@@ -134,7 +134,7 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
     fun sagaCombateMoverEAtacar(alvoId: String, local: com.gurps.ficha.domain.combat.LocalAtaque) =
         sagaDelegate.combate.heroiMoverEAtacar(alvoId, local)
     fun sagaCombateAvaliar(alvoId: String) = sagaDelegate.combate.heroiAvaliar(alvoId)
-    fun sagaCombateApontar(alvoId: String) = sagaDelegate.combate.heroiApontar(alvoId)
+    fun sagaCombateApontar(alvoId: String, firmado: Boolean = false) = sagaDelegate.combate.heroiApontar(alvoId, firmado)
     fun sagaCombateFintar(alvoId: String) = sagaDelegate.combate.heroiFintar(alvoId)
     fun sagaCombateAgarrar(alvoId: String) = sagaDelegate.combate.heroiAgarrar(alvoId)
     fun sagaCombateDerrubar(alvoId: String) = sagaDelegate.combate.heroiDerrubar(alvoId)

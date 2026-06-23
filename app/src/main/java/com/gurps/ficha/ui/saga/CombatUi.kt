@@ -263,11 +263,10 @@ private fun ManeuverCards(viewModel: FichaViewModel, estado: com.gurps.ficha.vie
     }
 
     if (apontarDialogo) {
-        SubDialogoEscolherAlvo(
-            titulo = "Apontar (mirar) em quem?",
-            descricaoConfirmar = "Apontar no alvo",
+        SubDialogoApontar(
             alvos = estado.combatentes.filter { !it.ehHeroi && it.vivo },
-            onConfirmar = { alvoId -> viewModel.sagaCombateApontar(alvoId); apontarDialogo = false },
+            podeFirmar = estado.ataques.getOrNull(estado.ataqueSelecionado)?.armaDeFogo == true,
+            onConfirmar = { alvoId, firmado -> viewModel.sagaCombateApontar(alvoId, firmado); apontarDialogo = false },
             onFechar = { apontarDialogo = false }
         )
     }
@@ -428,6 +427,48 @@ private fun SubDialogoEscolherAlvo(
             Button(onClick = { if (alvoId.isNotBlank()) onConfirmar(alvoId) },
                 enabled = alvoId.isNotBlank(),
                 modifier = Modifier.semantics { contentDescription = descricaoConfirmar }) { Text("Confirmar") }
+        },
+        dismissButton = { TextButton(onClick = onFechar) { Text("Cancelar") } }
+    )
+}
+
+/** Lote 395: Apontar — escolhe o alvo e (só para arma de fogo) se vai "firmar" a arma (+1 Acc). MB p.364. */
+@Composable
+private fun SubDialogoApontar(
+    alvos: List<CombatenteUi>,
+    podeFirmar: Boolean,
+    onConfirmar: (alvoId: String, firmado: Boolean) -> Unit,
+    onFechar: () -> Unit
+) {
+    var alvoId by remember { mutableStateOf(alvos.firstOrNull()?.id ?: "") }
+    var firmado by remember { mutableStateOf(false) }
+    AlertDialog(
+        onDismissRequest = onFechar,
+        title = { Text("Apontar (mirar) em quem?") },
+        text = {
+            Column(Modifier.verticalScroll(rememberScrollState())) {
+                alvos.forEach { a ->
+                    OpcaoRadio(alvoId == a.id, "${a.nome} — PV ${a.pvAtual}/${a.pvMax} (${a.distanciaM}m)", "Alvo ${a.nome}") { alvoId = a.id }
+                }
+                if (podeFirmar) {
+                    Spacer(Modifier.height(8.dp))
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.fillMaxWidth().semantics {
+                            contentDescription = "Firmar a arma, mais um na precisão" + if (firmado) ", ativado" else ", desativado"
+                        }
+                    ) {
+                        Switch(checked = firmado, onCheckedChange = { firmado = it })
+                        Spacer(Modifier.width(8.dp))
+                        Text("Firmar a arma (+1 Prec.)", style = MaterialTheme.typography.bodyMedium)
+                    }
+                }
+            }
+        },
+        confirmButton = {
+            Button(onClick = { if (alvoId.isNotBlank()) onConfirmar(alvoId, firmado && podeFirmar) },
+                enabled = alvoId.isNotBlank(),
+                modifier = Modifier.semantics { contentDescription = "Apontar no alvo" }) { Text("Apontar") }
         },
         dismissButton = { TextButton(onClick = onFechar) { Text("Cancelar") } }
     )

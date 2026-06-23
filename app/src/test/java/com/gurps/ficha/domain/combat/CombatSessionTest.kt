@@ -794,4 +794,39 @@ class CombatSessionTest {
         s.heroiMove(afastar = true, metros = 100)
         assertFalse("após outra ação, a disparada reinicia", s.log.last().contains("disparada"))
     }
+
+    // Lote 395 — Apontar: firmar a arma de fogo (+1 Acc) e teste de Vontade ao ser ferido (MB p.364).
+    @Test
+    fun `firmar a arma de fogo da +1 na precisao do tiro`() {
+        val g = goblin()
+        val enc = CombatEncounter(listOf(heroi(), g), mapOf("goblin" to 10), seed = 1L)
+        val s = CombatSession(enc, perfilHeroi(), Random(3))
+        val rev = AtaqueHeroi("Revólver", nh = 14, danoExpr = "2d-1 pa+", tipo = DanoTipo.PI_MAIS,
+            aDistancia = true, alcance = 1700, precisao = 2, armaDeFogo = true)
+        s.heroiApontar("goblin", firmado = true)
+        assertTrue("a declaração mostra o firmar", s.log.last().contains("firmando"))
+        s.heroiAtaca(rev, "goblin", Manobra.ATAQUE, LocalAtaque.TORSO)
+        val tiro = s.log.last { it.startsWith("🎯") || it.startsWith("⭐") || it.startsWith("💥") }
+        assertTrue("o tiro deve somar o firmar: $tiro", tiro.contains("firmar"))
+    }
+
+    @Test
+    fun `ser ferido mirando dispara o teste de Vontade da mira`() {
+        var testou = false
+        for (seed in 0L..250L) {
+            val base = goblin()
+            val g = base.copy(stats = base.stats!!.copy(armaNh = 16)) // crítico ocasional anula a defesa
+            val enc = CombatEncounter(listOf(heroi(), g), mapOf("goblin" to 1), seed = 1L)
+            val s = CombatSession(enc, perfilHeroi().copy(rd = 0), Random(seed))
+            s.heroiApontar("goblin")
+            val intencao = NpcCombatBrain.IntencaoNpc(
+                manobra = Manobra.ATAQUE, alvoId = "heroi", local = LocalAtaque.TORSO, motivo = "t"
+            )
+            s.npcResolve("goblin", intencao, DefesaHeroi(CombatResolver.TipoDefesa.ESQUIVA, 9, 18))
+            if (s.log.any { it.contains("Vontade") && (it.contains("perder a mira") || it.contains("mantém a mira")) }) {
+                testou = true; break
+            }
+        }
+        assertTrue("um acerto que fere o herói mirando deve testar a Vontade da mira", testou)
+    }
 }

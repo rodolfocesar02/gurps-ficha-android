@@ -32,10 +32,11 @@ class CombatSession(
     private var avaliarStacks: Int = 0
     private fun limparAvaliar() { avaliarAlvoId = null; avaliarStacks = 0 }
 
-    // Apontar (Lote 373/392): mira numa arma à distância → +Precisão (Acc) + mira de vários turnos (+1 no 2º seg, +2 no 3º+).
+    // Apontar (Lote 373/392/395): mira → +Precisão (Acc) + mira de vários turnos (+1/+2) + firmar arma de fogo (+1).
     private var apontarAlvoId: String? = null
     private var apontarStacks: Int = 0 // turnos consecutivos mirando o MESMO alvo
-    private fun limparApontar() { apontarAlvoId = null; apontarStacks = 0 }
+    private var apontarFirmado: Boolean = false // Lote 395: firmou a arma de fogo (+1 Acc, MB p.364)
+    private fun limparApontar() { apontarAlvoId = null; apontarStacks = 0; apontarFirmado = false }
 
     // Fintar (Lote 383): venceu a Disputa Rápida → reduz a defesa do alvo no PRÓXIMO golpe ao mesmo alvo (MB p.366).
     private var fintaAlvoId: String? = null
@@ -242,6 +243,8 @@ class CombatSession(
                     // Mira de vários turnos (MB p.364): +1 ao mirar 2 segundos, +2 ao mirar 3+ segundos.
                     val miraExtra = (apontarStacks - 1).coerceIn(0, 2)
                     if (miraExtra != 0) add(CombatActions.ComponenteMod("mira contínua", miraExtra))
+                    // Firmar a arma de fogo (Lote 395, MB p.364): +1 na Precisão.
+                    if (apontarFirmado && ataque.armaDeFogo) add(CombatActions.ComponenteMod("firmar", 1))
                 }
                 bonusCadenciaTiro(tiros).let { if (it != 0) add(CombatActions.ComponenteMod("rajada ${tiros} tiros", it)) }
             } else if (avaliarAlvoId == alvo.id && avaliarStacks > 0) {
@@ -337,15 +340,17 @@ class CombatSession(
         return txt
     }
 
-    /** Apontar (MB p.364): mira numa arma à distância → +Precisão (Acc) + mira contínua (+1 no 2º seg, +2 no 3º+). */
-    fun heroiApontar(alvoId: String): String {
+    /** Apontar (MB p.364): mira → +Precisão (Acc) + mira contínua (+1/+2) + firmar arma de fogo (+1). */
+    fun heroiApontar(alvoId: String, firmado: Boolean = false): String {
         inicioAcaoHeroi()
         // Mirar o MESMO alvo por turnos seguidos acumula a mira (+1 no 2º segundo, +2 no 3º+; MB p.364).
         if (apontarAlvoId == alvoId) apontarStacks++ else { apontarAlvoId = alvoId; apontarStacks = 1 }
+        apontarFirmado = firmado
         limparAvaliar(); limparFinta()
         val miraExtra = (apontarStacks - 1).coerceIn(0, 2)
+        val firmadoTxt = if (firmado) " +1 firmando" else ""
         val nome = inimigos.firstOrNull { it.id == alvoId }?.nome ?: "o alvo"
-        val txt = "🎯 Você mira em $nome (+Precisão${if (miraExtra > 0) " +$miraExtra de mira contínua" else ""} no próximo tiro)."
+        val txt = "🎯 Você mira em $nome (+Precisão${if (miraExtra > 0) " +$miraExtra de mira contínua" else ""}$firmadoTxt no próximo tiro)."
         log += txt
         return txt
     }
@@ -667,6 +672,13 @@ class CombatSession(
         if (troca.defesaTentada && apontarAlvoId != null) {
             limparApontar()
             log += "  └ você perde a mira (usou uma defesa ativa)."
+        }
+        // Apontar (Lote 395, MB p.364): se foi FERIDO ainda mirando (sem usar defesa), testa Vontade p/ não perder a mira.
+        if (apontarAlvoId != null && (troca.dano?.pvSubtrair ?: 0) > 0) {
+            val rolVont = rolar3d6()
+            if (rolVont > heroiPerfil.vontade) {
+                limparApontar(); log += "  └ a dor faz você perder a mira (Vontade ${heroiPerfil.vontade}, rolou $rolVont)."
+            } else log += "  └ você aguenta a dor e mantém a mira (Vontade ${heroiPerfil.vontade}, rolou $rolVont)."
         }
         // Erro Crítico do NPC (Lote 384, MB p.557): o oponente tropeça no próprio golpe.
         if (atk.critico == CriticoRules.ResultadoCritico.FALHA_CRITICA)
@@ -1017,7 +1029,9 @@ data class HeroiPerfilCombate(
     val modificadorTamanho: Int = 0,
     /** Lote 386: ST e DX do herói — para as Disputas Rápidas de luta agarrada (Agarrar/Derrubar, MB p.370/371). */
     val st: Int = 10,
-    val dx: Int = 10
+    val dx: Int = 10,
+    /** Lote 395: Vontade — teste para não perder a pontaria (Apontar) ao ser ferido (MB p.364). */
+    val vontade: Int = 10
 )
 
 /**
@@ -1044,6 +1058,7 @@ data class AtaqueHeroi(
     val duasMaos: Boolean = false, // Lote 380: ocupa as duas mãos → sem mão livre p/ o escudo (MB p.375).
     val desarmado: Boolean = false, // Lote 384: ataque desarmado (usa a Tabela de Erro Crítico desarmada).
     val aparaMarcial: Boolean = false, // Lote 391: apara desarmada por Caratê/Judô → sem o −3 vs armas (MB p.376).
+    val armaDeFogo: Boolean = false, // Lote 395: arma de fogo → pode "firmar" ao Apontar (+1 Acc, MB p.364).
     val temPericia: Boolean = true
 )
 

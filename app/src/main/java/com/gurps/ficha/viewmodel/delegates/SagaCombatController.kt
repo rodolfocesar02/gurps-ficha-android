@@ -321,10 +321,10 @@ class SagaCombatController(
         depoisDaAcaoDoHeroi()
     }
 
-    fun heroiApontar(alvoId: String) {
+    fun heroiApontar(alvoId: String, firmado: Boolean = false) {
         val s = sessao ?: return
         if (!s.combatenteAtual().ehHeroi || s.encerrado) return
-        s.heroiApontar(alvoId)
+        s.heroiApontar(alvoId, firmado)
         depoisDaAcaoDoHeroi()
     }
 
@@ -513,7 +513,9 @@ class SagaCombatController(
         // MT do herói (alvo) — somado ao acerto quando um NPC atira nele (Lote 381, MB p.549).
         modificadorTamanho = p.modificadorTamanho,
         // ST/DX para as Disputas de luta agarrada (Lote 386).
-        st = p.forca, dx = p.dx
+        st = p.forca, dx = p.dx,
+        // Vontade — teste p/ não perder a mira ao ser ferido (Lote 395).
+        vontade = p.vontade
     )
 
     /**
@@ -546,6 +548,7 @@ class SagaCombatController(
                 cadenciaTiro = arma.armaCadenciaTiro ?: 1,
                 recuo = arma.armaRecuo ?: 1,
                 duasMaos = ehDuasMaos(arma),
+                armaDeFogo = modo.contains("fogo"), // Lote 395: arma de fogo → pode firmar ao Apontar (+1)
                 temPericia = pericia != null
             ))
         }

@@ -3039,6 +3039,15 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - Build completo verde 2 variantes
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
+### Lote 395 — 23 de Junho de 2026
+**Saga combate: Apontar completo — firmar +1 + Vontade ao ser ferido (loop dos 16 parciais 3/16, MB p.364, branch GURPS-Saga)**
+- **FIRMAR (+1 Acc):** `heroiApontar(alvoId, firmado)` + `apontarFirmado`; o tiro soma +1 só se a arma é de fogo (`AtaqueHeroi.armaDeFogo`, setado por `armaTipoCombate` do catálogo — estruturado). UI: `SubDialogoApontar` com Switch "Firmar a arma (+1 Prec.)" mostrado só para arma de fogo.
+- **VONTADE AO SER FERIDO:** `HeroiPerfilCombate.vontade` (← `p.vontade`); se o herói é ferido **ainda mirando** (sem usar defesa — caso de defesa anulada por crítico), testa Vontade; falha → perde a mira. (Defender já perdia a mira no Lote 392.)
+- DEFERIDO: besta também "firma" (sem flag de besta no catálogo); apoio físico (mureta/tripé) e bruços não são modelados — o "firmar" é a declaração do jogador.
+- Testes: firmar soma +1 no tiro; ferimento mirando dispara o teste de Vontade (loop de seeds até um crítico). Build 2 variantes + testes verdes.
+- Combate.md: "Apontar" → FEITO.
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
 ### Lote 394 — 23 de Junho de 2026
 **Saga combate: Deslocamento — Disparada (loop dos 16 parciais 2/16, MB p.353, branch GURPS-Saga)**
 - A manobra Mover já funcionava; faltava a **Disparada** (sprint): Moves consecutivos **na mesma direção (linha reta)** dão **+20% de Deslocamento a partir do 2º** (MB p.353). `heroiMoveSeguidos`+`heroiMoveDirecao` (capturados antes de `inicioAcaoHeroi`, que zera o contador → ação não-Move quebra; mudar de direção recomeça); `heroiMove` aplica o sprint e narra "(disparada +Nm)".
