@@ -3039,6 +3039,13 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - Build completo verde 2 variantes
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
+### Lote 404 — 23 de Junho de 2026
+**Saga combate: Retirada e Jogar-se ao Chão — Esquiva e Queda (loop dos 16 parciais 12/16, fecha 2 tópicos, MB p.377, branch GURPS-Saga)**
+- A Retirada foi feita no 389; faltava **Jogar-se ao Chão / Esquiva e Queda**: variante de defesa **Esquiva +3 só contra ATAQUE À DISTÂNCIA**, mas o herói **termina deitado**. `OpcaoDefesa.jogarSeAoChao` + `DefesaHeroi.jogarSeAoChao`; `opcoesDefesa(permitirJogarSeAoChao)` emite a variante; `opcoesDefesaHeroi` gateia (vs tiro, não-deitado, não-atordoado); `npcResolve` põe `postura = DEITADO` após defender. UI: card mostra "⤓ jogar-se ao chão".
+- Teste: variante +3 vs tiro, ausente vs corpo-a-corpo; defender com ela deixa o herói deitado. Build 2 variantes + testes verdes.
+- Combate.md: "Retirada e Jogar-se ao Chão" e "Esquiva e Queda" → FEITO.
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
 ### Lote 403 — 23 de Junho de 2026
 **Saga combate: Velocidade e Distância do Alvo (loop dos 16 parciais 11/16, MB p.550, branch GURPS-Saga)**
 - A penalidade de distância já existia; faltava a de **alvo em movimento**: `Combatente.velocidadeAtual` (m percorridos no último Move) é **somado à distância** numa ÚNICA penalidade (`penalidadeDistancia(dist + velocidade)`, MB p.550 — não somar separado). `heroiMove`/MOVER do NPC setam; `inicioAcaoHeroi`/início do `npcResolve` zeram (parado = 0). Vale nas 2 direções (herói atira no NPC; NPC atira no herói).

@@ -441,7 +441,7 @@ class SagaCombatController(
                 opcoes.filter { it.tipo != escolha.tipo && !it.recuo }.maxByOrNull { it.valorFinal }
                     ?.let { DefesaHeroi(it.tipo, it.valorFinal, (1..3).sumOf { Random.nextInt(1, 7) }) }
             else null
-            s.npcResolve(npcId, intencao, DefesaHeroi(escolha.tipo, escolha.valorFinal, soma, escolha.recuo), secundaria)
+            s.npcResolve(npcId, intencao, DefesaHeroi(escolha.tipo, escolha.valorFinal, soma, escolha.recuo, escolha.jogarSeAoChao), secundaria)
         } else {
             s.npcResolve(npcId, intencao, null)
         }

@@ -695,9 +695,13 @@ private fun DefendaSeCard(viewModel: FichaViewModel, defesa: com.gurps.ficha.vie
             Spacer(Modifier.height(8.dp))
             defesa.opcoes.forEach { op ->
                 val comps = op.componentes.joinToString(" ") { (if (it.valor >= 0) "+${it.valor}" else "${it.valor}") + " ${it.nome}" }
-                val sufixoRecuo = if (op.recuo) " ↩ recuar" else "" // Lote 389: Retirada
+                val sufixo = when { // Lote 389/404
+                    op.recuo -> " ↩ recuar"
+                    op.jogarSeAoChao -> " ⤓ jogar-se ao chão"
+                    else -> ""
+                }
                 val rotulo = buildString {
-                    append("${op.tipo.rotulo}$sufixoRecuo ${op.valorFinal}")
+                    append("${op.tipo.rotulo}$sufixo ${op.valorFinal}")
                     if (comps.isNotBlank()) append("  ($comps)")
                     if (!op.disponivel) append(" — ${op.motivoIndisponivel}")
                 }
@@ -705,7 +709,7 @@ private fun DefendaSeCard(viewModel: FichaViewModel, defesa: com.gurps.ficha.vie
                     onClick = { if (op.disponivel) viewModel.sagaCombateDefender(op) },
                     enabled = op.disponivel,
                     modifier = Modifier.fillMaxWidth().padding(vertical = 2.dp)
-                        .semantics { contentDescription = "${op.tipo.rotulo}${if (op.recuo) " com recuo" else ""} valor ${op.valorFinal}" + if (!op.disponivel) ", indisponível" else ", rolar" }
+                        .semantics { contentDescription = "${op.tipo.rotulo}${if (op.recuo) " com recuo" else ""}${if (op.jogarSeAoChao) " jogando-se ao chão" else ""} valor ${op.valorFinal}" + if (!op.disponivel) ", indisponível" else ", rolar" }
                 ) { Text(rotulo) }
             }
         }

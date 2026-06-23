@@ -978,4 +978,31 @@ class CombatSessionTest {
         s.heroiAtaca(pistola, "goblin", Manobra.ATAQUE, LocalAtaque.TORSO)
         assertTrue("em movimento: Vel/Dist combinada", s.log.any { it.contains("Vel/Dist") })
     }
+
+    // Lote 404 — Esquiva e Queda / Jogar-se ao Chão (MB p.377): +3 na Esquiva vs tiro, mas termina deitado.
+    @Test
+    fun `esquiva e queda da +3 vs tiro e so vale a distancia`() {
+        val g = goblin()
+        val enc = CombatEncounter(listOf(heroi(), g), mapOf("goblin" to 10), seed = 1L)
+        val s = CombatSession(enc, perfilHeroi(), Random(3))
+        val ops = s.opcoesDefesaHeroi(contraAtaqueCorpoACorpo = false) // vs tiro
+        val jsc = ops.firstOrNull { it.jogarSeAoChao }
+        assertTrue("oferece jogar-se ao chão vs tiro", jsc != null)
+        val esquivaN = ops.first { it.tipo == CombatResolver.TipoDefesa.ESQUIVA && !it.jogarSeAoChao && !it.recuo }.valorFinal
+        assertEquals("+3 na esquiva", esquivaN + 3, jsc!!.valorFinal)
+        assertTrue("não vale vs corpo-a-corpo",
+            s.opcoesDefesaHeroi(contraAtaqueCorpoACorpo = true).none { it.jogarSeAoChao })
+    }
+
+    @Test
+    fun `jogar-se ao chao deixa o heroi deitado`() {
+        val g = goblin()
+        val enc = CombatEncounter(listOf(heroi(), g), mapOf("goblin" to 10), seed = 1L)
+        val s = CombatSession(enc, perfilHeroi(), Random(3))
+        val intencao = NpcCombatBrain.IntencaoNpc(
+            manobra = Manobra.ATAQUE, alvoId = "heroi", aDistancia = true, motivo = "atira"
+        )
+        s.npcResolve("goblin", intencao, DefesaHeroi(CombatResolver.TipoDefesa.ESQUIVA, 12, 10, jogarSeAoChao = true))
+        assertEquals("o herói termina deitado", Postura.DEITADO, s.heroi.postura)
+    }
 }

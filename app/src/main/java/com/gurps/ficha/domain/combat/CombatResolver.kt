@@ -29,7 +29,8 @@ object CombatResolver {
         val componentes: List<ComponenteMod>,
         val disponivel: Boolean,
         val motivoIndisponivel: String? = null,
-        val recuo: Boolean = false // Lote 389: variante "com recuo" (Retirada, MB p.377)
+        val recuo: Boolean = false, // Lote 389: variante "com recuo" (Retirada, MB p.377)
+        val jogarSeAoChao: Boolean = false // Lote 404: Esquiva e Queda (+3 vs tiro, termina deitado, MB p.377)
     )
 
     /**
@@ -81,7 +82,8 @@ object CombatResolver {
         defesasUsadas: DefesasUsadas,
         defesaTotalEm: TipoDefesa? = null,
         esgrima: Boolean = false,
-        permitirRecuo: Boolean = false // Lote 389: emite variantes "com recuo" (ataque corpo-a-corpo, 1×/turno)
+        permitirRecuo: Boolean = false, // Lote 389: emite variantes "com recuo" (ataque corpo-a-corpo, 1×/turno)
+        permitirJogarSeAoChao: Boolean = false // Lote 404: Esquiva e Queda (+3 na Esquiva vs tiro, termina deitado)
     ): List<OpcaoDefesa> {
         val out = mutableListOf<OpcaoDefesa>()
         fun emitir(tipo: TipoDefesa, base: Int, disponivel: Boolean, motivo: String?, aparas: Int = 0) {
@@ -94,6 +96,11 @@ object CombatResolver {
             }
         }
         emitir(TipoDefesa.ESQUIVA, esquivaBase, true, null)
+        // Esquiva e Queda (Lote 404, MB p.377): +3 na Esquiva contra tiro, mas o herói termina deitado (gateado pelo chamador).
+        if (permitirJogarSeAoChao) valorDefesaFinal(TipoDefesa.ESQUIVA, esquivaBase, false, defesaTotalEm == TipoDefesa.ESQUIVA).let { (v, c) ->
+            out.add(OpcaoDefesa(TipoDefesa.ESQUIVA, v + 3, c + ComponenteMod("jogar-se ao chão", 3),
+                disponivel = true, jogarSeAoChao = true))
+        }
         if (aparaBase != null)
             emitir(TipoDefesa.APARA, aparaBase, true, null, defesasUsadas.aparasPorArma.values.firstOrNull() ?: 0)
         if (bloqueioBase != null)

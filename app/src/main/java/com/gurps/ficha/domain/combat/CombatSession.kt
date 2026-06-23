@@ -632,6 +632,9 @@ class CombatSession(
         // = limitação futura). O passo de recuo em si fica abstraído (o herói está sempre engajado no tracker).
         val permitirRecuo = contraAtaqueCorpoACorpo && !heroi.defesasUsadas.retracaoUsada &&
             Condicao.ATORDOADO !in heroi.condicoes
+        // Esquiva e Queda (Lote 404, MB p.377): só contra ataque À DISTÂNCIA, se ainda não está deitado nem atordoado.
+        val permitirJogarSeAoChao = !contraAtaqueCorpoACorpo && heroi.postura != Postura.DEITADO &&
+            Condicao.ATORDOADO !in heroi.condicoes
         return CombatResolver.opcoesDefesa(
             esquivaBase = heroiPerfil.esquiva - bdRemovido - reducaoCambaleante - penAtordoado,
             aparaBase = if (podeAparar) heroiPerfil.apara?.let { it - bdRemovido - penAparaDesarmada - penAtordoado } else null,
@@ -639,7 +642,8 @@ class CombatSession(
             defesasUsadas = heroi.defesasUsadas,
             defesaTotalEm = defesaTotalEm ?: defesaTotalAumentadaEm, // Lote 388: +2 da Defesa Total (Aumentada)
             esgrima = tipoAparar == ApararTipo.ESGRIMA,
-            permitirRecuo = permitirRecuo
+            permitirRecuo = permitirRecuo,
+            permitirJogarSeAoChao = permitirJogarSeAoChao
         )
     }
 
@@ -784,6 +788,11 @@ class CombatSession(
         if (def.recuo) {
             heroi.defesasUsadas = heroi.defesasUsadas.copy(retracaoUsada = true)
             log += "  └ você recua um passo (Retirada, defesa ${def.valorFinal})."
+        }
+        // Esquiva e Queda (Lote 404, MB p.377): após a defesa contra o tiro, o herói termina DEITADO.
+        if (def.jogarSeAoChao && heroi.postura != Postura.DEITADO) {
+            heroi.postura = Postura.DEITADO
+            log += "  └ você se joga ao chão (+3 na esquiva vs tiro) e termina deitado."
         }
         log += narrarTroca(npc.nome, "você", stats.armaNome, intencao.aDistancia, atk, def.tipo, troca, intencao.local, tipoDano(stats.armaTipo))
         // Lote 390 (MB p.376): aparar um tiro à queima-roupa = desviar a ARMA do atacante, não o projétil.
@@ -1198,7 +1207,8 @@ data class DefesaHeroi(
     val tipo: CombatResolver.TipoDefesa,
     val valorFinal: Int,
     val soma: Int,
-    val recuo: Boolean = false // Lote 389: a defesa veio com Retirada (recuar um passo) — marca 1×/turno (MB p.377)
+    val recuo: Boolean = false, // Lote 389: a defesa veio com Retirada (recuar um passo) — marca 1×/turno (MB p.377)
+    val jogarSeAoChao: Boolean = false // Lote 404: Esquiva e Queda — após defender, o herói fica deitado (MB p.377)
 )
 
 enum class ResultadoCombate { VITORIA, DERROTA, FUGA }

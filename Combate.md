@@ -1431,7 +1431,7 @@ de projétil — não contra armas de fogo
 (a menos que o Mestre queira usar as
 regras opcionais de Dano a Escudos,
 pág. 484).
-## Retirada e Jogar-se ao Chão [~] ⚠️ PARCIAL OU INCOMPLETO
+## Retirada e Jogar-se ao Chão [x] ✅ FEITO (Retirada +3 esquiva/+1 apara-bloqueio — Lote 389; Jogar-se ao Chão / Esquiva e Queda: +3 na esquiva vs tiro, termina deitado — Lote 404)
 Em algumas situações, um personagem pode bater em retirada ou jogar-se
 ao chão para receber um bônus em
 Aparar, Bloqueio ou Esquiva. V. Opções
@@ -1730,7 +1730,7 @@ Um personagem não pode usar retirada a partir da posição sentado ou ajoelhado
 É possível usar retirada a partir da
 posição deitado (rolando).
 
-## Esquiva e Queda[]
+## Esquiva e Queda [x] ✅ FEITO (+3 na Esquiva contra ataque à distância, mas o herói termina deitado — Lote 404)
 Sob fogo, beije o chão! Um personagem
 pode se jogar ao chão durante uma esquiva, recebendo um bônus de +3 na jogada
 de defesa. Isso se chama “esquiva e queda”.
