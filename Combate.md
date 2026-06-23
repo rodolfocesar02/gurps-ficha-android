@@ -894,7 +894,7 @@ estava, mais um hexágono adjacente à
 escolha do personagem). Se ela o estava
 agarrando, o personagem se desvencilha. Se ele perder, sofre os mesmos efeitos! Num empate, nada acontece.
 
-## Imobilizar[]
+## Imobilizar [x] ✅ FEITO (oponente agarrado e no chão → Disputa de ST, +3 por categoria de MT de vantagem; vencendo, fica IMOBILIZADO e indefeso (sem defesa ativa) — Lote 411)
 Um personagem só pode tentar
 imobilizar um oponente que estiver no
 chão e somente se estiver agarrando o

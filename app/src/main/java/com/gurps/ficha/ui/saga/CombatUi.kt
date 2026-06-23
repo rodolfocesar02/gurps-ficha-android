@@ -174,6 +174,7 @@ private fun ManeuverCards(viewModel: FichaViewModel, estado: com.gurps.ficha.vie
     var derrubarDialogo by remember { mutableStateOf(false) }
     var encontraoDialogo by remember { mutableStateOf(false) }
     var empurraoDialogo by remember { mutableStateOf(false) }
+    var imobilizarDialogo by remember { mutableStateOf(false) }
     var posturaDialogo by remember { mutableStateOf(false) }
     var defesaTotalDialogo by remember { mutableStateOf(false) }
 
@@ -206,6 +207,7 @@ private fun ManeuverCards(viewModel: FichaViewModel, estado: com.gurps.ficha.vie
                             m == Manobra.DERRUBAR -> derrubarDialogo = true
                             m == Manobra.ENCONTRAO -> encontraoDialogo = true
                             m == Manobra.EMPURRAO -> empurraoDialogo = true
+                            m == Manobra.IMOBILIZAR -> imobilizarDialogo = true
                             m == Manobra.MUDAR_POSTURA -> posturaDialogo = true
                             m == Manobra.DEFESA_TOTAL -> defesaTotalDialogo = true
                             m == Manobra.FOGO_RETENCAO -> viewModel.sagaCombateFogoRetencao() // Lote 396: área, sem alvo
@@ -325,6 +327,16 @@ private fun ManeuverCards(viewModel: FichaViewModel, estado: com.gurps.ficha.vie
             alvos = estado.alvos,
             onConfirmar = { alvoId -> viewModel.sagaCombateEmpurrao(alvoId); empurraoDialogo = false },
             onFechar = { empurraoDialogo = false }
+        )
+    }
+
+    if (imobilizarDialogo) {
+        SubDialogoEscolherAlvo(
+            titulo = "Imobilizar quem? (precisa estar agarrado e no chão)",
+            descricaoConfirmar = "Imobilizar o alvo agarrado (Disputa de ST; deixa indefeso)",
+            alvos = estado.combatentes.filter { !it.ehHeroi && it.vivo && it.condicoes.contains("agarrado") },
+            onConfirmar = { alvoId -> viewModel.sagaCombateImobilizar(alvoId); imobilizarDialogo = false },
+            onFechar = { imobilizarDialogo = false }
         )
     }
 

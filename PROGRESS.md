@@ -3039,6 +3039,14 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - Build completo verde 2 variantes
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
+### Lote 411 — 23 de Junho de 2026
+**Saga combate: Imobilizar / Pin (tópicos `[]` 4/N, luta agarrada, MB p.371, branch GURPS-Saga)**
+- Nova manobra `IMOBILIZAR` — `heroiImobilizar(alvoId)`: exige o alvo **AGARRADO + no chão** (DEITADO/CAÍDO); **Disputa de ST** (+3 por categoria de MT de vantagem); vencendo, o alvo ganha `Condicao.IMOBILIZADO` (indefeso). `melhorDefesaNpc` retorna defesa 0 se IMOBILIZADO; o bloco AGARRADO do `npcResolve` agora cobre IMOBILIZADO (forceja a −3, não ataca, solta as duas condições ao vencer). Manobra aparece só com inimigo agarrado. Novas condições: `IMOBILIZADO`, `SUFOCANDO` (p/ 412).
+- Mata-Leão/Chave de Braço/Torção referenciam Martial Arts (p.403/404, fora do Básico) → deferidos.
+- Testes: herói forte imobiliza o agarrado caído; recusa sem agarrar. Build 2 variantes + testes verdes.
+- Combate.md: "Imobilizar" → FEITO.
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
 ### Lote 410 — 23 de Junho de 2026
 **Saga combate: Empurrão / Shove (tópicos `[]` 3/N, MB p.371, branch GURPS-Saga)**
 - Nova manobra `EMPURRAO` — `heroiEmpurrao(alvoId)`: acerto por **DX** (adjacente), alvo pode defender. Se acerta, **GdP×2** vira **projeção/knockback** = 1m por múltiplo de **(ST−2)** no resultado (MB p.378), com possível queda (teste de DX por metro extra); **nunca causa lesão**. `HeroiPerfilCombate.danoGdP` (← `p.danoGdP`). UI: manobra com seletor de alvo.

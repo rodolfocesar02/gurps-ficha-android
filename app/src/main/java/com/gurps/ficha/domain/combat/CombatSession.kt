@@ -261,6 +261,26 @@ class CombatSession(
         return AtaqueResultado(true, false, 0, false, log.last())
     }
 
+    /** Imobilizar (MB p.371): prende no chão um oponente AGARRADO. Disputa Normal de ST (+3 por categoria de MT). */
+    fun heroiImobilizar(alvoId: String): String {
+        inicioAcaoHeroi()
+        val alvo = inimigos.firstOrNull { it.id == alvoId && it.vivo } ?: return "Alvo inválido.".also { log += it }
+        if (Condicao.AGARRADO !in alvo.condicoes)
+            return "⚠️ Você precisa estar agarrando ${alvo.nome} (pelo tronco) para imobilizá-lo.".also { log += it }
+        if (alvo.postura != Postura.DEITADO && Condicao.CAIDO !in alvo.condicoes)
+            return "⚠️ Só dá pra imobilizar um oponente no chão — derrube-o antes.".also { log += it }
+        val mtBonus = (heroiPerfil.modificadorTamanho - (alvo.stats?.modificadorTamanho ?: 0)).coerceAtLeast(0) * 3
+        val stHeroi = heroiPerfil.st + mtBonus
+        val stNpc = alvo.stats?.st ?: 10
+        val rh = rolar3d6(); val rn = rolar3d6()
+        val txt = if (vencaDisputaRapida(stHeroi, rh, stNpc, rn)) {
+            alvo.condicoes.add(Condicao.IMOBILIZADO)
+            "🔒 Você IMOBILIZA ${alvo.nome} no chão — indefeso! [ST $stHeroi rolou $rh vs ST $stNpc rolou $rn]"
+        } else "🤼 ${alvo.nome} resiste e não é imobilizado. [ST $stHeroi rolou $rh vs ST $stNpc rolou $rn]"
+        log += txt
+        return txt
+    }
+
     /**
      * Mover e Atacar (MB p.366): o herói se desloca e ataca em movimento. Corpo-a-corpo aproxima-se do
      * alvo (gastando até o Deslocamento) antes de golpear; a penalidade é tratada pelo motor (CaC −4 e
@@ -766,17 +786,19 @@ class CombatSession(
             ?: return AtaqueResultado(false, false, 0, false, "NPC fora de combate.")
         npc.velocidadeAtual = 0 // Lote 403: só Mover redefine a velocidade do NPC (penalidade de Vel/Dist ao ser alvejado)
 
-        // Agarrado (Lote 386, MB p.371): o NPC preso gasta o turno tentando se desvencilhar (Disputa Rápida
-        // do maior entre ST/DX). Se vencer, solta-se; senão, continua preso. Em ambos os casos, não ataca.
-        if (Condicao.AGARRADO in npc.condicoes) {
-            val nv = maxOf(npc.stats?.st ?: 10, npc.stats?.dx ?: npc.dx)
+        // Agarrado/Imobilizado (Lotes 386/411, MB p.371): o NPC preso gasta o turno tentando se desvencilhar
+        // (Disputa Rápida do maior entre ST/DX; imobilizar é só ST e dá −3 ao NPC). Em ambos os casos, não ataca.
+        if (Condicao.AGARRADO in npc.condicoes || Condicao.IMOBILIZADO in npc.condicoes) {
+            val imob = Condicao.IMOBILIZADO in npc.condicoes
+            val nv = (if (imob) (npc.stats?.st ?: 10) - 3 else maxOf(npc.stats?.st ?: 10, npc.stats?.dx ?: npc.dx))
             val hv = maxOf(heroiPerfil.st, heroiPerfil.dx)
             val rn = rolar3d6(); val rh = rolar3d6()
+            val o = if (imob) "imobilização" else "agarrão"
             if (vencaDisputaRapida(nv, rn, hv, rh)) {
-                npc.condicoes.remove(Condicao.AGARRADO)
-                log += "🤼 ${npc.nome} se desvencilha e se solta do agarrão! [$nv rolou $rn vs $hv rolou $rh]"
+                npc.condicoes.remove(Condicao.AGARRADO); npc.condicoes.remove(Condicao.IMOBILIZADO)
+                log += "🤼 ${npc.nome} se desvencilha e se solta da $o! [$nv rolou $rn vs $hv rolou $rh]"
             } else {
-                log += "🤼 ${npc.nome} forceja, mas continua preso no agarrão. [$nv rolou $rn vs $hv rolou $rh]"
+                log += "🤼 ${npc.nome} forceja, mas continua preso na $o. [$nv rolou $rn vs $hv rolou $rh]"
             }
             verificarFim()
             return AtaqueResultado(false, false, 0, false, log.last())
@@ -1055,6 +1077,8 @@ class CombatSession(
 
     /** Melhor defesa de um NPC: Esquiva (Vel.Básica+3) vs Aparar (NH/2+3, só corpo-a-corpo); −4 se atordoado. */
     private fun melhorDefesaNpc(npc: Combatente): Pair<CombatResolver.TipoDefesa, Int> {
+        // Imobilizado (Lote 411, MB p.371): indefeso — não tem defesa ativa.
+        if (Condicao.IMOBILIZADO in npc.condicoes) return CombatResolver.TipoDefesa.ESQUIVA to 0
         val esquiva = esquivaNpc(npc)
         val melee = (npc.stats?.alcanceMetros ?: 1) <= 2
         val apara = if (melee) (npc.stats?.armaNh ?: 0) / 2 + 3 - penDefesaAtordoado(npc) else 0

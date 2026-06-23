@@ -359,6 +359,14 @@ class SagaCombatController(
         depoisDaAcaoDoHeroi()
     }
 
+    /** Lote 411: Imobilizar — prende no chão um oponente agarrado (Disputa de ST). MB p.371. */
+    fun heroiImobilizar(alvoId: String) {
+        val s = sessao ?: return
+        if (!s.combatenteAtual().ehHeroi || s.encerrado) return
+        s.heroiImobilizar(alvoId)
+        depoisDaAcaoDoHeroi()
+    }
+
     /** Lote 408: Golpe Rápido — dois ataques corpo-a-corpo a −6 cada (mantém a defesa). MB p.370. */
     fun heroiGolpeRapido(alvoId: String, local: LocalAtaque) {
         val s = sessao ?: return
@@ -539,6 +547,9 @@ class SagaCombatController(
             if (!ranged && alvos.isNotEmpty() && Manobra.GOLPE_RAPIDO !in it) it.add(Manobra.GOLPE_RAPIDO) // Lote 408
             if (!ranged && alvos.isNotEmpty() && Manobra.ENCONTRAO !in it) it.add(Manobra.ENCONTRAO) // Lote 409
             if (!ranged && alvos.isNotEmpty() && Manobra.EMPURRAO !in it) it.add(Manobra.EMPURRAO) // Lote 410
+            // Imobilizar (Lote 411): só faz sentido com um inimigo já AGARRADO.
+            if (s.inimigos.any { e -> e.vivo && Condicao.AGARRADO in e.condicoes } && Manobra.IMOBILIZAR !in it)
+                it.add(Manobra.IMOBILIZAR)
         }
         estado = CombatUiState(
             rodada = s.encounter.rodadaAtual,

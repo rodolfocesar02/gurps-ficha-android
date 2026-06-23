@@ -1102,4 +1102,28 @@ class CombatSessionTest {
         }
         assertTrue("o empurrão deve projetar o alvo sem causar lesão em alguma seed", projetou)
     }
+
+    // Lote 411 — Imobilizar (MB p.371): prende no chão um oponente agarrado (Disputa de ST) → indefeso.
+    @Test
+    fun `imobilizar prende um agarrado no chao`() {
+        var imobilizou = false
+        for (seed in 0L..40L) {
+            val g = goblin()
+            val enc = CombatEncounter(listOf(heroi(), g), mapOf("goblin" to 1), seed = 1L)
+            val s = CombatSession(enc, perfilHeroi().copy(st = 16), Random(seed))
+            g.condicoes.add(Condicao.AGARRADO); g.postura = Postura.DEITADO
+            s.heroiImobilizar("goblin")
+            if (Condicao.IMOBILIZADO in g.condicoes) { imobilizou = true; break }
+        }
+        assertTrue("herói forte deve imobilizar o goblin agarrado e caído", imobilizou)
+    }
+
+    @Test
+    fun `imobilizar exige alvo agarrado`() {
+        val g = goblin()
+        val enc = CombatEncounter(listOf(heroi(), g), mapOf("goblin" to 1), seed = 1L)
+        val s = CombatSession(enc, perfilHeroi(), Random(3))
+        s.heroiImobilizar("goblin")
+        assertTrue("recusa sem agarrar", s.log.last().contains("precisa estar agarrando"))
+    }
 }

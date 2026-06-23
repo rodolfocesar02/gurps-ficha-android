@@ -141,6 +141,7 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
         sagaDelegate.combate.heroiGolpeRapido(alvoId, local)
     fun sagaCombateEncontrao(alvoId: String) = sagaDelegate.combate.heroiEncontrao(alvoId)
     fun sagaCombateEmpurrao(alvoId: String) = sagaDelegate.combate.heroiEmpurrao(alvoId)
+    fun sagaCombateImobilizar(alvoId: String) = sagaDelegate.combate.heroiImobilizar(alvoId)
     fun sagaCombateFintar(alvoId: String) = sagaDelegate.combate.heroiFintar(alvoId)
     fun sagaCombateAgarrar(alvoId: String) = sagaDelegate.combate.heroiAgarrar(alvoId)
     fun sagaCombateDerrubar(alvoId: String) = sagaDelegate.combate.heroiDerrubar(alvoId)

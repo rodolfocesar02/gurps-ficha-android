@@ -25,6 +25,8 @@ enum class Condicao(val rotulo: String) {
     CAIDO("caído"),               // derrubado involuntariamente
     INCONSCIENTE("inconsciente"),
     AGARRADO("agarrado"),
+    IMOBILIZADO("imobilizado"),   // Lote 411: preso no chão, indefeso (MB p.371)
+    SUFOCANDO("sufocando"),       // Lote 412: estrangulado, perde 1 PF/turno (MB p.371/437)
     SURPRESO("surpreso")
 }
 
@@ -45,6 +47,8 @@ enum class Manobra(val rotulo: String) {
     GOLPE_RAPIDO("Golpe Rápido"), // Lote 408: dois ataques corpo-a-corpo, cada um a −6 (MB p.370)
     ENCONTRAO("Encontrão"),       // Lote 409: colisão (PV×vel/100 dados, dano mútuo, derrubada) (MB p.371)
     EMPURRAO("Empurrão"),         // Lote 410: empurra o alvo (GdP×2 → projeção/knockback, sem lesão) (MB p.371)
+    IMOBILIZAR("Imobilizar"),     // Lote 411: prende no chão um oponente agarrado (Disputa de ST) (MB p.371)
+    ESTRANGULAR("Estrangular"),   // Lote 412: asfixia/estrangula um agarrado (Disputa de ST → sufoca) (MB p.371)
     APONTAR("Apontar"),            // mira arma à distância → +Precisão no próximo tiro (MB p.364)
     FOGO_RETENCAO("Fogo de Retenção"), // Lote 396: arma CdT 5+ cobre a área → acerta quem avançar (MB p.409)
     CONCENTRAR("Concentrar-se"),
