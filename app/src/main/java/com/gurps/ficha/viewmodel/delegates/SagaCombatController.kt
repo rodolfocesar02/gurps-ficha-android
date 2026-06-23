@@ -328,6 +328,15 @@ class SagaCombatController(
         depoisDaAcaoDoHeroi()
     }
 
+    /** Lote 396: Fogo de Retenção — arma de fogo CdT 5+ cobre a área (quem avançar leva rajada). MB p.409. */
+    fun heroiFogoRetencao() {
+        val s = sessao ?: return
+        if (!s.combatenteAtual().ehHeroi || s.encerrado) return
+        val ataque = ataques.getOrNull(ataqueSelecionado) ?: return
+        s.heroiFogoRetencao(ataque)
+        depoisDaAcaoDoHeroi()
+    }
+
     fun heroiManobra(manobra: Manobra, novaPostura: Postura? = null) {
         val s = sessao ?: return
         if (!s.combatenteAtual().ehHeroi || s.encerrado) return
@@ -457,6 +466,8 @@ class SagaCombatController(
         val manobras = if (!vezHeroi) emptyList() else s.manobrasHeroi().toMutableList().also {
             if (alvos.isNotEmpty() && Manobra.ATAQUE !in it) it.add(Manobra.ATAQUE)
             if (ranged && alvos.isNotEmpty() && Manobra.APONTAR !in it) it.add(Manobra.APONTAR)
+            // Fogo de Retenção (Lote 396): arma à distância com CdT 5+ cobre a área (não precisa de alvo).
+            if (ranged && (ataqueSel?.cadenciaTiro ?: 1) >= 5 && Manobra.FOGO_RETENCAO !in it) it.add(Manobra.FOGO_RETENCAO)
             if (!ranged && alvos.isNotEmpty() && Manobra.FINTAR !in it) it.add(Manobra.FINTAR) // Lote 383: finta corpo-a-corpo
             if (!ranged && alvos.isNotEmpty() && Manobra.AGARRAR !in it) it.add(Manobra.AGARRAR) // Lote 386: agarrar
             if (!ranged && alvos.isNotEmpty() && Manobra.DERRUBAR !in it) it.add(Manobra.DERRUBAR) // Lote 386: derrubar

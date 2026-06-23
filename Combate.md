@@ -251,7 +251,7 @@ personagem Fintar com uma arma desbalanceada (“D” na estatística Aparar),
 ele não poderá aparar com ela, exatamente
 como se a tivesse usado para atacar.
 
-## Ataque Total [~] ⚠️ PARCIAL (Determinado +4/+1, Forte +2-ou-+1/dado, Duplo, Fintar OK; falta Fogo de Retenção)
+## Ataque Total [x] ✅ FEITO (Determinado +4/+1, Forte +2-ou-+1/dado, Duplo, Fintar — lotes 376-387; Fogo de Retenção: arma CdT 5+ cobre a área e alveja quem avança — Lote 396)
 Consiste em atacar um oponente
 com uma arma preparada, sem fazer
 nenhum esforço para se defender de

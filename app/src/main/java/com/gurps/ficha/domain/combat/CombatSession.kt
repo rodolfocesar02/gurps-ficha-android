@@ -64,10 +64,14 @@ class CombatSession(
     private var heroiMoveSeguidos = 0
     private var heroiMoveDirecao: Boolean? = null // afastar do último Move (mudar de direção quebra a disparada)
 
+    // Fogo de Retenção (Lote 396, MB p.409): arma CdT 5+ cobre a área até o próximo turno; quem AVANÇA leva uma rajada.
+    private var fogoRetencaoArma: AtaqueHeroi? = null
+
     /** Início de uma ação do herói: zera as flags do turno anterior (desbalanceada + sem-defesa/sem-aparar + Defesa Total + Disparada). */
     private fun inicioAcaoHeroi() {
         atacouDesbalanceada = false; heroiSemDefesaAtiva = false; heroiSemAparar = false; limparDefesaTotal()
         heroiMoveSeguidos = 0 // qualquer ação que NÃO seja Mover quebra a Disparada (heroiMove restaura +1)
+        fogoRetencaoArma = null // a cobertura do Fogo de Retenção dura só até a próxima ação do herói (Lote 396)
     }
 
     val heroi: Combatente get() = encounter.combatentes.first { it.ehHeroi }
@@ -373,6 +377,21 @@ class CombatSession(
         return txt
     }
 
+    /** Fogo de Retenção (MB p.409): arma de fogo CdT 5+ cobre a área; quem AVANÇAR leva uma rajada até o próximo turno. */
+    fun heroiFogoRetencao(ataque: AtaqueHeroi): String {
+        inicioAcaoHeroi()
+        limparAvaliar(); limparApontar(); limparFinta()
+        if (!ataque.aDistancia || ataque.cadenciaTiro < 5) {
+            val t = "⚠️ Fogo de Retenção exige uma arma à distância com CdT 5+."
+            log += t; return t
+        }
+        fogoRetencaoArma = ataque
+        heroiSemDefesaAtiva = true // é um Ataque Total: sem defesa ativa até o próximo turno (MB p.366)
+        val txt = "🔫 Você abre FOGO DE RETENÇÃO com ${ataque.rotulo.substringBefore(" (").trim()} — cobre a área; quem avançar leva rajada (sem defesa sua até o próximo turno)."
+        log += txt
+        return txt
+    }
+
     /**
      * Fintar (MB p.366): Disputa Rápida entre o NH do herói com a arma e a defesa do alvo (maior entre
      * armaNh e DX do NPC). Se o herói vencer, a MARGEM DE VITÓRIA é subtraída da defesa do alvo no próximo
@@ -578,6 +597,16 @@ class CombatSession(
             }
             verificarFim()
             return AtaqueResultado(false, false, 0, false, log.last())
+        }
+
+        // Fogo de Retenção (Lote 396, MB p.409): a zona coberta alveja quem AVANÇA, antes mesmo de o NPC agir.
+        fogoRetencaoArma?.let { arma ->
+            val avanca = (intencao.manobra == Manobra.MOVER && !intencao.recuar) || intencao.manobra == Manobra.MOVER_E_ATACAR
+            if (avanca) {
+                log += "🔫 Fogo de retenção: ${npc.nome} avança na zona coberta e é alvejado!"
+                resolverGolpeHeroi(arma, npc, Manobra.ATAQUE, LocalAtaque.TORSO, AtaqueTotalModo.DETERMINADO)
+                if (!npc.vivo) { verificarFim(); return AtaqueResultado(true, false, 0, true, log.last()) }
+            }
         }
 
         when (intencao.manobra) {

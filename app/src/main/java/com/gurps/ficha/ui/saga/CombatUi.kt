@@ -204,6 +204,7 @@ private fun ManeuverCards(viewModel: FichaViewModel, estado: com.gurps.ficha.vie
                             m == Manobra.DERRUBAR -> derrubarDialogo = true
                             m == Manobra.MUDAR_POSTURA -> posturaDialogo = true
                             m == Manobra.DEFESA_TOTAL -> defesaTotalDialogo = true
+                            m == Manobra.FOGO_RETENCAO -> viewModel.sagaCombateFogoRetencao() // Lote 396: área, sem alvo
                             else -> viewModel.sagaCombateManobra(m)
                         }
                     },

@@ -3039,6 +3039,16 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - Build completo verde 2 variantes
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
+### Lote 396 — 23 de Junho de 2026
+**Saga combate: Ataque Total (Fogo de Retenção) — fecha o Ataque Total (loop dos 16 parciais 4/16, MB p.409, branch GURPS-Saga)**
+- REGRA (MB p.409): arma à distância CdT 5+ cobre uma área e **acerta quem ENTRAR** antes do próximo turno (negação de área/interrupção). Mapeado ao tracker de faixas: nova manobra `FOGO_RETENCAO` (`heroiFogoRetencao(ataque)`, exige `aDistancia` + `cadenciaTiro≥5`); marca `fogoRetencaoArma` + `heroiSemDefesaAtiva` (é Ataque Total); dura até a próxima ação (limpo em `inicioAcaoHeroi`).
+- INTERRUPÇÃO: no `npcResolve`, se a zona está coberta e o NPC **avança** (MOVER sem recuar / MOVER_E_ATACAR), o herói dispara uma rajada nele (reusa `resolverGolpeHeroi` → RoF/Recuo/distância), ANTES de o NPC agir; se morre, sai.
+- UI: manobra "Fogo de Retenção" aparece quando a arma empunhada é à distância CdT 5+ (sem precisar de alvo — é área).
+- DEFERIDO: múltiplas zonas (CdT 10+), escolha de nº de tiros por zona, "margem de 1m da linha" — abstraídos no modelo de faixas.
+- Testes: NPC que avança é alvejado; CdT < 5 é recusado. Build 2 variantes + testes verdes.
+- Combate.md: "Ataque Total" → FEITO.
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
 ### Lote 395 — 23 de Junho de 2026
 **Saga combate: Apontar completo — firmar +1 + Vontade ao ser ferido (loop dos 16 parciais 3/16, MB p.364, branch GURPS-Saga)**
 - **FIRMAR (+1 Acc):** `heroiApontar(alvoId, firmado)` + `apontarFirmado`; o tiro soma +1 só se a arma é de fogo (`AtaqueHeroi.armaDeFogo`, setado por `armaTipoCombate` do catálogo — estruturado). UI: `SubDialogoApontar` com Switch "Firmar a arma (+1 Prec.)" mostrado só para arma de fogo.

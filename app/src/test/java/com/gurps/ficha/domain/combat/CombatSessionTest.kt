@@ -829,4 +829,30 @@ class CombatSessionTest {
         }
         assertTrue("um acerto que fere o herói mirando deve testar a Vontade da mira", testou)
     }
+
+    // Lote 396 — Fogo de Retenção (MB p.409): arma CdT 5+ cobre a área; quem AVANÇA leva uma rajada.
+    @Test
+    fun `fogo de retencao alveja o NPC que avanca`() {
+        val g = goblin()
+        val enc = CombatEncounter(listOf(heroi(), g), mapOf("goblin" to 10), seed = 1L)
+        val s = CombatSession(enc, perfilHeroi(), Random(3))
+        val mg = AtaqueHeroi("Metralhadora", nh = 14, danoExpr = "5d", tipo = DanoTipo.PI,
+            aDistancia = true, alcance = 1000, cadenciaTiro = 10, recuo = 2, armaDeFogo = true)
+        s.heroiFogoRetencao(mg)
+        assertTrue("declara o fogo de retenção", s.log.last().contains("FOGO DE RETENÇÃO"))
+        val avanca = NpcCombatBrain.IntencaoNpc(manobra = Manobra.MOVER, alvoId = "goblin", recuar = false, motivo = "avança")
+        s.npcResolve("goblin", avanca)
+        assertTrue("o NPC que avança leva fogo de retenção", s.log.any { it.contains("Fogo de retenção") && it.contains("alvejado") })
+    }
+
+    @Test
+    fun `fogo de retencao exige arma CdT 5+`() {
+        val g = goblin()
+        val enc = CombatEncounter(listOf(heroi(), g), mapOf("goblin" to 10), seed = 1L)
+        val s = CombatSession(enc, perfilHeroi(), Random(3))
+        val pistola = AtaqueHeroi("Pistola", nh = 14, danoExpr = "2d", tipo = DanoTipo.PI,
+            aDistancia = true, alcance = 100, cadenciaTiro = 3, armaDeFogo = true)
+        s.heroiFogoRetencao(pistola)
+        assertTrue("CdT < 5 recusa", s.log.last().contains("exige uma arma à distância com CdT 5+"))
+    }
 }
