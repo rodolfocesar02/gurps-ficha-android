@@ -1047,4 +1047,18 @@ class CombatSessionTest {
         assertEquals("vs corte/contusão: −3", 11 - 3, apara(gdp = false))
         assertEquals("vs ataque por ponta (GdP): sem −3", 11, apara(gdp = true))
     }
+
+    // Lote 408 — Golpe Rápido (MB p.370): dois ataques corpo-a-corpo, cada um a −6, mantendo a defesa.
+    @Test
+    fun `golpe rapido faz dois ataques a -6 e mantem a defesa`() {
+        val g = goblin(pv = 30)
+        val enc = CombatEncounter(listOf(heroi(), g), mapOf("goblin" to 1), seed = 1L)
+        val s = CombatSession(enc, perfilHeroi(), Random(3))
+        val espada = AtaqueHeroi("Espada", nh = 16, danoExpr = "2d", tipo = DanoTipo.CORT)
+        val res = s.heroiGolpeRapido(espada, "goblin", LocalAtaque.TORSO)
+        assertEquals("dois ataques", 2, res.size)
+        assertTrue("registra o Golpe Rápido", s.log.any { it.contains("Golpe Rápido") })
+        assertTrue("aplica a penalidade de −6", s.log.any { it.contains("golpe rápido") })
+        assertFalse("Golpe Rápido mantém a defesa ativa", s.heroiSemDefesaAtiva)
+    }
 }

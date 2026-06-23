@@ -343,6 +343,16 @@ class SagaCombatController(
         depoisDaAcaoDoHeroi()
     }
 
+    /** Lote 408: Golpe Rápido — dois ataques corpo-a-corpo a −6 cada (mantém a defesa). MB p.370. */
+    fun heroiGolpeRapido(alvoId: String, local: LocalAtaque) {
+        val s = sessao ?: return
+        if (!s.combatenteAtual().ehHeroi || s.encerrado) return
+        val ataque = ataques.getOrNull(ataqueSelecionado) ?: return
+        if (armaDespreparadaBloqueia(ataque)) return
+        s.heroiGolpeRapido(ataque, alvoId, local)
+        depoisDaAcaoDoHeroi()
+    }
+
     /** Lote 396: Fogo de Retenção — arma de fogo CdT 5+ cobre a área (quem avançar leva rajada). MB p.409. */
     fun heroiFogoRetencao() {
         val s = sessao ?: return
@@ -510,6 +520,7 @@ class SagaCombatController(
             if (!ranged && alvos.isNotEmpty() && Manobra.FINTAR !in it) it.add(Manobra.FINTAR) // Lote 383: finta corpo-a-corpo
             if (!ranged && alvos.isNotEmpty() && Manobra.AGARRAR !in it) it.add(Manobra.AGARRAR) // Lote 386: agarrar
             if (!ranged && alvos.isNotEmpty() && Manobra.DERRUBAR !in it) it.add(Manobra.DERRUBAR) // Lote 386: derrubar
+            if (!ranged && alvos.isNotEmpty() && Manobra.GOLPE_RAPIDO !in it) it.add(Manobra.GOLPE_RAPIDO) // Lote 408
         }
         estado = CombatUiState(
             rodada = s.encounter.rodadaAtual,

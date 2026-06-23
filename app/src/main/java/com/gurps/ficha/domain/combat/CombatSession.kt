@@ -162,6 +162,35 @@ class CombatSession(
         return r
     }
 
+    /** Golpe Rápido (MB p.370): dois ataques corpo-a-corpo no mesmo turno, cada um a −6 — MANTÉM a defesa ativa. */
+    fun heroiGolpeRapido(ataque: AtaqueHeroi, alvoId: String, local: LocalAtaque = LocalAtaque.TORSO): List<AtaqueResultado> {
+        if (ataque.rotulo == armaDespreparadaRotulo) {
+            val t = "⚠️ ${ataque.rotulo.substringBefore(" (").trim()} está despreparada — use Preparar antes de atacar."
+            log += t; return listOf(AtaqueResultado(false, false, 0, false, t))
+        }
+        inicioAcaoHeroi()
+        if (ataque.aDistancia) {
+            val t = "⚠️ Golpe Rápido é só corpo-a-corpo."
+            log += t; return listOf(AtaqueResultado(false, false, 0, false, t))
+        }
+        if (inimigos.none { it.id == alvoId && it.vivo })
+            return listOf(AtaqueResultado(false, false, 0, false, "Alvo inválido.").also { log += it.texto })
+        val nome = inimigos.first { it.id == alvoId }.nome
+        log += "⚔️⚔️ Golpe Rápido: dois ataques contra $nome, cada um a −6 (MB p.370)."
+        val resultados = mutableListOf<AtaqueResultado>()
+        repeat(2) {
+            val alvo = inimigos.firstOrNull { it.id == alvoId && it.vivo }
+            if (alvo != null) resultados += (golpeForaDeAlcance(ataque, alvo)
+                ?: resolverGolpeHeroi(ataque, alvo, Manobra.ATAQUE, local, AtaqueTotalModo.DETERMINADO,
+                    modAdicional = -6, rotuloModAdicional = "golpe rápido"))
+        }
+        limparAvaliar(); limparApontar(); limparFinta()
+        if (ataque.apararTipo == ApararTipo.DESBALANCEADA) atacouDesbalanceada = true
+        marcarDespreparoSeNecessario(ataque)
+        verificarFim()
+        return resultados
+    }
+
     /**
      * Mover e Atacar (MB p.366): o herói se desloca e ataca em movimento. Corpo-a-corpo aproxima-se do
      * alvo (gastando até o Deslocamento) antes de golpear; a penalidade é tratada pelo motor (CaC −4 e

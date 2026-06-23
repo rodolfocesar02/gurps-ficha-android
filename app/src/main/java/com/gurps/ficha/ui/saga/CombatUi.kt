@@ -188,7 +188,7 @@ private fun ManeuverCards(viewModel: FichaViewModel, estado: com.gurps.ficha.vie
 
             Spacer(Modifier.height(8.dp))
             estado.manobrasHeroi.forEach { m ->
-                val ehAtaque = m == Manobra.ATAQUE || m == Manobra.ATAQUE_TOTAL
+                val ehAtaque = m == Manobra.ATAQUE || m == Manobra.ATAQUE_TOTAL || m == Manobra.GOLPE_RAPIDO
                 val ehMoverAtacar = m == Manobra.MOVER_E_ATACAR
                 val precisaAlvo = ehAtaque || ehMoverAtacar
                 val temAlvo = if (ehMoverAtacar) estado.alvosMoverEAtacar.isNotEmpty() else estado.alvos.isNotEmpty()
@@ -234,6 +234,7 @@ private fun ManeuverCards(viewModel: FichaViewModel, estado: com.gurps.ficha.vie
             onConfirmar = { alvoId, local, modo, offHand, enganoso ->
                 when {
                     ehMoverAtacar -> viewModel.sagaCombateMoverEAtacar(alvoId, local)
+                    manobra == Manobra.GOLPE_RAPIDO -> viewModel.sagaCombateGolpeRapido(alvoId, local) // Lote 408
                     modo == AtaqueTotalModo.DUPLO && offHand != null -> viewModel.sagaCombateAtacarDuplo(alvoId, local, offHand)
                     else -> viewModel.sagaCombateAtacar(alvoId, manobra, local, modo, enganoso)
                 }

@@ -752,7 +752,7 @@ Impacto (pág. 398). Para atingir a arma
 de um oponente, veja Golpes Visando a
 Arma do Oponente (pág. 400).
 
-## Ataque Enganoso[]
+## Ataque Enganoso [x] ✅ FEITO (−2 no acerto por −1 na defesa do alvo, NH efetivo ≥10 — Lote 401)
 O personagem pode designar qualquer ataque com arma de combate corpo a corpo como sendo um ataque
 “enganoso” antes de fazer a jogada de
 ataque. A intenção do Ataque Enganoso é passar pelas defesas do oponente
@@ -770,7 +770,7 @@ O Mestre pode querer limitar a opção de Ataque Enganoso a uma simples
 penalidade de -4 ao NH efetivo do atacante que acarreta em uma penalidade
 de -2 nas defesas ativas do defensor.
 
-## Golpe Rápido[]
+## Golpe Rápido [x] ✅ FEITO (dois ataques corpo-a-corpo no mesmo turno, cada um a −6, mantendo a defesa ativa — Lote 408)
 Um Golpe Rápido é um ataque corpo a corpo executado de forma tão rápida que o atacante recebe um ataque
 adicional. O personagem precisa escolher uma manobra Ataque ou Ataque
 Total e precisa de uma arma preparada

@@ -3039,6 +3039,13 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - Build completo verde 2 variantes
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
+### Lote 408 — 23 de Junho de 2026
+**Saga combate: Golpe Rápido (tópicos `[]` 1/N, MB p.370, branch GURPS-Saga)**
+- Início da varredura dos tópicos NÃO-FEITOS do Combate.md (autonomia do usuário). **Golpe Rápido**: nova manobra `GOLPE_RAPIDO` — `heroiGolpeRapido(ataque, alvoId, local)` faz **2 ataques corpo-a-corpo** no mesmo turno, cada um com **−6** (`resolverGolpeHeroi(modAdicional=-6)`), **mantendo a defesa ativa** (não é Ataque Total). UI: manobra com seletor de alvo/local; `FichaViewModel.sagaCombateGolpeRapido`.
+- Teste: 2 ataques, componente −6, defesa mantida. Build 2 variantes + testes verdes.
+- Combate.md: "Golpe Rápido" e "Ataque Enganoso" (marcador corrigido) → FEITO.
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
 ### Lote 407 — 23 de Junho de 2026
 **Saga combate: Aparar Desarmado vs GdP — FECHA O LOOP DOS 16 PARCIAIS (16/16, MB p.376, branch GURPS-Saga)**
 - O −3 ao aparar uma arma com as mãos nuas (391) agora é **dispensado quando o ataque é por ponta (GdP)**, além da exceção Caratê/Judô. GdP é inferido do **dano PERF (perfuração = sempre por ponta)** — dado estruturado (`DanoTipo`), não nome. `opcoesDefesaHeroi(ataqueGdP)`; controller passa `tipoDano(armaTipo) == PERF && !aDistancia`.
