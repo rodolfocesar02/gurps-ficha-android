@@ -949,4 +949,18 @@ class CombatSessionTest {
         s.heroiAtaca(espada, "goblin", Manobra.ATAQUE, LocalAtaque.TORSO, enganoso = 2)
         assertTrue("o golpe registra o ataque enganoso (−4 no acerto)", s.log.any { it.contains("ataque enganoso") })
     }
+
+    // Lote 402 — Precisão e Disparo com Mira (MB p.364): a soma dos bônus de pontaria não excede o DOBRO da Acc.
+    @Test
+    fun `teto de pontaria nao excede o dobro da Acc`() {
+        val g = goblin()
+        val enc = CombatEncounter(listOf(heroi(), g), mapOf("goblin" to 10), seed = 1L)
+        val s = CombatSession(enc, perfilHeroi(), Random(3))
+        val rifle = AtaqueHeroi("Rifle", nh = 14, danoExpr = "5d", tipo = DanoTipo.PI,
+            aDistancia = true, alcance = 1000, precisao = 2, armaDeFogo = true)
+        repeat(3) { s.heroiApontar("goblin", firmado = true) } // Acc 2 + mira contínua +2 + firmar +1 = 5 > 2×2 = 4
+        s.heroiAtaca(rifle, "goblin", Manobra.ATAQUE, LocalAtaque.TORSO)
+        val tiro = s.log.last { it.startsWith("🎯") || it.startsWith("⭐") || it.startsWith("💥") }
+        assertTrue("aplica o teto de pontaria (2×Acc): $tiro", tiro.contains("teto de pontaria"))
+    }
 }

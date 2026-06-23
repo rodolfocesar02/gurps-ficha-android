@@ -1118,7 +1118,7 @@ a esse número indica um sucesso. Nesse caso, o ataque irá atingir o alvo, a
 menos que ele obtenha sucesso em uma
 defesa ativa.
 
-## Precisão e Disparo com Mira [~] ⚠️ PARCIAL OU INCOMPLETO
+## Precisão e Disparo com Mira [x] ✅ FEITO (Acc no Apontar + mira contínua + firmar já feitos; teto: a soma dos bônus de pontaria ≤ 2× a Prec — Lote 402; miras telescópicas/laser não modeladas no catálogo)
 Todas as armas de combate à distância apresentam o parâmetro Precisão
 (Prec). Esse é o bônus que o personagem recebe se executar uma ou mais
 manobras Apontar imediatamente antes do ataque.

@@ -3039,6 +3039,14 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - Build completo verde 2 variantes
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
+### Lote 402 — 23 de Junho de 2026
+**Saga combate: Precisão e Disparo com Mira — teto de pontaria (loop dos 16 parciais 10/16, MB p.364, branch GURPS-Saga)**
+- Acc + mira contínua + firmar já existiam; faltava o **teto**: a soma dos bônus de pontaria **não excede 2× a Prec** (MB p.364). Em `resolverGolpeHeroi`, mantém o breakdown (mira (Acc)/mira contínua/firmar) e, se o total passa de `2×Acc`, soma um componente negativo "teto de pontaria (2×Acc)".
+- DEFERIDO: miras telescópicas/laser e sistemas de pontaria não estão no catálogo (sem dado de scope).
+- Teste: rifle Acc 2 com mira 3 turnos (+2) + firmar (+1) = 5 → teto em 4. Build 2 variantes + testes verdes.
+- Combate.md: "Precisão e Disparo com Mira" → FEITO.
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
 ### Lote 401 — 23 de Junho de 2026
 **Saga combate: Opções de Ataque CaC — Ataque Enganoso (loop dos 16 parciais 9/16, MB p.369, branch GURPS-Saga)**
 - O cabeçalho "Opções de Ataques CaC" introduz as opções de golpe; faltava a mais usada: **Ataque Enganoso**. `resolverGolpeHeroi(enganoso)` e `heroiAtaca(enganoso)`: cada passo dá **−2 no NH** (componente "ataque enganoso") por **−1 na defesa do alvo** (`defValorFinal − enganoso`). UI: stepper no diálogo de ATAQUE corpo-a-corpo, limitado para o **NH efetivo não cair abaixo de 10** (`maxEnganoso = (nh−10)/2`, teto 4).

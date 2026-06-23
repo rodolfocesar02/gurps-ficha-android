@@ -280,12 +280,15 @@ class CombatSession(
                 if (pen != 0) add(CombatActions.ComponenteMod("distância ${dist}m", pen))
                 // Apontar no turno anterior ao mesmo alvo → soma a Precisão (Acc) da arma (MB p.364).
                 if (apontarAlvoId == alvo.id) {
-                    if (ataque.precisao != 0) add(CombatActions.ComponenteMod("mira (Acc)", ataque.precisao))
-                    // Mira de vários turnos (MB p.364): +1 ao mirar 2 segundos, +2 ao mirar 3+ segundos.
-                    val miraExtra = (apontarStacks - 1).coerceIn(0, 2)
+                    val acc = ataque.precisao
+                    val miraExtra = (apontarStacks - 1).coerceIn(0, 2) // mira de vários turnos: +1 (2s) / +2 (3s+)
+                    val firmar = if (apontarFirmado && ataque.armaDeFogo) 1 else 0
+                    if (acc != 0) add(CombatActions.ComponenteMod("mira (Acc)", acc))
                     if (miraExtra != 0) add(CombatActions.ComponenteMod("mira contínua", miraExtra))
-                    // Firmar a arma de fogo (Lote 395, MB p.364): +1 na Precisão.
-                    if (apontarFirmado && ataque.armaDeFogo) add(CombatActions.ComponenteMod("firmar", 1))
+                    if (firmar != 0) add(CombatActions.ComponenteMod("firmar", firmar))
+                    // Teto de pontaria (Lote 402, MB p.364): a soma dos bônus de pontaria não excede o DOBRO da Prec.
+                    val excedente = if (acc > 0) (acc + miraExtra + firmar) - acc * 2 else 0
+                    if (excedente > 0) add(CombatActions.ComponenteMod("teto de pontaria (2×Acc)", -excedente))
                 }
                 bonusCadenciaTiro(tiros).let { if (it != 0) add(CombatActions.ComponenteMod("rajada ${tiros} tiros", it)) }
             } else if (avaliarAlvoId == alvo.id && avaliarStacks > 0) {
