@@ -3039,6 +3039,14 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - Build completo verde 2 variantes
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
+### Lote 412 — 23 de Junho de 2026
+**Saga combate: Estrangulamento / Strangle (tópicos `[]` 5/N, luta agarrada, MB p.371, branch GURPS-Saga)**
+- Nova manobra `ESTRANGULAR` — `heroiEstrangular(alvoId)`: exige o alvo **AGARRADO**; **Disputa de ST vs max(ST,HT)**; a **margem de vitória** = dano por contusão **×1,5** (pescoço), RD protege; penetrando, o alvo fica `SUFOCANDO`. No `npcResolve`, o NPC SUFOCANDO **perde 1 PV/turno** (proxy de fôlego) enquanto preso, e solta a condição ao escapar. Manobra (e Imobilizar) aparecem só com inimigo agarrado.
+- **Núcleo da luta agarrada COMPLETO** (Agarrar 386, Derrubar 386, Imobilizar 411, Estrangular 412). Mata-Leão/Chave de Braço/Torção = Martial Arts (deferidos). "Ações Depois de Agarrar" → FEITO.
+- Testes: estrangular causa dano+sufocamento; recusa sem agarrar. Build 2 variantes + testes verdes.
+- Combate.md: "Asfixia ou Estrangulamento" e "Ações Depois de Agarrar" → FEITO.
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
 ### Lote 411 — 23 de Junho de 2026
 **Saga combate: Imobilizar / Pin (tópicos `[]` 4/N, luta agarrada, MB p.371, branch GURPS-Saga)**
 - Nova manobra `IMOBILIZAR` — `heroiImobilizar(alvoId)`: exige o alvo **AGARRADO + no chão** (DEITADO/CAÍDO); **Disputa de ST** (+3 por categoria de MT de vantagem); vencendo, o alvo ganha `Condicao.IMOBILIZADO` (indefeso). `melhorDefesaNpc` retorna defesa 0 se IMOBILIZADO; o bloco AGARRADO do `npcResolve` agora cobre IMOBILIZADO (forceja a −3, não ataca, solta as duas condições ao vencer). Manobra aparece só com inimigo agarrado. Novas condições: `IMOBILIZADO`, `SUFOCANDO` (p/ 412).

@@ -367,6 +367,14 @@ class SagaCombatController(
         depoisDaAcaoDoHeroi()
     }
 
+    /** Lote 412: Estrangular — asfixia um oponente agarrado pelo pescoço (Disputa de ST → sufoco). MB p.371. */
+    fun heroiEstrangular(alvoId: String) {
+        val s = sessao ?: return
+        if (!s.combatenteAtual().ehHeroi || s.encerrado) return
+        s.heroiEstrangular(alvoId)
+        depoisDaAcaoDoHeroi()
+    }
+
     /** Lote 408: Golpe Rápido — dois ataques corpo-a-corpo a −6 cada (mantém a defesa). MB p.370. */
     fun heroiGolpeRapido(alvoId: String, local: LocalAtaque) {
         val s = sessao ?: return
@@ -547,9 +555,11 @@ class SagaCombatController(
             if (!ranged && alvos.isNotEmpty() && Manobra.GOLPE_RAPIDO !in it) it.add(Manobra.GOLPE_RAPIDO) // Lote 408
             if (!ranged && alvos.isNotEmpty() && Manobra.ENCONTRAO !in it) it.add(Manobra.ENCONTRAO) // Lote 409
             if (!ranged && alvos.isNotEmpty() && Manobra.EMPURRAO !in it) it.add(Manobra.EMPURRAO) // Lote 410
-            // Imobilizar (Lote 411): só faz sentido com um inimigo já AGARRADO.
-            if (s.inimigos.any { e -> e.vivo && Condicao.AGARRADO in e.condicoes } && Manobra.IMOBILIZAR !in it)
-                it.add(Manobra.IMOBILIZAR)
+            // Imobilizar/Estrangular (Lotes 411/412): só fazem sentido com um inimigo já AGARRADO.
+            if (s.inimigos.any { e -> e.vivo && Condicao.AGARRADO in e.condicoes }) {
+                if (Manobra.IMOBILIZAR !in it) it.add(Manobra.IMOBILIZAR)
+                if (Manobra.ESTRANGULAR !in it) it.add(Manobra.ESTRANGULAR)
+            }
         }
         estado = CombatUiState(
             rodada = s.encounter.rodadaAtual,

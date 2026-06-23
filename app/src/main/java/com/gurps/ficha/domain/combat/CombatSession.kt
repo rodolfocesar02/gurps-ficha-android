@@ -281,6 +281,34 @@ class CombatSession(
         return txt
     }
 
+    /** Estrangular/Asfixiar (MB p.371): agarrado pelo pescoço. Disputa de ST vs max(ST,HT) → dano (margem ×1,5) + sufoco. */
+    fun heroiEstrangular(alvoId: String): String {
+        inicioAcaoHeroi()
+        val alvo = inimigos.firstOrNull { it.id == alvoId && it.vivo } ?: return "Alvo inválido.".also { log += it }
+        if (Condicao.AGARRADO !in alvo.condicoes)
+            return "⚠️ Você precisa estar agarrando ${alvo.nome} pelo pescoço para estrangulá-lo.".also { log += it }
+        val stHeroi = heroiPerfil.st
+        val resist = maxOf(alvo.stats?.st ?: 10, alvo.stats?.ht ?: 10)
+        val rh = rolar3d6(); val rn = rolar3d6()
+        // Disputa Rápida: margem de vitória do estrangulador = dano por contusão (×1,5 no pescoço); RD protege.
+        val margem = (stHeroi - rh) - (resist - rn)
+        if (rh > stHeroi || margem <= 0) {
+            log += "🫷 ${alvo.nome} resiste ao estrangulamento. [ST $stHeroi rolou $rh vs $resist rolou $rn]"
+            return log.last()
+        }
+        val danoBruto = (margem * 1.5).toInt().coerceAtLeast(1)
+        val dn = HitLocationRules.aplicarDano(alvo.pvMax, danoBruto, DanoTipo.CONT, LocalAtaque.TORSO,
+            alvo.stats?.rd ?: 0, alvo.stats?.tolerancia ?: ToleranciaFerimentos.NORMAL)
+        InjuryRules.ferir(alvo, dn.pvSubtrair, alvo.stats?.ht ?: 10, random)
+        log += "🫳 Você estrangula ${alvo.nome}: margem $margem → ${dn.pvSubtrair} de dano no pescoço. [ST $stHeroi rolou $rh vs $resist rolou $rn]"
+        if (dn.pvSubtrair > 0 && alvo.vivo) {
+            alvo.condicoes.add(Condicao.SUFOCANDO)
+            log += "  └ ${alvo.nome} começa a SUFOCAR — perde fôlego a cada turno até escapar (MB p.437)."
+        }
+        verificarFim()
+        return log.last()
+    }
+
     /**
      * Mover e Atacar (MB p.366): o herói se desloca e ataca em movimento. Corpo-a-corpo aproxima-se do
      * alvo (gastando até o Deslocamento) antes de golpear; a penalidade é tratada pelo motor (CaC −4 e
@@ -789,13 +817,18 @@ class CombatSession(
         // Agarrado/Imobilizado (Lotes 386/411, MB p.371): o NPC preso gasta o turno tentando se desvencilhar
         // (Disputa Rápida do maior entre ST/DX; imobilizar é só ST e dá −3 ao NPC). Em ambos os casos, não ataca.
         if (Condicao.AGARRADO in npc.condicoes || Condicao.IMOBILIZADO in npc.condicoes) {
+            // Estrangulado (Lote 412, MB p.437): perde fôlego a cada turno enquanto preso (proxy de PF = −1 PV).
+            if (Condicao.SUFOCANDO in npc.condicoes && npc.vivo) {
+                InjuryRules.ferir(npc, 1, npc.stats?.ht ?: 10, random)
+                log += "😮‍💨 ${npc.nome} sufoca e perde fôlego (−1)."
+            }
             val imob = Condicao.IMOBILIZADO in npc.condicoes
             val nv = (if (imob) (npc.stats?.st ?: 10) - 3 else maxOf(npc.stats?.st ?: 10, npc.stats?.dx ?: npc.dx))
             val hv = maxOf(heroiPerfil.st, heroiPerfil.dx)
             val rn = rolar3d6(); val rh = rolar3d6()
             val o = if (imob) "imobilização" else "agarrão"
             if (vencaDisputaRapida(nv, rn, hv, rh)) {
-                npc.condicoes.remove(Condicao.AGARRADO); npc.condicoes.remove(Condicao.IMOBILIZADO)
+                npc.condicoes.remove(Condicao.AGARRADO); npc.condicoes.remove(Condicao.IMOBILIZADO); npc.condicoes.remove(Condicao.SUFOCANDO)
                 log += "🤼 ${npc.nome} se desvencilha e se solta da $o! [$nv rolou $rn vs $hv rolou $rh]"
             } else {
                 log += "🤼 ${npc.nome} forceja, mas continua preso na $o. [$nv rolou $rn vs $hv rolou $rh]"

@@ -1126,4 +1126,28 @@ class CombatSessionTest {
         s.heroiImobilizar("goblin")
         assertTrue("recusa sem agarrar", s.log.last().contains("precisa estar agarrando"))
     }
+
+    // Lote 412 — Estrangular (MB p.371): agarrado pelo pescoço → Disputa de ST → dano + sufocamento.
+    @Test
+    fun `estrangular causa dano e sufocamento`() {
+        var sufocou = false
+        for (seed in 0L..40L) {
+            val g = goblin(pv = 20)
+            val enc = CombatEncounter(listOf(heroi(), g), mapOf("goblin" to 1), seed = 1L)
+            val s = CombatSession(enc, perfilHeroi().copy(st = 16), Random(seed))
+            g.condicoes.add(Condicao.AGARRADO)
+            s.heroiEstrangular("goblin")
+            if (Condicao.SUFOCANDO in g.condicoes && g.pvAtual < 20) { sufocou = true; break }
+        }
+        assertTrue("estrangular deve causar dano e sufocamento em alguma seed", sufocou)
+    }
+
+    @Test
+    fun `estrangular exige alvo agarrado`() {
+        val g = goblin()
+        val enc = CombatEncounter(listOf(heroi(), g), mapOf("goblin" to 1), seed = 1L)
+        val s = CombatSession(enc, perfilHeroi(), Random(3))
+        s.heroiEstrangular("goblin")
+        assertTrue("recusa sem agarrar", s.log.last().contains("pelo pescoço"))
+    }
 }

@@ -874,7 +874,7 @@ tomar a arma para si, mas é possível forçar o oponente a largá-la ao vencer 
 Disputa Normal de ST — um teste por
 turno, como explicado em Agarrar (acima). Para informações sobre uma técnica similar, veja Chave de Braço (pág. 231).
 
-## Ações Depois de Agarrar[]
+## Ações Depois de Agarrar [x] ✅ FEITO (Derrubar — Lote 386; Imobilizar — Lote 411; Asfixia/Estrangulamento — Lote 412. Mata-Leão/Chave de Braço/Torção referenciam Martial Arts (p.403/404), fora do Básico → deferidos)
 Depois de agarrar um oponente, o
 personagem pode tentar as seguintes
 ações nos turnos seguintes (contanto
@@ -911,7 +911,7 @@ precisa permanecer no local para segurar sua vítima, mas pode livrar uma de
 suas mãos para fazer outras ações. Se
 ele perder ou empatar, nada acontece.
 
-## Asfixia ou Estrangulamento []
+## Asfixia ou Estrangulamento [x] ✅ FEITO (agarrado pelo pescoço → Disputa de ST vs max(ST,HT); margem de vitória = dano por contusão ×1,5, RD protege; penetrando, o alvo fica SUFOCANDO e perde fôlego/PV por turno até escapar — Lote 412)
 O personagem precisa ter agarrado
 o oponente pelo pescoço. Ele normalmente precisa das mãos livres e não 
 pode fazer mais nada com elas (como

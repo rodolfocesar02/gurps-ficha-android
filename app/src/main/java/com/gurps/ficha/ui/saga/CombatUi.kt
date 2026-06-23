@@ -175,6 +175,7 @@ private fun ManeuverCards(viewModel: FichaViewModel, estado: com.gurps.ficha.vie
     var encontraoDialogo by remember { mutableStateOf(false) }
     var empurraoDialogo by remember { mutableStateOf(false) }
     var imobilizarDialogo by remember { mutableStateOf(false) }
+    var estrangularDialogo by remember { mutableStateOf(false) }
     var posturaDialogo by remember { mutableStateOf(false) }
     var defesaTotalDialogo by remember { mutableStateOf(false) }
 
@@ -208,6 +209,7 @@ private fun ManeuverCards(viewModel: FichaViewModel, estado: com.gurps.ficha.vie
                             m == Manobra.ENCONTRAO -> encontraoDialogo = true
                             m == Manobra.EMPURRAO -> empurraoDialogo = true
                             m == Manobra.IMOBILIZAR -> imobilizarDialogo = true
+                            m == Manobra.ESTRANGULAR -> estrangularDialogo = true
                             m == Manobra.MUDAR_POSTURA -> posturaDialogo = true
                             m == Manobra.DEFESA_TOTAL -> defesaTotalDialogo = true
                             m == Manobra.FOGO_RETENCAO -> viewModel.sagaCombateFogoRetencao() // Lote 396: área, sem alvo
@@ -337,6 +339,16 @@ private fun ManeuverCards(viewModel: FichaViewModel, estado: com.gurps.ficha.vie
             alvos = estado.combatentes.filter { !it.ehHeroi && it.vivo && it.condicoes.contains("agarrado") },
             onConfirmar = { alvoId -> viewModel.sagaCombateImobilizar(alvoId); imobilizarDialogo = false },
             onFechar = { imobilizarDialogo = false }
+        )
+    }
+
+    if (estrangularDialogo) {
+        SubDialogoEscolherAlvo(
+            titulo = "Estrangular quem? (precisa estar agarrado)",
+            descricaoConfirmar = "Estrangular o alvo agarrado (Disputa de ST; dano e sufocamento)",
+            alvos = estado.combatentes.filter { !it.ehHeroi && it.vivo && it.condicoes.contains("agarrado") },
+            onConfirmar = { alvoId -> viewModel.sagaCombateEstrangular(alvoId); estrangularDialogo = false },
+            onFechar = { estrangularDialogo = false }
         )
     }
 
