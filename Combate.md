@@ -389,7 +389,7 @@ Para maiores informações, veja Preparando Armas e Outros Equipamentos
 Movimento: Passo.
 Defesa Ativa: Qualquer.
 
-## Aguardar [~] ⚠️ PARCIAL OU INCOMPLETO
+## Aguardar [x] ✅ FEITO (Interromper Investida: arma perfurante firmada golpeia primeiro quem avança, +1 dano/2m — Lote 399; o "aguardar por gatilho arbitrário" é narrativo/Narrador)
 O personagem não faz nada a menos
 que algum acontecimento que ele tenha
 especificado de antemão ocorra antes

@@ -352,6 +352,15 @@ class SagaCombatController(
         depoisDaAcaoDoHeroi()
     }
 
+    /** Lote 399: Aguardar (Interromper Investida) — firma a arma perfurante empunhada p/ golpear primeiro quem investir. */
+    fun heroiAguardar() {
+        val s = sessao ?: return
+        if (!s.combatenteAtual().ehHeroi || s.encerrado) return
+        val ataque = ataques.getOrNull(ataqueSelecionado) ?: return
+        s.heroiAguardar(ataque)
+        depoisDaAcaoDoHeroi()
+    }
+
     fun heroiManobra(manobra: Manobra, novaPostura: Postura? = null) {
         val s = sessao ?: return
         if (!s.combatenteAtual().ehHeroi || s.encerrado) return

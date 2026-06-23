@@ -3039,6 +3039,15 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - Build completo verde 2 variantes
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
+### Lote 399 — 23 de Junho de 2026
+**Saga combate: Aguardar — Interromper Investida (loop dos 16 parciais 7/16, MB p.392, branch GURPS-Saga)**
+- O "aguardar por gatilho arbitrário" é narrativo; o núcleo de combate é **Interromper Investida**: `heroiAguardar(ataque)` firma uma arma **perfurante (PERF) corpo-a-corpo** → `aguardarInvestidaArma`. No `npcResolve`, se o NPC **avança** (MOVER sem recuar / MOVER_E_ATACAR), o herói **golpeia primeiro** com a arma firmada, **+1 de dano por 2m percorridos** (`bonusInvestidaPendente` somado em `resolverGolpeHeroi`). Sem arma perfurante = Aguardar genérico (narrativo, sem bônus).
+- Manobra AGUARDAR roteada para `heroiAguardar`; já estava em `manobrasLegais`. O herói ainda pode defender enquanto aguarda.
+- DEFERIDO: gatilhos arbitrários (segurar refém, coordenar com aliados, disparo de oportunidade) = Narrador.
+- Testes: investida é interrompida com bônus; arma não-perfurante = aguardar genérico. Build 2 variantes + testes verdes.
+- Combate.md: "Aguardar" → FEITO.
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
 ### Lote 398 — 23 de Junho de 2026
 **Saga combate: Armas Preparadas / Preparar — desbalanceada despreparada (loop dos 16 parciais 6/16, fecha 2 parciais, MB p.270/366, branch GURPS-Saga)**
 - REGRA (MB p.270): arma desbalanceada ('D') fica **DESPREPARADA após cada ataque** a menos que **ST ≥ 1,5× a ST mínima** da arma; re-preparar = manobra Preparar. `AtaqueHeroi.stMinimo` (← `armaStMinimo` do catálogo); `marcarDespreparoSeNecessario` nos 3 caminhos de ataque corpo-a-corpo; `armaDespreparadaRotulo` (persiste entre turnos, identifica a arma pelo rótulo).

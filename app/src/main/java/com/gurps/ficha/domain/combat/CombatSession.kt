@@ -70,6 +70,11 @@ class CombatSession(
     // Concentrar (Lote 397, MB p.344): atividade mental de turno completo; ser forçado a defender/ferido exige Vontade-3.
     private var concentrando = false
 
+    // Aguardar / Interromper Investida (Lote 399, MB p.392): arma perfurante firmada golpeia primeiro quem investe,
+    // com +1 de dano por 2m percorridos. Vale até o próximo turno (o herói ainda pode se defender enquanto aguarda).
+    private var aguardarInvestidaArma: AtaqueHeroi? = null
+    private var bonusInvestidaPendente = 0 // +1/2m, somado ao dano básico no golpe da investida
+
     // Armas Preparadas / Preparar (Lote 398, MB p.270/366): arma desbalanceada fica DESPREPARADA após atacar
     // (a menos que ST ≥ 1,5× a ST mínima); precisa de uma manobra Preparar p/ atacar de novo. Persiste entre turnos.
     private var armaDespreparadaRotulo: String? = null
@@ -93,6 +98,7 @@ class CombatSession(
         heroiMoveSeguidos = 0 // qualquer ação que NÃO seja Mover quebra a Disparada (heroiMove restaura +1)
         fogoRetencaoArma = null // a cobertura do Fogo de Retenção dura só até a próxima ação do herói (Lote 396)
         concentrando = false // a concentração vale só no turno declarado; o herói re-declara Concentrar p/ continuar (Lote 397)
+        aguardarInvestidaArma = null // a guarda da investida dura só até a próxima ação do herói (Lote 399)
     }
 
     val heroi: Combatente get() = encounter.combatentes.first { it.ehHeroi }
@@ -303,7 +309,7 @@ class CombatSession(
         val defSoma = rolar3d6()
         // Além de 1/2D, o dano cai pela metade (MB p.270) — aplica no dado básico antes de RD.
         val meioDano = ataque.aDistancia && ataque.meioDano > 0 && dist >= ataque.meioDano
-        var danoBasico = rolarDano(ataque.danoExpr, random) + bonusDanoForte(manobra, ataqueTotalModo, ataque.danoExpr, ataque.aDistancia)
+        var danoBasico = rolarDano(ataque.danoExpr, random) + bonusDanoForte(manobra, ataqueTotalModo, ataque.danoExpr, ataque.aDistancia) + bonusInvestidaPendente
         var rdAlvo = alvo.stats?.rd ?: 0
         var forcaGrave = false
         // Golpe Fulminante (Lote 384, MB p.558): a defesa já é anulada pelo crítico; a tabela modifica o DANO.
@@ -427,6 +433,21 @@ class CombatSession(
         fogoRetencaoArma = ataque
         heroiSemDefesaAtiva = true // é um Ataque Total: sem defesa ativa até o próximo turno (MB p.366)
         val txt = "🔫 Você abre FOGO DE RETENÇÃO com ${ataque.rotulo.substringBefore(" (").trim()} — cobre a área; quem avançar leva rajada (sem defesa sua até o próximo turno)."
+        log += txt
+        return txt
+    }
+
+    /** Aguardar / Interromper Investida (MB p.392): firma uma arma perfurante corpo-a-corpo p/ golpear primeiro quem investir. */
+    fun heroiAguardar(ataque: AtaqueHeroi): String {
+        inicioAcaoHeroi()
+        limparAvaliar(); limparApontar(); limparFinta()
+        // Interromper Investida só com arma perfurante corpo-a-corpo firmada; senão é só um Aguardar genérico (narrativo).
+        val txt = if (!ataque.aDistancia && ataque.tipo == DanoTipo.PERF) {
+            aguardarInvestidaArma = ataque
+            "⏳ Você AGUARDA firmando ${ataque.rotulo.substringBefore(" (").trim()} para receber a investida — golpeia primeiro quem avançar (+1 de dano por 2m percorridos)."
+        } else {
+            "⏳ Você aguarda, pronto para reagir. (Sem arma perfurante firmada: não há o bônus de Interromper Investida.)"
+        }
         log += txt
         return txt
     }
@@ -644,6 +665,20 @@ class CombatSession(
             if (avanca) {
                 log += "🔫 Fogo de retenção: ${npc.nome} avança na zona coberta e é alvejado!"
                 resolverGolpeHeroi(arma, npc, Manobra.ATAQUE, LocalAtaque.TORSO, AtaqueTotalModo.DETERMINADO)
+                if (!npc.vivo) { verificarFim(); return AtaqueResultado(true, false, 0, true, log.last()) }
+            }
+        }
+        // Aguardar / Interromper Investida (Lote 399, MB p.392): com a arma perfurante firmada, o herói golpeia
+        // PRIMEIRO quem investe (+1 de dano por 2m percorridos), antes de o NPC atacar.
+        aguardarInvestidaArma?.let { arma ->
+            val avanca = (intencao.manobra == Manobra.MOVER && !intencao.recuar) || intencao.manobra == Manobra.MOVER_E_ATACAR
+            if (avanca) {
+                val metros = npc.deslocamentoEfetivo.coerceAtMost(encounter.distancia(npc)).coerceAtLeast(0)
+                bonusInvestidaPendente = metros / 2
+                log += "🛡️→🗡️ Investida! ${npc.nome} avança e você golpeia primeiro com a arma firmada (+$bonusInvestidaPendente de dano por ${metros}m)."
+                resolverGolpeHeroi(arma, npc, Manobra.ATAQUE, LocalAtaque.TORSO, AtaqueTotalModo.DETERMINADO)
+                bonusInvestidaPendente = 0
+                aguardarInvestidaArma = null
                 if (!npc.vivo) { verificarFim(); return AtaqueResultado(true, false, 0, true, log.last()) }
             }
         }

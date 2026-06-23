@@ -902,4 +902,29 @@ class CombatSessionTest {
         s.heroiAtaca(machado, "goblin", Manobra.ATAQUE, LocalAtaque.TORSO)
         assertFalse("ST ≥ 1,5× a mínima não desprepara", s.armaDespreparada(machado.rotulo))
     }
+
+    // Lote 399 — Aguardar / Interromper Investida (MB p.392): arma perfurante firmada golpeia primeiro quem avança.
+    @Test
+    fun `aguardar interrompe a investida de quem avanca`() {
+        val g = goblin()
+        val enc = CombatEncounter(listOf(heroi(), g), mapOf("goblin" to 6), seed = 1L)
+        val s = CombatSession(enc, perfilHeroi(), Random(3))
+        val lanca = AtaqueHeroi("Lança", nh = 14, danoExpr = "1d+2", tipo = DanoTipo.PERF, alcance = 2)
+        s.heroiAguardar(lanca)
+        assertTrue("firma a arma perfurante", s.log.last().contains("AGUARDA firmando"))
+        val avanca = NpcCombatBrain.IntencaoNpc(manobra = Manobra.MOVER, alvoId = "goblin", recuar = false, motivo = "investe")
+        s.npcResolve("goblin", avanca)
+        assertTrue("golpeia primeiro quem investe", s.log.any { it.contains("Investida!") && it.contains("golpeia primeiro") })
+    }
+
+    @Test
+    fun `aguardar sem arma perfurante e so um aguardar generico`() {
+        val g = goblin()
+        val enc = CombatEncounter(listOf(heroi(), g), mapOf("goblin" to 6), seed = 1L)
+        val s = CombatSession(enc, perfilHeroi(), Random(3))
+        val espada = AtaqueHeroi("Espada", nh = 14, danoExpr = "2d", tipo = DanoTipo.CORT, alcance = 1)
+        s.heroiAguardar(espada)
+        assertTrue("aguardar genérico sem bônus", s.log.last().contains("sem o bônus de Interromper Investida") ||
+            s.log.last().contains("não há o bônus"))
+    }
 }
