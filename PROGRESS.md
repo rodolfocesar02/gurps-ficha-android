@@ -3039,6 +3039,14 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - Build completo verde 2 variantes
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
+### Lote 416 — 23 de Junho de 2026
+**Saga combate: Agachar + cluster de movimento em hexágono (tópicos `[]` 9/N, MB p.368, branch GURPS-Saga)**
+- **Agachar**: o benefício mecânico (alvo menor à distância) → `penalidadePosturaAlvejado(postura)` (agachado/ajoelhado/rastejando/sentado −2, deitado −4) somado ao acerto À DISTÂNCIA nos dois caminhos (`resolverGolpeHeroi` e `npcResolve`). Vale p/ herói e NPC (atira-se pior em alvo agachado/deitado).
+- **FORA DO ESCOPO (marcados `[—]`):** Passo, Espaçamento, Passando por Outros, Evadir, Ações Livres — são posicionamento em hexágono / ações narrativas, abstraídos no tracker de faixas (sem grade de hexágonos). Também Armadura Flexível/Trauma (sem flag rígida/flexível) e Corrosão (sem tipo de dano "cor") = limitados por dado.
+- Teste: penalidade por postura + tiro em alvo deitado registra a postura. Build 2 variantes + testes verdes.
+- Combate.md: "Agachar" → FEITO; Passo/Espaçamento/Passando por Outros/Evadir/Ações Livres → fora do escopo.
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
 ### Lote 415 — 23 de Junho de 2026
 **Saga combate: Sucessos Decisivos em Defesa (tópicos `[]` 8/N, MB p.374, branch GURPS-Saga)**
 - Crítico ao defender um ataque **corpo-a-corpo** → o atacante joga na Tabela de Erro Crítico (reusa `aplicarErroCritico`, Lote 384). `CombatResolver.defesaDecisiva(soma, valor)` (3-4 sempre; 5 se valor≥15; 6 se ≥16); no `npcResolve`, se `troca.defendeu && !aDistancia && defesaDecisiva` → o NPC tropeça. Vs ataque à distância = sem efeito (regra). 

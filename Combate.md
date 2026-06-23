@@ -1,4 +1,4 @@
-## Ações Livres []
+## Ações Livres [—] ⏸️ FORA DO ESCOPO (falar, largar item, agachar-se etc. durante o turno; são ações narrativas/instantâneas — o agachar tem efeito mecânico tratado em "Agachar". A fala no combate é a pendência registrada de interação com o Narrador)
 “Ações livres” são coisas que o personagem pode fazer durante qualquer
 manobra. Alguns exemplos são:
 Falar. O personagem sempre pode
@@ -524,7 +524,7 @@ a barriga ou rolando), independente
 do quanto ele é capaz de se mover normalmente. Não é possível se deslocar a
 partir da posição sentado!
 
-## Passo []
+## Passo [—] ⏸️ FORA DO ESCOPO (o "passo" de 1m é posicionamento em hexágono; o combate Saga usa faixas de distância abstratas — Mover já cobre a aproximação/recuo)
 Muitas manobras permitem que o
 personagem dê um passo, antes ou depois da ação. Um passo equivale a 1/10
 do Deslocamento, com um mínimo de
@@ -547,7 +547,7 @@ Um personagem sempre pode se virar para outra direção como parte de
 um passo (ou usando todo o passo, se
 ele só quiser mudar de direção).
 
-## Espaçamento []
+## Espaçamento [—] ⏸️ FORA DO ESCOPO (regras de ocupação/espaçamento de hexágonos; abstraído no tracker de faixas do Saga)
 Um combatente de tamanho humano precisa de aproximadamente
 um metro de espaço; dessa forma,
 dois guerreiros poderiam andar lado a
@@ -560,7 +560,7 @@ espaço para atacar e defender. Pessoas não envolvidas em um combate
 podem se apertar bastante, mas sem
 espaço para reagir.
 
-## Passando por Outros Personagens []
+## Passando por Outros Personagens [—] ⏸️ FORA DO ESCOPO (mover-se através de hexágonos ocupados por aliados/inimigos; sem grade de hexágonos no Saga)
 Em combate, um personagem sempre pode se mover por um espaço ocupado por seus aliados, além de poder
 correr ao redor de um oponente que
 não estiver bloqueando inteiramente
@@ -570,7 +570,7 @@ Contudo, se o Mestre disser que a única forma de passar por um oponente
 derrubá-lo (v. Encontrão, pág. 371) ou
 “evadir-se” dele.
 
-## Evadir []
+## Evadir [—] ⏸️ FORA DO ESCOPO (passar pelo hexágono ocupado por um oponente sem derrubá-lo; no modelo de faixas o herói se move livremente — não há "bloqueio de hexágono" a vencer)
 “Evadir” é o mover-se através de um
 espaço ocupado por um oponente sem
 derrubá-lo. É permitido evadir como
@@ -604,7 +604,7 @@ Por outro lado, personagens com as
 vantagens Voo e Super Salto podem passar
 por cima de um oponente, longe do alcance dele, e evadi-lo automaticamente!
 
-## Agachar []
+## Agachar [x] ✅ FEITO (benefício mecânico: postura do alvo o torna um alvo menor à distância — agachado/ajoelhado/rastejando −2, deitado −4 ao acerto do tiro; vale p/ herói e NPC — Lote 416)
 Se estiver em pé, um personagem
 pode se agachar no início do seu turno
 como parte de qualquer manobra. Se
@@ -1941,7 +1941,7 @@ vezes são encontrados em Atribulações
 e ataques que causam dano por toxina.
 Veja Modificadores Especiais de Penetração (pág. 416) para maiores informações.
 
-## Armadura Flexível e Trauma por Impacto[]
+## Armadura Flexível e Trauma por Impacto [—] ⏸️ DEFERIDO POR DADO (trauma por impacto exige saber se a RD é FLEXÍVEL — o modelo não distingue armadura rígida/flexível no equipamento; sem essa flag não dá pra aplicar o 1 PV por 5/10 de dano barrado sem chutar)
 Armaduras flexíveis como jaquetas
 de couro, cotas de malha ou coletes
 balísticos modernos são muito mais leves que uma armadura rígida, mas não
@@ -1961,7 +1961,7 @@ Se uma segunda RD estiver sobreposta à RD flexível, somente o dano que
 penetrar a camada externa é capaz de
 provocar trauma por impacto.
 
-## Corrosão[]
+## Corrosão [—] ⏸️ DEFERIDO POR DADO (dano por corrosão "cor" destrói RD; o enum `DanoTipo` só tem CONT/CORT/PI*/PERF — não há tipo de dano corrosivo nem RD destrutível persistente no modelo)
 Um ataque que causa dano por corrosão (cor) — ácidos, feixes de desintegração, etc. — destrói um ponto da
 RD do alvo a cada 5 pontos de dano
 básico. Isso afeta primeiro a armadura, depois a RD natural. Contudo, isso

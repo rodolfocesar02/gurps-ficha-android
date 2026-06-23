@@ -431,6 +431,8 @@ class CombatSession(
                 val pen = penalidadeDistancia(velDist)
                 if (pen != 0) add(CombatActions.ComponenteMod(
                     if (alvo.velocidadeAtual > 0) "Vel/Dist (${dist}m+${alvo.velocidadeAtual}m/s)" else "distância ${dist}m", pen))
+                // Agachar (Lote 416, MB p.368): alvo agachado/deitado é um alvo menor à distância.
+                penalidadePosturaAlvejado(alvo.postura).let { if (it != 0) add(CombatActions.ComponenteMod("alvo ${alvo.postura.rotulo}", it)) }
                 // Apontar no turno anterior ao mesmo alvo → soma a Precisão (Acc) da arma (MB p.364).
                 if (apontarAlvoId == alvo.id) {
                     val acc = ataque.precisao
@@ -907,6 +909,8 @@ class CombatSession(
                 val pen = penalidadeDistancia(distH + heroi.velocidadeAtual)
                 if (pen != 0) add(CombatActions.ComponenteMod(
                     if (heroi.velocidadeAtual > 0) "Vel/Dist (${distH}m+${heroi.velocidadeAtual}m/s)" else "distância", pen))
+                // Agachar (Lote 416, MB p.368): o herói agachado/deitado é um alvo menor à distância.
+                penalidadePosturaAlvejado(heroi.postura).let { if (it != 0) add(CombatActions.ComponenteMod("herói ${heroi.postura.rotulo}", it)) }
             }
         }
         val atk = CombatActions.resolverAtaque(
@@ -1315,6 +1319,16 @@ class CombatSession(
             val qtd = m.groupValues[1].toIntOrNull() ?: 0
             val mod = m.groupValues.getOrNull(2)?.toIntOrNull() ?: 0
             return (qtd * 6 + mod).coerceAtLeast(0)
+        }
+
+        /**
+         * Postura do ALVO como modificador no acerto À DISTÂNCIA (Lote 416, MB p.368): agachado/ajoelhado/
+         * rastejando/sentado = alvo menor (−2); deitado = ainda menor (−4); em pé = 0. (Agachar)
+         */
+        fun penalidadePosturaAlvejado(postura: Postura): Int = when (postura) {
+            Postura.EM_PE -> 0
+            Postura.DEITADO -> -4
+            else -> -2
         }
 
         /** Divisor de armadura na expressão de dano (Lote 413, MB p.378): "(2)"→2,0; "(0,5)"→0,5; sem→1,0. */

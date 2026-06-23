@@ -1201,4 +1201,20 @@ class CombatSessionTest {
         }
         assertTrue("uma defesa decisiva (acerto não-crítico) deve disparar o erro crítico do atacante", aplicou)
     }
+
+    // Lote 416 — Agachar (MB p.368): a postura do alvo o torna menor à distância (agachado −2, deitado −4).
+    @Test
+    fun `agachar torna o alvo menor a distancia`() {
+        assertEquals(0, CombatSession.penalidadePosturaAlvejado(Postura.EM_PE))
+        assertEquals(-2, CombatSession.penalidadePosturaAlvejado(Postura.AGACHADO))
+        assertEquals(-2, CombatSession.penalidadePosturaAlvejado(Postura.AJOELHADO))
+        assertEquals(-4, CombatSession.penalidadePosturaAlvejado(Postura.DEITADO))
+        val g = goblin()
+        val enc = CombatEncounter(listOf(heroi(), g), mapOf("goblin" to 5), seed = 1L)
+        val s = CombatSession(enc, perfilHeroi(), Random(3))
+        g.postura = Postura.DEITADO
+        val pistola = AtaqueHeroi("Pistola", nh = 14, danoExpr = "2d", tipo = DanoTipo.PI, aDistancia = true, alcance = 100)
+        s.heroiAtaca(pistola, "goblin", Manobra.ATAQUE, LocalAtaque.TORSO)
+        assertTrue("o tiro no alvo deitado registra a postura", s.log.any { it.contains("alvo deitado") })
+    }
 }
