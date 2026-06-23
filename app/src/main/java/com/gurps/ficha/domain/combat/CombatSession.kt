@@ -91,6 +91,8 @@ class CombatSession(
     fun prepararArmaEmpunhada() { armaDespreparadaRotulo = null }
     /** True se a arma [rotulo] está despreparada (precisa de Preparar antes de atacar). Lote 398. */
     fun armaDespreparada(rotulo: String): Boolean = armaDespreparadaRotulo == rotulo
+    /** Lote 406 (MB p.383): cair/atordoar-se empunhando uma arma desbalanceada a deixa despreparada. */
+    fun marcarArmaDespreparada(rotulo: String) { armaDespreparadaRotulo = rotulo }
 
     /** Início de uma ação do herói: zera as flags do turno anterior (desbalanceada + sem-defesa/sem-aparar + Defesa Total + Disparada). */
     private fun inicioAcaoHeroi() {

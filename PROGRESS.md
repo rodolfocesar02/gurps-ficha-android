@@ -3039,6 +3039,14 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - Build completo verde 2 variantes
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
+### Lote 406 — 23 de Junho de 2026
+**Saga combate: Quando uma Arma Está Preparada — cair/atordoar desprepara desbalanceada (loop dos 16 parciais 15/16, MB p.383, branch GURPS-Saga)**
+- A seção sobrepõe ao 398 (Armas Desbalanceadas, já feito); o bit NOVO: *"cair, perder o equilíbrio ou ficar atordoado empunhando uma arma que precisa de preparação a deixa despreparada"* (MB p.383). Motor: `marcarArmaDespreparada(rotulo)`; controller: `verificarDesprepararPorEstado` após o turno do NPC — se o herói está ATORDOADO/CAÍDO/DEITADO e empunha uma arma desbalanceada, ela fica despreparada (reusa o bloqueio do 398).
+- DEFERIDO: mudar de alcance de arma longa (sem rastreio de alcance atual no modelo) e tempos de guardar/embainhar = narrativo.
+- Teste: `marcarArmaDespreparada` bloqueia o ataque até Preparar. Build 2 variantes + testes verdes.
+- Combate.md: "Quando uma Arma Está Preparada?" → FEITO.
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
 ### Lote 405 — 23 de Junho de 2026
 **Saga combate: Aparar com a Mão Inábil (loop dos 16 parciais 13/16, MB p.376, branch GURPS-Saga)**
 - Núcleo do Aparar já feito (375/389/390). Faltava **Aparar com a Mão Inábil**: variante de defesa Aparar **−2 efetivo**, **anulada por Ambidestria**. `OpcaoDefesa.maoInabil`; `opcoesDefesa(ambidestro)` emite a variante (só sem Ambidestria); `opcoesDefesaHeroi`→controller passa `temAmbidestria`. UI: card "🤚 mão inábil".

@@ -446,8 +446,20 @@ class SagaCombatController(
         } else {
             s.npcResolve(npcId, intencao, null)
         }
+        verificarDesprepararPorEstado(s) // Lote 406: cair/atordoar com arma desbalanceada a deixa despreparada
         publicarLog()
         atualizarEstado()
+    }
+
+    /** Lote 406 (MB p.383): se o herói caiu/atordoou empunhando uma arma desbalanceada, ela fica despreparada. */
+    private fun verificarDesprepararPorEstado(s: CombatSession) {
+        val arma = ataques.getOrNull(ataqueSelecionado) ?: return
+        if (arma.aDistancia || arma.apararTipo != ApararTipo.DESBALANCEADA || s.armaDespreparada(arma.rotulo)) return
+        val abalado = Condicao.ATORDOADO in s.heroi.condicoes || s.heroi.caido || s.heroi.postura == Postura.DEITADO
+        if (abalado) {
+            s.marcarArmaDespreparada(arma.rotulo)
+            s.log += "  └ você foi abalado empunhando ${arma.rotulo.substringBefore(" (").trim()} (desbalanceada) — ela ficou despreparada (MB p.383)."
+        }
     }
 
     // ── Estado / persistência ──────────────────────────────────────────────────

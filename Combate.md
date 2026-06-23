@@ -2394,7 +2394,7 @@ regras para veículos; nas págs. 455–
 547–559, uma compilação das tabelas
 de combate.
 
-## Quando uma Arma Está Preparada? [~] ⚠️ PARCIAL OU INCOMPLETO
+## Quando uma Arma Está Preparada? [x] ✅ FEITO (arma pronta nas mãos + sacar 1 turno — Lote 374; desbalanceada despreparada após atacar — Lote 398; cair/atordoar empunhando arma desbalanceada a deixa despreparada — Lote 406. DEFERIDO: mudar de alcance de arma longa (sem rastreio de alcance atual) e tempos de guardar/embainhar = narrativo)
 Uma arma está “preparada” se estiver nas mãos do personagem e pronta
 para atacar. É necessário um turno para preparar uma arma a partir da bainha
 (v. Sacar Rápido, pág. 222). Seguem algumas regras especiais:

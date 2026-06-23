@@ -1019,4 +1019,18 @@ class CombatSessionTest {
         assertTrue("com Ambidestria não há variante de mão inábil",
             s.opcoesDefesaHeroi(contraAtaqueCorpoACorpo = true, ambidestro = true).none { it.maoInabil })
     }
+
+    // Lote 406 — Quando uma Arma Está Preparada (MB p.383): cair/atordoar com arma desbalanceada a deixa despreparada.
+    @Test
+    fun `marcar arma despreparada por estado bloqueia o ataque`() {
+        val g = goblin()
+        val enc = CombatEncounter(listOf(heroi(), g), mapOf("goblin" to 1), seed = 1L)
+        val s = CombatSession(enc, perfilHeroi(), Random(3))
+        val machado = AtaqueHeroi("Machado", nh = 12, danoExpr = "3d", tipo = DanoTipo.CORT,
+            apararTipo = ApararTipo.DESBALANCEADA, stMinimo = 12)
+        s.marcarArmaDespreparada(machado.rotulo) // simula cair/atordoar empunhando a arma desbalanceada
+        assertTrue("a arma fica despreparada", s.armaDespreparada(machado.rotulo))
+        val r = s.heroiAtaca(machado, "goblin", Manobra.ATAQUE, LocalAtaque.TORSO)
+        assertTrue("atacar é bloqueado até Preparar", r.texto.contains("despreparada"))
+    }
 }
