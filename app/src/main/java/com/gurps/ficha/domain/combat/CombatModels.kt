@@ -43,6 +43,7 @@ enum class Manobra(val rotulo: String) {
     AGARRAR("Agarrar"),           // Lote 386: agarra o oponente → estado AGARRADO (−4 DX) (MB p.370)
     DERRUBAR("Derrubar"),         // Lote 386: derruba um oponente agarrado (Disputa Rápida) (MB p.371)
     GOLPE_RAPIDO("Golpe Rápido"), // Lote 408: dois ataques corpo-a-corpo, cada um a −6 (MB p.370)
+    ENCONTRAO("Encontrão"),       // Lote 409: colisão (PV×vel/100 dados, dano mútuo, derrubada) (MB p.371)
     APONTAR("Apontar"),            // mira arma à distância → +Precisão no próximo tiro (MB p.364)
     FOGO_RETENCAO("Fogo de Retenção"), // Lote 396: arma CdT 5+ cobre a área → acerta quem avançar (MB p.409)
     CONCENTRAR("Concentrar-se"),

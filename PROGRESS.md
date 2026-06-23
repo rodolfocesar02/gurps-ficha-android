@@ -3039,6 +3039,14 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - Build completo verde 2 variantes
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
+### Lote 409 — 23 de Junho de 2026
+**Saga combate: Encontrão / Slam (tópicos `[]` 2/N, MB p.371, branch GURPS-Saga)**
+- Nova manobra `ENCONTRAO` — `heroiEncontrao(alvoId)`: carrega até o alvo, acerto por **DX** (sem o −4/teto-9 do Avançar e Atacar), alvo pode defender (corpo = arma pesada). Se acerta, **dano mútuo por contusão = (PV×vel.relativa)/100 dados** (`encontraoDanoDados` no companion: <1d → 1d-3/1d-2/1d-1; ≥1d arredonda 0,5+). Derrubada: alvo cai se leva o dobro; herói cai se leva o dobro, ou testa DX se causou ≥. Vel. relativa usa `velocidadeAtual` (Lote 403). UI: manobra com seletor de alvo.
+- DEFERIDO: derrubada em mergulho/acometida/arremetida com escudo e encontrão com veículo/montaria.
+- Testes: fórmula de dados (5 casos); encontrão com dano mútuo. Build 2 variantes + testes verdes.
+- Combate.md: "Encontrão" → FEITO.
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
 ### Lote 408 — 23 de Junho de 2026
 **Saga combate: Golpe Rápido (tópicos `[]` 1/N, MB p.370, branch GURPS-Saga)**
 - Início da varredura dos tópicos NÃO-FEITOS do Combate.md (autonomia do usuário). **Golpe Rápido**: nova manobra `GOLPE_RAPIDO` — `heroiGolpeRapido(ataque, alvoId, local)` faz **2 ataques corpo-a-corpo** no mesmo turno, cada um com **−6** (`resolverGolpeHeroi(modAdicional=-6)`), **mantendo a defesa ativa** (não é Ataque Total). UI: manobra com seletor de alvo/local; `FichaViewModel.sagaCombateGolpeRapido`.

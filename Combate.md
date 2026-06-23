@@ -1005,7 +1005,7 @@ motivo, o personagem se liberta automaticamente! Se conseguir se desvencilhar,
 personagem pode imediatamente se mover um metro em qualquer direção.
 
 
-## Encontrão[]
+## Encontrão [x] ✅ FEITO (colisão corporal: dano mútuo por contusão = (PV×vel.relativa)/100 dados, acerto por DX, derrubada por quem leva o dobro/teste de DX — Lote 409. DEFERIDO: derrubada em mergulho/acometida/arremetida com escudo e encontrão com veículo/montaria)
 Um personagem pode deliberadamente colidir com um oponente. Isso
 requer uma manobra Ataque, Ataque
 Total ou Avançar e Atacar. Para atingir, o personagem faz um teste contra DX, Briga ou Sumô. A penalidade

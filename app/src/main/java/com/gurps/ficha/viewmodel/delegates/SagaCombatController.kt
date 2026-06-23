@@ -343,6 +343,14 @@ class SagaCombatController(
         depoisDaAcaoDoHeroi()
     }
 
+    /** Lote 409: Encontrão — colisão corporal (dano mútuo por contusão + derrubada). MB p.371. */
+    fun heroiEncontrao(alvoId: String) {
+        val s = sessao ?: return
+        if (!s.combatenteAtual().ehHeroi || s.encerrado) return
+        s.heroiEncontrao(alvoId)
+        depoisDaAcaoDoHeroi()
+    }
+
     /** Lote 408: Golpe Rápido — dois ataques corpo-a-corpo a −6 cada (mantém a defesa). MB p.370. */
     fun heroiGolpeRapido(alvoId: String, local: LocalAtaque) {
         val s = sessao ?: return
@@ -521,6 +529,7 @@ class SagaCombatController(
             if (!ranged && alvos.isNotEmpty() && Manobra.AGARRAR !in it) it.add(Manobra.AGARRAR) // Lote 386: agarrar
             if (!ranged && alvos.isNotEmpty() && Manobra.DERRUBAR !in it) it.add(Manobra.DERRUBAR) // Lote 386: derrubar
             if (!ranged && alvos.isNotEmpty() && Manobra.GOLPE_RAPIDO !in it) it.add(Manobra.GOLPE_RAPIDO) // Lote 408
+            if (!ranged && alvos.isNotEmpty() && Manobra.ENCONTRAO !in it) it.add(Manobra.ENCONTRAO) // Lote 409
         }
         estado = CombatUiState(
             rodada = s.encounter.rodadaAtual,

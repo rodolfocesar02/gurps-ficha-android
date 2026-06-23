@@ -1061,4 +1061,29 @@ class CombatSessionTest {
         assertTrue("aplica a penalidade de −6", s.log.any { it.contains("golpe rápido") })
         assertFalse("Golpe Rápido mantém a defesa ativa", s.heroiSemDefesaAtiva)
     }
+
+    // Lote 409 — Encontrão (MB p.371): dano por contusão = (PV × velocidade)/100 dados, com derrubada.
+    @Test
+    fun `encontrao calcula dados de dano por PV e velocidade`() {
+        assertEquals("1d-1", CombatSession.encontraoDanoDados(12, 6)) // 0,72
+        assertEquals("6d", CombatSession.encontraoDanoDados(100, 6))  // 6,0
+        assertEquals("1d", CombatSession.encontraoDanoDados(20, 6))   // 1,2 → 1d
+        assertEquals("2d", CombatSession.encontraoDanoDados(30, 6))   // 1,8 → 2d
+        assertEquals("1d-3", CombatSession.encontraoDanoDados(10, 2)) // 0,2
+    }
+
+    @Test
+    fun `heroi da um encontrao com dano mutuo`() {
+        var aplicou = false
+        for (seed in 0L..30L) {
+            val g = goblin(pv = 30)
+            val enc = CombatEncounter(listOf(heroi(), g), mapOf("goblin" to 3), seed = 1L)
+            val s = CombatSession(enc, perfilHeroi(), Random(seed))
+            s.heroiEncontrao("goblin")
+            if (s.log.any { it.contains("Encontrão!") } && s.log.any { it.contains("impacto recíproco") }) {
+                aplicou = true; break
+            }
+        }
+        assertTrue("o encontrão deve acertar e causar dano mútuo em alguma seed", aplicou)
+    }
 }

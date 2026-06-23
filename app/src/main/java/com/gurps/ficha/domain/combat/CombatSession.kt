@@ -191,6 +191,46 @@ class CombatSession(
         return resultados
     }
 
+    /** Encontrão (MB p.371): colisão corporal. Dano mútuo por contusão = (PV×vel.relativa)/100 dados; quem leva mais cai. */
+    fun heroiEncontrao(alvoId: String): AtaqueResultado {
+        inicioAcaoHeroi()
+        val alvo = inimigos.firstOrNull { it.id == alvoId && it.vivo }
+            ?: return AtaqueResultado(false, false, 0, false, "Alvo inválido.").also { log += it.texto }
+        val dist = encounter.distancia(alvo)
+        val carga = dist.coerceIn(1, heroi.deslocamentoEfetivo.coerceAtLeast(1))
+        if (dist > 1) encounter.definirDistancia(alvo.id, 1) // chega ao corpo-a-corpo carregando
+        heroi.velocidadeAtual = carga
+        val relVel = (carga + alvo.velocidadeAtual).coerceAtLeast(1) // colisão frontal soma a aproximação do alvo
+        // Acerto por DX (sem o −4 / teto 9 do Avançar e Atacar; MB p.371).
+        val somaAtk = rolar3d6()
+        log += "💥 Encontrão! Você se lança contra ${alvo.nome} (DX ${heroiPerfil.dx}, rolou $somaAtk; vel. relativa ${relVel}m/s)."
+        if (somaAtk > heroiPerfil.dx) { log += "  └ você erra o encontrão."; verificarFim(); return AtaqueResultado(false, false, 0, false, log.last()) }
+        val (defTipo, defValor) = melhorDefesaNpc(alvo)
+        if (CombatResolver.defesaBemSucedida(defValor, rolar3d6())) {
+            log += "  └ ${alvo.nome} se defende (${defTipo.rotulo} $defValor) e desvia do encontrão."
+            verificarFim(); return AtaqueResultado(true, true, 0, false, log.last())
+        }
+        val danoHeroi = rolarDano(encontraoDanoDados(heroi.pvMax, relVel), random)
+        val danoNpc = rolarDano(encontraoDanoDados(alvo.pvMax, relVel), random)
+        val dnNpc = HitLocationRules.aplicarDano(alvo.pvMax, danoHeroi, DanoTipo.CONT, LocalAtaque.TORSO,
+            alvo.stats?.rd ?: 0, alvo.stats?.tolerancia ?: ToleranciaFerimentos.NORMAL)
+        InjuryRules.ferir(alvo, dnNpc.pvSubtrair, alvo.stats?.ht ?: 10, random)
+        val dnHeroi = HitLocationRules.aplicarDano(heroi.pvMax, danoNpc, DanoTipo.CONT, LocalAtaque.TORSO, heroiPerfil.rd)
+        InjuryRules.ferir(heroi, dnHeroi.pvSubtrair, heroiPerfil.ht, random)
+        log += "  └ você causa ${dnNpc.pvSubtrair} a ${alvo.nome} e sofre ${dnHeroi.pvSubtrair} (impacto recíproco)."
+        // Derrubada (MB p.371): o alvo cai se levar o dobro; o herói cai se levar o dobro, ou testa DX se causou ≥.
+        if (danoHeroi >= 2 * maxOf(1, danoNpc)) {
+            alvo.postura = Postura.DEITADO; alvo.condicoes.add(Condicao.CAIDO); log += "  └ ${alvo.nome} é jogado no chão pelo impacto!"
+        }
+        if (danoNpc >= 2 * maxOf(1, danoHeroi)) {
+            heroi.postura = Postura.DEITADO; heroi.condicoes.add(Condicao.CAIDO); log += "  └ o impacto te derruba!"
+        } else if (danoHeroi >= danoNpc && rolar3d6() > heroiPerfil.dx) {
+            heroi.postura = Postura.DEITADO; heroi.condicoes.add(Condicao.CAIDO); log += "  └ você se desequilibra no impacto e cai (falhou no teste de DX)."
+        }
+        verificarFim()
+        return AtaqueResultado(true, false, dnNpc.pvSubtrair, !alvo.vivo, log.last())
+    }
+
     /**
      * Mover e Atacar (MB p.366): o herói se desloca e ataca em movimento. Corpo-a-corpo aproxima-se do
      * alvo (gastando até o Deslocamento) antes de golpear; a penalidade é tratada pelo motor (CaC −4 e
@@ -1174,6 +1214,22 @@ class CombatSession(
             val qtd = m.groupValues[1].toIntOrNull() ?: 0
             val mod = m.groupValues.getOrNull(2)?.toIntOrNull() ?: 0
             return (qtd * 6 + mod).coerceAtLeast(0)
+        }
+
+        /**
+         * Dano do Encontrão (MB p.371, Lote 409): (PV × velocidade)/100 dados. <1d → 1d-3/1d-2/1d-1 pela fração;
+         * ≥1d arredonda a fração de dado (0,5+ p/ cima). Retorna a expressão de dano por contusão.
+         */
+        fun encontraoDanoDados(pv: Int, velocidade: Int): String {
+            val dados = pv * velocidade / 100.0
+            if (dados < 1.0) return when {
+                dados <= 0.25 -> "1d-3"
+                dados <= 0.5 -> "1d-2"
+                else -> "1d-1"
+            }
+            val inteiro = dados.toInt()
+            val d = if (dados - inteiro >= 0.5) inteiro + 1 else inteiro
+            return "${d}d"
         }
 
         /**
