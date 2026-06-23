@@ -59,9 +59,14 @@ class CombatSession(
     val heroiDefesaTotalDupla: Boolean get() = defesaTotalModo == DefesaTotalModo.DUPLA
     private fun limparDefesaTotal() { defesaTotalModo = null; defesaTotalAumentadaEm = null }
 
-    /** Início de uma ação do herói: zera as flags do turno anterior (desbalanceada + sem-defesa/sem-aparar + Defesa Total). */
+    // Disparada (Lote 394, MB p.353): Moves consecutivos NA MESMA DIREÇÃO (linha reta) acumulam +20% a partir do 2º.
+    private var heroiMoveSeguidos = 0
+    private var heroiMoveDirecao: Boolean? = null // afastar do último Move (mudar de direção quebra a disparada)
+
+    /** Início de uma ação do herói: zera as flags do turno anterior (desbalanceada + sem-defesa/sem-aparar + Defesa Total + Disparada). */
     private fun inicioAcaoHeroi() {
         atacouDesbalanceada = false; heroiSemDefesaAtiva = false; heroiSemAparar = false; limparDefesaTotal()
+        heroiMoveSeguidos = 0 // qualquer ação que NÃO seja Mover quebra a Disparada (heroiMove restaura +1)
     }
 
     val heroi: Combatente get() = encounter.combatentes.first { it.ehHeroi }
@@ -461,13 +466,21 @@ class CombatSession(
 
     /** Herói se move até [metros] (clamp no Deslocamento) aproximando/afastando do alvo (ou de todos). */
     fun heroiMove(alvoId: String? = null, afastar: Boolean = false, metros: Int = Int.MAX_VALUE): String {
+        val legsAnteriores = heroiMoveSeguidos // capturado ANTES de inicioAcaoHeroi (que zera o contador)
+        val direcaoAnterior = heroiMoveDirecao
         inicioAcaoHeroi()
-        val passo = metros.coerceIn(1, heroi.deslocamentoEfetivo.coerceAtLeast(1)) // metade se cambaleante (MB p.380)
+        // Disparada (MB p.353): só acumula em LINHA RETA (mesma direção); mudar de direção ou qualquer ação não-Move recomeça.
+        heroiMoveSeguidos = if (direcaoAnterior == afastar) legsAnteriores + 1 else 1
+        heroiMoveDirecao = afastar
+        // A partir do 2º Move consecutivo na mesma direção, +20% de Deslocamento (arredonda p/ baixo).
+        val sprint = if (heroiMoveSeguidos >= 2) heroi.deslocamentoEfetivo / 5 else 0
+        val deslocMax = (heroi.deslocamentoEfetivo + sprint).coerceAtLeast(1) // metade se cambaleante (MB p.380)
+        val passo = metros.coerceIn(1, deslocMax)
         val alvos = alvoId?.let { id -> inimigos.filter { it.id == id } } ?: inimigosVivos
         alvos.forEach { encounter.moverEmRelacaoAoHeroi(it.id, if (afastar) passo else -passo) }
         limparAvaliar(); limparApontar(); limparFinta()
         val nome = alvoId?.let { id -> inimigos.firstOrNull { it.id == id }?.nome } ?: "os inimigos"
-        val txt = "🏃 Você ${if (afastar) "recua ${passo}m de" else "avança ${passo}m até"} $nome."
+        val txt = "🏃 Você ${if (afastar) "recua ${passo}m de" else "avança ${passo}m até"} $nome${if (sprint > 0) " (disparada +${sprint}m)" else ""}."
         log += txt
         return txt
     }

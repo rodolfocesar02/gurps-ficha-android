@@ -39,7 +39,7 @@ personagem estiver atordoado, suas defesas ativas sofrem uma penalidade de
 -4 até o próximo turno — mesmo que
 ele se recupere.
 
-## Deslocamento [~] ⚠️ PARCIAL OU INCOMPLETO
+## Deslocamento [x] ✅ FEITO (manobra Mover funcional + Disparada +20% no 2º Move consecutivo — Lote 394; veículo/montaria = capítulo à parte, fora do escopo)
 O personagem se desloca mas não
 pode realiza nenhuma outra ação além
 das especificadas como Ações Livres

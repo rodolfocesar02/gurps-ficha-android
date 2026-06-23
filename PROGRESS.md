@@ -3039,6 +3039,14 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - Build completo verde 2 variantes
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
+### Lote 394 — 23 de Junho de 2026
+**Saga combate: Deslocamento — Disparada (loop dos 16 parciais 2/16, MB p.353, branch GURPS-Saga)**
+- A manobra Mover já funcionava; faltava a **Disparada** (sprint): Moves consecutivos **na mesma direção (linha reta)** dão **+20% de Deslocamento a partir do 2º** (MB p.353). `heroiMoveSeguidos`+`heroiMoveDirecao` (capturados antes de `inicioAcaoHeroi`, que zera o contador → ação não-Move quebra; mudar de direção recomeça); `heroiMove` aplica o sprint e narra "(disparada +Nm)".
+- Veículo/montaria (Combate Montado p.396 / Veículos p.462) = capítulo à parte, fora do escopo do combate Saga a pé.
+- Teste: 1º Move sem disparada; 2º consecutivo +1m (desloc 6); ação não-Move reinicia. Build 2 variantes + testes verdes.
+- Combate.md: "Deslocamento" → FEITO.
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
 ### Lote 393 — 23 de Junho de 2026
 **Saga combate: Fazer Nada / Atordoado — defesas −4 (loop dos 16 parciais 1/16, MB p.364, branch GURPS-Saga)**
 - A manobra forçada ao atordoado e a recuperação (HT/IQ em `avancarTurno`) JÁ existiam. Faltava o **−4 em TODAS as defesas ativas enquanto atordoado** (MB p.364). `opcoesDefesaHeroi` aplica `penAtordoado` (herói); `esquivaNpc`/`melhorDefesaNpc` usam `penDefesaAtordoado` (NPC).

@@ -779,4 +779,19 @@ class CombatSessionTest {
         assertEquals("esquiva −4 atordoado", esqN - 4, esquiva())
         assertEquals("apara −4 atordoado", aparaN - 4, apara())
     }
+
+    // Lote 394 — Disparada (MB p.353): Moves consecutivos dão +20% de Deslocamento a partir do 2º.
+    @Test
+    fun `disparada da +20% de deslocamento no 2o move consecutivo`() {
+        val g = goblin()
+        val enc = CombatEncounter(listOf(heroi(), g), mapOf("goblin" to 20), seed = 1L)
+        val s = CombatSession(enc, perfilHeroi(), Random(3)) // herói deslocamento 6 → +20% = +1
+        s.heroiMove(afastar = true, metros = 100)
+        assertFalse("1º move: sem disparada", s.log.last().contains("disparada"))
+        s.heroiMove(afastar = true, metros = 100)
+        assertTrue("2º move consecutivo: disparada +1m", s.log.last().contains("disparada +1m"))
+        s.heroiManobra(Manobra.AGUARDAR) // ação não-Move quebra a disparada
+        s.heroiMove(afastar = true, metros = 100)
+        assertFalse("após outra ação, a disparada reinicia", s.log.last().contains("disparada"))
+    }
 }
