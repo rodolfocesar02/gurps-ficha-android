@@ -231,6 +231,36 @@ class CombatSession(
         return AtaqueResultado(true, false, dnNpc.pvSubtrair, !alvo.vivo, log.last())
     }
 
+    /** Empurrão (MB p.371): empurra o alvo com as mãos. Acerto por DX; GdP×2 vira projeção (knockback), nunca lesão. */
+    fun heroiEmpurrao(alvoId: String): AtaqueResultado {
+        inicioAcaoHeroi()
+        val alvo = inimigos.firstOrNull { it.id == alvoId && it.vivo }
+            ?: return AtaqueResultado(false, false, 0, false, "Alvo inválido.").also { log += it.texto }
+        if (encounter.distancia(alvo) > 1) {
+            val t = "⚠️ Empurrão exige estar adjacente ao alvo."; log += t; return AtaqueResultado(false, false, 0, false, t)
+        }
+        val somaAtk = rolar3d6()
+        log += "🙌 Empurrão! Você tenta empurrar ${alvo.nome} (DX ${heroiPerfil.dx}, rolou $somaAtk)."
+        if (somaAtk > heroiPerfil.dx) { log += "  └ você erra o empurrão."; return AtaqueResultado(false, false, 0, false, log.last()) }
+        val (defTipo, defValor) = melhorDefesaNpc(alvo)
+        if (CombatResolver.defesaBemSucedida(defValor, rolar3d6())) {
+            log += "  └ ${alvo.nome} se defende (${defTipo.rotulo} $defValor) do empurrão."
+            return AtaqueResultado(true, true, 0, false, log.last())
+        }
+        val forca = rolarDano(heroiPerfil.danoGdP, random) * 2 // GdP × 2 (duas mãos), MB p.371
+        val stAlvo = (alvo.stats?.st ?: 10).coerceAtLeast(3)
+        val knockback = forca / (stAlvo - 2) // projeção: 1m por múltiplo de (ST−2) no dano (MB p.378); sem lesão
+        if (knockback > 0) {
+            encounter.moverEmRelacaoAoHeroi(alvo.id, knockback)
+            log += "  └ ${alvo.nome} é projetado ${knockback}m para trás (força $forca vs ST $stAlvo) — sem lesão (MB p.371/378)."
+            if (knockback >= 2 && rolar3d6() > (alvo.stats?.dx ?: alvo.dx) - (knockback - 1)) {
+                alvo.postura = Postura.DEITADO; alvo.condicoes.add(Condicao.CAIDO); log += "  └ ${alvo.nome} cai com o tranco!"
+            }
+        } else log += "  └ ${alvo.nome} mal se move (força $forca insuficiente vs ST $stAlvo)."
+        verificarFim()
+        return AtaqueResultado(true, false, 0, false, log.last())
+    }
+
     /**
      * Mover e Atacar (MB p.366): o herói se desloca e ataca em movimento. Corpo-a-corpo aproxima-se do
      * alvo (gastando até o Deslocamento) antes de golpear; a penalidade é tratada pelo motor (CaC −4 e
@@ -1261,7 +1291,9 @@ data class HeroiPerfilCombate(
     val st: Int = 10,
     val dx: Int = 10,
     /** Lote 395: Vontade — teste para não perder a pontaria (Apontar) ao ser ferido (MB p.364). */
-    val vontade: Int = 10
+    val vontade: Int = 10,
+    /** Lote 410: dano por GdP (golpe de ponta/empurrão) do herói, p/ o Empurrão (MB p.371). */
+    val danoGdP: String = "1d-2"
 )
 
 /**

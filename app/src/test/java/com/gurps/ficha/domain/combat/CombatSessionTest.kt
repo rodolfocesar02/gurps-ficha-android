@@ -1086,4 +1086,20 @@ class CombatSessionTest {
         }
         assertTrue("o encontrão deve acertar e causar dano mútuo em alguma seed", aplicou)
     }
+
+    // Lote 410 — Empurrão (MB p.371): projeta o alvo para trás (GdP×2 → knockback), nunca lesão.
+    @Test
+    fun `empurrao projeta o alvo para tras sem lesao`() {
+        var projetou = false
+        for (seed in 0L..30L) {
+            val base = goblin()
+            val g = base.copy(stats = base.stats!!.copy(st = 8)) // ST baixa → projeta fácil
+            val enc = CombatEncounter(listOf(heroi(), g), mapOf("goblin" to 1), seed = 1L)
+            val s = CombatSession(enc, perfilHeroi().copy(dx = 14, danoGdP = "2d"), Random(seed))
+            val pvAntes = g.pvAtual
+            s.heroiEmpurrao("goblin")
+            if (s.log.any { it.contains("projetado") } && g.pvAtual == pvAntes) { projetou = true; break }
+        }
+        assertTrue("o empurrão deve projetar o alvo sem causar lesão em alguma seed", projetou)
+    }
 }

@@ -351,6 +351,14 @@ class SagaCombatController(
         depoisDaAcaoDoHeroi()
     }
 
+    /** Lote 410: Empurrão — empurra o alvo (projeção/knockback, sem lesão). MB p.371. */
+    fun heroiEmpurrao(alvoId: String) {
+        val s = sessao ?: return
+        if (!s.combatenteAtual().ehHeroi || s.encerrado) return
+        s.heroiEmpurrao(alvoId)
+        depoisDaAcaoDoHeroi()
+    }
+
     /** Lote 408: Golpe Rápido — dois ataques corpo-a-corpo a −6 cada (mantém a defesa). MB p.370. */
     fun heroiGolpeRapido(alvoId: String, local: LocalAtaque) {
         val s = sessao ?: return
@@ -530,6 +538,7 @@ class SagaCombatController(
             if (!ranged && alvos.isNotEmpty() && Manobra.DERRUBAR !in it) it.add(Manobra.DERRUBAR) // Lote 386: derrubar
             if (!ranged && alvos.isNotEmpty() && Manobra.GOLPE_RAPIDO !in it) it.add(Manobra.GOLPE_RAPIDO) // Lote 408
             if (!ranged && alvos.isNotEmpty() && Manobra.ENCONTRAO !in it) it.add(Manobra.ENCONTRAO) // Lote 409
+            if (!ranged && alvos.isNotEmpty() && Manobra.EMPURRAO !in it) it.add(Manobra.EMPURRAO) // Lote 410
         }
         estado = CombatUiState(
             rodada = s.encounter.rodadaAtual,
@@ -585,7 +594,9 @@ class SagaCombatController(
         // ST/DX para as Disputas de luta agarrada (Lote 386).
         st = p.forca, dx = p.dx,
         // Vontade — teste p/ não perder a mira ao ser ferido (Lote 395).
-        vontade = p.vontade
+        vontade = p.vontade,
+        // Dano por GdP do herói — usado no Empurrão (Lote 410).
+        danoGdP = p.danoGdP
     )
 
     /**

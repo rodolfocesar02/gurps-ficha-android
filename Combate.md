@@ -1066,7 +1066,7 @@ dano. Nesse caso, o escudo sofre dano em
 vez do personagem, mas este ainda cai se o
 oponente causar o dobro ou mais de dano.
 
-## Empurrão []
+## Empurrão [x] ✅ FEITO (empurra o alvo: acerto por DX, GdP×2 vira projeção/knockback de 1m por múltiplo de (ST−2), com possível queda; nunca causa lesão — Lote 410)
 O personagem pode empurrar um
 oponente com um ou dois braços, fazendo um teste contra a DX ou Sumô
 para atingir. O oponente pode bloquear, esquivar ou aparar. Se for atingido,

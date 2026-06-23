@@ -173,6 +173,7 @@ private fun ManeuverCards(viewModel: FichaViewModel, estado: com.gurps.ficha.vie
     var agarrarDialogo by remember { mutableStateOf(false) }
     var derrubarDialogo by remember { mutableStateOf(false) }
     var encontraoDialogo by remember { mutableStateOf(false) }
+    var empurraoDialogo by remember { mutableStateOf(false) }
     var posturaDialogo by remember { mutableStateOf(false) }
     var defesaTotalDialogo by remember { mutableStateOf(false) }
 
@@ -204,6 +205,7 @@ private fun ManeuverCards(viewModel: FichaViewModel, estado: com.gurps.ficha.vie
                             m == Manobra.AGARRAR -> agarrarDialogo = true
                             m == Manobra.DERRUBAR -> derrubarDialogo = true
                             m == Manobra.ENCONTRAO -> encontraoDialogo = true
+                            m == Manobra.EMPURRAO -> empurraoDialogo = true
                             m == Manobra.MUDAR_POSTURA -> posturaDialogo = true
                             m == Manobra.DEFESA_TOTAL -> defesaTotalDialogo = true
                             m == Manobra.FOGO_RETENCAO -> viewModel.sagaCombateFogoRetencao() // Lote 396: área, sem alvo
@@ -313,6 +315,16 @@ private fun ManeuverCards(viewModel: FichaViewModel, estado: com.gurps.ficha.vie
             alvos = estado.alvos,
             onConfirmar = { alvoId -> viewModel.sagaCombateEncontrao(alvoId); encontraoDialogo = false },
             onFechar = { encontraoDialogo = false }
+        )
+    }
+
+    if (empurraoDialogo) {
+        SubDialogoEscolherAlvo(
+            titulo = "Empurrar quem?",
+            descricaoConfirmar = "Empurrar o alvo (projeção para trás, sem lesão)",
+            alvos = estado.alvos,
+            onConfirmar = { alvoId -> viewModel.sagaCombateEmpurrao(alvoId); empurraoDialogo = false },
+            onFechar = { empurraoDialogo = false }
         )
     }
 

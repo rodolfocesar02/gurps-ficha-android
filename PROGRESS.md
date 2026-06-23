@@ -3039,6 +3039,13 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - Build completo verde 2 variantes
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
+### Lote 410 — 23 de Junho de 2026
+**Saga combate: Empurrão / Shove (tópicos `[]` 3/N, MB p.371, branch GURPS-Saga)**
+- Nova manobra `EMPURRAO` — `heroiEmpurrao(alvoId)`: acerto por **DX** (adjacente), alvo pode defender. Se acerta, **GdP×2** vira **projeção/knockback** = 1m por múltiplo de **(ST−2)** no resultado (MB p.378), com possível queda (teste de DX por metro extra); **nunca causa lesão**. `HeroiPerfilCombate.danoGdP` (← `p.danoGdP`). UI: manobra com seletor de alvo.
+- Teste: empurrão projeta o alvo sem alterar o PV. Build 2 variantes + testes verdes.
+- Combate.md: "Empurrão" → FEITO.
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
 ### Lote 409 — 23 de Junho de 2026
 **Saga combate: Encontrão / Slam (tópicos `[]` 2/N, MB p.371, branch GURPS-Saga)**
 - Nova manobra `ENCONTRAO` — `heroiEncontrao(alvoId)`: carrega até o alvo, acerto por **DX** (sem o −4/teto-9 do Avançar e Atacar), alvo pode defender (corpo = arma pesada). Se acerta, **dano mútuo por contusão = (PV×vel.relativa)/100 dados** (`encontraoDanoDados` no companion: <1d → 1d-3/1d-2/1d-1; ≥1d arredonda 0,5+). Derrubada: alvo cai se leva o dobro; herói cai se leva o dobro, ou testa DX se causou ≥. Vel. relativa usa `velocidadeAtual` (Lote 403). UI: manobra com seletor de alvo.
