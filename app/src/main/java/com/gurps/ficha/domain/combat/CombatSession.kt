@@ -492,6 +492,10 @@ class CombatSession(
         )
         if (penFinta > 0) log += "  └ finta: a defesa de ${alvo.nome} cai −$penFinta neste golpe (${defValor}→${defValorFinal})."
         log += narrarTroca("Você", alvo.nome, ataque.rotulo.substringBefore(" (").trim(), ataque.aDistancia, atk, defTipo, troca, local, ataque.tipo)
+        // Projeção (Lote 417, MB p.378): contusão/corte que acerta pode jogar o alvo para trás (o helper filtra o tipo).
+        if (troca.dano != null && alvo.vivo)
+            aplicarProjecao(alvo, alvo, danoBruto, ataque.tipo, (troca.dano?.pvSubtrair ?: 0) > 0,
+                alvo.stats?.st ?: alvo.pvMax, alvo.stats?.dx ?: alvo.dx)
         // Erro Crítico (Lote 384, MB p.557): o próprio herói tropeça no golpe.
         if (atk.critico == CriticoRules.ResultadoCritico.FALHA_CRITICA)
             aplicarErroCritico(heroi, heroiPerfil.ht, ataque.danoExpr, ataque.desarmado, "Você")
@@ -967,6 +971,10 @@ class CombatSession(
             log += "  └ você se joga ao chão (+3 na esquiva vs tiro) e termina deitado."
         }
         log += narrarTroca(npc.nome, "você", stats.armaNome, intencao.aDistancia, atk, def.tipo, troca, intencao.local, tipoDano(stats.armaTipo))
+        // Projeção (Lote 417, MB p.378): o golpe contuso/cortante do NPC pode jogar o herói para trás.
+        if (troca.dano != null && heroi.vivo)
+            aplicarProjecao(heroi, npc, danoBasicoNpc, tipoDano(stats.armaTipo), (troca.dano?.pvSubtrair ?: 0) > 0,
+                heroiPerfil.st, heroiPerfil.dx)
         // Lote 390 (MB p.376): aparar um tiro à queima-roupa = desviar a ARMA do atacante, não o projétil.
         if (def.tipo == CombatResolver.TipoDefesa.APARA && intencao.aDistancia && troca.defendeu)
             log += "  └ você desvia a arma do atirador (não o projétil) — só dá pra aparar à queima-roupa."
@@ -1152,6 +1160,24 @@ class CombatSession(
             CriticoRules.EfeitoGolpeFulminante.RD_METADE -> GolpeFulminanteAplicado(danoBasico, rd / 2, false, "RD do alvo pela metade! (tabela $soma)")
             CriticoRules.EfeitoGolpeFulminante.FERIMENTO_GRAVE -> GolpeFulminanteAplicado(danoBasico, rd, true, "trata como ferimento grave! (tabela $soma)")
             CriticoRules.EfeitoGolpeFulminante.NORMAL -> GolpeFulminanteAplicado(danoBasico, rd, false, "golpe certeiro (dano normal, tabela $soma)")
+        }
+    }
+
+    /**
+     * Projeção / knockback (Lote 417, MB p.378): contusão SEMPRE projeta; corte só se NÃO penetrou a RD.
+     * 1m por múltiplo completo de (ST−2) do dano BÁSICO; o projetado testa DX (−1/m após o 1º) ou cai.
+     */
+    private fun aplicarProjecao(alvoProjetado: Combatente, npcDaTroca: Combatente, danoBasico: Int,
+                                tipo: DanoTipo, penetrou: Boolean, stAlvo: Int, dxAlvo: Int) {
+        val projeta = tipo == DanoTipo.CONT || (tipo == DanoTipo.CORT && !penetrou)
+        if (!projeta || danoBasico <= 0) return
+        val metros = danoBasico / (stAlvo - 2).coerceAtLeast(1)
+        if (metros <= 0) return
+        encounter.moverEmRelacaoAoHeroi(npcDaTroca.id, metros) // aumenta a distância herói↔NPC
+        log += "  ➡️ ${alvoProjetado.nome} é projetado ${metros}m pelo impacto (dano básico $danoBasico vs ST $stAlvo)."
+        if (rolar3d6() > dxAlvo - (metros - 1)) {
+            alvoProjetado.postura = Postura.DEITADO; alvoProjetado.condicoes.add(Condicao.CAIDO)
+            log += "  └ ${alvoProjetado.nome} cai com a projeção!"
         }
     }
 

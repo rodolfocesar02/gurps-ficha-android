@@ -3039,6 +3039,13 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - Build completo verde 2 variantes
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
+### Lote 417 — 23 de Junho de 2026
+**Saga combate: Projeção / knockback geral (tópicos `[]` 10/N, MB p.378, branch GURPS-Saga)**
+- `aplicarProjecao(...)`: contusão SEMPRE projeta; corte só se NÃO penetrou a RD; **1m por múltiplo de (ST−2) do dano básico**; o projetado testa DX (−1/m após o 1º) ou cai. Chamado nos dois caminhos (`resolverGolpeHeroi` após acertar o NPC; `npcResolve` após o NPC acertar o herói). Reusa a lógica de knockback do Empurrão (Lote 410, "apenas projeção").
+- Teste: golpe contuso forte (maça 3d) vs ST 8 projeta o alvo. Build 2 variantes + testes verdes.
+- Combate.md: "Projeção" → FEITO.
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
 ### Lote 416 — 23 de Junho de 2026
 **Saga combate: Agachar + cluster de movimento em hexágono (tópicos `[]` 9/N, MB p.368, branch GURPS-Saga)**
 - **Agachar**: o benefício mecânico (alvo menor à distância) → `penalidadePosturaAlvejado(postura)` (agachado/ajoelhado/rastejando/sentado −2, deitado −4) somado ao acerto À DISTÂNCIA nos dois caminhos (`resolverGolpeHeroi` e `npcResolve`). Vale p/ herói e NPC (atira-se pior em alvo agachado/deitado).

@@ -1837,7 +1837,7 @@ O resultado da avaliação de dano
 (depois de quaisquer modificadores,
 como mostrado acima) é o “dano básico” do ataque.
 
-## Projeção[]
+## Projeção [x] ✅ FEITO (contusão sempre projeta; corte só se NÃO penetrar a RD; 1m por múltiplo de (ST−2) do dano básico, com teste de DX −1/m para não cair; vale nas 2 direções herói↔NPC — Lote 417. "Apenas Projeção" sem dano = Empurrão, Lote 410)
 Quando atinge um oponente com muita força, o personagem pode projetá-lo para longe! Isso se chama “projeção”. Somente ataques por contusão e corte podem provocar projeção. Um ataque por contusão pode provocar projeção independente de penetrar a RD do alvo. Um ataque por corte
 só pode provocar projeção se não penetrar a RD do alvo.
 A projeção depende do dano básico antes de subtrair a RD. Para cada múltiplo completo da ST do alvo -2, ele é projetado um metro para longe do atacante. Por exemplo, um homem com ST 10 seria projetado um metro para

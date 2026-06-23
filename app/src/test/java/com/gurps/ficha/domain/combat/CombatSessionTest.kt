@@ -1217,4 +1217,20 @@ class CombatSessionTest {
         s.heroiAtaca(pistola, "goblin", Manobra.ATAQUE, LocalAtaque.TORSO)
         assertTrue("o tiro no alvo deitado registra a postura", s.log.any { it.contains("alvo deitado") })
     }
+
+    // Lote 417 — Projeção / knockback (MB p.378): golpe contuso/corte projeta o alvo (1m por (ST−2) de dano básico).
+    @Test
+    fun `projecao joga o alvo para tras com golpe contuso forte`() {
+        var projetou = false
+        for (seed in 0L..40L) {
+            val base = goblin(pv = 40)
+            val g = base.copy(stats = base.stats!!.copy(st = 8, rd = 0)) // ST baixa → projeta fácil
+            val enc = CombatEncounter(listOf(heroi(), g), mapOf("goblin" to 1), seed = 1L)
+            val s = CombatSession(enc, perfilHeroi(), Random(seed))
+            val maca = AtaqueHeroi("Maça", nh = 16, danoExpr = "3d", tipo = DanoTipo.CONT)
+            s.heroiAtaca(maca, "goblin", Manobra.ATAQUE, LocalAtaque.TORSO)
+            if (s.log.any { it.contains("projetado") && it.contains("impacto") }) { projetou = true; break }
+        }
+        assertTrue("um golpe contuso forte deve projetar o alvo em alguma seed", projetou)
+    }
 }
