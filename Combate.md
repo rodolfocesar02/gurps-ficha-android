@@ -499,7 +499,7 @@ Combate Montado (pág. 396) e Veículos
 (pág. 462) para observações sobre o
 combate montado ou veicular, respectivamente
 
-## Movimento [~] ⚠️ PARCIAL OU INCOMPLETO
+## Movimento [x] ✅ FEITO (Deslocamento por manobra já feito; postura reduz o Deslocamento — em pé cheio, ajoelhado/rastejando 1/3, deitado 1, sentado 0 — Lote 400; terreno difícil = Narrador)
 Um combatente pode se mover um
 número máximo de metros igual ao seu
 Deslocamento completo se escolher a

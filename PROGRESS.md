@@ -3039,6 +3039,13 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - Build completo verde 2 variantes
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
+### Lote 400 — 23 de Junho de 2026
+**Saga combate: Movimento — postura reduz o Deslocamento (loop dos 16 parciais 8/16, MB p.368, branch GURPS-Saga)**
+- O Deslocamento por manobra já existia; faltava a **redução por postura**: `Combatente.deslocamentoEfetivo` agora aplica em pé/agachado = cheio, **ajoelhado/rastejando = 1/3**, **deitado = 1**, **sentado = 0**; depois o cambaleante corta pela metade (MB p.380). Vale p/ herói e NPC (inimigo derrubado quase não se move).
+- Terreno difícil/obstáculos = Narrador. Teste: deslocamento por postura (6→2→2→1→0). Build 2 variantes + testes verdes.
+- Combate.md: "Movimento" → FEITO.
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
 ### Lote 399 — 23 de Junho de 2026
 **Saga combate: Aguardar — Interromper Investida (loop dos 16 parciais 7/16, MB p.392, branch GURPS-Saga)**
 - O "aguardar por gatilho arbitrário" é narrativo; o núcleo de combate é **Interromper Investida**: `heroiAguardar(ataque)` firma uma arma **perfurante (PERF) corpo-a-corpo** → `aguardarInvestidaArma`. No `npcResolve`, se o NPC **avança** (MOVER sem recuar / MOVER_E_ATACAR), o herói **golpeia primeiro** com a arma firmada, **+1 de dano por 2m percorridos** (`bonusInvestidaPendente` somado em `resolverGolpeHeroi`). Sem arma perfurante = Aguardar genérico (narrativo, sem bônus).

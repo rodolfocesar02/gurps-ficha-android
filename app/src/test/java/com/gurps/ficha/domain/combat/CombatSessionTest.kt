@@ -927,4 +927,15 @@ class CombatSessionTest {
         assertTrue("aguardar genérico sem bônus", s.log.last().contains("sem o bônus de Interromper Investida") ||
             s.log.last().contains("não há o bônus"))
     }
+
+    // Lote 400 — Movimento (MB p.368): a postura reduz o Deslocamento (1/3 ajoelhado/rastejando, 1 deitado, 0 sentado).
+    @Test
+    fun `postura reduz o deslocamento efetivo`() {
+        val c = Combatente(id = "c", nome = "C", dx = 10, velocidadeBasica = 6.0, deslocamento = 6, pvMax = 10, pvAtual = 10)
+        c.postura = Postura.EM_PE; assertEquals("em pé: cheio", 6, c.deslocamentoEfetivo)
+        c.postura = Postura.AJOELHADO; assertEquals("ajoelhado: 1/3", 2, c.deslocamentoEfetivo)
+        c.postura = Postura.RASTEJANDO; assertEquals("rastejando: 1/3", 2, c.deslocamentoEfetivo)
+        c.postura = Postura.DEITADO; assertEquals("deitado: 1", 1, c.deslocamentoEfetivo)
+        c.postura = Postura.SENTADO; assertEquals("sentado: 0", 0, c.deslocamentoEfetivo)
+    }
 }

@@ -122,5 +122,17 @@ data class Combatente(
     /** Cambaleante (MB p.380): com menos de 1/3 do PV Inicial, Vel.Básica/Deslocamento e Esquiva caem à metade. */
     val cambaleante: Boolean get() = vivo && pvAtual * 3 < pvMax
     /** Deslocamento efetivo: metade (arredondado p/ cima) se cambaleante (MB p.380). */
-    val deslocamentoEfetivo: Int get() = if (cambaleante) (deslocamento + 1) / 2 else deslocamento
+    /**
+     * Deslocamento efetivo: a postura reduz o movimento (Lote 400, MB p.368) — em pé/agachado = cheio;
+     * ajoelhado/rastejando = 1/3; deitado = 1; sentado = 0; depois, cambaleante corta pela metade (MB p.380).
+     */
+    val deslocamentoEfetivo: Int get() {
+        val porPostura = when (postura) {
+            Postura.EM_PE, Postura.AGACHADO -> deslocamento
+            Postura.AJOELHADO, Postura.RASTEJANDO -> deslocamento / 3
+            Postura.DEITADO -> 1
+            Postura.SENTADO -> 0
+        }
+        return if (cambaleante) (porPostura + 1) / 2 else porPostura
+    }
 }
