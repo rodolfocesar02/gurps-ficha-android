@@ -855,4 +855,24 @@ class CombatSessionTest {
         s.heroiFogoRetencao(pistola)
         assertTrue("CdT < 5 recusa", s.log.last().contains("exige uma arma à distância com CdT 5+"))
     }
+
+    // Lote 397 — Concentrar (MB p.344): ser forçado a defender / ser ferido exige Vontade-3 p/ manter a concentração.
+    @Test
+    fun `concentrar testa Vontade-3 ao ser perturbado`() {
+        var testou = false
+        for (seed in 0L..60L) {
+            val base = goblin()
+            val g = base.copy(stats = base.stats!!.copy(armaNh = 16)) // acerta com frequência → perturba
+            val enc = CombatEncounter(listOf(heroi(), g), mapOf("goblin" to 1), seed = 1L)
+            val s = CombatSession(enc, perfilHeroi(), Random(seed))
+            s.heroiManobra(Manobra.CONCENTRAR)
+            assertTrue("declara a concentração", s.log.last().contains("concentra"))
+            val intencao = NpcCombatBrain.IntencaoNpc(
+                manobra = Manobra.ATAQUE, alvoId = "heroi", local = LocalAtaque.TORSO, motivo = "t"
+            )
+            s.npcResolve("goblin", intencao, DefesaHeroi(CombatResolver.TipoDefesa.ESQUIVA, 9, 10))
+            if (s.log.any { it.contains("Vontade-3") }) { testou = true; break }
+        }
+        assertTrue("ser perturbado durante a concentração deve testar Vontade-3", testou)
+    }
 }

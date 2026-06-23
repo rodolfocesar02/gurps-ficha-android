@@ -341,7 +341,7 @@ contrário, ele só pode dar um passo.
 Defesa Ativa: O personagem pode escolher qualquer defesa ativa válida e recebe
 o bônus indicado acima.
 
-## Concentrar [~] ⚠️ PARCIAL OU INCOMPLETO
+## Concentrar [x] ✅ FEITO (mecânica de combate: Vontade-3 p/ manter a concentração ao ser forçado a defender/ser ferido — Lote 397; o EFEITO da concentração — magia/psi/perícia IQ — é resolvido pelo Narrador, não pelo motor de combate)
 O personagem se concentra em
 uma atividade mental (mesmo que ela
 tenha um componente físico mínimo,

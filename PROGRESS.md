@@ -3039,6 +3039,13 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - Build completo verde 2 variantes
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
+### Lote 397 — 23 de Junho de 2026
+**Saga combate: Concentrar — Vontade-3 ao ser perturbado (loop dos 16 parciais 5/16, MB p.344, branch GURPS-Saga)**
+- O EFEITO da concentração (magia/psi/perícia IQ) é do Narrador; o motor de combate modela a **mecânica de interrupção**: `heroiManobra(CONCENTRAR)` marca `concentrando`; em `npcResolve`, se o herói é **forçado a defender** (`defesaTentada`) ou **ferido**, testa **Vontade-3** (`heroiPerfil.vontade - 3`); falha → perde a concentração (recomeça). Vale só no turno (re-declara p/ continuar).
+- Teste: ser perturbado durante a concentração dispara o teste de Vontade-3 (loop de seeds até um acerto). Build 2 variantes + testes verdes.
+- Combate.md: "Concentrar" → FEITO (mecânica de combate; efeito = Narrador).
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
 ### Lote 396 — 23 de Junho de 2026
 **Saga combate: Ataque Total (Fogo de Retenção) — fecha o Ataque Total (loop dos 16 parciais 4/16, MB p.409, branch GURPS-Saga)**
 - REGRA (MB p.409): arma à distância CdT 5+ cobre uma área e **acerta quem ENTRAR** antes do próximo turno (negação de área/interrupção). Mapeado ao tracker de faixas: nova manobra `FOGO_RETENCAO` (`heroiFogoRetencao(ataque)`, exige `aDistancia` + `cadenciaTiro≥5`); marca `fogoRetencaoArma` + `heroiSemDefesaAtiva` (é Ataque Total); dura até a próxima ação (limpo em `inicioAcaoHeroi`).

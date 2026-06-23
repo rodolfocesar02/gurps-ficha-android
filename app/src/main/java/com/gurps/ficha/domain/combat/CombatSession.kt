@@ -67,11 +67,15 @@ class CombatSession(
     // Fogo de Retenção (Lote 396, MB p.409): arma CdT 5+ cobre a área até o próximo turno; quem AVANÇA leva uma rajada.
     private var fogoRetencaoArma: AtaqueHeroi? = null
 
+    // Concentrar (Lote 397, MB p.344): atividade mental de turno completo; ser forçado a defender/ferido exige Vontade-3.
+    private var concentrando = false
+
     /** Início de uma ação do herói: zera as flags do turno anterior (desbalanceada + sem-defesa/sem-aparar + Defesa Total + Disparada). */
     private fun inicioAcaoHeroi() {
         atacouDesbalanceada = false; heroiSemDefesaAtiva = false; heroiSemAparar = false; limparDefesaTotal()
         heroiMoveSeguidos = 0 // qualquer ação que NÃO seja Mover quebra a Disparada (heroiMove restaura +1)
         fogoRetencaoArma = null // a cobertura do Fogo de Retenção dura só até a próxima ação do herói (Lote 396)
+        concentrando = false // a concentração vale só no turno declarado; o herói re-declara Concentrar p/ continuar (Lote 397)
     }
 
     val heroi: Combatente get() = encounter.combatentes.first { it.ehHeroi }
@@ -326,8 +330,14 @@ class CombatSession(
             heroi.postura = novaPostura
         }
         limparAvaliar(); limparApontar(); limparFinta()
-        val txt = if (manobra == Manobra.MUDAR_POSTURA) "🧍 Você muda para ${heroi.postura.rotulo}."
-            else "🛡️ Você: ${manobra.rotulo}."
+        // Concentrar (Lote 397, MB p.344): marca a concentração; o efeito (magia/psi/perícia IQ) é do Narrador,
+        // mas a mecânica de combate é o teste de Vontade-3 ao ser perturbado (em npcResolve).
+        if (manobra == Manobra.CONCENTRAR) concentrando = true
+        val txt = when (manobra) {
+            Manobra.MUDAR_POSTURA -> "🧍 Você muda para ${heroi.postura.rotulo}."
+            Manobra.CONCENTRAR -> "🧠 Você se concentra (atividade mental). Se for forçado a defender ou for ferido, teste Vontade-3 para não perder a concentração."
+            else -> "🛡️ Você: ${manobra.rotulo}."
+        }
         log += txt
         return txt
     }
@@ -708,6 +718,15 @@ class CombatSession(
             if (rolVont > heroiPerfil.vontade) {
                 limparApontar(); log += "  └ a dor faz você perder a mira (Vontade ${heroiPerfil.vontade}, rolou $rolVont)."
             } else log += "  └ você aguenta a dor e mantém a mira (Vontade ${heroiPerfil.vontade}, rolou $rolVont)."
+        }
+        // Concentrar (Lote 397, MB p.344): ser forçado a defender OU ser ferido exige Vontade-3 p/ manter a concentração.
+        if (concentrando && (troca.defesaTentada || (troca.dano?.pvSubtrair ?: 0) > 0)) {
+            val alvoVont = heroiPerfil.vontade - 3
+            val rol = rolar3d6()
+            if (rol > alvoVont) {
+                concentrando = false
+                log += "  └ você PERDE a concentração (Vontade-3 = $alvoVont, rolou $rol) — a ação recomeça."
+            } else log += "  └ você mantém a concentração apesar da interrupção (Vontade-3 = $alvoVont, rolou $rol)."
         }
         // Erro Crítico do NPC (Lote 384, MB p.557): o oponente tropeça no próprio golpe.
         if (atk.critico == CriticoRules.ResultadoCritico.FALHA_CRITICA)
