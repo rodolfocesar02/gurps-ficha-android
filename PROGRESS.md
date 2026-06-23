@@ -3039,6 +3039,14 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - Build completo verde 2 variantes
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
+### Lote 413 — 23 de Junho de 2026
+**Saga combate: Divisores de Armadura (tópicos `[]` 6/N, MB p.378, branch GURPS-Saga)**
+- Divisor de armadura na expressão de dano (ex.: `3d(2) pa`): `CombatSession.divisorArmadura(expr)` extrai o "(2)"; `rdComDivisor(rd, divisor)` aplica — divisor ≥1 **reduz** a RD (÷, arredonda p/ baixo); fracionário (0,5/0,2/0,1) **melhora** a RD (×2/×5/×10) e trata RD 0 como 1. Aplicado nos dois caminhos de dano (`resolverGolpeHeroi` e `npcResolve`) ANTES do `aplicarDano`. `semTokenTipo` preserva o "(2)" (só tira o token de tipo no fim).
+- DEFERIDO: modificadores especiais de penetração (toxina/agentes de contato/respiratório) — não modelados.
+- Teste: parsing do divisor + RD reduzida/melhorada (5 casos). Build 2 variantes + testes verdes.
+- Combate.md: "Divisores de Armadura e Modificadores de Penetração" → FEITO.
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
 ### Lote 412 — 23 de Junho de 2026
 **Saga combate: Estrangulamento / Strangle (tópicos `[]` 5/N, luta agarrada, MB p.371, branch GURPS-Saga)**
 - Nova manobra `ESTRANGULAR` — `heroiEstrangular(alvoId)`: exige o alvo **AGARRADO**; **Disputa de ST vs max(ST,HT)**; a **margem de vitória** = dano por contusão **×1,5** (pescoço), RD protege; penetrando, o alvo fica `SUFOCANDO`. No `npcResolve`, o NPC SUFOCANDO **perde 1 PV/turno** (proxy de fôlego) enquanto preso, e solta a condição ao escapar. Manobra (e Imobilizar) aparecem só com inimigo agarrado.

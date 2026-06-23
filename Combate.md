@@ -1904,7 +1904,7 @@ sobre RD, veja Resistência a Dano (pág.
 83) e Armaduras (pág. 282).
 
 
-## Divisores de Armadura e Modificadores de Penetração[]
+## Divisores de Armadura e Modificadores de Penetração [x] ✅ FEITO (divisor de armadura na expressão de dano: "(2)" reduz a RD ÷2, "(5)" ÷5; fracionário (0,5/0,2/0,1) multiplica a RD ×2/×5/×10 e trata RD 0 como 1 — Lote 413; modificadores especiais de penetração de toxina/agentes = não modelados)
 Um “divisor de armadura” indica que
 um ataque tem uma maior facilidade (ou
 dificuldade) para penetrar a Resistência

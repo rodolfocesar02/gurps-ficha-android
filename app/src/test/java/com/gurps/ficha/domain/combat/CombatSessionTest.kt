@@ -1150,4 +1150,17 @@ class CombatSessionTest {
         s.heroiEstrangular("goblin")
         assertTrue("recusa sem agarrar", s.log.last().contains("pelo pescoço"))
     }
+
+    // Lote 413 — Divisores de Armadura (MB p.378): "(2)" reduz a RD; fracionário (0,5) a melhora (RD 0 → 1).
+    @Test
+    fun `divisor de armadura reduz ou melhora a RD`() {
+        assertEquals(2.0, CombatSession.divisorArmadura("3d(2) pa"), 0.0)
+        assertEquals(0.5, CombatSession.divisorArmadura("2d(0,5) cort"), 0.0)
+        assertEquals(1.0, CombatSession.divisorArmadura("2d-1 pa+"), 0.0)
+        assertEquals("(2): RD 6 → 3", 3, CombatSession.rdComDivisor(6, 2.0))
+        assertEquals("(5): RD 12 → 2", 2, CombatSession.rdComDivisor(12, 5.0))
+        assertEquals("(0,5): RD 4 → 8", 8, CombatSession.rdComDivisor(4, 0.5))
+        assertEquals("(0,5): RD 0 → 1×2 = 2", 2, CombatSession.rdComDivisor(0, 0.5))
+        assertEquals("sem divisor: inalterada", 5, CombatSession.rdComDivisor(5, 1.0))
+    }
 }

@@ -471,7 +471,7 @@ class CombatSession(
         // Além de 1/2D, o dano cai pela metade (MB p.270) — aplica no dado básico antes de RD.
         val meioDano = ataque.aDistancia && ataque.meioDano > 0 && dist >= ataque.meioDano
         var danoBasico = rolarDano(ataque.danoExpr, random) + bonusDanoForte(manobra, ataqueTotalModo, ataque.danoExpr, ataque.aDistancia) + bonusInvestidaPendente
-        var rdAlvo = alvo.stats?.rd ?: 0
+        var rdAlvo = rdComDivisor(alvo.stats?.rd ?: 0, divisorArmadura(ataque.danoExpr)) // Lote 413: divisor de armadura
         var forcaGrave = false
         // Golpe Fulminante (Lote 384, MB p.558): a defesa já é anulada pelo crítico; a tabela modifica o DANO.
         if (atk.critico == CriticoRules.ResultadoCritico.DECISIVO) {
@@ -915,7 +915,7 @@ class CombatSession(
         // Sem escolha de defesa (herói atordoado/sem opção) → só Esquiva passiva da ficha.
         var def = defesaHeroi ?: DefesaHeroi(CombatResolver.TipoDefesa.ESQUIVA, heroiPerfil.esquiva, rolar3d6())
         var danoBasicoNpc = rolarDano(stats.armaDano, random) + bonusDanoForte(intencao.manobra, AtaqueTotalModo.FORTE, stats.armaDano, intencao.aDistancia)
-        var rdHeroiAlvo = heroiPerfil.rd
+        var rdHeroiAlvo = rdComDivisor(heroiPerfil.rd, divisorArmadura(stats.armaDano)) // Lote 413: divisor de armadura
         var forcaGraveNpc = false
         // Golpe Fulminante do NPC (Lote 384, MB p.558).
         if (atk.critico == CriticoRules.ResultadoCritico.DECISIVO) {
@@ -1301,6 +1301,23 @@ class CombatSession(
             val qtd = m.groupValues[1].toIntOrNull() ?: 0
             val mod = m.groupValues.getOrNull(2)?.toIntOrNull() ?: 0
             return (qtd * 6 + mod).coerceAtLeast(0)
+        }
+
+        /** Divisor de armadura na expressão de dano (Lote 413, MB p.378): "(2)"→2,0; "(0,5)"→0,5; sem→1,0. */
+        fun divisorArmadura(expr: String): Double {
+            val m = Regex("""\((\d*[.,]?\d+)\)""").find(expr) ?: return 1.0
+            return m.groupValues[1].replace(",", ".").toDoubleOrNull()?.takeIf { it > 0 } ?: 1.0
+        }
+
+        /**
+         * RD efetiva após o divisor de armadura (MB p.378): divisor ≥1 reduz a RD (÷divisor, arredonda p/ baixo);
+         * divisor fracionário (0,5/0,2/0,1) MELHORA a RD (×2/×5/×10) e trata RD 0 como 1.
+         */
+        fun rdComDivisor(rd: Int, divisor: Double): Int {
+            if (divisor == 1.0) return rd
+            if (divisor > 1.0) return (rd / divisor).toInt().coerceAtLeast(0)
+            val base = if (rd == 0) 1 else rd // RD 0 vira 1 contra divisor fracionário
+            return (base / divisor).toInt()
         }
 
         /**
