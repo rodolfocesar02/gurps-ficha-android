@@ -1572,7 +1572,7 @@ Um atacante também pode quebrar ou derrubar uma
 arma deliberadamente; v. Golpes Visando a Arma do Oponente
 (pág. 400).
 
-## Aparar [~] ⚠️ PARCIAL (apara extra −4/−2 esgrima, recuo +3 esgrima, tiro só à queima-roupa — Lote 390; falta mão inábil −4, arremesso −1/−2, aparar-desarmado→ferir o atacante)
+## Aparar [x] ✅ FEITO (apara extra −4/−2 esgrima — Lote 375; recuo +3 esgrima — Lote 389; tiro só à queima-roupa — Lote 390; mão inábil −2 anulada por Ambidestria — Lote 405. DEFERIDO por falta de dado: aparar arremesso −1/−2 (sem flag thrown vs projétil no NPC) e aparar-desarmado→ferir o atacante (sem flag de arma natural do NPC))
 “Aparar” é uma tentativa de desviar
 um golpe utilizando uma arma ou as
 mãos nuas. O personagem não pode

@@ -603,7 +603,8 @@ class CombatSession(
         defesaTotalEm: CombatResolver.TipoDefesa? = null,
         contraArmaDeFogo: Boolean = false,
         atacanteAdjacente: Boolean = true, // Lote 390: aparar à distância só se o atacante estiver a 1m (default permissivo p/ corpo-a-corpo)
-        ataqueComArma: Boolean = false // Lote 391: o ataque do NPC usa arma? (−3 ao aparar com as mãos nuas)
+        ataqueComArma: Boolean = false, // Lote 391: o ataque do NPC usa arma? (−3 ao aparar com as mãos nuas)
+        ambidestro: Boolean = false // Lote 405: Ambidestria anula o −2 da apara com a mão inábil
     ): List<CombatResolver.OpcaoDefesa> {
         // Após um Ataque Total o herói não tem NENHUMA defesa ativa até o próximo turno (MB p.366).
         if (heroiSemDefesaAtiva) return emptyList()
@@ -643,7 +644,8 @@ class CombatSession(
             defesaTotalEm = defesaTotalEm ?: defesaTotalAumentadaEm, // Lote 388: +2 da Defesa Total (Aumentada)
             esgrima = tipoAparar == ApararTipo.ESGRIMA,
             permitirRecuo = permitirRecuo,
-            permitirJogarSeAoChao = permitirJogarSeAoChao
+            permitirJogarSeAoChao = permitirJogarSeAoChao,
+            ambidestro = ambidestro
         )
     }
 

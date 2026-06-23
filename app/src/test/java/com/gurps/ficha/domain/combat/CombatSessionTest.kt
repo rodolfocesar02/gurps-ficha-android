@@ -1005,4 +1005,18 @@ class CombatSessionTest {
         s.npcResolve("goblin", intencao, DefesaHeroi(CombatResolver.TipoDefesa.ESQUIVA, 12, 10, jogarSeAoChao = true))
         assertEquals("o herói termina deitado", Postura.DEITADO, s.heroi.postura)
     }
+
+    // Lote 405 — Aparar com a Mão Inábil (MB p.376): −2 efetivo, anulado por Ambidestria.
+    @Test
+    fun `aparar com a mao inabil tem -2 e some com ambidestria`() {
+        val g = goblin()
+        val enc = CombatEncounter(listOf(heroi(), g), mapOf("goblin" to 1), seed = 1L)
+        val s = CombatSession(enc, perfilHeroi(), Random(3))
+        val ops = s.opcoesDefesaHeroi(contraAtaqueCorpoACorpo = true, ambidestro = false)
+        val normal = ops.first { it.tipo == CombatResolver.TipoDefesa.APARA && !it.maoInabil && !it.recuo }.valorFinal
+        val inabil = ops.first { it.maoInabil }.valorFinal
+        assertEquals("mão inábil = −2", normal - 2, inabil)
+        assertTrue("com Ambidestria não há variante de mão inábil",
+            s.opcoesDefesaHeroi(contraAtaqueCorpoACorpo = true, ambidestro = true).none { it.maoInabil })
+    }
 }

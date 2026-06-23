@@ -3039,6 +3039,14 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - Build completo verde 2 variantes
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
+### Lote 405 — 23 de Junho de 2026
+**Saga combate: Aparar com a Mão Inábil (loop dos 16 parciais 13/16, MB p.376, branch GURPS-Saga)**
+- Núcleo do Aparar já feito (375/389/390). Faltava **Aparar com a Mão Inábil**: variante de defesa Aparar **−2 efetivo**, **anulada por Ambidestria**. `OpcaoDefesa.maoInabil`; `opcoesDefesa(ambidestro)` emite a variante (só sem Ambidestria); `opcoesDefesaHeroi`→controller passa `temAmbidestria`. UI: card "🤚 mão inábil".
+- DEFERIDO por falta de dado estruturado: aparar **arremesso** −1/−2 (sem flag thrown-vs-projétil no NpcStats) e **aparar-desarmado→ferir o atacante** (sem flag de arma natural do NPC). Anotado no Combate.md.
+- Teste: variante mão inábil = −2; ausente com Ambidestria. Build 2 variantes + testes verdes.
+- Combate.md: "Aparar" → FEITO (com deferidos honestos).
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
 ### Lote 404 — 23 de Junho de 2026
 **Saga combate: Retirada e Jogar-se ao Chão — Esquiva e Queda (loop dos 16 parciais 12/16, fecha 2 tópicos, MB p.377, branch GURPS-Saga)**
 - A Retirada foi feita no 389; faltava **Jogar-se ao Chão / Esquiva e Queda**: variante de defesa **Esquiva +3 só contra ATAQUE À DISTÂNCIA**, mas o herói **termina deitado**. `OpcaoDefesa.jogarSeAoChao` + `DefesaHeroi.jogarSeAoChao`; `opcoesDefesa(permitirJogarSeAoChao)` emite a variante; `opcoesDefesaHeroi` gateia (vs tiro, não-deitado, não-atordoado); `npcResolve` põe `postura = DEITADO` após defender. UI: card mostra "⤓ jogar-se ao chão".

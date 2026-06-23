@@ -30,7 +30,8 @@ object CombatResolver {
         val disponivel: Boolean,
         val motivoIndisponivel: String? = null,
         val recuo: Boolean = false, // Lote 389: variante "com recuo" (Retirada, MB p.377)
-        val jogarSeAoChao: Boolean = false // Lote 404: Esquiva e Queda (+3 vs tiro, termina deitado, MB p.377)
+        val jogarSeAoChao: Boolean = false, // Lote 404: Esquiva e Queda (+3 vs tiro, termina deitado, MB p.377)
+        val maoInabil: Boolean = false // Lote 405: Aparar com a mão inábil (−2 efetivo, anulado por Ambidestria, MB p.376)
     )
 
     /**
@@ -83,7 +84,8 @@ object CombatResolver {
         defesaTotalEm: TipoDefesa? = null,
         esgrima: Boolean = false,
         permitirRecuo: Boolean = false, // Lote 389: emite variantes "com recuo" (ataque corpo-a-corpo, 1×/turno)
-        permitirJogarSeAoChao: Boolean = false // Lote 404: Esquiva e Queda (+3 na Esquiva vs tiro, termina deitado)
+        permitirJogarSeAoChao: Boolean = false, // Lote 404: Esquiva e Queda (+3 na Esquiva vs tiro, termina deitado)
+        ambidestro: Boolean = false // Lote 405: Ambidestria anula o −2 da apara com a mão inábil
     ): List<OpcaoDefesa> {
         val out = mutableListOf<OpcaoDefesa>()
         fun emitir(tipo: TipoDefesa, base: Int, disponivel: Boolean, motivo: String?, aparas: Int = 0) {
@@ -103,6 +105,11 @@ object CombatResolver {
         }
         if (aparaBase != null)
             emitir(TipoDefesa.APARA, aparaBase, true, null, defesasUsadas.aparasPorArma.values.firstOrNull() ?: 0)
+        // Aparar com a Mão Inábil (Lote 405, MB p.376): −2 efetivo (Ambidestria anula → seria a apara normal).
+        if (aparaBase != null && !ambidestro) valorDefesaFinal(TipoDefesa.APARA, aparaBase, false,
+            defesaTotalEm == TipoDefesa.APARA, defesasUsadas.aparasPorArma.values.firstOrNull() ?: 0, esgrima).let { (v, c) ->
+            out.add(OpcaoDefesa(TipoDefesa.APARA, v - 2, c + ComponenteMod("mão inábil", -2), disponivel = true, maoInabil = true))
+        }
         if (bloqueioBase != null)
             emitir(TipoDefesa.BLOQUEIO, bloqueioBase, !defesasUsadas.bloqueouEsteTurno,
                 if (defesasUsadas.bloqueouEsteTurno) "já bloqueou neste turno" else null)
