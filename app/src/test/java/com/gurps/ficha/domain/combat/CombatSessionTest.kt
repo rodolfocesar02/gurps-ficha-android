@@ -1163,4 +1163,24 @@ class CombatSessionTest {
         assertEquals("(0,5): RD 0 → 1×2 = 2", 2, CombatSession.rdComDivisor(0, 0.5))
         assertEquals("sem divisor: inalterada", 5, CombatSession.rdComDivisor(5, 1.0))
     }
+
+    // Lote 414 — Esquiva Acrobática (MB p.377): com Acrobacia, teste antes da esquiva → +2 (sucesso) / −2 (falha).
+    @Test
+    fun `esquiva acrobatica e oferecida com Acrobacia e dispara o teste`() {
+        val g = goblin()
+        val enc = CombatEncounter(listOf(heroi(), g), mapOf("goblin" to 1), seed = 1L)
+        val comAcro = CombatSession(enc, perfilHeroi().copy(acrobacia = 12), Random(3))
+        assertTrue("oferece esquiva acrobática com Acrobacia", comAcro.opcoesDefesaHeroi().any { it.acrobatica })
+        val semAcro = CombatSession(enc, perfilHeroi().copy(acrobacia = null), Random(3))
+        assertTrue("sem Acrobacia, não oferece", semAcro.opcoesDefesaHeroi().none { it.acrobatica })
+
+        val g2 = goblin()
+        val e2 = CombatEncounter(listOf(heroi(), g2), mapOf("goblin" to 1), seed = 1L)
+        val s = CombatSession(e2, perfilHeroi().copy(acrobacia = 12), Random(3))
+        val intencao = NpcCombatBrain.IntencaoNpc(
+            manobra = Manobra.ATAQUE, alvoId = "heroi", local = LocalAtaque.TORSO, motivo = "t"
+        )
+        s.npcResolve("goblin", intencao, DefesaHeroi(CombatResolver.TipoDefesa.ESQUIVA, 9, 10, acrobatica = true))
+        assertTrue("a esquiva acrobática dispara o teste de Acrobacia", s.log.any { it.contains("Esquiva acrobática") })
+    }
 }

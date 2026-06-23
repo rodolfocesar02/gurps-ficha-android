@@ -1479,7 +1479,7 @@ defesa ativa contra cada ataque, a menos
 que utilize a manobra Defesa Total (Defesa Dupla), mas não há limites para o
 número de vezes que ele pode se esquivar
 de ataques diferentes durante seu turno.
-## Esquiva Acrobática[]
+## Esquiva Acrobática [x] ✅ FEITO (com a perícia Acrobacia, teste antes da esquiva: sucesso → +2, falha → −2; variante no card de defesa — Lote 414)
 Um personagem que gastou pelo
 menos um ponto na perícia Acrobacia,
 pode tentar uma esquiva “cinematográfica” uma vez durante seu turno. Ele
@@ -1493,7 +1493,7 @@ sofre uma penalidade de -2.
 É possível combinar essa ação com
 uma retirada (v. Retirada, pág. 377).
 
-## Esquiva Altruísta[]
+## Esquiva Altruísta [—] ⏸️ FORA DO ESCOPO (proteger um aliado interpondo-se; no combate Saga o herói luta sozinho contra os NPCs — não há aliados combatentes a defender)
 Um personagem pode defender uma
 pessoa ao se jogar na frente da trajetória
 de um ataque desferido contra ela. Para
@@ -1512,7 +1512,7 @@ o personagem já se moveu, ele não pode
 mais usar as regras de retirada se for
 atacado antes do seu próximo turno.
 
-## Esquiva com Veículo[]
+## Esquiva com Veículo [—] ⏸️ FORA DO ESCOPO (esquiva baseada no NH de Condução/Pilotagem + Manobrabilidade; o combate Saga é a pé — não há veículos no tracker)
 Um veículo fazendo manobras evasivas tem direito a uma jogada de Esquiva. Em vez de Velocidade Básica +
 3, use a metade do NH do operador do
 veículo (Condução, Pilotagem, etc.), arredondada para baixo, modificada pelo

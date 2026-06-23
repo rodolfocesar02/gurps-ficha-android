@@ -3039,6 +3039,14 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - Build completo verde 2 variantes
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
+### Lote 414 — 23 de Junho de 2026
+**Saga combate: Esquiva Acrobática (tópicos `[]` 7/N, MB p.377, branch GURPS-Saga)**
+- Variante de defesa **Esquiva Acrobática**: com a perícia Acrobacia, o motor testa Acrobacia ANTES da esquiva → **+2 (sucesso) / −2 (falha)**. `HeroiPerfilCombate.acrobacia` (← perícia `acrobacia` da ficha); `OpcaoDefesa.acrobatica` + `DefesaHeroi.acrobatica`; `opcoesDefesa(permitirAcrobatica)` emite a variante (só com Acrobacia, não atordoado); `npcResolve` rola e ajusta. UI: card "🤸 acrobática (±2)".
+- FORA DO ESCOPO (marcadas `[—]`): Esquiva Altruísta (sem aliados no combate solo) e Esquiva com Veículo (combate a pé).
+- Teste: oferecida com Acrobacia, ausente sem; dispara o teste no `npcResolve`. Build 2 variantes + testes verdes.
+- Combate.md: "Esquiva Acrobática" → FEITO.
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
 ### Lote 413 — 23 de Junho de 2026
 **Saga combate: Divisores de Armadura (tópicos `[]` 6/N, MB p.378, branch GURPS-Saga)**
 - Divisor de armadura na expressão de dano (ex.: `3d(2) pa`): `CombatSession.divisorArmadura(expr)` extrai o "(2)"; `rdComDivisor(rd, divisor)` aplica — divisor ≥1 **reduz** a RD (÷, arredonda p/ baixo); fracionário (0,5/0,2/0,1) **melhora** a RD (×2/×5/×10) e trata RD 0 como 1. Aplicado nos dois caminhos de dano (`resolverGolpeHeroi` e `npcResolve`) ANTES do `aplicarDano`. `semTokenTipo` preserva o "(2)" (só tira o token de tipo no fim).

@@ -486,7 +486,7 @@ class SagaCombatController(
                 opcoes.filter { it.tipo != escolha.tipo && !it.recuo }.maxByOrNull { it.valorFinal }
                     ?.let { DefesaHeroi(it.tipo, it.valorFinal, (1..3).sumOf { Random.nextInt(1, 7) }) }
             else null
-            s.npcResolve(npcId, intencao, DefesaHeroi(escolha.tipo, escolha.valorFinal, soma, escolha.recuo, escolha.jogarSeAoChao), secundaria)
+            s.npcResolve(npcId, intencao, DefesaHeroi(escolha.tipo, escolha.valorFinal, soma, escolha.recuo, escolha.jogarSeAoChao, escolha.acrobatica), secundaria)
         } else {
             s.npcResolve(npcId, intencao, null)
         }
@@ -617,7 +617,11 @@ class SagaCombatController(
         // Vontade — teste p/ não perder a mira ao ser ferido (Lote 395).
         vontade = p.vontade,
         // Dano por GdP do herói — usado no Empurrão (Lote 410).
-        danoGdP = p.danoGdP
+        danoGdP = p.danoGdP,
+        // NH em Acrobacia (null se não tem) — Esquiva Acrobática (Lote 414).
+        acrobacia = p.periciasTotais.firstOrNull {
+            CatalogFilters.normalizarBusca(it.definicaoId).removePrefix("racial_") == "acrobacia"
+        }?.calcularNivel(p)
     )
 
     /**

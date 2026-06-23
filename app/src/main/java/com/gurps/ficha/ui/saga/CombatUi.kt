@@ -744,10 +744,11 @@ private fun DefendaSeCard(viewModel: FichaViewModel, defesa: com.gurps.ficha.vie
             Spacer(Modifier.height(8.dp))
             defesa.opcoes.forEach { op ->
                 val comps = op.componentes.joinToString(" ") { (if (it.valor >= 0) "+${it.valor}" else "${it.valor}") + " ${it.nome}" }
-                val sufixo = when { // Lote 389/404/405
+                val sufixo = when { // Lote 389/404/405/414
                     op.recuo -> " ↩ recuar"
                     op.jogarSeAoChao -> " ⤓ jogar-se ao chão"
                     op.maoInabil -> " 🤚 mão inábil"
+                    op.acrobatica -> " 🤸 acrobática (±2)"
                     else -> ""
                 }
                 val rotulo = buildString {

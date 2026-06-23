@@ -31,7 +31,8 @@ object CombatResolver {
         val motivoIndisponivel: String? = null,
         val recuo: Boolean = false, // Lote 389: variante "com recuo" (Retirada, MB p.377)
         val jogarSeAoChao: Boolean = false, // Lote 404: Esquiva e Queda (+3 vs tiro, termina deitado, MB p.377)
-        val maoInabil: Boolean = false // Lote 405: Aparar com a mão inábil (−2 efetivo, anulado por Ambidestria, MB p.376)
+        val maoInabil: Boolean = false, // Lote 405: Aparar com a mão inábil (−2 efetivo, anulado por Ambidestria, MB p.376)
+        val acrobatica: Boolean = false // Lote 414: Esquiva Acrobática (teste de Acrobacia → +2/−2, MB p.377)
     )
 
     /**
@@ -85,7 +86,8 @@ object CombatResolver {
         esgrima: Boolean = false,
         permitirRecuo: Boolean = false, // Lote 389: emite variantes "com recuo" (ataque corpo-a-corpo, 1×/turno)
         permitirJogarSeAoChao: Boolean = false, // Lote 404: Esquiva e Queda (+3 na Esquiva vs tiro, termina deitado)
-        ambidestro: Boolean = false // Lote 405: Ambidestria anula o −2 da apara com a mão inábil
+        ambidestro: Boolean = false, // Lote 405: Ambidestria anula o −2 da apara com a mão inábil
+        permitirAcrobatica: Boolean = false // Lote 414: oferece a Esquiva Acrobática (herói tem Acrobacia, 1×/turno)
     ): List<OpcaoDefesa> {
         val out = mutableListOf<OpcaoDefesa>()
         fun emitir(tipo: TipoDefesa, base: Int, disponivel: Boolean, motivo: String?, aparas: Int = 0) {
@@ -98,6 +100,10 @@ object CombatResolver {
             }
         }
         emitir(TipoDefesa.ESQUIVA, esquivaBase, true, null)
+        // Esquiva Acrobática (Lote 414, MB p.377): teste de Acrobacia → +2/−2 (resolvido no motor); 1×/turno.
+        if (permitirAcrobatica) valorDefesaFinal(TipoDefesa.ESQUIVA, esquivaBase, false, defesaTotalEm == TipoDefesa.ESQUIVA).let { (v, c) ->
+            out.add(OpcaoDefesa(TipoDefesa.ESQUIVA, v, c, disponivel = true, acrobatica = true))
+        }
         // Esquiva e Queda (Lote 404, MB p.377): +3 na Esquiva contra tiro, mas o herói termina deitado (gateado pelo chamador).
         if (permitirJogarSeAoChao) valorDefesaFinal(TipoDefesa.ESQUIVA, esquivaBase, false, defesaTotalEm == TipoDefesa.ESQUIVA).let { (v, c) ->
             out.add(OpcaoDefesa(TipoDefesa.ESQUIVA, v + 3, c + ComponenteMod("jogar-se ao chão", 3),

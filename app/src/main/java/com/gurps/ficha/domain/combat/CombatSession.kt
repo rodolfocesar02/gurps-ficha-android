@@ -796,7 +796,9 @@ class CombatSession(
             esgrima = tipoAparar == ApararTipo.ESGRIMA,
             permitirRecuo = permitirRecuo,
             permitirJogarSeAoChao = permitirJogarSeAoChao,
-            ambidestro = ambidestro
+            ambidestro = ambidestro,
+            // Esquiva Acrobática (Lote 414): só se o herói tem Acrobacia e não está atordoado.
+            permitirAcrobatica = heroiPerfil.acrobacia != null && Condicao.ATORDOADO !in heroi.condicoes
         )
     }
 
@@ -914,6 +916,12 @@ class CombatSession(
         )
         // Sem escolha de defesa (herói atordoado/sem opção) → só Esquiva passiva da ficha.
         var def = defesaHeroi ?: DefesaHeroi(CombatResolver.TipoDefesa.ESQUIVA, heroiPerfil.esquiva, rolar3d6())
+        // Esquiva Acrobática (Lote 414, MB p.377): testa Acrobacia ANTES da esquiva → +2 (sucesso) / −2 (falha).
+        if (def.acrobatica && heroiPerfil.acrobacia != null) {
+            val rolAcro = rolar3d6(); val ok = rolAcro <= heroiPerfil.acrobacia!!
+            def = def.copy(valorFinal = (def.valorFinal + if (ok) 2 else -2).coerceAtLeast(0))
+            log += "🤸 Esquiva acrobática: Acrobacia ${heroiPerfil.acrobacia}, rolou $rolAcro → ${if (ok) "+2" else "−2"} (esquiva ${def.valorFinal})."
+        }
         var danoBasicoNpc = rolarDano(stats.armaDano, random) + bonusDanoForte(intencao.manobra, AtaqueTotalModo.FORTE, stats.armaDano, intencao.aDistancia)
         var rdHeroiAlvo = rdComDivisor(heroiPerfil.rd, divisorArmadura(stats.armaDano)) // Lote 413: divisor de armadura
         var forcaGraveNpc = false
@@ -1367,7 +1375,9 @@ data class HeroiPerfilCombate(
     /** Lote 395: Vontade — teste para não perder a pontaria (Apontar) ao ser ferido (MB p.364). */
     val vontade: Int = 10,
     /** Lote 410: dano por GdP (golpe de ponta/empurrão) do herói, p/ o Empurrão (MB p.371). */
-    val danoGdP: String = "1d-2"
+    val danoGdP: String = "1d-2",
+    /** Lote 414: NH em Acrobacia (null se o herói não tem) — p/ a Esquiva Acrobática (MB p.377). */
+    val acrobacia: Int? = null
 )
 
 /**
@@ -1405,7 +1415,8 @@ data class DefesaHeroi(
     val valorFinal: Int,
     val soma: Int,
     val recuo: Boolean = false, // Lote 389: a defesa veio com Retirada (recuar um passo) — marca 1×/turno (MB p.377)
-    val jogarSeAoChao: Boolean = false // Lote 404: Esquiva e Queda — após defender, o herói fica deitado (MB p.377)
+    val jogarSeAoChao: Boolean = false, // Lote 404: Esquiva e Queda — após defender, o herói fica deitado (MB p.377)
+    val acrobatica: Boolean = false // Lote 414: Esquiva Acrobática — testa Acrobacia (+2/−2) antes da esquiva (MB p.377)
 )
 
 enum class ResultadoCombate { VITORIA, DERROTA, FUGA }
