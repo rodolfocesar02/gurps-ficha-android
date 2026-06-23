@@ -990,6 +990,12 @@ class CombatSession(
         // Erro Crítico do NPC (Lote 384, MB p.557): o oponente tropeça no próprio golpe.
         if (atk.critico == CriticoRules.ResultadoCritico.FALHA_CRITICA)
             aplicarErroCritico(npc, stats.ht, stats.armaDano, stats.armaNome.isBlank(), npc.nome)
+        // Sucesso DECISIVO na defesa (Lote 415, MB p.374): crítico ao defender um ataque CaC → o atacante joga
+        // na Tabela de Erro Crítico (você o desarmou/tapeou). Não vale contra ataque à distância.
+        else if (troca.defendeu && !intencao.aDistancia && CombatResolver.defesaDecisiva(def.soma, def.valorFinal)) {
+            log += "✨ Defesa DECISIVA! Você surpreende ${npc.nome} — ele joga na Tabela de Erro Crítico:"
+            aplicarErroCritico(npc, stats.ht, stats.armaDano, stats.armaNome.isBlank(), npc.nome)
+        }
         val incap = !heroi.vivo
         verificarFim()
         return AtaqueResultado(

@@ -3039,6 +3039,14 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - Build completo verde 2 variantes
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
+### Lote 415 — 23 de Junho de 2026
+**Saga combate: Sucessos Decisivos em Defesa (tópicos `[]` 8/N, MB p.374, branch GURPS-Saga)**
+- Crítico ao defender um ataque **corpo-a-corpo** → o atacante joga na Tabela de Erro Crítico (reusa `aplicarErroCritico`, Lote 384). `CombatResolver.defesaDecisiva(soma, valor)` (3-4 sempre; 5 se valor≥15; 6 se ≥16); no `npcResolve`, se `troca.defendeu && !aDistancia && defesaDecisiva` → o NPC tropeça. Vs ataque à distância = sem efeito (regra). 
+- DEFERIDO: pegar a arma de arremesso ao aparar desarmado com crítico.
+- Teste: defesa soma 3 (crítico) com acerto não-crítico dispara o erro crítico do atacante. Build 2 variantes + testes verdes.
+- Combate.md: "Sucessos Decisivos em Jogadas de Defesa" → FEITO.
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
 ### Lote 414 — 23 de Junho de 2026
 **Saga combate: Esquiva Acrobática (tópicos `[]` 7/N, MB p.377, branch GURPS-Saga)**
 - Variante de defesa **Esquiva Acrobática**: com a perícia Acrobacia, o motor testa Acrobacia ANTES da esquiva → **+2 (sucesso) / −2 (falha)**. `HeroiPerfilCombate.acrobacia` (← perícia `acrobacia` da ficha); `OpcaoDefesa.acrobatica` + `DefesaHeroi.acrobatica`; `opcoesDefesa(permitirAcrobatica)` emite a variante (só com Acrobacia, não atordoado); `npcResolve` rola e ajusta. UI: card "🤸 acrobática (±2)".

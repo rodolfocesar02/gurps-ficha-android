@@ -2217,7 +2217,7 @@ Mesmo que o personagem tenha sorte
 de atingir um oponente superior, seu
 golpe pode não ter sido particularmente forte…
 
-## Sucessos Decisivos em Jogadas de Defesa[]
+## Sucessos Decisivos em Jogadas de Defesa [x] ✅ FEITO (crítico ao defender um ataque corpo-a-corpo → o atacante joga na Tabela de Erro Crítico — reusa o motor do Lote 384; vs ataque à distância sem efeito — Lote 415. DEFERIDO: pegar a arma de arremesso ao aparar desarmado com crítico)
 Quando um personagem obtém um
 sucesso decisivo em uma jogada de defesa contra um ataque corpo a corpo,
 então o atacante joga imediatamente

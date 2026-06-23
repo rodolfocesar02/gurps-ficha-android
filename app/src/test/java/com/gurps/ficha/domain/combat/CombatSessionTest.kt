@@ -1183,4 +1183,22 @@ class CombatSessionTest {
         s.npcResolve("goblin", intencao, DefesaHeroi(CombatResolver.TipoDefesa.ESQUIVA, 9, 10, acrobatica = true))
         assertTrue("a esquiva acrobática dispara o teste de Acrobacia", s.log.any { it.contains("Esquiva acrobática") })
     }
+
+    // Lote 415 — Sucessos Decisivos em Defesa (MB p.374): crítico ao defender CaC → o atacante joga na Tabela de Erro Crítico.
+    @Test
+    fun `defesa decisiva faz o atacante jogar na tabela de erro critico`() {
+        var aplicou = false
+        for (seed in 0L..40L) {
+            val base = goblin()
+            val g = base.copy(stats = base.stats!!.copy(armaNh = 16)) // acerta com frequência
+            val enc = CombatEncounter(listOf(heroi(), g), mapOf("goblin" to 1), seed = 1L)
+            val s = CombatSession(enc, perfilHeroi(), Random(seed))
+            val intencao = NpcCombatBrain.IntencaoNpc(
+                manobra = Manobra.ATAQUE, alvoId = "heroi", local = LocalAtaque.TORSO, motivo = "t"
+            )
+            s.npcResolve("goblin", intencao, DefesaHeroi(CombatResolver.TipoDefesa.ESQUIVA, 9, soma = 3)) // soma 3 = crítico
+            if (s.log.any { it.contains("Defesa DECISIVA") }) { aplicou = true; break }
+        }
+        assertTrue("uma defesa decisiva (acerto não-crítico) deve disparar o erro crítico do atacante", aplicou)
+    }
 }

@@ -66,6 +66,10 @@ object CombatResolver {
     /** A defesa é ANULADA por crítico do atacante ou por surpresa/ataque pelas costas. MB p.374. */
     fun defesaAnulada(criticoAtaque: Boolean, surpresa: Boolean): Boolean = criticoAtaque || surpresa
 
+    /** Sucesso DECISIVO (crítico) na defesa (Lote 415, MB p.374): 3-4 sempre; 5 se valor ≥15; 6 se valor ≥16. */
+    fun defesaDecisiva(soma: Int, valorFinal: Int): Boolean =
+        soma <= 4 || (soma == 5 && valorFinal >= 15) || (soma == 6 && valorFinal >= 16)
+
     /** Sucesso na defesa: 3-4 sempre passa, 17-18 sempre falha; senão soma ≤ valor. MB p.374. */
     fun defesaBemSucedida(valorFinal: Int, soma: Int): Boolean = when {
         soma <= 4 -> true
