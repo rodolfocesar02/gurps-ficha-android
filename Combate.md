@@ -737,7 +737,7 @@ estar adjacente ao oponente para usá-la
 uma ferramenta muito mais importância se o Mestre estiver usando um mapa
 durante a sessão (v. Capítulo 12).
 
-## Opções de Ataques com Armas de Combate Corpo a Corpo [~] ⚠️ PARCIAL OU INCOMPLETO
+## Opções de Ataques com Armas de Combate Corpo a Corpo [x] ✅ FEITO (Ponto de Impacto + Ataque Enganoso: −2 acerto/−1 defesa, NH efetivo ≥10 — Lote 401; Golpe Rápido e Visar a Arma do Oponente = tópicos próprios)
 Antes de fazer um ataque com uma
 arma de combate corpo a corpo, é possível especificar algumas opções adicionais.
 

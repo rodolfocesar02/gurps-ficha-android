@@ -231,11 +231,11 @@ private fun ManeuverCards(viewModel: FichaViewModel, estado: com.gurps.ficha.vie
             ataques = estado.ataques,
             ataqueSelecionado = estado.ataqueSelecionado,
             ambidestro = estado.heroiAmbidestro,
-            onConfirmar = { alvoId, local, modo, offHand ->
+            onConfirmar = { alvoId, local, modo, offHand, enganoso ->
                 when {
                     ehMoverAtacar -> viewModel.sagaCombateMoverEAtacar(alvoId, local)
                     modo == AtaqueTotalModo.DUPLO && offHand != null -> viewModel.sagaCombateAtacarDuplo(alvoId, local, offHand)
-                    else -> viewModel.sagaCombateAtacar(alvoId, manobra, local, modo)
+                    else -> viewModel.sagaCombateAtacar(alvoId, manobra, local, modo, enganoso)
                 }
                 alvoDialogo = null
             },
@@ -560,7 +560,7 @@ private fun SubDialogoAlvoLocal(
     ataques: List<AtaqueHeroi>,
     ataqueSelecionado: Int,
     ambidestro: Boolean,
-    onConfirmar: (alvoId: String, local: LocalAtaque, modo: AtaqueTotalModo, offHandIndex: Int?) -> Unit,
+    onConfirmar: (alvoId: String, local: LocalAtaque, modo: AtaqueTotalModo, offHandIndex: Int?, enganoso: Int) -> Unit,
     onFechar: () -> Unit
 ) {
     var alvoId by remember { mutableStateOf(alvos.firstOrNull()?.id ?: "") }
@@ -572,6 +572,12 @@ private fun SubDialogoAlvoLocal(
     }
     var offHand by remember { mutableStateOf(opcoesOffHand.firstOrNull()?.index) }
     val podeDuplo = manobra == Manobra.ATAQUE_TOTAL && opcoesOffHand.isNotEmpty()
+    // Lote 387/401: arma à distância muda o Ataque Total e desabilita o Ataque Enganoso (corpo-a-corpo).
+    val armaDistancia = ataques.getOrNull(ataqueSelecionado)?.aDistancia == true
+    // Ataque Enganoso (Lote 401, MB p.369): −2 no NH por −1 na defesa do alvo; o NH efetivo não pode cair abaixo de 10.
+    val maxEnganoso = if (armaDistancia || manobra != Manobra.ATAQUE) 0
+        else (((ataques.getOrNull(ataqueSelecionado)?.nh ?: 10) - 10) / 2).coerceIn(0, 4)
+    var enganoso by remember { mutableIntStateOf(0) }
 
     AlertDialog(
         onDismissRequest = onFechar,
@@ -598,11 +604,23 @@ private fun SubDialogoAlvoLocal(
                         onClick = { local = l }
                     )
                 }
+                if (manobra == Manobra.ATAQUE && maxEnganoso > 0) {
+                    Spacer(Modifier.height(8.dp))
+                    Text("Ataque Enganoso (−2 no acerto por −1 na defesa do alvo)",
+                        fontWeight = FontWeight.Bold, style = MaterialTheme.typography.labelLarge)
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        OutlinedButton(onClick = { if (enganoso > 0) enganoso-- }, enabled = enganoso > 0,
+                            modifier = Modifier.semantics { contentDescription = "Diminuir engano" }) { Text("−") }
+                        Text("  $enganoso  →  −${enganoso * 2} acerto / −$enganoso na defesa do alvo  ",
+                            style = MaterialTheme.typography.bodyMedium)
+                        OutlinedButton(onClick = { if (enganoso < maxEnganoso) enganoso++ }, enabled = enganoso < maxEnganoso,
+                            modifier = Modifier.semantics { contentDescription = "Aumentar engano" }) { Text("+") }
+                    }
+                }
                 if (manobra == Manobra.ATAQUE_TOTAL) {
                     Spacer(Modifier.height(8.dp))
                     Text("Modo do Ataque Total", fontWeight = FontWeight.Bold, style = MaterialTheme.typography.labelLarge)
                     // Lote 387: à distância o Determinado é +1 (não +4) e não existe "Forte" (MB p.365).
-                    val armaDistancia = ataques.getOrNull(ataqueSelecionado)?.aDistancia == true
                     val modos = buildList {
                         add(AtaqueTotalModo.DETERMINADO to if (armaDistancia) "+1 para acertar" else "+4 para acertar")
                         if (!armaDistancia) add(AtaqueTotalModo.FORTE to "+2 de dano, ou +1/dado")
@@ -639,7 +657,8 @@ private fun SubDialogoAlvoLocal(
             Button(
                 onClick = {
                     if (alvoId.isNotBlank())
-                        onConfirmar(alvoId, local, modo, if (modo == AtaqueTotalModo.DUPLO) offHand else null)
+                        onConfirmar(alvoId, local, modo, if (modo == AtaqueTotalModo.DUPLO) offHand else null,
+                            if (manobra == Manobra.ATAQUE) enganoso else 0)
                 },
                 enabled = alvoId.isNotBlank() && !(modo == AtaqueTotalModo.DUPLO && offHand == null),
                 modifier = Modifier.semantics { contentDescription = "Confirmar ataque" }

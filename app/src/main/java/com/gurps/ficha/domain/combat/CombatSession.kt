@@ -136,7 +136,8 @@ class CombatSession(
         alvoId: String,
         manobra: Manobra = Manobra.ATAQUE,
         local: LocalAtaque = LocalAtaque.TORSO,
-        ataqueTotalModo: AtaqueTotalModo = AtaqueTotalModo.DETERMINADO
+        ataqueTotalModo: AtaqueTotalModo = AtaqueTotalModo.DETERMINADO,
+        enganoso: Int = 0 // Lote 401: passos de Ataque Enganoso (MB p.369)
     ): AtaqueResultado {
         // Arma despreparada (Lote 398, MB p.270): não dá pra atacar até re-empunhá-la com um Preparar.
         if (ataque.rotulo == armaDespreparadaRotulo) {
@@ -147,7 +148,7 @@ class CombatSession(
         val alvo = inimigos.firstOrNull { it.id == alvoId && it.vivo }
             ?: return AtaqueResultado(false, false, 0, false, "Alvo inválido ou já fora de combate.").also { log += it.texto }
         golpeForaDeAlcance(ataque, alvo)?.let { return it }
-        val r = resolverGolpeHeroi(ataque, alvo, manobra, local, ataqueTotalModo)
+        val r = resolverGolpeHeroi(ataque, alvo, manobra, local, ataqueTotalModo, enganoso = enganoso)
         limparAvaliar(); limparApontar(); limparFinta() // bônus de Avaliar/Mira consumidos neste ataque
         // Arma desbalanceada: quem atacou com ela não pode aparar até o próximo turno (MB p.270).
         if (!ataque.aDistancia && ataque.apararTipo == ApararTipo.DESBALANCEADA) atacouDesbalanceada = true
@@ -260,7 +261,8 @@ class CombatSession(
         local: LocalAtaque,
         ataqueTotalModo: AtaqueTotalModo,
         modAdicional: Int = 0,
-        rotuloModAdicional: String = ""
+        rotuloModAdicional: String = "",
+        enganoso: Int = 0 // Lote 401: Ataque Enganoso — passos de −2 no NH por −1 na defesa do alvo (MB p.369)
     ): AtaqueResultado {
         val dist = encounter.distancia(alvo)
         // Rajada (MB p.374): com CdT≥2 dispara a rajada cheia → bônus para acertar por nº de tiros.
@@ -291,6 +293,8 @@ class CombatSession(
                 add(CombatActions.ComponenteMod("avaliar", avaliarStacks))
             }
             if (modAdicional != 0) add(CombatActions.ComponenteMod(rotuloModAdicional.ifBlank { "mod" }, modAdicional))
+            // Ataque Enganoso (Lote 401, MB p.369): −2 no NH por passo (em troca de −1 na defesa do alvo).
+            if (enganoso > 0) add(CombatActions.ComponenteMod("ataque enganoso", -2 * enganoso))
         }
         val atk = CombatActions.resolverAtaque(
             nhBaseArma = ataque.nh, manobra = manobra, postura = heroi.postura,
@@ -305,7 +309,8 @@ class CombatSession(
         val penFinta = if (alvo.id == fintaAlvoId) fintaPenalidade else 0
         // Agarrado (Lote 386, MB p.370): o alvo preso defende-se mal (−4).
         val penAgarrado = if (Condicao.AGARRADO in alvo.condicoes) 4 else 0
-        val defValorFinal = (defValor - penFinta - penAgarrado).coerceAtLeast(0)
+        // Ataque Enganoso (Lote 401, MB p.369): cada passo (−2 no meu NH) reduz a defesa do alvo em −1.
+        val defValorFinal = (defValor - penFinta - penAgarrado - enganoso).coerceAtLeast(0)
         val defSoma = rolar3d6()
         // Além de 1/2D, o dano cai pela metade (MB p.270) — aplica no dado básico antes de RD.
         val meioDano = ataque.aDistancia && ataque.meioDano > 0 && dist >= ataque.meioDano

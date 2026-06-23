@@ -938,4 +938,15 @@ class CombatSessionTest {
         c.postura = Postura.DEITADO; assertEquals("deitado: 1", 1, c.deslocamentoEfetivo)
         c.postura = Postura.SENTADO; assertEquals("sentado: 0", 0, c.deslocamentoEfetivo)
     }
+
+    // Lote 401 — Ataque Enganoso (MB p.369): −2 no acerto por passo, em troca de −1 na defesa do alvo.
+    @Test
+    fun `ataque enganoso registra a penalidade de acerto`() {
+        val g = goblin()
+        val enc = CombatEncounter(listOf(heroi(), g), mapOf("goblin" to 1), seed = 1L)
+        val s = CombatSession(enc, perfilHeroi(), Random(3))
+        val espada = AtaqueHeroi("Espada", nh = 16, danoExpr = "2d", tipo = DanoTipo.CORT)
+        s.heroiAtaca(espada, "goblin", Manobra.ATAQUE, LocalAtaque.TORSO, enganoso = 2)
+        assertTrue("o golpe registra o ataque enganoso (−4 no acerto)", s.log.any { it.contains("ataque enganoso") })
+    }
 }

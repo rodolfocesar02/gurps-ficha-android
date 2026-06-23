@@ -3039,6 +3039,14 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - Build completo verde 2 variantes
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
+### Lote 401 — 23 de Junho de 2026
+**Saga combate: Opções de Ataque CaC — Ataque Enganoso (loop dos 16 parciais 9/16, MB p.369, branch GURPS-Saga)**
+- O cabeçalho "Opções de Ataques CaC" introduz as opções de golpe; faltava a mais usada: **Ataque Enganoso**. `resolverGolpeHeroi(enganoso)` e `heroiAtaca(enganoso)`: cada passo dá **−2 no NH** (componente "ataque enganoso") por **−1 na defesa do alvo** (`defValorFinal − enganoso`). UI: stepper no diálogo de ATAQUE corpo-a-corpo, limitado para o **NH efetivo não cair abaixo de 10** (`maxEnganoso = (nh−10)/2`, teto 4).
+- DEFERIDO (tópicos próprios `[]`): Golpe Rápido (2 ataques a −6) e Visar a Arma do Oponente.
+- Teste: o golpe registra o componente "ataque enganoso". Build 2 variantes + testes verdes.
+- Combate.md: "Opções de Ataques com Armas de Combate Corpo a Corpo" → FEITO.
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
 ### Lote 400 — 23 de Junho de 2026
 **Saga combate: Movimento — postura reduz o Deslocamento (loop dos 16 parciais 8/16, MB p.368, branch GURPS-Saga)**
 - O Deslocamento por manobra já existia; faltava a **redução por postura**: `Combatente.deslocamentoEfetivo` agora aplica em pé/agachado = cheio, **ajoelhado/rastejando = 1/3**, **deitado = 1**, **sentado = 0**; depois o cambaleante corta pela metade (MB p.380). Vale p/ herói e NPC (inimigo derrubado quase não se move).
