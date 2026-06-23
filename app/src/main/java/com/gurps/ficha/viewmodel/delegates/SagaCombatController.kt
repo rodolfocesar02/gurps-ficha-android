@@ -422,7 +422,9 @@ class SagaCombatController(
             contraAtaqueCorpoACorpo = !intencao.aDistancia, // Lote 389: Retirada só vs corpo-a-corpo
             atacanteAdjacente = s.distancia(npc) <= 1, // Lote 390: aparar tiro só se o atirador está a 1m
             ataqueComArma = npc.stats?.armaNome?.isNotBlank() == true, // Lote 391: −3 ao aparar arma com as mãos nuas
-            ambidestro = temAmbidestria(viewModel.personagem) // Lote 405: anula o −2 da apara com a mão inábil
+            ambidestro = temAmbidestria(viewModel.personagem), // Lote 405: anula o −2 da apara com a mão inábil
+            // Lote 407: ataque por ponta (GdP) dispensa o −3 da apara desarmada; inferido do dano PERF (perfuração).
+            ataqueGdP = !intencao.aDistancia && npc.stats?.let { CombatSession.tipoDano(it.armaTipo) == DanoTipo.PERF } == true
         ) else emptyList()
         if (s.intencaoAtacaHeroi(intencao) && opcoes.isNotEmpty()) {
             val deferred = CompletableDeferred<CombatResolver.OpcaoDefesa>()

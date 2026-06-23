@@ -1033,4 +1033,18 @@ class CombatSessionTest {
         val r = s.heroiAtaca(machado, "goblin", Manobra.ATAQUE, LocalAtaque.TORSO)
         assertTrue("atacar é bloqueado até Preparar", r.texto.contains("despreparada"))
     }
+
+    // Lote 407 — Aparar Desarmado vs GdP (MB p.376): ataque por ponta (perfuração) dispensa o −3 das mãos nuas.
+    @Test
+    fun `aparar desarmado nao sofre -3 contra ataque por ponta GdP`() {
+        val g = goblin()
+        val enc = CombatEncounter(listOf(heroi(), g), mapOf("goblin" to 1), seed = 1L)
+        val s = CombatSession(enc, perfilHeroi(), Random(3))
+        val punho = AtaqueHeroi("Briga", nh = 12, danoExpr = "1d-1", tipo = DanoTipo.CONT, desarmado = true)
+        fun apara(gdp: Boolean) =
+            s.opcoesDefesaHeroi(armaPronta = punho, contraAtaqueCorpoACorpo = true, ataqueComArma = true, ataqueGdP = gdp)
+                .first { it.tipo == CombatResolver.TipoDefesa.APARA && !it.recuo && !it.maoInabil }.valorFinal
+        assertEquals("vs corte/contusão: −3", 11 - 3, apara(gdp = false))
+        assertEquals("vs ataque por ponta (GdP): sem −3", 11, apara(gdp = true))
+    }
 }

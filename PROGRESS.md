@@ -3039,6 +3039,15 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - Build completo verde 2 variantes
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
+### Lote 407 — 23 de Junho de 2026
+**Saga combate: Aparar Desarmado vs GdP — FECHA O LOOP DOS 16 PARCIAIS (16/16, MB p.376, branch GURPS-Saga)**
+- O −3 ao aparar uma arma com as mãos nuas (391) agora é **dispensado quando o ataque é por ponta (GdP)**, além da exceção Caratê/Judô. GdP é inferido do **dano PERF (perfuração = sempre por ponta)** — dado estruturado (`DanoTipo`), não nome. `opcoesDefesaHeroi(ataqueGdP)`; controller passa `tipoDano(armaTipo) == PERF && !aDistancia`.
+- DEFERIDO: lesão no braço que apara ao falhar (sem PV por membro nem escolha de local pelo atacante no modelo).
+- Teste: apara desarmada vs corte = −3; vs GdP/PERF = sem −3. Build 2 variantes + testes verdes.
+- Combate.md: "Aparar Desarmado" → FEITO.
+- **✅ LOOP DOS 16 PARCIAIS COMPLETO (393–407):** Fazer Nada, Deslocamento, Apontar, Ataque Total, Concentrar, Preparar+Armas Preparadas, Aguardar, Movimento, Opções de Ataque CaC, Precisão/Disparo com Mira, Velocidade e Distância, Retirada+Esquiva-e-Queda, Aparar, Quando uma Arma Está Preparada, Aparar Desarmado.
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
 ### Lote 406 — 23 de Junho de 2026
 **Saga combate: Quando uma Arma Está Preparada — cair/atordoar desprepara desbalanceada (loop dos 16 parciais 15/16, MB p.383, branch GURPS-Saga)**
 - A seção sobrepõe ao 398 (Armas Desbalanceadas, já feito); o bit NOVO: *"cair, perder o equilíbrio ou ficar atordoado empunhando uma arma que precisa de preparação a deixa despreparada"* (MB p.383). Motor: `marcarArmaDespreparada(rotulo)`; controller: `verificarDesprepararPorEstado` após o turno do NPC — se o herói está ATORDOADO/CAÍDO/DEITADO e empunha uma arma desbalanceada, ela fica despreparada (reusa o bloqueio do 398).

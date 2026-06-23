@@ -606,7 +606,8 @@ class CombatSession(
         contraArmaDeFogo: Boolean = false,
         atacanteAdjacente: Boolean = true, // Lote 390: aparar à distância só se o atacante estiver a 1m (default permissivo p/ corpo-a-corpo)
         ataqueComArma: Boolean = false, // Lote 391: o ataque do NPC usa arma? (−3 ao aparar com as mãos nuas)
-        ambidestro: Boolean = false // Lote 405: Ambidestria anula o −2 da apara com a mão inábil
+        ambidestro: Boolean = false, // Lote 405: Ambidestria anula o −2 da apara com a mão inábil
+        ataqueGdP: Boolean = false // Lote 407: ataque por ponta (GdP) → dispensa o −3 da apara desarmada (MB p.376)
     ): List<CombatResolver.OpcaoDefesa> {
         // Após um Ataque Total o herói não tem NENHUMA defesa ativa até o próximo turno (MB p.366).
         if (heroiSemDefesaAtiva) return emptyList()
@@ -619,9 +620,10 @@ class CombatSession(
         // Atacar no turno anterior (que permite só Esquiva/Bloqueio, MB p.367/270).
         val podeAparar = !ranged && podeApararPeloAlcance && tipoAparar != ApararTipo.NAO && !heroiSemAparar &&
             !(tipoAparar == ApararTipo.DESBALANCEADA && atacouDesbalanceada)
-        // Aparar Desarmado (Lote 391, MB p.376): aparar uma ARMA com as mãos nuas sofre −3, salvo Caratê/Judô.
-        // (A exceção GdP do MB fica de fora: o motor não distingue GdP/GeB no ataque do NPC — registrado.)
-        val penAparaDesarmada = if (armaPronta?.desarmado == true && ataqueComArma && armaPronta.aparaMarcial != true) 3 else 0
+        // Aparar Desarmado (Lote 391/407, MB p.376): aparar uma ARMA com as mãos nuas sofre −3, salvo Caratê/Judô
+        // OU se o ataque é por ponta (GdP). GdP é inferido do dano PERF (perfuração = sempre por ponta).
+        val penAparaDesarmada = if (armaPronta?.desarmado == true && ataqueComArma &&
+            armaPronta.aparaMarcial != true && !ataqueGdP) 3 else 0
         // BD do escudo (MB p.375): só vale com o escudo PREPARADO — uma mão livre (arma de 2 mãos não tem) —
         // e NÃO contra armas de fogo. Quando não vale, removemos o BD que já vem embutido nas defesas da ficha.
         val semMaoParaEscudo = armaPronta?.duasMaos == true
