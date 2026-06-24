@@ -53,6 +53,7 @@ class NarradorToolExecutor(
         fun aplicarCondicao(alvoId: String?, condicao: String, operacao: String): String
         fun gastarRecurso(recurso: String, quantidade: Int, motivo: String, itemNome: String?): String
         fun concederXp(pontos: Int, motivo: String): String
+        fun gerirEquipamento(itemNome: String, operacao: String): String
     }
 
     /** Campanha ativa — obrigatória para fatos. Setada ao abrir/criar campanha (A5). */
@@ -83,6 +84,7 @@ class NarradorToolExecutor(
                 NarradorTools.TOOL_APLICAR_CONDICAO -> aplicarCondicao(args)
                 NarradorTools.TOOL_GASTAR_RECURSO -> gastarRecurso(args)
                 NarradorTools.TOOL_CONCEDER_XP -> concederXp(args)
+                NarradorTools.TOOL_GERIR_EQUIPAMENTO -> gerirEquipamento(args)
                 in NarradorTools.TODAS -> {
                     Log.w("Narrador_Tools", "Tool ainda não implementada: $nome")
                     """{"erro":"nao_implementado","tool":"$nome"}"""
@@ -300,6 +302,14 @@ class NarradorToolExecutor(
         if (pontos == 0) return erro("campos_obrigatorios", "pontos é obrigatório")
         val motivo = args.optString("motivo").trim()
         return bridge.concederXp(pontos, motivo)
+    }
+
+    private fun gerirEquipamento(args: JSONObject): String {
+        val bridge = combatBridge ?: return erro("sem_combate", "Ficha do herói indisponível")
+        val itemNome = args.optString("item_nome").trim()
+        if (itemNome.isBlank()) return erro("campos_obrigatorios", "item_nome é obrigatório")
+        val operacao = args.optString("operacao", "confiscar").trim().ifBlank { "confiscar" }
+        return bridge.gerirEquipamento(itemNome, operacao)
     }
 
     private fun erro(codigo: String, detalhe: String): String =

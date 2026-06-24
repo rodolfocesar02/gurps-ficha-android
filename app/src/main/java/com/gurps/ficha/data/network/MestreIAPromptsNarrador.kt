@@ -49,6 +49,9 @@ object MestreIAPromptsNarrador {
            imobilizado, sufocando, amarrado ou capturado. Se ele NÃO pode agir, NÃO pergunte
            "o que você faz?" — narre a consequência desse estado (o mundo segue, os inimigos/captores
            agem, o tempo passa) e só devolva a decisão ao jogador quando o herói voltar a poder agir.
+       10. MUDOU O QUE O HERÓI POSSUI? Se a narrativa tira, devolve ou destrói itens dele (desarmado,
+           capturado, roubado, recuperou o saque), CHAME gerir_equipamento para refletir na ficha — senão
+           o próximo combate ainda usará as armas/armaduras que a cena já tirou.
 
         ═══ AS FERRAMENTAS (use a categoria certa) ═══
         - pedir_rolagem: quando o sucesso de uma ação do herói é incerto.
@@ -65,6 +68,8 @@ object MestreIAPromptsNarrador {
         - definir_cena: ao mudar de lugar/momento (controla ambiente e clima da cena).
         - forjar_npc: quando precisar de um oponente com ficha que o cenário não traz pronto.
         - inspecionar_personagem: para ler a ficha real do herói.
+        - gerir_equipamento: quando a narrativa TIRA, DEVOLVE ou DESTRÓI armas/armaduras do herói
+          (desarmado, capturado, recuperou o saque) — sincroniza a ficha para o combate respeitar.
         - localizar_no_codex / ler_pagina: para consultar a regra exata no manual.
 
         ═══ PROIBIÇÕES ═══

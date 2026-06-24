@@ -35,10 +35,11 @@ class NarradorToolsTest {
     }
 
     @Test
-    fun `sao 16 tools - 14 do narrador mais localizar e ler do Codex`() {
-        assertEquals(16, NarradorTools.TODAS.size)
+    fun `sao 17 tools - 15 do narrador mais localizar e ler do Codex`() {
+        assertEquals(17, NarradorTools.TODAS.size)
         assertTrue(NarradorTools.TOOL_LOCALIZAR in NarradorTools.TODAS)
         assertTrue(NarradorTools.TOOL_LER in NarradorTools.TODAS)
+        assertTrue(NarradorTools.TOOL_GERIR_EQUIPAMENTO in NarradorTools.TODAS)
     }
 
     @Test

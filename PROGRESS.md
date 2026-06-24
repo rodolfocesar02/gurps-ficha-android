@@ -3039,6 +3039,16 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - Build completo verde 2 variantes
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
+### Lote 421 — 24 de Junho de 2026
+**Saga: tool de desequipar — fecha o item 1 do teste de batalha (parte de equipamento, branch GURPS-Saga)**
+- **Problema (item 1):** o Narrador narrava "tiraram suas armas e armaduras", mas o combate continuava usando os itens (lia tudo de `p.equipamentos`). Agora há sincronia ficha↔narrativa para equipamento.
+- **Tool nova `gerir_equipamento(item_nome, operacao)`** — operacao: `confiscar` (tira, recuperável), `devolver` (volta a usar), `destruir` (some da ficha). `item_nome` casa por nome (igual/contém) ou por categoria (`armas`/`armaduras`/`tudo`). Schema + executor + bridge + helper `sagaGerirEquipamento` no ViewModel (persiste na ficha).
+- **Campo `confiscado` em `Equipamento`** (aditivo/anulável — Gson retrocompatível): item TIRADO continua na ficha (recuperável) mas indisponível. **Combate respeita:** `construirAtaques` ignora arma confiscada (herói luta no soco) e `rdHeroi` ignora armadura confiscada (sem RD). **Persiste entre batalhas** (era exatamente a falha do item 1).
+- **Prompt:** nova lei 10 (mudou o que o herói POSSUI → chame `gerir_equipamento`) + tool na lista. **UI:** aba Equipamentos marca "⛓️ confiscado na história" em arma/armadura.
+- **Teste** de roteamento da tool (item_nome obrigatório). Build verde nas 2 variantes.
+- **Limitação honesta documentada:** Aparar/Bloquear/bônus de escudo vêm do modelo de DEFESA da ficha (app-wide), ainda NÃO gateados por confisco — herói desarmado pode ainda aparar/bloquear pelos valores da ficha. Follow-up se necessário.
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
 ### Lote 420 — 24 de Junho de 2026
 **Saga: teste de batalha — Frentes 2/3/4 (itens 2,3,4,5,1-parcial) + endurecimento pós-revisão adversarial (branch GURPS-Saga)**
 - **Frente 2 — itens 2 e 3 (sem chat no combate / após cair):** a `BarraDeEnvio` (caixa "O que você faz?") deixou de ser SUBSTITUÍDA pelo painel de combate — agora fica SEMPRE visível abaixo do painel. O jogador fala com o Narrador DURANTE o combate (o `iniciar_combate` não bloqueia o loop da IA) e DEPOIS de desmaiar/morrer/vencer, sem sair e voltar à campanha. Em combate, placeholder "Falar com o Narrador…" e botão "Falar". `TabSaga.kt`.

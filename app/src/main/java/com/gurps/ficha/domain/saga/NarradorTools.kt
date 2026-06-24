@@ -32,17 +32,18 @@ object NarradorTools {
     const val TOOL_DEFINIR_CENA = "definir_cena"
     const val TOOL_FORJAR_NPC = "forjar_npc"
     const val TOOL_INSPECIONAR_PERSONAGEM = "inspecionar_personagem"
+    const val TOOL_GERIR_EQUIPAMENTO = "gerir_equipamento"
 
     // Reuso do motor do Auditor (mesmos nomes de MestreIATools.TOOL_LOCALIZAR/TOOL_LER)
     const val TOOL_LOCALIZAR = "localizar_no_codex"
     const val TOOL_LER = "ler_pagina"
 
-    /** Todas as tools que o executor do Narrador conhece (14 próprias + 2 do Códex). */
+    /** Todas as tools que o executor do Narrador conhece (15 próprias + 2 do Códex). */
     val TODAS: Set<String> = setOf(
         TOOL_PEDIR_ROLAGEM, TOOL_INICIAR_COMBATE, TOOL_ACAO_NPC, TOOL_APLICAR_DANO,
         TOOL_APLICAR_CONDICAO, TOOL_GASTAR_RECURSO, TOOL_CONSULTAR_MUNDO, TOOL_REGISTRAR_FATO,
         TOOL_AVANCAR_RELOGIO, TOOL_PASSAR_TEMPO, TOOL_CONCEDER_XP, TOOL_DEFINIR_CENA,
-        TOOL_FORJAR_NPC, TOOL_INSPECIONAR_PERSONAGEM, TOOL_LOCALIZAR, TOOL_LER
+        TOOL_FORJAR_NPC, TOOL_INSPECIONAR_PERSONAGEM, TOOL_GERIR_EQUIPAMENTO, TOOL_LOCALIZAR, TOOL_LER
     )
 
     // ── Especificação neutra (uma fonte, dois formatos) ─────────────────────
@@ -193,6 +194,15 @@ object NarradorTools {
             listOf(
                 Param("secao", "string", "Seção da ficha a ler.", obrigatorio = true,
                     enum = listOf("atributos", "vantagens", "desvantagens", "pericias", "magias", "equipamentos", "pontos", "completo"))
+            )
+        ),
+        ToolSpec(
+            TOOL_GERIR_EQUIPAMENTO,
+            "Tira, devolve ou destrói equipamento do herói na ficha REAL quando a narrativa muda o que ele POSSUI (desarmado, capturado, perdeu/recuperou o saque). É o que faz o combate respeitar a cena: arma confiscada some dos ataques (luta no soco) e armadura confiscada deixa de dar RD. Sem isso, a próxima luta ainda usaria o que foi tirado.",
+            listOf(
+                Param("item_nome", "string", "Nome do item como consta na ficha (confira com inspecionar_personagem seção equipamentos). Aceita também as categorias 'armas', 'armaduras' ou 'tudo' para agir em lote.", obrigatorio = true),
+                Param("operacao", "string", "O que fazer: confiscar (tira, mas é recuperável), devolver (volta a usar) ou destruir (some da ficha).", obrigatorio = true, enum = listOf("confiscar", "devolver", "destruir")),
+                Param("motivo", "string", "Causa na narrativa (captura, roubo, quebra), para o extrato do jogador.")
             )
         ),
         ToolSpec(

@@ -674,7 +674,8 @@ class SagaCombatController(
      */
     private fun construirAtaques(p: Personagem): List<AtaqueHeroi> {
         val out = mutableListOf<AtaqueHeroi>()
-        p.equipamentos.filter { it.tipo == TipoEquipamento.ARMA }.forEach { arma ->
+        // Armas CONFISCADAS (tiradas pela narrativa — desarmado/capturado) não aparecem: herói luta no soco.
+        p.equipamentos.filter { it.tipo == TipoEquipamento.ARMA && !it.confiscado }.forEach { arma ->
             // Modo do catálogo: "corpo_a_corpo" | "distancia" (arcos/arremesso) | "armas_de_fogo".
             val modo = arma.armaTipoCombate?.lowercase().orEmpty()
             val aDistancia = modo.contains("dist") || modo.contains("fogo")
@@ -777,9 +778,9 @@ class SagaCombatController(
             CatalogFilters.normalizarBusca(it.definicaoId).removePrefix("racial_") in DESARMADAS
         }.maxByOrNull { it.calcularNivel(p) }
 
-    /** RD do herói: maior RD entre as armaduras equipadas (aproximação de torso). */
+    /** RD do herói: maior RD entre as armaduras equipadas (aproximação de torso). Armadura CONFISCADA não conta. */
     private fun rdHeroi(p: Personagem): Int = p.equipamentos
-        .filter { it.tipo == TipoEquipamento.ARMADURA }
+        .filter { it.tipo == TipoEquipamento.ARMADURA && !it.confiscado }
         .mapNotNull { it.rdArmaduraExibicao()?.let { s -> Regex("\\d+").find(s)?.value?.toIntOrNull() } }
         .maxOrNull() ?: 0
 

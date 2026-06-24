@@ -405,6 +405,23 @@ class FichaSagaDelegate(
         return org.json.JSONObject().put("ok", true).put("xp_concedido", pontos).put("xp_total", total).toString()
     }
 
+    override fun gerirEquipamento(itemNome: String, operacao: String): String {
+        val afetados = viewModel.sagaGerirEquipamento(itemNome, operacao)
+        if (afetados.isEmpty())
+            return jsonErro("item_nao_encontrado", "Nenhum equipamento do herói casa com '$itemNome'. Veja os nomes exatos com inspecionar_personagem (seção equipamentos).")
+        val op = operacao.lowercase().trim()
+        val (verbo, icone) = when (op) {
+            "devolver", "equipar" -> "devolvido(s)" to "🎒"
+            "destruir", "descartar" -> "destruído(s)" to "🔥"
+            else -> "confiscado(s)" to "⛓️"
+        }
+        feed = feed + SagaTurn("sistema", "$icone Equipamento $verbo: ${afetados.joinToString(", ")}.")
+        return org.json.JSONObject().put("ok", true).put("operacao", op)
+            .put("itens", org.json.JSONArray(afetados))
+            .put("nota", "Itens $verbo na ficha: ${afetados.joinToString(", ")}. O combate já reflete (arma confiscada não ataca; armadura confiscada não dá RD).")
+            .toString()
+    }
+
     /** Fim de combate: o Narrador converte o relatório factual agregado em prosa (+ XP), sem inventar números. */
     private fun narrarFimDeCombate(fim: SagaCombatController.CombatFim) {
         // Se um turno de texto ainda roda (o golpe fatal pode ter vindo de uma tool nesse turno), enfileira:

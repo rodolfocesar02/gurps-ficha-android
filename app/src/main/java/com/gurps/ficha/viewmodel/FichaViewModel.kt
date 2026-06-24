@@ -166,6 +166,40 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
         adicionarEquipamento(com.gurps.ficha.model.Equipamento(nome = nome, quantidade = qtd.coerceAtLeast(1))); salvarFicha()
     }
 
+    /**
+     * Saga (item 1 do teste de batalha): o Narrador TIRA/DEVOLVE/DESTRÓI equipamento do herói para que o
+     * combate respeite a narrativa (desarmado/capturado). operacao: "confiscar" (marca indisponível, mas
+     * recuperável) | "devolver" (volta a usar) | "destruir" (some da ficha de vez). itemNome casa por nome
+     * (igual/contém) ou por categoria ("armas" / "armaduras" / "tudo"). Persiste na ficha. Retorna os nomes
+     * afetados (vazio = nada casou). O combate ignora ARMA/ARMADURA confiscada (ver construirAtaques/rdHeroi).
+     */
+    fun sagaGerirEquipamento(itemNome: String, operacao: String): List<String> {
+        val alvoNorm = com.gurps.ficha.domain.filters.CatalogFilters.normalizarBusca(itemNome)
+        fun ehAlvo(e: com.gurps.ficha.model.Equipamento): Boolean {
+            val n = com.gurps.ficha.domain.filters.CatalogFilters.normalizarBusca(e.nome)
+            return when (alvoNorm) {
+                "armas", "arma", "todas as armas" -> e.tipo == com.gurps.ficha.model.TipoEquipamento.ARMA
+                "armaduras", "armadura" -> e.tipo == com.gurps.ficha.model.TipoEquipamento.ARMADURA
+                "tudo", "tudo que carrega", "equipamento", "equipamentos" -> e.tipo in listOf(
+                    com.gurps.ficha.model.TipoEquipamento.ARMA, com.gurps.ficha.model.TipoEquipamento.ARMADURA,
+                    com.gurps.ficha.model.TipoEquipamento.ESCUDO, com.gurps.ficha.model.TipoEquipamento.CAPA
+                )
+                else -> n.isNotBlank() && alvoNorm.isNotBlank() && (n == alvoNorm || n.contains(alvoNorm) || alvoNorm.contains(n))
+            }
+        }
+        val afetados = personagem.equipamentos.filter { ehAlvo(it) }.map { it.nome }
+        if (afetados.isEmpty()) return emptyList()
+        val novaLista = when (operacao.lowercase().trim()) {
+            "destruir", "descartar" -> personagem.equipamentos.filterNot { ehAlvo(it) }
+            "devolver", "equipar" -> personagem.equipamentos.map { if (ehAlvo(it)) it.copy(confiscado = false) else it }
+            else -> personagem.equipamentos.map { if (ehAlvo(it)) it.copy(confiscado = true) else it } // confiscar/desequipar/tirar
+        }
+        personagem = personagem.copy(equipamentos = novaLista)
+        ajustarEscudo()
+        salvarFicha()
+        return afetados
+    }
+
     val mestreIAChatHistory get() = iaDelegate.mestreIAChatHistory
     val fichaGeradaPendente get() = iaDelegate.fichaGeradaPendente
     val mostrarDialogRetrato get() = iaDelegate.mostrarDialogRetrato

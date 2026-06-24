@@ -37,6 +37,9 @@ class NarradorToolExecutorCombatTest {
         override fun concederXp(pontos: Int, motivo: String): String {
             chamadas.add("xp:$pontos"); return JSONObject().put("ok", true).put("xp_total", pontos).toString()
         }
+        override fun gerirEquipamento(itemNome: String, operacao: String): String {
+            chamadas.add("equip:$itemNome:$operacao"); return JSONObject().put("ok", true).toString()
+        }
     }
 
     private fun exec(bridge: FakeBridge) = NarradorToolExecutor(
@@ -90,6 +93,17 @@ class NarradorToolExecutorCombatTest {
         assertEquals("campos_obrigatorios", JSONObject(e.executar(NarradorTools.TOOL_GASTAR_RECURSO, """{"recurso":"dinheiro","quantidade":-5,"motivo":"x"}""")).optString("erro"))
         // As chamadas barradas NÃO chegaram ao bridge.
         assertEquals(listOf("recurso:pv:-8", "recurso:pf:-3"), b.chamadas)
+    }
+
+    @Test
+    fun `gerir_equipamento roteia item_nome e operacao e exige item_nome`() = runBlocking {
+        val b = FakeBridge()
+        val e = exec(b)
+        assertTrue(JSONObject(e.executar(NarradorTools.TOOL_GERIR_EQUIPAMENTO, """{"item_nome":"Espada longa","operacao":"confiscar"}""")).optBoolean("ok"))
+        assertEquals(listOf("equip:Espada longa:confiscar"), b.chamadas)
+        // item_nome é obrigatório — sem ele, erro de campos e NÃO chega ao bridge.
+        assertEquals("campos_obrigatorios", JSONObject(e.executar(NarradorTools.TOOL_GERIR_EQUIPAMENTO, """{"operacao":"confiscar"}""")).optString("erro"))
+        assertEquals(listOf("equip:Espada longa:confiscar"), b.chamadas)
     }
 
     @Test

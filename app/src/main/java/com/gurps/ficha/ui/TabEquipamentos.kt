@@ -285,6 +285,11 @@ private fun ArmaduraSelecionadaItem(
     ) {
         Column(modifier = Modifier.weight(1f)) {
             Text(corrigirTextoQuebrado(equipamento.nome), style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.Medium)
+            // Saga: item tirado pela narrativa (Narrador). Continua na ficha, mas não conta no combate.
+            if (equipamento.confiscado) Text(
+                "⛓️ confiscado na história — não dá RD no combate",
+                style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.error
+            )
             Text(
                 if (rd.isNotBlank()) "RD: $rd" else "RD: -",
                 style = MaterialTheme.typography.bodySmall,
@@ -326,6 +331,11 @@ fun EquipamentoArmaItem(equipamento: Equipamento, onEdit: () -> Unit, onDelete: 
     ) {
         Column(modifier = Modifier.weight(1f)) {
             Text(equipamento.nome, style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Medium)
+            // Saga: arma tirada pela narrativa (Narrador). Continua na ficha, mas não aparece no combate.
+            if (equipamento.confiscado) Text(
+                "⛓️ confiscado na história — fora do combate",
+                style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.error
+            )
             val danoRaw = equipamento.armaDanoRaw
             if (!danoRaw.isNullOrBlank()) {
                 val danoCalc = viewModel.calcularDanoArmaComSt(danoRaw)

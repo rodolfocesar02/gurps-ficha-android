@@ -723,7 +723,11 @@ data class Equipamento(
     var armaTirosRaw: String? = null,           // "6(3)"
     var armaMagnitude: Int? = null,             // Bulk
     var armaRecuo: Int? = null,                 // Rcl
-    var armaAparar: String? = null              // coluna Aparar: "0", "-1", "0D" (desbal.), "0E"/"F" (esgrima), "Não"
+    var armaAparar: String? = null,             // coluna Aparar: "0", "-1", "0D" (desbal.), "0E"/"F" (esgrima), "Não"
+    // Saga (item 1 do teste de batalha): item TIRADO do herói pela narrativa (desarmado/capturado). Continua
+    // na ficha (recuperável) mas indisponível: o combate ignora arma confiscada (some dos ataques) e armadura
+    // confiscada (não dá RD). Aditivo/anulável → fichas antigas (Gson sem o campo) desserializam como false.
+    var confiscado: Boolean = false
 ) {
     fun danoCalculadoComSt(personagem: Personagem, periciaId: String? = null): String? {
         val raw = armaDanoRaw?.trim().orEmpty()
