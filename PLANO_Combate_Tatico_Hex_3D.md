@@ -17,7 +17,11 @@ Construir e validar isso numa grade 2D (Compose Canvas) ANTES de gastar esforço
 ## O que JÁ existe e será reaproveitado
 - **Motor 3D:** `SceneView 3.0.0` (sobre Google Filament), provado nos dados 3D (`Dice3DScene.kt`: câmera,
   luz, carga de `.glb`, vários objetos). Render de herói/inimigos/terreno = mesmo motor, outros modelos.
-- **VTT:** `TabVtt.kt` — mapa, **tokens**, vínculo token↔ficha, alvo, multiplayer (WebView). Conceito de "peça".
+  **Esta é a fundação de render reaproveitável.**
+- **VTT (LEGADO — decisão do usuário 2026-06-24: não será mais usado como VTT):** `TabVtt.kt` NÃO é alvo de
+  integração. Vale só como **doador de código** — o encanamento de imagem de token/mapa (seleção, hash sha1,
+  resolução de payload, cache local de imagem) pode ser SALVADO para os tokens do tático. A renderização em
+  **WebView NÃO é reaproveitada** (o tático usa Compose Canvas → Filament, não WebView).
 - **Motor de combate Saga:** `CombatSession`/`CombatEncounter`/`CombatResolver`/`HitLocationRules`/
   `InjuryRules`/`CombatActions`/`NpcCombatBrain` — toda a resolução (ataque→defesa→dano→ferimento) é REUTILIZADA.
   Só a **camada de posição** muda (hoje `distanciaAoHeroi` é um número/faixa; vira posição em hex).
@@ -46,7 +50,7 @@ Construir e validar isso numa grade 2D (Compose Canvas) ANTES de gastar esforço
 - Testes unitários completos (puro, sem Android). **Entregável: motor posicional provado.**
 
 ### Fase 2 — Combate na grade 2D (Compose Canvas)
-- Desenhar hexágonos + tokens 2D (reaproveitar imagens de token do VTT), seleção e **movimento por toque**.
+- Desenhar hexágonos + tokens 2D (salvar o encanamento de imagem de token do VTT legado, se ajudar), seleção e **movimento por toque**.
 - Plugar o motor de regras existente com posição em hex: alcance em hexes, **passo + ataque**, **Avançar e
   Atacar**, **Recuo**, **Aguardar/Interromper** por posição, orientação → bônus de ataque pelas costas/flanco.
 - **Entregável: combate tático jogável em 2D**, regras posicionais validadas.
