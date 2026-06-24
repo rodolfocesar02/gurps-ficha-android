@@ -3039,6 +3039,13 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - Build completo verde 2 variantes
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
+### Lote 419 — 24 de Junho de 2026
+**Saga: Prompt do Narrador — coerência de estado + 3ª via (teste de batalha, itens 6 e 7, branch GURPS-Saga)**
+- **Item 7 (alternativas A/B/C como gaiola):** lei de ferro 7 estendida — se o Narrador listar alternativas, elas são SUGESTÕES e ele deve deixar EXPLÍCITO que o jogador pode agir livremente FORA da lista (nunca apresentá-las como as únicas saídas). A caixa "O que você faz?" sempre aceita texto livre.
+- **Item 6 (cena incoerente com o estado do herói):** nova lei de ferro 9 — antes de devolver a iniciativa, RESPEITAR o estado do herói (inspecionar_personagem + relatório do combate). Se ele está inconsciente/caído/atordoado/imobilizado/sufocando/capturado, NÃO perguntar "o que você faz?" — narrar a consequência do estado (mundo segue, captores/inimigos agem, tempo passa) e só devolver a decisão quando o herói puder agir.
+- Mudança só no `MestreIAPromptsNarrador.kt` (string do prompt). Build verde nas 2 variantes (BUILD SUCCESSFUL). Itens 1/2/3/4/5 nas próximas frentes.
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
 ### Lote 418 — 23 de Junho de 2026
 **Saga combate: CLOSURA DO AUDIT DO Combate.md — 0 tópicos sem marcação (doc-only, branch GURPS-Saga)**
 - Marcados os últimos tópicos não-feitos com status honesto. **Lesões e Defesas Ativas → FEITO** (já estava: −4 atordoado/393 + choque-não-penaliza-defesa/382). **Armas de Arremesso → FEITO (base)** (arremesso = ataque à distância; "não fica preparada após arremessar" deferido por falta de flag thrown-vs-arco).
