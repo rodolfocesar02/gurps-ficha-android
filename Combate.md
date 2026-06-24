@@ -980,12 +980,12 @@ oponente não estiver imobilizado, afastar-se dele significa que ele automaticam
 dele. Um personagem forte assim, pode
 puxar ou carregar o oponente consigo!
 
-### Ações Depois de ser Agarrado
+### Ações Depois de ser Agarrado [x] ✅ FEITO (Lote 422: NPC agarra/imobiliza o herói; herói AGARRADO/IMOBILIZADO leva −4 nas defesas, perde Apontar/Aguardar/Concentrar/Fintar/à distância/avanço e só ataca desarmado)
 Um personagem agarrado não pode fazer uma manobra Deslocamento a menos que tenha pelo menos o dobro da ST do oponente. As manobras Apontar,
 Aguardar, Concentrar e Fintar — assim como ataques à distância — não são permitidas. Se estiver imobilizado, o personagem também não pode realizar nenhuma
 manobra que requer movimento físico! Caso contrário, ele pode fazer o seguinte:
 
-#### Ataque ou Ataque Total
+#### Ataque ou Ataque Total [x] ✅ FEITO (Lote 422: herói preso restrito a ataque desarmado — construirAtaques filtra; arma/à distância indisponíveis. Limitação honesta: alcance C vs 1 não distinguidos no modelo → adaga não liberada à parte)
 As duas manobras são permitidas, com algumas limitações. O personagem
 não pode usar nenhum membro que foi agarrado — nem morder, se seu pescoço ou cabeça estiverem agarrados. Ele está limitado a ataques desarmados
 (golpear ou agarrar) ou ataques com armas de alcance C. É possível apunhalar
@@ -994,7 +994,7 @@ Preparar
 O personagem pode Preparar um objeto se tiver uma mão livre, mas precisa
 fazer um teste de DX. Em caso de fracasso, ele deixa o objeto cair. As manobras
 Preparar para ativar ou desativar vantagens tem sucesso automático.
-### Desvencilhar-se
+### Desvencilhar-se [x] ✅ FEITO (Lote 422: manobra Desvencilhar — Disputa Rápida de ST; captor +5 agarrado/+10 imobilizado, −4 se atordoado, libertação automática se o captor cair. Simplificações honestas: sem "1×/10s" e sem +2/braço extra; passo de 1m abstraído)
 Se estiver agarrado, um personagem não pode se afastar até conseguir se desvencilhar, vencendo uma Disputa Rápida de ST. O oponente recebe um bônus de
 +5 se estiver agarrando com as duas mãos. Além disso, se o personagem estiver
 imobilizado, o oponente recebe um bônus de +10 se estiver usando duas mãos ou
@@ -1538,7 +1538,7 @@ demais para serem detidos desta forma.
 Só é possível bloquear um ataque
 por turno.
 
-### Aparando Armas Pesadas[]
+### Aparando Armas Pesadas [—] ⛔ FORA DO ESCOPO/DEFERIDO (falta de dado estruturado: NpcStats não tem peso/qualidade da arma do NPC; Equipamento do herói não tem qualidade. A regra exige peso da arma do atacante (não aparar > Base de Carga; quebra ao aparar ≥3× o próprio peso) e modificador de qualidade. Parcial só p/ atacante desarmado (peso efetivo ST/20) dispararia inconsistentemente vs NPCs armados — deferido limpo, sem chute. Lote 422)
 Não é possível usar uma rapieira frágil para aparar o porrete de um titã (que é do tamanho de uma árvore), o encontrão de um defensor de futebol americano ou a espadada de
 um robô gigante! Armas pesadas são capazes de lançar uma
 arma para longe — ou até mesmo quebrá-la.
@@ -2267,7 +2267,12 @@ se mover. Ações físicas geralmente
 exigem manobras Preparar, enquanto ações mentais exigem manobras
 Concentrar.
 
-### Preparando Armas e Outros Equipamentos [~] ⚠️ PARCIAL OU INCOMPLETO
+### Preparando Armas e Outros Equipamentos [x] ✅ FEITO (núcleo) — Lote 422 fecha o audit
+<!-- AUDIT: NÚCLEO FEITO — sacar/preparar arma gasta a manobra Preparar (Lotes 374/406) e arma desbalanceada
+(ex.: machado de haste) fica despreparada após o golpe (Lote 398). RESTO deferido por ser narrativo ou
+data-limitado: recarregar (sem modelo de munição, decisão 366); preparar escudo/capa em N=BD turnos;
+apanhar objeto do chão; entregar item entre personagens; ações prolongadas e a tabela de tempos — domínio
+do Narrador, fora do motor mecânico de combate por faixas. -->
 Um item “preparado” é um item
 que está em mãos e pronto para ser
 usado. Uma arma ou outro dispositivo

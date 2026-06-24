@@ -679,6 +679,72 @@ class CombatSession(
         return txt
     }
 
+    /** Lote 422 (MB p.370): o NPC agarra o HERÓI. Ataque defensável (a UI já pediu a defesa); sem dano. */
+    private fun npcAgarraHeroi(npc: Combatente, defesaHeroi: DefesaHeroi?): AtaqueResultado {
+        val nh = npc.stats?.armaNh ?: npc.dx
+        val atk = CombatActions.resolverAtaque(nhBaseArma = nh, manobra = Manobra.ATAQUE, postura = npc.postura, random = random)
+        val def = defesaHeroi ?: DefesaHeroi(CombatResolver.TipoDefesa.ESQUIVA, heroiPerfil.esquiva, rolar3d6())
+        val acertou = atk.resultado == CombatActions.ResultadoAcerto.ACERTO
+        val anulada = atk.critico == CriticoRules.ResultadoCritico.DECISIVO || heroiSemDefesaAtiva
+        val defendeu = acertou && !anulada && CombatResolver.defesaBemSucedida(def.valorFinal, def.soma)
+        registrarDefesaUsada(def.tipo)
+        val tec = "[NH $nh rolou ${atk.soma}]"
+        val pegou = acertou && !defendeu
+        val txt = if (pegou) {
+            heroi.condicoes.add(Condicao.AGARRADO)
+            "🤼 ${npc.nome} agarra você! Você fica preso (−4 nas defesas), só ataca desarmado e precisa se Desvencilhar. $tec"
+        } else "🤼 ${npc.nome} tenta agarrar você, mas ${if (!acertou) "erra o bote" else "você escapa"}. $tec"
+        log += txt
+        verificarFim()
+        return AtaqueResultado(pegou, false, 0, false, txt)
+    }
+
+    /** Lote 422 (MB p.371): o NPC imobiliza um herói JÁ agarrado — Disputa Rápida de ST; sem defesa ativa. */
+    private fun npcImobilizaHeroi(npc: Combatente): AtaqueResultado {
+        if (Condicao.AGARRADO !in heroi.condicoes) {
+            log += "• ${npc.nome} tenta prendê-lo, mas ainda não o agarrou."
+            return AtaqueResultado(false, false, 0, false, log.last())
+        }
+        val stNpc = npc.stats?.st ?: 10
+        val rn = rolar3d6(); val rh = rolar3d6()
+        val txt = if (vencaDisputaRapida(stNpc, rn, heroiPerfil.st, rh)) {
+            heroi.condicoes.add(Condicao.IMOBILIZADO)
+            "🔒 ${npc.nome} IMOBILIZA você! Mal dá para se mexer — Desvencilhar-se fica muito mais difícil. [ST $stNpc rolou $rn vs ST ${heroiPerfil.st} rolou $rh]"
+        } else "🤼 Você resiste e não é imobilizado por ${npc.nome}. [ST $stNpc rolou $rn vs ST ${heroiPerfil.st} rolou $rh]"
+        log += txt
+        verificarFim()
+        return AtaqueResultado(false, false, 0, false, txt)
+    }
+
+    /**
+     * Desvencilhar-se (MB p.371): o herói AGARRADO/IMOBILIZADO se solta vencendo uma Disputa Rápida de ST.
+     * Bônus do captor (proxy "agarra com 2 mãos"): +5 se agarrado, +10 se imobilizado; −4 se o captor está
+     * atordoado; libertação automática se o captor estiver fora de combate. Sucesso → solta-se.
+     * Simplificações honestas: sem a regra "1×/10s" quando imobilizado e sem o passo de 1m (posição abstraída).
+     */
+    fun heroiDesvencilhar(): String {
+        inicioAcaoHeroi()
+        if (Condicao.AGARRADO !in heroi.condicoes && Condicao.IMOBILIZADO !in heroi.condicoes)
+            return "Você não está preso.".also { log += it }
+        val captores = inimigos.filter { it.vivo && encounter.distancia(it) <= 1 }
+        val captor = captores.maxByOrNull { it.stats?.st ?: 10 }
+        if (captor == null) {
+            heroi.condicoes.remove(Condicao.AGARRADO); heroi.condicoes.remove(Condicao.IMOBILIZADO)
+            return "🤸 Não há mais ninguém te segurando — você se solta.".also { log += it }
+        }
+        val imob = Condicao.IMOBILIZADO in heroi.condicoes
+        var bonusCaptor = if (imob) 10 else 5
+        if (Condicao.ATORDOADO in captor.condicoes) bonusCaptor -= 4
+        val stCaptor = (captor.stats?.st ?: 10) + bonusCaptor
+        val rh = rolar3d6(); val rc = rolar3d6()
+        val txt = if (vencaDisputaRapida(heroiPerfil.st, rh, stCaptor, rc)) {
+            heroi.condicoes.remove(Condicao.AGARRADO); heroi.condicoes.remove(Condicao.IMOBILIZADO)
+            "🤸 Você se DESVENCILHA de ${captor.nome} e se solta! [ST ${heroiPerfil.st} rolou $rh vs $stCaptor rolou $rc]"
+        } else "🤼 Você forceja contra ${captor.nome}, mas continua preso. [ST ${heroiPerfil.st} rolou $rh vs $stCaptor rolou $rc]"
+        log += txt
+        return txt
+    }
+
     /**
      * Derrubar (MB p.371): Disputa Rápida usando o maior entre ST e DX de cada um. Se o herói vence, o alvo
      * vai ao chão (caído/deitado). Exige estar adjacente. Útil principalmente contra um alvo já agarrado.
@@ -749,7 +815,7 @@ class CombatSession(
     fun intencaoAtacaHeroi(intencao: NpcCombatBrain.IntencaoNpc): Boolean =
         intencao.alvoId == heroi.id &&
             (intencao.manobra == Manobra.ATAQUE || intencao.manobra == Manobra.ATAQUE_TOTAL ||
-                intencao.manobra == Manobra.MOVER_E_ATACAR)
+                intencao.manobra == Manobra.MOVER_E_ATACAR || intencao.manobra == Manobra.AGARRAR)
 
     /** Opções de defesa do herói para o card "Defenda-se!" (aplica recuo/Defesa Total/aparas extras). */
     fun opcoesDefesaHeroi(
@@ -786,6 +852,8 @@ class CombatSession(
             floor(heroi.velocidadeBasica).toInt() - floor(heroi.velocidadeBasica / 2).toInt() else 0
         // Atordoado (Lote 393, MB p.364/"Fazer Nada"): TODAS as defesas ativas sofrem −4 enquanto atordoado.
         val penAtordoado = if (Condicao.ATORDOADO in heroi.condicoes) 4 else 0
+        // Agarrado/Imobilizado (Lote 422, MB p.370/371): herói preso sofre −4 nas defesas (espelha o NPC agarrado).
+        val penPreso = if (Condicao.AGARRADO in heroi.condicoes || Condicao.IMOBILIZADO in heroi.condicoes) 4 else 0
         // Retirada (Lote 389, MB p.377): só vs corpo-a-corpo, 1×/turno e não atordoado (postura sentado/ajoelhado
         // = limitação futura). O passo de recuo em si fica abstraído (o herói está sempre engajado no tracker).
         val permitirRecuo = contraAtaqueCorpoACorpo && !heroi.defesasUsadas.retracaoUsada &&
@@ -794,9 +862,9 @@ class CombatSession(
         val permitirJogarSeAoChao = !contraAtaqueCorpoACorpo && heroi.postura != Postura.DEITADO &&
             Condicao.ATORDOADO !in heroi.condicoes
         return CombatResolver.opcoesDefesa(
-            esquivaBase = heroiPerfil.esquiva - bdRemovido - reducaoCambaleante - penAtordoado,
-            aparaBase = if (podeAparar) heroiPerfil.apara?.let { it - bdRemovido - penAparaDesarmada - penAtordoado } else null,
-            bloqueioBase = heroiPerfil.bloqueio?.let { it - bdRemovido - penAtordoado },
+            esquivaBase = heroiPerfil.esquiva - bdRemovido - reducaoCambaleante - penAtordoado - penPreso,
+            aparaBase = if (podeAparar) heroiPerfil.apara?.let { it - bdRemovido - penAparaDesarmada - penAtordoado - penPreso } else null,
+            bloqueioBase = heroiPerfil.bloqueio?.let { it - bdRemovido - penAtordoado - penPreso },
             defesasUsadas = heroi.defesasUsadas,
             defesaTotalEm = defesaTotalEm ?: defesaTotalAumentadaEm, // Lote 388: +2 da Defesa Total (Aumentada)
             esgrima = tipoAparar == ApararTipo.ESGRIMA,
@@ -892,6 +960,11 @@ class CombatSession(
             }
             else -> { /* ATAQUE / ATAQUE_TOTAL: resolve abaixo */ }
         }
+
+        // Lote 422 (MB p.370/371): NPC AGARRA o herói (defensável — a UI já pediu a defesa) ou o IMOBILIZA
+        // (Disputa de ST, exige tê-lo agarrado). Espelho de heroiAgarrar/heroiImobilizar.
+        if (intencao.manobra == Manobra.AGARRAR && intencao.alvoId == heroi.id) return npcAgarraHeroi(npc, defesaHeroi)
+        if (intencao.manobra == Manobra.IMOBILIZAR && intencao.alvoId == heroi.id) return npcImobilizaHeroi(npc)
 
         if (!intencaoAtacaHeroi(intencao)) {
             log += "• ${npc.nome}: ${intencao.manobra.rotulo} (${intencao.motivo})."

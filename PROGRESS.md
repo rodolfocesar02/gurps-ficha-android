@@ -3039,6 +3039,15 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - Build completo verde 2 variantes
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
+### Lote 422 — 24 de Junho de 2026
+**Saga combate: luta agarrada NPC→herói (Desvencilhar-se) — fecha as últimas regras codáveis do Combate.md (branch GURPS-Saga)**
+- **Ponto cego do audit:** o grep original (só `##`) tinha pulado subtópicos `###`/`####`. Achados e fechados: "Aparando Armas Pesadas" e "Preparando Armas e Outros Equipamentos" (deferidos/feitos com razão honesta), e a luta agarnada NPC→herói (lacuna REAL, não deferimento).
+- **Agarrão era mão única** (herói→NPC). Agora o inverso existe: (a) `NpcCombatBrain` — NPC DESARMADO engajado pode AGARRAR o herói (50%) e, se já agarrou, IMOBILIZAR; (b) `npcResolve` — `npcAgarraHeroi` (ataque defensável, sem dano → herói AGARRADO) e `npcImobilizaHeroi` (Disputa de ST → IMOBILIZADO); (c) herói preso leva −4 nas defesas (espelha o NPC agarrado).
+- **Herói AGARRADO/IMOBILIZADO restrito** (MB p.371): manobras perdem Apontar/Aguardar/Concentrar/Fintar/à distância/avanço (imobilizado perde quase tudo) e só ataca DESARMADO (`construirAtaques` filtra, reconstruído na transição). Nova manobra **Desvencilhar-se** (`heroiDesvencilhar`): Disputa Rápida de ST — captor +5 agarrado/+10 imobilizado, −4 se atordoado, soltura automática se o captor cai. Wrapper no ViewModel + botão na UI + teste determinístico.
+- **Simplificações honestas:** sem "1×/10s" ao imobilizar e sem +2/braço extra; passo de 1m abstraído; alcance C vs 1 não distinguidos (preso = só desarmado, adaga não liberada à parte); NPC imobiliza sem exigir o herói no chão (heroiImobilizar é mais estrito).
+- **PLACAR FINAL do Combate.md: 0 parciais, 0 não-feitos, 0 não-marcados (h2–h6).** Build verde nas 2 variantes. Todas as regras de combate codáveis estão implementadas; o resto é deferido por dado/narrativa com razão registrada in-file.
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
 ### Lote 421 — 24 de Junho de 2026
 **Saga: tool de desequipar — fecha o item 1 do teste de batalha (parte de equipamento, branch GURPS-Saga)**
 - **Problema (item 1):** o Narrador narrava "tiraram suas armas e armaduras", mas o combate continuava usando os itens (lia tudo de `p.equipamentos`). Agora há sincronia ficha↔narrativa para equipamento.

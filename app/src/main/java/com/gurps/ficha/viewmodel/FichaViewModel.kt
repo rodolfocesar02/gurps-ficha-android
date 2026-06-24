@@ -154,6 +154,7 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
     fun sagaCombateSelecionarAtaque(indice: Int) = sagaDelegate.combate.selecionarAtaque(indice)
     fun sagaCombateSacarArma(indice: Int) = sagaDelegate.combate.sacarArma(indice)
     fun sagaCombateEncerrar() = sagaDelegate.combate.encerrarManual()
+    fun sagaCombateDesvencilhar() = sagaDelegate.combate.heroiDesvencilhar() // Lote 422: herói preso se solta
 
     // Efeitos da Saga na ficha do herói (Lote 366 / B8) — mutam e SALVAM a ficha carregada.
     fun sagaConcederXp(pts: Int): Int {

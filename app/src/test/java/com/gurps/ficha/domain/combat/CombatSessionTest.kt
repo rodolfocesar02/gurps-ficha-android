@@ -1233,4 +1233,23 @@ class CombatSessionTest {
         }
         assertTrue("um golpe contuso forte deve projetar o alvo em alguma seed", projetou)
     }
+
+    // Lote 422: luta agarrada NPC→herói (MB p.370/371).
+    @Test
+    fun `heroi agarrado leva -4 nas defesas e se desvencilha quando ninguem o segura`() {
+        val enc = CombatEncounter(listOf(heroi(), goblin()), mapOf("goblin" to 1), seed = 1L)
+        val s = CombatSession(enc, perfilHeroi(), Random(1))
+        // AGARRAR é tratado como ataque ao herói → a UI pede "Defenda-se!".
+        assertTrue(s.intencaoAtacaHeroi(NpcCombatBrain.IntencaoNpc(Manobra.AGARRAR, alvoId = "heroi", motivo = "t")))
+        // Herói AGARRADO sofre −4 nas defesas (esquiva base 9 → 5).
+        s.heroi.condicoes.add(Condicao.AGARRADO)
+        val esq = s.opcoesDefesaHeroi().first {
+            it.tipo == CombatResolver.TipoDefesa.ESQUIVA && !it.recuo && !it.jogarSeAoChao && !it.acrobatica
+        }
+        assertEquals(5, esq.valorFinal)
+        // Sem captor adjacente (inimigo a 10m), Desvencilhar-se liberta automaticamente.
+        enc.definirDistancia("goblin", 10)
+        s.heroiDesvencilhar()
+        assertFalse(Condicao.AGARRADO in s.heroi.condicoes)
+    }
 }

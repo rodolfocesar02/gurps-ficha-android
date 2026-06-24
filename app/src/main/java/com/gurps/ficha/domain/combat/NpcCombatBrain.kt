@@ -60,6 +60,16 @@ object NpcCombatBrain {
 
         // 3) Corpo-a-corpo.
         if (engaj) {
+            // Luta agarrada NPC→herói (Lote 422, MB p.370/371): um NPC DESARMADO (luta natural — fera/lutador)
+            // pode prender o herói em vez de só golpear. Se já o agarrou, IMOBILIZA; senão, tenta AGARRAR.
+            val desarmadoNpc = stats?.armaNome.isNullOrBlank()
+            val alvo = encounter.combatentes.firstOrNull { it.id == alvoId }
+            val heroiAgarrado = alvo != null && Condicao.AGARRADO in alvo.condicoes
+            val heroiImobilizado = alvo != null && Condicao.IMOBILIZADO in alvo.condicoes
+            if (desarmadoNpc && !heroiImobilizado) {
+                if (heroiAgarrado) return IntencaoNpc(Manobra.IMOBILIZAR, alvoId, motivo = "imobiliza o herói agarrado")
+                if (random.nextInt(2) == 0) return IntencaoNpc(Manobra.AGARRAR, alvoId, motivo = "tenta agarrar o herói")
+            }
             val usaTotal = agress >= 7 && Manobra.ATAQUE_TOTAL in legais
             val local = if (agress >= 8) LocalAtaque.VITAIS else LocalAtaque.TORSO
             return if (usaTotal) IntencaoNpc(Manobra.ATAQUE_TOTAL, alvoId, local, motivo = "ataque total (agressivo)")

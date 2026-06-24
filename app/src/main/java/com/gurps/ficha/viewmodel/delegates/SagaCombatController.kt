@@ -111,6 +111,7 @@ class SagaCombatController(
     /** Ataques utilizáveis do herói (armas empunhadas + desarmado) e o índice escolhido (Lote 368). */
     private var ataques: List<AtaqueHeroi> = emptyList()
     private var ataqueSelecionado: Int = 0
+    private var ataquesAgarrado = false // Lote 422: lembra se 'ataques' já foi filtrado para o estado preso (só desarmado)
 
     /** Troca a arma EMPUNHADA sem custo (uso interno / arma já pronta). */
     fun selecionarAtaque(indice: Int) {
@@ -462,6 +463,14 @@ class SagaCombatController(
         depoisDaAcaoDoHeroi()
     }
 
+    /** Lote 422: Desvencilhar-se — o herói AGARRADO/IMOBILIZADO tenta se soltar (Disputa de ST). */
+    fun heroiDesvencilhar() {
+        val s = sessao ?: return
+        if (!s.combatenteAtual().ehHeroi || s.encerrado) return
+        s.heroiDesvencilhar()
+        depoisDaAcaoDoHeroi()
+    }
+
     private fun depoisDaAcaoDoHeroi() {
         val s = sessao ?: return
         publicarLog()
@@ -564,6 +573,13 @@ class SagaCombatController(
     private fun atualizarEstado() {
         val s = sessao ?: run { estado = null; return }
         val vezHeroi = s.combatenteAtual().ehHeroi && !s.encerrado
+        // Lote 422: herói preso só ataca desarmado — reconstrói os ataques na TRANSIÇÃO preso↔livre.
+        val heroiPreso = Condicao.AGARRADO in s.heroi.condicoes || Condicao.IMOBILIZADO in s.heroi.condicoes
+        if (heroiPreso != ataquesAgarrado) {
+            ataquesAgarrado = heroiPreso
+            ataques = construirAtaques(viewModel.personagem, agarrado = heroiPreso)
+            ataqueSelecionado = ataqueSelecionado.coerceIn(0, (ataques.size - 1).coerceAtLeast(0))
+        }
         val combs = s.encounter.combatentes.map { c ->
             val dist = s.distancia(c)
             CombatenteUi(
@@ -603,6 +619,17 @@ class SagaCombatController(
             if (s.inimigos.any { e -> e.vivo && Condicao.AGARRADO in e.condicoes }) {
                 if (Manobra.IMOBILIZAR !in it) it.add(Manobra.IMOBILIZAR)
                 if (Manobra.ESTRANGULAR !in it) it.add(Manobra.ESTRANGULAR)
+            }
+            // Herói AGARRADO/IMOBILIZADO (Lote 422, MB p.371): manobras restritas + Desvencilhar-se. Sem
+            // Apontar/Aguardar/Concentrar/Fintar/à distância nem ações de avanço; imobilizado mal age.
+            if (Condicao.AGARRADO in s.heroi.condicoes || Condicao.IMOBILIZADO in s.heroi.condicoes) {
+                it.removeAll(listOf(Manobra.APONTAR, Manobra.AGUARDAR, Manobra.CONCENTRAR, Manobra.FINTAR,
+                    Manobra.FOGO_RETENCAO, Manobra.ENCONTRAO, Manobra.EMPURRAO, Manobra.MOVER_E_ATACAR,
+                    Manobra.GOLPE_RAPIDO, Manobra.DERRUBAR, Manobra.AGARRAR))
+                if (Condicao.IMOBILIZADO in s.heroi.condicoes)
+                    it.removeAll(listOf(Manobra.MOVER, Manobra.ATAQUE, Manobra.ATAQUE_TOTAL, Manobra.MUDAR_POSTURA))
+                else it.remove(Manobra.MOVER) // agarrado não desloca sem 2× a ST do oponente (abstraído)
+                if (Manobra.DESVENCILHAR !in it) it.add(Manobra.DESVENCILHAR)
             }
         }
         estado = CombatUiState(
@@ -672,7 +699,7 @@ class SagaCombatController(
      * Lista de ataques utilizáveis (Lote 368): cada arma EQUIPADA (corpo-a-corpo e à distância/fogo)
      * com sua perícia, NH, dano resolvido por ST e tipo correto; mais o desarmado como último recurso.
      */
-    private fun construirAtaques(p: Personagem): List<AtaqueHeroi> {
+    private fun construirAtaques(p: Personagem, agarrado: Boolean = false): List<AtaqueHeroi> {
         val out = mutableListOf<AtaqueHeroi>()
         // Armas CONFISCADAS (tiradas pela narrativa — desarmado/capturado) não aparecem: herói luta no soco.
         p.equipamentos.filter { it.tipo == TipoEquipamento.ARMA && !it.confiscado }.forEach { arma ->
@@ -716,7 +743,9 @@ class SagaCombatController(
             desarmado = true, aparaMarcial = aparaMarcial, temPericia = desarmada != null
         ))
         // Armas à distância primeiro quando há (pistoleiro saca o revólver, não soca).
-        return out.sortedByDescending { it.aDistancia }
+        val resultado = out.sortedByDescending { it.aDistancia }
+        // Lote 422 (MB p.371): herói AGARRADO/IMOBILIZADO não empunha nem golpeia arma — só ataque desarmado.
+        return if (agarrado) resultado.filter { it.desarmado } else resultado
     }
 
     /** Converte o alcance corpo-a-corpo ("C", "1", "1,2") em metros (maior alcance da arma). "C" → 1 (adjacente). */
