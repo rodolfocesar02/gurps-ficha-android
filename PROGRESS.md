@@ -3039,6 +3039,13 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - Build completo verde 2 variantes
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
+### Recon — 24 de Junho de 2026
+**Mapa de regras de combate do GURPS Artes Marciais (doc-only, branch GURPS-Saga)**
+- Novo arquivo `Artes_Marciais_Regras_Combate.md`: inventário das regras de combate do livro Artes Marciais a partir do `chunks.jsonl` (`pt_artes_marciais`, 264 págs) — análogo ao audit do `Combate.md`, para planejar uma eventual "Fase Artes Marciais" do combate Saga.
+- Cobre: Técnicas (Cap. 3, ~110 técnicas via Tabela p258–262), Capítulo 4 — Combate (manobras expandidas, opções de combate p109–113 lidas em detalhe, combate corporal, opções de defesa, ataques múltiplos, lesões realistas), vantagens/perícias e armas/equipamentos. Cada regra com tag de encaixe no modelo de faixas (🟢 FIT / 🟡 PARCIAL / 🔴 FORA / ⚪ JÁ FEITO).
+- **Recomendação registrada** (maior valor × menor custo): Ataque Telegráfico (par do Enganoso), luta agarrada profunda (chaves/Mata-Leão estendendo o lote 422), Sangramento Grave + incapacitação de membro (item 5 do teste de batalha), Ataque Dedicado/Defensivo. Fora de escopo: posicional/hexágono, montaria, cinematográfico, dado de arma do NPC. Mudança só de documentação (não compila Kotlin).
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
 ### Lote 422 — 24 de Junho de 2026
 **Saga combate: luta agarrada NPC→herói (Desvencilhar-se) — fecha as últimas regras codáveis do Combate.md (branch GURPS-Saga)**
 - **Ponto cego do audit:** o grep original (só `##`) tinha pulado subtópicos `###`/`####`. Achados e fechados: "Aparando Armas Pesadas" e "Preparando Armas e Outros Equipamentos" (deferidos/feitos com razão honesta), e a luta agarnada NPC→herói (lacuna REAL, não deferimento).
