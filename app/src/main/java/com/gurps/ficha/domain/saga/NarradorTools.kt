@@ -116,7 +116,7 @@ object NarradorTools {
         ),
         ToolSpec(
             TOOL_GASTAR_RECURSO,
-            "Debita um recurso REAL da ficha do herói (fadiga, vida fora de combate, dinheiro, munição ou item consumível). O app aplica e confirma o novo total.",
+            "Debita um recurso REAL da ficha do herói (fadiga, vida fora de combate, dinheiro, munição ou item consumível). Para pv/pf, quantidade NEGATIVA RESTAURA o recurso (descanso, cura, primeiros socorros), respeitando o máximo da ficha. O app aplica e confirma o novo total.",
             listOf(
                 Param("recurso", "string", "Categoria do recurso a debitar.", obrigatorio = true, enum = listOf("pf", "pv", "dinheiro", "municao", "item")),
                 Param("quantidade", "integer", "Quantidade a debitar.", obrigatorio = true),

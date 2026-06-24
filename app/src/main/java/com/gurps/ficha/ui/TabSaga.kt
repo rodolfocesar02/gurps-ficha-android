@@ -422,14 +422,17 @@ private fun FeedDaCampanha(viewModel: FichaViewModel) {
             CardDeRolagem(viewModel, rolagem)
         }
 
-        // Combate ativo (B7): tracker + manobras/defesa substituem a barra de texto.
-        // Recebe weight p/ dividir a tela com o feed (chat) — o painel rola por dentro.
+        // Combate ativo (B7): tracker + manobras/defesa. Recebe weight p/ dividir a tela com o feed.
         if (viewModel.sagaCombateAtivo) {
             com.gurps.ficha.ui.saga.CombatePainel(viewModel, Modifier.weight(1.5f))
-        } else {
-            // Barra de envio
-            BarraDeEnvio(viewModel, habilitado = !processando && rolagem == null)
         }
+        // A caixa de texto fica SEMPRE disponível (itens 2/3 do teste de batalha): o jogador fala com
+        // o Narrador DURANTE o combate e DEPOIS de cair/vencer, sem precisar sair e voltar à campanha.
+        BarraDeEnvio(
+            viewModel,
+            habilitado = !processando && rolagem == null,
+            emCombate = viewModel.sagaCombateAtivo
+        )
     }
 }
 
@@ -511,7 +514,7 @@ private fun CardDeRolagem(viewModel: FichaViewModel, req: com.gurps.ficha.viewmo
 }
 
 @Composable
-private fun BarraDeEnvio(viewModel: FichaViewModel, habilitado: Boolean) {
+private fun BarraDeEnvio(viewModel: FichaViewModel, habilitado: Boolean, emCombate: Boolean = false) {
     var texto by remember { mutableStateOf("") }
     Row(
         modifier = Modifier
@@ -524,8 +527,9 @@ private fun BarraDeEnvio(viewModel: FichaViewModel, habilitado: Boolean) {
             onValueChange = { texto = it },
             modifier = Modifier
                 .weight(1f)
-                .semantics { contentDescription = "O que seu herói faz" },
-            placeholder = { Text("O que você faz?") },
+                .semantics { contentDescription = if (emCombate) "Falar com o Narrador durante o combate" else "O que seu herói faz" },
+            // Em combate as manobras são os botões do painel; a caixa serve para FALAR com o Narrador.
+            placeholder = { Text(if (emCombate) "Falar com o Narrador…" else "O que você faz?") },
             enabled = habilitado,
             maxLines = 4
         )
@@ -537,6 +541,6 @@ private fun BarraDeEnvio(viewModel: FichaViewModel, habilitado: Boolean) {
             },
             enabled = habilitado && texto.isNotBlank(),
             modifier = Modifier.semantics { contentDescription = "Enviar ação ao Narrador" }
-        ) { Text("Agir") }
+        ) { Text(if (emCombate) "Falar" else "Agir") }
     }
 }

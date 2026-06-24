@@ -3039,6 +3039,20 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - Build completo verde 2 variantes
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
+### Lote 420 — 24 de Junho de 2026
+**Saga: teste de batalha — Frentes 2/3/4 (itens 2,3,4,5,1-parcial) + endurecimento pós-revisão adversarial (branch GURPS-Saga)**
+- **Frente 2 — itens 2 e 3 (sem chat no combate / após cair):** a `BarraDeEnvio` (caixa "O que você faz?") deixou de ser SUBSTITUÍDA pelo painel de combate — agora fica SEMPRE visível abaixo do painel. O jogador fala com o Narrador DURANTE o combate (o `iniciar_combate` não bloqueia o loop da IA) e DEPOIS de desmaiar/morrer/vencer, sem sair e voltar à campanha. Em combate, placeholder "Falar com o Narrador…" e botão "Falar". `TabSaga.kt`.
+- **Frente 4 — item 4 (Ataque Enganoso parecia desabilitado):** no passo 0 a "−" fica cinza (correto) e mostrava "−0/−0", parecendo bug. Agora no passo 0 o texto vira "toque + (cada passo: −2 no acerto, −1 na defesa; até N)"; e em corpo-a-corpo com NH < 12 (ex.: Briga fraca) aparece nota explicando POR QUE sumiu (NH efetivo não cai abaixo de 10). `CombatUi.kt`.
+- **Frente 3 — item 5 (derrotado sem dano) e item 1 (parte de PV/estado):** (a) guarda em `iniciarCombate`: herói a 0 PV ou abaixo NÃO entra em combate fadado — recusa com "heroi_incapacitado" e manda o Narrador narrar/curar (`SagaCombatController`); (b) cura/descanso: `gastar_recurso` com `quantidade` NEGATIVA RESTAURA PV/PF (até o máximo) — schema, prompt e bridge; (c) prompt lei 8: não iniciar luta com herói caído, curar antes.
+- **Endurecimento pós-revisão adversarial (6 bugs reais achados por revisão multi-agente, todos corrigidos antes do commit):**
+  - 🔴 **ALTA (soft-lock):** o `NarradorToolExecutor` rejeitava `quantidade <= 0` ANTES do bridge → minha cura por valor negativo era código morto e o herói a 0 PV não lutava nem curava. Agora só ZERO é inválido; negativo é permitido para pv/pf (dinheiro/munição seguem exigindo positivo). `NarradorToolExecutor.kt` + novo teste.
+  - 🟠 **MÉDIA (reabrir combate):** falar com o Narrador no meio da luta podia fazê-lo chamar `iniciar_combate` de novo e sobrescrever a sessão. `iniciarCombate` agora recusa "combate_ja_ativo" se já há luta em curso (espelha `acao_npc`).
+  - 🟠 **MÉDIA (narração de fim perdida):** se o golpe fatal vinha de uma tool num turno de texto, a prosa de desfecho + XP eram descartadas por `processando`. Agora o `CombatFim` fica pendente e é drenado no `finally` de `rodarTurno`. `FichaSagaDelegate.kt`.
+  - 🟠 **MÉDIA (cura fantasma em combate):** `gastar_recurso` escrevia só na ficha; em combate o motor sobrescrevia. Agora, com combate em curso, pv/pf são roteados ao motor (`ajustarRecursoHeroiEmCombate`) e sincronizados.
+  - 🟡 **BAIXA (painel preso):** combate encerrado e não fechado deixava o painel velho na tela; `iniciarCombate` agora faz `encerrarManual()` de sessão já encerrada antes de seguir.
+- Build verde nas 2 variantes. **Pendente honesto (item 1, parte de equipamento):** desarmar/remover armas e armaduras narrados ainda NÃO sincroniza com a ficha — precisa de tool nova de desequipar (lote dedicado).
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
 ### Lote 419 — 24 de Junho de 2026
 **Saga: Prompt do Narrador — coerência de estado + 3ª via (teste de batalha, itens 6 e 7, branch GURPS-Saga)**
 - **Item 7 (alternativas A/B/C como gaiola):** lei de ferro 7 estendida — se o Narrador listar alternativas, elas são SUGESTÕES e ele deve deixar EXPLÍCITO que o jogador pode agir livremente FORA da lista (nunca apresentá-las como as únicas saídas). A caixa "O que você faz?" sempre aceita texto livre.

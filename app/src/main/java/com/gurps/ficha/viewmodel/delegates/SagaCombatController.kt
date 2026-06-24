@@ -166,6 +166,15 @@ class SagaCombatController(
      */
     fun iniciarCombate(inimigos: List<Pair<String, Int>>, distanciaM: Int = 5, surpresa: String = "ninguem"): String {
         val ctx = context ?: return "sem_contexto"
+        // Combate anterior já encerrado mas não fechado pela UI: limpa antes (senão o painel da luta
+        // passada fica preso, sobretudo agora que o jogador pode digitar após cair sem tocar "Fechar").
+        if (sessao?.encerrado == true) encerrarManual()
+        // Não reabrir POR CIMA de um combate EM CURSO. Como a caixa de texto agora fica sempre disponível
+        // (Frente 2), o jogador pode falar com o Narrador no meio da luta e ele chamar iniciar_combate de
+        // novo — o que sobrescreveria a sessão e dispararia um 2º loop. Recusa, como acao_npc já faz.
+        if (sessao != null && !sessao!!.encerrado) {
+            return "combate_ja_ativo: já existe um combate em andamento; conduza-o pelos botões do painel ou aguarde o fim."
+        }
         val p = viewModel.personagem
         val bestiario = BestiarioCatalogo.carregar(ctx)
 
@@ -176,6 +185,18 @@ class SagaCombatController(
             pvAtual = (p.pontosVidaRolagemAtual ?: p.pontosVida),
             pfAtual = (p.pontosFadigaRolagemAtual ?: p.pontosFadiga)
         )
+
+        // Item 5 do teste de batalha: NÃO abrir um combate que o herói já perdeu de saída. Se ele
+        // entra a 0 PV ou abaixo (PV residual de uma luta anterior, sem cura/descanso), o motor
+        // declararia "derrotado sem dano". Em vez disso, declina SEM criar sessão (nada de painel
+        // preso nem derrota fantasma) e devolve o estado factual para o Narrador narrar a
+        // consequência e, se for o caso, curar/descansar antes de qualquer luta (lei 9 do prompt).
+        val pvEntrada = heroiComb.pvAtual
+        if (pvEntrada <= 0) {
+            return "heroi_incapacitado: o herói está caído à beira da morte (PV $pvEntrada de ${heroiComb.pvMax}) " +
+                "e NÃO pode lutar — não há combate. Narre a consequência (ele desfalece, é capturado ou precisa ser " +
+                "resgatado) e só inicie uma luta depois que ele recuperar PV (gastar_recurso com quantidade NEGATIVA = descanso/cura)."
+        }
 
         val distancias = mutableMapOf<String, Int>()
         val combatentes = mutableListOf(heroiComb)
@@ -238,6 +259,29 @@ class SagaCombatController(
         val alvo = s.encounter.combatentes.firstOrNull { it.id == alvoId } ?: return null
         if (aplicar) alvo.condicoes.add(cond) else alvo.condicoes.remove(cond)
         val txt = "• ${alvo.nome}: ${if (aplicar) "ganha" else "perde"} a condição ${cond.rotulo}."
+        s.log += txt
+        s.reavaliarFim()
+        publicarLog(); atualizarEstado()
+        if (s.encerrado) finalizar()
+        return txt
+    }
+
+    /**
+     * Ajusta PV/PF do HERÓI dentro de um combate em curso (cura/descanso ou dreno fora do fluxo de dano).
+     * Em combate o motor é a fonte da verdade do PV — escrever só na ficha (gastarRecurso) seria sobrescrito
+     * no próximo dano/fim. Aqui altera o combatente e sincroniza a ficha. delta>0 restaura, delta<0 debita.
+     * pfMaxFicha = teto de PF (o Combatente não guarda PF máx). Retorna o relatório ou null se não há combate.
+     */
+    fun ajustarRecursoHeroiEmCombate(recurso: String, delta: Int, pfMaxFicha: Int): String? {
+        val s = sessao ?: return null
+        val h = s.heroi
+        when (recurso.lowercase().trim()) {
+            "pv" -> { h.pvAtual = (h.pvAtual + delta).coerceAtMost(h.pvMax); viewModel.sagaDefinirPvAtual(h.pvAtual.coerceAtLeast(0)) }
+            "pf" -> { h.pfAtual = (h.pfAtual + delta).coerceIn(0, pfMaxFicha); viewModel.sagaDefinirPfAtual(h.pfAtual) }
+            else -> return null
+        }
+        val txt = if (delta >= 0) "➕ ${h.nome} recupera $delta de ${recurso.uppercase()}."
+                  else "➖ ${h.nome} perde ${-delta} de ${recurso.uppercase()}."
         s.log += txt
         s.reavaliarFim()
         publicarLog(); atualizarEstado()

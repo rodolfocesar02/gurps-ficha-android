@@ -77,6 +77,22 @@ class NarradorToolExecutorCombatTest {
     }
 
     @Test
+    fun `gastar_recurso aceita pv pf NEGATIVO (cura) e barra zero e negativo fora de pv pf`() = runBlocking {
+        val b = FakeBridge()
+        val e = exec(b)
+        // Cura: quantidade NEGATIVA em pv/pf deve CHEGAR ao bridge (não ser rejeitada) — fix do soft-lock.
+        assertTrue(JSONObject(e.executar(NarradorTools.TOOL_GASTAR_RECURSO, """{"recurso":"pv","quantidade":-8,"motivo":"descanso"}""")).optBoolean("ok"))
+        assertTrue(JSONObject(e.executar(NarradorTools.TOOL_GASTAR_RECURSO, """{"recurso":"pf","quantidade":-3,"motivo":"folego"}""")).optBoolean("ok"))
+        assertEquals(listOf("recurso:pv:-8", "recurso:pf:-3"), b.chamadas)
+        // Zero é sempre inválido.
+        assertEquals("campos_obrigatorios", JSONObject(e.executar(NarradorTools.TOOL_GASTAR_RECURSO, """{"recurso":"pv","quantidade":0,"motivo":"x"}""")).optString("erro"))
+        // Negativo em recurso que NÃO é pv/pf continua barrado (não se "cura" dinheiro/munição).
+        assertEquals("campos_obrigatorios", JSONObject(e.executar(NarradorTools.TOOL_GASTAR_RECURSO, """{"recurso":"dinheiro","quantidade":-5,"motivo":"x"}""")).optString("erro"))
+        // As chamadas barradas NÃO chegaram ao bridge.
+        assertEquals(listOf("recurso:pv:-8", "recurso:pf:-3"), b.chamadas)
+    }
+
+    @Test
     fun `acao_npc exige combate ativo`() = runBlocking {
         val b = FakeBridge() // ativo = false
         val r = exec(b).executar(NarradorTools.TOOL_ACAO_NPC, """{"npc_id":"goblin_1","intencao":"ataca"}""")

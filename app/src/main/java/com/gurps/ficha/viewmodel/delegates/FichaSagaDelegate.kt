@@ -95,6 +95,9 @@ class FichaSagaDelegate(
     var processando by mutableStateOf(false); private set
 
     private var sessionIdAtual: Long? = null
+    // Fim de combate que chegou enquanto um turno de texto ainda rodava (processando=true): fica pendente
+    // e é narrado no finally de rodarTurno, senão a prosa de desfecho + XP seriam descartadas (revisão Frente 2).
+    private var fimDeCombatePendente: SagaCombatController.CombatFim? = null
 
     fun carregarCampanhas() {
         val dao = sagaDao ?: return
@@ -224,6 +227,8 @@ class FichaSagaDelegate(
             } finally {
                 processando = false
                 fase = ""
+                // Drena um fim de combate que chegou no meio deste turno (ver fimDeCombatePendente).
+                fimDeCombatePendente?.let { fimDeCombatePendente = null; narrarFimDeCombate(it) }
             }
         }
     }
@@ -369,13 +374,20 @@ class FichaSagaDelegate(
         val p = viewModel.personagem
         return when (recurso.lowercase().trim()) {
             "pf" -> {
-                val atual = (p.pontosFadigaRolagemAtual ?: p.pontosFadiga); val novo = (atual - quantidade).coerceAtLeast(0)
-                viewModel.sagaDefinirPfAtual(novo)
+                // delta>0 restaura, delta<0 debita (quantidade>0 = gasto; quantidade NEGATIVA = cura/descanso).
+                // Em combate o motor é a fonte da verdade do PF — roteia para lá (senão a cura seria sobrescrita).
+                val delta = -quantidade
+                if (combate.emCurso) combate.ajustarRecursoHeroiEmCombate("pf", delta, p.pontosFadiga)
+                else viewModel.sagaDefinirPfAtual(((p.pontosFadigaRolagemAtual ?: p.pontosFadiga) + delta).coerceIn(0, p.pontosFadiga))
+                val novo = (viewModel.personagem.pontosFadigaRolagemAtual ?: p.pontosFadiga)
                 org.json.JSONObject().put("ok", true).put("recurso", "pf").put("pf_atual", novo).put("pf_max", p.pontosFadiga).toString()
             }
             "pv" -> {
-                val atual = (p.pontosVidaRolagemAtual ?: p.pontosVida); val novo = (atual - quantidade).coerceAtLeast(0)
-                viewModel.sagaDefinirPvAtual(novo)
+                // delta>0 restaura, delta<0 debita. Em combate o motor controla o PV — roteia para lá. Item 5 do teste.
+                val delta = -quantidade
+                if (combate.emCurso) combate.ajustarRecursoHeroiEmCombate("pv", delta, p.pontosFadiga)
+                else viewModel.sagaDefinirPvAtual(((p.pontosVidaRolagemAtual ?: p.pontosVida) + delta).coerceIn(0, p.pontosVida))
+                val novo = (viewModel.personagem.pontosVidaRolagemAtual ?: p.pontosVida)
                 org.json.JSONObject().put("ok", true).put("recurso", "pv").put("pv_atual", novo).put("pv_max", p.pontosVida).toString()
             }
             "dinheiro", "municao", "item" ->
@@ -395,6 +407,9 @@ class FichaSagaDelegate(
 
     /** Fim de combate: o Narrador converte o relatório factual agregado em prosa (+ XP), sem inventar números. */
     private fun narrarFimDeCombate(fim: SagaCombatController.CombatFim) {
+        // Se um turno de texto ainda roda (o golpe fatal pode ter vindo de uma tool nesse turno), enfileira:
+        // rodarTurno está bloqueado por processando e descartaria esta narração. Será drenado no finally dele.
+        if (processando) { fimDeCombatePendente = fim; return }
         val saque = if (fim.saque.isEmpty()) "nenhum espólio" else fim.saque.joinToString(", ")
         rodarTurno(
             "[FIM DE COMBATE] Resultado: ${fim.resultado}. Estado final factual:\n${fim.resumoFactual}\n" +

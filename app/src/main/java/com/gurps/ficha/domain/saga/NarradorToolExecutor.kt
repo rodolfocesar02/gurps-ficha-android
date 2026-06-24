@@ -284,7 +284,11 @@ class NarradorToolExecutor(
         val recurso = args.optString("recurso").trim()
         if (recurso.isBlank()) return erro("campos_obrigatorios", "recurso é obrigatório")
         val quantidade = args.optInt("quantidade", 0)
-        if (quantidade <= 0) return erro("campos_obrigatorios", "quantidade deve ser positiva")
+        // pv/pf aceitam quantidade NEGATIVA (cura/descanso restaura — o bridge trata o sinal); só ZERO é inválido.
+        // dinheiro/municao/item continuam exigindo gasto estritamente positivo.
+        if (quantidade == 0) return erro("campos_obrigatorios", "quantidade não pode ser zero")
+        if (recurso.lowercase() !in listOf("pv", "pf") && quantidade < 0)
+            return erro("campos_obrigatorios", "quantidade deve ser positiva")
         val motivo = args.optString("motivo").trim()
         val itemNome = args.optString("item_nome").trim().ifBlank { null }
         return bridge.gastarRecurso(recurso, quantidade, motivo, itemNome)

@@ -653,18 +653,27 @@ private fun SubDialogoAlvoLocal(
                         onClick = { local = l }
                     )
                 }
-                if (manobra == Manobra.ATAQUE && maxEnganoso > 0) {
+                if (manobra == Manobra.ATAQUE && !armaDistancia && maxEnganoso > 0) {
                     Spacer(Modifier.height(8.dp))
                     Text("Ataque Enganoso (−2 no acerto por −1 na defesa do alvo)",
                         fontWeight = FontWeight.Bold, style = MaterialTheme.typography.labelLarge)
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         OutlinedButton(onClick = { if (enganoso > 0) enganoso-- }, enabled = enganoso > 0,
                             modifier = Modifier.semantics { contentDescription = "Diminuir engano" }) { Text("−") }
-                        Text("  $enganoso  →  −${enganoso * 2} acerto / −$enganoso na defesa do alvo  ",
+                        // No passo 0 a "−" fica cinza (não há como descer): deixa claro que é a "+" que ativa o engano.
+                        Text(
+                            if (enganoso == 0) "  toque +  (cada passo: −2 no acerto, −1 na defesa do alvo; até $maxEnganoso)  "
+                            else "  $enganoso  →  −${enganoso * 2} no acerto / −$enganoso na defesa do alvo  ",
                             style = MaterialTheme.typography.bodyMedium)
                         OutlinedButton(onClick = { if (enganoso < maxEnganoso) enganoso++ }, enabled = enganoso < maxEnganoso,
                             modifier = Modifier.semantics { contentDescription = "Aumentar engano" }) { Text("+") }
                     }
+                } else if (manobra == Manobra.ATAQUE && !armaDistancia) {
+                    // Item 4 do teste: explicar POR QUE o Enganoso não aparece (ex.: Briga com NH baixo) em vez de só sumir.
+                    Spacer(Modifier.height(8.dp))
+                    Text("Ataque Enganoso indisponível: o NH efetivo não pode cair abaixo de 10, então é preciso NH ≥ 12 no ataque escolhido.",
+                        style = MaterialTheme.typography.bodySmall, fontStyle = FontStyle.Italic,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
                 if (manobra == Manobra.ATAQUE_TOTAL) {
                     Spacer(Modifier.height(8.dp))
