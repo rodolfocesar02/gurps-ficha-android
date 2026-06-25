@@ -41,7 +41,8 @@
 > - ✅ Lote 383 = Fintar (2026-06-17, MB p.366) — loop 2/5. Manobra Fintar: Disputa Rápida (`heroiFintar`/`fintaResultado`); a margem de vitória reduz a defesa do alvo no próximo golpe corpo-a-corpo (e nos 2 do Ataque Total Duplo). UI + testes + build 2 variantes verde.
 > - ✅ Lote 384 = Tabelas de crítico (2026-06-17, MB p.557–558) — loop 3/5. Golpe Fulminante → tabela de DANO (×2/×3/máx/RD½/ferimento grave); Erro Crítico → efeito no atacante (acerta a si/cai; narra quebrar/largar arma). `CriticoRules.golpeFulminante`/`erroCritico`. **+ workaround de lint** (3 detectores compose-runtime crashando por incompat. da Kotlin Analysis API — desligados). Testes + build 2 variantes verde.
 > - ✅ Lote 385 = Tolerância a Ferimentos (2026-06-17, MB p.381) — loop 4/5. `ToleranciaFerimentos` (NÃO-VIVO/HOMOGÊNEO/DIFUSO) reduz dano pi/perf em `HitLocationRules`; `NpcStats.tolerancia`←bestiário; **esqueleto/zumbi = nao_vivo** (resistem a tiros). Testes + build 2 variantes verde.
-> - ➡️ Próximo (auditoria de combate, em ordem): "números que faltam" (**Modificador de Tamanho** no acerto + **Bônus de Defesa de escudo**) → Fintar → Ataque Enganoso/Golpe Rápido → Choque/Cambaleante → defesas que faltam → movimento por postura/Agachar → críticos com tabelas → Tolerância a Ferimentos/Divisor de Armadura → Agarrar/munição. Só DEPOIS de tudo isso: Fases C/D/E. (Validação no aparelho em paralelo; interação Narrador-no-combate adiada por ordem do usuário.)
+> - ✅ Lotes 386–422 (jun/2026) = **AUDITORIA DE COMBATE COMPLETA** — `Combate.md` 100% fechado (0 parciais/0 não-feitos): Agarrar/Imobilizar/Estrangular + luta agarrada NPC↔herói/Desvencilhar (422), Finta, Ataque Enganoso/Golpe Rápido, Encontrão/Empurrão, projeção, defesas que faltavam, postura/Agachar, críticos, Tolerância/Divisor de Armadura. +**teste de batalha no aparelho** (7 itens) corrigido (419–422) + tool `gerir_equipamento` (desarmar/confiscar). Detalhes no `PROGRESS.md`. Mapa do Artes Marciais em `Artes_Marciais_Regras_Combate.md`.
+> - ➡️ **PRÓXIMO — ver a seção "COMBATE TÁTICO (PONTE + PILAR HEXÁGONO)" logo após a Fase B.** Ordem: GATE (usuário valida 419–422 no aparelho) → PONTE (regras que sobrevivem aos 2 modelos) → PILAR hexágono 3D (`PLANO_Combate_Tatico_Hex_3D.md`). As Fases C/D/E (mundo vivo) seguem em paralelo conforme prioridade do usuário.
 
 ---
 
@@ -185,6 +186,110 @@ Executores reais: `iniciar_combate` (instancia do bestiário e/ou `forjar_npc` v
 **Aceite:** dizer ao Narrador "três bandidos saem da mata" → combate completo → prosa final SEM números inventados (`NarradorOutputValidator` zero alarmes) → saque entregue na ficha.
 > **Entregue (Lote 366):** CombatBridge + as 6 tools roteadas (iniciar_combate/acao_npc/aplicar_dano/aplicar_condicao/gastar_recurso/conceder_xp); fim de combate → prosa factual + saque (armas dos derrotados) na ficha + conceder_xp; lei de ferro 8 no prompt; teste de roteamento verde.
 > **Divergências (regra 12):** (1) NPC dirigido pelo MOTOR (NpcCombatBrain/B6) e jogado na UI interativa do B7 — `acao_npc` devolve o ESTADO FACTUAL p/ narração em vez de dirigir o "round em lote" (a UI aprovada venceu). (2) `forjar_npc` dentro do iniciar_combate (NPC sob medida) e TABELAS DE SAQUE por criatura ficam p/ enriquecimento (F1); saque atual = armas dos inimigos derrotados. (3) `gastar_recurso` dinheiro/munição/item = nota narrativa (a ficha não modela esses como número vivo); pf/pv são reais e salvos.
+
+
+
+
+
+---
+
+## FASE B+ — COMBATE TÁTICO (PONTE + PILAR HEXÁGONO)
+> Continuação do combate (a Fase B abstrata está completa: `Combate.md` 100% + lotes 386–422). Esta seção é a
+> sequência **canônica e ordenada** do que vem a seguir. Plano detalhado do pilar 3D: `PLANO_Combate_Tatico_Hex_3D.md`.
+> **Princípio-mestre:** MOTOR DE REGRAS 2D PRIMEIRO, 3D DEPOIS. Nunca pular um passo desta ordem.
+
+### 🚦 GATE 0 (NÃO é lote — tarefa do USUÁRIO) — Validar o combate atual no aparelho
+Revalidar os **Lotes 419–422** no Android Studio (chat no combate, cura/guarda, desarmar, agarrão NPC↔herói).
+**Nada do PILAR abre antes disso.** A PONTE pode ser feita em paralelo (são regras isoladas, baixo risco).
+**Aceite:** usuário confirma que os 7 itens do teste de batalha estão OK no aparelho.
+
+---
+### PONTE — regras de Artes Marciais que SOBREVIVEM aos dois modelos (faixas E hexágono)
+> Investimento seguro: são regras de RESOLUÇÃO (não de posição), então o pilar hexágono as reaproveita.
+> Fonte: `Artes_Marciais_Regras_Combate.md` + `chunks.jsonl` (`pt_artes_marciais`). Ordem sugerida:
+
+#### LOTE PONTE-1 — Chaves de luta agarrada (estende o agarrão do lote 422)
+**Objetivo:** com um alvo já AGARRADO, manobras de chave por Disputa Rápida de ST → dano/incapacitação.
+**Passos:** Chave de Braço/Pulso, Mata-Leão, Torção (Pescoço/Membro) no `CombatSession` (espelhar
+`heroiImobilizar`/`heroiEstrangular`); herói↔NPC nas duas direções; UI (manobra só quando há AGARRADO); testes.
+**Aceite:** build verde 2 variantes + teste determinístico; AM p69–79 referenciado em comentário.
+
+#### LOTE PONTE-2 — Sangramento Grave + incapacitação de membro (item 5 do teste de batalha)
+**Objetivo:** fechar a parte de "lesões realistas" que o usuário sentiu falta (sangramento/desmaio).
+**Passos:** no `InjuryRules`/`HitLocationRules`: sangramento (HT por intervalo ou perde +1 PV), incapacitação
+de braço/perna (>PV/2) já parcialmente modelada — completar efeito em combate; comentar `// MB`/`// AM p136–138`.
+**Aceite:** build verde 2 variantes + teste; ferimento grave dispara sangramento e o log explica.
+
+#### LOTE PONTE-3 — Ataque Telegráfico (par do Ataque Enganoso)
+**Objetivo:** opção +4 para acertar / +2 à defesa do alvo (oposto do Enganoso, já feito no lote 401).
+**Passos:** flag no ataque (não combina com Enganoso; não conta p/ golpe fulminante — usar NH antes do +4);
+UI (toggle no sub-diálogo de ataque, como o stepper do Enganoso); teste. AM p109.
+**Aceite:** build verde 2 variantes + teste.
+
+#### LOTE PONTE-4 (opcional) — Ataque Dedicado / Ataque Defensivo
+**Objetivo:** duas manobras simples de troca (acerto↔defesa↔dano). AM p98.
+**Passos:** novas entradas em `Manobra` + resolução + UI + teste.
+**Aceite:** build verde 2 variantes + teste.
+
+> ⚠️ NÃO implementar regras POSICIONAIS no modelo de faixas (flanco/alcance/cobertura "de mentira") — esse é
+> exatamente o pedaço que o pilar hexágono substitui. Só PONTE = regras de resolução.
+
+---
+### PILAR — COMBATE TÁTICO EM HEXÁGONO (3D). Abrir SÓ após GATE 0. Ordem ESTRITA H1→H9.
+> Detalhamento e arquitetura: `PLANO_Combate_Tatico_Hex_3D.md`. Cada lote verde+commitado antes do próximo.
+> Reaproveita: SceneView/Filament (dados 3D), motor de resolução do Saga, encanamento de imagem do VTT (LEGADO).
+
+#### LOTE HEX-1 (Fase 1) — Motor `HexGrid` puro (Kotlin, SEM render) — ISOLADO, zero risco
+**Objetivo:** o motor posicional, testável, sem tocar em nada que já funciona.
+**Passos:** `domain/combat/hex/HexCoord.kt` (axial/cube) + `HexGrid.kt`: distância em hex, vizinhos, range(n),
+linha reta, **linha de visão** (bloqueio), **6 orientações/facing** (a partir de 2 posições + direção); testes completos.
+**Aceite:** suíte verde; nenhuma dependência de Android no módulo; combate atual intacto.
+
+#### LOTE HEX-2 (Fase 2a) — Grade 2D em Compose Canvas (render + input, SEM regras)
+**Objetivo:** desenhar a grade e mover tokens — provar o desenho/toque antes das regras.
+**Passos:** `ui/saga/hex/HexCanvas.kt`: desenha hexágonos, posiciona herói + 1 inimigo (tokens 2D, salvar
+encanamento de imagem do VTT legado se ajudar), seleção e **movimento por toque**; atrás de **feature flag** (modo tático).
+**Aceite:** build verde 2 variantes; grade jogável de mover peças, sem combate ainda; modo faixas intacto (flag).
+
+#### LOTE HEX-3 (Fase 2b) — Integra a RESOLUÇÃO existente com posição em hex
+**Objetivo:** 1 ataque corpo-a-corpo resolvido com **alcance e movimento por hex**, reusando o motor do Saga.
+**Passos:** trocar a distância-única do encontro por posição em hex; alcance/reach da arma em nº de hexes;
+plugar `CombatResolver`/`HitLocationRules`/`InjuryRules` (intactos); passo+ataque. Teste de troca em hex.
+**Aceite:** build verde 2 variantes + teste; um round herói×NPC jogável na grade.
+
+#### LOTE HEX-4 (Fase 2c) — Regras posicionais BASE
+**Objetivo:** orientação (frente/flanco/costas → modificadores), Recuo, Avançar e Atacar, Aguardar por posição.
+**Passos:** usar o facing do HEX-1 nos bônus de ataque/defesa; reach real; testes por caso.
+**Aceite:** build verde 2 variantes + testes; ataque pelas costas anula defesa, flanco penaliza — verificável.
+
+#### LOTE HEX-5 (Fase 3) — IA tática do NPC
+**Objetivo:** o NPC se MOVE na grade (não só escolhe manobra).
+**Passos:** estender `NpcCombatBrain`: aproximar, **flanquear**, manter distância (kite de arqueiro), buscar
+**cobertura**, focar alvo; determinístico com seed; testes (bruto fecha, arqueiro abre, flanqueador rodeia).
+**Aceite:** build verde 2 variantes + testes; NPCs lutam de forma tática coerente em simulação.
+
+#### LOTE HEX-6 (Fase 4) — Regras posicionais 🔴 (MB + Artes Marciais) que o hex desbloqueia
+**Objetivo:** cobertura, vários alvos por posição/linha, "manter à distância", corredores de carga, e (quando
+`NpcStats` ganhar peso/comprimento de arma) "quem golpeia primeiro". Cruzar com `Combate.md` + `Artes_Marciais_Regras_Combate.md`.
+**Passos:** implementar item a item, cada um com teste e referência `// MB`/`// AM`.
+**Aceite:** build verde 2 variantes + testes por regra.
+
+#### LOTE HEX-7 (Fase 5a) — Render 3D base (Filament/SceneView)
+**Objetivo:** trocar o Canvas 2D pela cena 3D — terreno/grade em 3D + câmera tática.
+**Passos:** reusar a stack do `Dice3DScene.kt`: cena, luz, **câmera orbit/zoom/pan**, grade de hexágonos em 3D,
+tokens como billboards/figuras simples, realce do hex selecionado. Sem arte pesada ainda.
+**Aceite:** build verde 2 variantes; a MESMA partida do HEX-4 jogável em 3D; performance aceitável no aparelho.
+
+#### LOTE HEX-8 (Fase 5b) — Modelos `.glb` + animação básica + ambientação
+**Objetivo:** herói/inimigos como modelos 3D animados; cena lê bioma/humor do Narrador.
+**Passos:** modelos `.glb` (começar simples), animações idle/ataque/dano, ambiente/skybox por bioma (pasta
+`assets/environments`). Fallback = figura simples. Pipeline de asset documentado.
+**Aceite:** build verde 2 variantes; combate 3D com modelos e ambiente coerentes.
+
+#### LOTE HEX-9 (Fase 6) — Polimento e sabor
+**Objetivo:** defesa por **timing** (opcional, sabor Clair Obscur) sobre a rolagem GURPS; efeitos; integração com o feed narrado.
+**Passos:** mini-janela de parry/esquiva opcional (toggle acessibilidade), partículas/SFX (reusar AudioEngine se já existir), gancho com o Narrador.
+**Aceite:** build verde 2 variantes; checklist sensorial; modo faixas ainda disponível por flag.
 
 ---
 
