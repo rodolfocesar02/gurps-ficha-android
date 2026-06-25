@@ -1252,4 +1252,31 @@ class CombatSessionTest {
         s.heroiDesvencilhar()
         assertFalse(Condicao.AGARRADO in s.heroi.condicoes)
     }
+
+    // Lote PONTE-1: chaves de luta agarrada (AM p69-70/77).
+    @Test
+    fun `Chave de Membro exige alvo agarrado e causa dano por contusao quando vence`() {
+        val g = goblin().let { it.copy(stats = it.stats!!.copy(st = 8, ht = 8)) } // fraco → herói forte vence sempre
+        val enc = CombatEncounter(listOf(heroi(), g), mapOf("goblin" to 1), seed = 1L)
+        val s = CombatSession(enc, perfilHeroi().copy(st = 30), Random(1))
+        // Sem AGARRADO: guarda de pré-requisito — não causa dano.
+        s.heroiChaveMembro("goblin")
+        assertEquals(g.pvMax, g.pvAtual)
+        // Com AGARRADO: herói ST 30 vs resist 8 (max ST/HT) vence em qualquer rolagem → dano por contusão.
+        g.condicoes.add(Condicao.AGARRADO)
+        s.heroiChaveMembro("goblin")
+        assertTrue(g.pvAtual < g.pvMax)
+    }
+
+    @Test
+    fun `Mata-Leao num alvo agarrado causa dano e deixa SUFOCANDO`() {
+        // PV alto (60) p/ o alvo SOBREVIVER ao estrangulamento (SUFOCANDO só entra se vivo); ST baixa garante a vitória.
+        val g = goblin(pv = 60).let { it.copy(stats = it.stats!!.copy(st = 5, ht = 5)) }
+        val enc = CombatEncounter(listOf(heroi(), g), mapOf("goblin" to 1), seed = 1L)
+        val s = CombatSession(enc, perfilHeroi().copy(st = 20), Random(1)) // mata-leão: 20+3=23 vs resist 5 → vence sempre
+        g.condicoes.add(Condicao.AGARRADO)
+        s.heroiMataLeao("goblin")
+        assertTrue(g.pvAtual < g.pvMax)
+        assertTrue(Condicao.SUFOCANDO in g.condicoes)
+    }
 }

@@ -310,6 +310,66 @@ class CombatSession(
     }
 
     /**
+     * Chave de Membro (Lote PONTE-1, AM p.69-70/81): com o alvo JÁ AGARRADO, torce um membro. Disputa Rápida
+     * de ST (a vítima resiste com o MAIOR entre ST e HT; +4 se for a perna) → dano por contusão = margem (caminho
+     * de precisão de AM p.69, mesmo padrão do estrangular). Limitações honestas: sem o NH de perícia de luta no
+     * perfil (Disputa por ST pura, força-bruta AM p.81); RD flexível não é distinguida da rígida (motor aplica RD
+     * cheia); só braço/perna (mão/dedo/cabeça/pescoço deferidos — o Mata-Leão/Estrangular cobrem o pescoço).
+     */
+    fun heroiChaveMembro(alvoId: String, perna: Boolean = false): String {
+        inicioAcaoHeroi()
+        val alvo = inimigos.firstOrNull { it.id == alvoId && it.vivo } ?: return "Alvo inválido.".also { log += it }
+        if (Condicao.AGARRADO !in alvo.condicoes)
+            return "⚠️ Você precisa estar agarrando ${alvo.nome} para aplicar uma chave.".also { log += it }
+        val stHeroi = heroiPerfil.st
+        val resist = maxOf(alvo.stats?.st ?: 10, alvo.stats?.ht ?: 10) + (if (perna) 4 else 0)
+        val rh = rolar3d6(); val rn = rolar3d6()
+        val membro = if (perna) LocalAtaque.PERNA else LocalAtaque.BRACO
+        val margem = (stHeroi - rh) - (resist - rn)
+        if (rh > stHeroi || margem <= 0) {
+            log += "🦾 ${alvo.nome} resiste à chave de ${membro.rotulo}. [ST $stHeroi rolou $rh vs $resist rolou $rn]"
+            return log.last()
+        }
+        val dn = HitLocationRules.aplicarDano(alvo.pvMax, margem, DanoTipo.CONT, membro,
+            alvo.stats?.rd ?: 0, alvo.stats?.tolerancia ?: ToleranciaFerimentos.NORMAL)
+        InjuryRules.ferir(alvo, dn.pvSubtrair, alvo.stats?.ht ?: 10, random)
+        log += "🦾 Você aplica uma chave no ${membro.rotulo} de ${alvo.nome}: margem $margem → ${dn.pvSubtrair} de dano. [ST $stHeroi rolou $rh vs $resist rolou $rn]"
+        verificarFim()
+        return log.last()
+    }
+
+    /**
+     * Mata-Leão (Lote PONTE-1, AM p.77): estrangulamento com as DUAS mãos num alvo agarrado — uma Asfixia (MB
+     * p.371) com +3 na ST de controle. Aqui só o ramo "aéreo" (contusão no pescoço + sufoco); o "sanguíneo"
+     * (apagar por fadiga/PF) fica DEFERIDO (o motor não modela dano de fadiga em PF do NPC).
+     */
+    fun heroiMataLeao(alvoId: String): String {
+        inicioAcaoHeroi()
+        val alvo = inimigos.firstOrNull { it.id == alvoId && it.vivo } ?: return "Alvo inválido.".also { log += it }
+        if (Condicao.AGARRADO !in alvo.condicoes)
+            return "⚠️ Você precisa estar agarrando ${alvo.nome} pelo pescoço para o mata-leão.".also { log += it }
+        val stHeroi = heroiPerfil.st + 3 // +3 pelo controle com as duas mãos (AM p.77)
+        val resist = maxOf(alvo.stats?.st ?: 10, alvo.stats?.ht ?: 10)
+        val rh = rolar3d6(); val rn = rolar3d6()
+        val margem = (stHeroi - rh) - (resist - rn)
+        if (rh > stHeroi || margem <= 0) {
+            log += "🫷 ${alvo.nome} resiste ao mata-leão. [ST $stHeroi rolou $rh vs $resist rolou $rn]"
+            return log.last()
+        }
+        val danoBruto = (margem * 1.5).toInt().coerceAtLeast(1)
+        val dn = HitLocationRules.aplicarDano(alvo.pvMax, danoBruto, DanoTipo.CONT, LocalAtaque.TORSO,
+            alvo.stats?.rd ?: 0, alvo.stats?.tolerancia ?: ToleranciaFerimentos.NORMAL)
+        InjuryRules.ferir(alvo, dn.pvSubtrair, alvo.stats?.ht ?: 10, random)
+        log += "🫳 Você aplica um mata-leão em ${alvo.nome}: margem $margem → ${dn.pvSubtrair} de dano no pescoço. [ST $stHeroi rolou $rh vs $resist rolou $rn]"
+        if (dn.pvSubtrair > 0 && alvo.vivo) {
+            alvo.condicoes.add(Condicao.SUFOCANDO)
+            log += "  └ ${alvo.nome} começa a SUFOCAR — perde fôlego a cada turno até escapar (MB p.437)."
+        }
+        verificarFim()
+        return log.last()
+    }
+
+    /**
      * Mover e Atacar (MB p.366): o herói se desloca e ataca em movimento. Corpo-a-corpo aproxima-se do
      * alvo (gastando até o Deslocamento) antes de golpear; a penalidade é tratada pelo motor (CaC −4 e
      * teto de NH 9; à distância −2 ou a Magnitude, o pior). Na defesa seguinte só Esquiva/Bloqueio (MB p.367).
@@ -716,6 +776,54 @@ class CombatSession(
         return AtaqueResultado(false, false, 0, false, txt)
     }
 
+    /** Lote PONTE-1 (AM p.69-70): o NPC aplica uma chave num membro do HERÓI já agarrado (Disputa de ST → dano cont). */
+    private fun npcChaveMembroHeroi(npc: Combatente, perna: Boolean = false): AtaqueResultado {
+        if (Condicao.AGARRADO !in heroi.condicoes) {
+            log += "• ${npc.nome} tenta uma chave, mas ainda não o agarrou."
+            return AtaqueResultado(false, false, 0, false, log.last())
+        }
+        val stNpc = npc.stats?.st ?: 10
+        val resist = maxOf(heroiPerfil.st, heroiPerfil.ht) + (if (perna) 4 else 0)
+        val rn = rolar3d6(); val rh = rolar3d6()
+        val membro = if (perna) LocalAtaque.PERNA else LocalAtaque.BRACO
+        val margem = (stNpc - rn) - (resist - rh)
+        if (rn > stNpc || margem <= 0) {
+            log += "🦾 Você resiste à chave de ${npc.nome}. [ST $stNpc rolou $rn vs $resist rolou $rh]"
+            return AtaqueResultado(false, false, 0, false, log.last())
+        }
+        val dn = HitLocationRules.aplicarDano(heroi.pvMax, margem, DanoTipo.CONT, membro, heroiPerfil.rd)
+        InjuryRules.ferir(heroi, dn.pvSubtrair, heroiPerfil.ht, random)
+        log += "🦾 ${npc.nome} torce seu ${membro.rotulo}: margem $margem → ${dn.pvSubtrair} de dano. [ST $stNpc rolou $rn vs $resist rolou $rh]"
+        verificarFim()
+        return AtaqueResultado(true, false, dn.pvSubtrair, false, log.last())
+    }
+
+    /** Lote PONTE-1 (AM p.77): o NPC aplica um mata-leão no HERÓI já agarrado (+3 ST, contusão no pescoço + sufoco). */
+    private fun npcMataLeaoHeroi(npc: Combatente): AtaqueResultado {
+        if (Condicao.AGARRADO !in heroi.condicoes) {
+            log += "• ${npc.nome} tenta o mata-leão, mas ainda não o agarrou."
+            return AtaqueResultado(false, false, 0, false, log.last())
+        }
+        val stNpc = (npc.stats?.st ?: 10) + 3
+        val resist = maxOf(heroiPerfil.st, heroiPerfil.ht)
+        val rn = rolar3d6(); val rh = rolar3d6()
+        val margem = (stNpc - rn) - (resist - rh)
+        if (rn > stNpc || margem <= 0) {
+            log += "🫷 Você resiste ao mata-leão de ${npc.nome}. [ST $stNpc rolou $rn vs $resist rolou $rh]"
+            return AtaqueResultado(false, false, 0, false, log.last())
+        }
+        val danoBruto = (margem * 1.5).toInt().coerceAtLeast(1)
+        val dn = HitLocationRules.aplicarDano(heroi.pvMax, danoBruto, DanoTipo.CONT, LocalAtaque.TORSO, heroiPerfil.rd)
+        InjuryRules.ferir(heroi, dn.pvSubtrair, heroiPerfil.ht, random)
+        log += "🫳 ${npc.nome} aplica um mata-leão em você: margem $margem → ${dn.pvSubtrair} de dano no pescoço. [ST $stNpc rolou $rn vs $resist rolou $rh]"
+        if (dn.pvSubtrair > 0 && heroi.vivo) {
+            heroi.condicoes.add(Condicao.SUFOCANDO)
+            log += "  └ você começa a SUFOCAR — perde fôlego a cada turno até escapar (MB p.437)."
+        }
+        verificarFim()
+        return AtaqueResultado(true, false, dn.pvSubtrair, false, log.last())
+    }
+
     /**
      * Desvencilhar-se (MB p.371): o herói AGARRADO/IMOBILIZADO se solta vencendo uma Disputa Rápida de ST.
      * Bônus do captor (proxy "agarra com 2 mãos"): +5 se agarrado, +10 se imobilizado; −4 se o captor está
@@ -965,6 +1073,8 @@ class CombatSession(
         // (Disputa de ST, exige tê-lo agarrado). Espelho de heroiAgarrar/heroiImobilizar.
         if (intencao.manobra == Manobra.AGARRAR && intencao.alvoId == heroi.id) return npcAgarraHeroi(npc, defesaHeroi)
         if (intencao.manobra == Manobra.IMOBILIZAR && intencao.alvoId == heroi.id) return npcImobilizaHeroi(npc)
+        if (intencao.manobra == Manobra.CHAVE_MEMBRO && intencao.alvoId == heroi.id) return npcChaveMembroHeroi(npc)
+        if (intencao.manobra == Manobra.MATA_LEAO && intencao.alvoId == heroi.id) return npcMataLeaoHeroi(npc)
 
         if (!intencaoAtacaHeroi(intencao)) {
             log += "• ${npc.nome}: ${intencao.manobra.rotulo} (${intencao.motivo})."

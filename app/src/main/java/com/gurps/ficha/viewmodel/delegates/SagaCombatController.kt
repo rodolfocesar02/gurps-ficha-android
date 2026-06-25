@@ -420,6 +420,22 @@ class SagaCombatController(
         depoisDaAcaoDoHeroi()
     }
 
+    /** Lote PONTE-1: Chave de Membro num alvo agarrado (Disputa de ST → dano cont). AM p.69-70. */
+    fun heroiChaveMembro(alvoId: String, perna: Boolean = false) {
+        val s = sessao ?: return
+        if (!s.combatenteAtual().ehHeroi || s.encerrado) return
+        s.heroiChaveMembro(alvoId, perna)
+        depoisDaAcaoDoHeroi()
+    }
+
+    /** Lote PONTE-1: Mata-Leão (estrangular com 2 mãos, +3 ST) num alvo agarrado. AM p.77. */
+    fun heroiMataLeao(alvoId: String) {
+        val s = sessao ?: return
+        if (!s.combatenteAtual().ehHeroi || s.encerrado) return
+        s.heroiMataLeao(alvoId)
+        depoisDaAcaoDoHeroi()
+    }
+
     /** Lote 408: Golpe Rápido — dois ataques corpo-a-corpo a −6 cada (mantém a defesa). MB p.370. */
     fun heroiGolpeRapido(alvoId: String, local: LocalAtaque) {
         val s = sessao ?: return
@@ -615,17 +631,19 @@ class SagaCombatController(
             if (!ranged && alvos.isNotEmpty() && Manobra.GOLPE_RAPIDO !in it) it.add(Manobra.GOLPE_RAPIDO) // Lote 408
             if (!ranged && alvos.isNotEmpty() && Manobra.ENCONTRAO !in it) it.add(Manobra.ENCONTRAO) // Lote 409
             if (!ranged && alvos.isNotEmpty() && Manobra.EMPURRAO !in it) it.add(Manobra.EMPURRAO) // Lote 410
-            // Imobilizar/Estrangular (Lotes 411/412): só fazem sentido com um inimigo já AGARRADO.
+            // Imobilizar/Estrangular/Chaves (Lotes 411/412/PONTE-1): só fazem sentido com um inimigo já AGARRADO.
             if (s.inimigos.any { e -> e.vivo && Condicao.AGARRADO in e.condicoes }) {
                 if (Manobra.IMOBILIZAR !in it) it.add(Manobra.IMOBILIZAR)
                 if (Manobra.ESTRANGULAR !in it) it.add(Manobra.ESTRANGULAR)
+                if (Manobra.CHAVE_MEMBRO !in it) it.add(Manobra.CHAVE_MEMBRO)
+                if (Manobra.MATA_LEAO !in it) it.add(Manobra.MATA_LEAO)
             }
             // Herói AGARRADO/IMOBILIZADO (Lote 422, MB p.371): manobras restritas + Desvencilhar-se. Sem
             // Apontar/Aguardar/Concentrar/Fintar/à distância nem ações de avanço; imobilizado mal age.
             if (Condicao.AGARRADO in s.heroi.condicoes || Condicao.IMOBILIZADO in s.heroi.condicoes) {
                 it.removeAll(listOf(Manobra.APONTAR, Manobra.AGUARDAR, Manobra.CONCENTRAR, Manobra.FINTAR,
                     Manobra.FOGO_RETENCAO, Manobra.ENCONTRAO, Manobra.EMPURRAO, Manobra.MOVER_E_ATACAR,
-                    Manobra.GOLPE_RAPIDO, Manobra.DERRUBAR, Manobra.AGARRAR))
+                    Manobra.GOLPE_RAPIDO, Manobra.DERRUBAR, Manobra.AGARRAR, Manobra.CHAVE_MEMBRO, Manobra.MATA_LEAO))
                 if (Condicao.IMOBILIZADO in s.heroi.condicoes)
                     it.removeAll(listOf(Manobra.MOVER, Manobra.ATAQUE, Manobra.ATAQUE_TOTAL, Manobra.MUDAR_POSTURA))
                 else it.remove(Manobra.MOVER) // agarrado não desloca sem 2× a ST do oponente (abstraído)

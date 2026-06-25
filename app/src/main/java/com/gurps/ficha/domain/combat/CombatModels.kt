@@ -50,6 +50,8 @@ enum class Manobra(val rotulo: String) {
     IMOBILIZAR("Imobilizar"),     // Lote 411: prende no chão um oponente agarrado (Disputa de ST) (MB p.371)
     ESTRANGULAR("Estrangular"),   // Lote 412: asfixia/estrangula um agarrado (Disputa de ST → sufoca) (MB p.371)
     DESVENCILHAR("Desvencilhar-se"), // Lote 422: herói AGARRADO se solta (Disputa Rápida de ST) (MB p.371)
+    CHAVE_MEMBRO("Chave de Membro"), // Lote PONTE-1: chave num membro de um alvo agarrado (Disputa de ST → dano cont) (AM p.69-70/81)
+    MATA_LEAO("Mata-Leão"),          // Lote PONTE-1: estrangulamento com 2 mãos (+3 ST) num alvo agarrado (AM p.77)
     APONTAR("Apontar"),            // mira arma à distância → +Precisão no próximo tiro (MB p.364)
     FOGO_RETENCAO("Fogo de Retenção"), // Lote 396: arma CdT 5+ cobre a área → acerta quem avançar (MB p.409)
     CONCENTRAR("Concentrar-se"),

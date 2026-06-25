@@ -3046,6 +3046,13 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - **Recomendação registrada** (maior valor × menor custo): Ataque Telegráfico (par do Enganoso), luta agarrada profunda (chaves/Mata-Leão estendendo o lote 422), Sangramento Grave + incapacitação de membro (item 5 do teste de batalha), Ataque Dedicado/Defensivo. Fora de escopo: posicional/hexágono, montaria, cinematográfico, dado de arma do NPC. Mudança só de documentação (não compila Kotlin).
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
+### Lote PONTE-1 — 24 de Junho de 2026
+**Saga combate: chaves de luta agarrada (Chave de Membro + Mata-Leão) — 1ª ponte de Artes Marciais (branch GURPS-Saga)**
+- Primeira regra do mapa `Artes_Marciais_Regras_Combate.md` (ponte: regras que sobrevivem ao futuro pilar de hexágono). Estende o agarrão herói↔NPC (lote 422) com 2 finalizações sobre alvo AGARRADO.
+- **Chave de Membro** (AM p69-70/81): Disputa Rápida de ST (vítima resiste com max ST/HT; +4 se perna) → dano por **contusão = margem** no braço/perna. **Mata-Leão** (AM p77): estrangular com 2 mãos (**+3 ST**) → dano no pescoço (×1,5) + **SUFOCANDO**. Nas **duas direções** (herói→NPC via manobra; NPC→herói via `npcChaveMembroHeroi`/`npcMataLeaoHeroi` despachados em `npcResolve`). `NpcCombatBrain`: NPC desarmado que já agarrou o herói escolhe Mata-Leão (agress≥8)/Chave (≥6)/Imobilizar por agressividade. UI: 2 diálogos de alvo agarrado. 2 testes determinísticos.
+- **Deferido honesto (sem chute):** sem NH de perícia de luta no perfil (Disputa por ST pura); RD flexível não distinguida da rígida; ramo "sanguíneo"/fadiga do mata-leão; chaves finas (dedo/cabeça/pescoço/tesoura/triângulo) que exigem ponto de impacto/posição que o modelo de faixas não carrega. Build verde 2 variantes (+revisão adversarial).
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
 ### Lote 422 — 24 de Junho de 2026
 **Saga combate: luta agarrada NPC→herói (Desvencilhar-se) — fecha as últimas regras codáveis do Combate.md (branch GURPS-Saga)**
 - **Ponto cego do audit:** o grep original (só `##`) tinha pulado subtópicos `###`/`####`. Achados e fechados: "Aparando Armas Pesadas" e "Preparando Armas e Outros Equipamentos" (deferidos/feitos com razão honesta), e a luta agarnada NPC→herói (lacuna REAL, não deferimento).

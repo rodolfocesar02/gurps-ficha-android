@@ -67,7 +67,12 @@ object NpcCombatBrain {
             val heroiAgarrado = alvo != null && Condicao.AGARRADO in alvo.condicoes
             val heroiImobilizado = alvo != null && Condicao.IMOBILIZADO in alvo.condicoes
             if (desarmadoNpc && !heroiImobilizado) {
-                if (heroiAgarrado) return IntencaoNpc(Manobra.IMOBILIZAR, alvoId, motivo = "imobiliza o herói agarrado")
+                // Já agarrou o herói: brutos agressivos partem para a chave/mata-leão (Lote PONTE-1); senão imobilizam.
+                if (heroiAgarrado) return when {
+                    agress >= 8 -> IntencaoNpc(Manobra.MATA_LEAO, alvoId, motivo = "mata-leão no herói agarrado")
+                    agress >= 6 -> IntencaoNpc(Manobra.CHAVE_MEMBRO, alvoId, motivo = "chave no herói agarrado")
+                    else -> IntencaoNpc(Manobra.IMOBILIZAR, alvoId, motivo = "imobiliza o herói agarrado")
+                }
                 if (random.nextInt(2) == 0) return IntencaoNpc(Manobra.AGARRAR, alvoId, motivo = "tenta agarrar o herói")
             }
             val usaTotal = agress >= 7 && Manobra.ATAQUE_TOTAL in legais

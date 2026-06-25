@@ -176,6 +176,8 @@ private fun ManeuverCards(viewModel: FichaViewModel, estado: com.gurps.ficha.vie
     var empurraoDialogo by remember { mutableStateOf(false) }
     var imobilizarDialogo by remember { mutableStateOf(false) }
     var estrangularDialogo by remember { mutableStateOf(false) }
+    var chaveMembroDialogo by remember { mutableStateOf(false) } // Lote PONTE-1
+    var mataLeaoDialogo by remember { mutableStateOf(false) }     // Lote PONTE-1
     var posturaDialogo by remember { mutableStateOf(false) }
     var defesaTotalDialogo by remember { mutableStateOf(false) }
 
@@ -210,6 +212,8 @@ private fun ManeuverCards(viewModel: FichaViewModel, estado: com.gurps.ficha.vie
                             m == Manobra.EMPURRAO -> empurraoDialogo = true
                             m == Manobra.IMOBILIZAR -> imobilizarDialogo = true
                             m == Manobra.ESTRANGULAR -> estrangularDialogo = true
+                            m == Manobra.CHAVE_MEMBRO -> chaveMembroDialogo = true // Lote PONTE-1
+                            m == Manobra.MATA_LEAO -> mataLeaoDialogo = true         // Lote PONTE-1
                             m == Manobra.MUDAR_POSTURA -> posturaDialogo = true
                             m == Manobra.DEFESA_TOTAL -> defesaTotalDialogo = true
                             m == Manobra.FOGO_RETENCAO -> viewModel.sagaCombateFogoRetencao() // Lote 396: área, sem alvo
@@ -350,6 +354,26 @@ private fun ManeuverCards(viewModel: FichaViewModel, estado: com.gurps.ficha.vie
             alvos = estado.combatentes.filter { !it.ehHeroi && it.vivo && it.condicoes.contains("agarrado") },
             onConfirmar = { alvoId -> viewModel.sagaCombateEstrangular(alvoId); estrangularDialogo = false },
             onFechar = { estrangularDialogo = false }
+        )
+    }
+
+    if (chaveMembroDialogo) {
+        SubDialogoEscolherAlvo(
+            titulo = "Chave de membro em quem? (precisa estar agarrado)",
+            descricaoConfirmar = "Aplicar chave no braço do alvo agarrado (Disputa de ST; dano por contusão)",
+            alvos = estado.combatentes.filter { !it.ehHeroi && it.vivo && it.condicoes.contains("agarrado") },
+            onConfirmar = { alvoId -> viewModel.sagaCombateChaveMembro(alvoId); chaveMembroDialogo = false },
+            onFechar = { chaveMembroDialogo = false }
+        )
+    }
+
+    if (mataLeaoDialogo) {
+        SubDialogoEscolherAlvo(
+            titulo = "Mata-leão em quem? (precisa estar agarrado)",
+            descricaoConfirmar = "Estrangular com as duas mãos (+3 ST; dano no pescoço e sufocamento)",
+            alvos = estado.combatentes.filter { !it.ehHeroi && it.vivo && it.condicoes.contains("agarrado") },
+            onConfirmar = { alvoId -> viewModel.sagaCombateMataLeao(alvoId); mataLeaoDialogo = false },
+            onFechar = { mataLeaoDialogo = false }
         )
     }
 
