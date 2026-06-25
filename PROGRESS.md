@@ -3046,6 +3046,13 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - **Recomendação registrada** (maior valor × menor custo): Ataque Telegráfico (par do Enganoso), luta agarrada profunda (chaves/Mata-Leão estendendo o lote 422), Sangramento Grave + incapacitação de membro (item 5 do teste de batalha), Ataque Dedicado/Defensivo. Fora de escopo: posicional/hexágono, montaria, cinematográfico, dado de arma do NPC. Mudança só de documentação (não compila Kotlin).
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
+### Lote PONTE-3 — 24 de Junho de 2026
+**Saga combate: Ataque Telegráfico (AM p109) — 3ª ponte de Artes Marciais (branch GURPS-Saga)**
+- **Ataque Telegráfico** (par/oposto do Ataque Enganoso, lote 401): **+4 para acertar, mas +2 em TODAS as defesas do alvo**. Mutuamente exclusivo com o Enganoso. O **+4 NÃO conta para o golpe fulminante** — o crítico é recomputado com o NH ANTES do +4 (`atk.copy(critico = CriticoRules.classificar(soma, nhEfetivo−4))`); acerto/margem seguem com o +4. Não acumula com Avaliar. Em `resolverGolpeHeroi`/`heroiAtaca` + wrappers + UI (toggle Switch no diálogo de ataque, exclusivo com o stepper do Enganoso, sem o limite de NH≥12). Teste estatístico (acerta mais).
+- **Revisão adversarial achou e corrigiu 1 bug ALTA** que eu introduzi: o recompute do crítico (`copy(critico=...)`) podia transformar um ACERTO normal em FALHA CRÍTICA (soma 17 + NH efetivo alto → `classificar(17, NH−4)` vira falha) — o herói acertava com dano E sofria erro crítico no mesmo golpe. Fix: só rebaixar DECISIVO→NORMAL, **nunca** promover a falha. +teste que tranca isso (2000 lances NH 18).
+- **Deferido honesto:** o NPC usar Ataque Telegráfico proativamente (o cérebro não escolheria; só o herói usa). Build verde 2 variantes.
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
 ### Lote PONTE-2 — 24 de Junho de 2026
 **Saga combate: Sangramento (MB p420 / AM p138) — 2ª ponte de Artes Marciais (branch GURPS-Saga)**
 - **Sangramento** no motor: ferimento por corte/perfuração (contusão não sangra) marca `Condicao.SANGRANDO` + estado no `Combatente` (lesão, penalidade de local, intervalo, testes limpos). A cada intervalo (60s comum; 30s em vitais/pescoço/crânio com penalidade, AM p138) o ferido testa HT −(lesão/5)−penalidade no início do turno (`avancarTurno`); falha = −1 PV (−3 se 18); sucesso decisivo (≤4) ou 3 intervalos limpos = estanca. **Recuperar ≥1 PV estanca** (MB p52, no caminho de cura em combate). Marca nos DOIS sentidos (funil `CombatResolver.resolverTroca`).

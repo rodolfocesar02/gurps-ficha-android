@@ -297,12 +297,12 @@ class SagaCombatController(
 
     // ── Ações do herói (a UI chama) ──────────────────────────────────────────
 
-    fun heroiAtaca(alvoId: String, manobra: Manobra, local: LocalAtaque, modo: AtaqueTotalModo = AtaqueTotalModo.DETERMINADO, enganoso: Int = 0) {
+    fun heroiAtaca(alvoId: String, manobra: Manobra, local: LocalAtaque, modo: AtaqueTotalModo = AtaqueTotalModo.DETERMINADO, enganoso: Int = 0, telegrafico: Boolean = false) {
         val s = sessao ?: return
         if (!s.combatenteAtual().ehHeroi || s.encerrado) return
         val ataque = ataques.getOrNull(ataqueSelecionado) ?: return
         if (armaDespreparadaBloqueia(ataque)) return // Lote 398: arma despreparada → precisa Preparar antes
-        s.heroiAtaca(ataque, alvoId, manobra, local, modo, enganoso)
+        s.heroiAtaca(ataque, alvoId, manobra, local, modo, enganoso, telegrafico)
         depoisDaAcaoDoHeroi()
     }
 

@@ -1268,6 +1268,34 @@ class CombatSessionTest {
         assertTrue(g.pvAtual < g.pvMax)
     }
 
+    // Lote PONTE-3: Ataque Telegráfico (AM p109) — +4 no acerto, +2 nas defesas do alvo (vantagem líquida +2).
+    @Test
+    fun `Ataque Telegrafico acerta mais que o ataque normal`() {
+        fun acertos(telegrafico: Boolean): Int = (1..300).count { seed ->
+            val g = goblin()
+            val enc = CombatEncounter(listOf(heroi(), g), mapOf("goblin" to 1), seed = 1L)
+            val s = CombatSession(enc, perfilHeroi(), Random(seed.toLong()))
+            val espada = AtaqueHeroi("Espada", nh = 10, danoExpr = "1d", tipo = DanoTipo.CORT)
+            s.heroiAtaca(espada, "goblin", Manobra.ATAQUE, LocalAtaque.TORSO, telegrafico = telegrafico).danoAplicado > 0
+        }
+        val com = acertos(true); val sem = acertos(false)
+        assertTrue("Telegráfico ($com) deve causar dano em mais lances que o normal ($sem)", com > sem)
+    }
+
+    @Test
+    fun `Ataque Telegrafico que acerta nunca dispara erro critico`() {
+        // NH 14 +4 = 18: com soma 17, o recompute do crítico NÃO pode virar FALHA_CRITICA num acerto (bug da revisão).
+        repeat(2000) { seed ->
+            val g = goblin(pv = 50)
+            val enc = CombatEncounter(listOf(heroi(), g), mapOf("goblin" to 1), seed = 1L)
+            val s = CombatSession(enc, perfilHeroi(), Random(seed.toLong()))
+            val espada = AtaqueHeroi("Espada", nh = 14, danoExpr = "1d", tipo = DanoTipo.CORT)
+            val r = s.heroiAtaca(espada, "goblin", Manobra.ATAQUE, LocalAtaque.TORSO, telegrafico = true)
+            if (r.danoAplicado > 0)
+                assertFalse("acerto telegráfico não pode coexistir com erro crítico (seed $seed)", s.log.any { it.contains("Erro crítico") })
+        }
+    }
+
     @Test
     fun `Mata-Leao num alvo agarrado causa dano e deixa SUFOCANDO`() {
         // PV alto (60) p/ o alvo SOBREVIVER ao estrangulamento (SUFOCANDO só entra se vivo); ST baixa garante a vitória.

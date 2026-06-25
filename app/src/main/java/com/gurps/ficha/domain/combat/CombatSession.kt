@@ -140,7 +140,8 @@ class CombatSession(
         manobra: Manobra = Manobra.ATAQUE,
         local: LocalAtaque = LocalAtaque.TORSO,
         ataqueTotalModo: AtaqueTotalModo = AtaqueTotalModo.DETERMINADO,
-        enganoso: Int = 0 // Lote 401: passos de Ataque Enganoso (MB p.369)
+        enganoso: Int = 0, // Lote 401: passos de Ataque Enganoso (MB p.369)
+        telegrafico: Boolean = false // Lote PONTE-3: Ataque Telegráfico (AM p.109)
     ): AtaqueResultado {
         // Arma despreparada (Lote 398, MB p.270): não dá pra atacar até re-empunhá-la com um Preparar.
         if (ataque.rotulo == armaDespreparadaRotulo) {
@@ -151,7 +152,7 @@ class CombatSession(
         val alvo = inimigos.firstOrNull { it.id == alvoId && it.vivo }
             ?: return AtaqueResultado(false, false, 0, false, "Alvo inválido ou já fora de combate.").also { log += it.texto }
         golpeForaDeAlcance(ataque, alvo)?.let { return it }
-        val r = resolverGolpeHeroi(ataque, alvo, manobra, local, ataqueTotalModo, enganoso = enganoso)
+        val r = resolverGolpeHeroi(ataque, alvo, manobra, local, ataqueTotalModo, enganoso = enganoso, telegrafico = telegrafico)
         limparAvaliar(); limparApontar(); limparFinta() // bônus de Avaliar/Mira consumidos neste ataque
         // Arma desbalanceada: quem atacou com ela não pode aparar até o próximo turno (MB p.270).
         if (!ataque.aDistancia && ataque.apararTipo == ApararTipo.DESBALANCEADA) atacouDesbalanceada = true
@@ -472,9 +473,12 @@ class CombatSession(
         ataqueTotalModo: AtaqueTotalModo,
         modAdicional: Int = 0,
         rotuloModAdicional: String = "",
-        enganoso: Int = 0 // Lote 401: Ataque Enganoso — passos de −2 no NH por −1 na defesa do alvo (MB p.369)
+        enganoso: Int = 0, // Lote 401: Ataque Enganoso — passos de −2 no NH por −1 na defesa do alvo (MB p.369)
+        telegrafico: Boolean = false // Lote PONTE-3: Ataque Telegráfico — +4 p/ acertar, mas +2 nas defesas do alvo (AM p.109)
     ): AtaqueResultado {
         val dist = encounter.distancia(alvo)
+        // Telegráfico e Enganoso são mutuamente exclusivos (AM p.109): o telegráfico vence se ambos vierem.
+        val eng = if (telegrafico) 0 else enganoso
         // Rajada (MB p.374): com CdT≥2 dispara a rajada cheia → bônus para acertar por nº de tiros.
         val tiros = if (ataque.aDistancia) ataque.cadenciaTiro.coerceAtLeast(1) else 1
         val modsExtra: List<CombatActions.ComponenteMod> = buildList {
@@ -506,20 +510,30 @@ class CombatSession(
                     if (excedente > 0) add(CombatActions.ComponenteMod("teto de pontaria (2×Acc)", -excedente))
                 }
                 bonusCadenciaTiro(tiros).let { if (it != 0) add(CombatActions.ComponenteMod("rajada ${tiros} tiros", it)) }
-            } else if (avaliarAlvoId == alvo.id && avaliarStacks > 0) {
+            } else if (avaliarAlvoId == alvo.id && avaliarStacks > 0 && !telegrafico) {
                 // Avaliar só vale corpo-a-corpo, contra o alvo avaliado, no ataque seguinte (MB p.365).
+                // O +4 do Telegráfico NÃO acumula com o bônus de Avaliar (AM p.109).
                 add(CombatActions.ComponenteMod("avaliar", avaliarStacks))
             }
             if (modAdicional != 0) add(CombatActions.ComponenteMod(rotuloModAdicional.ifBlank { "mod" }, modAdicional))
             // Ataque Enganoso (Lote 401, MB p.369): −2 no NH por passo (em troca de −1 na defesa do alvo).
-            if (enganoso > 0) add(CombatActions.ComponenteMod("ataque enganoso", -2 * enganoso))
+            if (eng > 0) add(CombatActions.ComponenteMod("ataque enganoso", -2 * eng))
+            // Ataque Telegráfico (Lote PONTE-3, AM p.109): +4 para acertar (em troca de +2 nas defesas do alvo).
+            if (telegrafico) add(CombatActions.ComponenteMod("ataque telegráfico", 4))
         }
-        val atk = CombatActions.resolverAtaque(
+        val atkRaw = CombatActions.resolverAtaque(
             nhBaseArma = ataque.nh, manobra = manobra, postura = heroi.postura,
             local = local, visibilidade = Visibilidade.NORMAL, ataqueTotalModo = ataqueTotalModo,
             aDistancia = ataque.aDistancia, modsExtra = modsExtra,
             magnitudeArma = if (ataque.aDistancia) ataque.magnitude else null, random = random
         )
+        // Telegráfico (AM p.109): o +4 ajuda a ACERTAR, mas NÃO concede golpe fulminante. Se o golpe só seria
+        // DECISIVO por causa do +4 (NH antes do +4 não o classificaria), rebaixa para acerto NORMAL (mantém o
+        // dano, perde a anulação de defesa). NUNCA promove para FALHA CRÍTICA — um sucesso jamais vira erro.
+        val atk = if (telegrafico && atkRaw.critico == CriticoRules.ResultadoCritico.DECISIVO) {
+            val recl = CriticoRules.classificar(atkRaw.soma, atkRaw.calculo.nhEfetivo - 4)
+            atkRaw.copy(critico = if (recl == CriticoRules.ResultadoCritico.DECISIVO) CriticoRules.ResultadoCritico.DECISIVO else CriticoRules.ResultadoCritico.NORMAL)
+        } else atkRaw
         // Contra ataque à distância o alvo só Esquiva; corpo-a-corpo usa a melhor defesa.
         val (defTipo, defValor) = if (ataque.aDistancia)
             CombatResolver.TipoDefesa.ESQUIVA to esquivaNpc(alvo) else melhorDefesaNpc(alvo)
@@ -527,8 +541,8 @@ class CombatSession(
         val penFinta = if (alvo.id == fintaAlvoId) fintaPenalidade else 0
         // Agarrado (Lote 386, MB p.370): o alvo preso defende-se mal (−4).
         val penAgarrado = if (Condicao.AGARRADO in alvo.condicoes) 4 else 0
-        // Ataque Enganoso (Lote 401, MB p.369): cada passo (−2 no meu NH) reduz a defesa do alvo em −1.
-        val defValorFinal = (defValor - penFinta - penAgarrado - enganoso).coerceAtLeast(0)
+        // Ataque Enganoso (−1/passo na defesa do alvo) OU Telegráfico (+2 na defesa do alvo) — exclusivos (eng já zerado se telegráfico).
+        val defValorFinal = (defValor - penFinta - penAgarrado - eng + (if (telegrafico) 2 else 0)).coerceAtLeast(0)
         val defSoma = rolar3d6()
         // Além de 1/2D, o dano cai pela metade (MB p.270) — aplica no dado básico antes de RD.
         val meioDano = ataque.aDistancia && ataque.meioDano > 0 && dist >= ataque.meioDano

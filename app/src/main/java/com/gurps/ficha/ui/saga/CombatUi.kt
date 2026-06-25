@@ -244,12 +244,12 @@ private fun ManeuverCards(viewModel: FichaViewModel, estado: com.gurps.ficha.vie
             ataques = estado.ataques,
             ataqueSelecionado = estado.ataqueSelecionado,
             ambidestro = estado.heroiAmbidestro,
-            onConfirmar = { alvoId, local, modo, offHand, enganoso ->
+            onConfirmar = { alvoId, local, modo, offHand, enganoso, telegrafico ->
                 when {
                     ehMoverAtacar -> viewModel.sagaCombateMoverEAtacar(alvoId, local)
                     manobra == Manobra.GOLPE_RAPIDO -> viewModel.sagaCombateGolpeRapido(alvoId, local) // Lote 408
                     modo == AtaqueTotalModo.DUPLO && offHand != null -> viewModel.sagaCombateAtacarDuplo(alvoId, local, offHand)
-                    else -> viewModel.sagaCombateAtacar(alvoId, manobra, local, modo, enganoso)
+                    else -> viewModel.sagaCombateAtacar(alvoId, manobra, local, modo, enganoso, telegrafico)
                 }
                 alvoDialogo = null
             },
@@ -634,7 +634,7 @@ private fun SubDialogoAlvoLocal(
     ataques: List<AtaqueHeroi>,
     ataqueSelecionado: Int,
     ambidestro: Boolean,
-    onConfirmar: (alvoId: String, local: LocalAtaque, modo: AtaqueTotalModo, offHandIndex: Int?, enganoso: Int) -> Unit,
+    onConfirmar: (alvoId: String, local: LocalAtaque, modo: AtaqueTotalModo, offHandIndex: Int?, enganoso: Int, telegrafico: Boolean) -> Unit,
     onFechar: () -> Unit
 ) {
     var alvoId by remember { mutableStateOf(alvos.firstOrNull()?.id ?: "") }
@@ -652,6 +652,7 @@ private fun SubDialogoAlvoLocal(
     val maxEnganoso = if (armaDistancia || manobra != Manobra.ATAQUE) 0
         else (((ataques.getOrNull(ataqueSelecionado)?.nh ?: 10) - 10) / 2).coerceIn(0, 4)
     var enganoso by remember { mutableIntStateOf(0) }
+    var telegrafico by remember { mutableStateOf(false) } // Lote PONTE-3: Ataque Telegráfico (AM p.109)
 
     AlertDialog(
         onDismissRequest = onFechar,
@@ -690,7 +691,7 @@ private fun SubDialogoAlvoLocal(
                             if (enganoso == 0) "  toque +  (cada passo: −2 no acerto, −1 na defesa do alvo; até $maxEnganoso)  "
                             else "  $enganoso  →  −${enganoso * 2} no acerto / −$enganoso na defesa do alvo  ",
                             style = MaterialTheme.typography.bodyMedium)
-                        OutlinedButton(onClick = { if (enganoso < maxEnganoso) enganoso++ }, enabled = enganoso < maxEnganoso,
+                        OutlinedButton(onClick = { if (enganoso < maxEnganoso && !telegrafico) enganoso++ }, enabled = enganoso < maxEnganoso && !telegrafico,
                             modifier = Modifier.semantics { contentDescription = "Aumentar engano" }) { Text("+") }
                     }
                 } else if (manobra == Manobra.ATAQUE && !armaDistancia) {
@@ -699,6 +700,19 @@ private fun SubDialogoAlvoLocal(
                     Text("Ataque Enganoso indisponível: o NH efetivo não pode cair abaixo de 10, então é preciso NH ≥ 12 no ataque escolhido.",
                         style = MaterialTheme.typography.bodySmall, fontStyle = FontStyle.Italic,
                         color = MaterialTheme.colorScheme.onSurfaceVariant)
+                }
+                // Ataque Telegráfico (Lote PONTE-3, AM p.109): +4 para acertar, mas +2 nas defesas do alvo. Oposto do
+                // Enganoso (exclusivos). Corpo-a-corpo apenas; sem o limite de NH≥12 (o +4 nunca derruba o NH).
+                if (manobra == Manobra.ATAQUE && !armaDistancia) {
+                    Spacer(Modifier.height(8.dp))
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Switch(checked = telegrafico, enabled = enganoso == 0,
+                            onCheckedChange = { telegrafico = it },
+                            modifier = Modifier.semantics { contentDescription = "Ataque telegráfico: +4 para acertar, +2 nas defesas do alvo" })
+                        Spacer(Modifier.width(8.dp))
+                        Text("Ataque Telegráfico (+4 no acerto, mas +2 em todas as defesas do alvo)",
+                            style = MaterialTheme.typography.bodyMedium)
+                    }
                 }
                 if (manobra == Manobra.ATAQUE_TOTAL) {
                     Spacer(Modifier.height(8.dp))
@@ -741,7 +755,8 @@ private fun SubDialogoAlvoLocal(
                 onClick = {
                     if (alvoId.isNotBlank())
                         onConfirmar(alvoId, local, modo, if (modo == AtaqueTotalModo.DUPLO) offHand else null,
-                            if (manobra == Manobra.ATAQUE) enganoso else 0)
+                            if (manobra == Manobra.ATAQUE) enganoso else 0,
+                            manobra == Manobra.ATAQUE && telegrafico)
                 },
                 enabled = alvoId.isNotBlank() && !(modo == AtaqueTotalModo.DUPLO && offHand == null),
                 modifier = Modifier.semantics { contentDescription = "Confirmar ataque" }
