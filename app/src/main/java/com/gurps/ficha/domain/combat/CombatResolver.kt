@@ -173,7 +173,9 @@ object CombatResolver {
         }
 
         val dano = HitLocationRules.aplicarDano(defensor.pvMax, danoBaseRolado, danoTipo, local, rdLocal, tolerancia)
-        val ferimento = InjuryRules.ferir(defensor, dano.pvSubtrair, htDefensor, randomFerimento, forcarFerimentoGrave)
+        // Lote PONTE-2: passa tipo/local p/ marcar sangramento (corte/perfuração). É o funil principal de ferimento.
+        val ferimento = InjuryRules.ferir(defensor, dano.pvSubtrair, htDefensor, randomFerimento, forcarFerimentoGrave,
+            tipo = danoTipo, local = local)
         val motivoSemDefesa = when {
             anulada && critico -> " (defesa ANULADA por golpe decisivo)"
             anulada && surpresa -> " (defesa ANULADA por surpresa)"

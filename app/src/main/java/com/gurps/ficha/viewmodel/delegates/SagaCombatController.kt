@@ -244,7 +244,8 @@ class SagaCombatController(
         val ht = if (alvo.ehHeroi) s.heroiPerfil.ht else (alvo.stats?.ht ?: 10)
         val rd = if (alvo.ehHeroi) s.heroiPerfil.rd else (alvo.stats?.rd ?: 0)
         val dano = HitLocationRules.aplicarDano(alvo.pvMax, danoBase, tipo, local, rd, alvo.stats?.tolerancia ?: ToleranciaFerimentos.NORMAL)
-        val fer = InjuryRules.ferir(alvo, dano.pvSubtrair, ht, Random.Default)
+        // Lote PONTE-2: passa tipo/local p/ o dano narrado (corte/perfuração) também marcar sangramento, igual ao combate.
+        val fer = InjuryRules.ferir(alvo, dano.pvSubtrair, ht, Random.Default, tipo = tipo, local = local)
         val txt = "✴️ ${alvo.nome}: ${dano.texto} | ${fer.efeito}"
         s.log += txt
         if (alvo.ehHeroi) viewModel.sagaDefinirPvAtual(alvo.pvAtual.coerceAtLeast(0))
@@ -277,7 +278,11 @@ class SagaCombatController(
         val s = sessao ?: return null
         val h = s.heroi
         when (recurso.lowercase().trim()) {
-            "pv" -> { h.pvAtual = (h.pvAtual + delta).coerceAtMost(h.pvMax); viewModel.sagaDefinirPvAtual(h.pvAtual.coerceAtLeast(0)) }
+            "pv" -> {
+                h.pvAtual = (h.pvAtual + delta).coerceAtMost(h.pvMax); viewModel.sagaDefinirPvAtual(h.pvAtual.coerceAtLeast(0))
+                // Lote PONTE-2: cura em combate (primeiros socorros MB p.424 / magia / vantagem Cura MB p.52) estanca o sangramento.
+                if (delta > 0 && com.gurps.ficha.domain.combat.InjuryRules.estancarSangramento(h)) s.log += "🩹 ${h.nome} estanca o sangramento."
+            }
             "pf" -> { h.pfAtual = (h.pfAtual + delta).coerceIn(0, pfMaxFicha); viewModel.sagaDefinirPfAtual(h.pfAtual) }
             else -> return null
         }

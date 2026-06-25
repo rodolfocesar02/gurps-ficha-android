@@ -88,7 +88,8 @@ object InjuryRules {
      * Aplica o resultado de um golpe diretamente a um [Combatente] (muta PV e condições).
      * Integração pedida no B4; o executor real `aplicar_dano` (B5) usa isto encadeado ao B3.
      */
-    fun ferir(c: Combatente, dano: Int, ht: Int, random: Random, forcarFerimentoGrave: Boolean = false): ResultadoFerimento {
+    fun ferir(c: Combatente, dano: Int, ht: Int, random: Random, forcarFerimentoGrave: Boolean = false,
+              tipo: DanoTipo? = null, local: LocalAtaque? = null): ResultadoFerimento {
         val r = aplicarGolpe(c.pvAtual, c.pvMax, ht, dano, random, forcarFerimentoGrave)
         c.pvAtual = r.pvDepois
         // Choque (Lote 382): acumula os PV perdidos; vira penalidade no próximo turno do combatente (MB p.419).
@@ -98,6 +99,84 @@ object InjuryRules {
             EfeitoFerimento.ATORDOADO_CAIDO -> { c.condicoes.add(Condicao.ATORDOADO); c.condicoes.add(Condicao.CAIDO) }
             EfeitoFerimento.NENHUM -> {}
         }
+        // Sangramento (Lote PONTE-2, MB p.420 / AM p.138): corte/perfuração marca/agrava o sangramento (tipo/local
+        // só vêm pelo funil de troca; default null = sem marcação, mantém call-sites antigos sem regressão).
+        if (dano > 0 && c.vivo && tipo != null && local != null) {
+            classificarSangramento(tipo, local)?.let { (pen, intervalo) ->
+                if (!c.sangramentoAtivo) {
+                    c.sangramentoAtivo = true; c.condicoes.add(Condicao.SANGRANDO)
+                    c.sangramentoUltimaRodada = Int.MIN_VALUE; c.sangramentoTestesLimpos = 0
+                }
+                c.sangramentoLesaoPV = maxOf(c.sangramentoLesaoPV, dano)
+                c.sangramentoPenalidadeLocal = maxOf(c.sangramentoPenalidadeLocal, pen)
+                c.sangramentoIntervaloSeg = minOf(c.sangramentoIntervaloSeg, intervalo)
+            }
+        }
         return r
+    }
+
+    /**
+     * Sangramento (MB p.420 / AM p.138): contusão NÃO sangra; corte/perfuração sim. Devolve (penalidade extra de
+     * local, intervalo em segundos) ou null se não sangra. Locais graves (AM p.138) testam a cada 30s com penalidade.
+     */
+    fun classificarSangramento(tipo: DanoTipo, local: LocalAtaque): Pair<Int, Int>? {
+        if (tipo == DanoTipo.CONT) return null
+        return when (local) {
+            LocalAtaque.VITAIS -> 4 to 30
+            // Pescoço grave (−2, 30s) só vale para corte/perfuração; perfurantes (pi) caem no comum (AM p.138).
+            LocalAtaque.PESCOCO -> if (tipo == DanoTipo.CORT || tipo == DanoTipo.PERF) 2 to 30 else 0 to 60
+            LocalAtaque.CRANIO, LocalAtaque.OLHO -> 0 to 30
+            else -> 0 to 60
+        }
+    }
+
+    /**
+     * Um teste de sangramento (chamado pelo motor quando fecha um intervalo). HT −(lesão/5) −penalidade de local.
+     * Sucesso decisivo (≤4) ou 3 intervalos limpos = estanca; sucesso = não sangra neste intervalo; falha = perde
+     * 1 PV (3 se falha crítica/18), reprocessando morte/inconsciência. Retorna o ResultadoFerimento ou null se não sangra.
+     */
+    fun tickSangramento(c: Combatente, ht: Int, random: Random): ResultadoFerimento? {
+        if (!c.sangramentoAtivo) return null
+        // Penalidade −1 a cada 5 PV de LESÃO ACUMULADA (déficit de PV atual) + penalidade de local grave (MB p.420 / AM p.138).
+        val lesao = (c.pvMax - c.pvAtual).coerceAtLeast(0)
+        val htEf = ht - (lesao / 5) - c.sangramentoPenalidadeLocal
+        val soma = rolar3d6(random)
+        val logs = mutableListOf<String>()
+        return when {
+            soma <= 4 -> { // sucesso decisivo → estanca de vez (MB p.420)
+                estancarSangramento(c)
+                logs.add("sangramento estanca (HT $htEf, rolou $soma — decisivo).")
+                ResultadoFerimento(c.pvAtual, EfeitoFerimento.NENHUM, logs)
+            }
+            soma < 17 && soma <= htEf -> { // 3d6: 17/18 NUNCA são sucesso (cf. defesaBemSucedida). Não sangra neste intervalo.
+                c.sangramentoTestesLimpos += 1
+                if (c.sangramentoTestesLimpos >= 3) { estancarSangramento(c); logs.add("sangramento parou (3 intervalos sem sangrar).") }
+                else logs.add("não sangra neste intervalo (HT $htEf, rolou $soma).")
+                ResultadoFerimento(c.pvAtual, EfeitoFerimento.NENHUM, logs)
+            }
+            else -> { // falha (soma > htEf, ou auto-falha 17/18) → perde PV
+                c.sangramentoTestesLimpos = 0
+                // Falha crítica de HT (18 sempre; 17 se HT efetivo ≤ 15) → hemorragia maior: −3 PV. MB p.420.
+                val perda = if (soma == 18 || (soma == 17 && htEf <= 15)) 3 else 1
+                val r = aplicarGolpe(c.pvAtual, c.pvMax, ht, perda, random)
+                c.pvAtual = r.pvDepois
+                when (r.efeito) {
+                    EfeitoFerimento.MORTO, EfeitoFerimento.INCONSCIENTE -> c.condicoes.add(Condicao.INCONSCIENTE)
+                    EfeitoFerimento.ATORDOADO_CAIDO -> { c.condicoes.add(Condicao.ATORDOADO); c.condicoes.add(Condicao.CAIDO) }
+                    EfeitoFerimento.NENHUM -> {}
+                }
+                logs.add("sangra (HT $htEf, rolou $soma): perde $perda PV → ${c.pvAtual}/${c.pvMax}.")
+                ResultadoFerimento(c.pvAtual, r.efeito, logs)
+            }
+        }
+    }
+
+    /** Estanca o sangramento (Primeiros Socorros, cura de ≥1 PV — MB p.52). Retorna true se havia sangramento. */
+    fun estancarSangramento(c: Combatente): Boolean {
+        if (!c.sangramentoAtivo) return false
+        c.sangramentoAtivo = false; c.condicoes.remove(Condicao.SANGRANDO)
+        c.sangramentoLesaoPV = 0; c.sangramentoPenalidadeLocal = 0
+        c.sangramentoIntervaloSeg = 60; c.sangramentoUltimaRodada = Int.MIN_VALUE; c.sangramentoTestesLimpos = 0
+        return true
     }
 }

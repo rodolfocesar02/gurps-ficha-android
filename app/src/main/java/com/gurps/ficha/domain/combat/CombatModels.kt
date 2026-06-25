@@ -27,6 +27,7 @@ enum class Condicao(val rotulo: String) {
     AGARRADO("agarrado"),
     IMOBILIZADO("imobilizado"),   // Lote 411: preso no chão, indefeso (MB p.371)
     SUFOCANDO("sufocando"),       // Lote 412: estrangulado, perde 1 PF/turno (MB p.371/437)
+    SANGRANDO("sangrando"),       // Lote PONTE-2: ferimento que sangra; testa HT por intervalo ou perde PV (MB p.420)
     SURPRESO("surpreso")
 }
 
@@ -125,6 +126,13 @@ data class Combatente(
     var choquePendente: Int = 0,
     /** Lote 403: metros percorridos no último movimento → penalidade de Velocidade/Distância ao ser alvejado (MB p.550). */
     var velocidadeAtual: Int = 0,
+    // ── Sangramento (Lote PONTE-2, MB p.420 / AM p.138) — estado vivo do ferimento que sangra. ──
+    var sangramentoAtivo: Boolean = false,
+    var sangramentoLesaoPV: Int = 0,          // maior lesão única que sangra → penalidade −1 a cada 5 PV
+    var sangramentoPenalidadeLocal: Int = 0,  // penalidade extra de local grave (AM p.138; 0 = sangramento comum)
+    var sangramentoIntervaloSeg: Int = 60,    // 60s comum; 30s nos locais graves do AM
+    var sangramentoUltimaRodada: Int = Int.MIN_VALUE, // rodada do último teste (MIN = recém-iniciado, inicializa no 1º tick)
+    var sangramentoTestesLimpos: Int = 0,     // intervalos seguidos sem sangrar; 3 = estanca de vez
     /** Stats completos quando é NPC do bestiário; null para o herói (vem da ficha). */
     val stats: NpcStats? = null
 ) {

@@ -67,4 +67,59 @@ class InjuryRulesTest {
         assertTrue("deve haver log de cada turno", logAcumulado.size >= 3)
         assertTrue("deve registrar cheque(s) de HT", logAcumulado.any { it.contains("HT") })
     }
+
+    // Lote PONTE-2: sangramento (MB p420 / AM p138).
+    private fun vitima(pv: Int = 20) = Combatente(id = "v", nome = "V", dx = 11, velocidadeBasica = 5.0,
+        deslocamento = 5, pvMax = pv, pvAtual = pv)
+
+    @Test
+    fun `classificarSangramento distingue tipo e local`() {
+        assertEquals(null, InjuryRules.classificarSangramento(DanoTipo.CONT, LocalAtaque.TORSO)) // contusão não sangra
+        assertEquals(0 to 60, InjuryRules.classificarSangramento(DanoTipo.CORT, LocalAtaque.BRACO))
+        assertEquals(4 to 30, InjuryRules.classificarSangramento(DanoTipo.PERF, LocalAtaque.VITAIS))
+        assertEquals(2 to 30, InjuryRules.classificarSangramento(DanoTipo.CORT, LocalAtaque.PESCOCO))
+    }
+
+    @Test
+    fun `ferir por corte marca SANGRANDO e contusao ou sem-tipo nao marcam`() {
+        val r = Random(1)
+        val cCorte = vitima(); InjuryRules.ferir(cCorte, 5, 12, r, tipo = DanoTipo.CORT, local = LocalAtaque.TORSO)
+        assertTrue(cCorte.sangramentoAtivo); assertTrue(Condicao.SANGRANDO in cCorte.condicoes)
+        val cCont = vitima(); InjuryRules.ferir(cCont, 5, 12, r, tipo = DanoTipo.CONT, local = LocalAtaque.TORSO)
+        assertFalse(cCont.sangramentoAtivo)
+        val cSemTipo = vitima(); InjuryRules.ferir(cSemTipo, 5, 12, r) // call-site antigo: sem regressão
+        assertFalse(cSemTipo.sangramentoAtivo)
+    }
+
+    @Test
+    fun `tickSangramento perde PV com HT baixo e estancar limpa o estado`() {
+        val c = vitima()
+        InjuryRules.ferir(c, 5, 8, Random(1), tipo = DanoTipo.CORT, local = LocalAtaque.TORSO)
+        assertTrue(c.sangramentoAtivo)
+        // HT 3 (htEf ~2): quase todo teste falha e perde PV. Re-ativa o sangramento (sem novo dano) para garantir.
+        var perdeu = false
+        repeat(8) { i ->
+            if (!c.sangramentoAtivo) { c.sangramentoAtivo = true; c.condicoes.add(Condicao.SANGRANDO); c.sangramentoLesaoPV = 5; c.sangramentoTestesLimpos = 0 }
+            val pv = c.pvAtual
+            InjuryRules.tickSangramento(c, 3, Random(i.toLong() + 1))
+            if (c.pvAtual < pv) perdeu = true
+        }
+        assertTrue("HT baixo deve causar perda de PV por sangramento em algum tick", perdeu)
+        assertTrue(InjuryRules.estancarSangramento(c))
+        assertFalse(c.sangramentoAtivo); assertFalse(Condicao.SANGRANDO in c.condicoes)
+    }
+
+    @Test
+    fun `sangramento com HT altissimo ainda falha em 17 ou 18 (3d6 nunca e sucesso automatico)`() {
+        // HT 30: nenhum teste "normal" falha, mas 17/18 em 3d6 são SEMPRE falha → o ferido ainda pode sangrar.
+        val c = vitima(pv = 50)
+        var perdeu = false
+        repeat(500) { i ->
+            if (!c.sangramentoAtivo) { c.sangramentoAtivo = true; c.condicoes.add(Condicao.SANGRANDO) }
+            val pv = c.pvAtual
+            InjuryRules.tickSangramento(c, 30, Random(i.toLong() + 1))
+            if (c.pvAtual < pv) perdeu = true
+        }
+        assertTrue("um 17/18 em 3d6 deve fazer até HT 30 sangrar em algum dos 500 ticks", perdeu)
+    }
 }

@@ -1219,9 +1219,29 @@ class CombatSession(
         // zera defesas do turno de quem vai começar
         var prox = encounter.proximoTurno()
         var guarda = 0
-        while (!prox.vivo && guarda++ < encounter.combatentes.size) prox = encounter.proximoTurno()
+        while (!prox.vivo && guarda++ < encounter.combatentes.size) {
+            // Inconsciente mas ainda VIVO (PV > −PVmáx) continua sangrando — pode sangrar até a morte (MB p.420).
+            if (prox.pvAtual > -prox.pvMax) tickSangramentoNoTurno(prox)
+            prox = encounter.proximoTurno()
+        }
         prox.defesasUsadas = DefesasUsadas()
+        tickSangramentoNoTurno(prox)
         return prox
+    }
+
+    /**
+     * Sangramento (Lote PONTE-2, MB p.420): se o ferido fechou um intervalo (1 rodada ≈ 1s), testa HT ou perde PV.
+     * Em combates curtos quase nunca dispara (intervalo de 60s/30s) — fiel à regra; importa em lutas longas.
+     */
+    private fun tickSangramentoNoTurno(c: Combatente) {
+        if (!c.sangramentoAtivo) return
+        val rodada = encounter.rodadaAtual
+        if (c.sangramentoUltimaRodada == Int.MIN_VALUE) { c.sangramentoUltimaRodada = rodada; return }
+        if (rodada - c.sangramentoUltimaRodada < c.sangramentoIntervaloSeg) return
+        c.sangramentoUltimaRodada = rodada
+        val ht = if (c.ehHeroi) heroiPerfil.ht else (c.stats?.ht ?: 10)
+        InjuryRules.tickSangramento(c, ht, random)?.logs?.forEach { log += "🩸 ${c.nome}: $it" }
+        verificarFim()
     }
 
     private fun verificarFim() {
