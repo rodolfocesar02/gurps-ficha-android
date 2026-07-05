@@ -42,7 +42,8 @@
 > - ✅ Lote 384 = Tabelas de crítico (2026-06-17, MB p.557–558) — loop 3/5. Golpe Fulminante → tabela de DANO (×2/×3/máx/RD½/ferimento grave); Erro Crítico → efeito no atacante (acerta a si/cai; narra quebrar/largar arma). `CriticoRules.golpeFulminante`/`erroCritico`. **+ workaround de lint** (3 detectores compose-runtime crashando por incompat. da Kotlin Analysis API — desligados). Testes + build 2 variantes verde.
 > - ✅ Lote 385 = Tolerância a Ferimentos (2026-06-17, MB p.381) — loop 4/5. `ToleranciaFerimentos` (NÃO-VIVO/HOMOGÊNEO/DIFUSO) reduz dano pi/perf em `HitLocationRules`; `NpcStats.tolerancia`←bestiário; **esqueleto/zumbi = nao_vivo** (resistem a tiros). Testes + build 2 variantes verde.
 > - ✅ Lotes 386–422 (jun/2026) = **AUDITORIA DE COMBATE COMPLETA** — `Combate.md` 100% fechado (0 parciais/0 não-feitos): Agarrar/Imobilizar/Estrangular + luta agarrada NPC↔herói/Desvencilhar (422), Finta, Ataque Enganoso/Golpe Rápido, Encontrão/Empurrão, projeção, defesas que faltavam, postura/Agachar, críticos, Tolerância/Divisor de Armadura. +**teste de batalha no aparelho** (7 itens) corrigido (419–422) + tool `gerir_equipamento` (desarmar/confiscar). Detalhes no `PROGRESS.md`. Mapa do Artes Marciais em `Artes_Marciais_Regras_Combate.md`.
-> - ➡️ **PRÓXIMO — ver a seção "COMBATE TÁTICO (PONTE + PILAR HEXÁGONO)" logo após a Fase B.** Ordem: GATE (usuário valida 419–422 no aparelho) → PONTE (regras que sobrevivem aos 2 modelos) → PILAR hexágono 3D (`PLANO_Combate_Tatico_Hex_3D.md`). As Fases C/D/E (mundo vivo) seguem em paralelo conforme prioridade do usuário.
+> - ✅ Lotes PONTE-1..4 (2026-06-24) = **PONTE COMPLETA** (chaves de luta agarrada, sangramento, Ataque Telegráfico, Ataque Dedicado/Defensivo — regras de Artes Marciais que sobrevivem ao hexágono). Revisões adversariais corrigiram 8 bugs reais no caminho.
+> - ➡️ **PRÓXIMO: 🚦 GATE 0 — usuário valida TUDO no aparelho (Lotes 419–422 + PONTE-1..4).** Depois: PILAR hexágono HEX-1..HEX-9 (`PLANO_Combate_Tatico_Hex_3D.md`). As Fases C/D/E (mundo vivo) seguem conforme prioridade do usuário.
 
 ---
 
@@ -208,25 +209,25 @@ Revalidar os **Lotes 419–422** no Android Studio (chat no combate, cura/guarda
 > Investimento seguro: são regras de RESOLUÇÃO (não de posição), então o pilar hexágono as reaproveita.
 > Fonte: `Artes_Marciais_Regras_Combate.md` + `chunks.jsonl` (`pt_artes_marciais`). Ordem sugerida:
 
-#### LOTE PONTE-1 — Chaves de luta agarrada (estende o agarrão do lote 422)
+#### ✅ LOTE PONTE-1 (concluído 2026-06-24, commit `47b1e0d`) — Chaves de luta agarrada (Chave de Membro + Mata-Leão, herói↔NPC)
 **Objetivo:** com um alvo já AGARRADO, manobras de chave por Disputa Rápida de ST → dano/incapacitação.
 **Passos:** Chave de Braço/Pulso, Mata-Leão, Torção (Pescoço/Membro) no `CombatSession` (espelhar
 `heroiImobilizar`/`heroiEstrangular`); herói↔NPC nas duas direções; UI (manobra só quando há AGARRADO); testes.
 **Aceite:** build verde 2 variantes + teste determinístico; AM p69–79 referenciado em comentário.
 
-#### LOTE PONTE-2 — Sangramento Grave + incapacitação de membro (item 5 do teste de batalha)
+#### ✅ LOTE PONTE-2 (concluído 2026-06-24, commit `93bf263`) — Sangramento (MB p420/AM p138; +7 fixes da revisão adversarial)
 **Objetivo:** fechar a parte de "lesões realistas" que o usuário sentiu falta (sangramento/desmaio).
 **Passos:** no `InjuryRules`/`HitLocationRules`: sangramento (HT por intervalo ou perde +1 PV), incapacitação
 de braço/perna (>PV/2) já parcialmente modelada — completar efeito em combate; comentar `// MB`/`// AM p136–138`.
 **Aceite:** build verde 2 variantes + teste; ferimento grave dispara sangramento e o log explica.
 
-#### LOTE PONTE-3 — Ataque Telegráfico (par do Ataque Enganoso)
+#### ✅ LOTE PONTE-3 (concluído 2026-06-24, commit `40fc082`) — Ataque Telegráfico (+fix do crítico achado pela revisão)
 **Objetivo:** opção +4 para acertar / +2 à defesa do alvo (oposto do Enganoso, já feito no lote 401).
 **Passos:** flag no ataque (não combina com Enganoso; não conta p/ golpe fulminante — usar NH antes do +4);
 UI (toggle no sub-diálogo de ataque, como o stepper do Enganoso); teste. AM p109.
 **Aceite:** build verde 2 variantes + teste.
 
-#### LOTE PONTE-4 (opcional) — Ataque Dedicado / Ataque Defensivo
+#### ✅ LOTE PONTE-4 (concluído 2026-06-24, commit `318df5c`) — Ataque Dedicado / Ataque Defensivo
 **Objetivo:** duas manobras simples de troca (acerto↔defesa↔dano). AM p98.
 **Passos:** novas entradas em `Manobra` + resolução + UI + teste.
 **Aceite:** build verde 2 variantes + teste.
