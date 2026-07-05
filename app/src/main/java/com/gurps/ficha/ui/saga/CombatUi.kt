@@ -194,7 +194,8 @@ private fun ManeuverCards(viewModel: FichaViewModel, estado: com.gurps.ficha.vie
 
             Spacer(Modifier.height(8.dp))
             estado.manobrasHeroi.forEach { m ->
-                val ehAtaque = m == Manobra.ATAQUE || m == Manobra.ATAQUE_TOTAL || m == Manobra.GOLPE_RAPIDO
+                val ehAtaque = m == Manobra.ATAQUE || m == Manobra.ATAQUE_TOTAL || m == Manobra.GOLPE_RAPIDO ||
+                    m == Manobra.ATAQUE_DEDICADO || m == Manobra.ATAQUE_DEFENSIVO // Lote PONTE-4: abrem o diálogo de alvo/local
                 val ehMoverAtacar = m == Manobra.MOVER_E_ATACAR
                 val precisaAlvo = ehAtaque || ehMoverAtacar
                 val temAlvo = if (ehMoverAtacar) estado.alvosMoverEAtacar.isNotEmpty() else estado.alvos.isNotEmpty()
@@ -244,10 +245,12 @@ private fun ManeuverCards(viewModel: FichaViewModel, estado: com.gurps.ficha.vie
             ataques = estado.ataques,
             ataqueSelecionado = estado.ataqueSelecionado,
             ambidestro = estado.heroiAmbidestro,
-            onConfirmar = { alvoId, local, modo, offHand, enganoso, telegrafico ->
+            onConfirmar = { alvoId, local, modo, offHand, enganoso, telegrafico, dedicadoModo, benefDefensivo ->
                 when {
                     ehMoverAtacar -> viewModel.sagaCombateMoverEAtacar(alvoId, local)
                     manobra == Manobra.GOLPE_RAPIDO -> viewModel.sagaCombateGolpeRapido(alvoId, local) // Lote 408
+                    manobra == Manobra.ATAQUE_DEDICADO -> viewModel.sagaCombateAtaqueDedicado(alvoId, local, dedicadoModo) // Lote PONTE-4
+                    manobra == Manobra.ATAQUE_DEFENSIVO -> viewModel.sagaCombateAtaqueDefensivo(alvoId, local, benefDefensivo) // Lote PONTE-4
                     modo == AtaqueTotalModo.DUPLO && offHand != null -> viewModel.sagaCombateAtacarDuplo(alvoId, local, offHand)
                     else -> viewModel.sagaCombateAtacar(alvoId, manobra, local, modo, enganoso, telegrafico)
                 }
@@ -634,7 +637,7 @@ private fun SubDialogoAlvoLocal(
     ataques: List<AtaqueHeroi>,
     ataqueSelecionado: Int,
     ambidestro: Boolean,
-    onConfirmar: (alvoId: String, local: LocalAtaque, modo: AtaqueTotalModo, offHandIndex: Int?, enganoso: Int, telegrafico: Boolean) -> Unit,
+    onConfirmar: (alvoId: String, local: LocalAtaque, modo: AtaqueTotalModo, offHandIndex: Int?, enganoso: Int, telegrafico: Boolean, dedicadoModo: DedicadoModo, benefDefensivo: CombatResolver.TipoDefesa?) -> Unit,
     onFechar: () -> Unit
 ) {
     var alvoId by remember { mutableStateOf(alvos.firstOrNull()?.id ?: "") }
@@ -653,6 +656,8 @@ private fun SubDialogoAlvoLocal(
         else (((ataques.getOrNull(ataqueSelecionado)?.nh ?: 10) - 10) / 2).coerceIn(0, 4)
     var enganoso by remember { mutableIntStateOf(0) }
     var telegrafico by remember { mutableStateOf(false) } // Lote PONTE-3: Ataque Telegráfico (AM p.109)
+    var dedicadoModo by remember { mutableStateOf(DedicadoModo.DETERMINADO) } // Lote PONTE-4
+    var benefDefensivo by remember { mutableStateOf(CombatResolver.TipoDefesa.APARA) } // Lote PONTE-4: defesa que ganha +1
 
     AlertDialog(
         onDismissRequest = onFechar,
@@ -714,6 +719,22 @@ private fun SubDialogoAlvoLocal(
                             style = MaterialTheme.typography.bodyMedium)
                     }
                 }
+                if (manobra == Manobra.ATAQUE_DEDICADO) {
+                    Spacer(Modifier.height(8.dp))
+                    Text("Modo do Ataque Dedicado (−2 nas suas defesas até o próximo turno)", fontWeight = FontWeight.Bold, style = MaterialTheme.typography.labelLarge)
+                    OpcaoRadio(selecionado = dedicadoModo == DedicadoModo.DETERMINADO, rotulo = "Determinado (+2 para acertar)",
+                        descricao = "Ataque Dedicado Determinado", onClick = { dedicadoModo = DedicadoModo.DETERMINADO })
+                    OpcaoRadio(selecionado = dedicadoModo == DedicadoModo.FORTE, rotulo = "Forte (+1 de dano)",
+                        descricao = "Ataque Dedicado Forte", onClick = { dedicadoModo = DedicadoModo.FORTE })
+                }
+                if (manobra == Manobra.ATAQUE_DEFENSIVO) {
+                    Spacer(Modifier.height(8.dp))
+                    Text("Ataque Defensivo (−2 de dano, ou −1/dado, o pior) — defesa reforçada (+1):", fontWeight = FontWeight.Bold, style = MaterialTheme.typography.labelLarge)
+                    OpcaoRadio(selecionado = benefDefensivo == CombatResolver.TipoDefesa.APARA, rotulo = "Aparar +1",
+                        descricao = "Ataque Defensivo: +1 ao Aparar", onClick = { benefDefensivo = CombatResolver.TipoDefesa.APARA })
+                    OpcaoRadio(selecionado = benefDefensivo == CombatResolver.TipoDefesa.BLOQUEIO, rotulo = "Bloquear +1",
+                        descricao = "Ataque Defensivo: +1 ao Bloquear", onClick = { benefDefensivo = CombatResolver.TipoDefesa.BLOQUEIO })
+                }
                 if (manobra == Manobra.ATAQUE_TOTAL) {
                     Spacer(Modifier.height(8.dp))
                     Text("Modo do Ataque Total", fontWeight = FontWeight.Bold, style = MaterialTheme.typography.labelLarge)
@@ -756,7 +777,8 @@ private fun SubDialogoAlvoLocal(
                     if (alvoId.isNotBlank())
                         onConfirmar(alvoId, local, modo, if (modo == AtaqueTotalModo.DUPLO) offHand else null,
                             if (manobra == Manobra.ATAQUE) enganoso else 0,
-                            manobra == Manobra.ATAQUE && telegrafico)
+                            manobra == Manobra.ATAQUE && telegrafico,
+                            dedicadoModo, benefDefensivo)
                 },
                 enabled = alvoId.isNotBlank() && !(modo == AtaqueTotalModo.DUPLO && offHand == null),
                 modifier = Modifier.semantics { contentDescription = "Confirmar ataque" }

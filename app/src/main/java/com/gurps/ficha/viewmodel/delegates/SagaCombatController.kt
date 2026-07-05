@@ -297,12 +297,13 @@ class SagaCombatController(
 
     // ── Ações do herói (a UI chama) ──────────────────────────────────────────
 
-    fun heroiAtaca(alvoId: String, manobra: Manobra, local: LocalAtaque, modo: AtaqueTotalModo = AtaqueTotalModo.DETERMINADO, enganoso: Int = 0, telegrafico: Boolean = false) {
+    fun heroiAtaca(alvoId: String, manobra: Manobra, local: LocalAtaque, modo: AtaqueTotalModo = AtaqueTotalModo.DETERMINADO, enganoso: Int = 0, telegrafico: Boolean = false,
+                   dedicadoModo: DedicadoModo = DedicadoModo.DETERMINADO, benefDefensivo: CombatResolver.TipoDefesa? = null) {
         val s = sessao ?: return
         if (!s.combatenteAtual().ehHeroi || s.encerrado) return
         val ataque = ataques.getOrNull(ataqueSelecionado) ?: return
         if (armaDespreparadaBloqueia(ataque)) return // Lote 398: arma despreparada → precisa Preparar antes
-        s.heroiAtaca(ataque, alvoId, manobra, local, modo, enganoso, telegrafico)
+        s.heroiAtaca(ataque, alvoId, manobra, local, modo, enganoso, telegrafico, dedicadoModo, benefDefensivo)
         depoisDaAcaoDoHeroi()
     }
 
@@ -636,6 +637,9 @@ class SagaCombatController(
             if (!ranged && alvos.isNotEmpty() && Manobra.GOLPE_RAPIDO !in it) it.add(Manobra.GOLPE_RAPIDO) // Lote 408
             if (!ranged && alvos.isNotEmpty() && Manobra.ENCONTRAO !in it) it.add(Manobra.ENCONTRAO) // Lote 409
             if (!ranged && alvos.isNotEmpty() && Manobra.EMPURRAO !in it) it.add(Manobra.EMPURRAO) // Lote 410
+            // Ataque Dedicado/Defensivo (Lote PONTE-4, AM p98): vêm de manobrasLegais (engajado), mas são corpo-a-corpo
+            // e exigem alvo no alcance — removidos à distância ou sem alvo adjacente.
+            if (ranged || alvos.isEmpty()) it.removeAll(listOf(Manobra.ATAQUE_DEDICADO, Manobra.ATAQUE_DEFENSIVO))
             // Imobilizar/Estrangular/Chaves (Lotes 411/412/PONTE-1): só fazem sentido com um inimigo já AGARRADO.
             if (s.inimigos.any { e -> e.vivo && Condicao.AGARRADO in e.condicoes }) {
                 if (Manobra.IMOBILIZAR !in it) it.add(Manobra.IMOBILIZAR)
@@ -648,7 +652,8 @@ class SagaCombatController(
             if (Condicao.AGARRADO in s.heroi.condicoes || Condicao.IMOBILIZADO in s.heroi.condicoes) {
                 it.removeAll(listOf(Manobra.APONTAR, Manobra.AGUARDAR, Manobra.CONCENTRAR, Manobra.FINTAR,
                     Manobra.FOGO_RETENCAO, Manobra.ENCONTRAO, Manobra.EMPURRAO, Manobra.MOVER_E_ATACAR,
-                    Manobra.GOLPE_RAPIDO, Manobra.DERRUBAR, Manobra.AGARRAR, Manobra.CHAVE_MEMBRO, Manobra.MATA_LEAO))
+                    Manobra.GOLPE_RAPIDO, Manobra.DERRUBAR, Manobra.AGARRAR, Manobra.CHAVE_MEMBRO, Manobra.MATA_LEAO,
+                    Manobra.ATAQUE_DEDICADO, Manobra.ATAQUE_DEFENSIVO))
                 if (Condicao.IMOBILIZADO in s.heroi.condicoes)
                     it.removeAll(listOf(Manobra.MOVER, Manobra.ATAQUE, Manobra.ATAQUE_TOTAL, Manobra.MUDAR_POSTURA))
                 else it.remove(Manobra.MOVER) // agarrado não desloca sem 2× a ST do oponente (abstraído)

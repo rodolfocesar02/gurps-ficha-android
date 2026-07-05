@@ -35,6 +35,8 @@ enum class Condicao(val rotulo: String) {
 enum class Manobra(val rotulo: String) {
     ATAQUE("Ataque"),
     ATAQUE_TOTAL("Ataque Total"),
+    ATAQUE_DEDICADO("Ataque Dedicado"),   // Lote PONTE-4 (AM p98): entre Ataque e Ataque Total (+2 acerto OU +1 dano; −2 nas defesas)
+    ATAQUE_DEFENSIVO("Ataque Defensivo"),  // Lote PONTE-4 (AM p98): entre Ataque e Defesa Total (−dano; +1 numa defesa)
     DEFESA_TOTAL("Defesa Total"),
     MOVER("Mover"),
     MOVER_E_ATACAR("Mover e Atacar"),

@@ -3046,6 +3046,14 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - **Recomendação registrada** (maior valor × menor custo): Ataque Telegráfico (par do Enganoso), luta agarrada profunda (chaves/Mata-Leão estendendo o lote 422), Sangramento Grave + incapacitação de membro (item 5 do teste de batalha), Ataque Dedicado/Defensivo. Fora de escopo: posicional/hexágono, montaria, cinematográfico, dado de arma do NPC. Mudança só de documentação (não compila Kotlin).
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
+### Lote PONTE-4 — 24 de Junho de 2026
+**Saga combate: Ataque Dedicado / Ataque Defensivo (AM p98) — 4ª e última ponte de Artes Marciais (branch GURPS-Saga)**
+- **Ataque Dedicado** (entre Ataque e Ataque Total): Determinado **+2 para acertar** OU Forte **+1 de dano FIXO** (não o +2/+1-por-dado do Ataque Total); em troca **−2 em TODAS as defesas** no turno seguinte + **proíbe a Retirada**. **Ataque Defensivo** (entre Ataque e Defesa Total): **−2 de dano (ou −1/dado, o pior)** + **+1 numa defesa escolhida** (Aparar/Bloquear).
+- 2 manobras novas + `DedicadoModo` (Determinado/Forte). `calcularNH`/`resolverAtaque` ganham `dedicadoModo`; `modDanoManobra` (companion) faz o dano; flags por-turno (`heroiPenalidadeDefesaDedicado`/`heroiSemRetirada`/`heroiBonusDefesaDefensivo`) setadas no fim de `heroiAtaca`, lidas em `opcoesDefesaHeroi`, zeradas na próxima ação. `manobrasLegais` + controller (some à distância/sem-alvo/preso) + UI (seletores) + VM wrappers + 4 testes.
+- **Deferido honesto:** NPC usar Dedicado/Defensivo; vínculo fino "não apara com a mão que atacou" (abstraído como −2 geral, mesmo padrão do lote 421); bônus opcional de ST alta no Dedicado Forte (+1/2-dados, "a critério do Mestre"). Build verde 2 variantes.
+- **Nota:** a revisão adversarial por agentes NÃO rodou neste lote (limite semanal da conta) — validado por revisão MANUAL (ciclo das flags, callers posicionais, não-herança do Ataque Total, piso de dano 0) + 4 testes.
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
 ### Lote PONTE-3 — 24 de Junho de 2026
 **Saga combate: Ataque Telegráfico (AM p109) — 3ª ponte de Artes Marciais (branch GURPS-Saga)**
 - **Ataque Telegráfico** (par/oposto do Ataque Enganoso, lote 401): **+4 para acertar, mas +2 em TODAS as defesas do alvo**. Mutuamente exclusivo com o Enganoso. O **+4 NÃO conta para o golpe fulminante** — o crítico é recomputado com o NH ANTES do +4 (`atk.copy(critico = CriticoRules.classificar(soma, nhEfetivo−4))`); acerto/margem seguem com o +4. Não acumula com Avaliar. Em `resolverGolpeHeroi`/`heroiAtaca` + wrappers + UI (toggle Switch no diálogo de ataque, exclusivo com o stepper do Enganoso, sem o limite de NH≥12). Teste estatístico (acerta mais).

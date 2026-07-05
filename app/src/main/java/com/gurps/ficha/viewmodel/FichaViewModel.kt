@@ -128,6 +128,10 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
     val sagaCombateAtivo get() = sagaDelegate.combate.ativo
     fun sagaCombateAtacar(alvoId: String, manobra: com.gurps.ficha.domain.combat.Manobra, local: com.gurps.ficha.domain.combat.LocalAtaque, modo: com.gurps.ficha.domain.combat.AtaqueTotalModo = com.gurps.ficha.domain.combat.AtaqueTotalModo.DETERMINADO, enganoso: Int = 0, telegrafico: Boolean = false) =
         sagaDelegate.combate.heroiAtaca(alvoId, manobra, local, modo, enganoso, telegrafico)
+    fun sagaCombateAtaqueDedicado(alvoId: String, local: com.gurps.ficha.domain.combat.LocalAtaque, dedicadoModo: com.gurps.ficha.domain.combat.DedicadoModo) = // Lote PONTE-4
+        sagaDelegate.combate.heroiAtaca(alvoId, com.gurps.ficha.domain.combat.Manobra.ATAQUE_DEDICADO, local, dedicadoModo = dedicadoModo)
+    fun sagaCombateAtaqueDefensivo(alvoId: String, local: com.gurps.ficha.domain.combat.LocalAtaque, benefDefensivo: com.gurps.ficha.domain.combat.CombatResolver.TipoDefesa?) = // Lote PONTE-4
+        sagaDelegate.combate.heroiAtaca(alvoId, com.gurps.ficha.domain.combat.Manobra.ATAQUE_DEFENSIVO, local, benefDefensivo = benefDefensivo)
     fun sagaCombateAtacarDuplo(alvoId: String, local: com.gurps.ficha.domain.combat.LocalAtaque, offHandIndex: Int) =
         sagaDelegate.combate.heroiAtaqueDuplo(alvoId, local, offHandIndex)
     fun sagaCombateMover(alvoId: String?, afastar: Boolean, metros: Int) = sagaDelegate.combate.heroiMove(alvoId, afastar, metros)

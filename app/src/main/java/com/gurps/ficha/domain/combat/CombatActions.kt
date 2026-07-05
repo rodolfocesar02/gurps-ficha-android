@@ -47,6 +47,7 @@ object CombatActions {
         local: LocalAtaque = LocalAtaque.TORSO,
         visibilidade: Visibilidade = Visibilidade.NORMAL,
         ataqueTotalModo: AtaqueTotalModo = AtaqueTotalModo.DETERMINADO,
+        dedicadoModo: DedicadoModo = DedicadoModo.DETERMINADO,
         aDistancia: Boolean = false,
         modsExtra: List<ComponenteMod> = emptyList(),
         magnitudeArma: Int? = null
@@ -60,6 +61,10 @@ object CombatActions {
                 val m = if (aDistancia && ataqueTotalModo == AtaqueTotalModo.DETERMINADO) 1
                     else ModificadoresCombate.modAtaqueTotal(ataqueTotalModo)
                 if (m != 0) comps.add(ComponenteMod("Ataque Total ${ataqueTotalModo.rotulo}", m))
+            }
+            Manobra.ATAQUE_DEDICADO -> {
+                // Lote PONTE-4 (AM p98): Determinado = +2 no acerto; Forte = +0 (o bônus vai no dano).
+                if (dedicadoModo == DedicadoModo.DETERMINADO) comps.add(ComponenteMod("Ataque Dedicado Determinado", 2))
             }
             Manobra.MOVER_E_ATACAR -> {
                 // MB p.366: corpo-a-corpo −4 (e teto NH 9); à distância −2 OU a Magnitude (Bulk), o pior.
@@ -128,12 +133,13 @@ object CombatActions {
         local: LocalAtaque = LocalAtaque.TORSO,
         visibilidade: Visibilidade = Visibilidade.NORMAL,
         ataqueTotalModo: AtaqueTotalModo = AtaqueTotalModo.DETERMINADO,
+        dedicadoModo: DedicadoModo = DedicadoModo.DETERMINADO,
         aDistancia: Boolean = false,
         modsExtra: List<ComponenteMod> = emptyList(),
         magnitudeArma: Int? = null,
         random: Random = Random.Default
     ): RelatorioAtaque {
-        val calc = calcularNH(nhBaseArma, manobra, postura, local, visibilidade, ataqueTotalModo, aDistancia, modsExtra, magnitudeArma)
+        val calc = calcularNH(nhBaseArma, manobra, postura, local, visibilidade, ataqueTotalModo, dedicadoModo, aDistancia, modsExtra, magnitudeArma)
         val d = List(3) { random.nextInt(1, 7) }
         val soma = d.sum()
         val (res, margem, critico) = avaliarRolagem(calc.nhEfetivo, soma)

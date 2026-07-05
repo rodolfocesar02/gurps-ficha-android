@@ -1296,6 +1296,37 @@ class CombatSessionTest {
         }
     }
 
+    // Lote PONTE-4: Ataque Dedicado / Defensivo (AM p98).
+    @Test
+    fun `modDanoManobra Dedicado Forte e +1 fixo e Defensivo e o pior entre -2 e -1 por dado`() {
+        assertEquals(1, CombatSession.modDanoManobra(Manobra.ATAQUE_DEDICADO, DedicadoModo.FORTE, "2d", false))
+        assertEquals(1, CombatSession.modDanoManobra(Manobra.ATAQUE_DEDICADO, DedicadoModo.FORTE, "3d", false)) // +1 fixo (não +2/+1-por-dado)
+        assertEquals(0, CombatSession.modDanoManobra(Manobra.ATAQUE_DEDICADO, DedicadoModo.DETERMINADO, "2d", false))
+        assertEquals(-2, CombatSession.modDanoManobra(Manobra.ATAQUE_DEFENSIVO, DedicadoModo.DETERMINADO, "2d", false))
+        assertEquals(-3, CombatSession.modDanoManobra(Manobra.ATAQUE_DEFENSIVO, DedicadoModo.DETERMINADO, "3d", false)) // −1/dado pior
+        assertEquals(-2, CombatSession.modDanoManobra(Manobra.ATAQUE_DEFENSIVO, DedicadoModo.DETERMINADO, "1d+1", false))
+    }
+
+    @Test
+    fun `Ataque Dedicado da -2 nas defesas e proibe a Retirada`() {
+        val enc = CombatEncounter(listOf(heroi(), goblin()), mapOf("goblin" to 1), seed = 1L)
+        val s = CombatSession(enc, perfilHeroi(), Random(1)) // esquiva 9, apara 11
+        s.heroiAtaca(espada(), "goblin", Manobra.ATAQUE_DEDICADO, LocalAtaque.TORSO)
+        val def = s.opcoesDefesaHeroi(armaPronta = espada(), contraAtaqueCorpoACorpo = true)
+        assertEquals(7, def.first { it.tipo == CombatResolver.TipoDefesa.ESQUIVA && !it.recuo && !it.jogarSeAoChao && !it.acrobatica }.valorFinal)
+        assertTrue("Ataque Dedicado proíbe a Retirada", def.none { it.recuo })
+    }
+
+    @Test
+    fun `Ataque Defensivo da +1 na defesa escolhida e nao mexe nas outras`() {
+        val enc = CombatEncounter(listOf(heroi(), goblin()), mapOf("goblin" to 1), seed = 1L)
+        val s = CombatSession(enc, perfilHeroi(), Random(1))
+        s.heroiAtaca(espada(), "goblin", Manobra.ATAQUE_DEFENSIVO, LocalAtaque.TORSO, benefDefensivo = CombatResolver.TipoDefesa.APARA)
+        val def = s.opcoesDefesaHeroi(armaPronta = espada(), contraAtaqueCorpoACorpo = true)
+        assertEquals(12, def.first { it.tipo == CombatResolver.TipoDefesa.APARA && !it.recuo && !it.maoInabil }.valorFinal) // apara 11 +1
+        assertEquals(9, def.first { it.tipo == CombatResolver.TipoDefesa.ESQUIVA && !it.recuo && !it.jogarSeAoChao && !it.acrobatica }.valorFinal) // esquiva inalterada
+    }
+
     @Test
     fun `Mata-Leao num alvo agarrado causa dano e deixa SUFOCANDO`() {
         // PV alto (60) p/ o alvo SOBREVIVER ao estrangulamento (SUFOCANDO só entra se vivo); ST baixa garante a vitória.

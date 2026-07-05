@@ -52,6 +52,12 @@ class CombatSession(
     // Mover e Atacar (Lote 378): na defesa seguinte só Esquiva/Bloqueio — sem aparar — até o próximo turno (MB p.367).
     var heroiSemAparar: Boolean = false; private set
 
+    // Ataque Dedicado / Defensivo (Lote PONTE-4, AM p98): trade-off de defesa declarado no ataque, vale até a
+    // defesa do próximo turno do herói. Dedicado → −2 em todas as defesas + sem Retirada; Defensivo → +1 numa defesa.
+    var heroiPenalidadeDefesaDedicado: Int = 0; private set
+    var heroiSemRetirada: Boolean = false; private set
+    var heroiBonusDefesaDefensivo: CombatResolver.TipoDefesa? = null; private set
+
     // Defesa Total (Lote 388, MB p.366): declarada no turno do herói, vale até a PRÓXIMA ação dele.
     // AUMENTADA = +2 numa defesa escolhida; DUPLA = 2ª defesa diferente se a 1ª falhar.
     private var defesaTotalModo: DefesaTotalModo? = null
@@ -102,6 +108,8 @@ class CombatSession(
         concentrando = false // a concentração vale só no turno declarado; o herói re-declara Concentrar p/ continuar (Lote 397)
         aguardarInvestidaArma = null // a guarda da investida dura só até a próxima ação do herói (Lote 399)
         heroi.velocidadeAtual = 0 // só Mover define a velocidade do herói para a penalidade de Vel/Dist (Lote 403)
+        // Ataque Dedicado/Defensivo (Lote PONTE-4): o trade-off de defesa do turno anterior expira ao agir de novo.
+        heroiPenalidadeDefesaDedicado = 0; heroiSemRetirada = false; heroiBonusDefesaDefensivo = null
     }
 
     val heroi: Combatente get() = encounter.combatentes.first { it.ehHeroi }
@@ -141,7 +149,9 @@ class CombatSession(
         local: LocalAtaque = LocalAtaque.TORSO,
         ataqueTotalModo: AtaqueTotalModo = AtaqueTotalModo.DETERMINADO,
         enganoso: Int = 0, // Lote 401: passos de Ataque Enganoso (MB p.369)
-        telegrafico: Boolean = false // Lote PONTE-3: Ataque Telegráfico (AM p.109)
+        telegrafico: Boolean = false, // Lote PONTE-3: Ataque Telegráfico (AM p.109)
+        dedicadoModo: DedicadoModo = DedicadoModo.DETERMINADO, // Lote PONTE-4: modo do Ataque Dedicado (AM p98)
+        benefDefensivo: CombatResolver.TipoDefesa? = null // Lote PONTE-4: defesa que ganha +1 no Ataque Defensivo (AM p98)
     ): AtaqueResultado {
         // Arma despreparada (Lote 398, MB p.270): não dá pra atacar até re-empunhá-la com um Preparar.
         if (ataque.rotulo == armaDespreparadaRotulo) {
@@ -152,13 +162,16 @@ class CombatSession(
         val alvo = inimigos.firstOrNull { it.id == alvoId && it.vivo }
             ?: return AtaqueResultado(false, false, 0, false, "Alvo inválido ou já fora de combate.").also { log += it.texto }
         golpeForaDeAlcance(ataque, alvo)?.let { return it }
-        val r = resolverGolpeHeroi(ataque, alvo, manobra, local, ataqueTotalModo, enganoso = enganoso, telegrafico = telegrafico)
+        val r = resolverGolpeHeroi(ataque, alvo, manobra, local, ataqueTotalModo, enganoso = enganoso, telegrafico = telegrafico, dedicadoModo = dedicadoModo)
         limparAvaliar(); limparApontar(); limparFinta() // bônus de Avaliar/Mira consumidos neste ataque
         // Arma desbalanceada: quem atacou com ela não pode aparar até o próximo turno (MB p.270).
         if (!ataque.aDistancia && ataque.apararTipo == ApararTipo.DESBALANCEADA) atacouDesbalanceada = true
         marcarDespreparoSeNecessario(ataque) // Lote 398: desbalanceada fica despreparada se o herói não for forte
         // Ataque Total: sem defesa ativa até o próximo turno (MB p.366).
         if (manobra == Manobra.ATAQUE_TOTAL) heroiSemDefesaAtiva = true
+        // Ataque Dedicado/Defensivo (Lote PONTE-4, AM p98): declara o trade-off de defesa para a defesa do próximo turno.
+        if (manobra == Manobra.ATAQUE_DEDICADO) { heroiPenalidadeDefesaDedicado = 2; heroiSemRetirada = true }
+        if (manobra == Manobra.ATAQUE_DEFENSIVO) heroiBonusDefesaDefensivo = benefDefensivo
         verificarFim()
         return r
     }
@@ -474,7 +487,8 @@ class CombatSession(
         modAdicional: Int = 0,
         rotuloModAdicional: String = "",
         enganoso: Int = 0, // Lote 401: Ataque Enganoso — passos de −2 no NH por −1 na defesa do alvo (MB p.369)
-        telegrafico: Boolean = false // Lote PONTE-3: Ataque Telegráfico — +4 p/ acertar, mas +2 nas defesas do alvo (AM p.109)
+        telegrafico: Boolean = false, // Lote PONTE-3: Ataque Telegráfico — +4 p/ acertar, mas +2 nas defesas do alvo (AM p.109)
+        dedicadoModo: DedicadoModo = DedicadoModo.DETERMINADO // Lote PONTE-4: modo do Ataque Dedicado (AM p98)
     ): AtaqueResultado {
         val dist = encounter.distancia(alvo)
         // Telegráfico e Enganoso são mutuamente exclusivos (AM p.109): o telegráfico vence se ambos vierem.
@@ -523,7 +537,7 @@ class CombatSession(
         }
         val atkRaw = CombatActions.resolverAtaque(
             nhBaseArma = ataque.nh, manobra = manobra, postura = heroi.postura,
-            local = local, visibilidade = Visibilidade.NORMAL, ataqueTotalModo = ataqueTotalModo,
+            local = local, visibilidade = Visibilidade.NORMAL, ataqueTotalModo = ataqueTotalModo, dedicadoModo = dedicadoModo,
             aDistancia = ataque.aDistancia, modsExtra = modsExtra,
             magnitudeArma = if (ataque.aDistancia) ataque.magnitude else null, random = random
         )
@@ -546,7 +560,8 @@ class CombatSession(
         val defSoma = rolar3d6()
         // Além de 1/2D, o dano cai pela metade (MB p.270) — aplica no dado básico antes de RD.
         val meioDano = ataque.aDistancia && ataque.meioDano > 0 && dist >= ataque.meioDano
-        var danoBasico = rolarDano(ataque.danoExpr, random) + bonusDanoForte(manobra, ataqueTotalModo, ataque.danoExpr, ataque.aDistancia) + bonusInvestidaPendente
+        var danoBasico = (rolarDano(ataque.danoExpr, random) + bonusDanoForte(manobra, ataqueTotalModo, ataque.danoExpr, ataque.aDistancia)
+            + modDanoManobra(manobra, dedicadoModo, ataque.danoExpr, ataque.aDistancia) + bonusInvestidaPendente).coerceAtLeast(0)
         var rdAlvo = rdComDivisor(alvo.stats?.rd ?: 0, divisorArmadura(ataque.danoExpr)) // Lote 413: divisor de armadura
         var forcaGrave = false
         // Golpe Fulminante (Lote 384, MB p.558): a defesa já é anulada pelo crítico; a tabela modifica o DANO.
@@ -978,15 +993,20 @@ class CombatSession(
         val penPreso = if (Condicao.AGARRADO in heroi.condicoes || Condicao.IMOBILIZADO in heroi.condicoes) 4 else 0
         // Retirada (Lote 389, MB p.377): só vs corpo-a-corpo, 1×/turno e não atordoado (postura sentado/ajoelhado
         // = limitação futura). O passo de recuo em si fica abstraído (o herói está sempre engajado no tracker).
+        // Ataque Dedicado (Lote PONTE-4, AM p98): −2 em TODAS as defesas e proíbe a Retirada, no turno seguinte ao ataque.
+        val penDedicado = heroiPenalidadeDefesaDedicado
+        // Ataque Defensivo (Lote PONTE-4, AM p98): +1 numa defesa escolhida — só Aparar ou Bloquear (não Esquiva).
+        val bonusDefApara = if (heroiBonusDefesaDefensivo == CombatResolver.TipoDefesa.APARA) 1 else 0
+        val bonusDefBloqueio = if (heroiBonusDefesaDefensivo == CombatResolver.TipoDefesa.BLOQUEIO) 1 else 0
         val permitirRecuo = contraAtaqueCorpoACorpo && !heroi.defesasUsadas.retracaoUsada &&
-            Condicao.ATORDOADO !in heroi.condicoes
+            Condicao.ATORDOADO !in heroi.condicoes && !heroiSemRetirada
         // Esquiva e Queda (Lote 404, MB p.377): só contra ataque À DISTÂNCIA, se ainda não está deitado nem atordoado.
         val permitirJogarSeAoChao = !contraAtaqueCorpoACorpo && heroi.postura != Postura.DEITADO &&
             Condicao.ATORDOADO !in heroi.condicoes
         return CombatResolver.opcoesDefesa(
-            esquivaBase = heroiPerfil.esquiva - bdRemovido - reducaoCambaleante - penAtordoado - penPreso,
-            aparaBase = if (podeAparar) heroiPerfil.apara?.let { it - bdRemovido - penAparaDesarmada - penAtordoado - penPreso } else null,
-            bloqueioBase = heroiPerfil.bloqueio?.let { it - bdRemovido - penAtordoado - penPreso },
+            esquivaBase = heroiPerfil.esquiva - bdRemovido - reducaoCambaleante - penAtordoado - penPreso - penDedicado,
+            aparaBase = if (podeAparar) heroiPerfil.apara?.let { it - bdRemovido - penAparaDesarmada - penAtordoado - penPreso - penDedicado + bonusDefApara } else null,
+            bloqueioBase = heroiPerfil.bloqueio?.let { it - bdRemovido - penAtordoado - penPreso - penDedicado + bonusDefBloqueio },
             defesasUsadas = heroi.defesasUsadas,
             defesaTotalEm = defesaTotalEm ?: defesaTotalAumentadaEm, // Lote 388: +2 da Defesa Total (Aumentada)
             esgrima = tipoAparar == ApararTipo.ESGRIMA,
@@ -1616,6 +1636,21 @@ class CombatSession(
             if (manobra != Manobra.ATAQUE_TOTAL || modo != AtaqueTotalModo.FORTE || aDistancia) return 0
             val nDados = Regex("""(\d+)d""").find(danoExpr.lowercase())?.groupValues?.getOrNull(1)?.toIntOrNull() ?: 1
             return maxOf(2, nDados)
+        }
+
+        /**
+         * Mod de dano por manobra (Lote PONTE-4, AM p98): Ataque Dedicado (Forte) = +1 FIXO (não o +2/+1-por-dado do
+         * Ataque Total); Ataque Defensivo = −(o pior entre 2 e nº de dados). Só corpo-a-corpo. (TODO opcional AM p98:
+         * +1/2-dados no Dedicado Forte com ST alta — deferido para não chutar a interação com mods de arma.)
+         */
+        fun modDanoManobra(manobra: Manobra, dedicadoModo: DedicadoModo, danoExpr: String, aDistancia: Boolean): Int {
+            if (aDistancia) return 0
+            val nDados = Regex("""(\d+)d""").find(danoExpr.lowercase())?.groupValues?.getOrNull(1)?.toIntOrNull() ?: 1
+            return when (manobra) {
+                Manobra.ATAQUE_DEDICADO -> if (dedicadoModo == DedicadoModo.FORTE) 1 else 0
+                Manobra.ATAQUE_DEFENSIVO -> -maxOf(2, nDados)
+                else -> 0
+            }
         }
     }
 }

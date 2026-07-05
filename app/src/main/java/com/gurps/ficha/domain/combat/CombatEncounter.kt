@@ -89,7 +89,11 @@ class CombatEncounter(
         val engaj = engajado(c)
         if (engaj) {
             legais.add(Manobra.ATAQUE)                       // ataque corpo-a-corpo exige alvo adjacente
-            if (!c.caido) legais.add(Manobra.ATAQUE_TOTAL)
+            if (!c.caido) {
+                legais.add(Manobra.ATAQUE_TOTAL)
+                legais.add(Manobra.ATAQUE_DEDICADO)          // Lote PONTE-4 (AM p98): entre Ataque e Ataque Total
+                legais.add(Manobra.ATAQUE_DEFENSIVO)         // Lote PONTE-4 (AM p98): entre Ataque e Defesa Total
+            }
         }
         if (!c.caido) legais.add(Manobra.MOVER_E_ATACAR)     // caído não pode mover-e-atacar
         return legais.distinct()

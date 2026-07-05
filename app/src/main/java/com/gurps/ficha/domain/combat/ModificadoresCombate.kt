@@ -38,6 +38,12 @@ enum class AtaqueTotalModo(val rotulo: String) {
     TELEGRAFADO("Telegrafado")  // +4 NH, mas +2 nas defesas do inimigo (Artes Marciais)
 }
 
+/** Lote PONTE-4 (AM p98): modo do Ataque Dedicado — Determinado (+2 acerto) ou Forte (+1 dano). */
+enum class DedicadoModo(val rotulo: String) {
+    DETERMINADO("Determinado"), // +2 no NH
+    FORTE("Forte")              // +1 no dano (NH normal)
+}
+
 object ModificadoresCombate {
 
     /** Modificador de ataque CORPO-A-CORPO pela postura do atacante. MB p.551. */

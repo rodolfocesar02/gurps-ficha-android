@@ -17,8 +17,9 @@ class CombatActionsTest {
         base: Int, manobra: Manobra = Manobra.ATAQUE,
         postura: Postura = Postura.EM_PE, local: LocalAtaque = LocalAtaque.TORSO,
         vis: Visibilidade = Visibilidade.NORMAL,
-        at: AtaqueTotalModo = AtaqueTotalModo.DETERMINADO, aDist: Boolean = false
-    ) = CombatActions.calcularNH(base, manobra, postura, local, vis, at, aDist).nhEfetivo
+        at: AtaqueTotalModo = AtaqueTotalModo.DETERMINADO, aDist: Boolean = false,
+        dedicado: DedicadoModo = DedicadoModo.DETERMINADO
+    ) = CombatActions.calcularNH(base, manobra, postura, local, vis, at, dedicado, aDist).nhEfetivo
 
     @Test
     fun `matriz de NH efetivo`() {
@@ -44,6 +45,13 @@ class CombatActionsTest {
         // À distância: Determinado = +1 (MB p.366). Corpo-a-corpo continua +4.
         assertEquals(15, CombatActions.calcularNH(14, Manobra.ATAQUE_TOTAL, aDistancia = true, ataqueTotalModo = AtaqueTotalModo.DETERMINADO).nhEfetivo)
         assertEquals(18, CombatActions.calcularNH(14, Manobra.ATAQUE_TOTAL, ataqueTotalModo = AtaqueTotalModo.DETERMINADO).nhEfetivo)
+    }
+
+    @Test
+    fun `Ataque Dedicado Determinado +2 no acerto e Forte ou Defensivo nao mudam o acerto`() {
+        assertEquals(16, nh(14, Manobra.ATAQUE_DEDICADO, dedicado = DedicadoModo.DETERMINADO)) // +2 (AM p98)
+        assertEquals(14, nh(14, Manobra.ATAQUE_DEDICADO, dedicado = DedicadoModo.FORTE))         // +0 (bônus vai no dano)
+        assertEquals(14, nh(14, Manobra.ATAQUE_DEFENSIVO))                                        // acerto inalterado
     }
 
     @Test
