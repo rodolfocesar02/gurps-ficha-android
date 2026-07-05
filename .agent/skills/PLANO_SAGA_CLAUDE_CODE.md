@@ -43,7 +43,15 @@
 > - ✅ Lote 385 = Tolerância a Ferimentos (2026-06-17, MB p.381) — loop 4/5. `ToleranciaFerimentos` (NÃO-VIVO/HOMOGÊNEO/DIFUSO) reduz dano pi/perf em `HitLocationRules`; `NpcStats.tolerancia`←bestiário; **esqueleto/zumbi = nao_vivo** (resistem a tiros). Testes + build 2 variantes verde.
 > - ✅ Lotes 386–422 (jun/2026) = **AUDITORIA DE COMBATE COMPLETA** — `Combate.md` 100% fechado (0 parciais/0 não-feitos): Agarrar/Imobilizar/Estrangular + luta agarrada NPC↔herói/Desvencilhar (422), Finta, Ataque Enganoso/Golpe Rápido, Encontrão/Empurrão, projeção, defesas que faltavam, postura/Agachar, críticos, Tolerância/Divisor de Armadura. +**teste de batalha no aparelho** (7 itens) corrigido (419–422) + tool `gerir_equipamento` (desarmar/confiscar). Detalhes no `PROGRESS.md`. Mapa do Artes Marciais em `Artes_Marciais_Regras_Combate.md`.
 > - ✅ Lotes PONTE-1..4 (2026-06-24) = **PONTE COMPLETA** (chaves de luta agarrada, sangramento, Ataque Telegráfico, Ataque Dedicado/Defensivo — regras de Artes Marciais que sobrevivem ao hexágono). Revisões adversariais corrigiram 8 bugs reais no caminho.
-> - ➡️ **PRÓXIMO: 🚦 GATE 0 — usuário valida TUDO no aparelho (Lotes 419–422 + PONTE-1..4).** Depois: PILAR hexágono HEX-1..HEX-9 (`PLANO_Combate_Tatico_Hex_3D.md`). As Fases C/D/E (mundo vivo) seguem conforme prioridade do usuário.
+> - ➡️ **ORDEM DE PRIORIDADE APROVADA PELO USUÁRIO (2026-07-05)** — roteiro das próximas sessões (validação no aparelho segue em paralelo, tarefa do usuário):
+>   1. **T1-1 Sangramento entre cenas** — persistir na ficha + tick no `passar_tempo` do Narrador (fecha o item 5 do teste de batalha de verdade).
+>   2. **T1-2 Ações improvisadas → modificadores** — tool `aplicar_modificador_combate` (dá mecânica à caixa de chat no combate).
+>   3. **T1-3 Forjador: protocolo de magias no prompt** (bug mapeado, pequeno).
+>   4. **T2 Unificação de branches** (sessão dedicada COM o usuário, 1–2h; VTT legado simplificou).
+>   5. **T3 PILAR hexágono HEX-1..HEX-9** (`PLANO_Combate_Tatico_Hex_3D.md`) — HEX-1 é isolado, pode correr em paralelo ao T1.
+>   6. **T4 Fases D→C** (D1 XpEngine + D2 Acampamento antes do mundo vivo; em C, priorizar C5 memória se as campanhas crescerem).
+>   7. **T5 Fases E/F** (E0 upgrade → áudio/imagem/voz → release).
+>   8. **T6 oportunistas** (miudezas de combate de carona; Subject Segmentation quando a lib estabilizar).
 
 ---
 
