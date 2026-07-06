@@ -54,6 +54,7 @@ class NarradorToolExecutor(
         fun gastarRecurso(recurso: String, quantidade: Int, motivo: String, itemNome: String?): String
         fun concederXp(pontos: Int, motivo: String): String
         fun gerirEquipamento(itemNome: String, operacao: String): String
+        suspend fun passarTempo(minutos: Int, modo: String): String
     }
 
     /** Campanha ativa — obrigatória para fatos. Setada ao abrir/criar campanha (A5). */
@@ -85,6 +86,7 @@ class NarradorToolExecutor(
                 NarradorTools.TOOL_GASTAR_RECURSO -> gastarRecurso(args)
                 NarradorTools.TOOL_CONCEDER_XP -> concederXp(args)
                 NarradorTools.TOOL_GERIR_EQUIPAMENTO -> gerirEquipamento(args)
+                NarradorTools.TOOL_PASSAR_TEMPO -> passarTempo(args)
                 in NarradorTools.TODAS -> {
                     Log.w("Narrador_Tools", "Tool ainda não implementada: $nome")
                     """{"erro":"nao_implementado","tool":"$nome"}"""
@@ -310,6 +312,17 @@ class NarradorToolExecutor(
         if (itemNome.isBlank()) return erro("campos_obrigatorios", "item_nome é obrigatório")
         val operacao = args.optString("operacao", "confiscar").trim().ifBlank { "confiscar" }
         return bridge.gerirEquipamento(itemNome, operacao)
+    }
+
+    // Lote 423: passar_tempo real-PARCIAL — registra o tempo de jogo e processa o sangramento ativo do herói.
+    // O WorldTick completo (clima/relógios/ecologia) continua na Fase C2.
+    private suspend fun passarTempo(args: JSONObject): String {
+        val bridge = combatBridge ?: return erro("sem_combate", "Ficha do herói indisponível")
+        // Teto de 1 ano de jogo por chamada — evita overflow (minutos*60) e loop absurdo se a IA exagerar.
+        val minutos = args.optInt("minutos", 0).coerceAtMost(525_600)
+        if (minutos <= 0) return erro("campos_obrigatorios", "minutos deve ser positivo")
+        val modo = args.optString("modo", "atividade").ifBlank { "atividade" }
+        return bridge.passarTempo(minutos, modo)
     }
 
     private fun erro(codigo: String, detalhe: String): String =

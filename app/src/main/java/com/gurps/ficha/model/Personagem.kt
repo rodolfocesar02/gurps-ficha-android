@@ -72,6 +72,11 @@ data class Personagem(
     // Rolagem (estado de sessao salvo por ficha)
     var pontosVidaRolagemAtual: Int? = null,
     var pontosFadigaRolagemAtual: Int? = null,
+    // Saga (Lote 423): sangramento ATIVO persistido entre cenas/combates (MB p.420). O combate restaura ao
+    // iniciar; o passar_tempo do Narrador processa os testes fora de combate. Aditivo — ficha antiga = false/null.
+    var sagaSangrando: Boolean = false,
+    var sagaSangramentoPenalidadeLocal: Int? = null,
+    var sagaSangramentoIntervaloSeg: Int? = null,
     var modeloRacial: ModeloRacial = ModeloRacial()
 ) {
     /**

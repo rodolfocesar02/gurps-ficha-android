@@ -186,6 +186,13 @@ class SagaCombatController(
             pvAtual = (p.pontosVidaRolagemAtual ?: p.pontosVida),
             pfAtual = (p.pontosFadigaRolagemAtual ?: p.pontosFadiga)
         )
+        // Lote 423: sangramento persistido na ficha (de uma cena/luta anterior) entra no combate já ativo.
+        if (p.sagaSangrando) {
+            heroiComb.sangramentoAtivo = true
+            heroiComb.condicoes.add(Condicao.SANGRANDO)
+            heroiComb.sangramentoPenalidadeLocal = p.sagaSangramentoPenalidadeLocal ?: 0
+            heroiComb.sangramentoIntervaloSeg = p.sagaSangramentoIntervaloSeg ?: 60
+        }
 
         // Item 5 do teste de batalha: NÃO abrir um combate que o herói já perdeu de saída. Se ele
         // entra a 0 PV ou abaixo (PV residual de uma luta anterior, sem cura/descanso), o motor
@@ -684,6 +691,12 @@ class SagaCombatController(
         finalizado = true
         // Devolve o PV do herói à ficha (clamp em 0 — a ficha não guarda PV negativo) e SALVA.
         viewModel.sagaDefinirPvAtual(s.heroi.pvAtual.coerceAtLeast(0))
+        // Lote 423: o sangramento SOBREVIVE ao combate — persiste na ficha (o passar_tempo do Narrador processa).
+        // Herói desmaiado sangrando PERSISTE (pode ser tratado); a −1×PV ou pior (morto/beira da morte, e a ficha
+        // clampa o PV em 0 de toda forma) NÃO persiste — evita "cadáver sangrando" na cena seguinte.
+        if (s.heroi.sangramentoAtivo && s.heroi.pvAtual > -s.heroi.pvMax)
+            viewModel.sagaDefinirSangramento(s.heroi.sangramentoPenalidadeLocal, s.heroi.sangramentoIntervaloSeg)
+        else viewModel.sagaLimparSangramento()
         // Saque (B8): armas dos inimigos derrotados, entregues à ficha de verdade.
         val saque = if (s.resultado == ResultadoCombate.VITORIA) computarSaque(s) else emptyList()
         saque.forEach { viewModel.sagaAdicionarItem(it, 1) }

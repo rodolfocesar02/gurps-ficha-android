@@ -171,6 +171,28 @@ object InjuryRules {
         }
     }
 
+    /** Desfecho da passagem de tempo com sangramento (Lote 423). morto/desmaiou vêm do VEREDITO do motor (cheques de HT). */
+    data class ResultadoSangramentoTempo(val logs: List<String>, val morto: Boolean, val desmaiou: Boolean)
+
+    /**
+     * Lote 423: sangramento FORA de combate — processa [minutos] de tempo narrado (passar_tempo do Narrador).
+     * Um teste por intervalo fechado, até estancar ou morrer. Continua mesmo inconsciente (pode sangrar até a
+     * morte, MB p.420). A morte é o EfeitoFerimento.MORTO real dos cheques — NUNCA inferida por limiar de PV.
+     */
+    fun sangrarPorTempo(c: Combatente, ht: Int, minutos: Int, random: Random): ResultadoSangramentoTempo {
+        val logs = mutableListOf<String>()
+        var morto = false; var desmaiou = false
+        if (!c.sangramentoAtivo || minutos <= 0) return ResultadoSangramentoTempo(logs, false, false)
+        val testes = (minutos * 60) / c.sangramentoIntervaloSeg.coerceAtLeast(1)
+        for (i in 1..testes) {
+            val r = tickSangramento(c, ht, random) ?: break // estancou num tick anterior
+            logs.addAll(r.logs)
+            if (r.efeito == EfeitoFerimento.INCONSCIENTE) desmaiou = true
+            if (r.efeito == EfeitoFerimento.MORTO) { morto = true; break }
+        }
+        return ResultadoSangramentoTempo(logs, morto, desmaiou)
+    }
+
     /** Estanca o sangramento (Primeiros Socorros, cura de ≥1 PV — MB p.52). Retorna true se havia sangramento. */
     fun estancarSangramento(c: Combatente): Boolean {
         if (!c.sangramentoAtivo) return false

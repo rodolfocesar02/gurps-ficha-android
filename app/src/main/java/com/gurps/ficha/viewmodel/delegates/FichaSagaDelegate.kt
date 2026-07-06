@@ -386,7 +386,11 @@ class FichaSagaDelegate(
                 // delta>0 restaura, delta<0 debita. Em combate o motor controla o PV — roteia para lá. Item 5 do teste.
                 val delta = -quantidade
                 if (combate.emCurso) combate.ajustarRecursoHeroiEmCombate("pv", delta, p.pontosFadiga)
-                else viewModel.sagaDefinirPvAtual(((p.pontosVidaRolagemAtual ?: p.pontosVida) + delta).coerceIn(0, p.pontosVida))
+                else {
+                    viewModel.sagaDefinirPvAtual(((p.pontosVidaRolagemAtual ?: p.pontosVida) + delta).coerceIn(0, p.pontosVida))
+                    // Lote 423 (MB p.424/p.52): curar ≥1 PV fora de combate também estanca o sangramento persistido.
+                    if (delta > 0 && viewModel.sagaLimparSangramento()) feed = feed + SagaTurn("sistema", "🩹 O sangramento estanca.")
+                }
                 val novo = (viewModel.personagem.pontosVidaRolagemAtual ?: p.pontosVida)
                 org.json.JSONObject().put("ok", true).put("recurso", "pv").put("pv_atual", novo).put("pv_max", p.pontosVida).toString()
             }
@@ -403,6 +407,55 @@ class FichaSagaDelegate(
         val total = viewModel.sagaConcederXp(pontos)
         feed = feed + SagaTurn("sistema", "✨ +$pontos pontos de personagem (${motivo.ifBlank { "marco do arco" }}). Total ganho: $total.")
         return org.json.JSONObject().put("ok", true).put("xp_concedido", pontos).put("xp_total", total).toString()
+    }
+
+    /**
+     * Lote 423: passar_tempo real-PARCIAL. Registra o tempo de jogo da campanha e processa o SANGRAMENTO
+     * ativo do herói fora de combate (testes por intervalo, MB p.420). Clima/relógios/ecologia = Fase C2.
+     */
+    override suspend fun passarTempo(minutos: Int, modo: String): String {
+        if (combate.emCurso) return jsonErro("combate_em_curso", "Em combate o tempo corre por turnos — resolva a luta primeiro.")
+        // Tempo de jogo da campanha (campo já existia; o WorldTick completo fica para a Fase C2).
+        campanhaAtiva?.let { camp ->
+            sagaDao?.atualizarCampanha(camp.copy(tempoJogoMin = camp.tempoJogoMin + minutos))
+            campanhaAtiva = sagaDao?.getCampanha(camp.id)
+        }
+        val p = viewModel.personagem
+        val json = org.json.JSONObject().put("ok", true).put("minutos", minutos).put("modo", modo)
+        if (!p.sagaSangrando) {
+            return json.put("nota", "Tempo registrado. Clima/relógios ainda não são simulados.").toString()
+        }
+        // Sangramento ativo: herói efêmero com o estado da ficha → roda os testes do intervalo → grava de volta.
+        val h = com.gurps.ficha.domain.combat.Combatente(
+            id = "heroi", nome = p.nome.ifBlank { "Herói" }, ehHeroi = true, dx = p.dx,
+            velocidadeBasica = p.velocidadeBasica.toDouble(), deslocamento = 1,
+            pvMax = p.pontosVida, pvAtual = (p.pontosVidaRolagemAtual ?: p.pontosVida)
+        )
+        h.sangramentoAtivo = true
+        h.condicoes.add(com.gurps.ficha.domain.combat.Condicao.SANGRANDO)
+        h.sangramentoPenalidadeLocal = p.sagaSangramentoPenalidadeLocal ?: 0
+        h.sangramentoIntervaloSeg = p.sagaSangramentoIntervaloSeg ?: 60
+        val pvAntes = h.pvAtual
+        val res = com.gurps.ficha.domain.combat.InjuryRules.sangrarPorTempo(h, p.ht, minutos, Random.Default)
+        val perda = (pvAntes - h.pvAtual).coerceAtLeast(0)
+        val estancou = !h.sangramentoAtivo
+        viewModel.sagaDefinirPvAtual(h.pvAtual.coerceAtLeast(0))
+        // Estancou OU morreu (veredito REAL dos cheques de HT) → limpa o estado persistido (morto não fica "sangrando").
+        if (estancou || res.morto) viewModel.sagaLimparSangramento()
+        val resumo = when {
+            res.morto -> "🩸 O herói SANGROU ATÉ MORRER durante o tempo passado (perdeu $perda PV)."
+            estancou && res.desmaiou -> "🩸 Sangramento: perdeu $perda PV, DESMAIOU, mas o ferimento estancou."
+            estancou -> "🩸 Sangramento: perdeu $perda PV e depois ESTANCOU."
+            res.desmaiou -> "🩸 Sangramento: perdeu $perda PV e DESMAIOU — continua sangrando; trate-o depressa."
+            else -> "🩸 Sangramento: perdeu $perda PV e CONTINUA sangrando — trate-o (cura ou mais descanso)."
+        }
+        feed = feed + SagaTurn("sistema", resumo)
+        return json.put("sangramento", org.json.JSONObject()
+                .put("estancou", estancou).put("morto", res.morto).put("desmaiou", res.desmaiou)
+                .put("pv_perdido", perda)
+                .put("pv_atual", h.pvAtual.coerceAtLeast(0)).put("pv_max", p.pontosVida))
+            .put("nota", "Clima/relógios ainda não são simulados.")
+            .toString()
     }
 
     override fun gerirEquipamento(itemNome: String, operacao: String): String {
@@ -428,8 +481,13 @@ class FichaSagaDelegate(
         // rodarTurno está bloqueado por processando e descartaria esta narração. Será drenado no finally dele.
         if (processando) { fimDeCombatePendente = fim; return }
         val saque = if (fim.saque.isEmpty()) "nenhum espólio" else fim.saque.joinToString(", ")
+        // Lote 423: o sangramento persiste após a luta — o Narrador precisa saber para narrar/tratar.
+        val sangrando = if (viewModel.personagem.sagaSangrando)
+            "⚠️ O herói saiu SANGRANDO da luta: sem tratamento (cura via gastar_recurso negativo) ou descanso " +
+            "(passar_tempo processa os testes), ele seguirá perdendo PV.\n" else ""
         rodarTurno(
             "[FIM DE COMBATE] Resultado: ${fim.resultado}. Estado final factual:\n${fim.resumoFactual}\n" +
+            sangrando +
             "Espólio JÁ entregue à ficha do herói: $saque.\n" +
             "Narre o desfecho do combate em PROSA, fiel a estes números (NÃO invente PV nem dano). " +
             "Se foi um marco do arco ou houve bom proveito tático/interpretação, conceda pontos com conceder_xp. " +

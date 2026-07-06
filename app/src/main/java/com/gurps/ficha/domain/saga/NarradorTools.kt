@@ -155,7 +155,7 @@ object NarradorTools {
         ),
         ToolSpec(
             TOOL_PASSAR_TEMPO,
-            "Avança o tempo DE JOGO do mundo. O motor processa clima, relógios e ecologia no intervalo e devolve um delta textual do que mudou.",
+            "Avança o tempo DE JOGO do mundo e aplica os efeitos do intervalo: registra o tempo da campanha e processa o SANGRAMENTO ativo do herói (ele perde PV ou o ferimento estanca). Use quando o herói descansa, viaja ou trata ferimentos.",
             listOf(
                 Param("minutos", "integer", "Minutos de jogo a avançar.", obrigatorio = true),
                 Param("modo", "string", "Natureza do intervalo.", enum = listOf("descanso", "viagem", "atividade"))

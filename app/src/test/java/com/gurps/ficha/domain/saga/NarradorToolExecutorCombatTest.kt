@@ -40,6 +40,9 @@ class NarradorToolExecutorCombatTest {
         override fun gerirEquipamento(itemNome: String, operacao: String): String {
             chamadas.add("equip:$itemNome:$operacao"); return JSONObject().put("ok", true).toString()
         }
+        override suspend fun passarTempo(minutos: Int, modo: String): String {
+            chamadas.add("tempo:$minutos:$modo"); return JSONObject().put("ok", true).toString()
+        }
     }
 
     private fun exec(bridge: FakeBridge) = NarradorToolExecutor(
@@ -104,6 +107,17 @@ class NarradorToolExecutorCombatTest {
         // item_nome é obrigatório — sem ele, erro de campos e NÃO chega ao bridge.
         assertEquals("campos_obrigatorios", JSONObject(e.executar(NarradorTools.TOOL_GERIR_EQUIPAMENTO, """{"operacao":"confiscar"}""")).optString("erro"))
         assertEquals(listOf("equip:Espada longa:confiscar"), b.chamadas)
+    }
+
+    @Test
+    fun `passar_tempo roteia minutos e modo e exige minutos positivo`() = runBlocking {
+        val b = FakeBridge()
+        val e = exec(b)
+        assertTrue(JSONObject(e.executar(NarradorTools.TOOL_PASSAR_TEMPO, """{"minutos":30,"modo":"descanso"}""")).optBoolean("ok"))
+        assertEquals(listOf("tempo:30:descanso"), b.chamadas)
+        // minutos ausente/zero → erro de campos, sem chegar ao bridge.
+        assertEquals("campos_obrigatorios", JSONObject(e.executar(NarradorTools.TOOL_PASSAR_TEMPO, """{"modo":"descanso"}""")).optString("erro"))
+        assertEquals(listOf("tempo:30:descanso"), b.chamadas)
     }
 
     @Test

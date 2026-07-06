@@ -110,6 +110,20 @@ class InjuryRulesTest {
     }
 
     @Test
+    fun `sangrarPorTempo com HT baixo perde PV e sem sangramento nao faz nada`() {
+        // Lote 423: passagem de tempo fora de combate (passar_tempo do Narrador).
+        val c = vitima(pv = 30)
+        c.sangramentoAtivo = true; c.condicoes.add(Condicao.SANGRANDO); c.sangramentoIntervaloSeg = 60
+        val res = InjuryRules.sangrarPorTempo(c, 3, 10, Random(2)) // 10 min → até 10 testes com HT 3
+        assertTrue("HT 3 deve sangrar em 10 minutos", c.pvAtual < 30)
+        assertTrue(res.logs.isNotEmpty())
+        val semSangue = vitima()
+        val res2 = InjuryRules.sangrarPorTempo(semSangue, 10, 60, Random(1))
+        assertTrue(res2.logs.isEmpty()); assertFalse(res2.morto)
+        assertEquals(semSangue.pvMax, semSangue.pvAtual)
+    }
+
+    @Test
     fun `sangramento com HT altissimo ainda falha em 17 ou 18 (3d6 nunca e sucesso automatico)`() {
         // HT 30: nenhum teste "normal" falha, mas 17/18 em 3d6 são SEMPRE falha → o ferido ainda pode sangrar.
         val c = vitima(pv = 50)

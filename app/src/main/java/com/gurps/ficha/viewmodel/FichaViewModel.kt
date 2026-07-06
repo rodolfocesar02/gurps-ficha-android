@@ -168,6 +168,19 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
     }
     fun sagaDefinirPvAtual(v: Int) { atualizarPontosVidaRolagemAtual(v); salvarFicha() }
     fun sagaDefinirPfAtual(v: Int) { atualizarPontosFadigaRolagemAtual(v); salvarFicha() }
+    /** Lote 423: persiste o sangramento ativo do herói entre cenas/combates (MB p.420). */
+    fun sagaDefinirSangramento(penalidadeLocal: Int, intervaloSeg: Int) {
+        personagem = personagem.copy(sagaSangrando = true,
+            sagaSangramentoPenalidadeLocal = penalidadeLocal, sagaSangramentoIntervaloSeg = intervaloSeg)
+        salvarFicha()
+    }
+    /** Lote 423: estanca o sangramento persistido (cura/descanso). Retorna true se havia sangramento. */
+    fun sagaLimparSangramento(): Boolean {
+        if (!personagem.sagaSangrando) return false
+        personagem = personagem.copy(sagaSangrando = false,
+            sagaSangramentoPenalidadeLocal = null, sagaSangramentoIntervaloSeg = null)
+        salvarFicha(); return true
+    }
     fun sagaAdicionarItem(nome: String, qtd: Int) {
         if (nome.isBlank()) return
         adicionarEquipamento(com.gurps.ficha.model.Equipamento(nome = nome, quantidade = qtd.coerceAtLeast(1))); salvarFicha()

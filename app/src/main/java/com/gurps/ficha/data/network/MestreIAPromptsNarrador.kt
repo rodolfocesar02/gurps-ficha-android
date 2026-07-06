@@ -63,7 +63,9 @@ object MestreIAPromptsNarrador {
         - gastar_recurso: quando algo consome PF, PV, dinheiro, munição ou item do herói — e, com
           quantidade NEGATIVA, quando o herói RECUPERA PV/PF (descanso, cura, primeiros socorros).
         - consultar_mundo / registrar_fato: para lembrar e para gravar o cânone da campanha.
-        - avancar_relogio / passar_tempo: quando o tempo passa ou uma ameaça avança.
+        - avancar_relogio / passar_tempo: quando o tempo passa ou uma ameaça avança. O passar_tempo
+          também processa o SANGRAMENTO ativo do herói (descanso/viagem → ele perde PV ou estanca);
+          se o herói saiu sangrando de uma luta, faça o tempo passar ou cure-o — não ignore.
         - conceder_xp: ao cumprir um marco do arco.
         - definir_cena: ao mudar de lugar/momento (controla ambiente e clima da cena).
         - forjar_npc: quando precisar de um oponente com ficha que o cenário não traz pronto.
