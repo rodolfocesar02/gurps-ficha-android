@@ -14,7 +14,10 @@ data class CampanhaConfig(
     val dificuldade: String = "Normal", // Fácil | Normal | Difícil | Mortal
     val magiaPermitida: Boolean = true,
     val nivelTecnologico: Int = 3,    // NT GURPS 0-12
-    val livros: List<String> = listOf(MODULO_BASICO)
+    val livros: List<String> = listOf(MODULO_BASICO),
+    // Lote HEX-2 (Fase 2a do PILAR): combate tático em hexágonos (default OFF — modo faixas continua padrão).
+    // Aditivo/anulável em fichas antigas (Gson usa o default false); ver PLANO_Combate_Tatico_Hex_3D.md.
+    val modoTaticoHex: Boolean = false
 ) {
     fun toJson(): String = Gson().toJson(this)
 

@@ -94,6 +94,9 @@ class FichaSagaDelegate(
     var fase by mutableStateOf(""); private set
     var processando by mutableStateOf(false); private set
 
+    /** Lote HEX-2: config da campanha ativa (para a flag do modo tático em hexágonos). Default se null. */
+    val configAtiva: CampanhaConfig get() = CampanhaConfig.fromJson(campanhaAtiva?.configJson)
+
     private var sessionIdAtual: Long? = null
     // Fim de combate que chegou enquanto um turno de texto ainda rodava (processando=true): fica pendente
     // e é narrado no finally de rodarTurno, senão a prosa de desfecho + XP seriam descartadas (revisão Frente 2).

@@ -267,6 +267,21 @@ private fun ConfiguracaoJogoDialog(
                         modifier = Modifier.semantics { contentDescription = "Permitir magia" })
                 }
 
+                // Lote HEX-2: modo tático em hexágonos (demo — sem regras plugadas ainda; padrão OFF).
+                Row(
+                    modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Column(Modifier.weight(1f)) {
+                        Text("Combate tático em hexágonos (⬢)")
+                        Text("EXPERIMENTAL: grade DEMO sem regras plugadas (HEX-2). Padrão: OFF.",
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    }
+                    Switch(checked = config.modoTaticoHex, onCheckedChange = { onConfigChange(config.copy(modoTaticoHex = it)) },
+                        modifier = Modifier.semantics { contentDescription = "Modo tático em hexágonos" })
+                }
+
                 // Nível tecnológico
                 Row(
                     modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
@@ -423,8 +438,11 @@ private fun FeedDaCampanha(viewModel: FichaViewModel) {
         }
 
         // Combate ativo (B7): tracker + manobras/defesa. Recebe weight p/ dividir a tela com o feed.
+        // Lote HEX-2 (Fase 2a): se a config da campanha tiver `modoTaticoHex = true`, renderiza a grade
+        // tática DEMO em vez do painel por faixas. HEX-3 pluga o motor de combate ao canvas.
         if (viewModel.sagaCombateAtivo) {
-            com.gurps.ficha.ui.saga.CombatePainel(viewModel, Modifier.weight(1.5f))
+            if (viewModel.sagaModoTaticoHex) com.gurps.ficha.ui.saga.HexCanvasDemo(Modifier.weight(1.5f))
+            else com.gurps.ficha.ui.saga.CombatePainel(viewModel, Modifier.weight(1.5f))
         }
         // A caixa de texto fica SEMPRE disponível (itens 2/3 do teste de batalha): o jogador fala com
         // o Narrador DURANTE o combate e DEPOIS de cair/vencer, sem precisar sair e voltar à campanha.

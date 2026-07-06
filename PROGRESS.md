@@ -3046,6 +3046,16 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - **Recomendação registrada** (maior valor × menor custo): Ataque Telegráfico (par do Enganoso), luta agarrada profunda (chaves/Mata-Leão estendendo o lote 422), Sangramento Grave + incapacitação de membro (item 5 do teste de batalha), Ataque Dedicado/Defensivo. Fora de escopo: posicional/hexágono, montaria, cinematográfico, dado de arma do NPC. Mudança só de documentação (não compila Kotlin).
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
+### Lote HEX-2 — 5 de Julho de 2026 (T3 / Fase 2a do PILAR — grade 2D + flag + roteamento)
+**Saga combate tático: Compose Canvas 2D com grade de hexágonos, tokens móveis por toque — branch GURPS-Saga**
+- 2ª de 9 fatias do PILAR (`PLANO_Combate_Tatico_Hex_3D.md`). **Prova visual da grade** — SEM regras de combate plugadas ainda (HEX-3 pluga `CombatSession`).
+- **Feature flag:** `CampanhaConfig.modoTaticoHex: Boolean = false` (aditivo/Gson-safe, fichas antigas usam default). Switch na tela "Configuração do Jogo" com aviso "EXPERIMENTAL". Modo faixas (Lotes 419–424) continua o padrão intocado.
+- **Estado puro** (`domain/combat/hex/HexTaticoDemo.kt`): `HexTaticoState(tokens, hexSelecionado?, tokenSelecionadoId?, raioGrade=7)`; `aoTocarHex` implementa a lógica (mover se vizinho livre / selecionar token / destacar hex vazio). `mover` devolve `this` quando ilegal (evita recomposição). 6 testes puros.
+- **Canvas 2D** (`ui/saga/HexCanvas.kt`): `HexCanvasDemo` composable. `hexParaTela` (pointy-top: q influencia x e r meia-linha; r puxa y por 1.5t) + `telaParaHex` (inverso RedBlob + cube-round + descarta fora do raio). `desenharHex` desenha 6 vértices a 30°+60°*i com destaque quando selecionado + rótulo (q,r) para debug (some no HEX-7). `desenharToken` círculo azul/vermelho + flecha de facing + inicial + realce branco quando selecionado. Estilos (`ESTILO_LABEL_HEX`, `ESTILO_INICIAL_TOKEN`) declarados fora do `@Composable` para poder usar dentro do `DrawScope`.
+- **Roteamento** (`TabSaga.kt` linha ~426): quando `sagaCombateAtivo && sagaModoTaticoHex` → renderiza `HexCanvasDemo` (weight 1.5f, mesmo footprint do `CombatePainel`). Flag lida via `FichaSagaDelegate.configAtiva` (parse do `CampanhaEntity.configJson`) exposta como `viewModel.sagaModoTaticoHex`.
+- **Revisão adversarial** (3 dimensões: geometria hex↔tela, roteamento+flag, Compose+estado): **0 achados confirmados, 0 sem veredito**. Build verde 2 variantes. Combate por faixas intocado.
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
 ### Lote HEX-1 — 5 de Julho de 2026 (T3 / Fase 1 do PILAR — combate tático em hexágonos)
 **Saga combate tático: motor `HexGrid` puro (Kotlin, sem Android) — branch GURPS-Saga**
 - **PILAR NOVO** começa aqui — 1ª de 9 fatias (`PLANO_Combate_Tatico_Hex_3D.md`). Princípio-mestre: motor de regras 2D primeiro, 3D depois. **Zero toque no combate atual** — arquivos novos em `domain/combat/hex/`.
