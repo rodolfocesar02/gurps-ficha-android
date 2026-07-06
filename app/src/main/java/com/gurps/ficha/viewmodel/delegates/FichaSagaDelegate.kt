@@ -409,6 +409,15 @@ class FichaSagaDelegate(
         return org.json.JSONObject().put("ok", true).put("xp_concedido", pontos).put("xp_total", total).toString()
     }
 
+    /** Lote 424 (T1-2): ação improvisada do jogador (chat no combate) → modificador mecânico nomeado. */
+    override fun aplicarModificadorCombate(alvoId: String, valor: Int, aplicaEm: String, motivo: String, duracaoRodadas: Int?): String {
+        val txt = combate.aplicarModificador(alvoId, valor, aplicaEm, motivo, duracaoRodadas)
+            ?: return jsonErro("alvo_invalido", "Nenhum combatente vivo com id '$alvoId' no encontro atual.")
+        return org.json.JSONObject().put("ok", true).put("relatorio", txt)
+            .put("nota", "O modificador já entra no cálculo dos próximos golpes/defesas — narre a situação sem repetir números.")
+            .toString()
+    }
+
     /**
      * Lote 423: passar_tempo real-PARCIAL. Registra o tempo de jogo da campanha e processa o SANGRAMENTO
      * ativo do herói fora de combate (testes por intervalo, MB p.420). Clima/relógios/ecologia = Fase C2.

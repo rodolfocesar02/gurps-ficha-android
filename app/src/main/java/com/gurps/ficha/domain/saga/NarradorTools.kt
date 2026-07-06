@@ -33,17 +33,19 @@ object NarradorTools {
     const val TOOL_FORJAR_NPC = "forjar_npc"
     const val TOOL_INSPECIONAR_PERSONAGEM = "inspecionar_personagem"
     const val TOOL_GERIR_EQUIPAMENTO = "gerir_equipamento"
+    const val TOOL_APLICAR_MODIFICADOR_COMBATE = "aplicar_modificador_combate"
 
     // Reuso do motor do Auditor (mesmos nomes de MestreIATools.TOOL_LOCALIZAR/TOOL_LER)
     const val TOOL_LOCALIZAR = "localizar_no_codex"
     const val TOOL_LER = "ler_pagina"
 
-    /** Todas as tools que o executor do Narrador conhece (15 próprias + 2 do Códex). */
+    /** Todas as tools que o executor do Narrador conhece (16 próprias + 2 do Códex). */
     val TODAS: Set<String> = setOf(
         TOOL_PEDIR_ROLAGEM, TOOL_INICIAR_COMBATE, TOOL_ACAO_NPC, TOOL_APLICAR_DANO,
         TOOL_APLICAR_CONDICAO, TOOL_GASTAR_RECURSO, TOOL_CONSULTAR_MUNDO, TOOL_REGISTRAR_FATO,
         TOOL_AVANCAR_RELOGIO, TOOL_PASSAR_TEMPO, TOOL_CONCEDER_XP, TOOL_DEFINIR_CENA,
-        TOOL_FORJAR_NPC, TOOL_INSPECIONAR_PERSONAGEM, TOOL_GERIR_EQUIPAMENTO, TOOL_LOCALIZAR, TOOL_LER
+        TOOL_FORJAR_NPC, TOOL_INSPECIONAR_PERSONAGEM, TOOL_GERIR_EQUIPAMENTO,
+        TOOL_APLICAR_MODIFICADOR_COMBATE, TOOL_LOCALIZAR, TOOL_LER
     )
 
     // ── Especificação neutra (uma fonte, dois formatos) ─────────────────────
@@ -194,6 +196,17 @@ object NarradorTools {
             listOf(
                 Param("secao", "string", "Seção da ficha a ler.", obrigatorio = true,
                     enum = listOf("atributos", "vantagens", "desvantagens", "pericias", "magias", "equipamentos", "pontos", "completo"))
+            )
+        ),
+        ToolSpec(
+            TOOL_APLICAR_MODIFICADOR_COMBATE,
+            "Converte uma ação improvisada ou situação narrada em vantagem/desvantagem MECÂNICA num combate aberto: bônus ou penalidade NOMEADO no ataque ou na defesa de um combatente (herói ou NPC), com duração em rodadas. Use DEPOIS de validar a ação (pedir_rolagem quando incerta) — nunca deixe o efeito só na prosa.",
+            listOf(
+                Param("alvo_id", "string", "Identificador do combatente afetado (herói ou NPC do encontro).", obrigatorio = true),
+                Param("valor", "integer", "Tamanho do modificador: positivo ajuda, negativo atrapalha (ex.: +2, -4). Nunca zero.", obrigatorio = true),
+                Param("aplica_em", "string", "O que o modificador afeta.", obrigatorio = true, enum = listOf("ataque", "defesa")),
+                Param("motivo", "string", "Nome curto da situação (aparece no cálculo do golpe).", obrigatorio = true),
+                Param("duracao_rodadas", "integer", "Rodadas até expirar; omita para valer o combate inteiro.")
             )
         ),
         ToolSpec(

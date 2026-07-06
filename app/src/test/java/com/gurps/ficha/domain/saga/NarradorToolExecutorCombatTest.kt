@@ -43,6 +43,9 @@ class NarradorToolExecutorCombatTest {
         override suspend fun passarTempo(minutos: Int, modo: String): String {
             chamadas.add("tempo:$minutos:$modo"); return JSONObject().put("ok", true).toString()
         }
+        override fun aplicarModificadorCombate(alvoId: String, valor: Int, aplicaEm: String, motivo: String, duracaoRodadas: Int?): String {
+            chamadas.add("mod:$alvoId:$valor:$aplicaEm:$motivo:${duracaoRodadas ?: "combate"}"); return JSONObject().put("ok", true).toString()
+        }
     }
 
     private fun exec(bridge: FakeBridge) = NarradorToolExecutor(
@@ -118,6 +121,28 @@ class NarradorToolExecutorCombatTest {
         // minutos ausente/zero → erro de campos, sem chegar ao bridge.
         assertEquals("campos_obrigatorios", JSONObject(e.executar(NarradorTools.TOOL_PASSAR_TEMPO, """{"modo":"descanso"}""")).optString("erro"))
         assertEquals(listOf("tempo:30:descanso"), b.chamadas)
+    }
+
+    @Test
+    fun `aplicar_modificador_combate roteia e exige combate ativo`() = runBlocking {
+        val b = FakeBridge()
+        val e = exec(b)
+        // Sem combate ativo → erro, nada chega ao bridge.
+        assertEquals("sem_combate_ativo", JSONObject(e.executar(NarradorTools.TOOL_APLICAR_MODIFICADOR_COMBATE,
+            """{"alvo_id":"heroi","valor":2,"aplica_em":"defesa","motivo":"cobertura"}""")).optString("erro"))
+        assertTrue(b.chamadas.isEmpty())
+        // Com combate ativo → roteia com todos os campos (duração omitida = combate inteiro).
+        b.ativo = true
+        assertTrue(JSONObject(e.executar(NarradorTools.TOOL_APLICAR_MODIFICADOR_COMBATE,
+            """{"alvo_id":"goblin_1","valor":-4,"aplica_em":"ataque","motivo":"areia nos olhos","duracao_rodadas":2}""")).optBoolean("ok"))
+        assertEquals(listOf("mod:goblin_1:-4:ataque:areia nos olhos:2"), b.chamadas)
+        // valor 0, aplica_em inválido e duração explícita não-positiva são barrados.
+        assertEquals("campos_obrigatorios", JSONObject(e.executar(NarradorTools.TOOL_APLICAR_MODIFICADOR_COMBATE,
+            """{"alvo_id":"heroi","valor":0,"aplica_em":"defesa","motivo":"x"}""")).optString("erro"))
+        assertEquals("campos_obrigatorios", JSONObject(e.executar(NarradorTools.TOOL_APLICAR_MODIFICADOR_COMBATE,
+            """{"alvo_id":"heroi","valor":2,"aplica_em":"sorte","motivo":"x"}""")).optString("erro"))
+        assertEquals("campos_obrigatorios", JSONObject(e.executar(NarradorTools.TOOL_APLICAR_MODIFICADOR_COMBATE,
+            """{"alvo_id":"heroi","valor":2,"aplica_em":"defesa","motivo":"x","duracao_rodadas":0}""")).optString("erro"))
     }
 
     @Test

@@ -242,6 +242,14 @@ class SagaCombatController(
     /** Perfil de combate do herói montado da ficha ATUAL (o bridge usa p/ dano fora do loop). */
     fun perfilHeroi(): HeroiPerfilCombate = construirPerfilHeroi(viewModel.personagem)
 
+    /** Lote 424 (T1-2): modificador situacional do Narrador (ação improvisada → mecânica). Null = alvo inválido. */
+    fun aplicarModificador(alvoId: String, valor: Int, aplicaEm: String, motivo: String, duracaoRodadas: Int?): String? {
+        val s = sessao ?: return null
+        val txt = s.aplicarModSituacional(alvoId, aplicaEm, valor, motivo, duracaoRodadas) ?: return null
+        publicarLog(); atualizarEstado()
+        return txt
+    }
+
     // ── Efeitos aplicados pelo Narrador (B8), fora do loop de turnos ────────────
 
     /** Aplica dano a um combatente vivo do encontro (NPC ou herói). Retorna relatório factual ou null. */

@@ -55,6 +55,7 @@ class NarradorToolExecutor(
         fun concederXp(pontos: Int, motivo: String): String
         fun gerirEquipamento(itemNome: String, operacao: String): String
         suspend fun passarTempo(minutos: Int, modo: String): String
+        fun aplicarModificadorCombate(alvoId: String, valor: Int, aplicaEm: String, motivo: String, duracaoRodadas: Int?): String
     }
 
     /** Campanha ativa — obrigatória para fatos. Setada ao abrir/criar campanha (A5). */
@@ -87,6 +88,7 @@ class NarradorToolExecutor(
                 NarradorTools.TOOL_CONCEDER_XP -> concederXp(args)
                 NarradorTools.TOOL_GERIR_EQUIPAMENTO -> gerirEquipamento(args)
                 NarradorTools.TOOL_PASSAR_TEMPO -> passarTempo(args)
+                NarradorTools.TOOL_APLICAR_MODIFICADOR_COMBATE -> aplicarModificadorCombate(args)
                 in NarradorTools.TODAS -> {
                     Log.w("Narrador_Tools", "Tool ainda não implementada: $nome")
                     """{"erro":"nao_implementado","tool":"$nome"}"""
@@ -312,6 +314,27 @@ class NarradorToolExecutor(
         if (itemNome.isBlank()) return erro("campos_obrigatorios", "item_nome é obrigatório")
         val operacao = args.optString("operacao", "confiscar").trim().ifBlank { "confiscar" }
         return bridge.gerirEquipamento(itemNome, operacao)
+    }
+
+    // Lote 424 (T1-2): ação improvisada do jogador → modificador MECÂNICO nomeado no combate aberto.
+    private fun aplicarModificadorCombate(args: JSONObject): String {
+        val bridge = combatBridge ?: return erro("sem_combate", "Motor de combate indisponível")
+        if (!bridge.combateAtivo()) return erro("sem_combate_ativo", "Nenhum combate em andamento — modificadores situacionais só valem dentro de uma luta aberta.")
+        val alvoId = args.optString("alvo_id").trim()
+        if (alvoId.isBlank()) return erro("campos_obrigatorios", "alvo_id é obrigatório")
+        val valor = args.optInt("valor", 0)
+        if (valor == 0) return erro("campos_obrigatorios", "valor não pode ser zero")
+        val aplicaEm = args.optString("aplica_em").trim().lowercase()
+        if (aplicaEm !in listOf("ataque", "defesa")) return erro("campos_obrigatorios", "aplica_em deve ser 'ataque' ou 'defesa'")
+        val motivo = args.optString("motivo").trim()
+        if (motivo.isBlank()) return erro("campos_obrigatorios", "motivo é obrigatório (nomeia a situação)")
+        // Duração explícita inválida é ERRO (não vira "combate inteiro" silencioso — omitir o campo é que significa isso).
+        val duracao = if (args.has("duracao_rodadas")) {
+            val d = args.optInt("duracao_rodadas")
+            if (d <= 0) return erro("campos_obrigatorios", "duracao_rodadas deve ser positiva — omita o campo para valer o combate inteiro")
+            d
+        } else null
+        return bridge.aplicarModificadorCombate(alvoId, valor, aplicaEm, motivo, duracao)
     }
 
     // Lote 423: passar_tempo real-PARCIAL — registra o tempo de jogo e processa o sangramento ativo do herói.

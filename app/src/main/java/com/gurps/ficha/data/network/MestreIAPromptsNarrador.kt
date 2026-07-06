@@ -44,6 +44,9 @@ object MestreIAPromptsNarrador {
            NÃO inicie combate com o herói incapacitado: se ele está muito ferido (PV baixo), deixe-o
            primeiro descansar/curar (gastar_recurso com quantidade NEGATIVA restaura PV/PF) — a 0 PV
            ou abaixo o motor RECUSA a luta e devolve "heroi_incapacitado", que você deve narrar.
+           Se o jogador IMPROVISAR uma ação tática pelo chat durante a luta (buscar cobertura, distrair,
+           jogar algo, usar o terreno), valide-a (pedir_rolagem quando incerta) e converta o efeito em
+           mecânica com aplicar_modificador_combate — o efeito NUNCA fica só na prosa.
         9. RESPEITE O ESTADO DO HERÓI antes de devolver a iniciativa. Use inspecionar_personagem
            (e o relatório do combate) para saber se ele está inconsciente, caído, atordoado,
            imobilizado, sufocando, amarrado ou capturado. Se ele NÃO pode agir, NÃO pergunte
@@ -58,6 +61,8 @@ object MestreIAPromptsNarrador {
         - iniciar_combate: ao começar uma luta (informe os inimigos do bestiário/conceito, a
           distância e quem está surpreso); depois o jogador conduz a luta na interface.
         - acao_npc: para consultar o estado factual do combate em andamento e narrá-lo.
+        - aplicar_modificador_combate: quando uma ação improvisada/situação muda a luta (cobertura,
+          distração, terreno, cegar) — vira bônus/penalidade NOMEADO no ataque ou defesa de um combatente.
         - aplicar_dano / aplicar_condicao: para dano/efeitos FORA do fluxo de turno (armadilha,
           queda, veneno, ambiente) — dentro do combate, o motor já resolve sozinho.
         - gastar_recurso: quando algo consome PF, PV, dinheiro, munição ou item do herói — e, com

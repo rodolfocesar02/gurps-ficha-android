@@ -1296,6 +1296,38 @@ class CombatSessionTest {
         }
     }
 
+    // Lote 424 (T1-2): modificadores situacionais do Narrador (ações improvisadas → mecânica).
+    @Test
+    fun `mod situacional de defesa soma na defesa do heroi e expira apos as rodadas`() {
+        val enc = CombatEncounter(listOf(heroi(), goblin()), mapOf("goblin" to 1), seed = 1L)
+        val s = CombatSession(enc, perfilHeroi(), Random(1)) // esquiva 9
+        assertTrue(s.aplicarModSituacional("heroi", "defesa", 2, "cobertura", 1) != null)
+        fun esquiva() = s.opcoesDefesaHeroi().first {
+            it.tipo == CombatResolver.TipoDefesa.ESQUIVA && !it.recuo && !it.jogarSeAoChao && !it.acrobatica
+        }.valorFinal
+        assertEquals(11, esquiva()) // 9 + 2 de cobertura
+        // O turno da CRIAÇÃO não conta (o chat roda no turno do dono): após o 1º turno do herói o mod AINDA vale
+        // (é exatamente quando o NPC ataca e a cobertura precisa existir); expira ao fim do turno SEGUINTE dele.
+        while (!s.combatenteAtual().ehHeroi) s.avancarTurno()
+        s.avancarTurno() // fim do turno da criação → estreia, não decrementa
+        assertEquals(11, esquiva())
+        while (!s.combatenteAtual().ehHeroi) s.avancarTurno()
+        s.avancarTurno() // fim do turno seguinte do dono → decrementa 1→0 → expira
+        assertEquals(9, esquiva())
+        // Alvo inválido → null.
+        assertEquals(null, s.aplicarModSituacional("fantasma", "defesa", 2, "x", null))
+    }
+
+    @Test
+    fun `mod situacional de ataque entra nomeado no calculo do golpe do heroi`() {
+        val enc = CombatEncounter(listOf(heroi(), goblin()), mapOf("goblin" to 1), seed = 1L)
+        val s = CombatSession(enc, perfilHeroi(), Random(1))
+        s.aplicarModSituacional("heroi", "ataque", 3, "posição elevada", null)
+        s.heroiAtaca(espada(), "goblin", Manobra.ATAQUE, LocalAtaque.TORSO)
+        assertTrue("o motivo do mod deve aparecer no cálculo do ataque",
+            s.log.any { it.contains("posição elevada") })
+    }
+
     // Lote PONTE-4: Ataque Dedicado / Defensivo (AM p98).
     @Test
     fun `modDanoManobra Dedicado Forte e +1 fixo e Defensivo e o pior entre -2 e -1 por dado`() {

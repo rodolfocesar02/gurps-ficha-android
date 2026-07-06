@@ -58,6 +58,39 @@ class CombatSession(
     var heroiSemRetirada: Boolean = false; private set
     var heroiBonusDefesaDefensivo: CombatResolver.TipoDefesa? = null; private set
 
+    // ── Modificadores SITUACIONAIS (Lote 424/T1-2): ações improvisadas do jogador narradas pelo Narrador ──
+    // (cobertura, distração, terreno, areia nos olhos…) viram bônus/penalidade NOMEADO em ataque ou defesa
+    // de um combatente, aplicados pela tool aplicar_modificador_combate. Expiram por rodadas ou duram a luta.
+    data class ModSituacional(
+        val alvoId: String,
+        val categoria: String,     // "ataque" | "defesa"
+        val valor: Int,
+        val motivo: String,
+        var rodadasRestantes: Int, // Int.MAX_VALUE = até o fim do combate
+        var estreou: Boolean = false // o turno em que o mod nasce NÃO conta (o chat roda no turno do dono)
+    )
+    private val modsSituacionais = mutableListOf<ModSituacional>()
+
+    /** Aplica um modificador situacional (tool do Narrador). Retorna o relatório factual ou null se o alvo é inválido. */
+    fun aplicarModSituacional(alvoId: String, categoria: String, valor: Int, motivo: String, duracaoRodadas: Int?): String? {
+        val alvo = encounter.combatentes.firstOrNull { it.id == alvoId && it.vivo } ?: return null
+        val cat = if (categoria.lowercase().trim().startsWith("def")) "defesa" else "ataque"
+        val dur = duracaoRodadas?.coerceIn(1, 100) ?: Int.MAX_VALUE
+        val v = valor.coerceIn(-10, 10)
+        modsSituacionais.add(ModSituacional(alvo.id, cat, v, motivo.ifBlank { "situação" }, dur))
+        val sinal = if (v >= 0) "+$v" else "$v"
+        val durTxt = if (dur == Int.MAX_VALUE) "até o fim do combate" else "por $dur rodada(s)"
+        val txt = "🎯 ${alvo.nome}: $sinal em $cat (${motivo.ifBlank { "situação" }}), $durTxt."
+        log += txt
+        return txt
+    }
+
+    private fun modsSituacionaisAtaque(id: String): List<ModSituacional> =
+        modsSituacionais.filter { it.alvoId == id && it.categoria == "ataque" }
+
+    private fun modSituacionalDefesa(id: String): Int =
+        modsSituacionais.filter { it.alvoId == id && it.categoria == "defesa" }.sumOf { it.valor }
+
     // Defesa Total (Lote 388, MB p.366): declarada no turno do herói, vale até a PRÓXIMA ação dele.
     // AUMENTADA = +2 numa defesa escolhida; DUPLA = 2ª defesa diferente se a 1ª falhar.
     private var defesaTotalModo: DefesaTotalModo? = null
@@ -534,6 +567,8 @@ class CombatSession(
             if (eng > 0) add(CombatActions.ComponenteMod("ataque enganoso", -2 * eng))
             // Ataque Telegráfico (Lote PONTE-3, AM p.109): +4 para acertar (em troca de +2 nas defesas do alvo).
             if (telegrafico) add(CombatActions.ComponenteMod("ataque telegráfico", 4))
+            // Modificadores situacionais do Narrador (Lote 424): ação improvisada vira mod nomeado no ataque.
+            modsSituacionaisAtaque(heroi.id).forEach { add(CombatActions.ComponenteMod(it.motivo, it.valor)) }
         }
         val atkRaw = CombatActions.resolverAtaque(
             nhBaseArma = ataque.nh, manobra = manobra, postura = heroi.postura,
@@ -556,7 +591,8 @@ class CombatSession(
         // Agarrado (Lote 386, MB p.370): o alvo preso defende-se mal (−4).
         val penAgarrado = if (Condicao.AGARRADO in alvo.condicoes) 4 else 0
         // Ataque Enganoso (−1/passo na defesa do alvo) OU Telegráfico (+2 na defesa do alvo) — exclusivos (eng já zerado se telegráfico).
-        val defValorFinal = (defValor - penFinta - penAgarrado - eng + (if (telegrafico) 2 else 0)).coerceAtLeast(0)
+        // Mods situacionais do Narrador (Lote 424) também ajustam a defesa do NPC alvejado (ex.: distraído −2).
+        val defValorFinal = (defValor - penFinta - penAgarrado - eng + (if (telegrafico) 2 else 0) + modSituacionalDefesa(alvo.id)).coerceAtLeast(0)
         val defSoma = rolar3d6()
         // Além de 1/2D, o dano cai pela metade (MB p.270) — aplica no dado básico antes de RD.
         val meioDano = ataque.aDistancia && ataque.meioDano > 0 && dist >= ataque.meioDano
@@ -752,8 +788,11 @@ class CombatSession(
             val txt = "🤼 Não dá para agarrar ${alvo.nome}: é preciso estar adjacente (corpo-a-corpo)."
             log += txt; return txt
         }
-        val atk = CombatActions.resolverAtaque(nhBaseArma = ataque.nh, manobra = Manobra.ATAQUE, postura = heroi.postura, random = random)
-        val (_, defValor) = melhorDefesaNpc(alvo)
+        // Lote 424: mods situacionais valem também no agarrão (ataque do herói e defesa do alvo).
+        val atk = CombatActions.resolverAtaque(nhBaseArma = ataque.nh, manobra = Manobra.ATAQUE, postura = heroi.postura,
+            modsExtra = modsSituacionaisAtaque(heroi.id).map { CombatActions.ComponenteMod(it.motivo, it.valor) }, random = random)
+        val (_, defValorBase) = melhorDefesaNpc(alvo)
+        val defValor = (defValorBase + modSituacionalDefesa(alvo.id)).coerceAtLeast(0)
         val defSoma = rolar3d6()
         val acertou = atk.resultado == CombatActions.ResultadoAcerto.ACERTO
         val defendeu = acertou && atk.critico != CriticoRules.ResultadoCritico.DECISIVO && CombatResolver.defesaBemSucedida(defValor, defSoma)
@@ -771,8 +810,12 @@ class CombatSession(
     /** Lote 422 (MB p.370): o NPC agarra o HERÓI. Ataque defensável (a UI já pediu a defesa); sem dano. */
     private fun npcAgarraHeroi(npc: Combatente, defesaHeroi: DefesaHeroi?): AtaqueResultado {
         val nh = npc.stats?.armaNh ?: npc.dx
-        val atk = CombatActions.resolverAtaque(nhBaseArma = nh, manobra = Manobra.ATAQUE, postura = npc.postura, random = random)
-        val def = defesaHeroi ?: DefesaHeroi(CombatResolver.TipoDefesa.ESQUIVA, heroiPerfil.esquiva, rolar3d6())
+        // Lote 424: mods situacionais valem também no agarrão do NPC (ex.: areia nos olhos −4).
+        val atk = CombatActions.resolverAtaque(nhBaseArma = nh, manobra = Manobra.ATAQUE, postura = npc.postura,
+            modsExtra = modsSituacionaisAtaque(npc.id).map { CombatActions.ComponenteMod(it.motivo, it.valor) }, random = random)
+        // Fallback de defesa passiva soma o mod situacional do herói (ex.: cobertura +2).
+        val def = defesaHeroi ?: DefesaHeroi(CombatResolver.TipoDefesa.ESQUIVA,
+            (heroiPerfil.esquiva + modSituacionalDefesa(heroi.id)).coerceAtLeast(0), rolar3d6())
         val acertou = atk.resultado == CombatActions.ResultadoAcerto.ACERTO
         val anulada = atk.critico == CriticoRules.ResultadoCritico.DECISIVO || heroiSemDefesaAtiva
         val defendeu = acertou && !anulada && CombatResolver.defesaBemSucedida(def.valorFinal, def.soma)
@@ -995,6 +1038,8 @@ class CombatSession(
         // = limitação futura). O passo de recuo em si fica abstraído (o herói está sempre engajado no tracker).
         // Ataque Dedicado (Lote PONTE-4, AM p98): −2 em TODAS as defesas e proíbe a Retirada, no turno seguinte ao ataque.
         val penDedicado = heroiPenalidadeDefesaDedicado
+        // Modificadores situacionais do Narrador (Lote 424): ex.: cobertura → +2 nas defesas do herói.
+        val modSitDef = modSituacionalDefesa(heroi.id)
         // Ataque Defensivo (Lote PONTE-4, AM p98): +1 numa defesa escolhida — só Aparar ou Bloquear (não Esquiva).
         val bonusDefApara = if (heroiBonusDefesaDefensivo == CombatResolver.TipoDefesa.APARA) 1 else 0
         val bonusDefBloqueio = if (heroiBonusDefesaDefensivo == CombatResolver.TipoDefesa.BLOQUEIO) 1 else 0
@@ -1004,9 +1049,9 @@ class CombatSession(
         val permitirJogarSeAoChao = !contraAtaqueCorpoACorpo && heroi.postura != Postura.DEITADO &&
             Condicao.ATORDOADO !in heroi.condicoes
         return CombatResolver.opcoesDefesa(
-            esquivaBase = heroiPerfil.esquiva - bdRemovido - reducaoCambaleante - penAtordoado - penPreso - penDedicado,
-            aparaBase = if (podeAparar) heroiPerfil.apara?.let { it - bdRemovido - penAparaDesarmada - penAtordoado - penPreso - penDedicado + bonusDefApara } else null,
-            bloqueioBase = heroiPerfil.bloqueio?.let { it - bdRemovido - penAtordoado - penPreso - penDedicado + bonusDefBloqueio },
+            esquivaBase = heroiPerfil.esquiva - bdRemovido - reducaoCambaleante - penAtordoado - penPreso - penDedicado + modSitDef,
+            aparaBase = if (podeAparar) heroiPerfil.apara?.let { it - bdRemovido - penAparaDesarmada - penAtordoado - penPreso - penDedicado + bonusDefApara + modSitDef } else null,
+            bloqueioBase = heroiPerfil.bloqueio?.let { it - bdRemovido - penAtordoado - penPreso - penDedicado + bonusDefBloqueio + modSitDef },
             defesasUsadas = heroi.defesasUsadas,
             defesaTotalEm = defesaTotalEm ?: defesaTotalAumentadaEm, // Lote 388: +2 da Defesa Total (Aumentada)
             esgrima = tipoAparar == ApararTipo.ESGRIMA,
@@ -1121,6 +1166,8 @@ class CombatSession(
             InjuryRules.penalidadeChoque(npc.choquePendente, npc.pvMax).let {
                 if (it != 0) add(CombatActions.ComponenteMod("choque", it))
             }
+            // Modificadores situacionais do Narrador (Lote 424): ex.: areia nos olhos → −4 no ataque do NPC.
+            modsSituacionaisAtaque(npc.id).forEach { add(CombatActions.ComponenteMod(it.motivo, it.valor)) }
             if (intencao.aDistancia) {
                 // Atirando NO herói: soma o MT do herói (alvo) ao acerto (MB p.549).
                 if (heroiPerfil.modificadorTamanho != 0)
@@ -1139,8 +1186,9 @@ class CombatSession(
             local = intencao.local, visibilidade = Visibilidade.NORMAL,
             aDistancia = intencao.aDistancia, modsExtra = modsNpc, random = random
         )
-        // Sem escolha de defesa (herói atordoado/sem opção) → só Esquiva passiva da ficha.
-        var def = defesaHeroi ?: DefesaHeroi(CombatResolver.TipoDefesa.ESQUIVA, heroiPerfil.esquiva, rolar3d6())
+        // Sem escolha de defesa (herói atordoado/sem opção) → só Esquiva passiva da ficha (+mod situacional, Lote 424).
+        var def = defesaHeroi ?: DefesaHeroi(CombatResolver.TipoDefesa.ESQUIVA,
+            (heroiPerfil.esquiva + modSituacionalDefesa(heroi.id)).coerceAtLeast(0), rolar3d6())
         // Esquiva Acrobática (Lote 414, MB p.377): testa Acrobacia ANTES da esquiva → +2 (sucesso) / −2 (falha).
         if (def.acrobatica && heroiPerfil.acrobacia != null) {
             val rolAcro = rolar3d6(); val ok = rolAcro <= heroiPerfil.acrobacia!!
@@ -1250,6 +1298,15 @@ class CombatSession(
         }
         // Choque (Lote 382): expira ao fim do turno de quem agiu (valeu só no turno seguinte ao ferimento).
         anterior.choquePendente = 0
+        // Modificadores situacionais (Lote 424): decrementam ao fim do turno do DONO; expirados saem da lista.
+        // O turno da CRIAÇÃO não conta (o chat roda no turno do dono — senão "1 rodada" expiraria antes de valer).
+        modsSituacionais.removeAll { m ->
+            when {
+                m.alvoId != anterior.id || m.rodadasRestantes == Int.MAX_VALUE -> false
+                !m.estreou -> { m.estreou = true; false }
+                else -> { m.rodadasRestantes -= 1; m.rodadasRestantes <= 0 }
+            }
+        }
         // zera defesas do turno de quem vai começar
         var prox = encounter.proximoTurno()
         var guarda = 0
