@@ -3046,6 +3046,19 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - **Recomendação registrada** (maior valor × menor custo): Ataque Telegráfico (par do Enganoso), luta agarrada profunda (chaves/Mata-Leão estendendo o lote 422), Sangramento Grave + incapacitação de membro (item 5 do teste de batalha), Ataque Dedicado/Defensivo. Fora de escopo: posicional/hexágono, montaria, cinematográfico, dado de arma do NPC. Mudança só de documentação (não compila Kotlin).
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
+### Lote HEX-5 — 5 de Julho de 2026 (T3 / Fase 3 do PILAR — IA posicional do NPC)
+**Saga combate tático: IA tática que escolhe o HEX de destino (flanquear/kite/cobertura/aproximar/recuar) — branch GURPS-Saga**
+- 5ª de 9 fatias. `NpcCombatBrain` do Lote 363 decide MANOBRA (Ataque/Ataque Total/Mover/Fugir/Defesa Total) usando só distância; ele **continua intocado**. `HexTaticaNpc` **complementa** decidindo o HEX de destino quando manobra é Mover/Mover-e-Atacar. Se não é movimento → null (fica onde está).
+- **`HexTaticaNpc`** (`domain/combat/hex/HexTaticaNpc.kt`, kotlin puro): `data class PerfilTatico(agressividade, moral, alcanceArmaMetros, temArmaDistancia)`. `decidirDestino(estado, npcId, intencao, perfil, idHeroi, hexesComCobertura)` → `HexCoord?`. Estratégias por perfil, na ordem de precedência:
+  - **recuar** (moral baixa/PV crítico) → maximiza distância entre vizinhos (`escolherRecuar`).
+  - **arqueiro** (`temArmaDistancia && alcance≥3`) → **kite**: minimiza `|distância − alcance|`, prefere candidato com **vizinho em cobertura** (LoS bloqueada — Set passado pelo caller).
+  - **agressivo** (`agressividade≥6`) → **flanquear**: via `HexGrid.facingDoAtaque`, procura candidato que caia em FLANCO/COSTAS do herói; prefere COSTAS + adjacente; se nada flanqueia → cai no aproximar.
+  - **padrão** → aproximar (minimiza distância).
+- Candidatos = vizinhos do NPC + posição atual (permite ficar), filtrados por !ocupados. Deterministico com a ordem dos vizinhos do `HexGrid`.
+- **6 testes puros** — os mais delicados (flanquear + arqueiro-com-cobertura) passaram na 1ª. Total 52 no package hex.
+- Zero toque em `NpcCombatBrain`/`CombatSession`. O caller (UI do HEX-6/controller tático) chama primeiro `NpcCombatBrain.decidir()` (mesma lógica de sempre), depois `HexTaticaNpc.decidirDestino(...)` para complementar, e usa `HexPortabilidade.aplicarNovaDistancia` para sincronizar a posição após o motor mutar distância.
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
 ### Lote HEX-4 — 5 de Julho de 2026 (T3 / Fase 2c do PILAR — regras posicionais base + portabilidade)
 **Saga combate tático: facing (frente/flanco/costas) + portabilidade das manobras que mexem em distância — branch GURPS-Saga**
 - 4ª de 9 fatias. Duas peças puras, ambas destacáveis pela UI do HEX-5:
