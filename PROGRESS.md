@@ -3046,6 +3046,22 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - **Recomendação registrada** (maior valor × menor custo): Ataque Telegráfico (par do Enganoso), luta agarrada profunda (chaves/Mata-Leão estendendo o lote 422), Sangramento Grave + incapacitação de membro (item 5 do teste de batalha), Ataque Dedicado/Defensivo. Fora de escopo: posicional/hexágono, montaria, cinematográfico, dado de arma do NPC. Mudança só de documentação (não compila Kotlin).
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
+### Lote MA-1 — 8 de Julho de 2026 (PILAR MAGIA / Fase 1 — motor puro)
+**Saga magia: motor puro (parser tolerante da classe + regras MB p.6–14) — branch GURPS-Saga**
+- **1ª fatia do PILAR MAGIA.** Zero toque no combate atual. Novo package `domain/magic/` em kotlin puro. Aproveita o catálogo já existente (`magias2versao.json` — **879 magias** com id/dificuldade/página/classe/escola/duração/energia/tempo/pré-req/descrição).
+- **`MagicClass.kt`** — parser tolerante do campo `classe`. Cobre 8 classes (Comum/Área/Projétil/Toque/Bloqueio/Informação/Encantamento/Especial) + resistência codificada (`R-HT`, `R-Vont+1`, `R-HT ou IQ`, `R-Especial`, `R-Tranca Mágica`, marcador `#`, fórmula composta `(ST+Vont)/2`). Aliases absorvem os typos reais do JSON (`Comm`→Comum, `Projetil`→Projétil, `Encant.`→Encantamento). Reality check contra as **879 magias**: **99,89% de cobertura** (só `travar_vontade` cai em "parte não reconhecida" e mesmo assim entrega Área + COMPOSTA + rótulo pro Narrador).
+- **`MagicCore.kt`** — helpers puros:
+  - `MagicMana` — 5 níveis (`MUITO_ALTA`/`ALTA`/`NORMAL`/`BAIXA`/`NULA`), penalidade e permissão de operar.
+  - `MagicCost` — redução por NH (`NH≥15 → −1`, `NH≥20 → −2`, `+1 a cada +5`); custo por raio da Área (fracionário, piso 1); custo por MT do alvo (Comum).
+  - `MagicDistance` — penalidade = metros/hexes; −5 adicional se sem contato nem visão.
+  - `MagicMultiplasMagias` — `−3` por magia em concentração + `−1` por magia em andamento (permanente não penaliza).
+  - `MagicOperationRuling` — classificação 3d (`SUCESSO_DECISIVO`/`SUCESSO`/`FRACASSO`/`FALHA_CRITICA`) + custo a pagar por resultado (Informação paga total no fracasso).
+  - `MagicChoqueRetorno` — tabela completa 3d→18 da falha crítica (Magia p.7).
+  - `MagicActive` — `MagiaAtivaNoCombate` (id, operador, alvo, energia, timer, custo manutenção, tipo de duração) + `avancarTurnoSegundos()` que decai timers, cobra manutenção e expira duradouras/temporárias corretamente (Instantânea filtrada, Permanente/Encantamento imunes).
+- **68 testes puros** (17 parser + 33 core + 2 reality-check contra o JSON), todos verdes.
+- Zero mudança no `CombatSession`/`CombatResolver`/`MagicEngine` existentes. MA-2 pluga esse motor no encontro; MA-3 adiciona tools do Narrador; MA-4 wire no HexScene3D; MA-5 polimento.
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
 ### Lote HEX-9 — 8 de Julho de 2026 (T3 / Fase 7 do PILAR — polimento final + defesa por timing)
 **Saga combate tático 3D: câmera ortográfica, wrap yaw circular, halo hex e cone facing 3D, defesa por timing (Clair Obscur) — branch GURPS-Saga**
 - **9ª e ÚLTIMA fatia do PILAR.** Motor GURPS INTOCADO. Polimento em cima de HEX-1..8.
