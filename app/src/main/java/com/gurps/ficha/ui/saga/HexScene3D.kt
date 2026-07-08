@@ -17,6 +17,7 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.unit.dp
+import com.google.android.filament.Camera
 import com.google.android.filament.LightManager
 import com.google.android.filament.View as FilamentView
 import com.gurps.ficha.domain.combat.hex.HexRender3D
@@ -27,6 +28,7 @@ import io.github.sceneview.math.Direction
 import io.github.sceneview.math.Position
 import io.github.sceneview.math.Rotation
 import io.github.sceneview.math.Size
+import io.github.sceneview.node.CubeNode
 import io.github.sceneview.node.CylinderNode
 import io.github.sceneview.node.LightNode
 import io.github.sceneview.node.ModelNode
@@ -55,9 +57,11 @@ import io.github.sceneview.rememberView
 private val COR_FUNDO_3D = Color(0xFF0E1B29)
 private val COR_CHAO_3D = Color(0xFF2F3F52)
 private val COR_HALO_SELECAO = Color(1.0f, 0.85f, 0.2f, 0.55f)   // amarelo translúcido — glow no chão
+private val COR_HALO_HEX = Color(1.0f, 0.85f, 0.2f, 0.35f)       // amarelo mais fraco — hex tocado no chão
 private val COR_HEROI_3D = Color(0xFF3B82F6)                      // azul — cilindro fallback enquanto o .glb do herói carrega
 private val COR_INIMIGO_3D = Color(0xFFEF4444)                    // vermelho — cilindro fallback do inimigo
 private val COR_ALIADO_3D = Color(0xFF10B981)                     // verde — cilindro para aliado sem modelo próprio
+private val COR_CONE_FACING = Color(1.0f, 1.0f, 1.0f, 0.9f)      // branco — seta de facing 3D
 
 @Composable
 fun HexScene3DDemo(modifier: Modifier = Modifier) {
@@ -129,6 +133,10 @@ private fun HexScene3DBase(estado: HexTaticoState, modifier: Modifier = Modifier
         color = COR_CHAO_3D.toFilamentColor(), metallic = 0.0f, roughness = 0.9f, reflectance = 0.0f) }
     val haloMi = remember(materialLoader) { materialLoader.createColorInstance(
         color = COR_HALO_SELECAO.toFilamentColor(), metallic = 0.0f, roughness = 0.9f, reflectance = 0.0f) }
+    val haloHexMi = remember(materialLoader) { materialLoader.createColorInstance(
+        color = COR_HALO_HEX.toFilamentColor(), metallic = 0.0f, roughness = 0.9f, reflectance = 0.0f) }
+    val coneFacingMi = remember(materialLoader) { materialLoader.createColorInstance(
+        color = COR_CONE_FACING.toFilamentColor(), metallic = 0.0f, roughness = 0.6f, reflectance = 0.2f) }
     val heroiFallbackMi = remember(materialLoader) { materialLoader.createColorInstance(
         color = COR_HEROI_3D.toFilamentColor(), metallic = 0.1f, roughness = 0.5f, reflectance = 0.3f) }
     val inimigoFallbackMi = remember(materialLoader) { materialLoader.createColorInstance(
@@ -144,6 +152,24 @@ private fun HexScene3DBase(estado: HexTaticoState, modifier: Modifier = Modifier
         )
     }
 
+    // Câmera ortográfica top-down: câmera alta olhando para (0, 0, 0). A projeção ORTHO é setada via
+    // SideEffect toda recomposição — mantém ortho mesmo se resize disparar `updateProjection()` do
+    // CameraNode (que sobrescreveria com PERSPECTIVE). O "meio-raio" (half-extent) é ajustado ao raio
+    // da grade para caber; convertido em metros usando a mesma escala do HexRender3D (1 hex = 1 m).
+    val cameraNode = rememberCameraNode(engine).apply {
+        position = Position(x = 0f, y = 10f, z = 0f)
+        lookAt(Position(x = 0f, y = 0f, z = 0f))
+    }
+    val meioRaioMetros = (estado.raioGrade + 1) * 1.0f  // +1 pra ter margem
+    SideEffect {
+        cameraNode.camera.setProjection(
+            Camera.Projection.ORTHO,
+            -meioRaioMetros.toDouble(), meioRaioMetros.toDouble(),
+            -meioRaioMetros.toDouble(), meioRaioMetros.toDouble(),
+            0.1, 100.0
+        )
+    }
+
     Scene(
         modifier = modifier,
         engine = engine,
@@ -151,22 +177,31 @@ private fun HexScene3DBase(estado: HexTaticoState, modifier: Modifier = Modifier
         modelLoader = modelLoader,
         view = view,
         renderer = renderer,
-        cameraNode = rememberCameraNode(engine).apply {
-            position = Position(x = 0f, y = 12f, z = 6f)
-            lookAt(Position(x = 0f, y = 0f, z = 0f))
-        },
+        cameraNode = cameraNode,
         isOpaque = false,
         surfaceType = SurfaceType.TextureSurface
     ) {
         // Luz solar mais forte para os PBR dos .glb.
         LightNode(type = LightManager.Type.SUN, apply = { intensity(120_000f) })
 
-        // Chão 20x20 m.
+        // Chão: grande o suficiente para caber a grade toda com folga.
         PlaneNode(
-            size = Size(x = 20f, y = 0f, z = 20f),
+            size = Size(x = 2 * meioRaioMetros + 4f, y = 0f, z = 2 * meioRaioMetros + 4f),
             normal = io.github.sceneview.geometries.Plane.DEFAULT_NORMAL,
             materialInstance = chaoMi
         )
+
+        // Halo do HEX TOCADO no chão (independe de token) — círculo amarelo mais fraco.
+        val hexTocado = estado.hexSelecionado
+        if (hexTocado != null) {
+            val (hx, hz) = HexRender3D.hexParaMundo(hexTocado)
+            PlaneNode(
+                size = Size(x = 0.9f, y = 0f, z = 0.9f),
+                normal = Direction(y = 1f),
+                materialInstance = haloHexMi,
+                position = Position(x = hx, y = 0.02f, z = hz)
+            )
+        }
 
         for (token in tokens) {
             key(token.id) {
@@ -178,7 +213,8 @@ private fun HexScene3DBase(estado: HexTaticoState, modifier: Modifier = Modifier
                     fallbackHeroiMi = heroiFallbackMi,
                     fallbackInimigoMi = inimigoFallbackMi,
                     fallbackAliadoMi = aliadoMi,
-                    haloMi = haloMi
+                    haloMi = haloMi,
+                    coneFacingMi = coneFacingMi
                 )
             }
         }
@@ -204,11 +240,30 @@ private fun io.github.sceneview.SceneScope.TokenNode3D(
     fallbackInimigoMi: com.google.android.filament.MaterialInstance,
     fallbackAliadoMi: com.google.android.filament.MaterialInstance,
     haloMi: com.google.android.filament.MaterialInstance,
+    coneFacingMi: com.google.android.filament.MaterialInstance,
 ) {
-    val yawGraus = Math.toDegrees(token.yawRad.toDouble()).toFloat()
+    // Yaw circular: mantém o último ângulo animado como "corrente" e ajusta o alvo pelo menor caminho
+    // (helper puro em HexRender3D.ajustarYawParaMenorCaminho, testado). Evita giro de 340° em vez de 20°
+    // quando o token cruza a fronteira ±180°.
+    //
+    // Limitação conhecida: yawCorrente só atualiza no `finishedListener`. Se o alvo mudar 2× rápido
+    // (dentro dos 200 ms do tween), a 2ª chamada de ajustarYawParaMenorCaminho usa o yawCorrente
+    // ANTIGO em vez do valor da animação em curso. Consertar exige trocar animateFloatAsState por um
+    // `Animatable` (reescrita maior). No fluxo real (jogador toca um hex por vez) essa condição é
+    // raríssima; documentada para o polimento futuro se aparecer na prática.
+    val yawAlvoRaw = Math.toDegrees(token.yawRad.toDouble()).toFloat()
+    var yawCorrente by remember { mutableFloatStateOf(yawAlvoRaw) }
+    val yawAlvoAjustado = remember(yawAlvoRaw) {
+        HexRender3D.ajustarYawParaMenorCaminho(yawCorrente, yawAlvoRaw)
+    }
     val xAnim by animateFloatAsState(targetValue = token.x, animationSpec = tween(200), label = "x")
     val zAnim by animateFloatAsState(targetValue = token.z, animationSpec = tween(200), label = "z")
-    val yawAnim by animateFloatAsState(targetValue = yawGraus, animationSpec = tween(200), label = "yaw")
+    val yawAnim by animateFloatAsState(
+        targetValue = yawAlvoAjustado,
+        animationSpec = tween(200),
+        label = "yaw",
+        finishedListener = { yawCorrente = it }
+    )
 
     val instancia = when (token.cor) {
         HexRender3D.Cor.HEROI -> instanciaHeroi
@@ -254,6 +309,19 @@ private fun io.github.sceneview.SceneScope.TokenNode3D(
             position = Position(x = xAnim, y = 0.03f, z = zAnim)
         )
     }
+
+    // Cone de facing 3D — cubo achatado apontando na direção do yaw a partir do "peito" do token.
+    // Usa Rotation Y = yawAnim (mesma do modelo) e é deslocado 0.5m na direção yaw. Fica visível na
+    // câmera ortográfica top-down e serve para desambiguar Frente/Flanco/Costas.
+    val yawRadAnim = Math.toRadians(yawAnim.toDouble())
+    val dx = 0.5f * kotlin.math.cos(yawRadAnim).toFloat()
+    val dz = 0.5f * kotlin.math.sin(yawRadAnim).toFloat()
+    CubeNode(
+        size = Size(x = 0.5f, y = 0.1f, z = 0.15f),
+        materialInstance = coneFacingMi,
+        position = Position(x = xAnim + dx, y = 0.7f, z = zAnim + dz),
+        rotation = Rotation(y = yawAnim)
+    )
 }
 
 /** Converte um [Color] Compose em [io.github.sceneview.math.Color] (Float4 rgba 0..1). */

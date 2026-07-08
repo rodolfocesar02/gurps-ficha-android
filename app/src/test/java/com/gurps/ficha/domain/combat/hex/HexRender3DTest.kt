@@ -96,4 +96,34 @@ class HexRender3DTest {
         val b = HexRender3D.facingParaYaw(Direcao.SUDOESTE)
         assertNotEquals(a, b)
     }
+
+    // ── Lote HEX-9: wrap circular do yaw ────────────────────────────────────
+
+    @Test
+    fun `wrap yaw perto de 180 vai pelo caminho curto`() {
+        // 170 -> -170 pelo caminho curto é +20 graus (para +190), NÃO -340.
+        val alvoAjustado = HexRender3D.ajustarYawParaMenorCaminho(170f, -170f)
+        assertClose(190f, alvoAjustado, tol = 0.01f)
+    }
+
+    @Test
+    fun `wrap yaw simetrico do lado negativo`() {
+        // -170 -> 170: caminho curto é -20 graus (para -190).
+        val alvoAjustado = HexRender3D.ajustarYawParaMenorCaminho(-170f, 170f)
+        assertClose(-190f, alvoAjustado, tol = 0.01f)
+    }
+
+    @Test
+    fun `wrap yaw sem cruzar 180 mantem o alvo`() {
+        // 45 -> 50: já é o caminho curto.
+        val alvoAjustado = HexRender3D.ajustarYawParaMenorCaminho(45f, 50f)
+        assertClose(50f, alvoAjustado, tol = 0.01f)
+    }
+
+    @Test
+    fun `wrap yaw com corrente muito acima de 360 continua funcionando`() {
+        // Corrente = 720 (2 voltas completas), alvo = 10: mais próximo é 730.
+        val alvoAjustado = HexRender3D.ajustarYawParaMenorCaminho(720f, 10f)
+        assertClose(730f, alvoAjustado, tol = 0.01f)
+    }
 }

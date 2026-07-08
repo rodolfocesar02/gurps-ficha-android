@@ -57,6 +57,23 @@ object HexRender3D {
     }
 
     /**
+     * Ajusta [alvoGraus] para o valor equivalente MÓDULO 360° mais próximo de [correnteGraus] — evita
+     * que uma animação linear vá pelo caminho longo quando o ângulo cruza a fronteira ±180°.
+     *
+     * Exemplos:
+     *   ajustarYawParaMenorCaminho(correnteGraus =  170f, alvoGraus = -170f) →  190f (+20° via +Y)
+     *   ajustarYawParaMenorCaminho(correnteGraus = -170f, alvoGraus =  170f) → -190f (-20° via -Y)
+     *   ajustarYawParaMenorCaminho(correnteGraus =   45f, alvoGraus =   50f) →   50f (dentro de meia volta)
+     *
+     * Kotlin puro — o caller passa o valor CORRENTE (última animação) e o AVO (novo target); esta função
+     * devolve o alvo equivalente MAIS PRÓXIMO. Usar como `target` do `animateFloatAsState`.
+     */
+    fun ajustarYawParaMenorCaminho(correnteGraus: Float, alvoGraus: Float): Float {
+        var diff = ((alvoGraus - correnteGraus) % 360f + 540f) % 360f - 180f // (-180, 180]
+        return correnteGraus + diff
+    }
+
+    /**
      * Projeta cada combatente do [estado] em um [Token3D]. O caller informa quem é o [idHeroi] e o
      * conjunto de [idsInimigos] — os demais viram ALIADO por padrão (típico: NPCs neutros).
      *

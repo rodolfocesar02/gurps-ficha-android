@@ -474,6 +474,17 @@ private fun FeedDaCampanha(viewModel: FichaViewModel) {
             emCombate = viewModel.sagaCombateAtivo
         )
     }
+
+    // Lote HEX-9 (Fase 7 do PILAR): defesa por timing (Clair Obscur). Só entra no modo 3D — no
+    // modo 2D e no painel de faixas o UX antigo (botões dentro do painel) permanece. O card OVERLAY
+    // toma prioridade sobre a interação da grade enquanto a janela reativa está aberta.
+    val defesaPendente = viewModel.sagaCombateDefesaPendente
+    if (defesaPendente != null && viewModel.sagaModoTaticoHex3D) {
+        com.gurps.ficha.ui.saga.DefesaPorTimingCard(
+            pendente = defesaPendente,
+            onEscolher = { opcao -> viewModel.sagaCombateDefender(opcao) }
+        )
+    }
 }
 
 @Composable

@@ -3046,6 +3046,21 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - **Recomendação registrada** (maior valor × menor custo): Ataque Telegráfico (par do Enganoso), luta agarrada profunda (chaves/Mata-Leão estendendo o lote 422), Sangramento Grave + incapacitação de membro (item 5 do teste de batalha), Ataque Dedicado/Defensivo. Fora de escopo: posicional/hexágono, montaria, cinematográfico, dado de arma do NPC. Mudança só de documentação (não compila Kotlin).
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
+### Lote HEX-9 — 8 de Julho de 2026 (T3 / Fase 7 do PILAR — polimento final + defesa por timing)
+**Saga combate tático 3D: câmera ortográfica, wrap yaw circular, halo hex e cone facing 3D, defesa por timing (Clair Obscur) — branch GURPS-Saga**
+- **9ª e ÚLTIMA fatia do PILAR.** Motor GURPS INTOCADO. Polimento em cima de HEX-1..8.
+- **Câmera ortográfica no HexScene3D**: `SideEffect { cameraNode.camera.setProjection(Camera.Projection.ORTHO, ...) }` com meio-raio adaptado a `raioGrade+1` (metros). Câmera em `(0, 10, 0) → (0,0,0)`. Alinhamento perfeito 2D↔3D (overlay 2D continua servindo p/ tap, mas agora encaixado pixel-a-pixel).
+- **Wrap yaw circular** (kotlin puro em `HexRender3D.ajustarYawParaMenorCaminho`): fórmula `((alvo-corrente)%360 + 540)%360 - 180` devolve o alvo equivalente MAIS PRÓXIMO — 170°→−170° anima +20°, não −340°. 4 testes puros novos. Integrado no `TokenNode3D` via `finishedListener` do `animateFloatAsState`.
+- **Halo do HEX TOCADO** no chão 3D: `PlaneNode` 0.9x0.9 m amarelo (α=0.35) na posição do hex via `HexRender3D.hexParaMundo(hexSelecionado)`. Aparece independente de haver token no hex.
+- **Cone de facing 3D**: `CubeNode` branco translúcido (0.5x0.1x0.15 m) a 0.5 m à frente do token na direção do yaw — desambigua Frente/Flanco/Costas na câmera top-down.
+- **Defesa por timing (Clair Obscur)** — nova feature grande, arquivo `ui/saga/DefesaPorTiming.kt`:
+  - **Regras puras** (`object DefesaPorTimingRegras`): janela de 1000 ms; `<300ms → +1 (perfeito)`, `<600ms → 0 (bom)`, `<1000ms → −1 (tarde)`, `≥1000ms → BONUS_EXPIRADO` (marcador por identidade). `aplicarBonus(opcao, bonus)` soma no `valorFinal` e adiciona `ComponenteMod("timing (<rótulo>)", delta)` — o feed do Narrador mostra o abatimento. `opcaoPadrao(opcoes)` = `maxByOrNull { valorFinal }` filtrado por `disponivel`.
+  - **Card Compose** (`@Composable DefesaPorTimingCard`): `Dialog` NÃO dispensável (back/click-outside desligados). Barra `LinearProgressIndicator` decai; cor muda verde → âmbar → vermelho conforme urgência. Botão por opção disponível chama `onEscolher(aplicarBonus(opcao, bonus))`. Timeout auto-seleciona `opcaoPadrao(opcoes)` sem bônus.
+  - **11 testes puros das regras**.
+- **Wire no `TabSaga`**: card aparece SÓ quando `sagaModoTaticoHex3D == true` E `defesaPendente != null`. Modo 2D e painel de faixas mantêm o UX antigo (botões dentro do `CombatePainel`). Sem flag extra — o 3D é opt-in cinematográfico completo.
+- **Novas MaterialInstances memoizadas** no `HexScene3DBase` (`haloHexMi`, `coneFacingMi`) — segue o padrão do HEX-8.
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
 ### Lote HEX-8 — 8 de Julho de 2026 (T3 / Fase 6 do PILAR — modelos .glb + halo + interpolação)
 **Saga combate tático 3D: substitui cilindros por modelos .glb, halo de seleção, interpolação suave — branch GURPS-Saga**
 - 8ª de 9 fatias. Escopo escolhido: **modelos gratuitos por enquanto** (CC-BY 4.0). O motor de regras (HEX-1..6) continua intocado; refino visual em cima do render do HEX-7.
