@@ -1,0 +1,20 @@
+Licenças dos modelos 3D usados como placeholders no Lote HEX-8 (Saga combate tático 3D).
+
+=== token_heroi.glb ===
+Origem: CesiumMan (glTF 2.0 Sample Assets)
+Autor: Cesium — https://cesium.com/
+Licença: CC-BY 4.0 (https://creativecommons.org/licenses/by/4.0/)
+Fonte: https://github.com/KhronosGroup/glTF-Sample-Assets/tree/main/Models/CesiumMan
+Uso: Placeholder do token do herói na cena 3D do modo tático. Será substituído por
+     um modelo próprio quando disponível.
+
+=== token_inimigo.glb ===
+Origem: Duck (glTF 2.0 Sample Assets)
+Autor: Sony Computer Entertainment America LLC — via COLLADA WG samples
+Licença: CC-BY 4.0 (https://creativecommons.org/licenses/by/4.0/)
+Fonte: https://github.com/KhronosGroup/glTF-Sample-Assets/tree/main/Models/Duck
+Uso: Placeholder do token de NPC hostil na cena 3D do modo tático. Será substituído
+     por modelos próprios quando disponíveis.
+
+=== Dado.glb / dado_d6.glb ===
+Arquivos anteriores ao HEX-8 — cobertos pela licença do repositório (dados 3D).

@@ -3046,6 +3046,22 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - **Recomendação registrada** (maior valor × menor custo): Ataque Telegráfico (par do Enganoso), luta agarrada profunda (chaves/Mata-Leão estendendo o lote 422), Sangramento Grave + incapacitação de membro (item 5 do teste de batalha), Ataque Dedicado/Defensivo. Fora de escopo: posicional/hexágono, montaria, cinematográfico, dado de arma do NPC. Mudança só de documentação (não compila Kotlin).
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
+### Lote HEX-8 — 8 de Julho de 2026 (T3 / Fase 6 do PILAR — modelos .glb + halo + interpolação)
+**Saga combate tático 3D: substitui cilindros por modelos .glb, halo de seleção, interpolação suave — branch GURPS-Saga**
+- 8ª de 9 fatias. Escopo escolhido: **modelos gratuitos por enquanto** (CC-BY 4.0). O motor de regras (HEX-1..6) continua intocado; refino visual em cima do render do HEX-7.
+- **Novos assets** (`app/src/main/assets/models/`):
+  - `token_heroi.glb` — **CesiumMan** (humanóide com walk cycle, autor: Cesium, CC-BY 4.0, ~438 KB).
+  - `token_inimigo.glb` — **Duck** (patinho amarelo, autor: Sony via COLLADA WG, CC-BY 4.0, ~120 KB).
+  - `LICENSES.txt` — compliance CC-BY.
+  - Estratégia: modelos genéricos como PLACEHOLDER honesto (substituíveis a qualquer momento). ~558 KB no APK.
+- **`HexScene3D.kt` refatorado**: substitui `CylinderNode` puro por `ModelNode` carregando `.glb` via `rememberModelInstance`. Novo Composable `@SceneScope.TokenNode3D()` encapsula o render por token com **fallback robusto**: se `ModelInstance` retorna `null` (carregamento assíncrono OU asset ausente) o token cai num **cilindro colorido** (azul herói / vermelho inimigo / verde aliado) — nunca invisível.
+- **Halo de seleção**: `PlaneNode` circular amarelo translúcido (α=0.55) sob o token selecionado, criado dentro do `if (selecionado)` — quando desseleciona, `NodeLifecycle.onDispose` remove.
+- **Interpolação suave**: `animateFloatAsState + tween(200 ms)` para `x`, `z` e `yawGraus` — token não "teleporta" entre hexes; anima o movimento e o giro. Limitação honesta: `animateFloatAsState` do yaw **não trata wrap circular** — giro de 170° para −170° anima pelo caminho longo (340°). Corrigível no HEX-9 com spec circular.
+- **5 MaterialInstances memoizadas** em `remember(materialLoader)` — chão + halo + fallback herói/inimigo/aliado. Filament não coleta lixo; alocar 1x pela vida da Scene.
+- **Luz solar mais forte** (`intensity(120_000f)`) para os PBRs dos `.glb` responderem.
+- Overlay 2D com grade/tap **continua** — grade 3D nativa fica pro HEX-9 (câmera ortográfica).
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
 ### Lote HEX-7 — 8 de Julho de 2026 (T3 / Fase 5 do PILAR — render 3D SceneView)
 **Saga combate tático 3D: SceneView/Filament + tokens 3D + overlay 2D pra grade e toque — branch GURPS-Saga**
 - 7ª de 9 fatias. Primeira ponte do motor 2D (HEX-1..6) para render 3D. Escopo escolhido pelo usuário: **Plataforma vazia + grade + tokens placeholder** (modelos .glb ficam pro HEX-8).
