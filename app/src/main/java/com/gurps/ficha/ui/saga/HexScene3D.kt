@@ -152,15 +152,18 @@ private fun HexScene3DBase(estado: HexTaticoState, modifier: Modifier = Modifier
         )
     }
 
-    // Câmera ortográfica top-down: câmera alta olhando para (0, 0, 0). A projeção ORTHO é setada via
-    // SideEffect toda recomposição — mantém ortho mesmo se resize disparar `updateProjection()` do
-    // CameraNode (que sobrescreveria com PERSPECTIVE). O "meio-raio" (half-extent) é ajustado ao raio
-    // da grade para caber; convertido em metros usando a mesma escala do HexRender3D (1 hex = 1 m).
+    // Câmera ortográfica top-down: câmera alta com LEVE INCLINAÇÃO (Z positivo pequeno) para evitar
+    // matriz view degenerada — se ficar exatamente sobre o alvo com "up" default +Y, o forward e o up
+    // ficam paralelos e a Scene renderiza VAZIA. Um pequeno deslocamento em Z fixa o "up" e mantém a
+    // sensação ortográfica top-down.
+    // A projeção ORTHO é setada via SideEffect toda recomposição — mantém ortho mesmo se resize
+    // disparar `updateProjection()` do CameraNode (que sobrescreveria com PERSPECTIVE). O "meio-raio"
+    // (half-extent) é ajustado ao raio da grade para caber; 1 hex = 1 m (padrão HexRender3D).
     val cameraNode = rememberCameraNode(engine).apply {
-        position = Position(x = 0f, y = 10f, z = 0f)
+        position = Position(x = 0f, y = 15f, z = 3f)
         lookAt(Position(x = 0f, y = 0f, z = 0f))
     }
-    val meioRaioMetros = (estado.raioGrade + 1) * 1.0f  // +1 pra ter margem
+    val meioRaioMetros = (estado.raioGrade + 2) * 1.0f  // +2 pra margem confortável
     SideEffect {
         cameraNode.camera.setProjection(
             Camera.Projection.ORTHO,

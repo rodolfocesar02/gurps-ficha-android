@@ -491,12 +491,20 @@ private fun FeedDaCampanha(viewModel: FichaViewModel) {
         // Combate ativo (B7): tracker + manobras/defesa. Recebe weight p/ dividir a tela com o feed.
         // Lote HEX-2 (Fase 2a): se a config da campanha tiver `modoTaticoHex = true`, renderiza a grade
         // tática DEMO em vez do painel por faixas. HEX-3 pluga o motor de combate ao canvas.
-        // Lote HEX-7 (Fase 5): se `modoTaticoHex3D` tambem estiver ligado, mostra cena 3D SceneView; o
-        // Canvas 2D continua servindo como fallback quando so o modoTaticoHex esta ligado.
+        // Lote HEX-7 (Fase 5): se `modoTaticoHex3D` tambem estiver ligado, mostra cena 3D SceneView.
+        // Lote HEX-9b (correcao): 3D e 2D nao SUBSTITUEM mais o CombatePainel — a cena tatica fica em
+        // cima como visualizacao, e o CombatePainel fica embaixo para o herei ter acesso a Ataque/
+        // Manobra/Defesa. Sem isso, ligar o 3D deixava o herei sem UI de combate.
         if (viewModel.sagaCombateAtivo) {
             when {
-                viewModel.sagaModoTaticoHex3D -> com.gurps.ficha.ui.saga.HexScene3DDemo(Modifier.weight(1.5f))
-                viewModel.sagaModoTaticoHex   -> com.gurps.ficha.ui.saga.HexCanvasDemo(Modifier.weight(1.5f))
+                viewModel.sagaModoTaticoHex3D -> Column(Modifier.weight(1.5f).fillMaxWidth()) {
+                    com.gurps.ficha.ui.saga.HexScene3DDemo(Modifier.weight(1.2f).fillMaxWidth())
+                    com.gurps.ficha.ui.saga.CombatePainel(viewModel, Modifier.weight(1f).fillMaxWidth())
+                }
+                viewModel.sagaModoTaticoHex   -> Column(Modifier.weight(1.5f).fillMaxWidth()) {
+                    com.gurps.ficha.ui.saga.HexCanvasDemo(Modifier.weight(1.2f).fillMaxWidth())
+                    com.gurps.ficha.ui.saga.CombatePainel(viewModel, Modifier.weight(1f).fillMaxWidth())
+                }
                 else -> com.gurps.ficha.ui.saga.CombatePainel(viewModel, Modifier.weight(1.5f))
             }
         }
