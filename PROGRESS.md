@@ -3046,6 +3046,18 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - **Recomendação registrada** (maior valor × menor custo): Ataque Telegráfico (par do Enganoso), luta agarrada profunda (chaves/Mata-Leão estendendo o lote 422), Sangramento Grave + incapacitação de membro (item 5 do teste de batalha), Ataque Dedicado/Defensivo. Fora de escopo: posicional/hexágono, montaria, cinematográfico, dado de arma do NPC. Mudança só de documentação (não compila Kotlin).
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
+### Lote HEX-6 — 7 de Julho de 2026 (T3 / Fase 4 do PILAR — regras posicionais MB+AM)
+**Saga combate tático: cobertura + ataque através de hex + manter à distância — branch GURPS-Saga**
+- 6ª de 9 fatias. Regras 🔴 que o modelo de FAIXAS abstratas do Saga não cobre — motor puro 2D em cima de `HexGrid`, sem tocar em `CombatSession`.
+- **`HexRegrasPosicionais.kt`** (kotlin puro, 3 objects):
+  - **`HexCobertura`** (MB p.407–408): `enum Grau(LIMPA(0), PARCIAL(-2), TOTAL(-10, podeAtacar=false))`. `grauEntre(atacante, alvo, hexesBloqueadores)` → classifica: TOTAL se bloqueador está entre atacante e alvo na linha reta; PARCIAL se vizinho do alvo está em bloqueadores E mais perto do atacante; LIMPA caso contrário. TOTAL tem precedência.
+  - **`HexAtaqueAtravesHex`** (MB p.389): `penalidade(atacante, alvo, alcanceArmaMetros, ocupantesAliados, ocupantesInimigos)` → `null` se fora de alcance ou alcance < 2 para dist ≥ 2; `0` linha limpa ou só aliados (treino básico); `-4` se inimigo no meio. Endpoints excluídos.
+  - **`HexManterADistancia`** (AM p.101): tabela por `TipoInterrupcao` (NENHUMA/APAROU_SEM_DANO/APAROU_COM_DANO_NAO_ESTOCADA/APAROU_COM_ESTOCADA_PERFURANTE/NOCAUTE_OU_PROJECAO) → `Resultado(podeAvancar, movimentoExtra, disputaSTNecessaria, testeVontadeMod)`. Vontade-3 base do MB, caller ajusta por Hipoalgia/Hiperalgia.
+- **15 testes puros** (6 cobertura + 5 ataque-através + 4 manter-à-distância) — todos verdes na 1ª rodada. Total 67 no package hex.
+- Ataque Telegráfico (AM p.109) já implementado no PONTE-3 — só documentado na header como complemento.
+- Zero toque em CombatSession/CombatResolver/NpcCombatBrain. Caller pluga `HexCobertura.grauEntre` no cálculo de penalidade à distância; `HexAtaqueAtravesHex.penalidade` no ataque corpo-a-corpo com hex intermediário; `HexManterADistancia.avaliar` quando defensor pega uma carga com sucesso.
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
 ### Lote HEX-5 — 5 de Julho de 2026 (T3 / Fase 3 do PILAR — IA posicional do NPC)
 **Saga combate tático: IA tática que escolhe o HEX de destino (flanquear/kite/cobertura/aproximar/recuar) — branch GURPS-Saga**
 - 5ª de 9 fatias. `NpcCombatBrain` do Lote 363 decide MANOBRA (Ataque/Ataque Total/Mover/Fugir/Defesa Total) usando só distância; ele **continua intocado**. `HexTaticaNpc` **complementa** decidindo o HEX de destino quando manobra é Mover/Mover-e-Atacar. Se não é movimento → null (fica onde está).
