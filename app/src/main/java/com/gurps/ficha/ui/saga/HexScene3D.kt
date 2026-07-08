@@ -194,12 +194,12 @@ private fun HexScene3DBase(estado: HexTaticoState, modifier: Modifier = Modifier
             materialInstance = chaoMi
         )
 
-        // Halo do HEX TOCADO no chão (independe de token) — círculo amarelo mais fraco.
+        // Halo do HEX TOCADO no chão (independe de token) — quadrado pequeno amarelo dentro do hex.
         val hexTocado = estado.hexSelecionado
         if (hexTocado != null) {
             val (hx, hz) = HexRender3D.hexParaMundo(hexTocado)
             PlaneNode(
-                size = Size(x = 0.9f, y = 0f, z = 0.9f),
+                size = Size(x = 0.55f, y = 0f, z = 0.55f),
                 normal = Direction(y = 1f),
                 materialInstance = haloHexMi,
                 position = Position(x = hx, y = 0.02f, z = hz)
@@ -275,12 +275,14 @@ private fun io.github.sceneview.SceneScope.TokenNode3D(
     }
 
     if (instancia != null) {
-        // Modelos .glb — auto-play animação (CesiumMan tem walk cycle), escala para caber em ~0.9 m
-        // de aresta, base alinhada ao chão (centerOrigin y=-1).
+        // Modelos .glb — escala para ~1.5 m de altura (bem visível na câmera ortográfica top-down),
+        // base alinhada ao chão (centerOrigin y=-1). autoAnimate=false: os modelos placeholder não
+        // ficam "andando parados" — animação de caminhada será acionada só quando o token realmente
+        // mudar de hex (fatia futura, exige Animator do Filament).
         ModelNode(
             modelInstance = instancia,
-            autoAnimate = true,
-            scaleToUnits = 0.9f,
+            autoAnimate = false,
+            scaleToUnits = 1.5f,
             centerOrigin = Position(x = 0f, y = -1f, z = 0f),
             position = Position(x = xAnim, y = 0f, z = zAnim),
             rotation = Rotation(y = yawAnim)
@@ -303,26 +305,26 @@ private fun io.github.sceneview.SceneScope.TokenNode3D(
         )
     }
 
-    // Halo de seleção — plano circular amarelo translúcido no chão, um pouco acima para não sobrepor.
+    // Halo de seleção — plano quadrado amarelo pouco acima do chão, cabe dentro do hex.
     if (selecionado) {
         PlaneNode(
-            size = Size(x = 1.3f, y = 0f, z = 1.3f),
+            size = Size(x = 0.8f, y = 0f, z = 0.8f),
             normal = Direction(y = 1f),
             materialInstance = haloMi,
             position = Position(x = xAnim, y = 0.03f, z = zAnim)
         )
     }
 
-    // Cone de facing 3D — cubo achatado apontando na direção do yaw a partir do "peito" do token.
-    // Usa Rotation Y = yawAnim (mesma do modelo) e é deslocado 0.5m na direção yaw. Fica visível na
-    // câmera ortográfica top-down e serve para desambiguar Frente/Flanco/Costas.
+    // Cone de facing 3D — cubo pequeno achatado a 0.35m à frente do token na direção do yaw.
+    // Discreto (menor que antes) mas suficiente pra desambiguar Frente/Flanco/Costas no top-down.
     val yawRadAnim = Math.toRadians(yawAnim.toDouble())
-    val dx = 0.5f * kotlin.math.cos(yawRadAnim).toFloat()
-    val dz = 0.5f * kotlin.math.sin(yawRadAnim).toFloat()
+    val distanciaCone = 0.35f
+    val dx = distanciaCone * kotlin.math.cos(yawRadAnim).toFloat()
+    val dz = distanciaCone * kotlin.math.sin(yawRadAnim).toFloat()
     CubeNode(
-        size = Size(x = 0.5f, y = 0.1f, z = 0.15f),
+        size = Size(x = 0.25f, y = 0.05f, z = 0.08f),
         materialInstance = coneFacingMi,
-        position = Position(x = xAnim + dx, y = 0.7f, z = zAnim + dz),
+        position = Position(x = xAnim + dx, y = 0.05f, z = zAnim + dz),
         rotation = Rotation(y = yawAnim)
     )
 }
