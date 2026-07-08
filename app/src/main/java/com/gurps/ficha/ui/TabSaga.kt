@@ -9,6 +9,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -19,6 +20,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
@@ -56,6 +58,8 @@ private fun SelecaoDeCampanha(viewModel: FichaViewModel) {
     var config by remember { mutableStateOf(CampanhaConfig()) }
     var mostrarConfig by remember { mutableStateOf(false) }
     var idParaExcluir by remember { mutableStateOf<Long?>(null) }
+    // Lote HEX-9b: preview STANDALONE do combate 3D — sem precisar campanha ativa nem combate iniciado.
+    var mostrarPreview3D by remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
@@ -102,6 +106,15 @@ private fun SelecaoDeCampanha(viewModel: FichaViewModel) {
             onClick = { viewModel.sagaCriarCampanha(nome, config) },
             modifier = Modifier.fillMaxWidth().semantics { contentDescription = "Criar campanha e começar a aventura" }
         ) { Text("Criar campanha") }
+
+        // Preview standalone da cena 3D — pra validar visualmente sem depender de combate real.
+        Spacer(Modifier.height(8.dp))
+        OutlinedButton(
+            onClick = { mostrarPreview3D = true },
+            modifier = Modifier.fillMaxWidth().semantics { contentDescription = "Preview grade tática 3D demo" }
+        ) {
+            Text("⬢ Preview grade 3D (demo)")
+        }
 
         val campanhas = viewModel.sagaCampanhas
         if (campanhas.isNotEmpty()) {
@@ -156,6 +169,27 @@ private fun SelecaoDeCampanha(viewModel: FichaViewModel) {
             },
             dismissButton = { TextButton(onClick = { idParaExcluir = null }) { Text("Cancelar") } }
         )
+    }
+
+    // Preview standalone da grade 3D (Lote HEX-9b): não depende de campanha ativa nem combate.
+    if (mostrarPreview3D) {
+        androidx.compose.ui.window.Dialog(
+            onDismissRequest = { mostrarPreview3D = false },
+            properties = androidx.compose.ui.window.DialogProperties(usePlatformDefaultWidth = false)
+        ) {
+            Box(Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
+                com.gurps.ficha.ui.saga.HexScene3DDemo(Modifier.fillMaxSize())
+                // Botão fechar no canto superior direito.
+                IconButton(
+                    onClick = { mostrarPreview3D = false },
+                    modifier = Modifier
+                        .align(Alignment.TopEnd)
+                        .padding(8.dp)
+                        .background(Color(0xAA000000), CircleShape)
+                        .semantics { contentDescription = "Fechar preview 3D" }
+                ) { Icon(Icons.Default.Close, contentDescription = null, tint = Color.White) }
+            }
+        }
     }
 }
 
