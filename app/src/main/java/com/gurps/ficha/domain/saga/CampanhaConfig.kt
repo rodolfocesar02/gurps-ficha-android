@@ -17,7 +17,10 @@ data class CampanhaConfig(
     val livros: List<String> = listOf(MODULO_BASICO),
     // Lote HEX-2 (Fase 2a do PILAR): combate tático em hexágonos (default OFF — modo faixas continua padrão).
     // Aditivo/anulável em fichas antigas (Gson usa o default false); ver PLANO_Combate_Tatico_Hex_3D.md.
-    val modoTaticoHex: Boolean = false
+    val modoTaticoHex: Boolean = false,
+    // Lote HEX-7 (Fase 5 do PILAR): render 3D SceneView/Filament para o modo tático (default OFF).
+    // Requer modoTaticoHex=true; se só o 3D estiver ligado, o Canvas 2D é usado como fallback.
+    val modoTaticoHex3D: Boolean = false
 ) {
     fun toJson(): String = Gson().toJson(this)
 

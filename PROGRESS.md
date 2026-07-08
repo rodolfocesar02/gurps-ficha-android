@@ -3046,6 +3046,16 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - **Recomendação registrada** (maior valor × menor custo): Ataque Telegráfico (par do Enganoso), luta agarrada profunda (chaves/Mata-Leão estendendo o lote 422), Sangramento Grave + incapacitação de membro (item 5 do teste de batalha), Ataque Dedicado/Defensivo. Fora de escopo: posicional/hexágono, montaria, cinematográfico, dado de arma do NPC. Mudança só de documentação (não compila Kotlin).
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
+### Lote HEX-7 — 8 de Julho de 2026 (T3 / Fase 5 do PILAR — render 3D SceneView)
+**Saga combate tático 3D: SceneView/Filament + tokens 3D + overlay 2D pra grade e toque — branch GURPS-Saga**
+- 7ª de 9 fatias. Primeira ponte do motor 2D (HEX-1..6) para render 3D. Escopo escolhido pelo usuário: **Plataforma vazia + grade + tokens placeholder** (modelos .glb ficam pro HEX-8).
+- **`HexRender3D`** (kotlin puro em `domain/combat/hex/HexRender3D.kt`): converte `HexCoord` axial em `(x, z)` metros no mundo 3D (Y-up, 1 hex = 1 m) e `Direcao` em yaw radianos. Fórmula pointy-top: `x = q + r/2, z = r·√3/2`. Distância entre vizinhos = 1 m exato. `projetar(estado, idHeroi, idsInimigos)` devolve `List<Token3D>` colorido (HEROI/ALIADO/INIMIGO). 8 testes puros novos, total 76 no package hex.
+- **`HexScene3DDemo`** (Compose em `ui/saga/HexScene3D.kt`): usa SceneView 3.0.0 (já presente no projeto desde o lote dos dados 3D). Câmera perspectiva top-down inclinada (Position(0, 12, 6) → lookAt(0,0,0)); LightNode SUN; PlaneNode 20x20 m cinza; CylinderNode por token (radius 0.35, height 1.6, cor por `HexRender3D.Cor`) com rotation Y aplicando o yaw. Overlay Canvas 2D transparente por cima da Scene desenha a grade hex (reusando helpers do `HexCanvas` — `tamanhoHex`, `hexParaTela`, `telaParaHex`, `desenharHex`, agora `internal`) e captura tap → altera `HexTaticoState`. Alinhamento perfeito 2D↔3D fica pro HEX-9 (câmera ortográfica dedicada).
+- **Flag nova em `CampanhaConfig`**: `modoTaticoHex3D` (default false, aditiva/backward-compat via Gson). Só efetivo se `modoTaticoHex` também. Novo Switch no config panel (`enabled` só quando o pai está ligado); getter `sagaModoTaticoHex3D` no `FichaViewModel`.
+- **Roteamento em `TabSaga`**: quando 3D → `HexScene3DDemo`; senão 2D → `HexCanvasDemo`; senão `CombatePainel`. Fallback claro pra Canvas 2D se usuário desligar só o 3D.
+- Zero toque em CombatSession/CombatResolver. HEX-2..6 continuam intocados.
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
 ### Lote HEX-6 — 7 de Julho de 2026 (T3 / Fase 4 do PILAR — regras posicionais MB+AM)
 **Saga combate tático: cobertura + ataque através de hex + manter à distância — branch GURPS-Saga**
 - 6ª de 9 fatias. Regras 🔴 que o modelo de FAIXAS abstratas do Saga não cobre — motor puro 2D em cima de `HexGrid`, sem tocar em `CombatSession`.

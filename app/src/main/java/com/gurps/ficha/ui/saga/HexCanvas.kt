@@ -105,7 +105,7 @@ fun HexCanvasDemo(modifier: Modifier = Modifier) {
 // ── Geometria: hex ↔ tela (pointy-top, coordenadas axiais) ─────────────────
 
 /** Tamanho (raio de centro à ponta) em pixels que cabe [raioGrade] hexes visíveis na área [larg]x[alt]. */
-private fun tamanhoHex(larg: Float, alt: Float, raio: Int): Float {
+internal fun tamanhoHex(larg: Float, alt: Float, raio: Int): Float {
     // Largura de um hex pointy-top = sqrt(3) * tamanho; altura = 2 * tamanho.
     // A grade de raio r tem largura ~ sqrt(3)*(2r+1)*tamanho e altura ~ 1.5*(2r)+2 * tamanho.
     val diametroCells = (2 * raio + 1).toFloat()
@@ -115,7 +115,7 @@ private fun tamanhoHex(larg: Float, alt: Float, raio: Int): Float {
 }
 
 /** Centro em pixels do hexágono [c] considerando origem no centro da tela. */
-private fun hexParaTela(c: HexCoord, larg: Float, alt: Float, tam: Float): Pair<Float, Float> {
+internal fun hexParaTela(c: HexCoord, larg: Float, alt: Float, tam: Float): Pair<Float, Float> {
     val sqrt3 = sqrt(3.0f)
     val x = tam * (sqrt3 * c.q + sqrt3 / 2f * c.r) + larg / 2f
     val y = tam * (3f / 2f * c.r) + alt / 2f
@@ -123,7 +123,7 @@ private fun hexParaTela(c: HexCoord, larg: Float, alt: Float, tam: Float): Pair<
 }
 
 /** Converte um toque em pixels para o `HexCoord` mais próximo (round-trip com arredondamento cube). */
-private fun telaParaHex(toque: Offset, larg: Float, alt: Float, raio: Int): HexCoord? {
+internal fun telaParaHex(toque: Offset, larg: Float, alt: Float, raio: Int): HexCoord? {
     val tam = tamanhoHex(larg, alt, raio)
     val sqrt3 = sqrt(3.0f)
     val x = (toque.x - larg / 2f) / tam
@@ -146,10 +146,10 @@ private fun telaParaHex(toque: Offset, larg: Float, alt: Float, raio: Int): HexC
 // ── Desenho ────────────────────────────────────────────────────────────────
 
 /** Estilos usados dentro do DrawScope (materializados fora do @Composable). */
-private val ESTILO_LABEL_HEX = TextStyle(color = Color(0x77FFFFFF), fontSize = 9.sp)
+internal val ESTILO_LABEL_HEX = TextStyle(color = Color(0x77FFFFFF), fontSize = 9.sp)
 private val ESTILO_INICIAL_TOKEN = TextStyle(color = Color.White, fontSize = 16.sp, textAlign = TextAlign.Center)
 
-private fun DrawScope.desenharHex(
+internal fun DrawScope.desenharHex(
     cx: Float, cy: Float, tam: Float, destacado: Boolean,
     textMeasurer: TextMeasurer, hex: HexCoord
 ) {

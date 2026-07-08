@@ -128,6 +128,8 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
     val sagaCombateAtivo get() = sagaDelegate.combate.ativo
     /** Lote HEX-2: flag "modo tático em hexágonos" da campanha atual (default false — modo faixas). */
     val sagaModoTaticoHex get() = sagaDelegate.configAtiva.modoTaticoHex
+    /** Lote HEX-7: flag "render 3D SceneView" da campanha atual (efetivo só se `sagaModoTaticoHex` também). */
+    val sagaModoTaticoHex3D get() = sagaDelegate.configAtiva.modoTaticoHex3D
     fun sagaCombateAtacar(alvoId: String, manobra: com.gurps.ficha.domain.combat.Manobra, local: com.gurps.ficha.domain.combat.LocalAtaque, modo: com.gurps.ficha.domain.combat.AtaqueTotalModo = com.gurps.ficha.domain.combat.AtaqueTotalModo.DETERMINADO, enganoso: Int = 0, telegrafico: Boolean = false) =
         sagaDelegate.combate.heroiAtaca(alvoId, manobra, local, modo, enganoso, telegrafico)
     fun sagaCombateAtaqueDedicado(alvoId: String, local: com.gurps.ficha.domain.combat.LocalAtaque, dedicadoModo: com.gurps.ficha.domain.combat.DedicadoModo) = // Lote PONTE-4

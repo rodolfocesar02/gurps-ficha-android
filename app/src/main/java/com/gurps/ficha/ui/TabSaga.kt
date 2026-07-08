@@ -282,6 +282,23 @@ private fun ConfiguracaoJogoDialog(
                         modifier = Modifier.semantics { contentDescription = "Modo tático em hexágonos" })
                 }
 
+                // Lote HEX-7: render 3D (SceneView/Filament) — opt-in adicional, exige modoTaticoHex=true.
+                Row(
+                    modifier = Modifier.fillMaxWidth().padding(top = 4.dp, start = 24.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Column(Modifier.weight(1f)) {
+                        Text("↳ Render 3D (SceneView)")
+                        Text("EXPERIMENTAL: chão + tokens 3D + overlay 2D pra grade e toque. HEX-7. Padrão: OFF.",
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    }
+                    Switch(checked = config.modoTaticoHex3D,
+                        enabled = config.modoTaticoHex,
+                        onCheckedChange = { onConfigChange(config.copy(modoTaticoHex3D = it)) },
+                        modifier = Modifier.semantics { contentDescription = "Modo tático em hexágonos render 3D" })
+                }
+
                 // Nível tecnológico
                 Row(
                     modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
@@ -440,9 +457,14 @@ private fun FeedDaCampanha(viewModel: FichaViewModel) {
         // Combate ativo (B7): tracker + manobras/defesa. Recebe weight p/ dividir a tela com o feed.
         // Lote HEX-2 (Fase 2a): se a config da campanha tiver `modoTaticoHex = true`, renderiza a grade
         // tática DEMO em vez do painel por faixas. HEX-3 pluga o motor de combate ao canvas.
+        // Lote HEX-7 (Fase 5): se `modoTaticoHex3D` tambem estiver ligado, mostra cena 3D SceneView; o
+        // Canvas 2D continua servindo como fallback quando so o modoTaticoHex esta ligado.
         if (viewModel.sagaCombateAtivo) {
-            if (viewModel.sagaModoTaticoHex) com.gurps.ficha.ui.saga.HexCanvasDemo(Modifier.weight(1.5f))
-            else com.gurps.ficha.ui.saga.CombatePainel(viewModel, Modifier.weight(1.5f))
+            when {
+                viewModel.sagaModoTaticoHex3D -> com.gurps.ficha.ui.saga.HexScene3DDemo(Modifier.weight(1.5f))
+                viewModel.sagaModoTaticoHex   -> com.gurps.ficha.ui.saga.HexCanvasDemo(Modifier.weight(1.5f))
+                else -> com.gurps.ficha.ui.saga.CombatePainel(viewModel, Modifier.weight(1.5f))
+            }
         }
         // A caixa de texto fica SEMPRE disponível (itens 2/3 do teste de batalha): o jogador fala com
         // o Narrador DURANTE o combate e DEPOIS de cair/vencer, sem precisar sair e voltar à campanha.
