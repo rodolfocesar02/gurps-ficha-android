@@ -24,7 +24,9 @@ data class HexTaticoState(
     val hexSelecionado: HexCoord? = null,
     val tokenSelecionadoId: String? = null,
     /** Raio da grade em torno da origem. HEX-2 usa raio pequeno (7) para caber na tela — depois será dinâmico. */
-    val raioGrade: Int = 7
+    val raioGrade: Int = 7,
+    /** Mensagem exibida na UI por alguns segundos quando uma ação (mover, atacar) falha. Null quando não há aviso. */
+    val ultimoAviso: String? = null,
 ) {
     /** Todos os hexes visíveis na grade DEMO — origem em (0,0) e raio [raioGrade]. */
     val hexesVisiveis: List<HexCoord> get() = HexGrid.range(HexCoord.ORIGEM, raioGrade)
@@ -41,21 +43,37 @@ data class HexTaticoState(
         return copy(tokens = novos, hexSelecionado = destino, tokenSelecionadoId = id)
     }
 
+    /** Hexes VÁLIDOS para o token selecionado se mover (vizinhos, não-ocupados). Vazio se nada selecionado. */
+    val hexesValidosParaMover: Set<HexCoord> get() {
+        val idSel = tokenSelecionadoId ?: return emptySet()
+        val tok = tokens.firstOrNull { it.id == idSel } ?: return emptySet()
+        val ocupados = tokens.filter { it.id != idSel }.map { it.posicao }.toSet()
+        return HexGrid.vizinhos(tok.posicao).filter { it !in ocupados }.toSet()
+    }
+
     /**
      * Lógica de toque num hex: se há token selecionado e o hex é vizinho → tenta mover; senão só
      * seleciona/deseleciona o hex e o token ali (se houver). A UI chama este método e re-renderiza.
+     * Se a tentativa de mover falha (hex não-adjacente ou ocupado), grava uma mensagem em [ultimoAviso]
+     * pra UI exibir e limpa depois de alguns frames.
      */
     fun aoTocarHex(hex: HexCoord): HexTaticoState {
         val tokenAli = tokens.firstOrNull { it.posicao == hex }
         // 1) Toquei num hex vizinho ao token selecionado e o hex está livre → move.
         if (tokenSelecionadoId != null && tokenAli == null) {
             val movido = mover(tokenSelecionadoId, hex)
-            if (movido != this) return movido
+            if (movido != this) return movido.copy(ultimoAviso = null)
+            // Tentei mover mas não foi possível — dá feedback.
+            val tokSel = tokens.firstOrNull { it.id == tokenSelecionadoId }
+            val aviso = if (tokSel != null && tokSel.posicao.distancia(hex) > 1)
+                "Muito longe — só hex vizinho (1 passo)"
+            else "Hex ocupado"
+            return copy(hexSelecionado = hex, ultimoAviso = aviso)
         }
         // 2) Toquei num token → seleciona ele.
-        if (tokenAli != null) return copy(hexSelecionado = hex, tokenSelecionadoId = tokenAli.id)
+        if (tokenAli != null) return copy(hexSelecionado = hex, tokenSelecionadoId = tokenAli.id, ultimoAviso = null)
         // 3) Toquei em hex vazio → apenas destaca o hex, mantém token selecionado.
-        return copy(hexSelecionado = hex)
+        return copy(hexSelecionado = hex, ultimoAviso = null)
     }
 
     companion object {

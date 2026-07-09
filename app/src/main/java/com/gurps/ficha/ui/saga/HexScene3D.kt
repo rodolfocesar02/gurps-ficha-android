@@ -58,6 +58,7 @@ private val COR_FUNDO_3D = Color(0xFF0E1B29)
 private val COR_CHAO_3D = Color(0xFF2F3F52)
 private val COR_HALO_SELECAO = Color(1.0f, 0.85f, 0.2f, 0.55f)   // amarelo translúcido — glow no chão
 private val COR_HALO_HEX = Color(1.0f, 0.85f, 0.2f, 0.35f)       // amarelo mais fraco — hex tocado no chão
+private val COR_HEX_VALIDO = Color(0.06f, 0.72f, 0.51f, 0.35f)   // verde translúcido — vizinho válido pra mover
 private val COR_HEROI_3D = Color(0xFF3B82F6)                      // azul — cilindro fallback enquanto o .glb do herói carrega
 private val COR_INIMIGO_3D = Color(0xFFEF4444)                    // vermelho — cilindro fallback do inimigo
 private val COR_ALIADO_3D = Color(0xFF10B981)                     // verde — cilindro para aliado sem modelo próprio
@@ -68,15 +69,28 @@ fun HexScene3DDemo(modifier: Modifier = Modifier) {
     var estado by remember { mutableStateOf(HexTaticoState.demoInicial()) }
     val textMeasurer = rememberTextMeasurer()
 
+    // Aviso "Muito longe" some após 2 segundos.
+    LaunchedEffect(estado.ultimoAviso) {
+        if (estado.ultimoAviso != null) {
+            kotlinx.coroutines.delay(2000)
+            estado = estado.copy(ultimoAviso = null)
+        }
+    }
+
     Column(modifier = modifier.background(COR_FUNDO_3D)) {
-        Row(
-            Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 6.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text("⬢ Modo tático 3D (demo)", color = Color.White, style = MaterialTheme.typography.titleSmall)
-            Spacer(Modifier.weight(1f))
-            Text("Toque num token, depois num hex adjacente para mover", color = Color(0xCCFFFFFF),
-                style = MaterialTheme.typography.labelSmall)
+        Column(Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 6.dp)) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text("⬢ Modo tático 3D (demo)", color = Color.White, style = MaterialTheme.typography.titleSmall)
+                Spacer(Modifier.weight(1f))
+                Text("Toque no token → hex VERDE", color = Color(0xCCFFFFFF),
+                    style = MaterialTheme.typography.labelSmall)
+            }
+            // Toast do aviso — vermelho se ativo, some após 2s.
+            if (estado.ultimoAviso != null) {
+                Text("⚠ ${estado.ultimoAviso}", color = Color(0xFFEF4444),
+                    style = MaterialTheme.typography.labelMedium,
+                    modifier = Modifier.padding(top = 2.dp))
+            }
         }
 
         Box(Modifier.fillMaxWidth().weight(1f)) {
@@ -135,6 +149,8 @@ private fun HexScene3DBase(estado: HexTaticoState, modifier: Modifier = Modifier
         color = COR_HALO_SELECAO.toFilamentColor(), metallic = 0.0f, roughness = 0.9f, reflectance = 0.0f) }
     val haloHexMi = remember(materialLoader) { materialLoader.createColorInstance(
         color = COR_HALO_HEX.toFilamentColor(), metallic = 0.0f, roughness = 0.9f, reflectance = 0.0f) }
+    val haloValidoMi = remember(materialLoader) { materialLoader.createColorInstance(
+        color = COR_HEX_VALIDO.toFilamentColor(), metallic = 0.0f, roughness = 0.9f, reflectance = 0.0f) }
     val coneFacingMi = remember(materialLoader) { materialLoader.createColorInstance(
         color = COR_CONE_FACING.toFilamentColor(), metallic = 0.0f, roughness = 0.6f, reflectance = 0.2f) }
     val heroiFallbackMi = remember(materialLoader) { materialLoader.createColorInstance(
@@ -203,6 +219,18 @@ private fun HexScene3DBase(estado: HexTaticoState, modifier: Modifier = Modifier
                 normal = Direction(y = 1f),
                 materialInstance = haloHexMi,
                 position = Position(x = hx, y = 0.02f, z = hz)
+            )
+        }
+
+        // Vizinhos VÁLIDOS para o token selecionado se mover — halos verdes translúcidos no chão.
+        // Assim o jogador VÊ para onde pode andar antes de tocar (elimina o "às vezes anda, às vezes não").
+        for (hexValido in estado.hexesValidosParaMover) {
+            val (vx, vz) = HexRender3D.hexParaMundo(hexValido)
+            PlaneNode(
+                size = Size(x = 0.7f, y = 0f, z = 0.7f),
+                normal = Direction(y = 1f),
+                materialInstance = haloValidoMi,
+                position = Position(x = vx, y = 0.01f, z = vz)
             )
         }
 
