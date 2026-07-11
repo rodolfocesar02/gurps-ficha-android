@@ -107,13 +107,13 @@ private fun SelecaoDeCampanha(viewModel: FichaViewModel) {
             modifier = Modifier.fillMaxWidth().semantics { contentDescription = "Criar campanha e começar a aventura" }
         ) { Text("Criar campanha") }
 
-        // Preview standalone da cena 3D — pra validar visualmente sem depender de combate real.
+        // Preview standalone da grade tática — pra validar visualmente sem depender de combate real.
         Spacer(Modifier.height(8.dp))
         OutlinedButton(
             onClick = { mostrarPreview3D = true },
-            modifier = Modifier.fillMaxWidth().semantics { contentDescription = "Preview grade tática 3D demo" }
+            modifier = Modifier.fillMaxWidth().semantics { contentDescription = "Preview grade tática demo" }
         ) {
-            Text("⬢ Preview grade 3D (demo)")
+            Text("⬢ Preview grade tática (demo)")
         }
 
         val campanhas = viewModel.sagaCampanhas
@@ -171,14 +171,15 @@ private fun SelecaoDeCampanha(viewModel: FichaViewModel) {
         )
     }
 
-    // Preview standalone da grade 3D (Lote HEX-9b): não depende de campanha ativa nem combate.
+    // Preview standalone da grade tática (TOK-1: agora o canvas 2D com token de imagem).
+    // Não depende de campanha ativa nem combate.
     if (mostrarPreview3D) {
         androidx.compose.ui.window.Dialog(
             onDismissRequest = { mostrarPreview3D = false },
             properties = androidx.compose.ui.window.DialogProperties(usePlatformDefaultWidth = false)
         ) {
             Box(Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
-                com.gurps.ficha.ui.saga.HexScene3DDemo(Modifier.fillMaxSize())
+                com.gurps.ficha.ui.saga.HexCanvasTatico(viewModel, Modifier.fillMaxSize())
                 // Botão fechar no canto superior direito.
                 IconButton(
                     onClick = { mostrarPreview3D = false },
@@ -186,7 +187,7 @@ private fun SelecaoDeCampanha(viewModel: FichaViewModel) {
                         .align(Alignment.TopEnd)
                         .padding(8.dp)
                         .background(Color(0xAA000000), CircleShape)
-                        .semantics { contentDescription = "Fechar preview 3D" }
+                        .semantics { contentDescription = "Fechar preview da grade tática" }
                 ) { Icon(Icons.Default.Close, contentDescription = null, tint = Color.White) }
             }
         }
@@ -316,22 +317,9 @@ private fun ConfiguracaoJogoDialog(
                         modifier = Modifier.semantics { contentDescription = "Modo tático em hexágonos" })
                 }
 
-                // Lote HEX-7: render 3D (SceneView/Filament) — opt-in adicional, exige modoTaticoHex=true.
-                Row(
-                    modifier = Modifier.fillMaxWidth().padding(top = 4.dp, start = 24.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Column(Modifier.weight(1f)) {
-                        Text("↳ Render 3D (SceneView)")
-                        Text("EXPERIMENTAL: chão + tokens 3D + overlay 2D pra grade e toque. HEX-7. Padrão: OFF.",
-                            style = MaterialTheme.typography.labelSmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant)
-                    }
-                    Switch(checked = config.modoTaticoHex3D,
-                        enabled = config.modoTaticoHex,
-                        onCheckedChange = { onConfigChange(config.copy(modoTaticoHex3D = it)) },
-                        modifier = Modifier.semantics { contentDescription = "Modo tático em hexágonos render 3D" })
-                }
+                // Lote TOK-1: o Switch do render 3D (HEX-7) foi removido — o 3D virou legado após
+                // teste no aparelho; o modo tático agora é o canvas 2D com tokens de imagem.
+                // A flag modoTaticoHex3D segue existindo no CampanhaConfig só por compat de fichas.
 
                 // Nível tecnológico
                 Row(
@@ -489,23 +477,18 @@ private fun FeedDaCampanha(viewModel: FichaViewModel) {
         }
 
         // Combate ativo (B7): tracker + manobras/defesa. Recebe weight p/ dividir a tela com o feed.
-        // Lote HEX-2 (Fase 2a): se a config da campanha tiver `modoTaticoHex = true`, renderiza a grade
-        // tática DEMO em vez do painel por faixas. HEX-3 pluga o motor de combate ao canvas.
-        // Lote HEX-7 (Fase 5): se `modoTaticoHex3D` tambem estiver ligado, mostra cena 3D SceneView.
-        // Lote HEX-9b (correcao): 3D e 2D nao SUBSTITUEM mais o CombatePainel — a cena tatica fica em
-        // cima como visualizacao, e o CombatePainel fica embaixo para o herei ter acesso a Ataque/
-        // Manobra/Defesa. Sem isso, ligar o 3D deixava o herei sem UI de combate.
+        // Lote TOK-1 (VTT 2D): o modo tático agora é o canvas 2D com TOKENS DE IMAGEM (retrato do
+        // jogador circular). O render 3D (HEX-7..9) virou LEGADO após teste no aparelho — a flag
+        // `modoTaticoHex3D` ainda existe nas fichas antigas e cai aqui no MESMO canvas 2D novo.
+        // A cena tática fica em cima; o CombatePainel embaixo dá acesso a Ataque/Manobra/Defesa.
         if (viewModel.sagaCombateAtivo) {
-            when {
-                viewModel.sagaModoTaticoHex3D -> Column(Modifier.weight(1.5f).fillMaxWidth()) {
-                    com.gurps.ficha.ui.saga.HexScene3DDemo(Modifier.weight(1.2f).fillMaxWidth())
+            if (viewModel.sagaModoTaticoHex || viewModel.sagaModoTaticoHex3D) {
+                Column(Modifier.weight(1.5f).fillMaxWidth()) {
+                    com.gurps.ficha.ui.saga.HexCanvasTatico(viewModel, Modifier.weight(1.2f).fillMaxWidth())
                     com.gurps.ficha.ui.saga.CombatePainel(viewModel, Modifier.weight(1f).fillMaxWidth())
                 }
-                viewModel.sagaModoTaticoHex   -> Column(Modifier.weight(1.5f).fillMaxWidth()) {
-                    com.gurps.ficha.ui.saga.HexCanvasDemo(Modifier.weight(1.2f).fillMaxWidth())
-                    com.gurps.ficha.ui.saga.CombatePainel(viewModel, Modifier.weight(1f).fillMaxWidth())
-                }
-                else -> com.gurps.ficha.ui.saga.CombatePainel(viewModel, Modifier.weight(1.5f))
+            } else {
+                com.gurps.ficha.ui.saga.CombatePainel(viewModel, Modifier.weight(1.5f))
             }
         }
         // A caixa de texto fica SEMPRE disponível (itens 2/3 do teste de batalha): o jogador fala com

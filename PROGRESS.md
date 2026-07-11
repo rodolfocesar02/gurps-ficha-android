@@ -3046,6 +3046,21 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - **Recomendação registrada** (maior valor × menor custo): Ataque Telegráfico (par do Enganoso), luta agarrada profunda (chaves/Mata-Leão estendendo o lote 422), Sangramento Grave + incapacitação de membro (item 5 do teste de batalha), Ataque Dedicado/Defensivo. Fora de escopo: posicional/hexágono, montaria, cinematográfico, dado de arma do NPC. Mudança só de documentação (não compila Kotlin).
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
+### Lote TOK-1 — 10 de Julho de 2026 (VTT 2D / Fase 1 — tokens de imagem)
+**Saga combate tático: pivot 3D → VTT 2D com tokens de imagem (retrato do jogador) — branch GURPS-Saga**
+- **1ª fatia do `PLANO_Tokens_VTT_2D.md`** (decisão do usuário 10/jul após teste do 3D no aparelho: top-down mantém, .glb sai, imagem entra — estilo mesa Roll20/Foundry).
+- **`TokenImageStore`** (novo, `data/storage/`): gera e cacheia o token do herói a partir do retrato da ficha (`Personagem.imagemPersonagemOriginalUri`). Recorte QUADRADO 1:1 **centrado no rosto** (ML Kit Face Detection, mesma config do `ImagemPersonagemStore`), lado = 2.2× o rosto (moldura cabelo/ombros), escalado pra 256px, cache `filesDir/tokens/heroi_<hash>.png`. Matemática do recorte extraída em `calcularRecorteQuadrado(...)` **pura** (testável sem Android). Falha em qualquer etapa → null → canvas usa fallback.
+- **`HexCanvas.kt` evoluído**:
+  - Novo entry-point **`HexCanvasTatico(viewModel)`** — `produceState` carrega o token (assíncrono, key = retratoUri) e injeta no canvas.
+  - **`desenharTokenImagem`**: retrato circular (clipPath) + borda colorida (herói azul/inimigo vermelho) + anel branco de seleção + **facing como triângulo na borda externa** (estilo VTT).
+  - **Hexes válidos de movimento** pintados de verde translúcido (`desenharHexPreenchido`) — paridade com o que o 3D tinha.
+  - **Aviso "Muito longe"** no header (auto-hide 2 s) — paridade com o 3D.
+  - **Movimento ANIMADO** (200 ms): posições por token animadas em coordenadas axiais-neutras (`ax=√3q+√3r/2, ay=1.5r`) via `animateFloatAsState` em loop `key(t.id)` — token desliza em vez de teleportar, correto em qualquer resize.
+  - Fallback círculo+inicial permanece para inimigo (imagem gerada é o TOK-2) e herói sem retrato.
+- **Roteamento (`TabSaga`)**: `modoTaticoHex` OU `modoTaticoHex3D` caem AMBOS no `HexCanvasTatico` + `CombatePainel` empilhados. Switch do 3D **removido** da config; `CampanhaConfig.modoTaticoHex3D` deprecated (campo fica por compat Gson). Preview standalone da tela inicial pivota pro canvas 2D. `HexScene3D.kt` vira código legado sem call sites (não deletado).
+- **15 testes puros novos** (8 recorte quadrado + 7 estado tático: hexes válidos/aviso/facing).
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
 ### Lote MA-1 — 8 de Julho de 2026 (PILAR MAGIA / Fase 1 — motor puro)
 **Saga magia: motor puro (parser tolerante da classe + regras MB p.6–14) — branch GURPS-Saga**
 - **1ª fatia do PILAR MAGIA.** Zero toque no combate atual. Novo package `domain/magic/` em kotlin puro. Aproveita o catálogo já existente (`magias2versao.json` — **879 magias** com id/dificuldade/página/classe/escola/duração/energia/tempo/pré-req/descrição).

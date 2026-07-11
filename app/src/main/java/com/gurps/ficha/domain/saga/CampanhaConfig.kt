@@ -18,8 +18,9 @@ data class CampanhaConfig(
     // Lote HEX-2 (Fase 2a do PILAR): combate tático em hexágonos (default OFF — modo faixas continua padrão).
     // Aditivo/anulável em fichas antigas (Gson usa o default false); ver PLANO_Combate_Tatico_Hex_3D.md.
     val modoTaticoHex: Boolean = false,
-    // Lote HEX-7 (Fase 5 do PILAR): render 3D SceneView/Filament para o modo tático (default OFF).
-    // Requer modoTaticoHex=true; se só o 3D estiver ligado, o Canvas 2D é usado como fallback.
+    // DEPRECATED (Lote TOK-1): o render 3D (HEX-7..9) virou legado após teste no aparelho — o modo
+    // tático agora é o canvas 2D com tokens de imagem (PLANO_Tokens_VTT_2D.md). O campo permanece só
+    // por compat Gson com fichas que o ligaram; qualquer valor cai no mesmo canvas 2D novo.
     val modoTaticoHex3D: Boolean = false
 ) {
     fun toJson(): String = Gson().toJson(this)

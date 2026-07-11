@@ -1,5 +1,7 @@
 package com.gurps.ficha.ui.saga
 
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -10,13 +12,16 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
-import androidx.compose.ui.graphics.nativeCanvas
+import androidx.compose.ui.graphics.drawscope.clipPath
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextMeasurer
@@ -24,13 +29,16 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.drawText
 import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.TextUnit
+import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.gurps.ficha.data.storage.TokenImageStore
 import com.gurps.ficha.domain.combat.hex.Direcao
 import com.gurps.ficha.domain.combat.hex.HexCoord
 import com.gurps.ficha.domain.combat.hex.HexTaticoState
 import com.gurps.ficha.domain.combat.hex.TokenDemo
+import com.gurps.ficha.viewmodel.FichaViewModel
 import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.roundToInt
@@ -39,35 +47,85 @@ import kotlin.math.sqrt
 
 /**
  * Lote HEX-2 (Fase 2a do PILAR): Canvas 2D que desenha a grade de hexágonos e responde ao toque.
- * Ainda NÃO integra com CombatSession — é a "prova de que a grade funciona". HEX-3 pluga as regras.
  *
- * Convenção visual: pointy-top, tamanho do hex escalado para caber ~15 hexes de diâmetro na largura da tela.
+ * Lote TOK-1 (VTT 2D): o canvas evoluiu para o estilo mesa de RPG —
+ *  - Token do HERÓI = retrato do personagem recortado CIRCULAR (via [TokenImageStore]) com borda
+ *    azul e seta de facing na borda. Sem retrato → círculo colorido + inicial (fallback eterno).
+ *  - Hexes VÁLIDOS para mover destacados em VERDE; aviso "Muito longe" quando o toque não completa.
+ *  - Movimento ANIMADO (200 ms) nas coordenadas axiais — o token desliza em vez de teleportar.
+ *  - Fundo cinza por enquanto; fundo gerado pelo Narrador é o TOK-3.
+ *
+ * Convenção visual: pointy-top, tamanho do hex escalado para caber a grade na tela.
  * O motor (HexGrid/HexCoord) é kotlin puro e vive em domain/combat/hex/.
  */
 
 private val COR_GRADE_LINHA = Color(0x66FFFFFF)
 private val COR_GRADE_FUNDO = Color(0xFF1A2632)
 private val COR_HEX_SELECIONADO = Color(0x44FFC107)
+private val COR_HEX_VALIDO_2D = Color(0x5910B981)   // verde translúcido — vizinho válido pra mover
 private val COR_TOKEN_HEROI = Color(0xFF3B82F6)
 private val COR_TOKEN_INIMIGO = Color(0xFFEF4444)
 private val COR_FACING = Color(0xCCFFFFFF)
+private const val SQRT3 = 1.7320508f
+
+/**
+ * Wrapper do modo tático: carrega o token de imagem do herói a partir do retrato da ficha
+ * (assíncrono, com cache em disco) e injeta no canvas. É o entry-point usado pelo TabSaga
+ * (combate real e preview standalone).
+ */
+@Composable
+fun HexCanvasTatico(viewModel: FichaViewModel, modifier: Modifier = Modifier) {
+    val context = LocalContext.current
+    val retratoUri = viewModel.personagem.imagemPersonagemOriginalUri
+    var tokenHeroi by remember(retratoUri) { mutableStateOf<ImageBitmap?>(null) }
+    LaunchedEffect(retratoUri) {
+        tokenHeroi = TokenImageStore.obterTokenHeroi(context, retratoUri)?.asImageBitmap()
+    }
+    HexCanvasDemo(modifier = modifier, tokenHeroi = tokenHeroi)
+}
 
 @Composable
-fun HexCanvasDemo(modifier: Modifier = Modifier) {
-    // Estado local do canvas — na HEX-3 será elevado ao ViewModel/controller e vinculado ao CombatSession.
+fun HexCanvasDemo(modifier: Modifier = Modifier, tokenHeroi: ImageBitmap? = null) {
+    // Estado local do canvas — na integração com CombatSession real (TOK-4) será elevado ao controller.
     var estado by remember { mutableStateOf(HexTaticoState.demoInicial()) }
     val textMeasurer = rememberTextMeasurer()
 
+    // Aviso "Muito longe" some após 2 segundos.
+    LaunchedEffect(estado.ultimoAviso) {
+        if (estado.ultimoAviso != null) {
+            kotlinx.coroutines.delay(2000)
+            estado = estado.copy(ultimoAviso = null)
+        }
+    }
+
+    // Posições ANIMADAS por token, em coordenadas axiais-neutras (sem escala de tela):
+    //   ax = √3·q + √3/2·r ; ay = 1.5·r — mesma fórmula de hexParaTela sem o `tam` e o offset.
+    // Animar aqui (e multiplicar por `tam` só no draw) mantém a animação correta em qualquer resize.
+    val posAnimadas = mutableMapOf<String, Pair<Float, Float>>()
+    for (t in estado.tokens) {
+        key(t.id) {
+            val axAlvo = SQRT3 * t.posicao.q + SQRT3 / 2f * t.posicao.r
+            val ayAlvo = 1.5f * t.posicao.r
+            val ax by animateFloatAsState(axAlvo, tween(200), label = "ax")
+            val ay by animateFloatAsState(ayAlvo, tween(200), label = "ay")
+            posAnimadas[t.id] = ax to ay
+        }
+    }
+
     Column(modifier = modifier.background(COR_GRADE_FUNDO)) {
-        // Header: modo tático + o que fazer.
-        Row(
-            Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 6.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text("⬢ Modo tático (demo)", color = Color.White, style = MaterialTheme.typography.titleSmall)
-            Spacer(Modifier.weight(1f))
-            Text("Toque num token, depois num hex adjacente para mover", color = Color(0xCCFFFFFF),
-                style = MaterialTheme.typography.labelSmall)
+        // Header: modo tático + instrução + aviso transitório.
+        Column(Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 6.dp)) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text("⬢ Modo tático", color = Color.White, style = MaterialTheme.typography.titleSmall)
+                Spacer(Modifier.weight(1f))
+                Text("Toque no token → hex VERDE", color = Color(0xCCFFFFFF),
+                    style = MaterialTheme.typography.labelSmall)
+            }
+            if (estado.ultimoAviso != null) {
+                Text("⚠ ${estado.ultimoAviso}", color = Color(0xFFEF4444),
+                    style = MaterialTheme.typography.labelMedium,
+                    modifier = Modifier.padding(top = 2.dp))
+            }
         }
         Box(Modifier.fillMaxWidth().weight(1f)) {
             Canvas(
@@ -85,17 +143,29 @@ fun HexCanvasDemo(modifier: Modifier = Modifier) {
                 val alturaPx = size.height
                 val hexSizePx = tamanhoHex(larguraPx, alturaPx, estado.raioGrade)
 
-                // Fundo já pintado na Column; agora só os hexes.
+                // Grade.
                 for (hex in estado.hexesVisiveis) {
                     val (cx, cy) = hexParaTela(hex, larguraPx, alturaPx, hexSizePx)
                     val destacado = hex == estado.hexSelecionado
                     desenharHex(cx, cy, hexSizePx, destacado, textMeasurer, hex)
                 }
-                // Tokens desenhados por cima da grade (para não sumirem sob a linha).
+                // Hexes VÁLIDOS para mover — preenchimento verde translúcido.
+                for (hexValido in estado.hexesValidosParaMover) {
+                    val (cx, cy) = hexParaTela(hexValido, larguraPx, alturaPx, hexSizePx)
+                    desenharHexPreenchido(cx, cy, hexSizePx, COR_HEX_VALIDO_2D)
+                }
+                // Tokens por cima da grade — posição ANIMADA.
                 for (t in estado.tokens) {
-                    val (cx, cy) = hexParaTela(t.posicao, larguraPx, alturaPx, hexSizePx)
+                    val (ax, ay) = posAnimadas[t.id] ?: continue
+                    val cx = hexSizePx * ax + larguraPx / 2f
+                    val cy = hexSizePx * ay + alturaPx / 2f
                     val selecionado = t.id == estado.tokenSelecionadoId
-                    desenharToken(cx, cy, hexSizePx, t, selecionado, textMeasurer)
+                    val imagem = if (t.ehHeroi) tokenHeroi else null
+                    if (imagem != null) {
+                        desenharTokenImagem(cx, cy, hexSizePx, t, selecionado, imagem)
+                    } else {
+                        desenharToken(cx, cy, hexSizePx, t, selecionado, textMeasurer)
+                    }
                 }
             }
         }
@@ -149,12 +219,9 @@ internal fun telaParaHex(toque: Offset, larg: Float, alt: Float, raio: Int): Hex
 internal val ESTILO_LABEL_HEX = TextStyle(color = Color(0x77FFFFFF), fontSize = 9.sp)
 private val ESTILO_INICIAL_TOKEN = TextStyle(color = Color.White, fontSize = 16.sp, textAlign = TextAlign.Center)
 
-internal fun DrawScope.desenharHex(
-    cx: Float, cy: Float, tam: Float, destacado: Boolean,
-    textMeasurer: TextMeasurer, hex: HexCoord
-) {
+/** Path de hex pointy-top centrado em ([cx],[cy]) com raio [tam]. */
+private fun pathDoHex(cx: Float, cy: Float, tam: Float): Path {
     val path = Path()
-    // Pointy-top: primeiro vértice a 30°, depois de 60 em 60.
     for (i in 0..5) {
         val ang = PI / 6 + i * PI / 3 // 30°, 90°, 150°...
         val vx = (cx + tam * cos(ang)).toFloat()
@@ -162,15 +229,29 @@ internal fun DrawScope.desenharHex(
         if (i == 0) path.moveTo(vx, vy) else path.lineTo(vx, vy)
     }
     path.close()
+    return path
+}
+
+internal fun DrawScope.desenharHex(
+    cx: Float, cy: Float, tam: Float, destacado: Boolean,
+    textMeasurer: TextMeasurer, hex: HexCoord
+) {
+    val path = pathDoHex(cx, cy, tam)
     if (destacado) drawPath(path, color = COR_HEX_SELECIONADO)
     drawPath(path, color = COR_GRADE_LINHA, style = Stroke(width = 1.5f))
-    // Rótulo (q,r) minúsculo no topo do hex — útil pra depuração; some no HEX-7 (render 3D).
+    // Rótulo (q,r) minúsculo no topo do hex — útil pra depuração; sai no polimento do TOK-4.
     val label = textMeasurer.measure(text = androidx.compose.ui.text.AnnotatedString("${hex.q},${hex.r}"),
         style = ESTILO_LABEL_HEX)
     drawText(label, topLeft = Offset(cx - label.size.width / 2f, cy - tam / 2f))
 }
 
-private fun DrawScope.desenharToken(
+/** Hex PREENCHIDO com [cor] (usado para destacar os hexes válidos de movimento). */
+internal fun DrawScope.desenharHexPreenchido(cx: Float, cy: Float, tam: Float, cor: Color) {
+    drawPath(pathDoHex(cx, cy, tam), color = cor)
+}
+
+/** Fallback clássico: círculo colorido + inicial + linha de facing (inimigos sem imagem e herói sem retrato). */
+internal fun DrawScope.desenharToken(
     cx: Float, cy: Float, tam: Float, t: TokenDemo, selecionado: Boolean,
     textMeasurer: TextMeasurer
 ) {
@@ -179,16 +260,54 @@ private fun DrawScope.desenharToken(
     drawCircle(color = cor, radius = raio, center = Offset(cx, cy))
     if (selecionado) drawCircle(color = Color.White, radius = raio + 4f, center = Offset(cx, cy),
         style = Stroke(width = 3f))
-    // Indicador de FACING: pequena "flecha" na direção que o token olha (útil pra HEX-4).
+    // Indicador de FACING: pequena "flecha" na direção que o token olha.
     val angFacing = anguloDaDirecao(t.facing)
     val fx = (cx + raio * 0.9f * cos(angFacing)).toFloat()
     val fy = (cy + raio * 0.9f * sin(angFacing)).toFloat()
     drawLine(color = COR_FACING, start = Offset(cx, cy), end = Offset(fx, fy), strokeWidth = 3f)
-    // Inicial do nome no meio do token (padrão B7).
+    // Inicial do nome no meio do token.
     val inicial = t.nome.firstOrNull()?.uppercase() ?: "?"
     val label = textMeasurer.measure(text = androidx.compose.ui.text.AnnotatedString(inicial),
         style = ESTILO_INICIAL_TOKEN)
     drawText(label, topLeft = Offset(cx - label.size.width / 2f, cy - label.size.height / 2f))
+}
+
+/**
+ * Lote TOK-1: token de IMAGEM estilo VTT — retrato circular (clip) + borda colorida + seta de
+ * facing como TRIÂNGULO na borda externa (estilo Roll20/Foundry).
+ */
+internal fun DrawScope.desenharTokenImagem(
+    cx: Float, cy: Float, tam: Float, t: TokenDemo, selecionado: Boolean,
+    imagem: ImageBitmap
+) {
+    val raio = tam * 0.62f
+    val corBorda = if (t.ehHeroi) COR_TOKEN_HEROI else COR_TOKEN_INIMIGO
+    // Imagem recortada em círculo.
+    val clip = Path().apply { addOval(Rect(center = Offset(cx, cy), radius = raio)) }
+    clipPath(clip) {
+        drawImage(
+            image = imagem,
+            dstOffset = IntOffset((cx - raio).roundToInt(), (cy - raio).roundToInt()),
+            dstSize = IntSize((raio * 2).roundToInt(), (raio * 2).roundToInt())
+        )
+    }
+    // Borda colorida por cima (herói azul / inimigo vermelho).
+    drawCircle(color = corBorda, radius = raio, center = Offset(cx, cy),
+        style = Stroke(width = (tam * 0.09f).coerceAtLeast(2f)))
+    if (selecionado) drawCircle(color = Color.White, radius = raio + 4f, center = Offset(cx, cy),
+        style = Stroke(width = 3f))
+    // Facing: triângulo pequeno na borda externa apontando na direção.
+    val ang = anguloDaDirecao(t.facing)
+    val pontaR = raio + tam * 0.22f
+    val baseR = raio + tam * 0.04f
+    val abertura = 0.28 // rad — meia-largura angular da base
+    val ponta = Offset((cx + pontaR * cos(ang)).toFloat(), (cy + pontaR * sin(ang)).toFloat())
+    val base1 = Offset((cx + baseR * cos(ang - abertura)).toFloat(), (cy + baseR * sin(ang - abertura)).toFloat())
+    val base2 = Offset((cx + baseR * cos(ang + abertura)).toFloat(), (cy + baseR * sin(ang + abertura)).toFloat())
+    val seta = Path().apply {
+        moveTo(ponta.x, ponta.y); lineTo(base1.x, base1.y); lineTo(base2.x, base2.y); close()
+    }
+    drawPath(seta, color = corBorda)
 }
 
 /** Ângulo em radianos (frame de tela: 0 = leste, cresce para SUL) para cada direção. Pointy-top. */
