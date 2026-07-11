@@ -123,17 +123,26 @@ object TokenImageStore {
     }
 
     /**
-     * Grava o PNG num arquivo TEMPORÁRIO e renomeia por cima do destino — rename no mesmo diretório
-     * é atômico, então um cancelamento de corrotina no meio da escrita nunca deixa um PNG truncado
-     * sendo servido como cache (o pior caso é o .tmp órfão, apagado na próxima gravação).
+     * Grava o bitmap num arquivo TEMPORÁRIO e renomeia por cima do destino — rename no mesmo
+     * diretório é atômico, então um cancelamento de corrotina no meio da escrita nunca deixa um
+     * arquivo truncado sendo servido como cache (o pior caso é o .tmp órfão, sobrescrito depois).
+     * `internal` para o [CenarioImageStore] (TOK-3) reusar com JPEG.
      */
-    private fun salvarPngAtomico(destino: File, bitmap: Bitmap) {
+    internal fun salvarBitmapAtomico(
+        destino: File,
+        bitmap: Bitmap,
+        formato: Bitmap.CompressFormat = Bitmap.CompressFormat.PNG,
+        qualidade: Int = 100,
+    ) {
         val tmp = File(destino.parentFile, destino.name + ".tmp")
         val ok = runCatching {
-            tmp.outputStream().use { out -> bitmap.compress(Bitmap.CompressFormat.PNG, 100, out) }
+            tmp.outputStream().use { out -> bitmap.compress(formato, qualidade, out) }
         }.isSuccess
         if (ok) runCatching { tmp.renameTo(destino) } else runCatching { tmp.delete() }
     }
+
+    private fun salvarPngAtomico(destino: File, bitmap: Bitmap) =
+        salvarBitmapAtomico(destino, bitmap, Bitmap.CompressFormat.PNG, 100)
 
     /** Limpa o cache de tokens (chamar quando o retrato do personagem muda, se desejado). */
     fun limparCache(context: Context) {

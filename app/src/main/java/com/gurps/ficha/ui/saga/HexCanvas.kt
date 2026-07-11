@@ -33,6 +33,7 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.gurps.ficha.data.storage.CenarioImageStore
 import com.gurps.ficha.data.storage.TokenImageStore
 import com.gurps.ficha.domain.combat.hex.Direcao
 import com.gurps.ficha.domain.combat.hex.HexCoord
@@ -66,6 +67,7 @@ private val COR_HEX_VALIDO_2D = Color(0x5910B981)   // verde translúcido — vi
 private val COR_TOKEN_HEROI = Color(0xFF3B82F6)
 private val COR_TOKEN_INIMIGO = Color(0xFFEF4444)
 private val COR_FACING = Color(0xCCFFFFFF)
+private val COR_SCRIM_FUNDO = Color(0x66101820)  // escurece o fundo gerado p/ legibilidade da grade
 private const val SQRT3 = 1.7320508f
 
 /**
@@ -81,11 +83,44 @@ fun HexCanvasTatico(viewModel: FichaViewModel, modifier: Modifier = Modifier) {
     LaunchedEffect(retratoUri) {
         tokenHeroi = TokenImageStore.obterTokenHeroi(context, retratoUri)?.asImageBitmap()
     }
-    HexCanvasDemo(modifier = modifier, tokenHeroi = tokenHeroi)
+
+    // Lote TOK-3: fundo da CENA ativa (vista top-down gerada). Cache-first; se o gatilho do
+    // delegate ainda está gerando, o Mutex por chave faz esta chamada ESPERAR e entregar o bitmap
+    // quando pronto (recompose automática). Sem campanha/cena (preview standalone) → fundo cinza.
+    val camp = viewModel.sagaCampanhaAtiva
+    val cena = viewModel.sagaCenaAtiva
+    // Keys ESPELHAM a identidade do cache (campanha+cena+titulo+bioma — humor fica fora da chave,
+    // ver CenarioImageStore.chaveCena): qualquer mudança que regenera o fundo também recarrega aqui.
+    var fundoCena by remember(camp?.id, cena?.id, cena?.titulo, cena?.bioma) { mutableStateOf<ImageBitmap?>(null) }
+    LaunchedEffect(camp?.id, cena?.id, cena?.titulo, cena?.bioma) {
+        fundoCena = null
+        if (camp == null || cena == null) return@LaunchedEffect
+        if (!CenarioImageStore.cenaValidaParaFundo(cena.titulo)) return@LaunchedEffect
+        var bmp = CenarioImageStore.fundoCenaCacheado(context, camp.id, cena.id, cena.titulo, cena.bioma)
+        if (bmp == null) {
+            val imgKey = com.gurps.ficha.BuildConfig.MESTRE_IA_GEMINI_IMAGE_KEY
+            val imgModel = com.gurps.ficha.BuildConfig.MESTRE_IA_GEMINI_IMAGE_MODEL
+            if (imgKey.isNotBlank()) {
+                bmp = CenarioImageStore.obterFundoCena(
+                    context, camp.id, cena.id, cena.titulo, cena.bioma, cena.humor
+                ) { prompt ->
+                    com.gurps.ficha.data.network.GeminiImageService
+                        .gerarImagem(imgKey, imgModel, prompt, rotuloLog = "fundo:${cena.titulo}")?.bytes
+                }
+            }
+        }
+        fundoCena = bmp?.asImageBitmap()
+    }
+
+    HexCanvasDemo(modifier = modifier, tokenHeroi = tokenHeroi, fundoCena = fundoCena)
 }
 
 @Composable
-fun HexCanvasDemo(modifier: Modifier = Modifier, tokenHeroi: ImageBitmap? = null) {
+fun HexCanvasDemo(
+    modifier: Modifier = Modifier,
+    tokenHeroi: ImageBitmap? = null,
+    fundoCena: ImageBitmap? = null,
+) {
     // Estado local do canvas — na integração com CombatSession real (TOK-4) será elevado ao controller.
     var estado by remember { mutableStateOf(HexTaticoState.demoInicial()) }
     val textMeasurer = rememberTextMeasurer()
@@ -168,6 +203,26 @@ fun HexCanvasDemo(modifier: Modifier = Modifier, tokenHeroi: ImageBitmap? = null
                 val larguraPx = size.width
                 val alturaPx = size.height
                 val hexSizePx = tamanhoHex(larguraPx, alturaPx, estado.raioGrade)
+
+                // Lote TOK-3: fundo da cena (vista top-down gerada) em escala COVER + scrim escuro
+                // por cima pra grade e os tokens continuarem legíveis. Sem fundo → cinza da Column.
+                if (fundoCena != null) {
+                    val escala = kotlin.math.max(
+                        larguraPx / fundoCena.width.toFloat(),
+                        alturaPx / fundoCena.height.toFloat()
+                    )
+                    val dw = (fundoCena.width * escala).roundToInt()
+                    val dh = (fundoCena.height * escala).roundToInt()
+                    drawImage(
+                        image = fundoCena,
+                        dstOffset = IntOffset(
+                            ((larguraPx - dw) / 2f).roundToInt(),
+                            ((alturaPx - dh) / 2f).roundToInt()
+                        ),
+                        dstSize = IntSize(dw, dh)
+                    )
+                    drawRect(color = COR_SCRIM_FUNDO)
+                }
 
                 // Grade.
                 for (hex in estado.hexesVisiveis) {

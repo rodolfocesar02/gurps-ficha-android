@@ -3046,6 +3046,20 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - **Recomendação registrada** (maior valor × menor custo): Ataque Telegráfico (par do Enganoso), luta agarrada profunda (chaves/Mata-Leão estendendo o lote 422), Sangramento Grave + incapacitação de membro (item 5 do teste de batalha), Ataque Dedicado/Defensivo. Fora de escopo: posicional/hexágono, montaria, cinematográfico, dado de arma do NPC. Mudança só de documentação (não compila Kotlin).
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
+### Lote TOK-3 — 10 de Julho de 2026 (VTT 2D / Fase 3 — fundo de cenário gerado)
+**Saga combate tático: a cena vira imagem de fundo top-down sob a grade — branch GURPS-Saga**
+- **3ª fatia do `PLANO_Tokens_VTT_2D.md`** — quando o Narrador estabelece a cena (`definir_cena`), um gatilho assíncrono gera a vista aérea do CHÃO do lugar e ela vira o fundo da grade tática.
+- **`CenarioImageStore`** (novo, `data/storage/`):
+  - `chaveCena(campanhaId, cenaId, titulo, bioma)` **pura**: `c{camp}_s{cena}_h{hash-do-conteúdo-FÍSICO}` — o hash importa porque `definir_cena` ATUALIZA a mesma cena (nasce "Início", vira "O Coliseu de Ferro"); sem hash, um fundo genérico gerado cedo ficaria grudado. Conteúdo físico muda → chave muda → regenera → **irmãos obsoletos da mesma cena são apagados**. **HUMOR fica FORA da chave** (achado CONFIRMADO da revisão adversarial: humor é volátil — "tenso"→"alívio" na mesma locação — e não muda o terreno; se entrasse no hash, cada retoque de clima regeneraria o fundo pago). Humor ainda entra no PROMPT da 1ª geração. Teste-trava do contrato de custo incluído.
+  - `cenaValidaParaFundo(titulo)` **pura**: placeholder "Início"/vazio não gera fundo (economiza a geração inútil da abertura).
+  - `promptFundoCena(titulo, bioma?, humor?)` **pura**: vista aérea do chão, painterly; **proíbe criaturas/grid/texto** — grade e tokens são desenhados por cima.
+  - `obterFundoCena(...)`: cache `filesDir/cenarios/{chave}.jpg` (JPEG 85, maior lado ≤1024); Mutex por chave deduplica gatilho×canvas; escrita atômica (reusa `salvarBitmapAtomico`, promovido a `internal` parametrizado no `TokenImageStore`); `gerarImagem` injetada.
+  - `temFundoCena` (exists barato, sem decode — o gatilho por turno vira no-op cedo), `fundoCenaCacheado` (hit-only), `limparCache`.
+- **Gatilho no `FichaSagaDelegate.rodarTurno`**: após o refresh da cena pós-turno, `dispararGeracaoFundoCena()` — guards (placeholder, cache já existe via `temFundoCena`, key vazia) e `scope.launch` fire-and-forget.
+- **Canvas**: `HexCanvasTatico` lê `sagaCampanhaAtiva`/`sagaCenaAtiva` (ambos `mutableStateOf` — recompõe na troca de cena), carrega cache-first e gera on-demand no miss (Mutex faz esperar o gatilho em vez de gerar 2×). `HexCanvasDemo` desenha o fundo em escala **COVER** centralizado + **scrim escuro** (α=0.4) antes da grade. Sem campanha/cena (preview standalone) ou falha → fundo cinza eterno.
+- **+11 testes puros** (`CenarioImageStoreTest`: chave estável/muda com conteúdo/não colide entre campanhas/null≡vazio; guard "Início"; prompt com/sem bioma/humor + proibições).
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
 ### Lote TOK-2 — 10 de Julho de 2026 (VTT 2D / Fase 2 — gatilho de tokens de inimigos)
 **Saga combate tático: inimigos ganham retrato GERADO por Gemini via gatilho assíncrono — branch GURPS-Saga**
 - **2ª fatia do `PLANO_Tokens_VTT_2D.md`** — os "agentes secundários" do plano viram corrotinas fire-and-forget.

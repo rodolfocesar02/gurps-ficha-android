@@ -227,11 +227,43 @@ class FichaSagaDelegate(
                 persistirTurno("model", r.prosa)
                 // Lote 355 (A): definir_cena pode ter mudado a cena — reflete no cabeçalho.
                 campanhaAtiva?.let { cenaAtiva = sagaDao?.cenaAberta(it.id) }
+                // Lote TOK-3: gatilho do FUNDO da cena (fire-and-forget) — pré-gera a vista
+                // top-down do lugar pra grade tática. Cache por conteúdo da cena; no-op se já
+                // existe, se a cena ainda é o placeholder "Início" ou se não há chave de imagem.
+                dispararGeracaoFundoCena()
             } finally {
                 processando = false
                 fase = ""
                 // Drena um fim de combate que chegou no meio deste turno (ver fimDeCombatePendente).
                 fimDeCombatePendente?.let { fimDeCombatePendente = null; narrarFimDeCombate(it) }
+            }
+        }
+    }
+
+    /**
+     * Lote TOK-3: dispara em background a geração da imagem de FUNDO da cena ativa (vista
+     * top-down do chão) para a grade tática. Idempotente e barato quando já existe cache
+     * (checagem de arquivo); fire-and-forget — falha nunca afeta o turno.
+     */
+    private fun dispararGeracaoFundoCena() {
+        val ctx = context ?: return
+        val camp = campanhaAtiva ?: return
+        val cena = cenaAtiva ?: return
+        if (!com.gurps.ficha.data.storage.CenarioImageStore.cenaValidaParaFundo(cena.titulo)) return
+        // No-op barato quando o fundo desta versão da cena já existe (roda a cada turno).
+        if (com.gurps.ficha.data.storage.CenarioImageStore.temFundoCena(
+                ctx, camp.id, cena.id, cena.titulo, cena.bioma)) return
+        val imgKey = com.gurps.ficha.BuildConfig.MESTRE_IA_GEMINI_IMAGE_KEY
+        val imgModel = com.gurps.ficha.BuildConfig.MESTRE_IA_GEMINI_IMAGE_MODEL
+        if (imgKey.isBlank()) return
+        scope.launch {
+            runCatching {
+                com.gurps.ficha.data.storage.CenarioImageStore.obterFundoCena(
+                    ctx, camp.id, cena.id, cena.titulo, cena.bioma, cena.humor
+                ) { prompt ->
+                    com.gurps.ficha.data.network.GeminiImageService
+                        .gerarImagem(imgKey, imgModel, prompt, rotuloLog = "fundo:${cena.titulo}")?.bytes
+                }
             }
         }
     }
