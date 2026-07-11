@@ -94,7 +94,7 @@ Narrador dispara a geração da imagem de fundo do cenário e dos tokens dos ini
   campanha.
 
 ## 5. Registro de execução
-- [ ] TOK-1 — token de imagem + canvas novo + roteamento
+- [x] ✅ TOK-1 — token de imagem + canvas novo + roteamento (10/jul/2026, commit 4fb8977 — TokenImageStore com recorte por rosto + HexCanvasTatico + hexes verdes/aviso/animação migrados do 3D + Switch 3D removido + 15 testes puros)
 - [ ] TOK-2 — gatilho de inimigos
 - [ ] TOK-3 — gatilho de fundo
 - [ ] TOK-4 — polimento + combate real
