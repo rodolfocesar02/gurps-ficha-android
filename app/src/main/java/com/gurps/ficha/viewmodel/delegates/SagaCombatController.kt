@@ -236,6 +236,31 @@ class SagaCombatController(
         ataqueSelecionado = 0
         s.log += "⚔️ Combate iniciado: ${inimigos.joinToString(", ") { "${it.second}× ${it.first}" }} a ${distanciaM}m."
         scope.launch { rodarLoop() }
+
+        // Lote TOK-2: gatilho ASSÍNCRONO ("agente secundário") — pré-gera o token de IMAGEM de cada
+        // TIPO de inimigo via Gemini e cacheia em disco (filesDir/tokens/inimigos/{tipo}.png).
+        // Por TIPO, não por instância: 3 goblins = 1 imagem (~$0.067). Fire-and-forget: qualquer
+        // falha (sem chave, sem rede, geração ruim) deixa o canvas no fallback círculo+inicial —
+        // o combate NUNCA espera nem depende disso.
+        val imgKey = com.gurps.ficha.BuildConfig.MESTRE_IA_GEMINI_IMAGE_KEY
+        val imgModel = com.gurps.ficha.BuildConfig.MESTRE_IA_GEMINI_IMAGE_MODEL
+        if (imgKey.isNotBlank()) {
+            inimigos.map { it.first.lowercase().trim() }.distinct().forEach { tipoId ->
+                val criatura = bestiario.get(tipoId)
+                scope.launch {
+                    runCatching {
+                        com.gurps.ficha.data.storage.TokenImageStore.obterTokenInimigo(
+                            ctx, tipo = tipoId,
+                            nomeVisivel = criatura?.nome ?: tipoId,
+                            descricao = criatura?.descricao
+                        ) { prompt ->
+                            com.gurps.ficha.data.network.GeminiImageService
+                                .gerarImagem(imgKey, imgModel, prompt, rotuloLog = "token:$tipoId")?.bytes
+                        }
+                    }
+                }
+            }
+        }
         return s.resumo()
     }
 

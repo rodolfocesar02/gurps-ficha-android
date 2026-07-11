@@ -60,12 +60,22 @@ object GeminiImageService {
         nome: String,
         aparencia: String,
         historia: String
+    ): Resultado? = gerarImagem(apiKey, modelId, buildPrompt(nome, aparencia, historia), rotuloLog = nome)
+
+    /**
+     * Lote TOK-2: geração GENÉRICA com um [prompt] arbitrário — usada pelos gatilhos do combate
+     * tático (tokens de inimigos; fundo de cenário no TOK-3). Mesmo endpoint/formato do retrato.
+     */
+    suspend fun gerarImagem(
+        apiKey: String,
+        modelId: String,
+        prompt: String,
+        rotuloLog: String = "imagem"
     ): Resultado? = withContext(Dispatchers.IO) {
-        val prompt = buildPrompt(nome, aparencia, historia)
         val payload = buildPayload(prompt)
 
         val url = "$BASE_URL/$modelId:generateContent?key=$apiKey"
-        Log.i(TAG, "Gerando retrato para '$nome' | model=$modelId")
+        Log.i(TAG, "Gerando imagem para '$rotuloLog' | model=$modelId")
 
         try {
             val conn = (URL(url).openConnection() as HttpURLConnection).apply {

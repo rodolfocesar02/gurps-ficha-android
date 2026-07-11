@@ -93,4 +93,64 @@ class TokenImageStoreRecorteTest {
             assertTrue("lado>=1 p/ ${p.toList()}", r.lado >= 1)
         }
     }
+
+    // ─── Lote TOK-2: normalização do tipo (chave de cache) ─────
+
+    @Test
+    fun `normalizarTipo minusculas e underscore`() {
+        assertEquals("orc_bruto", TokenImageStore.normalizarTipo("Orc Bruto"))
+    }
+
+    @Test
+    fun `normalizarTipo remove acentos`() {
+        assertEquals("dragao", TokenImageStore.normalizarTipo("Dragão!"))
+    }
+
+    @Test
+    fun `normalizarTipo colapsa caracteres especiais consecutivos`() {
+        assertEquals("goblin_2", TokenImageStore.normalizarTipo("Goblin  #2"))
+    }
+
+    @Test
+    fun `normalizarTipo nao gera underscore nas pontas`() {
+        assertEquals("lobo", TokenImageStore.normalizarTipo("  lobo!  "))
+    }
+
+    @Test
+    fun `normalizarTipo string vazia devolve vazio`() {
+        assertEquals("", TokenImageStore.normalizarTipo("   "))
+    }
+
+    @Test
+    fun `normalizarTipo id de bestiario ja normalizado passa intacto`() {
+        assertEquals("orc_bruto", TokenImageStore.normalizarTipo("orc_bruto"))
+    }
+
+    // ─── Lote TOK-2: prompt do token de inimigo ─────────────────
+
+    @Test
+    fun `promptTokenInimigo inclui nome e descricao`() {
+        val p = TokenImageStore.promptTokenInimigo("Orc Bruto", "orc enorme de pele verde")
+        assertTrue(p.contains("Orc Bruto"))
+        assertTrue(p.contains("orc enorme de pele verde"))
+    }
+
+    @Test
+    fun `promptTokenInimigo sem descricao usa generica`() {
+        val p = TokenImageStore.promptTokenInimigo("Goblin", null)
+        assertTrue(p.contains("Goblin"))
+        assertTrue(p.contains("criatura hostil"))
+    }
+
+    @Test
+    fun `promptTokenInimigo com descricao em branco usa generica`() {
+        val p = TokenImageStore.promptTokenInimigo("Goblin", "   ")
+        assertTrue(p.contains("criatura hostil"))
+    }
+
+    @Test
+    fun `promptTokenInimigo proibe texto e marca dagua`() {
+        val p = TokenImageStore.promptTokenInimigo("Goblin")
+        assertTrue(p.contains("Do NOT include any text"))
+    }
 }

@@ -9,8 +9,12 @@ import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.face.FaceDetection
 import com.google.mlkit.vision.face.FaceDetectorOptions
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 import java.io.File
+import java.text.Normalizer
+import java.util.concurrent.ConcurrentHashMap
 import kotlin.math.max
 import kotlin.math.min
 
@@ -105,9 +109,7 @@ object TokenImageStore {
             Bitmap.createScaledBitmap(quadrado, LADO_TOKEN, LADO_TOKEN, true)
         } else quadrado
 
-        runCatching {
-            cacheFile.outputStream().use { out -> token.compress(Bitmap.CompressFormat.PNG, 100, out) }
-        }
+        salvarPngAtomico(cacheFile, token)
         // Tokens de retratos ANTIGOS viram lixo órfão quando o retrato muda (o URI novo tem UUID
         // novo) — remove os irmãos "heroi_*" que não são o cache atual.
         runCatching {
@@ -120,11 +122,129 @@ object TokenImageStore {
         token
     }
 
+    /**
+     * Grava o PNG num arquivo TEMPORÁRIO e renomeia por cima do destino — rename no mesmo diretório
+     * é atômico, então um cancelamento de corrotina no meio da escrita nunca deixa um PNG truncado
+     * sendo servido como cache (o pior caso é o .tmp órfão, apagado na próxima gravação).
+     */
+    private fun salvarPngAtomico(destino: File, bitmap: Bitmap) {
+        val tmp = File(destino.parentFile, destino.name + ".tmp")
+        val ok = runCatching {
+            tmp.outputStream().use { out -> bitmap.compress(Bitmap.CompressFormat.PNG, 100, out) }
+        }.isSuccess
+        if (ok) runCatching { tmp.renameTo(destino) } else runCatching { tmp.delete() }
+    }
+
     /** Limpa o cache de tokens (chamar quando o retrato do personagem muda, se desejado). */
     fun limparCache(context: Context) {
         runCatching {
             File(context.filesDir, DIR).listFiles()?.forEach { it.delete() }
+            File(context.filesDir, DIR_INIMIGOS).listFiles()?.forEach { it.delete() }
         }
+    }
+
+    // ── Lote TOK-2: tokens de INIMIGOS gerados por gatilho (agente secundário) ──────────────
+
+    private const val DIR_INIMIGOS = "tokens/inimigos"
+
+    /** Um Mutex por tipo — 3 goblins ao mesmo tempo = 1 única geração (as outras esperam o cache). */
+    private val geracoesEmVoo = ConcurrentHashMap<String, Mutex>()
+
+    /**
+     * Normaliza o TIPO do inimigo para virar chave de cache: minúsculas, sem acento, espaços e
+     * qualquer caractere fora de a-z/0-9 viram '_' (colapsados). PURO — testável sem Android.
+     * Ex.: "Orc Bruto" → "orc_bruto"; "Goblin 2" → "goblin_2"; "Dragão!" → "dragao".
+     */
+    fun normalizarTipo(tipo: String): String {
+        val semAcento = Normalizer.normalize(tipo.trim().lowercase(), Normalizer.Form.NFD)
+            .replace(Regex("\\p{Mn}+"), "")
+        return semAcento.replace(Regex("[^a-z0-9]+"), "_").trim('_')
+    }
+
+    /**
+     * Prompt do token do inimigo — busto frontal, fundo neutro, sem texto. PURO — testável.
+     * [descricao] opcional refina (vem do bestiário quando existir).
+     */
+    fun promptTokenInimigo(nome: String, descricao: String? = null): String {
+        val desc = descricao?.takeIf { it.isNotBlank() } ?: "criatura hostil de fantasia medieval"
+        return """Fantasy RPG enemy token portrait.
+Creature: $nome
+Description: $desc
+
+Style: detailed fantasy illustration, dramatic lighting, painterly style.
+Composition: head and shoulders bust, front view, centered, neutral dark background.
+Do NOT include any text, watermarks, logos, borders, or UI elements."""
+    }
+
+    /**
+     * Devolve o bitmap do token do inimigo do [tipo] (quadrado [LADO_TOKEN]px), do cache quando
+     * possível. No cache miss, chama [gerarImagem] (injetado — o caller pluga o GeminiImageService)
+     * com o prompt do busto, recorta quadrado centrado no rosto (mesmo pipeline do herói) e cacheia
+     * em filesDir/tokens/inimigos/{tipoNormalizado}.png — POR TIPO, não por instância: 3 goblins
+     * custam 1 imagem.
+     *
+     * Dedup de corrida: um Mutex por tipo garante que chamadas simultâneas do mesmo tipo façam
+     * UMA geração (as demais acham o cache ao entrar no lock). Qualquer falha devolve null e o
+     * canvas fica no fallback círculo+inicial — o combate NUNCA depende da imagem.
+     */
+    suspend fun obterTokenInimigo(
+        context: Context,
+        tipo: String,
+        nomeVisivel: String = tipo,
+        descricao: String? = null,
+        gerarImagem: suspend (prompt: String) -> ByteArray?,
+    ): Bitmap? = withContext(Dispatchers.IO) {
+        val chave = normalizarTipo(tipo)
+        if (chave.isBlank()) return@withContext null
+        val dir = File(context.filesDir, DIR_INIMIGOS).apply { mkdirs() }
+        val cacheFile = File(dir, "$chave.png")
+
+        // Cache hit rápido (sem lock).
+        if (cacheFile.exists()) {
+            val cached = runCatching { BitmapFactory.decodeFile(cacheFile.absolutePath) }.getOrNull()
+            if (cached != null) return@withContext cached
+        }
+
+        val mutex = geracoesEmVoo.computeIfAbsent(chave) { Mutex() }
+        mutex.withLock {
+            // Re-checa dentro do lock — outra corrotina pode ter acabado de gerar.
+            if (cacheFile.exists()) {
+                val cached = runCatching { BitmapFactory.decodeFile(cacheFile.absolutePath) }.getOrNull()
+                if (cached != null) return@withLock cached
+            }
+            val bytes = runCatching { gerarImagem(promptTokenInimigo(nomeVisivel, descricao)) }.getOrNull()
+                ?: return@withLock null
+            val original = runCatching { BitmapFactory.decodeByteArray(bytes, 0, bytes.size) }
+                .getOrNull() ?: return@withLock null
+
+            val rosto = detectarRosto(original)
+            val recorte = calcularRecorteQuadrado(
+                original.width, original.height,
+                rosto?.left, rosto?.top, rosto?.right, rosto?.bottom
+            )
+            val quadrado = runCatching {
+                Bitmap.createBitmap(original, recorte.left, recorte.top, recorte.lado, recorte.lado)
+            }.getOrNull() ?: run { original.recycle(); return@withLock null }
+            val token = if (quadrado.width != LADO_TOKEN) {
+                Bitmap.createScaledBitmap(quadrado, LADO_TOKEN, LADO_TOKEN, true)
+            } else quadrado
+
+            runCatching {
+                cacheFile.outputStream().use { out -> token.compress(Bitmap.CompressFormat.PNG, 100, out) }
+            }
+            if (quadrado != original) original.recycle()
+            if (token != quadrado) quadrado.recycle()
+            token
+        }
+    }
+
+    /** Cache hit síncrono (sem geração) — usado pelo canvas pra checar o que já existe em disco. */
+    suspend fun tokenInimigoCacheado(context: Context, tipo: String): Bitmap? = withContext(Dispatchers.IO) {
+        val chave = normalizarTipo(tipo)
+        if (chave.isBlank()) return@withContext null
+        val cacheFile = File(File(context.filesDir, DIR_INIMIGOS), "$chave.png")
+        if (!cacheFile.exists()) return@withContext null
+        runCatching { BitmapFactory.decodeFile(cacheFile.absolutePath) }.getOrNull()
     }
 
     /** Mesmo detector do ImagemPersonagemStore — maior rosto da imagem, ou null. */

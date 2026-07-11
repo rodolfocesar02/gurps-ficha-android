@@ -89,6 +89,32 @@ fun HexCanvasDemo(modifier: Modifier = Modifier, tokenHeroi: ImageBitmap? = null
     // Estado local do canvas — na integração com CombatSession real (TOK-4) será elevado ao controller.
     var estado by remember { mutableStateOf(HexTaticoState.demoInicial()) }
     val textMeasurer = rememberTextMeasurer()
+    val context = LocalContext.current
+
+    // Lote TOK-2: imagens dos INIMIGOS por tipo (chave = nome normalizado). Primeiro tenta o cache
+    // em disco (pré-aquecido pelo gatilho do iniciar_combate); se não existe, GERA on-demand via
+    // Gemini (uma vez por tipo, cache eterno) — assim o preview demo também exercita o TOK-2.
+    // Enquanto não chega (ou se falhar), o token fica no fallback círculo+inicial.
+    var tokensInimigos by remember { mutableStateOf<Map<String, ImageBitmap>>(emptyMap()) }
+    val nomesInimigos = estado.tokens.filter { !it.ehHeroi }.map { it.nome }.distinct()
+    LaunchedEffect(nomesInimigos) {
+        for (nome in nomesInimigos) {
+            val chave = TokenImageStore.normalizarTipo(nome)
+            if (chave.isBlank() || tokensInimigos.containsKey(chave)) continue
+            var bmp = TokenImageStore.tokenInimigoCacheado(context, nome)
+            if (bmp == null) {
+                val imgKey = com.gurps.ficha.BuildConfig.MESTRE_IA_GEMINI_IMAGE_KEY
+                val imgModel = com.gurps.ficha.BuildConfig.MESTRE_IA_GEMINI_IMAGE_MODEL
+                if (imgKey.isNotBlank()) {
+                    bmp = TokenImageStore.obterTokenInimigo(context, tipo = nome) { prompt ->
+                        com.gurps.ficha.data.network.GeminiImageService
+                            .gerarImagem(imgKey, imgModel, prompt, rotuloLog = "token:$chave")?.bytes
+                    }
+                }
+            }
+            if (bmp != null) tokensInimigos = tokensInimigos + (chave to bmp.asImageBitmap())
+        }
+    }
 
     // Aviso "Muito longe" some após 2 segundos.
     LaunchedEffect(estado.ultimoAviso) {
@@ -154,13 +180,15 @@ fun HexCanvasDemo(modifier: Modifier = Modifier, tokenHeroi: ImageBitmap? = null
                     val (cx, cy) = hexParaTela(hexValido, larguraPx, alturaPx, hexSizePx)
                     desenharHexPreenchido(cx, cy, hexSizePx, COR_HEX_VALIDO_2D)
                 }
-                // Tokens por cima da grade — posição ANIMADA.
+                // Tokens por cima da grade — posição ANIMADA. Herói usa o retrato; inimigo usa a
+                // imagem gerada (TOK-2) quando o cache/geração já entregou; fallback círculo+inicial.
                 for (t in estado.tokens) {
                     val (ax, ay) = posAnimadas[t.id] ?: continue
                     val cx = hexSizePx * ax + larguraPx / 2f
                     val cy = hexSizePx * ay + alturaPx / 2f
                     val selecionado = t.id == estado.tokenSelecionadoId
-                    val imagem = if (t.ehHeroi) tokenHeroi else null
+                    val imagem = if (t.ehHeroi) tokenHeroi
+                        else tokensInimigos[TokenImageStore.normalizarTipo(t.nome)]
                     if (imagem != null) {
                         desenharTokenImagem(cx, cy, hexSizePx, t, selecionado, imagem)
                     } else {

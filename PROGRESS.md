@@ -3046,6 +3046,22 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - **Recomendação registrada** (maior valor × menor custo): Ataque Telegráfico (par do Enganoso), luta agarrada profunda (chaves/Mata-Leão estendendo o lote 422), Sangramento Grave + incapacitação de membro (item 5 do teste de batalha), Ataque Dedicado/Defensivo. Fora de escopo: posicional/hexágono, montaria, cinematográfico, dado de arma do NPC. Mudança só de documentação (não compila Kotlin).
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
+### Lote TOK-2 — 10 de Julho de 2026 (VTT 2D / Fase 2 — gatilho de tokens de inimigos)
+**Saga combate tático: inimigos ganham retrato GERADO por Gemini via gatilho assíncrono — branch GURPS-Saga**
+- **2ª fatia do `PLANO_Tokens_VTT_2D.md`** — os "agentes secundários" do plano viram corrotinas fire-and-forget.
+- **`GeminiImageService.gerarImagem(apiKey, modelId, prompt, rotuloLog)`** — método genérico extraído do `gerarRetrato` (que mantém assinatura/prompt/parse idênticos e delega). Serve tokens agora e fundo de cenário no TOK-3.
+- **`TokenImageStore` estendido**:
+  - `normalizarTipo(tipo)` **pura**: minúsculas, sem acento (NFD), `[^a-z0-9]+`→`_` colapsado — chave de cache ("Orc Bruto"→`orc_bruto`).
+  - `promptTokenInimigo(nome, descricao?)` **pura**: busto frontal, fundo neutro escuro, sem texto/marca-d'água. Descrição do bestiário refina o prompt.
+  - `obterTokenInimigo(context, tipo, nomeVisivel, descricao, gerarImagem)`: cache `filesDir/tokens/inimigos/{chave}.png` **por TIPO** (3 goblins = 1 imagem ≈ $0.067); **Mutex por tipo** (ConcurrentHashMap) deduplica gerações concorrentes (gatilho × canvas); recorte quadrado centrado no rosto = mesmo pipeline do herói; `gerarImagem` é lambda injetada (desacoplado do Gemini).
+  - **`salvarPngAtomico`** (temp + rename): cancelamento de corrotina no meio da escrita nunca deixa PNG truncado servido como cache — aplicado ao herói também.
+  - `tokenInimigoCacheado` (hit-only) e `limparCache` cobrindo os dois diretórios.
+- **Gatilho no `SagaCombatController.iniciarCombate`**: ao abrir o encontro, para cada TIPO distinto de inimigo dispara `scope.launch { obterTokenInimigo(...) }` com nome+descrição do bestiário — pré-aquece o cache antes de a grade abrir. `runCatching` + key vazia = no-op: o combate NUNCA espera nem falha por causa da imagem.
+- **`HexCanvasDemo`**: mapa `tokensInimigos` carregado por `LaunchedEffect` (cache-first; se miss, gera on-demand — o preview demo também exercita o TOK-2, 1× por tipo). No draw, inimigo com imagem usa `desenharTokenImagem` (borda vermelha); sem imagem fica no círculo+inicial.
+- **+10 testes puros** (6 `normalizarTipo` + 4 `promptTokenInimigo`).
+- Consistência de chave gatilho×canvas: batem quando `normalizarTipo(nome) == id do bestiário` (caso do demo "Goblin"→`goblin`); divergências raras se resolvem no TOK-4 (canvas dirigido pelo CombatSession, que conhece o id).
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
 ### Lote TOK-1 — 10 de Julho de 2026 (VTT 2D / Fase 1 — tokens de imagem)
 **Saga combate tático: pivot 3D → VTT 2D com tokens de imagem (retrato do jogador) — branch GURPS-Saga**
 - **1ª fatia do `PLANO_Tokens_VTT_2D.md`** (decisão do usuário 10/jul após teste do 3D no aparelho: top-down mantém, .glb sai, imagem entra — estilo mesa Roll20/Foundry).
