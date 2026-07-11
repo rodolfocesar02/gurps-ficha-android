@@ -77,10 +77,46 @@ Narrador dispara a geração da imagem de fundo do cenário e dos tokens dos ini
 3. No canvas: fundo desenhado sob a grade com **scrim escuro** por cima (grade e tokens
    continuam legíveis). Fundo cinza permanece como fallback eterno.
 
-### TOK-4 — Polimento + combate real
-1. Tokens dirigidos pelo `CombatSession` real (posições via `HexCombatSync`/`HexPortabilidade`).
-2. Anel de vida (HP%) ao redor do token do inimigo; nome embaixo.
-3. Revalidar defesa por timing no fluxo 2D.
+### TOK-4 — Ponte CombatSession ↔ grid (combate REAL na grade)
+**Diretiva do usuário (11/jul):** revisitar o `Combate.md` e AUTOMATIZAR no grid as ações que hoje
+são botões abstratos de faixa — substituindo como estão. Itens do audit marcados "FORA DO ESCOPO
+por falta de grade de hexágonos" ficam DESBLOQUEADOS (a grade existe e os módulos HEX-1..6 já
+implementam a mecânica).
+
+1. **Estado tático REAL**: `HexCombatSync.projetarSetupInicial` no `iniciar_combate` projeta os
+   combatentes do encontro na grade; tokens com id/nome do bestiário (imagem TOK-2 pela chave
+   certa), **anel de HP** e nome sob o token. Estado sai do demo e passa a ser dirigido pelo
+   `SagaCombatController`.
+2. **Mover do herói pelo grid** (substitui o botão de faixa): tocar hex → valida custo contra o
+   **Deslocamento real** (postura reduz — Lote 400); a distância nova alimenta
+   `encounter.distanciaAoHeroi`. Hexes alcançáveis destacados em verde (raio = deslocamento).
+3. **NPC move pela IA posicional** (`HexTaticaNpc`, HEX-5): flanquear/kite/recuar refletidos no
+   grid; `HexPortabilidade.aplicarNovaDistancia` sincroniza quando o motor muda distância.
+4. Revalidar defesa por timing no fluxo 2D.
+
+### TOK-5 — Ações espaciais do Combate.md (substituições regra-a-regra)
+Mapa das ações automatizáveis pelo grid (item do audit → como fica):
+- **Alcance da arma C/1/2/3** (Combate.md "Alcance") → tocar no inimigo só ataca se
+  `HexAtaqueAtravesHex` valida; fora de alcance → oferece Avançar-e-Atacar. −4 através de hex
+  de inimigo; aliado livre (MB p.389).
+- **Passo de 1m** (era ⏸️ "posicionamento em hexágono") → manobras com passo movem 1 hex real.
+- **Espaçamento/ocupação** (era ⏸️) → grid já impede 2 tokens no hex; vira regra oficial.
+- **Evadir** (era ⏸️ "sem bloqueio de hexágono a vencer") → atravessar hex de oponente via
+  Disputa de DX; Obstrução (AM p.101, HEX-6) como contra.
+- **Distância / Velocidade do alvo** (à distância) → penalidade pela distância REAL em hexes
+  (1 hex = 1 m) em vez da faixa abstrata.
+- **Cobertura/Superpenetração** (era ⏸️ "exige posicionamento e linha de tiro") →
+  `HexCobertura` (HEX-6): LoS bloqueada, −2 parcial.
+- **Facing/flanco/costas** (MB p.389-390) → `HexRegrasFacing` (HEX-4) ajusta as defesas do
+  herói e do NPC pela posição real do atacante.
+- **Empurrão/Projeção/Encontrão** → knockback em HEXES visível no grid
+  (`HexPortabilidade.aplicarNovaDistancia`); velocidade relativa do Encontrão = hexes percorridos.
+- **Retirada** (defesa) → recuo de 1 hex animado no grid.
+- **Agarrar/luta agarrada** → exige adjacência (alcance C = mesmo hex/adjacente).
+- **Aguardar/Interromper Investida** → gatilho dispara quando o inimigo ENTRA no alcance em hexes.
+- **Manter à distância** (AM p.101) → `HexManterADistancia` (HEX-6) cobra os 2 MV extras no grid.
+Fatiar TOK-5 em sub-lotes se crescer (alcance+distância primeiro; facing/cobertura depois;
+Evadir/Aguardar por último).
 
 ---
 
