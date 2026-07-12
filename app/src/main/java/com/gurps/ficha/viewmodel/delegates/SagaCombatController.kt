@@ -108,6 +108,102 @@ class SagaCombatController(
     var estado by mutableStateOf<CombatUiState?>(null); private set
     var defesaPendente by mutableStateOf<DefesaPendenteUi?>(null); private set
 
+    // ── Lote TOK-4 (VTT 2D): estado POSICIONAL do combate na grade ─────────────────────────────
+    /** Posições reais dos combatentes (null fora de combate). Fonte do canvas tático. */
+    var estadoTatico by mutableStateOf<com.gurps.ficha.domain.combat.hex.HexCombatState?>(null); private set
+    /** Aviso transitório do grid ("Muito longe", "Não é seu turno") — a UI limpa após ~2s. */
+    var avisoTatico by mutableStateOf<String?>(null)
+
+    /** Token pronto pro desenho: posição + facing + nome + PV% (o canvas cruza com as imagens). */
+    data class TokenTatico(
+        val id: String, val nome: String, val ehHeroi: Boolean,
+        val pvPct: Float, val posicao: com.gurps.ficha.domain.combat.hex.HexCoord,
+        val facing: com.gurps.ficha.domain.combat.hex.Direcao,
+    )
+
+    /** Tokens do combate REAL, na ordem do estado tático. Vazio fora de combate. */
+    val tokensTaticos: List<TokenTatico> get() {
+        val s = sessao ?: return emptyList()
+        val est = estadoTatico ?: return emptyList()
+        return est.posicoes.mapNotNull { pos ->
+            val c = s.encounter.combatentes.firstOrNull { it.id == pos.id } ?: return@mapNotNull null
+            TokenTatico(
+                id = c.id, nome = c.nome, ehHeroi = c.ehHeroi,
+                pvPct = if (c.pvMax > 0) (c.pvAtual.toFloat() / c.pvMax).coerceIn(0f, 1f) else 0f,
+                posicao = pos.posicao, facing = pos.facing,
+            )
+        }
+    }
+
+    /** Hexes que o herói alcança AGORA (vazio se não é o turno dele) — destaque verde do canvas. */
+    fun hexesAlcancaveisHeroi(): Set<com.gurps.ficha.domain.combat.hex.HexCoord> {
+        val s = sessao ?: return emptySet()
+        val est = estadoTatico ?: return emptySet()
+        if (s.encerrado || !s.combatenteAtual().ehHeroi) return emptySet()
+        // Só quando o HERÓI está selecionado no grid (toque no próprio token) — evita poluir a grade.
+        if (est.idSelecionado != "heroi") return emptySet()
+        return com.gurps.ficha.domain.combat.hex.HexSetup.hexesAlcancaveis(
+            est, s.heroi.deslocamentoEfetivo.coerceAtLeast(1)
+        )
+    }
+
+    /**
+     * Toque num hex do canvas tático (combate REAL):
+     *  - hex com token → seleciona;
+     *  - herói selecionado + turno dele + hex alcançável → manobra MOVER TÁTICA (o grid vira a
+     *    fonte das distâncias — substitui o botão de faixa, Combate.md "Deslocamento"/"Passo");
+     *  - senão → destaca o hex / avisa por que não moveu.
+     */
+    fun aoTocarHexTatico(hex: com.gurps.ficha.domain.combat.hex.HexCoord) {
+        val s = sessao ?: return
+        val est = estadoTatico ?: return
+        val tokenAli = est.posicoes.firstOrNull { it.posicao == hex }
+        if (tokenAli != null) {
+            estadoTatico = est.copy(hexSelecionado = hex, idSelecionado = tokenAli.id)
+            return
+        }
+        if (est.idSelecionado == "heroi") {
+            if (s.encerrado || !s.combatenteAtual().ehHeroi) {
+                avisoTatico = "Não é seu turno"
+                estadoTatico = est.copy(hexSelecionado = hex)
+                return
+            }
+            val pHeroi = est.posicoes.firstOrNull { it.id == "heroi" } ?: return
+            val distancia = pHeroi.posicao.distancia(hex)
+            if (hex in hexesAlcancaveisHeroi()) {
+                val movido = com.gurps.ficha.domain.combat.hex.HexSetup.moverHeroi(est, hex)
+                estadoTatico = movido
+                avisoTatico = null
+                s.heroiMoveTatico(
+                    novasDistancias = com.gurps.ficha.domain.combat.hex.HexSetup.distanciasAoHeroi(movido),
+                    metrosPercorridos = distancia
+                )
+                depoisDaAcaoDoHeroi()
+                return
+            }
+            avisoTatico = "Muito longe — deslocamento ${s.heroi.deslocamentoEfetivo}m"
+        }
+        estadoTatico = est.copy(hexSelecionado = hex)
+    }
+
+    /**
+     * Reprojeta a grade a partir do encounter DEPOIS de ações do motor que mudam distância
+     * (Encontrão =1, Empurrão/Projeção knockback, Mover do NPC): cada NPC anda na linha reta
+     * herói↔NPC até a distância nova ([HexPortabilidade]); mortos saem da grade.
+     */
+    private fun sincronizarGridComEncounter() {
+        val s = sessao ?: return
+        var est = estadoTatico ?: return
+        val vivos = s.encounter.combatentes.filter { !it.ehHeroi && it.vivo }
+        est = com.gurps.ficha.domain.combat.hex.HexSetup.manterApenas(est, vivos.map { it.id }.toSet())
+        for (npc in vivos) {
+            val dist = s.encounter.distancia(npc)
+            if (dist == Int.MAX_VALUE) continue
+            est = com.gurps.ficha.domain.combat.hex.HexPortabilidade.aplicarNovaDistancia(est, npc.id, dist)
+        }
+        estadoTatico = est
+    }
+
     /** Ataques utilizáveis do herói (armas empunhadas + desarmado) e o índice escolhido (Lote 368). */
     private var ataques: List<AtaqueHeroi> = emptyList()
     private var ataqueSelecionado: Int = 0
@@ -235,6 +331,24 @@ class SagaCombatController(
         ataques = construirAtaques(p)
         ataqueSelecionado = 0
         s.log += "⚔️ Combate iniciado: ${inimigos.joinToString(", ") { "${it.second}× ${it.first}" }} a ${distanciaM}m."
+
+        // Lote TOK-4 (VTT 2D): monta a grade tática REAL — herói na origem, NPCs espalhados a
+        // distanciaM hexes — e projeta as distâncias reais (pós-colisão) de volta no encounter.
+        // SÓ quando o modo tático da campanha está ligado: com estadoTatico != null o MOVER de
+        // faixa some do painel (o hex verde é o Mover) — sem a grade visível isso deixaria o
+        // herói sem forma de se deslocar.
+        if (viewModel.sagaModoTaticoHex || viewModel.sagaModoTaticoHex3D) {
+            val estTatico = com.gurps.ficha.domain.combat.hex.HexSetup.setupDoEncontro(
+                idsInimigos = combatentes.filter { !it.ehHeroi }.map { it.id },
+                distanciaM = distanciaM
+            )
+            com.gurps.ficha.domain.combat.hex.HexCombatSync.projetarSetupInicial(estTatico, encounter)
+            estadoTatico = estTatico
+        } else {
+            estadoTatico = null
+        }
+        avisoTatico = null
+
         scope.launch { rodarLoop() }
 
         // Lote TOK-2: gatilho ASSÍNCRONO ("agente secundário") — pré-gera o token de IMAGEM de cada
@@ -548,6 +662,7 @@ class SagaCombatController(
 
     fun encerrarManual() {
         sessao = null; estado = null; defesaPendente = null; logPublicado = 0; finalizado = false
+        estadoTatico = null; avisoTatico = null // Lote TOK-4: limpa a grade tática
     }
 
     // ── Loop de turnos ────────────────────────────────────────────────────────
@@ -634,6 +749,9 @@ class SagaCombatController(
 
     private fun atualizarEstado() {
         val s = sessao ?: run { estado = null; return }
+        // Lote TOK-4: reprojeta a grade tática a partir do encounter (Encontrão/Empurrão/Projeção/
+        // Mover do NPC mudaram distâncias; mortos saem). Roda ANTES de montar o CombatUiState.
+        sincronizarGridComEncounter()
         val vezHeroi = s.combatenteAtual().ehHeroi && !s.encerrado
         // Lote 422: herói preso só ataca desarmado — reconstrói os ataques na TRANSIÇÃO preso↔livre.
         val heroiPreso = Condicao.AGARRADO in s.heroi.condicoes || Condicao.IMOBILIZADO in s.heroi.condicoes
@@ -699,6 +817,10 @@ class SagaCombatController(
                 else it.remove(Manobra.MOVER) // agarrado não desloca sem 2× a ST do oponente (abstraído)
                 if (Manobra.DESVENCILHAR !in it) it.add(Manobra.DESVENCILHAR)
             }
+            // Lote TOK-4 (achado da revisão): com a grade tática ativa, o MOVER de faixa some do
+            // painel — o toque no hex verde É a manobra Mover (a diretiva do lote é SUBSTITUIR;
+            // manter os dois misturaria a semântica da Disparada e duplicaria o caminho).
+            if (estadoTatico != null) it.remove(Manobra.MOVER)
         }
         estado = CombatUiState(
             rodada = s.encounter.rodadaAtual,

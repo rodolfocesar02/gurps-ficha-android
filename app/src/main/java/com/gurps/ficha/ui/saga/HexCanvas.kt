@@ -77,6 +77,17 @@ private const val SQRT3 = 1.7320508f
  */
 @Composable
 fun HexCanvasTatico(viewModel: FichaViewModel, modifier: Modifier = Modifier) {
+    // Lote TOK-4: em combate REAL com grade montada, o canvas é dirigido pelo SagaCombatController;
+    // fora de combate (preview standalone) continua o demo.
+    if (viewModel.sagaCombateAtivo && viewModel.sagaEstadoTatico != null) {
+        HexCanvasCombateReal(viewModel, modifier)
+    } else {
+        HexCanvasDemoWrapper(viewModel, modifier)
+    }
+}
+
+@Composable
+private fun HexCanvasDemoWrapper(viewModel: FichaViewModel, modifier: Modifier = Modifier) {
     val context = LocalContext.current
     val retratoUri = viewModel.personagem.imagemPersonagemOriginalUri
     var tokenHeroi by remember(retratoUri) { mutableStateOf<ImageBitmap?>(null) }
@@ -254,6 +265,191 @@ fun HexCanvasDemo(
         }
     }
 }
+
+/**
+ * Lote TOK-4: canvas do combate REAL — tokens/posições vêm do [FichaViewModel] (SagaCombatController),
+ * o toque vai pro controller (seleção + manobra MOVER tática), hexes alcançáveis do herói em verde,
+ * anel de HP e nome sob cada token. Reusa TODO o desenho do demo (TokenTatico → TokenDemo).
+ */
+@Composable
+private fun HexCanvasCombateReal(viewModel: FichaViewModel, modifier: Modifier = Modifier) {
+    val context = LocalContext.current
+    val estado = viewModel.sagaEstadoTatico ?: return
+    // Dependência EXPLÍCITA do CombatUiState observável: PV/condições mudam SEM o estadoTatico ser
+    // reatribuído (dano sem movimento → sincronizarGridComEncounter devolve a MESMA instância).
+    // tokensTaticos lê o encounter mutável não-observável — sem esta leitura, o anel de HP ficaria
+    // stale até o próximo movimento. Ler sagaCombateEstado (reatribuído a cada ação) recompõe aqui.
+    @Suppress("UNUSED_VARIABLE") val dependenciaEstadoCombate = viewModel.sagaCombateEstado
+    val tokens = viewModel.sagaTokensTaticos
+    val textMeasurer = rememberTextMeasurer()
+
+    // Token do herói (TOK-1).
+    val retratoUri = viewModel.personagem.imagemPersonagemOriginalUri
+    var tokenHeroi by remember(retratoUri) { mutableStateOf<ImageBitmap?>(null) }
+    LaunchedEffect(retratoUri) {
+        tokenHeroi = TokenImageStore.obterTokenHeroi(context, retratoUri)?.asImageBitmap()
+    }
+
+    // Tokens dos inimigos (TOK-2) — TIPO derivado do id do combatente ("goblin_2" → "goblin"),
+    // a MESMA chave que o gatilho do iniciar_combate usou (consistência garantida).
+    var tokensInimigos by remember { mutableStateOf<Map<String, ImageBitmap>>(emptyMap()) }
+    val tiposInimigos = tokens.filter { !it.ehHeroi }.map { tipoDoId(it.id) }.distinct()
+    LaunchedEffect(tiposInimigos) {
+        for (tipo in tiposInimigos) {
+            val chave = TokenImageStore.normalizarTipo(tipo)
+            if (chave.isBlank() || tokensInimigos.containsKey(chave)) continue
+            // Cache-first; se o gatilho ainda está gerando, obterTokenInimigo espera no Mutex.
+            var bmp = TokenImageStore.tokenInimigoCacheado(context, tipo)
+            if (bmp == null) {
+                val imgKey = com.gurps.ficha.BuildConfig.MESTRE_IA_GEMINI_IMAGE_KEY
+                val imgModel = com.gurps.ficha.BuildConfig.MESTRE_IA_GEMINI_IMAGE_MODEL
+                if (imgKey.isNotBlank()) {
+                    bmp = TokenImageStore.obterTokenInimigo(context, tipo = tipo) { prompt ->
+                        com.gurps.ficha.data.network.GeminiImageService
+                            .gerarImagem(imgKey, imgModel, prompt, rotuloLog = "token:$chave")?.bytes
+                    }
+                }
+            }
+            if (bmp != null) tokensInimigos = tokensInimigos + (chave to bmp.asImageBitmap())
+        }
+    }
+
+    // Fundo da cena (TOK-3).
+    val camp = viewModel.sagaCampanhaAtiva
+    val cena = viewModel.sagaCenaAtiva
+    var fundoCena by remember(camp?.id, cena?.id, cena?.titulo, cena?.bioma) { mutableStateOf<ImageBitmap?>(null) }
+    LaunchedEffect(camp?.id, cena?.id, cena?.titulo, cena?.bioma) {
+        fundoCena = null
+        if (camp == null || cena == null) return@LaunchedEffect
+        if (!CenarioImageStore.cenaValidaParaFundo(cena.titulo)) return@LaunchedEffect
+        fundoCena = CenarioImageStore.fundoCenaCacheado(context, camp.id, cena.id, cena.titulo, cena.bioma)
+            ?.asImageBitmap()
+    }
+
+    // Aviso do controller (auto-hide 2s).
+    val aviso = viewModel.sagaAvisoTatico
+    LaunchedEffect(aviso) {
+        if (aviso != null) {
+            kotlinx.coroutines.delay(2000)
+            viewModel.sagaAvisoTatico = null
+        }
+    }
+
+    // Posições animadas (mesmo padrão do demo — axial-neutras, escala aplicada no draw).
+    val posAnimadas = mutableMapOf<String, Pair<Float, Float>>()
+    for (t in tokens) {
+        key(t.id) {
+            val axAlvo = SQRT3 * t.posicao.q + SQRT3 / 2f * t.posicao.r
+            val ayAlvo = 1.5f * t.posicao.r
+            val ax by animateFloatAsState(axAlvo, tween(250), label = "ax")
+            val ay by animateFloatAsState(ayAlvo, tween(250), label = "ay")
+            posAnimadas[t.id] = ax to ay
+        }
+    }
+
+    val hexesAlcancaveis = viewModel.sagaHexesAlcancaveis()
+
+    Column(modifier = modifier.background(COR_GRADE_FUNDO)) {
+        Column(Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 6.dp)) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text("⬢ Combate tático", color = Color.White, style = MaterialTheme.typography.titleSmall)
+                Spacer(Modifier.weight(1f))
+                Text("Toque no seu token → hex VERDE = Mover", color = Color(0xCCFFFFFF),
+                    style = MaterialTheme.typography.labelSmall)
+            }
+            if (aviso != null) {
+                Text("⚠ $aviso", color = Color(0xFFEF4444),
+                    style = MaterialTheme.typography.labelMedium,
+                    modifier = Modifier.padding(top = 2.dp))
+            }
+        }
+        Box(Modifier.fillMaxWidth().weight(1f)) {
+            Canvas(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .semantics { contentDescription = "Grade tática do combate" }
+                    .pointerInput(estado.raioGrade) {
+                        detectTapGestures { toque ->
+                            val hex = telaParaHex(toque, size.width.toFloat(), size.height.toFloat(), estado.raioGrade)
+                            if (hex != null) viewModel.sagaAoTocarHexTatico(hex)
+                        }
+                    }
+            ) {
+                val larguraPx = size.width
+                val alturaPx = size.height
+                val hexSizePx = tamanhoHex(larguraPx, alturaPx, estado.raioGrade)
+
+                // Fundo da cena (TOK-3) + scrim.
+                if (fundoCena != null) {
+                    val escala = kotlin.math.max(
+                        larguraPx / fundoCena!!.width.toFloat(),
+                        alturaPx / fundoCena!!.height.toFloat()
+                    )
+                    val dw = (fundoCena!!.width * escala).roundToInt()
+                    val dh = (fundoCena!!.height * escala).roundToInt()
+                    drawImage(fundoCena!!, dstOffset = IntOffset(
+                        ((larguraPx - dw) / 2f).roundToInt(), ((alturaPx - dh) / 2f).roundToInt()
+                    ), dstSize = IntSize(dw, dh))
+                    drawRect(color = COR_SCRIM_FUNDO)
+                }
+                // Grade.
+                for (hex in estado.hexesVisiveis) {
+                    val (cx, cy) = hexParaTela(hex, larguraPx, alturaPx, hexSizePx)
+                    desenharHex(cx, cy, hexSizePx, hex == estado.hexSelecionado, textMeasurer, hex)
+                }
+                // Hexes alcançáveis (Mover real — deslocamento do herói).
+                for (hexValido in hexesAlcancaveis) {
+                    val (cx, cy) = hexParaTela(hexValido, larguraPx, alturaPx, hexSizePx)
+                    desenharHexPreenchido(cx, cy, hexSizePx, COR_HEX_VALIDO_2D)
+                }
+                // Tokens + anel de HP + nome.
+                for (t in tokens) {
+                    val (ax, ay) = posAnimadas[t.id] ?: continue
+                    val cx = hexSizePx * ax + larguraPx / 2f
+                    val cy = hexSizePx * ay + alturaPx / 2f
+                    val selecionado = t.id == estado.idSelecionado
+                    val demoToken = TokenDemo(t.id, t.nome, t.posicao, t.ehHeroi, t.facing)
+                    val imagem = if (t.ehHeroi) tokenHeroi
+                        else tokensInimigos[TokenImageStore.normalizarTipo(tipoDoId(t.id))]
+                    if (imagem != null) desenharTokenImagem(cx, cy, hexSizePx, demoToken, selecionado, imagem)
+                    else desenharToken(cx, cy, hexSizePx, demoToken, selecionado, textMeasurer)
+                    desenharAnelHpENome(cx, cy, hexSizePx, t.nome, t.pvPct, textMeasurer)
+                }
+            }
+        }
+    }
+}
+
+/** "goblin_2" → "goblin": o TIPO do bestiário é o id sem o sufixo _N (chave das imagens TOK-2). */
+internal fun tipoDoId(id: String): String = id.replace(Regex("_\\d+$"), "")
+
+/** Anel de HP (arco verde→vermelho proporcional ao PV) + nome sob o token. */
+internal fun DrawScope.desenharAnelHpENome(
+    cx: Float, cy: Float, tam: Float, nome: String, pvPct: Float, textMeasurer: TextMeasurer
+) {
+    val raio = tam * 0.62f
+    val corHp = when {
+        pvPct > 0.5f -> Color(0xFF10B981)
+        pvPct > 0.25f -> Color(0xFFF59E0B)
+        else -> Color(0xFFEF4444)
+    }
+    drawArc(
+        color = corHp,
+        startAngle = -90f,
+        sweepAngle = 360f * pvPct.coerceIn(0f, 1f),
+        useCenter = false,
+        topLeft = Offset(cx - raio - 6f, cy - raio - 6f),
+        size = androidx.compose.ui.geometry.Size((raio + 6f) * 2, (raio + 6f) * 2),
+        style = Stroke(width = 3f)
+    )
+    val label = textMeasurer.measure(
+        text = androidx.compose.ui.text.AnnotatedString(nome.take(12)),
+        style = ESTILO_NOME_TOKEN
+    )
+    drawText(label, topLeft = Offset(cx - label.size.width / 2f, cy + raio + 8f))
+}
+
+internal val ESTILO_NOME_TOKEN = TextStyle(color = Color(0xEEFFFFFF), fontSize = 10.sp)
 
 // ── Geometria: hex ↔ tela (pointy-top, coordenadas axiais) ─────────────────
 

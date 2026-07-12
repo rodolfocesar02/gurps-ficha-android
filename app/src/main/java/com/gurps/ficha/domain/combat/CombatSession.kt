@@ -983,6 +983,34 @@ class CombatSession(
         return txt
     }
 
+    /**
+     * Lote TOK-4 (VTT 2D): manobra Mover TÁTICA — o herói moveu-se pelo GRID e o grid é a fonte da
+     * verdade das novas distâncias (uma por NPC, exatas), em vez do move relativo por faixa.
+     * Consome o turno com as mesmas regras do [heroiMove] (disparada em linha reta, velocidade p/
+     * Vel/Dist, limpa Avaliar/Apontar/Finta); [metrosPercorridos] é o quanto o herói andou no grid
+     * (clampado ao Deslocamento efetivo pelo CALLER via hexes alcançáveis).
+     */
+    fun heroiMoveTatico(novasDistancias: Map<String, Int>, metrosPercorridos: Int): String {
+        val legsAnteriores = heroiMoveSeguidos
+        inicioAcaoHeroi()
+        // Disparada: no grid não rastreamos direção exata da corrida — mantém o contador se o
+        // turno anterior também foi Move (aproximação honesta; a linha reta é validada pelo caller).
+        heroiMoveSeguidos = legsAnteriores + 1
+        // Achado da revisão TOK-4: quebra a cadeia de "mesma direção" do Mover de FAIXA — sem isso,
+        // um Mover tático em qualquer direção contaria como linha reta pro heroiMove seguinte e
+        // daria Disparada indevida (heroiMoveDirecao ficava obsoleto).
+        heroiMoveDirecao = null
+        val passo = metrosPercorridos.coerceAtLeast(1)
+        heroi.velocidadeAtual = passo
+        novasDistancias.forEach { (id, dist) ->
+            if (inimigos.any { it.id == id && it.vivo }) encounter.definirDistancia(id, dist.coerceAtLeast(0))
+        }
+        limparAvaliar(); limparApontar(); limparFinta()
+        val txt = "🏃 Você se desloca ${passo}m pelo campo."
+        log += txt
+        return txt
+    }
+
     // ── Turno do NPC ───────────────────────────────────────────────────────
 
     /** Decide a intenção do NPC: usa o override do Narrador (B8) ou o cérebro tático (B6). */

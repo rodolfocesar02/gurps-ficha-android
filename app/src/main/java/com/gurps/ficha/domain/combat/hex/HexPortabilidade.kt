@@ -59,6 +59,17 @@ object HexPortabilidade {
             }
         }
 
+        // Lote TOK-4 (achado da revisão adversarial): se a linha reta foi BLOQUEADA por colisão e a
+        // distância ainda não bate, desvia para um hex LIVRE do ANEL na distância-alvo (o mais
+        // próximo da posição atual). Sem isso, a divergência grid≠encounter era ESCRITA DE VOLTA no
+        // encounter no próximo Mover tático do herói (NPC "teleportava" de 1m pra 2m+ sem ação).
+        if (atual.distancia(pHeroi.posicao) != alvo && alvo >= 1) {
+            val anelLivre = HexGrid.range(pHeroi.posicao, alvo)
+                .filter { it.distancia(pHeroi.posicao) == alvo && it !in ocupados }
+                .minByOrNull { it.distancia(pNpc.posicao) }
+            if (anelLivre != null) atual = anelLivre
+        }
+
         if (atual == pNpc.posicao) return estado
         val novas = estado.posicoes.map { if (it.id == idNpc) it.copy(posicao = atual) else it }
         return estado.copy(posicoes = novas)

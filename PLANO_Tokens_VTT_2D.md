@@ -133,4 +133,5 @@ Evadir/Aguardar por último).
 - [x] ✅ TOK-1 — token de imagem + canvas novo + roteamento (10/jul/2026, commit 4fb8977 — TokenImageStore com recorte por rosto + HexCanvasTatico + hexes verdes/aviso/animação migrados do 3D + Switch 3D removido + 15 testes puros)
 - [x] ✅ TOK-2 — gatilho de inimigos (10/jul/2026 — GeminiImageService.gerarImagem genérico + obterTokenInimigo com cache por TIPO + Mutex dedup + salvarPngAtomico + gatilho fire-and-forget no iniciarCombate + canvas cache-first com geração on-demand no demo + 10 testes puros)
 - [x] ✅ TOK-3 — gatilho de fundo (10/jul/2026 — CenarioImageStore com chave por conteúdo FÍSICO da cena (humor fora, achado da revisão adversarial), gatilho pós-turno no delegate, canvas cover+scrim, 12 testes puros)
-- [ ] TOK-4 — polimento + combate real
+- [x] ✅ TOK-4 — combate REAL no grid (11/jul/2026 — HexSetup + heroiMoveTatico + ponte no controller + HexCanvasCombateReal com anel de HP; MOVER de faixa substituído pelo toque no hex; revisão adversarial: 5 achados corrigidos incl. anel-alvo no HexPortabilidade e BFS anti-atravessar; 18 testes puros novos)
+- [ ] TOK-5 — ações espaciais do Combate.md (alcance C/1/2/3, distância real à distância, facing/flanco/costas, knockback em hexes, Retirada animada, agarrar por adjacência, Aguardar por alcance, Evadir, manter à distância)

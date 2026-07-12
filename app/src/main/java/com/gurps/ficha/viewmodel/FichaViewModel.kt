@@ -130,6 +130,14 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
     val sagaModoTaticoHex get() = sagaDelegate.configAtiva.modoTaticoHex
     /** Lote HEX-7: flag "render 3D SceneView" da campanha atual (efetivo só se `sagaModoTaticoHex` também). */
     val sagaModoTaticoHex3D get() = sagaDelegate.configAtiva.modoTaticoHex3D
+    // Lote TOK-4: grade tática dirigida pelo combate REAL.
+    val sagaEstadoTatico get() = sagaDelegate.combate.estadoTatico
+    val sagaTokensTaticos get() = sagaDelegate.combate.tokensTaticos
+    var sagaAvisoTatico
+        get() = sagaDelegate.combate.avisoTatico
+        set(v) { sagaDelegate.combate.avisoTatico = v }
+    fun sagaHexesAlcancaveis() = sagaDelegate.combate.hexesAlcancaveisHeroi()
+    fun sagaAoTocarHexTatico(hex: com.gurps.ficha.domain.combat.hex.HexCoord) = sagaDelegate.combate.aoTocarHexTatico(hex)
     fun sagaCombateAtacar(alvoId: String, manobra: com.gurps.ficha.domain.combat.Manobra, local: com.gurps.ficha.domain.combat.LocalAtaque, modo: com.gurps.ficha.domain.combat.AtaqueTotalModo = com.gurps.ficha.domain.combat.AtaqueTotalModo.DETERMINADO, enganoso: Int = 0, telegrafico: Boolean = false) =
         sagaDelegate.combate.heroiAtaca(alvoId, manobra, local, modo, enganoso, telegrafico)
     fun sagaCombateAtaqueDedicado(alvoId: String, local: com.gurps.ficha.domain.combat.LocalAtaque, dedicadoModo: com.gurps.ficha.domain.combat.DedicadoModo) = // Lote PONTE-4

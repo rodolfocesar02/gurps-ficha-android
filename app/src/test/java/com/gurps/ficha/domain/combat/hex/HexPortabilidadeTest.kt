@@ -2,6 +2,7 @@ package com.gurps.ficha.domain.combat.hex
 
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertSame
+import org.junit.Assert.assertTrue
 import org.junit.Test
 
 /** Lote HEX-4: portabilidade das manobras do motor (Encontrão/Empurrão/Mover) para posição em hex. */
@@ -49,17 +50,40 @@ class HexPortabilidadeTest {
     }
 
     @Test
-    fun `Aproximar respeita hex ocupado (colisão) - para no último hex livre`() {
-        // Setup extra: herói (0,0), goblin_1 (3,0), goblin_2 (2,0) bloqueando (2,0).
+    fun `Aproximar bloqueado na linha reta DESVIA pra hex livre do anel na distancia-alvo`() {
+        // COMPORTAMENTO ATUALIZADO NO TOK-4 (achado da revisão adversarial): antes, colisão na
+        // linha reta deixava o NPC parado a uma distância DIFERENTE do encounter — e essa
+        // divergência era escrita de volta no encounter no próximo Mover tático do herói
+        // (NPC "teleportava" mecanicamente sem ação). Agora o NPC desvia para um hex LIVRE do
+        // anel na distância-alvo, garantindo grid == encounter após cada sync.
+        // Setup: herói (0,0), goblin_1 (3,0), goblin_2 (2,0) bloqueando a linha reta.
         val estado = HexCombatState(posicoes = listOf(
             PosicaoCombatente("heroi", HexCoord.ORIGEM),
             PosicaoCombatente("goblin_1", HexCoord(3, 0)),
             PosicaoCombatente("goblin_2", HexCoord(2, 0))
         ))
-        // Tentar aproximar goblin_1 até 1m: (3,0)→(2,0) está ocupado por goblin_2 → para em (3,0) mesmo.
         val depois = HexPortabilidade.aplicarNovaDistancia(estado, "goblin_1", 1)
         val g1 = depois.posicoes.first { it.id == "goblin_1" }
-        assertEquals("bloqueado por colisão fica onde estava", HexCoord(3, 0), g1.posicao)
+        assertEquals("distância no grid DEVE bater com o alvo (contrato do TOK-4)",
+            1, g1.posicao.distancia(HexCoord.ORIGEM))
+        assertTrue("não sobrepõe o bloqueador", g1.posicao != HexCoord(2, 0))
+    }
+
+    @Test
+    fun `Anel-alvo completamente ocupado - fallback fica no ultimo hex livre da linha`() {
+        // Todos os 6 vizinhos do herói ocupados: aproximar até 1 é impossível; NPC fica onde a
+        // linha reta parou (comportamento antigo preservado como fallback honesto).
+        val vizinhos = listOf(
+            HexCoord(1, 0), HexCoord(0, 1), HexCoord(-1, 1),
+            HexCoord(-1, 0), HexCoord(0, -1), HexCoord(1, -1)
+        )
+        val posicoes = mutableListOf(PosicaoCombatente("heroi", HexCoord.ORIGEM))
+        vizinhos.forEachIndexed { i, h -> posicoes.add(PosicaoCombatente("g$i", h)) }
+        posicoes.add(PosicaoCombatente("longe", HexCoord(4, 0)))
+        val estado = HexCombatState(posicoes = posicoes)
+        val depois = HexPortabilidade.aplicarNovaDistancia(estado, "longe", 1)
+        val l = depois.posicoes.first { it.id == "longe" }
+        assertEquals("anel cheio: para no último livre da linha (2,0)", HexCoord(2, 0), l.posicao)
     }
 
     @Test
