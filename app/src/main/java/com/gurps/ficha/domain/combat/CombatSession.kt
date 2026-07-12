@@ -175,6 +175,24 @@ class CombatSession(
      * B5 (defesa do NPC) → B3/B4 (dano/ferimento). À distância sofre penalidade por metro e o NPC
      * só pode Esquivar; corpo-a-corpo o NPC usa a melhor defesa (Esquiva/Aparar).
      */
+    /**
+     * Lote TOK-5a (VTT 2D): ponte POSICIONAL opcional com a grade tática. Null = modo faixas
+     * (nenhuma regra de facing/linha entra — zero regressão). O SagaCombatController implementa
+     * com o HexCombatState; o motor consulta nos pontos de ataque/defesa/retirada.
+     */
+    interface PosicaoBridge {
+        /** Facing do ataque [atacanteId]→[alvoId] (FRENTE/FLANCO/COSTAS) ou null se fora da grade. */
+        fun facingDoAtaque(atacanteId: String, alvoId: String): com.gurps.ficha.domain.combat.hex.Facing?
+        /** Penalidade por atacar através de hex ocupado por INIMIGO (0 ou −4 — MB p.389). */
+        fun penalidadeAtravesDeHex(atacanteId: String, alvoId: String, alcanceArmaMetros: Int): Int
+        /** Vira o atacante de frente pro alvo na grade (mudar facing no próprio turno é livre). */
+        fun aoAtacar(atacanteId: String, alvoId: String)
+        /** Retirada (MB p.377): recua o defensor 1 hex na direção oposta ao atacante. Devolve as
+         *  novas distâncias ao herói (ou null se o recuo era impossível/defensor não é o herói). */
+        fun recuarUmHex(defensorId: String, atacanteId: String): Map<String, Int>?
+    }
+    var posicaoBridge: PosicaoBridge? = null
+
     fun heroiAtaca(
         ataque: AtaqueHeroi,
         alvoId: String,
@@ -569,6 +587,11 @@ class CombatSession(
             if (telegrafico) add(CombatActions.ComponenteMod("ataque telegráfico", 4))
             // Modificadores situacionais do Narrador (Lote 424): ação improvisada vira mod nomeado no ataque.
             modsSituacionaisAtaque(heroi.id).forEach { add(CombatActions.ComponenteMod(it.motivo, it.valor)) }
+            // Lote TOK-5a (MB p.389): atacar ATRAVÉS de hex ocupado por inimigo (arma alcance ≥2) → −4.
+            if (!ataque.aDistancia) {
+                val penHex = posicaoBridge?.penalidadeAtravesDeHex(heroi.id, alvo.id, ataque.alcance) ?: 0
+                if (penHex != 0) add(CombatActions.ComponenteMod("através de hex ocupado", penHex))
+            }
         }
         val atkRaw = CombatActions.resolverAtaque(
             nhBaseArma = ataque.nh, manobra = manobra, postura = heroi.postura,
@@ -583,6 +606,14 @@ class CombatSession(
             val recl = CriticoRules.classificar(atkRaw.soma, atkRaw.calculo.nhEfetivo - 4)
             atkRaw.copy(critico = if (recl == CriticoRules.ResultadoCritico.DECISIVO) CriticoRules.ResultadoCritico.DECISIVO else CriticoRules.ResultadoCritico.NORMAL)
         } else atkRaw
+        // Lote TOK-5a: o herói VIRA para o alvo ao atacar (mudar facing no próprio turno é livre).
+        posicaoBridge?.aoAtacar(heroi.id, alvo.id)
+        // Facing do golpe contra o NPC (MB p.374/390): FLANCO −2 na defesa dele; COSTAS anula.
+        val facingAlvoNpc = posicaoBridge?.facingDoAtaque(heroi.id, alvo.id)
+        val penFlancoNpc = if (facingAlvoNpc == com.gurps.ficha.domain.combat.hex.Facing.FLANCO) 2 else 0
+        val costasNpc = facingAlvoNpc == com.gurps.ficha.domain.combat.hex.Facing.COSTAS
+        if (penFlancoNpc != 0) log += "  └ você ataca pelo FLANCO de ${alvo.nome}: defesa dele −2 (MB p.390)."
+        if (costasNpc) log += "  └ você ataca ${alvo.nome} pelas COSTAS: defesa ANULADA (MB p.374)."
         // Contra ataque à distância o alvo só Esquiva; corpo-a-corpo usa a melhor defesa.
         val (defTipo, defValor) = if (ataque.aDistancia)
             CombatResolver.TipoDefesa.ESQUIVA to esquivaNpc(alvo) else melhorDefesaNpc(alvo)
@@ -592,7 +623,7 @@ class CombatSession(
         val penAgarrado = if (Condicao.AGARRADO in alvo.condicoes) 4 else 0
         // Ataque Enganoso (−1/passo na defesa do alvo) OU Telegráfico (+2 na defesa do alvo) — exclusivos (eng já zerado se telegráfico).
         // Mods situacionais do Narrador (Lote 424) também ajustam a defesa do NPC alvejado (ex.: distraído −2).
-        val defValorFinal = (defValor - penFinta - penAgarrado - eng + (if (telegrafico) 2 else 0) + modSituacionalDefesa(alvo.id)).coerceAtLeast(0)
+        val defValorFinal = (defValor - penFinta - penAgarrado - eng - penFlancoNpc + (if (telegrafico) 2 else 0) + modSituacionalDefesa(alvo.id)).coerceAtLeast(0)
         val defSoma = rolar3d6()
         // Além de 1/2D, o dano cai pela metade (MB p.270) — aplica no dado básico antes de RD.
         val meioDano = ataque.aDistancia && ataque.meioDano > 0 && dist >= ataque.meioDano
@@ -611,7 +642,8 @@ class CombatSession(
         val troca = CombatResolver.resolverTroca(
             defensor = alvo, htDefensor = alvo.stats?.ht ?: 10, ataque = atk,
             defesaTipo = defTipo, defesaValorFinal = defValorFinal, defesaSoma = defSoma,
-            surpresa = false, danoBaseRolado = danoBruto, danoTipo = ataque.tipo,
+            surpresa = costasNpc, // Lote TOK-5a: ataque pelas costas anula a defesa do NPC (MB p.374)
+            danoBaseRolado = danoBruto, danoTipo = ataque.tipo,
             local = local, rdLocal = rdAlvo, randomFerimento = random, forcarFerimentoGrave = forcaGrave,
             tolerancia = alvo.stats?.tolerancia ?: ToleranciaFerimentos.NORMAL
         )
@@ -1189,6 +1221,14 @@ class CombatSession(
         }
 
         val stats = npc.stats ?: return AtaqueResultado(false, false, 0, false, "${npc.nome} sem stats de ataque.")
+        // Lote TOK-5a: o NPC vira de frente pro herói ao atacar (facing é livre no próprio turno);
+        // e se MESMO ASSIM o golpe pega o herói de FLANCO/COSTAS (posição real na grade), a defesa
+        // do herói sofre (o ajuste das OPÇÕES é feito pelo controller via HexRegrasFacing; aqui só
+        // a anulação por COSTAS entra no resolverTroca).
+        posicaoBridge?.aoAtacar(npc.id, heroi.id)
+        val facingHeroiAlvo = posicaoBridge?.facingDoAtaque(npc.id, heroi.id)
+        val costasHeroi = facingHeroiAlvo == com.gurps.ficha.domain.combat.hex.Facing.COSTAS
+        if (costasHeroi) log += "⚠️ ${npc.nome} ataca você pelas COSTAS — defesa ANULADA (MB p.374)!"
         val modsNpc: List<CombatActions.ComponenteMod> = buildList {
             // Choque (Lote 382, MB p.419): PV perdidos no turno anterior penalizam o acerto do NPC.
             InjuryRules.penalidadeChoque(npc.choquePendente, npc.pvMax).let {
@@ -1215,8 +1255,12 @@ class CombatSession(
             aDistancia = intencao.aDistancia, modsExtra = modsNpc, random = random
         )
         // Sem escolha de defesa (herói atordoado/sem opção) → só Esquiva passiva da ficha (+mod situacional, Lote 424).
+        // TOK-5a: a esquiva PASSIVA também sofre o −2 de FLANCO (as opções do card já vêm ajustadas
+        // pelo controller via HexRegrasFacing — aqui só o caminho sem card, para não aplicar 2×).
+        val penFlancoPassiva = if (defesaHeroi == null &&
+            facingHeroiAlvo == com.gurps.ficha.domain.combat.hex.Facing.FLANCO) 2 else 0
         var def = defesaHeroi ?: DefesaHeroi(CombatResolver.TipoDefesa.ESQUIVA,
-            (heroiPerfil.esquiva + modSituacionalDefesa(heroi.id)).coerceAtLeast(0), rolar3d6())
+            (heroiPerfil.esquiva + modSituacionalDefesa(heroi.id) - penFlancoPassiva).coerceAtLeast(0), rolar3d6())
         // Esquiva Acrobática (Lote 414, MB p.377): testa Acrobacia ANTES da esquiva → +2 (sucesso) / −2 (falha).
         if (def.acrobatica && heroiPerfil.acrobacia != null) {
             val rolAcro = rolar3d6(); val ok = rolAcro <= heroiPerfil.acrobacia!!
@@ -1248,7 +1292,8 @@ class CombatSession(
         val troca = CombatResolver.resolverTroca(
             defensor = heroi, htDefensor = heroiPerfil.ht, ataque = atk,
             defesaTipo = def.tipo, defesaValorFinal = def.valorFinal, defesaSoma = def.soma,
-            surpresa = heroiSemDefesaAtiva, danoBaseRolado = danoBasicoNpc, danoTipo = tipoDano(stats.armaTipo),
+            surpresa = heroiSemDefesaAtiva || costasHeroi, // TOK-5a: costas anula (MB p.374)
+            danoBaseRolado = danoBasicoNpc, danoTipo = tipoDano(stats.armaTipo),
             local = intencao.local, rdLocal = rdHeroiAlvo, randomFerimento = random, forcarFerimentoGrave = forcaGraveNpc
         )
         // marca a defesa usada (bloqueio/recuo 1×/turno; aparas extras cumulativas)
@@ -1257,6 +1302,15 @@ class CombatSession(
         if (def.recuo) {
             heroi.defesasUsadas = heroi.defesasUsadas.copy(retracaoUsada = true)
             log += "  └ você recua um passo (Retirada, defesa ${def.valorFinal})."
+            // Lote TOK-5a: o passo de Retirada é REAL na grade — recua 1 hex na direção oposta ao
+            // atacante e as novas distâncias (a TODOS os NPCs) entram no encounter. Se o hex atrás
+            // está ocupado/fora da grade, o recuo fica só narrativo (bônus mantido — MB abstrai).
+            posicaoBridge?.recuarUmHex(heroi.id, npc.id)?.let { novas ->
+                novas.forEach { (id, d) ->
+                    if (inimigos.any { it.id == id && it.vivo }) encounter.definirDistancia(id, d.coerceAtLeast(0))
+                }
+                log += "  └ (o recuo abre 1m no campo)"
+            }
         }
         // Esquiva e Queda (Lote 404, MB p.377): após a defesa contra o tiro, o herói termina DEITADO.
         if (def.jogarSeAoChao && heroi.postura != Postura.DEITADO) {

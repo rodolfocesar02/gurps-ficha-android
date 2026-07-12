@@ -70,6 +70,62 @@ class CombatSessionTest {
         assertTrue(s.log.last().contains("distância") || r.texto.contains("distância") || s.log.any { it.contains("distância") })
     }
 
+    // ─── Lote TOK-5a: ponte posicional (facing/através-de-hex/retirada) ───
+
+    /** Bridge fake com facing fixo — testa a integração sem depender do grid real. */
+    private fun bridgeComFacing(facing: com.gurps.ficha.domain.combat.hex.Facing?, penHex: Int = 0) =
+        object : CombatSession.PosicaoBridge {
+            override fun facingDoAtaque(atacanteId: String, alvoId: String) = facing
+            override fun penalidadeAtravesDeHex(atacanteId: String, alvoId: String, alcanceArmaMetros: Int) = penHex
+            override fun aoAtacar(atacanteId: String, alvoId: String) {}
+            override fun recuarUmHex(defensorId: String, atacanteId: String): Map<String, Int>? = null
+        }
+
+    @Test
+    fun `ataque pelo FLANCO reduz a defesa do NPC em 2 e loga a regra`() {
+        val g = goblin()
+        val enc = CombatEncounter(listOf(heroi(), g), mapOf("goblin" to 1), seed = 1L)
+        val s = CombatSession(enc, perfilHeroi(), Random(7))
+        s.posicaoBridge = bridgeComFacing(com.gurps.ficha.domain.combat.hex.Facing.FLANCO)
+        s.heroiAtaca(espada(), "goblin", Manobra.ATAQUE, LocalAtaque.TORSO)
+        assertTrue("log deve registrar o ataque pelo flanco",
+            s.log.any { it.contains("FLANCO") && it.contains("−2") })
+    }
+
+    @Test
+    fun `ataque pelas COSTAS anula a defesa do NPC (surpresa) e loga a regra`() {
+        val g = goblin()
+        val enc = CombatEncounter(listOf(heroi(), g), mapOf("goblin" to 1), seed = 1L)
+        val s = CombatSession(enc, perfilHeroi(), Random(7))
+        s.posicaoBridge = bridgeComFacing(com.gurps.ficha.domain.combat.hex.Facing.COSTAS)
+        s.heroiAtaca(espada(), "goblin", Manobra.ATAQUE, LocalAtaque.TORSO)
+        assertTrue("log deve registrar o ataque pelas costas",
+            s.log.any { it.contains("COSTAS") && it.contains("ANULADA") })
+    }
+
+    @Test
+    fun `atacar atraves de hex ocupado aplica o mod de -4 no calculo`() {
+        val g = goblin()
+        val enc = CombatEncounter(listOf(heroi(), g), mapOf("goblin" to 2), seed = 1L)
+        val s = CombatSession(enc, perfilHeroi(), Random(7))
+        s.posicaoBridge = bridgeComFacing(null, penHex = -4)
+        // Espada com alcance 2 pra alcançar o alvo a 2m.
+        val lanca = AtaqueHeroi(rotulo = "Lança", nh = 14, danoExpr = "1d+2", tipo = DanoTipo.PERF, alcance = 2)
+        val r = s.heroiAtaca(lanca, "goblin", Manobra.ATAQUE, LocalAtaque.TORSO)
+        assertTrue("o cálculo do ataque deve conter o mod 'através de hex ocupado'",
+            s.log.any { it.contains("através de hex ocupado") } || r.texto.contains("através de hex ocupado"))
+    }
+
+    @Test
+    fun `sem bridge o comportamento antigo permanece (regressao zero)`() {
+        val g = goblin()
+        val enc = CombatEncounter(listOf(heroi(), g), mapOf("goblin" to 1), seed = 1L)
+        val s = CombatSession(enc, perfilHeroi(), Random(7))
+        // posicaoBridge = null (default) — nada de flanco/costas/através-de-hex nos logs.
+        s.heroiAtaca(espada(), "goblin", Manobra.ATAQUE, LocalAtaque.TORSO)
+        assertFalse(s.log.any { it.contains("FLANCO") || it.contains("COSTAS") || it.contains("através de hex") })
+    }
+
     @Test
     fun `heroi ataca goblin adjacente e o motor aplica o resultado`() {
         val g = goblin()

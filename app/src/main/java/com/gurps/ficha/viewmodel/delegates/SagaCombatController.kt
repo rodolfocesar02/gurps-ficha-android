@@ -187,6 +187,59 @@ class SagaCombatController(
     }
 
     /**
+     * Lote TOK-5a: implementação da ponte POSICIONAL que o CombatSession consulta. Todas as
+     * funções degradam para "sem efeito" quando a grade não está montada (modo faixas intacto).
+     */
+    private val bridgeTatico = object : CombatSession.PosicaoBridge {
+        override fun facingDoAtaque(atacanteId: String, alvoId: String): com.gurps.ficha.domain.combat.hex.Facing? {
+            val est = estadoTatico ?: return null
+            val pa = est.posicoes.firstOrNull { it.id == atacanteId }?.posicao ?: return null
+            val alvo = est.posicoes.firstOrNull { it.id == alvoId } ?: return null
+            return com.gurps.ficha.domain.combat.hex.HexGrid.facingDoAtaque(pa, alvo.posicao, alvo.facing)
+        }
+
+        override fun penalidadeAtravesDeHex(atacanteId: String, alvoId: String, alcanceArmaMetros: Int): Int {
+            val est = estadoTatico ?: return 0
+            val pa = est.posicoes.firstOrNull { it.id == atacanteId }?.posicao ?: return 0
+            val pb = est.posicoes.firstOrNull { it.id == alvoId }?.posicao ?: return 0
+            // No Saga o herói luta sozinho: todo ocupante intermediário que não é o par é INIMIGO.
+            val inimigosNoMeio = est.posicoes
+                .filter { it.id != atacanteId && it.id != alvoId }
+                .map { it.posicao }.toSet()
+            return com.gurps.ficha.domain.combat.hex.HexAtaqueAtravesHex.penalidade(
+                pa, pb, alcanceArmaMetros, ocupantesAliados = emptySet(), ocupantesInimigos = inimigosNoMeio
+            ) ?: 0 // null = fora de alcance — o motor já tem golpeForaDeAlcance pra isso
+        }
+
+        override fun aoAtacar(atacanteId: String, alvoId: String) {
+            val est = estadoTatico ?: return
+            val pa = est.posicoes.firstOrNull { it.id == atacanteId } ?: return
+            val alvoPos = est.posicoes.firstOrNull { it.id == alvoId }?.posicao ?: return
+            val dir = com.gurps.ficha.domain.combat.hex.Direcao.de(pa.posicao, alvoPos) ?: return
+            if (pa.facing == dir) return
+            estadoTatico = est.copy(posicoes = est.posicoes.map {
+                if (it.id == atacanteId) it.copy(facing = dir) else it
+            })
+        }
+
+        override fun recuarUmHex(defensorId: String, atacanteId: String): Map<String, Int>? {
+            val est = estadoTatico ?: return null
+            val pd = est.posicoes.firstOrNull { it.id == defensorId } ?: return null
+            val pa = est.posicoes.firstOrNull { it.id == atacanteId }?.posicao ?: return null
+            val dir = com.gurps.ficha.domain.combat.hex.Direcao.de(pa, pd.posicao) ?: return null
+            val destino = pd.posicao + dir.vetor
+            if (est.posicoes.any { it.id != defensorId && it.posicao == destino }) return null
+            if (com.gurps.ficha.domain.combat.hex.HexCoord.ORIGEM.distancia(destino) > est.raioGrade) return null
+            val novo = est.copy(posicoes = est.posicoes.map {
+                if (it.id == defensorId) it.copy(posicao = destino) else it
+            })
+            estadoTatico = novo
+            return if (defensorId == "heroi")
+                com.gurps.ficha.domain.combat.hex.HexSetup.distanciasAoHeroi(novo) else null
+        }
+    }
+
+    /**
      * Reprojeta a grade a partir do encounter DEPOIS de ações do motor que mudam distância
      * (Encontrão =1, Empurrão/Projeção knockback, Mover do NPC): cada NPC anda na linha reta
      * herói↔NPC até a distância nova ([HexPortabilidade]); mortos saem da grade.
@@ -344,6 +397,8 @@ class SagaCombatController(
             )
             com.gurps.ficha.domain.combat.hex.HexCombatSync.projetarSetupInicial(estTatico, encounter)
             estadoTatico = estTatico
+            // Lote TOK-5a: pluga a ponte posicional no motor (facing/através-de-hex/retirada real).
+            s.posicaoBridge = bridgeTatico
         } else {
             estadoTatico = null
         }
@@ -689,7 +744,7 @@ class SagaCombatController(
         val contraFogo = npc.stats?.let { it.armaDeFogo || CombatSession.pareceArmaDeFogo(it.armaNome) } ?: false
         // Passa a arma EMPUNHADA p/ as regras de Aparar (esgrima/desbalanceada/Não/à distância).
         // Sem opções (ex.: herói sem defesa ativa após Ataque Total) → resolve direto, sem card.
-        val opcoes = if (s.intencaoAtacaHeroi(intencao)) s.opcoesDefesaHeroi(
+        val opcoesBase = if (s.intencaoAtacaHeroi(intencao)) s.opcoesDefesaHeroi(
             armaPronta = ataques.getOrNull(ataqueSelecionado), contraArmaDeFogo = contraFogo,
             contraAtaqueCorpoACorpo = !intencao.aDistancia, // Lote 389: Retirada só vs corpo-a-corpo
             atacanteAdjacente = s.distancia(npc) <= 1, // Lote 390: aparar tiro só se o atirador está a 1m
@@ -698,6 +753,19 @@ class SagaCombatController(
             // Lote 407: ataque por ponta (GdP) dispensa o −3 da apara desarmada; inferido do dano PERF (perfuração).
             ataqueGdP = !intencao.aDistancia && npc.stats?.let { CombatSession.tipoDano(it.armaTipo) == DanoTipo.PERF } == true
         ) else emptyList()
+        // Lote TOK-5a (MB p.374/375/390): FACING do ataque contra o herói na grade —
+        //  FLANCO → todas as defesas −2 e o BD do escudo sai (HexRegrasFacing, do HEX-4);
+        //  COSTAS → defesa ANULADA: sem card (o motor resolve com surpresa=true e narra).
+        val facingAtaque = if (estadoTatico != null) bridgeTatico.facingDoAtaque(npcId, "heroi") else null
+        val opcoes = when (facingAtaque) {
+            com.gurps.ficha.domain.combat.hex.Facing.COSTAS -> emptyList()
+            com.gurps.ficha.domain.combat.hex.Facing.FLANCO ->
+                com.gurps.ficha.domain.combat.hex.HexRegrasFacing.ajustarOpcoesDefesa(
+                    opcoesBase, com.gurps.ficha.domain.combat.hex.Facing.FLANCO,
+                    bonusEscudoEmbutido = s.heroiPerfil.bonusEscudo
+                )
+            else -> opcoesBase
+        }
         if (s.intencaoAtacaHeroi(intencao) && opcoes.isNotEmpty()) {
             val deferred = CompletableDeferred<CombatResolver.OpcaoDefesa>()
             val nomeNpc = npc.nome

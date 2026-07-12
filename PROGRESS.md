@@ -3046,6 +3046,16 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - **Recomendação registrada** (maior valor × menor custo): Ataque Telegráfico (par do Enganoso), luta agarrada profunda (chaves/Mata-Leão estendendo o lote 422), Sangramento Grave + incapacitação de membro (item 5 do teste de batalha), Ataque Dedicado/Defensivo. Fora de escopo: posicional/hexágono, montaria, cinematográfico, dado de arma do NPC. Mudança só de documentação (não compila Kotlin).
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
+### Lote TOK-5a — 11 de Julho de 2026 (VTT 2D / Fase 5a — facing, através-de-hex e Retirada REAIS)
+**Saga combate tático: as primeiras regras do `Combate.md` substituídas pela POSIÇÃO real na grade — branch GURPS-Saga**
+- **5ª fatia do `PLANO_Tokens_VTT_2D.md`** — sub-lote "a" (facing/através/retirada). Evadir, Aguardar por alcance, cobertura e manter-à-distância ficam pro 5b.
+- **`CombatSession.PosicaoBridge`** (interface nova + `var posicaoBridge`, null = modo faixas com zero regressão): `facingDoAtaque`, `penalidadeAtravesDeHex`, `aoAtacar` (vira o atacante pro alvo — facing é livre no próprio turno), `recuarUmHex`.
+- **Herói→NPC (`resolverGolpeHeroi`)**: mod **"através de hex ocupado" −4** (MB p.389, corpo-a-corpo alcance ≥2, via `HexAtaqueAtravesHex` do HEX-6); **FLANCO → defesa do NPC −2** (MB p.390); **COSTAS → defesa ANULADA** via `surpresa=true` (MB p.374). Tudo logado com a página da regra. **Flanquear com Avançar-e-Atacar agora vale a pena de verdade.**
+- **NPC→herói (`npcResolve`)**: NPC vira pro herói ao atacar; **COSTAS do herói → surpresa** (defesa anulada + aviso no log). **FLANCO → o card "Defenda-se!" abre com TODAS as opções −2 e o BD do escudo removido** (`HexRegrasFacing.ajustarOpcoesDefesa` do HEX-4 — o módulo esperou 5 lotes pra ser plugado e entrou sem mudanças). COSTAS = sem card (o motor narra).
+- **Retirada REAL** (MB p.377): defesa com recuo move o herói **1 hex de verdade** na direção oposta ao atacante; as novas distâncias (a TODOS os NPCs) entram no encounter. Hex atrás ocupado/fora da grade → recuo só narrativo (bônus mantido, como o MB abstrai).
+- **+4 testes de integração** no `CombatSessionTest` com bridge FAKE (flanco reduz e loga; costas anula e loga; através-de-hex no cálculo; **sem bridge = regressão zero nos logs**). Todos os testes de combate existentes verdes sem mudança.
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
 ### Lote TOK-4 — 11 de Julho de 2026 (VTT 2D / Fase 4 — combate REAL no grid)
 **Saga combate tático: o grid vira o tabuleiro do combate de verdade — branch GURPS-Saga**
 - **4ª fatia do `PLANO_Tokens_VTT_2D.md`** (diretiva do usuário: automatizar no grid as ações do `Combate.md` que hoje são botões abstratos de faixa). Itens antes "FORA DO ESCOPO por falta de grade" começam a ser desbloqueados: **Deslocamento/Movimento** real, **Passo**, **Espaçamento** (ocupação de hex).
