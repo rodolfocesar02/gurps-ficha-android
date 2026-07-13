@@ -155,13 +155,37 @@ sem menus superiores nem abas; só um "X" no canto superior direito pra sair.
 3. Labels de coordenadas REMOVIDOS (viram flag interna de debug).
 4. Fix do fundo no combate real (obterFundoCena com geração/espera, igual ao demo).
 
-**TOK-6b — Layout "de jogo" do combate:**
-1. Grade DOMINANTE (~60–70% da altura da tela).
-2. Feed narrativo vira OVERLAY translúcido no topo da grade (últimas 2 linhas; toque expande
-   para o histórico completo).
-3. Painel de ação COMPACTO na base: manobras em linha horizontal rolável; tracker de HP
-   minimalista (nome + barra, sem cards altos).
-4. Zoom/pan manual (pinch + drag) por cima da câmera automática.
+**TOK-6b — AÇÕES NOS TOKENS (redesenhado com o usuário, 12/jul, após teste do 6a):**
+Feedback do teste: a câmera abre DEMAIS ao selecionar o herói (enquadrar TODOS os alcançáveis
+de deslocamento 5+ deixa os hexes pequenos de novo). Nova visão do usuário: o mapa É a
+interface — grade em ~2/3 da tela; as manobras moram NOS TOKENS (menu em leque/carrossel
+translúcido sobre o mapa); os cards de vida somem (barra de HP sobre a cabeça do token).
+
+**Mapeamento GURPS — qual ação mora em qual token:**
+- Token do JOGADOR (manobras SOBRE SI, sem alvo — MB p.363-366):
+  Aguardar (+Interromper Investida) · Preparar/Trocar arma · Mudar Postura · Defesa Total
+  (Aumentada/Dupla) · Concentrar · Não Fazer Nada · Desvencilhar-se (só quando agarrado).
+  MOVER continua sendo o toque no hex verde (não vira botão).
+- Token do INIMIGO (ações DIRECIONADAS, têm alvo — MB p.364-371):
+  Ataque · Ataque Total (Determinado/Duplo/Forte/Fintar) · Ataque Dedicado · Ataque Defensivo ·
+  Avançar e Atacar · Golpe Rápido · Fintar · Avaliar · Apontar (à distância) · Agarrar ·
+  Empurrão · Encontrão · Derrubar/Imobilizar/Estrangular/Chave/Mata-Leão (só com alvo agarrado) ·
+  Fogo de Retenção (CdT 5+).
+  Os botões exibidos = interseção com `manobrasHeroi`/`alvos` do CombatUiState (o motor JÁ
+  filtra por distância/alcance/estado — a UI radial só reorganiza o que já é legal).
+  Obs. GURPS: Concentrar é manobra sobre SI (mantém magia/tarefa mental) — fica no jogador,
+  embora o usuário o tenha listado no inimigo.
+
+**Sub-fatias:**
+- TOK-6b-1 — Grid 2/3 da tela + barra de HP sobre o token (substitui o anel e os CARDS de vida
+  do tracker, que somem no modo tático; condições viram mini-ícones na barra) + FIX da câmera
+  (piso de toque ~40dp por hex; enquadrar alcançáveis SÓ até esse piso) + PAN por arrasto
+  (offset manual somado ao centro da câmera; reset quando a câmera-alvo muda de verdade).
+- TOK-6b-2 — Menus radiais nos tokens: tocar no HERÓI abre o leque de manobras-de-si
+  (translúcido, em arco/carrossel sobre o mapa); tocar num INIMIGO abre o leque ofensivo;
+  sub-diálogos (local do golpe, modo do Ataque Total, enganoso/telegráfico) re-estilizados
+  translúcidos por cima do mapa; painel clássico de manobras SOME no modo tático (fica só a
+  linha da arma empunhada + Trocar arma).
 
 ## 5. Registro de execução
 - [x] ✅ TOK-1 — token de imagem + canvas novo + roteamento (10/jul/2026, commit 4fb8977 — TokenImageStore com recorte por rosto + HexCanvasTatico + hexes verdes/aviso/animação migrados do 3D + Switch 3D removido + 15 testes puros)
@@ -171,4 +195,5 @@ sem menus superiores nem abas; só um "X" no canto superior direito pra sair.
 - [x] ✅ TOK-5a — facing/através-de-hex/Retirada REAIS (11/jul/2026 — `CombatSession.PosicaoBridge` opcional: FLANCO −2/COSTAS anula nos DOIS sentidos (card de defesa ajustado via HexRegrasFacing com BD do escudo; esquiva passiva incluída), −4 atacando através de hex de inimigo, Retirada recua 1 hex real e atualiza as distâncias; +4 testes de integração com bridge fake; regressão zero sem bridge)
 - [x] ✅ TOK-5b — IA posicional do NPC + manter à distância (11/jul/2026 — `moverNpcNaGrade` itera HexTaticaNpc vizinho-a-vizinho: o goblin flanqueia/kita/recua de verdade; MOVER_E_ATACAR sem alcance consome o turno; fuga pela borda da grade; Interromper Investida mantém o oponente à distância via Disputa ST/Vontade−3. DEFERIDOS documentados: cobertura (sem obstáculos na grade), Evadir (BFS conservador cobre), Aguardar-por-alcance (já coberto pós-TOK-4))
 - [x] ✅ TOK-6a — Modo Jogo + câmera + fixes (12/jul/2026 — tela cheia em campanha via hideAppChrome estendido (vertical, sem o landscape do VTT), header 1-linha com X de sair, câmera enquadrando combatentes+alcançáveis (achado da revisão: verdes fora da viewport eram intocáveis), labels de coordenadas fora, fix do fundo cache-only no combate real, 9 testes puros da câmera)
-- [ ] TOK-6b — layout "de jogo" (grade dominante, feed em overlay, painel de ação compacto, zoom/pan)
+- [ ] TOK-6b-1 — grid 2/3 + barra de HP no token (cards de vida somem) + piso de toque na câmera + pan por arrasto
+- [ ] TOK-6b-2 — menus radiais nos tokens (jogador = manobras de si; inimigo = ofensivas) + sub-diálogos translúcidos
