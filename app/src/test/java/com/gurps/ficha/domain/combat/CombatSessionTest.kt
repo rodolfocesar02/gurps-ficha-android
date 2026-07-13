@@ -73,13 +73,17 @@ class CombatSessionTest {
     // ─── Lote TOK-5a: ponte posicional (facing/através-de-hex/retirada) ───
 
     /** Bridge fake com facing fixo — testa a integração sem depender do grid real. */
-    private fun bridgeComFacing(facing: com.gurps.ficha.domain.combat.hex.Facing?, penHex: Int = 0) =
-        object : CombatSession.PosicaoBridge {
-            override fun facingDoAtaque(atacanteId: String, alvoId: String) = facing
-            override fun penalidadeAtravesDeHex(atacanteId: String, alvoId: String, alcanceArmaMetros: Int) = penHex
-            override fun aoAtacar(atacanteId: String, alvoId: String) {}
-            override fun recuarUmHex(defensorId: String, atacanteId: String): Map<String, Int>? = null
-        }
+    private fun bridgeComFacing(
+        facing: com.gurps.ficha.domain.combat.hex.Facing?,
+        penHex: Int = 0,
+        distGrade: Int? = null,
+    ) = object : CombatSession.PosicaoBridge {
+        override fun facingDoAtaque(atacanteId: String, alvoId: String) = facing
+        override fun penalidadeAtravesDeHex(atacanteId: String, alvoId: String, alcanceArmaMetros: Int) = penHex
+        override fun aoAtacar(atacanteId: String, alvoId: String) {}
+        override fun recuarUmHex(defensorId: String, atacanteId: String): Map<String, Int>? = null
+        override fun moverNpcNaGrade(npcId: String, intencao: NpcCombatBrain.IntencaoNpc): Int? = distGrade
+    }
 
     @Test
     fun `ataque pelo FLANCO reduz a defesa do NPC em 2 e loga a regra`() {
@@ -114,6 +118,52 @@ class CombatSessionTest {
         val r = s.heroiAtaca(lanca, "goblin", Manobra.ATAQUE, LocalAtaque.TORSO)
         assertTrue("o cálculo do ataque deve conter o mod 'através de hex ocupado'",
             s.log.any { it.contains("através de hex ocupado") } || r.texto.contains("através de hex ocupado"))
+    }
+
+    // ─── Lote TOK-5b: IA posicional do NPC + Avançar-e-Atacar pela grade ───
+
+    @Test
+    fun `NPC com MOVER usa a distancia da GRADE quando o bridge decide`() {
+        val g = goblin()
+        val enc = CombatEncounter(listOf(heroi(), g), mapOf("goblin" to 6), seed = 1L)
+        val s = CombatSession(enc, perfilHeroi(), Random(3))
+        s.posicaoBridge = bridgeComFacing(null, distGrade = 2) // a grade moveu o goblin pra 2m
+        val intencao = NpcCombatBrain.IntencaoNpc(
+            manobra = Manobra.MOVER, alvoId = "heroi", local = LocalAtaque.TORSO,
+            aDistancia = false, recuar = false, motivo = "teste"
+        )
+        s.npcResolve("goblin", intencao, null)
+        assertEquals("a distância do encounter vem da grade", 2, enc.distancia(g))
+        assertTrue(s.log.any { it.contains("se move pelo campo") })
+    }
+
+    @Test
+    fun `MOVER_E_ATACAR que NAO alcanca pela grade consome o turno sem golpe`() {
+        val g = goblin() // alcance 1m
+        val enc = CombatEncounter(listOf(heroi(), g), mapOf("goblin" to 6), seed = 1L)
+        val s = CombatSession(enc, perfilHeroi(), Random(3))
+        s.posicaoBridge = bridgeComFacing(null, distGrade = 3) // avançou mas parou a 3m
+        val intencao = NpcCombatBrain.IntencaoNpc(
+            manobra = Manobra.MOVER_E_ATACAR, alvoId = "heroi", local = LocalAtaque.TORSO,
+            aDistancia = false, recuar = false, motivo = "teste"
+        )
+        val r = s.npcResolve("goblin", intencao, null)
+        assertEquals(3, enc.distancia(g))
+        assertFalse("não houve golpe", r.acertou)
+        assertTrue(s.log.any { it.contains("não alcança") })
+    }
+
+    @Test
+    fun `sem bridge MOVER_E_ATACAR mantem o comportamento antigo (chega a 1m e golpeia)`() {
+        val g = goblin()
+        val enc = CombatEncounter(listOf(heroi(), g), mapOf("goblin" to 6), seed = 1L)
+        val s = CombatSession(enc, perfilHeroi(), Random(3))
+        val intencao = NpcCombatBrain.IntencaoNpc(
+            manobra = Manobra.MOVER_E_ATACAR, alvoId = "heroi", local = LocalAtaque.TORSO,
+            aDistancia = false, recuar = false, motivo = "teste"
+        )
+        s.npcResolve("goblin", intencao, null)
+        assertEquals("modo faixas força 1m", 1, enc.distancia(g))
     }
 
     @Test

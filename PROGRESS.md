@@ -3046,6 +3046,17 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - **Recomendação registrada** (maior valor × menor custo): Ataque Telegráfico (par do Enganoso), luta agarrada profunda (chaves/Mata-Leão estendendo o lote 422), Sangramento Grave + incapacitação de membro (item 5 do teste de batalha), Ataque Dedicado/Defensivo. Fora de escopo: posicional/hexágono, montaria, cinematográfico, dado de arma do NPC. Mudança só de documentação (não compila Kotlin).
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
+### Lote TOK-5b — 11 de Julho de 2026 (VTT 2D / Fase 5b — IA posicional do NPC + manter à distância)
+**Saga combate tático: o NPC flanqueia/kita/recua DE VERDADE pela grade; Interromper Investida mantém o oponente à distância — branch GURPS-Saga**
+- **6ª fatia do `PLANO_Tokens_VTT_2D.md`** — fecha o TOK-5. Torna o facing do TOK-5a **testável sem depender do Narrador**: o goblin flanqueia o herói sozinho.
+- **`PosicaoBridge.moverNpcNaGrade(npcId, intencao)`** (novo): quando a grade está ativa, quem decide PRA ONDE o NPC vai é a **IA posicional do HEX-5** (`HexTaticaNpc` — flanquear agressivo/kite arqueiro/recuar covarde), iterada **vizinho a vizinho até o deslocamento** (flanquear emerge da sequência). Facing final = encarando o herói (recuar de costas daria flanco de graça). Null = modo faixas intacto.
+- **`npcResolve` MOVER**: distância vem da grade (`definirDistancia`) em vez do ±passo abstrato; **FUGA na grade**: `FUGA_METROS` (20) é inalcançável num raio 7 — recuar JÁ na borda = saiu do campo (fix da varredura própria; sem ele o NPC covarde recuaria em círculos pra sempre).
+- **`npcResolve` MOVER_E_ATACAR**: o NPC avança pela grade (podendo flanquear); **se não alcançar o herói, o avanço consome a manobra SEM golpe** (fiel ao Avançar-e-Atacar). Sem bridge → força 1m como antes.
+- **Manter um Oponente à Distância** (AM p.101, `HexManterADistancia` do HEX-6): golpe de Interromper Investida que CAUSA DANO põe a arma no caminho — **arma não-perfurante → Disputa Rápida de ST** (perdeu → o avanço PARA); **estocada perfurante cravada → Vontade−3 do NPC** (falhou → recua da lâmina). Simplificações honestas documentadas: sem o dano-máximo/arma-presa do avanço forçado; só dispara com dano>0 (o caso "não penetrou RD" fica pro polimento).
+- **Deferidos documentados**: cobertura na linha de tiro (sem modelo de obstáculos na grade), Evadir (raro em 1×N, BFS conservador cobre), Aguardar-por-alcance (o gatilho já usa distâncias reais pós-TOK-4).
+- **+3 testes de integração** (MOVER pela grade; MOVER_E_ATACAR sem alcance consome turno; sem bridge = 1m antigo). Todos os testes de combate verdes.
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
 ### Lote TOK-5a — 11 de Julho de 2026 (VTT 2D / Fase 5a — facing, através-de-hex e Retirada REAIS)
 **Saga combate tático: as primeiras regras do `Combate.md` substituídas pela POSIÇÃO real na grade — branch GURPS-Saga**
 - **5ª fatia do `PLANO_Tokens_VTT_2D.md`** — sub-lote "a" (facing/através/retirada). Evadir, Aguardar por alcance, cobertura e manter-à-distância ficam pro 5b.

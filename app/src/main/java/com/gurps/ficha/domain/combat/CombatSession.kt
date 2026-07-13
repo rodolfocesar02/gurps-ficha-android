@@ -190,6 +190,13 @@ class CombatSession(
         /** Retirada (MB p.377): recua o defensor 1 hex na direção oposta ao atacante. Devolve as
          *  novas distâncias ao herói (ou null se o recuo era impossível/defensor não é o herói). */
         fun recuarUmHex(defensorId: String, atacanteId: String): Map<String, Int>?
+
+        /**
+         * Lote TOK-5b: IA POSICIONAL do NPC — move o NPC na grade (flanquear/kite/recuar via
+         * HexTaticaNpc, HEX-5), passo a passo até o deslocamento, e devolve a NOVA distância ao
+         * herói. Null = a grade não decidiu (cai no movimento abstrato do modo faixas).
+         */
+        fun moverNpcNaGrade(npcId: String, intencao: NpcCombatBrain.IntencaoNpc): Int?
     }
     var posicaoBridge: PosicaoBridge? = null
 
@@ -1177,10 +1184,39 @@ class CombatSession(
                 val metros = npc.deslocamentoEfetivo.coerceAtMost(encounter.distancia(npc)).coerceAtLeast(0)
                 bonusInvestidaPendente = metros / 2
                 log += "🛡️→🗡️ Investida! ${npc.nome} avança e você golpeia primeiro com a arma firmada (+$bonusInvestidaPendente de dano por ${metros}m)."
-                resolverGolpeHeroi(arma, npc, Manobra.ATAQUE, LocalAtaque.TORSO, AtaqueTotalModo.DETERMINADO)
+                val rInv = resolverGolpeHeroi(arma, npc, Manobra.ATAQUE, LocalAtaque.TORSO, AtaqueTotalModo.DETERMINADO)
                 bonusInvestidaPendente = 0
                 aguardarInvestidaArma = null
                 if (!npc.vivo) { verificarFim(); return AtaqueResultado(true, false, 0, true, log.last()) }
+                // Lote TOK-5b — Manter um Oponente à Distância (AM p.101, HexManterADistancia do
+                // HEX-6): se o golpe de interrupção CAUSOU DANO, a arma está no caminho e o NPC
+                // precisa vencer para continuar avançando:
+                //  - arma NÃO-perfurante → Disputa Rápida de ST vs o herói; perdeu → o avanço PARA.
+                //  - arma de estocada perfurante (cravada) → teste de Vontade−3 do NPC; falhou → PARA.
+                //    (Simplificação honesta: sem o dano máximo adicional/arma presa do avanço forçado.)
+                if (rInv.danoAplicado > 0 && posicaoBridge != null) {
+                    val tipo = if (arma.tipo == DanoTipo.PERF)
+                        com.gurps.ficha.domain.combat.hex.HexManterADistancia.TipoInterrupcao.APAROU_COM_ESTOCADA_PERFURANTE
+                    else com.gurps.ficha.domain.combat.hex.HexManterADistancia.TipoInterrupcao.APAROU_COM_DANO_NAO_ESTOCADA
+                    val regra = com.gurps.ficha.domain.combat.hex.HexManterADistancia.avaliar(tipo)
+                    val passou = if (regra.disputaSTNecessaria) {
+                        val stN = npc.stats?.st ?: 10; val rn = rolar3d6()
+                        val stH = heroiPerfil.st; val rh = rolar3d6()
+                        val ok = vencaDisputaRapida(stN, rn, stH, rh)
+                        log += "  └ arma no caminho (AM p.101): Disputa de ST — ${npc.nome} $stN rolou $rn vs você $stH rolou $rh → ${if (ok) "ele passa" else "ele NÃO passa"}."
+                        ok
+                    } else if (regra.testeVontadeMod != null) {
+                        val vontade = (npc.stats?.iq ?: 8) + regra.testeVontadeMod!!
+                        val rv = rolar3d6(); val ok = rv <= vontade
+                        log += "  └ a lâmina está cravada (AM p.101): Vontade−3 de ${npc.nome} ($vontade, rolou $rv) → ${if (ok) "ele avança mesmo assim" else "ele recua da arma"}."
+                        ok
+                    } else regra.podeAvancar
+                    if (!passou) {
+                        log += "  └ ${npc.nome} é MANTIDO À DISTÂNCIA — o avanço para aqui."
+                        verificarFim()
+                        return AtaqueResultado(false, false, 0, false, log.last())
+                    }
+                }
             }
         }
 
@@ -1188,22 +1224,41 @@ class CombatSession(
             Manobra.MOVER -> {
                 val passo = npc.deslocamentoEfetivo.coerceAtLeast(1) // metade se cambaleante (MB p.380)
                 npc.velocidadeAtual = passo // Lote 403: NPC em movimento é mais difícil de alvejar (Vel/Dist)
-                if (intencao.recuar) {
+                // Lote TOK-5b: com a grade ativa, quem decide PRA ONDE é a IA POSICIONAL
+                // (HexTaticaNpc — flanquear/kite/recuar); a distância nova vem da posição real.
+                val distGrade = posicaoBridge?.moverNpcNaGrade(npc.id, intencao)
+                if (distGrade != null) {
+                    encounter.definirDistancia(npc.id, distGrade)
+                    log += "🏃 ${npc.nome} ${if (intencao.recuar) "recua" else "se move"} pelo campo (${intencao.motivo})."
+                } else if (intencao.recuar) {
                     encounter.moverEmRelacaoAoHeroi(npc.id, passo)
                     log += "🏃 ${npc.nome} recua ${passo}m (${intencao.motivo})."
-                    if (encounter.distancia(npc) >= FUGA_METROS) {
-                        npc.condicoes.add(Condicao.INCONSCIENTE) // sai do encontro (fugiu)
-                        log += "  └ ${npc.nome} fugiu do combate."
-                    }
                 } else {
                     encounter.moverEmRelacaoAoHeroi(npc.id, -passo)
                     log += "🏃 ${npc.nome} avança ${passo}m (${intencao.motivo})."
+                }
+                if (intencao.recuar && encounter.distancia(npc) >= FUGA_METROS) {
+                    npc.condicoes.add(Condicao.INCONSCIENTE) // sai do encontro (fugiu)
+                    log += "  └ ${npc.nome} fugiu do combate."
                 }
                 verificarFim()
                 return AtaqueResultado(false, false, 0, false, log.last())
             }
             Manobra.MOVER_E_ATACAR -> {
-                encounter.definirDistancia(npc.id, 1) // chega ao corpo-a-corpo antes de golpear
+                // Lote TOK-5b: com a grade, o NPC avança pelo campo (podendo FLANQUEAR); se não
+                // alcançar o herói neste turno, o avanço consome a manobra (fiel ao Avançar-e-Atacar).
+                val distGrade = posicaoBridge?.moverNpcNaGrade(npc.id, intencao)
+                if (distGrade != null) {
+                    encounter.definirDistancia(npc.id, distGrade)
+                    val alcanceNpc = (npc.stats?.alcanceMetros ?: 1).coerceAtLeast(1)
+                    if (distGrade > alcanceNpc) {
+                        log += "🏃 ${npc.nome} avança pelo campo, mas não alcança você neste turno."
+                        verificarFim()
+                        return AtaqueResultado(false, false, 0, false, log.last())
+                    }
+                } else {
+                    encounter.definirDistancia(npc.id, 1) // modo faixas: chega ao corpo-a-corpo
+                }
             }
             else -> { /* ATAQUE / ATAQUE_TOTAL: resolve abaixo */ }
         }

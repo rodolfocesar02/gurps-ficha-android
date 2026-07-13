@@ -237,6 +237,61 @@ class SagaCombatController(
             return if (defensorId == "heroi")
                 com.gurps.ficha.domain.combat.hex.HexSetup.distanciasAoHeroi(novo) else null
         }
+
+        override fun moverNpcNaGrade(
+            npcId: String,
+            intencao: com.gurps.ficha.domain.combat.NpcCombatBrain.IntencaoNpc,
+        ): Int? {
+            var est = estadoTatico ?: return null
+            val s = sessao ?: return null
+            val npc = s.encounter.combatentes.firstOrNull { it.id == npcId && it.vivo } ?: return null
+            val stats = npc.stats ?: return null
+            val perfil = com.gurps.ficha.domain.combat.hex.HexTaticaNpc.PerfilTatico(
+                agressividade = stats.agressividade,
+                moral = stats.moral,
+                alcanceArmaMetros = stats.alcanceMetros.coerceAtLeast(1),
+                // Proxy honesto: arma de fogo OU alcance longo caracterizam o combatente "à distância"
+                // (o kite do HexTaticaNpc exige temArmaDistancia && alcance ≥ 3).
+                temArmaDistancia = stats.armaDeFogo || stats.alcanceMetros >= 4,
+            )
+            // A IA decide VIZINHO a VIZINHO (decisão local do HEX-5); itera até o deslocamento —
+            // flanquear/kite/recuar emergem da sequência de passos.
+            val passos = npc.deslocamentoEfetivo.coerceAtLeast(1)
+            var moveu = false
+            for (i in 0 until passos) {
+                val atual = est.posicoes.firstOrNull { it.id == npcId }?.posicao ?: break
+                val destino = com.gurps.ficha.domain.combat.hex.HexTaticaNpc.decidirDestino(
+                    est, npcId, intencao, perfil
+                ) ?: break
+                if (destino == atual) break // a IA decidiu ficar (posição já é a melhor)
+                if (com.gurps.ficha.domain.combat.hex.HexCoord.ORIGEM.distancia(destino) > est.raioGrade) break
+                est = est.copy(posicoes = est.posicoes.map {
+                    if (it.id == npcId) it.copy(posicao = destino) else it
+                })
+                moveu = true
+            }
+            // Facing final: o NPC termina o movimento ENCARANDO o herói (facing é livre no fim do
+            // próprio turno — um NPC que recuasse de costas daria flanco de graça).
+            val posFinal = est.posicoes.firstOrNull { it.id == npcId } ?: return null
+            val posHeroi = est.posicoes.firstOrNull { it.id == "heroi" }?.posicao ?: return null
+            val dirHeroi = com.gurps.ficha.domain.combat.hex.Direcao.de(posFinal.posicao, posHeroi)
+            if (dirHeroi != null && posFinal.facing != dirHeroi) {
+                est = est.copy(posicoes = est.posicoes.map {
+                    if (it.id == npcId) it.copy(facing = dirHeroi) else it
+                })
+            }
+            estadoTatico = est
+            // FUGA na grade: FUGA_METROS (20) é INALCANÇÁVEL num raio 7 (dist máx ~14) — sem este
+            // ajuste, o NPC covarde recuaria em círculos pra sempre. Recuar já ESTANDO na borda
+            // (não dá mais pra se afastar) = saiu do campo → devolve FUGA_METROS e o motor marca
+            // a fuga pelo critério normal.
+            if (intencao.recuar && !moveu &&
+                com.gurps.ficha.domain.combat.hex.HexCoord.ORIGEM.distancia(posFinal.posicao) >= est.raioGrade - 1) {
+                return CombatSession.FUGA_METROS
+            }
+            // Mesmo sem se mover, a manobra foi consumida "se posicionando" — devolve a distância real.
+            return est.distanciaHex("heroi", npcId)
+        }
     }
 
     /**
