@@ -129,6 +129,40 @@ Evadir/Aguardar por último).
 - **Custo**: ~$0.067/imagem; cache agressivo por tipo/cena mantém o gasto em centavos por
   campanha.
 
+### TOK-6 — MODO JOGO: tela cheia imersiva + redesign do combate
+**Diretiva do usuário (12/jul, após teste no aparelho FÍSICO):** o combate FUNCIONA, mas os
+hexágonos ficam pequenos demais pro dedo (~20px; o mínimo Android é 48dp), as imagens dos tokens
+ficam invisíveis nesse tamanho, o fundo gerado não apareceu, e a tela desperdiça espaço com
+cabeçalho da ficha + abas. Visão do usuário: **em campanha, o app vira um JOGO em tela cheia** —
+sem menus superiores nem abas; só um "X" no canto superior direito pra sair.
+
+**Diagnóstico técnico do teste:**
+- Hexes pequenos: a grade raio 7 (15 hexes de diâmetro) é desenhada INTEIRA num canvas de ~1/4
+  da tela. No mouse do emulador funciona; no dedo, não.
+- Imagens "ausentes" nos tokens: elas provavelmente carregam — são É invisíveis a ~15px.
+- Fundo ausente: BUG — o canvas do combate REAL usa `fundoCenaCacheado` (cache-only); se a
+  geração ainda não terminou quando o canvas compôs, fica null pra sempre (as keys do
+  LaunchedEffect não mudam quando o arquivo aparece). O demo usa `obterFundoCena` (espera no
+  Mutex e recompõe) — o real tem que usar o mesmo caminho.
+- Poluição: labels de coordenadas (q,r) em todos os hexes.
+
+**TOK-6a — Modo Jogo + câmera + fixes:**
+1. `hideAppChrome` estendido: `selectedTitle == "Saga" && sagaCampanhaAtiva != null` → some
+   cabeçalho da ficha, PontosBar e bottom bar (REUSA a infra do VTT legado). **X flutuante** no
+   canto superior direito → `sagaSair()` (volta ao chrome normal).
+2. **Câmera do canvas**: enquadrar o BOUNDING BOX dos combatentes + 2 hexes de margem em vez da
+   grade inteira — hexes 3–4× maiores, auto-zoom conforme a luta se espalha/concentra.
+3. Labels de coordenadas REMOVIDOS (viram flag interna de debug).
+4. Fix do fundo no combate real (obterFundoCena com geração/espera, igual ao demo).
+
+**TOK-6b — Layout "de jogo" do combate:**
+1. Grade DOMINANTE (~60–70% da altura da tela).
+2. Feed narrativo vira OVERLAY translúcido no topo da grade (últimas 2 linhas; toque expande
+   para o histórico completo).
+3. Painel de ação COMPACTO na base: manobras em linha horizontal rolável; tracker de HP
+   minimalista (nome + barra, sem cards altos).
+4. Zoom/pan manual (pinch + drag) por cima da câmera automática.
+
 ## 5. Registro de execução
 - [x] ✅ TOK-1 — token de imagem + canvas novo + roteamento (10/jul/2026, commit 4fb8977 — TokenImageStore com recorte por rosto + HexCanvasTatico + hexes verdes/aviso/animação migrados do 3D + Switch 3D removido + 15 testes puros)
 - [x] ✅ TOK-2 — gatilho de inimigos (10/jul/2026 — GeminiImageService.gerarImagem genérico + obterTokenInimigo com cache por TIPO + Mutex dedup + salvarPngAtomico + gatilho fire-and-forget no iniciarCombate + canvas cache-first com geração on-demand no demo + 10 testes puros)
@@ -136,3 +170,5 @@ Evadir/Aguardar por último).
 - [x] ✅ TOK-4 — combate REAL no grid (11/jul/2026 — HexSetup + heroiMoveTatico + ponte no controller + HexCanvasCombateReal com anel de HP; MOVER de faixa substituído pelo toque no hex; revisão adversarial: 5 achados corrigidos incl. anel-alvo no HexPortabilidade e BFS anti-atravessar; 18 testes puros novos)
 - [x] ✅ TOK-5a — facing/através-de-hex/Retirada REAIS (11/jul/2026 — `CombatSession.PosicaoBridge` opcional: FLANCO −2/COSTAS anula nos DOIS sentidos (card de defesa ajustado via HexRegrasFacing com BD do escudo; esquiva passiva incluída), −4 atacando através de hex de inimigo, Retirada recua 1 hex real e atualiza as distâncias; +4 testes de integração com bridge fake; regressão zero sem bridge)
 - [x] ✅ TOK-5b — IA posicional do NPC + manter à distância (11/jul/2026 — `moverNpcNaGrade` itera HexTaticaNpc vizinho-a-vizinho: o goblin flanqueia/kita/recua de verdade; MOVER_E_ATACAR sem alcance consome o turno; fuga pela borda da grade; Interromper Investida mantém o oponente à distância via Disputa ST/Vontade−3. DEFERIDOS documentados: cobertura (sem obstáculos na grade), Evadir (BFS conservador cobre), Aguardar-por-alcance (já coberto pós-TOK-4))
+- [ ] TOK-6a — Modo Jogo (tela cheia + X pra sair) + câmera enquadrando os combatentes + labels fora + fix do fundo no combate real
+- [ ] TOK-6b — layout "de jogo" (grade dominante, feed em overlay, painel de ação compacto, zoom/pan)
