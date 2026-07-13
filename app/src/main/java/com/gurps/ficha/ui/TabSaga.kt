@@ -402,27 +402,26 @@ private fun FeedDaCampanha(viewModel: FichaViewModel) {
 
     Column(Modifier.fillMaxSize()) {
         // Cabeçalho da campanha
+        // Lote TOK-6a — MODO JOGO: header COMPACTO (uma linha fina) com o X de sair no canto
+        // direito (o chrome do app está escondido; este X é a única saída do "jogo").
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 12.dp, vertical = 8.dp),
+                .padding(horizontal = 12.dp, vertical = 2.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Column(Modifier.weight(1f)) {
                 Text(
-                    viewModel.sagaCampanhaAtiva?.nome ?: "Campanha",
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold
+                    viewModel.sagaCenaAtiva?.titulo ?: (viewModel.sagaCampanhaAtiva?.nome ?: "Campanha"),
+                    style = MaterialTheme.typography.titleSmall,
+                    fontWeight = FontWeight.Bold,
+                    maxLines = 1
                 )
-                viewModel.sagaCenaAtiva?.let {
-                    Text("Cena: ${it.titulo}", style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant)
-                }
             }
-            TextButton(
+            IconButton(
                 onClick = { viewModel.sagaSair() },
-                modifier = Modifier.semantics { contentDescription = "Sair para a lista de campanhas" }
-            ) { Text("Trocar") }
+                modifier = Modifier.semantics { contentDescription = "Sair da campanha" }
+            ) { Icon(Icons.Default.Close, contentDescription = null) }
         }
         HorizontalDivider()
 

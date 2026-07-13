@@ -68,7 +68,7 @@ private val COR_TOKEN_HEROI = Color(0xFF3B82F6)
 private val COR_TOKEN_INIMIGO = Color(0xFFEF4444)
 private val COR_FACING = Color(0xCCFFFFFF)
 private val COR_SCRIM_FUNDO = Color(0x66101820)  // escurece o fundo gerado p/ legibilidade da grade
-private const val SQRT3 = 1.7320508f
+internal const val SQRT3 = 1.7320508f
 
 /**
  * Wrapper do modo tático: carrega o token de imagem do herói a partir do retrato da ficha
@@ -199,21 +199,34 @@ fun HexCanvasDemo(
                     modifier = Modifier.padding(top = 2.dp))
             }
         }
-        Box(Modifier.fillMaxWidth().weight(1f)) {
+        BoxWithConstraints(Modifier.fillMaxWidth().weight(1f)) {
+            val largPx = constraints.maxWidth.toFloat()
+            val altPx = constraints.maxHeight.toFloat()
+            // Lote TOK-6a: câmera enquadra os tokens + hexes válidos (mesma UX do combate real).
+            val camAlvo = calcularCamera(
+                estado.tokens.map { it.posicao } + estado.hexesValidosParaMover,
+                largPx, altPx, estado.raioGrade
+            )
+            val camTam by animateFloatAsState(camAlvo.tam, tween(400), label = "camTam")
+            val camAx by animateFloatAsState(camAlvo.centroAx, tween(400), label = "camAx")
+            val camAy by animateFloatAsState(camAlvo.centroAy, tween(400), label = "camAy")
+            val cam = CameraHex(camTam, camAx, camAy)
+            val camAtual by rememberUpdatedState(cam)
             Canvas(
                 modifier = Modifier
                     .fillMaxSize()
                     .semantics { contentDescription = "Grade tática de hexágonos" }
                     .pointerInput(estado.raioGrade) {
                         detectTapGestures { toque ->
-                            val hex = telaParaHex(toque, size.width.toFloat(), size.height.toFloat(), estado.raioGrade)
+                            val hex = telaParaHexCam(toque.x, toque.y, camAtual,
+                                size.width.toFloat(), size.height.toFloat(), estado.raioGrade)
                             if (hex != null) estado = estado.aoTocarHex(hex)
                         }
                     }
             ) {
                 val larguraPx = size.width
                 val alturaPx = size.height
-                val hexSizePx = tamanhoHex(larguraPx, alturaPx, estado.raioGrade)
+                val hexSizePx = cam.tam
 
                 // Lote TOK-3: fundo da cena (vista top-down gerada) em escala COVER + scrim escuro
                 // por cima pra grade e os tokens continuarem legíveis. Sem fundo → cinza da Column.
@@ -235,23 +248,25 @@ fun HexCanvasDemo(
                     drawRect(color = COR_SCRIM_FUNDO)
                 }
 
-                // Grade.
+                // Grade (clip natural da tela esconde o fora-de-câmera).
                 for (hex in estado.hexesVisiveis) {
-                    val (cx, cy) = hexParaTela(hex, larguraPx, alturaPx, hexSizePx)
+                    val (cx, cy) = hexParaTelaCam(hex, cam, larguraPx, alturaPx)
+                    if (cx < -hexSizePx || cx > larguraPx + hexSizePx ||
+                        cy < -hexSizePx || cy > alturaPx + hexSizePx) continue
                     val destacado = hex == estado.hexSelecionado
                     desenharHex(cx, cy, hexSizePx, destacado, textMeasurer, hex)
                 }
                 // Hexes VÁLIDOS para mover — preenchimento verde translúcido.
                 for (hexValido in estado.hexesValidosParaMover) {
-                    val (cx, cy) = hexParaTela(hexValido, larguraPx, alturaPx, hexSizePx)
+                    val (cx, cy) = hexParaTelaCam(hexValido, cam, larguraPx, alturaPx)
                     desenharHexPreenchido(cx, cy, hexSizePx, COR_HEX_VALIDO_2D)
                 }
                 // Tokens por cima da grade — posição ANIMADA. Herói usa o retrato; inimigo usa a
                 // imagem gerada (TOK-2) quando o cache/geração já entregou; fallback círculo+inicial.
                 for (t in estado.tokens) {
                     val (ax, ay) = posAnimadas[t.id] ?: continue
-                    val cx = hexSizePx * ax + larguraPx / 2f
-                    val cy = hexSizePx * ay + alturaPx / 2f
+                    val cx = cam.tam * (ax - cam.centroAx) + larguraPx / 2f
+                    val cy = cam.tam * (ay - cam.centroAy) + alturaPx / 2f
                     val selecionado = t.id == estado.tokenSelecionadoId
                     val imagem = if (t.ehHeroi) tokenHeroi
                         else tokensInimigos[TokenImageStore.normalizarTipo(t.nome)]
@@ -314,7 +329,10 @@ private fun HexCanvasCombateReal(viewModel: FichaViewModel, modifier: Modifier =
         }
     }
 
-    // Fundo da cena (TOK-3).
+    // Fundo da cena (TOK-3). Lote TOK-6a — FIX do teste no aparelho: era cache-only; se a geração
+    // (gatilho pós-turno) ainda estava rodando quando a grade abriu, ficava cinza PRA SEMPRE (as
+    // keys não mudam quando o arquivo aparece). Agora usa o mesmo caminho do demo: cache-first e,
+    // no miss, obterFundoCena — que ESPERA no Mutex a geração em curso e recompõe quando chega.
     val camp = viewModel.sagaCampanhaAtiva
     val cena = viewModel.sagaCenaAtiva
     var fundoCena by remember(camp?.id, cena?.id, cena?.titulo, cena?.bioma) { mutableStateOf<ImageBitmap?>(null) }
@@ -322,8 +340,20 @@ private fun HexCanvasCombateReal(viewModel: FichaViewModel, modifier: Modifier =
         fundoCena = null
         if (camp == null || cena == null) return@LaunchedEffect
         if (!CenarioImageStore.cenaValidaParaFundo(cena.titulo)) return@LaunchedEffect
-        fundoCena = CenarioImageStore.fundoCenaCacheado(context, camp.id, cena.id, cena.titulo, cena.bioma)
-            ?.asImageBitmap()
+        var bmp = CenarioImageStore.fundoCenaCacheado(context, camp.id, cena.id, cena.titulo, cena.bioma)
+        if (bmp == null) {
+            val imgKey = com.gurps.ficha.BuildConfig.MESTRE_IA_GEMINI_IMAGE_KEY
+            val imgModel = com.gurps.ficha.BuildConfig.MESTRE_IA_GEMINI_IMAGE_MODEL
+            if (imgKey.isNotBlank()) {
+                bmp = CenarioImageStore.obterFundoCena(
+                    context, camp.id, cena.id, cena.titulo, cena.bioma, cena.humor
+                ) { prompt ->
+                    com.gurps.ficha.data.network.GeminiImageService
+                        .gerarImagem(imgKey, imgModel, prompt, rotuloLog = "fundo:${cena.titulo}")?.bytes
+                }
+            }
+        }
+        fundoCena = bmp?.asImageBitmap()
     }
 
     // Aviso do controller (auto-hide 2s).
@@ -363,21 +393,39 @@ private fun HexCanvasCombateReal(viewModel: FichaViewModel, modifier: Modifier =
                     modifier = Modifier.padding(top = 2.dp))
             }
         }
-        Box(Modifier.fillMaxWidth().weight(1f)) {
+        BoxWithConstraints(Modifier.fillMaxWidth().weight(1f)) {
+            val largPx = constraints.maxWidth.toFloat()
+            val altPx = constraints.maxHeight.toFloat()
+            // Lote TOK-6a — CÂMERA: enquadra os combatentes (+margem) em vez da grade inteira.
+            // Animada (400 ms) pra acompanhar a luta sem saltos. O tap usa o valor CORRENTE via
+            // rememberUpdatedState (o pointerInput não reinicia a cada frame da animação).
+            // Os hexes ALCANÇÁVEIS entram no enquadramento (achado da revisão): sem isso, com
+            // deslocamento 5 > margem 2,5, os verdes na direção oposta aos inimigos ficavam fora
+            // da tela e INTOCÁVEIS — recuar/fugir ficava limitado na prática. Selecionar o herói
+            // faz a câmera abrir suave; desselecionar reaperta.
+            val camAlvo = calcularCamera(
+                tokens.map { it.posicao } + hexesAlcancaveis, largPx, altPx, estado.raioGrade
+            )
+            val camTam by animateFloatAsState(camAlvo.tam, tween(400), label = "camTam")
+            val camAx by animateFloatAsState(camAlvo.centroAx, tween(400), label = "camAx")
+            val camAy by animateFloatAsState(camAlvo.centroAy, tween(400), label = "camAy")
+            val cam = CameraHex(camTam, camAx, camAy)
+            val camAtual by rememberUpdatedState(cam)
             Canvas(
                 modifier = Modifier
                     .fillMaxSize()
                     .semantics { contentDescription = "Grade tática do combate" }
                     .pointerInput(estado.raioGrade) {
                         detectTapGestures { toque ->
-                            val hex = telaParaHex(toque, size.width.toFloat(), size.height.toFloat(), estado.raioGrade)
+                            val hex = telaParaHexCam(toque.x, toque.y, camAtual,
+                                size.width.toFloat(), size.height.toFloat(), estado.raioGrade)
                             if (hex != null) viewModel.sagaAoTocarHexTatico(hex)
                         }
                     }
             ) {
                 val larguraPx = size.width
                 val alturaPx = size.height
-                val hexSizePx = tamanhoHex(larguraPx, alturaPx, estado.raioGrade)
+                val hexSizePx = cam.tam
 
                 // Fundo da cena (TOK-3) + scrim.
                 if (fundoCena != null) {
@@ -392,21 +440,23 @@ private fun HexCanvasCombateReal(viewModel: FichaViewModel, modifier: Modifier =
                     ), dstSize = IntSize(dw, dh))
                     drawRect(color = COR_SCRIM_FUNDO)
                 }
-                // Grade.
+                // Grade (o clip da tela esconde o que a câmera deixou de fora).
                 for (hex in estado.hexesVisiveis) {
-                    val (cx, cy) = hexParaTela(hex, larguraPx, alturaPx, hexSizePx)
+                    val (cx, cy) = hexParaTelaCam(hex, cam, larguraPx, alturaPx)
+                    if (cx < -hexSizePx || cx > larguraPx + hexSizePx ||
+                        cy < -hexSizePx || cy > alturaPx + hexSizePx) continue
                     desenharHex(cx, cy, hexSizePx, hex == estado.hexSelecionado, textMeasurer, hex)
                 }
                 // Hexes alcançáveis (Mover real — deslocamento do herói).
                 for (hexValido in hexesAlcancaveis) {
-                    val (cx, cy) = hexParaTela(hexValido, larguraPx, alturaPx, hexSizePx)
+                    val (cx, cy) = hexParaTelaCam(hexValido, cam, larguraPx, alturaPx)
                     desenharHexPreenchido(cx, cy, hexSizePx, COR_HEX_VALIDO_2D)
                 }
-                // Tokens + anel de HP + nome.
+                // Tokens + anel de HP + nome (posições animadas em unidades axiais → câmera).
                 for (t in tokens) {
                     val (ax, ay) = posAnimadas[t.id] ?: continue
-                    val cx = hexSizePx * ax + larguraPx / 2f
-                    val cy = hexSizePx * ay + alturaPx / 2f
+                    val cx = cam.tam * (ax - cam.centroAx) + larguraPx / 2f
+                    val cy = cam.tam * (ay - cam.centroAy) + alturaPx / 2f
                     val selecionado = t.id == estado.idSelecionado
                     val demoToken = TokenDemo(t.id, t.nome, t.posicao, t.ehHeroi, t.facing)
                     val imagem = if (t.ehHeroi) tokenHeroi
@@ -450,6 +500,58 @@ internal fun DrawScope.desenharAnelHpENome(
 }
 
 internal val ESTILO_NOME_TOKEN = TextStyle(color = Color(0xEEFFFFFF), fontSize = 10.sp)
+
+// ── Câmera (Lote TOK-6a): enquadra os COMBATENTES, não a grade inteira ─────
+
+/**
+ * A grade raio 7 inteira espremida na tela deixava cada hex com ~20px (o mínimo de toque do
+ * Android é 48dp) — no aparelho físico era intocável e as imagens dos tokens invisíveis.
+ * A câmera enquadra o BOUNDING BOX dos combatentes + margem, com piso (nunca menor que a visão
+ * full-grid) e teto (nunca hexes gigantes demais). Valores em "unidades axiais" (1 unidade = tam).
+ */
+internal data class CameraHex(val tam: Float, val centroAx: Float, val centroAy: Float)
+
+internal fun calcularCamera(posicoes: List<HexCoord>, larg: Float, alt: Float, raioGrade: Int): CameraHex {
+    val tamFull = tamanhoHex(larg, alt, raioGrade)
+    if (posicoes.isEmpty() || larg <= 0f || alt <= 0f) return CameraHex(tamFull, 0f, 0f)
+    val axs = posicoes.map { SQRT3 * it.q + SQRT3 / 2f * it.r }
+    val ays = posicoes.map { 1.5f * it.r }
+    val margemAx = SQRT3 * 2.5f  // ~2,5 hexes de folga
+    val margemAy = 1.5f * 2.5f
+    val minAx = axs.min() - margemAx; val maxAx = axs.max() + margemAx
+    val minAy = ays.min() - margemAy; val maxAy = ays.max() + margemAy
+    val wUnid = (maxAx - minAx).coerceAtLeast(0.1f)
+    val hUnid = (maxAy - minAy).coerceAtLeast(0.1f)
+    val tamMax = minOf(larg, alt) / 7f  // teto: ~7 unidades visíveis (combate colado não vira zoom infinito)
+    val piso = minOf(tamFull, tamMax)
+    val teto = maxOf(tamFull, tamMax)
+    val tam = minOf(larg / wUnid, alt / hUnid).coerceIn(piso, teto)
+    return CameraHex(tam, (minAx + maxAx) / 2f, (minAy + maxAy) / 2f)
+}
+
+/** Centro em px do hex [c] sob a câmera [cam]. */
+internal fun hexParaTelaCam(c: HexCoord, cam: CameraHex, larg: Float, alt: Float): Pair<Float, Float> {
+    val ax = SQRT3 * c.q + SQRT3 / 2f * c.r
+    val ay = 1.5f * c.r
+    return (cam.tam * (ax - cam.centroAx) + larg / 2f) to (cam.tam * (ay - cam.centroAy) + alt / 2f)
+}
+
+/** Toque em px → hex sob a câmera [cam] (cube-round); null fora da grade. */
+internal fun telaParaHexCam(x: Float, y: Float, cam: CameraHex, larg: Float, alt: Float, raioGrade: Int): HexCoord? {
+    if (cam.tam <= 0f) return null
+    val ax = (x - larg / 2f) / cam.tam + cam.centroAx
+    val ay = (y - alt / 2f) / cam.tam + cam.centroAy
+    val rFrac = ay / 1.5f
+    val qFrac = (ax - SQRT3 / 2f * rFrac) / SQRT3
+    val sFrac = -qFrac - rFrac
+    var rq = Math.round(qFrac.toDouble()).toInt()
+    var rr = Math.round(rFrac.toDouble()).toInt()
+    var rs = Math.round(sFrac.toDouble()).toInt()
+    val dq = kotlin.math.abs(rq - qFrac); val dr = kotlin.math.abs(rr - rFrac); val ds = kotlin.math.abs(rs - sFrac)
+    if (dq > dr && dq > ds) rq = -rr - rs else if (dr > ds) rr = -rq - rs else rs = -rq - rr
+    val hex = HexCoord(rq, rr)
+    return if (HexCoord.ORIGEM.distancia(hex) <= raioGrade) hex else null
+}
 
 // ── Geometria: hex ↔ tela (pointy-top, coordenadas axiais) ─────────────────
 
@@ -511,6 +613,9 @@ private fun pathDoHex(cx: Float, cy: Float, tam: Float): Path {
     return path
 }
 
+/** Lote TOK-6a: coordenadas (q,r) nos hexes poluíam a grade — agora só atrás desta flag de debug. */
+private const val DEBUG_COORDENADAS_HEX = false
+
 internal fun DrawScope.desenharHex(
     cx: Float, cy: Float, tam: Float, destacado: Boolean,
     textMeasurer: TextMeasurer, hex: HexCoord
@@ -518,10 +623,11 @@ internal fun DrawScope.desenharHex(
     val path = pathDoHex(cx, cy, tam)
     if (destacado) drawPath(path, color = COR_HEX_SELECIONADO)
     drawPath(path, color = COR_GRADE_LINHA, style = Stroke(width = 1.5f))
-    // Rótulo (q,r) minúsculo no topo do hex — útil pra depuração; sai no polimento do TOK-4.
-    val label = textMeasurer.measure(text = androidx.compose.ui.text.AnnotatedString("${hex.q},${hex.r}"),
-        style = ESTILO_LABEL_HEX)
-    drawText(label, topLeft = Offset(cx - label.size.width / 2f, cy - tam / 2f))
+    if (DEBUG_COORDENADAS_HEX) {
+        val label = textMeasurer.measure(text = androidx.compose.ui.text.AnnotatedString("${hex.q},${hex.r}"),
+            style = ESTILO_LABEL_HEX)
+        drawText(label, topLeft = Offset(cx - label.size.width / 2f, cy - tam / 2f))
+    }
 }
 
 /** Hex PREENCHIDO com [cor] (usado para destacar os hexes válidos de movimento). */

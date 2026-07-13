@@ -220,7 +220,12 @@ fun FichaScreen(viewModel: FichaViewModel) {
         listOf("Geral", "Traços", "Perícias", "Técnicas", "Equip.", "Rolagem", "Saga")
     }
     val selectedTitle = tabs.getOrNull(selectedTab).orEmpty()
-    val hideAppChrome = selectedTitle == "VTT" && vttImmersiveUi
+    val vttFullscreen = selectedTitle == "VTT" && vttImmersiveUi
+    // Lote TOK-6a — MODO JOGO: dentro de uma campanha da Saga, o app vira "jogo em tela cheia"
+    // (sem cabeçalho da ficha, sem PontosBar, sem abas). O X no header da campanha (TabSaga) sai.
+    // Diferente do VTT, NÃO força landscape — a Saga é vertical.
+    val sagaModoJogo = selectedTitle == "Saga" && viewModel.sagaCampanhaAtiva != null
+    val hideAppChrome = vttFullscreen || sagaModoJogo
     val maxTabIndex = tabs.lastIndex
     val exportCompativelLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.CreateDocument("application/json")
@@ -336,9 +341,10 @@ fun FichaScreen(viewModel: FichaViewModel) {
             vttImmersiveUi = false
         }
     }
-    DisposableEffect(hideAppChrome) {
+    // Orientação landscape é EXCLUSIVA do VTT legado — o Modo Jogo da Saga fica vertical.
+    DisposableEffect(vttFullscreen) {
         val previousOrientation = activity?.requestedOrientation
-        if (hideAppChrome && activity != null) {
+        if (vttFullscreen && activity != null) {
             activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
         }
         onDispose {
