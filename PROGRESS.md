@@ -3046,6 +3046,19 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - **Recomendação registrada** (maior valor × menor custo): Ataque Telegráfico (par do Enganoso), luta agarrada profunda (chaves/Mata-Leão estendendo o lote 422), Sangramento Grave + incapacitação de membro (item 5 do teste de batalha), Ataque Dedicado/Defensivo. Fora de escopo: posicional/hexágono, montaria, cinematográfico, dado de arma do NPC. Mudança só de documentação (não compila Kotlin).
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
+### Lote MA-2 — 14 de Julho de 2026 (PILAR MAGIA / Fase 2 — resolvedor de conjuração, motor puro)
+**Saga: o "cérebro" da magia, fiel ao livro — branch GURPS-Saga**
+- **Fonte lida direto**: regras do livro Magia nos chunks (`pt_magia` p.5–15) — lançamento, custo, resistência, distância, duração, choque, tempo de operação. Extraídas e conferidas para MÁXIMA fidelidade.
+- **`MagicCasting.kt` + `MagicEnergy`** (`domain/magic/`, PURO, sem Android): o resolvedor único que os dois palcos (narrativa MA-4 + combate MA-3) vão chamar. Caller joga os dados.
+- **`MagicEnergy.parse`**: o campo `energia` do catálogo é string livre ("2", "1 a 3", "Varia", "1/2") → `CustoEnergia`. Tolerante, nunca lança.
+- **`nhEfetivo(ctx)`** com PARCELAS (transparência p/ UI): mana (−5 baixa), distância (−1/m, só Comum/Área/Informação e se não tocar), sem-ver-nem-tocar (−5), múltiplas magias (−3 concentração / −1 andamento), queimar PV (−1/PV, p.8).
+- **`custoTotal`**: área × raio / Comum × MT ANTES da redução por NH (p.8); a redução usa o NH básico só com o −5 de mana baixa (não a distância); **Bloqueio NUNCA reduz** (p.12).
+- **`resolver`**: classifica 3d (MA-1), custo a pagar (decisivo perdoa; fracasso 1 exceto Informação paga tudo; crítico tudo + choque de retorno), marca `exigeResistencia` (resistível só automática no sucesso decisivo, p.13).
+- **`resolverResistencia`**: Disputa Rápida margem-operador × resistência-alvo, empate favorece o defensor, **Regra do 16** p/ alvo vivo, Abascanto penaliza o operador (p.14).
+- **Escala de efeito** (p.9/14): `tetoNiveisEfeito` = max(níveis da magia, Aptidão Mágica); 1 pto = 1d dano / 1s cegueira. **`tempoOperacaoAjustado`** por NH alto (p.9): NH20–24 metade, 25–29 ¼, +metade a cada 5, piso 1s.
+- **+29 testes** (`MagicCastingTest`), cada um citando a página da regra. Fronteira honesta: o resolvedor recebe NH básico (`calcularNivel`) e Aptidão (`MagicEngine`) já prontos — a fiação Android fica no MA-3/MA-4.
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
 ### Lote TOK-6b-3 — 14 de Julho de 2026 (VTT 2D / Fase 6b-3 — GRID PROTAGONISTA: layout pós-teste do 6b-2)
 **Saga: mais grade, menos moldura — feedback do teste no aparelho — branch GURPS-Saga**
 - **Trocar arma virou chip do herói** (`SubDialogoTrocarArma` no `MenuTaticoDoToken`): o botão mostra a arma empunhada (🔄 nome); abre o diálogo de armas; sacar é Preparar (gasta o turno) ou livre com Saque Rápido. Com isso o **painel fixo de arma do rodapé foi REMOVIDO** (`PainelArmaTatico` apagado, param `manobrasNoGrid` some).
