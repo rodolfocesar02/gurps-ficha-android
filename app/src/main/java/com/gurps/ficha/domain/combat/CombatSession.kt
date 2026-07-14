@@ -1,5 +1,13 @@
 package com.gurps.ficha.domain.combat
 
+import com.gurps.ficha.domain.magic.ContextoConjuracao
+import com.gurps.ficha.domain.magic.CustoEnergia
+import com.gurps.ficha.domain.magic.EfeitoChoqueRetorno
+import com.gurps.ficha.domain.magic.MagicCasting
+import com.gurps.ficha.domain.magic.ResistenciaMagia
+import com.gurps.ficha.domain.magic.ResultadoOperacao
+import com.gurps.ficha.domain.magic.AtributoResistencia
+import com.gurps.ficha.domain.magic.TipoClasseMagia
 import com.gurps.ficha.domain.roll.CriticoRules
 import kotlin.math.floor
 import kotlin.random.Random
@@ -718,6 +726,133 @@ class CombatSession(
         val txt = "👁️ Você avalia $nome (+$avaliarStacks no próximo golpe corpo-a-corpo)."
         log += txt
         return txt
+    }
+
+    // ── MAGIA no combate (Lote MA-3a) ────────────────────────────────────────────────────────────
+
+    /** Resultado factual de uma conjuração no combate, para o feed do Narrador. */
+    data class ResultadoConjuracaoCombate(
+        val sucesso: Boolean,
+        val texto: String,
+        val danoCausado: Int = 0,
+        val alvoResistiu: Boolean = false,
+    )
+
+    /**
+     * Lote MA-3a: o herói CONJURA uma magia no combate (equivale à manobra Concentrar, 1 segundo). O
+     * CONTROLLER monta o [ctx] a partir da ficha (NH básico, Aptidão, classe, custo lidos do catálogo);
+     * aqui o motor rola os dados (via [MagicCasting], o resolvedor do MA-2), paga a fadiga e aplica o
+     * que é DERIVÁVEL por regra:
+     *  - **Projétil**: dano 1d × energia investida ao alvo, com RD (Magia p.470). Deferido p/ MA-3b: o
+     *    teste separado de Ataque Inato e a esquiva do alvo — por ora o projétil acerta no sucesso do
+     *    lançamento; o tipo de dano é aproximado por contusão (×1 de ferimento, como queimadura básica).
+     *  - **Resistível**: Disputa Rápida de resistência (HT/Vont/… do alvo, Regra do 16) — o efeito além
+     *    de "resistiu ou não" é narrado pelo Mestre.
+     *  - **Falha crítica**: choque de retorno (dano/atordoamento no operador).
+     * Efeitos bespoke (Sono, Cura, Criar Objeto…) ficam para o Narrador; o motor loga o fato. Consome
+     * o turno pelo [depoisDaAcaoDoHeroi] do controller (como qualquer manobra).
+     */
+    fun heroiConjurar(
+        ctx: ContextoConjuracao,
+        custo: CustoEnergia,
+        energiaInvestida: Int,
+        magiaNome: String,
+        alvoId: String?,
+    ): ResultadoConjuracaoCombate {
+        inicioAcaoHeroi()
+        limparAvaliar(); limparApontar(); limparFinta()
+
+        val nhEf = MagicCasting.nhEfetivo(ctx)
+        val custoTotal = MagicCasting.custoTotal(ctx, custo, energiaInvestida.takeIf { custo.variavel })
+        val rol = rolar3d6()
+        val r = MagicCasting.resolver(nhEf.valor, rol, custoTotal, ctx.classe, rolagemChoqueRetorno3d = rolar3d6())
+
+        // Paga a fadiga (MA-3a: sempre em PF; queimar PV entra num lote futuro).
+        heroi.pfAtual = (heroi.pfAtual - r.custoAPagar).coerceAtLeast(0)
+
+        val modsTxt = if (nhEf.componentes.isEmpty()) "" else
+            " [" + nhEf.componentes.joinToString(", ") { "${it.motivo} ${if (it.valor >= 0) "+" else ""}${it.valor}" } + "]"
+        val alvo = alvoId?.let { id -> inimigos.firstOrNull { it.id == id && it.vivo } }
+        val sb = StringBuilder()
+
+        when (r.resultado) {
+            ResultadoOperacao.FALHA_CRITICA -> {
+                sb.append("💥 CHOQUE DE RETORNO ao conjurar $magiaNome! (NH ${nhEf.valor}$modsTxt, rolou $rol) ")
+                aplicarChoqueRetorno(r.choqueRetorno, sb)
+                verificarFim(); log += sb.toString().trim()
+                return ResultadoConjuracaoCombate(false, sb.toString().trim())
+            }
+            ResultadoOperacao.FRACASSO -> {
+                sb.append("✨ Você falha ao conjurar $magiaNome (NH ${nhEf.valor}$modsTxt, rolou $rol). Perde ${r.custoAPagar} PF.")
+                log += sb.toString().trim()
+                return ResultadoConjuracaoCombate(false, sb.toString().trim())
+            }
+            else -> { // SUCESSO ou SUCESSO_DECISIVO
+                val decisivo = r.resultado == ResultadoOperacao.SUCESSO_DECISIVO
+                sb.append(if (decisivo) "🌟 Sucesso DECISIVO em $magiaNome" else "🔮 Você conjura $magiaNome")
+                sb.append(" (NH ${nhEf.valor}$modsTxt, rolou $rol; custo ${r.custoAPagar} PF).")
+
+                var alvoResistiu = false
+                var dano = 0
+
+                if (r.exigeResistencia && alvo != null && ctx.classe.resistencia != null) {
+                    val resist = resistenciaDoAlvo(alvo, ctx.classe.resistencia!!)
+                    val rr = MagicCasting.resolverResistencia(nhEf.valor, rol, resist, rolar3d6(), regraDo16 = true)
+                    alvoResistiu = rr.alvoResistiu
+                    sb.append(if (alvoResistiu) " ${alvo.nome} RESISTE (resistência $resist)."
+                              else " ${alvo.nome} não resiste (resistência $resist).")
+                }
+
+                if (!alvoResistiu && TipoClasseMagia.PROJETIL in ctx.classe.classes && alvo != null) {
+                    val energia = energiaInvestida.coerceAtLeast(1)
+                    val bruto = rolarDano("${energia}d", random)
+                    val dn = HitLocationRules.aplicarDano(alvo.pvMax, bruto, DanoTipo.CONT, LocalAtaque.TORSO,
+                        alvo.stats?.rd ?: 0, alvo.stats?.tolerancia ?: ToleranciaFerimentos.NORMAL)
+                    InjuryRules.ferir(alvo, dn.pvSubtrair, alvo.stats?.ht ?: 10, random)
+                    dano = dn.pvSubtrair
+                    sb.append(" Projétil de ${energia}d → ${dn.pvSubtrair} de dano em ${alvo.nome}" +
+                        (if (!alvo.vivo) " (fora de combate!)." else "."))
+                } else if (!alvoResistiu && TipoClasseMagia.PROJETIL !in ctx.classe.classes) {
+                    sb.append(" Efeito narrado pelo Mestre.")
+                }
+
+                verificarFim(); log += sb.toString().trim()
+                return ResultadoConjuracaoCombate(true, sb.toString().trim(), dano, alvoResistiu)
+            }
+        }
+    }
+
+    /** Valor de resistência do alvo (MA-3a): atributo indicado + Abascanto embutido; combinadas pegam o maior. */
+    private fun resistenciaDoAlvo(alvo: Combatente, resist: ResistenciaMagia): Int {
+        fun valor(a: AtributoResistencia): Int = when (a) {
+            AtributoResistencia.HT -> alvo.stats?.ht ?: 10
+            AtributoResistencia.IQ, AtributoResistencia.VONTADE, AtributoResistencia.VONTADE_OU_PERICIA ->
+                alvo.stats?.iq ?: 10 // Vontade ~ IQ para o NPC (não há campo de Vontade separado)
+            AtributoResistencia.DX -> alvo.stats?.dx ?: 10
+            AtributoResistencia.ST -> alvo.stats?.st ?: 10
+            else -> alvo.stats?.ht ?: 10 // MÁGICA/COMPOSTA/ESPECIAL → fallback HT (delegado ao Mestre)
+        }
+        val opcoes = (listOf(resist.atributo) + resist.alternativos).map(::valor)
+        return (opcoes.max()) + resist.modificadorDefensor
+    }
+
+    /** Aplica o choque de retorno (Magia p.7) ao operador: dano/atordoamento conforme a tabela do MA-1. */
+    private fun aplicarChoqueRetorno(efeito: EfeitoChoqueRetorno?, sb: StringBuilder) {
+        if (efeito == null) return
+        sb.append(efeito.rotulo)
+        if (efeito.danoAoOperadorDadosD6 > 0) {
+            val d = rolarDano("${efeito.danoAoOperadorDadosD6}d", random)
+            InjuryRules.ferir(heroi, d, heroiPerfil.ht, random)
+            sb.append(" (você sofre $d de dano)")
+        }
+        if (efeito.danoAoOperadorPontos > 0) {
+            InjuryRules.ferir(heroi, efeito.danoAoOperadorPontos, heroiPerfil.ht, random)
+            sb.append(" (você sofre ${efeito.danoAoOperadorPontos} de dano)")
+        }
+        if (efeito.atordoaOperador) {
+            heroi.condicoes.add(Condicao.ATORDOADO)
+            sb.append(" (você fica atordoado)")
+        }
     }
 
     /** Apontar (MB p.364): mira → +Precisão (Acc) + mira contínua (+1/+2) + firmar arma de fogo (+1). */

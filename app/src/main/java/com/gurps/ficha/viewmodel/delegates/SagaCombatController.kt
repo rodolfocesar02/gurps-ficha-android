@@ -5,6 +5,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import com.gurps.ficha.domain.combat.*
+import com.gurps.ficha.domain.engine.MagicEngine
+import com.gurps.ficha.domain.magic.ContextoConjuracao
+import com.gurps.ficha.domain.magic.MagicCasting
+import com.gurps.ficha.domain.magic.MagicClassParser
+import com.gurps.ficha.domain.magic.MagicEnergy
+import com.gurps.ficha.domain.magic.NivelMana
+import com.gurps.ficha.domain.magic.TipoClasseMagia
 import com.gurps.ficha.domain.filters.CatalogFilters
 import com.gurps.ficha.domain.loaders.BestiarioCatalogo
 import com.gurps.ficha.model.Personagem
@@ -57,12 +64,29 @@ data class CombatenteUi(
     }
 }
 
+/** Lote MA-3a: uma magia que o herói pode conjurar no combate, pronta para o seletor. */
+data class MagiaConjuravelUi(
+    val id: String,
+    val nome: String,
+    val classe: String,
+    val nhBasico: Int,
+    val custoTexto: String,
+    /** Projétil habilita o controle de energia investida (1d por ponto). */
+    val ehProjetil: Boolean,
+    /** Teto de energia do Projétil = nível de Aptidão Mágica (Magia p.12). */
+    val aptidaoMagica: Int,
+    val castavel: Boolean,
+    val motivo: String,
+)
+
 /** Estado completo do combate para a UI. */
 data class CombatUiState(
     val rodada: Int,
     val combatentes: List<CombatenteUi>,
     val vezDoHeroi: Boolean,
     val manobrasHeroi: List<Manobra>,
+    /** Lote MA-3a: magias conjuráveis do herói (vazio se ele não é mago / não é a vez dele). */
+    val magiasConjuraveis: List<MagiaConjuravelUi> = emptyList(),
     val alvos: List<CombatenteUi>,
     /** Alvos alcançáveis com Mover e Atacar (Lote 378): corpo-a-corpo = reach + Deslocamento; à distância = dentro do Máx. */
     val alvosMoverEAtacar: List<CombatenteUi>,
@@ -651,6 +675,75 @@ class SagaCombatController(
         depoisDaAcaoDoHeroi()
     }
 
+    /**
+     * Lote MA-3a: o herói CONJURA uma magia no combate (manobra Concentrar, consome o turno). O
+     * controller extrai da ficha o NH básico e a Aptidão, monta o contexto puro e delega ao motor
+     * ([CombatSession.heroiConjurar], que usa o resolvedor do MA-2). [alvoId] = null para automagia.
+     */
+    fun heroiConjurar(magiaId: String, alvoId: String?, energiaInvestida: Int) {
+        val s = sessao ?: return
+        if (!s.combatenteAtual().ehHeroi || s.encerrado) return
+        val p = viewModel.personagem
+        val magia = p.magias.firstOrNull { it.definicaoId == magiaId || it.nome == magiaId } ?: return
+        val aptidao = MagicEngine.getNivelAptidaoMagicaParaMagia(p, null)
+        val classe = MagicClassParser.parse(magia.classe)
+        val custo = MagicEnergy.parse(magia.energia)
+        val distancia = if (alvoId == null) 0
+            else s.encounter.combatentes.firstOrNull { it.id == alvoId }?.let { s.distancia(it) } ?: 0
+        val ctx = ContextoConjuracao(
+            nhBasico = magia.calcularNivel(p, aptidao),
+            classe = classe,
+            mana = NivelMana.NORMAL,          // MA-5: mana ambiente por cena
+            distanciaMetros = distancia,
+            tocando = false,
+            veOuToca = true,
+            raioAreaMetros = 1,               // MA-3b: área centrada num hex
+        )
+        s.heroiConjurar(ctx, custo, energiaInvestida, magia.nome, alvoId)
+        viewModel.sagaDefinirPfAtual(s.heroi.pfAtual) // sincroniza a fadiga gasta com a ficha
+        depoisDaAcaoDoHeroi()
+    }
+
+    /** Rótulo curto da classe de magia para o seletor de conjuração. */
+    private fun rotuloClasse(c: TipoClasseMagia): String = when (c) {
+        TipoClasseMagia.COMUM -> "Comum"; TipoClasseMagia.AREA -> "Área"
+        TipoClasseMagia.PROJETIL -> "Projétil"; TipoClasseMagia.TOQUE -> "Toque"
+        TipoClasseMagia.BLOQUEIO -> "Bloqueio"; TipoClasseMagia.INFORMACAO -> "Informação"
+        TipoClasseMagia.ENCANTAMENTO -> "Encantamento"; TipoClasseMagia.ESPECIAL -> "Especial"
+    }
+
+    /** Lote MA-3a: monta a lista de magias conjuráveis do herói para o seletor (só na vez dele). */
+    private fun montarMagiasConjuraveis(s: CombatSession, vezHeroi: Boolean): List<MagiaConjuravelUi> {
+        if (!vezHeroi) return emptyList()
+        val p = viewModel.personagem
+        if (p.magias.isEmpty()) return emptyList()
+        val aptidao = MagicEngine.getNivelAptidaoMagicaParaMagia(p, null)
+        val temPf = s.heroi.pfAtual > 0
+        return p.magias.map { m ->
+            val classe = MagicClassParser.parse(m.classe)
+            val custo = MagicEnergy.parse(m.energia)
+            val ehProjetil = TipoClasseMagia.PROJETIL in classe.classes
+            val custoTxt = when {
+                custo.variavel && ehProjetil -> "Varia (1d/pto)"
+                custo.variavel -> "Varia"
+                custo.base != null -> "${custo.base} PF"
+                custo.fracao != null -> "${custo.fracao}×raio PF"
+                else -> "Varia"
+            }
+            MagiaConjuravelUi(
+                id = m.definicaoId.ifBlank { m.nome },
+                nome = m.nome,
+                classe = classe.classes.joinToString("/") { rotuloClasse(it) },
+                nhBasico = m.calcularNivel(p, aptidao),
+                custoTexto = custoTxt,
+                ehProjetil = ehProjetil,
+                aptidaoMagica = aptidao.coerceAtLeast(1),
+                castavel = temPf,
+                motivo = if (!temPf) "sem PF" else "",
+            )
+        }
+    }
+
     /** Lote 383: Finta — Disputa Rápida com a arma empunhada (corpo-a-corpo) que reduz a defesa do alvo. */
     fun heroiFintar(alvoId: String) {
         val s = sessao ?: return
@@ -976,6 +1069,7 @@ class SagaCombatController(
             combatentes = combs,
             vezDoHeroi = vezHeroi,
             manobrasHeroi = manobras,
+            magiasConjuraveis = montarMagiasConjuraveis(s, vezHeroi),
             alvos = alvos,
             alvosMoverEAtacar = alvosMover,
             ataques = ataques,

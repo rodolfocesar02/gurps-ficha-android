@@ -1013,6 +1013,7 @@ fun MenuTaticoDoToken(
     var posturaDialogo by remember(tokenId) { mutableStateOf(false) }
     var defesaTotalDialogo by remember(tokenId) { mutableStateOf(false) }
     var trocarArmaDialogo by remember(tokenId) { mutableStateOf(false) } // Lote TOK-6b-3: Trocar arma virou chip do token
+    var conjurarDialogo by remember(tokenId) { mutableStateOf(false) }    // Lote MA-3a: chip 🔮 Conjurar
 
     val ehHeroi = tokenId == "heroi"
     val alvo = if (ehHeroi) null
@@ -1098,6 +1099,18 @@ fun MenuTaticoDoToken(
                     )
                 }
             }
+            // Lote MA-3a: chip 🔮 Conjurar — só no herói e só se ele conhece magias.
+            if (ehHeroi && estado.magiasConjuraveis.isNotEmpty()) {
+                Surface(
+                    onClick = { conjurarDialogo = true },
+                    color = Color(0x334FC3F7), contentColor = Color.White, shape = RoundedCornerShape(14.dp),
+                    modifier = Modifier.padding(horizontal = 3.dp)
+                        .semantics { contentDescription = "Conjurar magia" }
+                ) {
+                    Text("🔮 Conjurar", style = MaterialTheme.typography.labelMedium,
+                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 8.dp))
+                }
+            }
             // Lote TOK-6b-3: "Trocar arma" saiu do painel de baixo (removido) e virou chip do herói —
             // abre o diálogo de armas; sacar é Preparar (gasta o turno) ou livre com Saque Rápido.
             if (ehHeroi && estado.ataques.size > 1) {
@@ -1177,6 +1190,89 @@ fun MenuTaticoDoToken(
             onFechar = { trocarArmaDialogo = false }
         )
     }
+
+    if (conjurarDialogo) {
+        SubDialogoConjurar(
+            magias = estado.magiasConjuraveis,
+            inimigos = estado.combatentes.filter { !it.ehHeroi && it.vivo },
+            onConjurar = { magiaId, alvoId, energia ->
+                viewModel.sagaCombateConjurar(magiaId, alvoId, energia); conjurarDialogo = false; onFechar()
+            },
+            onFechar = { conjurarDialogo = false }
+        )
+    }
+}
+
+/**
+ * Lote MA-3a: seletor de conjuração. Escolhe a magia, o alvo (um inimigo ou "em mim mesmo") e, para
+ * Projéteis, quanta energia investir (1d de dano por ponto, teto na Aptidão Mágica). Conjurar é a
+ * manobra Concentrar — gasta o turno. Efeitos bespoke são narrados pelo Mestre (MA-4).
+ */
+@Composable
+private fun SubDialogoConjurar(
+    magias: List<com.gurps.ficha.viewmodel.delegates.MagiaConjuravelUi>,
+    inimigos: List<CombatenteUi>,
+    onConjurar: (magiaId: String, alvoId: String?, energia: Int) -> Unit,
+    onFechar: () -> Unit,
+) {
+    var magiaSel by remember { mutableStateOf(magias.firstOrNull()) }
+    // null = "em mim mesmo" (automagia); senão o id do inimigo.
+    var alvoId by remember { mutableStateOf<String?>(inimigos.firstOrNull()?.id) }
+    var energia by remember { mutableIntStateOf(1) }
+
+    AlertDialog(
+        onDismissRequest = onFechar,
+        title = { Text("Conjurar magia") },
+        text = {
+            Column(Modifier.verticalScroll(rememberScrollState())) {
+                Text("Conjurar é a manobra Concentrar — gasta o turno.",
+                    style = MaterialTheme.typography.bodySmall, fontStyle = FontStyle.Italic,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant)
+                Spacer(Modifier.height(6.dp))
+                Text("Magia", fontWeight = FontWeight.Bold, style = MaterialTheme.typography.labelLarge)
+                magias.forEach { m ->
+                    OpcaoRadio(
+                        selecionado = magiaSel?.id == m.id,
+                        rotulo = "${m.nome} — ${m.classe}, NH ${m.nhBasico}, ${m.custoTexto}" + if (!m.castavel) " (${m.motivo})" else "",
+                        descricao = "Conjurar ${m.nome}, classe ${m.classe}, custo ${m.custoTexto}" + if (!m.castavel) ", indisponível: ${m.motivo}" else "",
+                        onClick = { magiaSel = m; if (!m.ehProjetil) energia = 1 else energia = energia.coerceIn(1, m.aptidaoMagica) }
+                    )
+                }
+
+                Spacer(Modifier.height(8.dp))
+                Text("Alvo", fontWeight = FontWeight.Bold, style = MaterialTheme.typography.labelLarge)
+                OpcaoRadio(alvoId == null, "Em mim mesmo (automagia)", "Conjurar sobre si mesmo") { alvoId = null }
+                inimigos.forEach { a ->
+                    OpcaoRadio(alvoId == a.id, "${a.nome} (${a.distanciaM}m)", "Alvo ${a.nome}") { alvoId = a.id }
+                }
+
+                // Energia investida — só faz diferença mecânica em Projétil (1d de dano por ponto).
+                val proj = magiaSel?.ehProjetil == true
+                if (proj) {
+                    Spacer(Modifier.height(8.dp))
+                    Text("Energia investida: ${energia} (→ ${energia}d de dano)", fontWeight = FontWeight.Bold,
+                        style = MaterialTheme.typography.labelLarge)
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        OutlinedButton(onClick = { if (energia > 1) energia-- },
+                            modifier = Modifier.semantics { contentDescription = "Menos energia" }) { Text("−") }
+                        Text("${energia}", Modifier.padding(horizontal = 16.dp), fontWeight = FontWeight.Bold)
+                        val teto = magiaSel?.aptidaoMagica ?: 1
+                        OutlinedButton(onClick = { if (energia < teto) energia++ },
+                            modifier = Modifier.semantics { contentDescription = "Mais energia" }) { Text("+") }
+                    }
+                }
+            }
+        },
+        confirmButton = {
+            val m = magiaSel
+            Button(
+                onClick = { if (m != null) onConjurar(m.id, alvoId, if (m.ehProjetil) energia else 1) },
+                enabled = m != null && m.castavel,
+                modifier = Modifier.semantics { contentDescription = "Conjurar a magia escolhida" }
+            ) { Text("Conjurar") }
+        },
+        dismissButton = { TextButton(onClick = onFechar) { Text("Cancelar") } }
+    )
 }
 
 /** Lote TOK-6b-3: troca de arma como diálogo do token (substitui o painel de arma fixo do rodapé). */

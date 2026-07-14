@@ -50,6 +50,28 @@ ficar fiel. Puro, determinístico (caller joga os dados), 29 testes.
   fiação e chamam este cérebro.
 
 ## MA-3 — Magia no COMBATE (grid + manobra)
+
+### ✅ MA-3a FEITO — a espinha conjurável no grid
+- Chip **🔮 Conjurar** no menu do token do herói (só se ele conhece magias) → `SubDialogoConjurar`
+  (escolhe magia + alvo [inimigo ou "em mim"] + energia do Projétil). Conjurar = manobra Concentrar
+  (gasta o turno).
+- **`CombatSession.heroiConjurar(ctx, custo, energia, nome, alvoId)`**: rola pelos resolvedores do
+  MA-2, paga a fadiga (PF), aplica o que é DERIVÁVEL por regra:
+  - **Projétil**: dano 1d × energia investida ao alvo, com RD (Magia p.470).
+  - **Resistível**: Disputa Rápida (HT/Vont/… do alvo, Regra do 16, Vontade≈IQ no NPC).
+  - **Falha crítica**: choque de retorno (dano/atordoamento no operador).
+  - Efeito bespoke → narrado pelo Mestre; o motor loga o fato.
+- Controller extrai da ficha (NH via `calcularNivel`, Aptidão via `MagicEngine`, classe/energia do
+  catálogo já em `MagiaSelecionada`); `CombatUiState.magiasConjuraveis` alimenta o seletor; a fadiga
+  gasta sincroniza com a ficha.
+- **+4 testes** de integração (`MagicCombatTest`): projétil causa dano + gasta PF; RD reduz; log
+  sempre registra e PF nunca sobe; automagia não aplica dano de projétil.
+- **Deferido honestamente p/ MA-3b+**: teste separado de Ataque Inato + esquiva do alvo (por ora o
+  projétil acerta no sucesso do lançamento); conjuração multi-turno + interrupção; Toque; Bloqueio;
+  Área centrada num hex; magias ATIVAS no combate + tick de manutenção; queimar PV; mana por cena
+  (fixa em NORMAL); mapeamento de condição (Sono/Cegueira → `Condicao`); NPC conjurador.
+
+### MA-3b/c (próximos)
 - Chip `🔮 Conjurar` no `MenuTaticoDoToken` do herói (só se conhece magias).
 - Seletor de magia: NH, custo, tempo de operação, classe; esmaece as impossíveis (mana nula, FP
   insuficiente, pré-requisito faltando).
@@ -82,6 +104,8 @@ ficar fiel. Puro, determinístico (caller joga os dados), 29 testes.
 ## Registro de execução
 - [x] ✅ MA-1 — motor puro (mana/custo/área/distância/choque/tick + parser de classe)
 - [x] ✅ MA-2 — resolvedor `MagicCasting` + `MagicEnergy` (cérebro compartilhado, fiel ao livro pt_magia p.5–15, 29 testes)
-- [ ] MA-3 — magia no combate (chip Conjurar + mira + multi-turno + magias ativas)
+- [x] ✅ MA-3a — espinha conjurável no grid (chip 🔮 Conjurar + seletor + `heroiConjurar` no motor: Projétil com dano/RD, resistência, choque; 4 testes de integração)
+- [ ] MA-3b — Projétil 2 testes + esquiva do alvo; Área no hex; magias ativas + tick
+- [ ] MA-3c — Toque, Bloqueio, conjuração multi-turno + interrupção, queimar PV
 - [ ] MA-4 — magia na narrativa (tool `lancar_magia`)
 - [ ] MA-5 — polimento + honestidade

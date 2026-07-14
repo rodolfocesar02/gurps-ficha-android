@@ -3046,6 +3046,15 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - **Recomendação registrada** (maior valor × menor custo): Ataque Telegráfico (par do Enganoso), luta agarrada profunda (chaves/Mata-Leão estendendo o lote 422), Sangramento Grave + incapacitação de membro (item 5 do teste de batalha), Ataque Dedicado/Defensivo. Fora de escopo: posicional/hexágono, montaria, cinematográfico, dado de arma do NPC. Mudança só de documentação (não compila Kotlin).
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
+### Lote MA-3a — 14 de Julho de 2026 (PILAR MAGIA / Fase 3a — a espinha conjurável no grid)
+**Saga: o herói CONJURA no combate — chip 🔮 no token — branch GURPS-Saga**
+- **Chip 🔮 Conjurar** no menu do token do herói (só se ele conhece magias) → `SubDialogoConjurar`: escolhe a magia (NH, classe, custo), o alvo (um inimigo ou "em mim mesmo") e — para Projétil — a energia investida (1d de dano por ponto, teto na Aptidão Mágica). Conjurar = manobra Concentrar (gasta o turno).
+- **`CombatSession.heroiConjurar`**: usa os resolvedores do MA-2 (rola 3d, NH efetivo, custo), **paga a fadiga (PF)** e aplica o que é DERIVÁVEL por regra: **Projétil** → dano 1d × energia com RD (Magia p.470); **Resistível** → Disputa Rápida (HT/Vont do alvo, Regra do 16, Vontade≈IQ no NPC); **falha crítica** → choque de retorno (dano/atordoamento no operador). Efeito bespoke (Sono/Cura/Criar) → narrado; o motor loga o fato.
+- **Controller** extrai da ficha: NH via `calcularNivel`, Aptidão via `MagicEngine`, classe/energia do catálogo já em `MagiaSelecionada` (sem DataRepository). `CombatUiState.magiasConjuraveis` alimenta o seletor; a fadiga gasta sincroniza com a ficha (`sagaDefinirPfAtual`).
+- **+4 testes de integração** (`MagicCombatTest`): projétil causa dano + gasta PF; RD reduz o dano; log sempre registra e PF nunca sobe; automagia não aplica dano de projétil. Zero regressão na suíte de combate.
+- **Deferido honestamente p/ MA-3b+**: teste separado de Ataque Inato + esquiva do alvo (por ora o projétil acerta no sucesso do lançamento; tipo de dano aproximado por contusão ×1); conjuração multi-turno + interrupção; Toque; Bloqueio; Área no hex; magias ATIVAS + tick; queimar PV; mana por cena (fixa em NORMAL); Sono/Cegueira → `Condicao`; NPC conjurador.
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
 ### Lote MA-2 — 14 de Julho de 2026 (PILAR MAGIA / Fase 2 — resolvedor de conjuração, motor puro)
 **Saga: o "cérebro" da magia, fiel ao livro — branch GURPS-Saga**
 - **Fonte lida direto**: regras do livro Magia nos chunks (`pt_magia` p.5–15) — lançamento, custo, resistência, distância, duração, choque, tempo de operação. Extraídas e conferidas para MÁXIMA fidelidade.
