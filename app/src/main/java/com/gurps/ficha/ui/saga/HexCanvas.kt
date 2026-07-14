@@ -4,6 +4,7 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.MaterialTheme
@@ -22,6 +23,7 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.clipPath
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextMeasurer
@@ -203,14 +205,18 @@ fun HexCanvasDemo(
             val largPx = constraints.maxWidth.toFloat()
             val altPx = constraints.maxHeight.toFloat()
             // Lote TOK-6a: câmera enquadra os tokens + hexes válidos (mesma UX do combate real).
+            // Lote TOK-6b-1: piso de toque de 40dp + pan por arrasto (igual ao combate real).
+            val pisoToquePx = with(LocalDensity.current) { 40.dp.toPx() }
             val camAlvo = calcularCamera(
                 estado.tokens.map { it.posicao } + estado.hexesValidosParaMover,
-                largPx, altPx, estado.raioGrade
+                largPx, altPx, estado.raioGrade, pisoToquePx = pisoToquePx
             )
             val camTam by animateFloatAsState(camAlvo.tam, tween(400), label = "camTam")
             val camAx by animateFloatAsState(camAlvo.centroAx, tween(400), label = "camAx")
             val camAy by animateFloatAsState(camAlvo.centroAy, tween(400), label = "camAy")
-            val cam = CameraHex(camTam, camAx, camAy)
+            var panPx by remember { mutableStateOf(Offset.Zero) }
+            LaunchedEffect(camAlvo) { panPx = Offset.Zero }
+            val cam = cameraEfetiva(camTam, camAx, camAy, panPx.x, panPx.y, estado.raioGrade)
             val camAtual by rememberUpdatedState(cam)
             Canvas(
                 modifier = Modifier
@@ -221,6 +227,12 @@ fun HexCanvasDemo(
                             val hex = telaParaHexCam(toque.x, toque.y, camAtual,
                                 size.width.toFloat(), size.height.toFloat(), estado.raioGrade)
                             if (hex != null) estado = estado.aoTocarHex(hex)
+                        }
+                    }
+                    .pointerInput(Unit) {
+                        detectDragGestures { change, dragAmount ->
+                            change.consume()
+                            panPx += dragAmount
                         }
                     }
             ) {
@@ -284,7 +296,7 @@ fun HexCanvasDemo(
 /**
  * Lote TOK-4: canvas do combate REAL — tokens/posições vêm do [FichaViewModel] (SagaCombatController),
  * o toque vai pro controller (seleção + manobra MOVER tática), hexes alcançáveis do herói em verde,
- * anel de HP e nome sob cada token. Reusa TODO o desenho do demo (TokenTatico → TokenDemo).
+ * barra de HP e nome sob cada token. Reusa TODO o desenho do demo (TokenTatico → TokenDemo).
  */
 @Composable
 private fun HexCanvasCombateReal(viewModel: FichaViewModel, modifier: Modifier = Modifier) {
@@ -292,7 +304,7 @@ private fun HexCanvasCombateReal(viewModel: FichaViewModel, modifier: Modifier =
     val estado = viewModel.sagaEstadoTatico ?: return
     // Dependência EXPLÍCITA do CombatUiState observável: PV/condições mudam SEM o estadoTatico ser
     // reatribuído (dano sem movimento → sincronizarGridComEncounter devolve a MESMA instância).
-    // tokensTaticos lê o encounter mutável não-observável — sem esta leitura, o anel de HP ficaria
+    // tokensTaticos lê o encounter mutável não-observável — sem esta leitura, a barra de HP ficaria
     // stale até o próximo movimento. Ler sagaCombateEstado (reatribuído a cada ação) recompõe aqui.
     @Suppress("UNUSED_VARIABLE") val dependenciaEstadoCombate = viewModel.sagaCombateEstado
     val tokens = viewModel.sagaTokensTaticos
@@ -397,19 +409,23 @@ private fun HexCanvasCombateReal(viewModel: FichaViewModel, modifier: Modifier =
             val largPx = constraints.maxWidth.toFloat()
             val altPx = constraints.maxHeight.toFloat()
             // Lote TOK-6a — CÂMERA: enquadra os combatentes (+margem) em vez da grade inteira.
-            // Animada (400 ms) pra acompanhar a luta sem saltos. O tap usa o valor CORRENTE via
-            // rememberUpdatedState (o pointerInput não reinicia a cada frame da animação).
-            // Os hexes ALCANÇÁVEIS entram no enquadramento (achado da revisão): sem isso, com
-            // deslocamento 5 > margem 2,5, os verdes na direção oposta aos inimigos ficavam fora
-            // da tela e INTOCÁVEIS — recuar/fugir ficava limitado na prática. Selecionar o herói
-            // faz a câmera abrir suave; desselecionar reaperta.
+            // Lote TOK-6b-1 (feedback do teste): PISO DE TOQUE de 40dp — enquadrar TODOS os
+            // alcançáveis abria demais e os hexes viravam alvo de mouse; agora o zoom para no
+            // tocável e o que ficou fora se alcança com o PAN por arrasto.
+            val pisoToquePx = with(LocalDensity.current) { 40.dp.toPx() }
             val camAlvo = calcularCamera(
-                tokens.map { it.posicao } + hexesAlcancaveis, largPx, altPx, estado.raioGrade
+                tokens.map { it.posicao } + hexesAlcancaveis, largPx, altPx, estado.raioGrade,
+                pisoToquePx = pisoToquePx
             )
             val camTam by animateFloatAsState(camAlvo.tam, tween(400), label = "camTam")
             val camAx by animateFloatAsState(camAlvo.centroAx, tween(400), label = "camAx")
             val camAy by animateFloatAsState(camAlvo.centroAy, tween(400), label = "camAy")
-            val cam = CameraHex(camTam, camAx, camAy)
+            // PAN por arrasto: acumulado em px, convertido pra unidades axiais na câmera efetiva.
+            // Reset quando o ENQUADRAMENTO-ALVO muda de verdade (mover, seleção, morte).
+            // O CENTRO é clampado ao raio da grade — o usuário nunca "se perde" em tela vazia.
+            var panPx by remember { mutableStateOf(Offset.Zero) }
+            LaunchedEffect(camAlvo) { panPx = Offset.Zero }
+            val cam = cameraEfetiva(camTam, camAx, camAy, panPx.x, panPx.y, estado.raioGrade)
             val camAtual by rememberUpdatedState(cam)
             Canvas(
                 modifier = Modifier
@@ -420,6 +436,12 @@ private fun HexCanvasCombateReal(viewModel: FichaViewModel, modifier: Modifier =
                             val hex = telaParaHexCam(toque.x, toque.y, camAtual,
                                 size.width.toFloat(), size.height.toFloat(), estado.raioGrade)
                             if (hex != null) viewModel.sagaAoTocarHexTatico(hex)
+                        }
+                    }
+                    .pointerInput(Unit) {
+                        detectDragGestures { change, dragAmount ->
+                            change.consume()
+                            panPx += dragAmount // o mapa segue o dedo
                         }
                     }
             ) {
@@ -452,7 +474,7 @@ private fun HexCanvasCombateReal(viewModel: FichaViewModel, modifier: Modifier =
                     val (cx, cy) = hexParaTelaCam(hexValido, cam, larguraPx, alturaPx)
                     desenharHexPreenchido(cx, cy, hexSizePx, COR_HEX_VALIDO_2D)
                 }
-                // Tokens + anel de HP + nome (posições animadas em unidades axiais → câmera).
+                // Tokens + barra de HP + nome (posições animadas em unidades axiais → câmera).
                 for (t in tokens) {
                     val (ax, ay) = posAnimadas[t.id] ?: continue
                     val cx = cam.tam * (ax - cam.centroAx) + larguraPx / 2f
@@ -463,7 +485,7 @@ private fun HexCanvasCombateReal(viewModel: FichaViewModel, modifier: Modifier =
                         else tokensInimigos[TokenImageStore.normalizarTipo(tipoDoId(t.id))]
                     if (imagem != null) desenharTokenImagem(cx, cy, hexSizePx, demoToken, selecionado, imagem)
                     else desenharToken(cx, cy, hexSizePx, demoToken, selecionado, textMeasurer)
-                    desenharAnelHpENome(cx, cy, hexSizePx, t.nome, t.pvPct, textMeasurer)
+                    desenharBarraHpENome(cx, cy, hexSizePx, t.nome, t.pvPct, t.condicoesIcones, textMeasurer)
                 }
             }
         }
@@ -473,9 +495,13 @@ private fun HexCanvasCombateReal(viewModel: FichaViewModel, modifier: Modifier =
 /** "goblin_2" → "goblin": o TIPO do bestiário é o id sem o sufixo _N (chave das imagens TOK-2). */
 internal fun tipoDoId(id: String): String = id.replace(Regex("_\\d+$"), "")
 
-/** Anel de HP (arco verde→vermelho proporcional ao PV) + nome sob o token. */
-internal fun DrawScope.desenharAnelHpENome(
-    cx: Float, cy: Float, tam: Float, nome: String, pvPct: Float, textMeasurer: TextMeasurer
+/**
+ * Lote TOK-6b-1: BARRA DE HP sobre a cabeça do token (substitui o anel e os cards de vida do
+ * tracker) + mini-ícones de condição acima dela + nome sob o token. A vida mora no grid.
+ */
+internal fun DrawScope.desenharBarraHpENome(
+    cx: Float, cy: Float, tam: Float, nome: String, pvPct: Float,
+    condicoesIcones: String, textMeasurer: TextMeasurer
 ) {
     val raio = tam * 0.62f
     val corHp = when {
@@ -483,20 +509,41 @@ internal fun DrawScope.desenharAnelHpENome(
         pvPct > 0.25f -> Color(0xFFF59E0B)
         else -> Color(0xFFEF4444)
     }
-    drawArc(
-        color = corHp,
-        startAngle = -90f,
-        sweepAngle = 360f * pvPct.coerceIn(0f, 1f),
-        useCenter = false,
-        topLeft = Offset(cx - raio - 6f, cy - raio - 6f),
-        size = androidx.compose.ui.geometry.Size((raio + 6f) * 2, (raio + 6f) * 2),
-        style = Stroke(width = 3f)
+    val larguraBarra = raio * 2.1f
+    val alturaBarra = (tam * 0.13f).coerceIn(4f, 10f)
+    val topoBarra = cy - raio - alturaBarra - 5f
+    val canto = androidx.compose.ui.geometry.CornerRadius(alturaBarra / 2f)
+    // Trilho escuro + preenchimento proporcional ao PV.
+    drawRoundRect(
+        color = Color(0xAA10161F),
+        topLeft = Offset(cx - larguraBarra / 2f, topoBarra),
+        size = androidx.compose.ui.geometry.Size(larguraBarra, alturaBarra),
+        cornerRadius = canto
     )
+    val pct = pvPct.coerceIn(0f, 1f)
+    if (pct > 0f) {
+        drawRoundRect(
+            color = corHp,
+            topLeft = Offset(cx - larguraBarra / 2f, topoBarra),
+            size = androidx.compose.ui.geometry.Size(larguraBarra * pct, alturaBarra),
+            cornerRadius = canto
+        )
+    }
+    // Condições (🩸💫🤼…) acima da barra. Sem .take() — cortaria um emoji composto (ZWJ/surrogate)
+    // no meio; a string é curta e controlada pelo controller (máx ~5 ícones).
+    if (condicoesIcones.isNotBlank()) {
+        val icones = textMeasurer.measure(
+            text = androidx.compose.ui.text.AnnotatedString(condicoesIcones),
+            style = ESTILO_NOME_TOKEN
+        )
+        drawText(icones, topLeft = Offset(cx - icones.size.width / 2f, topoBarra - icones.size.height - 2f))
+    }
+    // Nome sob o token.
     val label = textMeasurer.measure(
         text = androidx.compose.ui.text.AnnotatedString(nome.take(12)),
         style = ESTILO_NOME_TOKEN
     )
-    drawText(label, topLeft = Offset(cx - label.size.width / 2f, cy + raio + 8f))
+    drawText(label, topLeft = Offset(cx - label.size.width / 2f, cy + raio + 6f))
 }
 
 internal val ESTILO_NOME_TOKEN = TextStyle(color = Color(0xEEFFFFFF), fontSize = 10.sp)
@@ -511,7 +558,19 @@ internal val ESTILO_NOME_TOKEN = TextStyle(color = Color(0xEEFFFFFF), fontSize =
  */
 internal data class CameraHex(val tam: Float, val centroAx: Float, val centroAy: Float)
 
-internal fun calcularCamera(posicoes: List<HexCoord>, larg: Float, alt: Float, raioGrade: Int): CameraHex {
+internal fun calcularCamera(
+    posicoes: List<HexCoord>,
+    larg: Float,
+    alt: Float,
+    raioGrade: Int,
+    /**
+     * Lote TOK-6b-1 (feedback do teste): PISO DE TOQUE — o hex nunca fica menor que isto em px
+     * (~40dp convertidos pelo caller). Enquadrar TODOS os alcançáveis de deslocamento 5+ abria a
+     * câmera demais e os hexes viravam alvo de mouse, não de dedo. Com o piso, o que não couber
+     * fica fora da viewport e o PAN por arrasto alcança.
+     */
+    pisoToquePx: Float = 0f,
+): CameraHex {
     val tamFull = tamanhoHex(larg, alt, raioGrade)
     if (posicoes.isEmpty() || larg <= 0f || alt <= 0f) return CameraHex(tamFull, 0f, 0f)
     val axs = posicoes.map { SQRT3 * it.q + SQRT3 / 2f * it.r }
@@ -525,8 +584,25 @@ internal fun calcularCamera(posicoes: List<HexCoord>, larg: Float, alt: Float, r
     val tamMax = minOf(larg, alt) / 7f  // teto: ~7 unidades visíveis (combate colado não vira zoom infinito)
     val piso = minOf(tamFull, tamMax)
     val teto = maxOf(tamFull, tamMax)
-    val tam = minOf(larg / wUnid, alt / hUnid).coerceIn(piso, teto)
+    var tam = minOf(larg / wUnid, alt / hUnid).coerceIn(piso, teto)
+    // Piso de toque vence o enquadramento (mas nunca acima do teto).
+    if (pisoToquePx > 0f) tam = tam.coerceAtLeast(minOf(pisoToquePx, teto))
     return CameraHex(tam, (minAx + maxAx) / 2f, (minAy + maxAy) / 2f)
+}
+
+/**
+ * Lote TOK-6b-1: câmera EFETIVA = câmera animada + PAN do usuário, com o centro CLAMPADO à
+ * extensão axial da grade (ax ∈ ±√3·R, ay ∈ ±1.5·R) — arrastar nunca "perde" o mapa. PURA.
+ */
+internal fun cameraEfetiva(tam: Float, ax: Float, ay: Float, panX: Float, panY: Float, raioGrade: Int): CameraHex {
+    if (tam <= 0f) return CameraHex(tam, ax, ay)
+    val limiteAx = raioGrade * SQRT3
+    val limiteAy = raioGrade * 1.5f
+    return CameraHex(
+        tam,
+        (ax - panX / tam).coerceIn(-limiteAx, limiteAx),
+        (ay - panY / tam).coerceIn(-limiteAy, limiteAy)
+    )
 }
 
 /** Centro em px do hex [c] sob a câmera [cam]. */

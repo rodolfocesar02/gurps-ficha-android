@@ -3046,6 +3046,18 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - **Recomendação registrada** (maior valor × menor custo): Ataque Telegráfico (par do Enganoso), luta agarrada profunda (chaves/Mata-Leão estendendo o lote 422), Sangramento Grave + incapacitação de membro (item 5 do teste de batalha), Ataque Dedicado/Defensivo. Fora de escopo: posicional/hexágono, montaria, cinematográfico, dado de arma do NPC. Mudança só de documentação (não compila Kotlin).
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
+### Lote TOK-6b-1 — 12 de Julho de 2026 (VTT 2D / Fase 6b-1 — grid dominante + barra de HP no token + piso de toque + pan)
+**Saga: a vida mora no grid; a câmera respeita o dedo; o mapa se arrasta — branch GURPS-Saga**
+- **Feedback do teste do 6a**: a câmera abria DEMAIS ao selecionar o herói (enquadrar todos os alcançáveis de deslocamento 5+ → hexes pequenos de novo).
+- **Piso de toque na câmera** (`pisoToquePx` no `calcularCamera`, callers passam 40dp): o hex nunca fica menor que o tocável; o que não couber no enquadramento fica pro pan. Piso nunca ultrapassa o teto.
+- **PAN por arrasto** (real + demo): 2º `pointerInput` com `detectDragGestures`; o mapa segue o dedo; centro **clampado ao raio da grade** (nunca "se perde" em tela vazia); reset quando o enquadramento-alvo muda de verdade (mover/seleção/morte).
+- **Barra de HP sobre o token** (`desenharBarraHpENome`, substitui o anel): trilho escuro + preenchimento verde/âmbar/vermelho por PV%, **mini-ícones de condição** acima (🩸 sangrando, 💫 atordoado, 🤼 agarrado, 😮‍💨 sufocando, ⬇ postura baixa — `TokenTatico.condicoesIcones` no controller; sem `.take()` que cortaria emoji composto no meio), nome sob o token.
+- **Cards de vida SOMEM no modo tático** (`CombatePainel(mostrarTracker = false)`) — a informação mora no grid; modo faixas intocado.
+- **Grid DOMINANTE**: bloco de combate weight 3f (feed 1f), canvas weight 2.2 vs painel 1 → grade ~metade da tela (com Modo Jogo sem chrome, bem mais).
+- **Revisão adversarial (2 finders; verificadores no session limit → verificação manual): 3 achados, todos resolvidos** — 2 já corrigidos por varredura própria antes da revisão terminar (pan sem clamp → `cameraEfetiva` PURA com centro clampado à extensão axial da grade; `take(8)` cortaria emoji ZWJ no surrogate → removido) + comentários órfãos do "anel" atualizados.
+- **+4 testes** (piso vence o enquadramento; piso ≤ teto; pan gigante clampado; pan zero preserva a câmera).
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
 ### Lote TOK-6a — 12 de Julho de 2026 (VTT 2D / Fase 6a — MODO JOGO + câmera + fixes do teste físico)
 **Saga: em campanha o app vira JOGO em tela cheia; a câmera enquadra os combatentes — branch GURPS-Saga**
 - **Motivação (teste no aparelho FÍSICO)**: mecânica OK, mas hexes ~20px (mínimo Android: 48dp) intocáveis no dedo, imagens invisíveis nesse tamanho, fundo ausente, ⅓ da tela em chrome.

@@ -482,9 +482,13 @@ private fun FeedDaCampanha(viewModel: FichaViewModel) {
         // A cena tática fica em cima; o CombatePainel embaixo dá acesso a Ataque/Manobra/Defesa.
         if (viewModel.sagaCombateAtivo) {
             if (viewModel.sagaModoTaticoHex || viewModel.sagaModoTaticoHex3D) {
-                Column(Modifier.weight(1.5f).fillMaxWidth()) {
-                    com.gurps.ficha.ui.saga.HexCanvasTatico(viewModel, Modifier.weight(1.2f).fillMaxWidth())
-                    com.gurps.ficha.ui.saga.CombatePainel(viewModel, Modifier.weight(1f).fillMaxWidth())
+                // Lote TOK-6b-1: GRID DOMINANTE (~metade da tela; feed e painel dividem o resto).
+                // O tracker de cards de vida SOME — a vida mora na barra sobre cada token.
+                Column(Modifier.weight(3f).fillMaxWidth()) {
+                    com.gurps.ficha.ui.saga.HexCanvasTatico(viewModel, Modifier.weight(2.2f).fillMaxWidth())
+                    com.gurps.ficha.ui.saga.CombatePainel(
+                        viewModel, Modifier.weight(1f).fillMaxWidth(), mostrarTracker = false
+                    )
                 }
             } else {
                 com.gurps.ficha.ui.saga.CombatePainel(viewModel, Modifier.weight(1.5f))

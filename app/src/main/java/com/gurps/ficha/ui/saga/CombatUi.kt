@@ -40,7 +40,13 @@ private val COR_PV_MEDIO = Color(0xFFFFC107)
 private val COR_PV_BAIXO = Color(0xFFF44336)
 
 @Composable
-fun CombatePainel(viewModel: FichaViewModel, modifier: Modifier = Modifier) {
+fun CombatePainel(
+    viewModel: FichaViewModel,
+    modifier: Modifier = Modifier,
+    // Lote TOK-6b-1: no modo TÁTICO a vida mora no token (barra sobre a cabeça) — o tracker de
+    // cards duplicaria a informação e roubaria espaço da grade. No modo faixas continua true.
+    mostrarTracker: Boolean = true,
+) {
     val estado = viewModel.sagaCombateEstado ?: return
     val defesa = viewModel.sagaCombateDefesaPendente
 
@@ -70,7 +76,7 @@ fun CombatePainel(viewModel: FichaViewModel, modifier: Modifier = Modifier) {
                     .fillMaxWidth()
                     .verticalScroll(rememberScrollState())
             ) {
-                CombatTracker(estado.combatentes)
+                if (mostrarTracker) CombatTracker(estado.combatentes)
 
                 when {
                     estado.encerrado -> FimDeCombate(estado.resultado)

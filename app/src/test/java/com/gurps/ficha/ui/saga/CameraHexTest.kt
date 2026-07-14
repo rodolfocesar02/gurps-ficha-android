@@ -78,6 +78,41 @@ class CameraHexTest {
     }
 
     @Test
+    fun `piso de toque VENCE o enquadramento — hex nunca menor que o tocavel`() {
+        // Lote TOK-6b-1 (feedback do usuário): enquadrar todos os alcançáveis de deslocamento 5+
+        // deixava os hexes pequenos demais pro dedo. Com o piso, o zoom para no tocável e o resto
+        // fica pro pan.
+        val combatentes = listOf(HexCoord(0, 0), HexCoord(1, 0))
+        val alcancaveis = (1..5).flatMap { d -> listOf(HexCoord(-d, 0), HexCoord(d, 0)) }
+        val piso = 110f // px (~40dp em densidade típica)
+        val cam = calcularCamera(combatentes + alcancaveis, LARG, ALT, 7, pisoToquePx = piso)
+        assertTrue("tam (${cam.tam}) deve respeitar o piso de toque ($piso)", cam.tam >= piso)
+    }
+
+    @Test
+    fun `pan gigante e CLAMPADO — o centro da camera nunca sai da grade`() {
+        // Achado da revisão TOK-6b-1: sem clamp, arrastar demais deixava a viewport vazia
+        // ("o combate sumiu"). O centro efetivo fica dentro da extensão axial da grade.
+        val cam = cameraEfetiva(tam = 100f, ax = 0f, ay = 0f, panX = 1_000_000f, panY = -1_000_000f, raioGrade = 7)
+        assertTrue(kotlin.math.abs(cam.centroAx) <= 7 * SQRT3 + 0.01f)
+        assertTrue(kotlin.math.abs(cam.centroAy) <= 7 * 1.5f + 0.01f)
+    }
+
+    @Test
+    fun `pan zero preserva a camera animada`() {
+        val cam = cameraEfetiva(tam = 100f, ax = 2f, ay = -1f, panX = 0f, panY = 0f, raioGrade = 7)
+        assertEquals(2f, cam.centroAx, 0.001f)
+        assertEquals(-1f, cam.centroAy, 0.001f)
+    }
+
+    @Test
+    fun `piso de toque nunca ultrapassa o teto da camera`() {
+        val cam = calcularCamera(listOf(HexCoord(0, 0)), LARG, ALT, 7, pisoToquePx = 10_000f)
+        val teto = minOf(LARG, ALT) / 7f
+        assertTrue(cam.tam <= teto + 0.01f)
+    }
+
+    @Test
     fun `hexes alcancaveis incluidos ABREM a camera — todos ficam dentro da tela`() {
         // Achado da revisão TOK-6a: com deslocamento 5 > margem 2,5, os hexes verdes na direção
         // oposta aos inimigos ficavam FORA da viewport e intocáveis. Incluir os alcançáveis no

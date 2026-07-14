@@ -114,11 +114,13 @@ class SagaCombatController(
     /** Aviso transitório do grid ("Muito longe", "Não é seu turno") — a UI limpa após ~2s. */
     var avisoTatico by mutableStateOf<String?>(null)
 
-    /** Token pronto pro desenho: posição + facing + nome + PV% (o canvas cruza com as imagens). */
+    /** Token pronto pro desenho: posição + facing + nome + PV% + condições (o canvas cruza com as imagens). */
     data class TokenTatico(
         val id: String, val nome: String, val ehHeroi: Boolean,
         val pvPct: Float, val posicao: com.gurps.ficha.domain.combat.hex.HexCoord,
         val facing: com.gurps.ficha.domain.combat.hex.Direcao,
+        /** Lote TOK-6b-1: condições como mini-ícones sobre a barra de HP (🩸💫🤼😮‍💨⬇). */
+        val condicoesIcones: String = "",
     )
 
     /** Tokens do combate REAL, na ordem do estado tático. Vazio fora de combate. */
@@ -127,10 +129,18 @@ class SagaCombatController(
         val est = estadoTatico ?: return emptyList()
         return est.posicoes.mapNotNull { pos ->
             val c = s.encounter.combatentes.firstOrNull { it.id == pos.id } ?: return@mapNotNull null
+            val icones = buildString {
+                if (Condicao.SANGRANDO in c.condicoes) append("🩸")
+                if (Condicao.ATORDOADO in c.condicoes) append("💫")
+                if (Condicao.AGARRADO in c.condicoes || Condicao.IMOBILIZADO in c.condicoes) append("🤼")
+                if (Condicao.SUFOCANDO in c.condicoes) append("😮‍💨")
+                if (c.postura != Postura.EM_PE) append("⬇")
+            }
             TokenTatico(
                 id = c.id, nome = c.nome, ehHeroi = c.ehHeroi,
                 pvPct = if (c.pvMax > 0) (c.pvAtual.toFloat() / c.pvMax).coerceIn(0f, 1f) else 0f,
                 posicao = pos.posicao, facing = pos.facing,
+                condicoesIcones = icones,
             )
         }
     }
