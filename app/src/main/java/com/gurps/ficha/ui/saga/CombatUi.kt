@@ -1,6 +1,7 @@
 package com.gurps.ficha.ui.saga
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -46,6 +47,9 @@ fun CombatePainel(
     // Lote TOK-6b-1: no modo TÁTICO a vida mora no token (barra sobre a cabeça) — o tracker de
     // cards duplicaria a informação e roubaria espaço da grade. No modo faixas continua true.
     mostrarTracker: Boolean = true,
+    // Lote TOK-6b-2: no modo TÁTICO as manobras moram nos TOKENS (MenuTaticoDoToken) — aqui fica
+    // só a arma empunhada + a dica de onde tocar. Defenda-se!/fim de combate continuam aqui.
+    manobrasNoGrid: Boolean = false,
 ) {
     val estado = viewModel.sagaCombateEstado ?: return
     val defesa = viewModel.sagaCombateDefesaPendente
@@ -81,10 +85,35 @@ fun CombatePainel(
                 when {
                     estado.encerrado -> FimDeCombate(estado.resultado)
                     defesa != null -> DefendaSeCard(viewModel, defesa)
-                    estado.vezDoHeroi -> ManeuverCards(viewModel, estado)
+                    estado.vezDoHeroi -> if (manobrasNoGrid) PainelArmaTatico(viewModel, estado)
+                        else ManeuverCards(viewModel, estado)
                     else -> AguardandoInimigos()
                 }
             }
+        }
+    }
+}
+
+/**
+ * Lote TOK-6b-2: a versão do painel na sua vez quando as manobras moram nos tokens — só a arma
+ * empunhada (Preparar/Trocar continua importante ver) e a dica de onde tocar.
+ */
+@Composable
+private fun PainelArmaTatico(viewModel: FichaViewModel, estado: com.gurps.ficha.viewmodel.delegates.CombatUiState) {
+    Card(
+        Modifier.fillMaxWidth().padding(8.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer)
+    ) {
+        Column(Modifier.padding(12.dp)) {
+            Text("Sua vez", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
+            Spacer(Modifier.height(6.dp))
+            SeletorDeArma(viewModel, estado)
+            Text(
+                "Toque no SEU token para manobras, num INIMIGO para atacar — hexes verdes movem.",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.padding(top = 6.dp)
+            )
         }
     }
 }
@@ -872,3 +901,245 @@ private val LOCAIS_ATAQUE = listOf(
     LocalAtaque.VITAIS, LocalAtaque.BRACO, LocalAtaque.PERNA, LocalAtaque.MAO, LocalAtaque.PE,
     LocalAtaque.INGLE, LocalAtaque.OLHO
 )
+
+// ── Lote TOK-6b-2: menu do TOKEN (carrossel translúcido sobre a grade) ──────────────────────────
+//
+// A manobra mora onde ela acontece: tocar no SEU token abre as manobras sobre si mesmo; tocar num
+// INIMIGO abre as ações direcionadas a ele (o toque JÁ escolhe o alvo — os diálogos pulam essa
+// etapa). Mover não é botão: continua sendo tocar num hex verde (TOK-4).
+
+/** Manobras que o herói faz SOBRE SI MESMO — menu do próprio token (MB p.363-366). */
+internal val MANOBRAS_SOBRE_SI = setOf(
+    Manobra.MUDAR_POSTURA, Manobra.DEFESA_TOTAL, Manobra.AGUARDAR, Manobra.PREPARAR,
+    Manobra.CONCENTRAR, Manobra.DESVENCILHAR, Manobra.FOGO_RETENCAO, Manobra.NAO_FAZER_NADA
+)
+
+/** Menu do token do HERÓI: filtra das manobras legais as que não precisam de alvo. */
+internal fun menuTaticoHeroi(manobras: List<Manobra>): List<Manobra> =
+    manobras.filter { it in MANOBRAS_SOBRE_SI }
+
+/**
+ * Menu de um token INIMIGO: manobras direcionadas, gateadas EXATAMENTE pelas precondições do motor
+ * (senão o chip dispara, o motor rejeita e `depoisDaAcaoDoHeroi` consome o turno à toa — o soft-fail
+ * que o teste de batalha reprovou). Ver `CombatSession`:
+ *  - golpes de arma / Fintar exigem o alvo dentro do ALCANCE da arma (`aoAlcance`, estado.alvos);
+ *  - Agarrar/Derrubar/Empurrão exigem ADJACÊNCIA real (dist ≤ 1) — não bastam 2 m de lança (MB p.370-371);
+ *  - Encontrão carrega até o corpo-a-corpo pelo Deslocamento (`alcancaMovendo`, MB p.371);
+ *  - Mover e Atacar exige alcançá-lo com o Deslocamento (estado.alvosMoverEAtacar);
+ *  - Avaliar/Apontar valem para qualquer inimigo vivo à vista (MB p.364);
+ *  - Estrangular/Chave/Mata-Leão exigem o alvo JÁ AGARRADO (MB p.371, AM p.69-77);
+ *  - Imobilizar exige agarrado **E no chão** (deitado/caído) — derrube antes (MB p.371).
+ */
+internal fun menuTaticoInimigo(
+    manobras: List<Manobra>,
+    aoAlcance: Boolean,
+    adjacente: Boolean,
+    alcancaMovendo: Boolean,
+    agarrado: Boolean,
+    alvoNoChao: Boolean,
+): List<Manobra> = manobras.filter { m ->
+    when (m) {
+        Manobra.ATAQUE, Manobra.ATAQUE_TOTAL, Manobra.ATAQUE_DEDICADO, Manobra.ATAQUE_DEFENSIVO,
+        Manobra.GOLPE_RAPIDO, Manobra.FINTAR -> aoAlcance
+        Manobra.AGARRAR, Manobra.DERRUBAR, Manobra.EMPURRAO -> adjacente
+        Manobra.ENCONTRAO -> alcancaMovendo
+        Manobra.MOVER_E_ATACAR -> alcancaMovendo
+        Manobra.AVALIAR, Manobra.APONTAR -> true
+        Manobra.ESTRANGULAR, Manobra.CHAVE_MEMBRO, Manobra.MATA_LEAO -> agarrado
+        Manobra.IMOBILIZAR -> agarrado && alvoNoChao
+        else -> false // MOVER (hex verde) e manobras sobre si nunca aparecem no inimigo
+    }
+}
+
+/** Ícone decorativo do chip (o rótulo é quem carrega o significado). */
+internal fun iconeDaManobra(m: Manobra): String = when (m) {
+    Manobra.ATAQUE -> "⚔️"
+    Manobra.ATAQUE_TOTAL -> "💥"
+    Manobra.ATAQUE_DEDICADO -> "⚡"
+    Manobra.ATAQUE_DEFENSIVO -> "🤺"
+    Manobra.GOLPE_RAPIDO -> "🌀"
+    Manobra.MOVER_E_ATACAR -> "🏃"
+    Manobra.FINTAR -> "🎭"
+    Manobra.AVALIAR -> "👁️"
+    Manobra.APONTAR -> "🎯"
+    Manobra.AGARRAR -> "🤜"
+    Manobra.DERRUBAR -> "⤵️"
+    Manobra.ENCONTRAO -> "🐏"
+    Manobra.EMPURRAO -> "🖐️"
+    Manobra.IMOBILIZAR -> "🔒"
+    Manobra.ESTRANGULAR -> "🪢"
+    Manobra.CHAVE_MEMBRO -> "🦾"
+    Manobra.MATA_LEAO -> "🦁"
+    Manobra.MUDAR_POSTURA -> "🧎"
+    Manobra.DEFESA_TOTAL -> "🛡️"
+    Manobra.AGUARDAR -> "⏳"
+    Manobra.PREPARAR -> "🎒"
+    Manobra.CONCENTRAR -> "🧘"
+    Manobra.FOGO_RETENCAO -> "🔫"
+    Manobra.DESVENCILHAR -> "✊"
+    Manobra.NAO_FAZER_NADA -> "💤"
+    Manobra.MOVER -> "🏃"
+}
+
+/**
+ * Carrossel de manobras do token selecionado na grade. Renderiza NADA quando não é a vez do
+ * herói, há defesa pendente ou o combate acabou (o painel de baixo cuida desses estados).
+ * Ações que só precisam do alvo disparam DIRETO (o toque no token já foi a escolha); as que
+ * pedem parâmetro extra (local do golpe, modo, postura…) reusam os sub-diálogos com o alvo fixo.
+ */
+@Composable
+fun MenuTaticoDoToken(
+    viewModel: FichaViewModel,
+    tokenId: String,
+    onFechar: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val estado = viewModel.sagaCombateEstado ?: return
+    if (estado.encerrado || !estado.vezDoHeroi || viewModel.sagaCombateDefesaPendente != null) return
+
+    var alvoDialogo by remember(tokenId) { mutableStateOf<Manobra?>(null) }
+    var apontarDialogo by remember(tokenId) { mutableStateOf(false) }
+    var posturaDialogo by remember(tokenId) { mutableStateOf(false) }
+    var defesaTotalDialogo by remember(tokenId) { mutableStateOf(false) }
+
+    val ehHeroi = tokenId == "heroi"
+    val alvo = if (ehHeroi) null
+        else estado.combatentes.firstOrNull { it.id == tokenId && !it.ehHeroi && it.vivo } ?: return
+    val manobras = if (ehHeroi) {
+        menuTaticoHeroi(estado.manobrasHeroi)
+    } else {
+        menuTaticoInimigo(
+            manobras = estado.manobrasHeroi,
+            aoAlcance = estado.alvos.any { it.id == tokenId },
+            adjacente = alvo!!.distanciaM <= 1, // agarrar/derrubar/empurrão exigem corpo-a-corpo real
+            alcancaMovendo = estado.alvosMoverEAtacar.any { it.id == tokenId },
+            agarrado = alvo.condicoes.contains(Condicao.AGARRADO.rotulo),
+            alvoNoChao = alvo.postura == Postura.DEITADO.rotulo || alvo.condicoes.contains(Condicao.CAIDO.rotulo),
+        )
+    }
+
+    Surface(
+        color = Color(0xCC10161F),
+        contentColor = Color.White,
+        shape = RoundedCornerShape(20.dp),
+        modifier = modifier.padding(horizontal = 8.dp, vertical = 6.dp)
+    ) {
+        Row(
+            Modifier.horizontalScroll(rememberScrollState()).padding(horizontal = 10.dp, vertical = 6.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                if (ehHeroi) "Você" else "→ ${alvo!!.nome}",
+                style = MaterialTheme.typography.labelMedium, fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(end = 6.dp)
+            )
+            if (manobras.isEmpty() && !ehHeroi) {
+                // Se o herói NÃO tem nenhuma manobra direcionada (atordoado/agarrado → só age sobre
+                // si), o menu vazio não é "fora de alcance" — mandar tocar no próprio token.
+                val temDirecionada = estado.manobrasHeroi.any { it !in MANOBRAS_SOBRE_SI && it != Manobra.MOVER }
+                Text(
+                    if (temDirecionada) "Fora de alcance — avance pelos hexes verdes (toque no SEU token)"
+                    else "Você só pode agir sobre si agora — toque no SEU token",
+                    style = MaterialTheme.typography.labelSmall, fontStyle = FontStyle.Italic,
+                    modifier = Modifier.padding(end = 6.dp)
+                )
+            }
+            manobras.forEach { m ->
+                val descricao = m.rotulo + if (ehHeroi) "" else " em ${alvo!!.nome}"
+                Surface(
+                    onClick = {
+                        when (m) {
+                            // Pedem parâmetro extra → sub-diálogo com o alvo já fixado.
+                            Manobra.ATAQUE, Manobra.ATAQUE_TOTAL, Manobra.ATAQUE_DEDICADO,
+                            Manobra.ATAQUE_DEFENSIVO, Manobra.GOLPE_RAPIDO, Manobra.MOVER_E_ATACAR ->
+                                alvoDialogo = m
+                            Manobra.APONTAR -> apontarDialogo = true
+                            Manobra.MUDAR_POSTURA -> posturaDialogo = true
+                            Manobra.DEFESA_TOTAL -> defesaTotalDialogo = true
+                            // O toque no token já escolheu o alvo → dispara direto.
+                            Manobra.AVALIAR -> { viewModel.sagaCombateAvaliar(tokenId); onFechar() }
+                            Manobra.FINTAR -> { viewModel.sagaCombateFintar(tokenId); onFechar() }
+                            Manobra.AGARRAR -> { viewModel.sagaCombateAgarrar(tokenId); onFechar() }
+                            Manobra.DERRUBAR -> { viewModel.sagaCombateDerrubar(tokenId); onFechar() }
+                            Manobra.ENCONTRAO -> { viewModel.sagaCombateEncontrao(tokenId); onFechar() }
+                            Manobra.EMPURRAO -> { viewModel.sagaCombateEmpurrao(tokenId); onFechar() }
+                            Manobra.IMOBILIZAR -> { viewModel.sagaCombateImobilizar(tokenId); onFechar() }
+                            Manobra.ESTRANGULAR -> { viewModel.sagaCombateEstrangular(tokenId); onFechar() }
+                            Manobra.CHAVE_MEMBRO -> { viewModel.sagaCombateChaveMembro(tokenId); onFechar() }
+                            Manobra.MATA_LEAO -> { viewModel.sagaCombateMataLeao(tokenId); onFechar() }
+                            Manobra.AGUARDAR -> { viewModel.sagaCombateAguardar(); onFechar() }
+                            Manobra.FOGO_RETENCAO -> { viewModel.sagaCombateFogoRetencao(); onFechar() }
+                            Manobra.DESVENCILHAR -> { viewModel.sagaCombateDesvencilhar(); onFechar() }
+                            else -> { viewModel.sagaCombateManobra(m); onFechar() } // Preparar/Concentrar/Nada
+                        }
+                    },
+                    color = Color(0x33FFFFFF),
+                    contentColor = Color.White,
+                    shape = RoundedCornerShape(14.dp),
+                    modifier = Modifier.padding(horizontal = 3.dp)
+                        .semantics { contentDescription = "Manobra $descricao" }
+                ) {
+                    Text(
+                        "${iconeDaManobra(m)} ${m.rotulo}",
+                        style = MaterialTheme.typography.labelMedium,
+                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 8.dp)
+                    )
+                }
+            }
+            Surface(
+                onClick = onFechar,
+                color = Color(0x33FFFFFF), contentColor = Color.White, shape = CircleShape,
+                modifier = Modifier.padding(start = 4.dp)
+                    .semantics { contentDescription = "Fechar o menu do token" }
+            ) { Text("✕", style = MaterialTheme.typography.labelMedium, modifier = Modifier.padding(horizontal = 10.dp, vertical = 8.dp)) }
+        }
+    }
+
+    // ── Sub-diálogos com o ALVO FIXO (lista de 1 → já pré-selecionado) ──
+    alvoDialogo?.let { manobra ->
+        SubDialogoAlvoLocal(
+            manobra = manobra,
+            alvos = listOf(alvo!!),
+            ataques = estado.ataques,
+            ataqueSelecionado = estado.ataqueSelecionado,
+            ambidestro = estado.heroiAmbidestro,
+            onConfirmar = { alvoId, local, modo, offHand, enganoso, telegrafico, dedicadoModo, benefDefensivo ->
+                when {
+                    manobra == Manobra.MOVER_E_ATACAR -> viewModel.sagaCombateMoverEAtacar(alvoId, local)
+                    manobra == Manobra.GOLPE_RAPIDO -> viewModel.sagaCombateGolpeRapido(alvoId, local)
+                    manobra == Manobra.ATAQUE_DEDICADO -> viewModel.sagaCombateAtaqueDedicado(alvoId, local, dedicadoModo)
+                    manobra == Manobra.ATAQUE_DEFENSIVO -> viewModel.sagaCombateAtaqueDefensivo(alvoId, local, benefDefensivo)
+                    modo == AtaqueTotalModo.DUPLO && offHand != null -> viewModel.sagaCombateAtacarDuplo(alvoId, local, offHand)
+                    else -> viewModel.sagaCombateAtacar(alvoId, manobra, local, modo, enganoso, telegrafico)
+                }
+                alvoDialogo = null; onFechar()
+            },
+            onFechar = { alvoDialogo = null }
+        )
+    }
+
+    if (apontarDialogo) {
+        SubDialogoApontar(
+            alvos = listOf(alvo!!),
+            podeFirmar = estado.ataques.getOrNull(estado.ataqueSelecionado)?.armaDeFogo == true,
+            onConfirmar = { alvoId, firmado -> viewModel.sagaCombateApontar(alvoId, firmado); apontarDialogo = false; onFechar() },
+            onFechar = { apontarDialogo = false }
+        )
+    }
+
+    if (posturaDialogo) {
+        SubDialogoPostura(
+            posturaAtual = estado.posturaHeroi,
+            posturas = estado.posturasAlcancaveis,
+            onConfirmar = { postura -> viewModel.sagaCombateManobra(Manobra.MUDAR_POSTURA, postura); posturaDialogo = false; onFechar() },
+            onFechar = { posturaDialogo = false }
+        )
+    }
+
+    if (defesaTotalDialogo) {
+        SubDialogoDefesaTotal(
+            onConfirmar = { modo, aumentadaEm -> viewModel.sagaCombateDefesaTotal(modo, aumentadaEm); defesaTotalDialogo = false; onFechar() },
+            onFechar = { defesaTotalDialogo = false }
+        )
+    }
+}

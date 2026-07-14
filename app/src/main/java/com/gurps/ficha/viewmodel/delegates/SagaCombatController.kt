@@ -152,6 +152,12 @@ class SagaCombatController(
         if (s.encerrado || !s.combatenteAtual().ehHeroi) return emptySet()
         // Só quando o HERÓI está selecionado no grid (toque no próprio token) — evita poluir a grade.
         if (est.idSelecionado != "heroi") return emptySet()
+        // Lote TOK-6b-2 (achado da varredura): mesmas travas do MOVER de faixas — atordoado não
+        // se move (MB p.420) e agarrado/imobilizado não desloca sem se Desvencilhar (MB p.371).
+        // Sem isso a grade driblava a luta agarrada: bastava tocar num hex verde e sair andando.
+        if (Condicao.ATORDOADO in s.heroi.condicoes ||
+            Condicao.AGARRADO in s.heroi.condicoes ||
+            Condicao.IMOBILIZADO in s.heroi.condicoes) return emptySet()
         return com.gurps.ficha.domain.combat.hex.HexSetup.hexesAlcancaveis(
             est, s.heroi.deslocamentoEfetivo.coerceAtLeast(1)
         )
@@ -193,7 +199,17 @@ class SagaCombatController(
             }
             avisoTatico = "Muito longe — deslocamento ${s.heroi.deslocamentoEfetivo}m"
         }
-        estadoTatico = est.copy(hexSelecionado = hex)
+        // Lote TOK-6b-2: tocar num hex vazio com INIMIGO selecionado fecha o menu dele (limpa a
+        // seleção); com o herói selecionado a seleção fica (pra tentar outro hex de movimento).
+        estadoTatico = est.copy(
+            hexSelecionado = hex,
+            idSelecionado = if (est.idSelecionado == "heroi") "heroi" else null
+        )
+    }
+
+    /** Lote TOK-6b-2: fecha o menu do token — limpa a seleção da grade. */
+    fun limparSelecaoTatica() {
+        estadoTatico = estadoTatico?.copy(hexSelecionado = null, idSelecionado = null)
     }
 
     /**

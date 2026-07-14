@@ -484,10 +484,23 @@ private fun FeedDaCampanha(viewModel: FichaViewModel) {
             if (viewModel.sagaModoTaticoHex || viewModel.sagaModoTaticoHex3D) {
                 // Lote TOK-6b-1: GRID DOMINANTE (~metade da tela; feed e painel dividem o resto).
                 // O tracker de cards de vida SOME — a vida mora na barra sobre cada token.
+                // Lote TOK-6b-2: as MANOBRAS moram nos tokens — tocar num token abre o carrossel
+                // translúcido sobre a grade (você = manobras sobre si; inimigo = ações nele).
                 Column(Modifier.weight(3f).fillMaxWidth()) {
-                    com.gurps.ficha.ui.saga.HexCanvasTatico(viewModel, Modifier.weight(2.2f).fillMaxWidth())
+                    Box(Modifier.weight(2.2f).fillMaxWidth()) {
+                        com.gurps.ficha.ui.saga.HexCanvasTatico(viewModel, Modifier.fillMaxSize())
+                        val tokenSelecionado = viewModel.sagaEstadoTatico?.idSelecionado
+                        if (tokenSelecionado != null) {
+                            com.gurps.ficha.ui.saga.MenuTaticoDoToken(
+                                viewModel, tokenSelecionado,
+                                onFechar = { viewModel.sagaLimparSelecaoTatica() },
+                                modifier = Modifier.align(Alignment.BottomCenter)
+                            )
+                        }
+                    }
                     com.gurps.ficha.ui.saga.CombatePainel(
-                        viewModel, Modifier.weight(1f).fillMaxWidth(), mostrarTracker = false
+                        viewModel, Modifier.weight(1f).fillMaxWidth(),
+                        mostrarTracker = false, manobrasNoGrid = true
                     )
                 }
             } else {
