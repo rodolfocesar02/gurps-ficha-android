@@ -425,15 +425,20 @@ private fun FeedDaCampanha(viewModel: FichaViewModel) {
         }
         HorizontalDivider()
 
+        // Lote TOK-6b-3: no combate TÁTICO o grid é o protagonista — o feed encolhe (menos peso +
+        // cards compactos) e a caixa do Narrador sobe pro topo (ver mais abaixo).
+        val taticoAtivo = viewModel.sagaCombateAtivo &&
+            (viewModel.sagaModoTaticoHex || viewModel.sagaModoTaticoHex3D)
+
         // Feed
         LazyColumn(
             state = listState,
             modifier = Modifier
-                .weight(1f)
+                .weight(if (taticoAtivo) 0.7f else 1f)
                 .fillMaxWidth()
                 .padding(horizontal = 12.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-            contentPadding = PaddingValues(vertical = 8.dp)
+            verticalArrangement = Arrangement.spacedBy(if (taticoAtivo) 4.dp else 8.dp),
+            contentPadding = PaddingValues(vertical = if (taticoAtivo) 4.dp else 8.dp)
         ) {
             if (feed.isEmpty() && !processando) {
                 item {
@@ -448,7 +453,7 @@ private fun FeedDaCampanha(viewModel: FichaViewModel) {
             }
             items(feed, key = { it.uid }) { turno ->
                 val ehUltimoNarrador = turno.role == "narrador" && turno.uid == feed.lastOrNull()?.uid
-                TurnoBolha(turno, animar = ehUltimoNarrador)
+                TurnoBolha(turno, animar = ehUltimoNarrador, compacto = taticoAtivo)
             }
         }
 
@@ -480,40 +485,49 @@ private fun FeedDaCampanha(viewModel: FichaViewModel) {
         // jogador circular). O render 3D (HEX-7..9) virou LEGADO após teste no aparelho — a flag
         // `modoTaticoHex3D` ainda existe nas fichas antigas e cai aqui no MESMO canvas 2D novo.
         // A cena tática fica em cima; o CombatePainel embaixo dá acesso a Ataque/Manobra/Defesa.
-        if (viewModel.sagaCombateAtivo) {
-            if (viewModel.sagaModoTaticoHex || viewModel.sagaModoTaticoHex3D) {
-                // Lote TOK-6b-1: GRID DOMINANTE (~metade da tela; feed e painel dividem o resto).
-                // O tracker de cards de vida SOME — a vida mora na barra sobre cada token.
-                // Lote TOK-6b-2: as MANOBRAS moram nos tokens — tocar num token abre o carrossel
-                // translúcido sobre a grade (você = manobras sobre si; inimigo = ações nele).
-                Column(Modifier.weight(3f).fillMaxWidth()) {
-                    Box(Modifier.weight(2.2f).fillMaxWidth()) {
-                        com.gurps.ficha.ui.saga.HexCanvasTatico(viewModel, Modifier.fillMaxSize())
-                        val tokenSelecionado = viewModel.sagaEstadoTatico?.idSelecionado
-                        if (tokenSelecionado != null) {
-                            com.gurps.ficha.ui.saga.MenuTaticoDoToken(
-                                viewModel, tokenSelecionado,
-                                onFechar = { viewModel.sagaLimparSelecaoTatica() },
-                                modifier = Modifier.align(Alignment.BottomCenter)
-                            )
-                        }
-                    }
-                    com.gurps.ficha.ui.saga.CombatePainel(
-                        viewModel, Modifier.weight(1f).fillMaxWidth(),
-                        mostrarTracker = false, manobrasNoGrid = true
+        if (taticoAtivo) {
+            // Lote TOK-6b-3: GRID PROTAGONISTA. A caixa do Narrador sobe pra CÁ (fina, acima do grid)
+            // e o painel fixo de baixo saiu — o grid ocupa daqui até o rodapé. As MANOBRAS moram nos
+            // tokens (menu translúcido) e o status (Defenda-se!/fim/vez dos inimigos) vira OVERLAY.
+            BarraDeEnvio(
+                viewModel,
+                habilitado = !processando && rolagem == null,
+                emCombate = true,
+                compacto = true
+            )
+            Box(Modifier.weight(3f).fillMaxWidth()) {
+                com.gurps.ficha.ui.saga.HexCanvasTatico(viewModel, Modifier.fillMaxSize())
+                // Status do combate (só quando exige atenção) — no topo, abaixo do cabeçalho da grade,
+                // pra não cobrir os hexes de movimento embaixo.
+                com.gurps.ficha.ui.saga.CombateStatusTatico(
+                    viewModel, Modifier.align(Alignment.TopCenter).padding(top = 42.dp)
+                )
+                val tokenSelecionado = viewModel.sagaEstadoTatico?.idSelecionado
+                if (tokenSelecionado != null) {
+                    // Menu do HERÓI vai no TOPO (deixa os hexes verdes de movimento livres embaixo);
+                    // menu do INIMIGO fica embaixo (perto do polegar; atacar não precisa mover). O
+                    // respiro de 42dp no topo evita cobrir o cabeçalho "Combate tático".
+                    val heroi = tokenSelecionado == "heroi"
+                    val modMenu = if (heroi) Modifier.align(Alignment.TopCenter).padding(top = 42.dp)
+                        else Modifier.align(Alignment.BottomCenter)
+                    com.gurps.ficha.ui.saga.MenuTaticoDoToken(
+                        viewModel, tokenSelecionado,
+                        onFechar = { viewModel.sagaLimparSelecaoTatica() },
+                        modifier = modMenu
                     )
                 }
-            } else {
+            }
+        } else {
+            if (viewModel.sagaCombateAtivo) {
                 com.gurps.ficha.ui.saga.CombatePainel(viewModel, Modifier.weight(1.5f))
             }
+            // Fora do tático a caixa fica no rodapé (fluxo de narração / modo faixas).
+            BarraDeEnvio(
+                viewModel,
+                habilitado = !processando && rolagem == null,
+                emCombate = viewModel.sagaCombateAtivo
+            )
         }
-        // A caixa de texto fica SEMPRE disponível (itens 2/3 do teste de batalha): o jogador fala com
-        // o Narrador DURANTE o combate e DEPOIS de cair/vencer, sem precisar sair e voltar à campanha.
-        BarraDeEnvio(
-            viewModel,
-            habilitado = !processando && rolagem == null,
-            emCombate = viewModel.sagaCombateAtivo
-        )
     }
 
     // Lote HEX-9 (Fase 7 do PILAR): defesa por timing (Clair Obscur). Só entra no modo 3D — no
@@ -529,7 +543,7 @@ private fun FeedDaCampanha(viewModel: FichaViewModel) {
 }
 
 @Composable
-private fun TurnoBolha(turno: SagaTurn, animar: Boolean) {
+private fun TurnoBolha(turno: SagaTurn, animar: Boolean, compacto: Boolean = false) {
     val (rotulo, cor) = when (turno.role) {
         "jogador" -> "Você" to MaterialTheme.colorScheme.primaryContainer
         "sistema" -> "Dado" to MaterialTheme.colorScheme.tertiaryContainer
@@ -559,10 +573,13 @@ private fun TurnoBolha(turno: SagaTurn, animar: Boolean) {
             .fillMaxWidth()
             .semantics { contentDescription = "$rotulo: ${turno.texto}" }
     ) {
-        Column(Modifier.padding(12.dp)) {
+        Column(Modifier.padding(if (compacto) 8.dp else 12.dp)) {
             Text(rotulo, style = MaterialTheme.typography.labelSmall, fontWeight = FontWeight.Bold)
             Spacer(Modifier.height(2.dp))
-            Text(if (animar) textoVisivel else turno.texto, style = MaterialTheme.typography.bodyMedium)
+            Text(
+                if (animar) textoVisivel else turno.texto,
+                style = if (compacto) MaterialTheme.typography.bodySmall else MaterialTheme.typography.bodyMedium
+            )
         }
     }
 }
@@ -606,12 +623,19 @@ private fun CardDeRolagem(viewModel: FichaViewModel, req: com.gurps.ficha.viewmo
 }
 
 @Composable
-private fun BarraDeEnvio(viewModel: FichaViewModel, habilitado: Boolean, emCombate: Boolean = false) {
+private fun BarraDeEnvio(
+    viewModel: FichaViewModel,
+    habilitado: Boolean,
+    emCombate: Boolean = false,
+    // Lote TOK-6b-3: no combate tático a caixa sobe pro topo (acima do grid) e fica FINA — 1 linha,
+    // menos padding — pra roubar o mínimo de espaço da grade.
+    compacto: Boolean = false,
+) {
     var texto by remember { mutableStateOf("") }
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(8.dp),
+            .padding(horizontal = 8.dp, vertical = if (compacto) 2.dp else 8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         OutlinedTextField(
@@ -620,10 +644,11 @@ private fun BarraDeEnvio(viewModel: FichaViewModel, habilitado: Boolean, emComba
             modifier = Modifier
                 .weight(1f)
                 .semantics { contentDescription = if (emCombate) "Falar com o Narrador durante o combate" else "O que seu herói faz" },
-            // Em combate as manobras são os botões do painel; a caixa serve para FALAR com o Narrador.
+            // Em combate as manobras são os botões dos tokens; a caixa serve para FALAR com o Narrador.
             placeholder = { Text(if (emCombate) "Falar com o Narrador…" else "O que você faz?") },
             enabled = habilitado,
-            maxLines = 4
+            maxLines = if (compacto) 2 else 4,
+            textStyle = if (compacto) MaterialTheme.typography.bodySmall else LocalTextStyle.current
         )
         Spacer(Modifier.width(8.dp))
         Button(
@@ -632,6 +657,7 @@ private fun BarraDeEnvio(viewModel: FichaViewModel, habilitado: Boolean, emComba
                 if (t.isNotEmpty()) { viewModel.sagaEnviar(t); texto = "" }
             },
             enabled = habilitado && texto.isNotBlank(),
+            contentPadding = if (compacto) PaddingValues(horizontal = 12.dp, vertical = 4.dp) else ButtonDefaults.ContentPadding,
             modifier = Modifier.semantics { contentDescription = "Enviar ação ao Narrador" }
         ) { Text(if (emCombate) "Falar" else "Agir") }
     }

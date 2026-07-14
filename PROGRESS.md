@@ -3046,6 +3046,16 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - **Recomendação registrada** (maior valor × menor custo): Ataque Telegráfico (par do Enganoso), luta agarrada profunda (chaves/Mata-Leão estendendo o lote 422), Sangramento Grave + incapacitação de membro (item 5 do teste de batalha), Ataque Dedicado/Defensivo. Fora de escopo: posicional/hexágono, montaria, cinematográfico, dado de arma do NPC. Mudança só de documentação (não compila Kotlin).
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
+### Lote TOK-6b-3 — 14 de Julho de 2026 (VTT 2D / Fase 6b-3 — GRID PROTAGONISTA: layout pós-teste do 6b-2)
+**Saga: mais grade, menos moldura — feedback do teste no aparelho — branch GURPS-Saga**
+- **Trocar arma virou chip do herói** (`SubDialogoTrocarArma` no `MenuTaticoDoToken`): o botão mostra a arma empunhada (🔄 nome); abre o diálogo de armas; sacar é Preparar (gasta o turno) ou livre com Saque Rápido. Com isso o **painel fixo de arma do rodapé foi REMOVIDO** (`PainelArmaTatico` apagado, param `manobrasNoGrid` some).
+- **Caixa do Narrador SUBIU** pro topo do grid no combate tático (fina: 1-2 linhas, `BarraDeEnvio(compacto=true)`), liberando o rodapé pra grade. Fora do tático continua no rodapé.
+- **Status virou OVERLAY sobre a grade** (`CombateStatusTatico`): só aparece quando exige atenção — Defenda-se! (card cheio), fim de combate (+ Fechar), ou "Inimigos agindo…" (pílula translúcida). **Na vez do herói não renderiza NADA** — as ações moram nos tokens. O painel `weight(1f)` fixo saiu; o grid ganhou esse espaço.
+- **GRID PROTAGONISTA**: bloco tático agora é `Box(weight 3f)` direto (grid do topo ao rodapé) em vez de `Column{grid 2.2 + painel 1}`; feed encolhe no tático (`weight 0.7`, cards `TurnoBolha(compacto)` com menos padding + `bodySmall`).
+- **Câmera (o "hexes grandes demais, não movo o deslocamento todo")**: (1) margem de enquadramento 2,5→1,1 hex (menos borda desperdiçada); (2) **piso de toque menor AO MOVER** — 30dp com o herói selecionado (cabe mais do range), 40dp ao só observar. Com o grid mais alto + menu do herói no TOPO (deixa os hexes de movimento livres embaixo), o deslocamento aparece bem mais.
+- **Menu do herói no TOPO, do inimigo embaixo**: o self-menu não cobre os hexes verdes de movimento; o menu ofensivo fica ao alcance do polegar. Respiro de 42dp evita cobrir o cabeçalho "Combate tático".
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
 ### Lote TOK-6b-2 — 14 de Julho de 2026 (VTT 2D / Fase 6b-2 — MANOBRAS NOS TOKENS: carrossel translúcido)
 **Saga: a manobra mora onde ela acontece — tocar no token abre as ações — branch GURPS-Saga**
 - **Menu do SEU token** (`MenuTaticoDoToken` + `menuTaticoHeroi` pura): manobras sobre si mesmo — Mudar Postura, Defesa Total, Aguardar, Preparar, Concentrar, Desvencilhar (se preso), Fogo de Retenção, Não Fazer Nada. Mover NÃO é botão (continua sendo o hex verde, TOK-4).

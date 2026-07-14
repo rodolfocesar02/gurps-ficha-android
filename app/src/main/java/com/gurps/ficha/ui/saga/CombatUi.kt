@@ -47,9 +47,6 @@ fun CombatePainel(
     // Lote TOK-6b-1: no modo TÁTICO a vida mora no token (barra sobre a cabeça) — o tracker de
     // cards duplicaria a informação e roubaria espaço da grade. No modo faixas continua true.
     mostrarTracker: Boolean = true,
-    // Lote TOK-6b-2: no modo TÁTICO as manobras moram nos TOKENS (MenuTaticoDoToken) — aqui fica
-    // só a arma empunhada + a dica de onde tocar. Defenda-se!/fim de combate continuam aqui.
-    manobrasNoGrid: Boolean = false,
 ) {
     val estado = viewModel.sagaCombateEstado ?: return
     val defesa = viewModel.sagaCombateDefesaPendente
@@ -85,8 +82,7 @@ fun CombatePainel(
                 when {
                     estado.encerrado -> FimDeCombate(estado.resultado)
                     defesa != null -> DefendaSeCard(viewModel, defesa)
-                    estado.vezDoHeroi -> if (manobrasNoGrid) PainelArmaTatico(viewModel, estado)
-                        else ManeuverCards(viewModel, estado)
+                    estado.vezDoHeroi -> ManeuverCards(viewModel, estado)
                     else -> AguardandoInimigos()
                 }
             }
@@ -95,26 +91,41 @@ fun CombatePainel(
 }
 
 /**
- * Lote TOK-6b-2: a versão do painel na sua vez quando as manobras moram nos tokens — só a arma
- * empunhada (Preparar/Trocar continua importante ver) e a dica de onde tocar.
+ * Lote TOK-6b-3: overlay de status do combate tático, SOBRE a grade (o painel fixo do rodapé saiu
+ * pra dar todo o espaço vertical ao grid). Só aparece quando exige atenção: Defenda-se!, fim de
+ * combate, ou a vez dos inimigos. **Na vez do herói não renderiza NADA** — as ações moram nos
+ * tokens (menu) e o movimento nos hexes verdes.
  */
 @Composable
-private fun PainelArmaTatico(viewModel: FichaViewModel, estado: com.gurps.ficha.viewmodel.delegates.CombatUiState) {
-    Card(
-        Modifier.fillMaxWidth().padding(8.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer)
-    ) {
-        Column(Modifier.padding(12.dp)) {
-            Text("Sua vez", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
-            Spacer(Modifier.height(6.dp))
-            SeletorDeArma(viewModel, estado)
-            Text(
-                "Toque no SEU token para manobras, num INIMIGO para atacar — hexes verdes movem.",
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.padding(top = 6.dp)
-            )
+fun CombateStatusTatico(viewModel: FichaViewModel, modifier: Modifier = Modifier) {
+    val estado = viewModel.sagaCombateEstado ?: return
+    val defesa = viewModel.sagaCombateDefesaPendente
+    when {
+        estado.encerrado -> Column(
+            modifier.fillMaxWidth().padding(horizontal = 8.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            FimDeCombate(estado.resultado)
+            Button(
+                onClick = { viewModel.sagaCombateEncerrar() },
+                modifier = Modifier.padding(bottom = 8.dp)
+                    .semantics { contentDescription = "Fechar combate e voltar à narração" }
+            ) { Text("Fechar") }
         }
+        // Defenda-se! é o momento mais crítico — o card cheio (opaco) sobre a grade.
+        defesa != null -> Box(modifier.fillMaxWidth()) { DefendaSeCard(viewModel, defesa) }
+        // Vez dos inimigos: pílula translúcida discreta.
+        !estado.vezDoHeroi -> Surface(
+            color = Color(0xCC10161F), contentColor = Color.White, shape = RoundedCornerShape(16.dp),
+            modifier = modifier.padding(8.dp)
+        ) {
+            Row(Modifier.padding(horizontal = 14.dp, vertical = 8.dp), verticalAlignment = Alignment.CenterVertically) {
+                CircularProgressIndicator(Modifier.size(14.dp), strokeWidth = 2.dp, color = Color.White)
+                Spacer(Modifier.width(8.dp))
+                Text("Inimigos agindo…", style = MaterialTheme.typography.bodySmall)
+            }
+        }
+        // else: vez do herói → nada (menu do token + hexes verdes cuidam de tudo).
     }
 }
 
@@ -1001,6 +1012,7 @@ fun MenuTaticoDoToken(
     var apontarDialogo by remember(tokenId) { mutableStateOf(false) }
     var posturaDialogo by remember(tokenId) { mutableStateOf(false) }
     var defesaTotalDialogo by remember(tokenId) { mutableStateOf(false) }
+    var trocarArmaDialogo by remember(tokenId) { mutableStateOf(false) } // Lote TOK-6b-3: Trocar arma virou chip do token
 
     val ehHeroi = tokenId == "heroi"
     val alvo = if (ehHeroi) null
@@ -1086,6 +1098,20 @@ fun MenuTaticoDoToken(
                     )
                 }
             }
+            // Lote TOK-6b-3: "Trocar arma" saiu do painel de baixo (removido) e virou chip do herói —
+            // abre o diálogo de armas; sacar é Preparar (gasta o turno) ou livre com Saque Rápido.
+            if (ehHeroi && estado.ataques.size > 1) {
+                val armaAtual = estado.ataqueAtual?.rotulo?.substringBefore(" (")?.trim() ?: "arma"
+                Surface(
+                    onClick = { trocarArmaDialogo = true },
+                    color = Color(0x33FFFFFF), contentColor = Color.White, shape = RoundedCornerShape(14.dp),
+                    modifier = Modifier.padding(horizontal = 3.dp)
+                        .semantics { contentDescription = "Trocar arma — empunhando $armaAtual" }
+                ) {
+                    Text("🔄 $armaAtual", style = MaterialTheme.typography.labelMedium,
+                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 8.dp))
+                }
+            }
             Surface(
                 onClick = onFechar,
                 color = Color(0x33FFFFFF), contentColor = Color.White, shape = CircleShape,
@@ -1142,4 +1168,49 @@ fun MenuTaticoDoToken(
             onFechar = { defesaTotalDialogo = false }
         )
     }
+
+    if (trocarArmaDialogo) {
+        SubDialogoTrocarArma(
+            ataques = estado.ataques,
+            selecionado = estado.ataqueSelecionado,
+            onEscolher = { i -> viewModel.sagaCombateSacarArma(i); trocarArmaDialogo = false; onFechar() },
+            onFechar = { trocarArmaDialogo = false }
+        )
+    }
+}
+
+/** Lote TOK-6b-3: troca de arma como diálogo do token (substitui o painel de arma fixo do rodapé). */
+@Composable
+private fun SubDialogoTrocarArma(
+    ataques: List<AtaqueHeroi>,
+    selecionado: Int,
+    onEscolher: (Int) -> Unit,
+    onFechar: () -> Unit,
+) {
+    AlertDialog(
+        onDismissRequest = onFechar,
+        title = { Text("Trocar arma") },
+        text = {
+            Column(Modifier.verticalScroll(rememberScrollState())) {
+                Text(
+                    "Sacar uma arma é a manobra Preparar (gasta o turno) — livre com Saque Rápido.",
+                    style = MaterialTheme.typography.bodySmall, fontStyle = FontStyle.Italic,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                Spacer(Modifier.height(6.dp))
+                ataques.forEachIndexed { i, atk ->
+                    val empunhada = i == selecionado
+                    val alcanceTxt = if (atk.aDistancia) "à distância (Máx ${atk.alcance}m)" else "corpo-a-corpo (${atk.alcance}m)"
+                    OpcaoRadio(
+                        selecionado = empunhada,
+                        rotulo = "${atk.rotulo} — NH ${atk.nh}, ${atk.danoExpr} ${atk.tipo.rotulo}" + if (empunhada) " (na mão)" else "",
+                        descricao = if (empunhada) "${atk.rotulo}, já empunhada, $alcanceTxt" else "Sacar ${atk.rotulo}, $alcanceTxt",
+                        onClick = { if (!empunhada) onEscolher(i) else onFechar() }
+                    )
+                }
+            }
+        },
+        confirmButton = {},
+        dismissButton = { TextButton(onClick = onFechar) { Text("Cancelar") } }
+    )
 }

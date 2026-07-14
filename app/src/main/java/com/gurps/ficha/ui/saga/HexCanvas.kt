@@ -409,10 +409,12 @@ private fun HexCanvasCombateReal(viewModel: FichaViewModel, modifier: Modifier =
             val largPx = constraints.maxWidth.toFloat()
             val altPx = constraints.maxHeight.toFloat()
             // Lote TOK-6a — CÂMERA: enquadra os combatentes (+margem) em vez da grade inteira.
-            // Lote TOK-6b-1 (feedback do teste): PISO DE TOQUE de 40dp — enquadrar TODOS os
-            // alcançáveis abria demais e os hexes viravam alvo de mouse; agora o zoom para no
-            // tocável e o que ficou fora se alcança com o PAN por arrasto.
-            val pisoToquePx = with(LocalDensity.current) { 40.dp.toPx() }
+            // Lote TOK-6b-1: PISO DE TOQUE — o hex não encolhe abaixo do tocável; o resto vai pro PAN.
+            // Lote TOK-6b-3 (feedback do teste): quando o herói está SELECIONADO (modo movimento, há
+            // hexes verdes), usamos um piso MENOR — cabe mais do deslocamento na tela; ao só observar,
+            // o piso volta ao confortável.
+            val movendo = hexesAlcancaveis.isNotEmpty()
+            val pisoToquePx = with(LocalDensity.current) { (if (movendo) 30.dp else 40.dp).toPx() }
             val camAlvo = calcularCamera(
                 tokens.map { it.posicao } + hexesAlcancaveis, largPx, altPx, estado.raioGrade,
                 pisoToquePx = pisoToquePx
@@ -575,8 +577,11 @@ internal fun calcularCamera(
     if (posicoes.isEmpty() || larg <= 0f || alt <= 0f) return CameraHex(tamFull, 0f, 0f)
     val axs = posicoes.map { SQRT3 * it.q + SQRT3 / 2f * it.r }
     val ays = posicoes.map { 1.5f * it.r }
-    val margemAx = SQRT3 * 2.5f  // ~2,5 hexes de folga
-    val margemAy = 1.5f * 2.5f
+    // Lote TOK-6b-3 (feedback do teste): margem menor (~1 hex) — a folga de 2,5 hexes desperdiçava
+    // borda e, com o piso de toque, empurrava o range de movimento pra fora da viewport (o usuário
+    // não conseguia andar o deslocamento todo). Menos borda = mais hexes alcançáveis visíveis.
+    val margemAx = SQRT3 * 1.1f
+    val margemAy = 1.5f * 1.1f
     val minAx = axs.min() - margemAx; val maxAx = axs.max() + margemAx
     val minAy = ays.min() - margemAy; val maxAy = ays.max() + margemAy
     val wUnid = (maxAx - minAx).coerceAtLeast(0.1f)
