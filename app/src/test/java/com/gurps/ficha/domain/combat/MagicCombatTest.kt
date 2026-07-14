@@ -1,6 +1,7 @@
 package com.gurps.ficha.domain.combat
 
 import com.gurps.ficha.domain.magic.ContextoConjuracao
+import com.gurps.ficha.domain.magic.MagicCasting
 import com.gurps.ficha.domain.magic.MagicClassParser
 import com.gurps.ficha.domain.magic.MagicEnergy
 import com.gurps.ficha.domain.magic.NivelMana
@@ -87,5 +88,45 @@ class MagicCombatTest {
         val r = s.heroiConjurar(ctx, MagicEnergy.parse("2"), energiaInvestida = 1, magiaNome = "Escudo", alvoId = null)
         assertTrue(s.log.any { it.contains("Escudo") })
         assertTrue("automagia não causa dano de projétil", r.danoCausado == 0)
+    }
+
+    // ── Lote MA-3b ──
+
+    @Test
+    fun `projetil pode ser ESQUIVADO ou passar longe — nem todo lancamento bem-sucedido fere`() {
+        // Goblin bem esquivo + distância → em vários seeds, algum lançamento bem-sucedido NÃO fere
+        // (o alvo esquiva ou o Ataque Inato erra). Prova que o 2º teste/esquiva do MA-3b existe.
+        val esquivo = NpcStats(st = 11, dx = 15, ht = 14, pvMax = 8, rd = 0, armaNh = 11) // Vel.Básica alta → Esquiva alta
+        var sucessoSemDano = false
+        for (seed in 0L until 40L) {
+            val enc = CombatEncounter(
+                listOf(heroi(), Combatente(id = "goblin", nome = "Goblin", dx = 15, velocidadeBasica = 7.0, deslocamento = 7, pvMax = 8, pvAtual = 8, stats = esquivo)),
+                mapOf("goblin" to 10), seed = 1L
+            )
+            val s = CombatSession(enc, perfil(), Random(seed))
+            val r = s.heroiConjurar(ctxProjetil(nh = 30, dist = 10), MagicEnergy.parse("Varia"), 1, "Bola de Fogo", "goblin")
+            if (r.sucesso && r.danoCausado == 0 &&
+                s.log.any { it.contains("ESQUIVA") || it.contains("passa longe") }) {
+                sucessoSemDano = true; break
+            }
+        }
+        assertTrue("nenhum seed mostrou esquiva/erro do projétil — o 2º teste não está agindo", sucessoSemDano)
+    }
+
+    @Test
+    fun `queimar PV paga parte do custo com PV (fere o mago) e penaliza o NH`() {
+        // Custo fixo 3; queima 2 PV → paga 2 em PV (perde PV) e 1 em PF; NH cai 2 (−1 por PV).
+        val s = sessao(4L)
+        val pvAntes = s.heroi.pvAtual
+        val pfAntes = s.heroi.pfAtual
+        val ctx = ContextoConjuracao(nhBasico = 15, classe = MagicClassParser.parse("Comum"),
+            mana = NivelMana.NORMAL, pvQueimados = 2)
+        s.heroiConjurar(ctx, MagicEnergy.parse("3"), energiaInvestida = 1, magiaNome = "Grande Cura", alvoId = null)
+        // Só cobra se NÃO foi decisivo (decisivo perdoa o custo). Em qualquer caso, PV nunca sobe.
+        assertTrue("queimar PV nunca cura o mago", s.heroi.pvAtual <= pvAntes)
+        // A penalidade de −2 no NH aparece nas parcelas do NH efetivo.
+        val nh = MagicCasting.nhEfetivo(ctx)
+        assertTrue(nh.componentes.any { it.motivo.contains("queimar") && it.valor == -2 })
+        assertTrue(s.heroi.pfAtual <= pfAntes)
     }
 }

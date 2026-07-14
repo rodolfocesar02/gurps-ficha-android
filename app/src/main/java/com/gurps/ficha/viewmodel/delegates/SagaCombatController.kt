@@ -75,6 +75,8 @@ data class MagiaConjuravelUi(
     val ehProjetil: Boolean,
     /** Teto de energia do Projétil = nível de Aptidão Mágica (Magia p.12). */
     val aptidaoMagica: Int,
+    /** Custo aproximado (para limitar o quanto de PV o mago pode queimar). */
+    val custoEstimado: Int,
     val castavel: Boolean,
     val motivo: String,
 )
@@ -680,7 +682,7 @@ class SagaCombatController(
      * controller extrai da ficha o NH básico e a Aptidão, monta o contexto puro e delega ao motor
      * ([CombatSession.heroiConjurar], que usa o resolvedor do MA-2). [alvoId] = null para automagia.
      */
-    fun heroiConjurar(magiaId: String, alvoId: String?, energiaInvestida: Int) {
+    fun heroiConjurar(magiaId: String, alvoId: String?, energiaInvestida: Int, pvQueimados: Int = 0) {
         val s = sessao ?: return
         if (!s.combatenteAtual().ehHeroi || s.encerrado) return
         val p = viewModel.personagem
@@ -697,10 +699,12 @@ class SagaCombatController(
             distanciaMetros = distancia,
             tocando = false,
             veOuToca = true,
-            raioAreaMetros = 1,               // MA-3b: área centrada num hex
+            pvQueimados = pvQueimados.coerceAtLeast(0), // Lote MA-3b: queimar PV (−1 NH/PV, paga em PV)
+            raioAreaMetros = 1,               // MA-3d: área centrada num hex
         )
         s.heroiConjurar(ctx, custo, energiaInvestida, magia.nome, alvoId)
         viewModel.sagaDefinirPfAtual(s.heroi.pfAtual) // sincroniza a fadiga gasta com a ficha
+        viewModel.sagaDefinirPvAtual(s.heroi.pvAtual.coerceAtLeast(0)) // queimar PV / choque de retorno mexem no PV
         depoisDaAcaoDoHeroi()
     }
 
@@ -738,6 +742,7 @@ class SagaCombatController(
                 custoTexto = custoTxt,
                 ehProjetil = ehProjetil,
                 aptidaoMagica = aptidao.coerceAtLeast(1),
+                custoEstimado = (custo.base ?: custo.minimo).coerceAtLeast(1),
                 castavel = temPf,
                 motivo = if (!temPf) "sem PF" else "",
             )

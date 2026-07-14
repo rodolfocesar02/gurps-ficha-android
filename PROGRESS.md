@@ -3046,6 +3046,14 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - **Recomendação registrada** (maior valor × menor custo): Ataque Telegráfico (par do Enganoso), luta agarrada profunda (chaves/Mata-Leão estendendo o lote 422), Sangramento Grave + incapacitação de membro (item 5 do teste de batalha), Ataque Dedicado/Defensivo. Fora de escopo: posicional/hexágono, montaria, cinematográfico, dado de arma do NPC. Mudança só de documentação (não compila Kotlin).
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
+### Lote MA-3b — 15 de Julho de 2026 (PILAR MAGIA / Fase 3b — Projétil fiel + queimar PV)
+**Saga: o inimigo pode ESQUIVAR do projétil; o mago pode queimar PV — branch GURPS-Saga**
+- **Projétil = 2 testes** (Magia p.12): além do lançamento, um teste de **Ataque Inato** para acertar (aprox. DX + SSR de distância); o alvo pode **ESQUIVAR** (ou bloquear), **NUNCA aparar**. Só quem acerta e não é esquivado sofre o dano 1d × energia com RD. Fecha o maior gap de fidelidade do MA-3a (antes o projétil acertava no sucesso do lançamento).
+- **Queimar PV** (Magia p.8): o mago paga parte do custo com PV (fere de verdade via `InjuryRules.ferir`) no lugar de PF; cada PV é −1 no NH (já entrava no NH efetivo do MA-2 via `ctx.pvQueimados`). Stepper no `SubDialogoConjurar` com teto no custo estimado; PV e PF sincronizam com a ficha (`sagaDefinirPvAtual`/`sagaDefinirPfAtual`).
+- **+2 testes** (`MagicCombatTest`, total 6): o projétil pode ser esquivado ou passar longe (o 2º teste age); queimar PV fere o mago e penaliza o NH em −1 por PV. Zero regressão na suíte de combate.
+- **Deferido honestamente**: MA-3c (multi-turno + interrupção, Toque, Bloqueio) e MA-3d (Área no hex + resistência de área, magias ativas + tick). Cada um é uma fatia própria — MA-3b/c era grande demais para um lote.
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
 ### Lote MA-3a — 14 de Julho de 2026 (PILAR MAGIA / Fase 3a — a espinha conjurável no grid)
 **Saga: o herói CONJURA no combate — chip 🔮 no token — branch GURPS-Saga**
 - **Chip 🔮 Conjurar** no menu do token do herói (só se ele conhece magias) → `SubDialogoConjurar`: escolhe a magia (NH, classe, custo), o alvo (um inimigo ou "em mim mesmo") e — para Projétil — a energia investida (1d de dano por ponto, teto na Aptidão Mágica). Conjurar = manobra Concentrar (gasta o turno).

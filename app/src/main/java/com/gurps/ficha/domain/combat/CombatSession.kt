@@ -743,9 +743,9 @@ class CombatSession(
      * CONTROLLER monta o [ctx] a partir da ficha (NH básico, Aptidão, classe, custo lidos do catálogo);
      * aqui o motor rola os dados (via [MagicCasting], o resolvedor do MA-2), paga a fadiga e aplica o
      * que é DERIVÁVEL por regra:
-     *  - **Projétil**: dano 1d × energia investida ao alvo, com RD (Magia p.470). Deferido p/ MA-3b: o
-     *    teste separado de Ataque Inato e a esquiva do alvo — por ora o projétil acerta no sucesso do
-     *    lançamento; o tipo de dano é aproximado por contusão (×1 de ferimento, como queimadura básica).
+     *  - **Projétil** (Lote MA-3b): 2 testes (Magia p.12) — lançamento + Ataque Inato para acertar
+     *    (aprox. DX + SSR de distância); o alvo pode ESQUIVAR, nunca aparar. Acertou → dano 1d ×
+     *    energia com RD (o tipo é aproximado por contusão ×1, como queimadura básica).
      *  - **Resistível**: Disputa Rápida de resistência (HT/Vont/… do alvo, Regra do 16) — o efeito além
      *    de "resistiu ou não" é narrado pelo Mestre.
      *  - **Falha crítica**: choque de retorno (dano/atordoamento no operador).
@@ -767,8 +767,11 @@ class CombatSession(
         val rol = rolar3d6()
         val r = MagicCasting.resolver(nhEf.valor, rol, custoTotal, ctx.classe, rolagemChoqueRetorno3d = rolar3d6())
 
-        // Paga a fadiga (MA-3a: sempre em PF; queimar PV entra num lote futuro).
-        heroi.pfAtual = (heroi.pfAtual - r.custoAPagar).coerceAtLeast(0)
+        // Paga o custo: primeiro os PV que o mago escolheu QUEIMAR (dói — Magia p.8; a penalidade
+        // de −1/PV no NH já está no NH efetivo via ctx.pvQueimados), o restante sai dos PF.
+        val pvPagos = ctx.pvQueimados.coerceIn(0, r.custoAPagar)
+        if (pvPagos > 0) InjuryRules.ferir(heroi, pvPagos, heroiPerfil.ht, random)
+        heroi.pfAtual = (heroi.pfAtual - (r.custoAPagar - pvPagos)).coerceAtLeast(0)
 
         val modsTxt = if (nhEf.componentes.isEmpty()) "" else
             " [" + nhEf.componentes.joinToString(", ") { "${it.motivo} ${if (it.valor >= 0) "+" else ""}${it.valor}" } + "]"
@@ -805,13 +808,26 @@ class CombatSession(
 
                 if (!alvoResistiu && TipoClasseMagia.PROJETIL in ctx.classe.classes && alvo != null) {
                     val energia = energiaInvestida.coerceAtLeast(1)
-                    val bruto = rolarDano("${energia}d", random)
-                    val dn = HitLocationRules.aplicarDano(alvo.pvMax, bruto, DanoTipo.CONT, LocalAtaque.TORSO,
-                        alvo.stats?.rd ?: 0, alvo.stats?.tolerancia ?: ToleranciaFerimentos.NORMAL)
-                    InjuryRules.ferir(alvo, dn.pvSubtrair, alvo.stats?.ht ?: 10, random)
-                    dano = dn.pvSubtrair
-                    sb.append(" Projétil de ${energia}d → ${dn.pvSubtrair} de dano em ${alvo.nome}" +
-                        (if (!alvo.vivo) " (fora de combate!)." else "."))
+                    // 2º teste (Magia p.12): Ataque Inato para ACERTAR (aprox. DX + SSR de distância).
+                    val nhAcerto = heroiPerfil.dx + penalidadeDistancia(ctx.distanciaMetros)
+                    val rolAcerto = rolar3d6()
+                    if (rolAcerto > nhAcerto) {
+                        sb.append(" O projétil passa longe (Ataque Inato NH $nhAcerto, rolou $rolAcerto).")
+                    } else {
+                        // O alvo pode ESQUIVAR (ou bloquear), NUNCA aparar (Magia p.12).
+                        val esq = esquivaNpc(alvo)
+                        if (CombatResolver.defesaBemSucedida(esq, rolar3d6())) {
+                            sb.append(" ${alvo.nome} ESQUIVA do projétil (Esquiva $esq).")
+                        } else {
+                            val bruto = rolarDano("${energia}d", random)
+                            val dn = HitLocationRules.aplicarDano(alvo.pvMax, bruto, DanoTipo.CONT, LocalAtaque.TORSO,
+                                alvo.stats?.rd ?: 0, alvo.stats?.tolerancia ?: ToleranciaFerimentos.NORMAL)
+                            InjuryRules.ferir(alvo, dn.pvSubtrair, alvo.stats?.ht ?: 10, random)
+                            dano = dn.pvSubtrair
+                            sb.append(" Projétil de ${energia}d acerta → ${dn.pvSubtrair} de dano em ${alvo.nome}" +
+                                (if (!alvo.vivo) " (fora de combate!)." else "."))
+                        }
+                    }
                 } else if (!alvoResistiu && TipoClasseMagia.PROJETIL !in ctx.classe.classes) {
                     sb.append(" Efeito narrado pelo Mestre.")
                 }

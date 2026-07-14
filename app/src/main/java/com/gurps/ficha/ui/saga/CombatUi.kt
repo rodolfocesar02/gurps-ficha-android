@@ -1195,8 +1195,8 @@ fun MenuTaticoDoToken(
         SubDialogoConjurar(
             magias = estado.magiasConjuraveis,
             inimigos = estado.combatentes.filter { !it.ehHeroi && it.vivo },
-            onConjurar = { magiaId, alvoId, energia ->
-                viewModel.sagaCombateConjurar(magiaId, alvoId, energia); conjurarDialogo = false; onFechar()
+            onConjurar = { magiaId, alvoId, energia, pvQueimar ->
+                viewModel.sagaCombateConjurar(magiaId, alvoId, energia, pvQueimar); conjurarDialogo = false; onFechar()
             },
             onFechar = { conjurarDialogo = false }
         )
@@ -1212,13 +1212,14 @@ fun MenuTaticoDoToken(
 private fun SubDialogoConjurar(
     magias: List<com.gurps.ficha.viewmodel.delegates.MagiaConjuravelUi>,
     inimigos: List<CombatenteUi>,
-    onConjurar: (magiaId: String, alvoId: String?, energia: Int) -> Unit,
+    onConjurar: (magiaId: String, alvoId: String?, energia: Int, pvQueimar: Int) -> Unit,
     onFechar: () -> Unit,
 ) {
     var magiaSel by remember { mutableStateOf(magias.firstOrNull()) }
     // null = "em mim mesmo" (automagia); senão o id do inimigo.
     var alvoId by remember { mutableStateOf<String?>(inimigos.firstOrNull()?.id) }
     var energia by remember { mutableIntStateOf(1) }
+    var pvQueimar by remember { mutableIntStateOf(0) }
 
     AlertDialog(
         onDismissRequest = onFechar,
@@ -1261,12 +1262,27 @@ private fun SubDialogoConjurar(
                             modifier = Modifier.semantics { contentDescription = "Mais energia" }) { Text("+") }
                     }
                 }
+
+                // Queimar PV (Magia p.8): paga parte do custo com PV em vez de PF — cada PV é −1 no NH.
+                val tetoPv = (magiaSel?.custoEstimado ?: 0).coerceAtMost(4)
+                if (tetoPv > 0) {
+                    Spacer(Modifier.height(8.dp))
+                    Text("Queimar PV: ${pvQueimar} (−${pvQueimar} no NH; dói!)", fontWeight = FontWeight.Bold,
+                        style = MaterialTheme.typography.labelLarge)
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        OutlinedButton(onClick = { if (pvQueimar > 0) pvQueimar-- },
+                            modifier = Modifier.semantics { contentDescription = "Menos PV queimado" }) { Text("−") }
+                        Text("${pvQueimar}", Modifier.padding(horizontal = 16.dp), fontWeight = FontWeight.Bold)
+                        OutlinedButton(onClick = { if (pvQueimar < tetoPv) pvQueimar++ },
+                            modifier = Modifier.semantics { contentDescription = "Mais PV queimado" }) { Text("+") }
+                    }
+                }
             }
         },
         confirmButton = {
             val m = magiaSel
             Button(
-                onClick = { if (m != null) onConjurar(m.id, alvoId, if (m.ehProjetil) energia else 1) },
+                onClick = { if (m != null) onConjurar(m.id, alvoId, if (m.ehProjetil) energia else 1, pvQueimar) },
                 enabled = m != null && m.castavel,
                 modifier = Modifier.semantics { contentDescription = "Conjurar a magia escolhida" }
             ) { Text("Conjurar") }
