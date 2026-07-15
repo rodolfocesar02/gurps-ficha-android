@@ -933,26 +933,15 @@ class CombatSession(
                         if (CombatResolver.defesaBemSucedida(esq, rolar3d6())) {
                             sb.append(" ${alvo.nome} ESQUIVA do projétil (Esquiva $esq).")
                         } else {
-                            val bruto = rolarDano("${energia}d", random)
-                            val dn = HitLocationRules.aplicarDano(alvo.pvMax, bruto, DanoTipo.CONT, LocalAtaque.TORSO,
-                                alvo.stats?.rd ?: 0, alvo.stats?.tolerancia ?: ToleranciaFerimentos.NORMAL)
-                            InjuryRules.ferir(alvo, dn.pvSubtrair, alvo.stats?.ht ?: 10, random)
-                            dano = dn.pvSubtrair
-                            sb.append(" Projétil de ${energia}d acerta → ${dn.pvSubtrair} de dano em ${alvo.nome}" +
-                                (if (!alvo.vivo) " (fora de combate!)." else "."))
+                            sb.append(" Projétil acerta —")
+                            dano = aplicarDanoMagico(alvo, energia, ctx.mecanica, sb) // AR-1: dado curado ou 1d/energia
                         }
                     }
-                } else if (!alvoResistiu && ctx.danoPorEnergia && alvo != null) {
-                    // Lote MA-6: magia de dano DIRETA (não-Projétil) — funciona no sucesso (sem teste de
-                    // acerto), dano 1d × energia com RD (diretriz de Mágicas de Combate, Magia p.14).
-                    val energia = energiaInvestida.coerceAtLeast(1)
-                    val bruto = rolarDano("${energia}d", random)
-                    val dn = HitLocationRules.aplicarDano(alvo.pvMax, bruto, DanoTipo.CONT, LocalAtaque.TORSO,
-                        alvo.stats?.rd ?: 0, alvo.stats?.tolerancia ?: ToleranciaFerimentos.NORMAL)
-                    InjuryRules.ferir(alvo, dn.pvSubtrair, alvo.stats?.ht ?: 10, random)
-                    dano = dn.pvSubtrair
-                    sb.append(" ${energia}d de dano → ${dn.pvSubtrair} em ${alvo.nome}" +
-                        (if (!alvo.vivo) " (fora de combate!)." else "."))
+                } else if (!alvoResistiu && alvo != null &&
+                    (ctx.danoPorEnergia || com.gurps.ficha.domain.magic.MagicMechanics.temDanoEstruturado(ctx.mecanica))) {
+                    // Lote MA-6/AR-1: magia de dano DIRETA (não-Projétil) — funciona no sucesso (sem teste
+                    // de acerto). Usa a mecânica curada do catálogo quando houver; senão 1d × energia (p.14).
+                    dano = aplicarDanoMagico(alvo, energiaInvestida, ctx.mecanica, sb)
                 } else if (!alvoResistiu && TipoClasseMagia.PROJETIL !in ctx.classe.classes) {
                     sb.append(" Efeito narrado pelo Mestre.")
                 }
@@ -1094,6 +1083,34 @@ class CombatSession(
         val t = toqueCarregado ?: return
         toqueCarregado = null
         log += "✋ Você dissipa ${t.nome} da mão (sem efeito)."
+    }
+
+    /**
+     * Lote AR-1: aplica o dano de uma mágica ao alvo usando a `mecanica` CURADA do catálogo quando
+     * houver (dado exato escalado por energia, tipo, regra de armadura e condição embutida); sem
+     * mecânica, cai no padrão 1d × energia (contusão). Devolve o dano aplicado.
+     */
+    private fun aplicarDanoMagico(alvo: Combatente, energia: Int, mecanica: com.gurps.ficha.domain.magic.MagiaMecanica?, sb: StringBuilder): Int {
+        val expr = if (mecanica?.danoPorEnergia != null)
+            com.gurps.ficha.domain.magic.MagicMechanics.expandirDano(mecanica.danoPorEnergia, energia.coerceAtLeast(1), mecanica.energiaPorDado)
+        else "${energia.coerceAtLeast(1)}d"
+        val tipo = when (mecanica?.tipoDano) {
+            "corte" -> DanoTipo.CORT; "perf" -> DanoTipo.PERF
+            else -> DanoTipo.CONT // queimadura/contusão/projeção → ×1 (sem enum de queimadura; documentado)
+        }
+        val rd = if (mecanica?.armadura == "ignora") 0 else (alvo.stats?.rd ?: 0)
+        val bruto = rolarDano(expr, random)
+        val dn = HitLocationRules.aplicarDano(alvo.pvMax, bruto, tipo, LocalAtaque.TORSO, rd, alvo.stats?.tolerancia ?: ToleranciaFerimentos.NORMAL)
+        InjuryRules.ferir(alvo, dn.pvSubtrair, alvo.stats?.ht ?: 10, random)
+        sb.append(" $expr → ${dn.pvSubtrair} de dano em ${alvo.nome}" + (if (!alvo.vivo) " (fora de combate!)" else "") + ".")
+        // Condição embutida (ex.: Relâmpago atordoa: HT −1 por 2 PV; Concussão: HT−3).
+        if (mecanica?.condicao == "atordoado" && alvo.vivo && dn.pvSubtrair > 0) {
+            val pen = com.gurps.ficha.domain.magic.MagicMechanics.penalidadeCondicaoPorPv(mecanica.condicaoResistencia, dn.pvSubtrair)
+            val ht = (alvo.stats?.ht ?: 10) + pen
+            if (rolar3d6() > ht) { alvo.condicoes.add(Condicao.ATORDOADO); sb.append(" ${alvo.nome} fica ATORDOADO (HT $ht).") }
+            else sb.append(" (${alvo.nome} resiste ao atordoamento, HT $ht).")
+        }
+        return dn.pvSubtrair
     }
 
     /** Valor de resistência do alvo (MA-3a): atributo indicado + Abascanto embutido; combinadas pegam o maior. */

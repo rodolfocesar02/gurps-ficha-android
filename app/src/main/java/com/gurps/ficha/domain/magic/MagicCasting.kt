@@ -122,6 +122,8 @@ data class ContextoConjuracao(
      * efeito o catálogo não estrutura. Projétil tem o seu próprio caminho de dano.
      */
     val danoPorEnergia: Boolean = false,
+    /** Lote AR-1: regra estruturada curada do catálogo (dano exato, condição, buff). Null = comportamento padrão. */
+    val mecanica: MagiaMecanica? = null,
 )
 
 object MagicCasting {

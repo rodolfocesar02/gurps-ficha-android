@@ -208,6 +208,38 @@ class MagicCombatTest {
         assertTrue("sem PF não conjura", intencao.conjurar == null)
     }
 
+    // ── Lote AR-1: dano estruturado (mecanica curada do catálogo) ──
+
+    @Test
+    fun `Toque Chocante (mecanica ignora armadura) fere mesmo com RD alta`() {
+        // Comum de dano com mecanica: 1d+1/energia, ignora armadura. Goblin RD 6 → dano mesmo assim.
+        val gobRd = goblin().copy(stats = goblin().stats!!.copy(rd = 6))
+        val enc = CombatEncounter(listOf(heroi(), gobRd), mapOf("goblin" to 1), seed = 1L)
+        val s = CombatSession(enc, perfil(), Random(1))
+        val mec = com.gurps.ficha.domain.magic.MagiaMecanica(efeito = "dano", danoPorEnergia = "1d+1",
+            energiaPorDado = 1, tipoDano = "quei", armadura = "ignora")
+        val ctx = ContextoConjuracao(nhBasico = 30, classe = MagicClassParser.parse("Comum"),
+            mana = NivelMana.NORMAL, distanciaMetros = 1, mecanica = mec)
+        val r = s.heroiConjurar(ctx, MagicEnergy.parse("1 a 3"), energiaInvestida = 2, magiaNome = "Toque Chocante", alvoId = "goblin")
+        if (r.sucesso) assertTrue("ignora armadura deve ferir mesmo com RD 6", r.danoCausado > 0)
+    }
+
+    @Test
+    fun `Relampago (mecanica) pode ATORDOAR o alvo alem do dano`() {
+        var atordoou = false
+        for (seed in 0L until 40L) {
+            val enc = CombatEncounter(listOf(heroi(), goblin(pv = 20)), mapOf("goblin" to 5), seed = 1L)
+            val s = CombatSession(enc, perfil(), Random(seed))
+            val mec = com.gurps.ficha.domain.magic.MagiaMecanica(efeito = "dano", danoPorEnergia = "1d-1",
+                energiaPorDado = 1, tipoDano = "quei", condicao = "atordoado", condicaoResistencia = "HT_por_pv")
+            val ctx = ContextoConjuracao(nhBasico = 30, classe = MagicClassParser.parse("Projétil"),
+                mana = NivelMana.NORMAL, distanciaMetros = 5, mecanica = mec)
+            s.heroiConjurar(ctx, MagicEnergy.parse("1 a AM"), energiaInvestida = 5, magiaNome = "Relâmpago", alvoId = "goblin")
+            if (s.encounter.combatentes.first { it.id == "goblin" }.condicoes.contains(Condicao.ATORDOADO)) { atordoou = true; break }
+        }
+        assertTrue("Relâmpago com 5 de energia deveria atordoar em algum seed", atordoou)
+    }
+
     // ── Lote MA-6: dano de magia direta (não-Projétil) ──
 
     @Test

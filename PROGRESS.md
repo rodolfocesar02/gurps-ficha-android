@@ -3046,6 +3046,16 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - **Recomendação registrada** (maior valor × menor custo): Ataque Telegráfico (par do Enganoso), luta agarrada profunda (chaves/Mata-Leão estendendo o lote 422), Sangramento Grave + incapacitação de membro (item 5 do teste de batalha), Ataque Dedicado/Defensivo. Fora de escopo: posicional/hexágono, montaria, cinematográfico, dado de arma do NPC. Mudança só de documentação (não compila Kotlin).
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
+### Lote AR-1 — 15 de Julho de 2026 (MECÂNICA das magias / Escola AR fase 1 — dano estruturado)
+**Saga: a prosa das magias começa a virar regra — sem tocar na descrição — branch GURPS-Saga**
+- **Problema (pergunta do usuário)**: 879 magias com efeito em PROSA (`descricao` fiel), não em regra. Muitas não são só dano.
+- **Solução — campo `mecanica`** (legível pela máquina) ao lado da `descricao` (intocada). Modelo `domain/magic/MagicMechanics.kt` (`MagiaMecanica`): `efeito` fechado (dano/condicao/buff/ambiente/controle/informacao/narrado) + parâmetros. Adicionado ao `MagiaDefinicao` (catálogo, parseado por Gson); o combate lê via `DataRepository.getMagiaPorId(id).mecanica` (cobre até magias já aprendidas). `ContextoConjuracao.mecanica`.
+- **Handler de `dano` no motor** (`aplicarDanoMagico`): `MagicMechanics.expandirDano` escala o dado por energia ("1d-1"/energia → 3d-3 com 3 de energia; "1d"/2 energia → 2d com 4); `tipoDano`; **armadura "ignora"** (Toque Chocante fere mesmo com RD alta); **condição embutida** (Relâmpago atordoa: HT −1 por 2 PV; Concussão HT−3). Liga nas ramificações de Projétil e dano direto de `resolverConjuracao`.
+- **6 magias de Ar de DANO curadas** (lendo as descrições): Relâmpago, Toque Chocante, Concussão, Olhar de Relâmpago, Relâmpago Explosivo, Chicote de Relâmpago.
+- **+7 testes** (`MagicMechanicsTest` 5 + `MagicCombatTest` +2, total 29): expansão de dano, penalidade de condição, Toque Chocante ignora armadura, Relâmpago atordoa. Zero regressão.
+- **Próximo (AR-2)**: buffs (Corpo de Ar, Arma de Relâmpago +2…), ambiente (Muralhas, Furacão, clima…), controle (Turbilhão), informação + as ~43 magias restantes de Ar. Plano em `PLANO_MECANICA_MAGIAS.md`.
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
 ### Lote MA-7 — 15 de Julho de 2026 (PILAR MAGIA / Fase 7 — NPC CONJURADOR)
 **Saga: os inimigos magos agora conjuram DE VERDADE — branch GURPS-Saga**
 - **Dados**: `NpcStats.magias: List<NpcMagia>` (nome, nh, projetil, custoFP, danoDados). O bestiário ganhou `BestiarioCriatura.magias` (`MagiaCriatura`) → mapeado no `novoCombatente`. **Fallback**: um conceito de conjurador (regex `mago/conjurad/feiticei/brux/necromant/xam/arcan/piromant…`) sem mágica curada ganha um "Dardo Mágico" padrão (Projétil 1d, NH = IQ+3) — afordância de jogo (o usuário nomeou o inimigo).

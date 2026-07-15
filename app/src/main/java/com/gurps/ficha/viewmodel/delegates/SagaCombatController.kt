@@ -733,6 +733,11 @@ class SagaCombatController(
             s.log += "🚫 Aqui a mana está ${mana.name.lowercase()} — você não consegue conjurar ${magia.nome}."
             publicarLog(); atualizarEstado(); return
         }
+        // Lote AR-1: regra estruturada curada do catálogo (dano exato, condição…) — olha o `MagiaDefinicao`
+        // pelo id, cobrindo até magias já aprendidas antes da migração.
+        val mecanica = context?.let { c ->
+            runCatching { com.gurps.ficha.data.DataRepository.getInstance(c).getMagiaPorId(magia.definicaoId)?.mecanica }.getOrNull()
+        }
         val ctx = ContextoConjuracao(
             nhBasico = magia.calcularNivel(p, aptidao),
             classe = classe,
@@ -743,6 +748,7 @@ class SagaCombatController(
             pvQueimados = pvQueimados.coerceAtLeast(0), // Lote MA-3b: queimar PV (−1 NH/PV, paga em PV)
             raioAreaMetros = 1,               // MA-3d: área centrada num hex
             danoPorEnergia = danoPorEnergia,  // Lote MA-6: magia de dano direta (1d/energia)
+            mecanica = mecanica,              // Lote AR-1
         )
         // Tempo de operação (Magia p.9): base do catálogo, reduzido por NH alto. >1s → multi-turno.
         val tempoBase = parseTempoSeg(magia.tempoOperacao)

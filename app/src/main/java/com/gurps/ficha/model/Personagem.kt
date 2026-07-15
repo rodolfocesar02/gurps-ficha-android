@@ -643,7 +643,9 @@ data class MagiaDefinicao(
     val duracao: String? = null,
     val energia: String? = null,
     val tempoOperacao: String? = null,
-    val preRequisitos: String? = null
+    val preRequisitos: String? = null,
+    /** Lote AR-1: regra estruturada legível pela máquina (ao lado da `descricao` fiel). Null = usa o comportamento padrão. */
+    val mecanica: com.gurps.ficha.domain.magic.MagiaMecanica? = null
 ) {
     // Mantendo atributo base IQ fixo para magias
     val atributoBase: String get() = "IQ"
