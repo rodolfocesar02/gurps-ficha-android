@@ -502,9 +502,27 @@ private fun FeedDaCampanha(viewModel: FichaViewModel) {
                 com.gurps.ficha.ui.saga.CombateStatusTatico(
                     viewModel, Modifier.align(Alignment.TopCenter).padding(top = 42.dp)
                 )
+                // Lote MA-3d: mira de magia de ÁREA — instrução + Cancelar sobre a grade.
+                val mira = viewModel.sagaMiraAreaPendente
+                if (mira != null) {
+                    Surface(
+                        color = Color(0xE6B23A00), contentColor = Color.White, shape = RoundedCornerShape(16.dp),
+                        modifier = Modifier.align(Alignment.TopCenter).padding(top = 42.dp)
+                    ) {
+                        Row(Modifier.padding(horizontal = 12.dp, vertical = 8.dp), verticalAlignment = Alignment.CenterVertically) {
+                            Text("🎯 Toque o centro de ${mira.magiaNome} (raio ${mira.raio}m)",
+                                style = MaterialTheme.typography.labelMedium)
+                            Spacer(Modifier.width(8.dp))
+                            OutlinedButton(onClick = { viewModel.sagaCancelarMiraArea() },
+                                colors = ButtonDefaults.outlinedButtonColors(contentColor = Color.White),
+                                contentPadding = PaddingValues(horizontal = 10.dp, vertical = 2.dp),
+                                modifier = Modifier.semantics { contentDescription = "Cancelar a mira de área" }) { Text("Cancelar") }
+                        }
+                    }
+                }
                 val tokenSelecionado = viewModel.sagaEstadoTatico?.idSelecionado
                 // Lote MA-3c: concentrando numa magia → esconde o menu do token (só Continuar/Abortar).
-                if (tokenSelecionado != null && viewModel.sagaCombateEstado?.conjurando == null) {
+                if (mira == null && tokenSelecionado != null && viewModel.sagaCombateEstado?.conjurando == null) {
                     // Menu do HERÓI vai no TOPO (deixa os hexes verdes de movimento livres embaixo);
                     // menu do INIMIGO fica embaixo (perto do polegar; atacar não precisa mover). O
                     // respiro de 42dp no topo evita cobrir o cabeçalho "Combate tático".

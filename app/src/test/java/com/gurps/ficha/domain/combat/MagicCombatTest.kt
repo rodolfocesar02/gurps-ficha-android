@@ -115,6 +115,57 @@ class MagicCombatTest {
         assertTrue("nenhum seed mostrou esquiva/erro do projétil — o 2º teste não está agindo", sucessoSemDano)
     }
 
+    // ── Lote MA-3d: magia de área ──
+
+    private fun sessaoComDoisGoblins(seed: Long): CombatSession {
+        val g1 = goblin().copy(id = "g1", nome = "Goblin 1")
+        val g2 = goblin().copy(id = "g2", nome = "Goblin 2")
+        val enc = CombatEncounter(listOf(heroi(), g1, g2), mapOf("g1" to 5, "g2" to 5), seed = 1L)
+        return CombatSession(enc, perfil(), Random(seed))
+    }
+
+    @Test
+    fun `area sem resistencia atinge todos os alvos passados e gasta custo x raio`() {
+        val s = sessaoComDoisGoblins(1L)
+        val pfAntes = s.heroi.pfAtual
+        val ctx = ContextoConjuracao(nhBasico = 25, classe = MagicClassParser.parse("Área"),
+            mana = NivelMana.NORMAL, raioAreaMetros = 2)
+        val r = s.heroiConjurarArea(ctx, MagicEnergy.parse("2"), energiaInvestida = 2, magiaNome = "Tremor", alvosNaArea = listOf("g1", "g2"))
+        if (r.sucesso) {
+            assertTrue(s.log.any { it.contains("Atinge") && it.contains("Goblin 1") && it.contains("Goblin 2") })
+            // custo base 2 × raio 2 = 4 (NH 25 reduz −3 → 1). PF caiu.
+            assertTrue("gastou PF pelo custo de área", s.heroi.pfAtual < pfAntes)
+        }
+    }
+
+    @Test
+    fun `area vazia (nenhum alvo no raio) resolve mas nao atinge ninguem`() {
+        val s = sessaoComDoisGoblins(2L)
+        val ctx = ContextoConjuracao(nhBasico = 25, classe = MagicClassParser.parse("Área"),
+            mana = NivelMana.NORMAL, raioAreaMetros = 1)
+        val r = s.heroiConjurarArea(ctx, MagicEnergy.parse("2"), 1, "Tremor", alvosNaArea = emptyList())
+        if (r.sucesso) assertTrue(s.log.any { it.contains("Nenhum inimigo na área") })
+    }
+
+    @Test
+    fun `area resistivel separa quem foi atingido de quem resistiu`() {
+        // Alvos com resistências diferentes → em algum seed, um é atingido e outro resiste.
+        var separou = false
+        for (seed in 0L until 40L) {
+            val fraco = goblin().copy(id = "g1", nome = "Fraco", stats = goblin().stats!!.copy(ht = 8, iq = 8))
+            val forte = goblin().copy(id = "g2", nome = "Forte", stats = goblin().stats!!.copy(ht = 15, iq = 15))
+            val enc = CombatEncounter(listOf(heroi(), fraco, forte), mapOf("g1" to 5, "g2" to 5), seed = 1L)
+            val s = CombatSession(enc, perfil(), Random(seed))
+            val ctx = ContextoConjuracao(nhBasico = 16, classe = MagicClassParser.parse("Área/R-HT"),
+                mana = NivelMana.NORMAL, raioAreaMetros = 2)
+            val r = s.heroiConjurarArea(ctx, MagicEnergy.parse("2"), 2, "Sono Coletivo", listOf("g1", "g2"))
+            if (r.sucesso && s.log.any { it.contains("Atinge") } && s.log.any { it.contains("Resistiram") }) {
+                separou = true; break
+            }
+        }
+        assertTrue("nenhum seed separou atingidos de resistentes na área", separou)
+    }
+
     // ── Lote MA-3c: conjuração multi-turno ──
 
     private fun ctxComum(nh: Int) = ContextoConjuracao(

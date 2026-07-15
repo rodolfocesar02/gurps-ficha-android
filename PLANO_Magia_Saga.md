@@ -94,11 +94,17 @@ ficar fiel. Puro, determinístico (caller joga os dados), 29 testes.
 - **+5 testes** (`MagicCombatTest`, total 11): entra em concentração e só resolve no fim; atordoado
   perde automático; Vontade−3 falha perde / passa mantém; abortar limpa sem custo; 1s resolve na hora.
 
-### MA-3d (próximo — fatia focada)
-- **Toque** (2 testes: carrega a mão + ataque c-a-c); **Bloqueio** (defesa reativa no "Defenda-se!").
-- **Área** centrada num HEX (custo × raio; raio 1 = 1 hex, raio 2 = +adjacentes; resistência de área).
+### MA-3d — pacote final (Área ✅ · Toque/Bloqueio/magias-ativas em andamento)
+- **✅ Área centrada num HEX**: no 🔮 Conjurar, magia de Área mostra um stepper de RAIO (custo × raio,
+  p.11) e o botão vira "Mirar no grid"; o app entra em MIRA (`miraAreaPendente`) e o próximo toque num
+  hex é o CENTRO. `heroiConjurarArea`: 1 teste de lançamento; o controller calcula quem está no raio
+  (`HexGrid.range(centro, raio−1)`, 1 hex = 1 m) e a distância até a borda; cada alvo resiste sozinho
+  contra a margem do operador (p.14); efeito bespoke → narrado (o motor lista atingidos × resistentes).
+  Overlay "🎯 Toque o centro…" + Cancelar. +3 testes.
+- **Toque** (2 testes: carrega a mão + ataque c-a-c) — pendente.
+- **Bloqueio** (defesa reativa mágica no "Defenda-se!") — pendente.
 - **Magias ATIVAS** no combate + tick de manutenção (`MagicActive` do MA-1 já pronto; efeito de buff
-  é bespoke → narrado).
+  é bespoke → narrado) — pendente.
 - Seletor de magia: NH, custo, tempo de operação, classe; esmaece as impossíveis (mana nula, FP
   insuficiente, pré-requisito faltando).
 - Mira pela CLASSE: Comum/Projétil/Toque → token do inimigo (penalidade de distância pela grade);

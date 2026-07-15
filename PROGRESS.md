@@ -3046,6 +3046,14 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - **Recomendação registrada** (maior valor × menor custo): Ataque Telegráfico (par do Enganoso), luta agarrada profunda (chaves/Mata-Leão estendendo o lote 422), Sangramento Grave + incapacitação de membro (item 5 do teste de batalha), Ataque Dedicado/Defensivo. Fora de escopo: posicional/hexágono, montaria, cinematográfico, dado de arma do NPC. Mudança só de documentação (não compila Kotlin).
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
+### Lote MA-3d-1 — 15 de Julho de 2026 (PILAR MAGIA / Fase 3d — magia de ÁREA mirada no grid)
+**Saga: você toca um hex e a explosão cai lá — pegando todos no raio — branch GURPS-Saga**
+- **Mira no grid**: no 🔮 Conjurar, uma magia de **Área** troca o seletor de alvo por um **stepper de RAIO** (custo × raio, Magia p.11) e o botão vira **"Mirar no grid"**. O app entra em MIRA (`miraAreaPendente`) e o **próximo toque num hex é o CENTRO** da explosão. Overlay "🎯 Toque o centro de X (raio Nm)" + Cancelar.
+- **`CombatSession.heroiConjurarArea`**: UM teste de lançamento; o controller calcula pela grade quem está no raio (`HexGrid.range(centro, raio−1)`; 1 hex = 1 m; raio 1 = só o hex central, raio 2 = +adjacentes, p.13) e a distância do herói até a **borda mais próxima** (penalidade, p.11). Cada alvo na área **resiste sozinho** contra a margem do operador (p.14) → o motor lista **atingidos × resistentes**. Efeito bespoke (dano/condição) → **narrado pelo Mestre**.
+- **+3 testes** (`MagicCombatTest`, total 14): área sem resistência atinge todos + gasta custo × raio; área vazia resolve sem atingir; área resistível separa atingidos de resistentes. Zero regressão.
+- **Deferido p/ MA-3d-2/3/4**: Toque (carrega a mão + ataque), Bloqueio (defesa reativa), magias ativas + tick.
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
 ### Lote MA-3c — 15 de Julho de 2026 (PILAR MAGIA / Fase 3c — conjuração multi-turno com interrupção)
 **Saga: magias de vários segundos exigem foco — e o golpe do inimigo pode quebrá-lo — branch GURPS-Saga**
 - **Multi-turno** (Magia p.7/9): magias com tempo de operação > 1s (do catálogo, reduzido por NH via `tempoOperacaoAjustado`) entram em **concentração** — o turno inicial é a 1ª manobra Concentrar; restam `tempo−1` turnos. `heroiConjurar` guarda `conjuracaoEmAndamento` e SÓ resolve no ÚLTIMO turno (`continuarConjuracao`). Extraí a resolução para `resolverConjuracao` (compartilhada pelo lançamento de 1s e pelo fim do multi-turno).

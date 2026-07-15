@@ -73,6 +73,8 @@ data class MagiaConjuravelUi(
     val custoTexto: String,
     /** Projétil habilita o controle de energia investida (1d por ponto). */
     val ehProjetil: Boolean,
+    /** Área habilita o controle de raio + a mira no grid (Lote MA-3d). */
+    val ehArea: Boolean,
     /** Teto de energia do Projétil = nível de Aptidão Mágica (Magia p.12). */
     val aptidaoMagica: Int,
     /** Custo aproximado (para limitar o quanto de PV o mago pode queimar). */
@@ -83,6 +85,9 @@ data class MagiaConjuravelUi(
 
 /** Lote MA-3c: conjuração multi-turno em andamento (o herói está concentrando). */
 data class ConjurandoUi(val nome: String, val turnosRestantes: Int)
+
+/** Lote MA-3d: mira de magia de área em andamento — o app espera o toque no hex central. */
+data class MiraAreaUi(val magiaId: String, val magiaNome: String, val raio: Int, val energia: Int, val pvQueimar: Int)
 
 /** Estado completo do combate para a UI. */
 data class CombatUiState(
@@ -145,6 +150,9 @@ class SagaCombatController(
     /** Aviso transitório do grid ("Muito longe", "Não é seu turno") — a UI limpa após ~2s. */
     var avisoTatico by mutableStateOf<String?>(null)
 
+    /** Lote MA-3d: mira de magia de ÁREA pendente — enquanto não-null, o próximo toque num hex é o centro. */
+    var miraAreaPendente by mutableStateOf<MiraAreaUi?>(null); private set
+
     /** Token pronto pro desenho: posição + facing + nome + PV% + condições (o canvas cruza com as imagens). */
     data class TokenTatico(
         val id: String, val nome: String, val ehHeroi: Boolean,
@@ -205,6 +213,8 @@ class SagaCombatController(
      */
     fun aoTocarHexTatico(hex: com.gurps.ficha.domain.combat.hex.HexCoord) {
         val s = sessao ?: return
+        // Lote MA-3d: com uma mira de ÁREA pendente, o toque é o CENTRO da magia — resolve e sai.
+        if (miraAreaPendente != null) { resolverMiraAreaNoHex(hex); return }
         val est = estadoTatico ?: return
         val tokenAli = est.posicoes.firstOrNull { it.posicao == hex }
         if (tokenAli != null) {
@@ -717,6 +727,51 @@ class SagaCombatController(
         depoisDaAcaoDoHeroi()
     }
 
+    /**
+     * Lote MA-3d: começa a MIRA de uma magia de ÁREA — o app entra em modo "toque um hex". A magia só
+     * é lançada quando o jogador toca o centro no grid ([resolverMiraAreaNoHex]).
+     */
+    fun iniciarMiraArea(magiaId: String, raio: Int, energia: Int, pvQueimar: Int) {
+        val s = sessao ?: return
+        if (!s.combatenteAtual().ehHeroi || s.encerrado) return
+        val nome = viewModel.personagem.magias.firstOrNull { it.definicaoId == magiaId || it.nome == magiaId }?.nome ?: "magia"
+        miraAreaPendente = MiraAreaUi(magiaId, nome, raio.coerceAtLeast(1), energia, pvQueimar.coerceAtLeast(0))
+        avisoTatico = "Toque um hex para o centro de $nome (raio ${raio}m)"
+    }
+
+    /** Lote MA-3d: cancela a mira de área sem lançar. */
+    fun cancelarMiraArea() { miraAreaPendente = null; avisoTatico = null }
+
+    /** Lote MA-3d: resolve a magia de área centrada no [centro] tocado — calcula quem está no raio pela grade. */
+    private fun resolverMiraAreaNoHex(centro: com.gurps.ficha.domain.combat.hex.HexCoord) {
+        val s = sessao ?: return
+        val mira = miraAreaPendente ?: return
+        miraAreaPendente = null; avisoTatico = null
+        if (!s.combatenteAtual().ehHeroi || s.encerrado) return
+        val p = viewModel.personagem
+        val magia = p.magias.firstOrNull { it.definicaoId == mira.magiaId || it.nome == mira.magiaId } ?: return
+        val aptidao = MagicEngine.getNivelAptidaoMagicaParaMagia(p, null)
+        val est = estadoTatico
+        // raio em metros = raio em hexes (1 hex = 1 m). raio 1 = só o hex central → alcance 0 de hex.
+        val hexRaio = (mira.raio - 1).coerceAtLeast(0)
+        val hexesArea = com.gurps.ficha.domain.combat.hex.HexGrid.range(centro, hexRaio).toSet()
+        val alvos = est?.posicoes?.filter { it.id != "heroi" && it.posicao in hexesArea }?.map { it.id } ?: emptyList()
+        // Penalidade de distância = herói até a BORDA mais próxima da área (Magia p.11).
+        val distBorda = est?.posicoes?.firstOrNull { it.id == "heroi" }
+            ?.let { (it.posicao.distancia(centro) - hexRaio).coerceAtLeast(0) } ?: 0
+        val ctx = ContextoConjuracao(
+            nhBasico = magia.calcularNivel(p, aptidao),
+            classe = MagicClassParser.parse(magia.classe),
+            mana = NivelMana.NORMAL,
+            distanciaMetros = distBorda,
+            raioAreaMetros = mira.raio,
+            pvQueimados = mira.pvQueimar,
+        )
+        s.heroiConjurarArea(ctx, MagicEnergy.parse(magia.energia), mira.energia, magia.nome, alvos)
+        sincronizarRecursosHeroi(s)
+        depoisDaAcaoDoHeroi()
+    }
+
     /** Lote MA-3c: continua a conjuração multi-turno (mais uma manobra Concentrar). */
     fun heroiContinuarConjuracao() {
         val s = sessao ?: return
@@ -763,6 +818,7 @@ class SagaCombatController(
             val classe = MagicClassParser.parse(m.classe)
             val custo = MagicEnergy.parse(m.energia)
             val ehProjetil = TipoClasseMagia.PROJETIL in classe.classes
+            val ehArea = TipoClasseMagia.AREA in classe.classes
             val custoTxt = when {
                 custo.variavel && ehProjetil -> "Varia (1d/pto)"
                 custo.variavel -> "Varia"
@@ -777,6 +833,7 @@ class SagaCombatController(
                 nhBasico = m.calcularNivel(p, aptidao),
                 custoTexto = custoTxt,
                 ehProjetil = ehProjetil,
+                ehArea = ehArea,
                 aptidaoMagica = aptidao.coerceAtLeast(1),
                 custoEstimado = (custo.base ?: custo.minimo).coerceAtLeast(1),
                 castavel = temPf,

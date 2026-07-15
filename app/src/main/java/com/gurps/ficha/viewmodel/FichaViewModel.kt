@@ -155,6 +155,10 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
         sagaDelegate.combate.heroiConjurar(magiaId, alvoId, energiaInvestida, pvQueimados)
     fun sagaCombateContinuarConjuracao() = sagaDelegate.combate.heroiContinuarConjuracao() // Lote MA-3c
     fun sagaCombateAbortarConjuracao() = sagaDelegate.combate.heroiAbortarConjuracao()      // Lote MA-3c
+    val sagaMiraAreaPendente get() = sagaDelegate.combate.miraAreaPendente                  // Lote MA-3d
+    fun sagaIniciarMiraArea(magiaId: String, raio: Int, energia: Int, pvQueimar: Int) =
+        sagaDelegate.combate.iniciarMiraArea(magiaId, raio, energia, pvQueimar)
+    fun sagaCancelarMiraArea() = sagaDelegate.combate.cancelarMiraArea()
     fun sagaCombateApontar(alvoId: String, firmado: Boolean = false) = sagaDelegate.combate.heroiApontar(alvoId, firmado)
     fun sagaCombateFogoRetencao() = sagaDelegate.combate.heroiFogoRetencao()
     fun sagaCombateAguardar() = sagaDelegate.combate.heroiAguardar()

@@ -1219,6 +1219,9 @@ fun MenuTaticoDoToken(
             onConjurar = { magiaId, alvoId, energia, pvQueimar ->
                 viewModel.sagaCombateConjurar(magiaId, alvoId, energia, pvQueimar); conjurarDialogo = false; onFechar()
             },
+            onMirarArea = { magiaId, raio, energia, pvQueimar ->
+                viewModel.sagaIniciarMiraArea(magiaId, raio, energia, pvQueimar); conjurarDialogo = false; onFechar()
+            },
             onFechar = { conjurarDialogo = false }
         )
     }
@@ -1234,6 +1237,7 @@ private fun SubDialogoConjurar(
     magias: List<com.gurps.ficha.viewmodel.delegates.MagiaConjuravelUi>,
     inimigos: List<CombatenteUi>,
     onConjurar: (magiaId: String, alvoId: String?, energia: Int, pvQueimar: Int) -> Unit,
+    onMirarArea: (magiaId: String, raio: Int, energia: Int, pvQueimar: Int) -> Unit,
     onFechar: () -> Unit,
 ) {
     var magiaSel by remember { mutableStateOf(magias.firstOrNull()) }
@@ -1241,6 +1245,8 @@ private fun SubDialogoConjurar(
     var alvoId by remember { mutableStateOf<String?>(inimigos.firstOrNull()?.id) }
     var energia by remember { mutableIntStateOf(1) }
     var pvQueimar by remember { mutableIntStateOf(0) }
+    var raio by remember { mutableIntStateOf(2) } // Lote MA-3d: raio da magia de área
+    val ehArea = magiaSel?.ehArea == true
 
     AlertDialog(
         onDismissRequest = onFechar,
@@ -1261,11 +1267,28 @@ private fun SubDialogoConjurar(
                     )
                 }
 
-                Spacer(Modifier.height(8.dp))
-                Text("Alvo", fontWeight = FontWeight.Bold, style = MaterialTheme.typography.labelLarge)
-                OpcaoRadio(alvoId == null, "Em mim mesmo (automagia)", "Conjurar sobre si mesmo") { alvoId = null }
-                inimigos.forEach { a ->
-                    OpcaoRadio(alvoId == a.id, "${a.nome} (${a.distanciaM}m)", "Alvo ${a.nome}") { alvoId = a.id }
+                if (ehArea) {
+                    // Área (Lote MA-3d): o alvo é um HEX no grid; aqui só se escolhe o RAIO (custo × raio).
+                    Spacer(Modifier.height(8.dp))
+                    Text("Raio da área: ${raio}m (custo × $raio)", fontWeight = FontWeight.Bold,
+                        style = MaterialTheme.typography.labelLarge)
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        OutlinedButton(onClick = { if (raio > 1) raio-- },
+                            modifier = Modifier.semantics { contentDescription = "Menos raio" }) { Text("−") }
+                        Text("${raio}m", Modifier.padding(horizontal = 16.dp), fontWeight = FontWeight.Bold)
+                        OutlinedButton(onClick = { if (raio < 6) raio++ },
+                            modifier = Modifier.semantics { contentDescription = "Mais raio" }) { Text("+") }
+                    }
+                    Text("Depois de confirmar, toque um hex no grid para o centro da explosão.",
+                        style = MaterialTheme.typography.bodySmall, fontStyle = FontStyle.Italic,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant)
+                } else {
+                    Spacer(Modifier.height(8.dp))
+                    Text("Alvo", fontWeight = FontWeight.Bold, style = MaterialTheme.typography.labelLarge)
+                    OpcaoRadio(alvoId == null, "Em mim mesmo (automagia)", "Conjurar sobre si mesmo") { alvoId = null }
+                    inimigos.forEach { a ->
+                        OpcaoRadio(alvoId == a.id, "${a.nome} (${a.distanciaM}m)", "Alvo ${a.nome}") { alvoId = a.id }
+                    }
                 }
 
                 // Energia investida — só faz diferença mecânica em Projétil (1d de dano por ponto).
@@ -1303,10 +1326,15 @@ private fun SubDialogoConjurar(
         confirmButton = {
             val m = magiaSel
             Button(
-                onClick = { if (m != null) onConjurar(m.id, alvoId, if (m.ehProjetil) energia else 1, pvQueimar) },
+                onClick = {
+                    if (m != null) {
+                        if (m.ehArea) onMirarArea(m.id, raio, if (m.ehProjetil) energia else 1, pvQueimar)
+                        else onConjurar(m.id, alvoId, if (m.ehProjetil) energia else 1, pvQueimar)
+                    }
+                },
                 enabled = m != null && m.castavel,
-                modifier = Modifier.semantics { contentDescription = "Conjurar a magia escolhida" }
-            ) { Text("Conjurar") }
+                modifier = Modifier.semantics { contentDescription = if (ehArea) "Mirar a área no grid" else "Conjurar a magia escolhida" }
+            ) { Text(if (ehArea) "Mirar no grid" else "Conjurar") }
         },
         dismissButton = { TextButton(onClick = onFechar) { Text("Cancelar") } }
     )

@@ -915,6 +915,68 @@ class CombatSession(
         }
     }
 
+    /**
+     * Lote MA-3d: conjuração de ÁREA (Magia p.11/13). UM único teste de lançamento; custo × raio;
+     * TODOS os combatentes dentro do raio são afetados — cada um resiste sozinho contra a margem do
+     * operador (p.14). O CONTROLLER calcula quem está na área pela grade e passa os ids em [alvosNaArea];
+     * [ctx.raioAreaMetros] rege o custo. O efeito (dano/condição) é bespoke → narrado pelo Mestre; o
+     * motor identifica quem foi atingido e quem resistiu.
+     */
+    fun heroiConjurarArea(
+        ctx: ContextoConjuracao,
+        custo: CustoEnergia,
+        energiaInvestida: Int,
+        magiaNome: String,
+        alvosNaArea: List<String>,
+    ): ResultadoConjuracaoCombate {
+        inicioAcaoHeroi(); limparAvaliar(); limparApontar(); limparFinta()
+        val nhEf = MagicCasting.nhEfetivo(ctx)
+        val custoTotal = MagicCasting.custoTotal(ctx, custo, energiaInvestida.takeIf { custo.variavel })
+        val rol = rolar3d6()
+        val r = MagicCasting.resolver(nhEf.valor, rol, custoTotal, ctx.classe, rolagemChoqueRetorno3d = rolar3d6())
+        val pvPagos = ctx.pvQueimados.coerceIn(0, r.custoAPagar)
+        if (pvPagos > 0) InjuryRules.ferir(heroi, pvPagos, heroiPerfil.ht, random)
+        heroi.pfAtual = (heroi.pfAtual - (r.custoAPagar - pvPagos)).coerceAtLeast(0)
+
+        val sb = StringBuilder()
+        when (r.resultado) {
+            ResultadoOperacao.FALHA_CRITICA -> {
+                sb.append("💥 CHOQUE DE RETORNO ao conjurar $magiaNome (área)! (NH ${nhEf.valor}, rolou $rol) ")
+                aplicarChoqueRetorno(r.choqueRetorno, sb)
+                verificarFim(); log += sb.toString().trim()
+                return ResultadoConjuracaoCombate(false, sb.toString().trim())
+            }
+            ResultadoOperacao.FRACASSO -> {
+                sb.append("✨ Você falha ao conjurar $magiaNome em área (NH ${nhEf.valor}, rolou $rol). Perde ${r.custoAPagar} PF.")
+                log += sb.toString().trim()
+                return ResultadoConjuracaoCombate(false, sb.toString().trim())
+            }
+            else -> {
+                val decisivo = r.resultado == ResultadoOperacao.SUCESSO_DECISIVO
+                sb.append(if (decisivo) "🌟 Sucesso DECISIVO —" else "🔮 Você conjura")
+                sb.append(" $magiaNome em ÁREA (raio ${ctx.raioAreaMetros}m; NH ${nhEf.valor}, rolou $rol; custo ${r.custoAPagar} PF).")
+                val alvos = alvosNaArea.mapNotNull { id -> inimigos.firstOrNull { it.id == id && it.vivo } }
+                if (alvos.isEmpty()) {
+                    sb.append(" Nenhum inimigo na área.")
+                } else if (r.exigeResistencia && ctx.classe.resistencia != null) {
+                    val atingidos = mutableListOf<String>(); val resistiram = mutableListOf<String>()
+                    for (a in alvos) {
+                        val resist = resistenciaDoAlvo(a, ctx.classe.resistencia!!)
+                        val rr = MagicCasting.resolverResistencia(nhEf.valor, rol, resist, rolar3d6(), regraDo16 = true)
+                        if (rr.alvoResistiu) resistiram.add(a.nome) else atingidos.add(a.nome)
+                    }
+                    if (atingidos.isNotEmpty()) sb.append(" Atinge: ${atingidos.joinToString(", ")}.")
+                    if (resistiram.isNotEmpty()) sb.append(" Resistiram: ${resistiram.joinToString(", ")}.")
+                    sb.append(" Efeito narrado pelo Mestre.")
+                } else {
+                    sb.append(" Atinge: ${alvos.joinToString(", ") { it.nome }}. Efeito narrado pelo Mestre.")
+                }
+                verificarFim(); log += sb.toString().trim()
+                return ResultadoConjuracaoCombate(true, sb.toString().trim())
+            }
+        }
+    }
+
     /** Valor de resistência do alvo (MA-3a): atributo indicado + Abascanto embutido; combinadas pegam o maior. */
     private fun resistenciaDoAlvo(alvo: Combatente, resist: ResistenciaMagia): Int {
         fun valor(a: AtributoResistencia): Int = when (a) {
