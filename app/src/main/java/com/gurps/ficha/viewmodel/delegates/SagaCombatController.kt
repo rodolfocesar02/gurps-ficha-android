@@ -81,6 +81,9 @@ data class MagiaConjuravelUi(
     val motivo: String,
 )
 
+/** Lote MA-3c: conjuração multi-turno em andamento (o herói está concentrando). */
+data class ConjurandoUi(val nome: String, val turnosRestantes: Int)
+
 /** Estado completo do combate para a UI. */
 data class CombatUiState(
     val rodada: Int,
@@ -89,6 +92,8 @@ data class CombatUiState(
     val manobrasHeroi: List<Manobra>,
     /** Lote MA-3a: magias conjuráveis do herói (vazio se ele não é mago / não é a vez dele). */
     val magiasConjuraveis: List<MagiaConjuravelUi> = emptyList(),
+    /** Lote MA-3c: conjuração multi-turno em andamento (não-null → o herói só continua/aborta). */
+    val conjurando: ConjurandoUi? = null,
     val alvos: List<CombatenteUi>,
     /** Alvos alcançáveis com Mover e Atacar (Lote 378): corpo-a-corpo = reach + Deslocamento; à distância = dentro do Máx. */
     val alvosMoverEAtacar: List<CombatenteUi>,
@@ -184,6 +189,8 @@ class SagaCombatController(
         if (Condicao.ATORDOADO in s.heroi.condicoes ||
             Condicao.AGARRADO in s.heroi.condicoes ||
             Condicao.IMOBILIZADO in s.heroi.condicoes) return emptySet()
+        // Lote MA-3c: concentrando numa magia multi-turno → não se move (só continuar/abortar).
+        if (s.conjuracaoEmAndamento != null) return emptySet()
         return com.gurps.ficha.domain.combat.hex.HexSetup.hexesAlcancaveis(
             est, s.heroi.deslocamentoEfetivo.coerceAtLeast(1)
         )
@@ -702,10 +709,39 @@ class SagaCombatController(
             pvQueimados = pvQueimados.coerceAtLeast(0), // Lote MA-3b: queimar PV (−1 NH/PV, paga em PV)
             raioAreaMetros = 1,               // MA-3d: área centrada num hex
         )
-        s.heroiConjurar(ctx, custo, energiaInvestida, magia.nome, alvoId)
-        viewModel.sagaDefinirPfAtual(s.heroi.pfAtual) // sincroniza a fadiga gasta com a ficha
-        viewModel.sagaDefinirPvAtual(s.heroi.pvAtual.coerceAtLeast(0)) // queimar PV / choque de retorno mexem no PV
+        // Tempo de operação (Magia p.9): base do catálogo, reduzido por NH alto. >1s → multi-turno.
+        val tempoBase = parseTempoSeg(magia.tempoOperacao)
+        val tempo = MagicCasting.tempoOperacaoAjustado(tempoBase, magia.calcularNivel(p, aptidao))
+        s.heroiConjurar(ctx, custo, energiaInvestida, magia.nome, alvoId, tempo)
+        sincronizarRecursosHeroi(s)
         depoisDaAcaoDoHeroi()
+    }
+
+    /** Lote MA-3c: continua a conjuração multi-turno (mais uma manobra Concentrar). */
+    fun heroiContinuarConjuracao() {
+        val s = sessao ?: return
+        if (!s.combatenteAtual().ehHeroi || s.encerrado) return
+        s.continuarConjuracao()
+        sincronizarRecursosHeroi(s)
+        depoisDaAcaoDoHeroi()
+    }
+
+    /** Lote MA-3c: aborta a conjuração inacabada (sem custo). NÃO consome o turno — o herói reescolhe. */
+    fun heroiAbortarConjuracao() {
+        val s = sessao ?: return
+        s.abortarConjuracao()
+        publicarLog(); atualizarEstado()
+    }
+
+    private fun sincronizarRecursosHeroi(s: CombatSession) {
+        viewModel.sagaDefinirPfAtual(s.heroi.pfAtual)
+        viewModel.sagaDefinirPvAtual(s.heroi.pvAtual.coerceAtLeast(0))
+    }
+
+    /** Extrai os segundos do campo `tempoOperacao` do catálogo ("1 seg.", "3 seg.", "1 min."). */
+    private fun parseTempoSeg(txt: String?): Int {
+        val n = Regex("""\d+""").find(txt.orEmpty())?.value?.toIntOrNull() ?: 1
+        return if (txt?.contains("min", ignoreCase = true) == true) (n * 60).coerceAtLeast(1) else n.coerceAtLeast(1)
     }
 
     /** Rótulo curto da classe de magia para o seletor de conjuração. */
@@ -919,6 +955,9 @@ class SagaCombatController(
         val s = sessao ?: return
         val intencao = s.npcIntencao(npcId)
         val npc = s.inimigos.first { it.id == npcId }
+        // Lote MA-3c: para a interrupção da conjuração — foto do herói ANTES do golpe do NPC.
+        val pvHeroiAntes = s.heroi.pvAtual
+        val atordoadoAntes = Condicao.ATORDOADO in s.heroi.condicoes
         // BD do escudo do herói não vale contra arma de fogo (MB p.375): detecta pela flag ou pelo nome da arma.
         val contraFogo = npc.stats?.let { it.armaDeFogo || CombatSession.pareceArmaDeFogo(it.armaNome) } ?: false
         // Passa a arma EMPUNHADA p/ as regras de Aparar (esgrima/desbalanceada/Não/à distância).
@@ -966,6 +1005,13 @@ class SagaCombatController(
             s.npcResolve(npcId, intencao, DefesaHeroi(escolha.tipo, escolha.valorFinal, soma, escolha.recuo, escolha.jogarSeAoChao, escolha.acrobatica), secundaria)
         } else {
             s.npcResolve(npcId, intencao, null)
+        }
+        // Lote MA-3c: se o herói estava CONJURANDO e levou dano / ficou atordoado, testa a concentração
+        // (Vontade−3; atordoado perde automático — Magia p.7).
+        val atordoadoAgora = Condicao.ATORDOADO in s.heroi.condicoes
+        if (s.conjuracaoEmAndamento != null && (s.heroi.pvAtual < pvHeroiAntes || (atordoadoAgora && !atordoadoAntes))) {
+            s.interromperConjuracaoSeConjurando(atordoado = atordoadoAgora, rolagemVontade = (1..3).sumOf { Random.nextInt(1, 7) })
+            sincronizarRecursosHeroi(s)
         }
         verificarDesprepararPorEstado(s) // Lote 406: cair/atordoar com arma desbalanceada a deixa despreparada
         publicarLog()
@@ -1075,6 +1121,7 @@ class SagaCombatController(
             vezDoHeroi = vezHeroi,
             manobrasHeroi = manobras,
             magiasConjuraveis = montarMagiasConjuraveis(s, vezHeroi),
+            conjurando = s.conjuracaoEmAndamento?.let { ConjurandoUi(it.nome, it.turnosRestantes) },
             alvos = alvos,
             alvosMoverEAtacar = alvosMover,
             ataques = ataques,

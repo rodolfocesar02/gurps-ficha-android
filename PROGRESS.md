@@ -3046,6 +3046,15 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - **Recomendação registrada** (maior valor × menor custo): Ataque Telegráfico (par do Enganoso), luta agarrada profunda (chaves/Mata-Leão estendendo o lote 422), Sangramento Grave + incapacitação de membro (item 5 do teste de batalha), Ataque Dedicado/Defensivo. Fora de escopo: posicional/hexágono, montaria, cinematográfico, dado de arma do NPC. Mudança só de documentação (não compila Kotlin).
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
+### Lote MA-3c — 15 de Julho de 2026 (PILAR MAGIA / Fase 3c — conjuração multi-turno com interrupção)
+**Saga: magias de vários segundos exigem foco — e o golpe do inimigo pode quebrá-lo — branch GURPS-Saga**
+- **Multi-turno** (Magia p.7/9): magias com tempo de operação > 1s (do catálogo, reduzido por NH via `tempoOperacaoAjustado`) entram em **concentração** — o turno inicial é a 1ª manobra Concentrar; restam `tempo−1` turnos. `heroiConjurar` guarda `conjuracaoEmAndamento` e SÓ resolve no ÚLTIMO turno (`continuarConjuracao`). Extraí a resolução para `resolverConjuracao` (compartilhada pelo lançamento de 1s e pelo fim do multi-turno).
+- **Interrupção** (Magia p.7): no `executarTurnoNpc`, foto do PV/atordoamento do herói antes/depois do golpe; se levou dano ou ficou atordoado enquanto concentrava, `interromperConjuracaoSeConjurando` — **atordoado PERDE automático**; ferido exige **Vontade−3** para manter. `abortarConjuracao` cancela sem custo e **não gasta o turno** (o herói reescolhe).
+- **UI**: card `🔮 Conjurando X — [Continuar] [Abortar]` (`CombateStatusTatico`, prioritário na vez do herói); enquanto concentra, o menu do token E o movimento pelos hexes verdes ficam BLOQUEADOS (`hexesAlcancaveisHeroi` e o menu retornam vazio). `CombatUiState.conjurando`.
+- **+5 testes** (`MagicCombatTest`, total 11): entra em concentração e só resolve no fim; atordoado perde automático; Vontade−3 (falha perde / passa mantém); abortar limpa sem custo; 1s resolve na hora. Zero regressão.
+- **Deferido honestamente p/ MA-3d**: Toque, Bloqueio, Área no hex + resistência de área, magias ativas + tick.
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
 ### Lote MA-3b — 15 de Julho de 2026 (PILAR MAGIA / Fase 3b — Projétil fiel + queimar PV)
 **Saga: o inimigo pode ESQUIVAR do projétil; o mago pode queimar PV — branch GURPS-Saga**
 - **Projétil = 2 testes** (Magia p.12): além do lançamento, um teste de **Ataque Inato** para acertar (aprox. DX + SSR de distância); o alvo pode **ESQUIVAR** (ou bloquear), **NUNCA aparar**. Só quem acerta e não é esquivado sofre o dano 1d × energia com RD. Fecha o maior gap de fidelidade do MA-3a (antes o projétil acertava no sucesso do lançamento).

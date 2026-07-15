@@ -736,21 +736,35 @@ class CombatSession(
         val texto: String,
         val danoCausado: Int = 0,
         val alvoResistiu: Boolean = false,
+        /** Lote MA-3c: true quando a conjuração ainda está EM ANDAMENTO (magia de vários segundos). */
+        val emAndamento: Boolean = false,
     )
 
+    /** Lote MA-3c: uma conjuração de vários segundos em andamento (N manobras Concentrar). */
+    data class ConjuracaoEmAndamento(
+        val ctx: ContextoConjuracao,
+        val custo: CustoEnergia,
+        val energia: Int,
+        val nome: String,
+        val alvoId: String?,
+        val turnosRestantes: Int,
+    )
+
+    /** Conjuração multi-turno pendente do herói (null se ele não está concentrando). */
+    var conjuracaoEmAndamento: ConjuracaoEmAndamento? = null; private set
+
     /**
-     * Lote MA-3a: o herói CONJURA uma magia no combate (equivale à manobra Concentrar, 1 segundo). O
-     * CONTROLLER monta o [ctx] a partir da ficha (NH básico, Aptidão, classe, custo lidos do catálogo);
-     * aqui o motor rola os dados (via [MagicCasting], o resolvedor do MA-2), paga a fadiga e aplica o
-     * que é DERIVÁVEL por regra:
-     *  - **Projétil** (Lote MA-3b): 2 testes (Magia p.12) — lançamento + Ataque Inato para acertar
-     *    (aprox. DX + SSR de distância); o alvo pode ESQUIVAR, nunca aparar. Acertou → dano 1d ×
-     *    energia com RD (o tipo é aproximado por contusão ×1, como queimadura básica).
-     *  - **Resistível**: Disputa Rápida de resistência (HT/Vont/… do alvo, Regra do 16) — o efeito além
-     *    de "resistiu ou não" é narrado pelo Mestre.
+     * Lote MA-3a/3b/3c: o herói CONJURA uma magia no combate (manobra Concentrar). O CONTROLLER monta
+     * o [ctx] a partir da ficha (NH básico, Aptidão, classe, custo lidos do catálogo); aqui o motor rola
+     * os dados (via [MagicCasting], o resolvedor do MA-2), paga a fadiga e aplica o que é DERIVÁVEL:
+     *  - **Projétil** (MA-3b): 2 testes (Magia p.12) — lançamento + Ataque Inato para acertar (aprox.
+     *    DX + SSR de distância); o alvo pode ESQUIVAR, nunca aparar. Acertou → dano 1d × energia com RD.
+     *  - **Resistível**: Disputa Rápida (HT/Vont/… do alvo, Regra do 16) — efeito além disso é narrado.
      *  - **Falha crítica**: choque de retorno (dano/atordoamento no operador).
-     * Efeitos bespoke (Sono, Cura, Criar Objeto…) ficam para o Narrador; o motor loga o fato. Consome
-     * o turno pelo [depoisDaAcaoDoHeroi] do controller (como qualquer manobra).
+     *  - **Multi-turno** (MA-3c): se [tempoOperacaoSeg] > 1, entra em concentração por N turnos
+     *    ([conjuracaoEmAndamento]) e SÓ resolve no último (via [continuarConjuracao]); ser ferido ou
+     *    atordoado no meio pode fazer perder a magia ([interromperConjuracaoSeConjurando], Magia p.7).
+     * Efeitos bespoke (Sono, Cura, Criar Objeto…) ficam para o Narrador; o motor loga o fato.
      */
     fun heroiConjurar(
         ctx: ContextoConjuracao,
@@ -758,10 +772,73 @@ class CombatSession(
         energiaInvestida: Int,
         magiaNome: String,
         alvoId: String?,
+        tempoOperacaoSeg: Int = 1,
     ): ResultadoConjuracaoCombate {
         inicioAcaoHeroi()
         limparAvaliar(); limparApontar(); limparFinta()
+        if (tempoOperacaoSeg > 1) {
+            // O turno inicial já é a 1ª manobra Concentrar → restam (tempo − 1) turnos.
+            conjuracaoEmAndamento = ConjuracaoEmAndamento(ctx, custo, energiaInvestida, magiaNome, alvoId, tempoOperacaoSeg - 1)
+            val t = "🔮 Você começa a conjurar $magiaNome (${tempoOperacaoSeg}s de concentração — mantenha o foco)."
+            log += t
+            return ResultadoConjuracaoCombate(sucesso = false, texto = t, emAndamento = true)
+        }
+        return resolverConjuracao(ctx, custo, energiaInvestida, magiaNome, alvoId)
+    }
 
+    /**
+     * Lote MA-3c: continua a conjuração multi-turno (mais uma manobra Concentrar). Resolve quando o
+     * último turno de concentração termina; senão devolve null (ainda concentrando).
+     */
+    fun continuarConjuracao(): ResultadoConjuracaoCombate? {
+        val c = conjuracaoEmAndamento ?: return null
+        inicioAcaoHeroi(); limparAvaliar(); limparApontar(); limparFinta()
+        val rest = c.turnosRestantes - 1
+        if (rest > 0) {
+            conjuracaoEmAndamento = c.copy(turnosRestantes = rest)
+            log += "🔮 Você continua conjurando ${c.nome} (${rest}s restante(s))."
+            return ResultadoConjuracaoCombate(sucesso = false, texto = log.last(), emAndamento = true)
+        }
+        conjuracaoEmAndamento = null
+        return resolverConjuracao(c.ctx, c.custo, c.energia, c.nome, c.alvoId)
+    }
+
+    /** Lote MA-3c: aborta a conjuração inacabada sem custo (Magia p.8). NÃO consome o turno. */
+    fun abortarConjuracao() {
+        val c = conjuracaoEmAndamento ?: return
+        conjuracaoEmAndamento = null
+        log += "✋ Você aborta a conjuração de ${c.nome} (sem custo)."
+    }
+
+    /**
+     * Lote MA-3c: o herói foi distraído durante a concentração (Magia p.7) — atordoado PERDE a magia
+     * automaticamente; ferido/agarrado/projetado exige Vontade−3 para manter. O CONTROLLER chama após
+     * o turno do NPC quando o herói levou dano ou ficou atordoado.
+     */
+    fun interromperConjuracaoSeConjurando(atordoado: Boolean, rolagemVontade: Int) {
+        val c = conjuracaoEmAndamento ?: return
+        if (atordoado) {
+            conjuracaoEmAndamento = null
+            log += "💫 Atordoado durante a concentração — você PERDE a conjuração de ${c.nome} (Magia p.7)."
+            return
+        }
+        val alvo = heroiPerfil.vontade - 3
+        if (rolagemVontade > alvo) {
+            conjuracaoEmAndamento = null
+            log += "😖 Distraído (Vontade−3: precisava $alvo, rolou $rolagemVontade) — você perde a conjuração de ${c.nome}."
+        } else {
+            log += "😤 Você mantém a concentração em ${c.nome} apesar do golpe (Vontade−3: $alvo, rolou $rolagemVontade)."
+        }
+    }
+
+    /** Resolve de fato a conjuração (rolagem + custo + efeito). Usada pelo lançamento de 1s e pelo fim do multi-turno. */
+    private fun resolverConjuracao(
+        ctx: ContextoConjuracao,
+        custo: CustoEnergia,
+        energiaInvestida: Int,
+        magiaNome: String,
+        alvoId: String?,
+    ): ResultadoConjuracaoCombate {
         val nhEf = MagicCasting.nhEfetivo(ctx)
         val custoTotal = MagicCasting.custoTotal(ctx, custo, energiaInvestida.takeIf { custo.variavel })
         val rol = rolar3d6()

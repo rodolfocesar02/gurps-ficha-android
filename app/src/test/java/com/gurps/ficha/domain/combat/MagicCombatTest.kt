@@ -5,6 +5,8 @@ import com.gurps.ficha.domain.magic.MagicCasting
 import com.gurps.ficha.domain.magic.MagicClassParser
 import com.gurps.ficha.domain.magic.MagicEnergy
 import com.gurps.ficha.domain.magic.NivelMana
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import kotlin.random.Random
@@ -111,6 +113,68 @@ class MagicCombatTest {
             }
         }
         assertTrue("nenhum seed mostrou esquiva/erro do projétil — o 2º teste não está agindo", sucessoSemDano)
+    }
+
+    // ── Lote MA-3c: conjuração multi-turno ──
+
+    private fun ctxComum(nh: Int) = ContextoConjuracao(
+        nhBasico = nh, classe = MagicClassParser.parse("Comum"), mana = NivelMana.NORMAL
+    )
+
+    @Test
+    fun `magia de varios segundos entra em concentracao e so resolve no ultimo turno`() {
+        val s = sessao(1L)
+        val r0 = s.heroiConjurar(ctxComum(20), MagicEnergy.parse("2"), 1, "Grande Cura", null, tempoOperacaoSeg = 3)
+        assertTrue("deveria estar em andamento", r0.emAndamento)
+        assertTrue(s.conjuracaoEmAndamento != null)
+        // turno 2 e 3 de concentração; resolve no 3º.
+        val r1 = s.continuarConjuracao(); assertTrue(r1!!.emAndamento) // ainda 1 restante
+        assertTrue(s.conjuracaoEmAndamento != null)
+        val r2 = s.continuarConjuracao(); assertFalse(r2!!.emAndamento) // resolveu
+        assertTrue("terminou a concentração", s.conjuracaoEmAndamento == null)
+        assertTrue(s.log.any { it.contains("Grande Cura") })
+    }
+
+    @Test
+    fun `atordoar durante a concentracao PERDE a magia automaticamente`() {
+        val s = sessao(2L)
+        s.heroiConjurar(ctxComum(20), MagicEnergy.parse("2"), 1, "Voar", null, tempoOperacaoSeg = 4)
+        assertTrue(s.conjuracaoEmAndamento != null)
+        s.interromperConjuracaoSeConjurando(atordoado = true, rolagemVontade = 3) // atordoado ignora a rolagem
+        assertTrue("atordoado perde a conjuração", s.conjuracaoEmAndamento == null)
+        assertTrue(s.log.any { it.contains("PERDE a conjuração") })
+    }
+
+    @Test
+    fun `distracao exige Vontade-3 — falha perde, sucesso mantem`() {
+        // Vontade 10 → alvo 7. Rolar 18 (>7) perde; rolar 3 (<=7) mantém.
+        val sPerde = sessao(2L)
+        sPerde.heroiConjurar(ctxComum(20), MagicEnergy.parse("2"), 1, "Voar", null, tempoOperacaoSeg = 4)
+        sPerde.interromperConjuracaoSeConjurando(atordoado = false, rolagemVontade = 18)
+        assertTrue("Vontade−3 falhou → perde", sPerde.conjuracaoEmAndamento == null)
+
+        val sMantem = sessao(2L)
+        sMantem.heroiConjurar(ctxComum(20), MagicEnergy.parse("2"), 1, "Voar", null, tempoOperacaoSeg = 4)
+        sMantem.interromperConjuracaoSeConjurando(atordoado = false, rolagemVontade = 3)
+        assertTrue("Vontade−3 passou → mantém", sMantem.conjuracaoEmAndamento != null)
+    }
+
+    @Test
+    fun `abortar limpa a conjuracao sem custo`() {
+        val s = sessao(1L)
+        val pfAntes = s.heroi.pfAtual
+        s.heroiConjurar(ctxComum(20), MagicEnergy.parse("2"), 1, "Voar", null, tempoOperacaoSeg = 5)
+        s.abortarConjuracao()
+        assertTrue(s.conjuracaoEmAndamento == null)
+        assertEquals("abortar não gasta PF", pfAntes, s.heroi.pfAtual)
+    }
+
+    @Test
+    fun `magia de 1 segundo resolve na hora (nao entra em concentracao)`() {
+        val s = sessao(1L)
+        val r = s.heroiConjurar(ctxComum(20), MagicEnergy.parse("2"), 1, "Criar Fogo", null, tempoOperacaoSeg = 1)
+        assertFalse(r.emAndamento)
+        assertTrue(s.conjuracaoEmAndamento == null)
     }
 
     @Test

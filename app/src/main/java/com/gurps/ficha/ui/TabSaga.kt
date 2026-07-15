@@ -503,7 +503,8 @@ private fun FeedDaCampanha(viewModel: FichaViewModel) {
                     viewModel, Modifier.align(Alignment.TopCenter).padding(top = 42.dp)
                 )
                 val tokenSelecionado = viewModel.sagaEstadoTatico?.idSelecionado
-                if (tokenSelecionado != null) {
+                // Lote MA-3c: concentrando numa magia → esconde o menu do token (só Continuar/Abortar).
+                if (tokenSelecionado != null && viewModel.sagaCombateEstado?.conjurando == null) {
                     // Menu do HERÓI vai no TOPO (deixa os hexes verdes de movimento livres embaixo);
                     // menu do INIMIGO fica embaixo (perto do polegar; atacar não precisa mover). O
                     // respiro de 42dp no topo evita cobrir o cabeçalho "Combate tático".

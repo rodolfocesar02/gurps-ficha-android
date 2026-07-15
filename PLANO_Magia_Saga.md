@@ -82,13 +82,23 @@ ficar fiel. Puro, determinístico (caller joga os dados), 29 testes.
 - **+2 testes** (`MagicCombatTest`): o projétil pode ser esquivado/errar (o 2º teste age); queimar PV
   fere o mago e penaliza o NH.
 
-### MA-3c/d (próximos — cada um é uma fatia focada)
-- **MA-3c** — conjuração MULTI-TURNO (magias de vários segundos = N Concentrar; interrupção por
-  Vontade−3 ao ser ferido, perda automática se atordoado, Magia p.7); Toque (2 testes: carrega a mão
-  + ataque c-a-c); Bloqueio (defesa reativa no card "Defenda-se!").
-- **MA-3d** — Área centrada num HEX (custo × raio; raio 1 = 1 hex, raio 2 = +adjacentes; resistência
-  de área); magias ATIVAS no combate + tick de manutenção (`MagicActive` do MA-1 já pronto).
-- Chip `🔮 Conjurar` no `MenuTaticoDoToken` do herói (só se conhece magias). [feito no MA-3a]
+### ✅ MA-3c FEITO — conjuração MULTI-TURNO com interrupção
+- Magias de vários segundos (tempo do catálogo reduzido por NH, Magia p.9) entram em
+  **concentração**: o turno inicial é a 1ª manobra Concentrar; restam `tempo−1` turnos. `heroiConjurar`
+  guarda `conjuracaoEmAndamento` e SÓ resolve no último turno (via `continuarConjuracao`).
+- **Interrupção** (Magia p.7): o controller, após o turno do NPC, se o herói levou dano ou ficou
+  atordoado, chama `interromperConjuracaoSeConjurando` — **atordoado PERDE automático**; ferido exige
+  **Vontade−3** para manter. `abortarConjuracao` cancela sem custo (não gasta o turno).
+- **UI**: card `🔮 Conjurando X — [Continuar] [Abortar]` (`CombateStatusTatico`); enquanto concentra,
+  o menu do token e o movimento pelos hexes verdes ficam BLOQUEADOS (só continuar/abortar).
+- **+5 testes** (`MagicCombatTest`, total 11): entra em concentração e só resolve no fim; atordoado
+  perde automático; Vontade−3 falha perde / passa mantém; abortar limpa sem custo; 1s resolve na hora.
+
+### MA-3d (próximo — fatia focada)
+- **Toque** (2 testes: carrega a mão + ataque c-a-c); **Bloqueio** (defesa reativa no "Defenda-se!").
+- **Área** centrada num HEX (custo × raio; raio 1 = 1 hex, raio 2 = +adjacentes; resistência de área).
+- **Magias ATIVAS** no combate + tick de manutenção (`MagicActive` do MA-1 já pronto; efeito de buff
+  é bespoke → narrado).
 - Seletor de magia: NH, custo, tempo de operação, classe; esmaece as impossíveis (mana nula, FP
   insuficiente, pré-requisito faltando).
 - Mira pela CLASSE: Comum/Projétil/Toque → token do inimigo (penalidade de distância pela grade);
@@ -122,7 +132,7 @@ ficar fiel. Puro, determinístico (caller joga os dados), 29 testes.
 - [x] ✅ MA-2 — resolvedor `MagicCasting` + `MagicEnergy` (cérebro compartilhado, fiel ao livro pt_magia p.5–15, 29 testes)
 - [x] ✅ MA-3a — espinha conjurável no grid (chip 🔮 Conjurar + seletor + `heroiConjurar` no motor: Projétil com dano/RD, resistência, choque; 4 testes de integração)
 - [x] ✅ MA-3b — Projétil 2 testes + esquiva do alvo (nunca aparar) + queimar PV (2 testes novos)
-- [ ] MA-3c — Toque, Bloqueio, conjuração multi-turno + interrupção
-- [ ] MA-3d — Área no hex + resistência de área; magias ativas + tick de manutenção
+- [x] ✅ MA-3c — conjuração multi-turno + interrupção (Vontade−3 / atordoado; continuar/abortar; 5 testes novos)
+- [ ] MA-3d — Toque, Bloqueio, Área no hex + resistência de área, magias ativas + tick de manutenção
 - [ ] MA-4 — magia na narrativa (tool `lancar_magia`)
 - [ ] MA-5 — polimento + honestidade

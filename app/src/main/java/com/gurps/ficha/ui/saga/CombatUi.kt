@@ -100,6 +100,7 @@ fun CombatePainel(
 fun CombateStatusTatico(viewModel: FichaViewModel, modifier: Modifier = Modifier) {
     val estado = viewModel.sagaCombateEstado ?: return
     val defesa = viewModel.sagaCombateDefesaPendente
+    val conjurando = estado.conjurando
     when {
         estado.encerrado -> Column(
             modifier.fillMaxWidth().padding(horizontal = 8.dp),
@@ -114,6 +115,26 @@ fun CombateStatusTatico(viewModel: FichaViewModel, modifier: Modifier = Modifier
         }
         // Defenda-se! é o momento mais crítico — o card cheio (opaco) sobre a grade.
         defesa != null -> Box(modifier.fillMaxWidth()) { DefendaSeCard(viewModel, defesa) }
+        // Lote MA-3c: conjurando uma magia multi-turno — só Continuar ou Abortar.
+        conjurando != null && estado.vezDoHeroi -> Surface(
+            color = Color(0xE6152238), contentColor = Color.White, shape = RoundedCornerShape(16.dp),
+            modifier = modifier.padding(8.dp).fillMaxWidth(0.96f)
+        ) {
+            Column(Modifier.padding(12.dp)) {
+                Text("🔮 Conjurando ${conjurando.nome}", fontWeight = FontWeight.Bold, style = MaterialTheme.typography.titleSmall)
+                Text("${conjurando.turnosRestantes}s de concentração restante(s). Ser ferido ou atordoado pode fazer perder a magia.",
+                    style = MaterialTheme.typography.bodySmall, color = Color(0xCCFFFFFF))
+                Spacer(Modifier.height(8.dp))
+                Row {
+                    Button(onClick = { viewModel.sagaCombateContinuarConjuracao() },
+                        modifier = Modifier.semantics { contentDescription = "Continuar concentrando na magia" }) { Text("Continuar") }
+                    Spacer(Modifier.width(8.dp))
+                    OutlinedButton(onClick = { viewModel.sagaCombateAbortarConjuracao() },
+                        colors = ButtonDefaults.outlinedButtonColors(contentColor = Color.White),
+                        modifier = Modifier.semantics { contentDescription = "Abortar a conjuração" }) { Text("Abortar") }
+                }
+            }
+        }
         // Vez dos inimigos: pílula translúcida discreta.
         !estado.vezDoHeroi -> Surface(
             color = Color(0xCC10161F), contentColor = Color.White, shape = RoundedCornerShape(16.dp),
