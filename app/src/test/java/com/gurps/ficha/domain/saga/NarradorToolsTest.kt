@@ -35,12 +35,13 @@ class NarradorToolsTest {
     }
 
     @Test
-    fun `sao 18 tools - 16 do narrador mais localizar e ler do Codex`() {
-        assertEquals(18, NarradorTools.TODAS.size)
+    fun `sao 19 tools - 17 do narrador mais localizar e ler do Codex`() {
+        assertEquals(19, NarradorTools.TODAS.size) // Lote MA-4: +lancar_magia
         assertTrue(NarradorTools.TOOL_LOCALIZAR in NarradorTools.TODAS)
         assertTrue(NarradorTools.TOOL_LER in NarradorTools.TODAS)
         assertTrue(NarradorTools.TOOL_GERIR_EQUIPAMENTO in NarradorTools.TODAS)
         assertTrue(NarradorTools.TOOL_APLICAR_MODIFICADOR_COMBATE in NarradorTools.TODAS)
+        assertTrue(NarradorTools.TOOL_LANCAR_MAGIA in NarradorTools.TODAS)
     }
 
     @Test

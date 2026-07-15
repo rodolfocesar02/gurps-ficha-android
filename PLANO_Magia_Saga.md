@@ -127,10 +127,15 @@ ficar fiel. Puro, determinístico (caller joga os dados), 29 testes.
   turno (cobra manutenção/expira) via `MagicActive`.
 - Dano/condição aplicados pelos hooks existentes do motor de combate.
 
-## MA-4 — Magia na NARRATIVA (tool do Narrador)
-- Tool `lancar_magia { magia, alvo?, energia_extra? }` + executor: resolve conjuração fora de
-  combate pelo mesmo `MagicCasting`; debita FP via `gastar_recurso`; devolve resultado FACTUAL.
-- Orientação no prompt do Narrador: quando chamar `lancar_magia` vs narrar direto.
+## ✅ MA-4 — Magia na NARRATIVA (tool do Narrador) FEITO
+- Tool **`lancar_magia { magia, alvo?, energia_extra?, resistencia_alvo? }`** (`NarradorTools`, 19ª tool)
+  + dispatch no `NarradorToolExecutor` + método `lancarMagia` na `CombatBridge`, implementado no
+  `FichaSagaDelegate`: acha a magia no grimório, calcula NH (via `calcularNivel` + `MagicEngine`), rola
+  3d e resolve pelo **mesmo `MagicCasting` do MA-2**; debita a fadiga direto na ficha; devolve JSON
+  factual (resultado, custo pago, PF, resistência se informada, choque de retorno). O EFEITO é narrado.
+- **Guardas**: bloqueada DENTRO de combate (lá é o jogador na tela); erro se a magia não é do herói.
+- **Prompt do Narrador** atualizado: quando chamar `lancar_magia` (fora de combate) vs. o chip na tela.
+- **+3 testes** (dispatch, guarda em-combate, guarda campos) + contagem de tools 18→19.
 
 ## MA-5 — Polimento + honestidade
 - Mana ambiente por cena (estende `definir_cena`).
@@ -149,6 +154,8 @@ ficar fiel. Puro, determinístico (caller joga os dados), 29 testes.
 - [x] ✅ MA-3a — espinha conjurável no grid (chip 🔮 Conjurar + seletor + `heroiConjurar` no motor: Projétil com dano/RD, resistência, choque; 4 testes de integração)
 - [x] ✅ MA-3b — Projétil 2 testes + esquiva do alvo (nunca aparar) + queimar PV (2 testes novos)
 - [x] ✅ MA-3c — conjuração multi-turno + interrupção (Vontade−3 / atordoado; continuar/abortar; 5 testes novos)
-- [ ] MA-3d — Toque, Bloqueio, Área no hex + resistência de área, magias ativas + tick de manutenção
+- [x] ✅ MA-3d — Área no hex + Toque + Bloqueio + magias ativas + tick (4 sub-lotes, 10 testes novos)
+- [x] ✅ MA-4 — tool `lancar_magia` na narrativa (executor + bridge + delegate + prompt, 3 testes)
+- [ ] MA-5 — polimento (mana por cena, choque narrado, FP/magias ativas na UI, PraCego, doc dos deferidos)
 - [ ] MA-4 — magia na narrativa (tool `lancar_magia`)
 - [ ] MA-5 — polimento + honestidade

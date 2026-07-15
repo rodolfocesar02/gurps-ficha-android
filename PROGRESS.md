@@ -3046,6 +3046,15 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - **Recomendação registrada** (maior valor × menor custo): Ataque Telegráfico (par do Enganoso), luta agarrada profunda (chaves/Mata-Leão estendendo o lote 422), Sangramento Grave + incapacitação de membro (item 5 do teste de batalha), Ataque Dedicado/Defensivo. Fora de escopo: posicional/hexágono, montaria, cinematográfico, dado de arma do NPC. Mudança só de documentação (não compila Kotlin).
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
+### Lote MA-4 — 15 de Julho de 2026 (PILAR MAGIA / Fase 4 — magia na NARRATIVA: tool lancar_magia)
+**Saga: conjurar conversando com o Narrador, fora de combate — branch GURPS-Saga**
+- **Tool `lancar_magia`** (`NarradorTools`, 19ª tool): `{ magia, alvo?, energia_extra?, resistencia_alvo? }`. Dispatch no `NarradorToolExecutor` → método `lancarMagia` na `CombatBridge` → implementado no `FichaSagaDelegate` (onde a ficha vive).
+- **Resolução**: acha a magia no grimório do herói, calcula a Aptidão (`MagicEngine`) e o NH (`calcularNivel`), rola 3d e resolve pelo **mesmo `MagicCasting` do MA-2** (o cérebro compartilhado — narrativa e combate usam o mesmo motor); debita a fadiga direto na ficha; devolve **JSON factual** (resultado decisivo/sucesso/fracasso/crítico, custo pago, PF, resistência se `resistencia_alvo` informado, choque de retorno). O **EFEITO é narrado pelo Mestre**.
+- **Guardas**: bloqueada DENTRO de combate (`em_combate` — lá a conjuração é o chip na tela); erro `magia_desconhecida` se não é do grimório; `campos_obrigatorios` sem nome.
+- **Prompt do Narrador** atualizado com a orientação de quando chamar `lancar_magia` (fora de combate) vs. o chip Conjurar (na tela).
+- **+3 testes** (`NarradorToolExecutorCombatTest`: dispatch fora de combate, guarda em-combate, guarda campos) + contagem de tools 18→19 (`NarradorToolsTest`).
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
 ### Lote MA-3d-4 — 15 de Julho de 2026 (PILAR MAGIA / Fase 3d-4 — magias ATIVAS + tick — FECHA O MA-3)
 **Saga: buffs que persistem e drenam fadiga a cada turno — branch GURPS-Saga**
 - **Registro**: após conjurar com sucesso uma magia de DURAÇÃO (temporária/duradoura, não-Projétil/Toque/Área), o controller a registra (`registrarSeMagiaAtiva` → `CombatSession.registrarMagiaAtiva`), parseando o campo `duracao` do catálogo ("1 min."→temporária 60s, "permanente", "instantâneo") e a **manutenção ≈ metade do custo** (Magia p.15) reduzida por NH.

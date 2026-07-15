@@ -34,6 +34,7 @@ object NarradorTools {
     const val TOOL_INSPECIONAR_PERSONAGEM = "inspecionar_personagem"
     const val TOOL_GERIR_EQUIPAMENTO = "gerir_equipamento"
     const val TOOL_APLICAR_MODIFICADOR_COMBATE = "aplicar_modificador_combate"
+    const val TOOL_LANCAR_MAGIA = "lancar_magia"
 
     // Reuso do motor do Auditor (mesmos nomes de MestreIATools.TOOL_LOCALIZAR/TOOL_LER)
     const val TOOL_LOCALIZAR = "localizar_no_codex"
@@ -45,7 +46,7 @@ object NarradorTools {
         TOOL_APLICAR_CONDICAO, TOOL_GASTAR_RECURSO, TOOL_CONSULTAR_MUNDO, TOOL_REGISTRAR_FATO,
         TOOL_AVANCAR_RELOGIO, TOOL_PASSAR_TEMPO, TOOL_CONCEDER_XP, TOOL_DEFINIR_CENA,
         TOOL_FORJAR_NPC, TOOL_INSPECIONAR_PERSONAGEM, TOOL_GERIR_EQUIPAMENTO,
-        TOOL_APLICAR_MODIFICADOR_COMBATE, TOOL_LOCALIZAR, TOOL_LER
+        TOOL_APLICAR_MODIFICADOR_COMBATE, TOOL_LANCAR_MAGIA, TOOL_LOCALIZAR, TOOL_LER
     )
 
     // ── Especificação neutra (uma fonte, dois formatos) ─────────────────────
@@ -115,6 +116,16 @@ object NarradorTools {
                 Param("condicao", "string", "Nome da condição em termos de GURPS.", obrigatorio = true),
                 Param("operacao", "string", "Aplicar ou remover.", enum = listOf("aplicar", "remover")),
                 Param("duracao_turnos", "integer", "Duração em turnos, quando limitada.")
+            )
+        ),
+        ToolSpec(
+            TOOL_LANCAR_MAGIA,
+            "Resolve o herói conjurando uma mágica que ele conhece FORA de combate (na narrativa). O motor calcula o NH efetivo (mana, distância), rola 3d, debita a fadiga e devolve o resultado factual (sucesso/decisivo/fracasso/falha crítica, resistência do alvo se houver, custo pago e choque de retorno). NUNCA declare resultado de mágica sem esta ferramenta. Dentro de um combate aberto, a conjuração é feita pelo jogador na tela — não use esta tool.",
+            listOf(
+                Param("magia", "string", "Nome da mágica conforme o grimório do herói.", obrigatorio = true),
+                Param("alvo", "string", "Descrição curta do objetivo (uma criatura, um objeto, o próprio herói, um local)."),
+                Param("energia_extra", "integer", "Energia adicional investida em mágicas de efeito variável (0 quando não se aplica)."),
+                Param("resistencia_alvo", "integer", "Valor de resistência do alvo (HT/Vontade + Abascanto) quando a mágica for resistível e o objetivo puder resistir.")
             )
         ),
         ToolSpec(

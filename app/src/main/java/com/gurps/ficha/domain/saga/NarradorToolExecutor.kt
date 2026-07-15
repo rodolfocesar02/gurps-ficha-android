@@ -56,6 +56,8 @@ class NarradorToolExecutor(
         fun gerirEquipamento(itemNome: String, operacao: String): String
         suspend fun passarTempo(minutos: Int, modo: String): String
         fun aplicarModificadorCombate(alvoId: String, valor: Int, aplicaEm: String, motivo: String, duracaoRodadas: Int?): String
+        /** Lote MA-4: o herói conjura FORA de combate. Devolve o JSON factual (o motor usa o resolvedor MA-2). */
+        fun lancarMagia(magia: String, alvo: String?, energiaExtra: Int, resistenciaAlvo: Int?): String
     }
 
     /** Campanha ativa — obrigatória para fatos. Setada ao abrir/criar campanha (A5). */
@@ -89,6 +91,7 @@ class NarradorToolExecutor(
                 NarradorTools.TOOL_GERIR_EQUIPAMENTO -> gerirEquipamento(args)
                 NarradorTools.TOOL_PASSAR_TEMPO -> passarTempo(args)
                 NarradorTools.TOOL_APLICAR_MODIFICADOR_COMBATE -> aplicarModificadorCombate(args)
+                NarradorTools.TOOL_LANCAR_MAGIA -> lancarMagia(args)
                 in NarradorTools.TODAS -> {
                     Log.w("Narrador_Tools", "Tool ainda não implementada: $nome")
                     """{"erro":"nao_implementado","tool":"$nome"}"""
@@ -317,6 +320,18 @@ class NarradorToolExecutor(
     }
 
     // Lote 424 (T1-2): ação improvisada do jogador → modificador MECÂNICO nomeado no combate aberto.
+    /** Lote MA-4: o herói conjura FORA de combate (na narrativa). Dentro de luta, é feito na tela. */
+    private fun lancarMagia(args: JSONObject): String {
+        val bridge = combatBridge ?: return erro("sem_ficha", "Ficha do herói indisponível")
+        if (bridge.combateAtivo()) return erro("em_combate", "Há um combate aberto — a conjuração é feita pelo jogador na tela, não por esta tool.")
+        val magia = args.optString("magia").trim()
+        if (magia.isBlank()) return erro("campos_obrigatorios", "magia é obrigatória")
+        val alvo = args.optString("alvo").trim().ifBlank { null }
+        val energiaExtra = args.optInt("energia_extra", 0).coerceAtLeast(0)
+        val resistencia = if (args.has("resistencia_alvo")) args.optInt("resistencia_alvo") else null
+        return bridge.lancarMagia(magia, alvo, energiaExtra, resistencia)
+    }
+
     private fun aplicarModificadorCombate(args: JSONObject): String {
         val bridge = combatBridge ?: return erro("sem_combate", "Motor de combate indisponível")
         if (!bridge.combateAtivo()) return erro("sem_combate_ativo", "Nenhum combate em andamento — modificadores situacionais só valem dentro de uma luta aberta.")

@@ -46,6 +46,9 @@ class NarradorToolExecutorCombatTest {
         override fun aplicarModificadorCombate(alvoId: String, valor: Int, aplicaEm: String, motivo: String, duracaoRodadas: Int?): String {
             chamadas.add("mod:$alvoId:$valor:$aplicaEm:$motivo:${duracaoRodadas ?: "combate"}"); return JSONObject().put("ok", true).toString()
         }
+        override fun lancarMagia(magia: String, alvo: String?, energiaExtra: Int, resistenciaAlvo: Int?): String {
+            chamadas.add("magia:$magia:${alvo ?: "-"}:$energiaExtra:${resistenciaAlvo ?: "-"}"); return JSONObject().put("ok", true).toString()
+        }
     }
 
     private fun exec(bridge: FakeBridge) = NarradorToolExecutor(
@@ -61,6 +64,33 @@ class NarradorToolExecutorCombatTest {
         )
         assertTrue(JSONObject(r).optBoolean("ok"))
         assertEquals(listOf("iniciar:[(goblin, 3)]:8:ninguem"), b.chamadas)
+    }
+
+    @Test
+    fun `lancar_magia fora de combate roteia para a bridge`() = runBlocking {
+        val b = FakeBridge() // ativo = false
+        val r = exec(b).executar(
+            NarradorTools.TOOL_LANCAR_MAGIA,
+            """{"magia":"Bola de Fogo","alvo":"o portão","energia_extra":3,"resistencia_alvo":10}"""
+        )
+        assertTrue(JSONObject(r).optBoolean("ok"))
+        assertEquals(listOf("magia:Bola de Fogo:o portão:3:10"), b.chamadas)
+    }
+
+    @Test
+    fun `lancar_magia DENTRO de combate e bloqueada (feito na tela)`() = runBlocking {
+        val b = FakeBridge().apply { ativo = true }
+        val r = exec(b).executar(NarradorTools.TOOL_LANCAR_MAGIA, """{"magia":"Luz"}""")
+        assertEquals("em_combate", JSONObject(r).optString("erro"))
+        assertTrue(b.chamadas.isEmpty())
+    }
+
+    @Test
+    fun `lancar_magia sem nome devolve erro de campos`() = runBlocking {
+        val b = FakeBridge()
+        val r = exec(b).executar(NarradorTools.TOOL_LANCAR_MAGIA, """{"alvo":"algo"}""")
+        assertEquals("campos_obrigatorios", JSONObject(r).optString("erro"))
+        assertTrue(b.chamadas.isEmpty())
     }
 
     @Test

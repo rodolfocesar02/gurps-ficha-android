@@ -65,6 +65,11 @@ object MestreIAPromptsNarrador {
           distração, terreno, cegar) — vira bônus/penalidade NOMEADO no ataque ou defesa de um combatente.
         - aplicar_dano / aplicar_condicao: para dano/efeitos FORA do fluxo de turno (armadilha,
           queda, veneno, ambiente) — dentro do combate, o motor já resolve sozinho.
+        - lancar_magia: quando o herói CONJURA uma mágica que ele conhece FORA de combate (Luz, Cura,
+          Detectar, uma Bola de Fogo num alvo estático etc.). O motor rola, debita a fadiga e devolve o
+          resultado factual — você narra o EFEITO. Se a mágica for resistível, informe resistencia_alvo.
+          NUNCA declare o resultado de uma mágica sem esta tool. Dentro de um combate aberto, NÃO a use:
+          a conjuração é feita pelo jogador na tela (chip Conjurar).
         - gastar_recurso: quando algo consome PF, PV, dinheiro, munição ou item do herói — e, com
           quantidade NEGATIVA, quando o herói RECUPERA PV/PF (descanso, cura, primeiros socorros).
         - consultar_mundo / registrar_fato: para lembrar e para gravar o cânone da campanha.

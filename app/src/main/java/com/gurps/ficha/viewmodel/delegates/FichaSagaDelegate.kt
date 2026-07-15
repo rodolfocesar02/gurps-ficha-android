@@ -405,6 +405,60 @@ class FichaSagaDelegate(
             .toString()
     }
 
+    /**
+     * Lote MA-4: o herói conjura FORA de combate. Usa o resolvedor puro do MA-2 ([MagicCasting]);
+     * calcula o NH efetivo, rola 3d, resolve a resistência (se houver) e debita a fadiga. Devolve o
+     * JSON factual para o Narrador narrar — o EFEITO em si (dano/condição/utilidade) é dele.
+     */
+    override fun lancarMagia(magia: String, alvo: String?, energiaExtra: Int, resistenciaAlvo: Int?): String {
+        val p = viewModel.personagem
+        val sel = p.magias.firstOrNull { it.nome.equals(magia, ignoreCase = true) || it.definicaoId.equals(magia, ignoreCase = true) }
+            ?: return org.json.JSONObject().put("erro", "magia_desconhecida").put("magia", magia)
+                .put("detalhe", "O herói não conhece essa mágica.").toString()
+        val aptidao = com.gurps.ficha.domain.engine.MagicEngine.getNivelAptidaoMagicaParaMagia(p, null)
+        val classe = com.gurps.ficha.domain.magic.MagicClassParser.parse(sel.classe)
+        val custo = com.gurps.ficha.domain.magic.MagicEnergy.parse(sel.energia)
+        val ctx = com.gurps.ficha.domain.magic.ContextoConjuracao(
+            nhBasico = sel.calcularNivel(p, aptidao),
+            classe = classe,
+            mana = com.gurps.ficha.domain.magic.NivelMana.NORMAL, // MA-5: mana ambiente por cena
+            distanciaMetros = 0, tocando = true, // fora de combate o Narrador abstrai a posição
+        )
+        val nhEf = com.gurps.ficha.domain.magic.MagicCasting.nhEfetivo(ctx)
+        val custoTotal = com.gurps.ficha.domain.magic.MagicCasting.custoTotal(ctx, custo, energiaExtra.takeIf { custo.variavel && it > 0 })
+        fun d3() = (1..3).sumOf { kotlin.random.Random.nextInt(1, 7) }
+        val rol = d3()
+        val r = com.gurps.ficha.domain.magic.MagicCasting.resolver(nhEf.valor, rol, custoTotal, classe, rolagemChoqueRetorno3d = d3())
+
+        // Debita a fadiga (fora de combate, direto na ficha).
+        val pfAtual = (p.pontosFadigaRolagemAtual ?: p.pontosFadiga)
+        viewModel.sagaDefinirPfAtual((pfAtual - r.custoAPagar).coerceIn(0, p.pontosFadiga))
+
+        val out = org.json.JSONObject()
+            .put("ok", true).put("magia", sel.nome)
+            .put("classe", classe.classes.joinToString("/") { it.name })
+            .put("nh_efetivo", nhEf.valor).put("rolagem_3d", rol)
+            .put("resultado", when (r.resultado) {
+                com.gurps.ficha.domain.magic.ResultadoOperacao.SUCESSO_DECISIVO -> "sucesso_decisivo"
+                com.gurps.ficha.domain.magic.ResultadoOperacao.SUCESSO -> "sucesso"
+                com.gurps.ficha.domain.magic.ResultadoOperacao.FRACASSO -> "fracasso"
+                com.gurps.ficha.domain.magic.ResultadoOperacao.FALHA_CRITICA -> "falha_critica"
+            })
+            .put("custo_pago_pf", r.custoAPagar)
+            .put("pf_atual", (viewModel.personagem.pontosFadigaRolagemAtual ?: p.pontosFadiga))
+            .put("pf_max", p.pontosFadiga)
+        if (alvo != null) out.put("alvo", alvo)
+        // Resistência (se resistível e sucesso normal): usa o valor informado pelo Narrador.
+        if (r.exigeResistencia && resistenciaAlvo != null) {
+            val rr = com.gurps.ficha.domain.magic.MagicCasting.resolverResistencia(nhEf.valor, rol, resistenciaAlvo, d3(), regraDo16 = true)
+            out.put("alvo_resistiu", rr.alvoResistiu)
+        } else if (r.exigeResistencia) {
+            out.put("exige_resistencia", true) // o Narrador precisa informar resistencia_alvo
+        }
+        r.choqueRetorno?.let { out.put("choque_retorno", it.rotulo) }
+        return out.toString()
+    }
+
     override fun gastarRecurso(recurso: String, quantidade: Int, motivo: String, itemNome: String?): String {
         val p = viewModel.personagem
         return when (recurso.lowercase().trim()) {
