@@ -502,6 +502,17 @@ private fun FeedDaCampanha(viewModel: FichaViewModel) {
                 com.gurps.ficha.ui.saga.CombateStatusTatico(
                     viewModel, Modifier.align(Alignment.TopCenter).padding(top = 42.dp)
                 )
+                // Lote MA-3d-4: magias ATIVAS (buffs) — pílula discreta no canto superior direito.
+                val ativas = viewModel.sagaCombateEstado?.magiasAtivas.orEmpty()
+                if (ativas.isNotEmpty()) {
+                    Surface(
+                        color = Color(0xCC1A237E), contentColor = Color.White, shape = RoundedCornerShape(12.dp),
+                        modifier = Modifier.align(Alignment.TopEnd).padding(6.dp)
+                    ) {
+                        Text("✨ " + ativas.joinToString(" · "), style = MaterialTheme.typography.labelSmall,
+                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp))
+                    }
+                }
                 // Lote MA-3d: mira de magia de ÁREA — instrução + Cancelar sobre a grade.
                 val mira = viewModel.sagaMiraAreaPendente
                 if (mira != null) {

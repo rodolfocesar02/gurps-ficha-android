@@ -9,6 +9,8 @@ import com.gurps.ficha.domain.engine.MagicEngine
 import com.gurps.ficha.domain.magic.ContextoConjuracao
 import com.gurps.ficha.domain.magic.MagicCasting
 import com.gurps.ficha.domain.magic.MagicClassParser
+import com.gurps.ficha.domain.magic.MagicCost
+import com.gurps.ficha.domain.magic.TipoDuracao
 import com.gurps.ficha.domain.magic.MagicEnergy
 import com.gurps.ficha.domain.magic.NivelMana
 import com.gurps.ficha.domain.magic.TipoClasseMagia
@@ -103,6 +105,8 @@ data class CombatUiState(
     val conjurando: ConjurandoUi? = null,
     /** Lote MA-3d-2: nome da mágica de Toque carregada na mão (null se nenhuma). */
     val toqueCarregado: String? = null,
+    /** Lote MA-3d-4: mágicas ativas no combate ("Escudo (58s)") — manutenção cobrada por turno. */
+    val magiasAtivas: List<String> = emptyList(),
     val alvos: List<CombatenteUi>,
     /** Alvos alcançáveis com Mover e Atacar (Lote 378): corpo-a-corpo = reach + Deslocamento; à distância = dentro do Máx. */
     val alvosMoverEAtacar: List<CombatenteUi>,
@@ -726,9 +730,43 @@ class SagaCombatController(
         // Tempo de operação (Magia p.9): base do catálogo, reduzido por NH alto. >1s → multi-turno.
         val tempoBase = parseTempoSeg(magia.tempoOperacao)
         val tempo = MagicCasting.tempoOperacaoAjustado(tempoBase, magia.calcularNivel(p, aptidao))
-        s.heroiConjurar(ctx, custo, energiaInvestida, magia.nome, alvoId, tempo)
+        val res = s.heroiConjurar(ctx, custo, energiaInvestida, magia.nome, alvoId, tempo)
+        registrarSeMagiaAtiva(s, magia, classe, custo, res, alvoId, magia.calcularNivel(p, aptidao))
         sincronizarRecursosHeroi(s)
         depoisDaAcaoDoHeroi()
+    }
+
+    /** Lote MA-3d-4: após uma conjuração bem-sucedida de magia com DURAÇÃO, registra-a como ativa (tick de manutenção). */
+    private fun registrarSeMagiaAtiva(
+        s: CombatSession, magia: com.gurps.ficha.model.MagiaSelecionada,
+        classe: com.gurps.ficha.domain.magic.ClasseParseada,
+        custo: com.gurps.ficha.domain.magic.CustoEnergia,
+        res: CombatSession.ResultadoConjuracaoCombate, alvoId: String?, nhBasico: Int,
+    ) {
+        if (!res.sucesso || res.emAndamento) return
+        // Projétil/Toque/Área não são "buffs ativos" (dano imediato / carregam / mira própria).
+        if (TipoClasseMagia.PROJETIL in classe.classes || TipoClasseMagia.TOQUE in classe.classes ||
+            TipoClasseMagia.AREA in classe.classes) return
+        val (dur, durSeg) = parseDuracao(magia.duracao)
+        if (dur != TipoDuracao.TEMPORARIA && dur != TipoDuracao.DURADOURA) return
+        // Manutenção ≈ metade do custo (Magia p.15), reduzida por NH alto.
+        val base = (custo.base ?: custo.minimo).coerceAtLeast(1)
+        val manut = MagicCost.custoAjustadoPorNH(kotlin.math.ceil(base / 2.0).toInt().coerceAtLeast(1), nhBasico)
+        s.registrarMagiaAtiva(magia.nome, "heroi", alvoId, durSeg, if (dur == TipoDuracao.DURADOURA) 0 else manut, dur, exigeConcentracao = false)
+    }
+
+    /** Extrai (tipo de duração, segundos) do campo `duracao` do catálogo ("1 min.", "permanente", "instantâneo"). */
+    private fun parseDuracao(txt: String?): Pair<TipoDuracao, Int> {
+        val t = txt?.lowercase()?.trim() ?: return TipoDuracao.INSTANTANEA to 0
+        return when {
+            "permanente" in t -> TipoDuracao.PERMANENTE to 0
+            "instant" in t -> TipoDuracao.INSTANTANEA to 0
+            else -> {
+                val n = Regex("""\d+""").find(t)?.value?.toIntOrNull() ?: 0
+                if (n == 0) TipoDuracao.INSTANTANEA to 0
+                else TipoDuracao.TEMPORARIA to (if ("min" in t) n * 60 else n)
+            }
+        }
     }
 
     /**
@@ -1231,6 +1269,9 @@ class SagaCombatController(
             magiasConjuraveis = montarMagiasConjuraveis(s, vezHeroi),
             conjurando = s.conjuracaoEmAndamento?.let { ConjurandoUi(it.nome, it.turnosRestantes) },
             toqueCarregado = s.toqueCarregado?.nome,
+            magiasAtivas = s.magiasAtivas.map { m ->
+                m.magiaId + if (m.duracao == com.gurps.ficha.domain.magic.TipoDuracao.TEMPORARIA) " (${m.segundosParaProximaCobranca}s)" else ""
+            },
             alvos = alvos,
             alvosMoverEAtacar = alvosMover,
             ataques = ataques,

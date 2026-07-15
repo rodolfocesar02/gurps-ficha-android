@@ -166,6 +166,34 @@ class MagicCombatTest {
         assertTrue("nenhum seed separou atingidos de resistentes na área", separou)
     }
 
+    // ── Lote MA-3d-4: magias ativas + tick ──
+
+    @Test
+    fun `magia ativa cobra manutencao ao completar o intervalo e expira a duradoura`() {
+        val s = sessao(1L)
+        // Temporária de 2s, manutenção 1 PF: após 2 turnos do herói, cobra 1 PF e reseta.
+        s.registrarMagiaAtiva("Escudo", "heroi", null, duracaoSeg = 2, custoManutencaoSeg = 1,
+            duracao = com.gurps.ficha.domain.magic.TipoDuracao.TEMPORARIA, exigeConcentracao = false)
+        assertTrue(s.magiasAtivas.isNotEmpty())
+        val pfAntes = s.heroi.pfAtual
+        // avancarTurno cobra quando o HERÓI termina o turno (1s cada). No começo é a vez do herói.
+        s.avancarTurno() // herói → goblin (1s de manutenção decrementado)
+        s.avancarTurno() // goblin → herói
+        s.avancarTurno() // herói → goblin (2º segundo → cobra 1 PF, reseta)
+        assertTrue("manutenção deve ter cobrado PF em algum tick", s.heroi.pfAtual < pfAntes)
+    }
+
+    @Test
+    fun `magia ativa permanente nao cobra nem expira`() {
+        val s = sessao(1L)
+        s.registrarMagiaAtiva("Zumbi", "heroi", null, duracaoSeg = 999, custoManutencaoSeg = 0,
+            duracao = com.gurps.ficha.domain.magic.TipoDuracao.PERMANENTE, exigeConcentracao = false)
+        val pfAntes = s.heroi.pfAtual
+        repeat(6) { s.avancarTurno() }
+        assertTrue("permanente não expira", s.magiasAtivas.any { it.magiaId == "Zumbi" })
+        assertEquals("permanente não cobra manutenção", pfAntes, s.heroi.pfAtual)
+    }
+
     // ── Lote MA-3d-3: Bloqueio mágico ──
 
     @Test

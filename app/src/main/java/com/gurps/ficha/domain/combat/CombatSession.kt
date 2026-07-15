@@ -3,7 +3,10 @@ package com.gurps.ficha.domain.combat
 import com.gurps.ficha.domain.magic.ContextoConjuracao
 import com.gurps.ficha.domain.magic.CustoEnergia
 import com.gurps.ficha.domain.magic.EfeitoChoqueRetorno
+import com.gurps.ficha.domain.magic.MagiaAtivaNoCombate
+import com.gurps.ficha.domain.magic.MagicActive
 import com.gurps.ficha.domain.magic.MagicCasting
+import com.gurps.ficha.domain.magic.TipoDuracao
 import com.gurps.ficha.domain.magic.ResistenciaMagia
 import com.gurps.ficha.domain.magic.ResultadoOperacao
 import com.gurps.ficha.domain.magic.AtributoResistencia
@@ -756,6 +759,26 @@ class CombatSession(
     /** Lote MA-3d-2: mágica de TOQUE carregada na mão do herói, à espera de um ataque para descarregar. */
     data class ToqueCarregado(val nome: String, val ctx: ContextoConjuracao, val nhEfetivoCast: Int)
     var toqueCarregado: ToqueCarregado? = null; private set
+
+    /** Lote MA-3d-4: mágicas TEMPORÁRIAS/DURADOURAS ativas no combate (o efeito é narrado; aqui rastreia manutenção/expiração). */
+    var magiasAtivas: List<MagiaAtivaNoCombate> = emptyList(); private set
+
+    /**
+     * Lote MA-3d-4: registra uma mágica ativa (chamada pelo controller após uma conjuração
+     * bem-sucedida de magia com duração). O tick de manutenção roda em [avancarTurno].
+     */
+    fun registrarMagiaAtiva(
+        nome: String, operadorId: String, alvoId: String?, duracaoSeg: Int,
+        custoManutencaoSeg: Int, duracao: TipoDuracao, exigeConcentracao: Boolean,
+    ) {
+        magiasAtivas = magiasAtivas + MagiaAtivaNoCombate(
+            magiaId = nome, operadorId = operadorId, alvoId = alvoId, energiaInvestida = 0,
+            custoManutencaoSeg = custoManutencaoSeg, segundosParaProximaCobranca = duracaoSeg.coerceAtLeast(1),
+            duracaoTotalSeg = duracaoSeg.coerceAtLeast(1), duracao = duracao, exigeConcentracao = exigeConcentracao,
+        )
+        val manut = if (custoManutencaoSeg > 0) "manutenção $custoManutencaoSeg PF a cada ${duracaoSeg}s" else "sem custo de manutenção"
+        log += "✨ $nome fica ATIVA ($manut)."
+    }
 
     /**
      * Lote MA-3a/3b/3c: o herói CONJURA uma magia no combate (manobra Concentrar). O CONTROLLER monta
@@ -1798,6 +1821,16 @@ class CombatSession(
         }
         // Choque (Lote 382): expira ao fim do turno de quem agiu (valeu só no turno seguinte ao ferimento).
         anterior.choquePendente = 0
+        // Magias ativas (Lote MA-3d-4): o fim do turno do herói = 1 segundo de jogo; cobra manutenção
+        // (do PF do herói) e expira as duradouras (MagicActive, MB Magia p.9-10).
+        if (anterior.ehHeroi && magiasAtivas.isNotEmpty()) {
+            val res = MagicActive.avancarTurnoSegundos(magiasAtivas, 1)
+            magiasAtivas = res.ativasApos
+            res.cobrancasPorOperador["heroi"]?.let { fp ->
+                if (fp > 0) { heroi.pfAtual = (heroi.pfAtual - fp).coerceAtLeast(0); log += "✨ Manutenção de mágicas: −$fp PF." }
+            }
+            res.expiradas.forEach { log += "✨ ${it.magiaId} termina." }
+        }
         // Modificadores situacionais (Lote 424): decrementam ao fim do turno do DONO; expirados saem da lista.
         // O turno da CRIAÇÃO não conta (o chat roda no turno do dono — senão "1 rodada" expiraria antes de valer).
         modsSituacionais.removeAll { m ->

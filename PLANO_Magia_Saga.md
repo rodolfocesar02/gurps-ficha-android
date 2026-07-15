@@ -94,7 +94,7 @@ ficar fiel. Puro, determinístico (caller joga os dados), 29 testes.
 - **+5 testes** (`MagicCombatTest`, total 11): entra em concentração e só resolve no fim; atordoado
   perde automático; Vontade−3 falha perde / passa mantém; abortar limpa sem custo; 1s resolve na hora.
 
-### MA-3d — pacote final (Área ✅ · Toque/Bloqueio/magias-ativas em andamento)
+### ✅ MA-3d — pacote final COMPLETO (Área + Toque + Bloqueio + magias ativas)
 - **✅ Área centrada num HEX**: no 🔮 Conjurar, magia de Área mostra um stepper de RAIO (custo × raio,
   p.11) e o botão vira "Mirar no grid"; o app entra em MIRA (`miraAreaPendente`) e o próximo toque num
   hex é o CENTRO. `heroiConjurarArea`: 1 teste de lançamento; o controller calcula quem está no raio
@@ -110,8 +110,11 @@ ficar fiel. Puro, determinístico (caller joga os dados), 29 testes.
   valor = NH da magia). Ao escolher, o controller paga o custo (NÃO reduzido por NH, p.12) e o motor
   (`aplicarBloqueioMagico`) quebra qualquer conjuração em andamento; o sucesso (rolar ≤ NH) usa o fluxo
   de defesa normal. Não aparece contra golpe fulminante / pelas costas (opções vazias). +2 testes.
-- **Magias ATIVAS** no combate + tick de manutenção (`MagicActive` do MA-1 já pronto; efeito de buff
-  é bespoke → narrado) — pendente.
+- **✅ Magias ATIVAS + tick**: após conjurar com sucesso uma magia de DURAÇÃO (temporária/duradoura,
+  não-Projétil/Toque/Área), o controller a registra via `registrarMagiaAtiva`; o `avancarTurno` roda o
+  tick (1s por turno do herói) com `MagicActive`: **cobra a manutenção** do PF (≈ metade do custo,
+  reduzido por NH, p.15) ao completar o intervalo e **expira** as duradouras. Permanentes não cobram
+  nem expiram. Pílula "✨ ativas" no canto do grid. +2 testes. Efeito de buff é bespoke → narrado.
 - Seletor de magia: NH, custo, tempo de operação, classe; esmaece as impossíveis (mana nula, FP
   insuficiente, pré-requisito faltando).
 - Mira pela CLASSE: Comum/Projétil/Toque → token do inimigo (penalidade de distância pela grade);

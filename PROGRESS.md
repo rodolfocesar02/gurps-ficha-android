@@ -3046,6 +3046,16 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - **Recomendação registrada** (maior valor × menor custo): Ataque Telegráfico (par do Enganoso), luta agarrada profunda (chaves/Mata-Leão estendendo o lote 422), Sangramento Grave + incapacitação de membro (item 5 do teste de batalha), Ataque Dedicado/Defensivo. Fora de escopo: posicional/hexágono, montaria, cinematográfico, dado de arma do NPC. Mudança só de documentação (não compila Kotlin).
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
+### Lote MA-3d-4 — 15 de Julho de 2026 (PILAR MAGIA / Fase 3d-4 — magias ATIVAS + tick — FECHA O MA-3)
+**Saga: buffs que persistem e drenam fadiga a cada turno — branch GURPS-Saga**
+- **Registro**: após conjurar com sucesso uma magia de DURAÇÃO (temporária/duradoura, não-Projétil/Toque/Área), o controller a registra (`registrarSeMagiaAtiva` → `CombatSession.registrarMagiaAtiva`), parseando o campo `duracao` do catálogo ("1 min."→temporária 60s, "permanente", "instantâneo") e a **manutenção ≈ metade do custo** (Magia p.15) reduzida por NH.
+- **Tick**: o `avancarTurno` roda o tick a cada turno do herói (= 1s de jogo) via `MagicActive` (do MA-1): **cobra a manutenção** do PF do herói ao completar o intervalo (e reseta a temporária) e **expira** as duradouras. **Permanentes** não cobram nem expiram.
+- **UI**: pílula "✨ Ativas: X (58s) · Y" no canto superior direito do grid tático (`CombatUiState.magiasAtivas`).
+- **Fronteira honesta**: o EFEITO do buff (ex.: Escudo → +DB) é bespoke, não automatizável do catálogo → **narrado pelo Mestre**; o motor rastreia manutenção/expiração/visibilidade.
+- **+2 testes** (`MagicCombatTest`, total 21): manutenção cobra PF ao completar o intervalo; permanente não cobra nem expira. Zero regressão.
+- **🎉 FECHA O MA-3 (magia no combate)**: MA-3a/b/c + MA-3d (Área/Toque/Bloqueio/ativas) completos. NPC conjurador deferido; próximos MA-4 (narrativa) e MA-5 (polimento).
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
 ### Lote MA-3d-3 — 15 de Julho de 2026 (PILAR MAGIA / Fase 3d-3 — mágicas de BLOQUEIO)
 **Saga: conjurar uma defesa mágica no "Defenda-se!" — branch GURPS-Saga**
 - **Defesa por mágica**: quando um inimigo ataca, o card "Defenda-se!" agora lista, além de Esquiva/Aparar/Bloquear normais, as **mágicas de Bloqueio** que o herói conhece (🔮 nome, valor = NH da magia). `opcoesBloqueioMagico` no controller injeta essas opções (`OpcaoDefesa.magiaBloqueioId/Nome`).
