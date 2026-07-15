@@ -3046,6 +3046,15 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - **Recomendação registrada** (maior valor × menor custo): Ataque Telegráfico (par do Enganoso), luta agarrada profunda (chaves/Mata-Leão estendendo o lote 422), Sangramento Grave + incapacitação de membro (item 5 do teste de batalha), Ataque Dedicado/Defensivo. Fora de escopo: posicional/hexágono, montaria, cinematográfico, dado de arma do NPC. Mudança só de documentação (não compila Kotlin).
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
+### Lote MA-8 — 15 de Julho de 2026 (PILAR MAGIA — descrição da magia PRO NARRADOR)
+**Saga: o Narrador (IA) agora sabe o que a magia FAZ, não só o resultado — branch GURPS-Saga**
+- **Pergunta do usuário**: ao conjurar, o Narrador recebe a descrição da magia? **Resposta**: recebia só o RESULTADO mecânico (as linhas do combate viram turnos "sistema" no feed, e a IA lê os últimos 8), mas NÃO a `descricao` — então em magias de efeito "narrado" ele sabia "conjurou X" mas não o que X faz.
+- **Combate**: o controller pega do catálogo (`getMagiaPorId`) um **resumo do efeito** (`resumoDaDescricao`: a descrição fiel ANTES das seções Duração/Custo/Item, sem a linha de classe, ~300 chars) e passa em `ContextoConjuracao.resumoEfeito`; o motor ANEXA esse resumo à linha "Efeito narrado pelo Mestre" (combate direto e área) → chega ao Narrador via o feed.
+- **Narrativa**: `lancar_magia` passou a devolver `efeito` (a descrição do catálogo, ~500 chars) no JSON — o Narrador narra o efeito fiel fora de combate.
+- **Bônus**: o dano de ÁREA agora também usa a `mecanica` estruturada (dado exato, tipo, ignora armadura) quando houver (antes só o dano direto/Projétil).
+- **+1 teste** (`MagicCombatTest`, total 30): magia narrada leva o resumo do efeito ao log. Zero regressão.
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
 ### Lote AR-1 — 15 de Julho de 2026 (MECÂNICA das magias / Escola AR fase 1 — dano estruturado)
 **Saga: a prosa das magias começa a virar regra — sem tocar na descrição — branch GURPS-Saga**
 - **Problema (pergunta do usuário)**: 879 magias com efeito em PROSA (`descricao` fiel), não em regra. Muitas não são só dano.

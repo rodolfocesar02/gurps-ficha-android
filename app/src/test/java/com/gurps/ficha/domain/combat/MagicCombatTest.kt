@@ -208,6 +208,20 @@ class MagicCombatTest {
         assertTrue("sem PF não conjura", intencao.conjurar == null)
     }
 
+    // ── Lote MA-8: descrição do efeito no log (para o Narrador) ──
+
+    @Test
+    fun `magia narrada leva o RESUMO do efeito ao log (o Narrador le o feed)`() {
+        val s = sessao(2L)
+        val ctx = ContextoConjuracao(nhBasico = 25, classe = MagicClassParser.parse("Comum"),
+            mana = NivelMana.NORMAL, resumoEfeito = "Faz o alvo cair no sono se falhar num teste de HT.")
+        val r = s.heroiConjurar(ctx, MagicEnergy.parse("2"), 1, "Sono", alvoId = "goblin")
+        if (r.sucesso) {
+            assertTrue("o log deve conter o resumo do efeito pro Narrador",
+                s.log.any { it.contains("Faz o alvo cair no sono") })
+        }
+    }
+
     // ── Lote AR-1: dano estruturado (mecanica curada do catálogo) ──
 
     @Test

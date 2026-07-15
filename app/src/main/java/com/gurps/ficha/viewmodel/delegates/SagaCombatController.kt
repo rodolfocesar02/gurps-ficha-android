@@ -733,11 +733,13 @@ class SagaCombatController(
             s.log += "🚫 Aqui a mana está ${mana.name.lowercase()} — você não consegue conjurar ${magia.nome}."
             publicarLog(); atualizarEstado(); return
         }
-        // Lote AR-1: regra estruturada curada do catálogo (dano exato, condição…) — olha o `MagiaDefinicao`
-        // pelo id, cobrindo até magias já aprendidas antes da migração.
-        val mecanica = context?.let { c ->
-            runCatching { com.gurps.ficha.data.DataRepository.getInstance(c).getMagiaPorId(magia.definicaoId)?.mecanica }.getOrNull()
+        // Lote AR-1/MA-8: pega do catálogo a `mecanica` (regra estruturada) e um RESUMO do efeito (da
+        // descrição fiel do livro) — o resumo vai pro log e chega ao Narrador (que lê o feed do combate).
+        val def = context?.let { c ->
+            runCatching { com.gurps.ficha.data.DataRepository.getInstance(c).getMagiaPorId(magia.definicaoId) }.getOrNull()
         }
+        val mecanica = def?.mecanica
+        val resumoEfeito = resumoDaDescricao(def?.descricao ?: magia.texto)
         val ctx = ContextoConjuracao(
             nhBasico = magia.calcularNivel(p, aptidao),
             classe = classe,
@@ -749,6 +751,7 @@ class SagaCombatController(
             raioAreaMetros = 1,               // MA-3d: área centrada num hex
             danoPorEnergia = danoPorEnergia,  // Lote MA-6: magia de dano direta (1d/energia)
             mecanica = mecanica,              // Lote AR-1
+            resumoEfeito = resumoEfeito,      // Lote MA-8: descrição do efeito pro Narrador
         )
         // Tempo de operação (Magia p.9): base do catálogo, reduzido por NH alto. >1s → multi-turno.
         val tempoBase = parseTempoSeg(magia.tempoOperacao)
@@ -816,6 +819,7 @@ class SagaCombatController(
         val p = viewModel.personagem
         val magia = p.magias.firstOrNull { it.definicaoId == mira.magiaId || it.nome == mira.magiaId } ?: return
         val aptidao = MagicEngine.getNivelAptidaoMagicaParaMagia(p, null)
+        val def = context?.let { c -> runCatching { com.gurps.ficha.data.DataRepository.getInstance(c).getMagiaPorId(magia.definicaoId) }.getOrNull() }
         val est = estadoTatico
         // raio em metros = raio em hexes (1 hex = 1 m). raio 1 = só o hex central → alcance 0 de hex.
         val hexRaio = (mira.raio - 1).coerceAtLeast(0)
@@ -832,6 +836,8 @@ class SagaCombatController(
             raioAreaMetros = mira.raio,
             pvQueimados = mira.pvQueimar,
             danoPorEnergia = mira.causaDano, // Lote MA-6
+            mecanica = def?.mecanica,        // Lote AR-1
+            resumoEfeito = resumoDaDescricao(def?.descricao ?: magia.texto), // Lote MA-8
         )
         s.heroiConjurarArea(ctx, MagicEnergy.parse(magia.energia), mira.energia, magia.nome, alvos)
         sincronizarRecursosHeroi(s)
@@ -892,6 +898,24 @@ class SagaCombatController(
     private fun sincronizarRecursosHeroi(s: CombatSession) {
         viewModel.sagaDefinirPfAtual(s.heroi.pfAtual)
         viewModel.sagaDefinirPvAtual(s.heroi.pvAtual.coerceAtLeast(0))
+    }
+
+    /**
+     * Lote MA-8: resumo do EFEITO da magia a partir da descrição fiel — o texto ANTES das seções
+     * mecânicas (Duração/Custo/Item/Pré-requisito), sem a 1ª linha de classe, limitado a ~300 chars.
+     * Vai pro log da conjuração narrada e chega ao Narrador (IA) via o feed do combate.
+     */
+    private fun resumoDaDescricao(desc: String?): String? {
+        val d = desc?.trim().orEmpty()
+        if (d.isBlank()) return null
+        val corte = listOf("Duração:", "Duracao:", "Custo:", "Custo básico", "Custo basico", "Tempo de operação",
+            "Tempo de operacao", "Pré-requisito", "Pre-requisito", "\nItem\n", "\nItem ")
+            .mapNotNull { m -> d.indexOf(m).takeIf { it > 0 } }.minOrNull() ?: d.length
+        val linhas = d.substring(0, corte).split("\n").map { it.trim() }.filter { it.isNotBlank() }
+        val corpo = if (linhas.size > 1 && linhas[0].length < 30) linhas.drop(1) else linhas
+        val s = corpo.joinToString(" ").trim()
+        if (s.isBlank()) return null
+        return if (s.length > 300) s.take(300).trimEnd() + "…" else s
     }
 
     /** Extrai os segundos do campo `tempoOperacao` do catálogo ("1 seg.", "3 seg.", "1 min."). */

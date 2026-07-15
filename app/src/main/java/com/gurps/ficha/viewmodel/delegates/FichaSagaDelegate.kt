@@ -453,6 +453,9 @@ class FichaSagaDelegate(
             .put("pf_atual", (viewModel.personagem.pontosFadigaRolagemAtual ?: p.pontosFadiga))
             .put("pf_max", p.pontosFadiga)
         if (alvo != null) out.put("alvo", alvo)
+        // Lote MA-8: devolve o EFEITO da magia (descrição fiel do livro) para o Narrador narrar certo.
+        val descricao = (repository.getMagiaPorId(sel.definicaoId)?.descricao ?: sel.texto ?: "").trim()
+        if (descricao.isNotBlank()) out.put("efeito", descricao.take(500))
         // Resistência (se resistível e sucesso normal): usa o valor informado pelo Narrador.
         if (r.exigeResistencia && resistenciaAlvo != null) {
             val rr = com.gurps.ficha.domain.magic.MagicCasting.resolverResistencia(nhEf.valor, rol, resistenciaAlvo, d3(), regraDo16 = true)

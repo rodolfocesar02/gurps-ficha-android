@@ -124,6 +124,11 @@ data class ContextoConjuracao(
     val danoPorEnergia: Boolean = false,
     /** Lote AR-1: regra estruturada curada do catálogo (dano exato, condição, buff). Null = comportamento padrão. */
     val mecanica: MagiaMecanica? = null,
+    /**
+     * Lote MA-8: resumo do EFEITO da magia (1ª parte da descrição fiel do livro), anexado ao log quando
+     * o efeito é narrado — assim o Narrador (IA), que lê o feed do combate, sabe o que a magia FAZ.
+     */
+    val resumoEfeito: String? = null,
 )
 
 object MagicCasting {

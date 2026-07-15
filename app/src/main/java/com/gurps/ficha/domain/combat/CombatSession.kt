@@ -943,7 +943,7 @@ class CombatSession(
                     // de acerto). Usa a mecânica curada do catálogo quando houver; senão 1d × energia (p.14).
                     dano = aplicarDanoMagico(alvo, energiaInvestida, ctx.mecanica, sb)
                 } else if (!alvoResistiu && TipoClasseMagia.PROJETIL !in ctx.classe.classes) {
-                    sb.append(" Efeito narrado pelo Mestre.")
+                    sb.append(" Efeito narrado pelo Mestre" + (ctx.resumoEfeito?.let { " — $it" } ?: "") + ".")
                 }
 
                 verificarFim(); log += sb.toString().trim()
@@ -1005,18 +1005,24 @@ class CombatSession(
                     if (atingidos.isNotEmpty()) sb.append(" Atinge: ${atingidos.joinToString(", ") { it.nome }}.")
                     if (resistiram.isNotEmpty()) sb.append(" Resistiram: ${resistiram.joinToString(", ")}.")
                     // Lote MA-6: dano de área 1d × energia (Magia p.14), rolado uma vez, com a RD de cada um.
-                    if (ctx.danoPorEnergia && atingidos.isNotEmpty()) {
+                    if ((ctx.danoPorEnergia || com.gurps.ficha.domain.magic.MagicMechanics.temDanoEstruturado(ctx.mecanica)) && atingidos.isNotEmpty()) {
                         val energia = energiaInvestida.coerceAtLeast(1)
-                        val bruto = rolarDano("${energia}d", random)
+                        // AR-1: dado estruturado do catálogo quando houver; senão 1d × energia (p.14).
+                        val expr = if (ctx.mecanica?.danoPorEnergia != null)
+                            com.gurps.ficha.domain.magic.MagicMechanics.expandirDano(ctx.mecanica.danoPorEnergia, energia, ctx.mecanica.energiaPorDado)
+                        else "${energia}d"
+                        val tipo = if (ctx.mecanica?.tipoDano == "corte") DanoTipo.CORT else if (ctx.mecanica?.tipoDano == "perf") DanoTipo.PERF else DanoTipo.CONT
+                        val bruto = rolarDano(expr, random)
                         val partes = atingidos.map { a ->
-                            val dn = HitLocationRules.aplicarDano(a.pvMax, bruto, DanoTipo.CONT, LocalAtaque.TORSO,
-                                a.stats?.rd ?: 0, a.stats?.tolerancia ?: ToleranciaFerimentos.NORMAL)
+                            val rd = if (ctx.mecanica?.armadura == "ignora") 0 else (a.stats?.rd ?: 0)
+                            val dn = HitLocationRules.aplicarDano(a.pvMax, bruto, tipo, LocalAtaque.TORSO,
+                                rd, a.stats?.tolerancia ?: ToleranciaFerimentos.NORMAL)
                             InjuryRules.ferir(a, dn.pvSubtrair, a.stats?.ht ?: 10, random)
                             "${a.nome} ${dn.pvSubtrair}" + if (!a.vivo) " (fora!)" else ""
                         }
-                        sb.append(" Dano ${energia}d: ${partes.joinToString(", ")}.")
+                        sb.append(" Dano $expr: ${partes.joinToString(", ")}.")
                     } else {
-                        sb.append(" Efeito narrado pelo Mestre.")
+                        sb.append(" Efeito narrado pelo Mestre" + (ctx.resumoEfeito?.let { " — $it" } ?: "") + ".")
                     }
                 }
                 verificarFim(); log += sb.toString().trim()
