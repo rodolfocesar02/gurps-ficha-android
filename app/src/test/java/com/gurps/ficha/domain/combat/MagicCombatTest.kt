@@ -166,6 +166,48 @@ class MagicCombatTest {
         assertTrue("nenhum seed separou atingidos de resistentes na área", separou)
     }
 
+    // ── Lote MA-7: NPC conjurador ──
+
+    private fun conjuradorNpc() = Combatente(
+        id = "mago", nome = "Mago", dx = 11, velocidadeBasica = 5.0, deslocamento = 5, pvMax = 9, pvAtual = 9, pfAtual = 10,
+        stats = NpcStats(st = 10, dx = 11, iq = 13, ht = 11, pvMax = 9, rd = 0, armaNh = 10,
+            magias = listOf(NpcMagia(nome = "Dardo Mágico", nh = 15, projetil = true, custoFP = 1, danoDados = 1)))
+    )
+
+    @Test
+    fun `cerebro do NPC conjurador decide LANCAR a magia no heroi`() {
+        val enc = CombatEncounter(listOf(heroi(), conjuradorNpc()), mapOf("mago" to 5), seed = 1L)
+        val intencao = NpcCombatBrain.decidir(enc.combatentes.first { it.id == "mago" }, enc, "heroi", Random(3))
+        assertTrue("deveria intencionar conjurar", intencao.conjurar != null)
+        assertEquals("Dardo Mágico", intencao.conjurar!!.nome)
+    }
+
+    @Test
+    fun `npcConjurar gasta o PF do NPC e resolve (dano no heroi ou esquiva)`() {
+        val perfilBaixaEsquiva = HeroiPerfilCombate(esquiva = 3, apara = 11, ht = 12, rd = 0) // esquiva baixa → costuma acertar
+        val enc = CombatEncounter(listOf(heroi(), conjuradorNpc()), mapOf("mago" to 5), seed = 1L)
+        var feriu = false
+        for (seed in 0L until 20L) {
+            val e = CombatEncounter(listOf(heroi(), conjuradorNpc()), mapOf("mago" to 5), seed = 1L)
+            val s = CombatSession(e, perfilBaixaEsquiva, Random(seed))
+            val pfNpcAntes = s.inimigos.first { it.id == "mago" }.pfAtual
+            val pvHeroiAntes = s.heroi.pvAtual
+            s.npcConjurar("mago", NpcMagia("Dardo Mágico", nh = 30, projetil = true, custoFP = 1, danoDados = 2))
+            assertTrue("NPC gasta PF", s.inimigos.first { it.id == "mago" }.pfAtual < pfNpcAntes)
+            assertTrue(s.log.any { it.contains("Dardo Mágico") })
+            if (s.heroi.pvAtual < pvHeroiAntes) { feriu = true; break }
+        }
+        assertTrue("com esquiva 3 e NH 30, algum seed deveria ferir o herói", feriu)
+    }
+
+    @Test
+    fun `NPC sem PF nao conjura (o cerebro cai para acao mundana)`() {
+        val semPf = conjuradorNpc().let { it.copy(pfAtual = 0) }
+        val enc = CombatEncounter(listOf(heroi(), semPf), mapOf("mago" to 5), seed = 1L)
+        val intencao = NpcCombatBrain.decidir(enc.combatentes.first { it.id == "mago" }, enc, "heroi", Random(1))
+        assertTrue("sem PF não conjura", intencao.conjurar == null)
+    }
+
     // ── Lote MA-6: dano de magia direta (não-Projétil) ──
 
     @Test

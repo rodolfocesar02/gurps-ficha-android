@@ -3046,6 +3046,15 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - **Recomendação registrada** (maior valor × menor custo): Ataque Telegráfico (par do Enganoso), luta agarrada profunda (chaves/Mata-Leão estendendo o lote 422), Sangramento Grave + incapacitação de membro (item 5 do teste de batalha), Ataque Dedicado/Defensivo. Fora de escopo: posicional/hexágono, montaria, cinematográfico, dado de arma do NPC. Mudança só de documentação (não compila Kotlin).
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
+### Lote MA-7 — 15 de Julho de 2026 (PILAR MAGIA / Fase 7 — NPC CONJURADOR)
+**Saga: os inimigos magos agora conjuram DE VERDADE — branch GURPS-Saga**
+- **Dados**: `NpcStats.magias: List<NpcMagia>` (nome, nh, projetil, custoFP, danoDados). O bestiário ganhou `BestiarioCriatura.magias` (`MagiaCriatura`) → mapeado no `novoCombatente`. **Fallback**: um conceito de conjurador (regex `mago/conjurad/feiticei/brux/necromant/xam/arcan/piromant…`) sem mágica curada ganha um "Dardo Mágico" padrão (Projétil 1d, NH = IQ+3) — afordância de jogo (o usuário nomeou o inimigo).
+- **Cérebro** (`NpcCombatBrain`): `IntencaoNpc.conjurar`; se o NPC tem mágica ofensiva + PF suficiente + herói a ≥1m, ele **conjura** (se colado, recua um passo antes — mago não gosta de melee). Sem PF, cai para ação mundana.
+- **Resolução** (`CombatSession.npcConjurar`): usa o **mesmo `MagicCasting`** do herói. O NPC paga a própria fadiga; o herói se defende — **Projétil → ESQUIVA** (rolada pelo motor); acertou → dano 1d×danoDados com a **RD do herói**. **Falha crítica → choque de retorno NO NPC** (dano/atordoamento). O controller (`executarTurnoNpc`) roteia a intenção de conjurar para `npcConjurar`.
+- **+3 testes** (`MagicCombatTest`, total 27): o cérebro decide lançar; `npcConjurar` gasta o PF do NPC e fere/esquiva; sem PF não conjura. Zero regressão (inclui `NpcCombatBrainTest`).
+- **Refinamento futuro (honesto)**: a defesa do herói vs mágica de NPC é síncrona (auto-esquiva) — falta a versão INTERATIVA (card "Defenda-se!"); NPC só lança Projétil/dano direto (não Área/Toque/buff).
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
 ### Lote MA-6 — 15 de Julho de 2026 (PILAR MAGIA / Fase 6 — DANO de magia direta no combate)
 **Saga: magias de dano que não são Projétil (jatos etc.) agora ferem no combate — branch GURPS-Saga**
 - **Motivo (teste do usuário)**: "Jato de Chamas" é `classe="Comum"` no catálogo (não Projétil), então o dano estava só na descrição → caía em "efeito narrado", e no combate tático **ninguém narra** → parecia que não fazia nada. (O sucesso decisivo estava CERTO — o "custo 0 PF" prova a regra da p.7; era o efeito bespoke que faltava.)

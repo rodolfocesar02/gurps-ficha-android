@@ -82,6 +82,17 @@ data class DefesasUsadas(
  * Estatísticas de combate de um NPC/criatura (o bestiário do B6 popula isto).
  * velocidadeBasica e deslocamento têm default derivado de DX/HT (MB p.17).
  */
+/** Lote MA-7: uma mágica ofensiva pronta pra combate que um NPC conjurador pode lançar no herói. */
+data class NpcMagia(
+    val nome: String,
+    val nh: Int,
+    /** true = Projétil (o herói ESQUIVA); false = Comum de dano (o herói RESISTE se resistível). */
+    val projetil: Boolean = true,
+    val custoFP: Int = 1,
+    /** Dados de dano (1d por ponto de energia, Magia p.14). */
+    val danoDados: Int = 1,
+)
+
 data class NpcStats(
     val st: Int = 10,
     val dx: Int = 10,
@@ -104,7 +115,9 @@ data class NpcStats(
     val tolerancia: ToleranciaFerimentos = ToleranciaFerimentos.NORMAL,
     /** Comportamento tático (Lote 363/B6): 0-10. Alimenta o NpcCombatBrain. */
     val agressividade: Int = 5,
-    val moral: Int = 5
+    val moral: Int = 5,
+    /** Lote MA-7: mágicas ofensivas do NPC conjurador (vazio = não conjura). */
+    val magias: List<NpcMagia> = emptyList()
 )
 
 /**

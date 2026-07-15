@@ -1,5 +1,6 @@
 package com.gurps.ficha.domain.combat
 
+import com.gurps.ficha.domain.magic.ClasseParseada
 import com.gurps.ficha.domain.magic.ContextoConjuracao
 import com.gurps.ficha.domain.magic.CustoEnergia
 import com.gurps.ficha.domain.magic.EfeitoChoqueRetorno
@@ -1471,6 +1472,58 @@ class CombatSession(
         intencao.alvoId == heroi.id &&
             (intencao.manobra == Manobra.ATAQUE || intencao.manobra == Manobra.ATAQUE_TOTAL ||
                 intencao.manobra == Manobra.MOVER_E_ATACAR || intencao.manobra == Manobra.AGARRAR)
+
+    /**
+     * Lote MA-7: um NPC CONJURADOR lança uma mágica ofensiva no herói. Usa o mesmo resolvedor
+     * ([MagicCasting]) do herói. O NPC paga a própria fadiga; o herói se defende: **Projétil** → ESQUIVA
+     * (nunca aparar, Magia p.12); **Comum de dano** → efeito direto no sucesso. Acertou → dano 1d ×
+     * [NpcMagia.danoDados] com a RD do herói. Falha crítica → choque de retorno NO NPC. Resolução
+     * SÍNCRONA (a esquiva do herói é rolada pelo motor) — a defesa interativa vs mágica de NPC é um
+     * refinamento futuro.
+     */
+    fun npcConjurar(npcId: String, magia: NpcMagia): AtaqueResultado {
+        val npc = inimigos.firstOrNull { it.id == npcId && it.vivo }
+            ?: return AtaqueResultado(false, false, 0, false, "NPC inválido.")
+        npc.pfAtual = (npc.pfAtual - magia.custoFP).coerceAtLeast(0)
+        val dist = encounter.distancia(npc)
+        val classe = ClasseParseada(
+            classes = setOf(if (magia.projetil) TipoClasseMagia.PROJETIL else TipoClasseMagia.COMUM),
+            resistencia = null, original = ""
+        )
+        // Projétil cria na mão (sem distância); Comum sofre a penalidade de distância.
+        val nhEf = magia.nh + if (magia.projetil) 0 else penalidadeDistancia(dist)
+        val rol = rolar3d6()
+        val r = MagicCasting.resolver(nhEf, rol, magia.custoFP, classe, rolagemChoqueRetorno3d = rolar3d6())
+        val sb = StringBuilder()
+        when (r.resultado) {
+            ResultadoOperacao.FALHA_CRITICA -> {
+                sb.append("💥 ${npc.nome} tem um CHOQUE DE RETORNO ao conjurar ${magia.nome}! ")
+                r.choqueRetorno?.let { ef ->
+                    sb.append(ef.rotulo)
+                    if (ef.danoAoOperadorDadosD6 > 0) { val d = rolarDano("${ef.danoAoOperadorDadosD6}d", random); InjuryRules.ferir(npc, d, npc.stats?.ht ?: 10, random); sb.append(" (${npc.nome} sofre $d)") }
+                    if (ef.danoAoOperadorPontos > 0) { InjuryRules.ferir(npc, ef.danoAoOperadorPontos, npc.stats?.ht ?: 10, random); sb.append(" (${npc.nome} sofre ${ef.danoAoOperadorPontos})") }
+                    if (ef.atordoaOperador) { npc.condicoes.add(Condicao.ATORDOADO); sb.append(" (${npc.nome} atordoado)") }
+                }
+            }
+            ResultadoOperacao.FRACASSO -> sb.append("✨ ${npc.nome} falha ao conjurar ${magia.nome} (NH $nhEf, rolou $rol).")
+            else -> {
+                sb.append("🔮 ${npc.nome} conjura ${magia.nome} em você (NH $nhEf, rolou $rol).")
+                var acertou = true
+                if (magia.projetil) {
+                    val esq = heroiPerfil.esquiva
+                    if (CombatResolver.defesaBemSucedida(esq, rolar3d6())) { sb.append(" Você ESQUIVA (Esquiva $esq)."); acertou = false }
+                }
+                if (acertou) {
+                    val bruto = rolarDano("${magia.danoDados.coerceAtLeast(1)}d", random)
+                    val dn = HitLocationRules.aplicarDano(heroi.pvMax, bruto, DanoTipo.CONT, LocalAtaque.TORSO, heroiPerfil.rd)
+                    InjuryRules.ferir(heroi, dn.pvSubtrair, heroiPerfil.ht, random)
+                    sb.append(" ${magia.danoDados}d → ${dn.pvSubtrair} de dano em você" + (if (!heroi.vivo) " — você cai!" else "."))
+                }
+            }
+        }
+        verificarFim(); log += sb.toString().trim()
+        return AtaqueResultado(true, false, 0, !heroi.vivo, sb.toString().trim())
+    }
 
     /** Opções de defesa do herói para o card "Defenda-se!" (aplica recuo/Defesa Total/aparas extras). */
     fun opcoesDefesaHeroi(

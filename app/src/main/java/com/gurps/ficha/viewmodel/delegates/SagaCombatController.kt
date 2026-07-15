@@ -496,10 +496,21 @@ class SagaCombatController(
                 n++
                 val cid = "${idOuConceito.lowercase().trim()}_$n"
                 val nome = if (qtd > 1) "${criatura?.nome ?: idOuConceito} $n" else (criatura?.nome ?: idOuConceito)
-                val comb = criatura?.novoCombatente(cid, nome) ?: Combatente(
+                var comb = criatura?.novoCombatente(cid, nome) ?: Combatente(
                     id = cid, nome = nome, dx = 10, velocidadeBasica = 5.0, deslocamento = 5, pvMax = 10,
-                    stats = NpcStats(armaDano = "1d-1", armaTipo = "cont", armaNh = 10)
+                    stats = NpcStats(iq = 12, armaDano = "1d-1", armaTipo = "cont", armaNh = 10)
                 )
+                // Lote MA-7: conceito de CONJURADOR sem mágicas curadas no bestiário → mágica ofensiva
+                // padrão ("Dardo Mágico", Projétil 1d). Afordância de jogo — o usuário nomeou o inimigo.
+                val ehConjuradorConceito = Regex("mag[oa]|conjurad|feiticei|brux|necromant|xam|arcan|piromant|eletromant|cromant")
+                    .containsMatchIn(idOuConceito.lowercase())
+                val st = comb.stats
+                if (ehConjuradorConceito && st != null && st.magias.isEmpty()) {
+                    val nh = (st.iq + 3).coerceAtLeast(12)
+                    comb = comb.copy(stats = st.copy(magias = listOf(
+                        NpcMagia(nome = "Dardo Mágico", nh = nh, projetil = true, custoFP = 1, danoDados = 1)
+                    )))
+                }
                 combatentes.add(comb)
                 distancias[cid] = distanciaM.coerceAtLeast(1)
             }
@@ -1130,7 +1141,10 @@ class SagaCombatController(
         // Lote MA-3d-3: acrescenta as mágicas de BLOQUEIO conhecidas como opções de defesa (Magia p.12).
         // Só quando há defesa possível (não vale contra golpe fulminante / pelas costas — opcoes vazia).
         val opcoes = if (opcoesBaseFacing.isNotEmpty()) opcoesBaseFacing + opcoesBloqueioMagico(s) else opcoesBaseFacing
-        if (s.intencaoAtacaHeroi(intencao) && opcoes.isNotEmpty()) {
+        if (intencao.conjurar != null) {
+            // Lote MA-7: o NPC conjurador lança no herói (resolução síncrona; herói esquiva/leva dano).
+            s.npcConjurar(npcId, intencao.conjurar!!)
+        } else if (s.intencaoAtacaHeroi(intencao) && opcoes.isNotEmpty()) {
             val deferred = CompletableDeferred<CombatResolver.OpcaoDefesa>()
             val nomeNpc = npc.nome
             defesaPendente = DefesaPendenteUi(

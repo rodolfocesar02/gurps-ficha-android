@@ -16,7 +16,9 @@ object NpcCombatBrain {
         val local: LocalAtaque = LocalAtaque.TORSO,
         val aDistancia: Boolean = false,
         val recuar: Boolean = false,
-        val motivo: String
+        val motivo: String,
+        /** Lote MA-7: mágica que o NPC conjurador vai lançar neste turno (null = ação mundana). */
+        val conjurar: NpcMagia? = null
     )
 
     /** Fração de PV abaixo da qual a criatura tende a fugir (moral baixa foge antes). */
@@ -48,6 +50,16 @@ object NpcCombatBrain {
         if (npc.pvAtual <= npc.pvMax * limiarFugaPV(moral)) {
             return IntencaoNpc(Manobra.MOVER, recuar = true,
                 motivo = "moral baixa (PV ${npc.pvAtual}/${npc.pvMax}) — recua")
+        }
+
+        // 1.5) CONJURADOR (Lote MA-7): se tem mágica ofensiva e fôlego, conjura no herói. Projéteis têm
+        // alcance longo; se estiver colado (engajado), recua um passo primeiro (não gosta de melee).
+        val magiaEscolhida = stats?.magias?.firstOrNull { npc.pfAtual >= it.custoFP }
+        if (magiaEscolhida != null && dist >= 1) {
+            if (engaj && dist <= 1) return IntencaoNpc(Manobra.MOVER, recuar = true,
+                motivo = "conjurador colado — abre distância para lançar")
+            return IntencaoNpc(Manobra.CONCENTRAR, alvoId = alvoId, aDistancia = true,
+                conjurar = magiaEscolhida, motivo = "conjura ${magiaEscolhida.nome} no herói (${dist}m)")
         }
 
         // 2) Arqueiro (arma de alcance): mantém distância e atira.

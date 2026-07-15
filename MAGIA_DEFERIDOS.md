@@ -21,8 +21,11 @@ que não cabe em regra geral é **narrado pelo Mestre**.
   visibilidade**, mas o **efeito do buff** é narrado.
 
 ## DEFERIDO (fatia futura própria)
-- **NPC conjurador**: o inimigo (xamã goblin) lançando magia mecanicamente. Decisão do usuário: por
-  ora **só o herói conjura**; magia de NPC é narrativa. Precisa de um "cérebro de magia" do NPC.
+- ~~**NPC conjurador**~~ ✅ **FEITO (Lote MA-7)**: o NpcStats ganhou `magias`; o cérebro do NPC lança
+  quando tem mágica + fôlego + herói ao alcance; resolve pelo mesmo `MagicCasting` (o herói esquiva
+  Projétil / leva dano com sua RD). Conceito de "conjurador/mago" sem mágica curada no bestiário ganha
+  um "Dardo Mágico" padrão. **Refinamento futuro**: a defesa do herói vs mágica de NPC é rolada pelo
+  motor (síncrona) — falta a versão INTERATIVA (card "Defenda-se!") e o NPC conjurar Área/Toque/buff.
 - **Projétil — carregar em vários turnos** (Magia p.12): hoje o projétil é lançado no mesmo turno do
   lançamento (com 2 testes: lançamento + Ataque Inato + esquiva do alvo). O "aumentar por até 3s"
   antes de arremessar fica para depois.

@@ -2,6 +2,7 @@ package com.gurps.ficha.model
 
 import com.google.gson.Gson
 import com.gurps.ficha.domain.combat.Combatente
+import com.gurps.ficha.domain.combat.NpcMagia
 import com.gurps.ficha.domain.combat.NpcStats
 import com.gurps.ficha.domain.combat.ToleranciaFerimentos
 
@@ -20,6 +21,15 @@ data class AtaqueCriatura(
     val alcanceMetros: Int = 1
 )
 
+/** Lote MA-7: mágica ofensiva de um conjurador do bestiário. */
+data class MagiaCriatura(
+    val nome: String = "",
+    val nh: Int = 12,
+    val projetil: Boolean = true,
+    val custoFP: Int = 1,
+    val danoDados: Int = 1
+)
+
 data class BestiarioCriatura(
     val id: String = "",
     val nome: String = "",
@@ -36,7 +46,9 @@ data class BestiarioCriatura(
     val moral: Int = 5,             // 0-10
     val mt: Int = 0,                // Modificador de Tamanho (MT) — +MT no acerto à distância contra ela (MB p.549)
     val tolerancia: String = "",    // Lote 385: "" | "nao_vivo" | "homogeneo" | "difuso" (MB p.381)
-    val ataques: List<AtaqueCriatura> = emptyList()
+    val ataques: List<AtaqueCriatura> = emptyList(),
+    /** Lote MA-7: mágicas ofensivas do conjurador (nome, nh, projetil, custoFP, danoDados). */
+    val magias: List<MagiaCriatura> = emptyList()
 ) {
     /** Mapeia a string [tolerancia] do JSON para o enum de combate (Lote 385). */
     private fun toleranciaEnum(): ToleranciaFerimentos =
@@ -59,7 +71,8 @@ data class BestiarioCriatura(
             armaTipo = principal?.tipo ?: "", armaNh = principal?.nh ?: 10,
             alcanceMetros = alcanceMaximo,
             agressividade = agressividade, moral = moral,
-            modificadorTamanho = mt, tolerancia = toleranciaEnum()
+            modificadorTamanho = mt, tolerancia = toleranciaEnum(),
+            magias = magias.map { NpcMagia(it.nome, it.nh, it.projetil, it.custoFP, it.danoDados) } // Lote MA-7
         )
         return Combatente(
             id = id, nome = nome, ehHeroi = false, dx = dx,
