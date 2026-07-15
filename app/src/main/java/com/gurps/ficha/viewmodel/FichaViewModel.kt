@@ -159,6 +159,8 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
     fun sagaIniciarMiraArea(magiaId: String, raio: Int, energia: Int, pvQueimar: Int) =
         sagaDelegate.combate.iniciarMiraArea(magiaId, raio, energia, pvQueimar)
     fun sagaCancelarMiraArea() = sagaDelegate.combate.cancelarMiraArea()
+    /** Lote MA-5: mana ambiente da cena atual (setada pelo Narrador via definir_cena). Alimenta a conjuração. */
+    var sagaNivelMana: com.gurps.ficha.domain.magic.NivelMana = com.gurps.ficha.domain.magic.NivelMana.NORMAL
     fun sagaCombateEntregarToque(alvoId: String) = sagaDelegate.combate.heroiEntregarToque(alvoId)   // Lote MA-3d-2
     fun sagaCombateDissiparToque() = sagaDelegate.combate.heroiDissiparToque()                        // Lote MA-3d-2
     fun sagaCombateApontar(alvoId: String, firmado: Boolean = false) = sagaDelegate.combate.heroiApontar(alvoId, firmado)

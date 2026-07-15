@@ -3046,6 +3046,15 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - **Recomendação registrada** (maior valor × menor custo): Ataque Telegráfico (par do Enganoso), luta agarrada profunda (chaves/Mata-Leão estendendo o lote 422), Sangramento Grave + incapacitação de membro (item 5 do teste de batalha), Ataque Dedicado/Defensivo. Fora de escopo: posicional/hexágono, montaria, cinematográfico, dado de arma do NPC. Mudança só de documentação (não compila Kotlin).
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
+### Lote MA-5 — 15 de Julho de 2026 (PILAR MAGIA / Fase 5 — polimento: mana por cena + doc) 🎉 FECHA O PILAR
+**Saga: lugares mágicos e anti-mágicos afetam a conjuração — branch GURPS-Saga**
+- **Mana ambiente por cena**: `definir_cena` ganhou o param `mana` (muito_alta/alta/normal/baixa/nula). O executor chama `definirManaAmbiente` na `CombatBridge` → `FichaSagaDelegate` guarda `viewModel.sagaNivelMana` (em memória, sem migração de DB). **Todos os caminhos de conjuração** — combate (`heroiConjurar` + área) e narrativa (`lancarMagia`) — passaram a usar essa mana em vez do NORMAL fixo: **baixa = −5 no NH efetivo**, **nula = bloqueia a conjuração** (`MagicMana.podeOperar`, com mensagem factual). Prompt do Narrador orientado a definir mana em lugares mágicos/anti-mágicos.
+- **Doc dos deferidos** `MAGIA_DEFERIDOS.md`: registro honesto da fronteira — o que é automatizado (espinha), o que é narrado (efeitos bespoke), o que fica deferido (NPC conjurador, carregar projétil multi-turno, magia cerimonial, cajados, efeito de buff mecânico) e as simplificações fiéis (dano do projétil ≈ contusão, Ataque Inato ≈ DX, Vontade do NPC ≈ IQ, manutenção ≈ metade do custo).
+- **Magias ativas na UI** (pílula "✨ Ativas") já entregue no MA-3d-4; choque de retorno já traz rótulos do MA-1.
+- Zero regressão (saga + combate + magia verdes).
+- **🎉 PILAR MAGIA COMPLETO (MA-1..5)**: motor puro → resolvedor → magia no combate (conjurar/Projétil/Área/Toque/Bloqueio/multi-turno/ativas) → magia na narrativa → polimento. NPC conjurador deferido.
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
 ### Lote MA-4 — 15 de Julho de 2026 (PILAR MAGIA / Fase 4 — magia na NARRATIVA: tool lancar_magia)
 **Saga: conjurar conversando com o Narrador, fora de combate — branch GURPS-Saga**
 - **Tool `lancar_magia`** (`NarradorTools`, 19ª tool): `{ magia, alvo?, energia_extra?, resistencia_alvo? }`. Dispatch no `NarradorToolExecutor` → método `lancarMagia` na `CombatBridge` → implementado no `FichaSagaDelegate` (onde a ficha vive).

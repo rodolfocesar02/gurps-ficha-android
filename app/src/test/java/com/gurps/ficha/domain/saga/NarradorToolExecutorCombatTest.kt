@@ -49,6 +49,7 @@ class NarradorToolExecutorCombatTest {
         override fun lancarMagia(magia: String, alvo: String?, energiaExtra: Int, resistenciaAlvo: Int?): String {
             chamadas.add("magia:$magia:${alvo ?: "-"}:$energiaExtra:${resistenciaAlvo ?: "-"}"); return JSONObject().put("ok", true).toString()
         }
+        override fun definirManaAmbiente(nivel: String) { chamadas.add("mana:$nivel") }
     }
 
     private fun exec(bridge: FakeBridge) = NarradorToolExecutor(

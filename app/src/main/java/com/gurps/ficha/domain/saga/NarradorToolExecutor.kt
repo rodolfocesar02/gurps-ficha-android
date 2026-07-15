@@ -58,6 +58,8 @@ class NarradorToolExecutor(
         fun aplicarModificadorCombate(alvoId: String, valor: Int, aplicaEm: String, motivo: String, duracaoRodadas: Int?): String
         /** Lote MA-4: o herói conjura FORA de combate. Devolve o JSON factual (o motor usa o resolvedor MA-2). */
         fun lancarMagia(magia: String, alvo: String?, energiaExtra: Int, resistenciaAlvo: Int?): String
+        /** Lote MA-5: define a mana ambiente da cena ("muito_alta"/"alta"/"normal"/"baixa"/"nula"). */
+        fun definirManaAmbiente(nivel: String)
     }
 
     /** Campanha ativa — obrigatória para fatos. Setada ao abrir/criar campanha (A5). */
@@ -184,7 +186,11 @@ class NarradorToolExecutor(
         val humor = args.optString("humor").trim().ifBlank { atual?.humor.orEmpty() }
         val resumo = args.optString("resumo").trim().ifBlank { atual?.resumo.orEmpty() }
         dao.atualizarDescricaoCena(cid, titulo, bioma, humor, resumo)
-        return JSONObject().put("ok", true).put("cena", titulo).put("bioma", bioma).put("humor", humor).toString()
+        // Lote MA-5: mana ambiente da cena (em memória) — alimenta a conjuração. Omitir = mantém a atual.
+        val mana = args.optString("mana").trim().lowercase()
+        if (mana.isNotBlank()) combatBridge?.definirManaAmbiente(mana)
+        return JSONObject().put("ok", true).put("cena", titulo).put("bioma", bioma).put("humor", humor)
+            .apply { if (mana.isNotBlank()) put("mana", mana) }.toString()
     }
 
     private suspend fun pedirRolagem(args: JSONObject): String {

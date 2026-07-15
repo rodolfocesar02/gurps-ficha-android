@@ -717,10 +717,15 @@ class SagaCombatController(
         val custo = MagicEnergy.parse(magia.energia)
         val distancia = if (alvoId == null) 0
             else s.encounter.combatentes.firstOrNull { it.id == alvoId }?.let { s.distancia(it) } ?: 0
+        val mana = viewModel.sagaNivelMana // Lote MA-5: mana ambiente da cena
+        if (!com.gurps.ficha.domain.magic.MagicMana.podeOperar(mana, ehMago = aptidao > 0)) {
+            s.log += "🚫 Aqui a mana está ${mana.name.lowercase()} — você não consegue conjurar ${magia.nome}."
+            publicarLog(); atualizarEstado(); return
+        }
         val ctx = ContextoConjuracao(
             nhBasico = magia.calcularNivel(p, aptidao),
             classe = classe,
-            mana = NivelMana.NORMAL,          // MA-5: mana ambiente por cena
+            mana = mana,
             distanciaMetros = distancia,
             tocando = false,
             veOuToca = true,
@@ -804,7 +809,7 @@ class SagaCombatController(
         val ctx = ContextoConjuracao(
             nhBasico = magia.calcularNivel(p, aptidao),
             classe = MagicClassParser.parse(magia.classe),
-            mana = NivelMana.NORMAL,
+            mana = viewModel.sagaNivelMana, // Lote MA-5
             distanciaMetros = distBorda,
             raioAreaMetros = mira.raio,
             pvQueimados = mira.pvQueimar,

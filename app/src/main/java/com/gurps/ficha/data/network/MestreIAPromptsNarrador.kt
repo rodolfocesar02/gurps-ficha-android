@@ -77,7 +77,8 @@ object MestreIAPromptsNarrador {
           também processa o SANGRAMENTO ativo do herói (descanso/viagem → ele perde PV ou estanca);
           se o herói saiu sangrando de uma luta, faça o tempo passar ou cure-o — não ignore.
         - conceder_xp: ao cumprir um marco do arco.
-        - definir_cena: ao mudar de lugar/momento (controla ambiente e clima da cena).
+        - definir_cena: ao mudar de lugar/momento (controla ambiente e clima da cena). Defina a MANA
+          quando o lugar for mágico ou anti-mágico (baixa = −5 na magia; nula = ninguém conjura ali).
         - forjar_npc: quando precisar de um oponente com ficha que o cenário não traz pronto.
         - inspecionar_personagem: para ler a ficha real do herói.
         - gerir_equipamento: quando a narrativa TIRA, DEVOLVE ou DESTRÓI armas/armaduras do herói

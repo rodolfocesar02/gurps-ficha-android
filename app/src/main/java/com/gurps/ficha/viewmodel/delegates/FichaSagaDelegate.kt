@@ -418,10 +418,15 @@ class FichaSagaDelegate(
         val aptidao = com.gurps.ficha.domain.engine.MagicEngine.getNivelAptidaoMagicaParaMagia(p, null)
         val classe = com.gurps.ficha.domain.magic.MagicClassParser.parse(sel.classe)
         val custo = com.gurps.ficha.domain.magic.MagicEnergy.parse(sel.energia)
+        val mana = viewModel.sagaNivelMana // Lote MA-5: mana ambiente da cena
+        if (!com.gurps.ficha.domain.magic.MagicMana.podeOperar(mana, ehMago = aptidao > 0)) {
+            return org.json.JSONObject().put("erro", "mana_insuficiente").put("magia", sel.nome)
+                .put("mana", mana.name.lowercase()).put("detalhe", "A mana ambiente não permite conjurar aqui.").toString()
+        }
         val ctx = com.gurps.ficha.domain.magic.ContextoConjuracao(
             nhBasico = sel.calcularNivel(p, aptidao),
             classe = classe,
-            mana = com.gurps.ficha.domain.magic.NivelMana.NORMAL, // MA-5: mana ambiente por cena
+            mana = mana,
             distanciaMetros = 0, tocando = true, // fora de combate o Narrador abstrai a posição
         )
         val nhEf = com.gurps.ficha.domain.magic.MagicCasting.nhEfetivo(ctx)
@@ -457,6 +462,17 @@ class FichaSagaDelegate(
         }
         r.choqueRetorno?.let { out.put("choque_retorno", it.rotulo) }
         return out.toString()
+    }
+
+    /** Lote MA-5: define a mana ambiente da cena (em memória) — alimenta a conjuração no combate e na narrativa. */
+    override fun definirManaAmbiente(nivel: String) {
+        viewModel.sagaNivelMana = when (nivel.lowercase().trim().replace(" ", "_")) {
+            "muito_alta", "muito_alto" -> com.gurps.ficha.domain.magic.NivelMana.MUITO_ALTA
+            "alta", "alto" -> com.gurps.ficha.domain.magic.NivelMana.ALTA
+            "baixa", "baixo" -> com.gurps.ficha.domain.magic.NivelMana.BAIXA
+            "nula", "nulo", "sem_mana" -> com.gurps.ficha.domain.magic.NivelMana.NULA
+            else -> com.gurps.ficha.domain.magic.NivelMana.NORMAL
+        }
     }
 
     override fun gastarRecurso(recurso: String, quantidade: Int, motivo: String, itemNome: String?): String {

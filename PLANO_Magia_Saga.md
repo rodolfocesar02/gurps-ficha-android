@@ -137,12 +137,20 @@ ficar fiel. Puro, determinístico (caller joga os dados), 29 testes.
 - **Prompt do Narrador** atualizado: quando chamar `lancar_magia` (fora de combate) vs. o chip na tela.
 - **+3 testes** (dispatch, guarda em-combate, guarda campos) + contagem de tools 18→19.
 
-## MA-5 — Polimento + honestidade
-- Mana ambiente por cena (estende `definir_cena`).
-- Narração do choque de retorno (rótulos já no motor).
-- Indicador de FP e de magias ativas na UI da Saga.
-- Acessibilidade PraCego (contentDescription das magias/estados).
-- Doc dos feitiços deferidos (efeitos bespoke que ficam narrativos).
+## ✅ MA-5 — Polimento + honestidade FEITO
+- **Mana ambiente por cena**: `definir_cena` ganhou o param `mana` (muito_alta/alta/normal/baixa/nula);
+  o executor chama `definirManaAmbiente` na bridge → `FichaSagaDelegate` guarda `viewModel.sagaNivelMana`
+  (em memória). **Todos os caminhos de conjuração** (combate: `heroiConjurar`/área; narrativa:
+  `lancarMagia`) usam essa mana em vez do NORMAL fixo — **baixa = −5 no NH**, **nula = bloqueia**
+  (`MagicMana.podeOperar`). Prompt do Narrador orientado a definir mana em lugares mágicos/anti-mágicos.
+- **Magias ativas na UI**: pílula "✨ Ativas" no grid (feito no MA-3d-4).
+- **Doc dos deferidos**: `MAGIA_DEFERIDOS.md` — a fronteira honesta (efeitos narrados, NPC conjurador,
+  simplificações fiéis).
+- Choque de retorno já vem com rótulos do motor (MA-1); acessibilidade dos chips via `contentDescription`.
+
+## 🎉 PILAR MAGIA COMPLETO (MA-1..5)
+Motor puro → resolvedor → magia no combate (conjurar/Projétil/Área/Toque/Bloqueio/multi-turno/ativas)
+→ magia na narrativa → polimento. NPC conjurador segue deferido (fatia futura).
 
 ## Deferido honestamente
 - **NPC conjurador mecânico** (lote próprio futuro).
@@ -156,6 +164,6 @@ ficar fiel. Puro, determinístico (caller joga os dados), 29 testes.
 - [x] ✅ MA-3c — conjuração multi-turno + interrupção (Vontade−3 / atordoado; continuar/abortar; 5 testes novos)
 - [x] ✅ MA-3d — Área no hex + Toque + Bloqueio + magias ativas + tick (4 sub-lotes, 10 testes novos)
 - [x] ✅ MA-4 — tool `lancar_magia` na narrativa (executor + bridge + delegate + prompt, 3 testes)
-- [ ] MA-5 — polimento (mana por cena, choque narrado, FP/magias ativas na UI, PraCego, doc dos deferidos)
+- [x] ✅ MA-5 — polimento (mana ambiente por cena bloqueia/penaliza a conjuração; doc dos deferidos `MAGIA_DEFERIDOS.md`) 🎉 PILAR COMPLETO
 - [ ] MA-4 — magia na narrativa (tool `lancar_magia`)
 - [ ] MA-5 — polimento + honestidade

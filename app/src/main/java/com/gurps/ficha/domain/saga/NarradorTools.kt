@@ -184,12 +184,14 @@ object NarradorTools {
         ),
         ToolSpec(
             TOOL_DEFINIR_CENA,
-            "Abre uma cena nova (ou redefine a atual) com título, bioma e humor — controla arte, áudio e o cabeçalho do feed.",
+            "Abre uma cena nova (ou redefine a atual) com título, bioma e humor — controla arte, áudio e o cabeçalho do feed. Também define a MANA ambiente da cena, que afeta a magia (baixa = −5 no NH; nula = ninguém conjura).",
             listOf(
                 Param("titulo", "string", "Título curto da cena.", obrigatorio = true),
                 Param("bioma", "string", "Ambiente físico predominante da cena.", obrigatorio = true),
                 Param("humor", "string", "Tom emocional predominante da cena.", obrigatorio = true),
-                Param("resumo", "string", "Síntese de abertura opcional.")
+                Param("resumo", "string", "Síntese de abertura opcional."),
+                Param("mana", "string", "Intensidade de mana ambiente da cena (afeta a magia). Omita para manter a atual.",
+                    enum = listOf("muito_alta", "alta", "normal", "baixa", "nula"))
             )
         ),
         ToolSpec(
