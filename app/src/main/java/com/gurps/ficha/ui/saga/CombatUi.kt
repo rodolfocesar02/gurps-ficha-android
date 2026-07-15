@@ -890,8 +890,12 @@ private fun DefendaSeCard(viewModel: FichaViewModel, defesa: com.gurps.ficha.vie
                     else -> ""
                 }
                 val rotulo = buildString {
-                    append("${op.tipo.rotulo}$sufixo ${op.valorFinal}")
-                    if (comps.isNotBlank()) append("  ($comps)")
+                    if (op.magiaBloqueioNome != null) { // Lote MA-3d-3: defesa por mágica de Bloqueio
+                        append("🔮 ${op.magiaBloqueioNome} (bloqueio) ${op.valorFinal}")
+                    } else {
+                        append("${op.tipo.rotulo}$sufixo ${op.valorFinal}")
+                        if (comps.isNotBlank()) append("  ($comps)")
+                    }
                     if (!op.disponivel) append(" — ${op.motivoIndisponivel}")
                 }
                 Button(

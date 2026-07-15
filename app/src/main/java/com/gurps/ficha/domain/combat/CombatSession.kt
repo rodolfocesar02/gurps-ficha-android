@@ -1029,6 +1029,20 @@ class CombatSession(
         return ResultadoConjuracaoCombate(true, sb.toString())
     }
 
+    /**
+     * Lote MA-3d-3: paga uma mágica de BLOQUEIO usada como defesa reativa (Magia p.12). O custo NÃO é
+     * reduzido por NH alto (exceção da regra) e o ato INTERROMPE automaticamente qualquer conjuração em
+     * andamento do operador. O sucesso do bloqueio (rolar ≤ NH) é resolvido no fluxo de defesa normal.
+     */
+    fun aplicarBloqueioMagico(custoFP: Int, magiaNome: String) {
+        heroi.pfAtual = (heroi.pfAtual - custoFP.coerceAtLeast(0)).coerceAtLeast(0)
+        conjuracaoEmAndamento?.let {
+            conjuracaoEmAndamento = null
+            log += "  └ o bloqueio mágico interrompe sua conjuração de ${it.nome} (Magia p.12)."
+        }
+        log += "🔮 Você conjura $magiaNome como defesa (bloqueio mágico; custa $custoFP PF)."
+    }
+
     /** Lote MA-3d-2: dissipa a mágica de toque carregada (ação livre; Magia p.14). */
     fun dissiparToque() {
         val t = toqueCarregado ?: return

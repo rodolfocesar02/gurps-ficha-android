@@ -32,7 +32,11 @@ object CombatResolver {
         val recuo: Boolean = false, // Lote 389: variante "com recuo" (Retirada, MB p.377)
         val jogarSeAoChao: Boolean = false, // Lote 404: Esquiva e Queda (+3 vs tiro, termina deitado, MB p.377)
         val maoInabil: Boolean = false, // Lote 405: Aparar com a mão inábil (−2 efetivo, anulado por Ambidestria, MB p.376)
-        val acrobatica: Boolean = false // Lote 414: Esquiva Acrobática (teste de Acrobacia → +2/−2, MB p.377)
+        val acrobatica: Boolean = false, // Lote 414: Esquiva Acrobática (teste de Acrobacia → +2/−2, MB p.377)
+        // Lote MA-3d-3: defesa por mágica de BLOQUEIO (Magia p.12) — id/nome do feitiço. O valorFinal é
+        // o NH da mágica; ao escolher, o controller paga o custo (NÃO reduzido por NH) e quebra a concentração.
+        val magiaBloqueioId: String? = null,
+        val magiaBloqueioNome: String? = null
     )
 
     /**

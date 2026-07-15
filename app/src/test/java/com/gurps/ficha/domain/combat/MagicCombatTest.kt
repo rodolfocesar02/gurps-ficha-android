@@ -166,6 +166,27 @@ class MagicCombatTest {
         assertTrue("nenhum seed separou atingidos de resistentes na área", separou)
     }
 
+    // ── Lote MA-3d-3: Bloqueio mágico ──
+
+    @Test
+    fun `bloqueio magico paga o custo em PF e loga a defesa`() {
+        val s = sessao(1L)
+        val pfAntes = s.heroi.pfAtual
+        s.aplicarBloqueioMagico(custoFP = 2, magiaNome = "Escudo Reflexivo")
+        assertEquals("bloqueio cobra o custo cheio (não reduz por NH)", pfAntes - 2, s.heroi.pfAtual)
+        assertTrue(s.log.any { it.contains("Escudo Reflexivo") && it.contains("bloqueio mágico") })
+    }
+
+    @Test
+    fun `bloqueio magico INTERROMPE uma conjuracao em andamento`() {
+        val s = sessao(1L)
+        val ctx = ContextoConjuracao(nhBasico = 20, classe = MagicClassParser.parse("Comum"), mana = NivelMana.NORMAL)
+        s.heroiConjurar(ctx, MagicEnergy.parse("2"), 1, "Voar", null, tempoOperacaoSeg = 4)
+        assertTrue(s.conjuracaoEmAndamento != null)
+        s.aplicarBloqueioMagico(1, "Parede de Força")
+        assertTrue("o bloqueio quebra a concentração (Magia p.12)", s.conjuracaoEmAndamento == null)
+    }
+
     // ── Lote MA-3d-2: Toque ──
 
     @Test

@@ -106,7 +106,10 @@ ficar fiel. Puro, determinístico (caller joga os dados), 29 testes.
   `heroiEntregarToque`: ataque com a mão (aprox. DX) + defesa ativa do alvo; se defende, continua
   carregada; se acerta, descarrega e resistíveis fazem o 2º teste (Magia p.12). Chip **✋ Dissipar** no
   herói. +3 testes.
-- **Bloqueio** (defesa reativa mágica no "Defenda-se!") — pendente.
+- **✅ Bloqueio**: as mágicas de Bloqueio conhecidas viram opções no card "Defenda-se!" (🔮 nome,
+  valor = NH da magia). Ao escolher, o controller paga o custo (NÃO reduzido por NH, p.12) e o motor
+  (`aplicarBloqueioMagico`) quebra qualquer conjuração em andamento; o sucesso (rolar ≤ NH) usa o fluxo
+  de defesa normal. Não aparece contra golpe fulminante / pelas costas (opções vazias). +2 testes.
 - **Magias ATIVAS** no combate + tick de manutenção (`MagicActive` do MA-1 já pronto; efeito de buff
   é bespoke → narrado) — pendente.
 - Seletor de magia: NH, custo, tempo de operação, classe; esmaece as impossíveis (mana nula, FP

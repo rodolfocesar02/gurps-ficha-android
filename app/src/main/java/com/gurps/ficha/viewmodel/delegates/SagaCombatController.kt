@@ -791,6 +791,26 @@ class SagaCombatController(
         s.dissiparToque(); publicarLog(); atualizarEstado()
     }
 
+    /** Lote MA-3d-3: as mágicas de BLOQUEIO conhecidas viram opções no card "Defenda-se!" (valor = NH da magia). */
+    private fun opcoesBloqueioMagico(s: CombatSession): List<CombatResolver.OpcaoDefesa> {
+        val p = viewModel.personagem
+        if (p.magias.isEmpty()) return emptyList()
+        val aptidao = MagicEngine.getNivelAptidaoMagicaParaMagia(p, null)
+        val temPf = s.heroi.pfAtual > 0
+        return p.magias.mapNotNull { m ->
+            if (TipoClasseMagia.BLOQUEIO !in MagicClassParser.parse(m.classe).classes) return@mapNotNull null
+            CombatResolver.OpcaoDefesa(
+                tipo = CombatResolver.TipoDefesa.BLOQUEIO,
+                valorFinal = m.calcularNivel(p, aptidao),
+                componentes = emptyList(),
+                disponivel = temPf,
+                motivoIndisponivel = if (!temPf) "sem PF" else null,
+                magiaBloqueioId = m.definicaoId.ifBlank { m.nome },
+                magiaBloqueioNome = m.nome,
+            )
+        }
+    }
+
     /** Lote MA-3c: continua a conjuração multi-turno (mais uma manobra Concentrar). */
     fun heroiContinuarConjuracao() {
         val s = sessao ?: return
@@ -1053,7 +1073,7 @@ class SagaCombatController(
         //  FLANCO → todas as defesas −2 e o BD do escudo sai (HexRegrasFacing, do HEX-4);
         //  COSTAS → defesa ANULADA: sem card (o motor resolve com surpresa=true e narra).
         val facingAtaque = if (estadoTatico != null) bridgeTatico.facingDoAtaque(npcId, "heroi") else null
-        val opcoes = when (facingAtaque) {
+        val opcoesBaseFacing = when (facingAtaque) {
             com.gurps.ficha.domain.combat.hex.Facing.COSTAS -> emptyList()
             com.gurps.ficha.domain.combat.hex.Facing.FLANCO ->
                 com.gurps.ficha.domain.combat.hex.HexRegrasFacing.ajustarOpcoesDefesa(
@@ -1062,6 +1082,9 @@ class SagaCombatController(
                 )
             else -> opcoesBase
         }
+        // Lote MA-3d-3: acrescenta as mágicas de BLOQUEIO conhecidas como opções de defesa (Magia p.12).
+        // Só quando há defesa possível (não vale contra golpe fulminante / pelas costas — opcoes vazia).
+        val opcoes = if (opcoesBaseFacing.isNotEmpty()) opcoesBaseFacing + opcoesBloqueioMagico(s) else opcoesBaseFacing
         if (s.intencaoAtacaHeroi(intencao) && opcoes.isNotEmpty()) {
             val deferred = CompletableDeferred<CombatResolver.OpcaoDefesa>()
             val nomeNpc = npc.nome
@@ -1073,6 +1096,13 @@ class SagaCombatController(
             atualizarEstado()
             val escolha = deferred.await()
             defesaPendente = null
+            // Lote MA-3d-3: escolheu um bloqueio mágico → paga o custo (NÃO reduz por NH) e quebra a concentração.
+            if (escolha.magiaBloqueioId != null) {
+                val magia = viewModel.personagem.magias.firstOrNull { it.definicaoId == escolha.magiaBloqueioId || it.nome == escolha.magiaBloqueioId }
+                val custoFP = magia?.let { MagicEnergy.parse(it.energia) }?.let { it.base ?: it.minimo } ?: 1
+                s.aplicarBloqueioMagico(custoFP, escolha.magiaBloqueioNome ?: "magia")
+                viewModel.sagaDefinirPfAtual(s.heroi.pfAtual)
+            }
             val soma = (1..3).sumOf { Random.nextInt(1, 7) }
             // Defesa Total (Dupla, Lote 388): prepara a melhor 2ª defesa de TIPO diferente — usada só se a 1ª falhar.
             // Sem variante "com recuo" na 2ª (recuo é 1×/turno e já pode ter ido na 1ª).

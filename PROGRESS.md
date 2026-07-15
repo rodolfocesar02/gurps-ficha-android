@@ -3046,6 +3046,15 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - **Recomendação registrada** (maior valor × menor custo): Ataque Telegráfico (par do Enganoso), luta agarrada profunda (chaves/Mata-Leão estendendo o lote 422), Sangramento Grave + incapacitação de membro (item 5 do teste de batalha), Ataque Dedicado/Defensivo. Fora de escopo: posicional/hexágono, montaria, cinematográfico, dado de arma do NPC. Mudança só de documentação (não compila Kotlin).
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
+### Lote MA-3d-3 — 15 de Julho de 2026 (PILAR MAGIA / Fase 3d-3 — mágicas de BLOQUEIO)
+**Saga: conjurar uma defesa mágica no "Defenda-se!" — branch GURPS-Saga**
+- **Defesa por mágica**: quando um inimigo ataca, o card "Defenda-se!" agora lista, além de Esquiva/Aparar/Bloquear normais, as **mágicas de Bloqueio** que o herói conhece (🔮 nome, valor = NH da magia). `opcoesBloqueioMagico` no controller injeta essas opções (`OpcaoDefesa.magiaBloqueioId/Nome`).
+- **Ao escolher**: o controller paga o custo em PF (**NÃO reduzido por NH** — exceção da regra, Magia p.12) e o motor `aplicarBloqueioMagico` **quebra automaticamente** qualquer conjuração em andamento (p.12); o sucesso do bloqueio (rolar ≤ NH) passa pelo fluxo de defesa normal (`npcResolve` com tipo BLOQUEIO).
+- **Não aparece** contra golpe fulminante ou ataque pelas costas (opções de defesa vazias → sem bloqueio mágico, fiel à p.12).
+- **+2 testes** (`MagicCombatTest`, total 19): bloqueio cobra o custo cheio em PF + loga; bloqueio interrompe uma conjuração em andamento. Zero regressão.
+- **Deferido p/ MA-3d-4**: magias ativas + tick de manutenção.
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
 ### Lote MA-3d-2 — 15 de Julho de 2026 (PILAR MAGIA / Fase 3d-2 — mágicas de TOQUE)
 **Saga: carrega a mágica na mão e entrega num soco — branch GURPS-Saga**
 - **Carregar**: no 🔮 Conjurar, uma magia de **Toque** lança em si mesmo (botão "Carregar na mão"). No sucesso, `resolverConjuracao` guarda `toqueCarregado` (a mão fica energizada) em vez de aplicar efeito.
