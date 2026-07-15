@@ -3046,6 +3046,16 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - **Recomendação registrada** (maior valor × menor custo): Ataque Telegráfico (par do Enganoso), luta agarrada profunda (chaves/Mata-Leão estendendo o lote 422), Sangramento Grave + incapacitação de membro (item 5 do teste de batalha), Ataque Dedicado/Defensivo. Fora de escopo: posicional/hexágono, montaria, cinematográfico, dado de arma do NPC. Mudança só de documentação (não compila Kotlin).
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
+### Lote COND-1 — 15 de Julho de 2026 (PILAR MAGIA — condições mágicas ligadas no motor)
+**Saga: Sono, Cegueira, Medo, Paralisar e Silêncio agora FUNCIONAM (não só narrados) — branch GURPS-Saga**
+- **Pergunta do usuário**: quais efeitos adversos funcionam além de sangramento/atordoamento? Resposta: as 8 condições existentes (atordoado, sangrando, caído, inconsciente, agarrado, imobilizado, sufocando, surpreso) têm efeito real — mas da MAGIA só o atordoado estava ligado.
+- **+5 condições novas** na enum `Condicao`, cada uma com efeito MECÂNICO: **CEGO** (−4 para atacar e defender, MB p.394), **DORMINDO** (incapacitado + indefeso; **acorda ao levar dano**, MB p.428), **PARALISADO** (incapacitado + indefeso; não acorda), **AMEDRONTADO** (só recua/defende — não ataca; o NPC foge), **SILENCIADO** (não conjura — o ritual exige fala, Magia p.8).
+- **Engate no motor**: `manobrasLegais` (dormindo/paralisado→só "nada"; amedrontado→sem ataque); `melhorDefesaNpc`+`opcoesDefesaHeroi` (dormindo/paralisado indefesos; cego −4); mods de ataque do herói e do NPC (cego −4); `avancarTurno` (sweep que acorda quem dorme e levou dano); `heroiConjurar`/`npcConjurar` (silenciado bloqueia); cérebro do NPC (amedrontado foge).
+- **Handler `mecanica.condicao` generalizado** (`imporCondicaoMagica`): mapeia a string do catálogo (sono/cegueira/medo/paralisar/silenciar) → enum e impõe. **Magia de CONDIÇÃO pura** (`efeito == "condicao"`) impõe no sucesso não resistido, no combate direto E em área (Sono coletivo).
+- **+5 testes** (`MagicCombatTest`, total 35): Sono impõe DORMINDO; quem dorme só faz nada; dormindo acorda com dano; paralisado não acorda; silenciado bloqueia a conjuração. Zero regressão.
+- **Nota**: a infra está pronta; as magias de Sono/Cegueira/Medo (de outras escolas) serão CURADAS com `mecanica.condicao` quando eu chegar nas escolas delas.
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
 ### Lote MA-8 — 15 de Julho de 2026 (PILAR MAGIA — descrição da magia PRO NARRADOR)
 **Saga: o Narrador (IA) agora sabe o que a magia FAZ, não só o resultado — branch GURPS-Saga**
 - **Pergunta do usuário**: ao conjurar, o Narrador recebe a descrição da magia? **Resposta**: recebia só o RESULTADO mecânico (as linhas do combate viram turnos "sistema" no feed, e a IA lê os últimos 8), mas NÃO a `descricao` — então em magias de efeito "narrado" ele sabia "conjurou X" mas não o que X faz.

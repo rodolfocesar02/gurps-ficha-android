@@ -80,7 +80,11 @@ class CombatEncounter(
      */
     fun manobrasLegais(c: Combatente): List<Manobra> {
         if (!c.vivo) return emptyList()
+        // Lote COND-1: incapacitado por magia — dormindo/paralisado não agem (só "nada", o turno passa).
+        if (Condicao.DORMINDO in c.condicoes || Condicao.PARALISADO in c.condicoes) return listOf(Manobra.NAO_FAZER_NADA)
         if (Condicao.ATORDOADO in c.condicoes) return listOf(Manobra.DEFESA_TOTAL, Manobra.NAO_FAZER_NADA)
+        // Amedrontado: não ataca — só se afasta ou se defende (medo/pânico).
+        if (Condicao.AMEDRONTADO in c.condicoes) return listOf(Manobra.MOVER, Manobra.DEFESA_TOTAL, Manobra.AGUARDAR, Manobra.NAO_FAZER_NADA)
 
         val legais = mutableListOf(
             Manobra.AVALIAR, Manobra.AGUARDAR, Manobra.CONCENTRAR, Manobra.PREPARAR,

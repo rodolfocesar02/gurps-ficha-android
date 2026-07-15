@@ -208,6 +208,57 @@ class MagicCombatTest {
         assertTrue("sem PF não conjura", intencao.conjurar == null)
     }
 
+    // ── Lote COND-1: condições mágicas ──
+
+    @Test
+    fun `magia de condicao (Sono) impoe DORMINDO no alvo nao resistido`() {
+        val s = sessao(1L)
+        val mec = com.gurps.ficha.domain.magic.MagiaMecanica(efeito = "condicao", condicao = "sono")
+        // Comum sem resistência (classe sem R-XXX) → sucesso não resistido impõe a condição.
+        val ctx = ContextoConjuracao(nhBasico = 30, classe = MagicClassParser.parse("Comum"),
+            mana = NivelMana.NORMAL, distanciaMetros = 2, mecanica = mec)
+        val r = s.heroiConjurar(ctx, MagicEnergy.parse("2"), 1, "Sono", alvoId = "goblin")
+        if (r.sucesso) {
+            assertTrue("alvo deve ficar DORMINDO", s.encounter.combatentes.first { it.id == "goblin" }.condicoes.contains(Condicao.DORMINDO))
+        }
+    }
+
+    @Test
+    fun `quem dorme so pode nao fazer nada (indefeso)`() {
+        val g = goblin().apply { condicoes.add(Condicao.DORMINDO) }
+        val enc = CombatEncounter(listOf(heroi(), g), mapOf("goblin" to 1), seed = 1L)
+        assertEquals(listOf(Manobra.NAO_FAZER_NADA), enc.manobrasLegais(g))
+    }
+
+    @Test
+    fun `dormindo ACORDA ao levar dano (choque pendente)`() {
+        val s = sessao(1L)
+        val g = s.inimigos.first { it.id == "goblin" }
+        g.condicoes.add(Condicao.DORMINDO); g.choquePendente = 3 // levou dano
+        s.avancarTurno()
+        assertFalse("deveria acordar", g.condicoes.contains(Condicao.DORMINDO))
+    }
+
+    @Test
+    fun `paralisado NAO acorda ao levar dano`() {
+        val s = sessao(1L)
+        val g = s.inimigos.first { it.id == "goblin" }
+        g.condicoes.add(Condicao.PARALISADO); g.choquePendente = 3
+        s.avancarTurno()
+        assertTrue("paralisia não acorda com dano", g.condicoes.contains(Condicao.PARALISADO))
+    }
+
+    @Test
+    fun `silenciado bloqueia a conjuracao do heroi`() {
+        val h = heroi().apply { condicoes.add(Condicao.SILENCIADO) }
+        val enc = CombatEncounter(listOf(h, goblin()), mapOf("goblin" to 5), seed = 1L)
+        val s = CombatSession(enc, perfil(), Random(1))
+        val ctx = ContextoConjuracao(nhBasico = 30, classe = MagicClassParser.parse("Comum"), mana = NivelMana.NORMAL)
+        val r = s.heroiConjurar(ctx, MagicEnergy.parse("2"), 1, "Luz", alvoId = null)
+        assertFalse(r.sucesso)
+        assertTrue(s.log.any { it.contains("SILENCIADO") })
+    }
+
     // ── Lote MA-8: descrição do efeito no log (para o Narrador) ──
 
     @Test

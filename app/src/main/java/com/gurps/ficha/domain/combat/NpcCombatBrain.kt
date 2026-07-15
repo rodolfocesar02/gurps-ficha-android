@@ -33,10 +33,14 @@ object NpcCombatBrain {
         val legais = encounter.manobrasLegais(npc)
         if (legais.isEmpty()) return IntencaoNpc(Manobra.NAO_FAZER_NADA, motivo = "incapaz de agir")
 
-        // Estado muito restrito (ex.: atordoado → só defesa): assume postura defensiva.
+        // Estado muito restrito (ex.: atordoado/dormindo/paralisado → só defesa ou nada): postura defensiva.
         if (Manobra.MOVER !in legais) {
             val m = if (Manobra.DEFESA_TOTAL in legais) Manobra.DEFESA_TOTAL else legais.first()
-            return IntencaoNpc(m, motivo = "atordoado/limitado — defende-se")
+            return IntencaoNpc(m, motivo = "incapacitado/limitado — não ataca")
+        }
+        // Lote COND-1: amedrontado — foge do herói (medo/pânico), sem atacar.
+        if (Condicao.AMEDRONTADO in npc.condicoes) {
+            return IntencaoNpc(Manobra.MOVER, recuar = true, motivo = "amedrontado — recua do herói")
         }
 
         val stats = npc.stats

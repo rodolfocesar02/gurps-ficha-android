@@ -570,6 +570,8 @@ class CombatSession(
             InjuryRules.penalidadeChoque(heroi.choquePendente, heroi.pvMax).let {
                 if (it != 0) add(CombatActions.ComponenteMod("choque", it))
             }
+            // Cego (Lote COND-1, MB p.394): −4 para acertar (não vê o alvo).
+            if (Condicao.CEGO in heroi.condicoes) add(CombatActions.ComponenteMod("cego", -4))
             if (ataque.aDistancia) {
                 // Modificador de Tamanho do alvo (MB p.549): alvo grande é mais fácil de acertar, pequeno mais difícil.
                 val mt = alvo.stats?.modificadorTamanho ?: 0
@@ -804,6 +806,11 @@ class CombatSession(
     ): ResultadoConjuracaoCombate {
         inicioAcaoHeroi()
         limparAvaliar(); limparApontar(); limparFinta()
+        // Lote COND-1: silenciado não conjura (o ritual mágico exige fala, Magia p.8).
+        if (Condicao.SILENCIADO in heroi.condicoes) {
+            val t = "🤐 Você está SILENCIADO — não consegue conjurar $magiaNome (o ritual exige fala)."
+            log += t; return ResultadoConjuracaoCombate(false, t)
+        }
         if (tempoOperacaoSeg > 1) {
             // O turno inicial já é a 1ª manobra Concentrar → restam (tempo − 1) turnos.
             conjuracaoEmAndamento = ConjuracaoEmAndamento(ctx, custo, energiaInvestida, magiaNome, alvoId, tempoOperacaoSeg - 1)
@@ -920,7 +927,11 @@ class CombatSession(
                               else " ${alvo.nome} não resiste (resistência $resist).")
                 }
 
-                if (!alvoResistiu && TipoClasseMagia.PROJETIL in ctx.classe.classes && alvo != null) {
+                if (!alvoResistiu && ctx.mecanica?.efeito == "condicao" && alvo != null) {
+                    // Lote COND-1: magia de CONDIÇÃO pura (Sono, Cegueira, Medo, Paralisar…) — no sucesso
+                    // não resistido, impõe a condição (a resistência já veio da classe R-XXX, se houver).
+                    imporCondicaoMagica(alvo, ctx.mecanica.condicao, sb)
+                } else if (!alvoResistiu && TipoClasseMagia.PROJETIL in ctx.classe.classes && alvo != null) {
                     val energia = energiaInvestida.coerceAtLeast(1)
                     // 2º teste (Magia p.12): Ataque Inato para ACERTAR (aprox. DX + SSR de distância).
                     val nhAcerto = heroiPerfil.dx + penalidadeDistancia(ctx.distanciaMetros)
@@ -1004,8 +1015,10 @@ class CombatSession(
                 else {
                     if (atingidos.isNotEmpty()) sb.append(" Atinge: ${atingidos.joinToString(", ") { it.nome }}.")
                     if (resistiram.isNotEmpty()) sb.append(" Resistiram: ${resistiram.joinToString(", ")}.")
-                    // Lote MA-6: dano de área 1d × energia (Magia p.14), rolado uma vez, com a RD de cada um.
-                    if ((ctx.danoPorEnergia || com.gurps.ficha.domain.magic.MagicMechanics.temDanoEstruturado(ctx.mecanica)) && atingidos.isNotEmpty()) {
+                    // Lote COND-1: magia de CONDIÇÃO em área (Sono coletivo etc.) — impõe em cada atingido.
+                    if (ctx.mecanica?.efeito == "condicao" && atingidos.isNotEmpty()) {
+                        atingidos.forEach { imporCondicaoMagica(it, ctx.mecanica.condicao, sb) }
+                    } else if ((ctx.danoPorEnergia || com.gurps.ficha.domain.magic.MagicMechanics.temDanoEstruturado(ctx.mecanica)) && atingidos.isNotEmpty()) {
                         val energia = energiaInvestida.coerceAtLeast(1)
                         // AR-1: dado estruturado do catálogo quando houver; senão 1d × energia (p.14).
                         val expr = if (ctx.mecanica?.danoPorEnergia != null)
@@ -1109,14 +1122,29 @@ class CombatSession(
         val dn = HitLocationRules.aplicarDano(alvo.pvMax, bruto, tipo, LocalAtaque.TORSO, rd, alvo.stats?.tolerancia ?: ToleranciaFerimentos.NORMAL)
         InjuryRules.ferir(alvo, dn.pvSubtrair, alvo.stats?.ht ?: 10, random)
         sb.append(" $expr → ${dn.pvSubtrair} de dano em ${alvo.nome}" + (if (!alvo.vivo) " (fora de combate!)" else "") + ".")
-        // Condição embutida (ex.: Relâmpago atordoa: HT −1 por 2 PV; Concussão: HT−3).
-        if (mecanica?.condicao == "atordoado" && alvo.vivo && dn.pvSubtrair > 0) {
+        // Condição embutida (ex.: Relâmpago atordoa: HT −1 por 2 PV; Concussão: HT−3). Testa e impõe.
+        if (mecanica?.condicao != null && alvo.vivo && dn.pvSubtrair > 0) {
             val pen = com.gurps.ficha.domain.magic.MagicMechanics.penalidadeCondicaoPorPv(mecanica.condicaoResistencia, dn.pvSubtrair)
             val ht = (alvo.stats?.ht ?: 10) + pen
-            if (rolar3d6() > ht) { alvo.condicoes.add(Condicao.ATORDOADO); sb.append(" ${alvo.nome} fica ATORDOADO (HT $ht).") }
-            else sb.append(" (${alvo.nome} resiste ao atordoamento, HT $ht).")
+            if (rolar3d6() > ht) imporCondicaoMagica(alvo, mecanica.condicao, sb)
+            else sb.append(" (${alvo.nome} resiste à condição, HT $ht).")
         }
         return dn.pvSubtrair
+    }
+
+    /** Lote COND-1: mapeia a condição da `mecanica` para a enum e a impõe no alvo (Sono, Cegueira, Medo, Paralisar…). */
+    private fun imporCondicaoMagica(alvo: Combatente, condicaoStr: String?, sb: StringBuilder) {
+        val cond = when (condicaoStr?.lowercase()?.trim()) {
+            "atordoado", "atordoar" -> Condicao.ATORDOADO
+            "cego", "cegueira", "cegar" -> Condicao.CEGO
+            "dormindo", "sono", "adormecido", "dormir" -> Condicao.DORMINDO
+            "paralisado", "paralisia", "paralisar" -> Condicao.PARALISADO
+            "amedrontado", "medo", "panico", "pânico" -> Condicao.AMEDRONTADO
+            "silenciado", "silencio", "silêncio", "silenciar" -> Condicao.SILENCIADO
+            else -> return
+        }
+        alvo.condicoes.add(cond)
+        sb.append(" ${alvo.nome} fica ${cond.rotulo.uppercase()}.")
     }
 
     /** Valor de resistência do alvo (MA-3a): atributo indicado + Abascanto embutido; combinadas pegam o maior. */
@@ -1507,6 +1535,11 @@ class CombatSession(
     fun npcConjurar(npcId: String, magia: NpcMagia): AtaqueResultado {
         val npc = inimigos.firstOrNull { it.id == npcId && it.vivo }
             ?: return AtaqueResultado(false, false, 0, false, "NPC inválido.")
+        // Lote COND-1: silenciado não conjura (o ritual exige fala).
+        if (Condicao.SILENCIADO in npc.condicoes) {
+            log += "🤐 ${npc.nome} está silenciado e não consegue conjurar ${magia.nome}."
+            return AtaqueResultado(false, false, 0, false, log.last())
+        }
         npc.pfAtual = (npc.pfAtual - magia.custoFP).coerceAtLeast(0)
         val dist = encounter.distancia(npc)
         val classe = ClasseParseada(
@@ -1561,6 +1594,8 @@ class CombatSession(
     ): List<CombatResolver.OpcaoDefesa> {
         // Após um Ataque Total o herói não tem NENHUMA defesa ativa até o próximo turno (MB p.366).
         if (heroiSemDefesaAtiva) return emptyList()
+        // Lote COND-1: dormindo/paralisado → INDEFESO (sem defesa ativa; o motor resolve com surpresa).
+        if (Condicao.DORMINDO in heroi.condicoes || Condicao.PARALISADO in heroi.condicoes) return emptyList()
         val tipoAparar = armaPronta?.apararTipo ?: ApararTipo.NORMAL
         val ranged = armaPronta?.aDistancia == true
         // Aparar um ataque À DISTÂNCIA só se o atacante estiver adjacente (≤1m): apara-se a ARMA, não o projétil
@@ -1585,6 +1620,8 @@ class CombatSession(
         val penAtordoado = if (Condicao.ATORDOADO in heroi.condicoes) 4 else 0
         // Agarrado/Imobilizado (Lote 422, MB p.370/371): herói preso sofre −4 nas defesas (espelha o NPC agarrado).
         val penPreso = if (Condicao.AGARRADO in heroi.condicoes || Condicao.IMOBILIZADO in heroi.condicoes) 4 else 0
+        // Cego (Lote COND-1, MB p.394): −4 em todas as defesas (não vê o golpe chegar).
+        val penCego = if (Condicao.CEGO in heroi.condicoes) 4 else 0
         // Retirada (Lote 389, MB p.377): só vs corpo-a-corpo, 1×/turno e não atordoado (postura sentado/ajoelhado
         // = limitação futura). O passo de recuo em si fica abstraído (o herói está sempre engajado no tracker).
         // Ataque Dedicado (Lote PONTE-4, AM p98): −2 em TODAS as defesas e proíbe a Retirada, no turno seguinte ao ataque.
@@ -1600,9 +1637,9 @@ class CombatSession(
         val permitirJogarSeAoChao = !contraAtaqueCorpoACorpo && heroi.postura != Postura.DEITADO &&
             Condicao.ATORDOADO !in heroi.condicoes
         return CombatResolver.opcoesDefesa(
-            esquivaBase = heroiPerfil.esquiva - bdRemovido - reducaoCambaleante - penAtordoado - penPreso - penDedicado + modSitDef,
-            aparaBase = if (podeAparar) heroiPerfil.apara?.let { it - bdRemovido - penAparaDesarmada - penAtordoado - penPreso - penDedicado + bonusDefApara + modSitDef } else null,
-            bloqueioBase = heroiPerfil.bloqueio?.let { it - bdRemovido - penAtordoado - penPreso - penDedicado + bonusDefBloqueio + modSitDef },
+            esquivaBase = heroiPerfil.esquiva - bdRemovido - reducaoCambaleante - penAtordoado - penPreso - penCego - penDedicado + modSitDef,
+            aparaBase = if (podeAparar) heroiPerfil.apara?.let { it - bdRemovido - penAparaDesarmada - penAtordoado - penPreso - penCego - penDedicado + bonusDefApara + modSitDef } else null,
+            bloqueioBase = heroiPerfil.bloqueio?.let { it - bdRemovido - penAtordoado - penPreso - penCego - penDedicado + bonusDefBloqueio + modSitDef },
             defesasUsadas = heroi.defesasUsadas,
             defesaTotalEm = defesaTotalEm ?: defesaTotalAumentadaEm, // Lote 388: +2 da Defesa Total (Aumentada)
             esgrima = tipoAparar == ApararTipo.ESGRIMA,
@@ -1775,6 +1812,8 @@ class CombatSession(
             }
             // Modificadores situacionais do Narrador (Lote 424): ex.: areia nos olhos → −4 no ataque do NPC.
             modsSituacionaisAtaque(npc.id).forEach { add(CombatActions.ComponenteMod(it.motivo, it.valor)) }
+            // Cego (Lote COND-1, MB p.394): −4 para acertar (não vê o herói).
+            if (Condicao.CEGO in npc.condicoes) add(CombatActions.ComponenteMod("cego", -4))
             if (intencao.aDistancia) {
                 // Atirando NO herói: soma o MT do herói (alvo) ao acerto (MB p.549).
                 if (heroiPerfil.modificadorTamanho != 0)
@@ -1917,6 +1956,10 @@ class CombatSession(
                 log += "• ${anterior.nome} recupera-se do atordoamento."
             }
         }
+        // Lote COND-1: quem DORMINDO levou dano (choquePendente > 0) ACORDA (MB p.428). Paralisia NÃO acorda.
+        encounter.combatentes.filter { Condicao.DORMINDO in it.condicoes && it.choquePendente > 0 }.forEach {
+            it.condicoes.remove(Condicao.DORMINDO); log += "• ${it.nome} ACORDA com o golpe."
+        }
         // Choque (Lote 382): expira ao fim do turno de quem agiu (valeu só no turno seguinte ao ferimento).
         anterior.choquePendente = 0
         // Magias ativas (Lote MA-3d-4): o fim do turno do herói = 1 segundo de jogo; cobra manutenção
@@ -2051,18 +2094,20 @@ class CombatSession(
     }
 
     /** Esquiva de um NPC = Velocidade Básica + 3 (MB p.374); Vel.Básica pela metade se cambaleante (MB p.380). */
-    /** Penalidade de defesa por atordoamento (Lote 393, MB p.364): todas as defesas ativas a −4. */
-    private fun penDefesaAtordoado(c: Combatente): Int = if (Condicao.ATORDOADO in c.condicoes) 4 else 0
+    /** Penalidade de defesa por atordoamento (Lote 393, MB p.364) + cegueira (COND-1): −4 cada. */
+    private fun penDefesaAtordoado(c: Combatente): Int =
+        (if (Condicao.ATORDOADO in c.condicoes) 4 else 0) + (if (Condicao.CEGO in c.condicoes) 4 else 0)
 
     private fun esquivaNpc(npc: Combatente): Int {
         val velB = if (npc.cambaleante) npc.velocidadeBasica / 2 else npc.velocidadeBasica
         return floor(velB).toInt() + 3 - penDefesaAtordoado(npc)
     }
 
-    /** Melhor defesa de um NPC: Esquiva (Vel.Básica+3) vs Aparar (NH/2+3, só corpo-a-corpo); −4 se atordoado. */
+    /** Melhor defesa de um NPC: Esquiva (Vel.Básica+3) vs Aparar (NH/2+3, só corpo-a-corpo); −4 se atordoado/cego. */
     private fun melhorDefesaNpc(npc: Combatente): Pair<CombatResolver.TipoDefesa, Int> {
-        // Imobilizado (Lote 411, MB p.371): indefeso — não tem defesa ativa.
-        if (Condicao.IMOBILIZADO in npc.condicoes) return CombatResolver.TipoDefesa.ESQUIVA to 0
+        // Indefeso (MB p.371/428/429): imobilizado, dormindo ou paralisado — sem defesa ativa.
+        if (Condicao.IMOBILIZADO in npc.condicoes || Condicao.DORMINDO in npc.condicoes || Condicao.PARALISADO in npc.condicoes)
+            return CombatResolver.TipoDefesa.ESQUIVA to 0
         val esquiva = esquivaNpc(npc)
         val melee = (npc.stats?.alcanceMetros ?: 1) <= 2
         val apara = if (melee) (npc.stats?.armaNh ?: 0) / 2 + 3 - penDefesaAtordoado(npc) else 0

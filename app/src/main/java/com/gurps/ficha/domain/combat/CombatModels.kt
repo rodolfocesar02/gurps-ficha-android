@@ -28,7 +28,13 @@ enum class Condicao(val rotulo: String) {
     IMOBILIZADO("imobilizado"),   // Lote 411: preso no chão, indefeso (MB p.371)
     SUFOCANDO("sufocando"),       // Lote 412: estrangulado, perde 1 PF/turno (MB p.371/437)
     SANGRANDO("sangrando"),       // Lote PONTE-2: ferimento que sangra; testa HT por intervalo ou perde PV (MB p.420)
-    SURPRESO("surpreso")
+    SURPRESO("surpreso"),
+    // ── Lote COND-1: condições impostas por MAGIA (Sono, Cegueira, Medo, Paralisar, Silêncio) ──
+    CEGO("cego"),                 // −4 para atacar e defender (não vê o alvo; MB p.394 aprox.)
+    DORMINDO("dormindo"),         // incapacitado + indefeso; ACORDA ao sofrer dano (MB p.428)
+    PARALISADO("paralisado"),     // incapacitado + indefeso; NÃO acorda com dano (MB p.429)
+    AMEDRONTADO("amedrontado"),   // só recua/defende — não ataca (medo/pânico, MB p.428)
+    SILENCIADO("silenciado")      // não consegue conjurar (o ritual mágico exige fala, Magia p.8)
 }
 
 /** Manobras de turno (MB p.362-366 / Skill_GURPS "Manobras"). */
