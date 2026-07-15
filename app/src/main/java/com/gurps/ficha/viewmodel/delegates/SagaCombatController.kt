@@ -91,7 +91,7 @@ data class MagiaConjuravelUi(
 data class ConjurandoUi(val nome: String, val turnosRestantes: Int)
 
 /** Lote MA-3d: mira de magia de área em andamento — o app espera o toque no hex central. */
-data class MiraAreaUi(val magiaId: String, val magiaNome: String, val raio: Int, val energia: Int, val pvQueimar: Int)
+data class MiraAreaUi(val magiaId: String, val magiaNome: String, val raio: Int, val energia: Int, val pvQueimar: Int, val causaDano: Boolean = false)
 
 /** Estado completo do combate para a UI. */
 data class CombatUiState(
@@ -707,7 +707,7 @@ class SagaCombatController(
      * controller extrai da ficha o NH básico e a Aptidão, monta o contexto puro e delega ao motor
      * ([CombatSession.heroiConjurar], que usa o resolvedor do MA-2). [alvoId] = null para automagia.
      */
-    fun heroiConjurar(magiaId: String, alvoId: String?, energiaInvestida: Int, pvQueimados: Int = 0) {
+    fun heroiConjurar(magiaId: String, alvoId: String?, energiaInvestida: Int, pvQueimados: Int = 0, danoPorEnergia: Boolean = false) {
         val s = sessao ?: return
         if (!s.combatenteAtual().ehHeroi || s.encerrado) return
         val p = viewModel.personagem
@@ -731,6 +731,7 @@ class SagaCombatController(
             veOuToca = true,
             pvQueimados = pvQueimados.coerceAtLeast(0), // Lote MA-3b: queimar PV (−1 NH/PV, paga em PV)
             raioAreaMetros = 1,               // MA-3d: área centrada num hex
+            danoPorEnergia = danoPorEnergia,  // Lote MA-6: magia de dano direta (1d/energia)
         )
         // Tempo de operação (Magia p.9): base do catálogo, reduzido por NH alto. >1s → multi-turno.
         val tempoBase = parseTempoSeg(magia.tempoOperacao)
@@ -778,11 +779,11 @@ class SagaCombatController(
      * Lote MA-3d: começa a MIRA de uma magia de ÁREA — o app entra em modo "toque um hex". A magia só
      * é lançada quando o jogador toca o centro no grid ([resolverMiraAreaNoHex]).
      */
-    fun iniciarMiraArea(magiaId: String, raio: Int, energia: Int, pvQueimar: Int) {
+    fun iniciarMiraArea(magiaId: String, raio: Int, energia: Int, pvQueimar: Int, causaDano: Boolean = false) {
         val s = sessao ?: return
         if (!s.combatenteAtual().ehHeroi || s.encerrado) return
         val nome = viewModel.personagem.magias.firstOrNull { it.definicaoId == magiaId || it.nome == magiaId }?.nome ?: "magia"
-        miraAreaPendente = MiraAreaUi(magiaId, nome, raio.coerceAtLeast(1), energia, pvQueimar.coerceAtLeast(0))
+        miraAreaPendente = MiraAreaUi(magiaId, nome, raio.coerceAtLeast(1), energia, pvQueimar.coerceAtLeast(0), causaDano)
         avisoTatico = "Toque um hex para o centro de $nome (raio ${raio}m)"
     }
 
@@ -813,6 +814,7 @@ class SagaCombatController(
             distanciaMetros = distBorda,
             raioAreaMetros = mira.raio,
             pvQueimados = mira.pvQueimar,
+            danoPorEnergia = mira.causaDano, // Lote MA-6
         )
         s.heroiConjurarArea(ctx, MagicEnergy.parse(magia.energia), mira.energia, magia.nome, alvos)
         sincronizarRecursosHeroi(s)

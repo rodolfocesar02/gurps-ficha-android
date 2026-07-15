@@ -151,13 +151,13 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
     fun sagaCombateMoverEAtacar(alvoId: String, local: com.gurps.ficha.domain.combat.LocalAtaque) =
         sagaDelegate.combate.heroiMoverEAtacar(alvoId, local)
     fun sagaCombateAvaliar(alvoId: String) = sagaDelegate.combate.heroiAvaliar(alvoId)
-    fun sagaCombateConjurar(magiaId: String, alvoId: String?, energiaInvestida: Int, pvQueimados: Int = 0) = // Lote MA-3a/3b
-        sagaDelegate.combate.heroiConjurar(magiaId, alvoId, energiaInvestida, pvQueimados)
+    fun sagaCombateConjurar(magiaId: String, alvoId: String?, energiaInvestida: Int, pvQueimados: Int = 0, danoPorEnergia: Boolean = false) = // Lote MA-3a/3b/MA-6
+        sagaDelegate.combate.heroiConjurar(magiaId, alvoId, energiaInvestida, pvQueimados, danoPorEnergia)
     fun sagaCombateContinuarConjuracao() = sagaDelegate.combate.heroiContinuarConjuracao() // Lote MA-3c
     fun sagaCombateAbortarConjuracao() = sagaDelegate.combate.heroiAbortarConjuracao()      // Lote MA-3c
     val sagaMiraAreaPendente get() = sagaDelegate.combate.miraAreaPendente                  // Lote MA-3d
-    fun sagaIniciarMiraArea(magiaId: String, raio: Int, energia: Int, pvQueimar: Int) =
-        sagaDelegate.combate.iniciarMiraArea(magiaId, raio, energia, pvQueimar)
+    fun sagaIniciarMiraArea(magiaId: String, raio: Int, energia: Int, pvQueimar: Int, causaDano: Boolean = false) =
+        sagaDelegate.combate.iniciarMiraArea(magiaId, raio, energia, pvQueimar, causaDano)
     fun sagaCancelarMiraArea() = sagaDelegate.combate.cancelarMiraArea()
     /** Lote MA-5: mana ambiente da cena atual (setada pelo Narrador via definir_cena). Alimenta a conjuração. */
     var sagaNivelMana: com.gurps.ficha.domain.magic.NivelMana = com.gurps.ficha.domain.magic.NivelMana.NORMAL

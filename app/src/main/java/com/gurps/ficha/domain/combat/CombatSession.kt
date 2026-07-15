@@ -941,6 +941,17 @@ class CombatSession(
                                 (if (!alvo.vivo) " (fora de combate!)." else "."))
                         }
                     }
+                } else if (!alvoResistiu && ctx.danoPorEnergia && alvo != null) {
+                    // Lote MA-6: magia de dano DIRETA (não-Projétil) — funciona no sucesso (sem teste de
+                    // acerto), dano 1d × energia com RD (diretriz de Mágicas de Combate, Magia p.14).
+                    val energia = energiaInvestida.coerceAtLeast(1)
+                    val bruto = rolarDano("${energia}d", random)
+                    val dn = HitLocationRules.aplicarDano(alvo.pvMax, bruto, DanoTipo.CONT, LocalAtaque.TORSO,
+                        alvo.stats?.rd ?: 0, alvo.stats?.tolerancia ?: ToleranciaFerimentos.NORMAL)
+                    InjuryRules.ferir(alvo, dn.pvSubtrair, alvo.stats?.ht ?: 10, random)
+                    dano = dn.pvSubtrair
+                    sb.append(" ${energia}d de dano → ${dn.pvSubtrair} em ${alvo.nome}" +
+                        (if (!alvo.vivo) " (fora de combate!)." else "."))
                 } else if (!alvoResistiu && TipoClasseMagia.PROJETIL !in ctx.classe.classes) {
                     sb.append(" Efeito narrado pelo Mestre.")
                 }
@@ -992,20 +1003,31 @@ class CombatSession(
                 sb.append(if (decisivo) "🌟 Sucesso DECISIVO —" else "🔮 Você conjura")
                 sb.append(" $magiaNome em ÁREA (raio ${ctx.raioAreaMetros}m; NH ${nhEf.valor}, rolou $rol; custo ${r.custoAPagar} PF).")
                 val alvos = alvosNaArea.mapNotNull { id -> inimigos.firstOrNull { it.id == id && it.vivo } }
-                if (alvos.isEmpty()) {
-                    sb.append(" Nenhum inimigo na área.")
-                } else if (r.exigeResistencia && ctx.classe.resistencia != null) {
-                    val atingidos = mutableListOf<String>(); val resistiram = mutableListOf<String>()
-                    for (a in alvos) {
-                        val resist = resistenciaDoAlvo(a, ctx.classe.resistencia!!)
-                        val rr = MagicCasting.resolverResistencia(nhEf.valor, rol, resist, rolar3d6(), regraDo16 = true)
-                        if (rr.alvoResistiu) resistiram.add(a.nome) else atingidos.add(a.nome)
-                    }
-                    if (atingidos.isNotEmpty()) sb.append(" Atinge: ${atingidos.joinToString(", ")}.")
+                // Quem foi atingido (não resistiu). Resistíveis fazem a disputa; senão todos são atingidos.
+                val atingidos = mutableListOf<Combatente>(); val resistiram = mutableListOf<String>()
+                for (a in alvos) {
+                    val resiste = r.exigeResistencia && ctx.classe.resistencia != null &&
+                        MagicCasting.resolverResistencia(nhEf.valor, rol, resistenciaDoAlvo(a, ctx.classe.resistencia!!), rolar3d6(), regraDo16 = true).alvoResistiu
+                    if (resiste) resistiram.add(a.nome) else atingidos.add(a)
+                }
+                if (alvos.isEmpty()) sb.append(" Nenhum inimigo na área.")
+                else {
+                    if (atingidos.isNotEmpty()) sb.append(" Atinge: ${atingidos.joinToString(", ") { it.nome }}.")
                     if (resistiram.isNotEmpty()) sb.append(" Resistiram: ${resistiram.joinToString(", ")}.")
-                    sb.append(" Efeito narrado pelo Mestre.")
-                } else {
-                    sb.append(" Atinge: ${alvos.joinToString(", ") { it.nome }}. Efeito narrado pelo Mestre.")
+                    // Lote MA-6: dano de área 1d × energia (Magia p.14), rolado uma vez, com a RD de cada um.
+                    if (ctx.danoPorEnergia && atingidos.isNotEmpty()) {
+                        val energia = energiaInvestida.coerceAtLeast(1)
+                        val bruto = rolarDano("${energia}d", random)
+                        val partes = atingidos.map { a ->
+                            val dn = HitLocationRules.aplicarDano(a.pvMax, bruto, DanoTipo.CONT, LocalAtaque.TORSO,
+                                a.stats?.rd ?: 0, a.stats?.tolerancia ?: ToleranciaFerimentos.NORMAL)
+                            InjuryRules.ferir(a, dn.pvSubtrair, a.stats?.ht ?: 10, random)
+                            "${a.nome} ${dn.pvSubtrair}" + if (!a.vivo) " (fora!)" else ""
+                        }
+                        sb.append(" Dano ${energia}d: ${partes.joinToString(", ")}.")
+                    } else {
+                        sb.append(" Efeito narrado pelo Mestre.")
+                    }
                 }
                 verificarFim(); log += sb.toString().trim()
                 return ResultadoConjuracaoCombate(true, sb.toString().trim())

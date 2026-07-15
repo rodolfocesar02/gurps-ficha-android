@@ -1244,11 +1244,11 @@ fun MenuTaticoDoToken(
         SubDialogoConjurar(
             magias = estado.magiasConjuraveis,
             inimigos = estado.combatentes.filter { !it.ehHeroi && it.vivo },
-            onConjurar = { magiaId, alvoId, energia, pvQueimar ->
-                viewModel.sagaCombateConjurar(magiaId, alvoId, energia, pvQueimar); conjurarDialogo = false; onFechar()
+            onConjurar = { magiaId, alvoId, energia, pvQueimar, causaDano ->
+                viewModel.sagaCombateConjurar(magiaId, alvoId, energia, pvQueimar, causaDano); conjurarDialogo = false; onFechar()
             },
-            onMirarArea = { magiaId, raio, energia, pvQueimar ->
-                viewModel.sagaIniciarMiraArea(magiaId, raio, energia, pvQueimar); conjurarDialogo = false; onFechar()
+            onMirarArea = { magiaId, raio, energia, pvQueimar, causaDano ->
+                viewModel.sagaIniciarMiraArea(magiaId, raio, energia, pvQueimar, causaDano); conjurarDialogo = false; onFechar()
             },
             onFechar = { conjurarDialogo = false }
         )
@@ -1264,8 +1264,8 @@ fun MenuTaticoDoToken(
 private fun SubDialogoConjurar(
     magias: List<com.gurps.ficha.viewmodel.delegates.MagiaConjuravelUi>,
     inimigos: List<CombatenteUi>,
-    onConjurar: (magiaId: String, alvoId: String?, energia: Int, pvQueimar: Int) -> Unit,
-    onMirarArea: (magiaId: String, raio: Int, energia: Int, pvQueimar: Int) -> Unit,
+    onConjurar: (magiaId: String, alvoId: String?, energia: Int, pvQueimar: Int, causaDano: Boolean) -> Unit,
+    onMirarArea: (magiaId: String, raio: Int, energia: Int, pvQueimar: Int, causaDano: Boolean) -> Unit,
     onFechar: () -> Unit,
 ) {
     var magiaSel by remember { mutableStateOf(magias.firstOrNull()) }
@@ -1274,6 +1274,7 @@ private fun SubDialogoConjurar(
     var energia by remember { mutableIntStateOf(1) }
     var pvQueimar by remember { mutableIntStateOf(0) }
     var raio by remember { mutableIntStateOf(2) } // Lote MA-3d: raio da magia de área
+    var causaDano by remember(magiaSel?.id) { mutableStateOf(false) } // Lote MA-6: magia de dano direta
     val ehArea = magiaSel?.ehArea == true
 
     AlertDialog(
@@ -1325,9 +1326,23 @@ private fun SubDialogoConjurar(
                     }
                 }
 
-                // Energia investida — só faz diferença mecânica em Projétil (1d de dano por ponto).
+                // Lote MA-6: magia de dano DIRETA (Comum/Área que não é Projétil/Toque) — o jogador marca
+                // "causa dano" e o motor aplica 1d por energia (diretriz de Mágicas de Combate, Magia p.14).
                 val proj = magiaSel?.ehProjetil == true
-                if (proj) {
+                val podeMarcarDano = magiaSel != null && !proj && magiaSel!!.ehToque.not() && (ehArea || alvoId != null)
+                if (podeMarcarDano) {
+                    Spacer(Modifier.height(8.dp))
+                    Row(verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.fillMaxWidth().semantics {
+                            contentDescription = "Esta conjuração causa dano, um dado por energia" + if (causaDano) ", ativado" else ", desativado"
+                        }) {
+                        Switch(checked = causaDano, onCheckedChange = { causaDano = it })
+                        Spacer(Modifier.width(8.dp))
+                        Text("Causa dano (1d por energia)", style = MaterialTheme.typography.bodyMedium)
+                    }
+                }
+                // Energia investida → dados de dano (Projétil sempre; Comum/Área quando "causa dano").
+                if (proj || (podeMarcarDano && causaDano)) {
                     Spacer(Modifier.height(8.dp))
                     Text("Energia investida: ${energia} (→ ${energia}d de dano)", fontWeight = FontWeight.Bold,
                         style = MaterialTheme.typography.labelLarge)
@@ -1362,10 +1377,12 @@ private fun SubDialogoConjurar(
             Button(
                 onClick = {
                     if (m != null) {
+                        // Energia vira dados de dano no Projétil, ou quando o jogador marcou "causa dano".
+                        val energiaEfetiva = if (m.ehProjetil || causaDano) energia else 1
                         when {
-                            m.ehArea -> onMirarArea(m.id, raio, if (m.ehProjetil) energia else 1, pvQueimar)
-                            m.ehToque -> onConjurar(m.id, null, 1, pvQueimar) // Toque lança em si → carrega a mão
-                            else -> onConjurar(m.id, alvoId, if (m.ehProjetil) energia else 1, pvQueimar)
+                            m.ehArea -> onMirarArea(m.id, raio, energiaEfetiva, pvQueimar, causaDano)
+                            m.ehToque -> onConjurar(m.id, null, 1, pvQueimar, false) // Toque lança em si → carrega a mão
+                            else -> onConjurar(m.id, alvoId, energiaEfetiva, pvQueimar, causaDano)
                         }
                     }
                 },

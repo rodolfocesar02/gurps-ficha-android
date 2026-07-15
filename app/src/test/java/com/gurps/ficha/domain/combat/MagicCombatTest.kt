@@ -166,6 +166,48 @@ class MagicCombatTest {
         assertTrue("nenhum seed separou atingidos de resistentes na área", separou)
     }
 
+    // ── Lote MA-6: dano de magia direta (não-Projétil) ──
+
+    @Test
+    fun `magia Comum com causa dano aplica dano direto no alvo (sem teste de acerto)`() {
+        val s = sessao(1L)
+        val goblinPvMax = s.encounter.combatentes.first { it.id == "goblin" }.pvMax
+        // Jato de Chamas é Comum; com danoPorEnergia = true, sucesso aplica 1d×energia com RD.
+        val ctx = ContextoConjuracao(nhBasico = 30, classe = MagicClassParser.parse("Comum"),
+            mana = NivelMana.NORMAL, distanciaMetros = 2, danoPorEnergia = true)
+        val r = s.heroiConjurar(ctx, MagicEnergy.parse("1 a 3"), energiaInvestida = 3, magiaNome = "Jato de Chamas", alvoId = "goblin")
+        if (r.sucesso) {
+            assertTrue("Comum com dano deve ferir o alvo", s.encounter.combatentes.first { it.id == "goblin" }.pvAtual < goblinPvMax)
+            assertTrue(r.danoCausado > 0)
+        }
+    }
+
+    @Test
+    fun `magia Comum SEM causa dano continua narrada (nao fere)`() {
+        val s = sessao(1L)
+        val pvMax = s.encounter.combatentes.first { it.id == "goblin" }.pvMax
+        val ctx = ContextoConjuracao(nhBasico = 30, classe = MagicClassParser.parse("Comum"),
+            mana = NivelMana.NORMAL, distanciaMetros = 2, danoPorEnergia = false)
+        val r = s.heroiConjurar(ctx, MagicEnergy.parse("2"), 1, "Detectar Magia", alvoId = "goblin")
+        if (r.sucesso) {
+            assertEquals("sem causa dano, não fere", pvMax, s.encounter.combatentes.first { it.id == "goblin" }.pvAtual)
+            assertTrue(s.log.any { it.contains("narrado pelo Mestre") })
+        }
+    }
+
+    @Test
+    fun `area com causa dano fere TODOS os atingidos`() {
+        val s = sessaoComDoisGoblins(1L)
+        val ctx = ContextoConjuracao(nhBasico = 30, classe = MagicClassParser.parse("Área"),
+            mana = NivelMana.NORMAL, raioAreaMetros = 2, danoPorEnergia = true)
+        val r = s.heroiConjurarArea(ctx, MagicEnergy.parse("2"), energiaInvestida = 2, magiaNome = "Tempestade de Fogo", alvosNaArea = listOf("g1", "g2"))
+        if (r.sucesso) {
+            assertTrue("g1 ferido", s.encounter.combatentes.first { it.id == "g1" }.pvAtual < 7)
+            assertTrue("g2 ferido", s.encounter.combatentes.first { it.id == "g2" }.pvAtual < 7)
+            assertTrue(s.log.any { it.contains("Dano") })
+        }
+    }
+
     // ── Lote MA-3d-4: magias ativas + tick ──
 
     @Test

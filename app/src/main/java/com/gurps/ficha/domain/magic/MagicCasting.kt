@@ -116,6 +116,12 @@ data class ContextoConjuracao(
     val mtAlvo: Int = 0,
     /** Raio da área em metros (mágica de Área; custo × raio, p.11). */
     val raioAreaMetros: Int = 1,
+    /**
+     * Lote MA-6: a conjuração causa DANO por energia (1d por ponto — diretriz de Mágicas de Combate,
+     * Magia p.14). Marcado pelo jogador para magias de dano que NÃO são Projétil (jatos, etc.), cujo
+     * efeito o catálogo não estrutura. Projétil tem o seu próprio caminho de dano.
+     */
+    val danoPorEnergia: Boolean = false,
 )
 
 object MagicCasting {

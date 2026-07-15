@@ -3046,6 +3046,14 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - **Recomendação registrada** (maior valor × menor custo): Ataque Telegráfico (par do Enganoso), luta agarrada profunda (chaves/Mata-Leão estendendo o lote 422), Sangramento Grave + incapacitação de membro (item 5 do teste de batalha), Ataque Dedicado/Defensivo. Fora de escopo: posicional/hexágono, montaria, cinematográfico, dado de arma do NPC. Mudança só de documentação (não compila Kotlin).
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
+### Lote MA-6 — 15 de Julho de 2026 (PILAR MAGIA / Fase 6 — DANO de magia direta no combate)
+**Saga: magias de dano que não são Projétil (jatos etc.) agora ferem no combate — branch GURPS-Saga**
+- **Motivo (teste do usuário)**: "Jato de Chamas" é `classe="Comum"` no catálogo (não Projétil), então o dano estava só na descrição → caía em "efeito narrado", e no combate tático **ninguém narra** → parecia que não fazia nada. (O sucesso decisivo estava CERTO — o "custo 0 PF" prova a regra da p.7; era o efeito bespoke que faltava.)
+- **`ContextoConjuracao.danoPorEnergia`**: o jogador marca **"Causa dano (1d por energia)"** no seletor de Conjurar (para Comum/Área com alvo; Projétil já tinha o seu; Toque não). Diretriz de Mágicas de Combate, **Magia p.14** ("um ponto de energia compra 1d de dano").
+- **Motor**: `resolverConjuracao` — Comum de dano funciona no SUCESSO (sem teste de acerto, diferente do Projétil que tem 2 testes), dano 1d×energia com RD e resistência. `heroiConjurarArea` — todos os atingidos levam 1d×energia (rolado uma vez, com a RD de cada). Sem a flag, continua narrado.
+- **+3 testes** (`MagicCombatTest`, total 24): Comum com dano fere; Comum sem dano continua narrado; área com dano fere todos. Zero regressão.
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
 ### Lote MA-5 — 15 de Julho de 2026 (PILAR MAGIA / Fase 5 — polimento: mana por cena + doc) 🎉 FECHA O PILAR
 **Saga: lugares mágicos e anti-mágicos afetam a conjuração — branch GURPS-Saga**
 - **Mana ambiente por cena**: `definir_cena` ganhou o param `mana` (muito_alta/alta/normal/baixa/nula). O executor chama `definirManaAmbiente` na `CombatBridge` → `FichaSagaDelegate` guarda `viewModel.sagaNivelMana` (em memória, sem migração de DB). **Todos os caminhos de conjuração** — combate (`heroiConjurar` + área) e narrativa (`lancarMagia`) — passaram a usar essa mana em vez do NORMAL fixo: **baixa = −5 no NH efetivo**, **nula = bloqueia a conjuração** (`MagicMana.podeOperar`, com mensagem factual). Prompt do Narrador orientado a definir mana em lugares mágicos/anti-mágicos.

@@ -11,7 +11,10 @@ não reduz), **choque de retorno** e **duração/manutenção** (magias ativas).
 que não cabe em regra geral é **narrado pelo Mestre**.
 
 ## Efeitos NARRADOS (não automatizados — o catálogo não tem campo estruturado de efeito)
-- **Projétil** é a exceção: dano 1d × energia com RD é regra geral (p.470) → automatizado.
+- **Projétil**: dano 1d × energia com RD é regra geral (p.470) → automatizado (2 testes + esquiva).
+- **Dano direto (Lote MA-6)**: magias de dano que NÃO são Projétil (jatos, dano de área…) ganharam a
+  opção **"Causa dano (1d/energia)"** no seletor — o jogador marca e o motor aplica 1d×energia com RD
+  (diretriz de Mágicas de Combate, p.14). Sem marcar, continua narrado.
 - Todo o resto (Sono, Cegueira, Cura, Criar Objeto, Teleporte, Reanimar, buffs como Escudo→+DB…):
   o motor resolve o **lançamento + resistência + custo** e diz **quem foi afetado**; o Mestre narra o
   que acontece. As **magias ativas** (temporárias/duradouras) rastreiam **manutenção/expiração/
