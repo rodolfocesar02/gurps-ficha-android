@@ -101,7 +101,11 @@ ficar fiel. Puro, determinístico (caller joga os dados), 29 testes.
   (`HexGrid.range(centro, raio−1)`, 1 hex = 1 m) e a distância até a borda; cada alvo resiste sozinho
   contra a margem do operador (p.14); efeito bespoke → narrado (o motor lista atingidos × resistentes).
   Overlay "🎯 Toque o centro…" + Cancelar. +3 testes.
-- **Toque** (2 testes: carrega a mão + ataque c-a-c) — pendente.
+- **✅ Toque**: no 🔮 Conjurar, magia de Toque lança em si ("Carregar na mão"). `resolverConjuracao`
+  no sucesso guarda `toqueCarregado`; o chip **✋ {magia}** aparece no menu de um inimigo ADJACENTE →
+  `heroiEntregarToque`: ataque com a mão (aprox. DX) + defesa ativa do alvo; se defende, continua
+  carregada; se acerta, descarrega e resistíveis fazem o 2º teste (Magia p.12). Chip **✋ Dissipar** no
+  herói. +3 testes.
 - **Bloqueio** (defesa reativa mágica no "Defenda-se!") — pendente.
 - **Magias ATIVAS** no combate + tick de manutenção (`MagicActive` do MA-1 já pronto; efeito de buff
   é bespoke → narrado) — pendente.

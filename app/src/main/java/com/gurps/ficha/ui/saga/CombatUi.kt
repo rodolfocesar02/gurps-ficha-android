@@ -1120,6 +1120,30 @@ fun MenuTaticoDoToken(
                     )
                 }
             }
+            // Lote MA-3d-2: mágica de TOQUE carregada — chip de ENTREGAR num inimigo adjacente
+            // (menu do inimigo) e de DISSIPAR (menu do herói).
+            if (!ehHeroi && estado.toqueCarregado != null && alvo != null && alvo.distanciaM <= 1) {
+                Surface(
+                    onClick = { viewModel.sagaCombateEntregarToque(tokenId); onFechar() },
+                    color = Color(0x33FF8A65), contentColor = Color.White, shape = RoundedCornerShape(14.dp),
+                    modifier = Modifier.padding(horizontal = 3.dp)
+                        .semantics { contentDescription = "Descarregar ${estado.toqueCarregado} em ${alvo.nome}" }
+                ) {
+                    Text("✋ ${estado.toqueCarregado}", style = MaterialTheme.typography.labelMedium,
+                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 8.dp))
+                }
+            }
+            if (ehHeroi && estado.toqueCarregado != null) {
+                Surface(
+                    onClick = { viewModel.sagaCombateDissiparToque(); onFechar() },
+                    color = Color(0x33FF8A65), contentColor = Color.White, shape = RoundedCornerShape(14.dp),
+                    modifier = Modifier.padding(horizontal = 3.dp)
+                        .semantics { contentDescription = "Dissipar ${estado.toqueCarregado} da mão" }
+                ) {
+                    Text("✋ Dissipar", style = MaterialTheme.typography.labelMedium,
+                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 8.dp))
+                }
+            }
             // Lote MA-3a: chip 🔮 Conjurar — só no herói e só se ele conhece magias.
             if (ehHeroi && estado.magiasConjuraveis.isNotEmpty()) {
                 Surface(
@@ -1282,6 +1306,12 @@ private fun SubDialogoConjurar(
                     Text("Depois de confirmar, toque um hex no grid para o centro da explosão.",
                         style = MaterialTheme.typography.bodySmall, fontStyle = FontStyle.Italic,
                         color = MaterialTheme.colorScheme.onSurfaceVariant)
+                } else if (magiaSel?.ehToque == true) {
+                    // Toque (Lote MA-3d-2): lança em si (carrega a mão) → entrega depois num ataque.
+                    Spacer(Modifier.height(8.dp))
+                    Text("Toque: a mágica carrega sua mão. Depois, ataque um inimigo adjacente para descarregá-la.",
+                        style = MaterialTheme.typography.bodySmall, fontStyle = FontStyle.Italic,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant)
                 } else {
                     Spacer(Modifier.height(8.dp))
                     Text("Alvo", fontWeight = FontWeight.Bold, style = MaterialTheme.typography.labelLarge)
@@ -1328,13 +1358,21 @@ private fun SubDialogoConjurar(
             Button(
                 onClick = {
                     if (m != null) {
-                        if (m.ehArea) onMirarArea(m.id, raio, if (m.ehProjetil) energia else 1, pvQueimar)
-                        else onConjurar(m.id, alvoId, if (m.ehProjetil) energia else 1, pvQueimar)
+                        when {
+                            m.ehArea -> onMirarArea(m.id, raio, if (m.ehProjetil) energia else 1, pvQueimar)
+                            m.ehToque -> onConjurar(m.id, null, 1, pvQueimar) // Toque lança em si → carrega a mão
+                            else -> onConjurar(m.id, alvoId, if (m.ehProjetil) energia else 1, pvQueimar)
+                        }
                     }
                 },
                 enabled = m != null && m.castavel,
-                modifier = Modifier.semantics { contentDescription = if (ehArea) "Mirar a área no grid" else "Conjurar a magia escolhida" }
-            ) { Text(if (ehArea) "Mirar no grid" else "Conjurar") }
+                modifier = Modifier.semantics {
+                    contentDescription = when {
+                        ehArea -> "Mirar a área no grid"; magiaSel?.ehToque == true -> "Carregar a mágica na mão"
+                        else -> "Conjurar a magia escolhida"
+                    }
+                }
+            ) { Text(when { ehArea -> "Mirar no grid"; magiaSel?.ehToque == true -> "Carregar na mão"; else -> "Conjurar" }) }
         },
         dismissButton = { TextButton(onClick = onFechar) { Text("Cancelar") } }
     )

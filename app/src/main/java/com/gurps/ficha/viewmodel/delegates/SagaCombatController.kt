@@ -75,6 +75,8 @@ data class MagiaConjuravelUi(
     val ehProjetil: Boolean,
     /** Área habilita o controle de raio + a mira no grid (Lote MA-3d). */
     val ehArea: Boolean,
+    /** Toque carrega a mão e é entregue num ataque corpo-a-corpo (Lote MA-3d-2). */
+    val ehToque: Boolean,
     /** Teto de energia do Projétil = nível de Aptidão Mágica (Magia p.12). */
     val aptidaoMagica: Int,
     /** Custo aproximado (para limitar o quanto de PV o mago pode queimar). */
@@ -99,6 +101,8 @@ data class CombatUiState(
     val magiasConjuraveis: List<MagiaConjuravelUi> = emptyList(),
     /** Lote MA-3c: conjuração multi-turno em andamento (não-null → o herói só continua/aborta). */
     val conjurando: ConjurandoUi? = null,
+    /** Lote MA-3d-2: nome da mágica de Toque carregada na mão (null se nenhuma). */
+    val toqueCarregado: String? = null,
     val alvos: List<CombatenteUi>,
     /** Alvos alcançáveis com Mover e Atacar (Lote 378): corpo-a-corpo = reach + Deslocamento; à distância = dentro do Máx. */
     val alvosMoverEAtacar: List<CombatenteUi>,
@@ -772,6 +776,21 @@ class SagaCombatController(
         depoisDaAcaoDoHeroi()
     }
 
+    /** Lote MA-3d-2: descarrega a mágica de Toque carregada num inimigo adjacente (consome o turno). */
+    fun heroiEntregarToque(alvoId: String) {
+        val s = sessao ?: return
+        if (!s.combatenteAtual().ehHeroi || s.encerrado) return
+        s.heroiEntregarToque(alvoId)
+        sincronizarRecursosHeroi(s)
+        depoisDaAcaoDoHeroi()
+    }
+
+    /** Lote MA-3d-2: dissipa a mágica de Toque carregada (ação livre — não gasta o turno). */
+    fun heroiDissiparToque() {
+        val s = sessao ?: return
+        s.dissiparToque(); publicarLog(); atualizarEstado()
+    }
+
     /** Lote MA-3c: continua a conjuração multi-turno (mais uma manobra Concentrar). */
     fun heroiContinuarConjuracao() {
         val s = sessao ?: return
@@ -819,6 +838,7 @@ class SagaCombatController(
             val custo = MagicEnergy.parse(m.energia)
             val ehProjetil = TipoClasseMagia.PROJETIL in classe.classes
             val ehArea = TipoClasseMagia.AREA in classe.classes
+            val ehToque = TipoClasseMagia.TOQUE in classe.classes
             val custoTxt = when {
                 custo.variavel && ehProjetil -> "Varia (1d/pto)"
                 custo.variavel -> "Varia"
@@ -834,6 +854,7 @@ class SagaCombatController(
                 custoTexto = custoTxt,
                 ehProjetil = ehProjetil,
                 ehArea = ehArea,
+                ehToque = ehToque,
                 aptidaoMagica = aptidao.coerceAtLeast(1),
                 custoEstimado = (custo.base ?: custo.minimo).coerceAtLeast(1),
                 castavel = temPf,
@@ -1179,6 +1200,7 @@ class SagaCombatController(
             manobrasHeroi = manobras,
             magiasConjuraveis = montarMagiasConjuraveis(s, vezHeroi),
             conjurando = s.conjuracaoEmAndamento?.let { ConjurandoUi(it.nome, it.turnosRestantes) },
+            toqueCarregado = s.toqueCarregado?.nome,
             alvos = alvos,
             alvosMoverEAtacar = alvosMover,
             ataques = ataques,

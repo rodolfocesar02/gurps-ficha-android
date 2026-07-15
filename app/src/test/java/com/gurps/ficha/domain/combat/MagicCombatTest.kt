@@ -166,6 +166,48 @@ class MagicCombatTest {
         assertTrue("nenhum seed separou atingidos de resistentes na área", separou)
     }
 
+    // ── Lote MA-3d-2: Toque ──
+
+    @Test
+    fun `conjurar magia de Toque CARREGA a mao (nao aplica efeito na hora)`() {
+        val s = sessao(1L)
+        val ctx = ContextoConjuracao(nhBasico = 25, classe = MagicClassParser.parse("Toque"), mana = NivelMana.NORMAL)
+        val r = s.heroiConjurar(ctx, MagicEnergy.parse("2"), 1, "Golpe Mortal", alvoId = null)
+        if (r.sucesso) {
+            assertTrue("mão carregada", s.toqueCarregado != null)
+            assertTrue(s.log.any { it.contains("CARREGADA") })
+        }
+    }
+
+    @Test
+    fun `entregar toque num alvo adjacente descarrega a mao (acerto ou defesa)`() {
+        // NH/DX altos → acerta e descarrega em algum seed; noutro o goblin defende e mantém carregada.
+        var descarregou = false; var manteve = false
+        for (seed in 0L until 30L) {
+            val s = sessao(seed)
+            val ctxCast = ContextoConjuracao(nhBasico = 30, classe = MagicClassParser.parse("Toque"), mana = NivelMana.NORMAL)
+            s.heroiConjurar(ctxCast, MagicEnergy.parse("2"), 1, "Toque Gélido", alvoId = null)
+            if (s.toqueCarregado == null) continue
+            s.heroiEntregarToque("goblin")
+            if (s.toqueCarregado == null) descarregou = true else manteve = true
+            if (descarregou && manteve) break
+        }
+        assertTrue("nenhum seed descarregou o toque", descarregou)
+        assertTrue("nenhum seed manteve carregado após defesa/erro", manteve)
+    }
+
+    @Test
+    fun `dissipar toque limpa a mao sem efeito`() {
+        val s = sessao(1L)
+        val ctx = ContextoConjuracao(nhBasico = 30, classe = MagicClassParser.parse("Toque"), mana = NivelMana.NORMAL)
+        s.heroiConjurar(ctx, MagicEnergy.parse("2"), 1, "Toque Gélido", alvoId = null)
+        if (s.toqueCarregado != null) {
+            s.dissiparToque()
+            assertTrue(s.toqueCarregado == null)
+            assertTrue(s.log.any { it.contains("dissipa") })
+        }
+    }
+
     // ── Lote MA-3c: conjuração multi-turno ──
 
     private fun ctxComum(nh: Int) = ContextoConjuracao(

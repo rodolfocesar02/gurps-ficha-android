@@ -3046,6 +3046,14 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - **Recomendação registrada** (maior valor × menor custo): Ataque Telegráfico (par do Enganoso), luta agarrada profunda (chaves/Mata-Leão estendendo o lote 422), Sangramento Grave + incapacitação de membro (item 5 do teste de batalha), Ataque Dedicado/Defensivo. Fora de escopo: posicional/hexágono, montaria, cinematográfico, dado de arma do NPC. Mudança só de documentação (não compila Kotlin).
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
+### Lote MA-3d-2 — 15 de Julho de 2026 (PILAR MAGIA / Fase 3d-2 — mágicas de TOQUE)
+**Saga: carrega a mágica na mão e entrega num soco — branch GURPS-Saga**
+- **Carregar**: no 🔮 Conjurar, uma magia de **Toque** lança em si mesmo (botão "Carregar na mão"). No sucesso, `resolverConjuracao` guarda `toqueCarregado` (a mão fica energizada) em vez de aplicar efeito.
+- **Entregar**: o chip **✋ {magia}** aparece no menu de um inimigo **ADJACENTE** → `heroiEntregarToque`: ataque com a mão (aprox. DX) e o alvo usa **qualquer defesa ativa**; se se defende, a mágica **continua carregada** (tenta de novo); se acerta, **descarrega** e resistíveis fazem o **2º teste** (fresh, Magia p.12) — efeito narrado pelo Mestre. Chip **✋ Dissipar** no menu do herói (ação livre).
+- **+3 testes** (`MagicCombatTest`, total 17): Toque carrega a mão sem aplicar efeito na hora; entregar descarrega (acerto) ou mantém (defesa/erro); dissipar limpa. Zero regressão.
+- **Deferido p/ MA-3d-3/4**: Bloqueio (defesa reativa), magias ativas + tick.
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
 ### Lote MA-3d-1 — 15 de Julho de 2026 (PILAR MAGIA / Fase 3d — magia de ÁREA mirada no grid)
 **Saga: você toca um hex e a explosão cai lá — pegando todos no raio — branch GURPS-Saga**
 - **Mira no grid**: no 🔮 Conjurar, uma magia de **Área** troca o seletor de alvo por um **stepper de RAIO** (custo × raio, Magia p.11) e o botão vira **"Mirar no grid"**. O app entra em MIRA (`miraAreaPendente`) e o **próximo toque num hex é o CENTRO** da explosão. Overlay "🎯 Toque o centro de X (raio Nm)" + Cancelar.

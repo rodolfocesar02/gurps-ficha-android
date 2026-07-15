@@ -753,6 +753,10 @@ class CombatSession(
     /** Conjuração multi-turno pendente do herói (null se ele não está concentrando). */
     var conjuracaoEmAndamento: ConjuracaoEmAndamento? = null; private set
 
+    /** Lote MA-3d-2: mágica de TOQUE carregada na mão do herói, à espera de um ataque para descarregar. */
+    data class ToqueCarregado(val nome: String, val ctx: ContextoConjuracao, val nhEfetivoCast: Int)
+    var toqueCarregado: ToqueCarregado? = null; private set
+
     /**
      * Lote MA-3a/3b/3c: o herói CONJURA uma magia no combate (manobra Concentrar). O CONTROLLER monta
      * o [ctx] a partir da ficha (NH básico, Aptidão, classe, custo lidos do catálogo); aqui o motor rola
@@ -872,6 +876,15 @@ class CombatSession(
                 sb.append(if (decisivo) "🌟 Sucesso DECISIVO em $magiaNome" else "🔮 Você conjura $magiaNome")
                 sb.append(" (NH ${nhEf.valor}$modsTxt, rolou $rol; custo ${r.custoAPagar} PF).")
 
+                // Toque (Lote MA-3d-2, Magia p.11-12): o sucesso CARREGA a mão; o efeito só ocorre ao
+                // descarregar num ataque corpo-a-corpo ([heroiEntregarToque]). Resistência é no 2º teste, lá.
+                if (TipoClasseMagia.TOQUE in ctx.classe.classes) {
+                    toqueCarregado = ToqueCarregado(magiaNome, ctx, nhEf.valor)
+                    sb.append(" Sua mão fica CARREGADA — ataque um oponente adjacente para descarregar (Magia p.12).")
+                    log += sb.toString().trim()
+                    return ResultadoConjuracaoCombate(true, sb.toString().trim())
+                }
+
                 var alvoResistiu = false
                 var dano = 0
 
@@ -975,6 +988,52 @@ class CombatSession(
                 return ResultadoConjuracaoCombate(true, sb.toString().trim())
             }
         }
+    }
+
+    /**
+     * Lote MA-3d-2: descarrega a mágica de TOQUE carregada num alvo adjacente (Magia p.11-12). Ataque
+     * corpo-a-corpo com a mão (aprox. DX); o alvo usa QUALQUER defesa ativa. Se se defende, a mágica
+     * NÃO dispara e continua carregada (tenta de novo). Se acerta, descarrega: resistíveis fazem o 2º
+     * teste (fresh, p.12) e o efeito é narrado. Consome o turno como um ataque.
+     */
+    fun heroiEntregarToque(alvoId: String): ResultadoConjuracaoCombate {
+        inicioAcaoHeroi(); limparAvaliar(); limparApontar(); limparFinta()
+        val t = toqueCarregado ?: return ResultadoConjuracaoCombate(false, "Nenhuma mágica carregada na mão.")
+        val alvo = inimigos.firstOrNull { it.id == alvoId && it.vivo }
+            ?: return ResultadoConjuracaoCombate(false, "Alvo inválido.").also { log += it.texto }
+        val sb = StringBuilder("✋ Você tenta descarregar ${t.nome} em ${alvo.nome}")
+        val rolAtk = rolar3d6()
+        if (rolAtk > heroiPerfil.dx) {
+            sb.append(" — mas erra o toque (DX ${heroiPerfil.dx}, rolou $rolAtk). A mágica continua carregada.")
+            log += sb.toString(); return ResultadoConjuracaoCombate(false, sb.toString())
+        }
+        val (defTipo, defValor) = melhorDefesaNpc(alvo)
+        if (CombatResolver.defesaBemSucedida(defValor, rolar3d6())) {
+            sb.append(" — ${alvo.nome} se defende (${defTipo.rotulo} $defValor). A mágica continua carregada.")
+            log += sb.toString(); return ResultadoConjuracaoCombate(false, sb.toString())
+        }
+        // Acertou → descarrega.
+        toqueCarregado = null
+        sb.append(" e ACERTA!")
+        val resistencia = t.ctx.classe.resistencia
+        if (resistencia != null) {
+            // 2º teste do operador (Magia p.12) vs a resistência do alvo.
+            val resist = resistenciaDoAlvo(alvo, resistencia)
+            val rr = MagicCasting.resolverResistencia(t.nhEfetivoCast, rolar3d6(), resist, rolar3d6(), regraDo16 = true)
+            if (rr.alvoResistiu) sb.append(" ${alvo.nome} RESISTE (resistência $resist) — a mágica se dissipa.")
+            else sb.append(" ${alvo.nome} não resiste (resistência $resist). Efeito narrado pelo Mestre.")
+        } else {
+            sb.append(" Efeito narrado pelo Mestre.")
+        }
+        verificarFim(); log += sb.toString()
+        return ResultadoConjuracaoCombate(true, sb.toString())
+    }
+
+    /** Lote MA-3d-2: dissipa a mágica de toque carregada (ação livre; Magia p.14). */
+    fun dissiparToque() {
+        val t = toqueCarregado ?: return
+        toqueCarregado = null
+        log += "✋ Você dissipa ${t.nome} da mão (sem efeito)."
     }
 
     /** Valor de resistência do alvo (MA-3a): atributo indicado + Abascanto embutido; combinadas pegam o maior. */
