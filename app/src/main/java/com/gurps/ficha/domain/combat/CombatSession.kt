@@ -1111,7 +1111,7 @@ class CombatSession(
      */
     private fun aplicarDanoMagico(alvo: Combatente, energia: Int, mecanica: com.gurps.ficha.domain.magic.MagiaMecanica?, sb: StringBuilder): Int {
         val expr = if (mecanica?.danoPorEnergia != null)
-            com.gurps.ficha.domain.magic.MagicMechanics.expandirDano(mecanica.danoPorEnergia, energia.coerceAtLeast(1), mecanica.energiaPorDado)
+            com.gurps.ficha.domain.magic.MagicMechanics.expandirDano(mecanica.danoPorEnergia, energia.coerceAtLeast(1), mecanica.energiaPorDado, mecanica.danoFixo)
         else "${energia.coerceAtLeast(1)}d"
         val tipo = when (mecanica?.tipoDano) {
             "corte" -> DanoTipo.CORT; "perf" -> DanoTipo.PERF

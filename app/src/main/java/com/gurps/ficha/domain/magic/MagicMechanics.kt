@@ -17,6 +17,12 @@ data class MagiaMecanica(
     val danoPorEnergia: String? = null,
     /** Quantos pontos de energia compram 1 "unidade" de dado (1 no Relâmpago, 2 na Concussão). */
     val energiaPorDado: Int = 1,
+    /**
+     * true quando o dano NÃO escala com a energia investida — a energia compra outra coisa (alcance
+     * no Chicote de Relâmpago, raio/duração na Nuvem de Faíscas) ou é custo fixo (Géiser = 3d sempre).
+     * Sem isto o Géiser (custo 5) sairia como 15d.
+     */
+    val danoFixo: Boolean = false,
     /** "quei" (queimadura) | "cont" | "projecao" | "corte"… (default contusão no motor). */
     val tipoDano: String? = null,
     /** null = RD normal; "ignora" = armadura não protege (Toque Chocante); "metal_rd_1" = metal vira RD 1 (aprox.: mantém RD). */
@@ -50,10 +56,16 @@ object MagicMechanics {
      * Expande o dano por energia para a expressão total, escalando pela energia investida.
      * Ex.: "1d-1" por 1 energia, energia 3 → "3d-3"; "1d" por 2 energia, energia 4 → "2d".
      * Regras: dados = (energia / energiaPorDado) coerçado a ≥1; o modificador escala com a contagem.
+     *
+     * `danoFixo` trava a contagem em 1 (Géiser = 3d sempre, custe o que custar).
+     * Dano em PONTOS (Nuvem de Faíscas = "1" ponto/seg) vira "0d+N" — o rolador exige `<n>d` e
+     * devolveria 0 para um "1" pelado.
      */
-    fun expandirDano(danoPorEnergia: String, energia: Int, energiaPorDado: Int): String {
-        val n = (energia / energiaPorDado.coerceAtLeast(1)).coerceAtLeast(1)
-        val m = Regex("""(\d*)d([+-]\d+)?""").find(danoPorEnergia.replace(" ", "")) ?: return "${n}d"
+    fun expandirDano(danoPorEnergia: String, energia: Int, energiaPorDado: Int, danoFixo: Boolean = false): String {
+        val n = if (danoFixo) 1 else (energia / energiaPorDado.coerceAtLeast(1)).coerceAtLeast(1)
+        val txt = danoPorEnergia.replace(" ", "").lowercase()
+        val m = Regex("""(\d*)d([+-]\d+)?""").find(txt)
+            ?: return txt.toIntOrNull()?.let { "0d+${it * n}" } ?: "${n}d"
         val dadosBase = m.groupValues[1].toIntOrNull() ?: 1
         val modBase = m.groupValues[2].toIntOrNull() ?: 0
         val dados = dadosBase * n
