@@ -1,10 +1,13 @@
 package com.gurps.ficha.domain.combat
 
 import com.gurps.ficha.domain.magic.ContextoConjuracao
+import com.gurps.ficha.domain.magic.MagiaMecanica
 import com.gurps.ficha.domain.magic.MagicCasting
 import com.gurps.ficha.domain.magic.MagicClassParser
 import com.gurps.ficha.domain.magic.MagicEnergy
+import com.gurps.ficha.domain.magic.MagicMechanics
 import com.gurps.ficha.domain.magic.NivelMana
+import com.gurps.ficha.domain.magic.TipoDuracao
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
@@ -515,5 +518,89 @@ class MagicCombatTest {
         val nh = MagicCasting.nhEfetivo(ctx)
         assertTrue(nh.componentes.any { it.motivo.contains("queimar") && it.valor == -2 })
         assertTrue(s.heroi.pfAtual <= pfAntes)
+    }
+
+    // ── Lote MEC-2: o buff sai do JSON e vira regra viva no combate ──────────────────────────────
+
+    private fun registrar(s: CombatSession, nome: String, mec: MagiaMecanica, energia: Int = 1,
+                          alvo: String = "heroi", durSeg: Int = 60) =
+        s.registrarMagiaAtiva(nome, "heroi", alvo, durSeg, 0, TipoDuracao.DURADOURA, false,
+            MagicMechanics.calcularBuff(mec, energia, alvo))
+
+    @Test
+    fun `buff de RD sobe o perfil do heroi e a dissipacao devolve ao normal`() {
+        val s = sessao(7)
+        val rdBase = s.heroiPerfil.rd
+        registrar(s, "Escudo", MagiaMecanica(efeito = "buff", buffRotulo = "Escudo", buffRd = 4))
+        assertEquals(rdBase + 4, s.heroiPerfil.rd)
+        assertTrue(s.dissiparMagiaAtiva("Escudo"))
+        assertEquals("dissipar tem que reverter a RD", rdBase, s.heroiPerfil.rd)
+    }
+
+    @Test
+    fun `buff EXPIRA no tick e o bonus some sozinho`() {
+        val s = sessao(7)
+        val rdBase = s.heroiPerfil.rd
+        registrar(s, "Escudo", MagiaMecanica(efeito = "buff", buffRd = 4), durSeg = 1)
+        assertEquals(rdBase + 4, s.heroiPerfil.rd)
+        repeat(8) { s.avancarTurno() } // o tick roda ao fim do turno do herói
+        assertEquals("expirar tem que reverter — senão o bônus fica para sempre", rdBase, s.heroiPerfil.rd)
+        assertTrue(s.magiasAtivas.none { it.magiaId == "Escudo" })
+    }
+
+    @Test
+    fun `Forca sobe o ST do heroi conforme a energia investida`() {
+        val s = sessao(7)
+        val stBase = s.heroiPerfil.st
+        val forca = MagiaMecanica(efeito = "buff", buffAtributo = "ST", buffAtributoValor = 1,
+            buffEnergiaPorNivel = 2, buffMaxNiveis = 5)
+        registrar(s, "Força", forca, energia = 6)
+        assertEquals(stBase + 3, s.heroiPerfil.st)
+    }
+
+    @Test
+    fun `Voo troca o Deslocamento do heroi e devolve ao dissipar`() {
+        val s = sessao(7)
+        val base = s.heroi.deslocamentoEfetivo
+        registrar(s, "Voo", MagiaMecanica(efeito = "buff", buffRotulo = "Voo", buffDeslocamentoFixo = 10))
+        assertEquals(10, s.heroi.deslocamentoEfetivo)
+        s.dissiparMagiaAtiva("Voo")
+        assertEquals(base, s.heroi.deslocamentoEfetivo)
+    }
+
+    @Test
+    fun `buff so narrado nao entra na lista do combatente (nada a reverter depois)`() {
+        val s = sessao(7)
+        registrar(s, "Corpo de Água", MagiaMecanica(efeito = "buff", buffRotulo = "Corpo de Água"))
+        assertTrue("efeito sem número não vira delta", s.heroi.buffs.isEmpty())
+        assertTrue("mas continua rastreada como ativa", s.magiasAtivas.any { it.magiaId == "Corpo de Água" })
+    }
+
+    @Test
+    fun `Debilitar no NPC derruba o ST EFETIVO dele — nao fica so gravado`() {
+        val s = sessao(7)
+        val goblin = s.encounter.combatentes.first { it.id == "goblin" }
+        val stBase = goblin.stEfetivo
+        val deb = MagiaMecanica(efeito = "buff", buffAtributo = "ST", buffAtributoValor = -1,
+            buffEnergiaPorNivel = 1, buffMaxNiveis = 5)
+        registrar(s, "Debilitar", deb, energia = 3, alvo = "goblin")
+        assertEquals(stBase - 3, goblin.stEfetivo)
+    }
+
+    @Test
+    fun `RD de buff no NPC protege contra a magia de dano`() {
+        val s = sessao(7)
+        val goblin = s.encounter.combatentes.first { it.id == "goblin" }
+        registrar(s, "Proteger Animal", MagiaMecanica(efeito = "buff", buffRd = 5), alvo = "goblin")
+        assertEquals(5, goblin.buffRd)
+    }
+
+    @Test
+    fun `Nublar no heroi penaliza quem tenta acerta-lo`() {
+        val s = sessao(7)
+        val nublar = MagiaMecanica(efeito = "buff", buffPenalidadeAtacantes = 1,
+            buffEnergiaPorNivel = 1, buffMaxNiveis = 5)
+        registrar(s, "Nublar", nublar, energia = 4)
+        assertEquals(4, s.heroi.buffPenalidadeAtacantes)
     }
 }

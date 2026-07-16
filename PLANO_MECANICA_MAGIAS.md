@@ -9,16 +9,37 @@ Campo em `MagiaDefinicao` (catálogo) → lido no combate via `DataRepository.ge
 
 `efeito` (conjunto FECHADO): `dano` | `condicao` | `buff` | `ambiente` | `controle` | `informacao` | `narrado`.
 
-- **dano**: `danoPorEnergia` ("1d-1"), `energiaPorDado` (1 ou 2), `tipoDano` (quei/cont/projecao),
+- **dano**: `danoPorEnergia` ("1d-1"), `energiaPorDado` (1 ou 2), **`danoFixo`** (MEC-1: não escala com
+  a energia — Géiser é 3d SEMPRE; sem isto sairia 15d), `tipoDano` (quei/cont/projecao),
   `armadura` (null/"ignora"/"metal_rd_1"), `entrega` (projetil/toque/feixe/area), + condição embutida
   (`condicao`, `condicaoResistencia` "HT-3"/"HT_por_pv", `condicaoRaioM`).
-- **buff**: `buffRotulo` + `buffDanoArma` (bônus numérico simples) — rastreado como magia ativa.
-- **ambiente/controle/informacao**: `notas` (o motor tagueia, o Mestre descreve).
+  ⚠️ Dano em PONTOS ("1 ponto/seg") vira `"0d+N"` no `expandirDano` — `rolarDano` exige `<n>d` e
+  devolveria **0** para um `"1"` pelado.
+- **buff** (MEC-2 — os números): o modelo do livro é "N por NÍVEL, X de energia por nível, teto M".
+  `niveis = buffEnergiaPorNivel > 0 ? min(energia / buffEnergiaPorNivel, buffMaxNiveis) : 1` (piso 1);
+  cada campo abaixo é o valor POR NÍVEL, o motor multiplica:
+  - `buffRd` (Pele de Crocodilo 4), `buffEsquiva` (Apressar 1), `buffAtributo` ("ST"/"DX"/"HT") +
+    `buffAtributoValor` (NEGATIVO em Debilitar/Fragilidade/Inabilidade), `buffDeslocamento` (delta),
+    `buffDeslocamentoFixo` (ABSOLUTO — Voo 10, Voo do Falcão 40), `buffPenalidadeAtacantes` (Nublar),
+    `buffDanoArma` + **`buffArmaTipo`** ("cac"/"distancia" — sem isto o +2 do gume vaza pro arco).
+  - O motor SÓ sabe aplicar esses. Bônus de perícia/reação/alcance/peso NÃO têm campo → `semNumero`.
+- **ambiente/controle/informacao**: `notas` (o motor tagueia, o Mestre descreve). Desde o MEC-2 a
+  `notas` CHEGA ao Narrador via `resumoEfeito` — antes era gravada e nunca lida.
 - **narrado**: bespoke.
 
 ## Regra de ouro
 O motor aplica o que é estruturável (dano exato, condição, buff numérico); o resto tem a `mecanica`
 como TAG + `notas`, e o efeito fica narrado. `descricao` intocada.
+**Meia-regra errada é PIOR que narrar** — na dúvida, `narrado`/`semNumero` com nota. Foi assim que os
+74 buffs sem número ficaram honestos (metacaracterísticas, vantagens, imunidades, utilidade).
+
+## Como o buff vive no motor (MEC-2)
+`BuffAplicado` (deltas concretos) guardado na `MagiaAtivaNoCombate` **e** na lista `Combatente.buffs`.
+O perfil efetivo é COMPUTADO da lista (não se muta e "desmuta" nada) → expirar/dissipar é um `remove`,
+imune a drift e a reversão dupla. `heroiPerfil` é propriedade computada (ficha + buffs), então todo o
+motor enxerga o buff sem tocar nos ~30 pontos de uso. NPC: `stEfetivo`/`htEfetivo`/`dxEfetivo`.
+⚠️ `registrarSeMagiaAtiva` precisa checar `res.alvoResistiu` — `sucesso` só diz que a CONJURAÇÃO deu
+certo; sem o check, um Debilitar resistido ainda aplicaria −3 ST.
 
 ## Progresso por escola
 - **Ar (49 magias)** — em curso:

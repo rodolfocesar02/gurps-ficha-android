@@ -50,7 +50,7 @@
   "mecanica": {
    "efeito": "buff",
    "buffRotulo": "Padrão de Tempo Alterado +1",
-   "notas": "Objetivo ganha 1 nível de Padrão de Tempo Alterado (MB75) por 10s; não mantém, refazer. Ao fim o objetivo perde 5 PF (exceto se for o operador)."
+   "notas": "Objetivo ganha 1 nível de Padrão de Tempo Alterado (MB75) por 10s; não mantém, refazer. Ao fim o objetivo perde 5 PF (exceto se for o operador). Vantagem/metacaracterística — o motor não modela Padrão de Tempo Alterado; narrar."
   }
  },
  {
@@ -405,7 +405,7 @@
   "mecanica": {
    "efeito": "buff",
    "buffRotulo": "membro paralisado usavel 1min",
-   "notas": "Restaura uso temporario de UM membro paralisado/aleijado por 1 min (nao serve p/ membro ausente). Custo=limiar incapacitante do membro; Mestre avalia penalidades DX/ST."
+   "notas": "Restaura uso temporario de UM membro paralisado/aleijado por 1 min (nao serve p/ membro ausente). Custo=limiar incapacitante do membro; Mestre avalia penalidades DX/ST. Sem numero fixo: as penalidades sao julgamento do Mestre."
   }
  },
  {
@@ -444,7 +444,7 @@
   "mecanica": {
    "efeito": "buff",
    "buffRotulo": "membro alonga 1m/seg (sem limite)",
-   "notas": "Operador retem tato; deve ficar parado durante o alongamento."
+   "notas": "Narrado: o membro cresce 1m por segundo, sem limite superior. Operador retem o tato e deve ficar parado durante o alongamento; sem campo mecanico (nao e RD/atributo/deslocamento/dano). Mestre julga alcance e uso."
   }
  },
  {
@@ -585,7 +585,7 @@
   "mecanica": {
    "efeito": "buff",
    "buffRotulo": "Ambidestria",
-   "notas": "Concede vantagem Ambidestria por 1 min; sem efeito em quem ja a possui. Afeta so um par de membros."
+   "notas": "Vantagem (MB38) por 1 min; sem efeito em quem ja possui. Afeta so um par de membros. Nao cabe em numero."
   }
  },
  {
@@ -876,7 +876,11 @@
   "mecanica": {
    "efeito": "buff",
    "buffRotulo": "+até 3 Deslocamento e Esquiva",
-   "notas": "+1 por 2 de energia (máx +3) em Deslocamento e Esquiva por 1 min."
+   "notas": "+1 por 2 de energia (máx +3) em Deslocamento e Esquiva por 1 min. Metade do custo para manter.",
+   "buffEnergiaPorNivel": 2,
+   "buffMaxNiveis": 3,
+   "buffEsquiva": 1,
+   "buffDeslocamento": 1
   }
  },
  {
@@ -1000,8 +1004,9 @@
   "mecanica": {
    "efeito": "buff",
    "buffRotulo": "arma +2 dano (frio)",
+   "notas": "Arma corpo a corpo esfria e causa +2 de dano após penetrar a RD, por 1 min. Não escala com energia (4 para operar, 1 para manter). Armas de madeira quebram ao fim da magia; a arma também libera frio na vizinhança.",
    "buffDanoArma": 2,
-   "notas": "Arma esfria e causa +2 dano após penetrar RD. Armas de madeira quebram ao fim. Dura 1 min."
+   "buffArmaTipo": "cac"
   }
  },
  {
@@ -1041,8 +1046,9 @@
   "mecanica": {
    "efeito": "buff",
    "buffRotulo": "arma +2 quei (relampago)",
+   "notas": "Arma corpo a corpo ao menos parcialmente metalica: +2 de dano apos RD/ferimento. Contra armadura metalica causa min 1 ponto (nao modelado). Dur 1min. Nao escala com energia.",
    "buffDanoArma": 2,
-   "notas": "Arma corpo a corpo ao menos parcialmente metalica: +2 de dano apos RD/ferimento; contra armadura metalica causa min 1 ponto. Dur 1min."
+   "buffArmaTipo": "cac"
   }
  },
  {
@@ -1100,8 +1106,9 @@
   "mecanica": {
    "efeito": "buff",
    "buffRotulo": "arma flamejante +2 quei",
+   "notas": "+2 de dano a inimigos/objetos inflamaveis, aplicado depois de penetrar a armadura. So corpo a corpo. Arma tambem ilumina como tocha; armas de madeira viram cinzas ao fim. Duracao 1 min (4 p/ operar, 1 p/ manter).",
    "buffDanoArma": 2,
-   "notas": "+2 dano a inflamaveis apos penetrar RD; arma vira tocha. So corpo a corpo."
+   "buffArmaTipo": "cac"
   }
  },
  {
@@ -1194,7 +1201,7 @@
   "mecanica": {
    "efeito": "buff",
    "buffRotulo": "couraca de relampago (imune a raios + dano reativo)",
-   "notas": "Ataques corpo a corpo do alvo ganham dano extra por queimadura; arma metalica que o atinge sofre 1d-1 quei na mao; se agarrar/for agarrado o inimigo leva 3d-3 quei e a magia quebra. Alvo fica sob Imunidade a Relampagos. Dur 1min."
+   "notas": "Narrado: alvo fica imune a relampagos; ataques cac dele causam dano extra por queimadura (valor nao especificado no livro); arma metalica que o atinge sofre 1d-1 quei na mao; agarrar/ser agarrado = 3d-3 quei no inimigo e a magia quebra. Dano reativo e imunidade nao cabem nos campos do motor."
   }
  },
  {
@@ -1214,7 +1221,7 @@
   "mecanica": {
    "efeito": "buff",
    "buffRotulo": "armadura flamejante",
-   "notas": "Resistencia ao Fogo basica; atacante c.a.c. leva +1 quei e reacao 1d na arma (auto na mao se alcance<=1); agarrar=3d quei e quebra a magia."
+   "notas": "NARRADO: alvo envolto em chamas com Resistencia ao Fogo basica. Atacante corpo a corpo leva +1 de dano por fogo e uma reacao de 1d ao longo da arma (acerta automaticamente a mao se o alcance da arma for 1 ou menos). Se o alvo agarrar ou for agarrado, o inimigo leva 3d de queimadura e a magia se quebra. Dano refletido no atacante nao cabe em nenhum campo do motor."
   }
  },
  {
@@ -1376,7 +1383,7 @@
   "mecanica": {
    "efeito": "buff",
    "buffRotulo": "atravessa água/gelo como ar",
-   "notas": "Passa por água/gelo como se fosse ar; anula penalidades de combate na água. Precisa respirar por conta própria. Utilidade/movimento."
+   "notas": "Passa por água/gelo como se fosse ar e anula as penalidades de combate na água — não cabe em número (o motor não modela penalidade de terreno subaquático). Precisa respirar por conta própria; se a magia acabar submerso, corre risco de afogamento. Narrado."
   }
  },
  {
@@ -1540,7 +1547,11 @@
   "mecanica": {
    "efeito": "buff",
    "buffRotulo": "DX +N (um unico teste/acao)",
-   "notas": "1 energia por ponto, max 5. So um teste/acao curta. Pre-req Graca."
+   "notas": "1 energia por +1 DX, max +5. Duracao Instantanea: vale para UM UNICO teste ou acao curta (um golpe, uma Disputa Rapida, preparar arma, resistir a magia) — nao serve para Disputa Normal nem esforco de varios segundos. Afeta caracteristicas secundarias, exceto PV/PF. NH alto nao reduz o custo. Narrador: se o motor mantiver o buff por mais de uma acao, encerre manualmente apos o teste. Pre-req Graca.",
+   "buffEnergiaPorNivel": 1,
+   "buffMaxNiveis": 5,
+   "buffAtributo": "DX",
+   "buffAtributoValor": 1
   }
  },
  {
@@ -1561,7 +1572,11 @@
   "mecanica": {
    "efeito": "buff",
    "buffRotulo": "ST +N (um unico teste/acao)",
-   "notas": "1 energia por ponto, max 5. So um teste/acao curta (nao Disputa Normal). Nao afeta PV/PF."
+   "notas": "1 energia por +1 ST, max +5. Duracao Instantanea: vale para UM UNICO teste ou acao curta (um golpe, arremessar objeto, uma Disputa Rapida) — nao serve para Disputa Normal. Afeta secundarias (inclusive dano por ST), exceto PV/PF. NH alto nao reduz o custo. Narrador: encerre o buff apos a acao. Pre-req Forca.",
+   "buffEnergiaPorNivel": 1,
+   "buffMaxNiveis": 5,
+   "buffAtributo": "ST",
+   "buffAtributoValor": 1
   }
  },
  {
@@ -1582,7 +1597,7 @@
   "mecanica": {
    "efeito": "buff",
    "buffRotulo": "IQ +N (um unico teste/acao)",
-   "notas": "1 energia por ponto, max 5. Magia de Controle da MENTE, nao do Corpo."
+   "notas": "1 energia por +1 IQ, max +5, para um unico teste ou acao curta. SEM NUMERO no motor: o motor de combate nao usa IQ. Resolver narrado — o Narrador soma o bonus ao teste de IQ/pericia baseada em IQ do alvo. Magia de Controle da MENTE (nao do Corpo). Pre-req Sabedoria."
   }
  },
  {
@@ -1638,7 +1653,7 @@
   "mecanica": {
    "efeito": "buff",
    "buffRotulo": "+1 MT: ST/PV/Desloc x1,5; RD +1 a cada 2 MT",
-   "notas": "2 energia por +1 MT. IQ/DX/HT/PF/Vel Basica/Esquiva nao mudam. Peso x3,5 por MT. Itens duros nao crescem."
+   "notas": "2 energia por +1 MT. Efeito e MULTIPLICATIVO (ST/PV/Desloc x1,5 por MT) e o motor so soma bonus por nivel -> nao cabe. RD +1 a cada 2 MT e peso x3,5/MT tambem ficam narrados. IQ/DX/HT/PF/Vel Basica/Esquiva nao mudam."
   }
  },
  {
@@ -1674,7 +1689,7 @@
    "efeito": "buff",
    "condicaoResistencia": "HT",
    "buffRotulo": "+1 MT em outro ser: ST/PV/Desloc x1,5; RD +1 a cada 2 MT",
-   "notas": "Como Aumentar, em outro ser. 2 energia por +1 MT. So o operador ou Remover Maldicao anula."
+   "notas": "Como Aumentar, em outro ser (resistivel com HT). Mesmo motivo: multiplicadores de MT nao cabem no motor. So o operador ou Remover Maldicao anula."
   }
  },
  {
@@ -1818,7 +1833,7 @@
   "mecanica": {
    "efeito": "buff",
    "buffRotulo": "sem comer/beber 24h",
-   "notas": "Operador passa ~1 dia sem alimento ou água sem efeitos nocivos. Duração 24h."
+   "notas": "Utilidade fora de combate: o alvo passa ~1 dia sem alimento ou água sem efeitos nocivos. Duração 24h, custo 6, não pode ser mantida. Sem número que o motor execute — narre."
   }
  },
  {
@@ -1838,7 +1853,7 @@
   "mecanica": {
    "efeito": "buff",
    "buffRotulo": "comida parece saborosa 1 dia",
-   "notas": "Faz qualquer item comível parecer comida deliciosa (não muda a natureza real). Duração 1 dia."
+   "notas": "Utilidade fora de combate: faz qualquer item comível parecer comida deliciosa (não muda a natureza real nem o valor nutritivo). Só funciona em coisas que podem ser alimento (lama sim, pedra não). Duração 1 dia, 2 de energia por refeição. Sem número mecânico — narre."
   }
  },
  {
@@ -2119,7 +2134,7 @@
   "mecanica": {
    "efeito": "buff",
    "buffRotulo": "dobra velocidade de producao artesanal",
-   "notas": "Utilidade nao-combate. Dobra ritmo de perícia de manufatura; nao serve para magia artesanal. Quebra se interromper o trabalho."
+   "notas": "Utilidade fora de combate: dobra o ritmo de pericia de manufatura; nao serve pra magia artesanal. Quebra se o objetivo interromper o trabalho."
   }
  },
  {
@@ -2196,7 +2211,7 @@
   "mecanica": {
    "efeito": "buff",
    "buffRotulo": "anda sobre a água",
-   "notas": "Caminha sobre água/pântano/areia movediça como terra firme. Se cair (lesão) a magia quebra. Dura 1h."
+   "notas": "Caminha sobre água/pântano/areia movediça como terra firme. Se cair (lesão), a magia quebra; refeita na hora, cai 1m e leva 1d de afogamento. Movimentação narrada, sem número mecânico."
   }
  },
  {
@@ -2217,7 +2232,7 @@
   "mecanica": {
    "efeito": "buff",
    "buffRotulo": "anda em nuvens/névoa",
-   "notas": "Anda sobre nuvens como se sólidas por 1h. Se cair, magia quebra."
+   "notas": "Anda sobre nuvens/bancos de névoa como se sólidas por 1h. Se cair, a magia quebra. Mobilidade narrativa — sem número."
   }
  },
  {
@@ -2237,7 +2252,7 @@
   "mecanica": {
    "efeito": "buff",
    "buffRotulo": "anda em paredes/tetos (-2 no combate)",
-   "notas": "Anda em paredes/tetos; deve manter mão ou pé na superfície. Combate a -2 p/ o caminhante e o inimigo pelos ângulos."
+   "notas": "Anda em paredes/tetos; deve manter mão ou pé na superfície. O -2 atinge o caminhante E o inimigo (não é penalidade só a quem ataca) — julgamento do Mestre, narrar."
   }
  },
  {
@@ -2960,7 +2975,7 @@
   "mecanica": {
    "efeito": "buff",
    "buffRotulo": "idioma (ate Com Sotaque)",
-   "notas": "Da ao alvo um idioma no nivel do operador ou Com Sotaque, o menor."
+   "notas": "Da ao alvo um idioma no nivel do operador ou Com Sotaque, o menor. O operador deve conhecer o idioma. Efeito de idioma: o motor de combate nao usa."
   }
  },
  {
@@ -2995,7 +3010,7 @@
   "mecanica": {
    "efeito": "buff",
    "buffRotulo": "pericia +4 (max NH operador)",
-   "notas": "Alvo ganha pericia em (atributo)+4 ou +4 niveis; teto no NH do operador. Nao serve p/ idiomas ou magias."
+   "notas": "Alvo ganha pericia em (atributo dominante)+4 ou +4 niveis, o que for maior; teto no NH do operador. Nao serve p/ idiomas ou magias. Bonus de pericia nao tem campo no motor."
   }
  },
  {
@@ -3850,7 +3865,7 @@
   "mecanica": {
    "efeito": "buff",
    "buffRotulo": "Corpo de Água",
-   "notas": "Comum/R-HT. Concede metacaracterística Corpo de Água (MB p263) por 1 min. Roupas até 3kg liquefazem junto. Efeito narrado."
+   "notas": "Metacaracterística Corpo de Água (MB p263) por 1 min; Resistível com HT. Roupas até 3kg liquefazem junto, o resto cai no chão. Efeito narrado — não cabe em número."
   }
  },
  {
@@ -3885,7 +3900,7 @@
   "mecanica": {
    "efeito": "buff",
    "buffRotulo": "corpo de fogo",
-   "notas": "Resistivel com HT. Alvo ganha metacaracteristica Corpo de Fogo; roupas (ate 3kg) viram fogo, nao carrega nada. Expira se perder consciencia."
+   "notas": "NARRADO: metacaracteristica Corpo de Fogo (MB263). Resistivel com HT. Roupas ate 3 kg viram fogo e perdem poderes magicos; nao pode carregar nada. Expira se o alvo perder a consciencia. Metacaracteristica nao cabe em numero."
   }
  },
  {
@@ -3905,7 +3920,7 @@
   "mecanica": {
    "efeito": "buff",
    "buffRotulo": "Corpo de Gelo",
-   "notas": "Comum/R-HT. Concede metacaracterística Corpo de Gelo (MB p263) por 1 min; expira se perder consciência. Efeito narrado."
+   "notas": "Metacaracterística Corpo de Gelo (MB p263) por 1 min; Resistível com HT; expira se o alvo perder a consciência. Roupas até 3kg viram gelo e perdem poderes mágicos. Efeito narrado."
   }
  },
  {
@@ -4002,7 +4017,7 @@
    "efeito": "buff",
    "condicaoResistencia": "HT",
    "buffRotulo": "forma de relampago (metacaracteristica)",
-   "notas": "Resistivel com HT. Alvo vira relampago animado (metatrait Corpo de Relampagos). Quebra se perder a consciencia. Dur 1min."
+   "notas": "Metacaracteristica Corpo de Relampagos (Resistivel com HT). Quebra se o alvo perder a consciencia. Dur 1min. Metatrait = narrado."
   }
  },
  {
@@ -4022,7 +4037,7 @@
   "mecanica": {
    "efeito": "buff",
    "buffRotulo": "Forma de Sombra (bidimensional)",
-   "notas": "Alvo vira sombra 2D na parede/chao com a vantagem Forma de Sombra; nao carrega equipamento, nao ve no escuro. R-HT. Expira se perder consciencia."
+   "notas": "Metacaracteristica: alvo vira sombra 2D na parede/chao com a vantagem Forma de Sombra (MB61). Roupa ate 3kg vira sombra (perde poder magico); resto do equipamento cai no chao e ele nao carrega nada. NAO ve no escuro. R-HT. Expira se perder consciencia. Duracao 1min (6/3). Narrado: nao cabe em numero."
   }
  },
  {
@@ -4057,7 +4072,7 @@
   "mecanica": {
    "efeito": "buff",
    "buffRotulo": "etéreo (atravessa sólidos)",
-   "notas": "Objetivo vira etéreo 10s: atravessa sólidos, imune a ataques físicos e maioria das magias; magias de mente têm efeito normal a -2. Não pode empunhar armas nem mover coisas. Conjura a -5."
+   "notas": "Objetivo vira etéreo 10s: atravessa sólidos, imune a ataques físicos e à maioria das magias; magias de mente/alma têm efeito normal e são Resistíveis a -2. Não pode empunhar armas nem mover coisas. Conjura a -5. Metacaracterística — narrar."
   }
  },
  {
@@ -4749,7 +4764,11 @@
    "efeito": "buff",
    "condicaoResistencia": "HT",
    "buffRotulo": "ST -N (max 5)",
-   "notas": "Debuff. 1 energia por -1 ST (max 5). Reduz dano de arma, nao os PV. Afeta Base de Carga."
+   "notas": "Debuff resistivel com HT. 1 energia por -1 ST, max 5. Reduz dano basico com armas, NAO os PV. Afeta Base de Carga. Manter custa metade (arred. p/ cima).",
+   "buffEnergiaPorNivel": 1,
+   "buffMaxNiveis": 5,
+   "buffAtributo": "ST",
+   "buffAtributoValor": -1
   }
  },
  {
@@ -5396,7 +5415,7 @@
   "mecanica": {
    "efeito": "buff",
    "buffRotulo": "alfabetizacao",
-   "notas": "Concede leitura/escrita em um idioma (Rudimentar/Com Sotaque/Materna conforme energia)."
+   "notas": "Concede leitura/escrita em um idioma: 2 energia = Rudimentar, 4 = Com Sotaque, 6 = Materna. Utilidade fora de combate."
   }
  },
  {
@@ -5416,7 +5435,7 @@
   "mecanica": {
    "efeito": "buff",
    "buffRotulo": "fala/compreensao de idioma",
-   "notas": "Fala e compreensao de um idioma (nivel conforme energia). Nao cria fala/audicao inexistente."
+   "notas": "Fala e compreensao de um idioma: 2 energia = Rudimentar, 4 = Com Sotaque, 6 = Materna. Nao cria fala/audicao inexistente. Utilidade fora de combate."
   }
  },
  {
@@ -5843,7 +5862,7 @@
   "mecanica": {
    "efeito": "buff",
    "buffRotulo": "-1 MT: ST/PV/Desloc x2/3; RD -1 a cada 2 MT; mais dificil de acertar",
-   "notas": "2 energia por -1 MT. IQ/DX/HT/PF/Vel Basica/Esquiva nao mudam. Peso /3,5 por MT. Piso opcional 1 PV/Desloc 1."
+   "notas": "2 energia por -1 MT. Multiplicadores (x2/3) e mudanca de MT nao cabem no motor. Piso opcional do Mestre: 1 PV e Deslocamento 1."
   }
  },
  {
@@ -5879,7 +5898,7 @@
    "efeito": "buff",
    "condicaoResistencia": "HT",
    "buffRotulo": "-1 MT em outro ser: ST/PV/Desloc x2/3; RD -1 a cada 2 MT",
-   "notas": "Como Encolher, em outro ser. 2 energia por -1 MT. So o operador ou Remover Maldicao anula."
+   "notas": "Como Encolher, em outro ser (resistivel com HT). Mesmo motivo: multiplicadores de MT nao cabem. So o operador ou Remover Maldicao anula."
   }
  },
  {
@@ -6133,7 +6152,7 @@
   "mecanica": {
    "efeito": "buff",
    "buffRotulo": "Equilibrio Perfeito",
-   "notas": "Concede Equilibrio Perfeito por 1 min; sem efeito em quem ja possui."
+   "notas": "Vantagem Equilibrio Perfeito (MB58) por 1 min; sem efeito em quem ja possui. Nao cabe em numero."
   }
  },
  {
@@ -6153,7 +6172,7 @@
   "mecanica": {
    "efeito": "buff",
    "buffRotulo": "+NH em Escalada (2x a energia usada)",
-   "notas": "1 a 3 energia; incremento em Escalada = dobro da energia. Duracao 1 min."
+   "notas": "1 a 3 de energia; bonus em Escalada = dobro da energia (+2 a +6). Bonus de PERICIA nao tem campo no motor -> narrado."
   }
  },
  {
@@ -6188,7 +6207,7 @@
   "mecanica": {
    "efeito": "buff",
    "buffRotulo": "-1 a -5 em testes p/ detectar o alvo parado",
-   "notas": "Penalidade -1 por ponto de energia (max -5) a testes de sentido/Visao p/ achar o alvo; so vale enquanto parado, retoma se voltar a parar. Duracao 1h."
+   "notas": "Penalidade de -1 por ponto de energia (max -5) a testes de SENTIDO/Visao para achar o alvo. NAO e penalidade ao NH de ataque (isso e Nublar) e o motor nao tem campo para testes de sentido -> narrado. So vale enquanto o alvo esta parado; retoma se voltar a parar. Duracao 1h."
   }
  },
  {
@@ -7081,7 +7100,11 @@
   "mecanica": {
    "efeito": "buff",
    "buffRotulo": "ST +N (max 5), afeta dano/Carga/PV",
-   "notas": "2 energia por +1 ST (max 5). Afeta dano, Base de Carga e PV (nao cura). Se ao fim as feridas deixarem <= -1xPV, teste HT."
+   "notas": "2 energia por +1 ST, max 5. Afeta dano, Base de Carga e PV, mas nao cura ferimentos. Se ao fim as feridas deixarem o alvo com -1xPV Inicial ou menos, teste de HT pra sobreviver.",
+   "buffEnergiaPorNivel": 2,
+   "buffMaxNiveis": 5,
+   "buffAtributo": "ST",
+   "buffAtributoValor": 1
   }
  },
  {
@@ -7181,7 +7204,11 @@
    "efeito": "buff",
    "condicaoResistencia": "HT",
    "buffRotulo": "HT -N (max 5)",
-   "notas": "Debuff. 2 energia por -1 HT (max 5). Afeta tudo que depende de HT exceto o que depende de PF."
+   "notas": "Debuff resistivel com HT. 2 energia por -1 HT, max 5. Afeta tudo que depende de HT (Vel Basica, pericias-HT, resistencias, inconsciencia, morte), exceto o que depende de PF.",
+   "buffEnergiaPorNivel": 2,
+   "buffMaxNiveis": 5,
+   "buffAtributo": "HT",
+   "buffAtributoValor": -1
   }
  },
  {
@@ -7217,7 +7244,7 @@
   "mecanica": {
    "efeito": "buff",
    "buffRotulo": "Tolerância à Temp. 3 (calor)",
-   "notas": "Alvo ganha Tolerância à Temperatura 3 contra calor por 1h; evita desidratação/insolação. NÃO protege contra chamas/fogo mágico."
+   "notas": "Alvo ganha Tolerância à Temperatura 3 rumo ao calor por 1h; evita desidratação/insolação, mas NÃO protege contra chamas reais ou mágicas nem contra queimadura solar. Efeito de ambiente/vantagem — sem número de combate."
   }
  },
  {
@@ -7541,7 +7568,11 @@
   "mecanica": {
    "efeito": "buff",
    "buffRotulo": "DX +N (max 5), +Vel Basica e pericias-DX",
-   "notas": "4 energia por +1 DX (max 5). Aumenta Vel Basica e todas pericias baseadas em DX."
+   "notas": "4 energia por +1 DX, max 5. Aumenta Velocidade Basica e todas as pericias baseadas em DX (inclusive mira de magias de projetil).",
+   "buffEnergiaPorNivel": 4,
+   "buffMaxNiveis": 5,
+   "buffAtributo": "DX",
+   "buffAtributoValor": 1
   }
  },
  {
@@ -7583,7 +7614,7 @@
   "mecanica": {
    "efeito": "buff",
    "buffRotulo": "não se molha em chuva leve",
-   "notas": "Escudo invisível desvia chuva/precipitação leve por 10 min. Não funciona contra granizo intenso/mágico. Utilidade."
+   "notas": "Escudo invisível desvia precipitação leve por 10 min. Não funciona contra granizo intenso/mágico, chuva de pedras etc. Utilidade pura, sem efeito de combate."
   }
  },
  {
@@ -7865,7 +7896,7 @@
   "mecanica": {
    "efeito": "buff",
    "buffRotulo": "imune a ácido",
-   "notas": "Alvo e o que carrega ficam imunes a ácido por 1 min (custo 6 para resistir Ácido Essencial)."
+   "notas": "Alvo (e o que carrega) fica imune aos efeitos do ácido por 1 min. Custo 2; 6 se precisar resistir a Ácido Essencial. Imunidade total — o motor não modela imunidade por tipo de dano; narrar."
   }
  },
  {
@@ -7886,7 +7917,7 @@
   "mecanica": {
    "efeito": "buff",
    "buffRotulo": "imune à água / RD 2 vs ácido",
-   "notas": "Alvo fica seco mesmo submerso por 1 min; não protege contra escaldamento/congelamento. Concede RD 2 contra ácido."
+   "notas": "Alvo fica seco mesmo submerso por 1 min; protege do amortecimento de vapor/gelo mas NÃO de escaldamento/congelamento. Dá RD 2 SOMENTE contra derramamento/imersão em ácido — RD condicional por tipo, que o motor não sabe aplicar (dar RD 2 geral seria errado). Narrar."
   }
  },
  {
@@ -7906,8 +7937,8 @@
   "descricao": "Comum\n\nO objetivo é imune a doenças enquanto a mágica durar, de acordo com a vantagem de Resistente a Doenças (veja Resistente, pág. MB84). Esta também é uma mágica de Proteção e Aviso.\n\nDuração: 1 hora.\n\nCusto: 4 para operar. 3 para manter.\n\nTempo de operação: 10 segundos.\n\nPré-requisito: Remover Infecção ou Vigor.",
   "mecanica": {
    "efeito": "buff",
-   "buffRotulo": "imune a doencas 1h",
-   "notas": "Alvo fica imune a doencas por 1 hora (como vantagem Resistente a Doencas). Custo 4 operar / 3 manter."
+   "buffRotulo": "imune a doenças 1h",
+   "notas": "Alvo fica imune a doenças por 1 hora (como a vantagem Resistente a Doenças). Custo 4 operar / 3 manter. Imunidade — sem número de combate."
   }
  },
  {
@@ -7927,7 +7958,7 @@
   "mecanica": {
    "efeito": "buff",
    "buffRotulo": "imune a dor: nao atordoa, sem penal. de choque, sem perda de Desloc",
-   "notas": "Ignora Espasmo e magias de dor. NAO da resistencia a lesao, so a dor. Duracao 1 min."
+   "notas": "Por 1 min: impossivel atordoar em combate, sem penalidade de choque, sem reducao de Deslocamento abaixo de 1/3 dos PV; ignora Espasmo e magias de dor. NAO da resistencia a lesao. Sao efeitos de estado, nao um bonus numerico -> narrado (candidato a handler de condicao futuro)."
   }
  },
  {
@@ -7999,7 +8030,7 @@
   "mecanica": {
    "efeito": "buff",
    "buffRotulo": "imune a raios/eletricidade",
-   "notas": "Alvo e o que carrega ficam imunes a efeitos de raios e eletricidade. Dur 1min."
+   "notas": "Alvo e o que carrega ficam imunes a efeitos de raios e eletricidade por 1 min. Também mágica do Ar. Imunidade por tipo — o motor não modela; narrar."
   }
  },
  {
@@ -8035,7 +8066,7 @@
   "mecanica": {
    "efeito": "buff",
    "buffRotulo": "imune a veneno 1h",
-   "notas": "Alvo fica imune a venenos por 1 hora (vestigios podem reagir quando acabar). Custo 4 operar / 3 manter."
+   "notas": "Alvo fica imune a venenos por 1 hora; vestígios persistentes podem voltar a agir quando a mágica acabar. Custo 4 operar / 3 manter. Imunidade — narrar."
   }
  },
  {
@@ -8055,7 +8086,7 @@
   "mecanica": {
    "efeito": "buff",
    "buffRotulo": "imune a fogo/calor",
-   "notas": "Alvo e o que carrega ficam imunes a calor e fogo (nao a eletricidade). Custo dobra vs alto-forno/vulcao, triplica vs estrela/nuclear."
+   "notas": "NARRADO: imunidade a calor e fogo (nao a eletricidade) para o alvo e o que ele carrega. Custo dobra vs alto-forno/vulcao, triplica vs estrela/nuclear; contra magias de Fogo de combate basta o 1o nivel. Imunidade nao cabe em numero."
   }
  },
  {
@@ -8075,7 +8106,7 @@
   "mecanica": {
    "efeito": "buff",
    "buffRotulo": "imune a frio",
-   "notas": "Imune a frio e congelamento (nao a gelo caindo/lancas de gelo). Custo dobra vs -20 graus, triplica vs zero absoluto."
+   "notas": "NARRADO: imunidade a frio e congelamento (nao a gelo caindo nem lancas magicas de gelo). Custo dobra vs frio de -20 C ou mais, triplica vs zero absoluto. Imunidade nao cabe em numero."
   }
  },
  {
@@ -8112,7 +8143,11 @@
    "efeito": "buff",
    "condicaoResistencia": "HT",
    "buffRotulo": "DX -N por energia (max 5) e pericias-DX",
-   "notas": "Debuff. 1 a 5 energia = -1 por ponto em DX e pericias baseadas em DX."
+   "notas": "Debuff resistivel com HT. Cada ponto de energia = -1 na DX e nas pericias baseadas em DX, max 5. Manter custa metade (arred. p/ cima).",
+   "buffEnergiaPorNivel": 1,
+   "buffMaxNiveis": 5,
+   "buffAtributo": "DX",
+   "buffAtributoValor": -1
   }
  },
  {
@@ -8132,7 +8167,7 @@
   "mecanica": {
    "efeito": "buff",
    "buffRotulo": "Infravisao (ve raios de calor)",
-   "notas": "Concede a vantagem Infravisao (MB65). Nao ve invisiveis. Duracao 1min."
+   "notas": "Vantagem: concede Infravisao (MB65), ve raios de calor alem da luz normal. Nao ve invisiveis. Duracao 1min (3/1). Narrado."
   }
  },
  {
@@ -8224,7 +8259,7 @@
   "mecanica": {
    "efeito": "buff",
    "buffRotulo": "Invisivel",
-   "notas": "Alvo nao pode ser visto (nem reflexo/foto); ainda faz som e deixa rastro. Ver o Invisivel detecta. Grande vantagem em combate (Visibilidade MB394). Duracao 1min."
+   "notas": "Vantagem: alvo nao pode ser visto, nem em reflexos/fotos; o que pega fica invisivel se quiser. Ainda faz som e deixa rastro (perfume/pegadas). Infravisao nao detecta; Ver o Invisivel sim. Grande vantagem em combate (Visibilidade, MB394) — o Mestre aplica as penalidades da regra de Visibilidade. Duracao 1min (5/3)."
   }
  },
  {
@@ -8610,7 +8645,7 @@
   "mecanica": {
    "efeito": "buff",
    "buffRotulo": "+até 5 p/ liberdade de movimento",
-   "notas": "+2 por ponto de bônus (máx +5) a perícias/atributos p/ evitar/escapar de agarrões, fugir, resistir a Cola/Levitação/Paralisia etc. Não ajuda furtividade, controle da mente, esquivar projéteis."
+   "notas": "2 de energia por ponto de bônus (máx +5) a perícias/atributos usados para manter ou recuperar liberdade de movimentos: disputas de DX/ST contra agarrar, Fuga, Arrombamento, dobrar barras, resistir a Cola/Levitação/Paralisia. NÃO ajuda Camuflagem/Disfarce/Furtividade, controle da mente, nem esquivar projéteis. Bônus situacional de perícia/disputa dependente do julgamento do Mestre — não é buff de a"
   }
  },
  {
@@ -9289,7 +9324,7 @@
   "mecanica": {
    "efeito": "buff",
    "buffRotulo": "velocidade de marcha 2x (longa distância)",
-   "notas": "Dobra a velocidade de viagem de longa distância por 1 dia; NÃO afeta Deslocamento de combate nem Velocidade Básica. Ao fim perde 10 PF e deve dormir."
+   "notas": "Dobra a velocidade de viagem de longa distância por 1 dia; a própria magia diz que NÃO afeta Deslocamento de combate nem Velocidade Básica. Ao fim perde 10 PF e deve dormir."
   }
  },
  {
@@ -9552,7 +9587,7 @@
   "mecanica": {
    "efeito": "buff",
    "buffRotulo": "parte do corpo vira arma/ferramenta animal",
-   "notas": "Cada transformacao e magica separada. Ex.: Garras de Lobo 1d+1 corte; Boca de Tubarao 1d+2 perf; Pele de Crocodilo RD4 (-1 Desl); Asas de Morcego voo Desl6; Olhos de Aguia Visao Telescopica 2. Custo minimo 3."
+   "notas": "Cada transformacao e uma magia separada com efeito diferente (Olhos de Aguia = Visao Telescopica 2 + miopia; Asas de Morcego = voo Desl 6, sem armas de 2 maos; Boca de Tubarao = mordida 1d+2 perf, nao fala; Garras de Lobo = garras 1d+1 corte, maos ocupadas; Pele de Crocodilo = RD 4, -1 Desl, -2 Furtividade). Nao cabe num unico bloco numerico: escolha da transformacao e efeitos colaterais dependem "
   }
  },
  {
@@ -9572,7 +9607,7 @@
   "mecanica": {
    "efeito": "buff",
    "buffRotulo": "parte do corpo vira arma/ferramenta animal",
-   "notas": "Cada transformacao e magica separada. Ex.: Garras de Lobo 1d+1 corte; Boca de Tubarao 1d+2 perf; Pele de Crocodilo RD4 (-1 Desl); Asas de Morcego voo Desl6; Olhos de Aguia Visao Telescopica 2. Custo minimo 3."
+   "notas": "Mesma estrutura da versao do Ar: cada transformacao e uma magia separada (garras 1d+1 corte, mordida 1d+2 perf, RD 4 com -1 Desl, voo Desl 6, Visao Telescopica 2), cada uma com desvantagem propria. Efeito multiplo e a escolha do jogador -> nao cabe num campo unico. Custo minimo 3, 1/3 pra manter, duracao 1h."
   }
  },
  {
@@ -9592,7 +9627,7 @@
   "mecanica": {
    "efeito": "buff",
    "buffRotulo": "parte do corpo vira arma/ferramenta animal",
-   "notas": "Cada transformacao e magica separada. Ex.: Garras de Lobo 1d+1 corte; Boca de Tubarao 1d+2 perf; Pele de Crocodilo RD4 (-1 Desl); Asas de Morcego voo Desl6; Olhos de Aguia Visao Telescopica 2. Custo minimo 3."
+   "notas": "Mesma estrutura das outras Metamorfoses Parciais: cada transformacao e magia separada com bonus E desvantagem (ex.: Boca de Tubarao 1d+2 perfuracao mas nao fala claramente; Pele de Crocodilo RD 4 mas -1 Desl e -2 Furtividade). Nao cabe num bloco numerico unico. Custo minimo 3, 1/3 pra manter, duracao 1h."
   }
  },
  {
@@ -10103,7 +10138,7 @@
   "mecanica": {
    "efeito": "buff",
    "buffRotulo": "nada com Deslocamento normal",
-   "notas": "Move-se na água com Deslocamento normal e luta sem penalidade de combate subaquático por 1 min. Não fornece respiração."
+   "notas": "Move-se na água com o Deslocamento NORMAL (não concede bônus) e luta sem as penalidades de combate subaquático por 1 min. Não fornece respiração. Remove penalidade de ambiente — narrar."
   }
  },
  {
@@ -10272,7 +10307,10 @@
   "mecanica": {
    "efeito": "buff",
    "buffRotulo": "-1 a -5 no NH de ataques contra o alvo",
-   "notas": "Cada ponto de energia = -1 ao NH efetivo de qualquer ataque ao alvo, max -5. Duracao 1min."
+   "notas": "Cada ponto de energia = -1 ao NH efetivo de QUALQUER ataque contra o alvo, ate -5. Duracao 1min, mesmo custo para manter.",
+   "buffEnergiaPorNivel": 1,
+   "buffMaxNiveis": 5,
+   "buffPenalidadeAtacantes": 1
   }
  },
  {
@@ -10409,7 +10447,7 @@
   "mecanica": {
    "efeito": "buff",
    "buffRotulo": "resiste leitura de emocao; ate +4 social",
-   "notas": "Resiste a Aura/Percepcao de Emocao; ate +4 em pericias onde mascarar emocao ajuda."
+   "notas": "Resiste a Aura/Percepcao de Emocao (e Percepcao de Inimigos, opcao do Mestre) e a qualquer leitura do estado emocional. Ate +4 em pericias onde mascarar emocao ajuda — julgamento do Mestre, sem campo no motor."
   }
  },
  {
@@ -10459,7 +10497,7 @@
   "mecanica": {
    "efeito": "buff",
    "buffRotulo": "defesa vs leitura/controle mental",
-   "notas": "Ataque mental precisa vencer Disputa Rapida com esta magia antes do teste normal do alvo."
+   "notas": "Ataque de leitura/controle mental precisa vencer Disputa Rapida com esta magia; mesmo vencendo, o alvo ainda faz o teste de resistencia normal. Nao afeta controle mental ja implantado."
   }
  },
  {
@@ -10548,7 +10586,7 @@
   "mecanica": {
    "efeito": "buff",
    "buffRotulo": "Visao Telescopica/nivel",
-   "notas": "Concede Visao Telescopica: cada nivel ignora -1 de penalidade de distancia em Visao (-2 se Apontar), e +1 de Precisao/nivel em ataques a distancia com Apontar. Nao cumulativo com binoculos. Custo 2/nivel. Duracao 1min."
+   "notas": "Concede Visao Telescopica (MB98), 2 de energia por nivel: cada nivel ignora -1 de penalidade de DISTANCIA em testes de Visao (-2 se fizer manobra Apontar) e da +1 de PRECISAO por nivel em ataques a distancia, desde que Aponte por segundos iguais ao bonus. O motor nao tem campo para Precisao nem para penalidade de distancia em Visao -> narrado. Nao cumulativo com binoculos/telescopio. Duracao 1min."
   }
  },
  {
@@ -10634,7 +10672,7 @@
   "mecanica": {
    "efeito": "buff",
    "buffRotulo": "saborear/cheirar à distância",
-   "notas": "Operador saboreia/cheira qualquer objeto visível ou através de sólidos até 2m. Testes de Paladar/Olfato automáticos. Duração 1 min."
+   "notas": "Utilidade fora de combate (percepção). Operador saboreia/cheira qualquer objeto visível ou através de sólidos até 2m; testes de Paladar/Olfato automáticos. Duração 1 min, 3 para operar / 1 para manter. Nenhum efeito numérico que o motor de combate saiba aplicar — Narrador descreve (útil p/ detectar venenos)."
   }
  },
  {
@@ -11185,7 +11223,7 @@
   "mecanica": {
    "efeito": "buff",
    "buffRotulo": "+bonus em teste de reacao",
-   "notas": "R-Vont: melhora a reacao do alvo ao operador. Custo = 2x o bonus (max +5). Bonus definido pelo operador."
+   "notas": "R-Vont: melhora a reacao do alvo (IQ racial 6+) ao operador. Custo = 2x o bonus, max +5. Bonus de reacao nao tem campo no motor."
   }
  },
  {
@@ -11452,7 +11490,7 @@
   "mecanica": {
    "efeito": "buff",
    "buffRotulo": "Nao Respira (retarda asfixia)",
-   "notas": "Elimina necessidade de ar por 1 min. Nao fornece ar; so retarda asfixia. Nao protege de vacuo/pressao."
+   "notas": "Vantagem Nao Respira (MB73) por 1 min. Nao fornece ar, so retarda a asfixia; nao protege de vacuo nem de pressao. Nao cabe em numero."
   }
  },
  {
@@ -11610,8 +11648,9 @@
   "mecanica": {
    "efeito": "buff",
    "buffRotulo": "projétil +2 dano (frio)",
+   "notas": "Como Arma Congelante, mas em arma de projétil: cada projétil disparado causa +2 de dano após penetrar a RD, por 1 min. Não escala com energia. O projétil quebra ao acertar ou após 10 seg.",
    "buffDanoArma": 2,
-   "notas": "Como Arma Congelante, mas em arma de projétil: cada projétil disparado causa +2 dano, quebra após acertar ou 10 seg. Dura 1 min."
+   "buffArmaTipo": "distancia"
   }
  },
  {
@@ -11632,8 +11671,9 @@
   "mecanica": {
    "efeito": "buff",
    "buffRotulo": "projetil +2 quei (relampago)",
+   "notas": "Arma de projetil: cada projetil disparado causa +2 de dano apos RD/ferimento (como Arma de Relampago). Partes de madeira viram cinzas. Custo dobra se os projeteis nao forem metalicos. Dur 1min. Nao escala com energia.",
    "buffDanoArma": 2,
-   "notas": "Como Arma de Relampago mas em arma de projetil: cada projetil disparado causa +2 de dano por relampago; partes de madeira viram cinzas. Custo dobra se projeteis nao metalicos. Dur 1min."
+   "buffArmaTipo": "distancia"
   }
  },
  {
@@ -11653,8 +11693,9 @@
   "mecanica": {
    "efeito": "buff",
    "buffRotulo": "projeteis flamejantes +2 quei",
+   "notas": "Como Arma Flamejante, porem em arma de projetil: +2 de dano depois de penetrar a armadura. Projetil vira cinzas ao atingir o alvo ou apos 10 seg. Custo dobra se os projeteis forem de metal.",
    "buffDanoArma": 2,
-   "notas": "Como Arma Flamejante em arma de projetil; +2 dano; projetil vira cinzas ao atingir ou apos 10 seg. Custo dobra se projetil de metal."
+   "buffArmaTipo": "distancia"
   }
  },
  {
@@ -11734,8 +11775,9 @@
   "descricao": "Área\n\nOperada em uma área, essa mágica protege todos os animais de um determinado tipo dentro de seus limites. Tentativas de fazer mal a eles são repelidas como se fosse por defensores invisíveis; animais protegidos ganham BD +3 e RD 5.\n\nEsta também é uma mágica de Proteção e Aviso.\n\nDuração: 1 minuto.\n\nCusto básico: 1. O mesmo custo para manter.\n\nTempo de operação: 1 minuto.\n\nPré-requisitos: Armadura, Sentinela e quaisquer três mágicas sobre Animais.",
   "mecanica": {
    "efeito": "buff",
-   "buffRotulo": "BD +3 e RD 5",
-   "notas": "Magica de Area: todos os animais de um tipo dentro dela ganham BD+3 e RD5; ataques repelidos como por defensores invisiveis. Tambem Protecao e Aviso. 1/1."
+   "buffRotulo": "RD 5 (BD +3 narrado)",
+   "notas": "Mágica de Área: todos os animais de um tipo dentro dela ganham RD 5 e BD +3 por 1 min (custo básico 1, mesmo para manter). Só a RD 5 é executada — o BD +3 (ataques repelidos por defensores invisíveis) fica narrado, pois o motor não tem campo de BD.",
+   "buffRd": 5
   }
  },
  {
@@ -12127,7 +12169,7 @@
   "mecanica": {
    "efeito": "buff",
    "buffRotulo": "peso do equipamento -25% ou -50%",
-   "notas": "Reduz o peso do equipamento carregado (3 = -25%, 5 = -50%) por 10 min."
+   "notas": "Reduz o peso do equipamento carregado (3 = -25%, 5 = -50%) por 10 min. Peso/sobrecarga não tem campo no motor."
   }
  },
  {
@@ -12211,7 +12253,7 @@
   "mecanica": {
    "efeito": "buff",
    "buffRotulo": "Reflexos em Combate",
-   "notas": "Concede Reflexos em Combate por 1 min; sem efeito em quem ja possui."
+   "notas": "Vantagem Reflexos em Combate (MB82) por 1 min; sem efeito em quem ja possui. O livro nao da um numero unico (a vantagem tem varios efeitos) -> narrado."
   }
  },
  {
@@ -12632,7 +12674,7 @@
   "mecanica": {
    "efeito": "buff",
    "buffRotulo": "idioma copiado do alvo",
-   "notas": "Operador ganha um idioma no nivel do alvo ou Com Sotaque, o menor."
+   "notas": "Operador ganha um idioma no nivel do alvo ou Com Sotaque, o menor. O alvo deve conhecer o idioma."
   }
  },
  {
@@ -12652,7 +12694,7 @@
   "mecanica": {
    "efeito": "buff",
    "buffRotulo": "pericia +4 copiada do alvo",
-   "notas": "Operador ganha pericia (atributo)+4 ou +4 niveis; teto no NH do alvo, que deve estar disposto. Nao serve p/ idiomas/magias."
+   "notas": "Operador ganha pericia (atributo dominante)+4 ou +4 niveis, o que for maior; teto no NH do alvo, que deve estar disposto. Nao serve p/ idiomas/magias. Bonus de pericia nao tem campo no motor."
   }
  },
  {
@@ -12772,7 +12814,7 @@
   "mecanica": {
    "efeito": "buff",
    "buffRotulo": "respira água (Guelras)",
-   "notas": "Concede Não Respira (Guelras) por 1 min; ainda respira ar. Opcional: Resistência à Pressão 1. Utilidade."
+   "notas": "Concede Não Respira (Guelras) (MB p73) por 1 min; continua respirando ar. A critério do Mestre inclui Resistência à Pressão 1 (MB p84). Vantagem — sem campo numérico."
   }
  },
  {
@@ -12793,7 +12835,7 @@
   "mecanica": {
    "efeito": "buff",
    "buffRotulo": "criatura aquática respira ar",
-   "notas": "Alvo respira ar como se fosse água e não se desidrata no ar por 1 min. Mantém criaturas aquáticas vivas fora d'água. Utilidade."
+   "notas": "Alvo respira ar como se fosse água e não se desidrata no ar, por 1 min. Serve para manter peixes/homens-peixe vivos fora d'água. Utilidade narrada."
   }
  },
  {
@@ -12886,7 +12928,7 @@
   "mecanica": {
    "efeito": "buff",
    "buffRotulo": "audicao restaurada 1h",
-   "notas": "Restaura temporariamente a audicao por 1 hora (timpanos/orgaos nao podem estar ausentes). Custo = metade dos pontos de audicao restaurados (Per+Audicao Aguda); metade p/ manter."
+   "notas": "Restaura temporariamente a audicao por 1 hora (timpanos/orgaos nao podem estar ausentes). Custo = metade dos pontos de audicao restaurados (Per+Audicao Aguda); metade p/ manter. Per/sentidos nao entram no motor de combate."
   }
  },
  {
@@ -12906,7 +12948,7 @@
   "mecanica": {
    "efeito": "buff",
    "buffRotulo": "fala restaurada 1h",
-   "notas": "Restaura temporariamente a fala por 1 hora (lingua/cordas vocais nao podem estar ausentes). Custo 5 operar / 3 manter."
+   "notas": "Restaura temporariamente a fala por 1 hora (lingua/cordas vocais nao podem estar ausentes). Custo 5 operar / 3 manter. Efeito de utilidade, sem numero de combate."
   }
  },
  {
@@ -12961,7 +13003,7 @@
   "mecanica": {
    "efeito": "buff",
    "buffRotulo": "visao restaurada 1h",
-   "notas": "Restaura temporariamente a visao por 1 hora, seja qual for a causa (perda magica pode resistir); olhos nao podem estar ausentes. Custo = metade dos pontos de Visao restaurados (Per+Visao Aguda); metade p/ manter. Cura permanente = Restauracao."
+   "notas": "Restaura temporariamente a visao por 1 hora, seja qual for a causa (perda magica pode resistir); olhos nao podem estar ausentes. Custo = metade dos pontos de Visao restaurados (Per+Visao Aguda); metade p/ manter. Cura permanente = Restauracao. Per/sentidos nao entram no motor."
   }
  },
  {
@@ -13050,7 +13092,7 @@
   "mecanica": {
    "efeito": "buff",
    "buffRotulo": "queda a 1 m/s (sem dano ao pousar)",
-   "notas": "Reduz a velocidade de queda p/ 1 m/s; sem dano ao aterrissar em superfície normal (espetos ainda causam metade). 1 por 25kg."
+   "notas": "Reduz a velocidade de queda para 1 m/s; sem dano ao aterrissar em superfície normal (espetos ainda causam metade). Custo 1 por 25 kg. Situacional — narrar."
   }
  },
  {
@@ -13413,7 +13455,7 @@
   "mecanica": {
    "efeito": "buff",
    "buffRotulo": "deslocamento de salto +2x energia",
-   "notas": "Aumenta o deslocamento básico só p/ salto em 2x a energia aplicada (1 a 3). Por 1 min."
+   "notas": "Aumenta o deslocamento básico APENAS para fins de salto em 2x a energia aplicada (1 a 3). Não é Deslocamento de combate — não pode virar buffDeslocamento."
   }
  },
  {
@@ -13448,7 +13490,7 @@
   "mecanica": {
    "efeito": "buff",
    "buffRotulo": "ignora penalidades de gelo/neve",
-   "notas": "Elimina penalidades de deslocamento/DX/perícia por gelo ou neve por 1 min. Ainda sofre por superfície instável."
+   "notas": "Elimina as penalidades de Deslocamento/DX/perícia impostas por gelo ou neve, por 1 min — remove penalidade de terreno (que o motor não modela), não concede bônus. Ainda sofre por superfície instável. Narrado."
   }
  },
  {
@@ -13623,7 +13665,7 @@
   "mecanica": {
    "efeito": "buff",
    "buffRotulo": "+5 Arrombamento (à distância)",
-   "notas": "+5 em Arrombamento (move trancas sem tocar c/ ferramentas), e bônus similar a Mecânica e perícias de 'terceira mão'."
+   "notas": "+5 em Arrombamento (move trancas sem tocar, com ferramentas) e bônus similar a Mecânica e perícias de 'terceira mão'. Bônus de perícia — sem campo no motor."
   }
  },
  {
@@ -14356,7 +14398,7 @@
   "mecanica": {
    "efeito": "buff",
    "buffRotulo": "aquecido +15C",
-   "notas": "Mantem alvo confortavelmente quente no frio (+15C rumo a zona de conforto), evita congelamento/hipotermia. NAO protege contra frio magico. Dura 1h. Protecao/Aviso."
+   "notas": "Mantém o alvo confortavelmente quente no frio (+15 °C rumo à zona de conforto), evitando congelamento/hipotermia. NÃO protege contra frio mágico (ex.: Congelamento). Duração 1h (texto do custo diz 1 min. no cabeçalho). Efeito de ambiente — sem número de combate."
   }
  },
  {
@@ -15101,7 +15143,7 @@
   "mecanica": {
    "efeito": "buff",
    "buffRotulo": "Ve invisiveis (translucidos)",
-   "notas": "Alvo ve coisas ocultas por Invisibilidade ou invisibilidade natural; aparecem translucidas. Duracao 1min."
+   "notas": "Vantagem: alvo ve coisas ocultas pela magia Invisibilidade ou por invisibilidade natural; aparecem translucidas. Duracao 1min (4/2). Narrado."
   }
  },
  {
@@ -15269,7 +15311,11 @@
   "mecanica": {
    "efeito": "buff",
    "buffRotulo": "HT +N (max 5), +Vel Basica/PF",
-   "notas": "2 energia por +1 HT (max 5). Afeta Vel Basica, PF, resistencia a trauma/doenca. Se ao fim PF < 0, sofre dano por PF negativo."
+   "notas": "2 energia por +1 HT, max 5. Afeta Velocidade Basica, PF e resistencia a trauma/doenca. Se ao fim os PF estiverem abaixo de zero, sofre 1 de dano por PF negativo (risco de desmaio).",
+   "buffEnergiaPorNivel": 2,
+   "buffMaxNiveis": 5,
+   "buffAtributo": "HT",
+   "buffAtributoValor": 1
   }
  },
  {
@@ -15305,7 +15351,7 @@
   "mecanica": {
    "efeito": "buff",
    "buffRotulo": "Protecao contra cegueira por luz",
-   "notas": "Espia fontes intensas de luz com seguranca e protege contra cegueira de Lampejo, ataques baseados em visao e similares. Duracao 1min."
+   "notas": "Espia fontes intensas de luz (fogo, sol) com seguranca e protege contra cegueira causada pela magia Lampejo, ataques baseados em visao e ocorrencias semelhantes. Imunidade -> narrado. Duracao 1min (2/1)."
   }
  },
  {
@@ -15402,7 +15448,7 @@
   "mecanica": {
    "efeito": "buff",
    "buffRotulo": "Visao Microscopica 2 (x100); -2 CaC",
-   "notas": "Ve objetos ao alcance como ampliacao x100 (Visao Microscopica 2). Fica extremamente miope: nao ve claro alem de 1m e todos ataques corpo a corpo com -2 no NH. Dobrar custo = x10 ampliacao. Duracao 1min."
+   "notas": "Vantagem de percepção (Visão Microscópica 2, ampliação x100) + desvantagem situacional. O -2 é ao NH dos ataques CORPO A CORPO DO PRÓPRIO OBJETIVO (miopia extrema, não vê claro além de 1m) — o motor só tem campo pra penalidade a QUEM ATACA o alvo, que é o oposto; preencher inverteria a regra. Dobrar o custo de operação = x10 de ampliação. Duração 1 min, 4 para operar / 2 para manter. Narrador apli"
   }
  },
  {
@@ -15422,7 +15468,7 @@
   "mecanica": {
    "efeito": "buff",
    "buffRotulo": "Visao no Escuro",
-   "notas": "Alvo ve na escuridao como a vantagem Visao no Escuro e ignora os efeitos da magia Trevas. Duracao 1min."
+   "notas": "Vantagem: alvo ve na escuridao como se tivesse Visao no Escuro e ignora os efeitos da magia Trevas. Duracao 1min (5/2). Narrado."
   }
  },
  {
@@ -15442,7 +15488,7 @@
   "mecanica": {
    "efeito": "buff",
    "buffRotulo": "Visao Noturna 9",
-   "notas": "Ve claramente desde que haja alguma luz (Visao Noturna 9). Na escuridao total ainda fica cego. Duracao 1min."
+   "notas": "Ve claramente desde que haja ALGUMA luz (Visao Noturna 9). Na escuridao total o alvo continua cego. Duracao 1min (3/1). Narrado."
   }
  },
  {
@@ -15531,7 +15577,8 @@
   "mecanica": {
    "efeito": "buff",
    "buffRotulo": "voa com Deslocamento 10",
-   "notas": "Voa sem asas, Deslocamento 10 (reduzido por sobrecarga); move e luta normal, vantagem se acima dos inimigos. Por 1 min."
+   "notas": "Voa sem asas com Deslocamento 10 (reduzido por sobrecarga); move e luta normal, vantagem de combate se acima dos inimigos (MB402). Por 1 min.",
+   "buffDeslocamentoFixo": 10
   }
  },
  {
@@ -15551,7 +15598,8 @@
   "mecanica": {
    "efeito": "buff",
    "buffRotulo": "voa com Deslocamento 40",
-   "notas": "Voo muito rápido, Deslocamento 40 (120 km/h), reduzido por sobrecarga; move e luta normal, vantagem se acima. Por 1 min."
+   "notas": "Voo muito rápido: Deslocamento 40 (120 km/h), reduzido por sobrecarga; move e luta normal, vantagem se acima dos inimigos. Por 1 min.",
+   "buffDeslocamentoFixo": 40
   }
  },
  {

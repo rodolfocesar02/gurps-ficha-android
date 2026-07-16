@@ -739,7 +739,13 @@ class SagaCombatController(
             runCatching { com.gurps.ficha.data.DataRepository.getInstance(c).getMagiaPorId(magia.definicaoId) }.getOrNull()
         }
         val mecanica = def?.mecanica
-        val resumoEfeito = resumoDaDescricao(def?.descricao ?: magia.texto)
+        // Lote MEC-2: a `notas` da curadoria é a REGRA destilada (ambiente/controle/informação, que o
+        // motor não executa); a descrição é o sabor. O Narrador recebe as duas — antes a nota era
+        // gravada e nunca lida por ninguém.
+        val resumoEfeito = listOfNotNull(
+            mecanica?.notas?.takeIf { it.isNotBlank() },
+            resumoDaDescricao(def?.descricao ?: magia.texto)?.takeIf { it.isNotBlank() },
+        ).joinToString(" — ").take(400).ifBlank { null }
         val ctx = ContextoConjuracao(
             nhBasico = magia.calcularNivel(p, aptidao),
             classe = classe,
@@ -757,7 +763,7 @@ class SagaCombatController(
         val tempoBase = parseTempoSeg(magia.tempoOperacao)
         val tempo = MagicCasting.tempoOperacaoAjustado(tempoBase, magia.calcularNivel(p, aptidao))
         val res = s.heroiConjurar(ctx, custo, energiaInvestida, magia.nome, alvoId, tempo)
-        registrarSeMagiaAtiva(s, magia, classe, custo, res, alvoId, magia.calcularNivel(p, aptidao))
+        registrarSeMagiaAtiva(s, magia, classe, custo, res, alvoId, magia.calcularNivel(p, aptidao), mecanica, energiaInvestida)
         sincronizarRecursosHeroi(s)
         depoisDaAcaoDoHeroi()
     }
@@ -768,8 +774,12 @@ class SagaCombatController(
         classe: com.gurps.ficha.domain.magic.ClasseParseada,
         custo: com.gurps.ficha.domain.magic.CustoEnergia,
         res: CombatSession.ResultadoConjuracaoCombate, alvoId: String?, nhBasico: Int,
+        mecanica: com.gurps.ficha.domain.magic.MagiaMecanica? = null, energiaInvestida: Int = 0,
     ) {
         if (!res.sucesso || res.emAndamento) return
+        // Lote MEC-2: o alvo RESISTIU → a magia não pega. Sem isto um Debilitar resistido ainda
+        // aplicaria −3 ST, porque `sucesso` só quer dizer "a conjuração deu certo".
+        if (res.alvoResistiu) return
         // Projétil/Toque/Área não são "buffs ativos" (dano imediato / carregam / mira própria).
         if (TipoClasseMagia.PROJETIL in classe.classes || TipoClasseMagia.TOQUE in classe.classes ||
             TipoClasseMagia.AREA in classe.classes) return
@@ -778,7 +788,16 @@ class SagaCombatController(
         // Manutenção ≈ metade do custo (Magia p.15), reduzida por NH alto.
         val base = (custo.base ?: custo.minimo).coerceAtLeast(1)
         val manut = MagicCost.custoAjustadoPorNH(kotlin.math.ceil(base / 2.0).toInt().coerceAtLeast(1), nhBasico)
-        s.registrarMagiaAtiva(magia.nome, "heroi", alvoId, durSeg, if (dur == TipoDuracao.DURADOURA) 0 else manut, dur, exigeConcentracao = false)
+        // Lote MEC-2: buff com NÚMERO curado → o motor aplica os deltas e reverte ao expirar.
+        // Sem número (Corpo de Água, Ambidestria) o buff segue só narrado — regra de ouro.
+        val buff = mecanica
+            ?.takeIf { com.gurps.ficha.domain.magic.MagicMechanics.temBuffEstruturado(it) }
+            ?.let {
+                com.gurps.ficha.domain.magic.MagicMechanics.calcularBuff(
+                    it, energiaInvestida, alvoId ?: "heroi" // sem alvo explícito, o buff é no operador
+                )
+            }
+        s.registrarMagiaAtiva(magia.nome, "heroi", alvoId, durSeg, if (dur == TipoDuracao.DURADOURA) 0 else manut, dur, exigeConcentracao = false, buff = buff)
     }
 
     /** Extrai (tipo de duração, segundos) do campo `duracao` do catálogo ("1 min.", "permanente", "instantâneo"). */

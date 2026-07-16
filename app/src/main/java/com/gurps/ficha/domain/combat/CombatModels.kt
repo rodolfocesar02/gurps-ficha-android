@@ -154,9 +154,36 @@ data class Combatente(
     var sangramentoIntervaloSeg: Int = 60,    // 60s comum; 30s nos locais graves do AM
     var sangramentoUltimaRodada: Int = Int.MIN_VALUE, // rodada do último teste (MIN = recém-iniciado, inicializa no 1º tick)
     var sangramentoTestesLimpos: Int = 0,     // intervalos seguidos sem sangrar; 3 = estanca de vez
+    /**
+     * Lote MEC-2: buffs mágicos ativos NESTE combatente. Guardar a LISTA (em vez de mutar um total e
+     * "desmutar" depois) faz a expiração ser só um `remove` — sem drift nem reversão dupla.
+     */
+    val buffs: MutableList<com.gurps.ficha.domain.magic.BuffAplicado> = mutableListOf(),
     /** Stats completos quando é NPC do bestiário; null para o herói (vem da ficha). */
     val stats: NpcStats? = null
 ) {
+    // ── Somas dos buffs mágicos ativos (Lote MEC-2). Valem para o herói E para o NPC. ──
+    val buffRd: Int get() = buffs.sumOf { it.rd }
+    val buffEsquiva: Int get() = buffs.sumOf { it.esquiva }
+    val buffSt: Int get() = buffs.sumOf { it.st }
+    val buffDx: Int get() = buffs.sumOf { it.dx }
+    val buffHt: Int get() = buffs.sumOf { it.ht }
+    val buffDanoArma: Int get() = buffs.sumOf { it.danoArma }
+    /** Penalidade ao NH de quem ATACA este combatente (Nublar). Valor positivo = quanto subtrair. */
+    val buffPenalidadeAtacantes: Int get() = buffs.sumOf { it.penalidadeAtacantes }
+    /** Deslocamento ABSOLUTO imposto por buff (Voo); o mais recente vence. null = ninguém impôs. */
+    val buffDeslocamentoFixo: Int? get() = buffs.lastOrNull { it.deslocamentoFixo != null }?.deslocamentoFixo
+
+    /**
+     * Atributos EFETIVOS do NPC = bestiário + buffs mágicos (Debilitar −ST, Fragilidade −HT…). Sem
+     * isto o debuff no inimigo seria gravado e não faria nada — o motor lê o bestiário direto.
+     * (O herói tem stats null: seus atributos vêm do HeroiPerfilCombate, que soma os buffs à parte.)
+     */
+    val stEfetivo: Int get() = (stats?.st ?: 10) + buffSt
+    val htEfetivo: Int get() = (stats?.ht ?: 10) + buffHt
+    val dxEfetivo: Int get() = (stats?.dx ?: 10) + buffDx
+    /** Variante para os pontos que caem no DX do próprio combatente quando não há bestiário. */
+    val dxEfetivoOuProprio: Int get() = (stats?.dx ?: dx) + buffDx
     val vivo: Boolean get() = pvAtual > -pvMax && Condicao.INCONSCIENTE !in condicoes
     /** Caído = derrubado (condição) ou postura deitada. */
     val caido: Boolean get() = Condicao.CAIDO in condicoes || postura == Postura.DEITADO
@@ -168,9 +195,12 @@ data class Combatente(
      * ajoelhado/rastejando = 1/3; deitado = 1; sentado = 0; depois, cambaleante corta pela metade (MB p.380).
      */
     val deslocamentoEfetivo: Int get() {
+        // Lote MEC-2: o buff entra na BASE (Voo impõe Deslocamento 10; Apressar soma) — postura e
+        // cambaleante continuam cortando depois, que é a ordem das regras.
+        val base = (buffDeslocamentoFixo ?: (deslocamento + buffs.sumOf { it.deslocamento })).coerceAtLeast(0)
         val porPostura = when (postura) {
-            Postura.EM_PE, Postura.AGACHADO -> deslocamento
-            Postura.AJOELHADO, Postura.RASTEJANDO -> deslocamento / 3
+            Postura.EM_PE, Postura.AGACHADO -> base
+            Postura.AJOELHADO, Postura.RASTEJANDO -> base / 3
             Postura.DEITADO -> 1
             Postura.SENTADO -> 0
         }

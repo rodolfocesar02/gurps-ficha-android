@@ -30,9 +30,29 @@ import kotlin.random.Random
  */
 class CombatSession(
     val encounter: CombatEncounter,
-    val heroiPerfil: HeroiPerfilCombate,
+    /** Perfil da ficha, SEM buffs mágicos. Leia [heroiPerfil] — é ele que enxerga os buffs ativos. */
+    val heroiPerfilBase: HeroiPerfilCombate,
     private val random: Random = Random.Default
 ) {
+    /**
+     * Lote MEC-2: perfil EFETIVO do herói = ficha + buffs mágicos ativos (Força +ST, Escudo +RD,
+     * Apressar +Esquiva…). É propriedade computada de propósito: todo o motor já lia `heroiPerfil`,
+     * então os buffs passam a valer em cada regra sem tocar em nenhum ponto de uso.
+     */
+    val heroiPerfil: HeroiPerfilCombate
+        get() {
+            val b = heroiPerfilBase
+            val h = encounter.combatentes.firstOrNull { it.ehHeroi } ?: return b
+            if (h.buffs.isEmpty()) return b
+            return b.copy(
+                rd = b.rd + h.buffRd,
+                esquiva = b.esquiva + h.buffEsquiva,
+                st = b.st + h.buffSt,
+                dx = b.dx + h.buffDx,
+                ht = b.ht + h.buffHt,
+            )
+        }
+
     /** Registro factual, linha a linha — o Narrador transforma em prosa SEM inventar números. */
     val log: MutableList<String> = mutableListOf()
 
@@ -298,7 +318,7 @@ class CombatSession(
         val danoNpc = rolarDano(encontraoDanoDados(alvo.pvMax, relVel), random)
         val dnNpc = HitLocationRules.aplicarDano(alvo.pvMax, danoHeroi, DanoTipo.CONT, LocalAtaque.TORSO,
             alvo.stats?.rd ?: 0, alvo.stats?.tolerancia ?: ToleranciaFerimentos.NORMAL)
-        InjuryRules.ferir(alvo, dnNpc.pvSubtrair, alvo.stats?.ht ?: 10, random)
+        InjuryRules.ferir(alvo, dnNpc.pvSubtrair, alvo.htEfetivo, random)
         val dnHeroi = HitLocationRules.aplicarDano(heroi.pvMax, danoNpc, DanoTipo.CONT, LocalAtaque.TORSO, heroiPerfil.rd)
         InjuryRules.ferir(heroi, dnHeroi.pvSubtrair, heroiPerfil.ht, random)
         log += "  └ você causa ${dnNpc.pvSubtrair} a ${alvo.nome} e sofre ${dnHeroi.pvSubtrair} (impacto recíproco)."
@@ -332,12 +352,12 @@ class CombatSession(
             return AtaqueResultado(true, true, 0, false, log.last())
         }
         val forca = rolarDano(heroiPerfil.danoGdP, random) * 2 // GdP × 2 (duas mãos), MB p.371
-        val stAlvo = (alvo.stats?.st ?: 10).coerceAtLeast(3)
+        val stAlvo = (alvo.stEfetivo).coerceAtLeast(3)
         val knockback = forca / (stAlvo - 2) // projeção: 1m por múltiplo de (ST−2) no dano (MB p.378); sem lesão
         if (knockback > 0) {
             encounter.moverEmRelacaoAoHeroi(alvo.id, knockback)
             log += "  └ ${alvo.nome} é projetado ${knockback}m para trás (força $forca vs ST $stAlvo) — sem lesão (MB p.371/378)."
-            if (knockback >= 2 && rolar3d6() > (alvo.stats?.dx ?: alvo.dx) - (knockback - 1)) {
+            if (knockback >= 2 && rolar3d6() > (alvo.dxEfetivoOuProprio) - (knockback - 1)) {
                 alvo.postura = Postura.DEITADO; alvo.condicoes.add(Condicao.CAIDO); log += "  └ ${alvo.nome} cai com o tranco!"
             }
         } else log += "  └ ${alvo.nome} mal se move (força $forca insuficiente vs ST $stAlvo)."
@@ -355,7 +375,7 @@ class CombatSession(
             return "⚠️ Só dá pra imobilizar um oponente no chão — derrube-o antes.".also { log += it }
         val mtBonus = (heroiPerfil.modificadorTamanho - (alvo.stats?.modificadorTamanho ?: 0)).coerceAtLeast(0) * 3
         val stHeroi = heroiPerfil.st + mtBonus
-        val stNpc = alvo.stats?.st ?: 10
+        val stNpc = alvo.stEfetivo
         val rh = rolar3d6(); val rn = rolar3d6()
         val txt = if (vencaDisputaRapida(stHeroi, rh, stNpc, rn)) {
             alvo.condicoes.add(Condicao.IMOBILIZADO)
@@ -372,7 +392,7 @@ class CombatSession(
         if (Condicao.AGARRADO !in alvo.condicoes)
             return "⚠️ Você precisa estar agarrando ${alvo.nome} pelo pescoço para estrangulá-lo.".also { log += it }
         val stHeroi = heroiPerfil.st
-        val resist = maxOf(alvo.stats?.st ?: 10, alvo.stats?.ht ?: 10)
+        val resist = maxOf(alvo.stEfetivo, alvo.htEfetivo)
         val rh = rolar3d6(); val rn = rolar3d6()
         // Disputa Rápida: margem de vitória do estrangulador = dano por contusão (×1,5 no pescoço); RD protege.
         val margem = (stHeroi - rh) - (resist - rn)
@@ -383,7 +403,7 @@ class CombatSession(
         val danoBruto = (margem * 1.5).toInt().coerceAtLeast(1)
         val dn = HitLocationRules.aplicarDano(alvo.pvMax, danoBruto, DanoTipo.CONT, LocalAtaque.TORSO,
             alvo.stats?.rd ?: 0, alvo.stats?.tolerancia ?: ToleranciaFerimentos.NORMAL)
-        InjuryRules.ferir(alvo, dn.pvSubtrair, alvo.stats?.ht ?: 10, random)
+        InjuryRules.ferir(alvo, dn.pvSubtrair, alvo.htEfetivo, random)
         log += "🫳 Você estrangula ${alvo.nome}: margem $margem → ${dn.pvSubtrair} de dano no pescoço. [ST $stHeroi rolou $rh vs $resist rolou $rn]"
         if (dn.pvSubtrair > 0 && alvo.vivo) {
             alvo.condicoes.add(Condicao.SUFOCANDO)
@@ -406,7 +426,7 @@ class CombatSession(
         if (Condicao.AGARRADO !in alvo.condicoes)
             return "⚠️ Você precisa estar agarrando ${alvo.nome} para aplicar uma chave.".also { log += it }
         val stHeroi = heroiPerfil.st
-        val resist = maxOf(alvo.stats?.st ?: 10, alvo.stats?.ht ?: 10) + (if (perna) 4 else 0)
+        val resist = maxOf(alvo.stEfetivo, alvo.htEfetivo) + (if (perna) 4 else 0)
         val rh = rolar3d6(); val rn = rolar3d6()
         val membro = if (perna) LocalAtaque.PERNA else LocalAtaque.BRACO
         val margem = (stHeroi - rh) - (resist - rn)
@@ -416,7 +436,7 @@ class CombatSession(
         }
         val dn = HitLocationRules.aplicarDano(alvo.pvMax, margem, DanoTipo.CONT, membro,
             alvo.stats?.rd ?: 0, alvo.stats?.tolerancia ?: ToleranciaFerimentos.NORMAL)
-        InjuryRules.ferir(alvo, dn.pvSubtrair, alvo.stats?.ht ?: 10, random)
+        InjuryRules.ferir(alvo, dn.pvSubtrair, alvo.htEfetivo, random)
         log += "🦾 Você aplica uma chave no ${membro.rotulo} de ${alvo.nome}: margem $margem → ${dn.pvSubtrair} de dano. [ST $stHeroi rolou $rh vs $resist rolou $rn]"
         verificarFim()
         return log.last()
@@ -433,7 +453,7 @@ class CombatSession(
         if (Condicao.AGARRADO !in alvo.condicoes)
             return "⚠️ Você precisa estar agarrando ${alvo.nome} pelo pescoço para o mata-leão.".also { log += it }
         val stHeroi = heroiPerfil.st + 3 // +3 pelo controle com as duas mãos (AM p.77)
-        val resist = maxOf(alvo.stats?.st ?: 10, alvo.stats?.ht ?: 10)
+        val resist = maxOf(alvo.stEfetivo, alvo.htEfetivo)
         val rh = rolar3d6(); val rn = rolar3d6()
         val margem = (stHeroi - rh) - (resist - rn)
         if (rh > stHeroi || margem <= 0) {
@@ -443,7 +463,7 @@ class CombatSession(
         val danoBruto = (margem * 1.5).toInt().coerceAtLeast(1)
         val dn = HitLocationRules.aplicarDano(alvo.pvMax, danoBruto, DanoTipo.CONT, LocalAtaque.TORSO,
             alvo.stats?.rd ?: 0, alvo.stats?.tolerancia ?: ToleranciaFerimentos.NORMAL)
-        InjuryRules.ferir(alvo, dn.pvSubtrair, alvo.stats?.ht ?: 10, random)
+        InjuryRules.ferir(alvo, dn.pvSubtrair, alvo.htEfetivo, random)
         log += "🫳 Você aplica um mata-leão em ${alvo.nome}: margem $margem → ${dn.pvSubtrair} de dano no pescoço. [ST $stHeroi rolou $rh vs $resist rolou $rn]"
         if (dn.pvSubtrair > 0 && alvo.vivo) {
             alvo.condicoes.add(Condicao.SUFOCANDO)
@@ -572,6 +592,9 @@ class CombatSession(
             }
             // Cego (Lote COND-1, MB p.394): −4 para acertar (não vê o alvo).
             if (Condicao.CEGO in heroi.condicoes) add(CombatActions.ComponenteMod("cego", -4))
+            // MEC-2 — Nublar no ALVO (−1 a −5): vale para o herói também, não só contra ele.
+            if (alvo.buffPenalidadeAtacantes > 0)
+                add(CombatActions.ComponenteMod("alvo nublado", -alvo.buffPenalidadeAtacantes))
             if (ataque.aDistancia) {
                 // Modificador de Tamanho do alvo (MB p.549): alvo grande é mais fácil de acertar, pequeno mais difícil.
                 val mt = alvo.stats?.modificadorTamanho ?: 0
@@ -650,7 +673,8 @@ class CombatSession(
         val meioDano = ataque.aDistancia && ataque.meioDano > 0 && dist >= ataque.meioDano
         var danoBasico = (rolarDano(ataque.danoExpr, random) + bonusDanoForte(manobra, ataqueTotalModo, ataque.danoExpr, ataque.aDistancia)
             + modDanoManobra(manobra, dedicadoModo, ataque.danoExpr, ataque.aDistancia) + bonusInvestidaPendente).coerceAtLeast(0)
-        var rdAlvo = rdComDivisor(alvo.stats?.rd ?: 0, divisorArmadura(ataque.danoExpr)) // Lote 413: divisor de armadura
+        // MEC-2: a RD de buff mágico (Proteger Animal RD 5, Armadura) soma à RD do bestiário.
+        var rdAlvo = rdComDivisor((alvo.stats?.rd ?: 0) + alvo.buffRd, divisorArmadura(ataque.danoExpr)) // Lote 413: divisor de armadura
         var forcaGrave = false
         // Golpe Fulminante (Lote 384, MB p.558): a defesa já é anulada pelo crítico; a tabela modifica o DANO.
         if (atk.critico == CriticoRules.ResultadoCritico.DECISIVO) {
@@ -658,10 +682,18 @@ class CombatSession(
             danoBasico = gf.dano; rdAlvo = gf.rd; forcaGrave = gf.grave
             log += "  ⭐ Golpe Fulminante — ${gf.nota}"
         }
-        val danoBruto = if (meioDano) danoBasico / 2 else danoBasico
+        var danoBruto = if (meioDano) danoBasico / 2 else danoBasico
+        // MEC-2 — Arma Flamejante/Congelante/de Relâmpago (+2): o bônus entra APÓS penetrar a RD, e só
+        // se o dado base penetrou. Como a RD é subtraída dentro do resolver, somar aqui dá o mesmo:
+        // (dano+2) − RD == (dano − RD) + 2. `armaTipo` impede o +2 do gume vazar para o arco.
+        val bonusArmaMagica = heroi.buffs.filter { it.danoArma > 0 && it.danoArmaVale(ataque.aDistancia) }.sumOf { it.danoArma }
+        if (bonusArmaMagica > 0 && danoBruto > rdAlvo) {
+            danoBruto += bonusArmaMagica
+            log += "  └ 🔥 a arma encantada soma +$bonusArmaMagica de dano após penetrar a RD."
+        }
 
         val troca = CombatResolver.resolverTroca(
-            defensor = alvo, htDefensor = alvo.stats?.ht ?: 10, ataque = atk,
+            defensor = alvo, htDefensor = alvo.htEfetivo, ataque = atk,
             defesaTipo = defTipo, defesaValorFinal = defValorFinal, defesaSoma = defSoma,
             surpresa = costasNpc, // Lote TOK-5a: ataque pelas costas anula a defesa do NPC (MB p.374)
             danoBaseRolado = danoBruto, danoTipo = ataque.tipo,
@@ -673,7 +705,7 @@ class CombatSession(
         // Projeção (Lote 417, MB p.378): contusão/corte que acerta pode jogar o alvo para trás (o helper filtra o tipo).
         if (troca.dano != null && alvo.vivo)
             aplicarProjecao(alvo, alvo, danoBruto, ataque.tipo, (troca.dano?.pvSubtrair ?: 0) > 0,
-                alvo.stats?.st ?: alvo.pvMax, alvo.stats?.dx ?: alvo.dx)
+                alvo.stats?.st ?: alvo.pvMax, alvo.dxEfetivoOuProprio)
         // Erro Crítico (Lote 384, MB p.557): o próprio herói tropeça no golpe.
         if (atk.critico == CriticoRules.ResultadoCritico.FALHA_CRITICA)
             aplicarErroCritico(heroi, heroiPerfil.ht, ataque.danoExpr, ataque.desarmado, "Você")
@@ -686,7 +718,7 @@ class CombatSession(
                     if (!alvo.vivo) return@repeat
                     val d = (rolarDano(ataque.danoExpr, random)).let { if (meioDano) it / 2 else it }
                     val rd = HitLocationRules.aplicarDano(alvo.pvMax, d, ataque.tipo, local, alvo.stats?.rd ?: 0, alvo.stats?.tolerancia ?: ToleranciaFerimentos.NORMAL)
-                    InjuryRules.ferir(alvo, rd.pvSubtrair, alvo.stats?.ht ?: 10, random)
+                    InjuryRules.ferir(alvo, rd.pvSubtrair, alvo.htEfetivo, random)
                 }
                 log += "  └ rajada: +$extras projétil(eis) acertam (Recuo ${ataque.recuo}, margem ${atk.margem}) → ${alvo.nome} PV ${alvo.pvAtual}/${alvo.pvMax}."
             }
@@ -773,14 +805,58 @@ class CombatSession(
     fun registrarMagiaAtiva(
         nome: String, operadorId: String, alvoId: String?, duracaoSeg: Int,
         custoManutencaoSeg: Int, duracao: TipoDuracao, exigeConcentracao: Boolean,
+        buff: com.gurps.ficha.domain.magic.BuffAplicado? = null,
     ) {
+        // MEC-2: aplica o buff no alvo AGORA (a lista dele passa a somar no perfil efetivo).
+        val aplicado = buff?.takeIf { !it.soNarrado }
+        if (aplicado != null) {
+            val alvo = encounter.combatentes.firstOrNull { it.id == aplicado.alvoId }
+            if (alvo != null) {
+                alvo.buffs.add(aplicado)
+                log += "✨ ${alvo.nome}: $nome — ${descreverBuff(aplicado)}."
+            }
+        }
         magiasAtivas = magiasAtivas + MagiaAtivaNoCombate(
             magiaId = nome, operadorId = operadorId, alvoId = alvoId, energiaInvestida = 0,
             custoManutencaoSeg = custoManutencaoSeg, segundosParaProximaCobranca = duracaoSeg.coerceAtLeast(1),
             duracaoTotalSeg = duracaoSeg.coerceAtLeast(1), duracao = duracao, exigeConcentracao = exigeConcentracao,
+            buff = aplicado,
         )
         val manut = if (custoManutencaoSeg > 0) "manutenção $custoManutencaoSeg PF a cada ${duracaoSeg}s" else "sem custo de manutenção"
         log += "✨ $nome fica ATIVA ($manut)."
+    }
+
+    /** Lote MEC-2: descreve os deltas de um buff em texto factual (o Narrador transforma em prosa). */
+    private fun descreverBuff(b: com.gurps.ficha.domain.magic.BuffAplicado): String {
+        val partes = buildList {
+            if (b.st != 0) add("ST ${sinal(b.st)}"); if (b.dx != 0) add("DX ${sinal(b.dx)}")
+            if (b.ht != 0) add("HT ${sinal(b.ht)}"); if (b.rd != 0) add("RD ${sinal(b.rd)}")
+            if (b.esquiva != 0) add("Esquiva ${sinal(b.esquiva)}")
+            if (b.deslocamentoFixo != null) add("Deslocamento ${b.deslocamentoFixo}")
+            else if (b.deslocamento != 0) add("Deslocamento ${sinal(b.deslocamento)}")
+            if (b.danoArma != 0) add("arma ${sinal(b.danoArma)} de dano")
+            if (b.penalidadeAtacantes != 0) add("−${b.penalidadeAtacantes} a quem o atacar")
+        }
+        return if (partes.isEmpty()) (b.rotulo.ifBlank { "efeito narrado" }) else partes.joinToString(", ")
+    }
+    private fun sinal(n: Int) = if (n >= 0) "+$n" else "$n"
+
+    /**
+     * Lote MEC-2: dissipa uma mágica ativa pelo nome, REVERTENDO o buff que ela aplicou. Buff
+     * permanente sai por aqui (não expira sozinho).
+     */
+    fun dissiparMagiaAtiva(magiaId: String): Boolean {
+        val alvo = magiasAtivas.firstOrNull { it.magiaId.equals(magiaId, ignoreCase = true) } ?: return false
+        removerBuffDe(alvo)
+        magiasAtivas = magiasAtivas - alvo
+        log += "✨ $magiaId é dissipada."
+        return true
+    }
+
+    /** Tira da lista do combatente exatamente o BuffAplicado que esta mágica pôs (por identidade). */
+    private fun removerBuffDe(m: MagiaAtivaNoCombate) {
+        val b = m.buff ?: return
+        encounter.combatentes.firstOrNull { it.id == b.alvoId }?.buffs?.removeIf { it === b }
     }
 
     /**
@@ -1021,16 +1097,18 @@ class CombatSession(
                     } else if ((ctx.danoPorEnergia || com.gurps.ficha.domain.magic.MagicMechanics.temDanoEstruturado(ctx.mecanica)) && atingidos.isNotEmpty()) {
                         val energia = energiaInvestida.coerceAtLeast(1)
                         // AR-1: dado estruturado do catálogo quando houver; senão 1d × energia (p.14).
+                        // MEC-2: `danoFixo` também aqui — o Géiser é de ÁREA, e este ramo tem a própria
+                        // cópia do expandirDano; sem isto ele sairia 15d (custo 5) apesar do MEC-1.
                         val expr = if (ctx.mecanica?.danoPorEnergia != null)
-                            com.gurps.ficha.domain.magic.MagicMechanics.expandirDano(ctx.mecanica.danoPorEnergia, energia, ctx.mecanica.energiaPorDado)
+                            com.gurps.ficha.domain.magic.MagicMechanics.expandirDano(ctx.mecanica.danoPorEnergia, energia, ctx.mecanica.energiaPorDado, ctx.mecanica.danoFixo)
                         else "${energia}d"
                         val tipo = if (ctx.mecanica?.tipoDano == "corte") DanoTipo.CORT else if (ctx.mecanica?.tipoDano == "perf") DanoTipo.PERF else DanoTipo.CONT
                         val bruto = rolarDano(expr, random)
                         val partes = atingidos.map { a ->
-                            val rd = if (ctx.mecanica?.armadura == "ignora") 0 else (a.stats?.rd ?: 0)
+                            val rd = if (ctx.mecanica?.armadura == "ignora") 0 else ((a.stats?.rd ?: 0) + a.buffRd)
                             val dn = HitLocationRules.aplicarDano(a.pvMax, bruto, tipo, LocalAtaque.TORSO,
                                 rd, a.stats?.tolerancia ?: ToleranciaFerimentos.NORMAL)
-                            InjuryRules.ferir(a, dn.pvSubtrair, a.stats?.ht ?: 10, random)
+                            InjuryRules.ferir(a, dn.pvSubtrair, a.htEfetivo, random)
                             "${a.nome} ${dn.pvSubtrair}" + if (!a.vivo) " (fora!)" else ""
                         }
                         sb.append(" Dano $expr: ${partes.joinToString(", ")}.")
@@ -1117,15 +1195,15 @@ class CombatSession(
             "corte" -> DanoTipo.CORT; "perf" -> DanoTipo.PERF
             else -> DanoTipo.CONT // queimadura/contusão/projeção → ×1 (sem enum de queimadura; documentado)
         }
-        val rd = if (mecanica?.armadura == "ignora") 0 else (alvo.stats?.rd ?: 0)
+        val rd = if (mecanica?.armadura == "ignora") 0 else ((alvo.stats?.rd ?: 0) + alvo.buffRd)
         val bruto = rolarDano(expr, random)
         val dn = HitLocationRules.aplicarDano(alvo.pvMax, bruto, tipo, LocalAtaque.TORSO, rd, alvo.stats?.tolerancia ?: ToleranciaFerimentos.NORMAL)
-        InjuryRules.ferir(alvo, dn.pvSubtrair, alvo.stats?.ht ?: 10, random)
+        InjuryRules.ferir(alvo, dn.pvSubtrair, alvo.htEfetivo, random)
         sb.append(" $expr → ${dn.pvSubtrair} de dano em ${alvo.nome}" + (if (!alvo.vivo) " (fora de combate!)" else "") + ".")
         // Condição embutida (ex.: Relâmpago atordoa: HT −1 por 2 PV; Concussão: HT−3). Testa e impõe.
         if (mecanica?.condicao != null && alvo.vivo && dn.pvSubtrair > 0) {
             val pen = com.gurps.ficha.domain.magic.MagicMechanics.penalidadeCondicaoPorPv(mecanica.condicaoResistencia, dn.pvSubtrair)
-            val ht = (alvo.stats?.ht ?: 10) + pen
+            val ht = (alvo.htEfetivo) + pen
             if (rolar3d6() > ht) imporCondicaoMagica(alvo, mecanica.condicao, sb)
             else sb.append(" (${alvo.nome} resiste à condição, HT $ht).")
         }
@@ -1150,12 +1228,12 @@ class CombatSession(
     /** Valor de resistência do alvo (MA-3a): atributo indicado + Abascanto embutido; combinadas pegam o maior. */
     private fun resistenciaDoAlvo(alvo: Combatente, resist: ResistenciaMagia): Int {
         fun valor(a: AtributoResistencia): Int = when (a) {
-            AtributoResistencia.HT -> alvo.stats?.ht ?: 10
+            AtributoResistencia.HT -> alvo.htEfetivo
             AtributoResistencia.IQ, AtributoResistencia.VONTADE, AtributoResistencia.VONTADE_OU_PERICIA ->
                 alvo.stats?.iq ?: 10 // Vontade ~ IQ para o NPC (não há campo de Vontade separado)
-            AtributoResistencia.DX -> alvo.stats?.dx ?: 10
-            AtributoResistencia.ST -> alvo.stats?.st ?: 10
-            else -> alvo.stats?.ht ?: 10 // MÁGICA/COMPOSTA/ESPECIAL → fallback HT (delegado ao Mestre)
+            AtributoResistencia.DX -> alvo.dxEfetivo
+            AtributoResistencia.ST -> alvo.stEfetivo
+            else -> alvo.htEfetivo // MÁGICA/COMPOSTA/ESPECIAL → fallback HT (delegado ao Mestre)
         }
         val opcoes = (listOf(resist.atributo) + resist.alternativos).map(::valor)
         return (opcoes.max()) + resist.modificadorDefensor
@@ -1259,7 +1337,7 @@ class CombatSession(
             log += txt; return txt
         }
         val rolHeroi = rolar3d6()
-        val nhDefensor = maxOf(alvo.stats?.armaNh ?: 10, alvo.stats?.dx ?: 10)
+        val nhDefensor = maxOf(alvo.stats?.armaNh ?: 10, alvo.dxEfetivo)
         val rolDefensor = rolar3d6()
         val penalidade = fintaResultado(ataque.nh, rolHeroi, nhDefensor, rolDefensor)
         val tec = "[NH ${ataque.nh} rolou $rolHeroi vs defesa $nhDefensor rolou $rolDefensor]"
@@ -1336,7 +1414,7 @@ class CombatSession(
             log += "• ${npc.nome} tenta prendê-lo, mas ainda não o agarrou."
             return AtaqueResultado(false, false, 0, false, log.last())
         }
-        val stNpc = npc.stats?.st ?: 10
+        val stNpc = npc.stEfetivo
         val rn = rolar3d6(); val rh = rolar3d6()
         val txt = if (vencaDisputaRapida(stNpc, rn, heroiPerfil.st, rh)) {
             heroi.condicoes.add(Condicao.IMOBILIZADO)
@@ -1353,7 +1431,7 @@ class CombatSession(
             log += "• ${npc.nome} tenta uma chave, mas ainda não o agarrou."
             return AtaqueResultado(false, false, 0, false, log.last())
         }
-        val stNpc = npc.stats?.st ?: 10
+        val stNpc = npc.stEfetivo
         val resist = maxOf(heroiPerfil.st, heroiPerfil.ht) + (if (perna) 4 else 0)
         val rn = rolar3d6(); val rh = rolar3d6()
         val membro = if (perna) LocalAtaque.PERNA else LocalAtaque.BRACO
@@ -1375,7 +1453,7 @@ class CombatSession(
             log += "• ${npc.nome} tenta o mata-leão, mas ainda não o agarrou."
             return AtaqueResultado(false, false, 0, false, log.last())
         }
-        val stNpc = (npc.stats?.st ?: 10) + 3
+        val stNpc = (npc.stEfetivo) + 3
         val resist = maxOf(heroiPerfil.st, heroiPerfil.ht)
         val rn = rolar3d6(); val rh = rolar3d6()
         val margem = (stNpc - rn) - (resist - rh)
@@ -1406,7 +1484,7 @@ class CombatSession(
         if (Condicao.AGARRADO !in heroi.condicoes && Condicao.IMOBILIZADO !in heroi.condicoes)
             return "Você não está preso.".also { log += it }
         val captores = inimigos.filter { it.vivo && encounter.distancia(it) <= 1 }
-        val captor = captores.maxByOrNull { it.stats?.st ?: 10 }
+        val captor = captores.maxByOrNull { it.stEfetivo }
         if (captor == null) {
             heroi.condicoes.remove(Condicao.AGARRADO); heroi.condicoes.remove(Condicao.IMOBILIZADO)
             return "🤸 Não há mais ninguém te segurando — você se solta.".also { log += it }
@@ -1414,7 +1492,7 @@ class CombatSession(
         val imob = Condicao.IMOBILIZADO in heroi.condicoes
         var bonusCaptor = if (imob) 10 else 5
         if (Condicao.ATORDOADO in captor.condicoes) bonusCaptor -= 4
-        val stCaptor = (captor.stats?.st ?: 10) + bonusCaptor
+        val stCaptor = (captor.stEfetivo) + bonusCaptor
         val rh = rolar3d6(); val rc = rolar3d6()
         val txt = if (vencaDisputaRapida(heroiPerfil.st, rh, stCaptor, rc)) {
             heroi.condicoes.remove(Condicao.AGARRADO); heroi.condicoes.remove(Condicao.IMOBILIZADO)
@@ -1438,7 +1516,7 @@ class CombatSession(
             log += txt; return txt
         }
         val heroVal = maxOf(heroiPerfil.st, heroiPerfil.dx)
-        val npcVal = maxOf(alvo.stats?.st ?: 10, alvo.stats?.dx ?: 10)
+        val npcVal = maxOf(alvo.stEfetivo, alvo.dxEfetivo)
         val rh = rolar3d6(); val rn = rolar3d6()
         val tec = "[$heroVal rolou $rh vs $npcVal rolou $rn]"
         val txt = if (vencaDisputaRapida(heroVal, rh, npcVal, rn)) {
@@ -1556,8 +1634,8 @@ class CombatSession(
                 sb.append("💥 ${npc.nome} tem um CHOQUE DE RETORNO ao conjurar ${magia.nome}! ")
                 r.choqueRetorno?.let { ef ->
                     sb.append(ef.rotulo)
-                    if (ef.danoAoOperadorDadosD6 > 0) { val d = rolarDano("${ef.danoAoOperadorDadosD6}d", random); InjuryRules.ferir(npc, d, npc.stats?.ht ?: 10, random); sb.append(" (${npc.nome} sofre $d)") }
-                    if (ef.danoAoOperadorPontos > 0) { InjuryRules.ferir(npc, ef.danoAoOperadorPontos, npc.stats?.ht ?: 10, random); sb.append(" (${npc.nome} sofre ${ef.danoAoOperadorPontos})") }
+                    if (ef.danoAoOperadorDadosD6 > 0) { val d = rolarDano("${ef.danoAoOperadorDadosD6}d", random); InjuryRules.ferir(npc, d, npc.htEfetivo, random); sb.append(" (${npc.nome} sofre $d)") }
+                    if (ef.danoAoOperadorPontos > 0) { InjuryRules.ferir(npc, ef.danoAoOperadorPontos, npc.htEfetivo, random); sb.append(" (${npc.nome} sofre ${ef.danoAoOperadorPontos})") }
                     if (ef.atordoaOperador) { npc.condicoes.add(Condicao.ATORDOADO); sb.append(" (${npc.nome} atordoado)") }
                 }
             }
@@ -1670,11 +1748,11 @@ class CombatSession(
         if (Condicao.AGARRADO in npc.condicoes || Condicao.IMOBILIZADO in npc.condicoes) {
             // Estrangulado (Lote 412, MB p.437): perde fôlego a cada turno enquanto preso (proxy de PF = −1 PV).
             if (Condicao.SUFOCANDO in npc.condicoes && npc.vivo) {
-                InjuryRules.ferir(npc, 1, npc.stats?.ht ?: 10, random)
+                InjuryRules.ferir(npc, 1, npc.htEfetivo, random)
                 log += "😮‍💨 ${npc.nome} sufoca e perde fôlego (−1)."
             }
             val imob = Condicao.IMOBILIZADO in npc.condicoes
-            val nv = (if (imob) (npc.stats?.st ?: 10) - 3 else maxOf(npc.stats?.st ?: 10, npc.stats?.dx ?: npc.dx))
+            val nv = (if (imob) (npc.stEfetivo) - 3 else maxOf(npc.stEfetivo, npc.dxEfetivoOuProprio))
             val hv = maxOf(heroiPerfil.st, heroiPerfil.dx)
             val rn = rolar3d6(); val rh = rolar3d6()
             val o = if (imob) "imobilização" else "agarrão"
@@ -1721,7 +1799,7 @@ class CombatSession(
                     else com.gurps.ficha.domain.combat.hex.HexManterADistancia.TipoInterrupcao.APAROU_COM_DANO_NAO_ESTOCADA
                     val regra = com.gurps.ficha.domain.combat.hex.HexManterADistancia.avaliar(tipo)
                     val passou = if (regra.disputaSTNecessaria) {
-                        val stN = npc.stats?.st ?: 10; val rn = rolar3d6()
+                        val stN = npc.stEfetivo; val rn = rolar3d6()
                         val stH = heroiPerfil.st; val rh = rolar3d6()
                         val ok = vencaDisputaRapida(stN, rn, stH, rh)
                         log += "  └ arma no caminho (AM p.101): Disputa de ST — ${npc.nome} $stN rolou $rn vs você $stH rolou $rh → ${if (ok) "ele passa" else "ele NÃO passa"}."
@@ -1814,6 +1892,9 @@ class CombatSession(
             modsSituacionaisAtaque(npc.id).forEach { add(CombatActions.ComponenteMod(it.motivo, it.valor)) }
             // Cego (Lote COND-1, MB p.394): −4 para acertar (não vê o herói).
             if (Condicao.CEGO in npc.condicoes) add(CombatActions.ComponenteMod("cego", -4))
+            // MEC-2 — Nublar (−1 a −5): a magia no HERÓI penaliza quem tenta acertá-lo.
+            if (heroi.buffPenalidadeAtacantes > 0)
+                add(CombatActions.ComponenteMod("alvo nublado", -heroi.buffPenalidadeAtacantes))
             if (intencao.aDistancia) {
                 // Atirando NO herói: soma o MT do herói (alvo) ao acerto (MB p.549).
                 if (heroiPerfil.modificadorTamanho != 0)
@@ -1950,7 +2031,7 @@ class CombatSession(
         // tenta recuperar atordoamento de quem acabou de agir
         val anterior = combatenteAtual()
         if (Condicao.ATORDOADO in anterior.condicoes) {
-            val ht = if (anterior.ehHeroi) heroiPerfil.ht else (anterior.stats?.ht ?: 10)
+            val ht = if (anterior.ehHeroi) heroiPerfil.ht else (anterior.htEfetivo)
             if (InjuryRules.recuperaAtordoamento(ht, random)) {
                 anterior.condicoes.remove(Condicao.ATORDOADO)
                 log += "• ${anterior.nome} recupera-se do atordoamento."
@@ -1970,7 +2051,12 @@ class CombatSession(
             res.cobrancasPorOperador["heroi"]?.let { fp ->
                 if (fp > 0) { heroi.pfAtual = (heroi.pfAtual - fp).coerceAtLeast(0); log += "✨ Manutenção de mágicas: −$fp PF." }
             }
-            res.expiradas.forEach { log += "✨ ${it.magiaId} termina." }
+            // MEC-2: expirar tem que REVERTER o buff — senão o bônus fica para sempre.
+            res.expiradas.forEach { exp ->
+                removerBuffDe(exp)
+                val volta = exp.buff?.let { " — ${it.rotulo.ifBlank { "o efeito" }} se desfaz" } ?: ""
+                log += "✨ ${exp.magiaId} termina$volta."
+            }
         }
         // Modificadores situacionais (Lote 424): decrementam ao fim do turno do DONO; expirados saem da lista.
         // O turno da CRIAÇÃO não conta (o chat roda no turno do dono — senão "1 rodada" expiraria antes de valer).
@@ -2004,7 +2090,7 @@ class CombatSession(
         if (c.sangramentoUltimaRodada == Int.MIN_VALUE) { c.sangramentoUltimaRodada = rodada; return }
         if (rodada - c.sangramentoUltimaRodada < c.sangramentoIntervaloSeg) return
         c.sangramentoUltimaRodada = rodada
-        val ht = if (c.ehHeroi) heroiPerfil.ht else (c.stats?.ht ?: 10)
+        val ht = if (c.ehHeroi) heroiPerfil.ht else (c.htEfetivo)
         InjuryRules.tickSangramento(c, ht, random)?.logs?.forEach { log += "🩸 ${c.nome}: $it" }
         verificarFim()
     }

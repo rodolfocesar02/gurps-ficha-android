@@ -241,6 +241,11 @@ data class MagiaAtivaNoCombate(
     val duracao: TipoDuracao,
     /** true se a mágica exige concentração contínua (ex.: Levitar objeto). */
     val exigeConcentracao: Boolean,
+    /**
+     * Lote MEC-2: os deltas que este buff aplicou no alvo (null = efeito só narrado). Guardar o que
+     * ENTROU é o que deixa a expiração reverter sem recalcular — imune a drift.
+     */
+    val buff: BuffAplicado? = null,
 )
 
 object MagicActive {
