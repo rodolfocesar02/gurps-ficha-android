@@ -10,6 +10,7 @@ import com.gurps.ficha.domain.magic.NivelMana
 import com.gurps.ficha.domain.magic.TipoDuracao
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import kotlin.random.Random
@@ -593,6 +594,33 @@ class MagicCombatTest {
         val goblin = s.encounter.combatentes.first { it.id == "goblin" }
         registrar(s, "Proteger Animal", MagiaMecanica(efeito = "buff", buffRd = 5), alvo = "goblin")
         assertEquals(5, goblin.buffRd)
+    }
+
+    @Test
+    fun `Escudo soma BD em TODAS as defesas ativas e some ao dissipar`() {
+        val s = sessao(7)
+        val esqBase = s.heroiPerfil.esquiva
+        val aparaBase = s.heroiPerfil.apara!!
+        val escudo = MagiaMecanica(efeito = "buff", buffRotulo = "Escudo", buffBd = 1,
+            buffEnergiaPorNivel = 2, buffMaxNiveis = 4)
+        registrar(s, "Escudo", escudo, energia = 6) // 6/2 = 3 níveis → BD +3
+        assertEquals(esqBase + 3, s.heroiPerfil.esquiva)
+        assertEquals(aparaBase + 3, s.heroiPerfil.apara)
+        s.dissiparMagiaAtiva("Escudo")
+        assertEquals(esqBase, s.heroiPerfil.esquiva)
+        assertEquals(aparaBase, s.heroiPerfil.apara)
+    }
+
+    @Test
+    fun `BD magico respeita o teto de 4 e nao inventa defesa que o heroi nao tem`() {
+        val enc = CombatEncounter(listOf(heroi(), goblin()), mapOf("goblin" to 5), seed = 1L)
+        // Herói SEM aparar e SEM bloquear (não empunha arma nem escudo).
+        val s = CombatSession(enc, HeroiPerfilCombate(esquiva = 9, apara = null, bloqueio = null, ht = 12), Random(7))
+        val escudo = MagiaMecanica(efeito = "buff", buffBd = 1, buffEnergiaPorNivel = 2, buffMaxNiveis = 4)
+        registrar(s, "Escudo", escudo, energia = 40) // teto: +4, não +20
+        assertEquals(13, s.heroiPerfil.esquiva)
+        assertNull("BD não cria um Aparar do nada", s.heroiPerfil.apara)
+        assertNull("BD não cria um Bloquear do nada", s.heroiPerfil.bloqueio)
     }
 
     @Test

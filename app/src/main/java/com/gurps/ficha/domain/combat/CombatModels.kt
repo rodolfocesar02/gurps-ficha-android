@@ -165,6 +165,8 @@ data class Combatente(
     // ── Somas dos buffs mágicos ativos (Lote MEC-2). Valem para o herói E para o NPC. ──
     val buffRd: Int get() = buffs.sumOf { it.rd }
     val buffEsquiva: Int get() = buffs.sumOf { it.esquiva }
+    /** BD mágico (Escudo): soma em TODAS as defesas ativas, como o BD do escudo real (MB p.374). */
+    val buffBd: Int get() = buffs.sumOf { it.bd }
     val buffSt: Int get() = buffs.sumOf { it.st }
     val buffDx: Int get() = buffs.sumOf { it.dx }
     val buffHt: Int get() = buffs.sumOf { it.ht }

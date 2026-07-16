@@ -64,6 +64,12 @@ data class MagiaMecanica(
     val buffRd: Int = 0,
     /** Bônus de Esquiva por nível (Apressar +1/nível). */
     val buffEsquiva: Int = 0,
+    /**
+     * Lote MEC-4 — Bônus de Defesa por nível (Escudo = +1 BD por 2 de energia, teto +4). BD soma em
+     * TODAS as defesas ativas (esquiva, aparar, bloquear), como o BD do escudo real (MB p.374).
+     * Sem este campo, Escudo/Bloquear — as magias de proteção mais usadas — ficariam inertes.
+     */
+    val buffBd: Int = 0,
     /** Atributo alterado: "ST" | "DX" | "HT" (IQ não entra no motor de combate → narrado). */
     val buffAtributo: String? = null,
     /** Valor do atributo por nível — NEGATIVO nos debuffs (Debilitar = −1 ST/nível). */
@@ -89,6 +95,8 @@ data class BuffAplicado(
     val rotulo: String = "",
     val rd: Int = 0,
     val esquiva: Int = 0,
+    /** Bônus de Defesa: soma em esquiva, aparar E bloquear (Escudo). */
+    val bd: Int = 0,
     val st: Int = 0,
     val dx: Int = 0,
     val ht: Int = 0,
@@ -107,7 +115,7 @@ data class BuffAplicado(
         else -> true
     }
     /** true se nada numérico foi aplicado — o efeito é só narrado (Corpo de Água, Ambidestria). */
-    val soNarrado: Boolean get() = rd == 0 && esquiva == 0 && st == 0 && dx == 0 && ht == 0 &&
+    val soNarrado: Boolean get() = rd == 0 && esquiva == 0 && bd == 0 && st == 0 && dx == 0 && ht == 0 &&
         deslocamento == 0 && deslocamentoFixo == null && danoArma == 0 && penalidadeAtacantes == 0
 }
 
@@ -118,7 +126,7 @@ object MagicMechanics {
 
     /** true se o buff tem NÚMERO que o motor aplica (senão é narrado — regra de ouro). */
     fun temBuffEstruturado(m: MagiaMecanica?): Boolean = m != null && m.efeito == "buff" &&
-        (m.buffRd != 0 || m.buffEsquiva != 0 || m.buffAtributoValor != 0 || m.buffDeslocamento != 0 ||
+        (m.buffRd != 0 || m.buffEsquiva != 0 || m.buffBd != 0 || m.buffAtributoValor != 0 || m.buffDeslocamento != 0 ||
          m.buffDeslocamentoFixo != 0 || m.buffDanoArma != 0 || m.buffPenalidadeAtacantes != 0)
 
     /**
@@ -145,6 +153,7 @@ object MagicMechanics {
             rotulo = m.buffRotulo ?: "",
             rd = m.buffRd * n,
             esquiva = m.buffEsquiva * n,
+            bd = m.buffBd * n,
             st = if (m.buffAtributo.equals("ST", true)) atr else 0,
             dx = if (m.buffAtributo.equals("DX", true)) atr else 0,
             ht = if (m.buffAtributo.equals("HT", true)) atr else 0,

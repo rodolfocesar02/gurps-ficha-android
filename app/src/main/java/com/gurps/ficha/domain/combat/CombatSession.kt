@@ -44,9 +44,15 @@ class CombatSession(
             val b = heroiPerfilBase
             val h = encounter.combatentes.firstOrNull { it.ehHeroi } ?: return b
             if (h.buffs.isEmpty()) return b
+            // MEC-4: o BD mágico (Escudo) soma em TODAS as defesas ativas, como o BD do escudo real
+            // (MB p.374) — por isso entra em esquiva, aparar E bloquear. Aparar/bloquear ficam null
+            // quando o herói não tem a defesa: o BD não INVENTA uma defesa que ele não possui.
+            val bd = h.buffBd
             return b.copy(
                 rd = b.rd + h.buffRd,
-                esquiva = b.esquiva + h.buffEsquiva,
+                esquiva = b.esquiva + h.buffEsquiva + bd,
+                apara = b.apara?.plus(bd),
+                bloqueio = b.bloqueio?.plus(bd),
                 st = b.st + h.buffSt,
                 dx = b.dx + h.buffDx,
                 ht = b.ht + h.buffHt,
