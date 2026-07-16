@@ -37,11 +37,26 @@ data class CustoEnergia(
     val maximo: Int? = null,
     /** Custo básico FRACIONÁRIO de mágica de área (1/2, 1/10) — Magia p.11. */
     val fracao: Double? = null,
+    /**
+     * Lote MEC-5: custo para MANTER por período, lido do catálogo ("04/02" = operar 4, manter 2).
+     * null = não informado (aí o motor estima metade do custo, Magia p.15). 0 = não pode ser mantida.
+     */
+    val manutencao: Int? = null,
     val original: String,
 )
 
 object MagicEnergy {
-    private val FRACAO = Regex("""(\d+)\s*/\s*(\d+)""")
+    /**
+     * Lote MEC-5 — "04/02" no catálogo é **operar/manter**, NÃO uma fração. O regex de fração antigo
+     * casava primeiro e transformava o custo de 307 mágicas em número quebrado (Agonizar "08/06"
+     * virava 1,33 em vez de custar 8). Auditando o catálogo inteiro: a fração de área pura ("1/2")
+     * NÃO EXISTE — todo "N/M" é operar/manter (223 zero-padded + ~40 com marcador "#") ou
+     * "N de energia por M unidades" ("1/4 litros", "250/0,5 kg").
+     *
+     * Regra ESTRITA de propósito: só casa dois inteiros crus com marcador opcional. Qualquer coisa
+     * com unidade ou barra extra ("1/10/I", "2/5 m") cai fora e vira variável — melhor não adivinhar.
+     */
+    private val OPERAR_MANTER = Regex("""^\s*(\d+)\s*/\s*(\d+)\s*#?\s*$""")
     private val FAIXA = Regex("""(\d+)\s*(?:a|-|–|até)\s*(\d+)""")
     private val PRIMEIRO_INT = Regex("""\d+""")
 
@@ -58,10 +73,13 @@ object MagicEnergy {
             return CustoEnergia(base = null, variavel = true, minimo = min, original = original)
         }
 
-        // Fração de área "1/2", "1/10".
-        FRACAO.find(lower)?.let { m ->
-            val num = m.groupValues[1].toInt(); val den = m.groupValues[2].toInt().coerceAtLeast(1)
-            return CustoEnergia(base = null, variavel = false, fracao = num.toDouble() / den, original = original)
+        // Lote MEC-5: "04/02" / "4/2#" / "50/20" = operar/manter. Tem que vir ANTES da faixa, senão
+        // o "-" da faixa nem chega aqui — e antes de qualquer outro, porque é o formato mais comum.
+        OPERAR_MANTER.find(lower)?.let { m ->
+            val operar = m.groupValues[1].toInt()
+            val manter = m.groupValues[2].toInt()
+            return CustoEnergia(base = operar, variavel = false, minimo = operar.coerceAtLeast(1),
+                manutencao = manter, original = original)
         }
 
         // Faixa "1 a 3" → variável, com min/max.

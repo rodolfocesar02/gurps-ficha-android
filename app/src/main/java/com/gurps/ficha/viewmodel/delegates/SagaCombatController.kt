@@ -784,10 +784,21 @@ class SagaCombatController(
         if (TipoClasseMagia.PROJETIL in classe.classes || TipoClasseMagia.TOQUE in classe.classes ||
             TipoClasseMagia.AREA in classe.classes) return
         val (dur, durSeg) = parseDuracao(magia.duracao)
-        if (dur != TipoDuracao.TEMPORARIA && dur != TipoDuracao.DURADOURA) return
-        // Manutenção ≈ metade do custo (Magia p.15), reduzida por NH alto.
+        // Lote MEC-5: buff PERMANENTE/indefinido vale até ser dissipado (`dissiparMagiaAtiva`), então
+        // precisa ser registrado. Mas só quando TEM buff estruturado — senão as 154 mágicas "Perm."
+        // de ambiente/narrado (Criar Água…) virariam ruído de "fica ATIVA" no feed.
+        val temBuffNumerico = mecanica != null &&
+            com.gurps.ficha.domain.magic.MagicMechanics.temBuffEstruturado(mecanica)
+        val duracaoRastreavel = dur == TipoDuracao.TEMPORARIA || dur == TipoDuracao.DURADOURA ||
+            (dur == TipoDuracao.PERMANENTE && temBuffNumerico)
+        if (!duracaoRastreavel) return
+        // Lote MEC-5: usa a manutenção REAL do catálogo ("04/02" = manter 2) quando ela existe; só
+        // estima metade do custo (Magia p.15) quando o campo não informa. Antes a manutenção real
+        // nunca era lida — o "/02" era engolido pelo parser de fração.
         val base = (custo.base ?: custo.minimo).coerceAtLeast(1)
-        val manut = MagicCost.custoAjustadoPorNH(kotlin.math.ceil(base / 2.0).toInt().coerceAtLeast(1), nhBasico)
+        val manutBruta = custo.manutencao ?: kotlin.math.ceil(base / 2.0).toInt()
+        val manut = if (manutBruta <= 0) 0 // "0/1" e afins: não pode ser mantida de graça — 0 é 0.
+            else MagicCost.custoAjustadoPorNH(manutBruta, nhBasico)
         // Lote MEC-2: buff com NÚMERO curado → o motor aplica os deltas e reverte ao expirar.
         // Sem número (Corpo de Água, Ambidestria) o buff segue só narrado — regra de ouro.
         val buff = mecanica
@@ -801,18 +812,8 @@ class SagaCombatController(
     }
 
     /** Extrai (tipo de duração, segundos) do campo `duracao` do catálogo ("1 min.", "permanente", "instantâneo"). */
-    private fun parseDuracao(txt: String?): Pair<TipoDuracao, Int> {
-        val t = txt?.lowercase()?.trim() ?: return TipoDuracao.INSTANTANEA to 0
-        return when {
-            "permanente" in t -> TipoDuracao.PERMANENTE to 0
-            "instant" in t -> TipoDuracao.INSTANTANEA to 0
-            else -> {
-                val n = Regex("""\d+""").find(t)?.value?.toIntOrNull() ?: 0
-                if (n == 0) TipoDuracao.INSTANTANEA to 0
-                else TipoDuracao.TEMPORARIA to (if ("min" in t) n * 60 else n)
-            }
-        }
-    }
+    private fun parseDuracao(txt: String?): Pair<TipoDuracao, Int> =
+        com.gurps.ficha.domain.magic.MagicTime.parseDuracao(txt)
 
     /**
      * Lote MA-3d: começa a MIRA de uma magia de ÁREA — o app entra em modo "toque um hex". A magia só
@@ -938,10 +939,8 @@ class SagaCombatController(
     }
 
     /** Extrai os segundos do campo `tempoOperacao` do catálogo ("1 seg.", "3 seg.", "1 min."). */
-    private fun parseTempoSeg(txt: String?): Int {
-        val n = Regex("""\d+""").find(txt.orEmpty())?.value?.toIntOrNull() ?: 1
-        return if (txt?.contains("min", ignoreCase = true) == true) (n * 60).coerceAtLeast(1) else n.coerceAtLeast(1)
-    }
+    private fun parseTempoSeg(txt: String?): Int =
+        com.gurps.ficha.domain.magic.MagicTime.parseTempoSeg(txt)
 
     /** Rótulo curto da classe de magia para o seletor de conjuração. */
     private fun rotuloClasse(c: TipoClasseMagia): String = when (c) {

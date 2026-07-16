@@ -82,4 +82,31 @@ class MagicCatalogRealityCheckTest {
         assertTrue("Parser PERDEU resistência em ${perdidas.size} magia(s): ${perdidas.take(5)}",
             perdidas.isEmpty())
     }
+
+    // ── Lote MEC-5: o custo do catálogo REAL ────────────────────────────────────────────────────
+
+    @Test
+    fun `nenhuma magia do catalogo real perde o custo no formato operar-manter`() {
+        // O bug: "04/02" (operar 4, manter 2) casava no regex de FRAÇÃO e virava 2,0 com base=null —
+        // 307 das 879. Esta trava roda contra o catálogo real para não voltar a passar batido.
+        val catalogo = carregarCatalogo()
+        Assume.assumeNotNull(catalogo)
+        val quebradas = mutableListOf<String>()
+        var comOperarManter = 0
+        val formato = Regex("""^\s*\d+\s*/\s*\d+\s*#?\s*$""")
+        for (i in 0 until catalogo!!.length()) {
+            val magia = catalogo.getJSONObject(i)
+            val bruto = magia.optString("energia", "")
+            if (!formato.matches(bruto)) continue
+            comOperarManter++
+            val c = MagicEnergy.parse(bruto)
+            val esperadoOperar = bruto.trim().removeSuffix("#").split("/")[0].trim().toInt()
+            val esperadoManter = bruto.trim().removeSuffix("#").split("/")[1].trim().toInt()
+            if (c.base != esperadoOperar || c.manutencao != esperadoManter || c.fracao != null)
+                quebradas += "${magia.optString("nome")}: '$bruto' → base=${c.base} manut=${c.manutencao} fracao=${c.fracao}"
+        }
+        println("MEC-5: $comOperarManter mágicas no formato operar/manter no catálogo real.")
+        assertTrue("o catálogo real precisa ter mágicas nesse formato para o teste valer", comOperarManter > 100)
+        assertTrue("Custo lido ERRADO em ${quebradas.size} magia(s): ${quebradas.take(5)}", quebradas.isEmpty())
+    }
 }

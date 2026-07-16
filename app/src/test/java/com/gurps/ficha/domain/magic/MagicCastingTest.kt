@@ -36,9 +36,23 @@ class MagicCastingTest {
         assertEquals(1, c.base); assertEquals(3, c.maximo); assertTrue(c.variavel)
     }
 
-    @Test fun `energia fracao de area meio`() {
+    /**
+     * Lote MEC-5 — este teste MUDOU de significado, de propósito.
+     *
+     * Ele nascia no MA-2 assumindo que "1/2" no campo `energia` era a fração de área da Magia p.11.
+     * A auditoria do catálogo INTEIRO (879) mostrou que essa suposição é falsa: **nenhuma mágica usa
+     * fração pura nesse campo**. Todo "N/M" ali é operar/manter (263 casos: "04/02", "4/2#", "50/20")
+     * ou custo por unidade ("1/4 litros", "250/0,5 kg"). O custo básico fracionário de área (Chuva =
+     * 0,1; Correnteza = 0,02) vem da DESCRIÇÃO, não daqui.
+     *
+     * O regex de fração antigo, por casar primeiro, quebrava o custo de 307 mágicas reais para servir
+     * a um formato que não existe. Agora "1/2" lê como as outras 263: operar 1, manter 2.
+     */
+    @Test fun `1-2 no campo energia e operar-manter, nao fracao — o catalogo nao tem fracao pura`() {
         val c = MagicEnergy.parse("1/2")
-        assertEquals(0.5, c.fracao!!, 0.0001)
+        assertEquals(1, c.base)
+        assertEquals(2, c.manutencao)
+        assertNull(c.fracao)
     }
 
     @Test fun `energia vazia vira variavel`() {
@@ -200,5 +214,40 @@ class MagicCastingTest {
     @Test fun `tempo arredonda a fracao para cima e nunca abaixo de 1`() {
         // 3s em NH 20 → ceil(1,5) = 2.
         assertEquals(2, MagicCasting.tempoOperacaoAjustado(tempoBaseSeg = 3, nhBasico = 20))
+    }
+
+    // ── Lote MEC-5: "NN/MM" é operar/manter, não fração ──────────────────────────────────────────
+
+    @Test fun `energia 04-02 e operar 4 manter 2 — nao a fracao 2`() {
+        // Antes: o regex de fração casava primeiro e devolvia fracao=2.0 com base=null (307 mágicas).
+        val c = MagicEnergy.parse("04/02")
+        assertEquals(4, c.base)
+        assertEquals(2, c.manutencao)
+        assertNull("não é fração", c.fracao)
+        assertFalse(c.variavel)
+    }
+
+    @Test fun `formatos reais do catalogo de operar-manter`() {
+        assertEquals(8 to 6, MagicEnergy.parse("08/06").let { it.base to it.manutencao }) // Agonizar
+        assertEquals(4 to 2, MagicEnergy.parse("4/2#").let { it.base to it.manutencao })  // marcador de nota
+        assertEquals(50 to 20, MagicEnergy.parse("50/20").let { it.base to it.manutencao }) // ritual caro
+        assertEquals(2 to 1, MagicEnergy.parse("02/01").let { it.base to it.manutencao })
+    }
+
+    @Test fun `custo por UNIDADE nao vira operar-manter — regra estrita`() {
+        // "1 de energia por 4 litros" não é operar/manter; sem unidade no schema, fica variável.
+        val litros = MagicEnergy.parse("1/4 litros")
+        assertNull("não pode inventar manutenção 4", litros.manutencao)
+        val kg = MagicEnergy.parse("250/0,5 kg")
+        assertNull(kg.manutencao)
+        val marcador = MagicEnergy.parse("1/10/I") // barra extra → não casa
+        assertNull(marcador.manutencao)
+    }
+
+    @Test fun `Varia continua variavel e sem manutencao declarada`() {
+        val c = MagicEnergy.parse("Varia")
+        assertTrue(c.variavel)
+        assertNull(c.base)
+        assertNull(c.manutencao)
     }
 }
