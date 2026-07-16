@@ -27,6 +27,26 @@ Campo em `MagiaDefinicao` (catálogo) → lido no combate via `DataRepository.ge
   `notas` CHEGA ao Narrador via `resumoEfeito` — antes era gravada e nunca lida.
 - **narrado**: bespoke.
 
+## Duração, custo e manutenção (MEC-5) — números CANÔNICOS, não texto
+Os campos `duracao`/`energia`/`tempoOperacao` são a transcrição do cabeçalho e **divergem do livro**
+em dezenas de mágicas (auditoria de 24 escolas contra a `descricao` fiel: 50 conflitos de duração,
+10 de custo — Arma Congelante tem `03/01` no cabeçalho, o livro diz "4 para operar, 1 para manter").
+
+**652 mágicas têm os números conferidos** no catálogo: `custoOperar`, `custoManter`, `duracaoSeg`,
+`duracaoTipo` ("instantanea"/"temporaria"/"permanente"), `tempoOperacaoSeg`. O motor **prefere esses
+campos**; `MagicTime`/`MagicEnergy` só parseiam o texto quando eles faltam (227 mágicas, confiança do
+auditor < alta — fallback honesto).
+
+⚠️ Armadilhas do texto livre (todas com teste travando contra o catálogo REAL):
+- `'Perm.'` (154) — a busca era pela palavra `"permanente"` INTEIRA; a abreviação virava INSTANTÂNEA.
+- `'1 hora'` (82) — só `"min"` era multiplicado: HORA virava SEGUNDO e o buff expirava em 1 turno.
+- `'Hora'`/`'Dia#'` — unidade SEM número: sem dígito, caía em instantânea.
+- `'04/02'` (307) — é **operar/manter**, não fração. A fração de área pura (`'1/2'`) NÃO existe no catálogo.
+- `'0/1'` — custa **0 para lançar** e 1 para manter. É legítimo: não assuma "manter ≤ operar".
+- Temporária SEM segundos ("role 2d dias", "1 noite") — gravar 0s faz expirar na hora; **pior que o fallback**.
+- A `descricao` tem DOIS blocos de custo: o da mágica e o da seção **"Item"** (custo para ENCANTAR um
+  cajado: 750 de energia). Ler o último dá um número absurdo e faz parecer que o auditor errou.
+
 ## Regra de ouro
 O motor aplica o que é estruturável (dano exato, condição, buff numérico); o resto tem a `mecanica`
 como TAG + `notas`, e o efeito fica narrado. `descricao` intocada.

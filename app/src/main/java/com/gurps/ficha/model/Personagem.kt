@@ -645,7 +645,23 @@ data class MagiaDefinicao(
     val tempoOperacao: String? = null,
     val preRequisitos: String? = null,
     /** Lote AR-1: regra estruturada legível pela máquina (ao lado da `descricao` fiel). Null = usa o comportamento padrão. */
-    val mecanica: com.gurps.ficha.domain.magic.MagiaMecanica? = null
+    val mecanica: com.gurps.ficha.domain.magic.MagiaMecanica? = null,
+
+    // ── Lote MEC-5b: os números CANÔNICOS, extraídos da `descricao` (que é fiel ao livro) ──
+    // Os campos de texto acima (`duracao`, `energia`, `tempoOperacao`) são a transcrição do
+    // cabeçalho, e a auditoria provou que ela DIVERGE do livro em dezenas de mágicas (Arma
+    // Congelante: cabeçalho diz custo 3, o livro diz 4). Estes campos são a verdade conferida
+    // contra a descrição; o motor prefere eles e só cai no parser de texto quando são null.
+    /** Custo em energia para OPERAR. null = variável/não informado → o motor parseia o texto. */
+    val custoOperar: Int? = null,
+    /** Custo para MANTER por período. 0 = "não pode ser mantida". null = não informado. */
+    val custoManter: Int? = null,
+    /** Duração em SEGUNDOS ("1 hora" = 3600). 0 com [duracaoTipo] instantânea/permanente. */
+    val duracaoSeg: Int? = null,
+    /** "instantanea" | "temporaria" | "permanente". null = não informado. */
+    val duracaoTipo: String? = null,
+    /** Tempo de operação em SEGUNDOS ("1 hora" de ritual = 3600). */
+    val tempoOperacaoSeg: Int? = null,
 ) {
     // Mantendo atributo base IQ fixo para magias
     val atributoBase: String get() = "IQ"

@@ -725,7 +725,6 @@ class SagaCombatController(
         val magia = p.magias.firstOrNull { it.definicaoId == magiaId || it.nome == magiaId } ?: return
         val aptidao = MagicEngine.getNivelAptidaoMagicaParaMagia(p, null)
         val classe = MagicClassParser.parse(magia.classe)
-        val custo = MagicEnergy.parse(magia.energia)
         val distancia = if (alvoId == null) 0
             else s.encounter.combatentes.firstOrNull { it.id == alvoId }?.let { s.distancia(it) } ?: 0
         val mana = viewModel.sagaNivelMana // Lote MA-5: mana ambiente da cena
@@ -739,6 +738,10 @@ class SagaCombatController(
             runCatching { com.gurps.ficha.data.DataRepository.getInstance(c).getMagiaPorId(magia.definicaoId) }.getOrNull()
         }
         val mecanica = def?.mecanica
+        // Lote MEC-5b: o custo CANÔNICO (conferido contra a descrição fiel do livro) manda; o parser
+        // do texto do cabeçalho é só fallback. A auditoria achou dezenas de transcrições erradas —
+        // Arma Congelante tem "03/01" no cabeçalho, mas o livro diz "4 para operar, 1 para manter".
+        val custo = custoCanonico(def) ?: MagicEnergy.parse(magia.energia)
         // Lote MEC-2: a `notas` da curadoria é a REGRA destilada (ambiente/controle/informação, que o
         // motor não executa); a descrição é o sabor. O Narrador recebe as duas — antes a nota era
         // gravada e nunca lida por ninguém.
@@ -760,10 +763,10 @@ class SagaCombatController(
             resumoEfeito = resumoEfeito,      // Lote MA-8: descrição do efeito pro Narrador
         )
         // Tempo de operação (Magia p.9): base do catálogo, reduzido por NH alto. >1s → multi-turno.
-        val tempoBase = parseTempoSeg(magia.tempoOperacao)
+        val tempoBase = tempoDe(def, magia.tempoOperacao) // MEC-5b: canônico > texto do cabeçalho
         val tempo = MagicCasting.tempoOperacaoAjustado(tempoBase, magia.calcularNivel(p, aptidao))
         val res = s.heroiConjurar(ctx, custo, energiaInvestida, magia.nome, alvoId, tempo)
-        registrarSeMagiaAtiva(s, magia, classe, custo, res, alvoId, magia.calcularNivel(p, aptidao), mecanica, energiaInvestida)
+        registrarSeMagiaAtiva(s, magia, classe, custo, res, alvoId, magia.calcularNivel(p, aptidao), mecanica, energiaInvestida, def)
         sincronizarRecursosHeroi(s)
         depoisDaAcaoDoHeroi()
     }
@@ -775,6 +778,7 @@ class SagaCombatController(
         custo: com.gurps.ficha.domain.magic.CustoEnergia,
         res: CombatSession.ResultadoConjuracaoCombate, alvoId: String?, nhBasico: Int,
         mecanica: com.gurps.ficha.domain.magic.MagiaMecanica? = null, energiaInvestida: Int = 0,
+        def: com.gurps.ficha.model.MagiaDefinicao? = null,
     ) {
         if (!res.sucesso || res.emAndamento) return
         // Lote MEC-2: o alvo RESISTIU → a magia não pega. Sem isto um Debilitar resistido ainda
@@ -783,7 +787,7 @@ class SagaCombatController(
         // Projétil/Toque/Área não são "buffs ativos" (dano imediato / carregam / mira própria).
         if (TipoClasseMagia.PROJETIL in classe.classes || TipoClasseMagia.TOQUE in classe.classes ||
             TipoClasseMagia.AREA in classe.classes) return
-        val (dur, durSeg) = parseDuracao(magia.duracao)
+        val (dur, durSeg) = duracaoDe(def, magia.duracao) // MEC-5b: canônico > texto do cabeçalho
         // Lote MEC-5: buff PERMANENTE/indefinido vale até ser dissipado (`dissiparMagiaAtiva`), então
         // precisa ser registrado. Mas só quando TEM buff estruturado — senão as 154 mágicas "Perm."
         // de ambiente/narrado (Criar Água…) virariam ruído de "fica ATIVA" no feed.
@@ -814,6 +818,36 @@ class SagaCombatController(
     /** Extrai (tipo de duração, segundos) do campo `duracao` do catálogo ("1 min.", "permanente", "instantâneo"). */
     private fun parseDuracao(txt: String?): Pair<TipoDuracao, Int> =
         com.gurps.ficha.domain.magic.MagicTime.parseDuracao(txt)
+
+    // ── Lote MEC-5b: preferir o número CANÔNICO do catálogo ao parser do texto ───────────────────
+    // Os campos de texto (`duracao`, `energia`, `tempoOperacao`) são a transcrição do cabeçalho, e a
+    // auditoria contra a `descricao` (fiel ao livro) provou que ela erra em dezenas de mágicas. Onde
+    // o número conferido existe, ele manda; onde não existe (240 mágicas, confiança < alta), o
+    // parser continua valendo — fallback honesto, não invenção.
+
+    /** Custo conferido contra o livro, ou null quando a mágica não tem número canônico. */
+    private fun custoCanonico(def: com.gurps.ficha.model.MagiaDefinicao?): com.gurps.ficha.domain.magic.CustoEnergia? {
+        val operar = def?.custoOperar ?: return null
+        return com.gurps.ficha.domain.magic.CustoEnergia(
+            base = operar, variavel = false, minimo = operar.coerceAtLeast(1),
+            manutencao = def.custoManter, original = def.energia.orEmpty(),
+        )
+    }
+
+    /** (tipo, segundos) conferidos contra o livro; cai no parser do texto quando não há canônico. */
+    private fun duracaoDe(def: com.gurps.ficha.model.MagiaDefinicao?, txt: String?): Pair<TipoDuracao, Int> {
+        val tipo = when (def?.duracaoTipo) {
+            "instantanea" -> TipoDuracao.INSTANTANEA
+            "temporaria" -> TipoDuracao.TEMPORARIA
+            "permanente" -> TipoDuracao.PERMANENTE
+            else -> return parseDuracao(txt)
+        }
+        return tipo to (def.duracaoSeg ?: 0)
+    }
+
+    /** Tempo de operação conferido contra o livro; cai no parser do texto quando não há canônico. */
+    private fun tempoDe(def: com.gurps.ficha.model.MagiaDefinicao?, txt: String?): Int =
+        def?.tempoOperacaoSeg?.takeIf { it > 0 } ?: parseTempoSeg(txt)
 
     /**
      * Lote MA-3d: começa a MIRA de uma magia de ÁREA — o app entra em modo "toque um hex". A magia só
@@ -859,7 +893,8 @@ class SagaCombatController(
             mecanica = def?.mecanica,        // Lote AR-1
             resumoEfeito = resumoDaDescricao(def?.descricao ?: magia.texto), // Lote MA-8
         )
-        s.heroiConjurarArea(ctx, MagicEnergy.parse(magia.energia), mira.energia, magia.nome, alvos)
+        // MEC-5b: canônico > texto também na área.
+        s.heroiConjurarArea(ctx, custoCanonico(def) ?: MagicEnergy.parse(magia.energia), mira.energia, magia.nome, alvos)
         sincronizarRecursosHeroi(s)
         depoisDaAcaoDoHeroi()
     }

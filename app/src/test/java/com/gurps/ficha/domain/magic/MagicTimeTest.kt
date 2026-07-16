@@ -102,6 +102,63 @@ class MagicTimeTest {
         assertTrue("Duração lida ERRADA em ${quebradas.size} magia(s): ${quebradas.take(5)}", quebradas.isEmpty())
     }
 
+    // ── Lote MEC-5b: os números canônicos gravados no catálogo ──────────────────────────────────
+
+    @Test
+    fun `as magias auditadas tem numero canonico e ele bate com o livro`() {
+        val catalogo = carregarCatalogo()
+        Assume.assumeNotNull(catalogo)
+        var comCanonico = 0
+        val invalidas = mutableListOf<String>()
+        for (i in 0 until catalogo!!.length()) {
+            val m = catalogo.getJSONObject(i)
+            val tipo = m.optString("duracaoTipo", "")
+            if (tipo.isEmpty()) continue // sem canônico → cai no parser (240 mágicas, honesto)
+            comCanonico++
+            val nome = m.optString("nome")
+            if (tipo !in listOf("instantanea", "temporaria", "permanente"))
+                invalidas += "$nome: duracaoTipo '$tipo' fora do vocabulário"
+            // Temporária TEM que ter segundos > 0, senão expiraria na hora.
+            if (tipo == "temporaria" && m.optInt("duracaoSeg", 0) <= 0)
+                invalidas += "$nome: temporária com duracaoSeg=${m.optInt("duracaoSeg", 0)}"
+            // Instantânea/permanente não podem carregar duração.
+            if (tipo != "temporaria" && m.optInt("duracaoSeg", 0) != 0)
+                invalidas += "$nome: $tipo com duracaoSeg=${m.optInt("duracaoSeg", 0)}"
+            // Manutenção não passa do custo de operar (Magia p.15) — EXCETO quando operar é 0, que é
+            // legítimo: o catálogo tem "0/1" (lança de graça, custa para manter).
+            val op = if (m.has("custoOperar")) m.optInt("custoOperar") else null
+            val mt = if (m.has("custoManter")) m.optInt("custoManter") else null
+            if (op != null && op > 0 && mt != null && mt > op)
+                invalidas += "$nome: manter ($mt) > operar ($op)"
+        }
+        println("MEC-5b: $comCanonico mágicas com número canônico no catálogo real.")
+        assertTrue("o merge do canônico precisa ter rodado", comCanonico > 500)
+        assertTrue("Canônico INVÁLIDO em ${invalidas.size} magia(s): ${invalidas.take(5)}", invalidas.isEmpty())
+    }
+
+    @Test
+    fun `o canonico corrigiu as transcricoes erradas que a auditoria achou`() {
+        // Casos verificados À MÃO contra a descrição fiel do livro (o cabeçalho diverge nos três).
+        val catalogo = carregarCatalogo()
+        Assume.assumeNotNull(catalogo)
+        val porNome = (0 until catalogo!!.length()).associate {
+            val m = catalogo.getJSONObject(it); m.optString("nome") to m
+        }
+        // Arma Congelante: cabeçalho "03/01"; livro "Custo: 4 para operar: 1 para manter".
+        porNome["Arma Congelante"]?.let {
+            assertEquals(4, it.optInt("custoOperar"))
+            assertEquals(1, it.optInt("custoManter"))
+            assertEquals(2, it.optInt("tempoOperacaoSeg")) // cabeçalho dizia "3 seg."
+        }
+        // Analisar Mágica: cabeçalho "5"; livro "Custo: 8".
+        porNome["Analisar Mágica"]?.let { assertEquals(8, it.optInt("custoOperar")) }
+        // Subjugar: cabeçalho "4"; livro "6 para operar. 3 para manter".
+        porNome["Subjugar"]?.let {
+            assertEquals(6, it.optInt("custoOperar"))
+            assertEquals(3, it.optInt("custoManter"))
+        }
+    }
+
     @Test
     fun `toda magia Perm do catalogo real e PERMANENTE, nunca instantanea`() {
         val catalogo = carregarCatalogo()
