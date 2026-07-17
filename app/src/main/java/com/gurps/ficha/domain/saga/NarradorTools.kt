@@ -85,7 +85,14 @@ object NarradorTools {
                 Param("inimigos", "array_objeto", "Oponentes do encontro: identificador do bestiário ou conceito, com quantidade.",
                     obrigatorio = true, camposItem = mapOf("id_ou_conceito" to "string", "quantidade" to "integer")),
                 Param("distancia_m", "integer", "Distância inicial aproximada em metros entre o herói e os oponentes."),
-                Param("surpresa", "string", "Quem está surpreso no início, se houver surpresa.", enum = listOf("ninguem", "heroi", "inimigos"))
+                Param("surpresa", "string", "Quem está surpreso no início, se houver surpresa.", enum = listOf("ninguem", "heroi", "inimigos")),
+                // Lote MEC-8: sem este campo o Narrador NÃO TINHA COMO dizer quais mágicas o inimigo
+                // sabe — e o app preenchia o buraco inventando ("Dardo Mágico", que nem existe em GURPS).
+                Param("magias_dos_inimigos", "array_string",
+                    "Nomes EXATOS de mágicas do catálogo GURPS que os conjuradores deste encontro sabem lançar " +
+                        "(ex.: \"Bola de Fogo\", \"Relâmpago\", \"Adaga de Gelo\"). Use APENAS mágicas que existem no " +
+                        "livro — nome inventado é recusado e o inimigo fica sem mágica. Só mágicas de DANO funcionam " +
+                        "como ataque do inimigo. Deixe vazio se nenhum oponente for conjurador.")
             )
         ),
         ToolSpec(

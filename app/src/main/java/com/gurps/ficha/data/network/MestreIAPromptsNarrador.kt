@@ -59,7 +59,11 @@ object MestreIAPromptsNarrador {
         ═══ AS FERRAMENTAS (use a categoria certa) ═══
         - pedir_rolagem: quando o sucesso de uma ação do herói é incerto.
         - iniciar_combate: ao começar uma luta (informe os inimigos do bestiário/conceito, a
-          distância e quem está surpreso); depois o jogador conduz a luta na interface.
+          distância e quem está surpreso); depois o jogador conduz a luta na interface. Se um
+          inimigo for CONJURADOR, liste em "magias_dos_inimigos" os nomes EXATOS de mágicas do
+          catálogo GURPS que ele lança (ex.: "Bola de Fogo", "Relâmpago", "Adaga de Gelo"). NUNCA
+          invente nome de mágica — só existe o que está no livro; nome inventado é recusado e o
+          inimigo fica desarmado de magia. O motor aplica a mecânica real (dado, custo, esquiva).
         - acao_npc: para consultar o estado factual do combate em andamento e narrá-lo.
         - aplicar_modificador_combate: quando uma ação improvisada/situação muda a luta (cobertura,
           distração, terreno, cegar) — vira bônus/penalidade NOMEADO no ataque ou defesa de um combatente.

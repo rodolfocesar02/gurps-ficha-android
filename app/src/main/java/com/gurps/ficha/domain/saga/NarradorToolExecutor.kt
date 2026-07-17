@@ -46,7 +46,7 @@ class NarradorToolExecutor(
      * factuais (dano/condição/recurso/XP) sem inventar números.
      */
     interface CombatBridge {
-        suspend fun iniciarCombate(inimigos: List<Pair<String, Int>>, distanciaM: Int, surpresa: String): String
+        suspend fun iniciarCombate(inimigos: List<Pair<String, Int>>, distanciaM: Int, surpresa: String, magiasDeclaradas: List<String>): String
         fun combateAtivo(): Boolean
         fun acaoNpc(npcId: String, intencao: String, alvoId: String?, detalhes: String?): String
         fun aplicarDano(alvoId: String?, dano: String, tipo: String, local: String?): String
@@ -258,7 +258,11 @@ class NarradorToolExecutor(
         if (inimigos.isEmpty()) return erro("campos_obrigatorios", "ao menos um inimigo é obrigatório")
         val distancia = args.optInt("distancia_m", 5)
         val surpresa = args.optString("surpresa", "ninguem").ifBlank { "ninguem" }
-        val resumo = bridge.iniciarCombate(inimigos, distancia, surpresa)
+        // Lote MEC-8: mágicas que o Narrador declarou para os conjuradores (nomes do catálogo real).
+        val magias = args.optJSONArray("magias_dos_inimigos")?.let { ja ->
+            (0 until ja.length()).mapNotNull { ja.optString(it).trim().ifBlank { null } }
+        } ?: emptyList()
+        val resumo = bridge.iniciarCombate(inimigos, distancia, surpresa, magias)
         return JSONObject().put("ok", true).put("estado", resumo)
             .put("instrucao", "O combate é jogado na interface pelo jogador. Narre a abertura SEM rolar nem inventar números; o motor cuida das rolagens. Você será chamado de novo ao fim do combate para narrar o desfecho.")
             .toString()

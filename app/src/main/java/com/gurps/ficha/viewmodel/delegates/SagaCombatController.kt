@@ -456,7 +456,33 @@ class SagaCombatController(
      * Abre um encontro. [inimigos] = pares (id do bestiário, quantidade). Devolve um resumo factual
      * (o Narrador transforma em prosa). Distâncias e surpresa preparam o estado inicial.
      */
-    fun iniciarCombate(inimigos: List<Pair<String, Int>>, distanciaM: Int = 5, surpresa: String = "ninguem"): String {
+    /**
+     * Lote MEC-8: procura a magia no CATÁLOGO real e monta a [NpcMagia] com a mecânica CURADA (dado,
+     * entrega, custo). Devolve null se o nome não existe nas 879 — o app NÃO inventa magia.
+     */
+    private fun npcMagiaDoCatalogo(nomeMagia: String, nh: Int): NpcMagia? {
+        val ctx = context ?: return null
+        val alvo = com.gurps.ficha.domain.filters.CatalogFilters.normalizarBusca(nomeMagia)
+        val def = runCatching {
+            com.gurps.ficha.data.DataRepository.getInstance(ctx).magias
+                .firstOrNull { com.gurps.ficha.domain.filters.CatalogFilters.normalizarBusca(it.nome) == alvo }
+        }.getOrNull() ?: return null
+        val mec = def.mecanica ?: return null
+        // Só magia de DANO serve como ataque do NPC — o motor não sabe executar o resto no cérebro dele.
+        if (mec.efeito != "dano" || mec.danoPorEnergia == null) return null
+        val projetil = mec.entrega == "projetil" ||
+            com.gurps.ficha.domain.magic.TipoClasseMagia.PROJETIL in MagicClassParser.parse(def.classe).classes
+        // Custo e dados vêm do livro: o custo canônico (ou 1) compra os dados que a curadoria mandar.
+        val custo = (def.custoOperar ?: 1).coerceIn(1, 6)
+        return NpcMagia(nome = def.nome, nh = nh, projetil = projetil, custoFP = custo,
+            danoDados = custo.coerceIn(1, 3))
+    }
+
+    fun iniciarCombate(
+        inimigos: List<Pair<String, Int>>, distanciaM: Int = 5, surpresa: String = "ninguem",
+        /** Lote MEC-8: nomes de magias REAIS do catálogo que os conjuradores do encontro sabem. */
+        magiasDeclaradas: List<String> = emptyList(),
+    ): String {
         val ctx = context ?: return "sem_contexto"
         // Combate anterior já encerrado mas não fechado pela UI: limpa antes (senão o painel da luta
         // passada fica preso, sobretudo agora que o jogador pode digitar após cair sem tocar "Fechar").
@@ -510,16 +536,18 @@ class SagaCombatController(
                     id = cid, nome = nome, dx = 10, velocidadeBasica = 5.0, deslocamento = 5, pvMax = 10,
                     stats = NpcStats(iq = 12, armaDano = "1d-1", armaTipo = "cont", armaNh = 10)
                 )
-                // Lote MA-7: conceito de CONJURADOR sem mágicas curadas no bestiário → mágica ofensiva
-                // padrão ("Dardo Mágico", Projétil 1d). Afordância de jogo — o usuário nomeou o inimigo.
-                val ehConjuradorConceito = Regex("mag[oa]|conjurad|feiticei|brux|necromant|xam|arcan|piromant|eletromant|cromant")
-                    .containsMatchIn(idOuConceito.lowercase())
+                // Lote MEC-8: as mágicas do NPC vêm do CATÁLOGO (879 magias reais, curadas), nunca de
+                // invenção. O Narrador declara os nomes em `iniciar_combate`; o app procura cada um e
+                // usa a mecânica REAL do livro. Nome que não existe é RECUSADO (e dito no log).
+                //
+                // Isto substitui o "Dardo Mágico" do MA-7: aquilo era uma magia que NÃO EXISTE em GURPS
+                // (é nome de D&D), com números que eu inventei (NH = IQ+3, 1d, 1 PF), disparada por um
+                // regex no nome que o usuário digitava. Fidelidade ao livro é a base do projeto.
                 val st = comb.stats
-                if (ehConjuradorConceito && st != null && st.magias.isEmpty()) {
+                if (st != null && st.magias.isEmpty() && magiasDeclaradas.isNotEmpty()) {
                     val nh = (st.iq + 3).coerceAtLeast(12)
-                    comb = comb.copy(stats = st.copy(magias = listOf(
-                        NpcMagia(nome = "Dardo Mágico", nh = nh, projetil = true, custoFP = 1, danoDados = 1)
-                    )))
+                    val doCatalogo = magiasDeclaradas.mapNotNull { nomeMagia -> npcMagiaDoCatalogo(nomeMagia, nh) }
+                    if (doCatalogo.isNotEmpty()) comb = comb.copy(stats = st.copy(magias = doCatalogo))
                 }
                 combatentes.add(comb)
                 distancias[cid] = distanciaM.coerceAtLeast(1)
@@ -1255,8 +1283,42 @@ class SagaCombatController(
         // Só quando há defesa possível (não vale contra golpe fulminante / pelas costas — opcoes vazia).
         val opcoes = if (opcoesBaseFacing.isNotEmpty()) opcoesBaseFacing + opcoesBloqueioMagico(s) else opcoesBaseFacing
         if (intencao.conjurar != null) {
-            // Lote MA-7: o NPC conjurador lança no herói (resolução síncrona; herói esquiva/leva dano).
-            s.npcConjurar(npcId, intencao.conjurar!!)
+            val magiaNpc = intencao.conjurar!!
+            // Lote MEC-8: a defesa contra mágica de NPC agora é INTERATIVA, igual à defesa contra arma.
+            // Projétil mágico → o herói ESQUIVA (nunca apara/bloqueia com escudo, Magia p.12), mas PODE
+            // usar uma mágica de Bloqueio. Mágica de dano NÃO-projétil (Comum resistível) não tem defesa
+            // ativa — resiste por atributo, resolução direta. Antes o motor esquivava sozinho: o jogador
+            // reclamou (com razão) que não teve rolagem de esquiva nem opção de defesa.
+            if (magiaNpc.projetil) {
+                val soEsquiva = opcoes.filter {
+                    it.tipo == CombatResolver.TipoDefesa.ESQUIVA || it.magiaBloqueioId != null
+                }
+                if (soEsquiva.isNotEmpty()) {
+                    val deferred = CompletableDeferred<CombatResolver.OpcaoDefesa>()
+                    defesaPendente = DefesaPendenteUi(
+                        atacante = npc.nome,
+                        descricaoAtaque = "${npc.nome} conjura ${magiaNpc.nome} em você! Esquive ou bloqueie com magia.",
+                        opcoes = soEsquiva, deferred = deferred
+                    )
+                    atualizarEstado()
+                    val escolha = deferred.await()
+                    defesaPendente = null
+                    // A rolagem de defesa é feita AQUI (o jogador escolheu; o motor rola os 3d6), igual
+                    // ao fluxo contra arma — o herói vê a soma no log.
+                    val soma = (1..3).sumOf { Random.nextInt(1, 7) }
+                    if (escolha.magiaBloqueioId != null) {
+                        val mb = viewModel.personagem.magias.firstOrNull { it.definicaoId == escolha.magiaBloqueioId || it.nome == escolha.magiaBloqueioId }
+                        val custoFP = mb?.let { MagicEnergy.parse(it.energia) }?.let { it.base ?: it.minimo } ?: 1
+                        s.aplicarBloqueioMagico(custoFP, escolha.magiaBloqueioNome ?: "magia")
+                        viewModel.sagaDefinirPfAtual(s.heroi.pfAtual)
+                    }
+                    s.npcConjurar(npcId, magiaNpc, DefesaHeroi(escolha.tipo, escolha.valorFinal, soma))
+                } else {
+                    s.npcConjurar(npcId, magiaNpc) // sem defesa possível (raro) → resolução direta
+                }
+            } else {
+                s.npcConjurar(npcId, magiaNpc) // dano não-projétil: resiste por atributo, sem defesa ativa
+            }
         } else if (s.intencaoAtacaHeroi(intencao) && opcoes.isNotEmpty()) {
             val deferred = CompletableDeferred<CombatResolver.OpcaoDefesa>()
             val nomeNpc = npc.nome

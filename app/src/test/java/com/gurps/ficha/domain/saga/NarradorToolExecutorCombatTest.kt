@@ -18,8 +18,8 @@ class NarradorToolExecutorCombatTest {
     private class FakeBridge : NarradorToolExecutor.CombatBridge {
         val chamadas = mutableListOf<String>()
         var ativo = false
-        override suspend fun iniciarCombate(inimigos: List<Pair<String, Int>>, distanciaM: Int, surpresa: String): String {
-            chamadas.add("iniciar:$inimigos:$distanciaM:$surpresa"); ativo = true; return "estado-inicial"
+        override suspend fun iniciarCombate(inimigos: List<Pair<String, Int>>, distanciaM: Int, surpresa: String, magiasDeclaradas: List<String>): String {
+            chamadas.add("iniciar:$inimigos:$distanciaM:$surpresa:$magiasDeclaradas"); ativo = true; return "estado-inicial"
         }
         override fun combateAtivo(): Boolean = ativo
         override fun acaoNpc(npcId: String, intencao: String, alvoId: String?, detalhes: String?): String {
@@ -64,7 +64,19 @@ class NarradorToolExecutorCombatTest {
             """{"inimigos":[{"id_ou_conceito":"goblin","quantidade":3}],"distancia_m":8,"surpresa":"ninguem"}"""
         )
         assertTrue(JSONObject(r).optBoolean("ok"))
-        assertEquals(listOf("iniciar:[(goblin, 3)]:8:ninguem"), b.chamadas)
+        assertEquals(listOf("iniciar:[(goblin, 3)]:8:ninguem:[]"), b.chamadas)
+    }
+
+    @Test
+    fun `iniciar_combate repassa as magias declaradas dos inimigos`() = runBlocking {
+        // Lote MEC-8: o Narrador declara as mágicas REAIS; sem isto o app inventava "Dardo Mágico".
+        val b = FakeBridge()
+        exec(b).executar(
+            NarradorTools.TOOL_INICIAR_COMBATE,
+            """{"inimigos":[{"id_ou_conceito":"mago","quantidade":1}],"magias_dos_inimigos":["Bola de Fogo","Relâmpago"]}"""
+        )
+        assertTrue(b.chamadas.first().contains("Bola de Fogo"))
+        assertTrue(b.chamadas.first().contains("Relâmpago"))
     }
 
     @Test

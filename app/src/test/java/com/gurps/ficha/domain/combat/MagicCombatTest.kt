@@ -172,10 +172,12 @@ class MagicCombatTest {
 
     // ── Lote MA-7: NPC conjurador ──
 
+    // Lote MEC-8: a magia do NPC é uma magia REAL do catálogo (Bola de Fogo), não a inventada
+    // "Dardo Mágico" (que nem existe em GURPS).
     private fun conjuradorNpc() = Combatente(
         id = "mago", nome = "Mago", dx = 11, velocidadeBasica = 5.0, deslocamento = 5, pvMax = 9, pvAtual = 9, pfAtual = 10,
         stats = NpcStats(st = 10, dx = 11, iq = 13, ht = 11, pvMax = 9, rd = 0, armaNh = 10,
-            magias = listOf(NpcMagia(nome = "Dardo Mágico", nh = 15, projetil = true, custoFP = 1, danoDados = 1)))
+            magias = listOf(NpcMagia(nome = "Bola de Fogo", nh = 15, projetil = true, custoFP = 1, danoDados = 1)))
     )
 
     @Test
@@ -183,25 +185,47 @@ class MagicCombatTest {
         val enc = CombatEncounter(listOf(heroi(), conjuradorNpc()), mapOf("mago" to 5), seed = 1L)
         val intencao = NpcCombatBrain.decidir(enc.combatentes.first { it.id == "mago" }, enc, "heroi", Random(3))
         assertTrue("deveria intencionar conjurar", intencao.conjurar != null)
-        assertEquals("Dardo Mágico", intencao.conjurar!!.nome)
+        assertEquals("Bola de Fogo", intencao.conjurar!!.nome)
     }
 
     @Test
     fun `npcConjurar gasta o PF do NPC e resolve (dano no heroi ou esquiva)`() {
         val perfilBaixaEsquiva = HeroiPerfilCombate(esquiva = 3, apara = 11, ht = 12, rd = 0) // esquiva baixa → costuma acertar
-        val enc = CombatEncounter(listOf(heroi(), conjuradorNpc()), mapOf("mago" to 5), seed = 1L)
         var feriu = false
         for (seed in 0L until 20L) {
             val e = CombatEncounter(listOf(heroi(), conjuradorNpc()), mapOf("mago" to 5), seed = 1L)
             val s = CombatSession(e, perfilBaixaEsquiva, Random(seed))
             val pfNpcAntes = s.inimigos.first { it.id == "mago" }.pfAtual
             val pvHeroiAntes = s.heroi.pvAtual
-            s.npcConjurar("mago", NpcMagia("Dardo Mágico", nh = 30, projetil = true, custoFP = 1, danoDados = 2))
+            s.npcConjurar("mago", NpcMagia("Bola de Fogo", nh = 30, projetil = true, custoFP = 1, danoDados = 2))
             assertTrue("NPC gasta PF", s.inimigos.first { it.id == "mago" }.pfAtual < pfNpcAntes)
-            assertTrue(s.log.any { it.contains("Dardo Mágico") })
+            assertTrue(s.log.any { it.contains("Bola de Fogo") })
             if (s.heroi.pvAtual < pvHeroiAntes) { feriu = true; break }
         }
         assertTrue("com esquiva 3 e NH 30, algum seed deveria ferir o herói", feriu)
+    }
+
+    @Test
+    fun `MEC-8 a esquiva do NPC-magia usa a ROLAGEM do jogador, nao uma automatica`() {
+        // A reclamação do usuário: "não tive rolagem de esquiva". Agora a defesa é interativa — a soma
+        // vem do card. Esquiva alta + rolagem baixa (3) = sempre esquiva; o herói não pode ser ferido.
+        val enc = CombatEncounter(listOf(heroi(), conjuradorNpc()), mapOf("mago" to 5), seed = 1L)
+        val s = CombatSession(enc, HeroiPerfilCombate(esquiva = 12, apara = 11, ht = 12, rd = 0), Random(1))
+        val pvAntes = s.heroi.pvAtual
+        val defesaBoa = DefesaHeroi(CombatResolver.TipoDefesa.ESQUIVA, valorFinal = 12, soma = 3)
+        val r = s.npcConjurar("mago", NpcMagia("Bola de Fogo", nh = 30, projetil = true, custoFP = 1, danoDados = 2), defesaBoa)
+        assertEquals("esquiva com rolagem 3 vs Esquiva 12 é sucesso garantido", pvAntes, s.heroi.pvAtual)
+        assertTrue(s.log.any { it.contains("ESQUIVA") && it.contains("rolou 3") })
+    }
+
+    @Test
+    fun `MEC-8 rolagem RUIM do jogador deixa a Bola de Fogo acertar`() {
+        val enc = CombatEncounter(listOf(heroi(), conjuradorNpc()), mapOf("mago" to 5), seed = 1L)
+        val s = CombatSession(enc, HeroiPerfilCombate(esquiva = 8, apara = 11, ht = 12, rd = 0), Random(1))
+        val pvAntes = s.heroi.pvAtual
+        val defesaRuim = DefesaHeroi(CombatResolver.TipoDefesa.ESQUIVA, valorFinal = 8, soma = 18) // 18 falha sempre
+        s.npcConjurar("mago", NpcMagia("Bola de Fogo", nh = 30, projetil = true, custoFP = 1, danoDados = 2), defesaRuim)
+        assertTrue("rolagem 18 falha a esquiva → a magia fere", s.heroi.pvAtual < pvAntes)
     }
 
     @Test

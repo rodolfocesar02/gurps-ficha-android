@@ -344,8 +344,8 @@ class FichaSagaDelegate(
 
     // ── CombatBridge (Lote 366 / B8): tools do Narrador → motor de combate + ficha ──
 
-    override suspend fun iniciarCombate(inimigos: List<Pair<String, Int>>, distanciaM: Int, surpresa: String): String =
-        combate.iniciarCombate(inimigos, distanciaM, surpresa)
+    override suspend fun iniciarCombate(inimigos: List<Pair<String, Int>>, distanciaM: Int, surpresa: String, magiasDeclaradas: List<String>): String =
+        combate.iniciarCombate(inimigos, distanciaM, surpresa, magiasDeclaradas)
 
     override fun combateAtivo(): Boolean = combate.emCurso
 

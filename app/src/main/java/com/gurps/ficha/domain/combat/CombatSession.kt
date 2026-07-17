@@ -1628,7 +1628,7 @@ class CombatSession(
      * SÍNCRONA (a esquiva do herói é rolada pelo motor) — a defesa interativa vs mágica de NPC é um
      * refinamento futuro.
      */
-    fun npcConjurar(npcId: String, magia: NpcMagia): AtaqueResultado {
+    fun npcConjurar(npcId: String, magia: NpcMagia, defesaHeroi: DefesaHeroi? = null): AtaqueResultado {
         val npc = inimigos.firstOrNull { it.id == npcId && it.vivo }
             ?: return AtaqueResultado(false, false, 0, false, "NPC inválido.")
         // Lote COND-1: silenciado não conjura (o ritual exige fala).
@@ -1662,8 +1662,16 @@ class CombatSession(
                 sb.append("🔮 ${npc.nome} conjura ${magia.nome} em você (NH $nhEf, rolou $rol).")
                 var acertou = true
                 if (magia.projetil) {
-                    val esq = heroiPerfil.esquiva
-                    if (CombatResolver.defesaBemSucedida(esq, rolar3d6())) { sb.append(" Você ESQUIVA (Esquiva $esq)."); acertou = false }
+                    // Lote MEC-8: Projétil mágico só pode ser ESQUIVADO (Magia p.12). A defesa agora é
+                    // INTERATIVA como contra arma: usa a rolagem que o JOGADOR fez no card "Defenda-se!"
+                    // (defesaHeroi). Sem card (fallback), o motor rola — mas o controller sempre passa.
+                    val esq = defesaHeroi?.valorFinal ?: heroiPerfil.esquiva
+                    val rolDef = defesaHeroi?.soma ?: rolar3d6()
+                    if (CombatResolver.defesaBemSucedida(esq, rolDef)) {
+                        sb.append(" Você ESQUIVA (Esquiva $esq, rolou $rolDef)."); acertou = false
+                    } else {
+                        sb.append(" Você não esquiva (Esquiva $esq, rolou $rolDef).")
+                    }
                 }
                 if (acertou) {
                     val bruto = rolarDano("${magia.danoDados.coerceAtLeast(1)}d", random)
