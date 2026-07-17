@@ -482,6 +482,8 @@ class SagaCombatController(
         inimigos: List<Pair<String, Int>>, distanciaM: Int = 5, surpresa: String = "ninguem",
         /** Lote MEC-8: nomes de magias REAIS do catálogo que os conjuradores do encontro sabem. */
         magiasDeclaradas: List<String> = emptyList(),
+        /** Lote TESTE-1: força a grade tática mesmo fora de campanha (combate de teste do preview). */
+        forcarTatico: Boolean = false,
     ): String {
         val ctx = context ?: return "sem_contexto"
         // Combate anterior já encerrado mas não fechado pela UI: limpa antes (senão o painel da luta
@@ -571,7 +573,7 @@ class SagaCombatController(
         // SÓ quando o modo tático da campanha está ligado: com estadoTatico != null o MOVER de
         // faixa some do painel (o hex verde é o Mover) — sem a grade visível isso deixaria o
         // herói sem forma de se deslocar.
-        if (viewModel.sagaModoTaticoHex || viewModel.sagaModoTaticoHex3D) {
+        if (viewModel.sagaModoTaticoHex || viewModel.sagaModoTaticoHex3D || forcarTatico) {
             val estTatico = com.gurps.ficha.domain.combat.hex.HexSetup.setupDoEncontro(
                 idsInimigos = combatentes.filter { !it.ehHeroi }.map { it.id },
                 distanciaM = distanciaM

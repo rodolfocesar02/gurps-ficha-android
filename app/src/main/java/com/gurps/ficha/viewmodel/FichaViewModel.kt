@@ -159,6 +159,24 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
     fun sagaIniciarMiraArea(magiaId: String, raio: Int, energia: Int, pvQueimar: Int, causaDano: Boolean = false) =
         sagaDelegate.combate.iniciarMiraArea(magiaId, raio, energia, pvQueimar, causaDano)
     fun sagaCancelarMiraArea() = sagaDelegate.combate.cancelarMiraArea()
+    /**
+     * Lote TESTE-1: inicia um combate de TESTE direto do preview da grade tática, sem o Narrador.
+     * Serve para o jogador exercitar as magias no aparelho. Cria [qtdGoblins] goblins a [distanciaM]m;
+     * um deles é conjurador (Bola de Fogo) para testar a esquiva interativa contra magia de NPC.
+     */
+    fun sagaIniciarCombateTeste(qtdGoblins: Int = 2, distanciaM: Int = 5) {
+        viewModelScope.launch {
+            // O controller monta a grade (forcarTatico), roda o loop e publica o estado sozinho — a UI
+            // reage por `sagaCombateAtivo`/`sagaEstadoTatico`, sem refresh manual.
+            sagaDelegate.combate.iniciarCombate(
+                inimigos = listOf("goblin" to qtdGoblins),
+                distanciaM = distanciaM,
+                surpresa = "ninguem",
+                magiasDeclaradas = listOf("Bola de Fogo"),
+                forcarTatico = true,
+            )
+        }
+    }
     /** Lote MA-5: mana ambiente da cena atual (setada pelo Narrador via definir_cena). Alimenta a conjuração. */
     var sagaNivelMana: com.gurps.ficha.domain.magic.NivelMana = com.gurps.ficha.domain.magic.NivelMana.NORMAL
     fun sagaCombateEntregarToque(alvoId: String) = sagaDelegate.combate.heroiEntregarToque(alvoId)   // Lote MA-3d-2

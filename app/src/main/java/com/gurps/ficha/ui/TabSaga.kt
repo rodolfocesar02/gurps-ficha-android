@@ -189,6 +189,18 @@ private fun SelecaoDeCampanha(viewModel: FichaViewModel) {
                         .background(Color(0xAA000000), CircleShape)
                         .semantics { contentDescription = "Fechar preview da grade tática" }
                 ) { Icon(Icons.Default.Close, contentDescription = null, tint = Color.White) }
+
+                // Lote TESTE-1: iniciar um combate de TESTE (2 goblins, um conjurador) direto do preview,
+                // sem o Narrador — para exercitar as magias no aparelho. Some quando o combate começa.
+                if (!viewModel.sagaCombateAtivo) {
+                    Button(
+                        onClick = { viewModel.sagaIniciarCombateTeste() },
+                        modifier = Modifier
+                            .align(Alignment.BottomCenter)
+                            .padding(bottom = 24.dp)
+                            .semantics { contentDescription = "Iniciar combate de teste com 2 goblins para testar as magias" }
+                    ) { Text("⚔️ Combate de teste (2 goblins)") }
+                }
             }
         }
     }
