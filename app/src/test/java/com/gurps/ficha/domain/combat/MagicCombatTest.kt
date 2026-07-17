@@ -623,6 +623,60 @@ class MagicCombatTest {
         assertNull("BD não cria um Bloquear do nada", s.heroiPerfil.bloqueio)
     }
 
+    // ── Lote MEC-6: buff de UM ÚNICO USO (Aumentar Força/Destreza/Vitalidade) ───────────────────
+
+    private fun umUso(atributo: String) = MagiaMecanica(
+        efeito = "buff", buffAtributo = atributo, buffAtributoValor = 1,
+        buffEnergiaPorNivel = 1, buffMaxNiveis = 5, buffUmUnicoUso = true,
+    )
+
+    @Test
+    fun `Aumentar Forca aplica o ST na hora — antes o heroi pagava o PF e nada acontecia`() {
+        val s = sessao(7)
+        val stBase = s.heroiPerfil.st
+        s.aplicarBuffDeUmUso("Aumentar Força", MagicMechanics.calcularBuff(umUso("ST"), 3, "heroi"))
+        assertEquals(stBase + 3, s.heroiPerfil.st)
+    }
+
+    @Test
+    fun `o buff de um uso SOBREVIVE ao turno em que foi conjurado`() {
+        // A armadilha: conjurar gasta a ação. Se o buff sumisse no fim desse turno, o herói nunca
+        // conseguiria usá-lo — pagaria o PF por nada (que era exatamente o bug).
+        val s = sessao(7)
+        val stBase = s.heroiPerfil.st
+        s.aplicarBuffDeUmUso("Aumentar Força", MagicMechanics.calcularBuff(umUso("ST"), 3, "heroi"))
+        // Fecha a rodada inteira: o herói volta a agir com o bônus ainda de pé.
+        repeat(s.encounter.combatentes.size) { s.avancarTurno() }
+        assertEquals("o bônus tem que valer na ação SEGUINTE", stBase + 3, s.heroiPerfil.st)
+    }
+
+    @Test
+    fun `o buff de um uso some depois da acao seguinte`() {
+        val s = sessao(7)
+        val stBase = s.heroiPerfil.st
+        s.aplicarBuffDeUmUso("Aumentar Força", MagicMechanics.calcularBuff(umUso("ST"), 3, "heroi"))
+        // Duas rodadas: a 1ª é a da conjuração, a 2ª é a ação que consome o bônus.
+        repeat(s.encounter.combatentes.size * 2 + 1) { s.avancarTurno() }
+        assertEquals("um único uso não pode virar buff permanente", stBase, s.heroiPerfil.st)
+        assertTrue(s.heroi.buffs.none { it.umUnicoUso })
+    }
+
+    @Test
+    fun `buff de um uso NAO vira magia ativa (nao tem manutencao nem relogio)`() {
+        val s = sessao(7)
+        s.aplicarBuffDeUmUso("Aumentar Destreza", MagicMechanics.calcularBuff(umUso("DX"), 2, "heroi"))
+        assertTrue("é instantânea: não entra no rastreio de manutenção", s.magiasAtivas.isEmpty())
+        assertEquals(2, s.heroi.buffDx)
+    }
+
+    @Test
+    fun `Aumentar Vitalidade sobe o HT do heroi`() {
+        val s = sessao(7)
+        val htBase = s.heroiPerfil.ht
+        s.aplicarBuffDeUmUso("Aumentar Vitalidade", MagicMechanics.calcularBuff(umUso("HT"), 4, "heroi"))
+        assertEquals(htBase + 4, s.heroiPerfil.ht)
+    }
+
     @Test
     fun `Nublar no heroi penaliza quem tenta acerta-lo`() {
         val s = sessao(7)

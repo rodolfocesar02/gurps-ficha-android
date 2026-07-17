@@ -80,6 +80,16 @@ data class MagiaMecanica(
     val buffDeslocamentoFixo: Int = 0,
     /** Penalidade por nível ao NH de QUEM ATACA o alvo (Nublar = −1/nível, máx −5). Valor positivo. */
     val buffPenalidadeAtacantes: Int = 0,
+    /**
+     * Lote MEC-6 — buff de UM ÚNICO USO: duração "Instant.", vale para um único teste/ação curta
+     * (Aumentar Força: "+1 ST por energia, máx 5, só um teste"). Estes NÃO são mágicas ativas: sem
+     * este campo, `registrarSeMagiaAtiva` os descartava por não serem temporários — o herói pagava o
+     * PF e não acontecia NADA.
+     *
+     * O motor aplica e consome ao FIM da próxima ação do dono (aproximação honesta de "um teste":
+     * o turno da conjuração não conta, senão o buff morreria antes de poder ser usado).
+     */
+    val buffUmUnicoUso: Boolean = false,
 
     // ── notas para o Narrador (ambiente/controle/utilidade: o motor tagueia, o Mestre descreve) ──
     val notas: String? = null,
@@ -107,7 +117,14 @@ data class BuffAplicado(
     /** "cac" | "distancia" | null (qualquer) — em que arma o [danoArma] vale. */
     val armaTipo: String? = null,
     val penalidadeAtacantes: Int = 0,
+    /** Lote MEC-6: vale para UM único teste/ação — some ao fim da próxima ação do dono. */
+    val umUnicoUso: Boolean = false,
 ) {
+    /**
+     * Lote MEC-6: true depois que o dono FECHOU o turno em que conjurou. O turno da conjuração não
+     * conta — senão o buff de um uso expiraria antes de o herói poder usá-lo.
+     */
+    var estreou: Boolean = false
     /** true se o bônus de dano vale para um ataque com este alcance. */
     fun danoArmaVale(aDistancia: Boolean): Boolean = when (armaTipo) {
         "cac" -> !aDistancia
@@ -162,6 +179,7 @@ object MagicMechanics {
             danoArma = m.buffDanoArma * n,
             armaTipo = m.buffArmaTipo,
             penalidadeAtacantes = m.buffPenalidadeAtacantes * n,
+            umUnicoUso = m.buffUmUnicoUso,
         )
     }
 

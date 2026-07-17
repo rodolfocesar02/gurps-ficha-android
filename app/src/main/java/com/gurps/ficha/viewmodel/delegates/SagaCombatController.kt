@@ -784,6 +784,17 @@ class SagaCombatController(
         // Lote MEC-2: o alvo RESISTIU → a magia não pega. Sem isto um Debilitar resistido ainda
         // aplicaria −3 ST, porque `sucesso` só quer dizer "a conjuração deu certo".
         if (res.alvoResistiu) return
+        // Lote MEC-6: buff de UM ÚNICO USO (Aumentar Força/Destreza/Vitalidade). Tem que vir ANTES do
+        // filtro de duração: são "Instant." e por isso eram descartados aqui — o herói pagava o PF e
+        // não acontecia nada.
+        if (mecanica?.buffUmUnicoUso == true &&
+            com.gurps.ficha.domain.magic.MagicMechanics.temBuffEstruturado(mecanica)) {
+            s.aplicarBuffDeUmUso(
+                magia.nome,
+                com.gurps.ficha.domain.magic.MagicMechanics.calcularBuff(mecanica, energiaInvestida, alvoId ?: "heroi"),
+            )
+            return
+        }
         // Projétil/Toque/Área não são "buffs ativos" (dano imediato / carregam / mira própria).
         if (TipoClasseMagia.PROJETIL in classe.classes || TipoClasseMagia.TOQUE in classe.classes ||
             TipoClasseMagia.AREA in classe.classes) return

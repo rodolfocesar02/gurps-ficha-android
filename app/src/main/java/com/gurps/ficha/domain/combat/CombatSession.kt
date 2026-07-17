@@ -832,6 +832,18 @@ class CombatSession(
         log += "✨ $nome fica ATIVA ($manut)."
     }
 
+    /**
+     * Lote MEC-6: buff de UM ÚNICO USO (Aumentar Força/Destreza/Vitalidade — "Instant.", vale para um
+     * teste). NÃO é mágica ativa: não tem manutenção nem relógio. Entra na lista do alvo (então o
+     * perfil efetivo já o enxerga) e sai ao fim da PRÓXIMA ação do dono — ver [avancarTurno].
+     */
+    fun aplicarBuffDeUmUso(nome: String, buff: com.gurps.ficha.domain.magic.BuffAplicado) {
+        if (buff.soNarrado) return
+        val alvo = encounter.combatentes.firstOrNull { it.id == buff.alvoId } ?: return
+        alvo.buffs.add(buff)
+        log += "✨ ${alvo.nome}: $nome — ${descreverBuff(buff)} (vale para a próxima ação)."
+    }
+
     /** Lote MEC-2: descreve os deltas de um buff em texto factual (o Narrador transforma em prosa). */
     private fun descreverBuff(b: com.gurps.ficha.domain.magic.BuffAplicado): String {
         val partes = buildList {
@@ -2049,6 +2061,11 @@ class CombatSession(
         }
         // Choque (Lote 382): expira ao fim do turno de quem agiu (valeu só no turno seguinte ao ferimento).
         anterior.choquePendente = 0
+        // Lote MEC-6: buff de UM ÚNICO USO some ao fim da PRÓXIMA ação do dono. O turno em que foi
+        // conjurado não conta (mesma armadilha do Lote 424): o herói conjura Aumentar Força gastando
+        // a ação, então o bônus tem que sobreviver até o turno seguinte para ele poder usá-lo.
+        anterior.buffs.removeAll { it.umUnicoUso && it.estreou }
+        anterior.buffs.filter { it.umUnicoUso && !it.estreou }.forEach { it.estreou = true }
         // Magias ativas (Lote MA-3d-4): o fim do turno do herói = 1 segundo de jogo; cobra manutenção
         // (do PF do herói) e expira as duradouras (MagicActive, MB Magia p.9-10).
         if (anterior.ehHeroi && magiasAtivas.isNotEmpty()) {

@@ -2005,7 +2005,8 @@
    "buffEnergiaPorNivel": 1,
    "buffMaxNiveis": 5,
    "buffAtributo": "DX",
-   "buffAtributoValor": 1
+   "buffAtributoValor": 1,
+   "buffUmUnicoUso": true
   },
   "duracaoTipo": "instantanea",
   "duracaoSeg": 0,
@@ -2033,7 +2034,8 @@
    "buffEnergiaPorNivel": 1,
    "buffMaxNiveis": 5,
    "buffAtributo": "ST",
-   "buffAtributoValor": 1
+   "buffAtributoValor": 1,
+   "buffUmUnicoUso": true
   },
   "duracaoTipo": "instantanea",
   "duracaoSeg": 0,
@@ -2081,8 +2083,13 @@
   "mecanica": {
    "efeito": "buff",
    "entrega": "toque",
-   "buffRotulo": "+1 a +5 HT (1 teste/acao curta)",
-   "notas": "1 de energia por +1 de HT, max +5. NARRADO apesar de HT ser atributo executavel: a duracao e INSTANTANEA — o bonus vale so para UM unico teste ou acao curta (Disputa Rapida, teste de atributo, um golpe, resistir a uma magia). Aplicar como buff de duracao daria +HT persistente por toda a cena, o que seria regra errada. O Narrador soma o bonus ao teste pontual. Afeta secundarias exceto PV/PF. Pre-re"
+   "buffRotulo": "HT +N (um unico teste/acao)",
+   "notas": "1 de energia por +1 de HT, max +5. NARRADO apesar de HT ser atributo executavel: a duracao e INSTANTANEA — o bonus vale so para UM unico teste ou acao curta (Disputa Rapida, teste de atributo, um golpe, resistir a uma magia). Aplicar como buff de duracao daria +HT persistente por toda a cena, o que seria regra errada. O Narrador soma o bonus ao teste pontual. Afeta secundarias exceto PV/PF. Pre-re",
+   "buffAtributo": "HT",
+   "buffAtributoValor": 1,
+   "buffEnergiaPorNivel": 1,
+   "buffMaxNiveis": 5,
+   "buffUmUnicoUso": true
   },
   "duracaoTipo": "instantanea",
   "duracaoSeg": 0,

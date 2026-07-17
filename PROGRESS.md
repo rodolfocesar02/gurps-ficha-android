@@ -3046,6 +3046,17 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - **Recomendação registrada** (maior valor × menor custo): Ataque Telegráfico (par do Enganoso), luta agarrada profunda (chaves/Mata-Leão estendendo o lote 422), Sangramento Grave + incapacitação de membro (item 5 do teste de batalha), Ataque Dedicado/Defensivo. Fora de escopo: posicional/hexágono, montaria, cinematográfico, dado de arma do NPC. Mudança só de documentação (não compila Kotlin).
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
+### Lote MEC-6 — 17 de Julho de 2026 (buff de UM ÚNICO USO — Aumentar Força/Destreza/Vitalidade)
+**O herói pagava o PF e NADA acontecia — branch GURPS-Saga**
+- **O bug**: Aumentar Força/Destreza/Vitalidade têm duração `"Instant."` (valem para um único teste/ação curta). `registrarSeMagiaAtiva` só aceitava TEMPORARIA/DURADOURA/PERMANENTE, então elas eram **silenciosamente descartadas**: o custo era cobrado e o bônus nunca aplicava. Estavam CURADAS com número desde o MEC-2 — faltava o gancho.
+- **Campo `buffUmUnicoUso`** + `BuffAplicado.umUnicoUso`/`estreou`. Não são mágicas ativas (não têm manutenção nem relógio): entram direto na lista de buffs do alvo (`aplicarBuffDeUmUso`), então o `heroiPerfil` computado já as enxerga.
+- **A armadilha do CONSUMO** (a parte que exigia cuidado): conjurar GASTA a ação do turno. Se o buff sumisse no fim desse mesmo turno, o herói nunca conseguiria usá-lo — seria trocar "não faz nada" por "não faz nada, com mais código". O buff **sobrevive ao turno da conjuração** e é consumido ao fim da ação SEGUINTE do dono, no `avancarTurno` (mesma armadilha do Lote 424, mesmo padrão do `estreou`).
+- **Curada a Aumentar Vitalidade** (só tinha rótulo, sem número): HT +1 por energia, máx 5. **Aumentar Inteligência segue narrada** — é IQ, e o motor de combate não usa IQ.
+- **+5 testes**: aplica na hora; SOBREVIVE ao turno da conjuração; some depois da ação seguinte; não vira mágica ativa; Vitalidade sobe o HT. Build gate verde nas duas variantes.
+- **DEFERIDO HONESTO — Bloquear e Robustez ficaram de fora.** Eu as tinha listado junto, mas ao abrir o código: são de classe **Bloqueio**, e o app modela magia de Bloqueio como **opção de DEFESA** (rola o NH da magia como defesa). Robustez ("RD +5 contra UM ataque") não é uma rolagem de defesa; encaixá-la ali seria meia-regra errada. Precisam do caminho de reação de bloqueio aplicar buff — outro lote.
+- **Estado do catálogo**: 879/879 curadas. O motor EXECUTA **86** (dano 40 + condição 21 + buff com número 25). Gargalos que sobram, todos de MOTOR (não de curadoria): **IQ/Vontade/Percepção** (29 magias, destravaria a escola de Mente), **dano por TIPO** (10 imunidades), **BD/RD instantâneo de Bloqueio** (Bloquear/Robustez).
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
 ### Lote MEC-5 — 17 de Julho de 2026 (duração, custo e manutenção eram lidos ERRADO em centenas de magias)
 **A pergunta do usuário ("é narrativo ou mecânico?") destravou o bug mais grave do PILAR MAGIA — branch GURPS-Saga**
 - **A resposta**: duração, tempo de operação e custo SEMPRE foram mecânicos (custo pago em PF de verdade e reduzido por NH; tempo vira manobras Concentrar; duração tem tick, cobra manutenção e expira). **Mas os parsers erravam, calados.**
