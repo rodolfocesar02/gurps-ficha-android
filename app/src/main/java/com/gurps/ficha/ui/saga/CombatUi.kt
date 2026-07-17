@@ -1292,7 +1292,16 @@ private fun SubDialogoConjurar(
                         selecionado = magiaSel?.id == m.id,
                         rotulo = "${m.nome} — ${m.classe}, NH ${m.nhBasico}, ${m.custoTexto}" + if (!m.castavel) " (${m.motivo})" else "",
                         descricao = "Conjurar ${m.nome}, classe ${m.classe}, custo ${m.custoTexto}" + if (!m.castavel) ", indisponível: ${m.motivo}" else "",
-                        onClick = { magiaSel = m; if (!m.ehProjetil) energia = 1 else energia = energia.coerceIn(1, m.aptidaoMagica) }
+                        // Lote MEC-7: o teto depende da magia — Projétil usa a Aptidão Mágica (p.12);
+                        // buff que escala usa o teto de níveis do livro (Escudo: 2 PF × 4 = 8).
+                        onClick = {
+                            magiaSel = m
+                            energia = when {
+                                m.ehProjetil -> energia.coerceIn(1, m.aptidaoMagica)
+                                m.escalaComEnergia -> energia.coerceIn(1, m.energiaMax)
+                                else -> 1
+                            }
+                        }
                     )
                 }
 
@@ -1341,18 +1350,34 @@ private fun SubDialogoConjurar(
                         Text("Causa dano (1d por energia)", style = MaterialTheme.typography.bodyMedium)
                     }
                 }
-                // Energia investida → dados de dano (Projétil sempre; Comum/Área quando "causa dano").
-                if (proj || (podeMarcarDano && causaDano)) {
+                // Energia investida. Lote MEC-7: além do dano (Projétil / "causa dano"), TODA magia cujo
+                // EFEITO escala com energia entra aqui — Escudo, Armadura, Força, Aumentar Força… Antes
+                // só Projétil tinha o seletor, e o jogador levava o MÍNIMO sem poder escolher.
+                val escalaBuff = magiaSel?.escalaComEnergia == true
+                if (proj || (podeMarcarDano && causaDano) || escalaBuff) {
+                    val teto = when {
+                        proj || (podeMarcarDano && causaDano) -> magiaSel?.aptidaoMagica ?: 1
+                        else -> magiaSel?.energiaMax ?: 1
+                    }
+                    val efeito = when {
+                        proj || (podeMarcarDano && causaDano) -> "→ ${energia}d de dano"
+                        else -> magiaSel?.dicaEnergia ?: ""
+                    }
                     Spacer(Modifier.height(8.dp))
-                    Text("Energia investida: ${energia} (→ ${energia}d de dano)", fontWeight = FontWeight.Bold,
-                        style = MaterialTheme.typography.labelLarge)
-                    Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text("Energia investida: ${energia} PF  ${if (efeito.isNotBlank()) "($efeito)" else ""}",
+                        fontWeight = FontWeight.Bold, style = MaterialTheme.typography.labelLarge)
+                    Row(verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.semantics {
+                            contentDescription = "Energia investida: $energia de $teto. $efeito"
+                        }) {
                         OutlinedButton(onClick = { if (energia > 1) energia-- },
                             modifier = Modifier.semantics { contentDescription = "Menos energia" }) { Text("−") }
                         Text("${energia}", Modifier.padding(horizontal = 16.dp), fontWeight = FontWeight.Bold)
-                        val teto = magiaSel?.aptidaoMagica ?: 1
                         OutlinedButton(onClick = { if (energia < teto) energia++ },
                             modifier = Modifier.semantics { contentDescription = "Mais energia" }) { Text("+") }
+                        Spacer(Modifier.width(8.dp))
+                        Text("máx $teto", style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant)
                     }
                 }
 

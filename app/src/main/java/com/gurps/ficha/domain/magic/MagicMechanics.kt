@@ -147,6 +147,39 @@ object MagicMechanics {
          m.buffDeslocamentoFixo != 0 || m.buffDanoArma != 0 || m.buffPenalidadeAtacantes != 0)
 
     /**
+     * Lote MEC-7: quanto de energia ainda COMPRA efeito, e o que ela compra em português.
+     * null = o efeito não escala (custo fixo → o jogador não tem o que escolher).
+     *
+     * Vive aqui, no domínio puro, porque é REGRA (o teto vem do livro) e precisa de teste: o mesmo
+     * erro de deixar isto privado na UI foi o que manteve 325 mágicas com a duração errada.
+     *
+     * O teto é `energiaPorNivel × maxNiveis` — acima disso o jogador só queimaria fadiga à toa,
+     * porque a regra trava o efeito no teto de níveis (Escudo: 2 PF por +1 de BD, máx +4 → 8 PF).
+     */
+    data class EscalaDeEnergia(val energiaMax: Int, val dica: String)
+
+    fun escalaDeEnergia(m: MagiaMecanica?): EscalaDeEnergia? {
+        if (m == null || m.efeito != "buff") return null
+        val porNivel = m.buffEnergiaPorNivel
+        val maxNiveis = m.buffMaxNiveis
+        if (porNivel <= 0 || maxNiveis <= 0) return null
+        val (porUm, oQue) = when {
+            m.buffBd != 0 -> m.buffBd to "de Defesa"
+            m.buffRd != 0 -> m.buffRd to "de RD"
+            m.buffAtributoValor != 0 -> m.buffAtributoValor to "de ${m.buffAtributo ?: "atributo"}"
+            m.buffPenalidadeAtacantes != 0 -> -m.buffPenalidadeAtacantes to "para quem o atacar"
+            m.buffEsquiva != 0 -> m.buffEsquiva to "de Esquiva"
+            m.buffDeslocamento != 0 -> m.buffDeslocamento to "de Deslocamento"
+            else -> return null
+        }
+        fun sinal(n: Int) = if (n >= 0) "+$n" else "$n"
+        return EscalaDeEnergia(
+            energiaMax = porNivel * maxNiveis,
+            dica = "cada $porNivel PF = ${sinal(porUm)} $oQue (até ${sinal(porUm * maxNiveis)})",
+        )
+    }
+
+    /**
      * Níveis efetivos do buff dada a energia investida: `energia / buffEnergiaPorNivel`, com teto em
      * `buffMaxNiveis`. Sem escala por energia (buffEnergiaPorNivel = 0) o buff vale 1 nível fixo.
      * Piso 1 — quem conjurou pagou, leva pelo menos 1 nível.

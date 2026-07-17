@@ -81,6 +81,16 @@ data class MagiaConjuravelUi(
     val ehToque: Boolean,
     /** Teto de energia do Projétil = nível de Aptidão Mágica (Magia p.12). */
     val aptidaoMagica: Int,
+    /**
+     * Lote MEC-7: o EFEITO desta magia escala com a energia investida (Escudo: 2 PF por +1 de Defesa;
+     * Aumentar Força: 1 PF por +1 de ST). Antes só Projétil ganhava o seletor, então o jogador levava
+     * o MÍNIMO sem poder escolher — pagava e recebia o efeito mais fraco possível.
+     */
+    val escalaComEnergia: Boolean = false,
+    /** Teto de energia que ainda compra efeito (acima disso é desperdício). */
+    val energiaMax: Int = 1,
+    /** O que a energia compra, em português ("+1 de Defesa a cada 2 PF, até +4"). */
+    val dicaEnergia: String? = null,
     /** Custo aproximado (para limitar o quanto de PV o mago pode queimar). */
     val custoEstimado: Int,
     val castavel: Boolean,
@@ -1016,6 +1026,12 @@ class SagaCombatController(
                 custo.fracao != null -> "${custo.fracao}×raio PF"
                 else -> "Varia"
             }
+            // Lote MEC-7: a curadoria diz se o EFEITO escala com energia e até onde (Escudo: 2 PF por
+            // +1 de Defesa, teto +4). Sem isto o jogador não tinha como escolher e levava o mínimo.
+            val mecUi = context?.let { c ->
+                runCatching { com.gurps.ficha.data.DataRepository.getInstance(c).getMagiaPorId(m.definicaoId)?.mecanica }.getOrNull()
+            }
+            val escala = com.gurps.ficha.domain.magic.MagicMechanics.escalaDeEnergia(mecUi)
             MagiaConjuravelUi(
                 id = m.definicaoId.ifBlank { m.nome },
                 nome = m.nome,
@@ -1029,6 +1045,9 @@ class SagaCombatController(
                 custoEstimado = (custo.base ?: custo.minimo).coerceAtLeast(1),
                 castavel = temPf,
                 motivo = if (!temPf) "sem PF" else "",
+                escalaComEnergia = escala != null,
+                energiaMax = escala?.energiaMax ?: 1,
+                dicaEnergia = escala?.dica,
             )
         }
     }

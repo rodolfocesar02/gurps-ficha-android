@@ -3046,6 +3046,16 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - **Recomendação registrada** (maior valor × menor custo): Ataque Telegráfico (par do Enganoso), luta agarrada profunda (chaves/Mata-Leão estendendo o lote 422), Sangramento Grave + incapacitação de membro (item 5 do teste de batalha), Ataque Dedicado/Defensivo. Fora de escopo: posicional/hexágono, montaria, cinematográfico, dado de arma do NPC. Mudança só de documentação (não compila Kotlin).
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
+### Lote MEC-7 — 17 de Julho de 2026 (o jogador não podia ESCOLHER a energia — bug achado no aparelho)
+**Teste do usuário: "testei Escudo e Aumentar Força, não tive opção de escolher quanto de fadiga gastar" — branch GURPS-Saga**
+- **O bug, numa linha**: `if (!m.ehProjetil) energia = 1` no diálogo de conjuração. **O seletor de energia só existia para Projétil** (e raio para Área). Escudo e Aumentar Força são classe COMUM → a energia era travada em 1 → o herói pagava e levava o **efeito MÍNIMO**: Escudo com BD **+1** em vez dos +4 possíveis; Aumentar Força com **+1** de ST em vez de +5. Sem escolha e sem aviso.
+- **Por que é grave**: nessas magias a ESCOLHA é a magia. Escudo sem decidir quanto investir não é magia, é um botão.
+- **Correção**: `MagiaConjuravelUi` ganhou `escalaComEnergia` + `energiaMax` + `dicaEnergia`. O seletor agora aparece para **toda magia cujo EFEITO escala com energia** (Escudo, Armadura, Força, Graça, Vigor, Apressar, Nublar, Aumentar Força/Destreza/Vitalidade, Debilitar, Fragilidade, Inabilidade) e mostra **o que a energia compra**: "Energia investida: 6 PF — *cada 2 PF = +1 de Defesa (até +4)* — máx 8".
+- **O teto vem da REGRA** (`buffEnergiaPorNivel × buffMaxNiveis`): Escudo trava em 8 PF porque acima disso a Defesa não sobe — o app não deixa o jogador queimar fadiga à toa. Projétil mantém o teto da Aptidão Mágica (Magia p.12).
+- **Quase repeti o erro do MEC-5**: escrevi o cálculo PRIVADO dentro da tela — exatamente o que deixou 325 mágicas com a duração errada (o parser era privado no controller, fora do alcance dos testes). Movido para `MagicMechanics.escalaDeEnergia` (domínio puro), com teste.
+- **+6 testes**, incluindo um de COERÊNCIA: o teto do seletor tem que bater com o teto que o motor aplica — se divergirem, o gate quebra em vez de o jogador descobrir gastando PF sem efeito. Build gate verde nas duas variantes.
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
 ### Lote MEC-6 — 17 de Julho de 2026 (buff de UM ÚNICO USO — Aumentar Força/Destreza/Vitalidade)
 **O herói pagava o PF e NADA acontecia — branch GURPS-Saga**
 - **O bug**: Aumentar Força/Destreza/Vitalidade têm duração `"Instant."` (valem para um único teste/ação curta). `registrarSeMagiaAtiva` só aceitava TEMPORARIA/DURADOURA/PERMANENTE, então elas eram **silenciosamente descartadas**: o custo era cobrado e o bônus nunca aplicava. Estavam CURADAS com número desde o MEC-2 — faltava o gancho.

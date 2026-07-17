@@ -2,6 +2,7 @@ package com.gurps.ficha.domain.magic
 
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
@@ -90,6 +91,56 @@ class MagicMechanicsTest {
         assertTrue(MagicMechanics.calcularBuff(corpoDeAgua, 3, "heroi").soNarrado)
         assertFalse(MagicMechanics.temBuffEstruturado(corpoDeAgua))
         assertTrue(MagicMechanics.temBuffEstruturado(MagiaMecanica(efeito = "buff", buffRd = 4)))
+    }
+
+    // ── Lote MEC-7: o jogador precisa PODER escolher a energia ──────────────────────────────────
+    // Bug achado no aparelho: Escudo e Aumentar Força gastavam a fadiga sozinhos e entregavam o
+    // MÍNIMO — o seletor de energia só existia para Projétil.
+
+    @Test fun `Escudo — cada 2 PF compram +1 de Defesa, teto 8 PF (BD +4)`() {
+        val escudo = MagiaMecanica(efeito = "buff", buffBd = 1, buffEnergiaPorNivel = 2, buffMaxNiveis = 4)
+        val e = MagicMechanics.escalaDeEnergia(escudo)!!
+        assertEquals("acima de 8 PF o efeito trava: seria fadiga jogada fora", 8, e.energiaMax)
+        assertTrue(e.dica.contains("cada 2 PF"))
+        assertTrue(e.dica.contains("+4"))
+    }
+
+    @Test fun `Aumentar Forca — 1 PF por +1 de ST, teto 5`() {
+        val af = MagiaMecanica(efeito = "buff", buffAtributo = "ST", buffAtributoValor = 1,
+            buffEnergiaPorNivel = 1, buffMaxNiveis = 5, buffUmUnicoUso = true)
+        val e = MagicMechanics.escalaDeEnergia(af)!!
+        assertEquals(5, e.energiaMax)
+        assertTrue(e.dica.contains("ST"))
+    }
+
+    @Test fun `magia de custo FIXO nao mostra seletor — nao ha o que escolher`() {
+        // Pele de Crocodilo: RD 4, não escala.
+        assertNull(MagicMechanics.escalaDeEnergia(MagiaMecanica(efeito = "buff", buffRd = 4)))
+        // Voo: Deslocamento 10 absoluto, não escala.
+        assertNull(MagicMechanics.escalaDeEnergia(MagiaMecanica(efeito = "buff", buffDeslocamentoFixo = 10)))
+        // Não é buff.
+        assertNull(MagicMechanics.escalaDeEnergia(MagiaMecanica(efeito = "dano", danoPorEnergia = "1d")))
+        assertNull(MagicMechanics.escalaDeEnergia(null))
+    }
+
+    @Test fun `debuff mostra o sinal NEGATIVO na dica (Nublar e Debilitar)`() {
+        val nublar = MagicMechanics.escalaDeEnergia(
+            MagiaMecanica(efeito = "buff", buffPenalidadeAtacantes = 1, buffEnergiaPorNivel = 1, buffMaxNiveis = 5))!!
+        assertEquals(5, nublar.energiaMax)
+        assertTrue("penalidade tem que aparecer negativa", nublar.dica.contains("-1") || nublar.dica.contains("−1"))
+        val debilitar = MagicMechanics.escalaDeEnergia(
+            MagiaMecanica(efeito = "buff", buffAtributo = "ST", buffAtributoValor = -1,
+                buffEnergiaPorNivel = 1, buffMaxNiveis = 5))!!
+        assertTrue(debilitar.dica.contains("-5"))
+    }
+
+    @Test fun `o teto do seletor bate com o teto que o motor aplica`() {
+        // Coerência: gastar o teto de energia tem que dar exatamente o efeito máximo — se o seletor
+        // deixasse passar disso, o jogador queimaria PF sem ganhar nada.
+        val escudo = MagiaMecanica(efeito = "buff", buffBd = 1, buffEnergiaPorNivel = 2, buffMaxNiveis = 4)
+        val teto = MagicMechanics.escalaDeEnergia(escudo)!!.energiaMax
+        assertEquals(4, MagicMechanics.calcularBuff(escudo, teto, "heroi").bd)
+        assertEquals("acima do teto o efeito não cresce", 4, MagicMechanics.calcularBuff(escudo, teto + 10, "heroi").bd)
     }
 
     @Test fun `penalidade da condicao por PV (Relampago -1 a cada 2 PV)`() {
