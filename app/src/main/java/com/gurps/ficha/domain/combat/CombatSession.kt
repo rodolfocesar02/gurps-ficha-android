@@ -1048,7 +1048,22 @@ class CombatSession(
                 } else if (!alvoResistiu && ctx.mecanica?.efeito == "condicao" && alvo != null) {
                     // Lote COND-1: magia de CONDIÇÃO pura (Sono, Cegueira, Medo, Paralisar…) — no sucesso
                     // não resistido, impõe a condição (a resistência já veio da classe R-XXX, se houver).
-                    imporCondicaoMagica(alvo, ctx.mecanica.condicao, sb, ctx.mecanica.condicaoDuracaoSeg)
+                    // Lote MEC-18: quando a classe NÃO dá resistência mas a magia tem teste próprio
+                    // (Jato de Som, classe "Comum": HT menos a energia gasta, +1 a cada 5 de RD), o
+                    // alvo testa aqui. Sem isto ele era atordoado sem teste nenhum.
+                    val mec = ctx.mecanica
+                    val testeProprio = ctx.classe.resistencia == null &&
+                        com.gurps.ficha.domain.magic.MagicMechanics.temTesteProprioDeCondicao(mec)
+                    if (testeProprio) {
+                        val rdAlvo = (alvo.stats?.rd ?: 0) + alvo.buffRd
+                        val alvoHt = com.gurps.ficha.domain.magic.MagicMechanics
+                            .resistenciaEfetivaDaCondicao(mec, alvo.htEfetivo, energiaInvestida, rdAlvo)
+                        val rolCond = rolar3d6()
+                        if (rolCond <= alvoHt) sb.append(" ${alvo.nome} RESISTE (teste $alvoHt, rolou $rolCond).")
+                        else imporCondicaoMagica(alvo, mec.condicao, sb, com.gurps.ficha.domain.magic.MagicMechanics.duracaoCondicaoSeg(mec, energiaInvestida))
+                    } else {
+                        imporCondicaoMagica(alvo, mec.condicao, sb, com.gurps.ficha.domain.magic.MagicMechanics.duracaoCondicaoSeg(mec, energiaInvestida))
+                    }
                 } else if (!alvoResistiu && TipoClasseMagia.PROJETIL in ctx.classe.classes && alvo != null) {
                     val energia = energiaInvestida.coerceAtLeast(1)
                     // 2º teste (Magia p.12): Ataque Inato para ACERTAR (aprox. DX + SSR de distância).
@@ -1142,7 +1157,7 @@ class CombatSession(
                     if (resistiram.isNotEmpty()) sb.append(" Resistiram: ${resistiram.joinToString(", ")}.")
                     // Lote COND-1: magia de CONDIÇÃO em área (Sono coletivo etc.) — impõe em cada atingido.
                     if (ctx.mecanica?.efeito == "condicao" && atingidos.isNotEmpty()) {
-                        atingidos.forEach { imporCondicaoMagica(it, ctx.mecanica.condicao, sb, ctx.mecanica.condicaoDuracaoSeg) }
+                        atingidos.forEach { imporCondicaoMagica(it, ctx.mecanica.condicao, sb, com.gurps.ficha.domain.magic.MagicMechanics.duracaoCondicaoSeg(ctx.mecanica, energiaInvestida)) }
                     } else if ((ctx.danoPorEnergia || com.gurps.ficha.domain.magic.MagicMechanics.temDanoEstruturado(ctx.mecanica)) && atingidos.isNotEmpty()) {
                         val energia = energiaInvestida.coerceAtLeast(1)
                         // AR-1: dado estruturado do catálogo quando houver; senão 1d × energia (p.14).
@@ -1273,7 +1288,7 @@ class CombatSession(
             val pen = com.gurps.ficha.domain.magic.MagicMechanics.penalidadeCondicaoPorPv(mecanica.condicaoResistencia, dn.pvSubtrair)
             // Lote MEC-15: além do 1/2D o alvo resiste à atribulação com +3 (MB, seção "Distância").
             val ht = (alvo.htEfetivo) + pen + (if (meioDano) 3 else 0)
-            if (rolar3d6() > ht) imporCondicaoMagica(alvo, mecanica.condicao, sb, mecanica.condicaoDuracaoSeg)
+            if (rolar3d6() > ht) imporCondicaoMagica(alvo, mecanica.condicao, sb, com.gurps.ficha.domain.magic.MagicMechanics.duracaoCondicaoSeg(mecanica, energia))
             else sb.append(" (${alvo.nome} resiste à condição, HT $ht).")
         }
         return dn.pvSubtrair

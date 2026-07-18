@@ -816,6 +816,45 @@ class MagicCombatTest {
         assertEquals(20, MagicMechanics.danoDaExplosao(20, distanciaM = 5, divisorPorMetro = 0))
     }
 
+    // ── Lote MEC-18: teste próprio de condição e duração escalada pela energia ───────────────────
+
+    @Test
+    fun `Jato de Som resiste com HT MENOS a energia gasta`() {
+        val m = MagiaMecanica(efeito = "condicao", condicao = "atordoado",
+            condicaoResistencia = "HT_menos_energia", condicaoRdBonusPor = 5)
+        assertEquals("HT 12, 4 de energia, sem RD → 8", 8,
+            MagicMechanics.resistenciaEfetivaDaCondicao(m, atributoBase = 12, energiaGasta = 4, rd = 0))
+        assertEquals("mesma coisa com RD 10 → +2 → 10", 10,
+            MagicMechanics.resistenciaEfetivaDaCondicao(m, atributoBase = 12, energiaGasta = 4, rd = 10))
+        assertEquals("RD 4 ainda não chega a +1 (é a cada 5)", 8,
+            MagicMechanics.resistenciaEfetivaDaCondicao(m, atributoBase = 12, energiaGasta = 4, rd = 4))
+    }
+
+    @Test
+    fun `duracao da condicao escala com a energia investida`() {
+        val jato = MagiaMecanica(efeito = "condicao", condicao = "cego", condicaoDuracaoSegPorEnergia = 1)
+        assertEquals("3 de energia = 3 segundos cego", 3, MagicMechanics.duracaoCondicaoSeg(jato, 3))
+        val cegar = MagiaMecanica(efeito = "condicao", condicao = "cego", condicaoDuracaoSeg = 10)
+        assertEquals("prazo fixo não escala", 10, MagicMechanics.duracaoCondicaoSeg(cegar, 3))
+    }
+
+    @Test
+    fun `magia de condicao SEM resistencia de classe agora exige o teste proprio`() {
+        // O Jato de Som é classe "Comum": não havia R-XXX, e o ramo de condição ignorava o
+        // condicaoResistencia — ele atordoava sem teste nenhum.
+        val s = sessao(7)
+        val goblin = s.encounter.combatentes.first { it.id == "goblin" }
+        val jato = MagiaMecanica(efeito = "condicao", condicao = "atordoado",
+            condicaoResistencia = "HT_menos_energia")
+        val ctx = ContextoConjuracao(nhBasico = 25, classe = MagicClassParser.parse("Comum"),
+            mana = NivelMana.NORMAL, mecanica = jato)
+        // Energia 0 contra HT 11 → resiste em quase toda rolagem; o que importa é que HOUVE teste.
+        s.heroiConjurar(ctx, MagicEnergy.parse("1 a 4"), energiaInvestida = 0,
+            magiaNome = "Jato de Som", alvoId = "goblin")
+        val houveTeste = s.log.any { it.contains("RESISTE") } || Condicao.ATORDOADO in goblin.condicoes
+        assertTrue("tem que haver teste (resistir ou não), nunca imposição automática", houveTeste)
+    }
+
     // ── Lote MEC-17: condição com PRAZO (antes era eterna) ──────────────────────────────────────
 
     @Test

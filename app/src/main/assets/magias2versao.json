@@ -1670,7 +1670,6 @@
       "efeito": "condicao",
       "entrega": "projetil",
       "condicao": "atordoado",
-      "condicaoResistencia": "HT",
       "notas": "Alvo fisicamente atordoado; teste de HT a cada segundo para recuperar. Nao pode ser mantida."
     }
   },
@@ -3100,7 +3099,6 @@
       "efeito": "condicao",
       "entrega": "projetil",
       "condicao": "cego",
-      "condicaoResistencia": "HT",
       "notas": "Cegueira por 10 seg: -10 em ataque fisico, nao ve alvos para mirar magias.",
       "condicaoDuracaoSeg": 10
     },
@@ -7361,7 +7359,6 @@
       "efeito": "condicao",
       "entrega": "projetil",
       "condicao": "silenciado",
-      "condicaoResistencia": "HT",
       "notas": "Alvo incapaz de falar por 10 seg; dificulta magias que exigem fala.",
       "condicaoDuracaoSeg": 10
     },
@@ -10642,7 +10639,8 @@
       "entrega": "feixe",
       "condicao": "cego",
       "condicaoResistencia": "HT",
-      "notas": "Dano por ácido. Teste DX-4/Ataque Inato para acertar; pode ser desviado, não aparado/bloqueado. 1 a 3 energia (1d-1 cada). Causa projeção (empurrão narrado). Se acerta o rosto pode cegar (MB p428)."
+      "notas": "Dano por ácido. Teste DX-4/Ataque Inato para acertar; pode ser desviado, não aparado/bloqueado. 1 a 3 energia (1d-1 cada). Causa projeção (empurrão narrado). Se acerta o rosto pode cegar (MB p428).",
+      "condicaoDuracaoSegPorEnergia": 1
     },
     "duracaoTipo": "temporaria",
     "duracaoSeg": 1,
@@ -10706,7 +10704,8 @@
       "entrega": "feixe",
       "condicao": "cego",
       "condicaoResistencia": "HT",
-      "notas": "Ataque a distancia: DX-4 ou Ataque Inato; pode ser esquivado/bloqueado, nao aparado. NAO causa dano. So cega se acertar o rosto. Falha no HT = cego 1 seg por ponto de energia (1 a 3); depois -3 em pericias de combate por 1d seg. Falha critica = cego 1d seg por ponto. Sucesso = nao ve por 1 seg. Sucesso decisivo = nada. Alcance em metros = energia."
+      "notas": "Ataque a distancia: DX-4 ou Ataque Inato; pode ser esquivado/bloqueado, nao aparado. NAO causa dano. So cega se acertar o rosto. Falha no HT = cego 1 seg por ponto de energia (1 a 3); depois -3 em pericias de combate por 1d seg. Falha critica = cego 1d seg por ponto. Sucesso = nao ve por 1 seg. Sucesso decisivo = nada. Alcance em metros = energia.",
+      "condicaoDuracaoSegPorEnergia": 1
     }
   },
   {
@@ -10755,7 +10754,8 @@
       "entrega": "feixe",
       "condicao": "cego",
       "condicaoResistencia": "HT",
-      "notas": "Teste DX-4/Ataque Inato; esquivável/bloqueável, não aparável. Efeito principal: cega o alvo se acerta o rosto e falha HT (1 seg de cegueira por energia; falha crítica 1d seg/energia; após, -3 combate por 1d seg). Também causa projeção/empurrão (1d/energia, não PV). Apaga fogo em 1m."
+      "notas": "Teste DX-4/Ataque Inato; esquivável/bloqueável, não aparável. Efeito principal: cega o alvo se acerta o rosto e falha HT (1 seg de cegueira por energia; falha crítica 1d seg/energia; após, -3 combate por 1d seg). Também causa projeção/empurrão (1d/energia, não PV). Apaga fogo em 1m.",
+      "condicaoDuracaoSegPorEnergia": 1
     },
     "duracaoTipo": "temporaria",
     "duracaoSeg": 1,
@@ -10805,7 +10805,8 @@
       "entrega": "feixe",
       "condicao": "cego",
       "condicaoResistencia": "HT",
-      "notas": "Teste DX-4/Ataque Inato; esquivável/bloqueável, não aparável. Cega se acerta o rosto e falha HT (mesma mecânica do Jato de Lama). Também projeta/empurra (1d/energia, não PV) e fere criaturas de fogo. Apaga fogo em 1m."
+      "notas": "Teste DX-4/Ataque Inato; esquivável/bloqueável, não aparável. Cega se acerta o rosto e falha HT (mesma mecânica do Jato de Lama). Também projeta/empurra (1d/energia, não PV) e fere criaturas de fogo. Apaga fogo em 1m.",
+      "condicaoDuracaoSegPorEnergia": 1
     },
     "duracaoTipo": "temporaria",
     "duracaoSeg": 1,
@@ -10849,8 +10850,9 @@
       "efeito": "condicao",
       "entrega": "feixe",
       "condicao": "atordoado",
-      "condicaoResistencia": "HT",
-      "notas": "Não causa dano. Ataque Inato ou DX-4; pode ser esquivado ou bloqueado, não aparado. Teste de HT MENOS o custo de energia da magia ou fica atordoado; RD dá +1 ao HT efetivo a cada 5 pontos; repete o teste (HT - energia) a cada turno pra se recuperar."
+      "condicaoResistencia": "HT_menos_energia",
+      "notas": "Não causa dano. Ataque Inato ou DX-4; pode ser esquivado ou bloqueado, não aparado. Teste de HT MENOS o custo de energia da magia ou fica atordoado; RD dá +1 ao HT efetivo a cada 5 pontos; repete o teste (HT - energia) a cada turno pra se recuperar.",
+      "condicaoRdBonusPor": 5
     }
   },
   {
@@ -10875,7 +10877,8 @@
       "entrega": "feixe",
       "condicao": "cego",
       "condicaoResistencia": "HT",
-      "notas": "Teste DX-4/Ataque Inato; esquivável/bloqueável, não aparável. Dano por escaldamento 1d-1/energia (dobro vs criaturas de fogo/gelo) + projeção. Se acerta o rosto e falha HT, cega (mesma mecânica dos outros jatos). Apaga fogo em 1m."
+      "notas": "Teste DX-4/Ataque Inato; esquivável/bloqueável, não aparável. Dano por escaldamento 1d-1/energia (dobro vs criaturas de fogo/gelo) + projeção. Se acerta o rosto e falha HT, cega (mesma mecânica dos outros jatos). Apaga fogo em 1m.",
+      "condicaoDuracaoSegPorEnergia": 1
     },
     "duracaoTipo": "temporaria",
     "duracaoSeg": 1,
@@ -13747,7 +13750,6 @@
       "efeito": "condicao",
       "entrega": "toque",
       "condicao": "paralisado",
-      "condicaoResistencia": "HT",
       "notas": "Toque na cabeca (-5 no ataque). Se nao resistir, alvo totalmente paralisado, nao se move por 1 min. Nao pode ser mantida.",
       "condicaoDuracaoSeg": 60
     },
@@ -17895,7 +17897,8 @@
       "entrega": "feixe",
       "condicao": "cego",
       "condicaoResistencia": "HT",
-      "notas": "Como Jato de Vapor mas sai da boca: 1d/energia de escaldamento (1 a 4), teste DX-2/Ataque Inato, sem mãos, não pode manter. Área/sopro. Cega se acerta rosto e falha HT."
+      "notas": "Como Jato de Vapor mas sai da boca: 1d/energia de escaldamento (1 a 4), teste DX-2/Ataque Inato, sem mãos, não pode manter. Área/sopro. Cega se acerta rosto e falha HT.",
+      "condicaoDuracaoSegPorEnergia": 1
     },
     "duracaoTipo": "temporaria",
     "duracaoSeg": 1,
@@ -18604,7 +18607,6 @@
       "efeito": "condicao",
       "entrega": "area",
       "condicao": "amedrontado",
-      "condicaoResistencia": "HT",
       "notas": "Area, R-Vont. Quem nao resistir faz imediatamente uma Verificacao de Panico a -3 (a Verificacao de Panico e teste de Vontade, MB360 - o motor usa o teste da condicao).",
       "condicaoDuracaoSeg": 60
     }

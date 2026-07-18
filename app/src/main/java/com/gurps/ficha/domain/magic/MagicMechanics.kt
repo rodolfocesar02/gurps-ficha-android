@@ -85,6 +85,17 @@ data class MagiaMecanica(
      * cegado ficava cego a luta inteira.
      */
     val condicaoDuracaoSeg: Int = 0,
+    /**
+     * Lote MEC-18: bônus ao atributo de resistência a cada N pontos de RD (Jato de Som: *"A RD
+     * atribui um bônus de +1 ao HT efetivo do alvo para cada cinco pontos de RD"*). 0 = sem bônus.
+     */
+    val condicaoRdBonusPor: Int = 0,
+    /**
+     * Lote MEC-18: segundos de condição POR PONTO DE ENERGIA investido (Jato de Areia/Lama/Neve/
+     * Vapor: *"cada ponto de energia na mágica o cega por um segundo"*). Soma-se ao prazo fixo
+     * (`condicaoDuracaoSeg`), que nestas magias é 0 — a duração é toda escalada.
+     */
+    val condicaoDuracaoSegPorEnergia: Int = 0,
 
     // ── condição embutida (rider no dano ou standalone) ──
     /** Condição imposta ("atordoado", "cego"…). */
@@ -353,5 +364,31 @@ object MagicMechanics {
         resistencia == "HT_por_pv" -> -(pvSofridos / 2)
         resistencia != null && resistencia.startsWith("HT-") -> resistencia.removePrefix("HT-").toIntOrNull()?.let { -it } ?: 0
         else -> 0
+    }
+
+    /**
+     * Lote MEC-18: a magia impõe a condição com teste PRÓPRIO do alvo (e não pela classe R-XXX)?
+     * É o caso do Jato de Som, cuja classe é "Comum" — sem isto ele atordoava sem teste nenhum.
+     */
+    /** Lote MEC-18: prazo total da condição = fixo + (por energia × energia investida). */
+    fun duracaoCondicaoSeg(m: MagiaMecanica?, energiaInvestida: Int): Int {
+        if (m == null) return 0
+        return m.condicaoDuracaoSeg + m.condicaoDuracaoSegPorEnergia * energiaInvestida.coerceAtLeast(0)
+    }
+
+    fun temTesteProprioDeCondicao(m: MagiaMecanica?): Boolean =
+        m?.efeito == "condicao" && !m.condicaoResistencia.isNullOrBlank()
+
+    /**
+     * Lote MEC-18: valor efetivo do teste de resistência à condição.
+     * `HT_menos_energia` (Jato de Som): *"teste contra seu HT MENOS o custo de energia da mágica"*,
+     * mais *"+1 ao HT efetivo a cada cinco pontos de RD"* quando `condicaoRdBonusPor` estiver setado.
+     */
+    fun resistenciaEfetivaDaCondicao(m: MagiaMecanica, atributoBase: Int, energiaGasta: Int, rd: Int): Int {
+        val porEnergia = if (m.condicaoResistencia == "HT_menos_energia") -energiaGasta else 0
+        val fixo = m.condicaoResistencia?.takeIf { it.startsWith("HT-") }
+            ?.removePrefix("HT-")?.toIntOrNull()?.let { -it } ?: 0
+        val bonusRd = if (m.condicaoRdBonusPor > 0) rd / m.condicaoRdBonusPor else 0
+        return atributoBase + porEnergia + fixo + bonusRd
     }
 }
