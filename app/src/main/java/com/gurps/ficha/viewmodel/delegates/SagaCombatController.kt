@@ -155,7 +155,20 @@ class SagaCombatController(
     /** Empurra cada linha factual nova para o feed da Saga (turnos "sistema"). */
     private val onLinhasNovas: (List<String>) -> Unit
 ) {
-    private var sessao: CombatSession? = null
+    /**
+     * Lote TESTE-1c: OBSERVÁVEL pelo Compose (`mutableStateOf`), não um `var` comum.
+     *
+     * Bug que isto corrige (achado pelo usuário no aparelho): `ativo` é `get() = sessao != null`.
+     * Com `sessao` sendo `var` puro, `ativo` NÃO era observável — e a tela testa
+     * `if (sagaCombateAtivo && sagaEstadoTatico != null)`. Pelo CURTO-CIRCUITO do `&&`, enquanto
+     * `ativo` era falso o `estadoTatico` (esse sim observável) NUNCA era lido, então o composable
+     * não se inscrevia nele. Resultado: o combate começava e a grade **nunca redesenhava** — o
+     * preview ficava no demo para sempre.
+     *
+     * Como `CombatSession` é mutável por dentro, o `mutableStateOf` notifica na ATRIBUIÇÃO (começar/
+     * encerrar combate), que é exatamente o que a UI precisa saber.
+     */
+    private var sessao: CombatSession? by mutableStateOf(null)
     private var logPublicado = 0
     private var finalizado = false
 

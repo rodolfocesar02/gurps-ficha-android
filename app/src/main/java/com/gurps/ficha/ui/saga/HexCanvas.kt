@@ -81,7 +81,12 @@ internal const val SQRT3 = 1.7320508f
 fun HexCanvasTatico(viewModel: FichaViewModel, modifier: Modifier = Modifier) {
     // Lote TOK-4: em combate REAL com grade montada, o canvas é dirigido pelo SagaCombatController;
     // fora de combate (preview standalone) continua o demo.
-    if (viewModel.sagaCombateAtivo && viewModel.sagaEstadoTatico != null) {
+    // Lote TESTE-1c: o ESTADO TÁTICO (observável) é lido PRIMEIRO de propósito. Se viesse depois de
+    // `sagaCombateAtivo` num `&&`, o curto-circuito impediria a leitura enquanto não houvesse combate
+    // — e sem leitura não há inscrição, então a grade não redesenharia quando o combate começasse.
+    // Cinto e suspensório: `sessao` agora é observável, mas a ordem aqui protege de uma regressão.
+    val estadoTaticoAtual = viewModel.sagaEstadoTatico
+    if (estadoTaticoAtual != null && viewModel.sagaCombateAtivo) {
         HexCanvasCombateReal(viewModel, modifier)
     } else {
         HexCanvasDemoWrapper(viewModel, modifier)
