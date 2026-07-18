@@ -240,6 +240,47 @@ class SagaCombatController(
      *  - **p.386**: em *Avançar e Atacar* "o personagem NÃO pode mudar de direção no final do
      *    deslocamento" — aqui isso não se aplica porque a virada acontece antes de escolher a manobra.
      */
+    /**
+     * Lote HEX-FACING-2: virada de FIM DE MOVIMENTO pendente (MB p.388). Enquanto != null, o turno do
+     * herói ainda NÃO passou: ele já andou e agora escolhe para onde fica olhando.
+     */
+    data class ViradaFinalUi(
+        val andou: Int,
+        /** true = pode virar para qualquer direção (andou ≤ metade do Deslocamento). */
+        val livreParaQualquer: Boolean,
+        val facingAtual: com.gurps.ficha.domain.combat.hex.Direcao,
+    )
+    var viradaFinalPendente: ViradaFinalUi? by mutableStateOf(null); private set
+
+    /**
+     * Direções que o herói PODE escolher na virada de fim de movimento (MB p.388): todas se andou até
+     * metade do Deslocamento; senão só um lado de hexágono para cada lado (± 1 na roda das 6).
+     */
+    fun direcoesDaViradaFinal(): List<com.gurps.ficha.domain.combat.hex.Direcao> {
+        val v = viradaFinalPendente ?: return emptyList()
+        val todas = com.gurps.ficha.domain.combat.hex.Direcao.values().toList()
+        if (v.livreParaQualquer) return todas
+        val i = v.facingAtual.ordinal
+        return listOf(v.facingAtual, todas[(i + 1) % 6], todas[(i + 5) % 6])
+    }
+
+    /** Conclui a virada de fim de movimento (ou a dispensa mantendo a direção) e PASSA o turno. */
+    fun concluirViradaFinal(direcao: com.gurps.ficha.domain.combat.hex.Direcao?) {
+        val s = sessao ?: return
+        val v = viradaFinalPendente ?: return
+        val est = estadoTatico
+        if (direcao != null && est != null && direcao != v.facingAtual && direcao in direcoesDaViradaFinal()) {
+            estadoTatico = est.copy(
+                posicoes = est.posicoes.map { if (it.id == "heroi") it.copy(facing = direcao) else it }
+            )
+            s.log += "🧭 Ao fim do movimento você se vira para ${direcao.name.lowercase()} " +
+                (if (v.livreParaQualquer) "(livre — andou ${v.andou}m)" else "(um lado de hexágono — andou ${v.andou}m)") +
+                " [MB p.388]."
+        }
+        viradaFinalPendente = null
+        depoisDaAcaoDoHeroi()
+    }
+
     fun heroiVirar(direcao: com.gurps.ficha.domain.combat.hex.Direcao) {
         val s = sessao ?: return
         val est = estadoTatico ?: return
@@ -311,7 +352,22 @@ class SagaCombatController(
                     novasDistancias = com.gurps.ficha.domain.combat.hex.HexSetup.distanciasAoHeroi(movido),
                     metrosPercorridos = distancia
                 )
-                depoisDaAcaoDoHeroi()
+                // Lote HEX-FACING-2 (MB p.388): "Mudar de direção NO FINAL DO MOVIMENTO: Livre!" — o
+                // turno NÃO passa direto. O jogador escolhe para onde fica olhando antes dos inimigos
+                // agirem; sem isto o facing gruda na direção da fuga e ele leva flanco sem poder reagir.
+                // Livre para QUALQUER direção se andou até METADE do Deslocamento; se andou mais, só
+                // UM lado de hexágono.
+                // Se o combate acabou com o movimento (ou o herói caiu), NÃO pede virada — seria um
+                // prompt preso numa luta encerrada.
+                if (s.encerrado) { depoisDaAcaoDoHeroi(); return }
+                val metade = (s.heroi.deslocamentoEfetivo + 1) / 2
+                viradaFinalPendente = ViradaFinalUi(
+                    andou = distancia,
+                    livreParaQualquer = distancia <= metade,
+                    facingAtual = movido.posicoes.firstOrNull { it.id == "heroi" }?.facing
+                        ?: com.gurps.ficha.domain.combat.hex.Direcao.LESTE,
+                )
+                atualizarEstado()
                 return
             }
             avisoTatico = "Muito longe — deslocamento ${s.heroi.deslocamentoEfetivo}m"
@@ -1332,6 +1388,7 @@ class SagaCombatController(
     fun encerrarManual() {
         sessao = null; estado = null; defesaPendente = null; logPublicado = 0; finalizado = false
         estadoTatico = null; avisoTatico = null // Lote TOK-4: limpa a grade tática
+        viradaFinalPendente = null // HEX-FACING-2: pendência não pode vazar para a próxima luta
     }
 
     // ── Loop de turnos ────────────────────────────────────────────────────────

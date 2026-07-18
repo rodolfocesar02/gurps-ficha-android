@@ -142,6 +142,12 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
     /** Lote HEX-FACING: vira o herói (ação LIVRE — MB p.387/388; não gasta o turno). */
     fun sagaCombateVirar(direcao: com.gurps.ficha.domain.combat.hex.Direcao) =
         sagaDelegate.combate.heroiVirar(direcao)
+    // Lote HEX-FACING-2 (MB p.388): virada de FIM DE MOVIMENTO — o turno espera o jogador escolher
+    // para onde fica olhando antes de os inimigos agirem.
+    val sagaViradaFinalPendente get() = sagaDelegate.combate.viradaFinalPendente
+    fun sagaDirecoesViradaFinal() = sagaDelegate.combate.direcoesDaViradaFinal()
+    fun sagaConcluirViradaFinal(direcao: com.gurps.ficha.domain.combat.hex.Direcao?) =
+        sagaDelegate.combate.concluirViradaFinal(direcao)
     fun sagaCombateAtacar(alvoId: String, manobra: com.gurps.ficha.domain.combat.Manobra, local: com.gurps.ficha.domain.combat.LocalAtaque, modo: com.gurps.ficha.domain.combat.AtaqueTotalModo = com.gurps.ficha.domain.combat.AtaqueTotalModo.DETERMINADO, enganoso: Int = 0, telegrafico: Boolean = false) =
         sagaDelegate.combate.heroiAtaca(alvoId, manobra, local, modo, enganoso, telegrafico)
     fun sagaCombateAtaqueDedicado(alvoId: String, local: com.gurps.ficha.domain.combat.LocalAtaque, dedicadoModo: com.gurps.ficha.domain.combat.DedicadoModo) = // Lote PONTE-4

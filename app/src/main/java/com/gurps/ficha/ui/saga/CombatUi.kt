@@ -116,6 +116,13 @@ fun BoxScope.OverlaysCombateTatico(
     paddingTopo: Dp = 42.dp,
 ) {
     if (!viewModel.sagaCombateAtivo) return
+    // Lote HEX-FACING-2 (MB p.388): virada de FIM DE MOVIMENTO — tem prioridade sobre o resto, porque
+    // o turno está PARADO esperando esta escolha (os inimigos ainda não agiram).
+    val virada = viewModel.sagaViradaFinalPendente
+    if (virada != null) {
+        PromptViradaFinal(viewModel, virada, Modifier.align(Alignment.BottomCenter).padding(bottom = 24.dp))
+        return
+    }
     // Status + card "Defenda-se!" (é ele quem trata a defesa no tático 2D).
     CombateStatusTatico(viewModel, Modifier.align(Alignment.TopCenter).padding(top = paddingTopo))
     // Magias ATIVAS (buffs) — pílula discreta.
@@ -160,6 +167,65 @@ fun BoxScope.OverlaysCombateTatico(
             onFechar = { viewModel.sagaLimparSelecaoTatica() },
             modifier = mod
         )
+    }
+}
+
+/**
+ * Lote HEX-FACING-2 (MB p.388): depois de andar, o herói escolhe para onde fica OLHANDO — antes de os
+ * inimigos agirem. É o caso "Livre!" da regra: qualquer direção se andou até metade do Deslocamento;
+ * apenas um lado de hexágono se andou mais.
+ */
+@Composable
+private fun PromptViradaFinal(
+    viewModel: FichaViewModel,
+    virada: com.gurps.ficha.viewmodel.delegates.SagaCombatController.ViradaFinalUi,
+    modifier: Modifier = Modifier,
+) {
+    val rotulos = mapOf(
+        com.gurps.ficha.domain.combat.hex.Direcao.LESTE to "→ L",
+        com.gurps.ficha.domain.combat.hex.Direcao.NORDESTE to "↗ NE",
+        com.gurps.ficha.domain.combat.hex.Direcao.SUDESTE to "↘ SE",
+        com.gurps.ficha.domain.combat.hex.Direcao.OESTE to "← O",
+        com.gurps.ficha.domain.combat.hex.Direcao.NOROESTE to "↖ NO",
+        com.gurps.ficha.domain.combat.hex.Direcao.SUDOESTE to "↙ SO",
+    )
+    val permitidas = viewModel.sagaDirecoesViradaFinal()
+    Surface(
+        color = Color(0xE61A237E), contentColor = Color.White, shape = RoundedCornerShape(18.dp),
+        modifier = modifier.padding(horizontal = 8.dp)
+    ) {
+        Column(Modifier.padding(horizontal = 12.dp, vertical = 10.dp)) {
+            Text("🧭 Para onde você fica olhando?", fontWeight = FontWeight.Bold,
+                style = MaterialTheme.typography.labelLarge)
+            Text(
+                if (virada.livreParaQualquer)
+                    "Andou ${virada.andou}m (até metade do Deslocamento): livre para qualquer direção — MB p.388."
+                else "Andou ${virada.andou}m (mais que metade): só um lado de hexágono — MB p.388.",
+                style = MaterialTheme.typography.labelSmall, fontStyle = FontStyle.Italic
+            )
+            Spacer(Modifier.height(8.dp))
+            Row(Modifier.horizontalScroll(rememberScrollState()), verticalAlignment = Alignment.CenterVertically) {
+                permitidas.forEach { d ->
+                    val atual = d == virada.facingAtual
+                    Surface(
+                        onClick = { viewModel.sagaConcluirViradaFinal(d) },
+                        color = if (atual) Color(0x33FFFFFF) else Color(0x55FFFFFF),
+                        contentColor = Color.White, shape = RoundedCornerShape(12.dp),
+                        modifier = Modifier.padding(horizontal = 3.dp).semantics {
+                            contentDescription = "Ficar olhando para ${rotulos[d]}" + if (atual) ", direção atual" else ""
+                        }
+                    ) {
+                        Text(rotulos[d] ?: d.name, style = MaterialTheme.typography.labelMedium,
+                            modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp))
+                    }
+                }
+                Spacer(Modifier.width(6.dp))
+                TextButton(
+                    onClick = { viewModel.sagaConcluirViradaFinal(null) },
+                    modifier = Modifier.semantics { contentDescription = "Manter a direção atual e encerrar o turno" }
+                ) { Text("Manter", color = Color.White) }
+            }
+        }
     }
 }
 

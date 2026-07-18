@@ -127,6 +127,45 @@ class HexRegrasFacingTest {
             Facing.FRENTE, HexRegrasFacing.facingDoAtaque(atacante, alvo, Direcao.NOROESTE))
     }
 
+    // ── Lote HEX-FACING-2 (MB p.388): virada no FIM do movimento ────────────────────────────────
+    // "Livre! O personagem pode se virar para QUALQUER direção se não usou mais que a METADE dos seus
+    // pontos de movimento; se usou mais, ele pode mudar sua direção em apenas UM LADO DE HEXÁGONO."
+
+    /** Espelha `SagaCombatController.direcoesDaViradaFinal` — a regra em si, sem Android. */
+    private fun direcoesPermitidas(facingAtual: Direcao, andou: Int, deslocamento: Int): List<Direcao> {
+        val metade = (deslocamento + 1) / 2
+        val todas = Direcao.values().toList()
+        if (andou <= metade) return todas
+        val i = facingAtual.ordinal
+        return listOf(facingAtual, todas[(i + 1) % 6], todas[(i + 5) % 6])
+    }
+
+    @Test fun `andou ate METADE do deslocamento — vira para QUALQUER direcao`() {
+        assertEquals(6, direcoesPermitidas(Direcao.LESTE, andou = 3, deslocamento = 6).size)
+        assertEquals("exatamente a metade ainda é livre", 6,
+            direcoesPermitidas(Direcao.LESTE, andou = 2, deslocamento = 4).size)
+    }
+
+    @Test fun `andou MAIS que a metade — so um lado de hexagono para cada lado`() {
+        val p = direcoesPermitidas(Direcao.LESTE, andou = 5, deslocamento = 6)
+        assertEquals(3, p.size) // a atual + 1 vizinha de cada lado
+        assertTrue(Direcao.LESTE in p)
+        assertTrue(Direcao.SUDESTE in p)   // ordinal +1
+        assertTrue(Direcao.NORDESTE in p)  // ordinal −1 (dá a volta na roda)
+        assertFalse("dar meia-volta exigiria 3 lados", Direcao.OESTE in p)
+    }
+
+    @Test fun `virada limitada ainda tira o atacante das COSTAS`() {
+        // Mesmo restrito a 1 lado, o herói consegue sair do pior caso (costas → flanco).
+        val alvo = HexCoord(0, 0)
+        val atacante = alvo + Direcao.OESTE.vetor
+        assertEquals(Facing.COSTAS, HexRegrasFacing.facingDoAtaque(atacante, alvo, Direcao.LESTE))
+        val permitidas = direcoesPermitidas(Direcao.LESTE, andou = 5, deslocamento = 6)
+        val melhor = permitidas.minByOrNull { HexRegrasFacing.facingDoAtaque(atacante, alvo, it).ordinal }
+        assertEquals("virando 1 lado, as costas viram flanco",
+            Facing.FLANCO, HexRegrasFacing.facingDoAtaque(atacante, alvo, melhor!!))
+    }
+
     @Test fun `atacante DISTANTE tambem e classificado — nao so o adjacente`() {
         // O goblin do print estava longe (magia à distância), não colado.
         val alvo = HexCoord(0, 0)
