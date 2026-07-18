@@ -3046,6 +3046,16 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - **Recomendação registrada** (maior valor × menor custo): Ataque Telegráfico (par do Enganoso), luta agarrada profunda (chaves/Mata-Leão estendendo o lote 422), Sangramento Grave + incapacitação de membro (item 5 do teste de batalha), Ataque Dedicado/Defensivo. Fora de escopo: posicional/hexágono, montaria, cinematográfico, dado de arma do NPC. Mudança só de documentação (não compila Kotlin).
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
+### Lote LOG-1 — 18 de Julho de 2026 (combate visível no logcat, para o teste no aparelho)
+**"podemos colocar logs ativos, pra aparecer no logcat do Android Studio?" — branch GURPS-Saga**
+- **Diagnóstico**: o motor de combate/magia tinha **ZERO logging**. Todo o logging do app era do lado da IA (`MestreIA_*`, `GeminiLive`) — na hora que uma regra saísse errada no aparelho, não havia nada para olhar.
+- **Atalho aproveitado**: o combate já escreve os números na narrativa (NH, rolagem, dano, RD, condição) em **164 pontos**. Trocando `mutableListOf()` por uma `LogDeCombate : ArrayList<String>()` que espelha no `add`, os 164 pontos passam a sair no logcat **sem serem tocados** — uma linha alterada.
+- **No Android Studio**: filtrar por `tag:Saga_Combate`. Marco `═══ COMBATE INICIADO ═══` com os PV de todo mundo facilita achar o começo da luta num log cheio.
+- **+ traço mecânico da explosão** (`⚙`): a narrativa só mostra o dano final, então a conta do MEC-14 (distância ao centro → bruto → dividido) ficava invisível. É o número mais fácil de sair errado e o mais difícil de conferir de olho.
+- **Seguro para a suíte**: o `unitTests.isReturnDefaultValues = true` já estava ligado no build, então `android.util.Log` vira no-op no JVM. Gate confirmou: **738 testes, exatamente os mesmos de antes**.
+- 📊 **Calibragem pedida pelo usuário** ("essa quantidade de testes é normal?"): 56.261 linhas de produção / 10.771 de teste ≈ 1 linha de teste para cada 5 de produção; 337 testes em `domain/combat`, 146 em `domain/magic`, **0 em `viewmodel`/UI**. É proporção saudável — e o zero na UI explica por que os bugs que ele achou no aparelho (seletor de energia, magia inventada, combate sem conjurar) escaparam: estavam todos na costura de UI, a única camada sem cobertura.
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
 ### Lote MEC-19 — 18 de Julho de 2026 (escapar da condição por teste de atributo — o gelo)
 **Continuação de "faça os 10 buracos de schema que faltam!" — branch GURPS-Saga**
 - **O problema**: o Toque Congelante virava `condicao: paralisado` genérica — **sem saída nenhuma**. Combinado com o MEC-17 (que só faz condição sair por TEMPO) e sem prazo no catálogo, a vítima ficava paralisada para sempre. O livro dá a saída: *"não pode tomar nenhuma ação até que ele **rompa o gelo com um teste de ST** bem-sucedido com uma penalidade de **-1 por cada 0,5cm de gelo**"*, e *"Custo: **2 por 0,5cm**"* → −1 a cada 2 pontos de energia.

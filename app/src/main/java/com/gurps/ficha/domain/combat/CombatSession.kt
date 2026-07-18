@@ -60,7 +60,14 @@ class CombatSession(
         }
 
     /** Registro factual, linha a linha — o Narrador transforma em prosa SEM inventar números. */
-    val log: MutableList<String> = mutableListOf()
+    // Lote LOG-1: espelha cada linha da narrativa no logcat (filtre por tag:Saga_Combate).
+    val log: MutableList<String> = LogDeCombate()
+
+    init {
+        // Marco de início: facilita achar onde a luta começa num logcat cheio.
+        SagaLog.mecanica("═══ COMBATE INICIADO ═══ " +
+            encounter.combatentes.joinToString(", ") { "${it.nome}(PV ${it.pvAtual}/${it.pvMax})" })
+    }
 
     var encerrado: Boolean = false; private set
     var resultado: ResultadoCombate? = null; private set
@@ -1176,6 +1183,10 @@ class CombatSession(
                             val distCentro = distanciaAoCentro[a.id] ?: 0
                             val brutoAqui = com.gurps.ficha.domain.magic.MagicMechanics
                                 .danoDaExplosao(bruto, distCentro, divisorExpl)
+                            // LOG-1: a narrativa só mostra o dano final — aqui sai a conta da explosão.
+                            if (divisorExpl > 0) SagaLog.mecanica(
+                                "explosão: ${a.nome} a ${distCentro}m do centro — bruto $bruto → $brutoAqui " +
+                                    "(divisor ${divisorExpl}×dist)")
                             val rd = if (ctx.mecanica?.armadura == "ignora") 0 else ((a.stats?.rd ?: 0) + a.buffRd)
                             val dn = HitLocationRules.aplicarDano(a.pvMax, brutoAqui, tipo, LocalAtaque.TORSO,
                                 rd, a.stats?.tolerancia ?: ToleranciaFerimentos.NORMAL)
