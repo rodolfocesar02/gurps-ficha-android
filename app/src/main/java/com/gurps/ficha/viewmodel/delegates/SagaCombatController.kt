@@ -478,13 +478,34 @@ class SagaCombatController(
             danoDados = custo.coerceIn(1, 3))
     }
 
+    /**
+     * Lote LIMPEZA-2: combate SANDBOX (o "Combate de teste" do preview da grade). Ponto de entrada
+     * PRÓPRIO para não sujar a API de produção com um parâmetro que só o teste usa — o `forcarTatico`
+     * do TESTE-1 era exatamente esse cheiro.
+     *
+     * A única diferença para um combate normal é forçar a grade tática: fora de campanha não há
+     * `modoTaticoHex` (é config da campanha), e sem grade o sandbox cairia no modo faixas.
+     */
+    fun iniciarCombateSandbox(
+        inimigos: List<Pair<String, Int>>, distanciaM: Int = 5,
+        magiasDeclaradas: List<String> = emptyList(),
+    ): String {
+        taticoForcadoUmaVez = true
+        return iniciarCombate(inimigos, distanciaM, "ninguem", magiasDeclaradas)
+    }
+
+    /** Consumido (e zerado) pelo próximo [iniciarCombate] — não vaza para combates seguintes. */
+    private var taticoForcadoUmaVez = false
+
     fun iniciarCombate(
         inimigos: List<Pair<String, Int>>, distanciaM: Int = 5, surpresa: String = "ninguem",
         /** Lote MEC-8: nomes de magias REAIS do catálogo que os conjuradores do encontro sabem. */
         magiasDeclaradas: List<String> = emptyList(),
-        /** Lote TESTE-1: força a grade tática mesmo fora de campanha (combate de teste do preview). */
-        forcarTatico: Boolean = false,
     ): String {
+        // Lote LIMPEZA-2: consome o "forçado do sandbox" JÁ AQUI — antes das saídas antecipadas
+        // (sem contexto / combate ativo / herói incapacitado). Se consumisse lá embaixo, um retorno
+        // antecipado deixaria a flag ligada e ela vazaria para o PRÓXIMO combate, que seria real.
+        val taticoForcado = taticoForcadoUmaVez.also { taticoForcadoUmaVez = false }
         val ctx = context ?: return "sem_contexto"
         // Combate anterior já encerrado mas não fechado pela UI: limpa antes (senão o painel da luta
         // passada fica preso, sobretudo agora que o jogador pode digitar após cair sem tocar "Fechar").
@@ -573,7 +594,7 @@ class SagaCombatController(
         // SÓ quando o modo tático da campanha está ligado: com estadoTatico != null o MOVER de
         // faixa some do painel (o hex verde é o Mover) — sem a grade visível isso deixaria o
         // herói sem forma de se deslocar.
-        if (viewModel.sagaModoTaticoHex || viewModel.sagaModoTaticoHex3D || forcarTatico) {
+        if (viewModel.sagaModoTaticoHex || viewModel.sagaModoTaticoHex3D || taticoForcado) {
             val estTatico = com.gurps.ficha.domain.combat.hex.HexSetup.setupDoEncontro(
                 idsInimigos = combatentes.filter { !it.ehHeroi }.map { it.id },
                 distanciaM = distanciaM

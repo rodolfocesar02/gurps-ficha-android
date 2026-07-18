@@ -166,14 +166,13 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
      */
     fun sagaIniciarCombateTeste(qtdGoblins: Int = 2, distanciaM: Int = 5) {
         viewModelScope.launch {
-            // O controller monta a grade (forcarTatico), roda o loop e publica o estado sozinho — a UI
-            // reage por `sagaCombateAtivo`/`sagaEstadoTatico`, sem refresh manual.
-            sagaDelegate.combate.iniciarCombate(
+            // Lote LIMPEZA-2: entrada PRÓPRIA do sandbox (a API de produção não carrega mais flag de
+            // teste). O controller monta a grade, roda o loop e publica o estado sozinho — a UI reage
+            // por `sagaCombateAtivo`/`sagaEstadoTatico`, sem refresh manual.
+            sagaDelegate.combate.iniciarCombateSandbox(
                 inimigos = listOf("goblin" to qtdGoblins),
                 distanciaM = distanciaM,
-                surpresa = "ninguem",
                 magiasDeclaradas = listOf("Bola de Fogo"),
-                forcarTatico = true,
             )
         }
     }
