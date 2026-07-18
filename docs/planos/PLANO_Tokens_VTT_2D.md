@@ -78,7 +78,7 @@ Narrador dispara a geração da imagem de fundo do cenário e dos tokens dos ini
    continuam legíveis). Fundo cinza permanece como fallback eterno.
 
 ### TOK-4 — Ponte CombatSession ↔ grid (combate REAL na grade)
-**Diretiva do usuário (11/jul):** revisitar o `Combate.md` e AUTOMATIZAR no grid as ações que hoje
+**Diretiva do usuário (11/jul):** revisitar o `docs/fonte-regras/Combate.md` e AUTOMATIZAR no grid as ações que hoje
 são botões abstratos de faixa — substituindo como estão. Itens do audit marcados "FORA DO ESCOPO
 por falta de grade de hexágonos" ficam DESBLOQUEADOS (a grade existe e os módulos HEX-1..6 já
 implementam a mecânica).
@@ -94,9 +94,9 @@ implementam a mecânica).
    grid; `HexPortabilidade.aplicarNovaDistancia` sincroniza quando o motor muda distância.
 4. Revalidar defesa por timing no fluxo 2D.
 
-### TOK-5 — Ações espaciais do Combate.md (substituições regra-a-regra)
+### TOK-5 — Ações espaciais do docs/fonte-regras/Combate.md (substituições regra-a-regra)
 Mapa das ações automatizáveis pelo grid (item do audit → como fica):
-- **Alcance da arma C/1/2/3** (Combate.md "Alcance") → tocar no inimigo só ataca se
+- **Alcance da arma C/1/2/3** (docs/fonte-regras/Combate.md "Alcance") → tocar no inimigo só ataca se
   `HexAtaqueAtravesHex` valida; fora de alcance → oferece Avançar-e-Atacar. −4 através de hex
   de inimigo; aliado livre (MB p.389).
 - **Passo de 1m** (era ⏸️ "posicionamento em hexágono") → manobras com passo movem 1 hex real.

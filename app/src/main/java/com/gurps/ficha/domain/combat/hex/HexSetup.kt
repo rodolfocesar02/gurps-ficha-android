@@ -5,7 +5,7 @@ package com.gurps.ficha.domain.combat.hex
  * do herói pelo grid. Kotlin PURO.
  *
  * Substitui o "botão de faixa" (aproximar/afastar N metros) pelo toque no hex: o grid vira a fonte
- * das distâncias no turno de mover do herói (Combate.md "Deslocamento"/"Movimento"; o Passo de 1m e
+ * das distâncias no turno de mover do herói (docs/fonte-regras/Combate.md "Deslocamento"/"Movimento"; o Passo de 1m e
  * o Espaçamento — antes FORA DO ESCOPO por falta de grade — passam a ser reais).
  */
 object HexSetup {
@@ -46,7 +46,7 @@ object HexSetup {
      * Hexes que o herói pode alcançar neste turno de Mover — BFS de custo 1 sobre hexes LIVRES:
      * o CAMINHO não atravessa hex ocupado por NINGUÉM (achado da revisão adversarial do TOK-4:
      * o range geométrico deixava o herói "atravessar" a linha inimiga de graça — fuga de cerco
-     * sem rolagem; o Combate.md exige Evadir para passar por hex de INIMIGO). Conservador até o
+     * sem rolagem; o docs/fonte-regras/Combate.md exige Evadir para passar por hex de INIMIGO). Conservador até o
      * TOK-5 relaxar aliados (atravessar aliado é livre, MB p.389) e implementar Evadir.
      */
     fun hexesAlcancaveis(estado: HexCombatState, deslocamento: Int, idHeroi: String = "heroi"): Set<HexCoord> {

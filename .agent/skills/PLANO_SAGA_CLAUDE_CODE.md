@@ -41,14 +41,14 @@
 > - ✅ Lote 383 = Fintar (2026-06-17, MB p.366) — loop 2/5. Manobra Fintar: Disputa Rápida (`heroiFintar`/`fintaResultado`); a margem de vitória reduz a defesa do alvo no próximo golpe corpo-a-corpo (e nos 2 do Ataque Total Duplo). UI + testes + build 2 variantes verde.
 > - ✅ Lote 384 = Tabelas de crítico (2026-06-17, MB p.557–558) — loop 3/5. Golpe Fulminante → tabela de DANO (×2/×3/máx/RD½/ferimento grave); Erro Crítico → efeito no atacante (acerta a si/cai; narra quebrar/largar arma). `CriticoRules.golpeFulminante`/`erroCritico`. **+ workaround de lint** (3 detectores compose-runtime crashando por incompat. da Kotlin Analysis API — desligados). Testes + build 2 variantes verde.
 > - ✅ Lote 385 = Tolerância a Ferimentos (2026-06-17, MB p.381) — loop 4/5. `ToleranciaFerimentos` (NÃO-VIVO/HOMOGÊNEO/DIFUSO) reduz dano pi/perf em `HitLocationRules`; `NpcStats.tolerancia`←bestiário; **esqueleto/zumbi = nao_vivo** (resistem a tiros). Testes + build 2 variantes verde.
-> - ✅ Lotes 386–422 (jun/2026) = **AUDITORIA DE COMBATE COMPLETA** — `Combate.md` 100% fechado (0 parciais/0 não-feitos): Agarrar/Imobilizar/Estrangular + luta agarrada NPC↔herói/Desvencilhar (422), Finta, Ataque Enganoso/Golpe Rápido, Encontrão/Empurrão, projeção, defesas que faltavam, postura/Agachar, críticos, Tolerância/Divisor de Armadura. +**teste de batalha no aparelho** (7 itens) corrigido (419–422) + tool `gerir_equipamento` (desarmar/confiscar). Detalhes no `PROGRESS.md`. Mapa do Artes Marciais em `Artes_Marciais_Regras_Combate.md`.
+> - ✅ Lotes 386–422 (jun/2026) = **AUDITORIA DE COMBATE COMPLETA** — `docs/fonte-regras/Combate.md` 100% fechado (0 parciais/0 não-feitos): Agarrar/Imobilizar/Estrangular + luta agarrada NPC↔herói/Desvencilhar (422), Finta, Ataque Enganoso/Golpe Rápido, Encontrão/Empurrão, projeção, defesas que faltavam, postura/Agachar, críticos, Tolerância/Divisor de Armadura. +**teste de batalha no aparelho** (7 itens) corrigido (419–422) + tool `gerir_equipamento` (desarmar/confiscar). Detalhes no `PROGRESS.md`. Mapa do Artes Marciais em `Artes_Marciais_Regras_Combate.md`.
 > - ✅ Lotes PONTE-1..4 (2026-06-24) = **PONTE COMPLETA** (chaves de luta agarrada, sangramento, Ataque Telegráfico, Ataque Dedicado/Defensivo — regras de Artes Marciais que sobrevivem ao hexágono). Revisões adversariais corrigiram 8 bugs reais no caminho.
 > - ➡️ **ORDEM DE PRIORIDADE APROVADA PELO USUÁRIO (2026-07-05)** — roteiro das próximas sessões (validação no aparelho segue em paralelo, tarefa do usuário):
 >   1. ✅ **T1-1 Sangramento entre cenas** (Lote 423, commit `5751808`) — persistido na ficha; `passar_tempo` real-PARCIAL processa; +3 fixes de fidelidade GURPS pela revisão.
 >   2. ✅ **T1-2 Ações improvisadas → modificadores** (Lote 424, commit `1efcd5f`) — `aplicar_modificador_combate` (18ª tool); regra da ESTREIA impede expiração precoce; +4 fixes pela revisão.
 >   3. ✅ **T1-3 Forjador: protocolo de magias no prompt** — REVERIFICADO 2026-07-05: já estava corrigido em 2026-06-03 (Lote 329: cadeia automática). Erro meu de bookkeeping na análise anterior. Sem trabalho.
 >   4. **T2 Unificação de branches** (sessão dedicada COM o usuário, 1–2h; VTT legado simplificou).
->   5. **T3 PILAR hexágono HEX-1..HEX-9** (`PLANO_Combate_Tatico_Hex_3D.md`) — HEX-1 é isolado, pode correr em paralelo ao T1.
+>   5. **T3 PILAR hexágono HEX-1..HEX-9** (`docs/planos/PLANO_Combate_Tatico_Hex_3D.md`) — HEX-1 é isolado, pode correr em paralelo ao T1.
 >   6. **T4 Fases D→C** (D1 XpEngine + D2 Acampamento antes do mundo vivo; em C, priorizar C5 memória se as campanhas crescerem).
 >   7. **T5 Fases E/F** (E0 upgrade → áudio/imagem/voz → release).
 >   8. **T6 oportunistas** (miudezas de combate de carona; Subject Segmentation quando a lib estabilizar).
@@ -203,8 +203,8 @@ Executores reais: `iniciar_combate` (instancia do bestiário e/ou `forjar_npc` v
 ---
 
 ## FASE B+ — COMBATE TÁTICO (PONTE + PILAR HEXÁGONO)
-> Continuação do combate (a Fase B abstrata está completa: `Combate.md` 100% + lotes 386–422). Esta seção é a
-> sequência **canônica e ordenada** do que vem a seguir. Plano detalhado do pilar 3D: `PLANO_Combate_Tatico_Hex_3D.md`.
+> Continuação do combate (a Fase B abstrata está completa: `docs/fonte-regras/Combate.md` 100% + lotes 386–422). Esta seção é a
+> sequência **canônica e ordenada** do que vem a seguir. Plano detalhado do pilar 3D: `docs/planos/PLANO_Combate_Tatico_Hex_3D.md`.
 > **Princípio-mestre:** MOTOR DE REGRAS 2D PRIMEIRO, 3D DEPOIS. Nunca pular um passo desta ordem.
 
 ### 🚦 GATE 0 (NÃO é lote — tarefa do USUÁRIO) — Validar o combate atual no aparelho
@@ -245,7 +245,7 @@ UI (toggle no sub-diálogo de ataque, como o stepper do Enganoso); teste. AM p10
 
 ---
 ### PILAR — COMBATE TÁTICO EM HEXÁGONO (3D). Abrir SÓ após GATE 0. Ordem ESTRITA H1→H9.
-> Detalhamento e arquitetura: `PLANO_Combate_Tatico_Hex_3D.md`. Cada lote verde+commitado antes do próximo.
+> Detalhamento e arquitetura: `docs/planos/PLANO_Combate_Tatico_Hex_3D.md`. Cada lote verde+commitado antes do próximo.
 > Reaproveita: SceneView/Filament (dados 3D), motor de resolução do Saga, encanamento de imagem do VTT (LEGADO).
 
 #### LOTE HEX-1 (Fase 1) — Motor `HexGrid` puro (Kotlin, SEM render) — ISOLADO, zero risco
@@ -279,7 +279,7 @@ plugar `CombatResolver`/`HitLocationRules`/`InjuryRules` (intactos); passo+ataqu
 
 #### LOTE HEX-6 (Fase 4) — Regras posicionais 🔴 (MB + Artes Marciais) que o hex desbloqueia
 **Objetivo:** cobertura, vários alvos por posição/linha, "manter à distância", corredores de carga, e (quando
-`NpcStats` ganhar peso/comprimento de arma) "quem golpeia primeiro". Cruzar com `Combate.md` + `Artes_Marciais_Regras_Combate.md`.
+`NpcStats` ganhar peso/comprimento de arma) "quem golpeia primeiro". Cruzar com `docs/fonte-regras/Combate.md` + `Artes_Marciais_Regras_Combate.md`.
 **Passos:** implementar item a item, cada um com teste e referência `// MB`/`// AM`.
 **Aceite:** build verde 2 variantes + testes por regra.
 

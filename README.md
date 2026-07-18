@@ -2,6 +2,20 @@
 
 Aplicativo de ficha editavel para GURPS 4a Edicao em portugues brasileiro.
 
+## Mapa da documentacao
+
+| Onde | O que tem |
+|---|---|
+| **[docs/pendencias/PENDENCIAS.md](docs/pendencias/PENDENCIAS.md)** | ⭐ **Comece aqui.** O que falta, o que e narrado por projeto e o que ja esta pronto mas nao validado. |
+| [docs/pendencias/](docs/pendencias/) | Fronteiras honestas da magia e a auditoria de schema. |
+| [docs/planos/](docs/planos/) | Planos por pilar: Magia, Combate Tatico, Tokens VTT, Automacao de Vantagens. |
+| [docs/fonte-regras/](docs/fonte-regras/) | Transcricao do livro (Combate, indice do Modulo Basico) — a **fonte** contra a qual as regras sao implementadas. |
+| [PROGRESS.md](PROGRESS.md) | Diario de bordo: um registro por lote, do mais novo ao mais antigo. |
+| `.agent/skills/` | Planos e regras operacionais do agente de IA. |
+
+> **Antes de reportar um bug de magia**, confira o PENDENCIAS.md: **9 em cada 10 magias sao narradas
+> por projeto**, nao por falta de implementacao. O logcat (`tag:Saga_Combate`) diz qual e o caso.
+
 ## Funcionalidades
 
 ### Atributos Primarios

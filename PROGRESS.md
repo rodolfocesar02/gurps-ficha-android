@@ -1237,7 +1237,7 @@ Melhoria: Avaliar o uso de uma pequena biblioteca de busca vetorial local (ou um
   - topic_index resolve o displacement garantindo as páginas críticas independente do ranking BM25
 
 ### Lote 265: topic_index gerado do Índice do Livro — CONCLUÍDO | commit: 4179816
-- **scripts/gerar_topic_index.py:** parse automático de `indice.md` + `glossario.md` → 515 tópicos
+- **scripts/gerar_topic_index.py:** parse automático de `docs/fonte-regras/indice.md` + `glossario.md` → 515 tópicos
   - `PALAVRAS_GENERICAS`: descarta termos genéricos ("combate", "dano", "armas", etc.) como `require_all` sozinhos
   - Termos compostos (2+ palavras) sempre usam todas as palavras como `require_all` — mais precisos
   - `--merge`: mescla gerado com manuais preservando entradas existentes
@@ -3041,9 +3041,20 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 
 ### Recon — 24 de Junho de 2026
 **Mapa de regras de combate do GURPS Artes Marciais (doc-only, branch GURPS-Saga)**
-- Novo arquivo `Artes_Marciais_Regras_Combate.md`: inventário das regras de combate do livro Artes Marciais a partir do `chunks.jsonl` (`pt_artes_marciais`, 264 págs) — análogo ao audit do `Combate.md`, para planejar uma eventual "Fase Artes Marciais" do combate Saga.
+- Novo arquivo `Artes_Marciais_Regras_Combate.md`: inventário das regras de combate do livro Artes Marciais a partir do `chunks.jsonl` (`pt_artes_marciais`, 264 págs) — análogo ao audit do `docs/fonte-regras/Combate.md`, para planejar uma eventual "Fase Artes Marciais" do combate Saga.
 - Cobre: Técnicas (Cap. 3, ~110 técnicas via Tabela p258–262), Capítulo 4 — Combate (manobras expandidas, opções de combate p109–113 lidas em detalhe, combate corporal, opções de defesa, ataques múltiplos, lesões realistas), vantagens/perícias e armas/equipamentos. Cada regra com tag de encaixe no modelo de faixas (🟢 FIT / 🟡 PARCIAL / 🔴 FORA / ⚪ JÁ FEITO).
 - **Recomendação registrada** (maior valor × menor custo): Ataque Telegráfico (par do Enganoso), luta agarrada profunda (chaves/Mata-Leão estendendo o lote 422), Sangramento Grave + incapacitação de membro (item 5 do teste de batalha), Ataque Dedicado/Defensivo. Fora de escopo: posicional/hexágono, montaria, cinematográfico, dado de arma do NPC. Mudança só de documentação (não compila Kotlin).
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
+### Lote ORGANIZA — 18 de Julho de 2026 (casa arrumada + PENDENCIAS.md, o mapa único)
+**"organiza a casa pra nos... depois mapei, analise, e transcreva tudo pra um unico arquivo das pendencias" — branch GURPS-Saga**
+- **O problema que motivou**: o usuário estava testando no aparelho e batendo em coisas **não implementadas**, achando que eram bugs. A informação existia, mas espalhada por 4 documentos — ninguém via o todo. Culpa minha por nunca ter consolidado.
+- **Arrumação** (com `git mv`, histórico preservado): `docs/fonte-regras/` (Combate.md, indice.md — transcrição do livro), `docs/planos/` (5 planos), `docs/pendencias/` (deferidos + auditoria + o novo PENDENCIAS.md). Raiz ficou só com README e PROGRESS.
+- **Ponteiros corrigidos**: nenhum código LÊ `.md` em runtime, mas 9 arquivos (4 `.kt`, PROGRESS, planos e uma skill) citavam os caminhos antigos em comentários. Todos atualizados e conferidos — 0 ponteiros mortos, 0 caminhos duplicados.
+- **NÃO tocado de propósito**: `Artes_Marciais_Regras_Combate.md` e `logcat_novo.md` (alheios/em edição pelo usuário), `.agent/skills/MAPA_DETALHADO.md` (editado por ele) e os arquivos do Nexus Arcano (outra sessão). Conferido no `git status` que nenhum entrou no commit.
+- **`docs/pendencias/PENDENCIAS.md`** — o mapa único, com o número que explica a frustração: **87 das 879 magias (9,9%) são executadas mecanicamente**; 792 são narradas **por projeto**. Tabela por efeito, heurística de logcat para o usuário distinguir bug de não-implementado sozinho (`"Efeito narrado pelo Mestre"` = não é bug), lista priorizada do que falta, lista do que está pronto mas **não validado**, e a dívida técnica conhecida.
+- 🔍 **Achado da análise**: dos 13 itens "FORA DO ESCOPO" do `Combate.md`, **5 foram excluídos por não haver grade de hexágonos — e a grade foi construída depois**. Conferi item a item **no código** antes de publicar, e ainda bem: o **Passo já está implementado** (35 ocorrências no motor) enquanto o documento ainda o marca como fora do escopo. Ia publicar afirmação errada. Situação real: Passo ✅ feito, Passando-por-Outros e Cobertura 🟡 parciais, Evadir e Espaçamento ❌ não feitos.
+- ⚠️ Gate: **750 testes nas DUAS variantes**; único vermelho o flaky do Nexus Arcano.
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
 ### Lotes MEC-20 e MEC-21 — 18 de Julho de 2026 (dano oferecido onde a regra não permite; TOQUE não fazia nada)
@@ -3148,7 +3159,7 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - **A penalidade de distância (SSR) já existia**; o que faltava era o resto: **Máx** (não dá para acertar além dele) e **1/2D** (metade do dano). Estavam só na prosa das `notas` das 12 magias de projétil.
 - **A fonte literal me deu 3 detalhes que eu teria errado de memória**: (1) o 1/2D vale a partir da distância **maior ou IGUAL** — eu teria escrito `>`, e o alvo exatamente no 1/2D levaria dano cheio; (2) divide o dano **básico** (antes da RD), arredondando para baixo; (3) além do 1/2D o alvo resiste à atribulação com **+3**.
 - **Implementado**: `alcanceMeioDano`/`alcanceMaximo` + `foraDoAlcanceMaximo()`/`aplicarMeioDano()`. A guarda de Máx recusa **antes de cobrar fadiga** (mesmo princípio do MEC-13 — o operador enxerga a distância, não faz sentido queimar o turno num tiro que a regra proíbe). Tem teste provando que o PF não é cobrado.
-- ⚠️ **Contradição do próprio livro, registrada**: a seção "Distância" diz metade do dano **E** +3 para resistir; a seção "Metade do Dano (1/2D)" diz +3 **em vez de** a metade. Adotada a formulação inequívoca (os dois). Está no `MAGIA_DEFERIDOS.md` — é uma linha para inverter se em mesa o usuário preferir.
+- ⚠️ **Contradição do próprio livro, registrada**: a seção "Distância" diz metade do dano **E** +3 para resistir; a seção "Metade do Dano (1/2D)" diz +3 **em vez de** a metade. Adotada a formulação inequívoca (os dois). Está no `docs/pendencias/MAGIA_DEFERIDOS.md` — é uma linha para inverter se em mesa o usuário preferir.
 - ⚠️ **Precisão (Prec) NÃO foi para o schema, de propósito**: Acc só vale com a manobra **Apontar**, e hoje o projétil é conjurado e arremessado no mesmo turno (`heroiConjurar` chama `limparApontar()`). Somar Prec sem Apontar seria bônus de graça — o oposto da regra. Seria campo morto; destrava junto com o deferido "carregar em vários turnos".
 - 🐛 **Erro meu, pego antes de commitar**: o primeiro regex de curadoria pegou `Max` de qualquer contexto e marcou **Força, Vigor, Debilitar, Calor (Máx 1500!), Metalovisão** como se fossem alcance de arma — eram tetos de nível/energia/profundidade. Revertido e refeito com escopo estrito (`entrega: projetil` **e** o bloco `1/2D … Máx` colado): 25 magias erradas → **12 corretas**. É exatamente a lição já registrada de *preferir dado estruturado a heurística sobre prosa*.
 - **+4 testes** (o ≥ do 1/2D; sem 1/2D não decai; o limite exato do Máx; e a recusa sem cobrar fadiga).
@@ -3161,7 +3172,7 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - **MEC-14 — EXPLOSÃO com decaimento por distância**: a regra estava só na prosa das `notas`. Texto literal: *"O alvo e qualquer um mais próximo do alvo que um metro recebe dano total. Os mais afastados **dividem o dano em três vezes a distância em metros** (arredondado para baixo)."* Virou `explosaoDivisorPorMetro` + `danoDaExplosao()`, aplicado no ramo de ÁREA; o controller tático passa a distância real de cada alvo ao hex central (`distanciaAoCentro`).
   - **Exatamente 3 magias** têm essa regra: Bola de Fogo Explosiva, Bola de Relâmpagos, Relâmpago Explosivo. A **Concussão NÃO entra** — o auditor a tinha agrupado junto, mas o "raio de 10 m" dela é do **atordoamento**, não decaimento de dano; e a **Explodir** também não (fragmentação em objeto, outra regra).
   - **Sem o campo nada decai** — que é o certo para chuva/nuvem: dano ambiental atinge todos igual, não é onda de choque. Tem teste trancando isso.
-  - ⚠️ **Limitação honesta registrada no `MAGIA_DEFERIDOS.md`**: o Relâmpago Explosivo é `entrega: projetil` e o ramo de projétil acerta **um alvo só** — o alvo direto leva o dano cheio (correto), mas **quem está ao redor não leva respingo**. Espalhar do ponto de impacto exigiria o projétil resolver contra um HEX.
+  - ⚠️ **Limitação honesta registrada no `docs/pendencias/MAGIA_DEFERIDOS.md`**: o Relâmpago Explosivo é `entrega: projetil` e o ramo de projétil acerta **um alvo só** — o alvo direto leva o dano cheio (correto), mas **quem está ao redor não leva respingo**. Espalhar do ponto de impacto exigiria o projétil resolver contra um HEX.
 - 🐛 **Bug meu pego pelo próprio teste**: calculei `brutoAqui` (o dano já dividido) e continuei passando `bruto` para `aplicarDano` — o decaimento não saía do lugar. O unitário puro passava; só o teste de integração com **dois goblins a distâncias diferentes** revelou. Fica a lição: testar a função pura não prova que ela está ligada.
 - **+4 testes** em `MagicCombatTest` (dano cheio até 1 m; 20 a 2/3/4/7 m = 3/2/1/0; sem divisor não decai; e o de integração).
 - ⚠️ Gate: **727 testes nas DUAS variantes (Visual e PraCego)**, único vermelho segue sendo o **flaky pré-existente do Nexus Arcano** (`planejador_resolve_requisito_de_contagem_por_escola`, em correção em sessão separada).
@@ -3248,13 +3259,13 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
 ### Lote MEC-9 — 17 de Julho de 2026 (os 2 buracos de schema que eram MEUS)
-**Primeiro lote do roteiro do `BURACOS_SCHEMA_MAGIAS.md` — atacando os que eu mesmo introduzi**
+**Primeiro lote do roteiro do `docs/pendencias/BURACOS_SCHEMA_MAGIAS.md` — atacando os que eu mesmo introduzi**
 - **1 dos 13 "críticos" era FALSO POSITIVO — e verificar valeu o lote inteiro.** O auditor disse que "resistência por VONTADE não existe no enum" (Terror/Pânico/Medo/Êxtase). **Já existe e já funciona**: a resistência principal vem da CLASSE da magia (`R-Vont` → `AtributoResistencia.VONTADE`), tratada em `resistenciaDoAlvo`; o `condicaoResistencia` é outro campo, para o teste EXTRA embutido no dano (o atordoar do Relâmpago). O auditor conflatou os dois. **Se eu tivesse "consertado", teria quebrado o que estava certo.**
 - **🔴 BUG REAL, meu, do MEC-2 — o +2 da arma encantada era MULTIPLICADO.** Eu somava o bônus ao dano BRUTO com o comentário de que `(dano+2) − RD == (dano − RD) + 2` — verdade para subtração pura, mas **o multiplicador de ferimento vem DEPOIS da RD** (`HitLocationRules`: `floor(penetrante × mult)`). Então corte (×1,5) transformava o +2 em **+3**; perfuração (×2), em **+4**. O livro diz "após a penetração da armadura **e os modificadores de ferimento**". Agora vai como `bonusAposRd` no `CombatResolver.resolverTroca`, somado ao ferimento final. Teste trava o número exato: dano 8, RD 2, corte → **11** (não 12).
 - **🔴 Teto de energia — porta que o MEC-7 abriu.** O seletor novo permitia despejar 10 num Toque Candente ("Custo: 1 a 3") e sair **10d**. `MagicEnergy.tetoDeEnergiaDano(energia, aptidao)` (domínio puro, testável — lição do MEC-5 de não enterrar regra na UI) passa a mandar no teto. ⚠️ Armadilha: `"2 a 2×AM"` — o regex de faixa leria "2 a 2" e limitaria em **2**, quando o certo é 2×Aptidão Mágica; por isso o "AM" é testado ANTES da faixa.
 - **+7 testes** (3 no `CombatResolverTest`: bônus não multiplicado / bônus não fura armadura sozinho / regressão sem bônus; 4 no `MagicCastingTest`: faixa simples, ×AM, Varia, custo fixo).
 - ⚠️ Gate: compila e todos os meus testes passam; o único vermelho segue sendo o **flaky pré-existente do Nexus Arcano** (já em conserto em sessão paralela do usuário).
-- **Restam 11 achados reais** no `BURACOS_SCHEMA_MAGIAS.md`: explosão sem decaimento, dano por segundo (chuvas/nuvens), restrição de alvo (dá para Desintegrar um vivo), stats de projétil (1/2D-Máx-Precisão), duração de cegueira por energia, Jato de Som (HT − energia), Toque Candente (RD natural), Morte Candente/Putrefata (tick com teste), Lampejo (bandas), Toque Congelante (escape por ST).
+- **Restam 11 achados reais** no `docs/pendencias/BURACOS_SCHEMA_MAGIAS.md`: explosão sem decaimento, dano por segundo (chuvas/nuvens), restrição de alvo (dá para Desintegrar um vivo), stats de projétil (1/2D-Máx-Precisão), duração de cegueira por energia, Jato de Som (HT − energia), Toque Candente (RD natural), Morte Candente/Putrefata (tick com teste), Lampejo (bandas), Toque Congelante (escape por ST).
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
 ### Lotes LIMPEZA-1 a 4 — 17 de Julho de 2026 (dívida que EU criei, apontada na minha própria revisão)
@@ -3262,7 +3273,7 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - **LIMPEZA-1 — fonte ÚNICA dos overlays táticos.** Para consertar o TESTE-1b eu havia DUPLICADO por copy-paste a pilha de overlays (status/"Defenda-se!", magias ativas, mira de área, menu do token) dentro do diálogo do preview. Duas cópias divergem em silêncio — mexer numa e esquecer a outra reproduz exatamente o bug que o usuário pegou (combate que não deixa conjurar). Agora existe `OverlaysCombateTatico(viewModel, menuHeroiNoTopo, paddingTopo)` em `CombatUi.kt`, extensão de `BoxScope`, usada pelos DOIS lugares. O parâmetro `menuHeroiNoTopo` guarda a única diferença real: na tela de campanha o menu do herói vai em cima (libera os hexes de movimento, TOK-6b-3); no diálogo cabe embaixo, perto do polegar.
 - **LIMPEZA-2 — flag de teste fora da API de produção.** O `forcarTatico` do TESTE-1 era um parâmetro que SÓ o teste usava, sujando a assinatura de `iniciarCombate`. Agora o sandbox tem entrada própria: `iniciarCombateSandbox(...)`, que liga um `taticoForcadoUmaVez` privado. ⚠️ **Risco pego na revisão:** eu ia consumir a flag lá embaixo (na hora de montar a grade), mas `iniciarCombate` tem SAÍDAS ANTECIPADAS antes disso (sem contexto / combate já ativo / herói incapacitado) — se caísse numa delas a flag ficaria ligada e **vazaria para o próximo combate, que seria real**. Consumo movido para a 1ª linha da função.
 - **LIMPEZA-3 — código morto marcado.** `EfeitoMagia.kt`/`EfeitoMagiaCanvas.kt` (VFX-1) têm **zero chamadores** em produção: o mapeamento está certo e testado, mas nada dispara efeito no combate. Em vez de deixar ambíguo (código que compila, tem teste e ninguém usa apodrece), os dois arquivos ganharam aviso de cabeçalho **⚠️ PROTÓTIPO NÃO LIGADO** explicando que falta a integração com o grid e que a ordem foi decisão do usuário (mecânica 100% antes da arte). Ao ligar, remover o aviso.
-- **LIMPEZA-4 — auditoria PROATIVA de buracos de schema. ACHOU 26 (13 de impacto ALTO).** Padrão observado: **5 vezes nesta sessão** um campo faltante só apareceu quando o jogo saiu errado no aparelho (`danoFixo` → Géiser 15d; `buffBd` → Escudo não passava; `buffUmUnicoUso` → Aumentar Força não fazia nada; `buffArmaTipo` → +2 do gume vazando pro arco; `escalaComEnergia` → jogador sem escolher energia). Em TODAS a curadoria já sabia a resposta e escreveu na `notas` — faltava CAMPO, não competência. Agente auditou as 84 magias que o motor executa. **Resultado completo em `BURACOS_SCHEMA_MAGIAS.md`.** Os mais graves:
+- **LIMPEZA-4 — auditoria PROATIVA de buracos de schema. ACHOU 26 (13 de impacto ALTO).** Padrão observado: **5 vezes nesta sessão** um campo faltante só apareceu quando o jogo saiu errado no aparelho (`danoFixo` → Géiser 15d; `buffBd` → Escudo não passava; `buffUmUnicoUso` → Aumentar Força não fazia nada; `buffArmaTipo` → +2 do gume vazando pro arco; `escalaComEnergia` → jogador sem escolher energia). Em TODAS a curadoria já sabia a resposta e escreveu na `notas` — faltava CAMPO, não competência. Agente auditou as 84 magias que o motor executa. **Resultado completo em `docs/pendencias/BURACOS_SCHEMA_MAGIAS.md`.** Os mais graves:
   - 🔴 **Resistência por VONTADE não existe no enum** — Terror/Pânico/Medo/Êxtase/Atordoamento Mental são R-Vont, mas `condicaoResistencia` só aceita HT. Terror está gravado como "HT": **o motor rola o atributo errado**.
   - 🔴 **Sem teto de energia por magia** — e isto é **consequência DIRETA do MEC-7** (o seletor que acabei de entregar): Toque Candente é "custo 1 a 3", mas o seletor deixa despejar 10 → sai **10d**. Precisa de `energiaMaxima`.
   - 🔴 **`buffDanoArma` provavelmente soma ANTES da RD** — o livro diz "+2 após penetrar a armadura E os modificadores de ferimento". Dano 4 vs RD 5: correto = 2 de lesão; motor = 1. Número errado em toda luta contra armadura.
@@ -3387,7 +3398,7 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - **Handler de `dano` no motor** (`aplicarDanoMagico`): `MagicMechanics.expandirDano` escala o dado por energia ("1d-1"/energia → 3d-3 com 3 de energia; "1d"/2 energia → 2d com 4); `tipoDano`; **armadura "ignora"** (Toque Chocante fere mesmo com RD alta); **condição embutida** (Relâmpago atordoa: HT −1 por 2 PV; Concussão HT−3). Liga nas ramificações de Projétil e dano direto de `resolverConjuracao`.
 - **6 magias de Ar de DANO curadas** (lendo as descrições): Relâmpago, Toque Chocante, Concussão, Olhar de Relâmpago, Relâmpago Explosivo, Chicote de Relâmpago.
 - **+7 testes** (`MagicMechanicsTest` 5 + `MagicCombatTest` +2, total 29): expansão de dano, penalidade de condição, Toque Chocante ignora armadura, Relâmpago atordoa. Zero regressão.
-- **Próximo (AR-2)**: buffs (Corpo de Ar, Arma de Relâmpago +2…), ambiente (Muralhas, Furacão, clima…), controle (Turbilhão), informação + as ~43 magias restantes de Ar. Plano em `PLANO_MECANICA_MAGIAS.md`.
+- **Próximo (AR-2)**: buffs (Corpo de Ar, Arma de Relâmpago +2…), ambiente (Muralhas, Furacão, clima…), controle (Turbilhão), informação + as ~43 magias restantes de Ar. Plano em `docs/planos/PLANO_MECANICA_MAGIAS.md`.
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
 ### Lote MA-7 — 15 de Julho de 2026 (PILAR MAGIA / Fase 7 — NPC CONJURADOR)
@@ -3410,7 +3421,7 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 ### Lote MA-5 — 15 de Julho de 2026 (PILAR MAGIA / Fase 5 — polimento: mana por cena + doc) 🎉 FECHA O PILAR
 **Saga: lugares mágicos e anti-mágicos afetam a conjuração — branch GURPS-Saga**
 - **Mana ambiente por cena**: `definir_cena` ganhou o param `mana` (muito_alta/alta/normal/baixa/nula). O executor chama `definirManaAmbiente` na `CombatBridge` → `FichaSagaDelegate` guarda `viewModel.sagaNivelMana` (em memória, sem migração de DB). **Todos os caminhos de conjuração** — combate (`heroiConjurar` + área) e narrativa (`lancarMagia`) — passaram a usar essa mana em vez do NORMAL fixo: **baixa = −5 no NH efetivo**, **nula = bloqueia a conjuração** (`MagicMana.podeOperar`, com mensagem factual). Prompt do Narrador orientado a definir mana em lugares mágicos/anti-mágicos.
-- **Doc dos deferidos** `MAGIA_DEFERIDOS.md`: registro honesto da fronteira — o que é automatizado (espinha), o que é narrado (efeitos bespoke), o que fica deferido (NPC conjurador, carregar projétil multi-turno, magia cerimonial, cajados, efeito de buff mecânico) e as simplificações fiéis (dano do projétil ≈ contusão, Ataque Inato ≈ DX, Vontade do NPC ≈ IQ, manutenção ≈ metade do custo).
+- **Doc dos deferidos** `docs/pendencias/MAGIA_DEFERIDOS.md`: registro honesto da fronteira — o que é automatizado (espinha), o que é narrado (efeitos bespoke), o que fica deferido (NPC conjurador, carregar projétil multi-turno, magia cerimonial, cajados, efeito de buff mecânico) e as simplificações fiéis (dano do projétil ≈ contusão, Ataque Inato ≈ DX, Vontade do NPC ≈ IQ, manutenção ≈ metade do custo).
 - **Magias ativas na UI** (pílula "✨ Ativas") já entregue no MA-3d-4; choque de retorno já traz rótulos do MA-1.
 - Zero regressão (saga + combate + magia verdes).
 - **🎉 PILAR MAGIA COMPLETO (MA-1..5)**: motor puro → resolvedor → magia no combate (conjurar/Projétil/Área/Toque/Bloqueio/multi-turno/ativas) → magia na narrativa → polimento. NPC conjurador deferido.
@@ -3550,7 +3561,7 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 
 ### Lote TOK-5b — 11 de Julho de 2026 (VTT 2D / Fase 5b — IA posicional do NPC + manter à distância)
 **Saga combate tático: o NPC flanqueia/kita/recua DE VERDADE pela grade; Interromper Investida mantém o oponente à distância — branch GURPS-Saga**
-- **6ª fatia do `PLANO_Tokens_VTT_2D.md`** — fecha o TOK-5. Torna o facing do TOK-5a **testável sem depender do Narrador**: o goblin flanqueia o herói sozinho.
+- **6ª fatia do `docs/planos/PLANO_Tokens_VTT_2D.md`** — fecha o TOK-5. Torna o facing do TOK-5a **testável sem depender do Narrador**: o goblin flanqueia o herói sozinho.
 - **`PosicaoBridge.moverNpcNaGrade(npcId, intencao)`** (novo): quando a grade está ativa, quem decide PRA ONDE o NPC vai é a **IA posicional do HEX-5** (`HexTaticaNpc` — flanquear agressivo/kite arqueiro/recuar covarde), iterada **vizinho a vizinho até o deslocamento** (flanquear emerge da sequência). Facing final = encarando o herói (recuar de costas daria flanco de graça). Null = modo faixas intacto.
 - **`npcResolve` MOVER**: distância vem da grade (`definirDistancia`) em vez do ±passo abstrato; **FUGA na grade**: `FUGA_METROS` (20) é inalcançável num raio 7 — recuar JÁ na borda = saiu do campo (fix da varredura própria; sem ele o NPC covarde recuaria em círculos pra sempre).
 - **`npcResolve` MOVER_E_ATACAR**: o NPC avança pela grade (podendo flanquear); **se não alcançar o herói, o avanço consome a manobra SEM golpe** (fiel ao Avançar-e-Atacar). Sem bridge → força 1m como antes.
@@ -3560,8 +3571,8 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
 ### Lote TOK-5a — 11 de Julho de 2026 (VTT 2D / Fase 5a — facing, através-de-hex e Retirada REAIS)
-**Saga combate tático: as primeiras regras do `Combate.md` substituídas pela POSIÇÃO real na grade — branch GURPS-Saga**
-- **5ª fatia do `PLANO_Tokens_VTT_2D.md`** — sub-lote "a" (facing/através/retirada). Evadir, Aguardar por alcance, cobertura e manter-à-distância ficam pro 5b.
+**Saga combate tático: as primeiras regras do `docs/fonte-regras/Combate.md` substituídas pela POSIÇÃO real na grade — branch GURPS-Saga**
+- **5ª fatia do `docs/planos/PLANO_Tokens_VTT_2D.md`** — sub-lote "a" (facing/através/retirada). Evadir, Aguardar por alcance, cobertura e manter-à-distância ficam pro 5b.
 - **`CombatSession.PosicaoBridge`** (interface nova + `var posicaoBridge`, null = modo faixas com zero regressão): `facingDoAtaque`, `penalidadeAtravesDeHex`, `aoAtacar` (vira o atacante pro alvo — facing é livre no próprio turno), `recuarUmHex`.
 - **Herói→NPC (`resolverGolpeHeroi`)**: mod **"através de hex ocupado" −4** (MB p.389, corpo-a-corpo alcance ≥2, via `HexAtaqueAtravesHex` do HEX-6); **FLANCO → defesa do NPC −2** (MB p.390); **COSTAS → defesa ANULADA** via `surpresa=true` (MB p.374). Tudo logado com a página da regra. **Flanquear com Avançar-e-Atacar agora vale a pena de verdade.**
 - **NPC→herói (`npcResolve`)**: NPC vira pro herói ao atacar; **COSTAS do herói → surpresa** (defesa anulada + aviso no log). **FLANCO → o card "Defenda-se!" abre com TODAS as opções −2 e o BD do escudo removido** (`HexRegrasFacing.ajustarOpcoesDefesa` do HEX-4 — o módulo esperou 5 lotes pra ser plugado e entrou sem mudanças). COSTAS = sem card (o motor narra).
@@ -3571,7 +3582,7 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 
 ### Lote TOK-4 — 11 de Julho de 2026 (VTT 2D / Fase 4 — combate REAL no grid)
 **Saga combate tático: o grid vira o tabuleiro do combate de verdade — branch GURPS-Saga**
-- **4ª fatia do `PLANO_Tokens_VTT_2D.md`** (diretiva do usuário: automatizar no grid as ações do `Combate.md` que hoje são botões abstratos de faixa). Itens antes "FORA DO ESCOPO por falta de grade" começam a ser desbloqueados: **Deslocamento/Movimento** real, **Passo**, **Espaçamento** (ocupação de hex).
+- **4ª fatia do `docs/planos/PLANO_Tokens_VTT_2D.md`** (diretiva do usuário: automatizar no grid as ações do `docs/fonte-regras/Combate.md` que hoje são botões abstratos de faixa). Itens antes "FORA DO ESCOPO por falta de grade" começam a ser desbloqueados: **Deslocamento/Movimento** real, **Passo**, **Espaçamento** (ocupação de hex).
 - **`HexSetup`** (novo, kotlin puro): `setupDoEncontro` (herói na origem, inimigos espalhados pelas 6 direções a `distanciaM` hexes, colisão resolvida, facing pro herói), `hexesAlcancaveis` (livres a dist ≤ deslocamento — sem pathfinding no TOK-4, terreno aberto documentado), `moverHeroi` (facing pela direção), `distanciasAoHeroi` (mapa que alimenta o encounter), `manterApenas` (mortos saem da grade). **12 testes puros**.
 - **`CombatSession.heroiMoveTatico(novasDistancias, metros)`** — ADITIVO (o `heroiMove` de faixa fica intocado): consome o turno com as regras do Mover (disparada aproximada, velocidade p/ Vel/Dist, limpa Avaliar/Apontar/Finta) e seta as distâncias EXATAS por NPC vindas do grid. **O grid é a fonte da verdade no turno de mover do herói.**
 - **`SagaCombatController`**: `estadoTatico` (state) + `avisoTatico` + `tokensTaticos` (id/nome/ehHeroi/pvPct/posição/facing) + `hexesAlcancaveisHeroi()` (só com o token do herói selecionado e no turno dele) + `aoTocarHexTatico(hex)` (seleção / MOVER tático / avisos) + `sincronizarGridComEncounter()` no início do `atualizarEstado` (Encontrão/Empurrão/Projeção/Mover do NPC reprojetados via `HexPortabilidade`; mortos saem). `iniciarCombate` monta a grade + `HexCombatSync.projetarSetupInicial` (uso correto do contrato "setup only" do HEX-3).
@@ -3588,7 +3599,7 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 
 ### Lote TOK-3 — 10 de Julho de 2026 (VTT 2D / Fase 3 — fundo de cenário gerado)
 **Saga combate tático: a cena vira imagem de fundo top-down sob a grade — branch GURPS-Saga**
-- **3ª fatia do `PLANO_Tokens_VTT_2D.md`** — quando o Narrador estabelece a cena (`definir_cena`), um gatilho assíncrono gera a vista aérea do CHÃO do lugar e ela vira o fundo da grade tática.
+- **3ª fatia do `docs/planos/PLANO_Tokens_VTT_2D.md`** — quando o Narrador estabelece a cena (`definir_cena`), um gatilho assíncrono gera a vista aérea do CHÃO do lugar e ela vira o fundo da grade tática.
 - **`CenarioImageStore`** (novo, `data/storage/`):
   - `chaveCena(campanhaId, cenaId, titulo, bioma)` **pura**: `c{camp}_s{cena}_h{hash-do-conteúdo-FÍSICO}` — o hash importa porque `definir_cena` ATUALIZA a mesma cena (nasce "Início", vira "O Coliseu de Ferro"); sem hash, um fundo genérico gerado cedo ficaria grudado. Conteúdo físico muda → chave muda → regenera → **irmãos obsoletos da mesma cena são apagados**. **HUMOR fica FORA da chave** (achado CONFIRMADO da revisão adversarial: humor é volátil — "tenso"→"alívio" na mesma locação — e não muda o terreno; se entrasse no hash, cada retoque de clima regeneraria o fundo pago). Humor ainda entra no PROMPT da 1ª geração. Teste-trava do contrato de custo incluído.
   - `cenaValidaParaFundo(titulo)` **pura**: placeholder "Início"/vazio não gera fundo (economiza a geração inútil da abertura).
@@ -3602,7 +3613,7 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 
 ### Lote TOK-2 — 10 de Julho de 2026 (VTT 2D / Fase 2 — gatilho de tokens de inimigos)
 **Saga combate tático: inimigos ganham retrato GERADO por Gemini via gatilho assíncrono — branch GURPS-Saga**
-- **2ª fatia do `PLANO_Tokens_VTT_2D.md`** — os "agentes secundários" do plano viram corrotinas fire-and-forget.
+- **2ª fatia do `docs/planos/PLANO_Tokens_VTT_2D.md`** — os "agentes secundários" do plano viram corrotinas fire-and-forget.
 - **`GeminiImageService.gerarImagem(apiKey, modelId, prompt, rotuloLog)`** — método genérico extraído do `gerarRetrato` (que mantém assinatura/prompt/parse idênticos e delega). Serve tokens agora e fundo de cenário no TOK-3.
 - **`TokenImageStore` estendido**:
   - `normalizarTipo(tipo)` **pura**: minúsculas, sem acento (NFD), `[^a-z0-9]+`→`_` colapsado — chave de cache ("Orc Bruto"→`orc_bruto`).
@@ -3618,7 +3629,7 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 
 ### Lote TOK-1 — 10 de Julho de 2026 (VTT 2D / Fase 1 — tokens de imagem)
 **Saga combate tático: pivot 3D → VTT 2D com tokens de imagem (retrato do jogador) — branch GURPS-Saga**
-- **1ª fatia do `PLANO_Tokens_VTT_2D.md`** (decisão do usuário 10/jul após teste do 3D no aparelho: top-down mantém, .glb sai, imagem entra — estilo mesa Roll20/Foundry).
+- **1ª fatia do `docs/planos/PLANO_Tokens_VTT_2D.md`** (decisão do usuário 10/jul após teste do 3D no aparelho: top-down mantém, .glb sai, imagem entra — estilo mesa Roll20/Foundry).
 - **`TokenImageStore`** (novo, `data/storage/`): gera e cacheia o token do herói a partir do retrato da ficha (`Personagem.imagemPersonagemOriginalUri`). Recorte QUADRADO 1:1 **centrado no rosto** (ML Kit Face Detection, mesma config do `ImagemPersonagemStore`), lado = 2.2× o rosto (moldura cabelo/ombros), escalado pra 256px, cache `filesDir/tokens/heroi_<hash>.png`. Matemática do recorte extraída em `calcularRecorteQuadrado(...)` **pura** (testável sem Android). Falha em qualquer etapa → null → canvas usa fallback.
 - **`HexCanvas.kt` evoluído**:
   - Novo entry-point **`HexCanvasTatico(viewModel)`** — `produceState` carrega o token (assíncrono, key = retratoUri) e injeta no canvas.
@@ -3737,7 +3748,7 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 
 ### Lote HEX-2 — 5 de Julho de 2026 (T3 / Fase 2a do PILAR — grade 2D + flag + roteamento)
 **Saga combate tático: Compose Canvas 2D com grade de hexágonos, tokens móveis por toque — branch GURPS-Saga**
-- 2ª de 9 fatias do PILAR (`PLANO_Combate_Tatico_Hex_3D.md`). **Prova visual da grade** — SEM regras de combate plugadas ainda (HEX-3 pluga `CombatSession`).
+- 2ª de 9 fatias do PILAR (`docs/planos/PLANO_Combate_Tatico_Hex_3D.md`). **Prova visual da grade** — SEM regras de combate plugadas ainda (HEX-3 pluga `CombatSession`).
 - **Feature flag:** `CampanhaConfig.modoTaticoHex: Boolean = false` (aditivo/Gson-safe, fichas antigas usam default). Switch na tela "Configuração do Jogo" com aviso "EXPERIMENTAL". Modo faixas (Lotes 419–424) continua o padrão intocado.
 - **Estado puro** (`domain/combat/hex/HexTaticoDemo.kt`): `HexTaticoState(tokens, hexSelecionado?, tokenSelecionadoId?, raioGrade=7)`; `aoTocarHex` implementa a lógica (mover se vizinho livre / selecionar token / destacar hex vazio). `mover` devolve `this` quando ilegal (evita recomposição). 6 testes puros.
 - **Canvas 2D** (`ui/saga/HexCanvas.kt`): `HexCanvasDemo` composable. `hexParaTela` (pointy-top: q influencia x e r meia-linha; r puxa y por 1.5t) + `telaParaHex` (inverso RedBlob + cube-round + descarta fora do raio). `desenharHex` desenha 6 vértices a 30°+60°*i com destaque quando selecionado + rótulo (q,r) para debug (some no HEX-7). `desenharToken` círculo azul/vermelho + flecha de facing + inicial + realce branco quando selecionado. Estilos (`ESTILO_LABEL_HEX`, `ESTILO_INICIAL_TOKEN`) declarados fora do `@Composable` para poder usar dentro do `DrawScope`.
@@ -3747,7 +3758,7 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 
 ### Lote HEX-1 — 5 de Julho de 2026 (T3 / Fase 1 do PILAR — combate tático em hexágonos)
 **Saga combate tático: motor `HexGrid` puro (Kotlin, sem Android) — branch GURPS-Saga**
-- **PILAR NOVO** começa aqui — 1ª de 9 fatias (`PLANO_Combate_Tatico_Hex_3D.md`). Princípio-mestre: motor de regras 2D primeiro, 3D depois. **Zero toque no combate atual** — arquivos novos em `domain/combat/hex/`.
+- **PILAR NOVO** começa aqui — 1ª de 9 fatias (`docs/planos/PLANO_Combate_Tatico_Hex_3D.md`). Princípio-mestre: motor de regras 2D primeiro, 3D depois. **Zero toque no combate atual** — arquivos novos em `domain/combat/hex/`.
 - **`HexCoord.kt`:** data class axial `(q,r)` pointy-top; `s = -q-r` implícito; +/− vetoriais; `distancia` via cube; enum `Direcao` (6 direções nomeadas: LESTE/SUDESTE/SUDOESTE/OESTE/NOROESTE/NORDESTE, circular horário, `oposta = ord+3 mod 6`); `Direcao.de(a,b)` por projeção; enum `Facing` (FRENTE 0, FLANCO −2, COSTAS anula) com `Facing.calcular(origemAtk, alvo, facingAlvo)` — arco frontal 180° (3 hexes), costas 1 hex, flancos 2 hexes (fiel a MB p.390/AM p.104); `arredondarCube` (algoritmo RedBlob que preserva x+y+z=0); `lerpHex`.
 - **`HexGrid.kt` (object):** `distancia`, `vizinhos` (6 na ordem do enum), `range(centro, raio)` (3n²+3n+1 hexes; require raio≥0), `linhaReta` (distancia+1 pontos via lerpHex + arredondamento cube), `linhaDeVisao(de, ate, bloqueado)` (ignora as pontas — herói/alvo dentro de vegetação enxerga fora), `facingDoAtaque` (proxy p/ Facing.calcular).
 - **24 testes** em `HexGridTest.kt` — kotlin puro (~5s p/ rodar todos): distância simétrica, vizinhos únicos a d=1, range 0/1/2 (contagens 1/7/19), linha reta com passos adjacentes, LoS livre/bloqueada/pontas ignoradas, facing frente (facing + laterais)/flanco/costas por 6 direções.
@@ -3802,12 +3813,12 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
 ### Lote 422 — 24 de Junho de 2026
-**Saga combate: luta agarrada NPC→herói (Desvencilhar-se) — fecha as últimas regras codáveis do Combate.md (branch GURPS-Saga)**
+**Saga combate: luta agarrada NPC→herói (Desvencilhar-se) — fecha as últimas regras codáveis do docs/fonte-regras/Combate.md (branch GURPS-Saga)**
 - **Ponto cego do audit:** o grep original (só `##`) tinha pulado subtópicos `###`/`####`. Achados e fechados: "Aparando Armas Pesadas" e "Preparando Armas e Outros Equipamentos" (deferidos/feitos com razão honesta), e a luta agarnada NPC→herói (lacuna REAL, não deferimento).
 - **Agarrão era mão única** (herói→NPC). Agora o inverso existe: (a) `NpcCombatBrain` — NPC DESARMADO engajado pode AGARRAR o herói (50%) e, se já agarrou, IMOBILIZAR; (b) `npcResolve` — `npcAgarraHeroi` (ataque defensável, sem dano → herói AGARRADO) e `npcImobilizaHeroi` (Disputa de ST → IMOBILIZADO); (c) herói preso leva −4 nas defesas (espelha o NPC agarrado).
 - **Herói AGARRADO/IMOBILIZADO restrito** (MB p.371): manobras perdem Apontar/Aguardar/Concentrar/Fintar/à distância/avanço (imobilizado perde quase tudo) e só ataca DESARMADO (`construirAtaques` filtra, reconstruído na transição). Nova manobra **Desvencilhar-se** (`heroiDesvencilhar`): Disputa Rápida de ST — captor +5 agarrado/+10 imobilizado, −4 se atordoado, soltura automática se o captor cai. Wrapper no ViewModel + botão na UI + teste determinístico.
 - **Simplificações honestas:** sem "1×/10s" ao imobilizar e sem +2/braço extra; passo de 1m abstraído; alcance C vs 1 não distinguidos (preso = só desarmado, adaga não liberada à parte); NPC imobiliza sem exigir o herói no chão (heroiImobilizar é mais estrito).
-- **PLACAR FINAL do Combate.md: 0 parciais, 0 não-feitos, 0 não-marcados (h2–h6).** Build verde nas 2 variantes. Todas as regras de combate codáveis estão implementadas; o resto é deferido por dado/narrativa com razão registrada in-file.
+- **PLACAR FINAL do docs/fonte-regras/Combate.md: 0 parciais, 0 não-feitos, 0 não-marcados (h2–h6).** Build verde nas 2 variantes. Todas as regras de combate codáveis estão implementadas; o resto é deferido por dado/narrativa com razão registrada in-file.
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
 ### Lote 421 — 24 de Junho de 2026
@@ -3842,10 +3853,10 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
 ### Lote 418 — 23 de Junho de 2026
-**Saga combate: CLOSURA DO AUDIT DO Combate.md — 0 tópicos sem marcação (doc-only, branch GURPS-Saga)**
+**Saga combate: CLOSURA DO AUDIT DO docs/fonte-regras/Combate.md — 0 tópicos sem marcação (doc-only, branch GURPS-Saga)**
 - Marcados os últimos tópicos não-feitos com status honesto. **Lesões e Defesas Ativas → FEITO** (já estava: −4 atordoado/393 + choque-não-penaliza-defesa/382). **Armas de Arremesso → FEITO (base)** (arremesso = ataque à distância; "não fica preparada após arremessar" deferido por falta de flag thrown-vs-arco).
 - **FORA DO ESCOPO/DEFERIDO (`[—]`, com razão):** Mata-Leão/Chave de Braço/Torção (Martial Arts p.403/404, fora do Básico); Ataques que não Causam Dano (Atribulação/poderes especiais); Aparar com Armas Improvisadas (durabilidade de objeto); Recarregar e Disparar (sem munição, decisão 366); Superpenetração e Cobertura (posicionamento em hexágono); Dano Especial/Acompanhamento/Conjuntos (tipos de dano/modificadores especiais); Segurar (objeto empunhado pelo NPC); Outras Ações / Outras Ações em Combate / Ações Prolongadas Comuns (narrativo/Narrador).
-- **PLACAR FINAL do Combate.md: 70 FEITO [x] · 23 fora-do-escopo/deferido [—] · 0 sem marcação.** Todas as regras de combate codificáveis no modelo abstrato do Saga estão implementadas, build verde nas 2 variantes, testadas. Mudança só de documentação (não compila Kotlin).
+- **PLACAR FINAL do docs/fonte-regras/Combate.md: 70 FEITO [x] · 23 fora-do-escopo/deferido [—] · 0 sem marcação.** Todas as regras de combate codificáveis no modelo abstrato do Saga estão implementadas, build verde nas 2 variantes, testadas. Mudança só de documentação (não compila Kotlin).
 - **PRÓXIMO (combinado): validação no aparelho de TUDO** (tarefa do usuário). NÃO entrar na Fase C antes disso.
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -3853,7 +3864,7 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 **Saga combate: Projeção / knockback geral (tópicos `[]` 10/N, MB p.378, branch GURPS-Saga)**
 - `aplicarProjecao(...)`: contusão SEMPRE projeta; corte só se NÃO penetrou a RD; **1m por múltiplo de (ST−2) do dano básico**; o projetado testa DX (−1/m após o 1º) ou cai. Chamado nos dois caminhos (`resolverGolpeHeroi` após acertar o NPC; `npcResolve` após o NPC acertar o herói). Reusa a lógica de knockback do Empurrão (Lote 410, "apenas projeção").
 - Teste: golpe contuso forte (maça 3d) vs ST 8 projeta o alvo. Build 2 variantes + testes verdes.
-- Combate.md: "Projeção" → FEITO.
+- docs/fonte-regras/Combate.md: "Projeção" → FEITO.
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
 ### Lote 416 — 23 de Junho de 2026
@@ -3861,7 +3872,7 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - **Agachar**: o benefício mecânico (alvo menor à distância) → `penalidadePosturaAlvejado(postura)` (agachado/ajoelhado/rastejando/sentado −2, deitado −4) somado ao acerto À DISTÂNCIA nos dois caminhos (`resolverGolpeHeroi` e `npcResolve`). Vale p/ herói e NPC (atira-se pior em alvo agachado/deitado).
 - **FORA DO ESCOPO (marcados `[—]`):** Passo, Espaçamento, Passando por Outros, Evadir, Ações Livres — são posicionamento em hexágono / ações narrativas, abstraídos no tracker de faixas (sem grade de hexágonos). Também Armadura Flexível/Trauma (sem flag rígida/flexível) e Corrosão (sem tipo de dano "cor") = limitados por dado.
 - Teste: penalidade por postura + tiro em alvo deitado registra a postura. Build 2 variantes + testes verdes.
-- Combate.md: "Agachar" → FEITO; Passo/Espaçamento/Passando por Outros/Evadir/Ações Livres → fora do escopo.
+- docs/fonte-regras/Combate.md: "Agachar" → FEITO; Passo/Espaçamento/Passando por Outros/Evadir/Ações Livres → fora do escopo.
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
 ### Lote 415 — 23 de Junho de 2026
@@ -3869,7 +3880,7 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - Crítico ao defender um ataque **corpo-a-corpo** → o atacante joga na Tabela de Erro Crítico (reusa `aplicarErroCritico`, Lote 384). `CombatResolver.defesaDecisiva(soma, valor)` (3-4 sempre; 5 se valor≥15; 6 se ≥16); no `npcResolve`, se `troca.defendeu && !aDistancia && defesaDecisiva` → o NPC tropeça. Vs ataque à distância = sem efeito (regra). 
 - DEFERIDO: pegar a arma de arremesso ao aparar desarmado com crítico.
 - Teste: defesa soma 3 (crítico) com acerto não-crítico dispara o erro crítico do atacante. Build 2 variantes + testes verdes.
-- Combate.md: "Sucessos Decisivos em Jogadas de Defesa" → FEITO.
+- docs/fonte-regras/Combate.md: "Sucessos Decisivos em Jogadas de Defesa" → FEITO.
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
 ### Lote 414 — 23 de Junho de 2026
@@ -3877,7 +3888,7 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - Variante de defesa **Esquiva Acrobática**: com a perícia Acrobacia, o motor testa Acrobacia ANTES da esquiva → **+2 (sucesso) / −2 (falha)**. `HeroiPerfilCombate.acrobacia` (← perícia `acrobacia` da ficha); `OpcaoDefesa.acrobatica` + `DefesaHeroi.acrobatica`; `opcoesDefesa(permitirAcrobatica)` emite a variante (só com Acrobacia, não atordoado); `npcResolve` rola e ajusta. UI: card "🤸 acrobática (±2)".
 - FORA DO ESCOPO (marcadas `[—]`): Esquiva Altruísta (sem aliados no combate solo) e Esquiva com Veículo (combate a pé).
 - Teste: oferecida com Acrobacia, ausente sem; dispara o teste no `npcResolve`. Build 2 variantes + testes verdes.
-- Combate.md: "Esquiva Acrobática" → FEITO.
+- docs/fonte-regras/Combate.md: "Esquiva Acrobática" → FEITO.
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
 ### Lote 413 — 23 de Junho de 2026
@@ -3885,7 +3896,7 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - Divisor de armadura na expressão de dano (ex.: `3d(2) pa`): `CombatSession.divisorArmadura(expr)` extrai o "(2)"; `rdComDivisor(rd, divisor)` aplica — divisor ≥1 **reduz** a RD (÷, arredonda p/ baixo); fracionário (0,5/0,2/0,1) **melhora** a RD (×2/×5/×10) e trata RD 0 como 1. Aplicado nos dois caminhos de dano (`resolverGolpeHeroi` e `npcResolve`) ANTES do `aplicarDano`. `semTokenTipo` preserva o "(2)" (só tira o token de tipo no fim).
 - DEFERIDO: modificadores especiais de penetração (toxina/agentes de contato/respiratório) — não modelados.
 - Teste: parsing do divisor + RD reduzida/melhorada (5 casos). Build 2 variantes + testes verdes.
-- Combate.md: "Divisores de Armadura e Modificadores de Penetração" → FEITO.
+- docs/fonte-regras/Combate.md: "Divisores de Armadura e Modificadores de Penetração" → FEITO.
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
 ### Lote 412 — 23 de Junho de 2026
@@ -3893,7 +3904,7 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - Nova manobra `ESTRANGULAR` — `heroiEstrangular(alvoId)`: exige o alvo **AGARRADO**; **Disputa de ST vs max(ST,HT)**; a **margem de vitória** = dano por contusão **×1,5** (pescoço), RD protege; penetrando, o alvo fica `SUFOCANDO`. No `npcResolve`, o NPC SUFOCANDO **perde 1 PV/turno** (proxy de fôlego) enquanto preso, e solta a condição ao escapar. Manobra (e Imobilizar) aparecem só com inimigo agarrado.
 - **Núcleo da luta agarrada COMPLETO** (Agarrar 386, Derrubar 386, Imobilizar 411, Estrangular 412). Mata-Leão/Chave de Braço/Torção = Martial Arts (deferidos). "Ações Depois de Agarrar" → FEITO.
 - Testes: estrangular causa dano+sufocamento; recusa sem agarrar. Build 2 variantes + testes verdes.
-- Combate.md: "Asfixia ou Estrangulamento" e "Ações Depois de Agarrar" → FEITO.
+- docs/fonte-regras/Combate.md: "Asfixia ou Estrangulamento" e "Ações Depois de Agarrar" → FEITO.
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
 ### Lote 411 — 23 de Junho de 2026
@@ -3901,14 +3912,14 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - Nova manobra `IMOBILIZAR` — `heroiImobilizar(alvoId)`: exige o alvo **AGARRADO + no chão** (DEITADO/CAÍDO); **Disputa de ST** (+3 por categoria de MT de vantagem); vencendo, o alvo ganha `Condicao.IMOBILIZADO` (indefeso). `melhorDefesaNpc` retorna defesa 0 se IMOBILIZADO; o bloco AGARRADO do `npcResolve` agora cobre IMOBILIZADO (forceja a −3, não ataca, solta as duas condições ao vencer). Manobra aparece só com inimigo agarrado. Novas condições: `IMOBILIZADO`, `SUFOCANDO` (p/ 412).
 - Mata-Leão/Chave de Braço/Torção referenciam Martial Arts (p.403/404, fora do Básico) → deferidos.
 - Testes: herói forte imobiliza o agarrado caído; recusa sem agarrar. Build 2 variantes + testes verdes.
-- Combate.md: "Imobilizar" → FEITO.
+- docs/fonte-regras/Combate.md: "Imobilizar" → FEITO.
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
 ### Lote 410 — 23 de Junho de 2026
 **Saga combate: Empurrão / Shove (tópicos `[]` 3/N, MB p.371, branch GURPS-Saga)**
 - Nova manobra `EMPURRAO` — `heroiEmpurrao(alvoId)`: acerto por **DX** (adjacente), alvo pode defender. Se acerta, **GdP×2** vira **projeção/knockback** = 1m por múltiplo de **(ST−2)** no resultado (MB p.378), com possível queda (teste de DX por metro extra); **nunca causa lesão**. `HeroiPerfilCombate.danoGdP` (← `p.danoGdP`). UI: manobra com seletor de alvo.
 - Teste: empurrão projeta o alvo sem alterar o PV. Build 2 variantes + testes verdes.
-- Combate.md: "Empurrão" → FEITO.
+- docs/fonte-regras/Combate.md: "Empurrão" → FEITO.
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
 ### Lote 409 — 23 de Junho de 2026
@@ -3916,14 +3927,14 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - Nova manobra `ENCONTRAO` — `heroiEncontrao(alvoId)`: carrega até o alvo, acerto por **DX** (sem o −4/teto-9 do Avançar e Atacar), alvo pode defender (corpo = arma pesada). Se acerta, **dano mútuo por contusão = (PV×vel.relativa)/100 dados** (`encontraoDanoDados` no companion: <1d → 1d-3/1d-2/1d-1; ≥1d arredonda 0,5+). Derrubada: alvo cai se leva o dobro; herói cai se leva o dobro, ou testa DX se causou ≥. Vel. relativa usa `velocidadeAtual` (Lote 403). UI: manobra com seletor de alvo.
 - DEFERIDO: derrubada em mergulho/acometida/arremetida com escudo e encontrão com veículo/montaria.
 - Testes: fórmula de dados (5 casos); encontrão com dano mútuo. Build 2 variantes + testes verdes.
-- Combate.md: "Encontrão" → FEITO.
+- docs/fonte-regras/Combate.md: "Encontrão" → FEITO.
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
 ### Lote 408 — 23 de Junho de 2026
 **Saga combate: Golpe Rápido (tópicos `[]` 1/N, MB p.370, branch GURPS-Saga)**
-- Início da varredura dos tópicos NÃO-FEITOS do Combate.md (autonomia do usuário). **Golpe Rápido**: nova manobra `GOLPE_RAPIDO` — `heroiGolpeRapido(ataque, alvoId, local)` faz **2 ataques corpo-a-corpo** no mesmo turno, cada um com **−6** (`resolverGolpeHeroi(modAdicional=-6)`), **mantendo a defesa ativa** (não é Ataque Total). UI: manobra com seletor de alvo/local; `FichaViewModel.sagaCombateGolpeRapido`.
+- Início da varredura dos tópicos NÃO-FEITOS do docs/fonte-regras/Combate.md (autonomia do usuário). **Golpe Rápido**: nova manobra `GOLPE_RAPIDO` — `heroiGolpeRapido(ataque, alvoId, local)` faz **2 ataques corpo-a-corpo** no mesmo turno, cada um com **−6** (`resolverGolpeHeroi(modAdicional=-6)`), **mantendo a defesa ativa** (não é Ataque Total). UI: manobra com seletor de alvo/local; `FichaViewModel.sagaCombateGolpeRapido`.
 - Teste: 2 ataques, componente −6, defesa mantida. Build 2 variantes + testes verdes.
-- Combate.md: "Golpe Rápido" e "Ataque Enganoso" (marcador corrigido) → FEITO.
+- docs/fonte-regras/Combate.md: "Golpe Rápido" e "Ataque Enganoso" (marcador corrigido) → FEITO.
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
 ### Lote 407 — 23 de Junho de 2026
@@ -3931,7 +3942,7 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - O −3 ao aparar uma arma com as mãos nuas (391) agora é **dispensado quando o ataque é por ponta (GdP)**, além da exceção Caratê/Judô. GdP é inferido do **dano PERF (perfuração = sempre por ponta)** — dado estruturado (`DanoTipo`), não nome. `opcoesDefesaHeroi(ataqueGdP)`; controller passa `tipoDano(armaTipo) == PERF && !aDistancia`.
 - DEFERIDO: lesão no braço que apara ao falhar (sem PV por membro nem escolha de local pelo atacante no modelo).
 - Teste: apara desarmada vs corte = −3; vs GdP/PERF = sem −3. Build 2 variantes + testes verdes.
-- Combate.md: "Aparar Desarmado" → FEITO.
+- docs/fonte-regras/Combate.md: "Aparar Desarmado" → FEITO.
 - **✅ LOOP DOS 16 PARCIAIS COMPLETO (393–407):** Fazer Nada, Deslocamento, Apontar, Ataque Total, Concentrar, Preparar+Armas Preparadas, Aguardar, Movimento, Opções de Ataque CaC, Precisão/Disparo com Mira, Velocidade e Distância, Retirada+Esquiva-e-Queda, Aparar, Quando uma Arma Está Preparada, Aparar Desarmado.
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -3940,29 +3951,29 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - A seção sobrepõe ao 398 (Armas Desbalanceadas, já feito); o bit NOVO: *"cair, perder o equilíbrio ou ficar atordoado empunhando uma arma que precisa de preparação a deixa despreparada"* (MB p.383). Motor: `marcarArmaDespreparada(rotulo)`; controller: `verificarDesprepararPorEstado` após o turno do NPC — se o herói está ATORDOADO/CAÍDO/DEITADO e empunha uma arma desbalanceada, ela fica despreparada (reusa o bloqueio do 398).
 - DEFERIDO: mudar de alcance de arma longa (sem rastreio de alcance atual no modelo) e tempos de guardar/embainhar = narrativo.
 - Teste: `marcarArmaDespreparada` bloqueia o ataque até Preparar. Build 2 variantes + testes verdes.
-- Combate.md: "Quando uma Arma Está Preparada?" → FEITO.
+- docs/fonte-regras/Combate.md: "Quando uma Arma Está Preparada?" → FEITO.
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
 ### Lote 405 — 23 de Junho de 2026
 **Saga combate: Aparar com a Mão Inábil (loop dos 16 parciais 13/16, MB p.376, branch GURPS-Saga)**
 - Núcleo do Aparar já feito (375/389/390). Faltava **Aparar com a Mão Inábil**: variante de defesa Aparar **−2 efetivo**, **anulada por Ambidestria**. `OpcaoDefesa.maoInabil`; `opcoesDefesa(ambidestro)` emite a variante (só sem Ambidestria); `opcoesDefesaHeroi`→controller passa `temAmbidestria`. UI: card "🤚 mão inábil".
-- DEFERIDO por falta de dado estruturado: aparar **arremesso** −1/−2 (sem flag thrown-vs-projétil no NpcStats) e **aparar-desarmado→ferir o atacante** (sem flag de arma natural do NPC). Anotado no Combate.md.
+- DEFERIDO por falta de dado estruturado: aparar **arremesso** −1/−2 (sem flag thrown-vs-projétil no NpcStats) e **aparar-desarmado→ferir o atacante** (sem flag de arma natural do NPC). Anotado no docs/fonte-regras/Combate.md.
 - Teste: variante mão inábil = −2; ausente com Ambidestria. Build 2 variantes + testes verdes.
-- Combate.md: "Aparar" → FEITO (com deferidos honestos).
+- docs/fonte-regras/Combate.md: "Aparar" → FEITO (com deferidos honestos).
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
 ### Lote 404 — 23 de Junho de 2026
 **Saga combate: Retirada e Jogar-se ao Chão — Esquiva e Queda (loop dos 16 parciais 12/16, fecha 2 tópicos, MB p.377, branch GURPS-Saga)**
 - A Retirada foi feita no 389; faltava **Jogar-se ao Chão / Esquiva e Queda**: variante de defesa **Esquiva +3 só contra ATAQUE À DISTÂNCIA**, mas o herói **termina deitado**. `OpcaoDefesa.jogarSeAoChao` + `DefesaHeroi.jogarSeAoChao`; `opcoesDefesa(permitirJogarSeAoChao)` emite a variante; `opcoesDefesaHeroi` gateia (vs tiro, não-deitado, não-atordoado); `npcResolve` põe `postura = DEITADO` após defender. UI: card mostra "⤓ jogar-se ao chão".
 - Teste: variante +3 vs tiro, ausente vs corpo-a-corpo; defender com ela deixa o herói deitado. Build 2 variantes + testes verdes.
-- Combate.md: "Retirada e Jogar-se ao Chão" e "Esquiva e Queda" → FEITO.
+- docs/fonte-regras/Combate.md: "Retirada e Jogar-se ao Chão" e "Esquiva e Queda" → FEITO.
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
 ### Lote 403 — 23 de Junho de 2026
 **Saga combate: Velocidade e Distância do Alvo (loop dos 16 parciais 11/16, MB p.550, branch GURPS-Saga)**
 - A penalidade de distância já existia; faltava a de **alvo em movimento**: `Combatente.velocidadeAtual` (m percorridos no último Move) é **somado à distância** numa ÚNICA penalidade (`penalidadeDistancia(dist + velocidade)`, MB p.550 — não somar separado). `heroiMove`/MOVER do NPC setam; `inicioAcaoHeroi`/início do `npcResolve` zeram (parado = 0). Vale nas 2 direções (herói atira no NPC; NPC atira no herói).
 - Teste: NPC parado = só "distância 5m"; com velocidade = "Vel/Dist". Build 2 variantes + testes verdes.
-- Combate.md: "Velocidade e Distância do Alvo" → FEITO.
+- docs/fonte-regras/Combate.md: "Velocidade e Distância do Alvo" → FEITO.
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
 ### Lote 402 — 23 de Junho de 2026
@@ -3970,7 +3981,7 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - Acc + mira contínua + firmar já existiam; faltava o **teto**: a soma dos bônus de pontaria **não excede 2× a Prec** (MB p.364). Em `resolverGolpeHeroi`, mantém o breakdown (mira (Acc)/mira contínua/firmar) e, se o total passa de `2×Acc`, soma um componente negativo "teto de pontaria (2×Acc)".
 - DEFERIDO: miras telescópicas/laser e sistemas de pontaria não estão no catálogo (sem dado de scope).
 - Teste: rifle Acc 2 com mira 3 turnos (+2) + firmar (+1) = 5 → teto em 4. Build 2 variantes + testes verdes.
-- Combate.md: "Precisão e Disparo com Mira" → FEITO.
+- docs/fonte-regras/Combate.md: "Precisão e Disparo com Mira" → FEITO.
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
 ### Lote 401 — 23 de Junho de 2026
@@ -3978,14 +3989,14 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - O cabeçalho "Opções de Ataques CaC" introduz as opções de golpe; faltava a mais usada: **Ataque Enganoso**. `resolverGolpeHeroi(enganoso)` e `heroiAtaca(enganoso)`: cada passo dá **−2 no NH** (componente "ataque enganoso") por **−1 na defesa do alvo** (`defValorFinal − enganoso`). UI: stepper no diálogo de ATAQUE corpo-a-corpo, limitado para o **NH efetivo não cair abaixo de 10** (`maxEnganoso = (nh−10)/2`, teto 4).
 - DEFERIDO (tópicos próprios `[]`): Golpe Rápido (2 ataques a −6) e Visar a Arma do Oponente.
 - Teste: o golpe registra o componente "ataque enganoso". Build 2 variantes + testes verdes.
-- Combate.md: "Opções de Ataques com Armas de Combate Corpo a Corpo" → FEITO.
+- docs/fonte-regras/Combate.md: "Opções de Ataques com Armas de Combate Corpo a Corpo" → FEITO.
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
 ### Lote 400 — 23 de Junho de 2026
 **Saga combate: Movimento — postura reduz o Deslocamento (loop dos 16 parciais 8/16, MB p.368, branch GURPS-Saga)**
 - O Deslocamento por manobra já existia; faltava a **redução por postura**: `Combatente.deslocamentoEfetivo` agora aplica em pé/agachado = cheio, **ajoelhado/rastejando = 1/3**, **deitado = 1**, **sentado = 0**; depois o cambaleante corta pela metade (MB p.380). Vale p/ herói e NPC (inimigo derrubado quase não se move).
 - Terreno difícil/obstáculos = Narrador. Teste: deslocamento por postura (6→2→2→1→0). Build 2 variantes + testes verdes.
-- Combate.md: "Movimento" → FEITO.
+- docs/fonte-regras/Combate.md: "Movimento" → FEITO.
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
 ### Lote 399 — 23 de Junho de 2026
@@ -3994,7 +4005,7 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - Manobra AGUARDAR roteada para `heroiAguardar`; já estava em `manobrasLegais`. O herói ainda pode defender enquanto aguarda.
 - DEFERIDO: gatilhos arbitrários (segurar refém, coordenar com aliados, disparo de oportunidade) = Narrador.
 - Testes: investida é interrompida com bônus; arma não-perfurante = aguardar genérico. Build 2 variantes + testes verdes.
-- Combate.md: "Aguardar" → FEITO.
+- docs/fonte-regras/Combate.md: "Aguardar" → FEITO.
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
 ### Lote 398 — 23 de Junho de 2026
@@ -4003,14 +4014,14 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - BLOQUEIO: `heroiAtaca` recusa se a arma está despreparada; o controller (`armaDespreparadaBloqueia`) avisa **sem gastar o turno** (heroiAtaca/MoverEAtacar/AtaqueDuplo). `heroiManobra(PREPARAR)` e `sacarArma` re-empunham (`prepararArmaEmpunhada`).
 - DEFERIDO: Martial Arts distingue 'D' (desbalanceada) de '‡' (despreparo) — o Básico (fonte do projeto) trata juntos; recarregar = sem sistema de munição (por decisão do Lote 366); abrir porta/ativar vantagem = Narrador.
 - Testes: desbalanceada com ST baixa fica despreparada e bloqueia o 2º ataque; Preparar re-empunha; ST ≥ 1,5× não desprepara. Build 2 variantes + testes verdes.
-- Combate.md: "Preparar" e "Armas Preparadas" → FEITO.
+- docs/fonte-regras/Combate.md: "Preparar" e "Armas Preparadas" → FEITO.
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
 ### Lote 397 — 23 de Junho de 2026
 **Saga combate: Concentrar — Vontade-3 ao ser perturbado (loop dos 16 parciais 5/16, MB p.344, branch GURPS-Saga)**
 - O EFEITO da concentração (magia/psi/perícia IQ) é do Narrador; o motor de combate modela a **mecânica de interrupção**: `heroiManobra(CONCENTRAR)` marca `concentrando`; em `npcResolve`, se o herói é **forçado a defender** (`defesaTentada`) ou **ferido**, testa **Vontade-3** (`heroiPerfil.vontade - 3`); falha → perde a concentração (recomeça). Vale só no turno (re-declara p/ continuar).
 - Teste: ser perturbado durante a concentração dispara o teste de Vontade-3 (loop de seeds até um acerto). Build 2 variantes + testes verdes.
-- Combate.md: "Concentrar" → FEITO (mecânica de combate; efeito = Narrador).
+- docs/fonte-regras/Combate.md: "Concentrar" → FEITO (mecânica de combate; efeito = Narrador).
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
 ### Lote 396 — 23 de Junho de 2026
@@ -4020,7 +4031,7 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - UI: manobra "Fogo de Retenção" aparece quando a arma empunhada é à distância CdT 5+ (sem precisar de alvo — é área).
 - DEFERIDO: múltiplas zonas (CdT 10+), escolha de nº de tiros por zona, "margem de 1m da linha" — abstraídos no modelo de faixas.
 - Testes: NPC que avança é alvejado; CdT < 5 é recusado. Build 2 variantes + testes verdes.
-- Combate.md: "Ataque Total" → FEITO.
+- docs/fonte-regras/Combate.md: "Ataque Total" → FEITO.
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
 ### Lote 395 — 23 de Junho de 2026
@@ -4029,7 +4040,7 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - **VONTADE AO SER FERIDO:** `HeroiPerfilCombate.vontade` (← `p.vontade`); se o herói é ferido **ainda mirando** (sem usar defesa — caso de defesa anulada por crítico), testa Vontade; falha → perde a mira. (Defender já perdia a mira no Lote 392.)
 - DEFERIDO: besta também "firma" (sem flag de besta no catálogo); apoio físico (mureta/tripé) e bruços não são modelados — o "firmar" é a declaração do jogador.
 - Testes: firmar soma +1 no tiro; ferimento mirando dispara o teste de Vontade (loop de seeds até um crítico). Build 2 variantes + testes verdes.
-- Combate.md: "Apontar" → FEITO.
+- docs/fonte-regras/Combate.md: "Apontar" → FEITO.
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
 ### Lote 394 — 23 de Junho de 2026
@@ -4037,14 +4048,14 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - A manobra Mover já funcionava; faltava a **Disparada** (sprint): Moves consecutivos **na mesma direção (linha reta)** dão **+20% de Deslocamento a partir do 2º** (MB p.353). `heroiMoveSeguidos`+`heroiMoveDirecao` (capturados antes de `inicioAcaoHeroi`, que zera o contador → ação não-Move quebra; mudar de direção recomeça); `heroiMove` aplica o sprint e narra "(disparada +Nm)".
 - Veículo/montaria (Combate Montado p.396 / Veículos p.462) = capítulo à parte, fora do escopo do combate Saga a pé.
 - Teste: 1º Move sem disparada; 2º consecutivo +1m (desloc 6); ação não-Move reinicia. Build 2 variantes + testes verdes.
-- Combate.md: "Deslocamento" → FEITO.
+- docs/fonte-regras/Combate.md: "Deslocamento" → FEITO.
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
 ### Lote 393 — 23 de Junho de 2026
 **Saga combate: Fazer Nada / Atordoado — defesas −4 (loop dos 16 parciais 1/16, MB p.364, branch GURPS-Saga)**
 - A manobra forçada ao atordoado e a recuperação (HT/IQ em `avancarTurno`) JÁ existiam. Faltava o **−4 em TODAS as defesas ativas enquanto atordoado** (MB p.364). `opcoesDefesaHeroi` aplica `penAtordoado` (herói); `esquivaNpc`/`melhorDefesaNpc` usam `penDefesaAtordoado` (NPC).
 - Teste: esquiva e apara caem −4 com `Condicao.ATORDOADO`. Build 2 variantes + testes verdes.
-- Combate.md: "Fazer Nada" → FEITO.
+- docs/fonte-regras/Combate.md: "Fazer Nada" → FEITO.
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
 ### Lote 392 — 23 de Junho de 2026
@@ -4053,7 +4064,7 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - PERDER A MIRA: usar uma **defesa ativa** zera a pontaria (`limparApontar` quando `troca.defesaTentada`); o log avisa. (Defender entre os turnos = perde o Acc no tiro seguinte, como manda a regra.)
 - DEFERIDO (registrado): **firmar** a arma (+1 Acc) e o **teste de Vontade** para não perder a mira ao ser ferido (não modelados).
 - Testes: stacking +1→+2→teto; defender perde a mira (loop de seeds com acerto). Build 2 variantes + testes verdes.
-- Combate.md: "Apontar" segue PARCIAL (núcleo da mira feito; firmar/Vontade deferidos).
+- docs/fonte-regras/Combate.md: "Apontar" segue PARCIAL (núcleo da mira feito; firmar/Vontade deferidos).
 - **✅ LOOP DE REFINO DE DEFESA 388–392 COMPLETO** (Defesa Total Aumentada+Dupla, Retirada, Aparar à queima-roupa, Aparar Desarmado −3, Apontar multi-turno).
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -4063,7 +4074,7 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - `AtaqueHeroi.aparaMarcial` (novo) = true quando a melhor perícia de luta do herói é Caratê/Judô — detectado por `definicaoId` estruturado (set `MARCIAIS_APARA`, não por nome livre). Controller passa `ataqueComArma = npc.armaNome.isNotBlank()`.
 - DEFERIDO (registrado): a exceção **GdP** (o motor não distingue GdP/GeB no ataque do NPC) e a **lesão no braço que apara** ao falhar.
 - Testes: mãos nuas vs arma = −3; vs ataque desarmado = sem penalidade; Caratê/Judô = valor cheio. Build 2 variantes + testes verdes.
-- Combate.md: "Aparar Desarmado" segue PARCIAL (com o avanço anotado).
+- docs/fonte-regras/Combate.md: "Aparar Desarmado" segue PARCIAL (com o avanço anotado).
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
 ### Lote 390 — 23 de Junho de 2026
@@ -4071,7 +4082,7 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - BUG: o card oferecia **Aparar contra um atirador distante**. A regra (MB p.376): só se apara um ataque à distância se o atacante estiver **adjacente (≤1m)** — apara-se a ARMA, não o projétil. `opcoesDefesaHeroi(atacanteAdjacente)` gateia o `podeAparar`; o controller passa `s.distancia(npc) <= 1`. Bloqueio (escudo) continua valendo contra tiro (a regra do escudo não muda).
 - Narração: ao aparar um tiro à queima-roupa, o log explica "você desvia a arma do atirador (não o projétil)".
 - Testes: corpo-a-corpo e tiro a 1m oferecem aparar; tiro de longe não. Build 2 variantes + testes verdes.
-- Combate.md: "Aparar" segue PARCIAL — falta mão inábil −4, arremesso −1/−2, aparar-desarmado→ferir o atacante.
+- docs/fonte-regras/Combate.md: "Aparar" segue PARCIAL — falta mão inábil −4, arremesso −1/−2, aparar-desarmado→ferir o atacante.
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
 ### Lote 389 — 22 de Junho de 2026
@@ -4081,7 +4092,7 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - RESTRIÇÕES: só **contra ataque corpo-a-corpo**; **1×/turno** (reusa `DefesasUsadas.retracaoUsada`, marcado em `npcResolve` quando `DefesaHeroi.recuo`); bloqueado se **atordoado**. (Postura sentado/ajoelhado e o passo físico p/ trás = simplificação registrada — o herói está sempre engajado no tracker.)
 - UI: as variantes aparecem no card "Defenda-se!" com sufixo "↩ recuar" + componente "+N recuo"; a Dupla (388) ignora variantes com recuo na 2ª defesa.
 - Testes: esgrima+recuo=+3, variantes emitidas só com `permitirRecuo`, recuo só corpo-a-corpo e 1×/turno. Build 2 variantes + testes verdes.
-- Combate.md: "Opções de Defesa Ativa" → FEITO (Retirada). "Retirada e Jogar-se ao Chão" segue parcial (falta Esquiva-e-Queda).
+- docs/fonte-regras/Combate.md: "Opções de Defesa Ativa" → FEITO (Retirada). "Retirada e Jogar-se ao Chão" segue parcial (falta Esquiva-e-Queda).
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
 ### Lote 388 — 22 de Junho de 2026
@@ -4091,7 +4102,7 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - **DUPLA:** se a 1ª defesa falha (e o ataque NÃO foi anulado por golpe decisivo), tenta automaticamente uma 2ª defesa de TIPO diferente. Como `resolverTroca` MUTA o defensor (aplica dano), decido o resultado ANTES via `CombatResolver.defesaBemSucedida` (puro): o controller prepara a melhor 2ª defesa (`opcoes.filter{tipo≠1ª}.maxBy{valorFinal}`) e passa em `npcResolve(..., defesaSecundaria)`; o motor troca `def` pela 2ª só se a 1ª falhou.
 - UI: manobra "Defesa Total" abre `SubDialogoDefesaTotal` (Aumentada [+ qual defesa] / Dupla); `FichaViewModel.sagaCombateDefesaTotal`; wrapper no `SagaCombatController`.
 - Testes (`CombatSessionTest`): Aumentada soma +2 só na defesa escolhida; Dupla salva o herói quando a 1ª falha (loop de seeds, acerto não-crítico). Build 2 variantes + testes verdes.
-- Combate.md: "Defesa Total" → FEITO.
+- docs/fonte-regras/Combate.md: "Defesa Total" → FEITO.
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
 ### Lote 387 — 22 de Junho de 2026
@@ -4100,7 +4111,7 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - RESTRIÇÃO: Forte só vale **corpo-a-corpo** (à distância não tem Forte; MB p.365). Gateado por `aDistancia` no herói e no NPC. (Espada de energia/queimadura ficaria de fora pela regra, mas o motor só modela dano por ST de GdP/GeB — todo corpo-a-corpo aqui é elegível; nota para quando houver dano de queimadura.)
 - UI: a opção "Forte" some quando a arma empunhada é à distância; o rótulo do **Determinado** mostra **+1** à distância (era sempre "+4", errado para tiro).
 - Testes (`CombatSessionTest`): 1d→+2, 2d→+2, 3d→+3, 4d→+4, à distância→0, manobra/modo diferentes→0. Build 2 variantes + testes verdes.
-- Combate.md: "Ataque Total" segue PARCIAL (Determinado/Forte/Duplo/Fintar OK; falta **Fogo de Retenção**, CdT 5+, MB p.409).
+- docs/fonte-regras/Combate.md: "Ataque Total" segue PARCIAL (Determinado/Forte/Duplo/Fintar OK; falta **Fogo de Retenção**, CdT 5+, MB p.409).
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
 ### Lote 386 — 22 de Junho de 2026
@@ -4109,7 +4120,7 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - DERRUBAR (MB p.370–371): `heroiDerrubar(alvoId)` — Disputa Rápida do maior entre ST/DX; vencendo, o alvo vai a CAÍDO/DEITADO. Helper puro `vencaDisputaRapida(valorA, rolA, valorB, rolB)` (empate de margem favorece o defensor, MB p.348).
 - UI: manobras Agarrar/Derrubar habilitadas quando há alvo corpo-a-corpo (sem alvo à distância) → seletor de alvo; `FichaViewModel.sagaCombateAgarrar/Derrubar`; wrappers no `SagaCombatController`.
 - Testes (`CombatSessionTest`): `vencaDisputaRapida` segue a regra; agarrar deixa o NPC AGARRADO; NPC agarrado gasta o turno se soltando (não ataca); derrubar joga o alvo no chão. Build 2 variantes + testes verdes.
-- Combate.md: "Agarrar" e "Derrubar" → FEITO (base). Sub-sistema completo (Imobilizar/Estrangular/Mata-Leão/Chave de Braço/Encontrão/Empurrão) fica para lotes futuros.
+- docs/fonte-regras/Combate.md: "Agarrar" e "Derrubar" → FEITO (base). Sub-sistema completo (Imobilizar/Estrangular/Mata-Leão/Chave de Braço/Encontrão/Empurrão) fica para lotes futuros.
 - NOTA (git): o código de domínio (CombatSession.kt/CombatModels.kt) foi varrido por engano para o commit `02e4567` (sessão paralela dados-3D, `git add -A`); este commit fecha o Lote 386 com a fiação de UI + testes + docs sob a mensagem correta. ⚠️ Colisão de numeração: a série dados-3D também tem um "Lote 386" (correção de colisão física dos dados) — são trabalhos distintos.
 - LOOP DE REGRAS DE COMBATE 5/5 COMPLETO (382–386). Próximo: validação no aparelho (tudo de uma vez) + resto do sub-sistema de luta agarrada.
 ----------------------------------------------------------------------------------------------------------------------------------------------------
@@ -4120,7 +4131,7 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - CAMINHO DE DADO: `NpcStats.tolerancia` ← `BestiarioCriatura.tolerancia` (string do JSON → enum). `CombatResolver.resolverTroca` repassa ao `aplicarDano`; chamadores (`resolverGolpeHeroi`, rajada, `aplicarDanoCombatente`) passam a tolerância do alvo. Herói = NORMAL.
 - DADO DO BESTIÁRIO: **esqueleto e zumbi** marcados `"tolerancia": "nao_vivo"` (canônico: mortos-vivos corpóreos = Unliving) — agora resistem a tiros (pi ×⅓), como o exemplo do próprio MB p.381.
 - Testes (`HitLocationRulesTest`): Não-Vivo reduz pi (9→3) e não dá bônus de vitais; perf segue ×1; Homogêneo (pi ×0.2); Difuso (teto 1/2). Build 2 variantes + lint verde.
-- Combate.md: "Lesões em Alvos Difusos, Homogêneos e Não-Vivos" → FEITO.
+- docs/fonte-regras/Combate.md: "Lesões em Alvos Difusos, Homogêneos e Não-Vivos" → FEITO.
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
 ### Lote 384 — 17 de Junho de 2026
@@ -4129,7 +4140,7 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - ERRO CRÍTICO (MB p.557): `CriticoRules.erroCritico(soma, desarmado)` → efeito no ATACANTE. O motor aplica os mecânicos (ACERTA_A_SI[_METADE] = dano em si; CAI = derrubado/deitado) e NARRA o resto (QUEBRA_ARMA/LARGA_ARMA/DESEQUILIBRIO — não rastreamos durabilidade/empunhadura de arma). `AtaqueHeroi.desarmado` escolhe a tabela armada/desarmada.
 - WORKAROUND DE BUILD: 3 detectores do compose-runtime lint (`NullSafeMutableLiveData`, `FrequentlyChangingValue`, `RememberInComposition`) crashavam com `IncompatibleClassChangeError` ("Found class KaSimpleVariableAccessCall, but interface was expected" — Kotlin Analysis API × versão do lint) ao re-executar o lint, derrubando o build (os lotes anteriores passavam só porque o lint estava em cache). Desligados em `app/build.gradle.kts` (mesmo padrão dos 2 já existentes; nosso código não usa Compose neles).
 - Testes: `golpeFulminante`/`erroCritico` (mapeamento das tabelas), `danoMaximo`, e integração (Golpe Fulminante com NH alto, Erro crítico com NH baixo). Build 2 variantes + lint verde.
-- Combate.md: "Golpes Fulminantes e Erros Críticos", "Golpes Fulminantes", "Erros Críticos" → FEITO.
+- docs/fonte-regras/Combate.md: "Golpes Fulminantes e Erros Críticos", "Golpes Fulminantes", "Erros Críticos" → FEITO.
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
 ### Lote 383 — 17 de Junho de 2026
@@ -4138,7 +4149,7 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - EFEITO: se vence, `fintaAlvoId`/`fintaPenalidade` reduzem a defesa do alvo no PRÓXIMO golpe corpo-a-corpo (em `resolverGolpeHeroi`, `defValorFinal`); aplica também aos dois golpes do Ataque Total (Duplo) (MB p.366). Exige arma corpo-a-corpo no alcance. `limparFinta` espelha avaliar/apontar (consumido no ataque; descartado em mover/manobra/outra prep).
 - UI: manobra Fintar (quando há arma corpo-a-corpo + alvo ao alcance) → seletor de alvo; `FichaViewModel.sagaCombateFintar`.
 - Testes: `fintaResultado` (4 casos), finta bem-sucedida abate a defesa no golpe seguinte, finta bloqueada com arma à distância. Build 2 variantes + lint verde.
-- Combate.md: "Fintar" → FEITO.
+- docs/fonte-regras/Combate.md: "Fintar" → FEITO.
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
 ### Lote 382 — 17 de Junho de 2026
@@ -4146,7 +4157,7 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - CHOQUE (MB p.419/381): toda perda de PV gera choque — penalidade em DX/IQ (acerto) no PRÓXIMO turno. `InjuryRules.penalidadeChoque(pvPerdidos, pvMax)`: −1/PV; se PV Inicial ≥20, −1 a cada PVInicial/10; teto −4. NÃO afeta defesas (MB p.375). `Combatente.choquePendente` acumula em `ferir`; aplicado ao acerto do herói (`resolverGolpeHeroi`) e do NPC (`npcResolve`); expira em `avancarTurno` (fim do turno de quem agiu).
 - CAMBALEANTE (MB p.380): com < 1/3 do PV Inicial, Vel.Básica/Deslocamento e Esquiva caem à metade. `Combatente.cambaleante`/`deslocamentoEfetivo`; Esquiva do herói (`opcoesDefesaHeroi`) e do NPC (`esquivaNpc`) reduzidas; Deslocamento à metade em `heroiMove`/`heroiMoverEAtacar`/NPC/controller.
 - Testes: penalidadeChoque (PV<20 e ≥20 com teto); choque aplicado ao golpe + expira; ferir acumula choque; cambaleante reduz Esquiva e Deslocamento. Build 2 variantes + lint verde.
-- Combate.md: "Efeitos de Lesões" → FEITO.
+- docs/fonte-regras/Combate.md: "Efeitos de Lesões" → FEITO.
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
 ### Lote 381 — 17 de Junho de 2026

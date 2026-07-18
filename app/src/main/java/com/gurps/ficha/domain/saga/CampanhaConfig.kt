@@ -16,10 +16,10 @@ data class CampanhaConfig(
     val nivelTecnologico: Int = 3,    // NT GURPS 0-12
     val livros: List<String> = listOf(MODULO_BASICO),
     // Lote HEX-2 (Fase 2a do PILAR): combate tático em hexágonos (default OFF — modo faixas continua padrão).
-    // Aditivo/anulável em fichas antigas (Gson usa o default false); ver PLANO_Combate_Tatico_Hex_3D.md.
+    // Aditivo/anulável em fichas antigas (Gson usa o default false); ver docs/planos/PLANO_Combate_Tatico_Hex_3D.md.
     val modoTaticoHex: Boolean = false,
     // DEPRECATED (Lote TOK-1): o render 3D (HEX-7..9) virou legado após teste no aparelho — o modo
-    // tático agora é o canvas 2D com tokens de imagem (PLANO_Tokens_VTT_2D.md). O campo permanece só
+    // tático agora é o canvas 2D com tokens de imagem (docs/planos/PLANO_Tokens_VTT_2D.md). O campo permanece só
     // por compat Gson com fichas que o ligaram; qualquer valor cai no mesmo canvas 2D novo.
     val modoTaticoHex3D: Boolean = false
 ) {

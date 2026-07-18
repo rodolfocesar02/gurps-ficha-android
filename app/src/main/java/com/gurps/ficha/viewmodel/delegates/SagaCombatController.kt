@@ -327,7 +327,7 @@ class SagaCombatController(
      * Toque num hex do canvas tático (combate REAL):
      *  - hex com token → seleciona;
      *  - herói selecionado + turno dele + hex alcançável → manobra MOVER TÁTICA (o grid vira a
-     *    fonte das distâncias — substitui o botão de faixa, Combate.md "Deslocamento"/"Passo");
+     *    fonte das distâncias — substitui o botão de faixa, docs/fonte-regras/Combate.md "Deslocamento"/"Passo");
      *  - senão → destaca o hex / avisa por que não moveu.
      */
     fun aoTocarHexTatico(hex: com.gurps.ficha.domain.combat.hex.HexCoord) {

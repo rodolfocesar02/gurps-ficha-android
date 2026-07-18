@@ -62,7 +62,7 @@ Construir e validar isso numa grade 2D (Compose Canvas) ANTES de gastar esforço
 ### Fase 4 — Regras posicionais 🔴 (MB + Artes Marciais) que o hex desbloqueia
 - Orientação/facing, alcance/reach reais, **cobertura**, **vários alvos por posição/linha**, "manter à
   distância", corredores de carga, e (quando o `NpcStats` ganhar peso/comprimento de arma) "quem golpeia
-  primeiro" por comprimento. Cruzar com o `Combate.md` (✅ fechado) e o `Artes_Marciais_Regras_Combate.md`.
+  primeiro" por comprimento. Cruzar com o `docs/fonte-regras/Combate.md` (✅ fechado) e o `Artes_Marciais_Regras_Combate.md`.
 
 ### Fase 5 — Render 3D (Filament/SceneView)
 - Trocar o Canvas 2D por **cena 3D**: terreno/grade em 3D, modelos `.glb` de herói/inimigos, **câmera tática**

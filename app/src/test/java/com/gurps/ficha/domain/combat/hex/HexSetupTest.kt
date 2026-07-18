@@ -80,7 +80,7 @@ class HexSetupTest {
     @Test
     fun `heroi CERCADO pelos 6 lados nao alcanca nada (BFS nao atravessa ocupados)`() {
         // Achado da revisão TOK-4: o range geométrico deixava atravessar a linha inimiga de graça
-        // (Combate.md exige Evadir). O BFS bloqueia o caminho — cercado = preso.
+        // (docs/fonte-regras/Combate.md exige Evadir). O BFS bloqueia o caminho — cercado = preso.
         val vizinhos = listOf(
             HexCoord(1, 0), HexCoord(0, 1), HexCoord(-1, 1),
             HexCoord(-1, 0), HexCoord(0, -1), HexCoord(1, -1)

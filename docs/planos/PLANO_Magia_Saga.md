@@ -144,7 +144,7 @@ ficar fiel. Puro, determinístico (caller joga os dados), 29 testes.
   `lancarMagia`) usam essa mana em vez do NORMAL fixo — **baixa = −5 no NH**, **nula = bloqueia**
   (`MagicMana.podeOperar`). Prompt do Narrador orientado a definir mana em lugares mágicos/anti-mágicos.
 - **Magias ativas na UI**: pílula "✨ Ativas" no grid (feito no MA-3d-4).
-- **Doc dos deferidos**: `MAGIA_DEFERIDOS.md` — a fronteira honesta (efeitos narrados, NPC conjurador,
+- **Doc dos deferidos**: `docs/pendencias/MAGIA_DEFERIDOS.md` — a fronteira honesta (efeitos narrados, NPC conjurador,
   simplificações fiéis).
 - Choque de retorno já vem com rótulos do motor (MA-1); acessibilidade dos chips via `contentDescription`.
 
@@ -164,6 +164,6 @@ Motor puro → resolvedor → magia no combate (conjurar/Projétil/Área/Toque/B
 - [x] ✅ MA-3c — conjuração multi-turno + interrupção (Vontade−3 / atordoado; continuar/abortar; 5 testes novos)
 - [x] ✅ MA-3d — Área no hex + Toque + Bloqueio + magias ativas + tick (4 sub-lotes, 10 testes novos)
 - [x] ✅ MA-4 — tool `lancar_magia` na narrativa (executor + bridge + delegate + prompt, 3 testes)
-- [x] ✅ MA-5 — polimento (mana ambiente por cena bloqueia/penaliza a conjuração; doc dos deferidos `MAGIA_DEFERIDOS.md`) 🎉 PILAR COMPLETO
+- [x] ✅ MA-5 — polimento (mana ambiente por cena bloqueia/penaliza a conjuração; doc dos deferidos `docs/pendencias/MAGIA_DEFERIDOS.md`) 🎉 PILAR COMPLETO
 - [ ] MA-4 — magia na narrativa (tool `lancar_magia`)
 - [ ] MA-5 — polimento + honestidade
