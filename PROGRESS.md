@@ -3046,6 +3046,16 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - **Recomendação registrada** (maior valor × menor custo): Ataque Telegráfico (par do Enganoso), luta agarrada profunda (chaves/Mata-Leão estendendo o lote 422), Sangramento Grave + incapacitação de membro (item 5 do teste de batalha), Ataque Dedicado/Defensivo. Fora de escopo: posicional/hexágono, montaria, cinematográfico, dado de arma do NPC. Mudança só de documentação (não compila Kotlin).
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
+### Lote MEC-17 — 18 de Julho de 2026 (condição com PRAZO — antes era ETERNA) + reclassificação do MEC-16
+**Continuação de "faça os 10 buracos de schema que faltam!" — branch GURPS-Saga**
+- **🔴 O buraco de verdade**: `imporCondicaoMagica` fazia `condicoes.add(cond)` **e mais nada**. Só ATORDOADO tinha recuperação (teste de HT) e DORMINDO acordava com golpe — **CEGO, PARALISADO, AMEDRONTADO e SILENCIADO NUNCA saíam**. Um goblin cegado ficava cego a luta inteira, sendo que a Cegar dura **10 segundos** no livro. Isso não é detalhe: cegueira eterna é praticamente matar o inimigo com uma magia barata.
+- **Implementado**: `condicaoDuracaoSeg` no schema + `condicoesTemporarias` no Combatente (relógio por condição). O prazo corre quando o turno de quem sofre a condição termina (1 turno = 1 segundo) e a condição cai sozinha ao zerar, com linha no log. Reaplicar mantém o **maior** prazo — a segunda Cegar não pode encurtar a primeira.
+- **Curadoria sem heurística**: 10 magias curadas lendo o campo **estruturado** `duracao` (Cegar 10s, Medo 600s, Paralisia Total 60s, Terror 60s…). As `Instant.`/`Perm.` ficaram de fora **de propósito** — têm regra própria de saída (o atordoamento sai por HT; o Sono, quando acordam o alvo).
+- **+2 testes**: a cegueira com prazo expira sozinha; e a condição **sem** prazo NÃO expira por tempo (esse segundo teste é o que impede a correção de virar um bug novo, tirando paralisia que deveria durar).
+- 📋 **MEC-16 RECLASSIFICADO — e por isso NÃO foi feito**: eu tinha planejado "dano por turno" como buraco de schema. Não é. As Chuvas (Ácido/Fogo/Pedras), a Nuvem de Faíscas e o Géiser são **zonas persistentes**: uma área do grid que fere quem está dentro, a cada turno, pela duração. Isso exige (1) registro da zona na sessão, (2) tique de dano no avanço do turno e (3) **desenhar a zona na grade**. O item (3) não é opcional: dano invisível recriaria exatamente o bug que você reportou no aparelho ("só de se movimentar ele tá perdendo PV"). Como é lote de UI, ele **para para teste** pela sua própria regra — e já há fila de coisa não validada.
+- ⚠️ Gate: **733 testes nas DUAS variantes**; único vermelho segue sendo o **flaky pré-existente do Nexus Arcano**.
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
 ### Lote MEC-15 — 18 de Julho de 2026 (distâncias do Projétil: 1/2D e Máximo)
 **Continuação de "faça os 10 buracos de schema que faltam!" — branch GURPS-Saga**
 - **A penalidade de distância (SSR) já existia**; o que faltava era o resto: **Máx** (não dá para acertar além dele) e **1/2D** (metade do dano). Estavam só na prosa das `notas` das 12 magias de projétil.

@@ -816,6 +816,38 @@ class MagicCombatTest {
         assertEquals(20, MagicMechanics.danoDaExplosao(20, distanciaM = 5, divisorPorMetro = 0))
     }
 
+    // ── Lote MEC-17: condição com PRAZO (antes era eterna) ──────────────────────────────────────
+
+    @Test
+    fun `cegueira com prazo EXPIRA sozinha — antes durava a luta inteira`() {
+        val s = sessao(7)
+        val goblin = s.encounter.combatentes.first { it.id == "goblin" }
+        val cegar = MagiaMecanica(efeito = "condicao", condicao = "cego", condicaoDuracaoSeg = 3)
+        val ctx = ContextoConjuracao(nhBasico = 25, classe = MagicClassParser.parse("Comum"),
+            mana = NivelMana.NORMAL, mecanica = cegar)
+        s.heroiConjurar(ctx, MagicEnergy.parse("1 a 4"), energiaInvestida = 2,
+            magiaNome = "Cegar", alvoId = "goblin")
+        assertTrue("devia ter cegado", Condicao.CEGO in goblin.condicoes)
+
+        // Cada turno DELE consome 1 segundo. Roda vários turnos completos.
+        repeat(12) { s.avancarTurno() }
+        assertFalse("depois do prazo a cegueira TEM que cair sozinha", Condicao.CEGO in goblin.condicoes)
+    }
+
+    @Test
+    fun `condicao SEM prazo continua ate a regra dela tirar (nao expira por tempo)`() {
+        val s = sessao(7)
+        val goblin = s.encounter.combatentes.first { it.id == "goblin" }
+        val paralisar = MagiaMecanica(efeito = "condicao", condicao = "paralisado") // sem prazo
+        val ctx = ContextoConjuracao(nhBasico = 25, classe = MagicClassParser.parse("Comum"),
+            mana = NivelMana.NORMAL, mecanica = paralisar)
+        s.heroiConjurar(ctx, MagicEnergy.parse("1 a 4"), energiaInvestida = 2,
+            magiaNome = "Paralisar", alvoId = "goblin")
+        assertTrue(Condicao.PARALISADO in goblin.condicoes)
+        repeat(12) { s.avancarTurno() }
+        assertTrue("sem prazo não pode sair sozinha", Condicao.PARALISADO in goblin.condicoes)
+    }
+
     // ── Lote MEC-15: distâncias do Projétil (1/2D e Máx) ────────────────────────────────────────
 
     @Test

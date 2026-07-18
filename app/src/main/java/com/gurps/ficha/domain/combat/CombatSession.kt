@@ -1048,7 +1048,7 @@ class CombatSession(
                 } else if (!alvoResistiu && ctx.mecanica?.efeito == "condicao" && alvo != null) {
                     // Lote COND-1: magia de CONDIÇÃO pura (Sono, Cegueira, Medo, Paralisar…) — no sucesso
                     // não resistido, impõe a condição (a resistência já veio da classe R-XXX, se houver).
-                    imporCondicaoMagica(alvo, ctx.mecanica.condicao, sb)
+                    imporCondicaoMagica(alvo, ctx.mecanica.condicao, sb, ctx.mecanica.condicaoDuracaoSeg)
                 } else if (!alvoResistiu && TipoClasseMagia.PROJETIL in ctx.classe.classes && alvo != null) {
                     val energia = energiaInvestida.coerceAtLeast(1)
                     // 2º teste (Magia p.12): Ataque Inato para ACERTAR (aprox. DX + SSR de distância).
@@ -1142,7 +1142,7 @@ class CombatSession(
                     if (resistiram.isNotEmpty()) sb.append(" Resistiram: ${resistiram.joinToString(", ")}.")
                     // Lote COND-1: magia de CONDIÇÃO em área (Sono coletivo etc.) — impõe em cada atingido.
                     if (ctx.mecanica?.efeito == "condicao" && atingidos.isNotEmpty()) {
-                        atingidos.forEach { imporCondicaoMagica(it, ctx.mecanica.condicao, sb) }
+                        atingidos.forEach { imporCondicaoMagica(it, ctx.mecanica.condicao, sb, ctx.mecanica.condicaoDuracaoSeg) }
                     } else if ((ctx.danoPorEnergia || com.gurps.ficha.domain.magic.MagicMechanics.temDanoEstruturado(ctx.mecanica)) && atingidos.isNotEmpty()) {
                         val energia = energiaInvestida.coerceAtLeast(1)
                         // AR-1: dado estruturado do catálogo quando houver; senão 1d × energia (p.14).
@@ -1273,7 +1273,7 @@ class CombatSession(
             val pen = com.gurps.ficha.domain.magic.MagicMechanics.penalidadeCondicaoPorPv(mecanica.condicaoResistencia, dn.pvSubtrair)
             // Lote MEC-15: além do 1/2D o alvo resiste à atribulação com +3 (MB, seção "Distância").
             val ht = (alvo.htEfetivo) + pen + (if (meioDano) 3 else 0)
-            if (rolar3d6() > ht) imporCondicaoMagica(alvo, mecanica.condicao, sb)
+            if (rolar3d6() > ht) imporCondicaoMagica(alvo, mecanica.condicao, sb, mecanica.condicaoDuracaoSeg)
             else sb.append(" (${alvo.nome} resiste à condição, HT $ht).")
         }
         return dn.pvSubtrair
@@ -1307,7 +1307,13 @@ class CombatSession(
     }
 
     /** Lote COND-1: mapeia a condição da `mecanica` para a enum e a impõe no alvo (Sono, Cegueira, Medo, Paralisar…). */
-    private fun imporCondicaoMagica(alvo: Combatente, condicaoStr: String?, sb: StringBuilder) {
+    private fun imporCondicaoMagica(
+        alvo: Combatente,
+        condicaoStr: String?,
+        sb: StringBuilder,
+        /** Lote MEC-17: segundos de duração. 0 = sem prazo (sai pela regra própria da condição). */
+        duracaoSeg: Int = 0,
+    ) {
         val cond = when (condicaoStr?.lowercase()?.trim()) {
             "atordoado", "atordoar" -> Condicao.ATORDOADO
             "cego", "cegueira", "cegar" -> Condicao.CEGO
@@ -1318,7 +1324,14 @@ class CombatSession(
             else -> return
         }
         alvo.condicoes.add(cond)
-        sb.append(" ${alvo.nome} fica ${cond.rotulo.uppercase()}.")
+        // MEC-17: com prazo, registra o relógio. Se já havia um, fica o MAIOR — a segunda Cegar não
+        // pode encurtar a primeira.
+        if (duracaoSeg > 0) {
+            val atual = alvo.condicoesTemporarias[cond] ?: 0
+            alvo.condicoesTemporarias[cond] = maxOf(atual, duracaoSeg)
+        }
+        sb.append(" ${alvo.nome} fica ${cond.rotulo.uppercase()}" +
+            (if (duracaoSeg > 0) " por ${duracaoSeg}s." else "."))
     }
 
     /** Valor de resistência do alvo (MA-3a): atributo indicado + Abascanto embutido; combinadas pegam o maior. */
@@ -2148,6 +2161,17 @@ class CombatSession(
             if (InjuryRules.recuperaAtordoamento(ht, random)) {
                 anterior.condicoes.remove(Condicao.ATORDOADO)
                 log += "• ${anterior.nome} recupera-se do atordoamento."
+            }
+        }
+        // Lote MEC-17: condições com PRAZO correm o relógio quando o turno de quem as sofre termina
+        // (1 turno = 1 segundo) e caem sozinhas ao zerar. Sem isto a Cegar era eterna.
+        anterior.condicoesTemporarias.entries.toList().forEach { (cond, resta) ->
+            val novo = resta - 1
+            if (novo > 0) anterior.condicoesTemporarias[cond] = novo
+            else {
+                anterior.condicoesTemporarias.remove(cond)
+                anterior.condicoes.remove(cond)
+                log += "• ${anterior.nome} não está mais ${cond.rotulo.uppercase()}."
             }
         }
         // Lote COND-1: quem DORMINDO levou dano (choquePendente > 0) ACORDA (MB p.428). Paralisia NÃO acorda.

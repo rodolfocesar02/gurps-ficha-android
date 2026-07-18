@@ -78,6 +78,13 @@ data class MagiaMecanica(
      */
     val alcanceMeioDano: Int = 0,
     val alcanceMaximo: Int = 0,
+    /**
+     * Lote MEC-17: por quantos SEGUNDOS a condição dura (Cegar = 10 seg; Lampejo cega 3 seg).
+     * 0 = sem prazo — a condição sai pela regra dela (o Sono acaba quando acordam o alvo; a paralisia
+     * do Toque Congelante, quando ele rompe o gelo). Sem este campo a condição era ETERNA: um goblin
+     * cegado ficava cego a luta inteira.
+     */
+    val condicaoDuracaoSeg: Int = 0,
 
     // ── condição embutida (rider no dano ou standalone) ──
     /** Condição imposta ("atordoado", "cego"…). */

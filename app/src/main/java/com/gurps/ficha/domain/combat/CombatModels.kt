@@ -142,6 +142,12 @@ data class Combatente(
     var pfAtual: Int = 10,
     var postura: Postura = Postura.EM_PE,
     val condicoes: MutableSet<Condicao> = mutableSetOf(),
+    /**
+     * Lote MEC-17: segundos restantes de uma condição TEMPORÁRIA (a Cegar dura 10 seg, o Lampejo
+     * cega 3 seg). Só entram aqui as condições com prazo — as sem prazo (paralisia até romper o
+     * gelo, sono até ser acordado) ficam fora e continuam saindo pelas suas próprias regras.
+     */
+    val condicoesTemporarias: MutableMap<Condicao, Int> = mutableMapOf(),
     var defesasUsadas: DefesasUsadas = DefesasUsadas(),
     /** Lote 382: PV perdidos desde o último turno deste combatente → penalidade de Choque no próximo (MB p.419). */
     var choquePendente: Int = 0,

@@ -3101,7 +3101,8 @@
       "entrega": "projetil",
       "condicao": "cego",
       "condicaoResistencia": "HT",
-      "notas": "Cegueira por 10 seg: -10 em ataque fisico, nao ve alvos para mirar magias."
+      "notas": "Cegueira por 10 seg: -10 em ataque fisico, nao ve alvos para mirar magias.",
+      "condicaoDuracaoSeg": 10
     },
     "duracaoTipo": "temporaria",
     "duracaoSeg": 10,
@@ -6752,7 +6753,8 @@
       "efeito": "condicao",
       "entrega": "toque",
       "condicao": "silenciado",
-      "notas": "Ser vivo não emite sons significativos (classe Comum/R-Vont já cuida da resistência). Pode deixar um mago inimigo sem poder."
+      "notas": "Ser vivo não emite sons significativos (classe Comum/R-Vont já cuida da resistência). Pode deixar um mago inimigo sem poder.",
+      "condicaoDuracaoSeg": 60
     },
     "duracaoTipo": "temporaria",
     "duracaoSeg": 60,
@@ -7360,7 +7362,8 @@
       "entrega": "projetil",
       "condicao": "silenciado",
       "condicaoResistencia": "HT",
-      "notas": "Alvo incapaz de falar por 10 seg; dificulta magias que exigem fala."
+      "notas": "Alvo incapaz de falar por 10 seg; dificulta magias que exigem fala.",
+      "condicaoDuracaoSeg": 10
     },
     "duracaoTipo": "temporaria",
     "duracaoSeg": 10,
@@ -8639,7 +8642,8 @@
       "efeito": "condicao",
       "entrega": "projetil",
       "condicao": "paralisado",
-      "notas": "R-Vont, 10 seg. Prazer incapacitante: o alvo nao pode agir nem se esquivar (limiar de dor irrelevante). Exposicao 3x em 10 dias -> teste de Vontade+2 ou ganha Vicio."
+      "notas": "R-Vont, 10 seg. Prazer incapacitante: o alvo nao pode agir nem se esquivar (limiar de dor irrelevante). Exposicao 3x em 10 dias -> teste de Vontade+2 ou ganha Vicio.",
+      "condicaoDuracaoSeg": 10
     },
     "duracaoTipo": "temporaria",
     "duracaoSeg": 10,
@@ -12096,7 +12100,8 @@
       "efeito": "condicao",
       "entrega": "area",
       "condicao": "amedrontado",
-      "notas": "Area (raio conforme energia), R-Vont, 10 min. Alvos sentem medo: +3 nas reacoes do operador em situacoes de ameaca, -3 em lealdade/onde aterrorizar e contraproducente. Contrariada por Bravura."
+      "notas": "Area (raio conforme energia), R-Vont, 10 min. Alvos sentem medo: +3 nas reacoes do operador em situacoes de ameaca, -3 em lealdade/onde aterrorizar e contraproducente. Contrariada por Bravura.",
+      "condicaoDuracaoSeg": 600
     },
     "duracaoTipo": "temporaria",
     "duracaoSeg": 600,
@@ -13690,7 +13695,8 @@
       "efeito": "condicao",
       "entrega": "area",
       "condicao": "amedrontado",
-      "notas": "Area, R-Vont, 1 min. Os afetados fogem em medo irracional para longe do operador. Quem nao consegue fugir pode virar e fazer Defesa Total se atacado."
+      "notas": "Area, R-Vont, 1 min. Os afetados fogem em medo irracional para longe do operador. Quem nao consegue fugir pode virar e fazer Defesa Total se atacado.",
+      "condicaoDuracaoSeg": 60
     },
     "duracaoTipo": "temporaria",
     "duracaoSeg": 60,
@@ -13742,7 +13748,8 @@
       "entrega": "toque",
       "condicao": "paralisado",
       "condicaoResistencia": "HT",
-      "notas": "Toque na cabeca (-5 no ataque). Se nao resistir, alvo totalmente paralisado, nao se move por 1 min. Nao pode ser mantida."
+      "notas": "Toque na cabeca (-5 no ataque). Se nao resistir, alvo totalmente paralisado, nao se move por 1 min. Nao pode ser mantida.",
+      "condicaoDuracaoSeg": 60
     },
     "duracaoTipo": "temporaria",
     "duracaoSeg": 60,
@@ -15308,7 +15315,8 @@
       "efeito": "condicao",
       "entrega": "toque",
       "condicao": "silenciado",
-      "notas": "Objeto ou ser vivo não emite som algum. +3 em Furtividade do objetivo ou -5 na Audição de quem escuta. Duração: 10s se resistiu, 1 min. se não."
+      "notas": "Objeto ou ser vivo não emite som algum. +3 em Furtividade do objetivo ou -5 na Audição de quem escuta. Duração: 10s se resistiu, 1 min. se não.",
+      "condicaoDuracaoSeg": 10
     }
   },
   {
@@ -18597,7 +18605,8 @@
       "entrega": "area",
       "condicao": "amedrontado",
       "condicaoResistencia": "HT",
-      "notas": "Area, R-Vont. Quem nao resistir faz imediatamente uma Verificacao de Panico a -3 (a Verificacao de Panico e teste de Vontade, MB360 - o motor usa o teste da condicao)."
+      "notas": "Area, R-Vont. Quem nao resistir faz imediatamente uma Verificacao de Panico a -3 (a Verificacao de Panico e teste de Vontade, MB360 - o motor usa o teste da condicao).",
+      "condicaoDuracaoSeg": 60
     }
   },
   {
@@ -19712,7 +19721,8 @@
       "efeito": "condicao",
       "entrega": "projetil",
       "condicao": "atordoado",
-      "notas": "Alvo vê uma aparição da própria morte e fica MENTALMENTE atordoado até passar num teste de IQ para se livrar (o motor só conhece atordoado genérico). Duração 1 s, custo 2."
+      "notas": "Alvo vê uma aparição da própria morte e fica MENTALMENTE atordoado até passar num teste de IQ para se livrar (o motor só conhece atordoado genérico). Duração 1 s, custo 2.",
+      "condicaoDuracaoSeg": 1
     },
     "duracaoTipo": "temporaria",
     "duracaoSeg": 1,
