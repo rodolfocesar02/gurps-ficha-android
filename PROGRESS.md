@@ -3046,6 +3046,16 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - **Recomendação registrada** (maior valor × menor custo): Ataque Telegráfico (par do Enganoso), luta agarrada profunda (chaves/Mata-Leão estendendo o lote 422), Sangramento Grave + incapacitação de membro (item 5 do teste de batalha), Ataque Dedicado/Defensivo. Fora de escopo: posicional/hexágono, montaria, cinematográfico, dado de arma do NPC. Mudança só de documentação (não compila Kotlin).
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
+### Lote UX-1 — 17 de Julho de 2026 (conjurar em DOIS PASSOS — pedido do usuário no aparelho)
+**"Cada magia como um botão; ao selecionar abre outro diálogo com alvo/dano/energia/PV. Se o personagem tiver 200 magias, demora e fica lento o combate" — branch GURPS-Saga**
+- **O problema**: o `SubDialogoConjurar` era um diálogo ÚNICO — a lista inteira de magias em rádios e, só lá no fim da rolagem, alvo + "causa dano" + energia + queimar PV. Com muitas magias o jogador rola a lista completa **a cada conjuração** só para alcançar os parâmetros. Trava o ritmo do combate.
+- **Passo 1 — escolher a magia**: cada magia virou um **botão** de largura cheia (nome em destaque; embaixo `classe · NH · custo`, e o motivo quando indisponível). Um toque leva direto ao passo 2.
+- **Passo 2 — só os parâmetros DAQUELA magia**: título do diálogo = nome da magia; alvo, "causa dano", energia (com o teto do MEC-9) e queimar PV. Botão **"Voltar"** retorna à lista em vez de fechar tudo — errar a escolha não custa recomeçar a conjuração.
+- **Busca por nome no passo 1** (aparece com mais de 6 magias, via `CatalogFilters.contemBusca`): a divisão em dois passos resolve o "rolar até o fim para achar os parâmetros", mas **não** resolveria "tenho 200 magias e preciso achar a Bola de Fogo" — que era a preocupação real do usuário. A busca resolve.
+- Estado por magia com `remember(sel.id)`: trocar de magia zera energia/alvo/PV em vez de carregar valores da escolha anterior.
+- ⚠️ Gate: compila nas 4 variantes; único vermelho segue sendo o **flaky pré-existente do Nexus Arcano** (em conserto na sessão paralela do usuário).
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
 ### Lote TESTE-1c — 17 de Julho de 2026 (o modo tático NÃO ligava — bug de reatividade do Compose)
 **"Você disse que ia deixar o modo tático ligado e não ficou" — teste no aparelho, branch GURPS-Saga**
 - **A causa era REATIVIDADE, não lógica.** Toda a cadeia do TESTE-1/1b estava correta (botão → `sagaIniciarCombateTeste` → `iniciarCombateSandbox` → flag → grade montada), e eu conferi elo por elo. Mas nenhum elo era o problema.

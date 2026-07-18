@@ -1327,6 +1327,14 @@ fun MenuTaticoDoToken(
  * Projéteis, quanta energia investir (1d de dano por ponto, teto na Aptidão Mágica). Conjurar é a
  * manobra Concentrar — gasta o turno. Efeitos bespoke são narrados pelo Mestre (MA-4).
  */
+/**
+ * Lote UX-1 (pedido do usuário no aparelho): conjurar em DOIS PASSOS.
+ *
+ * Antes era um diálogo único: a lista inteira de magias em rádios e, lá no fim, alvo/dano/energia/PV.
+ * Com muitas magias (o usuário citou o caso de 200) rolar até o fim a cada conjuração trava o ritmo
+ * do combate. Agora: **passo 1** = escolher a magia (cada uma é um BOTÃO, com busca); **passo 2** =
+ * um diálogo só com os parâmetros daquela magia.
+ */
 @Composable
 private fun SubDialogoConjurar(
     magias: List<com.gurps.ficha.viewmodel.delegates.MagiaConjuravelUi>,
@@ -1335,46 +1343,87 @@ private fun SubDialogoConjurar(
     onMirarArea: (magiaId: String, raio: Int, energia: Int, pvQueimar: Int, causaDano: Boolean) -> Unit,
     onFechar: () -> Unit,
 ) {
-    var magiaSel by remember { mutableStateOf(magias.firstOrNull()) }
-    // null = "em mim mesmo" (automagia); senão o id do inimigo.
-    var alvoId by remember { mutableStateOf<String?>(inimigos.firstOrNull()?.id) }
-    var energia by remember { mutableIntStateOf(1) }
-    var pvQueimar by remember { mutableIntStateOf(0) }
-    var raio by remember { mutableIntStateOf(2) } // Lote MA-3d: raio da magia de área
-    var causaDano by remember(magiaSel?.id) { mutableStateOf(false) } // Lote MA-6: magia de dano direta
-    val ehArea = magiaSel?.ehArea == true
+    // null = ainda escolhendo a magia (passo 1); != null = configurando os parâmetros (passo 2).
+    var magiaSel by remember { mutableStateOf<com.gurps.ficha.viewmodel.delegates.MagiaConjuravelUi?>(null) }
+    var busca by remember { mutableStateOf("") }
+
+    val sel = magiaSel
+    if (sel == null) {
+        val filtradas = remember(busca, magias) {
+            if (busca.isBlank()) magias
+            else magias.filter { com.gurps.ficha.domain.filters.CatalogFilters.contemBusca(it.nome, busca) }
+        }
+        AlertDialog(
+            onDismissRequest = onFechar,
+            title = { Text("Conjurar magia") },
+            text = {
+                Column {
+                    Text("Conjurar é a manobra Concentrar — gasta o turno.",
+                        style = MaterialTheme.typography.bodySmall, fontStyle = FontStyle.Italic,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Spacer(Modifier.height(8.dp))
+                    // Busca: o que realmente resolve uma lista longa (o caso das 200 magias).
+                    if (magias.size > 6) {
+                        OutlinedTextField(
+                            value = busca, onValueChange = { busca = it },
+                            label = { Text("Buscar magia") }, singleLine = true,
+                            modifier = Modifier.fillMaxWidth().semantics { contentDescription = "Buscar magia pelo nome" }
+                        )
+                        Spacer(Modifier.height(8.dp))
+                    }
+                    if (filtradas.isEmpty()) {
+                        Text("Nenhuma magia com esse nome.", style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    }
+                    Column(Modifier.verticalScroll(rememberScrollState())) {
+                        filtradas.forEach { m ->
+                            // Cada magia é um BOTÃO: um toque já leva ao passo 2 (sem rolar até o fim).
+                            OutlinedButton(
+                                onClick = { magiaSel = m },
+                                enabled = m.castavel,
+                                modifier = Modifier.fillMaxWidth().padding(vertical = 2.dp).semantics {
+                                    contentDescription = "Escolher ${m.nome}, ${m.classe}, NH ${m.nhBasico}, custo ${m.custoTexto}" +
+                                        if (!m.castavel) ", indisponível: ${m.motivo}" else ""
+                                }
+                            ) {
+                                Column(Modifier.fillMaxWidth()) {
+                                    Text(m.nome, fontWeight = FontWeight.Bold, style = MaterialTheme.typography.bodyMedium)
+                                    Text(
+                                        "${m.classe} · NH ${m.nhBasico} · ${m.custoTexto}" + if (!m.castavel) " · ${m.motivo}" else "",
+                                        style = MaterialTheme.typography.bodySmall,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            confirmButton = {},
+            dismissButton = { TextButton(onClick = onFechar) { Text("Cancelar") } }
+        )
+        return
+    }
+
+    // ── Passo 2: parâmetros SÓ da magia escolhida ───────────────────────────────────────────────
+    var alvoId by remember(sel.id) { mutableStateOf<String?>(inimigos.firstOrNull()?.id) }
+    var energia by remember(sel.id) { mutableIntStateOf(1) }
+    var pvQueimar by remember(sel.id) { mutableIntStateOf(0) }
+    var raio by remember(sel.id) { mutableIntStateOf(2) }
+    var causaDano by remember(sel.id) { mutableStateOf(false) }
+    val ehArea = sel.ehArea
 
     AlertDialog(
         onDismissRequest = onFechar,
-        title = { Text("Conjurar magia") },
+        title = { Text(sel.nome) },
         text = {
             Column(Modifier.verticalScroll(rememberScrollState())) {
-                Text("Conjurar é a manobra Concentrar — gasta o turno.",
-                    style = MaterialTheme.typography.bodySmall, fontStyle = FontStyle.Italic,
+                Text("${sel.classe} · NH ${sel.nhBasico} · custo ${sel.custoTexto}",
+                    style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant)
-                Spacer(Modifier.height(6.dp))
-                Text("Magia", fontWeight = FontWeight.Bold, style = MaterialTheme.typography.labelLarge)
-                magias.forEach { m ->
-                    OpcaoRadio(
-                        selecionado = magiaSel?.id == m.id,
-                        rotulo = "${m.nome} — ${m.classe}, NH ${m.nhBasico}, ${m.custoTexto}" + if (!m.castavel) " (${m.motivo})" else "",
-                        descricao = "Conjurar ${m.nome}, classe ${m.classe}, custo ${m.custoTexto}" + if (!m.castavel) ", indisponível: ${m.motivo}" else "",
-                        // Lote MEC-7: o teto depende da magia — Projétil usa a Aptidão Mágica (p.12);
-                        // buff que escala usa o teto de níveis do livro (Escudo: 2 PF × 4 = 8).
-                        onClick = {
-                            magiaSel = m
-                            energia = when {
-                                m.ehProjetil -> energia.coerceIn(1, m.aptidaoMagica)
-                                m.escalaComEnergia -> energia.coerceIn(1, m.energiaMax)
-                                else -> 1
-                            }
-                        }
-                    )
-                }
+                Spacer(Modifier.height(8.dp))
 
                 if (ehArea) {
-                    // Área (Lote MA-3d): o alvo é um HEX no grid; aqui só se escolhe o RAIO (custo × raio).
-                    Spacer(Modifier.height(8.dp))
                     Text("Raio da área: ${raio}m (custo × $raio)", fontWeight = FontWeight.Bold,
                         style = MaterialTheme.typography.labelLarge)
                     Row(verticalAlignment = Alignment.CenterVertically) {
@@ -1387,14 +1436,11 @@ private fun SubDialogoConjurar(
                     Text("Depois de confirmar, toque um hex no grid para o centro da explosão.",
                         style = MaterialTheme.typography.bodySmall, fontStyle = FontStyle.Italic,
                         color = MaterialTheme.colorScheme.onSurfaceVariant)
-                } else if (magiaSel?.ehToque == true) {
-                    // Toque (Lote MA-3d-2): lança em si (carrega a mão) → entrega depois num ataque.
-                    Spacer(Modifier.height(8.dp))
+                } else if (sel.ehToque) {
                     Text("Toque: a mágica carrega sua mão. Depois, ataque um inimigo adjacente para descarregá-la.",
                         style = MaterialTheme.typography.bodySmall, fontStyle = FontStyle.Italic,
                         color = MaterialTheme.colorScheme.onSurfaceVariant)
                 } else {
-                    Spacer(Modifier.height(8.dp))
                     Text("Alvo", fontWeight = FontWeight.Bold, style = MaterialTheme.typography.labelLarge)
                     OpcaoRadio(alvoId == null, "Em mim mesmo (automagia)", "Conjurar sobre si mesmo") { alvoId = null }
                     inimigos.forEach { a ->
@@ -1402,10 +1448,9 @@ private fun SubDialogoConjurar(
                     }
                 }
 
-                // Lote MA-6: magia de dano DIRETA (Comum/Área que não é Projétil/Toque) — o jogador marca
-                // "causa dano" e o motor aplica 1d por energia (diretriz de Mágicas de Combate, Magia p.14).
-                val proj = magiaSel?.ehProjetil == true
-                val podeMarcarDano = magiaSel != null && !proj && magiaSel!!.ehToque.not() && (ehArea || alvoId != null)
+                // Lote MA-6: magia de dano DIRETA (Comum/Área que não é Projétil/Toque).
+                val proj = sel.ehProjetil
+                val podeMarcarDano = !proj && !sel.ehToque && (ehArea || alvoId != null)
                 if (podeMarcarDano) {
                     Spacer(Modifier.height(8.dp))
                     Row(verticalAlignment = Alignment.CenterVertically,
@@ -1417,26 +1462,17 @@ private fun SubDialogoConjurar(
                         Text("Causa dano (1d por energia)", style = MaterialTheme.typography.bodyMedium)
                     }
                 }
-                // Energia investida. Lote MEC-7: além do dano (Projétil / "causa dano"), TODA magia cujo
-                // EFEITO escala com energia entra aqui — Escudo, Armadura, Força, Aumentar Força… Antes
-                // só Projétil tinha o seletor, e o jogador levava o MÍNIMO sem poder escolher.
-                val escalaBuff = magiaSel?.escalaComEnergia == true
+
+                // Energia. Lote MEC-7/MEC-9: o teto vem da REGRA da magia, não da Aptidão pura.
+                val escalaBuff = sel.escalaComEnergia
                 if (proj || (podeMarcarDano && causaDano) || escalaBuff) {
-                    val teto = when {
-                        proj || (podeMarcarDano && causaDano) -> magiaSel?.aptidaoMagica ?: 1
-                        else -> magiaSel?.energiaMax ?: 1
-                    }
-                    val efeito = when {
-                        proj || (podeMarcarDano && causaDano) -> "→ ${energia}d de dano"
-                        else -> magiaSel?.dicaEnergia ?: ""
-                    }
+                    val teto = if (proj || (podeMarcarDano && causaDano)) sel.aptidaoMagica else sel.energiaMax
+                    val efeito = if (proj || (podeMarcarDano && causaDano)) "→ ${energia}d de dano" else (sel.dicaEnergia ?: "")
                     Spacer(Modifier.height(8.dp))
                     Text("Energia investida: ${energia} PF  ${if (efeito.isNotBlank()) "($efeito)" else ""}",
                         fontWeight = FontWeight.Bold, style = MaterialTheme.typography.labelLarge)
                     Row(verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.semantics {
-                            contentDescription = "Energia investida: $energia de $teto. $efeito"
-                        }) {
+                        modifier = Modifier.semantics { contentDescription = "Energia investida: $energia de $teto. $efeito" }) {
                         OutlinedButton(onClick = { if (energia > 1) energia-- },
                             modifier = Modifier.semantics { contentDescription = "Menos energia" }) { Text("−") }
                         Text("${energia}", Modifier.padding(horizontal = 16.dp), fontWeight = FontWeight.Bold)
@@ -1449,7 +1485,7 @@ private fun SubDialogoConjurar(
                 }
 
                 // Queimar PV (Magia p.8): paga parte do custo com PV em vez de PF — cada PV é −1 no NH.
-                val tetoPv = (magiaSel?.custoEstimado ?: 0).coerceAtMost(4)
+                val tetoPv = sel.custoEstimado.coerceAtMost(4)
                 if (tetoPv > 0) {
                     Spacer(Modifier.height(8.dp))
                     Text("Queimar PV: ${pvQueimar} (−${pvQueimar} no NH; dói!)", fontWeight = FontWeight.Bold,
@@ -1465,29 +1501,26 @@ private fun SubDialogoConjurar(
             }
         },
         confirmButton = {
-            val m = magiaSel
             Button(
                 onClick = {
-                    if (m != null) {
-                        // Energia vira dados de dano no Projétil, ou quando o jogador marcou "causa dano".
-                        val energiaEfetiva = if (m.ehProjetil || causaDano) energia else 1
-                        when {
-                            m.ehArea -> onMirarArea(m.id, raio, energiaEfetiva, pvQueimar, causaDano)
-                            m.ehToque -> onConjurar(m.id, null, 1, pvQueimar, false) // Toque lança em si → carrega a mão
-                            else -> onConjurar(m.id, alvoId, energiaEfetiva, pvQueimar, causaDano)
-                        }
+                    val energiaEfetiva = if (sel.ehProjetil || causaDano || sel.escalaComEnergia) energia else 1
+                    when {
+                        sel.ehArea -> onMirarArea(sel.id, raio, energiaEfetiva, pvQueimar, causaDano)
+                        sel.ehToque -> onConjurar(sel.id, null, 1, pvQueimar, false)
+                        else -> onConjurar(sel.id, alvoId, energiaEfetiva, pvQueimar, causaDano)
                     }
                 },
-                enabled = m != null && m.castavel,
+                enabled = sel.castavel,
                 modifier = Modifier.semantics {
                     contentDescription = when {
-                        ehArea -> "Mirar a área no grid"; magiaSel?.ehToque == true -> "Carregar a mágica na mão"
-                        else -> "Conjurar a magia escolhida"
+                        ehArea -> "Mirar a área no grid"; sel.ehToque -> "Carregar a mágica na mão"
+                        else -> "Conjurar ${sel.nome}"
                     }
                 }
-            ) { Text(when { ehArea -> "Mirar no grid"; magiaSel?.ehToque == true -> "Carregar na mão"; else -> "Conjurar" }) }
+            ) { Text(when { ehArea -> "Mirar no grid"; sel.ehToque -> "Carregar na mão"; else -> "Conjurar" }) }
         },
-        dismissButton = { TextButton(onClick = onFechar) { Text("Cancelar") } }
+        // "Voltar" à lista em vez de fechar tudo — errar a magia não custa recomeçar a conjuração.
+        dismissButton = { TextButton(onClick = { magiaSel = null }) { Text("Voltar") } }
     )
 }
 
