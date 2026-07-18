@@ -5926,8 +5926,10 @@
   "preRequisitos": "AM1, Cura Superficial",
   "descricao": "Comum\n\nRestaura até 8 PV para o objetivo. Não elimina doenças ou venenos, mas curará os danos causados por essas coisas.\n\nCaso contrário, esta mágica funciona da mesma forma que Cura Superficial: com uma penalidade de -3 por operação no mesmo objetivo em um dia, e a perícia Medicina com NH 15 ou superior mitigará os efeitos de uma falha crítica.\n\nAs penalidades para operações repetidas são acumuladas separadamente para Cura Superficial e Cura Profunda. Por exemplo, um operador poderia operar as duas mágicas no mesmo objetivo no mesmo dia, sem penalidade.\n\nCusto: 1 a 4. Duas vezes o valor gasto é restaurado para o objetivo.\n\nPré-requisitos: Aptidão Mágica 1 e Cura Superficial.\n\nItem\n\nVarinha ou cajado decorado com um padrão de serpente. O item deve tocar o objetivo. Utilizável apenas por magos, ou por não-magos perícia Medicina 20 ou superior. Custo de energia para criar: 1.500.",
   "mecanica": {
-   "efeito": "narrado",
-   "notas": "Cura ATE 8 PV: gasta 1 a 4 energia, restaura o DOBRO ao alvo. Nao remove doenca/veneno (so o dano). -3 por operacao repetida no mesmo alvo/dia (contador separado de Cura Superficial); Medicina NH15+ mitiga falha critica."
+   "efeito": "cura",
+   "notas": "Cura ATE 8 PV: gasta 1 a 4 energia, restaura o DOBRO ao alvo. Nao remove doenca/veneno (so o dano). -3 por operacao repetida no mesmo alvo/dia (contador separado de Cura Superficial); Medicina NH15+ mitiga falha critica.",
+   "curaPvPorEnergia": 2,
+   "curaMaxPv": 8
   },
   "duracaoTipo": "permanente",
   "duracaoSeg": 0,
@@ -5948,8 +5950,10 @@
   "preRequisitos": "Conceder Vitalidade",
   "descricao": "Comum\n\nRestaura até 3 PV para o objetivo. Não elimina doenças ou venenos, mas curará os danos causados por essas coisas.\n\nEsta mágica é arriscada se usada mais de uma vez por dia pelo mesmo operador no mesmo objetivo. Se tentar, faça um teste com uma penalidade de -3 para a primeira repetição, -6 para a segunda e assim por diante.\n\nSe você tiver a perícia Medicina com NH 15 ou superior, uma falha crítica com esta mágica conta apenas como uma falha comum — a menos que você esteja tentando a mágica mais de uma vez por dia no mesmo objetivo.\n\nCusto: 1 a 3. O mesmo valor é restaurado ao objetivo.\n\nPré-requisito: Conceder Vitalidade.\n\nItem\n\nVarinha ou cajado, decorada com um padrão de serpente. O item deve tocar o objetivo. Utilizável apenas por magos, ou por não-magos com perícia Medicina 15 ou superior. Custo de energia para criar: 600.",
   "mecanica": {
-   "efeito": "narrado",
-   "notas": "Cura ATE 3 PV: gasta 1 a 3 energia, restaura o MESMO valor. Nao remove doenca/veneno (so o dano). -3 na 1a repeticao no mesmo alvo/dia, -6 na 2a, etc.; Medicina NH15+ converte falha critica em comum."
+   "efeito": "cura",
+   "notas": "Cura ATE 3 PV: gasta 1 a 3 energia, restaura o MESMO valor. Nao remove doenca/veneno (so o dano). -3 na 1a repeticao no mesmo alvo/dia, -6 na 2a, etc.; Medicina NH15+ converte falha critica em comum.",
+   "curaPvPorEnergia": 1,
+   "curaMaxPv": 3
   },
   "duracaoTipo": "permanente",
   "duracaoSeg": 0,
@@ -5970,8 +5974,9 @@
   "preRequisitos": "AM3, Cura Profunda",
   "descricao": "Comum\n\nRestaura todos os PV perdidos do objetivo. Não elimina doenças ou venenos, nem recupera partes do corpo danificadas ou ausentes, mas pode curar os PV perdidos em qualquer uma dessas coisas.\n\nUm determinado objetivo só pode se beneficiar desta mágica uma vez por dia, seja ela operada pelo mesmo operador ou por um operador diferente de cada vez. Se você tiver a perícia Medicina com NH 15 ou superior, uma falha crítica com esta mágica conta apenas como uma falha.\n\nCusto: 20. Uma tentativa por dia por objetivo.\n\nTempo de operação: 1 minuto.\n\nPré-requisitos: Aptidão Mágica 3 e Cura Profunda.\n\nItem\n\nVarinha ou cajado decorado com um padrão de serpente. O item deve tocar o objetivo. Utilizável apenas por magos, ou por não-magos com a perícia Medicina 25 ou superior. Custo de energia para criar: 4.000.",
   "mecanica": {
-   "efeito": "narrado",
-   "notas": "Restaura TODOS os PV perdidos do alvo. Custo 20, 1x por dia por alvo (qualquer operador). Nao remove doenca/veneno nem partes ausentes. Medicina NH15+ converte falha critica em comum."
+   "efeito": "cura",
+   "notas": "Restaura TODOS os PV perdidos do alvo. Custo 20, 1x por dia por alvo (qualquer operador). Nao remove doenca/veneno nem partes ausentes. Medicina NH15+ converte falha critica em comum.",
+   "curaTotal": true
   },
   "duracaoTipo": "permanente",
   "duracaoSeg": 0,

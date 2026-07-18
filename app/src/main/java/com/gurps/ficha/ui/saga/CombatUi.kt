@@ -1406,7 +1406,11 @@ private fun SubDialogoConjurar(
     }
 
     // ── Passo 2: parâmetros SÓ da magia escolhida ───────────────────────────────────────────────
-    var alvoId by remember(sel.id) { mutableStateOf<String?>(inimigos.firstOrNull()?.id) }
+    // Lote MEC-10: em magia de CURA o alvo padrão é SI MESMO (curar o goblin por acidente seria o
+    // pior default possível); nas demais, o primeiro inimigo.
+    var alvoId by remember(sel.id) {
+        mutableStateOf<String?>(if (sel.ehCura) null else inimigos.firstOrNull()?.id)
+    }
     var energia by remember(sel.id) { mutableIntStateOf(1) }
     var pvQueimar by remember(sel.id) { mutableIntStateOf(0) }
     var raio by remember(sel.id) { mutableIntStateOf(2) }
@@ -1450,7 +1454,8 @@ private fun SubDialogoConjurar(
 
                 // Lote MA-6: magia de dano DIRETA (Comum/Área que não é Projétil/Toque).
                 val proj = sel.ehProjetil
-                val podeMarcarDano = !proj && !sel.ehToque && (ehArea || alvoId != null)
+                // MEC-10: magia de CURA nunca oferece "causa dano" (não faz sentido e confundiria).
+                val podeMarcarDano = !proj && !sel.ehToque && !sel.ehCura && (ehArea || alvoId != null)
                 if (podeMarcarDano) {
                     Spacer(Modifier.height(8.dp))
                     Row(verticalAlignment = Alignment.CenterVertically,

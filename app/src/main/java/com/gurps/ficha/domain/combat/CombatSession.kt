@@ -1021,7 +1021,11 @@ class CombatSession(
                               else " ${alvo.nome} não resiste (resistência $resist).")
                 }
 
-                if (!alvoResistiu && ctx.mecanica?.efeito == "condicao" && alvo != null) {
+                if (com.gurps.ficha.domain.magic.MagicMechanics.temCuraEstruturada(ctx.mecanica)) {
+                    // Lote MEC-10: magia de CURA restaura PV. Sem alvo explícito, cura o próprio
+                    // operador (automagia) — é o caso comum: o mago se cura no meio da luta.
+                    aplicarCuraMagica(alvo ?: heroi, energiaInvestida, ctx.mecanica!!, sb)
+                } else if (!alvoResistiu && ctx.mecanica?.efeito == "condicao" && alvo != null) {
                     // Lote COND-1: magia de CONDIÇÃO pura (Sono, Cegueira, Medo, Paralisar…) — no sucesso
                     // não resistido, impõe a condição (a resistência já veio da classe R-XXX, se houver).
                     imporCondicaoMagica(alvo, ctx.mecanica.condicao, sb)
@@ -1226,6 +1230,33 @@ class CombatSession(
             else sb.append(" (${alvo.nome} resiste à condição, HT $ht).")
         }
         return dn.pvSubtrair
+    }
+
+    /**
+     * Lote MEC-10: aplica CURA mágica — restaura PV de verdade (Cura Superficial 1 PV/energia até 3;
+     * Cura Profunda 2 PV/energia até 8; Cura Superior todos os PV perdidos).
+     *
+     * Nunca estoura o PV máximo nem "cura" quem está inteiro. Se o alvo estava INCONSCIENTE por PV
+     * negativo e a cura o traz de volta acima de 0, a inconsciência sai (ela é consequência do PV).
+     */
+    private fun aplicarCuraMagica(
+        alvo: Combatente, energia: Int, mecanica: com.gurps.ficha.domain.magic.MagiaMecanica, sb: StringBuilder,
+    ): Int {
+        val perdidos = (alvo.pvMax - alvo.pvAtual).coerceAtLeast(0)
+        val curado = com.gurps.ficha.domain.magic.MagicMechanics.pvCurados(mecanica, energia, perdidos)
+        if (curado <= 0) {
+            sb.append(" ${alvo.nome} já está com os PV cheios — nada a curar.")
+            return 0
+        }
+        val antes = alvo.pvAtual
+        alvo.pvAtual = (alvo.pvAtual + curado).coerceAtMost(alvo.pvMax)
+        // A inconsciência por PV negativo deixa de valer quando os PV voltam ao positivo (MB p.380).
+        if (antes <= 0 && alvo.pvAtual > 0 && Condicao.INCONSCIENTE in alvo.condicoes) {
+            alvo.condicoes.remove(Condicao.INCONSCIENTE)
+            sb.append(" ${alvo.nome} recobra a consciência!")
+        }
+        sb.append(" ✚ ${alvo.nome} recupera $curado PV (${alvo.pvAtual}/${alvo.pvMax}).")
+        return curado
     }
 
     /** Lote COND-1: mapeia a condição da `mecanica` para a enum e a impõe no alvo (Sono, Cegueira, Medo, Paralisar…). */

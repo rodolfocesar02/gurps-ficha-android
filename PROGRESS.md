@@ -3046,6 +3046,18 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - **Recomendação registrada** (maior valor × menor custo): Ataque Telegráfico (par do Enganoso), luta agarrada profunda (chaves/Mata-Leão estendendo o lote 422), Sangramento Grave + incapacitação de membro (item 5 do teste de batalha), Ataque Dedicado/Defensivo. Fora de escopo: posicional/hexágono, montaria, cinematográfico, dado de arma do NPC. Mudança só de documentação (não compila Kotlin).
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
+### Lote MEC-10 — 17 de Julho de 2026 (magias de CURA não existiam mecanicamente)
+**"As magias de cura não estão configuradas mecanicamente no combate? Não estão dando opção de escolher quanto de fadiga usar" — teste no aparelho, branch GURPS-Saga**
+- **Resposta: NÃO estavam — e a causa era ESTRUTURAL.** O `efeito` do schema não tinha valor para cura (`dano | condicao | buff | ambiente | controle | informacao | narrado`). Sem forma de dizer "restaura PV", **todas** as magias de curar caíram em `narrado`: não devolviam PV nenhum e — exatamente como o usuário notou — **não ofereciam o seletor de energia**, que só aparecia para dano e buff.
+- **Padrão de sempre**: os curadores SABIAM e escreveram na `notas` ("gasta 1 a 4 energia, restaura o DOBRO"), mas não havia CAMPO.
+- ⚠️ **Ponto cego da auditoria do LIMPEZA-4 — vale registrar**: ela examinou as **84 magias que o motor JÁ executava**, e cura não era uma delas → era **estruturalmente invisível** para aquela varredura. A auditoria acha campo faltando em magia que já funciona; nunca acharia uma CATEGORIA INTEIRA que não existe. Quem achou foi o usuário, jogando.
+- **Efeito `cura` novo**, com os números conferidos na descrição fiel: `curaPvPorEnergia`, `curaMaxPv`, `curaTotal`. Cura Superficial = 1 PV/energia, teto 3 ("Restaura até 3 PV", custo 1 a 3); Cura Profunda = 2 PV/energia, teto 8 ("até 8 PV", custo 1 a 4); Cura Superior = todos os PV perdidos (custo fixo 20).
+- **Motor** (`aplicarCuraMagica`): restaura PV de verdade, **nunca passa do PV máximo** e não "cura" quem está inteiro (curar 8 em quem perdeu 1 restaura 1). Se o alvo estava INCONSCIENTE por PV negativo e a cura o traz ao positivo, a inconsciência sai (é consequência do PV, MB p.380). Sem alvo explícito, cura o próprio operador — o caso comum no combate.
+- **UI**: o seletor de energia passa a aparecer para cura, mostrando o que ela compra ("cada 1 PF = 2 PV, até 8"); o alvo padrão é **SI MESMO** (curar o goblin por engano seria o pior default possível); o toggle "causa dano" some em magia de cura.
+- **+9 testes** (6 no `MagicMechanicsTest`: escala por energia, tetos, não estoura o perdido, Cura Superior, teto de energia derivado, cura sem número não entra no motor; 3 no `MagicCombatTest`: restaura PV no combate real, não passa do máximo).
+- ⚠️ Gate: compila nas 4 variantes; único vermelho segue sendo o **flaky pré-existente do Nexus Arcano**.
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
 ### Lote UX-1 — 17 de Julho de 2026 (conjurar em DOIS PASSOS — pedido do usuário no aparelho)
 **"Cada magia como um botão; ao selecionar abre outro diálogo com alvo/dano/energia/PV. Se o personagem tiver 200 magias, demora e fica lento o combate" — branch GURPS-Saga**
 - **O problema**: o `SubDialogoConjurar` era um diálogo ÚNICO — a lista inteira de magias em rádios e, só lá no fim da rolagem, alvo + "causa dano" + energia + queimar PV. Com muitas magias o jogador rola a lista completa **a cada conjuração** só para alcançar os parâmetros. Trava o ritmo do combate.

@@ -91,6 +91,8 @@ data class MagiaConjuravelUi(
     val energiaMax: Int = 1,
     /** O que a energia compra, em português ("+1 de Defesa a cada 2 PF, até +4"). */
     val dicaEnergia: String? = null,
+    /** Lote MEC-10: magia de CURA — o seletor de energia também vale aqui (PV por ponto de energia). */
+    val ehCura: Boolean = false,
     /** Custo aproximado (para limitar o quanto de PV o mago pode queimar). */
     val custoEstimado: Int,
     val castavel: Boolean,
@@ -1096,6 +1098,13 @@ class SagaCombatController(
                 runCatching { com.gurps.ficha.data.DataRepository.getInstance(c).getMagiaPorId(m.definicaoId)?.mecanica }.getOrNull()
             }
             val escala = com.gurps.ficha.domain.magic.MagicMechanics.escalaDeEnergia(mecUi)
+            // Lote MEC-10: cura também escala com energia — e o jogador precisa poder ESCOLHER
+            // quanto gastar (era a queixa: as magias de cura não davam essa opção).
+            val ehCuraMagia = com.gurps.ficha.domain.magic.MagicMechanics.temCuraEstruturada(mecUi)
+            val escalaCura = ehCuraMagia && mecUi != null && !mecUi.curaTotal
+            val tetoCura = if (escalaCura) com.gurps.ficha.domain.magic.MagicMechanics.tetoEnergiaCura(mecUi!!) else 1
+            val dicaCura = if (escalaCura)
+                "cada 1 PF = ${mecUi!!.curaPvPorEnergia} PV (até ${mecUi.curaMaxPv})" else null
             MagiaConjuravelUi(
                 id = m.definicaoId.ifBlank { m.nome },
                 nome = m.nome,
@@ -1112,9 +1121,10 @@ class SagaCombatController(
                 custoEstimado = (custo.base ?: custo.minimo).coerceAtLeast(1),
                 castavel = temPf,
                 motivo = if (!temPf) "sem PF" else "",
-                escalaComEnergia = escala != null,
-                energiaMax = escala?.energiaMax ?: 1,
-                dicaEnergia = escala?.dica,
+                escalaComEnergia = escala != null || escalaCura,
+                energiaMax = escala?.energiaMax ?: tetoCura,
+                dicaEnergia = escala?.dica ?: dicaCura,
+                ehCura = ehCuraMagia,
             )
         }
     }

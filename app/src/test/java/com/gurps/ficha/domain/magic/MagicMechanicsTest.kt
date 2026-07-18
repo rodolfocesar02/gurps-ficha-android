@@ -143,6 +143,47 @@ class MagicMechanicsTest {
         assertEquals("acima do teto o efeito não cresce", 4, MagicMechanics.calcularBuff(escudo, teto + 10, "heroi").bd)
     }
 
+    // ── Lote MEC-10: CURA (o `efeito` não tinha valor para curar — tudo caía em "narrado") ───────
+
+    private val superficial = MagiaMecanica(efeito = "cura", curaPvPorEnergia = 1, curaMaxPv = 3)
+    private val profunda = MagiaMecanica(efeito = "cura", curaPvPorEnergia = 2, curaMaxPv = 8)
+    private val superior = MagiaMecanica(efeito = "cura", curaTotal = true)
+
+    @Test fun `Cura Superficial restaura 1 PV por energia, teto 3`() {
+        assertEquals(2, MagicMechanics.pvCurados(superficial, energia = 2, pvPerdidos = 10))
+        assertEquals("teto da magia", 3, MagicMechanics.pvCurados(superficial, energia = 9, pvPerdidos = 10))
+    }
+
+    @Test fun `Cura Profunda restaura o DOBRO por energia, teto 8`() {
+        assertEquals(6, MagicMechanics.pvCurados(profunda, energia = 3, pvPerdidos = 10))
+        assertEquals("teto da magia", 8, MagicMechanics.pvCurados(profunda, energia = 9, pvPerdidos = 10))
+    }
+
+    @Test fun `cura NUNCA estoura o que o alvo realmente perdeu`() {
+        // Curar 8 em quem perdeu 2 restaura 2 — não inventa PV acima do máximo.
+        assertEquals(2, MagicMechanics.pvCurados(profunda, energia = 4, pvPerdidos = 2))
+        assertEquals(0, MagicMechanics.pvCurados(profunda, energia = 4, pvPerdidos = 0))
+    }
+
+    @Test fun `Cura Superior restaura TODOS os PV perdidos`() {
+        assertEquals(17, MagicMechanics.pvCurados(superior, energia = 1, pvPerdidos = 17))
+        assertEquals(0, MagicMechanics.pvCurados(superior, energia = 1, pvPerdidos = 0))
+    }
+
+    @Test fun `teto de energia da cura vem do teto de PV — Profunda 8 por 2 = 4`() {
+        assertEquals(3, MagicMechanics.tetoEnergiaCura(superficial)) // 3 PV ÷ 1 por energia
+        assertEquals(4, MagicMechanics.tetoEnergiaCura(profunda))    // 8 PV ÷ 2 por energia
+        assertEquals("custo fixo: não há energia a escolher", 1, MagicMechanics.tetoEnergiaCura(superior))
+    }
+
+    @Test fun `so conta como cura quem tem numero — magia de cura narrada nao entra no motor`() {
+        assertTrue(MagicMechanics.temCuraEstruturada(superficial))
+        assertTrue(MagicMechanics.temCuraEstruturada(superior))
+        assertFalse(MagicMechanics.temCuraEstruturada(MagiaMecanica(efeito = "cura"))) // sem número
+        assertFalse(MagicMechanics.temCuraEstruturada(MagiaMecanica(efeito = "narrado")))
+        assertFalse(MagicMechanics.temCuraEstruturada(null))
+    }
+
     @Test fun `penalidade da condicao por PV (Relampago -1 a cada 2 PV)`() {
         assertEquals(-3, MagicMechanics.penalidadeCondicaoPorPv("HT_por_pv", pvSofridos = 6))
         assertEquals(-3, MagicMechanics.penalidadeCondicaoPorPv("HT-3", pvSofridos = 1))

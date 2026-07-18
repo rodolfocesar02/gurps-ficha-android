@@ -701,6 +701,31 @@ class MagicCombatTest {
         assertEquals(htBase + 4, s.heroiPerfil.ht)
     }
 
+    // ── Lote MEC-10: magia de CURA restaura PV no combate ───────────────────────────────────────
+
+    @Test
+    fun `Cura Profunda restaura PV do heroi ferido (2 PV por energia)`() {
+        val s = sessao(7)
+        s.heroi.pvAtual = 4 // ferido (max 12)
+        val cura = MagiaMecanica(efeito = "cura", curaPvPorEnergia = 2, curaMaxPv = 8)
+        val ctx = ContextoConjuracao(nhBasico = 25, classe = MagicClassParser.parse("Comum"),
+            mana = NivelMana.NORMAL, mecanica = cura)
+        s.heroiConjurar(ctx, MagicEnergy.parse("1 a 4"), energiaInvestida = 3, magiaNome = "Cura Profunda", alvoId = null)
+        assertEquals("3 de energia × 2 PV = 6, de 4 para 10", 10, s.heroi.pvAtual)
+        assertTrue(s.log.any { it.contains("recupera") })
+    }
+
+    @Test
+    fun `cura nao passa do PV maximo`() {
+        val s = sessao(7)
+        s.heroi.pvAtual = 11 // perdeu só 1 (max 12)
+        val cura = MagiaMecanica(efeito = "cura", curaPvPorEnergia = 2, curaMaxPv = 8)
+        val ctx = ContextoConjuracao(nhBasico = 25, classe = MagicClassParser.parse("Comum"),
+            mana = NivelMana.NORMAL, mecanica = cura)
+        s.heroiConjurar(ctx, MagicEnergy.parse("1 a 4"), energiaInvestida = 4, magiaNome = "Cura Profunda", alvoId = null)
+        assertEquals("cura 8 em quem perdeu 1 → restaura 1", 12, s.heroi.pvAtual)
+    }
+
     @Test
     fun `Nublar no heroi penaliza quem tenta acerta-lo`() {
         val s = sessao(7)

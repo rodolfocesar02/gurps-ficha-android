@@ -9,8 +9,24 @@ package com.gurps.ficha.domain.magic
  * Elemental). Escola por escola, começando por Ar.
  */
 data class MagiaMecanica(
-    /** "dano" | "condicao" | "buff" | "ambiente" | "controle" | "informacao" | "narrado". */
+    /** "dano" | "cura" | "condicao" | "buff" | "ambiente" | "controle" | "informacao" | "narrado". */
     val efeito: String = "narrado",
+
+    // ── efeito "cura" (Lote MEC-10) ──────────────────────────────────────────────────────────────
+    /**
+     * PV restaurados por ponto de energia: Cura Superficial = 1 ("restaura o mesmo valor", até 3 PV);
+     * Cura Profunda = 2 ("o dobro", até 8 PV).
+     *
+     * Existe porque o `efeito` NÃO tinha valor para cura — as magias de curar ficavam todas em
+     * "narrado", sem restaurar PV e **sem seletor de energia** (o jogador nem escolhia quanto gastar).
+     * A auditoria do LIMPEZA-4 não pegou isto: ela só olhou as 84 magias que o motor JÁ executava, e
+     * cura não era uma delas — ponto cego estrutural daquela varredura.
+     */
+    val curaPvPorEnergia: Int = 0,
+    /** Teto de PV que a magia cura numa operação (Superficial 3, Profunda 8). 0 = sem teto próprio. */
+    val curaMaxPv: Int = 0,
+    /** true = restaura TODOS os PV perdidos (Cura Superior, custo fixo 20). Ignora os campos acima. */
+    val curaTotal: Boolean = false,
 
     // ── efeito "dano" ──
     /** Dado por unidade de energia (ex.: "1d-1" no Relâmpago, "1d+1" no Toque Chocante). */
@@ -140,6 +156,30 @@ object MagicMechanics {
 
     /** true se a mágica tem dano estruturado que o motor aplica automaticamente. */
     fun temDanoEstruturado(m: MagiaMecanica?): Boolean = m?.efeito == "dano" && m.danoPorEnergia != null
+
+    /** true se a mágica CURA PV de forma estruturada (Lote MEC-10). */
+    fun temCuraEstruturada(m: MagiaMecanica?): Boolean =
+        m?.efeito == "cura" && (m.curaTotal || m.curaPvPorEnergia > 0)
+
+    /**
+     * PV que a magia restaura com [energia] investida, respeitando o teto da própria magia e o que o
+     * alvo REALMENTE perdeu (curar 8 em quem perdeu 2 restaura 2 — não estoura o PV máximo).
+     */
+    fun pvCurados(m: MagiaMecanica, energia: Int, pvPerdidos: Int): Int {
+        if (pvPerdidos <= 0) return 0
+        if (m.curaTotal) return pvPerdidos
+        val porEnergia = m.curaPvPorEnergia.coerceAtLeast(0)
+        if (porEnergia == 0) return 0
+        val bruto = porEnergia * energia.coerceAtLeast(1)
+        val comTeto = if (m.curaMaxPv > 0) minOf(bruto, m.curaMaxPv) else bruto
+        return minOf(comTeto, pvPerdidos)
+    }
+
+    /** Energia que ainda compra cura (acima disso o teto da magia trava). Ex.: Profunda 8/2 = 4. */
+    fun tetoEnergiaCura(m: MagiaMecanica): Int {
+        if (m.curaTotal || m.curaPvPorEnergia <= 0) return 1
+        return if (m.curaMaxPv > 0) (m.curaMaxPv / m.curaPvPorEnergia).coerceAtLeast(1) else 1
+    }
 
     /** true se o buff tem NÚMERO que o motor aplica (senão é narrado — regra de ouro). */
     fun temBuffEstruturado(m: MagiaMecanica?): Boolean = m != null && m.efeito == "buff" &&
