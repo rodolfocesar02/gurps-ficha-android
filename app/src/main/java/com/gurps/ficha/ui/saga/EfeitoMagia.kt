@@ -4,7 +4,17 @@ import androidx.compose.ui.graphics.Color
 import com.gurps.ficha.domain.magic.MagiaMecanica
 
 /**
- * Lote VFX-1 (protótipo): efeitos visuais das mágicas no combate.
+ * ⚠️ PROTÓTIPO NÃO LIGADO (Lote VFX-1 / marcado no LIMPEZA-3).
+ *
+ * **Este arquivo e o [EfeitoMagiaCanvas] ainda NÃO têm nenhum chamador em produção.** O mapeamento
+ * abaixo está correto e coberto por testes (`VfxMapperTest`), mas nada dispara os efeitos no combate:
+ * falta a integração com o grid (o motor emitir "magia X saiu do hexágono A para o B", a UI converter
+ * para pixels e animar). Decisão consciente do usuário: **mecânica 100% primeiro, arte visual depois.**
+ *
+ * Se você chegou aqui procurando por que os efeitos não aparecem no jogo: é isto. Não é bug — é lote
+ * pendente. Ao ligar, remova este aviso.
+ *
+ * ── Lote VFX-1 (protótipo): efeitos visuais das mágicas no combate ──
  *
  * A ideia central: NÃO precisamos de 84 efeitos únicos. As mágicas mecânicas caem em poucos
  * ARQUÉTIPOS de movimento (projétil, explosão, toque, flash, aura…), e a cor vem do ELEMENTO. Um

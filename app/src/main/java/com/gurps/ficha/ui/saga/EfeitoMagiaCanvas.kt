@@ -14,6 +14,8 @@ import kotlin.math.sin
 import kotlin.random.Random
 
 /**
+ * ⚠️ PROTÓTIPO NÃO LIGADO — nenhum chamador em produção ainda (ver aviso em `EfeitoMagia.kt`).
+ *
  * Lote VFX-1 (protótipo): desenha um [EfeitoVfx] no Canvas do combate, entre [origem] (o conjurador)
  * e [alvo]. Partículas puras — sem dependência nova, mesma tecnologia do grid hexagonal.
  *
