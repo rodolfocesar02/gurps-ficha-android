@@ -1092,7 +1092,10 @@ class SagaCombatController(
                 ehProjetil = ehProjetil,
                 ehArea = ehArea,
                 ehToque = ehToque,
-                aptidaoMagica = aptidao.coerceAtLeast(1),
+                // Lote MEC-9: o teto do seletor de DANO vem da REGRA da magia ("1 a 3" → 3;
+                // "2 a 2×AM" → 2×Aptidão), não mais da Aptidão pura. Sem isto o MEC-7 deixava
+                // despejar 10 num Toque Candente (custo 1 a 3) e sair 10d.
+                aptidaoMagica = MagicEnergy.tetoDeEnergiaDano(m.energia, aptidao),
                 custoEstimado = (custo.base ?: custo.minimo).coerceAtLeast(1),
                 castavel = temPf,
                 motivo = if (!temPf) "sem PF" else "",

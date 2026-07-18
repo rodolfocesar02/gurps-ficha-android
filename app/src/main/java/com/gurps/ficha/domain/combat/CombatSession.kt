@@ -688,15 +688,14 @@ class CombatSession(
             danoBasico = gf.dano; rdAlvo = gf.rd; forcaGrave = gf.grave
             log += "  ⭐ Golpe Fulminante — ${gf.nota}"
         }
-        var danoBruto = if (meioDano) danoBasico / 2 else danoBasico
-        // MEC-2 — Arma Flamejante/Congelante/de Relâmpago (+2): o bônus entra APÓS penetrar a RD, e só
-        // se o dado base penetrou. Como a RD é subtraída dentro do resolver, somar aqui dá o mesmo:
-        // (dano+2) − RD == (dano − RD) + 2. `armaTipo` impede o +2 do gume vazar para o arco.
+        val danoBruto = if (meioDano) danoBasico / 2 else danoBasico
+        // Lote MEC-9 (CORRIGE o MEC-2) — Arma Flamejante/Congelante/de Relâmpago (+2). O livro diz
+        // "após a penetração da armadura E OS MODIFICADORES DE FERIMENTO". O MEC-2 somava ANTES da RD
+        // com a justificativa de que (dano+2)−RD == (dano−RD)+2 — verdade para subtração pura, mas o
+        // multiplicador de ferimento vem DEPOIS da RD, então o +2 era multiplicado junto: corte ×1,5
+        // virava +3, perfuração ×2 virava +4. Agora vai como bônus PÓS-RD no resolver.
+        // `armaTipo` impede o +2 do gume vazar para o arco.
         val bonusArmaMagica = heroi.buffs.filter { it.danoArma > 0 && it.danoArmaVale(ataque.aDistancia) }.sumOf { it.danoArma }
-        if (bonusArmaMagica > 0 && danoBruto > rdAlvo) {
-            danoBruto += bonusArmaMagica
-            log += "  └ 🔥 a arma encantada soma +$bonusArmaMagica de dano após penetrar a RD."
-        }
 
         val troca = CombatResolver.resolverTroca(
             defensor = alvo, htDefensor = alvo.htEfetivo, ataque = atk,
@@ -704,7 +703,8 @@ class CombatSession(
             surpresa = costasNpc, // Lote TOK-5a: ataque pelas costas anula a defesa do NPC (MB p.374)
             danoBaseRolado = danoBruto, danoTipo = ataque.tipo,
             local = local, rdLocal = rdAlvo, randomFerimento = random, forcarFerimentoGrave = forcaGrave,
-            tolerancia = alvo.stats?.tolerancia ?: ToleranciaFerimentos.NORMAL
+            tolerancia = alvo.stats?.tolerancia ?: ToleranciaFerimentos.NORMAL,
+            bonusAposRd = bonusArmaMagica // MEC-9: entra depois da RD e do multiplicador de ferimento
         )
         if (penFinta > 0) log += "  └ finta: a defesa de ${alvo.nome} cai −$penFinta neste golpe (${defValor}→${defValorFinal})."
         log += narrarTroca("Você", alvo.nome, ataque.rotulo.substringBefore(" (").trim(), ataque.aDistancia, atk, defTipo, troca, local, ataque.tipo)

@@ -244,6 +244,30 @@ class MagicCastingTest {
         assertNull(marcador.manutencao)
     }
 
+    // ── Lote MEC-9: teto de energia (o MEC-7 abriu a porta para dano inflado) ───────────────────
+
+    @Test fun `faixa simples limita o dano — Toque Candente 1 a 3 nao aceita 10`() {
+        // O bug: com o seletor do MEC-7 e sem teto, 10 de energia saía 10d numa magia de custo 1 a 3.
+        assertEquals(3, MagicEnergy.tetoDeEnergiaDano("1 a 3", aptidaoMagica = 5))
+        assertEquals(4, MagicEnergy.tetoDeEnergiaDano("1 a 4", aptidaoMagica = 9))
+        assertEquals(6, MagicEnergy.tetoDeEnergiaDano("2 a 6", aptidaoMagica = 2))
+    }
+
+    @Test fun `teto por APTIDAO nao pode ser lido como faixa — 2 a 2xAM e 2 vezes a aptidao`() {
+        // Armadilha real do catálogo: o regex de faixa leria "2 a 2" e daria teto 2 (restritivo demais).
+        assertEquals(6, MagicEnergy.tetoDeEnergiaDano("2 a 2×AM#", aptidaoMagica = 3))
+        assertEquals(8, MagicEnergy.tetoDeEnergiaDano("2 a 2x AM", aptidaoMagica = 4))
+    }
+
+    @Test fun `Projetil Varia usa a Aptidao Magica (Magia p12)`() {
+        assertEquals(4, MagicEnergy.tetoDeEnergiaDano("Varia", aptidaoMagica = 4))
+        assertEquals(1, MagicEnergy.tetoDeEnergiaDano("Varia", aptidaoMagica = 0)) // piso 1
+    }
+
+    @Test fun `custo FIXO e o proprio teto`() {
+        assertEquals(5, MagicEnergy.tetoDeEnergiaDano("5", aptidaoMagica = 9))
+    }
+
     @Test fun `Varia continua variavel e sem manutencao declarada`() {
         val c = MagicEnergy.parse("Varia")
         assertTrue(c.variavel)

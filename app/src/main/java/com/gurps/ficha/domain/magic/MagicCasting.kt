@@ -46,6 +46,38 @@ data class CustoEnergia(
 )
 
 object MagicEnergy {
+
+    /**
+     * Lote MEC-9: TETO de energia que ainda compra efeito numa magia de DANO.
+     *
+     * Existe porque o MEC-7 (seletor de energia) abriu uma porta: sem teto, o jogador despeja 10 num
+     * Toque Candente ("Custo: 1 a 3") e sai **10d**. O livro limita cada magia.
+     *
+     * Formatos reais do catálogo:
+     *  - `"1 a 3"` → teto 3 (faixa simples).
+     *  - `"2 a 2×AM"` / `"2 a 2x AM"` → teto 2 × Aptidão Mágica. ⚠️ O regex de faixa leria "2 a 2" e
+     *    daria teto 2 — restringiria demais. Por isso o "AM" é testado ANTES.
+     *  - `"Varia"` (Projétil) → até a Aptidão Mágica por segundo (Magia p.12).
+     *  - custo fixo (`"5"`) → é o próprio custo; não há o que escolher.
+     */
+    fun tetoDeEnergiaDano(energiaTexto: String?, aptidaoMagica: Int): Int {
+        val am = aptidaoMagica.coerceAtLeast(1)
+        val t = energiaTexto?.lowercase()?.trim().orEmpty()
+        if (t.isBlank()) return am
+        // "N a M×AM" → M × Aptidão (tem que vir antes da faixa simples).
+        Regex("""(\d+)\s*[x×]\s*am""").find(t)?.let { m ->
+            return (m.groupValues[1].toIntOrNull() ?: 1).coerceAtLeast(1) * am
+        }
+        if ("am" in t) return am // "até a AM por segundo"
+        if ("varia" in t) return am
+        FAIXA.find(t)?.let { m ->
+            val hi = maxOf(m.groupValues[1].toInt(), m.groupValues[2].toInt())
+            return hi.coerceAtLeast(1)
+        }
+        // Custo fixo: o próprio valor é o teto.
+        PRIMEIRO_INT.find(t)?.value?.toIntOrNull()?.let { if (it > 0) return it }
+        return am
+    }
     /**
      * Lote MEC-5 — "04/02" no catálogo é **operar/manter**, NÃO uma fração. O regex de fração antigo
      * casava primeiro e transformava o custo de 307 mágicas em número quebrado (Agonizar "08/06"

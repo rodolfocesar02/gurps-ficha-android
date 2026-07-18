@@ -162,7 +162,16 @@ object CombatResolver {
         rdLocal: Int,
         randomFerimento: kotlin.random.Random,
         forcarFerimentoGrave: Boolean = false,
-        tolerancia: ToleranciaFerimentos = ToleranciaFerimentos.NORMAL
+        tolerancia: ToleranciaFerimentos = ToleranciaFerimentos.NORMAL,
+        /**
+         * Lote MEC-9: bônus que entra DEPOIS da RD **e do multiplicador de ferimento** — é assim que
+         * as armas encantadas funcionam: "causa mais 2 pontos de dano após a penetração da armadura
+         * e os modificadores de ferimento" (Magia, Arma Flamejante/Congelante/de Relâmpago).
+         *
+         * Não dá para somar antes: o MEC-2 fazia isso e o +2 acabava MULTIPLICADO pelo modificador
+         * (corte ×1,5 virava +3; perfuração ×2 virava +4). Só conta se o dado base penetrou a RD.
+         */
+        bonusAposRd: Int = 0,
     ): RelatorioTroca {
         if (ataque.resultado == CombatActions.ResultadoAcerto.FALHA) {
             return RelatorioTroca(ataque, false, null, null, false, null, null, "${ataque.texto} → erra, sem defesa necessária.")
@@ -176,7 +185,14 @@ object CombatResolver {
                 "${ataque.texto} → ${defesaTipo.rotulo} $defesaValorFinal, rolou $defesaSoma: DEFENDEU.")
         }
 
-        val dano = HitLocationRules.aplicarDano(defensor.pvMax, danoBaseRolado, danoTipo, local, rdLocal, tolerancia)
+        val danoBruto = HitLocationRules.aplicarDano(defensor.pvMax, danoBaseRolado, danoTipo, local, rdLocal, tolerancia)
+        // Lote MEC-9: o bônus da arma encantada entra AQUI — depois da RD e do multiplicador — e só
+        // se o dado base penetrou (bônus não fura armadura sozinho, Magia p. Arma Flamejante).
+        val extra = if (bonusAposRd > 0 && danoBruto.pvSubtrair > 0) bonusAposRd else 0
+        val dano = if (extra > 0) danoBruto.copy(
+            pvSubtrair = danoBruto.pvSubtrair + extra,
+            texto = danoBruto.texto + " +$extra (arma encantada, após RD)"
+        ) else danoBruto
         // Lote PONTE-2: passa tipo/local p/ marcar sangramento (corte/perfuração). É o funil principal de ferimento.
         val ferimento = InjuryRules.ferir(defensor, dano.pvSubtrair, htDefensor, randomFerimento, forcarFerimentoGrave,
             tipo = danoTipo, local = local)

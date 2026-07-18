@@ -107,4 +107,55 @@ class CombatResolverTest {
         assertNull(trocaDef.dano)
         assertEquals(pvAntes, goblin.pvAtual) // aparou: sem dano
     }
+
+    // ── Lote MEC-9: bônus da arma encantada entra DEPOIS da RD e do multiplicador ────────────────
+
+    private fun ataqueQueAcerta() = CombatActions.RelatorioAtaque(
+        calculo = CombatActions.calcularNH(14, Manobra.ATAQUE),
+        dados = listOf(4, 4, 2), soma = 10,
+        resultado = CombatActions.ResultadoAcerto.ACERTO, margem = 4,
+        critico = CriticoRules.ResultadoCritico.NORMAL,
+        atacanteSemDefesaAtiva = false, semApararDepois = false, texto = "ataque"
+    )
+
+    @Test
+    fun `bonus da arma encantada NAO e multiplicado pelo modificador de ferimento`() {
+        // O bug do MEC-2: o +2 era somado ao dano BRUTO, então o multiplicador de CORTE (×1,5) o
+        // multiplicava junto — virava +3. O livro manda somar "após a RD E os modificadores".
+        // Dano 8, RD 2 → penetra 6 → corte ×1,5 = 9 → +2 = 11 (e NÃO (8+2−2)×1,5 = 12).
+        val goblin = Combatente("g", "Goblin", dx = 11, velocidadeBasica = 5.0, deslocamento = 5, pvMax = 30, pvAtual = 30)
+        val troca = CombatResolver.resolverTroca(
+            defensor = goblin, htDefensor = 10, ataque = ataqueQueAcerta(),
+            defesaTipo = CombatResolver.TipoDefesa.ESQUIVA, defesaValorFinal = 3, defesaSoma = 18, // falha a defesa
+            surpresa = false, danoBaseRolado = 8, danoTipo = DanoTipo.CORT, local = LocalAtaque.TORSO, rdLocal = 2,
+            randomFerimento = Random(1), bonusAposRd = 2
+        )
+        assertEquals("penetrou 6, corte ×1,5 = 9, +2 depois = 11", 11, troca.dano!!.pvSubtrair)
+    }
+
+    @Test
+    fun `bonus da arma encantada NAO fura armadura sozinho`() {
+        // Dado base não penetrou (dano 3 vs RD 5) → o +2 não deve criar ferimento do nada.
+        val goblin = Combatente("g", "Goblin", dx = 11, velocidadeBasica = 5.0, deslocamento = 5, pvMax = 20, pvAtual = 20)
+        val troca = CombatResolver.resolverTroca(
+            defensor = goblin, htDefensor = 10, ataque = ataqueQueAcerta(),
+            defesaTipo = CombatResolver.TipoDefesa.ESQUIVA, defesaValorFinal = 3, defesaSoma = 18,
+            surpresa = false, danoBaseRolado = 3, danoTipo = DanoTipo.CORT, local = LocalAtaque.TORSO, rdLocal = 5,
+            randomFerimento = Random(1), bonusAposRd = 2
+        )
+        assertEquals("não penetrou: bônus não conta", 0, troca.dano!!.pvSubtrair)
+        assertEquals(20, goblin.pvAtual)
+    }
+
+    @Test
+    fun `sem bonus o comportamento e o de antes (regressao)`() {
+        val goblin = Combatente("g", "Goblin", dx = 11, velocidadeBasica = 5.0, deslocamento = 5, pvMax = 30, pvAtual = 30)
+        val troca = CombatResolver.resolverTroca(
+            defensor = goblin, htDefensor = 10, ataque = ataqueQueAcerta(),
+            defesaTipo = CombatResolver.TipoDefesa.ESQUIVA, defesaValorFinal = 3, defesaSoma = 18,
+            surpresa = false, danoBaseRolado = 8, danoTipo = DanoTipo.CORT, local = LocalAtaque.TORSO, rdLocal = 2,
+            randomFerimento = Random(1)
+        )
+        assertEquals("penetrou 6 × 1,5 = 9", 9, troca.dano!!.pvSubtrair)
+    }
 }
