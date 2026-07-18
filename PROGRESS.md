@@ -3046,6 +3046,15 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - **Recomendação registrada** (maior valor × menor custo): Ataque Telegráfico (par do Enganoso), luta agarrada profunda (chaves/Mata-Leão estendendo o lote 422), Sangramento Grave + incapacitação de membro (item 5 do teste de batalha), Ataque Dedicado/Defensivo. Fora de escopo: posicional/hexágono, montaria, cinematográfico, dado de arma do NPC. Mudança só de documentação (não compila Kotlin).
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
+### Lote MEC-19 — 18 de Julho de 2026 (escapar da condição por teste de atributo — o gelo)
+**Continuação de "faça os 10 buracos de schema que faltam!" — branch GURPS-Saga**
+- **O problema**: o Toque Congelante virava `condicao: paralisado` genérica — **sem saída nenhuma**. Combinado com o MEC-17 (que só faz condição sair por TEMPO) e sem prazo no catálogo, a vítima ficava paralisada para sempre. O livro dá a saída: *"não pode tomar nenhuma ação até que ele **rompa o gelo com um teste de ST** bem-sucedido com uma penalidade de **-1 por cada 0,5cm de gelo**"*, e *"Custo: **2 por 0,5cm**"* → −1 a cada 2 pontos de energia.
+- **Implementado**: `condicaoEscapeAtributo` + `condicaoEscapeEnergiaPorPonto` no schema, `EscapeCondicao` no Combatente, e a tentativa de romper resolvida no avanço do turno — a vítima gasta o turno tentando; sucesso liberta na hora, falha tenta de novo. Tudo aparece no log.
+- **Terceira via de saída de condição**, agora completas: por **tempo** (MEC-17), por **teste de resistência na imposição** (MEC-18) e por **escape recorrente** (MEC-19).
+- **+2 testes** (a penalidade escalando com a energia; e o preso tentando romper todo turno).
+- ⚠️ Gate: **738 testes nas DUAS variantes**; único vermelho segue sendo o **flaky pré-existente do Nexus Arcano**.
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
 ### Lote MEC-18 — 18 de Julho de 2026 (condição imposta SEM teste; duração escalada pela energia)
 **Continuação de "faça os 10 buracos de schema que faltam!" — branch GURPS-Saga**
 - **🔴 Bug real achado ao conferir um item que eu achava falso positivo**: a auditoria dizia que "Vontade não existe no enum". **É falso positivo mesmo** — Deturpar/Medo/Pânico/Quietude têm `R-Vont` na CLASSE e já resistem por Vontade corretamente. **Mas do lado disso apareceu coisa pior**: o ramo de magia de condição só testava resistência quando a CLASSE trazia `R-XXX`. O **Jato de Som** é classe `Comum` — logo **atordoava sem teste nenhum**, quando o livro manda *"teste contra seu HT MENOS o custo de energia da mágica"*. O mesmo valia para **Jato de Areia/Lama/Neve** (classe Comum, o livro manda testar HT para não cegar).

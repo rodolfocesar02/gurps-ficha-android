@@ -96,6 +96,14 @@ data class MagiaMecanica(
      * (`condicaoDuracaoSeg`), que nestas magias é 0 — a duração é toda escalada.
      */
     val condicaoDuracaoSegPorEnergia: Int = 0,
+    /**
+     * Lote MEC-19: a condição não sai por tempo nem por HT — a vítima ESCAPA testando um atributo.
+     * Toque Congelante: *"não pode tomar nenhuma ação até que ele rompa o gelo com um teste de ST
+     * bem-sucedido com uma penalidade de -1 por cada 0,5cm de gelo"*, e *"Custo: 2 por 0,5cm"* —
+     * logo −1 a cada [condicaoEscapeEnergiaPorPonto] pontos de energia investidos.
+     */
+    val condicaoEscapeAtributo: String? = null,
+    val condicaoEscapeEnergiaPorPonto: Int = 0,
 
     // ── condição embutida (rider no dano ou standalone) ──
     /** Condição imposta ("atordoado", "cego"…). */
@@ -374,6 +382,13 @@ object MagicMechanics {
     fun duracaoCondicaoSeg(m: MagiaMecanica?, energiaInvestida: Int): Int {
         if (m == null) return 0
         return m.condicaoDuracaoSeg + m.condicaoDuracaoSegPorEnergia * energiaInvestida.coerceAtLeast(0)
+    }
+
+    /** Lote MEC-19: penalidade no teste de fuga, pela energia investida (−1 a cada N pontos). */
+    fun penalidadeEscapeCondicao(m: MagiaMecanica?, energiaInvestida: Int): Int {
+        val porPonto = m?.condicaoEscapeEnergiaPorPonto ?: 0
+        if (porPonto <= 0) return 0
+        return -(energiaInvestida.coerceAtLeast(0) / porPonto)
     }
 
     fun temTesteProprioDeCondicao(m: MagiaMecanica?): Boolean =

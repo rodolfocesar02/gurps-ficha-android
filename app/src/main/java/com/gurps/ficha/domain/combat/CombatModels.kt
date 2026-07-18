@@ -130,6 +130,17 @@ data class NpcStats(
  * Um combatente no encontro. Os campos de ESTADO mutável (pv/pf/postura/condições) mudam
  * durante a luta; os imutáveis definem a iniciativa e o alcance.
  */
+/**
+ * Lote MEC-19: condição da qual a vítima escapa por teste de atributo, e não por tempo.
+ * [penalidade] já vem negativa (o −1 por 0,5cm de gelo do Toque Congelante).
+ */
+data class EscapeCondicao(
+    val condicao: Condicao,
+    val atributo: String,
+    val penalidade: Int,
+    val descricao: String,
+)
+
 data class Combatente(
     val id: String,
     val nome: String,
@@ -148,6 +159,11 @@ data class Combatente(
      * gelo, sono até ser acordado) ficam fora e continuam saindo pelas suas próprias regras.
      */
     val condicoesTemporarias: MutableMap<Condicao, Int> = mutableMapOf(),
+    /**
+     * Lote MEC-19: condição da qual se ESCAPA testando um atributo (o gelo do Toque Congelante),
+     * em vez de sair por tempo. `null` = nenhuma.
+     */
+    var escapeCondicao: EscapeCondicao? = null,
     var defesasUsadas: DefesasUsadas = DefesasUsadas(),
     /** Lote 382: PV perdidos desde o último turno deste combatente → penalidade de Choque no próximo (MB p.419). */
     var choquePendente: Int = 0,

@@ -18803,7 +18803,9 @@
       "efeito": "condicao",
       "entrega": "toque",
       "condicao": "paralisado",
-      "notas": "Toque cobre o alvo inteiro de gelo: imobilizado, não age até romper com teste de ST (-1 por 0,5cm de gelo). Gelo tem RD 1/cm, quebra a 0,5cm por dano básico. Choque térmico: teste HT (perde PF). 2 energia por 0,5cm. Fere criaturas de fogo (1d-1 por 0,5cm)."
+      "notas": "Toque cobre o alvo inteiro de gelo: imobilizado, não age até romper com teste de ST (-1 por 0,5cm de gelo). Gelo tem RD 1/cm, quebra a 0,5cm por dano básico. Choque térmico: teste HT (perde PF). 2 energia por 0,5cm. Fere criaturas de fogo (1d-1 por 0,5cm).",
+      "condicaoEscapeAtributo": "ST",
+      "condicaoEscapeEnergiaPorPonto": 2
     },
     "duracaoTipo": "permanente",
     "duracaoSeg": 0,

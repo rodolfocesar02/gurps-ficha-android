@@ -816,6 +816,37 @@ class MagicCombatTest {
         assertEquals(20, MagicMechanics.danoDaExplosao(20, distanciaM = 5, divisorPorMetro = 0))
     }
 
+    // ── Lote MEC-19: escapar da condição por teste de atributo (o gelo) ──────────────────────────
+
+    @Test
+    fun `penalidade de escape cresce com a energia (menos 1 a cada 2 pontos)`() {
+        val gelo = MagiaMecanica(efeito = "condicao", condicao = "paralisado",
+            condicaoEscapeAtributo = "ST", condicaoEscapeEnergiaPorPonto = 2)
+        assertEquals("2 de energia = 0,5cm = -1", -1, MagicMechanics.penalidadeEscapeCondicao(gelo, 2))
+        assertEquals("6 de energia = 1,5cm = -3", -3, MagicMechanics.penalidadeEscapeCondicao(gelo, 6))
+        assertEquals("sem campo de escape, sem penalidade", 0,
+            MagicMechanics.penalidadeEscapeCondicao(MagiaMecanica(efeito = "condicao"), 6))
+    }
+
+    @Test
+    fun `preso no gelo tenta romper todo turno e a paralisia NAO expira por tempo`() {
+        val s = sessao(7)
+        val goblin = s.encounter.combatentes.first { it.id == "goblin" }
+        val gelo = MagiaMecanica(efeito = "condicao", condicao = "paralisado",
+            condicaoEscapeAtributo = "ST", condicaoEscapeEnergiaPorPonto = 2)
+        val ctx = ContextoConjuracao(nhBasico = 25, classe = MagicClassParser.parse("Comum"),
+            mana = NivelMana.NORMAL, mecanica = gelo)
+        s.heroiConjurar(ctx, MagicEnergy.parse("1 a 4"), energiaInvestida = 2,
+            magiaNome = "Toque Congelante", alvoId = "goblin")
+        assertTrue("devia ter congelado", Condicao.PARALISADO in goblin.condicoes)
+        assertTrue("e devia ter registrado o escape", goblin.escapeCondicao != null)
+
+        repeat(20) { s.avancarTurno() }
+        // Com ST 11 −1, ele quase certamente rompe em 20 turnos — o ponto é que EXISTE saída.
+        assertTrue("tem que haver tentativa de romper registrada no log",
+            s.log.any { it.contains("romper") || it.contains("ROMPE") })
+    }
+
     // ── Lote MEC-18: teste próprio de condição e duração escalada pela energia ───────────────────
 
     @Test

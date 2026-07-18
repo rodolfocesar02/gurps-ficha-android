@@ -1060,9 +1060,9 @@ class CombatSession(
                             .resistenciaEfetivaDaCondicao(mec, alvo.htEfetivo, energiaInvestida, rdAlvo)
                         val rolCond = rolar3d6()
                         if (rolCond <= alvoHt) sb.append(" ${alvo.nome} RESISTE (teste $alvoHt, rolou $rolCond).")
-                        else imporCondicaoMagica(alvo, mec.condicao, sb, com.gurps.ficha.domain.magic.MagicMechanics.duracaoCondicaoSeg(mec, energiaInvestida))
+                        else imporCondicaoMagica(alvo, mec.condicao, sb, com.gurps.ficha.domain.magic.MagicMechanics.duracaoCondicaoSeg(mec, energiaInvestida), escapeDaMecanica(mec, energiaInvestida))
                     } else {
-                        imporCondicaoMagica(alvo, mec.condicao, sb, com.gurps.ficha.domain.magic.MagicMechanics.duracaoCondicaoSeg(mec, energiaInvestida))
+                        imporCondicaoMagica(alvo, mec.condicao, sb, com.gurps.ficha.domain.magic.MagicMechanics.duracaoCondicaoSeg(mec, energiaInvestida), escapeDaMecanica(mec, energiaInvestida))
                     }
                 } else if (!alvoResistiu && TipoClasseMagia.PROJETIL in ctx.classe.classes && alvo != null) {
                     val energia = energiaInvestida.coerceAtLeast(1)
@@ -1322,12 +1322,28 @@ class CombatSession(
     }
 
     /** Lote COND-1: mapeia a condição da `mecanica` para a enum e a impõe no alvo (Sono, Cegueira, Medo, Paralisar…). */
+    /** Lote MEC-19: monta o escape da condição a partir da mecânica curada, se houver. */
+    private fun escapeDaMecanica(
+        m: com.gurps.ficha.domain.magic.MagiaMecanica?,
+        energiaInvestida: Int,
+    ): EscapeCondicao? {
+        val attr = m?.condicaoEscapeAtributo ?: return null
+        return EscapeCondicao(
+            condicao = Condicao.PARALISADO, // sobrescrito pela condição real em imporCondicaoMagica
+            atributo = attr,
+            penalidade = com.gurps.ficha.domain.magic.MagicMechanics.penalidadeEscapeCondicao(m, energiaInvestida),
+            descricao = "o gelo",
+        )
+    }
+
     private fun imporCondicaoMagica(
         alvo: Combatente,
         condicaoStr: String?,
         sb: StringBuilder,
         /** Lote MEC-17: segundos de duração. 0 = sem prazo (sai pela regra própria da condição). */
         duracaoSeg: Int = 0,
+        /** Lote MEC-19: se a condição sai por teste de atributo (gelo), em vez de por tempo. */
+        escape: EscapeCondicao? = null,
     ) {
         val cond = when (condicaoStr?.lowercase()?.trim()) {
             "atordoado", "atordoar" -> Condicao.ATORDOADO
@@ -1344,6 +1360,14 @@ class CombatSession(
         if (duracaoSeg > 0) {
             val atual = alvo.condicoesTemporarias[cond] ?: 0
             alvo.condicoesTemporarias[cond] = maxOf(atual, duracaoSeg)
+        }
+        // MEC-19: condição da qual se ESCAPA por teste de atributo (o gelo do Toque Congelante).
+        if (escape != null) {
+            alvo.escapeCondicao = escape.copy(condicao = cond)
+            sb.append(" ${alvo.nome} fica ${cond.rotulo.uppercase()} — só sai com um teste de " +
+                "${escape.atributo}${if (escape.penalidade != 0) "${escape.penalidade}" else ""} " +
+                "(${escape.descricao}).")
+            return
         }
         sb.append(" ${alvo.nome} fica ${cond.rotulo.uppercase()}" +
             (if (duracaoSeg > 0) " por ${duracaoSeg}s." else "."))
@@ -2176,6 +2200,24 @@ class CombatSession(
             if (InjuryRules.recuperaAtordoamento(ht, random)) {
                 anterior.condicoes.remove(Condicao.ATORDOADO)
                 log += "• ${anterior.nome} recupera-se do atordoamento."
+            }
+        }
+        // Lote MEC-19: quem está preso por uma condição de ESCAPE gasta o turno tentando romper
+        // (o gelo do Toque Congelante). Sucesso liberta na hora; falha, tenta de novo no próximo.
+        anterior.escapeCondicao?.let { esc ->
+            val base = when (esc.atributo.uppercase()) {
+                "ST" -> if (anterior.ehHeroi) heroiPerfil.st else (anterior.stats?.st ?: 10)
+                "HT" -> if (anterior.ehHeroi) heroiPerfil.ht else anterior.htEfetivo
+                else -> if (anterior.ehHeroi) heroiPerfil.ht else anterior.htEfetivo
+            }
+            val alvoTeste = base + esc.penalidade
+            val rol = rolar3d6()
+            if (rol <= alvoTeste) {
+                anterior.condicoes.remove(esc.condicao)
+                anterior.escapeCondicao = null
+                log += "• ${anterior.nome} ROMPE ${esc.descricao} (${esc.atributo} $alvoTeste, rolou $rol) e se liberta."
+            } else {
+                log += "• ${anterior.nome} tenta romper ${esc.descricao} e não consegue (${esc.atributo} $alvoTeste, rolou $rol)."
             }
         }
         // Lote MEC-17: condições com PRAZO correm o relógio quando o turno de quem as sofre termina
