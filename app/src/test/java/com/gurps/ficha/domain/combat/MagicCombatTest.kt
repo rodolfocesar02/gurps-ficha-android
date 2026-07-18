@@ -816,6 +816,55 @@ class MagicCombatTest {
         assertEquals(20, MagicMechanics.danoDaExplosao(20, distanciaM = 5, divisorPorMetro = 0))
     }
 
+    // ── Lote MEC-21: o TOQUE agora aplica a mecânica ao descarregar ─────────────────────────────
+    // Antes a conjuração de Toque dava `return` cedo (só carregava a mão) e o descarregar caía em
+    // "Efeito narrado pelo Mestre" — NENHUMA magia de toque fazia nada. Isso também deixava o
+    // MEC-19 (fuga do gelo) inalcançável em jogo.
+
+    /** Carrega uma magia de toque e descarrega no goblin; devolve (sessão, log). */
+    private fun descarregarToque(mec: MagiaMecanica, energia: Int, seed: Long): Pair<CombatSession, List<String>> {
+        val s = sessao(seed, distGoblin = 1)
+        val ctx = ContextoConjuracao(nhBasico = 25, classe = MagicClassParser.parse("Toque"),
+            mana = NivelMana.NORMAL, mecanica = mec, tocando = true)
+        s.heroiConjurar(ctx, MagicEnergy.parse("1 a 4"), energiaInvestida = energia,
+            magiaNome = "Magia de Toque", alvoId = null)
+        s.heroiEntregarToque("goblin")
+        return s to s.log.toList()
+    }
+
+    @Test
+    fun `toque de DANO agora fere de verdade — nao so narra`() {
+        val dano = MagiaMecanica(efeito = "dano", danoPorEnergia = "1d-1", energiaPorDado = 1,
+            tipoDano = "quei", armadura = "ignora", entrega = "toque")
+        // Vários seeds: o toque pode errar ou o alvo se defender; basta ferir em alguma tentativa.
+        val feriuAlguma = (0L until 30L).any { seed ->
+            val (s, _) = descarregarToque(dano, energia = 3, seed = seed)
+            s.encounter.combatentes.first { it.id == "goblin" }.let { it.pvAtual < it.pvMax }
+        }
+        assertTrue("magia de toque com dano curado tem que causar dano ao descarregar", feriuAlguma)
+    }
+
+    @Test
+    fun `toque de CONDICAO impoe a condicao — e e o que faz o MEC-19 existir em jogo`() {
+        val gelo = MagiaMecanica(efeito = "condicao", condicao = "paralisado", entrega = "toque",
+            condicaoEscapeAtributo = "ST", condicaoEscapeEnergiaPorPonto = 2)
+        val congelouAlguma = (0L until 30L).any { seed ->
+            val (s, _) = descarregarToque(gelo, energia = 2, seed = seed)
+            val g = s.encounter.combatentes.first { it.id == "goblin" }
+            Condicao.PARALISADO in g.condicoes && g.escapeCondicao != null
+        }
+        assertTrue("o Toque Congelante precisa paralisar E registrar a fuga por ST", congelouAlguma)
+    }
+
+    @Test
+    fun `toque sem mecanica curada continua NARRADO — sem inventar efeito`() {
+        val nada = MagiaMecanica(efeito = "narrado", entrega = "toque")
+        val (_, log) = descarregarToque(nada, energia = 1, seed = 7)
+        val acertou = log.any { it.contains("ACERTA") }
+        if (acertou) assertTrue("sem mecânica, o efeito continua sendo do Mestre",
+            log.any { it.contains("narrado pelo Mestre") })
+    }
+
     // ── Lote TESTE-SANDBOX: as recusas do início de combate são REAIS e precisam ser ditas ──────
     // O sandbox descartava o retorno de `iniciarCombate`, então uma recusa virava "o botão não faz
     // nada". Estes testes trancam os códigos que a UI traduz para o jogador.

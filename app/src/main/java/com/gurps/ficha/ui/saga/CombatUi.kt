@@ -1549,7 +1549,14 @@ private fun SubDialogoConjurar(
                 // Lote MA-6: magia de dano DIRETA (Comum/Área que não é Projétil/Toque).
                 val proj = sel.ehProjetil
                 // MEC-10: magia de CURA nunca oferece "causa dano" (não faz sentido e confundiria).
-                val podeMarcarDano = !proj && !sel.ehToque && !sel.ehCura && (ehArea || alvoId != null)
+                // Lote MEC-20: e o toggle só aparece para quem PODE causar dano. A fonte diz que o
+                // "1d por ponto de energia" vale para magia de COMBATE e Projétil ("uma mágica de
+                // combate talvez cause 1d de dano por ponto") — não existe regra para bombear dano
+                // em magia de Informação ou utilidade. Antes o switch aparecia em Localizar Ar e
+                // Criar Ar, convidando o jogador a inventar dano que a regra não permite.
+                val efeitoPermiteDano = sel.efeito == null || sel.efeito == "dano"
+                val podeMarcarDano = !proj && !sel.ehToque && !sel.ehCura && efeitoPermiteDano &&
+                    (ehArea || alvoId != null)
                 if (podeMarcarDano) {
                     Spacer(Modifier.height(8.dp))
                     Row(verticalAlignment = Alignment.CenterVertically,

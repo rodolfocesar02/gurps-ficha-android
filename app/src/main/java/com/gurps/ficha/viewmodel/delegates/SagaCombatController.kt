@@ -93,6 +93,12 @@ data class MagiaConjuravelUi(
     val dicaEnergia: String? = null,
     /** Lote MEC-10: magia de CURA — o seletor de energia também vale aqui (PV por ponto de energia). */
     val ehCura: Boolean = false,
+    /**
+     * Lote MEC-20: o `efeito` curado do catálogo ("dano", "condicao", "buff", "cura", "ambiente",
+     * "controle", "narrado", "informacao"). A tela usa isto para só oferecer "Causa dano" a quem
+     * pode causar dano — antes o toggle aparecia até em Localizar Ar e Criar Ar.
+     */
+    val efeito: String? = null,
     /** Custo aproximado (para limitar o quanto de PV o mago pode queimar). */
     val custoEstimado: Int,
     val castavel: Boolean,
@@ -1282,6 +1288,7 @@ class SagaCombatController(
                 // "2 a 2×AM" → 2×Aptidão), não mais da Aptidão pura. Sem isto o MEC-7 deixava
                 // despejar 10 num Toque Candente (custo 1 a 3) e sair 10d.
                 aptidaoMagica = MagicEnergy.tetoDeEnergiaDano(m.energia, aptidao),
+                efeito = mecUi?.efeito, // MEC-20
                 custoEstimado = (custo.base ?: custo.minimo).coerceAtLeast(1),
                 castavel = temPf,
                 motivo = if (!temPf) "sem PF" else "",

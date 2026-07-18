@@ -811,7 +811,16 @@ class CombatSession(
     var conjuracaoEmAndamento: ConjuracaoEmAndamento? = null; private set
 
     /** Lote MA-3d-2: mágica de TOQUE carregada na mão do herói, à espera de um ataque para descarregar. */
-    data class ToqueCarregado(val nome: String, val ctx: ContextoConjuracao, val nhEfetivoCast: Int)
+    /**
+     * Lote MEC-21: a ENERGIA investida passa a viajar com a mão carregada. Sem ela o descarregar não
+     * tinha como escalar dano nem duração de condição.
+     */
+    data class ToqueCarregado(
+        val nome: String,
+        val ctx: ContextoConjuracao,
+        val nhEfetivoCast: Int,
+        val energiaInvestida: Int = 1,
+    )
     var toqueCarregado: ToqueCarregado? = null; private set
 
     /** Lote MA-3d-4: mágicas TEMPORÁRIAS/DURADOURAS ativas no combate (o efeito é narrado; aqui rastreia manutenção/expiração). */
@@ -1037,7 +1046,7 @@ class CombatSession(
                 // Toque (Lote MA-3d-2, Magia p.11-12): o sucesso CARREGA a mão; o efeito só ocorre ao
                 // descarregar num ataque corpo-a-corpo ([heroiEntregarToque]). Resistência é no 2º teste, lá.
                 if (TipoClasseMagia.TOQUE in ctx.classe.classes) {
-                    toqueCarregado = ToqueCarregado(magiaNome, ctx, nhEf.valor)
+                    toqueCarregado = ToqueCarregado(magiaNome, ctx, nhEf.valor, energiaInvestida)
                     sb.append(" Sua mão fica CARREGADA — ataque um oponente adjacente para descarregar (Magia p.12).")
                     log += sb.toString().trim()
                     return ResultadoConjuracaoCombate(true, sb.toString().trim())
@@ -1236,14 +1245,37 @@ class CombatSession(
         toqueCarregado = null
         sb.append(" e ACERTA!")
         val resistencia = t.ctx.classe.resistencia
+        var resistiu = false
         if (resistencia != null) {
             // 2º teste do operador (Magia p.12) vs a resistência do alvo.
             val resist = resistenciaDoAlvo(alvo, resistencia)
             val rr = MagicCasting.resolverResistencia(t.nhEfetivoCast, rolar3d6(), resist, rolar3d6(), regraDo16 = true)
-            if (rr.alvoResistiu) sb.append(" ${alvo.nome} RESISTE (resistência $resist) — a mágica se dissipa.")
-            else sb.append(" ${alvo.nome} não resiste (resistência $resist). Efeito narrado pelo Mestre.")
-        } else {
-            sb.append(" Efeito narrado pelo Mestre.")
+            resistiu = rr.alvoResistiu
+            if (resistiu) sb.append(" ${alvo.nome} RESISTE (resistência $resist) — a mágica se dissipa.")
+            else sb.append(" ${alvo.nome} não resiste (resistência $resist).")
+        }
+        // Lote MEC-21: APLICA a mecânica curada ao descarregar.
+        //
+        // Bug que isto corrige: a conjuração de TOQUE dá `return` cedo (só carrega a mão), então o
+        // descarregar caía sempre em "Efeito narrado pelo Mestre" — NENHUMA magia de toque fazia
+        // nada mecanicamente. Toque Candente, Morte Candente, Toque Chocante e Toque Congelante
+        // acertavam e não produziam efeito. Isso também deixava o MEC-19 (fuga do gelo) inalcançável
+        // em jogo: a paralisia nunca chegava a ser imposta.
+        val mec = t.ctx.mecanica
+        val energia = t.energiaInvestida.coerceAtLeast(1)
+        if (!resistiu) when {
+            com.gurps.ficha.domain.magic.MagicMechanics.temCuraEstruturada(mec) ->
+                aplicarCuraMagica(alvo, energia, mec!!, sb)
+
+            mec?.efeito == "condicao" ->
+                imporCondicaoMagica(alvo, mec.condicao, sb,
+                    com.gurps.ficha.domain.magic.MagicMechanics.duracaoCondicaoSeg(mec, energia),
+                    escapeDaMecanica(mec, energia))
+
+            com.gurps.ficha.domain.magic.MagicMechanics.temDanoEstruturado(mec) ->
+                aplicarDanoMagico(alvo, energia, mec, sb)
+
+            else -> sb.append(" Efeito narrado pelo Mestre.")
         }
         verificarFim(); log += sb.toString()
         return ResultadoConjuracaoCombate(true, sb.toString())
