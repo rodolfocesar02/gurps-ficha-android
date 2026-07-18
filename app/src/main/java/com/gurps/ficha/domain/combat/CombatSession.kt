@@ -900,6 +900,15 @@ class CombatSession(
     ): ResultadoConjuracaoCombate {
         inicioAcaoHeroi()
         limparAvaliar(); limparApontar(); limparFinta()
+        // Lote MEC-13: magia que só afeta OBJETO INANIMADO (Desintegrar, Fender, Enfraquecer,
+        // Explodir) não pode ser lançada num combatente. Recusa ANTES de gastar fadiga — o jogador
+        // não perde o turno por uma jogada que a regra não permite.
+        if (alvoId != null && com.gurps.ficha.domain.magic.MagicMechanics.soAfetaObjeto(ctx.mecanica)) {
+            val alvoNome = encounter.combatentes.firstOrNull { it.id == alvoId }?.nome ?: "esse alvo"
+            val t = "🚫 $magiaNome afeta apenas objetos inanimados — não pode ser lançada em $alvoNome."
+            log += t
+            return ResultadoConjuracaoCombate(false, t)
+        }
         // Lote COND-1: silenciado não conjura (o ritual mágico exige fala, Magia p.8).
         if (Condicao.SILENCIADO in heroi.condicoes) {
             val t = "🤐 Você está SILENCIADO — não consegue conjurar $magiaNome (o ritual exige fala)."
@@ -1074,6 +1083,12 @@ class CombatSession(
         energiaInvestida: Int,
         magiaNome: String,
         alvosNaArea: List<String>,
+        /**
+         * Lote MEC-14: distância (m) de cada alvo ao CENTRO da explosão. Só o controller tático sabe
+         * disso (tem as posições no grid). Vazio = sem decaimento (todos levam o dano cheio), que é o
+         * certo para chuva/nuvem — dano ambiental, não onda de choque.
+         */
+        distanciaAoCentro: Map<String, Int> = emptyMap(),
     ): ResultadoConjuracaoCombate {
         inicioAcaoHeroi(); limparAvaliar(); limparApontar(); limparFinta()
         val nhEf = MagicCasting.nhEfetivo(ctx)
@@ -1126,9 +1141,16 @@ class CombatSession(
                         else "${energia}d"
                         val tipo = if (ctx.mecanica?.tipoDano == "corte") DanoTipo.CORT else if (ctx.mecanica?.tipoDano == "perf") DanoTipo.PERF else DanoTipo.CONT
                         val bruto = rolarDano(expr, random)
+                        // Lote MEC-14: EXPLOSÃO — quem está além de 1m do centro divide o dano por
+                        // (3 × distância), arredondando para baixo. Sem `explosaoDivisorPorMetro` (ou
+                        // sem posições) todos levam cheio, que é o certo para chuva/nuvem.
+                        val divisorExpl = ctx.mecanica?.explosaoDivisorPorMetro ?: 0
                         val partes = atingidos.map { a ->
+                            val distCentro = distanciaAoCentro[a.id] ?: 0
+                            val brutoAqui = com.gurps.ficha.domain.magic.MagicMechanics
+                                .danoDaExplosao(bruto, distCentro, divisorExpl)
                             val rd = if (ctx.mecanica?.armadura == "ignora") 0 else ((a.stats?.rd ?: 0) + a.buffRd)
-                            val dn = HitLocationRules.aplicarDano(a.pvMax, bruto, tipo, LocalAtaque.TORSO,
+                            val dn = HitLocationRules.aplicarDano(a.pvMax, brutoAqui, tipo, LocalAtaque.TORSO,
                                 rd, a.stats?.tolerancia ?: ToleranciaFerimentos.NORMAL)
                             InjuryRules.ferir(a, dn.pvSubtrair, a.htEfetivo, random)
                             "${a.nome} ${dn.pvSubtrair}" + if (!a.vivo) " (fora!)" else ""

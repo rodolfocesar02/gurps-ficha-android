@@ -729,6 +729,35 @@ class MagicCombatTest {
         assertEquals("e não pode ferir o herói por esse caminho", pvAntes, s.heroi.pvAtual)
     }
 
+    // ── Lote MEC-13: magia que só afeta OBJETO recusa alvo vivo ─────────────────────────────────
+
+    @Test
+    fun `MEC-13 Desintegrar NAO pode ser lancada num NPC vivo`() {
+        // O livro: "afeta apenas objetos inanimados". Antes dava para desintegrar um goblin.
+        val s = sessao(7)
+        val pfAntes = s.heroi.pfAtual
+        val pvGoblinAntes = s.encounter.combatentes.first { it.id == "goblin" }.pvAtual
+        val mec = MagiaMecanica(efeito = "dano", danoPorEnergia = "1d", entrega = "projetil", alvoValido = "objeto")
+        val ctx = ContextoConjuracao(nhBasico = 30, classe = MagicClassParser.parse("Comum"),
+            mana = NivelMana.NORMAL, mecanica = mec)
+        val r = s.heroiConjurar(ctx, MagicEnergy.parse("1 a 4"), 3, "Desintegrar", alvoId = "goblin")
+        assertFalse("a conjuração deve ser recusada", r.sucesso)
+        assertEquals("goblin não pode levar dano", pvGoblinAntes,
+            s.encounter.combatentes.first { it.id == "goblin" }.pvAtual)
+        assertEquals("e o herói NÃO perde fadiga por uma jogada ilegal", pfAntes, s.heroi.pfAtual)
+        assertTrue(s.log.any { it.contains("apenas objetos inanimados") })
+    }
+
+    @Test
+    fun `MEC-13 magia normal segue funcionando (regressao)`() {
+        val s = sessao(7)
+        val mec = MagiaMecanica(efeito = "dano", danoPorEnergia = "1d", entrega = "projetil")
+        val ctx = ContextoConjuracao(nhBasico = 30, classe = MagicClassParser.parse("Projétil"),
+            mana = NivelMana.NORMAL, distanciaMetros = 5, mecanica = mec)
+        val r = s.heroiConjurar(ctx, MagicEnergy.parse("Varia"), 2, "Bola de Fogo", alvoId = "goblin")
+        assertTrue("sem alvoValido a magia é permitida", r.sucesso)
+    }
+
     // ── Lote MEC-10: magia de CURA restaura PV no combate ───────────────────────────────────────
 
     @Test
@@ -761,5 +790,56 @@ class MagicCombatTest {
             buffEnergiaPorNivel = 1, buffMaxNiveis = 5)
         registrar(s, "Nublar", nublar, energia = 4)
         assertEquals(4, s.heroi.buffPenalidadeAtacantes)
+    }
+
+    // ── Lote MEC-14: EXPLOSÃO com decaimento por distância ───────────────────────────────────────
+    // Regra literal (Bola de Fogo Explosiva / Relâmpago Explosivo): "O alvo e qualquer um mais próximo
+    // do alvo que um metro recebe dano total. Os mais afastados dividem o dano em três vezes a
+    // distância em metros (arredondado para baixo)."
+
+    @Test
+    fun `explosao — ate 1m leva dano cheio`() {
+        assertEquals(20, MagicMechanics.danoDaExplosao(20, distanciaM = 0, divisorPorMetro = 3))
+        assertEquals(20, MagicMechanics.danoDaExplosao(20, distanciaM = 1, divisorPorMetro = 3))
+    }
+
+    @Test
+    fun `explosao — alem de 1m divide por tres vezes a distancia, arredondando para baixo`() {
+        assertEquals("20 a 2m = 20 / 6 = 3", 3, MagicMechanics.danoDaExplosao(20, 2, 3))
+        assertEquals("20 a 3m = 20 / 9 = 2", 2, MagicMechanics.danoDaExplosao(20, 3, 3))
+        assertEquals("20 a 4m = 20 / 12 = 1", 1, MagicMechanics.danoDaExplosao(20, 4, 3))
+        assertEquals("longe o bastante zera", 0, MagicMechanics.danoDaExplosao(20, 7, 3))
+    }
+
+    @Test
+    fun `sem divisor (chuva, nuvem) NAO decai — dano ambiental atinge todos igual`() {
+        assertEquals(20, MagicMechanics.danoDaExplosao(20, distanciaM = 5, divisorPorMetro = 0))
+    }
+
+    @Test
+    fun `area explosiva machuca menos quem esta longe do centro`() {
+        // Dois goblins idênticos na área: um no centro, outro a 3m. Mesmo dado, danos diferentes.
+        val enc = CombatEncounter(
+            listOf(heroi(), goblin(pv = 30), goblin(pv = 30).copy(id = "g2", nome = "Goblin 2")),
+            mapOf("goblin" to 4, "g2" to 4), seed = 1L
+        )
+        val s = CombatSession(enc, perfil(), Random(7))
+        val pvInicialPerto = s.encounter.combatentes.first { it.id == "goblin" }.pvAtual
+        val pvInicialLonge = s.encounter.combatentes.first { it.id == "g2" }.pvAtual
+        val perto = s.encounter.combatentes.first { it.id == "goblin" }
+
+        val bomba = MagiaMecanica(efeito = "dano", danoPorEnergia = "1d", energiaPorDado = 2,
+            entrega = "area", explosaoDivisorPorMetro = 3)
+        val ctx = ContextoConjuracao(nhBasico = 25, classe = MagicClassParser.parse("Comum"),
+            mana = NivelMana.NORMAL, mecanica = bomba, raioAreaMetros = 4)
+        s.heroiConjurarArea(ctx, MagicEnergy.parse("1 a 20"), energiaInvestida = 20,
+            magiaNome = "Bola de Fogo Explosiva", alvosNaArea = listOf(perto.id, "g2"),
+            distanciaAoCentro = mapOf(perto.id to 0, "g2" to 3))
+
+        val sofreuPerto = pvInicialPerto - s.encounter.combatentes.first { it.id == perto.id }.pvAtual
+        val sofreuLonge = pvInicialLonge - s.encounter.combatentes.first { it.id == "g2" }.pvAtual
+        assertTrue("quem estava no centro tem que ter levado dano", sofreuPerto > 0)
+        assertTrue("a 3m o dano é dividido por 9 — tem que ser bem menor que no centro",
+            sofreuLonge < sofreuPerto)
     }
 }

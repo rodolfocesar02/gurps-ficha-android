@@ -45,6 +45,29 @@ data class MagiaMecanica(
     val armadura: String? = null,
     /** Como acerta: "projetil" | "toque" | "feixe" (DX−4) | "area" | "auto". Complementa a `classe`. */
     val entrega: String? = null,
+    /**
+     * Lote MEC-13: restrição de ALVO VÁLIDO. `"objeto"` = só objetos inanimados — Desintegrar ("afeta
+     * apenas objetos inanimados"), Enfraquecer ("funciona apenas em itens inanimados"), Fender ("faz
+     * buracos em objetos inanimados, paredes"), Explodir. Sem este campo o motor deixava **desintegrar
+     * um NPC vivo**, o que o livro proíbe.
+     *
+     * ⚠️ NÃO existe valor para "morto-vivo" de propósito: a Espantar Zumbi só afeta o que foi animado
+     * PELA MÁGICA ZUMBI, e o motor não tem esse conceito (o bestiário nem marca morto-vivo — o
+     * esqueleto só diz isso na prosa). Fingir seria meia-regra errada; fica narrado.
+     */
+    val alvoValido: String? = null,
+    /**
+     * Lote MEC-14: EXPLOSÃO com decaimento por distância. Regra (Bola de Fogo Explosiva, Relâmpago
+     * Explosivo): *"O alvo e qualquer um mais próximo do alvo que um metro recebe dano total. Os mais
+     * afastados **dividem o dano em três vezes a distância em metros** (arredondado para baixo)."*
+     *
+     * Guarda o divisor por metro (3 nas magias do livro). 0 = não é explosão (todos na área levam o
+     * dano cheio, que é o certo para chuva/nuvem — dano ambiental, não onda de choque).
+     *
+     * ⚠️ A Concussão NÃO entra aqui: o "raio de 10 metros" dela é do ATORDOAMENTO (`condicaoRaioM`),
+     * não decaimento de dano — a descrição deixa claro, apesar de o auditor tê-la agrupado junto.
+     */
+    val explosaoDivisorPorMetro: Int = 0,
 
     // ── condição embutida (rider no dano ou standalone) ──
     /** Condição imposta ("atordoado", "cego"…). */
@@ -156,6 +179,21 @@ object MagicMechanics {
 
     /** true se a mágica tem dano estruturado que o motor aplica automaticamente. */
     fun temDanoEstruturado(m: MagiaMecanica?): Boolean = m?.efeito == "dano" && m.danoPorEnergia != null
+
+    /**
+     * Lote MEC-13: true se a mágica NÃO pode ser lançada em criatura (só serve para objeto inanimado).
+     * O motor recusa o alvo em vez de aplicar dano num ser vivo.
+     */
+    fun soAfetaObjeto(m: MagiaMecanica?): Boolean = m?.alvoValido == "objeto"
+
+    /**
+     * Lote MEC-14: dano da explosão a [distanciaM] metros do centro.
+     * Até 1m → dano cheio; além disso, dividido por (divisor × distância), arredondando para baixo.
+     */
+    fun danoDaExplosao(danoCheio: Int, distanciaM: Int, divisorPorMetro: Int): Int {
+        if (divisorPorMetro <= 0 || distanciaM <= 1) return danoCheio
+        return danoCheio / (divisorPorMetro * distanciaM)
+    }
 
     /** true se a mágica CURA PV de forma estruturada (Lote MEC-10). */
     fun temCuraEstruturada(m: MagiaMecanica?): Boolean =

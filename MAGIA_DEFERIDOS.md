@@ -37,6 +37,13 @@ que não cabe em regra geral é **narrado pelo Mestre**.
   mapa por-magia que o catálogo não fornece.
 - **Magia no modo FAIXAS**: a conjuração no combate só existe no modo TÁTICO (grid) — o chip 🔮 mora
   no token. No modo de faixas não há UI de conjurar.
+- **Respingo do RELÂMPAGO EXPLOSIVO** (Lote MEC-14): o decaimento de explosão ("divide o dano por 3× a
+  distância em metros") está implementado no ramo de ÁREA, e vale de verdade para a **Bola de Fogo
+  Explosiva** e a **Bola de Relâmpagos** (ambas `entrega: area`). O Relâmpago Explosivo, porém, é
+  `entrega: projetil` — o ramo de projétil acerta **um alvo só**, então o alvo direto leva o dano
+  cheio (correto: distância 0) mas **quem está ao redor dele não leva respingo nenhum**. Espalhar a
+  partir do ponto de impacto exigiria o projétil resolver contra um HEX em vez de um combatente.
+  O campo `explosaoDivisorPorMetro: 3` já está no catálogo, esperando esse ramo.
 
 ## Simplificações honestas (fiéis o bastante, documentadas)
 - **Tipo de dano do Projétil** aproximado por contusão (×1 de ferimento, como queimadura básica).

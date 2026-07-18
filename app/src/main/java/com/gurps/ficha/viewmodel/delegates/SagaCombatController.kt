@@ -1078,7 +1078,10 @@ class SagaCombatController(
             resumoEfeito = resumoDaDescricao(def?.descricao ?: magia.texto), // Lote MA-8
         )
         // MEC-5b: canônico > texto também na área.
-        s.heroiConjurarArea(ctx, custoCanonico(def) ?: MagicEnergy.parse(magia.energia), mira.energia, magia.nome, alvos)
+        // Lote MEC-14: distância de cada alvo ao CENTRO (1 hex = 1 m) — a explosão decai com ela.
+        val distCentro = est?.posicoes?.filter { it.id in alvos }
+            ?.associate { it.id to it.posicao.distancia(centro) } ?: emptyMap()
+        s.heroiConjurarArea(ctx, custoCanonico(def) ?: MagicEnergy.parse(magia.energia), mira.energia, magia.nome, alvos, distCentro)
         sincronizarRecursosHeroi(s)
         depoisDaAcaoDoHeroi()
     }
