@@ -32,6 +32,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.gurps.ficha.domain.saga.CampanhaConfig
+import com.gurps.ficha.ui.saga.OverlaysCombateTatico
 import com.gurps.ficha.viewmodel.FichaViewModel
 import com.gurps.ficha.viewmodel.delegates.SagaTurn
 import kotlinx.coroutines.delay
@@ -181,54 +182,10 @@ private fun SelecaoDeCampanha(viewModel: FichaViewModel) {
             Box(Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
                 com.gurps.ficha.ui.saga.HexCanvasTatico(viewModel, Modifier.fillMaxSize())
 
-                // Lote TESTE-1b: quando o combate de teste está ATIVO, o preview precisa dos MESMOS
-                // overlays da tela de campanha — senão o jogador vê o grid mas não tem como conjurar
-                // nem defender (o menu do token e o card "Defenda-se!" moram na tela principal, atrás
-                // deste diálogo em tela cheia). Este bloco replica o essencial de TabSaga (§tático).
-                if (viewModel.sagaCombateAtivo) {
-                    // Status + card "Defenda-se!" (o goblin conjurador ataca → você escolhe a defesa).
-                    com.gurps.ficha.ui.saga.CombateStatusTatico(
-                        viewModel, Modifier.align(Alignment.TopCenter).padding(top = 56.dp)
-                    )
-                    // Magias ativas (buffs) — pílula no canto.
-                    val ativas = viewModel.sagaCombateEstado?.magiasAtivas.orEmpty()
-                    if (ativas.isNotEmpty()) {
-                        Surface(
-                            color = Color(0xCC1A237E), contentColor = Color.White, shape = RoundedCornerShape(12.dp),
-                            modifier = Modifier.align(Alignment.TopStart).padding(6.dp)
-                        ) {
-                            Text("✨ " + ativas.joinToString(" · "), style = MaterialTheme.typography.labelSmall,
-                                modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp))
-                        }
-                    }
-                    // Mira de magia de ÁREA (toque o hex central).
-                    val mira = viewModel.sagaMiraAreaPendente
-                    if (mira != null) {
-                        Surface(
-                            color = Color(0xE6B23A00), contentColor = Color.White, shape = RoundedCornerShape(16.dp),
-                            modifier = Modifier.align(Alignment.Center).padding(top = 56.dp)
-                        ) {
-                            Row(Modifier.padding(horizontal = 12.dp, vertical = 8.dp), verticalAlignment = Alignment.CenterVertically) {
-                                Text("🎯 Toque o centro de ${mira.magiaNome} (raio ${mira.raio}m)", style = MaterialTheme.typography.labelMedium)
-                                Spacer(Modifier.width(8.dp))
-                                OutlinedButton(onClick = { viewModel.sagaCancelarMiraArea() },
-                                    colors = ButtonDefaults.outlinedButtonColors(contentColor = Color.White),
-                                    contentPadding = PaddingValues(horizontal = 10.dp, vertical = 2.dp)) { Text("Cancelar") }
-                            }
-                        }
-                    }
-                    // Menu de MANOBRAS no token (tem o chip 🔮 de conjurar). Aparece ao tocar um token.
-                    // No diálogo em tela cheia o menu fica embaixo (perto do polegar) para herói OU
-                    // inimigo — sem o feed/caixa do Narrador competindo por espaço como na tela cheia.
-                    val tokenSel = viewModel.sagaEstadoTatico?.idSelecionado
-                    if (mira == null && tokenSel != null && viewModel.sagaCombateEstado?.conjurando == null) {
-                        com.gurps.ficha.ui.saga.MenuTaticoDoToken(
-                            viewModel, tokenSel,
-                            onFechar = { viewModel.sagaLimparSelecaoTatica() },
-                            modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = 24.dp)
-                        )
-                    }
-                }
+                // Lote LIMPEZA-1: a MESMA pilha de overlays da tela de campanha (fonte única). No
+                // diálogo o menu do herói fica embaixo (não há feed competindo por espaço) e o topo
+                // tem mais respiro por causa do cabeçalho da grade.
+                OverlaysCombateTatico(viewModel, menuHeroiNoTopo = false, paddingTopo = 56.dp)
 
                 // Botão fechar no canto superior direito.
                 IconButton(
@@ -559,55 +516,11 @@ private fun FeedDaCampanha(viewModel: FichaViewModel) {
             )
             Box(Modifier.weight(3f).fillMaxWidth()) {
                 com.gurps.ficha.ui.saga.HexCanvasTatico(viewModel, Modifier.fillMaxSize())
-                // Status do combate (só quando exige atenção) — no topo, abaixo do cabeçalho da grade,
-                // pra não cobrir os hexes de movimento embaixo.
-                com.gurps.ficha.ui.saga.CombateStatusTatico(
-                    viewModel, Modifier.align(Alignment.TopCenter).padding(top = 42.dp)
-                )
-                // Lote MA-3d-4: magias ATIVAS (buffs) — pílula discreta no canto superior direito.
-                val ativas = viewModel.sagaCombateEstado?.magiasAtivas.orEmpty()
-                if (ativas.isNotEmpty()) {
-                    Surface(
-                        color = Color(0xCC1A237E), contentColor = Color.White, shape = RoundedCornerShape(12.dp),
-                        modifier = Modifier.align(Alignment.TopEnd).padding(6.dp)
-                    ) {
-                        Text("✨ " + ativas.joinToString(" · "), style = MaterialTheme.typography.labelSmall,
-                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp))
-                    }
-                }
-                // Lote MA-3d: mira de magia de ÁREA — instrução + Cancelar sobre a grade.
-                val mira = viewModel.sagaMiraAreaPendente
-                if (mira != null) {
-                    Surface(
-                        color = Color(0xE6B23A00), contentColor = Color.White, shape = RoundedCornerShape(16.dp),
-                        modifier = Modifier.align(Alignment.TopCenter).padding(top = 42.dp)
-                    ) {
-                        Row(Modifier.padding(horizontal = 12.dp, vertical = 8.dp), verticalAlignment = Alignment.CenterVertically) {
-                            Text("🎯 Toque o centro de ${mira.magiaNome} (raio ${mira.raio}m)",
-                                style = MaterialTheme.typography.labelMedium)
-                            Spacer(Modifier.width(8.dp))
-                            OutlinedButton(onClick = { viewModel.sagaCancelarMiraArea() },
-                                colors = ButtonDefaults.outlinedButtonColors(contentColor = Color.White),
-                                contentPadding = PaddingValues(horizontal = 10.dp, vertical = 2.dp),
-                                modifier = Modifier.semantics { contentDescription = "Cancelar a mira de área" }) { Text("Cancelar") }
-                        }
-                    }
-                }
-                val tokenSelecionado = viewModel.sagaEstadoTatico?.idSelecionado
-                // Lote MA-3c: concentrando numa magia → esconde o menu do token (só Continuar/Abortar).
-                if (mira == null && tokenSelecionado != null && viewModel.sagaCombateEstado?.conjurando == null) {
-                    // Menu do HERÓI vai no TOPO (deixa os hexes verdes de movimento livres embaixo);
-                    // menu do INIMIGO fica embaixo (perto do polegar; atacar não precisa mover). O
-                    // respiro de 42dp no topo evita cobrir o cabeçalho "Combate tático".
-                    val heroi = tokenSelecionado == "heroi"
-                    val modMenu = if (heroi) Modifier.align(Alignment.TopCenter).padding(top = 42.dp)
-                        else Modifier.align(Alignment.BottomCenter)
-                    com.gurps.ficha.ui.saga.MenuTaticoDoToken(
-                        viewModel, tokenSelecionado,
-                        onFechar = { viewModel.sagaLimparSelecaoTatica() },
-                        modifier = modMenu
-                    )
-                }
+                // Lote LIMPEZA-1: pilha ÚNICA de overlays (status/Defenda-se, magias ativas, mira de
+                // área, menu do token). Antes este bloco vivia aqui E duplicado no diálogo do preview.
+                // Aqui o menu do HERÓI vai no TOPO (deixa os hexes verdes de movimento livres embaixo,
+                // Lote TOK-6b-3); 42dp de respiro evita cobrir o cabeçalho "Combate tático".
+                OverlaysCombateTatico(viewModel, menuHeroiNoTopo = true, paddingTopo = 42.dp)
             }
         } else {
             if (viewModel.sagaCombateAtivo) {

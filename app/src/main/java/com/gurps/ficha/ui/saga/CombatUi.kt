@@ -19,6 +19,7 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.gurps.ficha.domain.combat.*
 import com.gurps.ficha.viewmodel.FichaViewModel
@@ -96,6 +97,72 @@ fun CombatePainel(
  * combate, ou a vez dos inimigos. **Na vez do herói não renderiza NADA** — as ações moram nos
  * tokens (menu) e o movimento nos hexes verdes.
  */
+/**
+ * Lote LIMPEZA-1: a pilha ÚNICA de overlays do combate tático — status/"Defenda-se!", pílula de
+ * magias ativas, mira de área e o menu de manobras no token (que tem o chip 🔮 de conjurar).
+ *
+ * Existe porque o TESTE-1b precisou dos mesmos overlays no diálogo do preview e eu os DUPLIQUEI por
+ * copy-paste. Duas cópias divergem em silêncio: mexer numa e esquecer a outra dá exatamente o bug
+ * que o usuário pegou no aparelho (combate que não deixa conjurar). Agora há UMA fonte.
+ *
+ * Deve ser chamado DENTRO de um [BoxScope] que envolve a grade (os alinhamentos são relativos a ela).
+ * [menuHeroiNoTopo] existe porque na tela de campanha o menu do herói vai em cima (deixa os hexes de
+ * movimento livres embaixo, Lote TOK-6b-3); no diálogo em tela cheia ele cabe embaixo, perto do polegar.
+ */
+@Composable
+fun BoxScope.OverlaysCombateTatico(
+    viewModel: FichaViewModel,
+    menuHeroiNoTopo: Boolean,
+    paddingTopo: Dp = 42.dp,
+) {
+    if (!viewModel.sagaCombateAtivo) return
+    // Status + card "Defenda-se!" (é ele quem trata a defesa no tático 2D).
+    CombateStatusTatico(viewModel, Modifier.align(Alignment.TopCenter).padding(top = paddingTopo))
+    // Magias ATIVAS (buffs) — pílula discreta.
+    val ativas = viewModel.sagaCombateEstado?.magiasAtivas.orEmpty()
+    if (ativas.isNotEmpty()) {
+        Surface(
+            color = Color(0xCC1A237E), contentColor = Color.White, shape = RoundedCornerShape(12.dp),
+            modifier = Modifier.align(if (menuHeroiNoTopo) Alignment.TopEnd else Alignment.TopStart).padding(6.dp)
+        ) {
+            Text("✨ " + ativas.joinToString(" · "), style = MaterialTheme.typography.labelSmall,
+                modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp))
+        }
+    }
+    // Mira de magia de ÁREA — instrução + Cancelar sobre a grade.
+    val mira = viewModel.sagaMiraAreaPendente
+    if (mira != null) {
+        Surface(
+            color = Color(0xE6B23A00), contentColor = Color.White, shape = RoundedCornerShape(16.dp),
+            modifier = Modifier.align(if (menuHeroiNoTopo) Alignment.TopCenter else Alignment.Center).padding(top = paddingTopo)
+        ) {
+            Row(Modifier.padding(horizontal = 12.dp, vertical = 8.dp), verticalAlignment = Alignment.CenterVertically) {
+                Text("🎯 Toque o centro de ${mira.magiaNome} (raio ${mira.raio}m)",
+                    style = MaterialTheme.typography.labelMedium)
+                Spacer(Modifier.width(8.dp))
+                OutlinedButton(
+                    onClick = { viewModel.sagaCancelarMiraArea() },
+                    colors = ButtonDefaults.outlinedButtonColors(contentColor = Color.White),
+                    contentPadding = PaddingValues(horizontal = 10.dp, vertical = 2.dp),
+                    modifier = Modifier.semantics { contentDescription = "Cancelar a mira de área" }
+                ) { Text("Cancelar") }
+            }
+        }
+    }
+    // Menu de MANOBRAS no token (chip 🔮 de conjurar). Lote MA-3c: some enquanto concentra numa magia.
+    val tokenSel = viewModel.sagaEstadoTatico?.idSelecionado
+    if (mira == null && tokenSel != null && viewModel.sagaCombateEstado?.conjurando == null) {
+        val heroi = tokenSel == "heroi"
+        val mod = if (heroi && menuHeroiNoTopo) Modifier.align(Alignment.TopCenter).padding(top = paddingTopo)
+            else Modifier.align(Alignment.BottomCenter).padding(bottom = if (menuHeroiNoTopo) 0.dp else 24.dp)
+        MenuTaticoDoToken(
+            viewModel, tokenSel,
+            onFechar = { viewModel.sagaLimparSelecaoTatica() },
+            modifier = mod
+        )
+    }
+}
+
 @Composable
 fun CombateStatusTatico(viewModel: FichaViewModel, modifier: Modifier = Modifier) {
     val estado = viewModel.sagaCombateEstado ?: return
