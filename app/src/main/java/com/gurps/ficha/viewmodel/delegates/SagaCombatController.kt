@@ -258,10 +258,9 @@ class SagaCombatController(
      */
     fun direcoesDaViradaFinal(): List<com.gurps.ficha.domain.combat.hex.Direcao> {
         val v = viradaFinalPendente ?: return emptyList()
-        val todas = com.gurps.ficha.domain.combat.hex.Direcao.values().toList()
-        if (v.livreParaQualquer) return todas
-        val i = v.facingAtual.ordinal
-        return listOf(v.facingAtual, todas[(i + 1) % 6], todas[(i + 5) % 6])
+        // Lote TESTE-C: a regra mora no domain (testável na JVM) — aqui só o estado da UI.
+        return com.gurps.ficha.domain.combat.hex.RegrasMovimentoTatico
+            .direcoesDaViradaFinal(v.facingAtual, v.livreParaQualquer)
     }
 
     /** Conclui a virada de fim de movimento (ou a dispensa mantendo a direção) e PASSA o turno. */
@@ -309,11 +308,10 @@ class SagaCombatController(
         // Lote TOK-6b-2 (achado da varredura): mesmas travas do MOVER de faixas — atordoado não
         // se move (MB p.420) e agarrado/imobilizado não desloca sem se Desvencilhar (MB p.371).
         // Sem isso a grade driblava a luta agarrada: bastava tocar num hex verde e sair andando.
-        if (Condicao.ATORDOADO in s.heroi.condicoes ||
-            Condicao.AGARRADO in s.heroi.condicoes ||
-            Condicao.IMOBILIZADO in s.heroi.condicoes) return emptySet()
         // Lote MA-3c: concentrando numa magia multi-turno → não se move (só continuar/abortar).
-        if (s.conjuracaoEmAndamento != null) return emptySet()
+        // Lote TESTE-C: as travas moram no domain e são testadas lá.
+        if (!com.gurps.ficha.domain.combat.hex.RegrasMovimentoTatico
+                .podeMoverNaGrade(s.heroi.condicoes, s.conjuracaoEmAndamento != null)) return emptySet()
         return com.gurps.ficha.domain.combat.hex.HexSetup.hexesAlcancaveis(
             est, s.heroi.deslocamentoEfetivo.coerceAtLeast(1)
         )
@@ -360,10 +358,12 @@ class SagaCombatController(
                 // Se o combate acabou com o movimento (ou o herói caiu), NÃO pede virada — seria um
                 // prompt preso numa luta encerrada.
                 if (s.encerrado) { depoisDaAcaoDoHeroi(); return }
-                val metade = (s.heroi.deslocamentoEfetivo + 1) / 2
                 viradaFinalPendente = ViradaFinalUi(
                     andou = distancia,
-                    livreParaQualquer = distancia <= metade,
+                    // Lote TESTE-C: a regra da metade (MB p.388) mora no domain e é testada lá,
+                    // contra o deslocamento EFETIVO (carga/ferimento), não o cru da ficha.
+                    livreParaQualquer = com.gurps.ficha.domain.combat.hex.RegrasMovimentoTatico
+                        .viradaFinalLivre(distancia, s.heroi.deslocamentoEfetivo),
                     facingAtual = movido.posicoes.firstOrNull { it.id == "heroi" }?.facing
                         ?: com.gurps.ficha.domain.combat.hex.Direcao.LESTE,
                 )

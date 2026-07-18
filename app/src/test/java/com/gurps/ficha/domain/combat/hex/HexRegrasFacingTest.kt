@@ -1,6 +1,7 @@
 package com.gurps.ficha.domain.combat.hex
 
 import com.gurps.ficha.domain.combat.CombatResolver
+import com.gurps.ficha.domain.combat.Condicao
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
@@ -131,14 +132,18 @@ class HexRegrasFacingTest {
     // "Livre! O personagem pode se virar para QUALQUER direção se não usou mais que a METADE dos seus
     // pontos de movimento; se usou mais, ele pode mudar sua direção em apenas UM LADO DE HEXÁGONO."
 
-    /** Espelha `SagaCombatController.direcoesDaViradaFinal` — a regra em si, sem Android. */
-    private fun direcoesPermitidas(facingAtual: Direcao, andou: Int, deslocamento: Int): List<Direcao> {
-        val metade = (deslocamento + 1) / 2
-        val todas = Direcao.values().toList()
-        if (andou <= metade) return todas
-        val i = facingAtual.ordinal
-        return listOf(facingAtual, todas[(i + 1) % 6], todas[(i + 5) % 6])
-    }
+    /**
+     * Lote TESTE-C: chama o CÓDIGO REAL (`RegrasMovimentoTatico`), não mais uma cópia da regra.
+     *
+     * Antes havia aqui um `direcoesPermitidas` que reimplementava a lógica. Ele passava verde mesmo
+     * que o controller quebrasse — inclusive no caso mais provável: trocar `deslocamentoEfetivo`
+     * (com carga/ferimento) pelo deslocamento cru da ficha.
+     */
+    private fun direcoesPermitidas(facingAtual: Direcao, andou: Int, deslocamento: Int): List<Direcao> =
+        RegrasMovimentoTatico.direcoesDaViradaFinal(
+            facingAtual,
+            RegrasMovimentoTatico.viradaFinalLivre(andou, deslocamento),
+        )
 
     @Test fun `andou ate METADE do deslocamento — vira para QUALQUER direcao`() {
         assertEquals(6, direcoesPermitidas(Direcao.LESTE, andou = 3, deslocamento = 6).size)
@@ -164,6 +169,35 @@ class HexRegrasFacingTest {
         val melhor = permitidas.minByOrNull { HexRegrasFacing.facingDoAtaque(atacante, alvo, it).ordinal }
         assertEquals("virando 1 lado, as costas viram flanco",
             Facing.FLANCO, HexRegrasFacing.facingDoAtaque(atacante, alvo, melhor!!))
+    }
+
+    // ── Lote TESTE-C: travas de movimento na grade (antes só existiam dentro do controller) ──────
+
+    @Test fun `atordoado, agarrado ou imobilizado NAO se move pela grade`() {
+        // MB p.420 (atordoado) e p.371 (agarrado/imobilizado só sai se Desvencilhar). Sem estas
+        // travas a grade driblava a luta agarrada: bastava tocar um hex verde e sair andando.
+        assertTrue("sem condição nenhuma, move",
+            RegrasMovimentoTatico.podeMoverNaGrade(emptySet(), conjurandoMultiTurno = false))
+        listOf(Condicao.ATORDOADO, Condicao.AGARRADO, Condicao.IMOBILIZADO).forEach { c ->
+            assertFalse("$c deveria travar o movimento na grade",
+                RegrasMovimentoTatico.podeMoverNaGrade(setOf(c), conjurandoMultiTurno = false))
+        }
+    }
+
+    @Test fun `magia multi-turno em andamento tambem prende o operador`() {
+        assertFalse(RegrasMovimentoTatico.podeMoverNaGrade(emptySet(), conjurandoMultiTurno = true))
+    }
+
+    @Test fun `condicao que NAO impede andar (ex cego) deixa mover`() {
+        // Trava demais também é bug: cegueira atrapalha mirar, não andar.
+        assertTrue(RegrasMovimentoTatico.podeMoverNaGrade(setOf(Condicao.CEGO), conjurandoMultiTurno = false))
+    }
+
+    @Test fun `a regra da metade usa o deslocamento EFETIVO — o caso que a copia nao protegia`() {
+        // Deslocamento efetivo 6 (são): andar 3 ainda é livre.
+        assertTrue(RegrasMovimentoTatico.viradaFinalLivre(andou = 3, deslocamentoEfetivo = 6))
+        // O MESMO herói ferido/carregado, efetivo 4: andar 3 já passou da metade → virada limitada.
+        assertFalse(RegrasMovimentoTatico.viradaFinalLivre(andou = 3, deslocamentoEfetivo = 4))
     }
 
     @Test fun `atacante DISTANTE tambem e classificado — nao so o adjacente`() {

@@ -3046,6 +3046,21 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - **Recomendação registrada** (maior valor × menor custo): Ataque Telegráfico (par do Enganoso), luta agarrada profunda (chaves/Mata-Leão estendendo o lote 422), Sangramento Grave + incapacitação de membro (item 5 do teste de batalha), Ataque Dedicado/Defensivo. Fora de escopo: posicional/hexágono, montaria, cinematográfico, dado de arma do NPC. Mudança só de documentação (não compila Kotlin).
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
+### Lote TESTE-C — 18 de Julho de 2026 (regra tática sai do controller e passa a ser testada de verdade)
+**"viewmodel (UI), nao existem teste pra isso?" — e a resposta era um problema meu — branch GURPS-Saga**
+- **Por que a camada de ViewModel tem 0 testes**: `SagaCombatController` exige `FichaViewModel`, que é `AndroidViewModel(Application)`. **Na JVM pura não existe `Application`**, então nada dele entra na suíte. É estrutural, não descuido.
+- 🔴 **Dívida MINHA, achada ao conferir**: o teste da virada final (`HexRegrasFacingTest`) tinha um `direcoesPermitidas` que **reimplementava a regra** em vez de chamá-la. Uma cópia passa verde mesmo que o original quebre — e o caso concreto era real: o código de verdade usa `deslocamentoEfetivo` (com carga/ferimento) e a cópia recebia um deslocamento cru. Trocar um pelo outro quebraria o jogo para herói ferido **sem derrubar teste nenhum**.
+- **Implementado**: `RegrasMovimentoTatico` no `domain` (Kotlin puro) com `viradaFinalLivre`, `direcoesDaViradaFinal` e `podeMoverNaGrade`. O controller passou a **chamar** essas funções; o teste passou a exercitar o **código real** e a cópia foi apagada.
+- **+4 testes**: as travas de movimento (atordoado/agarrado/imobilizado e magia multi-turno), o caso oposto (cego **pode** andar — travar demais também é bug) e o do `deslocamentoEfetivo` que a cópia não protegia.
+- ℹ️ **Escopo menor do que o previsto, e isso é bom**: os filtros do menu tático (`menuTaticoInimigo`) **já eram função pura e já tinham 9 testes** desde o TOK-6b-2. Só faltavam a virada e as travas.
+- ⚠️ Gate: **742 testes nas DUAS variantes**; único vermelho segue sendo o **flaky pré-existente do Nexus Arcano**.
+
+#### Experimento Robolectric (opção A) — TESTADO E **DESCARTADO**
+- Montado a pedido do usuário para decidir com dado, não com opinião. 4 testes rodando de verdade contra um `Application` simulado.
+- **Descartado por 5 razões medidas**: (1) **nenhum bug do app encontrado** — as 3 falhas do caminho foram todas minhas (SDK, uso errado da API `"Goblin" to 7` que é *quantidade* e não PV, e premissa de iniciativa); (2) **~15× mais lento** (~2,5s/teste contra ~0,16s da suíte JVM); (3) o Robolectric 4.13 só suporta **SDK 34** e o app tem alvo **35** — testaria um Android diferente do publicado; (4) `FichaViewModel` novo nasce com ficha **em branco**, o goblin ganha a iniciativa 100% das vezes e o caminho feliz nunca roda sem fixture pesada; (5) o cenário mais valioso (provar que a trava de agarrado está **ligada**) é impossível sem alargar visibilidade só para teste — piorar o código para agradar o teste.
+- **Conclusão registrada**: o C cobre barato o que a UI tem de regra; o que sobra (layout, tamanho de toque, recomposição) **só o teste no aparelho real pega** — e a infraestrutura dele (`ui-test-junit4`) já está no `build.gradle`, apenas sem uso.
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
 ### Lote LOG-1 — 18 de Julho de 2026 (combate visível no logcat, para o teste no aparelho)
 **"podemos colocar logs ativos, pra aparecer no logcat do Android Studio?" — branch GURPS-Saga**
 - **Diagnóstico**: o motor de combate/magia tinha **ZERO logging**. Todo o logging do app era do lado da IA (`MestreIA_*`, `GeminiLive`) — na hora que uma regra saísse errada no aparelho, não havia nada para olhar.
