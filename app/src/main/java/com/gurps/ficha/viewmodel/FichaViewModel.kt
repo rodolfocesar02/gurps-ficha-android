@@ -139,6 +139,9 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
     fun sagaHexesAlcancaveis() = sagaDelegate.combate.hexesAlcancaveisHeroi()
     fun sagaAoTocarHexTatico(hex: com.gurps.ficha.domain.combat.hex.HexCoord) = sagaDelegate.combate.aoTocarHexTatico(hex)
     fun sagaLimparSelecaoTatica() = sagaDelegate.combate.limparSelecaoTatica() // Lote TOK-6b-2: fecha o menu do token
+    /** Lote HEX-FACING: vira o herói (ação LIVRE — MB p.387/388; não gasta o turno). */
+    fun sagaCombateVirar(direcao: com.gurps.ficha.domain.combat.hex.Direcao) =
+        sagaDelegate.combate.heroiVirar(direcao)
     fun sagaCombateAtacar(alvoId: String, manobra: com.gurps.ficha.domain.combat.Manobra, local: com.gurps.ficha.domain.combat.LocalAtaque, modo: com.gurps.ficha.domain.combat.AtaqueTotalModo = com.gurps.ficha.domain.combat.AtaqueTotalModo.DETERMINADO, enganoso: Int = 0, telegrafico: Boolean = false) =
         sagaDelegate.combate.heroiAtaca(alvoId, manobra, local, modo, enganoso, telegrafico)
     fun sagaCombateAtaqueDedicado(alvoId: String, local: com.gurps.ficha.domain.combat.LocalAtaque, dedicadoModo: com.gurps.ficha.domain.combat.DedicadoModo) = // Lote PONTE-4

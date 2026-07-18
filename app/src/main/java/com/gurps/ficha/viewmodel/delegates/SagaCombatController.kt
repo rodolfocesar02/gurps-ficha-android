@@ -218,6 +218,47 @@ class SagaCombatController(
     }
 
     /** Hexes que o herói alcança AGORA (vazio se não é o turno dele) — destaque verde do canvas. */
+    /**
+     * Lote HEX-FACING: o herói MUDA DE DIREÇÃO (facing). É uma ação **LIVRE** — não gasta o turno.
+     *
+     * Regra conferida na fonte literal (Módulo Básico, a pedido do usuário):
+     *  - **p.368/364**: o "passo" que quase toda manobra concede é "um movimento de até 1/10 do
+     *    Deslocamento, **uma mudança de direção (ex.: virar-se), ou as duas coisas**".
+     *  - **p.387** ("Passo" no Combate Tático): "Algumas manobras, como Ataque ou Preparar, permitem
+     *    que o personagem dê um passo em qualquer direção... Ele pode **mudar de direção livremente**
+     *    antes ou depois do movimento."
+     *  - **p.388**: "Mudar de direção no final do movimento: **Livre!**" (para qualquer direção se não
+     *    usou mais que metade dos pontos de movimento).
+     *
+     * Ou seja: virar e atacar no mesmo turno é legal — virar NÃO consome a ação. Neste app o
+     * movimento no grid já gasta o turno (manobra Deslocamento), então o herói vira ANTES de agir,
+     * quando ainda não gastou ponto de movimento nenhum: o caso "livre para qualquer direção".
+     *
+     * BLOQUEIOS (também da fonte):
+     *  - **p.86**: quem está agarrado/retido "não pode utilizar as manobras Deslocamento e Mudança de
+     *    Posição **nem mudar de direção**".
+     *  - **p.386**: em *Avançar e Atacar* "o personagem NÃO pode mudar de direção no final do
+     *    deslocamento" — aqui isso não se aplica porque a virada acontece antes de escolher a manobra.
+     */
+    fun heroiVirar(direcao: com.gurps.ficha.domain.combat.hex.Direcao) {
+        val s = sessao ?: return
+        val est = estadoTatico ?: return
+        if (s.encerrado || !s.combatenteAtual().ehHeroi) { avisoTatico = "Não é seu turno"; return }
+        // MB p.86: agarrado/imobilizado não muda de direção.
+        val preso = Condicao.AGARRADO in s.heroi.condicoes || Condicao.IMOBILIZADO in s.heroi.condicoes
+        if (preso) { avisoTatico = "Agarrado — você não consegue mudar de direção (MB p.86)"; return }
+        val atual = est.posicoes.firstOrNull { it.id == "heroi" } ?: return
+        if (atual.facing == direcao) { avisoTatico = null; return }
+        estadoTatico = est.copy(
+            posicoes = est.posicoes.map { if (it.id == "heroi") it.copy(facing = direcao) else it }
+        )
+        // Ação livre: NÃO chama depoisDaAcaoDoHeroi() — o turno continua com o jogador.
+        s.log += "🧭 Você se vira para ${direcao.name.lowercase()} (ação livre — MB p.387)."
+        publicarLog()
+        avisoTatico = null
+        atualizarEstado()
+    }
+
     fun hexesAlcancaveisHeroi(): Set<com.gurps.ficha.domain.combat.hex.HexCoord> {
         val s = sessao ?: return emptySet()
         val est = estadoTatico ?: return emptySet()

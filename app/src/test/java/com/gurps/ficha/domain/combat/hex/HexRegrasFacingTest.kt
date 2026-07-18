@@ -96,4 +96,42 @@ class HexRegrasFacingTest {
         val origem = alvo + Direcao.OESTE.vetor
         assertEquals(Facing.COSTAS, HexRegrasFacing.facingDoAtaque(origem, alvo, Direcao.LESTE))
     }
+
+    // ── Lote HEX-FACING: os arcos completos, olhando para LESTE ─────────────────────────────────
+    // Base da dúvida do usuário no aparelho ("nessa posição eu deveria estar flanqueado?"). A regra:
+    // FRENTE = a direção encarada + as DUAS vizinhas (3 de 6); FLANCO = 2; COSTAS = 1.
+
+    @Test fun `olhando para LESTE — frente cobre Leste, Nordeste e Sudeste`() {
+        val alvo = HexCoord(0, 0)
+        listOf(Direcao.LESTE, Direcao.NORDESTE, Direcao.SUDESTE).forEach { d ->
+            assertEquals("ataque vindo de $d deveria ser FRENTE",
+                Facing.FRENTE, HexRegrasFacing.facingDoAtaque(alvo + d.vetor, alvo, Direcao.LESTE))
+        }
+    }
+
+    @Test fun `olhando para LESTE — flanco e so Noroeste e Sudoeste`() {
+        val alvo = HexCoord(0, 0)
+        listOf(Direcao.NOROESTE, Direcao.SUDOESTE).forEach { d ->
+            assertEquals("ataque vindo de $d deveria ser FLANCO",
+                Facing.FLANCO, HexRegrasFacing.facingDoAtaque(alvo + d.vetor, alvo, Direcao.LESTE))
+        }
+    }
+
+    @Test fun `virar-se MUDA o arco — o mesmo atacante sai do flanco para a frente`() {
+        // É exatamente o que a ação livre de virar (MB p.387) dá ao jogador: encarar a ameaça.
+        val alvo = HexCoord(0, 0)
+        val atacante = alvo + Direcao.NOROESTE.vetor
+        assertEquals("olhando para Leste, o atacante a Noroeste pega o flanco",
+            Facing.FLANCO, HexRegrasFacing.facingDoAtaque(atacante, alvo, Direcao.LESTE))
+        assertEquals("virando para Noroeste, ele passa a vir de FRENTE",
+            Facing.FRENTE, HexRegrasFacing.facingDoAtaque(atacante, alvo, Direcao.NOROESTE))
+    }
+
+    @Test fun `atacante DISTANTE tambem e classificado — nao so o adjacente`() {
+        // O goblin do print estava longe (magia à distância), não colado.
+        val alvo = HexCoord(0, 0)
+        val longeNordeste = HexCoord(3, -3) // 3 hexes a nordeste
+        assertEquals(Facing.FRENTE, HexRegrasFacing.facingDoAtaque(longeNordeste, alvo, Direcao.LESTE))
+        assertEquals(Facing.FLANCO, HexRegrasFacing.facingDoAtaque(longeNordeste, alvo, Direcao.SUDESTE))
+    }
 }

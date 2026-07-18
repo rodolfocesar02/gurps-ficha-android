@@ -1106,6 +1106,7 @@ fun MenuTaticoDoToken(
     var defesaTotalDialogo by remember(tokenId) { mutableStateOf(false) }
     var trocarArmaDialogo by remember(tokenId) { mutableStateOf(false) } // Lote TOK-6b-3: Trocar arma virou chip do token
     var conjurarDialogo by remember(tokenId) { mutableStateOf(false) }    // Lote MA-3a: chip 🔮 Conjurar
+    var virarDialogo by remember(tokenId) { mutableStateOf(false) }       // Lote HEX-FACING: 🧭 Virar
 
     val ehHeroi = tokenId == "heroi"
     val alvo = if (ehHeroi) null
@@ -1189,6 +1190,24 @@ fun MenuTaticoDoToken(
                         style = MaterialTheme.typography.labelMedium,
                         modifier = Modifier.padding(horizontal = 10.dp, vertical = 8.dp)
                     )
+                }
+            }
+            // Lote HEX-FACING: 🧭 VIRAR — ação LIVRE (MB p.387/388: "pode mudar de direção livremente
+            // antes ou depois do movimento"; "no final do movimento: Livre!"). NÃO gasta o turno, por
+            // isso NÃO chama onFechar() no clique: o menu fica aberto para o jogador agir depois de
+            // se orientar. Some quando agarrado (MB p.86: preso não muda de direção).
+            val presoParaVirar = estado.combatentes.firstOrNull { it.ehHeroi }?.condicoes.orEmpty()
+                .let { c -> Condicao.AGARRADO.rotulo in c || Condicao.IMOBILIZADO.rotulo in c }
+            if (ehHeroi && !presoParaVirar) {
+                Surface(
+                    onClick = { virarDialogo = true },
+                    color = Color(0x3364B5F6), contentColor = Color.White, shape = RoundedCornerShape(14.dp),
+                    modifier = Modifier.padding(horizontal = 3.dp).semantics {
+                        contentDescription = "Virar-se para outra direção. Ação livre: não gasta o turno"
+                    }
+                ) {
+                    Text("🧭 Virar", style = MaterialTheme.typography.labelMedium,
+                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 8.dp))
                 }
             }
             // Lote MA-3d-2: mágica de TOQUE carregada — chip de ENTREGAR num inimigo adjacente
@@ -1304,6 +1323,15 @@ fun MenuTaticoDoToken(
             selecionado = estado.ataqueSelecionado,
             onEscolher = { i -> viewModel.sagaCombateSacarArma(i); trocarArmaDialogo = false; onFechar() },
             onFechar = { trocarArmaDialogo = false }
+        )
+    }
+    // Lote HEX-FACING: escolher a direção. NÃO chama onFechar() — virar é LIVRE, o jogador continua
+    // com o turno para agir depois de se orientar.
+    if (virarDialogo) {
+        SubDialogoVirar(
+            atual = viewModel.sagaEstadoTatico?.posicoes?.firstOrNull { it.id == "heroi" }?.facing,
+            onEscolher = { d -> viewModel.sagaCombateVirar(d); virarDialogo = false },
+            onFechar = { virarDialogo = false }
         )
     }
 
@@ -1530,6 +1558,55 @@ private fun SubDialogoConjurar(
 }
 
 /** Lote TOK-6b-3: troca de arma como diálogo do token (substitui o painel de arma fixo do rodapé). */
+/**
+ * Lote HEX-FACING: escolhe para onde o herói OLHA. Ação LIVRE — a regra é explícita no diálogo para o
+ * jogador saber que pode virar e agir no mesmo turno (MB p.387: "pode mudar de direção livremente
+ * antes ou depois do movimento"; p.388: "no final do movimento: Livre!").
+ */
+@Composable
+private fun SubDialogoVirar(
+    atual: com.gurps.ficha.domain.combat.hex.Direcao?,
+    onEscolher: (com.gurps.ficha.domain.combat.hex.Direcao) -> Unit,
+    onFechar: () -> Unit,
+) {
+    val rotulos = mapOf(
+        com.gurps.ficha.domain.combat.hex.Direcao.LESTE to "→ Leste",
+        com.gurps.ficha.domain.combat.hex.Direcao.SUDESTE to "↘ Sudeste",
+        com.gurps.ficha.domain.combat.hex.Direcao.SUDOESTE to "↙ Sudoeste",
+        com.gurps.ficha.domain.combat.hex.Direcao.OESTE to "← Oeste",
+        com.gurps.ficha.domain.combat.hex.Direcao.NOROESTE to "↖ Noroeste",
+        com.gurps.ficha.domain.combat.hex.Direcao.NORDESTE to "↗ Nordeste",
+    )
+    AlertDialog(
+        onDismissRequest = onFechar,
+        title = { Text("Virar-se") },
+        text = {
+            Column(Modifier.verticalScroll(rememberScrollState())) {
+                Text(
+                    "Ação LIVRE: virar não gasta o seu turno — você pode se orientar e atacar no mesmo " +
+                        "segundo (MB p.387). Quem te ataca pela FRENTE não ganha bônus; pelo FLANCO suas " +
+                        "defesas caem −2; pelas COSTAS você não se defende.",
+                    style = MaterialTheme.typography.bodySmall, fontStyle = FontStyle.Italic,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                Spacer(Modifier.height(10.dp))
+                rotulos.forEach { (dir, rotulo) ->
+                    val ehAtual = dir == atual
+                    OutlinedButton(
+                        onClick = { onEscolher(dir) },
+                        enabled = !ehAtual,
+                        modifier = Modifier.fillMaxWidth().padding(vertical = 2.dp).semantics {
+                            contentDescription = "Virar-se para $rotulo" + if (ehAtual) ", direção atual" else ""
+                        }
+                    ) { Text(rotulo + if (ehAtual) "  (atual)" else "") }
+                }
+            }
+        },
+        confirmButton = {},
+        dismissButton = { TextButton(onClick = onFechar) { Text("Fechar") } }
+    )
+}
+
 @Composable
 private fun SubDialogoTrocarArma(
     ataques: List<AtaqueHeroi>,
