@@ -816,6 +816,27 @@ class MagicCombatTest {
         assertEquals(20, MagicMechanics.danoDaExplosao(20, distanciaM = 5, divisorPorMetro = 0))
     }
 
+    // ── Lote TESTE-SANDBOX: as recusas do início de combate são REAIS e precisam ser ditas ──────
+    // O sandbox descartava o retorno de `iniciarCombate`, então uma recusa virava "o botão não faz
+    // nada". Estes testes trancam os códigos que a UI traduz para o jogador.
+
+    @Test
+    fun `0 PV NAO e morte em GURPS — por isso a trava do sandbox e do controller, nao do motor`() {
+        // Eu tinha escrito um teste afirmando que o herói a 0 PV "não está vivo". ERRADO: `vivo` só
+        // cai em −PV máximo. 0 PV é "cambaleante mas de pé". A regra de NÃO ABRIR um combate de teste
+        // com o herói a 0 PV é uma decisão do `iniciarCombate` (não faz sentido lutar assim), não uma
+        // propriedade do motor. Este teste tranca o fato real, para o próximo leitor não repetir meu erro.
+        val heroiCaido = heroi().apply { pvAtual = 0 }
+        val enc = CombatEncounter(listOf(heroiCaido, goblin()), mapOf("goblin" to 5), seed = 1L)
+        val s = CombatSession(enc, perfil(), Random(7))
+        assertTrue("0 PV ainda é 'vivo' em GURPS (só morre em −PVmáx)", s.heroi.vivo)
+        assertTrue("mas está em/abaixo de zero — que é o que o sandbox recusa", s.heroi.pvAtual <= 0)
+    }
+
+    // NOTA HONESTA: a tradução dessa recusa em mensagem de tela mora no `SagaCombatController`, que
+    // não é instanciável na JVM (precisa de `Application`) — a mesma limitação registrada no
+    // TESTE-C. A fiação é verificada no aparelho.
+
     // ── Lote TESTE-NPC: modos do combate de teste (Normal / Congelado / Boneco) ─────────────────
 
     @Test

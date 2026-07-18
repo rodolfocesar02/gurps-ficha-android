@@ -210,6 +210,27 @@ private fun SelecaoDeCampanha(viewModel: FichaViewModel) {
                     ) { Text("⚔️ Combate de teste (2 goblins)") }
                 }
 
+                // Lote TESTE-SANDBOX: por que o combate não abriu. Precisa ficar AQUI, e não no
+                // `avisoTatico` dos overlays de combate — aqueles retornam cedo quando não há combate
+                // ativo, que é exatamente o caso em que esta mensagem importa.
+                viewModel.sagaAvisoSandbox?.let { aviso ->
+                    Card(
+                        modifier = Modifier
+                            .align(Alignment.Center)
+                            .padding(24.dp)
+                            .semantics { liveRegion = LiveRegionMode.Assertive },
+                        colors = CardDefaults.cardColors(
+                            containerColor = MaterialTheme.colorScheme.errorContainer
+                        ),
+                    ) {
+                        Column(Modifier.padding(16.dp)) {
+                            Text(aviso, style = MaterialTheme.typography.bodyMedium)
+                            Spacer(Modifier.height(8.dp))
+                            TextButton(onClick = { viewModel.sagaLimparAvisoSandbox() }) { Text("Entendi") }
+                        }
+                    }
+                }
+
                 // Lote TESTE-NPC: seletor do comportamento dos NPCs. Fica visível TAMBÉM durante a
                 // luta — trocar no meio vale na hora, sem reiniciar o combate.
                 SeletorModoTesteNpc(

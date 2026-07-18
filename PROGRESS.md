@@ -3046,6 +3046,20 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - **Recomendação registrada** (maior valor × menor custo): Ataque Telegráfico (par do Enganoso), luta agarrada profunda (chaves/Mata-Leão estendendo o lote 422), Sangramento Grave + incapacitação de membro (item 5 do teste de batalha), Ataque Dedicado/Defensivo. Fora de escopo: posicional/hexágono, montaria, cinematográfico, dado de arma do NPC. Mudança só de documentação (não compila Kotlin).
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
+### Lote TESTE-SANDBOX — 18 de Julho de 2026 (o botão de combate de teste falhava EM SILÊNCIO)
+**"nao esta entrando no modo de combate, os botoes aparecem acima do grid, porem nada de combate!" — branch GURPS-Saga**
+- **🔴 A causa**: `sagaIniciarCombateTeste` chamava `iniciarCombateSandbox` e **DESCARTAVA o retorno**. Só que `iniciarCombate` tem **quatro saídas de recusa** que devolvem um código em vez de abrir a luta: `sem_contexto`, `combate_ja_ativo`, `heroi_incapacitado` (herói com **PV ≤ 0**) e bestiário ausente. Nenhuma delas chegava à tela — o botão simplesmente **não fazia nada**, sem explicação.
+- **Dois suspeitos práticos para o caso do usuário**: (1) **PV ≤ 0** persistido na ficha de uma luta de teste anterior — aí TODO combate de teste seguinte era recusado para sempre; (2) **sessão presa** de uma luta anterior, que além de recusar **esconde o próprio botão** (ele está sob `if (!sagaCombateAtivo)`), o que bate com "os botões aparecem mas nada de combate".
+- **Corrigido nas duas pontas**:
+  - **Destrava**: numa ARENA DE TESTE uma luta presa não pode bloquear a próxima — o sandbox agora encerra a anterior e recomeça. Em campanha a recusa continua valendo (lá ela protege de o Narrador abrir combate por cima de outro).
+  - **Explica**: `avisoSandbox` traduz o código em algo acionável ("seu herói está com 0 de 12 PV — restaure os PV na ficha e tente de novo") e aparece num card no centro do preview. Tinha que ser um canal PRÓPRIO: o `avisoTatico` dos overlays de combate retorna cedo quando não há combate ativo — exatamente o caso em que esta mensagem importa.
+  - **Registra**: a recusa também sai no logcat (`tag:Saga_Combate`).
+- 🐛 **Erro meu de entendimento de regra, pego pelo gate**: escrevi um teste afirmando que o herói a 0 PV "não está vivo". **Errado** — em GURPS `vivo` só cai em **−PV máximo**; 0 PV é "de pé, cambaleante". A trava de não abrir combate a 0 PV é decisão do `iniciarCombate`, não propriedade do motor. O teste foi reescrito para trancar o fato real, com o erro anotado para o próximo leitor.
+- ⚠️ **Limite honesto**: a tradução recusa→mensagem mora no `SagaCombatController`, **não testável na JVM** (precisa de `Application`) — a mesma limitação medida no TESTE-C. O motor está coberto; a fiação depende do teste no aparelho.
+- ⚠️ Gate: **747 testes nas DUAS variantes**; único vermelho o flaky do Nexus Arcano.
+- 🚦 **Lote de UI → PARA para teste no aparelho.**
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
 ### Lote TESTE-NPC — 18 de Julho de 2026 (NPCs congelados no preview, para testar magia e combate)
 **"podemos deixar os NPC do preview apenas congelados?" — branch GURPS-Saga**
 - **Contexto**: validar as regras novas (MEC-13..19) no aparelho é difícil com o goblin atacando de volta e a luta andando sozinha.

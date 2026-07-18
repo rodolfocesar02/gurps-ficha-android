@@ -185,6 +185,12 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
             )
         }
     }
+    /** Lote TESTE-SANDBOX: motivo de o combate de teste não ter aberto (null = abriu). */
+    val sagaAvisoSandbox: String?
+        get() = sagaDelegate.combate.avisoSandbox
+
+    fun sagaLimparAvisoSandbox() = sagaDelegate.combate.limparAvisoSandbox()
+
     /**
      * Lote TESTE-NPC: modo dos NPCs no combate de teste (Normal / Congelado / Boneco). Vale também
      * com a luta já em andamento — trocar não obriga a reiniciar.

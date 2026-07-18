@@ -611,16 +611,49 @@ class SagaCombatController(
         atualizarEstado()
     }
 
+    /**
+     * Lote TESTE-SANDBOX: por que o combate de teste não abriu. `null` = abriu normalmente.
+     *
+     * Existe porque o retorno de [iniciarCombate] era **descartado** aqui: quando o motor recusava
+     * (herói a 0 PV de uma luta anterior, sessão presa, bestiário ausente), o botão simplesmente
+     * não fazia nada e o jogador não recebia explicação nenhuma.
+     */
+    var avisoSandbox by mutableStateOf<String?>(null)
+        private set
+
+    fun limparAvisoSandbox() { avisoSandbox = null }
+
     fun iniciarCombateSandbox(
         inimigos: List<Pair<String, Int>>, distanciaM: Int = 5,
         magiasDeclaradas: List<String> = emptyList(),
     ): String {
+        avisoSandbox = null
+        // Lote TESTE-SANDBOX: numa ARENA DE TESTE, uma luta presa não pode bloquear a próxima —
+        // o botão existe justamente para recomeçar à vontade. Em campanha a recusa continua valendo.
+        if (sessao != null) encerrarManual()
         taticoForcadoUmaVez = true
         val r = iniciarCombate(inimigos, distanciaM, "ninguem", magiasDeclaradas)
         // Lote TESTE-NPC: o sandbox é o ÚNICO lugar que sai do NORMAL.
         sessao?.modoTesteNpc = modoTesteNpc
+        avisoSandbox = explicarRecusaSandbox(r)
+        com.gurps.ficha.domain.combat.SagaLog.mecanica(
+            if (avisoSandbox == null) "combate de teste iniciado" else "combate de teste RECUSADO: $r")
         atualizarEstado()
         return r
+    }
+
+    /** Traduz o código de recusa do motor em algo acionável na tela (null = não houve recusa). */
+    private fun explicarRecusaSandbox(retorno: String): String? = when {
+        retorno.startsWith("heroi_incapacitado") -> {
+            val p = viewModel.personagem
+            "⚠️ Combate de teste não abriu: seu herói está com ${p.pontosVidaRolagemAtual ?: p.pontosVida} " +
+                "de ${p.pontosVida} PV (0 ou menos). Restaure os PV na ficha e tente de novo."
+        }
+        retorno.startsWith("sem_contexto") ->
+            "⚠️ Combate de teste não abriu: o app não conseguiu carregar o bestiário. Reabra a aba Saga."
+        retorno.startsWith("combate_ja_ativo") ->
+            "⚠️ Já havia um combate em andamento. Feche-o e tente de novo."
+        else -> null
     }
 
     /** Consumido (e zerado) pelo próximo [iniciarCombate] — não vaza para combates seguintes. */
