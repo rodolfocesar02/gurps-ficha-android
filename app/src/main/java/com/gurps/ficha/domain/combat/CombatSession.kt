@@ -909,6 +909,17 @@ class CombatSession(
             log += t
             return ResultadoConjuracaoCombate(false, t)
         }
+        // Lote MEC-15: alvo além da Distância Máxima do Projétil — "O alvo NÃO PODE estar a uma
+        // distância maior que Distância Max". Recusa antes de gastar fadiga (o operador enxerga a
+        // distância; não faz sentido queimar o turno num tiro que a regra proíbe).
+        if (alvoId != null && com.gurps.ficha.domain.magic.MagicMechanics
+                .foraDoAlcanceMaximo(ctx.mecanica, ctx.distanciaMetros)) {
+            val alvoNome = encounter.combatentes.firstOrNull { it.id == alvoId }?.nome ?: "o alvo"
+            val t = "🚫 $alvoNome está a ${ctx.distanciaMetros}m — além do alcance máximo de " +
+                "$magiaNome (Máx ${ctx.mecanica?.alcanceMaximo}m)."
+            log += t
+            return ResultadoConjuracaoCombate(false, t)
+        }
         // Lote COND-1: silenciado não conjura (o ritual mágico exige fala, Magia p.8).
         if (Condicao.SILENCIADO in heroi.condicoes) {
             val t = "🤐 Você está SILENCIADO — não consegue conjurar $magiaNome (o ritual exige fala)."
@@ -1052,7 +1063,8 @@ class CombatSession(
                             sb.append(" ${alvo.nome} ESQUIVA do projétil (Esquiva $esq).")
                         } else {
                             sb.append(" Projétil acerta —")
-                            dano = aplicarDanoMagico(alvo, energia, ctx.mecanica, sb) // AR-1: dado curado ou 1d/energia
+                            // MEC-15: a distância entra aqui para o 1/2D.
+                            dano = aplicarDanoMagico(alvo, energia, ctx.mecanica, sb, ctx.distanciaMetros) // AR-1: dado curado ou 1d/energia
                         }
                     }
                 } else if (!alvoResistiu && alvo != null &&
@@ -1231,7 +1243,14 @@ class CombatSession(
      * houver (dado exato escalado por energia, tipo, regra de armadura e condição embutida); sem
      * mecânica, cai no padrão 1d × energia (contusão). Devolve o dano aplicado.
      */
-    private fun aplicarDanoMagico(alvo: Combatente, energia: Int, mecanica: com.gurps.ficha.domain.magic.MagiaMecanica?, sb: StringBuilder): Int {
+    private fun aplicarDanoMagico(
+        alvo: Combatente,
+        energia: Int,
+        mecanica: com.gurps.ficha.domain.magic.MagiaMecanica?,
+        sb: StringBuilder,
+        /** Lote MEC-15: distância ao alvo, para o 1/2D. 0 = perto/irrelevante. */
+        distanciaM: Int = 0,
+    ): Int {
         val expr = if (mecanica?.danoPorEnergia != null)
             com.gurps.ficha.domain.magic.MagicMechanics.expandirDano(mecanica.danoPorEnergia, energia.coerceAtLeast(1), mecanica.energiaPorDado, mecanica.danoFixo)
         else "${energia.coerceAtLeast(1)}d"
@@ -1240,14 +1259,20 @@ class CombatSession(
             else -> DanoTipo.CONT // queimadura/contusão/projeção → ×1 (sem enum de queimadura; documentado)
         }
         val rd = if (mecanica?.armadura == "ignora") 0 else ((alvo.stats?.rd ?: 0) + alvo.buffRd)
-        val bruto = rolarDano(expr, random)
+        val brutoCheio = rolarDano(expr, random)
+        // Lote MEC-15: a partir de 1/2D (INCLUSIVE) o dano BÁSICO — antes da RD — cai pela metade,
+        // arredondando para baixo.
+        val bruto = com.gurps.ficha.domain.magic.MagicMechanics.aplicarMeioDano(brutoCheio, mecanica, distanciaM)
+        val meioDano = bruto < brutoCheio
+        if (meioDano) sb.append(" (além de ${mecanica?.alcanceMeioDano}m: metade do dano)")
         val dn = HitLocationRules.aplicarDano(alvo.pvMax, bruto, tipo, LocalAtaque.TORSO, rd, alvo.stats?.tolerancia ?: ToleranciaFerimentos.NORMAL)
         InjuryRules.ferir(alvo, dn.pvSubtrair, alvo.htEfetivo, random)
         sb.append(" $expr → ${dn.pvSubtrair} de dano em ${alvo.nome}" + (if (!alvo.vivo) " (fora de combate!)" else "") + ".")
         // Condição embutida (ex.: Relâmpago atordoa: HT −1 por 2 PV; Concussão: HT−3). Testa e impõe.
         if (mecanica?.condicao != null && alvo.vivo && dn.pvSubtrair > 0) {
             val pen = com.gurps.ficha.domain.magic.MagicMechanics.penalidadeCondicaoPorPv(mecanica.condicaoResistencia, dn.pvSubtrair)
-            val ht = (alvo.htEfetivo) + pen
+            // Lote MEC-15: além do 1/2D o alvo resiste à atribulação com +3 (MB, seção "Distância").
+            val ht = (alvo.htEfetivo) + pen + (if (meioDano) 3 else 0)
             if (rolar3d6() > ht) imporCondicaoMagica(alvo, mecanica.condicao, sb)
             else sb.append(" (${alvo.nome} resiste à condição, HT $ht).")
         }

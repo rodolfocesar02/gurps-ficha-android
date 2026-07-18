@@ -816,6 +816,47 @@ class MagicCombatTest {
         assertEquals(20, MagicMechanics.danoDaExplosao(20, distanciaM = 5, divisorPorMetro = 0))
     }
 
+    // ── Lote MEC-15: distâncias do Projétil (1/2D e Máx) ────────────────────────────────────────
+
+    @Test
+    fun `meio dano vale a partir do 1 meio D INCLUSIVE (e nao so alem dele)`() {
+        // O detalhe da fonte literal: "distância MAIOR OU IGUAL à distância 1/2D". De memória eu teria
+        // escrito só ">", e o alvo exatamente no 1/2D levaria dano cheio.
+        val m = MagiaMecanica(efeito = "dano", alcanceMeioDano = 25, alcanceMaximo = 50)
+        assertEquals("a 24m ainda é dano cheio", 11, MagicMechanics.aplicarMeioDano(11, m, 24))
+        assertEquals("a 25m JÁ cai pela metade", 5, MagicMechanics.aplicarMeioDano(11, m, 25))
+        assertEquals("arredonda para baixo", 5, MagicMechanics.aplicarMeioDano(11, m, 40))
+    }
+
+    @Test
+    fun `sem 1 meio D o dano nunca cai (granadas, magias sem essa distancia)`() {
+        val m = MagiaMecanica(efeito = "dano", alcanceMaximo = 50)
+        assertEquals(11, MagicMechanics.aplicarMeioDano(11, m, 49))
+    }
+
+    @Test
+    fun `alcance maximo — no limite pode, um metro alem nao`() {
+        val m = MagiaMecanica(efeito = "dano", alcanceMeioDano = 25, alcanceMaximo = 50)
+        assertFalse("exatamente no Máx ainda alcança", MagicMechanics.foraDoAlcanceMaximo(m, 50))
+        assertTrue("1m além do Máx não alcança", MagicMechanics.foraDoAlcanceMaximo(m, 51))
+        assertFalse("Máx 0 = sem limite", MagicMechanics.foraDoAlcanceMaximo(MagiaMecanica(efeito = "dano"), 999))
+    }
+
+    @Test
+    fun `conjurar alem do Maximo e recusado SEM gastar fadiga`() {
+        val s = sessao(7, distGoblin = 80)
+        val pfAntes = s.heroi.pfAtual
+        val bola = MagiaMecanica(efeito = "dano", danoPorEnergia = "1d", energiaPorDado = 1,
+            entrega = "projetil", alcanceMeioDano = 25, alcanceMaximo = 50)
+        val ctx = ContextoConjuracao(nhBasico = 25, classe = MagicClassParser.parse("Projétil"),
+            mana = NivelMana.NORMAL, distanciaMetros = 80, mecanica = bola)
+        val r = s.heroiConjurar(ctx, MagicEnergy.parse("Varia"), energiaInvestida = 3,
+            magiaNome = "Bola de Fogo", alvoId = "goblin")
+        assertFalse("fora do Máx tem que recusar", r.sucesso)
+        assertEquals("e NÃO pode cobrar fadiga por um tiro que a regra proíbe", pfAntes, s.heroi.pfAtual)
+        assertTrue(r.texto.contains("alcance máximo"))
+    }
+
     @Test
     fun `area explosiva machuca menos quem esta longe do centro`() {
         // Dois goblins idênticos na área: um no centro, outro a 3m. Mesmo dado, danos diferentes.

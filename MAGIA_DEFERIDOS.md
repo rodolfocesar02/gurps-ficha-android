@@ -37,6 +37,18 @@ que não cabe em regra geral é **narrado pelo Mestre**.
   mapa por-magia que o catálogo não fornece.
 - **Magia no modo FAIXAS**: a conjuração no combate só existe no modo TÁTICO (grid) — o chip 🔮 mora
   no token. No modo de faixas não há UI de conjurar.
+- **PRECISÃO (Prec/Acc) do Projétil** (Lote MEC-15): o catálogo traz a Prec das 12 magias de projétil
+  (ex.: Bola de Fogo Prec 1, Relâmpago Prec 3), mas a Precisão **só se aplica com a manobra Apontar** —
+  e hoje o projétil é conjurado e arremessado **no mesmo turno**, com `heroiConjurar` chamando
+  `limparApontar()`. Não há turno em que se possa mirar. Somar a Prec sem Apontar seria dar bônus de
+  graça, o oposto da regra. Isto se destrava junto com o deferido **"Projétil — carregar em vários
+  turnos"** logo acima; o maquinário de Apontar (Acc + mira de vários turnos + firmar) já existe e é
+  usado pelas armas. Por isso o campo `precisao` NÃO foi adicionado ao schema: seria campo morto.
+- **"+3 para resistir OU metade do dano"** (Lote MEC-15): o livro se contradiz entre duas seções — a
+  seção *"Distância"* diz que além do 1/2D o ataque *"causa apenas metade do dano **E** ... é resistido
+  com um bônus de +3"*, enquanto a seção *"Metade do Dano (1/2D)"* diz que o +3 vale *"**em vez de** o
+  dano ser reduzido pela metade"*. Adotada a formulação inequívoca (**os dois**, da seção "Distância").
+  Se em mesa o usuário preferir o "em vez de", é uma linha em `aplicarDanoMagico`.
 - **Respingo do RELÂMPAGO EXPLOSIVO** (Lote MEC-14): o decaimento de explosão ("divide o dano por 3× a
   distância em metros") está implementado no ramo de ÁREA, e vale de verdade para a **Bola de Fogo
   Explosiva** e a **Bola de Relâmpagos** (ambas `entrega: area`). O Relâmpago Explosivo, porém, é

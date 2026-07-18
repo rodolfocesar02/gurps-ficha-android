@@ -68,6 +68,16 @@ data class MagiaMecanica(
      * não decaimento de dano — a descrição deixa claro, apesar de o auditor tê-la agrupado junto.
      */
     val explosaoDivisorPorMetro: Int = 0,
+    /**
+     * Lote MEC-15: distâncias do Projétil, em metros (MB, "Distância" e "Metade do Dano (1/2D)").
+     * `alcanceMeioDano` = 1/2D: *"Se o alvo estiver a uma distância **maior ou igual** à distância
+     * 1/2D, divida o dano básico por 2, arredondando para baixo."* (é ≥, não >).
+     * `alcanceMaximo` = Max: *"O alvo não pode estar a uma distância maior que Distância Max; 1/2D
+     * afeta apenas o dano."*
+     * 0 nos dois = sem limite (o catálogo traz "n/a"/"n/d" em algumas).
+     */
+    val alcanceMeioDano: Int = 0,
+    val alcanceMaximo: Int = 0,
 
     // ── condição embutida (rider no dano ou standalone) ──
     /** Condição imposta ("atordoado", "cego"…). */
@@ -190,6 +200,18 @@ object MagicMechanics {
      * Lote MEC-14: dano da explosão a [distanciaM] metros do centro.
      * Até 1m → dano cheio; além disso, dividido por (divisor × distância), arredondando para baixo.
      */
+    /** Lote MEC-15: o alvo está além do Máx? (Max 0 = sem limite.) */
+    fun foraDoAlcanceMaximo(m: MagiaMecanica?, distanciaM: Int): Boolean {
+        val max = m?.alcanceMaximo ?: 0
+        return max > 0 && distanciaM > max
+    }
+
+    /** Lote MEC-15: a partir de 1/2D (inclusive) o dano básico cai pela metade, arredondando p/ baixo. */
+    fun aplicarMeioDano(dano: Int, m: MagiaMecanica?, distanciaM: Int): Int {
+        val meia = m?.alcanceMeioDano ?: 0
+        return if (meia > 0 && distanciaM >= meia) dano / 2 else dano
+    }
+
     fun danoDaExplosao(danoCheio: Int, distanciaM: Int, divisorPorMetro: Int): Int {
         if (divisorPorMetro <= 0 || distanciaM <= 1) return danoCheio
         return danoCheio / (divisorPorMetro * distanciaM)

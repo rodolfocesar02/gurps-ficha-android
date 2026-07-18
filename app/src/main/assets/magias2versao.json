@@ -152,7 +152,9 @@
       "energiaPorDado": 1,
       "tipoDano": "perf",
       "entrega": "projetil",
-      "notas": "1/2D 30, Max 60, Prec 3. Até AM de energia/seg por 3 seg. Sem efeito extra em criaturas de fogo."
+      "notas": "1/2D 30, Max 60, Prec 3. Até AM de energia/seg por 3 seg. Sem efeito extra em criaturas de fogo.",
+      "alcanceMeioDano": 30,
+      "alcanceMaximo": 60
     },
     "duracaoTipo": "instantanea",
     "duracaoSeg": 0,
@@ -1597,7 +1599,8 @@
     "mecanica": {
       "efeito": "narrado",
       "entrega": "projetil",
-      "notas": "Meta: transforma outra magia em Projétil (1/2D n/a, Max 80, Prec 1; teste DX-4 ou Ataque Inato). Custo 3 + custo da magia-objetivo. Pode ser bloqueada/esquivada, não aparada. Não vale para magias de Projétil/Bloqueio."
+      "notas": "Meta: transforma outra magia em Projétil (1/2D n/a, Max 80, Prec 1; teste DX-4 ou Ataque Inato). Custo 3 + custo da magia-objetivo. Pode ser bloqueada/esquivada, não aparada. Não vale para magias de Projétil/Bloqueio.",
+      "alcanceMaximo": 80
     },
     "duracaoTipo": "permanente",
     "duracaoSeg": 0,
@@ -2549,7 +2552,9 @@
       "danoPorEnergia": "1d",
       "energiaPorDado": 1,
       "entrega": "projetil",
-      "notas": "Dano por ácido (corrosão), sem tipo padrão. 1/2D 20, Max 40, Prec 1, perícia Ataque Inato. Até AM de energia/seg por 3 seg."
+      "notas": "Dano por ácido (corrosão), sem tipo padrão. 1/2D 20, Max 40, Prec 1, perícia Ataque Inato. Até AM de energia/seg por 3 seg.",
+      "alcanceMeioDano": 20,
+      "alcanceMaximo": 40
     },
     "duracaoTipo": "instantanea",
     "duracaoSeg": 0,
@@ -2598,7 +2603,9 @@
       "energiaPorDado": 1,
       "tipoDano": "quei",
       "entrega": "projetil",
-      "notas": "1/2D 25, Max 50, Prec 1. Ate AM por seg por 3 seg."
+      "notas": "1/2D 25, Max 50, Prec 1. Ate AM por seg por 3 seg.",
+      "alcanceMeioDano": 25,
+      "alcanceMaximo": 50
     },
     "duracaoTipo": "instantanea",
     "duracaoSeg": 0,
@@ -8174,7 +8181,9 @@
       "energiaPorDado": 1,
       "tipoDano": "cont",
       "entrega": "projetil",
-      "notas": "1/2D 40, Max 80, Prec 2. Até AM de energia/seg por 3 seg. Esfera de 1 dado apaga fogo em 1m de raio."
+      "notas": "1/2D 40, Max 80, Prec 2. Até AM de energia/seg por 3 seg. Esfera de 1 dado apaga fogo em 1m de raio.",
+      "alcanceMeioDano": 40,
+      "alcanceMaximo": 80
     },
     "duracaoTipo": "instantanea",
     "duracaoSeg": 0,
@@ -8721,7 +8730,9 @@
       "efeito": "narrado",
       "tipoDano": "perf",
       "entrega": "projetil",
-      "notas": "Arremessa magicamente qualquer arma como se lançada por ST 15 (perf 1d+1 impacto / corte 2d+1 balanço, conforme a arma). 1/2D 20 Máx 40 Prec 1. Dano depende da arma, não escala com energia (energia = 1 por 0,5kg). Alvo defende normal."
+      "notas": "Arremessa magicamente qualquer arma como se lançada por ST 15 (perf 1d+1 impacto / corte 2d+1 balanço, conforme a arma). 1/2D 20 Máx 40 Prec 1. Dano depende da arma, não escala com energia (energia = 1 por 0,5kg). Alvo defende normal.",
+      "alcanceMeioDano": 20,
+      "alcanceMaximo": 40
     }
   },
   {
@@ -14471,7 +14482,9 @@
       "tipoDano": "cont",
       "entrega": "projetil",
       "condicaoResistencia": "HT",
-      "notas": "Arremessa o objetivo (R-HT) num alvo como se ST 15 o jogasse; ao atingir causa contusão 1d (até 5kg) ou 1d+1 (até 12,5kg). Teste DX-4/Arremesso p/ acertar; alvo esquiva/bloqueia, só o objetivo resiste. 1/2D 20 Máx 60 Prec 1. Dano não escala linear com energia."
+      "notas": "Arremessa o objetivo (R-HT) num alvo como se ST 15 o jogasse; ao atingir causa contusão 1d (até 5kg) ou 1d+1 (até 12,5kg). Teste DX-4/Arremesso p/ acertar; alvo esquiva/bloqueia, só o objetivo resiste. 1/2D 20 Máx 60 Prec 1. Dano não escala linear com energia.",
+      "alcanceMeioDano": 20,
+      "alcanceMaximo": 60
     }
   },
   {
@@ -14965,7 +14978,9 @@
       "energiaPorDado": 1,
       "tipoDano": "cont",
       "entrega": "projetil",
-      "notas": "Ate a Aptidao Magica por segundo, por ate 3 segundos. 1/2D 40, Max 80, Prec 2."
+      "notas": "Ate a Aptidao Magica por segundo, por ate 3 segundos. 1/2D 40, Max 80, Prec 2.",
+      "alcanceMeioDano": 40,
+      "alcanceMaximo": 80
     }
   },
   {
@@ -15343,7 +15358,9 @@
       "entrega": "projetil",
       "condicao": "cego",
       "condicaoResistencia": "HT",
-      "notas": "Projetil 1/2D 75, Max 150, Prec 2, pericia Ataque Inato. Queima como laser (o texto tambem menciona perfuracao no custo; adotado queimadura pela descricao). Energia ate o nivel de Aptidao Magica/seg por ate 3seg. Golpe no rosto cega (teste HT); nos olhos dobra dano e cega (HT com -dano). Espelho reflete; escudo polido +50% BD; defensor c/ espelho pode Bloquear -2. Areas de Escuridao/Trevas resistem."
+      "notas": "Projetil 1/2D 75, Max 150, Prec 2, pericia Ataque Inato. Queima como laser (o texto tambem menciona perfuracao no custo; adotado queimadura pela descricao). Energia ate o nivel de Aptidao Magica/seg por ate 3seg. Golpe no rosto cega (teste HT); nos olhos dobra dano e cega (HT com -dano). Espelho reflete; escudo polido +50% BD; defensor c/ espelho pode Bloquear -2. Areas de Escuridao/Trevas resistem.",
+      "alcanceMeioDano": 75,
+      "alcanceMaximo": 150
     }
   },
   {
@@ -15799,7 +15816,9 @@
       "entrega": "projetil",
       "condicao": "atordoado",
       "condicaoResistencia": "HT_por_pv",
-      "notas": "1/2D 50, Max 100, Prec 3. Armadura metalica conta como RD 1. Se o alvo se ferir, testa HT (-1 por 2 PV sofridos) ou atordoa; novo teste HT a cada turno para recuperar. Ate AM de energia/seg por 3s. 1d-1 por ponto de energia."
+      "notas": "1/2D 50, Max 100, Prec 3. Armadura metalica conta como RD 1. Se o alvo se ferir, testa HT (-1 por 2 PV sofridos) ou atordoa; novo teste HT a cada turno para recuperar. Ate AM de energia/seg por 3s. 1d-1 por ponto de energia.",
+      "alcanceMeioDano": 50,
+      "alcanceMaximo": 100
     }
   },
   {
@@ -15827,7 +15846,9 @@
       "condicao": "atordoado",
       "condicaoResistencia": "HT_por_pv",
       "notas": "1/2D 50, Max 100, Prec 3. Explosao: alvo e quem estiver a <1m leva dano total; mais longe divide por 3x a distancia em m. Pode mirar parede/piso a +4. 1d-1 por 2 pontos completos de energia. Aplica atordoar do Relampago.",
-      "explosaoDivisorPorMetro": 3
+      "explosaoDivisorPorMetro": 3,
+      "alcanceMeioDano": 50,
+      "alcanceMaximo": 100
     }
   },
   {
