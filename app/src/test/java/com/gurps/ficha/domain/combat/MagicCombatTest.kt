@@ -816,6 +816,52 @@ class MagicCombatTest {
         assertEquals(20, MagicMechanics.danoDaExplosao(20, distanciaM = 5, divisorPorMetro = 0))
     }
 
+    // ── Lote TESTE-NPC: modos do combate de teste (Normal / Congelado / Boneco) ─────────────────
+
+    @Test
+    fun `NORMAL e o padrao — nenhuma sessao nasce em modo de teste`() {
+        // Garante que campanha real nunca cai em modo de teste por acidente.
+        assertEquals(ModoTesteNpc.NORMAL, sessao(7).modoTesteNpc)
+    }
+
+    @Test
+    fun `CONGELADO faz o NPC nao agir`() {
+        val s = sessao(7)
+        s.modoTesteNpc = ModoTesteNpc.CONGELADO
+        val intencao = s.npcIntencao("goblin")
+        assertEquals("congelado não age", Manobra.NAO_FAZER_NADA, intencao.manobra)
+    }
+
+    /** Lança um projétil num goblin no modo dado e devolve o log da luta. */
+    private fun logDeProjetilNoModo(modo: ModoTesteNpc, seed: Long): List<String> {
+        val s = sessao(seed)
+        s.modoTesteNpc = modo
+        s.heroiConjurar(ctxProjetil(nh = 30), MagicEnergy.parse("Varia"), energiaInvestida = 3,
+            magiaNome = "Bola de Fogo", alvoId = "goblin")
+        return s.log.toList()
+    }
+
+    @Test
+    fun `CONGELADO ainda ESQUIVA — e a diferenca real para o Boneco`() {
+        // A distinção que motivou os dois modos: congelar o TURNO não desliga a DEFESA.
+        val esquivouAlgumaVez = (0L until 40L).any { seed ->
+            logDeProjetilNoModo(ModoTesteNpc.CONGELADO, seed).any { it.contains("ESQUIVA") }
+        }
+        assertTrue("congelado tem que esquivar em ao menos uma das 40 tentativas", esquivouAlgumaVez)
+    }
+
+    @Test
+    fun `BONECO nunca esquiva — mas o ATACANTE ainda pode errar sozinho`() {
+        // Cuidado com a promessa: "boneco" não é "tudo acerta". Ele não se defende, porém o projétil
+        // ainda faz a própria jogada de acerto (Ataque Inato) e pode passar longe. Tirar isso também
+        // esconderia bug no caminho de acerto — que é justamente o que se quer validar.
+        val logs = (0L until 40L).map { logDeProjetilNoModo(ModoTesteNpc.BONECO, it) }
+        assertTrue("no modo boneco NENHUMA esquiva pode acontecer",
+            logs.none { l -> l.any { it.contains("ESQUIVA") } })
+        assertTrue("e mesmo assim tem que haver acerto em alguma tentativa",
+            logs.any { l -> l.any { it.contains("Projétil acerta") } })
+    }
+
     // ── Lote MEC-19: escapar da condição por teste de atributo (o gelo) ──────────────────────────
 
     @Test

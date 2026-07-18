@@ -598,12 +598,29 @@ class SagaCombatController(
      * A única diferença para um combate normal é forçar a grade tática: fora de campanha não há
      * `modoTaticoHex` (é config da campanha), e sem grade o sandbox cairia no modo faixas.
      */
+    /**
+     * Lote TESTE-NPC: modo dos NPCs no combate de TESTE. Observável para o seletor da tela refletir
+     * a troca; aplicado à sessão viva na hora, para não obrigar a reiniciar a luta.
+     */
+    var modoTesteNpc by mutableStateOf(com.gurps.ficha.domain.combat.ModoTesteNpc.NORMAL)
+        private set
+
+    fun definirModoTesteNpc(modo: com.gurps.ficha.domain.combat.ModoTesteNpc) {
+        modoTesteNpc = modo
+        sessao?.modoTesteNpc = modo // vale já nesta luta, sem reiniciar
+        atualizarEstado()
+    }
+
     fun iniciarCombateSandbox(
         inimigos: List<Pair<String, Int>>, distanciaM: Int = 5,
         magiasDeclaradas: List<String> = emptyList(),
     ): String {
         taticoForcadoUmaVez = true
-        return iniciarCombate(inimigos, distanciaM, "ninguem", magiasDeclaradas)
+        val r = iniciarCombate(inimigos, distanciaM, "ninguem", magiasDeclaradas)
+        // Lote TESTE-NPC: o sandbox é o ÚNICO lugar que sai do NORMAL.
+        sessao?.modoTesteNpc = modoTesteNpc
+        atualizarEstado()
+        return r
     }
 
     /** Consumido (e zerado) pelo próximo [iniciarCombate] — não vaza para combates seguintes. */

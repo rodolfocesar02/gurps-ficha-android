@@ -3046,6 +3046,22 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - **Recomendação registrada** (maior valor × menor custo): Ataque Telegráfico (par do Enganoso), luta agarrada profunda (chaves/Mata-Leão estendendo o lote 422), Sangramento Grave + incapacitação de membro (item 5 do teste de batalha), Ataque Dedicado/Defensivo. Fora de escopo: posicional/hexágono, montaria, cinematográfico, dado de arma do NPC. Mudança só de documentação (não compila Kotlin).
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
+### Lote TESTE-NPC — 18 de Julho de 2026 (NPCs congelados no preview, para testar magia e combate)
+**"podemos deixar os NPC do preview apenas congelados?" — branch GURPS-Saga**
+- **Contexto**: validar as regras novas (MEC-13..19) no aparelho é difícil com o goblin atacando de volta e a luta andando sozinha.
+- **Três modos** (`ModoTesteNpc`), seletor no topo do preview, visível TAMBÉM durante a luta — trocar vale na hora, sem reiniciar o combate:
+  - **Normal** — cérebro tático age e defende (jogo de verdade);
+  - **Congelado** — não age, mas **ainda esquiva/apara**;
+  - **Boneco** — não age nem defende.
+- **A distinção Congelado × Boneco é real, não cosmética**: agir e defender são pontos SEPARADOS no motor (`npcIntencao` × `melhorDefesaNpc`/`esquivaNpc`). Congelar o turno não desliga a esquiva.
+- 🐛 **Bug meu que o teste pegou (e teria confundido no aparelho)**: eu havia implementado o Boneco **zerando** a defesa. Não funciona — em GURPS **3 ou 4 é sucesso automático**, então uma Esquiva 0 ainda escapava de vez em quando. No aparelho isso apareceria como *"botei Boneco e mesmo assim ele esquivou"*. Corrigido com `npcSeDefendeu`, que **pula a rolagem**. Conferido um a um que os 5 sites trocados são defesa de NPC e que os 3 do **herói** ficaram intactos.
+- ⚠️ **Promessa minha corrigida**: eu havia dito ao usuário que Boneco = "tudo acerta". **Está errado** — o alvo não se defende, mas o atacante ainda faz a própria jogada de acerto e pode errar. Tirar essa jogada esconderia bug no caminho de acerto, que é justamente o que se quer validar. O rótulo na tela diz isso ("você ainda pode errar o ataque").
+- **Só o sandbox sai do NORMAL** — nenhum caminho de campanha seta outro valor, e há teste trancando o padrão.
+- **+4 testes**: padrão NORMAL; congelado não age; congelado ainda esquiva (em 40 tentativas); boneco nunca esquiva mas ainda acerta em algumas.
+- ⚠️ Gate: **746 testes nas DUAS variantes**; único vermelho o flaky do Nexus Arcano. Houve um `packagePracegoRelease FAILED` isolado (file lock do Windows no empacotamento incremental) — **transitório, confirmado passando na re-execução**.
+- 🚦 **Lote de UI → PARA para teste no aparelho.**
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
 ### Lote TESTE-C — 18 de Julho de 2026 (regra tática sai do controller e passa a ser testada de verdade)
 **"viewmodel (UI), nao existem teste pra isso?" — e a resposta era um problema meu — branch GURPS-Saga**
 - **Por que a camada de ViewModel tem 0 testes**: `SagaCombatController` exige `FichaViewModel`, que é `AndroidViewModel(Application)`. **Na JVM pura não existe `Application`**, então nada dele entra na suíte. É estrutural, não descuido.

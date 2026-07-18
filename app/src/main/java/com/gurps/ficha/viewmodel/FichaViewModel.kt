@@ -185,6 +185,16 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
             )
         }
     }
+    /**
+     * Lote TESTE-NPC: modo dos NPCs no combate de teste (Normal / Congelado / Boneco). Vale também
+     * com a luta já em andamento — trocar não obriga a reiniciar.
+     */
+    val sagaModoTesteNpc: com.gurps.ficha.domain.combat.ModoTesteNpc
+        get() = sagaDelegate.combate.modoTesteNpc
+
+    fun sagaDefinirModoTesteNpc(modo: com.gurps.ficha.domain.combat.ModoTesteNpc) =
+        sagaDelegate.combate.definirModoTesteNpc(modo)
+
     /** Lote MA-5: mana ambiente da cena atual (setada pelo Narrador via definir_cena). Alimenta a conjuração. */
     var sagaNivelMana: com.gurps.ficha.domain.magic.NivelMana = com.gurps.ficha.domain.magic.NivelMana.NORMAL
     fun sagaCombateEntregarToque(alvoId: String) = sagaDelegate.combate.heroiEntregarToque(alvoId)   // Lote MA-3d-2

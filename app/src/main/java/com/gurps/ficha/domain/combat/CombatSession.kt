@@ -63,6 +63,12 @@ class CombatSession(
     // Lote LOG-1: espelha cada linha da narrativa no logcat (filtre por tag:Saga_Combate).
     val log: MutableList<String> = LogDeCombate()
 
+    /**
+     * Lote TESTE-NPC: só o combate de TESTE do preview mexe nisto. Em campanha fica [ModoTesteNpc.NORMAL]
+     * — nenhum caminho de jogo real seta outro valor.
+     */
+    var modoTesteNpc: ModoTesteNpc = ModoTesteNpc.NORMAL
+
     init {
         // Marco de início: facilita achar onde a luta começa num logcat cheio.
         SagaLog.mecanica("═══ COMBATE INICIADO ═══ " +
@@ -323,7 +329,7 @@ class CombatSession(
         log += "💥 Encontrão! Você se lança contra ${alvo.nome} (DX ${heroiPerfil.dx}, rolou $somaAtk; vel. relativa ${relVel}m/s)."
         if (somaAtk > heroiPerfil.dx) { log += "  └ você erra o encontrão."; verificarFim(); return AtaqueResultado(false, false, 0, false, log.last()) }
         val (defTipo, defValor) = melhorDefesaNpc(alvo)
-        if (CombatResolver.defesaBemSucedida(defValor, rolar3d6())) {
+        if (npcSeDefendeu(defValor, rolar3d6())) {
             log += "  └ ${alvo.nome} se defende (${defTipo.rotulo} $defValor) e desvia do encontrão."
             verificarFim(); return AtaqueResultado(true, true, 0, false, log.last())
         }
@@ -360,7 +366,7 @@ class CombatSession(
         log += "🙌 Empurrão! Você tenta empurrar ${alvo.nome} (DX ${heroiPerfil.dx}, rolou $somaAtk)."
         if (somaAtk > heroiPerfil.dx) { log += "  └ você erra o empurrão."; return AtaqueResultado(false, false, 0, false, log.last()) }
         val (defTipo, defValor) = melhorDefesaNpc(alvo)
-        if (CombatResolver.defesaBemSucedida(defValor, rolar3d6())) {
+        if (npcSeDefendeu(defValor, rolar3d6())) {
             log += "  └ ${alvo.nome} se defende (${defTipo.rotulo} $defValor) do empurrão."
             return AtaqueResultado(true, true, 0, false, log.last())
         }
@@ -1081,7 +1087,7 @@ class CombatSession(
                     } else {
                         // O alvo pode ESQUIVAR (ou bloquear), NUNCA aparar (Magia p.12).
                         val esq = esquivaNpc(alvo)
-                        if (CombatResolver.defesaBemSucedida(esq, rolar3d6())) {
+                        if (npcSeDefendeu(esq, rolar3d6())) {
                             sb.append(" ${alvo.nome} ESQUIVA do projétil (Esquiva $esq).")
                         } else {
                             sb.append(" Projétil acerta —")
@@ -1222,7 +1228,7 @@ class CombatSession(
             log += sb.toString(); return ResultadoConjuracaoCombate(false, sb.toString())
         }
         val (defTipo, defValor) = melhorDefesaNpc(alvo)
-        if (CombatResolver.defesaBemSucedida(defValor, rolar3d6())) {
+        if (npcSeDefendeu(defValor, rolar3d6())) {
             sb.append(" — ${alvo.nome} se defende (${defTipo.rotulo} $defValor). A mágica continua carregada.")
             log += sb.toString(); return ResultadoConjuracaoCombate(false, sb.toString())
         }
@@ -1531,7 +1537,7 @@ class CombatSession(
         val defValor = (defValorBase + modSituacionalDefesa(alvo.id)).coerceAtLeast(0)
         val defSoma = rolar3d6()
         val acertou = atk.resultado == CombatActions.ResultadoAcerto.ACERTO
-        val defendeu = acertou && atk.critico != CriticoRules.ResultadoCritico.DECISIVO && CombatResolver.defesaBemSucedida(defValor, defSoma)
+        val defendeu = acertou && atk.critico != CriticoRules.ResultadoCritico.DECISIVO && npcSeDefendeu(defValor, defSoma)
         val tec = "[NH ${ataque.nh} rolou ${atk.soma}]"
         val txt = if (acertou && !defendeu) {
             alvo.condicoes.add(Condicao.AGARRADO)
@@ -1752,6 +1758,12 @@ class CombatSession(
     /** Decide a intenção do NPC: usa o override do Narrador (B8) ou o cérebro tático (B6). */
     fun npcIntencao(npcId: String, override: NpcCombatBrain.IntencaoNpc? = null): NpcCombatBrain.IntencaoNpc {
         val npc = inimigos.first { it.id == npcId }
+        // Lote TESTE-NPC: no sandbox congelado/boneco o NPC não age (mas em CONGELADO ainda defende
+        // — a defesa é resolvida noutro ponto, `melhorDefesaNpc`/`esquivaNpc`).
+        if (modoTesteNpc != ModoTesteNpc.NORMAL) {
+            return NpcCombatBrain.IntencaoNpc(Manobra.NAO_FAZER_NADA,
+                motivo = "modo de teste: ${modoTesteNpc.rotulo.lowercase()}")
+        }
         return override ?: NpcCombatBrain.decidir(npc, encounter, alvoId = heroi.id, random = random)
     }
 
@@ -2394,13 +2406,29 @@ class CombatSession(
     private fun penDefesaAtordoado(c: Combatente): Int =
         (if (Condicao.ATORDOADO in c.condicoes) 4 else 0) + (if (Condicao.CEGO in c.condicoes) 4 else 0)
 
+    /**
+     * Lote TESTE-NPC: rolagem de defesa DO NPC (nunca a do herói).
+     *
+     * No modo BONECO ele não se defende — e isso exige **pular a rolagem**, não zerar o valor:
+     * em GURPS um **3 ou 4 é sucesso automático**, então uma Esquiva 0 ainda escaparia de vez em
+     * quando. Foi exatamente o bug que o teste pegou; no aparelho apareceria como "botei Boneco e
+     * mesmo assim ele esquivou".
+     */
+    private fun npcSeDefendeu(valor: Int, rolagem: Int): Boolean =
+        modoTesteNpc != ModoTesteNpc.BONECO && CombatResolver.defesaBemSucedida(valor, rolagem)
+
     private fun esquivaNpc(npc: Combatente): Int {
+        // Lote TESTE-NPC: no modo BONECO o valor vai a 0 (o log mostra "Esquiva 0"), mas quem
+        // realmente impede a defesa é `npcSeDefendeu` — zerar sozinho NÃO basta (regra do 3/4).
+        if (modoTesteNpc == ModoTesteNpc.BONECO) return 0
         val velB = if (npc.cambaleante) npc.velocidadeBasica / 2 else npc.velocidadeBasica
         return floor(velB).toInt() + 3 - penDefesaAtordoado(npc)
     }
 
     /** Melhor defesa de um NPC: Esquiva (Vel.Básica+3) vs Aparar (NH/2+3, só corpo-a-corpo); −4 se atordoado/cego. */
     private fun melhorDefesaNpc(npc: Combatente): Pair<CombatResolver.TipoDefesa, Int> {
+        // Lote TESTE-NPC: BONECO não apara nem esquiva.
+        if (modoTesteNpc == ModoTesteNpc.BONECO) return CombatResolver.TipoDefesa.ESQUIVA to 0
         // Indefeso (MB p.371/428/429): imobilizado, dormindo ou paralisado — sem defesa ativa.
         if (Condicao.IMOBILIZADO in npc.condicoes || Condicao.DORMINDO in npc.condicoes || Condicao.PARALISADO in npc.condicoes)
             return CombatResolver.TipoDefesa.ESQUIVA to 0

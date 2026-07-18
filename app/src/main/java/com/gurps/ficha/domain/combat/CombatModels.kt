@@ -131,6 +131,30 @@ data class NpcStats(
  * durante a luta; os imutáveis definem a iniciativa e o alcance.
  */
 /**
+ * Lote TESTE-NPC: como os NPCs se comportam no combate de TESTE do preview.
+ *
+ * Existe porque validar regra nova (dano de magia, 1/2D, explosão) no aparelho é difícil quando o
+ * goblin ataca de volta e a luta anda sozinha. Não tem efeito em campanha — só o sandbox seta isto.
+ *
+ * A distinção entre [CONGELADO] e [BONECO] é real e não cosmética: agir e defender são coisas
+ * SEPARADAS no motor. Congelar o turno não desliga a esquiva.
+ */
+enum class ModoTesteNpc(val rotulo: String, val descricao: String) {
+    /** Comportamento de jogo: o cérebro tático decide e o NPC ataca de volta. */
+    NORMAL("Normal", "os NPCs agem e defendem normalmente"),
+
+    /** Não age no próprio turno, mas DEFENDE normalmente (sua magia ainda pode ser esquivada). */
+    CONGELADO("Congelado", "não agem, mas ainda esquivam/aparam"),
+
+    /**
+     * Não age e NÃO defende. Atenção: isso **não** é "tudo acerta" — o atacante ainda faz a própria
+     * jogada de acerto e pode errar. Tirar essa jogada esconderia bug no caminho de acerto, que é
+     * justamente o que se quer validar.
+     */
+    BONECO("Boneco", "não agem nem defendem (você ainda pode errar o ataque)"),
+}
+
+/**
  * Lote MEC-19: condição da qual a vítima escapa por teste de atributo, e não por tempo.
  * [penalidade] já vem negativa (o −1 por 0,5cm de gelo do Toque Congelante).
  */

@@ -31,6 +31,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import com.gurps.ficha.domain.combat.ModoTesteNpc
 import com.gurps.ficha.domain.saga.CampanhaConfig
 import com.gurps.ficha.ui.saga.OverlaysCombateTatico
 import com.gurps.ficha.viewmodel.FichaViewModel
@@ -208,8 +209,64 @@ private fun SelecaoDeCampanha(viewModel: FichaViewModel) {
                             .semantics { contentDescription = "Iniciar combate de teste com 2 goblins para testar as magias" }
                     ) { Text("⚔️ Combate de teste (2 goblins)") }
                 }
+
+                // Lote TESTE-NPC: seletor do comportamento dos NPCs. Fica visível TAMBÉM durante a
+                // luta — trocar no meio vale na hora, sem reiniciar o combate.
+                SeletorModoTesteNpc(
+                    modoAtual = viewModel.sagaModoTesteNpc,
+                    aoTrocar = { viewModel.sagaDefinirModoTesteNpc(it) },
+                    modifier = Modifier.align(Alignment.TopCenter).padding(top = 8.dp),
+                )
             }
         }
+    }
+}
+
+/**
+ * Lote TESTE-NPC: escolhe como os NPCs se comportam no combate de teste.
+ *
+ * Os três modos são degraus de ruído, do mais limpo ao mais realista:
+ *  - **Boneco** — não agem nem defendem: tudo acerta, bom para conferir número de dano;
+ *  - **Congelado** — não agem, mas ainda esquivam/aparam;
+ *  - **Normal** — comportamento de jogo (o cérebro tático ataca de volta).
+ */
+@Composable
+private fun SeletorModoTesteNpc(
+    modoAtual: ModoTesteNpc,
+    aoTrocar: (ModoTesteNpc) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Column(
+        modifier = modifier
+            .background(Color(0xAA000000), RoundedCornerShape(8.dp))
+            .padding(horizontal = 8.dp, vertical = 6.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        Text("NPCs no teste", color = Color.White, style = MaterialTheme.typography.labelSmall)
+        Spacer(Modifier.height(4.dp))
+        Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+            ModoTesteNpc.values().forEach { modo ->
+                val ativo = modo == modoAtual
+                Button(
+                    onClick = { aoTrocar(modo) },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = if (ativo) MaterialTheme.colorScheme.primary
+                        else Color(0x33FFFFFF)
+                    ),
+                    contentPadding = PaddingValues(horizontal = 10.dp, vertical = 4.dp),
+                    modifier = Modifier.semantics {
+                        contentDescription = "Modo dos NPCs: ${modo.rotulo} — ${modo.descricao}" +
+                            if (ativo) ". Selecionado" else ""
+                    },
+                ) { Text(modo.rotulo, style = MaterialTheme.typography.labelSmall) }
+            }
+        }
+        Text(
+            modoAtual.descricao,
+            color = Color(0xCCFFFFFF),
+            style = MaterialTheme.typography.labelSmall,
+            modifier = Modifier.padding(top = 2.dp),
+        )
     }
 }
 
