@@ -164,4 +164,32 @@ class MagicClassParserTest {
         assertEquals(setOf(TipoClasseMagia.ESPECIAL), r.classes)
         assertTrue(r.temParteNaoReconhecida)
     }
+
+    // ── Lote MEC-12: Bloqueio PURO (defende) x "Comum ou Bloqueio" (só pode ser lançada como reação)
+    // O card "Defenda-se!" oferecia "Aumentar Força (bloqueio) 15" contra uma Bola de Fogo — não
+    // defende de nada e, com NH 15, daria imunidade a magia de graça. A distinção está na classe.
+
+    private fun bloqueioPuro(classe: String): Boolean {
+        val c = MagicClassParser.parse(classe).classes
+        return TipoClasseMagia.BLOQUEIO in c && TipoClasseMagia.COMUM !in c
+    }
+
+    @Test fun `magias que REALMENTE defendem sao Bloqueio puro`() {
+        // Strings reais do catálogo.
+        assertTrue("Desviar Energia (cita Bola de Fogo/Relâmpago)", bloqueioPuro("Bloqueio"))
+        assertTrue("Girar Lâmina", bloqueioPuro("Bloqueio/R-DX"))
+        assertTrue("Refletir Olhar", bloqueioPuro("Bloqueio/R-Espec."))
+    }
+
+    @Test fun `Comum ou Bloqueio NAO e defesa — Aumentar Forca nao para uma Bola de Fogo`() {
+        assertFalse("Aumentar Força/Destreza/IQ/Vitalidade", bloqueioPuro("Comum ou Bloqueio"))
+        assertFalse("Fascinar", bloqueioPuro("Comum ou Bloqueio/R-Vont"))
+        assertFalse("Dominar Animal", bloqueioPuro("Comum/Bloqueio/R-IQ"))
+    }
+
+    @Test fun `magia sem Bloqueio nenhum nunca vira opcao de defesa`() {
+        assertFalse(bloqueioPuro("Comum"))       // Escudo
+        assertFalse(bloqueioPuro("Projétil"))    // Bola de Fogo
+        assertFalse(bloqueioPuro("Área"))
+    }
 }

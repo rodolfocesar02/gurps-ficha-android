@@ -1008,7 +1008,21 @@ class SagaCombatController(
         val aptidao = MagicEngine.getNivelAptidaoMagicaParaMagia(p, null)
         val temPf = s.heroi.pfAtual > 0
         return p.magias.mapNotNull { m ->
-            if (TipoClasseMagia.BLOQUEIO !in MagicClassParser.parse(m.classe).classes) return@mapNotNull null
+            // Lote MEC-12: só magia de Bloqueio PURO é oferecida como DEFESA.
+            //
+            // Bug pego no aparelho: o card "Defenda-se!" contra uma Bola de Fogo oferecia
+            // "🔮 Aumentar Força (bloqueio) 15" — que não defende de nada (só aumenta ST) e, com NH 15,
+            // deixaria o herói praticamente imune a magia de graça.
+            //
+            // A distinção está nos DADOS: classe `"Bloqueio"` pura = reação que PROTEGE de um ataque
+            // chegando (Desviar Energia cita "mágica Bola de Fogo ou Relâmpago"; Desviar/Devolver
+            // Projétil; Bloquear = BD instantâneo; Robustez = RD instantânea; Braço de Ferro;
+            // Apanhar Projétil). Já `"Comum ou Bloqueio"` significa que a magia PODE ser lançada como
+            // reação — mas o efeito dela não é defensivo (Aumentar Força/Destreza/IQ/Vitalidade,
+            // Fascinar, Dominar Animal). Essas saem da lista.
+            val classes = MagicClassParser.parse(m.classe).classes
+            val bloqueioPuro = TipoClasseMagia.BLOQUEIO in classes && TipoClasseMagia.COMUM !in classes
+            if (!bloqueioPuro) return@mapNotNull null
             CombatResolver.OpcaoDefesa(
                 tipo = CombatResolver.TipoDefesa.BLOQUEIO,
                 valorFinal = m.calcularNivel(p, aptidao),

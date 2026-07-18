@@ -3046,6 +3046,18 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - **Recomendação registrada** (maior valor × menor custo): Ataque Telegráfico (par do Enganoso), luta agarrada profunda (chaves/Mata-Leão estendendo o lote 422), Sangramento Grave + incapacitação de membro (item 5 do teste de batalha), Ataque Dedicado/Defensivo. Fora de escopo: posicional/hexágono, montaria, cinematográfico, dado de arma do NPC. Mudança só de documentação (não compila Kotlin).
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
+### Lote MEC-12 — 17 de Julho de 2026 (o card de defesa oferecia magia que NÃO defende)
+**Print do aparelho: o card "Defenda-se!" contra Bola de Fogo trazia "🔮 Aumentar Força (bloqueio) 15" — branch GURPS-Saga**
+- ✅ **Antes de tudo: o card FUNCIONOU** — o MEC-11 acertou. O jogador foi atacado por magia e teve a escolha (Esquiva 7, Esquiva+jogar-se ao chão 10). Primeira correção de UI da sessão que chegou funcionando ao aparelho.
+- **🔴 O erro**: entre as defesas aparecia **Aumentar Força**, que só aumenta ST — não desvia bola de fogo nenhuma. Pior: com NH 15, escolhê-la seria quase sempre sucesso → **imunidade a magia praticamente de graça**, quebrando o combate.
+- **A causa**: `opcoesBloqueioMagico` aceitava QUALQUER magia cuja classe contivesse "Bloqueio". Mas o catálogo tem DUAS coisas diferentes, e a distinção está nos dados:
+  - `"Bloqueio"` **puro** = reação que PROTEGE de um ataque chegando — Desviar Energia (cita literalmente "mágica Bola de Fogo ou Relâmpago"), Desviar/Devolver Projétil, Bloquear (BD instantâneo), Robustez (RD instantânea), Braço de Ferro, Apanhar Projétil, Girar Lâmina, Refletir Olhar, Translocação.
+  - `"Comum ou Bloqueio"` = a magia PODE ser lançada como reação, mas o efeito **não é defensivo** — Aumentar Força/Destreza/Inteligência/Vitalidade, Fascinar, Dominar Animal.
+- **Correção**: só Bloqueio PURO entra (`BLOQUEIO in classes && COMUM !in classes`). Regra estrutural, derivada do dado — não heurística de nome.
+- **+3 testes** no `MagicClassParserTest` com as strings REAIS do catálogo ("Bloqueio", "Bloqueio/R-DX", "Bloqueio/R-Espec." passam; "Comum ou Bloqueio", "Comum ou Bloqueio/R-Vont", "Comum/Bloqueio/R-IQ" não).
+- ⚠️ Gate: compila nas 4 variantes; único vermelho segue sendo o **flaky pré-existente do Nexus Arcano**.
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
 ### Lote MEC-11 — 17 de Julho de 2026 (a defesa contra magia de NPC NUNCA disparava)
 **"No preview, só do personagem se movimentar ele está perdendo PV — algum bug?" — teste no aparelho, branch GURPS-Saga**
 - **Não era o movimento.** O PV sumia de verdade, mas pela **Bola de Fogo do goblin conjurador** — que fui eu quem colocou no combate de teste (`magiasDeclaradas = listOf("Bola de Fogo")`), justamente para exercitar a defesa contra magia do MEC-8.
