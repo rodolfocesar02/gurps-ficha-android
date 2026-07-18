@@ -701,6 +701,34 @@ class MagicCombatTest {
         assertEquals(htBase + 4, s.heroiPerfil.ht)
     }
 
+    // ── Lote MEC-11: conjuração de PROJÉTIL no herói CONTA como ataque defensável ────────────────
+
+    @Test
+    fun `MEC-11 intencao de conjurar projetil no heroi PERMITE defesa (o card Defenda-se)`() {
+        // O bug: `intencaoAtacaHeroi` só aceitava ATAQUE/ATAQUE_TOTAL/MOVER_E_ATACAR/AGARRAR. Conjurar
+        // é CONCENTRAR → as opções de defesa vinham VAZIAS → a defesa interativa do MEC-8 nunca
+        // disparava e o motor esquivava sozinho. O jogador só via o PV sumindo, sem card nem escolha.
+        val enc = CombatEncounter(listOf(heroi(), conjuradorNpc()), mapOf("mago" to 5), seed = 1L)
+        val s = CombatSession(enc, perfil(), Random(3))
+        val intencao = NpcCombatBrain.decidir(enc.combatentes.first { it.id == "mago" }, enc, "heroi", Random(3))
+        assertTrue("o cérebro deveria querer conjurar", intencao.conjurar != null)
+        assertTrue("conjurar projétil no herói TEM que contar como ataque defensável",
+            s.intencaoAtacaHeroi(intencao))
+        assertFalse("mas não pode ser resolvido como ataque de ARMA", intencao.conjurar!!.projetil.not())
+    }
+
+    @Test
+    fun `MEC-11 npcResolve NAO resolve conjuracao como ataque de arma`() {
+        // Guarda: mesmo passando por intencaoAtacaHeroi, a conjuração sai por npcConjurar.
+        val enc = CombatEncounter(listOf(heroi(), conjuradorNpc()), mapOf("mago" to 5), seed = 1L)
+        val s = CombatSession(enc, perfil(), Random(3))
+        val intencao = NpcCombatBrain.decidir(enc.combatentes.first { it.id == "mago" }, enc, "heroi", Random(3))
+        val pvAntes = s.heroi.pvAtual
+        val r = s.npcResolve("mago", intencao, null)
+        assertFalse("npcResolve não deve tratar isso como ataque", r.acertou)
+        assertEquals("e não pode ferir o herói por esse caminho", pvAntes, s.heroi.pvAtual)
+    }
+
     // ── Lote MEC-10: magia de CURA restaura PV no combate ───────────────────────────────────────
 
     @Test

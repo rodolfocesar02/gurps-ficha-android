@@ -3046,6 +3046,18 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - **Recomendação registrada** (maior valor × menor custo): Ataque Telegráfico (par do Enganoso), luta agarrada profunda (chaves/Mata-Leão estendendo o lote 422), Sangramento Grave + incapacitação de membro (item 5 do teste de batalha), Ataque Dedicado/Defensivo. Fora de escopo: posicional/hexágono, montaria, cinematográfico, dado de arma do NPC. Mudança só de documentação (não compila Kotlin).
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
+### Lote MEC-11 — 17 de Julho de 2026 (a defesa contra magia de NPC NUNCA disparava)
+**"No preview, só do personagem se movimentar ele está perdendo PV — algum bug?" — teste no aparelho, branch GURPS-Saga**
+- **Não era o movimento.** O PV sumia de verdade, mas pela **Bola de Fogo do goblin conjurador** — que fui eu quem colocou no combate de teste (`magiasDeclaradas = listOf("Bola de Fogo")`), justamente para exercitar a defesa contra magia do MEC-8.
+- **🔴 O bug real (meu, do MEC-8): a defesa interativa contra magia NUNCA era alcançada.** As opções de defesa só são calculadas quando `intencaoAtacaHeroi(intencao)` é true, e essa função aceitava apenas `ATAQUE | ATAQUE_TOTAL | MOVER_E_ATACAR | AGARRAR`. **Conjurar é a manobra `CONCENTRAR`** — fora da lista. Logo `opcoes` vinha VAZIA, meu código do MEC-8 caía no ramo de fallback e chamava `npcConjurar` SEM o card: o motor esquivava sozinho. Do lado do jogador: move, leva dano, **sem card, sem rolagem, sem escolha** — parecia que andar machucava.
+- **Quando escrevi "a esquiva agora é interativa" no MEC-8, não era verdade na prática**: o código existia mas era inalcançável. Só o teste no aparelho revelaria.
+- **Correção**: `intencaoAtacaHeroi` passa a aceitar `intencao.conjurar?.projetil == true` (Projétil mágico no herói É um ataque defensável — Esquiva ou magia de Bloqueio, Magia p.12).
+- **Risco que a correção criava, e blindagem**: `intencaoAtacaHeroi` também guarda o `npcResolve`; com a conjuração passando, uma intenção de conjurar cairia no fluxo de ataque com ARMA. Guarda explícita adicionada (`intencao.conjurar != null` → sai antes).
+- **+2 testes** (a intenção de conjurar conta como defensável; `npcResolve` não resolve conjuração como ataque de arma) + suíte `domain.combat` inteira sem regressão.
+- ⚠️ Gate: compila nas 4 variantes; único vermelho segue sendo o **flaky pré-existente do Nexus Arcano**.
+- 💡 **Nota para o teste**: o personagem terminou a luta em 3/10 PV e isso PERSISTE na ficha — recuperar PV antes de testar de novo (o motor recusa abrir combate com o herói a 0).
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
 ### Lote MEC-10 — 17 de Julho de 2026 (magias de CURA não existiam mecanicamente)
 **"As magias de cura não estão configuradas mecanicamente no combate? Não estão dando opção de escolher quanto de fadiga usar" — teste no aparelho, branch GURPS-Saga**
 - **Resposta: NÃO estavam — e a causa era ESTRUTURAL.** O `efeito` do schema não tinha valor para cura (`dano | condicao | buff | ambiente | controle | informacao | narrado`). Sem forma de dizer "restaura PV", **todas** as magias de curar caíram em `narrado`: não devolviam PV nenhum e — exatamente como o usuário notou — **não ofereciam o seletor de energia**, que só aparecia para dano e buff.

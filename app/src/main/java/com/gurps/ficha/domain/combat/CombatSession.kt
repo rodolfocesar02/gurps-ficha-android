@@ -1649,7 +1649,13 @@ class CombatSession(
     fun intencaoAtacaHeroi(intencao: NpcCombatBrain.IntencaoNpc): Boolean =
         intencao.alvoId == heroi.id &&
             (intencao.manobra == Manobra.ATAQUE || intencao.manobra == Manobra.ATAQUE_TOTAL ||
-                intencao.manobra == Manobra.MOVER_E_ATACAR || intencao.manobra == Manobra.AGARRAR)
+                intencao.manobra == Manobra.MOVER_E_ATACAR || intencao.manobra == Manobra.AGARRAR ||
+                // Lote MEC-11: conjurar um PROJÉTIL mágico no herói TAMBÉM é um ataque que ele pode
+                // defender (Esquiva ou magia de Bloqueio, Magia p.12). A manobra é CONCENTRAR, que
+                // não estava nesta lista — então as opções de defesa vinham VAZIAS e a defesa
+                // interativa do MEC-8 NUNCA disparava: o motor esquivava sozinho e o jogador só via
+                // o PV sumindo, sem card e sem escolha. Foi o que o usuário pegou no aparelho.
+                (intencao.conjurar?.projetil == true))
 
     /**
      * Lote MA-7: um NPC CONJURADOR lança uma mágica ofensiva no herói. Usa o mesmo resolvedor
@@ -1926,7 +1932,10 @@ class CombatSession(
         if (intencao.manobra == Manobra.CHAVE_MEMBRO && intencao.alvoId == heroi.id) return npcChaveMembroHeroi(npc)
         if (intencao.manobra == Manobra.MATA_LEAO && intencao.alvoId == heroi.id) return npcMataLeaoHeroi(npc)
 
-        if (!intencaoAtacaHeroi(intencao)) {
+        // Lote MEC-11: conjuração NÃO se resolve aqui (é `npcConjurar`, com o resolvedor de magia).
+        // Guarda explícita porque `intencaoAtacaHeroi` passou a aceitar Projétil mágico — sem isto,
+        // uma intenção de conjurar cairia no fluxo de ataque com ARMA.
+        if (intencao.conjurar != null || !intencaoAtacaHeroi(intencao)) {
             log += "• ${npc.nome}: ${intencao.manobra.rotulo} (${intencao.motivo})."
             return AtaqueResultado(false, false, 0, false, log.last())
         }
