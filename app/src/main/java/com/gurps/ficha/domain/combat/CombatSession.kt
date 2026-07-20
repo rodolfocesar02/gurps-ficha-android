@@ -1265,8 +1265,10 @@ class CombatSession(
                         // AR-1: dado estruturado do catálogo quando houver; senão 1d × energia (p.14).
                         // MEC-2: `danoFixo` também aqui — o Géiser é de ÁREA, e este ramo tem a própria
                         // cópia do expandirDano; sem isto ele sairia 15d (custo 5) apesar do MEC-1.
+                        // Lote MEC-36 (P8): `danoDeAreaComDegrau` já escolhe entre o dado normal e o
+                        // "2d-2 por custo dobrado" da Chuva de Fogo/Pedras.
                         val expr = if (ctx.mecanica?.danoPorEnergia != null)
-                            com.gurps.ficha.domain.magic.MagicMechanics.expandirDano(ctx.mecanica.danoPorEnergia, energia, ctx.mecanica.energiaPorDado, ctx.mecanica.danoFixo)
+                            com.gurps.ficha.domain.magic.MagicMechanics.danoDeAreaComDegrau(ctx.mecanica, energia)
                         else "${energia}d"
                         val tipo = if (ctx.mecanica?.tipoDano == "corte") DanoTipo.CORT else if (ctx.mecanica?.tipoDano == "perf") DanoTipo.PERF else DanoTipo.CONT
                         val bruto = rolarDano(expr, random)

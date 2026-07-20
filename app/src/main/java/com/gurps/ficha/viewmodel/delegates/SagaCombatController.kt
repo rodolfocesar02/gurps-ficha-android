@@ -1153,9 +1153,14 @@ class SagaCombatController(
     fun iniciarMiraArea(magiaId: String, raio: Int, energia: Int, pvQueimar: Int, causaDano: Boolean = false) {
         val s = sessao ?: return
         if (!s.combatenteAtual().ehHeroi || s.encerrado) return
-        val nome = viewModel.personagem.magias.firstOrNull { it.definicaoId == magiaId || it.nome == magiaId }?.nome ?: "magia"
-        miraAreaPendente = MiraAreaUi(magiaId, nome, raio.coerceAtLeast(1), energia, pvQueimar.coerceAtLeast(0), causaDano)
-        avisoTatico = "Toque um hex para o centro de $nome (raio ${raio}m)"
+        val magia = viewModel.personagem.magias.firstOrNull { it.definicaoId == magiaId || it.nome == magiaId }
+        val nome = magia?.nome ?: "magia"
+        // Lote MEC-36 (P10): respeita o raio MÍNIMO da mágica (Nuvem de Faíscas, Sono Coletivo = 2m).
+        val mec = context?.let { c -> runCatching { com.gurps.ficha.data.DataRepository.getInstance(c).getMagiaPorId(magia?.definicaoId ?: "") }.getOrNull()?.mecanica }
+        val raioFinal = com.gurps.ficha.domain.magic.MagicMechanics.raioEfetivo(mec, raio)
+        miraAreaPendente = MiraAreaUi(magiaId, nome, raioFinal, energia, pvQueimar.coerceAtLeast(0), causaDano)
+        avisoTatico = "Toque um hex para o centro de $nome (raio ${raioFinal}m)" +
+            (if (raioFinal > raio) " — mínimo desta mágica" else "")
     }
 
     /** Lote MA-3d: cancela a mira de área sem lançar. */

@@ -821,6 +821,35 @@ class MagicCombatTest {
         assertEquals(20, MagicMechanics.danoDaExplosao(20, distanciaM = 5, divisorPorMetro = 0))
     }
 
+    // ── Lote MEC-36 (P8 degrau de custo dobrado + P10 raio mínimo) ──────────────────────────────
+
+    @Test
+    fun `degrau de custo dobrado troca 1d-1 por 2d-2 ao pagar o dobro (P8)`() {
+        val chuva = MagiaMecanica(efeito = "dano", danoPorEnergia = "1d-1", energiaPorDado = 1,
+            danoFixo = true, danoDegrauCustoDobrado = "2d-2", energiaParaDegrau = 4)
+        assertEquals("abaixo do limiar, dano normal", "1d-1",
+            MagicMechanics.danoDeAreaComDegrau(chuva, energia = 2))
+        assertEquals("no limiar, sobe para o degrau", "2d-2",
+            MagicMechanics.danoDeAreaComDegrau(chuva, energia = 4))
+        assertEquals("acima do limiar, segue no degrau", "2d-2",
+            MagicMechanics.danoDeAreaComDegrau(chuva, energia = 6))
+    }
+
+    @Test
+    fun `sem degrau configurado o dano de area e o normal`() {
+        val simples = MagiaMecanica(efeito = "dano", danoPorEnergia = "1d", energiaPorDado = 2)
+        assertEquals("2d", MagicMechanics.danoDeAreaComDegrau(simples, energia = 4))
+    }
+
+    @Test
+    fun `raio minimo eleva raios pequenos e preserva os maiores (P10)`() {
+        val nuvem = MagiaMecanica(efeito = "dano", areaRaioMinimoM = 2)
+        assertEquals("raio 1 sobe para o mínimo 2", 2, MagicMechanics.raioEfetivo(nuvem, 1))
+        assertEquals("raio 3 é preservado", 3, MagicMechanics.raioEfetivo(nuvem, 3))
+        assertEquals("sem mínimo, o raio escolhido vale (piso 1)", 1,
+            MagicMechanics.raioEfetivo(MagiaMecanica(efeito = "dano"), 1))
+    }
+
     // ── Lote MEC-31: no modo BONECO o alvo também não RESISTE ───────────────────────────────────
 
     @Test

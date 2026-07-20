@@ -3046,6 +3046,15 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - **Recomendação registrada** (maior valor × menor custo): Ataque Telegráfico (par do Enganoso), luta agarrada profunda (chaves/Mata-Leão estendendo o lote 422), Sangramento Grave + incapacitação de membro (item 5 do teste de batalha), Ataque Dedicado/Defensivo. Fora de escopo: posicional/hexágono, montaria, cinematográfico, dado de arma do NPC. Mudança só de documentação (não compila Kotlin).
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
+### Lote MEC-36 — 20 de Julho de 2026 (P8 degrau 2d-2 + P10 raio mínimo)
+**"faz P4, P8, P9, P10 num lote só" — mas P4 e P9 precisam de mecânica nova; este lote é P8+P10 — branch GURPS-Saga**
+- **Reescopo honesto na leitura**: os quatro não eram "pequenos" iguais. **P8** (degrau) e **P10** (raio mínimo) são limpos e completos. **P4** (Lampejo) precisa de um *rider* de **−3 na DX por 1 min** — penalidade de atributo temporária que **não existe** no motor. **P9** (Jatos) são `narrado`/`feixe` sem caminho de resolução; projeção ali é feature de ataque em feixe. Os dois viram lote próprio no loop, o que casa com o "cada um num lote" do usuário.
+- ✅ **P8**: `danoDeAreaComDegrau` — Chuva de Fogo/Pedras trocam 1d-1 por **2d-2** ao pagar o dobro do custo. Limiar = custo-base **2** dobrado (da nota curada). ⚠️ **Suposição honesta**: o "1/I" do catálogo não deixa o custo-base cristalino, e o payoff pleno é o **tique por segundo** (P1b) — hoje o degrau já vale na aplicação única. O mecanismo fica pronto para o P1b reusar.
+- ✅ **P10**: `raioEfetivo` — Nuvem de Faíscas e Sono Coletivo têm raio **mínimo 2m**; a mira eleva o raio escolhido e avisa "mínimo desta mágica".
+- **+3 testes** (degrau troca no limiar / não troca abaixo; raio mínimo eleva o pequeno e preserva o grande).
+- 🟢 Gate: **779 testes, ZERO falhas**.
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
 ### Lote MEC-35 — 20 de Julho de 2026 (D1 FECHADO: mais 3 erros meus revertidos; placar final)
 **"mas ja esta corrigido?" — branch GURPS-Saga**
 - Fui fechar as 10 que faltavam e achei **mais um erro meu**: as **3 Metamorfose Parcial**. A `descricao` do JSON diz "Especial", mas o **corpo do livro** diz *"Metamorfose Parcial (MD) — **Comum; Resistível com Vontade**"* — segundo caso comprovado de **descrição corrompida** (o 1º foi a Bola de Relâmpagos). Revertidas para `Comum/R-Vont`, que era o valor **original** do catálogo.

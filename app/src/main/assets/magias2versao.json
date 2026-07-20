@@ -3406,7 +3406,9 @@
       "energiaPorDado": 1,
       "tipoDano": "quei",
       "entrega": "area",
-      "notas": "1d-1/seg a todos na area (min custo 2). Dobrando o custo base: 2d-2/seg. Menos de 1 seg na area = metade. Armadura protege; escudo BD2+ bloqueia. So ao ar livre."
+      "notas": "1d-1/seg a todos na area (min custo 2). Dobrando o custo base: 2d-2/seg. Menos de 1 seg na area = metade. Armadura protege; escudo BD2+ bloqueia. So ao ar livre.",
+      "danoDegrauCustoDobrado": "2d-2",
+      "energiaParaDegrau": 4
     },
     "duracaoTipo": "temporaria",
     "duracaoSeg": 60,
@@ -3455,7 +3457,9 @@
       "tipoDano": "cont",
       "entrega": "area",
       "notas": "Dano FIXO 1d-1 por segundo na area (nao escala com energia gasta); pelo dobro do custo basico vira 2d-2/seg. Meio segundo = metade do dano. Armadura protege normal; escudo BD2+ levantado (Prontidao, 2 maos) bloqueia automatico. So ao ar livre. Dura 1 min.",
-      "danoFixo": true
+      "danoFixo": true,
+      "danoDegrauCustoDobrado": "2d-2",
+      "energiaParaDegrau": 4
     },
     "duracaoTipo": "temporaria",
     "duracaoSeg": 60,
@@ -13220,7 +13224,8 @@
       "tipoDano": "quei",
       "armadura": "metal_rd_1",
       "entrega": "area",
-      "notas": "Nuvem ao nivel do solo. Dano FLAT: 1 ponto/segundo por ponto de energia no custo base (nao e dado). Nao bloqueia visao. Armadura protege normal; metalica da RD minima como contra relampago. Raio min 2m. Dur 10s."
+      "notas": "Nuvem ao nivel do solo. Dano FLAT: 1 ponto/segundo por ponto de energia no custo base (nao e dado). Nao bloqueia visao. Armadura protege normal; metalica da RD minima como contra relampago. Raio min 2m. Dur 10s.",
+      "areaRaioMinimoM": 2
     }
   },
   {
@@ -17735,7 +17740,8 @@
       "efeito": "condicao",
       "entrega": "area",
       "condicao": "dormindo",
-      "notas": "Como Sono mas em AREA (R-HT): faz alvos na area adormecerem por ate 8 horas. Custo basico 3, raio minimo 2m; tempo de operacao 1 seg por ponto de energia gasto. Resistencia c/ HT ja tratada pela classe R-HT."
+      "notas": "Como Sono mas em AREA (R-HT): faz alvos na area adormecerem por ate 8 horas. Custo basico 3, raio minimo 2m; tempo de operacao 1 seg por ponto de energia gasto. Resistencia c/ HT ja tratada pela classe R-HT.",
+      "areaRaioMinimoM": 2
     }
   },
   {

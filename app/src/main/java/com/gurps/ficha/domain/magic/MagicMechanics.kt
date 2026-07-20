@@ -132,6 +132,19 @@ data class MagiaMecanica(
     val condicaoResistencia: String? = null,
     /** Raio (m) em que a condição se espalha (Concussão = 10). 0 = só o alvo. */
     val condicaoRaioM: Int = 0,
+    /**
+     * Lote MEC-36 (P8): dano do **degrau de custo dobrado**. Chuva de Fogo/Pedras: *"pelo dobro do
+     * custo básico, a chuva causa **2d-2** por segundo"*. Quando a energia investida chega a
+     * [energiaParaDegrau], o dano por tick passa a ser esta expressão.
+     */
+    val danoDegrauCustoDobrado: String? = null,
+    /** Energia (≥) a partir da qual o degrau acima vale. Para Chuva de Fogo base 2 → dobrado = 4. */
+    val energiaParaDegrau: Int = 0,
+    /**
+     * Lote MEC-36 (P10): raio MÍNIMO de uma mágica de área, em metros. *"Raio mínimo de 2 m"*
+     * (Nuvem de Faíscas, Sono Coletivo…). O operador não pode mirar uma área menor que isto.
+     */
+    val areaRaioMinimoM: Int = 0,
 
     // ── efeito "buff" (rastreado como magia ativa; bônus numérico quando houver) ──
     /** Rótulo curto do efeito, para o feed e para o Narrador ("Pele de Crocodilo RD 4"). */
@@ -371,6 +384,22 @@ object MagicMechanics {
      * Dano em PONTOS (Nuvem de Faíscas = "1" ponto/seg) vira "0d+N" — o rolador exige `<n>d` e
      * devolveria 0 para um "1" pelado.
      */
+    /**
+     * Lote MEC-36 (P8): expressão de dano da área, já considerando o degrau de custo dobrado.
+     * Se o operador investiu [energiaParaDegrau] ou mais e há um [danoDegrauCustoDobrado], usa-o;
+     * senão cai no `expandirDano` normal.
+     */
+    fun danoDeAreaComDegrau(m: MagiaMecanica, energia: Int): String {
+        if (m.danoDegrauCustoDobrado != null && m.energiaParaDegrau > 0 && energia >= m.energiaParaDegrau) {
+            return expandirDano(m.danoDegrauCustoDobrado, energia, m.energiaPorDado, m.danoFixo)
+        }
+        return expandirDano(m.danoPorEnergia ?: "1d", energia, m.energiaPorDado, m.danoFixo)
+    }
+
+    /** Lote MEC-36 (P10): raio efetivo respeitando o mínimo da mágica. */
+    fun raioEfetivo(m: MagiaMecanica?, raioEscolhido: Int): Int =
+        maxOf(raioEscolhido, m?.areaRaioMinimoM ?: 0).coerceAtLeast(1)
+
     fun expandirDano(danoPorEnergia: String, energia: Int, energiaPorDado: Int, danoFixo: Boolean = false): String {
         val n = if (danoFixo) 1 else (energia / energiaPorDado.coerceAtLeast(1)).coerceAtLeast(1)
         val txt = danoPorEnergia.replace(" ", "").lowercase()
