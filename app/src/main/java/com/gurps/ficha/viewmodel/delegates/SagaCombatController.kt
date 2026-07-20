@@ -1199,6 +1199,9 @@ class SagaCombatController(
     private fun opcoesBloqueioMagico(s: CombatSession): List<CombatResolver.OpcaoDefesa> {
         val p = viewModel.personagem
         if (p.magias.isEmpty()) return emptyList()
+        // Lote MEC-27 (C2, Magia p.12): "apenas UMA mágica de Bloqueio por turno, independentemente
+        // do nível de habilidade". Já usou nesta rodada → não oferece de novo.
+        if (s.bloqueioMagicoUsadoNoTurno) return emptyList()
         val aptidao = MagicEngine.getNivelAptidaoMagicaParaMagia(p, null)
         val temPf = s.heroi.pfAtual > 0
         return p.magias.mapNotNull { m ->

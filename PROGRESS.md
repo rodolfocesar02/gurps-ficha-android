@@ -3046,6 +3046,15 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - **Recomendação registrada** (maior valor × menor custo): Ataque Telegráfico (par do Enganoso), luta agarrada profunda (chaves/Mata-Leão estendendo o lote 422), Sangramento Grave + incapacitação de membro (item 5 do teste de batalha), Ataque Dedicado/Defensivo. Fora de escopo: posicional/hexágono, montaria, cinematográfico, dado de arma do NPC. Mudança só de documentação (não compila Kotlin).
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
+### Lote MEC-27 — 20 de Julho de 2026 (C2: uma mágica de Bloqueio por turno) — e C3 já estava certa
+**"enquanto a tarefa nao finaliza, ja deixe encaminhado o proximo lote!" — branch GURPS-Saga**
+- ✅ **C2 feita** (Magia p.12): *"o personagem pode operar apenas **uma mágica de Bloqueio por turno**, independentemente de seu nível de habilidade"*. Flag `bloqueioMagicoUsadoNoTurno` marcada em `aplicarBloqueioMagico` e **renovada quando o turno do herói recomeça**; o seletor de defesa deixa de oferecer bloqueio já usado. Sem isso o herói bloqueava magicamente **cada** ataque da rodada — defesa ilimitada, exatamente o que a regra proíbe.
+- ✅ **C3 já estava correta no resultado**: o golpe fulminante **anula toda a defesa** (`anulada = atk.critico == DECISIVO`), inclusive o bloqueio mágico. 🟡 Sobra um detalhe honesto: as opções são montadas **antes** da rolagem, então o jogador ainda pode escolher o bloqueio e **gastar PF** num crítico que já ia passar. É desperdício de energia, não erro de regra — registrado assim.
+- 🐛 **TERCEIRO erro meu na mesma varredura**: eu havia marcado *"Bloqueio interrompe automaticamente a concentração"* como ❌. **Estava implementado** dentro de `aplicarBloqueioMagico`. Os três erros (custo por NH, este, e o C3) têm a **mesma causa**: contei ocorrências / li comentário em vez de ler o código. Os três agora estão corrigidos nos documentos — e este ganhou **teste**, que é o que impede de se perder de novo.
+- **+3 testes**: a cota é consumida; **renova** na rodada seguinte; e o bloqueio interrompe a conjuração em andamento.
+- 🟢 Gate: **769 testes, ZERO falhas**.
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
 ### Lote MEC-26 — 20 de Julho de 2026 (C4: apanhar abala a concentração) — e C1 estava BLOQUEADA
 **"faz C1 e C4 juntas!" — branch GURPS-Saga**
 - ⛔ **A C1 não pôde ser feita, e o motivo só apareceu ao ir implementar**: a regra é *"se sofrer uma lesão enquanto **sustenta o projétil**, teste de Vontade; falhando, o projétil o afeta imediatamente"*. Mas o motor **conjura e arremessa o projétil no MESMO turno** — **nunca existe projétil sustentado**. Implementar seria código morto. Ela depende do deferido "Projétil carregado em vários turnos". Registrada como **BLOQUEADA com a dependência nomeada**, não como pendência solta.

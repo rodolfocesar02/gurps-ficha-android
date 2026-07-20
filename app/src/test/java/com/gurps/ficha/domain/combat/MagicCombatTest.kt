@@ -821,6 +821,41 @@ class MagicCombatTest {
         assertEquals(20, MagicMechanics.danoDaExplosao(20, distanciaM = 5, divisorPorMetro = 0))
     }
 
+    // ── Lote MEC-27 (C2): só UMA mágica de Bloqueio por turno (Magia p.12) ──────────────────────
+
+    @Test
+    fun `bloqueio magico marca a cota do turno e o motor lembra`() {
+        val s = sessao(7)
+        assertFalse("a rodada começa com a cota livre", s.bloqueioMagicoUsadoNoTurno)
+        s.aplicarBloqueioMagico(custoFP = 2, magiaNome = "Bloquear")
+        assertTrue("usar o bloqueio tem que consumir a cota", s.bloqueioMagicoUsadoNoTurno)
+    }
+
+    @Test
+    fun `a cota RENOVA quando o turno do heroi recomeca`() {
+        val s = sessao(7)
+        s.aplicarBloqueioMagico(custoFP = 2, magiaNome = "Bloquear")
+        assertTrue(s.bloqueioMagicoUsadoNoTurno)
+        // Roda a mesa inteira até a vez do herói voltar.
+        repeat(6) { s.avancarTurno() }
+        assertFalse("na rodada seguinte o herói pode bloquear de novo",
+            s.bloqueioMagicoUsadoNoTurno)
+    }
+
+    @Test
+    fun `bloqueio magico tambem INTERROMPE a conjuracao em andamento (Magia p12)`() {
+        // Regra que eu havia marcado como não implementada na varredura — estava feita.
+        // Este teste tranca o comportamento para não se perder.
+        val s = sessao(7)
+        val ctx = ContextoConjuracao(nhBasico = 25, classe = MagicClassParser.parse("Comum"),
+            mana = NivelMana.NORMAL)
+        s.heroiConjurar(ctx, MagicEnergy.parse("1 a 4"), energiaInvestida = 2,
+            magiaNome = "Magia Longa", alvoId = null, tempoOperacaoSeg = 3)
+        assertTrue("cenário: há conjuração em andamento", s.conjuracaoEmAndamento != null)
+        s.aplicarBloqueioMagico(custoFP = 1, magiaNome = "Bloquear")
+        assertTrue("o bloqueio mágico interrompe a conjuração", s.conjuracaoEmAndamento == null)
+    }
+
     // ── Lote MEC-26 (C4): apanhar abala a concentração de mágica mantida ────────────────────────
     // Magia p.10: "Se for distraído, sofrer uma lesão ou ficar atordoado, ele deverá fazer um teste
     // de Vontade com penalidade igual a -3. O fracasso não encerra a mágica, mas ela permanecerá

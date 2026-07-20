@@ -68,7 +68,7 @@
 | **Área** | 🟡 falta custo mínimo e afetar parte da área |
 | **Toque** | 🟡 falta o bloqueio de "não conjura enquanto sustenta" e o Aparar que não dispara |
 | **Projétil** | 🔴 falta **carregar em vários turnos** e o **teste de Vontade ao ser ferido** |
-| **Bloqueio** | 🔴 **duas** regras estruturais faltando (a 3ª, o custo, já estava feita) |
+| **Bloqueio** | ✅ **as 5 regras conferidas estão cobertas** (MEC-27 fechou a última). Resta só o detalhe do PF gasto à toa num crítico. |
 | **Informação** | 🔴 tudo narrativo (por projeto), mas há regras mecânicas não aplicadas |
 | **Resistíveis** | 🟡 falta "optar por não resistir" e a regra de Área Resistível |
 | **Encantamento / Especiais** | ⏸️ fora de escopo (itens mágicos / regra própria por magia) |
@@ -146,9 +146,9 @@
 | Regra (literal) | Estado |
 |---|---|
 | Defesa instantânea contra ataque físico ou mágica; conta como aparar/bloquear/esquivar | ✅ (`opcoesBloqueioMagico`) |
-| 🔴 *"Só é possível operar **uma** mágica de Bloqueio **por turno**"* | ❌ **não implementado** |
-| 🔴 *"**Não** é possível usar mágicas de Bloqueio contra um **golpe fulminante**"* | ❌ não implementado (o `golpeFulminante` existe no motor, mas não gateia isto) |
-| 🔴 *"Interrompem **automaticamente a concentração** do operador — ele perde a mágica que preparava"* | ❌ não implementado |
+| *"Só é possível operar **uma** mágica de Bloqueio **por turno**"* | ✅ **FEITO (Lote MEC-27)** |
+| *"**Não** é possível usar mágicas de Bloqueio contra um **golpe fulminante**"* | ✅ **no resultado** — o crítico **anula toda a defesa** (`anulada = atk.critico == DECISIVO`), inclusive o bloqueio mágico. 🟡 **Resta um detalhe**: as opções são montadas ANTES da rolagem, então o jogador ainda pode escolher o bloqueio e **gastar PF** num crítico que já ia passar. Desperdício de energia, não de regra. |
+| *"Interrompem **automaticamente a concentração** do operador — ele perde a mágica que preparava"* | ✅ **JÁ ESTAVA FEITO** em `aplicarBloqueioMagico` — eu marquei ❌ por engano na varredura (3º erro do mesmo tipo). Agora **com teste**. |
 | Sustentando Toque → não é afetada; sustentando Projétil → não pode aumentar, mas guarda | ❌ |
 | *"**Não sofrem redução de custo** em função de NH elevado"* | ✅ **JÁ FEITO e testado** (ver A.1 — eu havia marcado errado) |
 

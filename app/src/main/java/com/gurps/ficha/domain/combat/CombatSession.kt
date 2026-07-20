@@ -1337,7 +1337,17 @@ class CombatSession(
      * reduzido por NH alto (exceção da regra) e o ato INTERROMPE automaticamente qualquer conjuração em
      * andamento do operador. O sucesso do bloqueio (rolar ≤ NH) é resolvido no fluxo de defesa normal.
      */
+    /**
+     * Lote MEC-27 (C2, Magia p.12): *"O personagem pode operar apenas **uma mágica de Bloqueio por
+     * turno**, independentemente de seu nível de habilidade."*
+     *
+     * Sem esta trava o herói podia conjurar um bloqueio mágico contra CADA ataque da rodada —
+     * defesa mágica ilimitada, que é justamente o que a regra proíbe.
+     */
+    var bloqueioMagicoUsadoNoTurno: Boolean = false; private set
+
     fun aplicarBloqueioMagico(custoFP: Int, magiaNome: String) {
+        bloqueioMagicoUsadoNoTurno = true
         heroi.pfAtual = (heroi.pfAtual - custoFP.coerceAtLeast(0)).coerceAtLeast(0)
         conjuracaoEmAndamento?.let {
             conjuracaoEmAndamento = null
@@ -2504,6 +2514,8 @@ class CombatSession(
             prox = encounter.proximoTurno()
         }
         prox.defesasUsadas = DefesasUsadas()
+        // Lote MEC-27: a cota de UMA mágica de Bloqueio renova quando o turno do herói recomeça.
+        if (prox.ehHeroi) bloqueioMagicoUsadoNoTurno = false
         tickSangramentoNoTurno(prox)
         return prox
     }
