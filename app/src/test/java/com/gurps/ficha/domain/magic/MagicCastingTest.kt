@@ -66,6 +66,17 @@ class MagicCastingTest {
         assertEquals(10, MagicCasting.nhEfetivo(ctx).valor)
     }
 
+    @Test fun `MEC-32 alvo ADJACENTE nao penaliza a Comum — o operador alcanca com a mao`() {
+        // Magia p.11: a penalidade vale "se o operador NÃO CONSEGUIR tocá-lo". A 1 m ele consegue.
+        val longe = ContextoConjuracao(nhBasico = 15, classe = classe("Comum"),
+            distanciaMetros = 5, tocando = false)
+        assertEquals(10, MagicCasting.nhEfetivo(longe).valor) // −5
+
+        val encostado = ContextoConjuracao(nhBasico = 15, classe = classe("Comum"),
+            distanciaMetros = 1, tocando = true)
+        assertEquals("tocando o alvo, sem redutor", 15, MagicCasting.nhEfetivo(encostado).valor)
+    }
+
     @Test fun `distancia penaliza Comum mas nao Toque`() {
         val comum = ContextoConjuracao(nhBasico = 15, classe = classe("Comum"), distanciaMetros = 5)
         assertEquals(10, MagicCasting.nhEfetivo(comum).valor) // −5 por 5m (p.11)

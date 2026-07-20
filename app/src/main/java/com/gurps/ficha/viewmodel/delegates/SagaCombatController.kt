@@ -1037,7 +1037,10 @@ class SagaCombatController(
             classe = classe,
             mana = mana,
             distanciaMetros = distancia,
-            tocando = false,
+            // Lote MEC-32 (C13, Magia p.11): o redutor de distância da mágica COMUM só vale
+            // *"se o operador não conseguir tocá-lo"*. Alvo ADJACENTE (1 m) = ele alcança com a mão,
+            // então não há penalidade. Antes `tocando` era fixo em `false` e tocar o alvo custava −1.
+            tocando = distancia <= 1,
             veOuToca = true,
             pvQueimados = pvQueimados.coerceAtLeast(0), // Lote MA-3b: queimar PV (−1 NH/PV, paga em PV)
             raioAreaMetros = 1,               // MA-3d: área centrada num hex

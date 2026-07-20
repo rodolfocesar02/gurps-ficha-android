@@ -1010,7 +1010,7 @@
     "nome": "Anular Mágica",
     "dificuldade": "D",
     "pagina": 126,
-    "classe": "Área/R-Mágica",
+    "classe": "Comum/R-Mágica",
     "escola": [
       "Metamágica"
     ],
@@ -2642,7 +2642,7 @@
     "nome": "Bola de Relampagos",
     "dificuldade": "D",
     "pagina": 197,
-    "classe": "Comum",
+    "classe": "Área",
     "escola": [
       "Clima",
       "Ar"
@@ -4259,7 +4259,7 @@
     "nome": "Controle de Elemental Ar",
     "dificuldade": "D",
     "pagina": 28,
-    "classe": "Especial",
+    "classe": "Comum/R-ST ou Vontade",
     "escola": [
       "Ar"
     ],
@@ -4279,7 +4279,7 @@
     "nome": "Controle de Elemental Fogo",
     "dificuldade": "D",
     "pagina": 28,
-    "classe": "Especial",
+    "classe": "Comum/R-ST ou Vontade",
     "escola": [
       "Fogo"
     ],
@@ -4299,7 +4299,7 @@
     "nome": "Controle de Elemental Terra",
     "dificuldade": "D",
     "pagina": 28,
-    "classe": "Especial",
+    "classe": "Comum/R-ST ou Vontade",
     "escola": [
       "Terra"
     ],
@@ -4318,7 +4318,7 @@
     "nome": "Controle de Elemental Água",
     "dificuldade": "D",
     "pagina": 28,
-    "classe": "Especial",
+    "classe": "Comum/R-ST ou Vontade",
     "escola": [
       "Água"
     ],
@@ -6085,7 +6085,7 @@
     "nome": "Decapitação",
     "dificuldade": "MD",
     "pagina": 42,
-    "classe": "Comum/R-HT+2",
+    "classe": "Toque/R-HT+2",
     "escola": [
       "Corpo"
     ],
@@ -6837,7 +6837,7 @@
     "nome": "Dissipar Água",
     "dificuldade": "D",
     "pagina": 185,
-    "classe": "Área",
+    "classe": "Comum",
     "escola": [
       "Água"
     ],
@@ -8653,7 +8653,7 @@
     "nome": "Extinguir Fogo",
     "dificuldade": "D",
     "pagina": 72,
-    "classe": "Comum",
+    "classe": "Área",
     "escola": [
       "Fogo"
     ],
@@ -12272,7 +12272,7 @@
     "nome": "Metamorfose Parcial (Criaturas do Ar)",
     "dificuldade": "MD",
     "pagina": 34,
-    "classe": "Comum/R-Vont",
+    "classe": "Especial",
     "escola": [
       "Animais"
     ],
@@ -12292,7 +12292,7 @@
     "nome": "Metamorfose Parcial (Criaturas da Terra)",
     "dificuldade": "MD",
     "pagina": 34,
-    "classe": "Comum/R-Vont",
+    "classe": "Especial",
     "escola": [
       "Animais"
     ],
@@ -12312,7 +12312,7 @@
     "nome": "Metamorfose Parcial (Criaturas do Mar)",
     "dificuldade": "MD",
     "pagina": 34,
-    "classe": "Comum/R-Vont",
+    "classe": "Especial",
     "escola": [
       "Animais"
     ],
@@ -12835,7 +12835,7 @@
     "nome": "Muralha de Relampagos",
     "dificuldade": "D",
     "pagina": 197,
-    "classe": "Comum",
+    "classe": "Área",
     "escola": [
       "Clima",
       "Ar"
@@ -14441,7 +14441,7 @@
     "nome": "Petrificação Parcial",
     "dificuldade": "MD",
     "pagina": 52,
-    "classe": "Comum/R-HT",
+    "classe": "Toque/R-HT",
     "escola": [
       "Terra"
     ],
@@ -16668,7 +16668,7 @@
     "nome": "Retardar Fogo",
     "dificuldade": "D",
     "pagina": 73,
-    "classe": "Comum",
+    "classe": "Área",
     "escola": [
       "Fogo"
     ],
@@ -17887,7 +17887,7 @@
     "nome": "Sopro de Vapor",
     "dificuldade": "MD",
     "pagina": 192,
-    "classe": "Área",
+    "classe": "Comum",
     "escola": [
       "Água"
     ],
@@ -18258,7 +18258,7 @@
     "nome": "Teia de Aranha",
     "dificuldade": "D",
     "pagina": 32,
-    "classe": "Projetil",
+    "classe": "Projétil/Especial",
     "escola": [
       "Animais"
     ],
@@ -19182,7 +19182,7 @@
     "nome": "Transportar Outro no Tempo",
     "dificuldade": "MD",
     "pagina": 81,
-    "classe": "Comum/R-Vont+1",
+    "classe": "Especial/R-Vont+1",
     "escola": [
       "Portal"
     ],

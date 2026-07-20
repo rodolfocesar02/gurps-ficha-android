@@ -78,7 +78,7 @@ cujo efeito é `dano`/`condicao`/`cura` **é suspeito**.
 
 | # | O que está errado | Tamanho |
 |---|---|---|
-| D1 | **~17 magias com o campo `classe` divergindo da primeira linha da descrição** (a classe oficial do livro). Ex.: Decapitação e Petrificação Parcial marcadas `Comum` quando o livro diz **Toque**; Bola de Relâmpagos, Extinguir Fogo, Muralha de Relâmpagos e Retardar Fogo marcadas `Comum` quando o livro diz **Área**; Dissipar Água, Anular Mágica e Sopro de Vapor o inverso; os 4 Controle de Elemental marcados `Especial` quando o livro diz **Comum**. **A classe decide o comportamento do motor** (carregar a mão, pedir raio, ser direta) — logo isso muda regra em jogo. Achado no MEC-24 a partir da Morte Putrefata, que já foi corrigida. | 1 lote de curadoria |
+| D1 | ~~**magias com `classe` divergindo do livro**~~ ✅ **FEITO (Lote MEC-32)** — **18 corrigidas**, conferidas uma a uma contra a primeira linha da descrição (que é a classe oficial). Sobraram 4 divergências, todas **falso-positivo**: a 1ª linha delas é referência cruzada ("Como Ilusão Simples, mas…"), não linha de classe. |
 
 > ⚠️ Cada caso exige ler a descrição: várias magias começam com referência cruzada ("Como Ilusão
 > Simples, mas…") em vez da linha de classe, então não dá para corrigir com regex.
@@ -107,9 +107,9 @@ Achados que ninguém tinha registrado antes:
 | C7 | ~~**Mágicas não acumulam**~~ ✅ **FEITO (Lote MEC-29)** — relançar troca pela mais forte em vez de somar | — |
 | C8 | ⛔ **SEM ONDE APLICAR** — não existe ação de cancelar mágica no app. Os únicos caminhos que encerram são os do MEC-23 (deixar acabar / não poder pagar), que por regra são **grátis**. Precisa antes de um botão de cancelar. | — |
 | C9 | ✅ **JÁ ESTAVA FEITO** — `custoTotal` faz `.coerceAtLeast(custo.minimo)`. Procurei `custoMinimo`, identificador errado. | — |
-| C10 | 🟡 **moot na prática** — "optar por não resistir" só importa com **aliados**, que o jogo não tem. O **Abascanto em dobro** na Área Resistível segue pendente. | — |
+| C10 | ⛔ **INIMPLEMENTÁVEL hoje** — as duas metades faltam base: "optar por não resistir" exige **aliados** (o jogo só tem herói × inimigos) e o "Abascanto em dobro" exige o campo **Abascanto** no `NpcStats`, que **não existe**. Mesma classe do C1/C8. | — |
 | C11 | ⚪ Manter **só parte** da área, pagando proporcional; área não pode ser **expandida** depois | Menor |
-| C13 | 🟡 **Mágica Comum em alvo ADJACENTE não deveria ter redutor de distância** — a regra condiciona o redutor a *"se o operador não conseguir tocá-lo"*, mas `tocando` está fixo em `false`. Hoje tocar o alvo custa −1. | Achado ao investigar o relato do Toque (20/jul) |
+| C13 | ~~**Comum em alvo ADJACENTE sem redutor**~~ ✅ **FEITO (Lote MEC-32)** — `tocando = distancia <= 1` | — |
 | C12 | ⚪ **Rituais alternativos** (omitir gestos/fala por −2/−4; caprichar por +1) — regra **opcional** | Menor |
 
 ✅ **Saíram da fila (20/jul):** **Aptidão Mágica destrava o teto de energia** — feito no **MEC-25**;

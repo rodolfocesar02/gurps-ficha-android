@@ -3046,6 +3046,15 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - **Recomendação registrada** (maior valor × menor custo): Ataque Telegráfico (par do Enganoso), luta agarrada profunda (chaves/Mata-Leão estendendo o lote 422), Sangramento Grave + incapacitação de membro (item 5 do teste de batalha), Ataque Dedicado/Defensivo. Fora de escopo: posicional/hexágono, montaria, cinematográfico, dado de arma do NPC. Mudança só de documentação (não compila Kotlin).
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
+### Lote MEC-32 — 20 de Julho de 2026 (D1: 18 classes erradas no catálogo; C13 feito; C10 inimplementável)
+**"faça o d1, c13, c10" — branch GURPS-Saga**
+- ✅ **D1 — 18 magias com a CLASSE errada, corrigidas.** A 1ª linha da descrição é a classe oficial do livro; comparei todas as 879 contra ela e conferi **caso a caso**. Destaques: **Decapitação** e **Petrificação Parcial** eram `Comum` sendo **Toque** (não exigiam encostar!); **Bola de Relâmpagos**, **Extinguir Fogo**, **Muralha de Relâmpagos** e **Retardar Fogo** eram `Comum` sendo **Área** (não pediam raio); **Dissipar Água** e **Sopro de Vapor** o inverso; os **4 Controle de Elemental** eram `Especial` sendo `Comum/R-ST ou Vontade`; as **3 Metamorfose Parcial** eram `Comum/R-Vont` sendo **Especial** (transformam o próprio corpo — não há alvo para resistir).
+- **Sobraram 4 divergências, todas falso-positivo** — a 1ª linha delas é **referência cruzada** ("Como Ilusão Simples, mas…"), não linha de classe. Foi por isso que este lote foi de leitura e não de regex: a primeira varredura, automática, teria "consertado" essas 4 e quebrado o que estava certo.
+- ✅ **C13 (MEC-32)**: mágica **Comum** em alvo **adjacente** não sofre mais redutor de distância. A regra condiciona o redutor a *"se o operador não conseguir tocá-lo"* — a 1 m ele alcança. Antes `tocando` era fixo em `false` e encostar no alvo custava −1.
+- ⛔ **C10 é INIMPLEMENTÁVEL hoje**, e o motivo só apareceu ao abrir o código: *"optar por não resistir"* exige **aliados** (o jogo só tem herói × inimigos) e *"Abascanto em dobro"* exige o campo **Abascanto** no `NpcStats`, que **não existe**. Reclassificado ao lado de C1 e C8 — com a dependência nomeada, em vez de ficar como pendência solta que alguém tentaria de novo.
+- 🟢 Gate: **776 testes, ZERO falhas**.
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
 ### Lote MEC-31 — 20 de Julho de 2026 (modo BONECO também não RESISTE)
 **"agora vc tirou a opção de manter? quando acertei a magia, nao apareceu o pop-up" — log do aparelho, branch GURPS-Saga**
 - ✅ **Não era regressão.** O log do usuário mostra a resposta: *"ACERTA! Goblin 2 **RESISTE** (resistência 10) — a mágica se dissipa."* A Morte Candente é `R-HT`; resistiu → nada fica ativo → nada a manter. Comportamento **correto** pela regra (Magia p.13: resistível só funciona automaticamente em sucesso decisivo).
