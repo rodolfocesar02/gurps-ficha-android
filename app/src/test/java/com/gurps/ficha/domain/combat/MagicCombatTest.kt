@@ -901,6 +901,43 @@ class MagicCombatTest {
         assertTrue("sem dano, o teste de Vontade nem acontece", s.log.none { it.contains("dispara em VOCÊ") })
     }
 
+    // ── Lote MEC-40 (P6): Precisão do projétil ao Apontar ───────────────────────────────────────
+
+    private fun ctxProjetilPrec(prec: Int) = ContextoConjuracao(
+        nhBasico = 25, classe = MagicClassParser.parse("Projétil"), mana = NivelMana.NORMAL,
+        distanciaMetros = 3, mecanica = MagiaMecanica(efeito = "dano", danoPorEnergia = "1d",
+            energiaPorDado = 1, precisao = prec))
+
+    @Test
+    fun `Apontar antes de arremessar soma a Precisao ao ataque (P6)`() {
+        val s = sessao(7, distGoblin = 3)
+        s.heroiCarregarProjetil(ctxProjetilPrec(prec = 3), MagicEnergy.parse("Varia"), 3, "Relâmpago", tetoPorTurno = 4)
+        s.heroiApontar("goblin")           // mira o alvo
+        s.heroiArremessarProjetil("goblin")
+        assertTrue("o log tem que registrar o bonus de mira +3",
+            s.log.any { it.contains("mira: +3") })
+    }
+
+    @Test
+    fun `sem Apontar NAO soma Precisao`() {
+        val s = sessao(7, distGoblin = 3)
+        s.heroiCarregarProjetil(ctxProjetilPrec(prec = 3), MagicEnergy.parse("Varia"), 3, "Relâmpago", tetoPorTurno = 4)
+        s.heroiArremessarProjetil("goblin") // arremessa direto, sem mirar
+        assertTrue("nao pode haver bonus de mira", s.log.none { it.contains("mira: +") })
+    }
+
+    @Test
+    fun `Apontar no alvo ERRADO nao vale para o arremesso`() {
+        val enc = CombatEncounter(
+            listOf(heroi(), goblin().copy(id = "g1"), goblin().copy(id = "g2")),
+            mapOf("g1" to 3, "g2" to 3), seed = 1L)
+        val s = CombatSession(enc, perfil(), Random(7))
+        s.heroiCarregarProjetil(ctxProjetilPrec(prec = 3), MagicEnergy.parse("Varia"), 3, "Relâmpago", tetoPorTurno = 4)
+        s.heroiApontar("g1")                 // mira g1
+        s.heroiArremessarProjetil("g2")      // arremessa em g2
+        assertTrue("mira em outro alvo não soma", s.log.none { it.contains("mira: +") })
+    }
+
     // ── Lote MEC-38 (P7): Toque Candente — armadura não protege, RD natural sim ─────────────────
 
     @Test

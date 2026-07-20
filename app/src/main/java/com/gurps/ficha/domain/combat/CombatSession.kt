@@ -1316,8 +1316,11 @@ class CombatSession(
      */
     private fun resolverArremessoProjetil(
         alvo: Combatente, energia: Int, ctx: ContextoConjuracao, sb: StringBuilder,
+        /** Lote MEC-40 (P6): +Precisão quando o operador Apontou neste alvo antes de arremessar. */
+        bonusPrecisao: Int = 0,
     ): Int {
-        val nhAcerto = heroiPerfil.dx + penalidadeDistancia(ctx.distanciaMetros)
+        val nhAcerto = heroiPerfil.dx + penalidadeDistancia(ctx.distanciaMetros) + bonusPrecisao
+        if (bonusPrecisao > 0) sb.append(" (mira: +$bonusPrecisao)")
         val rolAcerto = rolar3d6()
         if (rolAcerto > nhAcerto) {
             sb.append(" O projétil passa longe (Ataque Inato NH $nhAcerto, rolou $rolAcerto).")
@@ -1400,13 +1403,19 @@ class CombatSession(
 
     /** Arremessa o projétil segurado num alvo. Consome o turno como um ataque à distância. */
     fun heroiArremessarProjetil(alvoId: String): ResultadoConjuracaoCombate {
+        // Lote MEC-40 (P6): captura a mira (Apontar) ANTES de inicioAcaoHeroi limpar o apontar.
+        // Precisão da magia + mira de vários turnos (+1 no 2º segundo, +2 no 3º+, MB p.364).
+        val mirou = apontarAlvoId == alvoId
+        val bonusPrec = if (mirou) {
+            (projetilCarregado?.ctx?.mecanica?.precisao ?: 0) + (apontarStacks - 1).coerceIn(0, 2)
+        } else 0
         inicioAcaoHeroi(); limparAvaliar(); limparApontar(); limparFinta()
         val p = projetilCarregado ?: return ResultadoConjuracaoCombate(false, "Nenhum projétil na mão.")
         val alvo = inimigos.firstOrNull { it.id == alvoId && it.vivo }
             ?: return ResultadoConjuracaoCombate(false, "Alvo inválido.").also { log += it.texto }
         projetilCarregado = null
         val sb = StringBuilder("🔥 Você arremessa ${p.nome} em ${alvo.nome} (${p.energiaAcumulada} de energia).")
-        val dano = resolverArremessoProjetil(alvo, p.energiaAcumulada, p.ctx, sb)
+        val dano = resolverArremessoProjetil(alvo, p.energiaAcumulada, p.ctx, sb, bonusPrec)
         verificarFim(); log += sb.toString().trim()
         return ResultadoConjuracaoCombate(true, sb.toString().trim(), dano)
     }

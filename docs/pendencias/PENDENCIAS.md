@@ -127,7 +127,7 @@ e com teste** desde antes.
 |---|---|---|
 | P4 | ~~Bandas de distância do **Lampejo**~~ ✅ **FEITO (MEC-37)** — bandas + rider de ofuscamento (−N nas perícias de combate, com timer) — mecânica reusável nos Jatos (P9) | Lampejo |
 | P5 | 🔴 **precisa de projétil-contra-HEX** — o ramo de projétil resolve contra 1 combatente; para espalhar a explosão do ponto de impacto ele teria de mirar um hex e varrer os vizinhos (metade do trabalho do MEC-14 de área, do lado do projétil). Feature, não ajuste. | Relâmpago Explosivo |
-| P6 | 🟡 **DESBLOQUEADO pelo P11** (o projétil já pode ser sustentado). Falta: enquanto segura, a manobra **Apontar** soma a Precisão da magia no arremesso. Motor + UI pequenos. | 12 projéteis |
+| P6 | ~~**Precisão do projétil**~~ ✅ **FEITO (MEC-40)** — Apontar antes de arremessar soma a Precisão (+ mira de vários turnos). Chip 🎯 Apontar no token inimigo. 12 magias curadas. | 12 projéteis |
 | P7 | ~~**RD natural × armadura** do Toque Candente~~ ✅ **FEITO (MEC-38)** — campo `rdNatural` no bestiário + `armadura: "ignora_vestida"` → ignora a vestida, natural protege | Toque Candente |
 | P8 | ~~Degrau de custo dobrado (2d-2)~~ ✅ **FEITO (MEC-36)** — `danoDeAreaComDegrau`; limiar = custo-base 2 dobrado. O payoff pleno é o tique por segundo (P1b). | Chuva de Fogo/Pedras |
 | P9 | 🔴 **precisa de resolução de FEIXE** — os Jatos são `narrado`/`feixe` e não têm caminho de acerto/dano no motor. Projeção (knockback) reusaria o Empurrão existente, mas o feixe em si (teste DX-4, esquiva/bloqueio) é ataque novo. A parte do Géiser (empurra + DX-5) mora no P1b (zona). | Jatos, Géiser |

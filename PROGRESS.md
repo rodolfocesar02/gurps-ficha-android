@@ -3046,6 +3046,16 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - **Recomendação registrada** (maior valor × menor custo): Ataque Telegráfico (par do Enganoso), luta agarrada profunda (chaves/Mata-Leão estendendo o lote 422), Sangramento Grave + incapacitação de membro (item 5 do teste de batalha), Ataque Dedicado/Defensivo. Fora de escopo: posicional/hexágono, montaria, cinematográfico, dado de arma do NPC. Mudança só de documentação (não compila Kotlin).
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
+### Lote MEC-40 — 20 de Julho de 2026 (P6: Precisão do projétil ao Apontar)
+**"faz p6" — branch GURPS-Saga**
+- ✅ **P6**: desbloqueado pelo P11. Enquanto segura o projétil, **Apontar** no alvo soma a **Precisão (Acc)** da magia ao Ataque Inato do arremesso — mais a mira de vários turnos (+1 no 2º segundo, +2 no 3º+, MB p.364), reusando o `apontarAlvoId`/`apontarStacks` das armas.
+- **Detalhe que teria virado bug**: `heroiArremessarProjetil` chama `limparApontar()` no início — a mira seria apagada antes de ser lida. Captura o bônus **antes** do `inicioAcaoHeroi`.
+- **12 magias curadas** com a Precisão das notas (Bola de Fogo 1, Relâmpago 3, Adaga de Gelo 3…). Campo `precisao` no schema.
+- **UI**: chip **🎯 Apontar** no token inimigo enquanto segura o projétil (ao lado de Arremessar), via o passthrough de Apontar que já existia.
+- **+3 testes**: Apontar soma; sem Apontar não soma; Apontar no alvo errado não vale.
+- 🟢 Gate: **793 testes, ZERO falhas**.
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
 ### Lote MEC-39 — 20 de Julho de 2026 (P11: projétil multi-turno — a feature keystone + C1 de brinde)
 **"faz o P11!" — branch GURPS-Saga**
 - ✅ **P11**: o projétil mágico agora pode ser **SEGURADO na mão entre turnos** (Magia p.12). `heroiCarregarProjetil` (cria e segura, sem arremessar), `heroiAumentarProjetil` (+energia sem teste, até **Aptidão/turno** e no máx. **3 segundos**), `heroiArremessarProjetil` (resolve o Ataque Inato/esquiva/dano), `dissiparProjetil` (ação livre).

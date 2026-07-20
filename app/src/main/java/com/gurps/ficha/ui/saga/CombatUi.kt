@@ -1364,6 +1364,16 @@ fun MenuTaticoDoToken(
                     Text("🔥 Arremessar", style = MaterialTheme.typography.labelMedium,
                         modifier = Modifier.padding(horizontal = 10.dp, vertical = 8.dp))
                 }
+                // Lote MEC-40 (P6): Apontar no alvo antes de arremessar → soma a Precisão da magia.
+                Surface(
+                    onClick = { viewModel.sagaCombateApontar(tokenId); onFechar() },
+                    color = Color(0x334FC3F7), contentColor = Color.White, shape = RoundedCornerShape(14.dp),
+                    modifier = Modifier.padding(horizontal = 3.dp)
+                        .semantics { contentDescription = "Apontar em ${alvo.nome} para somar a Precisão" }
+                ) {
+                    Text("🎯 Apontar", style = MaterialTheme.typography.labelMedium,
+                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 8.dp))
+                }
             }
             if (ehHeroi && estado.projetilCarregado != null) {
                 Surface(

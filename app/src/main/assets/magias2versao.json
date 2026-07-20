@@ -154,7 +154,8 @@
       "entrega": "projetil",
       "notas": "1/2D 30, Max 60, Prec 3. Até AM de energia/seg por 3 seg. Sem efeito extra em criaturas de fogo.",
       "alcanceMeioDano": 30,
-      "alcanceMaximo": 60
+      "alcanceMaximo": 60,
+      "precisao": 3
     },
     "duracaoTipo": "instantanea",
     "duracaoSeg": 0,
@@ -1600,7 +1601,8 @@
       "efeito": "narrado",
       "entrega": "projetil",
       "notas": "Meta: transforma outra magia em Projétil (1/2D n/a, Max 80, Prec 1; teste DX-4 ou Ataque Inato). Custo 3 + custo da magia-objetivo. Pode ser bloqueada/esquivada, não aparada. Não vale para magias de Projétil/Bloqueio.",
-      "alcanceMaximo": 80
+      "alcanceMaximo": 80,
+      "precisao": 1
     },
     "duracaoTipo": "permanente",
     "duracaoSeg": 0,
@@ -2553,7 +2555,8 @@
       "entrega": "projetil",
       "notas": "Dano por ácido (corrosão), sem tipo padrão. 1/2D 20, Max 40, Prec 1, perícia Ataque Inato. Até AM de energia/seg por 3 seg.",
       "alcanceMeioDano": 20,
-      "alcanceMaximo": 40
+      "alcanceMaximo": 40,
+      "precisao": 1
     },
     "duracaoTipo": "instantanea",
     "duracaoSeg": 0,
@@ -2604,7 +2607,8 @@
       "entrega": "projetil",
       "notas": "1/2D 25, Max 50, Prec 1. Ate AM por seg por 3 seg.",
       "alcanceMeioDano": 25,
-      "alcanceMaximo": 50
+      "alcanceMaximo": 50,
+      "precisao": 1
     },
     "duracaoTipo": "instantanea",
     "duracaoSeg": 0,
@@ -8187,7 +8191,8 @@
       "entrega": "projetil",
       "notas": "1/2D 40, Max 80, Prec 2. Até AM de energia/seg por 3 seg. Esfera de 1 dado apaga fogo em 1m de raio.",
       "alcanceMeioDano": 40,
-      "alcanceMaximo": 80
+      "alcanceMaximo": 80,
+      "precisao": 2
     },
     "duracaoTipo": "instantanea",
     "duracaoSeg": 0,
@@ -8737,7 +8742,8 @@
       "entrega": "projetil",
       "notas": "Arremessa magicamente qualquer arma como se lançada por ST 15 (perf 1d+1 impacto / corte 2d+1 balanço, conforme a arma). 1/2D 20 Máx 40 Prec 1. Dano depende da arma, não escala com energia (energia = 1 por 0,5kg). Alvo defende normal.",
       "alcanceMeioDano": 20,
-      "alcanceMaximo": 40
+      "alcanceMaximo": 40,
+      "precisao": 1
     }
   },
   {
@@ -14525,7 +14531,8 @@
       "condicaoResistencia": "HT",
       "notas": "Arremessa o objetivo (R-HT) num alvo como se ST 15 o jogasse; ao atingir causa contusão 1d (até 5kg) ou 1d+1 (até 12,5kg). Teste DX-4/Arremesso p/ acertar; alvo esquiva/bloqueia, só o objetivo resiste. 1/2D 20 Máx 60 Prec 1. Dano não escala linear com energia.",
       "alcanceMeioDano": 20,
-      "alcanceMaximo": 60
+      "alcanceMaximo": 60,
+      "precisao": 1
     }
   },
   {
@@ -15021,7 +15028,8 @@
       "entrega": "projetil",
       "notas": "Ate a Aptidao Magica por segundo, por ate 3 segundos. 1/2D 40, Max 80, Prec 2.",
       "alcanceMeioDano": 40,
-      "alcanceMaximo": 80
+      "alcanceMaximo": 80,
+      "precisao": 2
     }
   },
   {
@@ -15402,7 +15410,8 @@
       "condicaoResistencia": "HT",
       "notas": "Projetil 1/2D 75, Max 150, Prec 2, pericia Ataque Inato. Queima como laser (o texto tambem menciona perfuracao no custo; adotado queimadura pela descricao). Energia ate o nivel de Aptidao Magica/seg por ate 3seg. Golpe no rosto cega (teste HT); nos olhos dobra dano e cega (HT com -dano). Espelho reflete; escudo polido +50% BD; defensor c/ espelho pode Bloquear -2. Areas de Escuridao/Trevas resistem.",
       "alcanceMeioDano": 75,
-      "alcanceMaximo": 150
+      "alcanceMaximo": 150,
+      "precisao": 2
     }
   },
   {
@@ -15860,7 +15869,8 @@
       "condicaoResistencia": "HT_por_pv",
       "notas": "1/2D 50, Max 100, Prec 3. Armadura metalica conta como RD 1. Se o alvo se ferir, testa HT (-1 por 2 PV sofridos) ou atordoa; novo teste HT a cada turno para recuperar. Ate AM de energia/seg por 3s. 1d-1 por ponto de energia.",
       "alcanceMeioDano": 50,
-      "alcanceMaximo": 100
+      "alcanceMaximo": 100,
+      "precisao": 3
     }
   },
   {
@@ -15890,7 +15900,8 @@
       "notas": "1/2D 50, Max 100, Prec 3. Explosao: alvo e quem estiver a <1m leva dano total; mais longe divide por 3x a distancia em m. Pode mirar parede/piso a +4. 1d-1 por 2 pontos completos de energia. Aplica atordoar do Relampago.",
       "explosaoDivisorPorMetro": 3,
       "alcanceMeioDano": 50,
-      "alcanceMaximo": 100
+      "alcanceMaximo": 100,
+      "precisao": 3
     }
   },
   {
@@ -18296,7 +18307,8 @@
     "mecanica": {
       "efeito": "controle",
       "entrega": "projetil",
-      "notas": "Dispara fio de teia; ataque com DX-4 ou Ataque Inato, 1/2D n/d, Max=comprimento, Prec 3. Acerto imobiliza (Retencao com Grudento). Fio: ST 10, RD 3, suporta 250kg, sofre 3x dano de fogo. 1 energia/5m (max 100m), metade p/ manter. Pode virar teia de area."
+      "notas": "Dispara fio de teia; ataque com DX-4 ou Ataque Inato, 1/2D n/d, Max=comprimento, Prec 3. Acerto imobiliza (Retencao com Grudento). Fio: ST 10, RD 3, suporta 250kg, sofre 3x dano de fogo. 1 energia/5m (max 100m), metade p/ manter. Pode virar teia de area.",
+      "precisao": 3
     },
     "duracaoTipo": "temporaria",
     "duracaoSeg": 60,
