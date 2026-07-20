@@ -83,6 +83,28 @@ cujo efeito é `dano`/`condicao`/`cura` **é suspeito**.
 > ⚠️ Cada caso exige ler a descrição: várias magias começam com referência cruzada ("Como Ilusão
 > Simples, mas…") em vez da linha de classe, então não dá para corrigir com regex.
 
+### 2.1c Classes de Mágicas (Magia p.11–14) — varredura completa
+
+Documento próprio: **[CLASSES_DE_MAGICA.md](CLASSES_DE_MAGICA.md)** — cada regra das 8 classes,
+conferida uma a uma **no código**.
+
+Achados que ninguém tinha registrado antes:
+
+| # | Regra que falta | Por que importa |
+|---|---|---|
+| C1 | **Teste de Vontade ao ser FERIDO sustentando um projétil** — falhando, *"o projétil o afeta imediatamente"* | O mago segura uma Bola de Fogo, apanha, e hoje nada acontece |
+| C2 | **Só UMA mágica de Bloqueio por turno** | Sem isso, defesa mágica ilimitada |
+| C3 | **Bloqueio não vale contra golpe fulminante** | O crítico deveria passar |
+| C4 | **Bloqueio NÃO reduz custo por NH alto** (é exceção à regra geral, que o motor aplica a todas) | Bloqueio sai barato demais |
+| C5 | **Não pode conjurar enquanto sustenta Toque ou Projétil** | Hoje dá para acumular mágicas |
+| C6 | **Dissipar mágica sustentada é ação livre** | O jogador fica preso com a mão carregada |
+| C7 | **Custo mínimo** de algumas mágicas de Área | 0 ocorrências no código |
+| C8 | Resistível: **optar por não resistir**; Área Resistível com **Abascanto em dobro** | Magia benéfica em aliado |
+
+> ⚠️ **Honestidade sobre o processo:** eu vinha citando p.11/p.12 caso a caso conforme precisava,
+> mas nunca tinha lido a seção inteira. Estas 8 regras estavam invisíveis — não por decisão, por
+> omissão. É o mesmo padrão dos documentos desatualizados: **o que não é varrido inteiro, engana**.
+
 ### 2.2 Regras de magia específicas
 
 | # | O que falta | Afeta |

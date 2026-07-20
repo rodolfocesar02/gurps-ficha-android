@@ -3046,6 +3046,17 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - **Recomendação registrada** (maior valor × menor custo): Ataque Telegráfico (par do Enganoso), luta agarrada profunda (chaves/Mata-Leão estendendo o lote 422), Sangramento Grave + incapacitação de membro (item 5 do teste de batalha), Ataque Dedicado/Defensivo. Fora de escopo: posicional/hexágono, montaria, cinematográfico, dado de arma do NPC. Mudança só de documentação (não compila Kotlin).
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
+### Lote DOC-CLASSES — 20 de Julho de 2026 (varredura das Classes de Mágicas, p.11–14)
+**"confirma se vc ja lido sobre? se nao, pode agregar essas regras num arquivo dentro da pendencias" — branch GURPS-Saga**
+- **Resposta honesta ao usuário: eu tinha lido só EM PARTES.** Vinha citando p.11/p.12 caso a caso (Projétil, Toque, Área) conforme cada lote precisava, mas **nunca varri a seção inteira** — e a varredura achou regras com efeito mecânico que nunca foram implementadas **nem registradas em lugar nenhum**. Não foi decisão; foi omissão.
+- **Criado `docs/pendencias/CLASSES_DE_MAGICA.md`**: as 8 classes (Comuns, Área, Toque, Projétil, Bloqueio, Informação, Resistíveis, Encantamento/Especiais), regra por regra, com o texto literal e o estado **conferido no código** — não de memória.
+- 🔴 **Achado mais grave (C1)**: *"Se sofrer uma lesão enquanto sustenta o projétil, o operador faz teste de **Vontade**. Se fracassar, **o projétil o afeta imediatamente**."* Hoje o mago segura uma Bola de Fogo, apanha, e não acontece nada. Barato de implementar e com consequência real.
+- 🔴 **Três regras estruturais de Bloqueio faltando**: só **uma por turno**; **não vale contra golpe fulminante**; e **não sofre redução de custo por NH alto** — esta última é uma **exceção** que o motor viola, porque aplica `custoAjustadoPorNH` a todas as classes.
+- 🟡 Outras: não conjurar enquanto sustenta Toque/Projétil; dissipar sustentada como **ação livre**; **custo mínimo** de Área (0 ocorrências no código); Resistível "optar por não resistir" e Abascanto em dobro na Área Resistível.
+- ✅ **Também confirmou o que ESTÁ certo**: custo × (1+MT), −5 sem ver nem tocar, custo de Área × raio, penalidade até a borda, raio 1m = 1 hex, Projétil nunca aparado, RD protege contra Projétil. Tudo ligado e conferido.
+- **Sem alteração de código** — o gate verde de 761 testes segue valendo.
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
 ### Lote MEC-24 — 20 de Julho de 2026 (o toggle de dano voltou — e revelou erro de CLASSE no catálogo)
 **"lembra-se de que falamos sobre esse sistema causar dano(1d por energia)? isso nao tinha sido corrigido?" — print da Morte Putrefata, branch GURPS-Saga**
 - **O MEC-20 corrigiu, mas não cobria este caso.** Ele passou a gatear o toggle pelo `efeito` curado — e a Morte Putrefata **é** `efeito: dano`, então passava pelo filtro. Só que o dano dela já está definido pelo livro (**1d-1 por turno**); oferecer "1d por energia" em cima disso convida a somar dano que a regra não prevê.
