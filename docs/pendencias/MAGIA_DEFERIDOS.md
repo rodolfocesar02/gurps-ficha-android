@@ -33,8 +33,11 @@ que não cabe em regra geral é **narrado pelo Mestre**.
 - **Cajados mágicos** (reduzir distância / carregar Toque, p.13).
 - **Modificadores de longa distância** para Informação (tabela p.14) — a Informação hoje é resolvida
   narrativamente.
-- **Efeito do buff aplicado mecanicamente** (ex.: Escudo dando +DB de verdade nas defesas). Requer um
-  mapa por-magia que o catálogo não fornece.
+- ~~**Efeito do buff aplicado mecanicamente**~~ ✅ **FEITO (Lotes MEC-2 e MEC-4)** — o Escudo soma BD
+  em esquiva/aparar/bloquear e a Armadura soma RD, via `heroiPerfil` (`CombatSession.kt:44-60`).
+  **O que sobra** é catálogo, não motor: dos 179 buffs, 23 têm campos numéricos e funcionam; os
+  outros **156 só têm `buffRotulo`** (rótulo em texto) e precisariam de curadoria da prosa.
+  ⚠️ Esta linha ficou desatualizada por vários lotes e induziu a erro no `PENDENCIAS.md`.
 - **Magia no modo FAIXAS**: a conjuração no combate só existe no modo TÁTICO (grid) — o chip 🔮 mora
   no token. No modo de faixas não há UI de conjurar.
 - **PRECISÃO (Prec/Acc) do Projétil** (Lote MEC-15): o catálogo traz a Prec das 12 magias de projétil

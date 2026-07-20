@@ -55,7 +55,15 @@ cujo efeito é `dano`/`condicao`/`cura` **é suspeito**.
 |---|---|---|---|
 | P1 | **Tique por turno** — dano recorrente com teste a cada turno | Morte Candente, Morte Putrefata, Chuva de Ácido/Fogo/Pedras, Nuvem de Faíscas, Géiser, Mau Cheiro | auditoria #2 e #11 |
 | P2 | **Manter magia com efeito continuado** — a manutenção cobra PF, mas o efeito não persiste | todas as de duração | MAGIA_DEFERIDOS |
-| P3 | **Efeito de buff aplicado de verdade** — Escudo não dá +DB, Armadura não dá +RD | **156 dos 179 buffs** | MAGIA_DEFERIDOS |
+| P3 | **Curar os 156 buffs que só têm rótulo de texto** — não é bug de motor, é trabalho de catálogo | 156 dos 179 buffs | ver correção abaixo |
+
+> ✅ **Correção (18/jul)** — a versão anterior desta linha dizia *"Escudo não dá +DB, Armadura não dá
+> +RD"*. **Está errado.** Conferido em `CombatSession.kt:44-60`: o BD mágico do Escudo soma em
+> esquiva/aparar/bloquear e o `buffRd` da Armadura entra na RD — feito nos lotes MEC-2/MEC-4. O texto
+> velho veio do `MAGIA_DEFERIDOS.md`, escrito **antes** daquilo existir, e eu o copiei para cá sem
+> conferir. **O que realmente falta:** dos 179 buffs, **23 têm campos numéricos e funcionam**; os
+> outros **156 só têm `buffRotulo`** (rótulo em texto). Mecanizá-los é extrair número da prosa —
+> trabalho de curadoria de catálogo, como foi o MEC-2, não conserto de motor.
 
 > P1 e P2 são o **mesmo mecanismo** (zona/efeito que persiste e tica). Um lote resolve os dois.
 > ⚠️ P1 tem parte de UI: uma zona de dano precisa ser **desenhada na grade**, senão o jogador perde
