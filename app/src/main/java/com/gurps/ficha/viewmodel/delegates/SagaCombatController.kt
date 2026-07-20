@@ -109,6 +109,12 @@ data class MagiaConjuravelUi(
      * pode causar dano — antes o toggle aparecia até em Localizar Ar e Criar Ar.
      */
     val efeito: String? = null,
+    /**
+     * Lote MEC-24: a magia JA tem dano curado no catalogo (ex.: Morte Putrefata, 1d-1 por turno).
+     * Nesses casos o toggle generico "1d por energia" nao se aplica — o dano dela ja esta definido,
+     * e oferecer o switch convida a somar dano que a regra nao prevê.
+     */
+    val danoJaDefinido: Boolean = false,
     /** Custo aproximado (para limitar o quanto de PV o mago pode queimar). */
     val custoEstimado: Int,
     val castavel: Boolean,
@@ -1321,6 +1327,8 @@ class SagaCombatController(
                 // despejar 10 num Toque Candente (custo 1 a 3) e sair 10d.
                 aptidaoMagica = MagicEnergy.tetoDeEnergiaDano(m.energia, aptidao),
                 efeito = mecUi?.efeito, // MEC-20
+                danoJaDefinido = com.gurps.ficha.domain.magic.MagicMechanics.temDanoEstruturado(mecUi) ||
+                    com.gurps.ficha.domain.magic.MagicMechanics.temTiquePorTurno(mecUi), // MEC-24
                 custoEstimado = (custo.base ?: custo.minimo).coerceAtLeast(1),
                 castavel = temPf,
                 motivo = if (!temPf) "sem PF" else "",

@@ -74,6 +74,15 @@ cujo efeito é `dano`/`condicao`/`cura` **é suspeito**.
 > ⚠️ **Deferido honesto do MEC-22:** *"mortos-vivos não são afetados"* não é aplicado — o `NpcStats`
 > não tem campo de tipo de criatura (mesma limitação da RD natural do Toque Candente).
 
+### 2.1b Erros de DADO no catálogo (não são bugs de motor)
+
+| # | O que está errado | Tamanho |
+|---|---|---|
+| D1 | **~17 magias com o campo `classe` divergindo da primeira linha da descrição** (a classe oficial do livro). Ex.: Decapitação e Petrificação Parcial marcadas `Comum` quando o livro diz **Toque**; Bola de Relâmpagos, Extinguir Fogo, Muralha de Relâmpagos e Retardar Fogo marcadas `Comum` quando o livro diz **Área**; Dissipar Água, Anular Mágica e Sopro de Vapor o inverso; os 4 Controle de Elemental marcados `Especial` quando o livro diz **Comum**. **A classe decide o comportamento do motor** (carregar a mão, pedir raio, ser direta) — logo isso muda regra em jogo. Achado no MEC-24 a partir da Morte Putrefata, que já foi corrigida. | 1 lote de curadoria |
+
+> ⚠️ Cada caso exige ler a descrição: várias magias começam com referência cruzada ("Como Ilusão
+> Simples, mas…") em vez da linha de classe, então não dá para corrigir com regex.
+
 ### 2.2 Regras de magia específicas
 
 | # | O que falta | Afeta |

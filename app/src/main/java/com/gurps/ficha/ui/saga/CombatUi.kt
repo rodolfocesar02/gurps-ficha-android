@@ -1606,7 +1606,9 @@ private fun SubDialogoConjurar(
                 // combate talvez cause 1d de dano por ponto") — não existe regra para bombear dano
                 // em magia de Informação ou utilidade. Antes o switch aparecia em Localizar Ar e
                 // Criar Ar, convidando o jogador a inventar dano que a regra não permite.
-                val efeitoPermiteDano = sel.efeito == null || sel.efeito == "dano"
+                // MEC-24: e quem JA tem dano curado (Morte Putrefata: 1d-1 por turno) tambem nao
+                // oferece o toggle — o dano dela ja esta definido pelo livro.
+                val efeitoPermiteDano = (sel.efeito == null || sel.efeito == "dano") && !sel.danoJaDefinido
                 val podeMarcarDano = !proj && !sel.ehToque && !sel.ehCura && efeitoPermiteDano &&
                     (ehArea || alvoId != null)
                 if (podeMarcarDano) {

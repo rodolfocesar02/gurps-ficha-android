@@ -821,6 +821,26 @@ class MagicCombatTest {
         assertEquals(20, MagicMechanics.danoDaExplosao(20, distanciaM = 5, divisorPorMetro = 0))
     }
 
+    // ── Lote MEC-24: quem já tem dano curado NÃO oferece o toggle genérico ──────────────────────
+
+    @Test
+    fun `magia com dano proprio nao pode oferecer o 1d por energia generico`() {
+        // Morte Putrefata tem 1d-1 POR TURNO definido pelo livro. Oferecer "causa dano 1d por
+        // energia" em cima disso convida a somar dano que a regra não prevê.
+        val putrefata = MagiaMecanica(efeito = "dano", entrega = "toque",
+            danoPorTurnoExpr = "1d-1", danoPorTurnoTeste = "HT")
+        assertTrue("o tique conta como dano já definido",
+            MagicMechanics.temTiquePorTurno(putrefata))
+
+        val bolaDeFogo = MagiaMecanica(efeito = "dano", danoPorEnergia = "1d", energiaPorDado = 1)
+        assertTrue("dano curado também conta", MagicMechanics.temDanoEstruturado(bolaDeFogo))
+
+        // Uma magia de dano SEM número curado é a única que precisa do toggle genérico.
+        val semNumero = MagiaMecanica(efeito = "dano")
+        assertFalse(MagicMechanics.temDanoEstruturado(semNumero))
+        assertFalse(MagicMechanics.temTiquePorTurno(semNumero))
+    }
+
     // ── Lote TOK-PF: a barra de fadiga precisa refletir a manutenção ────────────────────────────
 
     private fun comMorteCandenteAtiva(): CombatSession = (0L until 40L).map { seed ->
