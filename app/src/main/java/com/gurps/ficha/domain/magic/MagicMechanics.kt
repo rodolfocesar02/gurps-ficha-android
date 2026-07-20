@@ -145,6 +145,13 @@ data class MagiaMecanica(
      * (Nuvem de Faíscas, Sono Coletivo…). O operador não pode mirar uma área menor que isto.
      */
     val areaRaioMinimoM: Int = 0,
+    /**
+     * Lote MEC-37 (P4): efeito em BANDAS de distância (Lampejo). Cada faixa tem seu próprio
+     * resultado. Ex.: ≤10m → cego 3s + ofuscado −3 por 60s; 11–25m → só ofuscado −3 por 60s;
+     * 26m+ → ofuscado −3 por 3s. Vazio = a mágica não usa bandas.
+     */
+    val condicaoBandas: List<CondicaoBanda> = emptyList(),
+    // (CondicaoBanda definida abaixo, fora da data class.)
 
     // ── efeito "buff" (rastreado como magia ativa; bônus numérico quando houver) ──
     /** Rótulo curto do efeito, para o feed e para o Narrador ("Pele de Crocodilo RD 4"). */
@@ -201,6 +208,18 @@ data class MagiaMecanica(
 
     // ── notas para o Narrador (ambiente/controle/utilidade: o motor tagueia, o Mestre descreve) ──
     val notas: String? = null,
+)
+
+/**
+ * Lote MEC-37 (P4): uma faixa de distância do efeito do Lampejo. [ateM] é o limite superior da
+ * banda (inclusive); a 1ª banda cuja distância ≤ ateM ganha o efeito. [cegoSeg] = segundos de
+ * cegueira; [riderPenalidade]/[riderSeg] = ofuscamento (−N nas perícias de combate) e sua duração.
+ */
+data class CondicaoBanda(
+    val ateM: Int,
+    val cegoSeg: Int = 0,
+    val riderPenalidade: Int = 0,
+    val riderSeg: Int = 0,
 )
 
 /**
@@ -395,6 +414,13 @@ object MagicMechanics {
         }
         return expandirDano(m.danoPorEnergia ?: "1d", energia, m.energiaPorDado, m.danoFixo)
     }
+
+    /** Lote MEC-37 (P4): a banda cujo limite superior cobre a distância (a 1ª que serve). */
+    fun bandaPara(m: MagiaMecanica?, distanciaM: Int): CondicaoBanda? =
+        m?.condicaoBandas?.sortedBy { it.ateM }?.firstOrNull { distanciaM <= it.ateM }
+            ?: m?.condicaoBandas?.maxByOrNull { it.ateM } // além da última banda → usa a mais distante
+
+    fun usaBandas(m: MagiaMecanica?): Boolean = !m?.condicaoBandas.isNullOrEmpty()
 
     /** Lote MEC-36 (P10): raio efetivo respeitando o mínimo da mágica. */
     fun raioEfetivo(m: MagiaMecanica?, raioEscolhido: Int): Int =

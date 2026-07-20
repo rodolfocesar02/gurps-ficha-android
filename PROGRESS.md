@@ -3046,6 +3046,15 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - **Recomendação registrada** (maior valor × menor custo): Ataque Telegráfico (par do Enganoso), luta agarrada profunda (chaves/Mata-Leão estendendo o lote 422), Sangramento Grave + incapacitação de membro (item 5 do teste de batalha), Ataque Dedicado/Defensivo. Fora de escopo: posicional/hexágono, montaria, cinematográfico, dado de arma do NPC. Mudança só de documentação (não compila Kotlin).
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
+### Lote MEC-37 — 20 de Julho de 2026 (P4: Lampejo em bandas + rider de ofuscamento)
+**Loop de magia, cada item seu lote — branch GURPS-Saga**
+- ✅ **P4**: o Lampejo agora aplica efeito **por banda de distância** ao centro do clarão: **≤10m** cega 3s + ofusca −3 por 60s; **11–25m** só ofusca −3 por 60s; **26m+** ofusca −3 por 3s. Estrutura `CondicaoBanda` (lista no schema, Gson-friendly) + `bandaPara`/`usaBandas`.
+- 🆕 **Mecânica nova reusável — o "ofuscamento"**: penalidade TEMPORÁRIA às perícias de combate (`penalidadeCombateTemp` + timer `penalidadeCombateSeg` no Combatente), entra nos ataques do herói e do NPC junto do CEGO, e **expira sozinha** no avanço de turno. Era o que faltava para o P4 — e é a mesma peça que o **P9** (Jatos: "−3 a todas as perícias de combate por 1d seg") vai reusar.
+- **+3 testes**: `bandaPara` escolhe a faixa certa; integração perto-cega-longe-só-ofusca; e o ofuscamento expira.
+- 🐛 **A regra da memória valeu**: escrevi um nome de teste com `;` (proibido em Kotlin) — o gate pegou, corrigido para "e".
+- 🟢 Gate: **782 testes, ZERO falhas**.
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
 ### Lote MEC-36 — 20 de Julho de 2026 (P8 degrau 2d-2 + P10 raio mínimo)
 **"faz P4, P8, P9, P10 num lote só" — mas P4 e P9 precisam de mecânica nova; este lote é P8+P10 — branch GURPS-Saga**
 - **Reescopo honesto na leitura**: os quatro não eram "pequenos" iguais. **P8** (degrau) e **P10** (raio mínimo) são limpos e completos. **P4** (Lampejo) precisa de um *rider* de **−3 na DX por 1 min** — penalidade de atributo temporária que **não existe** no motor. **P9** (Jatos) são `narrado`/`feixe` sem caminho de resolução; projeção ali é feature de ataque em feixe. Os dois viram lote próprio no loop, o que casa com o "cada um num lote" do usuário.

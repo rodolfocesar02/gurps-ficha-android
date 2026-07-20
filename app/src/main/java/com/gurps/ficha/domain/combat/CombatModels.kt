@@ -188,6 +188,13 @@ data class Combatente(
      * em vez de sair por tempo. `null` = nenhuma.
      */
     var escapeCondicao: EscapeCondicao? = null,
+    /**
+     * Lote MEC-37 (P4): penalidade TEMPORÁRIA às perícias de combate (o rider do Lampejo, "−3 a
+     * todas as perícias de combate", e dos Jatos). Positivo = quanto se subtrai. Cai a 0 pelo timer.
+     */
+    var penalidadeCombateTemp: Int = 0,
+    /** Segundos restantes do rider acima. */
+    var penalidadeCombateSeg: Int = 0,
     var defesasUsadas: DefesasUsadas = DefesasUsadas(),
     /** Lote 382: PV perdidos desde o último turno deste combatente → penalidade de Choque no próximo (MB p.419). */
     var choquePendente: Int = 0,

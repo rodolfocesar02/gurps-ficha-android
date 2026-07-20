@@ -1,6 +1,7 @@
 package com.gurps.ficha.domain.combat
 
 import com.gurps.ficha.domain.magic.ContextoConjuracao
+import com.gurps.ficha.domain.magic.CondicaoBanda
 import com.gurps.ficha.domain.magic.MagiaMecanica
 import com.gurps.ficha.domain.magic.MagicCasting
 import com.gurps.ficha.domain.magic.MagicClassParser
@@ -819,6 +820,53 @@ class MagicCombatTest {
     @Test
     fun `sem divisor (chuva, nuvem) NAO decai — dano ambiental atinge todos igual`() {
         assertEquals(20, MagicMechanics.danoDaExplosao(20, distanciaM = 5, divisorPorMetro = 0))
+    }
+
+    // ── Lote MEC-37 (P4): Lampejo em bandas de distância + rider de ofuscamento ─────────────────
+
+    @Test
+    fun `bandaPara escolhe a faixa certa por distancia (P4)`() {
+        val lampejo = MagiaMecanica(efeito = "condicao", condicaoBandas = listOf(
+            CondicaoBanda(ateM = 10, cegoSeg = 3, riderPenalidade = 3, riderSeg = 60),
+            CondicaoBanda(ateM = 25, riderPenalidade = 3, riderSeg = 60),
+            CondicaoBanda(ateM = 9999, riderPenalidade = 3, riderSeg = 3),
+        ))
+        assertEquals("a 5m: cega 3s", 3, MagicMechanics.bandaPara(lampejo, 5)!!.cegoSeg)
+        assertEquals("a 20m: não cega", 0, MagicMechanics.bandaPara(lampejo, 20)!!.cegoSeg)
+        assertEquals("a 20m: rider dura 60s", 60, MagicMechanics.bandaPara(lampejo, 20)!!.riderSeg)
+        assertEquals("a 40m: rider curto de 3s", 3, MagicMechanics.bandaPara(lampejo, 40)!!.riderSeg)
+    }
+
+    @Test
+    fun `Lampejo perto CEGA e OFUSCA e longe so ofusca (integracao)`() {
+        val lampejo = MagiaMecanica(efeito = "condicao", condicaoBandas = listOf(
+            CondicaoBanda(ateM = 10, cegoSeg = 3, riderPenalidade = 3, riderSeg = 60),
+            CondicaoBanda(ateM = 9999, riderPenalidade = 3, riderSeg = 3),
+        ))
+        val enc = CombatEncounter(
+            listOf(heroi(), goblin().copy(id = "perto"), goblin().copy(id = "longe")),
+            mapOf("perto" to 2, "longe" to 40), seed = 1L)
+        val s = CombatSession(enc, perfil(), Random(7))
+        val ctx = ContextoConjuracao(nhBasico = 25, classe = MagicClassParser.parse("Área"),
+            mana = NivelMana.NORMAL, mecanica = lampejo, raioAreaMetros = 60)
+        s.heroiConjurarArea(ctx, MagicEnergy.parse("1 a 20"), energiaInvestida = 4,
+            magiaNome = "Lampejo", alvosNaArea = listOf("perto", "longe"),
+            distanciaAoCentro = mapOf("perto" to 2, "longe" to 40))
+        val perto = s.encounter.combatentes.first { it.id == "perto" }
+        val longe = s.encounter.combatentes.first { it.id == "longe" }
+        assertTrue("o de perto tem que ficar cego", Condicao.CEGO in perto.condicoes)
+        assertTrue("e ofuscado", perto.penalidadeCombateTemp > 0)
+        assertFalse("o de longe NÃO cega", Condicao.CEGO in longe.condicoes)
+        assertTrue("mas fica ofuscado", longe.penalidadeCombateTemp > 0)
+    }
+
+    @Test
+    fun `o ofuscamento EXPIRA com o tempo`() {
+        val s = sessao(7)
+        s.heroi.penalidadeCombateTemp = 3
+        s.heroi.penalidadeCombateSeg = 3
+        repeat(10) { s.avancarTurno() }
+        assertEquals("depois do prazo, sem penalidade", 0, s.heroi.penalidadeCombateTemp)
     }
 
     // ── Lote MEC-36 (P8 degrau de custo dobrado + P10 raio mínimo) ──────────────────────────────

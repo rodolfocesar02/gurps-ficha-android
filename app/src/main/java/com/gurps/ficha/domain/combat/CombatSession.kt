@@ -611,6 +611,8 @@ class CombatSession(
             }
             // Cego (Lote COND-1, MB p.394): −4 para acertar (não vê o alvo).
             if (Condicao.CEGO in heroi.condicoes) add(CombatActions.ComponenteMod("cego", -4))
+            // Lote MEC-37 (P4): rider de ofuscamento (Lampejo/Jatos) — −N nas perícias de combate.
+            if (heroi.penalidadeCombateTemp > 0) add(CombatActions.ComponenteMod("ofuscado", -heroi.penalidadeCombateTemp))
             // MEC-2 — Nublar no ALVO (−1 a −5): vale para o herói também, não só contra ele.
             if (alvo.buffPenalidadeAtacantes > 0)
                 add(CombatActions.ComponenteMod("alvo nublado", -alvo.buffPenalidadeAtacantes))
@@ -1257,8 +1259,21 @@ class CombatSession(
                 else {
                     if (atingidos.isNotEmpty()) sb.append(" Atinge: ${atingidos.joinToString(", ") { it.nome }}.")
                     if (resistiram.isNotEmpty()) sb.append(" Resistiram: ${resistiram.joinToString(", ")}.")
+                    // Lote MEC-37 (P4): Lampejo — efeito em BANDAS por distância ao centro. Cada
+                    // atingido pega sua faixa (cegueira + ofuscamento −N por T segundos).
+                    if (com.gurps.ficha.domain.magic.MagicMechanics.usaBandas(ctx.mecanica) && atingidos.isNotEmpty()) {
+                        atingidos.forEach { a ->
+                            val dist = distanciaAoCentro[a.id] ?: 0
+                            val banda = com.gurps.ficha.domain.magic.MagicMechanics.bandaPara(ctx.mecanica, dist) ?: return@forEach
+                            if (banda.cegoSeg > 0) imporCondicaoMagica(a, "cego", sb, banda.cegoSeg)
+                            if (banda.riderPenalidade > 0 && banda.riderSeg > 0) {
+                                a.penalidadeCombateTemp = maxOf(a.penalidadeCombateTemp, banda.riderPenalidade)
+                                a.penalidadeCombateSeg = maxOf(a.penalidadeCombateSeg, banda.riderSeg)
+                                sb.append(" ${a.nome} fica ofuscado (−${banda.riderPenalidade} nas perícias de combate por ${banda.riderSeg}s).")
+                            }
+                        }
                     // Lote COND-1: magia de CONDIÇÃO em área (Sono coletivo etc.) — impõe em cada atingido.
-                    if (ctx.mecanica?.efeito == "condicao" && atingidos.isNotEmpty()) {
+                    } else if (ctx.mecanica?.efeito == "condicao" && atingidos.isNotEmpty()) {
                         atingidos.forEach { imporCondicaoMagica(it, ctx.mecanica.condicao, sb, com.gurps.ficha.domain.magic.MagicMechanics.duracaoCondicaoSeg(ctx.mecanica, energiaInvestida)) }
                     } else if ((ctx.danoPorEnergia || com.gurps.ficha.domain.magic.MagicMechanics.temDanoEstruturado(ctx.mecanica)) && atingidos.isNotEmpty()) {
                         val energia = energiaInvestida.coerceAtLeast(1)
@@ -2217,6 +2232,8 @@ class CombatSession(
             modsSituacionaisAtaque(npc.id).forEach { add(CombatActions.ComponenteMod(it.motivo, it.valor)) }
             // Cego (Lote COND-1, MB p.394): −4 para acertar (não vê o herói).
             if (Condicao.CEGO in npc.condicoes) add(CombatActions.ComponenteMod("cego", -4))
+            // Lote MEC-37 (P4): rider de ofuscamento.
+            if (npc.penalidadeCombateTemp > 0) add(CombatActions.ComponenteMod("ofuscado", -npc.penalidadeCombateTemp))
             // MEC-2 — Nublar (−1 a −5): a magia no HERÓI penaliza quem tenta acertá-lo.
             if (heroi.buffPenalidadeAtacantes > 0)
                 add(CombatActions.ComponenteMod("alvo nublado", -heroi.buffPenalidadeAtacantes))
@@ -2487,6 +2504,14 @@ class CombatSession(
         }
         // Lote MEC-17: condições com PRAZO correm o relógio quando o turno de quem as sofre termina
         // (1 turno = 1 segundo) e caem sozinhas ao zerar. Sem isto a Cegar era eterna.
+        // Lote MEC-37 (P4): o rider de ofuscamento corre o relógio junto (1 turno = 1 s) e some.
+        if (anterior.penalidadeCombateSeg > 0) {
+            anterior.penalidadeCombateSeg -= 1
+            if (anterior.penalidadeCombateSeg <= 0) {
+                anterior.penalidadeCombateTemp = 0
+                log += "• ${anterior.nome} recupera a mira (o ofuscamento passou)."
+            }
+        }
         anterior.condicoesTemporarias.entries.toList().forEach { (cond, resta) ->
             val novo = resta - 1
             if (novo > 0) anterior.condicoesTemporarias[cond] = novo

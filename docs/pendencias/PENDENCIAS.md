@@ -125,7 +125,7 @@ e com teste** desde antes.
 
 | # | O que falta | Afeta |
 |---|---|---|
-| P4 | Bandas de distância do **Lampejo** (≤10m / 11–25m / 26m+ com efeitos diferentes) | Lampejo |
+| P4 | ~~Bandas de distância do **Lampejo**~~ ✅ **FEITO (MEC-37)** — bandas + rider de ofuscamento (−N nas perícias de combate, com timer) — mecânica reusável nos Jatos (P9) | Lampejo |
 | P5 | **Respingo do Relâmpago Explosivo** — é `projetil` e o ramo acerta 1 alvo só | Relâmpago Explosivo |
 | P6 | **Precisão (Acc)** do projétil — só valeria com a manobra Apontar, que não existe no fluxo de conjuração | 12 magias de projétil |
 | P7 | **RD natural × armadura** do Toque Candente — o bestiário tem um campo `rd` único, sem separar | Toque Candente |

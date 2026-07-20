@@ -10955,7 +10955,27 @@
       "condicao": "cego",
       "condicaoResistencia": "HT",
       "condicaoRaioM": 10,
-      "notas": "Lampejo cegante: afeta quem encara de olhos abertos. Teste HT p/ evitar o pior. Dentro de 10m, falha=cego 3seg + 1min DX-3; 11-25m falha=1min DX-3; 26m+ falha=3seg DX-3. Sucesso reduz muito. Operador imune se fechar os olhos. Instantaneo."
+      "notas": "Lampejo cegante: afeta quem encara de olhos abertos. Teste HT p/ evitar o pior. Dentro de 10m, falha=cego 3seg + 1min DX-3; 11-25m falha=1min DX-3; 26m+ falha=3seg DX-3. Sucesso reduz muito. Operador imune se fechar os olhos. Instantaneo.",
+      "condicaoBandas": [
+        {
+          "ateM": 10,
+          "cegoSeg": 3,
+          "riderPenalidade": 3,
+          "riderSeg": 60
+        },
+        {
+          "ateM": 25,
+          "cegoSeg": 0,
+          "riderPenalidade": 3,
+          "riderSeg": 60
+        },
+        {
+          "ateM": 9999,
+          "cegoSeg": 0,
+          "riderPenalidade": 3,
+          "riderSeg": 3
+        }
+      ]
     }
   },
   {
