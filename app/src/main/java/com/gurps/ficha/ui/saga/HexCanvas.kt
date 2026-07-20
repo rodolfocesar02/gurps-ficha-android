@@ -492,7 +492,7 @@ private fun HexCanvasCombateReal(viewModel: FichaViewModel, modifier: Modifier =
                         else tokensInimigos[TokenImageStore.normalizarTipo(tipoDoId(t.id))]
                     if (imagem != null) desenharTokenImagem(cx, cy, hexSizePx, demoToken, selecionado, imagem)
                     else desenharToken(cx, cy, hexSizePx, demoToken, selecionado, textMeasurer)
-                    desenharBarraHpENome(cx, cy, hexSizePx, t.nome, t.pvPct, t.condicoesIcones, textMeasurer)
+                    desenharBarraHpENome(cx, cy, hexSizePx, t.nome, t.pvPct, t.condicoesIcones, textMeasurer, t.pfPct)
                 }
             }
         }
@@ -508,7 +508,13 @@ internal fun tipoDoId(id: String): String = id.replace(Regex("_\\d+$"), "")
  */
 internal fun DrawScope.desenharBarraHpENome(
     cx: Float, cy: Float, tam: Float, nome: String, pvPct: Float,
-    condicoesIcones: String, textMeasurer: TextMeasurer
+    condicoesIcones: String, textMeasurer: TextMeasurer,
+    /**
+     * Lote TOK-PF: fração de FADIGA — barra azul fina sob a de PV. `null` = não desenha (NPCs não
+     * rastreiam PF). Ficou visível porque a manutenção de mágica do MEC-22 drena PF por turno, e
+     * sem isto o jogador via o recurso sumir sem acompanhar.
+     */
+    pfPct: Float? = null,
 ) {
     val raio = tam * 0.62f
     val corHp = when {
@@ -535,6 +541,29 @@ internal fun DrawScope.desenharBarraHpENome(
             size = androidx.compose.ui.geometry.Size(larguraBarra * pct, alturaBarra),
             cornerRadius = canto
         )
+    }
+    // TOK-PF: barra de FADIGA, azul e mais fina, logo abaixo da de PV.
+    if (pfPct != null) {
+        val alturaPf = (alturaBarra * 0.6f).coerceAtLeast(3f)
+        val topoPf = topoBarra + alturaBarra + 2f
+        val cantoPf = androidx.compose.ui.geometry.CornerRadius(alturaPf / 2f)
+        drawRoundRect(
+            color = Color(0xAA10161F),
+            topLeft = Offset(cx - larguraBarra / 2f, topoPf),
+            size = androidx.compose.ui.geometry.Size(larguraBarra, alturaPf),
+            cornerRadius = cantoPf
+        )
+        val pctPf = pfPct.coerceIn(0f, 1f)
+        if (pctPf > 0f) {
+            // Azul cheio → âmbar quando a fadiga fica crítica (mesma gramática de cor da barra de PV).
+            val corPf = if (pctPf > 0.25f) Color(0xFF3B82F6) else Color(0xFFF59E0B)
+            drawRoundRect(
+                color = corPf,
+                topLeft = Offset(cx - larguraBarra / 2f, topoPf),
+                size = androidx.compose.ui.geometry.Size(larguraBarra * pctPf, alturaPf),
+                cornerRadius = cantoPf
+            )
+        }
     }
     // Condições (🩸💫🤼…) acima da barra. Sem .take() — cortaria um emoji composto (ZWJ/surrogate)
     // no meio; a string é curta e controlada pelo controller (máx ~5 ícones).

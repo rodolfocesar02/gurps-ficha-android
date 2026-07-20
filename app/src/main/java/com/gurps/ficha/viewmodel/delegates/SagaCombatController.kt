@@ -49,7 +49,9 @@ data class CombatenteUi(
     val condicoes: List<String>,
     val distanciaM: Int,
     val faixa: FaixaDistancia,
-    val vivo: Boolean
+    val vivo: Boolean,
+    /** Lote TOK-PF: fração de fadiga do HERÓI (null nos NPCs — o bestiário não rastreia PF). */
+    val pfPct: Float? = null,
 ) {
     val fracaoPv: Float get() = if (pvMax <= 0) 0f else (pvAtual.toFloat() / pvMax).coerceIn(0f, 1f)
     /** Frase única para o TalkBack: "Goblin, faixa Médio, 8 metros, em pé, ferido". */
@@ -63,6 +65,14 @@ data class CombatenteUi(
             fracaoPv < 1f -> "ferido"
             else -> "ileso"
         })
+        // Lote TOK-PF: a barra azul é só visual — o TalkBack precisa da fadiga em palavras.
+        if (ehHeroi && pfPct != null) {
+            append(", fadiga "); append(when {
+                pfPct <= 0.33f -> "quase esgotada"
+                pfPct < 1f -> "parcial"
+                else -> "cheia"
+            })
+        }
     }
 }
 
@@ -196,6 +206,11 @@ class SagaCombatController(
     data class TokenTatico(
         val id: String, val nome: String, val ehHeroi: Boolean,
         val pvPct: Float, val posicao: com.gurps.ficha.domain.combat.hex.HexCoord,
+        /**
+         * Lote TOK-PF: fração de PF (barra azul sob a de PV). **Só o herói** — o bestiário não
+         * rastreia fadiga de NPC, então mostrar barra neles seria inventar dado. `null` = sem barra.
+         */
+        val pfPct: Float? = null,
         val facing: com.gurps.ficha.domain.combat.hex.Direcao,
         /** Lote TOK-6b-1: condições como mini-ícones sobre a barra de HP (🩸💫🤼😮‍💨⬇). */
         val condicoesIcones: String = "",
@@ -217,6 +232,11 @@ class SagaCombatController(
             TokenTatico(
                 id = c.id, nome = c.nome, ehHeroi = c.ehHeroi,
                 pvPct = if (c.pvMax > 0) (c.pvAtual.toFloat() / c.pvMax).coerceIn(0f, 1f) else 0f,
+                // TOK-PF: o máximo vem da ficha (o Combatente não guarda pfMax).
+                pfPct = if (c.ehHeroi) {
+                    val max = viewModel.personagem.pontosFadiga
+                    if (max > 0) (c.pfAtual.toFloat() / max).coerceIn(0f, 1f) else null
+                } else null,
                 posicao = pos.posicao, facing = pos.facing,
                 condicoesIcones = icones,
             )
@@ -1624,7 +1644,9 @@ class SagaCombatController(
                 condicoes = c.condicoes.map { it.rotulo },
                 distanciaM = if (c.ehHeroi) 0 else dist,
                 faixa = if (c.ehHeroi) FaixaDistancia.ENGAJADO else FaixaDistancia.de(dist),
-                vivo = c.vivo
+                vivo = c.vivo,
+                pfPct = if (c.ehHeroi) viewModel.personagem.pontosFadiga
+                    .takeIf { it > 0 }?.let { (c.pfAtual.toFloat() / it).coerceIn(0f, 1f) } else null,
             )
         }
         val ataqueSel = ataques.getOrNull(ataqueSelecionado)

@@ -816,6 +816,27 @@ class MagicCombatTest {
         assertEquals(20, MagicMechanics.danoDaExplosao(20, distanciaM = 5, divisorPorMetro = 0))
     }
 
+    // ── Lote TOK-PF: a barra de fadiga precisa refletir a manutenção ────────────────────────────
+
+    @Test
+    fun `manter magia de tique DRENA PF do operador turno a turno`() {
+        // É o que a barra azul mostra. Se a manutenção não drenasse, a barra seria decorativa.
+        val s = (0L until 40L).map { seed ->
+            val x = sessao(seed, distGoblin = 1)
+            val ctx = ContextoConjuracao(nhBasico = 25, classe = MagicClassParser.parse("Toque"),
+                mana = NivelMana.NORMAL, mecanica = morteCandente(), tocando = true)
+            x.heroiConjurar(ctx, MagicEnergy.parse("3"), energiaInvestida = 3,
+                magiaNome = "Morte Candente", alvoId = null)
+            x.heroiEntregarToque("goblin")
+            x
+        }.first { it.magiasAtivas.any { m -> m.magiaId == "Morte Candente" } }
+
+        val pfDepoisDoLancamento = s.heroi.pfAtual
+        repeat(6) { s.avancarTurno() }
+        assertTrue("manter a mágica tem que consumir PF ao longo dos turnos",
+            s.heroi.pfAtual < pfDepoisDoLancamento)
+    }
+
     // ── Lote MEC-22: mágica que FERE A CADA TURNO (Morte Candente / Morte Putrefata) ────────────
 
     private fun morteCandente(criticoFixo: Int = 0) = MagiaMecanica(

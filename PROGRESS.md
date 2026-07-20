@@ -3046,6 +3046,16 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - **Recomendação registrada** (maior valor × menor custo): Ataque Telegráfico (par do Enganoso), luta agarrada profunda (chaves/Mata-Leão estendendo o lote 422), Sangramento Grave + incapacitação de membro (item 5 do teste de batalha), Ataque Dedicado/Defensivo. Fora de escopo: posicional/hexágono, montaria, cinematográfico, dado de arma do NPC. Mudança só de documentação (não compila Kotlin).
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
+### Lote TOK-PF — 18 de Julho de 2026 (barra azul de fadiga sobre o token)
+**"so temos barra de PV, podemos fazer uma barra Azul pra representar a de PF?" — branch GURPS-Saga**
+- **Motivo real**: o MEC-22 fez a manutenção de mágica drenar PF **por turno**. Sem barra, o jogador via o recurso sumir sem conseguir acompanhar — pedido veio direto do roteiro de teste.
+- **Implementado**: `pfPct` no `TokenTatico`, barra azul fina logo abaixo da de PV, com a mesma gramática de cor da de vida (azul → âmbar abaixo de 25%).
+- **Só o HERÓI tem barra.** O bestiário não rastreia fadiga de NPC — desenhar barra neles seria inventar dado. `pfPct = null` nos NPCs e nada é desenhado. O máximo vem da ficha (`personagem.pontosFadiga`), porque o `Combatente` só guarda `pfAtual`.
+- ♿ **A barra é só visual — o TalkBack precisava das palavras.** A variante **PraCego** perderia a informação, então a `descricaoAcessivel` ganhou "fadiga cheia / parcial / quase esgotada". Isso exigiu `pfPct` também no `CombatenteUi` (classe diferente do `TokenTatico`).
+- **+1 teste**: prova que manter a mágica de tique **drena PF turno a turno** — sem isso a barra seria decorativa.
+- 🟢 Gate: **756 testes, ZERO falhas** (o flaky do Nexus passou de novo — segue não-determinístico, não consertado).
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
 ### Lote MEC-22 — 18 de Julho de 2026 (motor de TIQUE por turno — a Morte Candente finalmente queima)
 **Escolhido com o usuário como "o melhor a implementar agora" — branch GURPS-Saga**
 - **A regra, literal**: *"Toda vez, a vítima deve fazer um teste de HT; em uma falha (crítica ou não), ele recebe 1d-1 de dano por fogo. Em um sucesso, ele não leva dano naquele turno; em um sucesso decisivo, a mágica está quebrada."* + *"Nem RD nem Resistência ao Fogo protegem"*. A Morte Putrefata troca o dado por **6 pontos** na falha crítica.
