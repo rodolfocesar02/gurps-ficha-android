@@ -211,6 +211,11 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
     /** Lote MA-5: mana ambiente da cena atual (setada pelo Narrador via definir_cena). Alimenta a conjuração. */
     var sagaNivelMana: com.gurps.ficha.domain.magic.NivelMana = com.gurps.ficha.domain.magic.NivelMana.NORMAL
     fun sagaCombateEntregarToque(alvoId: String) = sagaDelegate.combate.heroiEntregarToque(alvoId)   // Lote MA-3d-2
+    // Lote MEC-39 (P11): projétil carregado por vários turnos.
+    fun sagaCarregarProjetil(magiaId: String, energia: Int) = sagaDelegate.combate.carregarProjetil(magiaId, energia)
+    fun sagaAumentarProjetil(energia: Int) = sagaDelegate.combate.aumentarProjetil(energia)
+    fun sagaArremessarProjetil(alvoId: String) = sagaDelegate.combate.arremessarProjetil(alvoId)
+    fun sagaDissiparProjetil() = sagaDelegate.combate.dissiparProjetilCarregado()
     fun sagaCombateDissiparToque() = sagaDelegate.combate.heroiDissiparToque()                        // Lote MA-3d-2
     fun sagaCombateApontar(alvoId: String, firmado: Boolean = false) = sagaDelegate.combate.heroiApontar(alvoId, firmado)
     fun sagaCombateFogoRetencao() = sagaDelegate.combate.heroiFogoRetencao()

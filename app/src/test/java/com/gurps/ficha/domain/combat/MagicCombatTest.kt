@@ -822,6 +822,85 @@ class MagicCombatTest {
         assertEquals(20, MagicMechanics.danoDaExplosao(20, distanciaM = 5, divisorPorMetro = 0))
     }
 
+    // ── Lote MEC-39 (P11): projétil carregado por vários turnos + C1 (Vontade ao ser ferido) ────
+
+    private fun ctxProjetilDano() = ContextoConjuracao(
+        nhBasico = 25, classe = MagicClassParser.parse("Projétil"), mana = NivelMana.NORMAL,
+        distanciaMetros = 3, mecanica = MagiaMecanica(efeito = "dano", danoPorEnergia = "1d", energiaPorDado = 1))
+
+    @Test
+    fun `carregar cria o projetil na mao sem arremessar (P11)`() {
+        val s = sessao(7)
+        val r = s.heroiCarregarProjetil(ctxProjetilDano(), MagicEnergy.parse("Varia"),
+            energiaInicial = 2, magiaNome = "Bola de Fogo", tetoPorTurno = 4)
+        assertTrue(r.sucesso)
+        assertTrue("o projetil fica segurado", s.projetilCarregado != null)
+        assertEquals("com a energia inicial", 2, s.projetilCarregado!!.energiaAcumulada)
+    }
+
+    @Test
+    fun `aumentar soma energia ate o teto e no maximo 3 segundos`() {
+        val s = sessao(7)
+        s.heroiCarregarProjetil(ctxProjetilDano(), MagicEnergy.parse("Varia"), 2, "Bola de Fogo", tetoPorTurno = 4)
+        s.heroiAumentarProjetil(4) // 2s
+        s.heroiAumentarProjetil(4) // 3s
+        assertEquals("2 + 4 + 4", 10, s.projetilCarregado!!.energiaAcumulada)
+        val r4 = s.heroiAumentarProjetil(4) // tentaria 4s
+        assertFalse("nao pode passar de 3 segundos", r4.sucesso)
+        assertEquals("energia nao muda alem do 3o segundo", 10, s.projetilCarregado!!.energiaAcumulada)
+    }
+
+    @Test
+    fun `nao da para conjurar outra magia enquanto segura o projetil (C5-projetil)`() {
+        val s = sessao(7)
+        s.heroiCarregarProjetil(ctxProjetilDano(), MagicEnergy.parse("Varia"), 2, "Bola de Fogo", tetoPorTurno = 4)
+        val outra = ContextoConjuracao(nhBasico = 25, classe = MagicClassParser.parse("Comum"), mana = NivelMana.NORMAL)
+        val r = s.heroiConjurar(outra, MagicEnergy.parse("2"), 2, "Outra", alvoId = "goblin")
+        assertFalse("segurando projetil nao conjura", r.sucesso)
+        assertTrue(r.texto.contains("segurando"))
+    }
+
+    @Test
+    fun `arremessar consome o projetil e resolve o ataque`() {
+        val s = sessao(7, distGoblin = 3)
+        s.heroiCarregarProjetil(ctxProjetilDano(), MagicEnergy.parse("Varia"), 3, "Bola de Fogo", tetoPorTurno = 4)
+        s.heroiArremessarProjetil("goblin")
+        assertTrue("a mao fica livre depois de arremessar", s.projetilCarregado == null)
+        assertTrue(s.log.any { it.contains("arremessa Bola de Fogo") })
+    }
+
+    @Test
+    fun `dissipar solta o projetil sem efeito (acao livre)`() {
+        val s = sessao(7)
+        s.heroiCarregarProjetil(ctxProjetilDano(), MagicEnergy.parse("Varia"), 2, "Bola de Fogo", tetoPorTurno = 4)
+        s.dissiparProjetil()
+        assertTrue(s.projetilCarregado == null)
+    }
+
+    @Test
+    fun `C1 ferido segurando projetil testa Vontade e pode dispara-lo em si (Magia p12)`() {
+        // Segura o projetil, marca lesao (choquePendente) e avanca o turno do heroi.
+        var explodiuAlguma = false
+        for (seed in 0L until 60L) {
+            val s = sessao(seed, distGoblin = 3)
+            s.heroiCarregarProjetil(ctxProjetilDano(), MagicEnergy.parse("Varia"), 3, "Bola de Fogo", tetoPorTurno = 4)
+            s.heroi.choquePendente = 5 // sofreu lesao
+            s.avancarTurno()
+            if (s.log.any { it.contains("dispara em VOCÊ") }) { explodiuAlguma = true; break }
+        }
+        assertTrue("em 60 tentativas, alguma falha de Vontade tem que fazer o projetil disparar no heroi",
+            explodiuAlguma)
+    }
+
+    @Test
+    fun `sem lesao o projetil segurado NAO dispara sozinho`() {
+        val s = sessao(7)
+        s.heroiCarregarProjetil(ctxProjetilDano(), MagicEnergy.parse("Varia"), 3, "Bola de Fogo", tetoPorTurno = 4)
+        s.heroi.choquePendente = 0
+        repeat(4) { s.avancarTurno(); s.heroi.choquePendente = 0 }
+        assertTrue("sem dano, o teste de Vontade nem acontece", s.log.none { it.contains("dispara em VOCÊ") })
+    }
+
     // ── Lote MEC-38 (P7): Toque Candente — armadura não protege, RD natural sim ─────────────────
 
     @Test

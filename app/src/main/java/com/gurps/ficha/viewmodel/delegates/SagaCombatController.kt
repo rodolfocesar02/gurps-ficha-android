@@ -139,6 +139,10 @@ data class CombatUiState(
     val conjurando: ConjurandoUi? = null,
     /** Lote MA-3d-2: nome da mágica de Toque carregada na mão (null se nenhuma). */
     val toqueCarregado: String? = null,
+    /** Lote MEC-39 (P11): rótulo do projétil segurado ("Bola de Fogo · 5 en · 2/3s"), null se nenhum. */
+    val projetilCarregado: String? = null,
+    /** Lote MEC-39 (P11): Aptidão Mágica do herói — teto de energia por turno ao aumentar o projétil. */
+    val aptidaoMagica: Int = 1,
     /** Lote MA-3d-4: mágicas ativas no combate ("Escudo (58s)") — manutenção cobrada por turno. */
     val magiasAtivas: List<String> = emptyList(),
     val alvos: List<CombatenteUi>,
@@ -1057,6 +1061,43 @@ class SagaCombatController(
         depoisDaAcaoDoHeroi()
     }
 
+    // ── Lote MEC-39 (P11): projétil carregado por vários turnos ──────────────────────────────────
+
+    /** Cria um projétil e o SEGURA na mão (em vez de arremessar no mesmo turno). */
+    fun carregarProjetil(magiaId: String, energiaInvestida: Int) {
+        val s = sessao ?: return
+        if (!s.combatenteAtual().ehHeroi || s.encerrado) return
+        val p = viewModel.personagem
+        val magia = p.magias.firstOrNull { it.definicaoId == magiaId || it.nome == magiaId } ?: return
+        val aptidao = MagicEngine.getNivelAptidaoMagicaParaMagia(p, null)
+        val def = context?.let { c -> runCatching { com.gurps.ficha.data.DataRepository.getInstance(c).getMagiaPorId(magia.definicaoId) }.getOrNull() }
+        val ctx = ContextoConjuracao(
+            nhBasico = magia.calcularNivel(p, aptidao), classe = MagicClassParser.parse(magia.classe),
+            mana = viewModel.sagaNivelMana, distanciaMetros = 0, tocando = false, veOuToca = true,
+            mecanica = def?.mecanica, danoPorEnergia = true,
+            resumoEfeito = resumoDaDescricao(def?.descricao ?: magia.texto),
+        )
+        s.heroiCarregarProjetil(ctx, custoCanonico(def) ?: MagicEnergy.parse(magia.energia),
+            energiaInvestida, magia.nome, tetoPorTurno = aptidao.coerceAtLeast(1))
+        sincronizarRecursosHeroi(s); depoisDaAcaoDoHeroi()
+    }
+
+    fun aumentarProjetil(energiaExtra: Int) {
+        val s = sessao ?: return
+        s.heroiAumentarProjetil(energiaExtra); sincronizarRecursosHeroi(s); depoisDaAcaoDoHeroi()
+    }
+
+    fun arremessarProjetil(alvoId: String) {
+        val s = sessao ?: return
+        s.heroiArremessarProjetil(alvoId); sincronizarRecursosHeroi(s); depoisDaAcaoDoHeroi()
+    }
+
+    /** Ação livre — não consome o turno. */
+    fun dissiparProjetilCarregado() {
+        val s = sessao ?: return
+        s.dissiparProjetil(); publicarLog(); atualizarEstado()
+    }
+
     /** Lote MA-3d-4: após uma conjuração bem-sucedida de magia com DURAÇÃO, registra-a como ativa (tick de manutenção). */
     private fun registrarSeMagiaAtiva(
         s: CombatSession, magia: com.gurps.ficha.model.MagiaSelecionada,
@@ -1759,6 +1800,8 @@ class SagaCombatController(
             magiasConjuraveis = montarMagiasConjuraveis(s, vezHeroi),
             conjurando = s.conjuracaoEmAndamento?.let { ConjurandoUi(it.nome, it.turnosRestantes) },
             toqueCarregado = s.toqueCarregado?.nome,
+            projetilCarregado = s.projetilCarregado?.let { "${it.nome} · ${it.energiaAcumulada} en · ${it.turnosConcentrado}/${CombatSession.MAX_TURNOS_PROJETIL}s" },
+            aptidaoMagica = MagicEngine.getNivelAptidaoMagicaParaMagia(viewModel.personagem, null).coerceAtLeast(1),
             magiasAtivas = s.magiasAtivas.map { m ->
                 m.magiaId + if (m.duracao == com.gurps.ficha.domain.magic.TipoDuracao.TEMPORARIA) " (${m.segundosParaProximaCobranca}s)" else ""
             },

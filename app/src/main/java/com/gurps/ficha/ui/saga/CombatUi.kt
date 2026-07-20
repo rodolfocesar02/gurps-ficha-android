@@ -1352,6 +1352,39 @@ fun MenuTaticoDoToken(
                         modifier = Modifier.padding(horizontal = 10.dp, vertical = 8.dp))
                 }
             }
+            // Lote MEC-39 (P11): projétil CARREGADO — arremessar num inimigo (menu do inimigo);
+            // aumentar/dissipar (menu do herói).
+            if (!ehHeroi && estado.projetilCarregado != null && alvo != null) {
+                Surface(
+                    onClick = { viewModel.sagaArremessarProjetil(tokenId); onFechar() },
+                    color = Color(0x334FC3F7), contentColor = Color.White, shape = RoundedCornerShape(14.dp),
+                    modifier = Modifier.padding(horizontal = 3.dp)
+                        .semantics { contentDescription = "Arremessar o projétil em ${alvo.nome}" }
+                ) {
+                    Text("🔥 Arremessar", style = MaterialTheme.typography.labelMedium,
+                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 8.dp))
+                }
+            }
+            if (ehHeroi && estado.projetilCarregado != null) {
+                Surface(
+                    onClick = { viewModel.sagaAumentarProjetil(estado.aptidaoMagica.coerceAtLeast(1)); onFechar() },
+                    color = Color(0x334FC3F7), contentColor = Color.White, shape = RoundedCornerShape(14.dp),
+                    modifier = Modifier.padding(horizontal = 3.dp)
+                        .semantics { contentDescription = "Aumentar o projétil ${estado.projetilCarregado}" }
+                ) {
+                    Text("🔮 Aumentar", style = MaterialTheme.typography.labelMedium,
+                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 8.dp))
+                }
+                Surface(
+                    onClick = { viewModel.sagaDissiparProjetil(); onFechar() },
+                    color = Color(0x334FC3F7), contentColor = Color.White, shape = RoundedCornerShape(14.dp),
+                    modifier = Modifier.padding(horizontal = 3.dp)
+                        .semantics { contentDescription = "Dissipar o projétil" }
+                ) {
+                    Text("💨 Dissipar", style = MaterialTheme.typography.labelMedium,
+                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 8.dp))
+                }
+            }
             // Lote MA-3a: chip 🔮 Conjurar — só no herói e só se ele conhece magias.
             if (ehHeroi && estado.magiasConjuraveis.isNotEmpty()) {
                 Surface(
@@ -1460,6 +1493,9 @@ fun MenuTaticoDoToken(
             onConjurar = { magiaId, alvoId, energia, pvQueimar, causaDano ->
                 viewModel.sagaCombateConjurar(magiaId, alvoId, energia, pvQueimar, causaDano); conjurarDialogo = false; onFechar()
             },
+            onCarregarProjetil = { magiaId, energia ->
+                viewModel.sagaCarregarProjetil(magiaId, energia); conjurarDialogo = false; onFechar()
+            },
             onMirarArea = { magiaId, raio, energia, pvQueimar, causaDano ->
                 viewModel.sagaIniciarMiraArea(magiaId, raio, energia, pvQueimar, causaDano); conjurarDialogo = false; onFechar()
             },
@@ -1486,6 +1522,7 @@ private fun SubDialogoConjurar(
     magias: List<com.gurps.ficha.viewmodel.delegates.MagiaConjuravelUi>,
     inimigos: List<CombatenteUi>,
     onConjurar: (magiaId: String, alvoId: String?, energia: Int, pvQueimar: Int, causaDano: Boolean) -> Unit,
+    onCarregarProjetil: (magiaId: String, energia: Int) -> Unit = { _, _ -> },
     onMirarArea: (magiaId: String, raio: Int, energia: Int, pvQueimar: Int, causaDano: Boolean) -> Unit,
     onFechar: () -> Unit,
 ) {
@@ -1680,7 +1717,18 @@ private fun SubDialogoConjurar(
             ) { Text(when { ehArea -> "Mirar no grid"; sel.ehToque -> "Carregar na mão"; else -> "Conjurar" }) }
         },
         // "Voltar" à lista em vez de fechar tudo — errar a magia não custa recomeçar a conjuração.
-        dismissButton = { TextButton(onClick = { magiaSel = null }) { Text("Voltar") } }
+        dismissButton = {
+            Row {
+                // Lote MEC-39 (P11): projétil pode ser SEGURADO em vez de arremessado, para aumentar
+                // por turnos (Magia p.12).
+                if (sel.ehProjetil) {
+                    TextButton(onClick = { onCarregarProjetil(sel.id, energia) }, enabled = sel.castavel) {
+                        Text("Segurar")
+                    }
+                }
+                TextButton(onClick = { magiaSel = null }) { Text("Voltar") }
+            }
+        }
     )
 }
 

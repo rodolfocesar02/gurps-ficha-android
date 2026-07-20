@@ -99,7 +99,7 @@ Achados que ninguém tinha registrado antes:
 
 | # | Regra que falta | Por que importa |
 |---|---|---|
-| C1 | ⛔ **BLOQUEADA** — *"teste de Vontade ao ser ferido sustentando um projétil"*. **Não tem quando disparar**: o motor conjura e arremessa o projétil no MESMO turno; nunca existe projétil sustentado. Depende do deferido **"Projétil carregado em vários turnos"**. Implementar hoje seria código morto. | — |
+| C1 | ~~**Vontade ao ser ferido sustentando projétil**~~ ✅ **FEITO (MEC-39)** — destravou com o P11: ferido segurando o projétil, testa Vontade; falha → ele dispara no próprio herói. Usa o sinal `choquePendente` do MEC-26. | — |
 | C2 | ~~**Só UMA mágica de Bloqueio por turno**~~ ✅ **FEITO (Lote MEC-27)** | — |
 | C3 | ✅ **já correto no resultado** (o crítico anula toda a defesa). 🟡 Resta só o jogador poder **gastar PF** escolhendo bloqueio num crítico que já ia passar — desperdício, não erro de regra. | — |
 | C4 | ~~**Vontade−3 ao ser ferido/atordoado mantendo mágica de concentração**~~ ✅ **FEITO (Lote MEC-26)** — fracasso congela o tique do turno, falha crítica desfaz a mágica | — |
@@ -127,12 +127,12 @@ e com teste** desde antes.
 |---|---|---|
 | P4 | ~~Bandas de distância do **Lampejo**~~ ✅ **FEITO (MEC-37)** — bandas + rider de ofuscamento (−N nas perícias de combate, com timer) — mecânica reusável nos Jatos (P9) | Lampejo |
 | P5 | 🔴 **precisa de projétil-contra-HEX** — o ramo de projétil resolve contra 1 combatente; para espalhar a explosão do ponto de impacto ele teria de mirar um hex e varrer os vizinhos (metade do trabalho do MEC-14 de área, do lado do projétil). Feature, não ajuste. | Relâmpago Explosivo |
-| P6 | ⛔ **BLOQUEADO por P11** — a Precisão só entra com a manobra **Apontar**, que exige o projétil poder ser **sustentado entre turnos**. Sem P11, não há onde a Prec somar. | 12 projéteis |
+| P6 | 🟡 **DESBLOQUEADO pelo P11** (o projétil já pode ser sustentado). Falta: enquanto segura, a manobra **Apontar** soma a Precisão da magia no arremesso. Motor + UI pequenos. | 12 projéteis |
 | P7 | ~~**RD natural × armadura** do Toque Candente~~ ✅ **FEITO (MEC-38)** — campo `rdNatural` no bestiário + `armadura: "ignora_vestida"` → ignora a vestida, natural protege | Toque Candente |
 | P8 | ~~Degrau de custo dobrado (2d-2)~~ ✅ **FEITO (MEC-36)** — `danoDeAreaComDegrau`; limiar = custo-base 2 dobrado. O payoff pleno é o tique por segundo (P1b). | Chuva de Fogo/Pedras |
 | P9 | 🔴 **precisa de resolução de FEIXE** — os Jatos são `narrado`/`feixe` e não têm caminho de acerto/dano no motor. Projeção (knockback) reusaria o Empurrão existente, mas o feixe em si (teste DX-4, esquiva/bloqueio) é ataque novo. A parte do Géiser (empurra + DX-5) mora no P1b (zona). | Jatos, Géiser |
 | P10 | ~~Raio mínimo de 2m~~ ✅ **FEITO (MEC-36)** — `raioEfetivo`; a mira eleva o raio ao mínimo | Nuvem de Faíscas, Sono Coletivo |
-| P11 | 🔴 **feature grande — o keystone.** Projétil sustentado por 1–3 turnos (concentrar, investir energia por turno, segurar/mirar/atacar, Vontade ao ser ferido). Máquina de estados nova no fluxo de conjuração + escolhas turno-a-turno na UI (logo, **para para teste**). Destrava C1 e P6. **Cerimonial foi VETADO pelo usuário** (interpretativo, fora de combate). | Projéteis |
+| P11 | ~~**Projétil carregado em vários turnos**~~ ✅ **FEITO (MEC-39)** — carregar/aumentar (até 3s, +Aptidão/turno)/arremessar/dissipar, aditivo ao one-shot. UI: botão "Segurar" no diálogo + chips Arremessar/Aumentar/Dissipar no token. **Cerimonial VETADO pelo usuário.** ⚠️ PARA para teste no aparelho (UI). |
 | P12 | 🟡 **é UI** — a conjuração só existe no grid tático; levá-la ao modo de faixas é montar o seletor de magia lá. Lote de UI → **para para teste no aparelho**. | combate sem grade |
 
 ### 2.3 Combate — "fora do escopo" cuja justificativa CADUCOU

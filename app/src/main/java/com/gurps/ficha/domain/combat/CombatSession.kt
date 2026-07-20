@@ -1021,6 +1021,14 @@ class CombatSession(
             log += msg
             return ResultadoConjuracaoCombate(false, msg)
         }
+        // Lote MEC-39 (P11): idem enquanto SEGURA um projétil — "não poderá fazer outra operação
+        // mágica enquanto segurar o projétil" (Magia p.12).
+        projetilCarregado?.let { p ->
+            val msg = "✋ Você está segurando ${p.nome} — não dá para conjurar outra mágica. " +
+                "Arremesse, aumente ou dissipe (ação livre)."
+            log += msg
+            return ResultadoConjuracaoCombate(false, msg)
+        }
         // Lote COND-1: silenciado não conjura (o ritual mágico exige fala, Magia p.8).
         if (Condicao.SILENCIADO in heroi.condicoes) {
             val t = "🤐 Você está SILENCIADO — não consegue conjurar $magiaNome (o ritual exige fala)."
@@ -1169,23 +1177,8 @@ class CombatSession(
                         imporCondicaoMagica(alvo, mec.condicao, sb, com.gurps.ficha.domain.magic.MagicMechanics.duracaoCondicaoSeg(mec, energiaInvestida), escapeDaMecanica(mec, energiaInvestida))
                     }
                 } else if (!alvoResistiu && TipoClasseMagia.PROJETIL in ctx.classe.classes && alvo != null) {
-                    val energia = energiaInvestida.coerceAtLeast(1)
-                    // 2º teste (Magia p.12): Ataque Inato para ACERTAR (aprox. DX + SSR de distância).
-                    val nhAcerto = heroiPerfil.dx + penalidadeDistancia(ctx.distanciaMetros)
-                    val rolAcerto = rolar3d6()
-                    if (rolAcerto > nhAcerto) {
-                        sb.append(" O projétil passa longe (Ataque Inato NH $nhAcerto, rolou $rolAcerto).")
-                    } else {
-                        // O alvo pode ESQUIVAR (ou bloquear), NUNCA aparar (Magia p.12).
-                        val esq = esquivaNpc(alvo)
-                        if (npcSeDefendeu(esq, rolar3d6())) {
-                            sb.append(" ${alvo.nome} ESQUIVA do projétil (Esquiva $esq).")
-                        } else {
-                            sb.append(" Projétil acerta —")
-                            // MEC-15: a distância entra aqui para o 1/2D.
-                            dano = aplicarDanoMagico(alvo, energia, ctx.mecanica, sb, ctx.distanciaMetros) // AR-1: dado curado ou 1d/energia
-                        }
-                    }
+                    // One-shot: conjura e arremessa no mesmo turno (o caso de "1 segundo").
+                    dano = resolverArremessoProjetil(alvo, energiaInvestida.coerceAtLeast(1), ctx, sb)
                 } else if (!alvoResistiu && alvo != null &&
                     (ctx.danoPorEnergia || com.gurps.ficha.domain.magic.MagicMechanics.temDanoEstruturado(ctx.mecanica))) {
                     // Lote MA-6/AR-1: magia de dano DIRETA (não-Projétil) — funciona no sucesso (sem teste
@@ -1314,6 +1307,115 @@ class CombatSession(
                 return ResultadoConjuracaoCombate(true, sb.toString().trim())
             }
         }
+    }
+
+    /**
+     * Lote MEC-39 (P11): resolução do ARREMESSO de um projétil mágico (Magia p.12): teste de Ataque
+     * Inato para acertar (aprox. DX + SSR de distância), o alvo ESQUIVA ou bloqueia mas NUNCA apara,
+     * e no acerto aplica o dano (1/2D pela distância). Reusado pelo one-shot e pelo projétil carregado.
+     */
+    private fun resolverArremessoProjetil(
+        alvo: Combatente, energia: Int, ctx: ContextoConjuracao, sb: StringBuilder,
+    ): Int {
+        val nhAcerto = heroiPerfil.dx + penalidadeDistancia(ctx.distanciaMetros)
+        val rolAcerto = rolar3d6()
+        if (rolAcerto > nhAcerto) {
+            sb.append(" O projétil passa longe (Ataque Inato NH $nhAcerto, rolou $rolAcerto).")
+            return 0
+        }
+        val esq = esquivaNpc(alvo)
+        if (npcSeDefendeu(esq, rolar3d6())) {
+            sb.append(" ${alvo.nome} ESQUIVA do projétil (Esquiva $esq).")
+            return 0
+        }
+        sb.append(" Projétil acerta —")
+        return aplicarDanoMagico(alvo, energia, ctx.mecanica, sb, ctx.distanciaMetros)
+    }
+
+    // ── Lote MEC-39 (P11): projétil CARREGADO por vários turnos (Magia p.12) ─────────────────────
+
+    /**
+     * Um projétil mágico "segurado" na mão entre turnos. [energiaAcumulada] cresce a cada Aumentar
+     * (máx. [tetoPorTurno] = Aptidão Mágica por segundo), até [MAX_TURNOS_PROJETIL] segundos.
+     */
+    data class ProjetilCarregado(
+        val nome: String,
+        val ctx: ContextoConjuracao,
+        val nhEfetivoCast: Int,
+        var energiaAcumulada: Int,
+        var turnosConcentrado: Int,
+        val tetoPorTurno: Int,
+    )
+
+    var projetilCarregado: ProjetilCarregado? = null; private set
+
+    /**
+     * Cria o projétil e o SEGURA na mão (não arremessa) — Magia p.12. O turno inicial já é a 1ª
+     * concentração. Enquanto segura, o operador não pode conjurar outra mágica (a guarda no topo de
+     * [heroiConjurar] cuida disso). Consome a ação como uma Concentração.
+     */
+    fun heroiCarregarProjetil(
+        ctx: ContextoConjuracao, custo: CustoEnergia, energiaInicial: Int, magiaNome: String, tetoPorTurno: Int,
+    ): ResultadoConjuracaoCombate {
+        inicioAcaoHeroi(); limparAvaliar(); limparApontar(); limparFinta()
+        if (projetilCarregado != null || toqueCarregado != null) {
+            val t = "✋ Você já está segurando uma mágica — não dá para criar outra."
+            log += t; return ResultadoConjuracaoCombate(false, t)
+        }
+        val nhEf = MagicCasting.nhEfetivo(ctx)
+        val custoTotal = MagicCasting.custoTotal(ctx, custo, energiaInicial.takeIf { custo.variavel })
+        val rol = rolar3d6()
+        val r = MagicCasting.resolver(nhEf.valor, rol, custoTotal, ctx.classe, rolagemChoqueRetorno3d = rolar3d6())
+        heroi.pfAtual = (heroi.pfAtual - r.custoAPagar).coerceAtLeast(0)
+        if (r.resultado == ResultadoOperacao.FALHA_CRITICA) {
+            val sb = StringBuilder("💥 CHOQUE DE RETORNO ao criar $magiaNome! (NH ${nhEf.valor}, rolou $rol) ")
+            aplicarChoqueRetorno(r.choqueRetorno, sb); verificarFim(); log += sb.toString().trim()
+            return ResultadoConjuracaoCombate(false, sb.toString().trim())
+        }
+        if (r.resultado == ResultadoOperacao.FRACASSO) {
+            val t = "✨ Você falha ao criar $magiaNome (NH ${nhEf.valor}, rolou $rol). Perde ${r.custoAPagar} PF."
+            log += t; return ResultadoConjuracaoCombate(false, t)
+        }
+        val energia = energiaInicial.coerceIn(1, tetoPorTurno.coerceAtLeast(1))
+        projetilCarregado = ProjetilCarregado(magiaNome, ctx, nhEf.valor, energia, 1, tetoPorTurno.coerceAtLeast(1))
+        val t = "🔮 $magiaNome cresce na sua mão ($energia de energia; máx +${tetoPorTurno} por turno). " +
+            "Arremesse, aumente (até ${MAX_TURNOS_PROJETIL}s) ou segure."
+        log += t; return ResultadoConjuracaoCombate(true, t)
+    }
+
+    /** Aumenta o projétil segurado: +energia (sem teste), até o teto por turno e o máximo de segundos. */
+    fun heroiAumentarProjetil(energiaExtra: Int): ResultadoConjuracaoCombate {
+        inicioAcaoHeroi()
+        val p = projetilCarregado ?: return ResultadoConjuracaoCombate(false, "Nenhum projétil na mão.")
+        if (p.turnosConcentrado >= MAX_TURNOS_PROJETIL) {
+            val t = "Você não pode passar de ${MAX_TURNOS_PROJETIL}s criando o projétil — arremesse ou segure."
+            log += t; return ResultadoConjuracaoCombate(false, t)
+        }
+        val extra = energiaExtra.coerceIn(1, p.tetoPorTurno)
+        p.energiaAcumulada += extra; p.turnosConcentrado += 1
+        heroi.pfAtual = (heroi.pfAtual - extra).coerceAtLeast(0)
+        val t = "🔮 ${p.nome} cresce mais (+$extra → ${p.energiaAcumulada} de energia; ${p.turnosConcentrado}/${MAX_TURNOS_PROJETIL}s)."
+        log += t; verificarFim(); return ResultadoConjuracaoCombate(true, t)
+    }
+
+    /** Arremessa o projétil segurado num alvo. Consome o turno como um ataque à distância. */
+    fun heroiArremessarProjetil(alvoId: String): ResultadoConjuracaoCombate {
+        inicioAcaoHeroi(); limparAvaliar(); limparApontar(); limparFinta()
+        val p = projetilCarregado ?: return ResultadoConjuracaoCombate(false, "Nenhum projétil na mão.")
+        val alvo = inimigos.firstOrNull { it.id == alvoId && it.vivo }
+            ?: return ResultadoConjuracaoCombate(false, "Alvo inválido.").also { log += it.texto }
+        projetilCarregado = null
+        val sb = StringBuilder("🔥 Você arremessa ${p.nome} em ${alvo.nome} (${p.energiaAcumulada} de energia).")
+        val dano = resolverArremessoProjetil(alvo, p.energiaAcumulada, p.ctx, sb)
+        verificarFim(); log += sb.toString().trim()
+        return ResultadoConjuracaoCombate(true, sb.toString().trim(), dano)
+    }
+
+    /** Dissipa o projétil segurado (ação livre; Magia p.14). */
+    fun dissiparProjetil() {
+        val p = projetilCarregado ?: return
+        projetilCarregado = null
+        log += "✋ Você deixa ${p.nome} se dissipar sem arremessar."
     }
 
     /**
@@ -2540,6 +2642,26 @@ class CombatSession(
         encounter.combatentes.filter { Condicao.DORMINDO in it.condicoes && it.choquePendente > 0 }.forEach {
             it.condicoes.remove(Condicao.DORMINDO); log += "• ${it.nome} ACORDA com o golpe."
         }
+        // Lote MEC-39 (C1, Magia p.12): se o herói SEGURA um projétil e sofreu lesão desde o próprio
+        // turno anterior, testa Vontade — falhando, *"o projétil irá afetá-lo imediatamente!"*.
+        // Usa o mesmo sinal de lesão (`choquePendente`) do abalo de concentração, e ANTES do reset.
+        if (anterior.ehHeroi && projetilCarregado != null && anterior.choquePendente > 0) {
+            val p = projetilCarregado!!
+            val rol = rolar3d6()
+            if (rol <= heroiPerfil.vontade) {
+                log += "🔮 Ferido, você segura firme ${p.nome} (Vontade ${heroiPerfil.vontade}, rolou $rol)."
+            } else {
+                projetilCarregado = null
+                val expr = com.gurps.ficha.domain.magic.MagicMechanics.expandirDano(
+                    p.ctx.mecanica?.danoPorEnergia ?: "1d", p.energiaAcumulada,
+                    p.ctx.mecanica?.energiaPorDado ?: 1, p.ctx.mecanica?.danoFixo ?: false)
+                val bruto = rolarDano(expr, random)
+                val dn = HitLocationRules.aplicarDano(heroi.pvMax, bruto, DanoTipo.CONT, LocalAtaque.TORSO, heroiPerfil.rd)
+                InjuryRules.ferir(heroi, dn.pvSubtrair, heroiPerfil.ht, random)
+                log += "💥 Ferido, você PERDE o controle de ${p.nome} (Vontade ${heroiPerfil.vontade}, rolou $rol) — " +
+                    "ela dispara em VOCÊ: $expr → ${dn.pvSubtrair} de dano!" + (if (!heroi.vivo) " Você cai!" else "")
+            }
+        }
         // Lote MEC-26 (C4): o abalo de concentração precisa rodar ANTES do reset do choque logo
         // abaixo — senão o gatilho "sofreu uma lesão" já foi apagado e o teste nunca dispara.
         // (Foi exatamente esse o bug: o teste ficava vermelho porque eu chequei tarde demais.)
@@ -2813,6 +2935,8 @@ class CombatSession(
     }
 
     companion object {
+        /** Lote MEC-39 (P11): máximo de segundos criando/aumentando um projétil (Magia p.12). */
+        const val MAX_TURNOS_PROJETIL = 3
         /** A partir desta distância um NPC em fuga é considerado fora do encontro. */
         const val FUGA_METROS = 20
 

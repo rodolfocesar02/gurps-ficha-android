@@ -3046,6 +3046,20 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - **Recomendação registrada** (maior valor × menor custo): Ataque Telegráfico (par do Enganoso), luta agarrada profunda (chaves/Mata-Leão estendendo o lote 422), Sangramento Grave + incapacitação de membro (item 5 do teste de batalha), Ataque Dedicado/Defensivo. Fora de escopo: posicional/hexágono, montaria, cinematográfico, dado de arma do NPC. Mudança só de documentação (não compila Kotlin).
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
+### Lote MEC-39 — 20 de Julho de 2026 (P11: projétil multi-turno — a feature keystone + C1 de brinde)
+**"faz o P11!" — branch GURPS-Saga**
+- ✅ **P11**: o projétil mágico agora pode ser **SEGURADO na mão entre turnos** (Magia p.12). `heroiCarregarProjetil` (cria e segura, sem arremessar), `heroiAumentarProjetil` (+energia sem teste, até **Aptidão/turno** e no máx. **3 segundos**), `heroiArremessarProjetil` (resolve o Ataque Inato/esquiva/dano), `dissiparProjetil` (ação livre).
+- 🧱 **Feito ADITIVO — o one-shot que o usuário testou não foi tocado.** Extraí a resolução do arremesso para `resolverArremessoProjetil`, reusado pelos dois caminhos. Zero regressão no projétil de um turno.
+- ✅ **C1 destravada de brinde**: *"se sofrer uma lesão enquanto sustenta o projétil, teste de Vontade; falha → o projétil o afeta imediatamente"*. Reusa o sinal `choquePendente` do MEC-26, no avanço do turno. Era ⛔ bloqueada há vários lotes justamente por falta do P11.
+- 🔒 **Guarda C5 estendida**: não conjura outra mágica enquanto segura o projétil (como no toque).
+- **UI**: botão **"Segurar"** no diálogo de conjurar do projétil (ao lado de "Conjurar"); chips **Arremessar** (no token inimigo), **Aumentar** e **Dissipar** (no token do herói); rótulo do projétil no estado ("Bola de Fogo · 5 en · 2/3s").
+- 🐛 **Bug estrutural pego pelo compilador**: inseri um `companion object` novo no meio da classe, mas ela já tinha um — cascata de "unresolved" pela classe inteira. Movida a constante para o companion existente.
+- **+7 testes de motor** (carregar sem arremessar; aumentar até o teto e o máx 3s; guarda de conjurar; arremessar consome; dissipar; C1 dispara no herói ferido; sem lesão não dispara).
+- ⚠️ **VETADO pelo usuário**: magia **cerimonial** (interpretativa, fora de combate) — não entra.
+- 🟢 Gate: **790 testes, ZERO falhas**.
+- 🚦 **Toca UI → PARA para teste no aparelho.**
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
 ### Lote MEC-38 — 20 de Julho de 2026 (P7: Toque Candente — armadura não protege, RD natural sim)
 **Loop de magia — branch GURPS-Saga**
 - ✅ **P7**: o bloqueio era o `NpcStats` ter um campo `rd` único. Adicionado **`rdNatural`** (a parcela pele/escamas) e um terceiro valor de `armadura`: **`"ignora_vestida"`** — ignora `rd − rdNatural` mas mantém a RD natural. Centralizado em `rdContraMagia`, que os 2 sites de dano de magia agora usam.
