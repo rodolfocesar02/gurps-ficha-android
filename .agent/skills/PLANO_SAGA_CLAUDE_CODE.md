@@ -41,7 +41,7 @@
 > - ✅ Lote 383 = Fintar (2026-06-17, MB p.366) — loop 2/5. Manobra Fintar: Disputa Rápida (`heroiFintar`/`fintaResultado`); a margem de vitória reduz a defesa do alvo no próximo golpe corpo-a-corpo (e nos 2 do Ataque Total Duplo). UI + testes + build 2 variantes verde.
 > - ✅ Lote 384 = Tabelas de crítico (2026-06-17, MB p.557–558) — loop 3/5. Golpe Fulminante → tabela de DANO (×2/×3/máx/RD½/ferimento grave); Erro Crítico → efeito no atacante (acerta a si/cai; narra quebrar/largar arma). `CriticoRules.golpeFulminante`/`erroCritico`. **+ workaround de lint** (3 detectores compose-runtime crashando por incompat. da Kotlin Analysis API — desligados). Testes + build 2 variantes verde.
 > - ✅ Lote 385 = Tolerância a Ferimentos (2026-06-17, MB p.381) — loop 4/5. `ToleranciaFerimentos` (NÃO-VIVO/HOMOGÊNEO/DIFUSO) reduz dano pi/perf em `HitLocationRules`; `NpcStats.tolerancia`←bestiário; **esqueleto/zumbi = nao_vivo** (resistem a tiros). Testes + build 2 variantes verde.
-> - ✅ Lotes 386–422 (jun/2026) = **AUDITORIA DE COMBATE COMPLETA** — `docs/fonte-regras/Combate.md` 100% fechado (0 parciais/0 não-feitos): Agarrar/Imobilizar/Estrangular + luta agarrada NPC↔herói/Desvencilhar (422), Finta, Ataque Enganoso/Golpe Rápido, Encontrão/Empurrão, projeção, defesas que faltavam, postura/Agachar, críticos, Tolerância/Divisor de Armadura. +**teste de batalha no aparelho** (7 itens) corrigido (419–422) + tool `gerir_equipamento` (desarmar/confiscar). Detalhes no `PROGRESS.md`. Mapa do Artes Marciais em `Artes_Marciais_Regras_Combate.md`.
+> - ✅ Lotes 386–422 (jun/2026) = **AUDITORIA DE COMBATE COMPLETA** — `docs/fonte-regras/Combate.md` 100% fechado (0 parciais/0 não-feitos): Agarrar/Imobilizar/Estrangular + luta agarrada NPC↔herói/Desvencilhar (422), Finta, Ataque Enganoso/Golpe Rápido, Encontrão/Empurrão, projeção, defesas que faltavam, postura/Agachar, críticos, Tolerância/Divisor de Armadura. +**teste de batalha no aparelho** (7 itens) corrigido (419–422) + tool `gerir_equipamento` (desarmar/confiscar). Detalhes no `PROGRESS.md`. Mapa do Artes Marciais em `docs/pendencias/Artes_Marciais_Regras_Combate.md`.
 > - ✅ Lotes PONTE-1..4 (2026-06-24) = **PONTE COMPLETA** (chaves de luta agarrada, sangramento, Ataque Telegráfico, Ataque Dedicado/Defensivo — regras de Artes Marciais que sobrevivem ao hexágono). Revisões adversariais corrigiram 8 bugs reais no caminho.
 > - ➡️ **ORDEM DE PRIORIDADE APROVADA PELO USUÁRIO (2026-07-05)** — roteiro das próximas sessões (validação no aparelho segue em paralelo, tarefa do usuário):
 >   1. ✅ **T1-1 Sangramento entre cenas** (Lote 423, commit `5751808`) — persistido na ficha; `passar_tempo` real-PARCIAL processa; +3 fixes de fidelidade GURPS pela revisão.
@@ -215,7 +215,7 @@ Revalidar os **Lotes 419–422** no Android Studio (chat no combate, cura/guarda
 ---
 ### PONTE — regras de Artes Marciais que SOBREVIVEM aos dois modelos (faixas E hexágono)
 > Investimento seguro: são regras de RESOLUÇÃO (não de posição), então o pilar hexágono as reaproveita.
-> Fonte: `Artes_Marciais_Regras_Combate.md` + `chunks.jsonl` (`pt_artes_marciais`). Ordem sugerida:
+> Fonte: `docs/pendencias/Artes_Marciais_Regras_Combate.md` + `chunks.jsonl` (`pt_artes_marciais`). Ordem sugerida:
 
 #### ✅ LOTE PONTE-1 (concluído 2026-06-24, commit `47b1e0d`) — Chaves de luta agarrada (Chave de Membro + Mata-Leão, herói↔NPC)
 **Objetivo:** com um alvo já AGARRADO, manobras de chave por Disputa Rápida de ST → dano/incapacitação.
@@ -279,7 +279,7 @@ plugar `CombatResolver`/`HitLocationRules`/`InjuryRules` (intactos); passo+ataqu
 
 #### LOTE HEX-6 (Fase 4) — Regras posicionais 🔴 (MB + Artes Marciais) que o hex desbloqueia
 **Objetivo:** cobertura, vários alvos por posição/linha, "manter à distância", corredores de carga, e (quando
-`NpcStats` ganhar peso/comprimento de arma) "quem golpeia primeiro". Cruzar com `docs/fonte-regras/Combate.md` + `Artes_Marciais_Regras_Combate.md`.
+`NpcStats` ganhar peso/comprimento de arma) "quem golpeia primeiro". Cruzar com `docs/fonte-regras/Combate.md` + `docs/pendencias/Artes_Marciais_Regras_Combate.md`.
 **Passos:** implementar item a item, cada um com teste e referência `// MB`/`// AM`.
 **Aceite:** build verde 2 variantes + testes por regra.
 

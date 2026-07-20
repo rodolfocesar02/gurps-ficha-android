@@ -3041,9 +3041,22 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 
 ### Recon — 24 de Junho de 2026
 **Mapa de regras de combate do GURPS Artes Marciais (doc-only, branch GURPS-Saga)**
-- Novo arquivo `Artes_Marciais_Regras_Combate.md`: inventário das regras de combate do livro Artes Marciais a partir do `chunks.jsonl` (`pt_artes_marciais`, 264 págs) — análogo ao audit do `docs/fonte-regras/Combate.md`, para planejar uma eventual "Fase Artes Marciais" do combate Saga.
+- Novo arquivo `docs/pendencias/Artes_Marciais_Regras_Combate.md`: inventário das regras de combate do livro Artes Marciais a partir do `chunks.jsonl` (`pt_artes_marciais`, 264 págs) — análogo ao audit do `docs/fonte-regras/Combate.md`, para planejar uma eventual "Fase Artes Marciais" do combate Saga.
 - Cobre: Técnicas (Cap. 3, ~110 técnicas via Tabela p258–262), Capítulo 4 — Combate (manobras expandidas, opções de combate p109–113 lidas em detalhe, combate corporal, opções de defesa, ataques múltiplos, lesões realistas), vantagens/perícias e armas/equipamentos. Cada regra com tag de encaixe no modelo de faixas (🟢 FIT / 🟡 PARCIAL / 🔴 FORA / ⚪ JÁ FEITO).
 - **Recomendação registrada** (maior valor × menor custo): Ataque Telegráfico (par do Enganoso), luta agarrada profunda (chaves/Mata-Leão estendendo o lote 422), Sangramento Grave + incapacitação de membro (item 5 do teste de batalha), Ataque Dedicado/Defensivo. Fora de escopo: posicional/hexágono, montaria, cinematográfico, dado de arma do NPC. Mudança só de documentação (não compila Kotlin).
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
+### Lote ORGANIZA-2 — 18 de Julho de 2026 (Artes Marciais entra no mapa — e estava desatualizado também)
+**"o arquivo Artes_Marciais_Regras_Combate.md possui pendencias nele tbm!" + autorização para commitar os arquivos antes intocados — branch GURPS-Saga**
+- **Movido** `Artes_Marciais_Regras_Combate.md` → `docs/pendencias/` (é **inventário**, não fonte de regra), com as 4 referências cruzadas atualizadas.
+- 🔍 **Mesma doença do `Combate.md`, confirmada no código**: o documento listava como pendentes coisas **já implementadas**. Remarcados ⚪ **FEITO**: Chaves/imobilizações/estrangulamentos (PONTE-1), **Ataque Dedicado** e **Ataque Defensivo** (PONTE-4), **Ataque Telegráfico** (PONTE-3) — este último inclusive com a regra fina do crítico usando NH−4 sem virar falha crítica. O Sangramento (PONTE-2) também já saiu do bloco *Lesões Realistas*.
+- **Aviso de validade no topo do documento**: a legenda dele diz *"modelo de FAIXAS, sem hexágono"* — foi escrita antes da grade existir. Os **17 itens 🔴 "posicional/hexágono"** merecem reavaliação pelo mesmo motivo dos 5 do `Combate.md`.
+- **Contagem real depois da conferência**: ⚪ feito 9 → **13**; 🟢 codável 6 → **2**; 🟡 parcial 39; 🔴 fora 17.
+- **PENDENCIAS.md ganhou a seção 2.4** com o bloco de Artes Marciais organizado por sinergia com o motor atual — e a recomendação subiu **Lesões Realistas** para 3º lugar, porque o Sangramento já provou que o bloco encaixa bem no motor de dano.
+- **Commitados os arquivos antes deixados de fora** (autorização explícita do usuário): `logcat_novo.md` e `.agent/skills/MAPA_DETALHADO.md`.
+- ⚠️ **Nexus Arcano segue FORA do commit, agora por confirmação do usuário**: a outra sessão que estava consertando o teste flaky **acabou os tokens** e o conserto está incompleto (o teste segue vermelho). Ele vai pedir para finalizarem. Commitar aquilo pela metade colocaria vermelho conhecido na branch.
+- **Nota de higiene registrada**: `logcat_novo.md` é despejo transitório na raiz — candidato a `.gitignore`, já que o LOG-1 (`tag:Saga_Combate`) dá o mesmo em tempo real.
+- ⚠️ Gate: **750 testes nas DUAS variantes**; único vermelho o flaky do Nexus Arcano.
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
 ### Lote ORGANIZA — 18 de Julho de 2026 (casa arrumada + PENDENCIAS.md, o mapa único)
@@ -3051,7 +3064,7 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - **O problema que motivou**: o usuário estava testando no aparelho e batendo em coisas **não implementadas**, achando que eram bugs. A informação existia, mas espalhada por 4 documentos — ninguém via o todo. Culpa minha por nunca ter consolidado.
 - **Arrumação** (com `git mv`, histórico preservado): `docs/fonte-regras/` (Combate.md, indice.md — transcrição do livro), `docs/planos/` (5 planos), `docs/pendencias/` (deferidos + auditoria + o novo PENDENCIAS.md). Raiz ficou só com README e PROGRESS.
 - **Ponteiros corrigidos**: nenhum código LÊ `.md` em runtime, mas 9 arquivos (4 `.kt`, PROGRESS, planos e uma skill) citavam os caminhos antigos em comentários. Todos atualizados e conferidos — 0 ponteiros mortos, 0 caminhos duplicados.
-- **NÃO tocado de propósito**: `Artes_Marciais_Regras_Combate.md` e `logcat_novo.md` (alheios/em edição pelo usuário), `.agent/skills/MAPA_DETALHADO.md` (editado por ele) e os arquivos do Nexus Arcano (outra sessão). Conferido no `git status` que nenhum entrou no commit.
+- **NÃO tocado de propósito**: `docs/pendencias/Artes_Marciais_Regras_Combate.md` e `logcat_novo.md` (alheios/em edição pelo usuário), `.agent/skills/MAPA_DETALHADO.md` (editado por ele) e os arquivos do Nexus Arcano (outra sessão). Conferido no `git status` que nenhum entrou no commit.
 - **`docs/pendencias/PENDENCIAS.md`** — o mapa único, com o número que explica a frustração: **87 das 879 magias (9,9%) são executadas mecanicamente**; 792 são narradas **por projeto**. Tabela por efeito, heurística de logcat para o usuário distinguir bug de não-implementado sozinho (`"Efeito narrado pelo Mestre"` = não é bug), lista priorizada do que falta, lista do que está pronto mas **não validado**, e a dívida técnica conhecida.
 - 🔍 **Achado da análise**: dos 13 itens "FORA DO ESCOPO" do `Combate.md`, **5 foram excluídos por não haver grade de hexágonos — e a grade foi construída depois**. Conferi item a item **no código** antes de publicar, e ainda bem: o **Passo já está implementado** (35 ocorrências no motor) enquanto o documento ainda o marca como fora do escopo. Ia publicar afirmação errada. Situação real: Passo ✅ feito, Passando-por-Outros e Cobertura 🟡 parciais, Evadir e Espaçamento ❌ não feitos.
 - ⚠️ Gate: **750 testes nas DUAS variantes**; único vermelho o flaky do Nexus Arcano.
@@ -3807,7 +3820,7 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 
 ### Lote PONTE-1 — 24 de Junho de 2026
 **Saga combate: chaves de luta agarrada (Chave de Membro + Mata-Leão) — 1ª ponte de Artes Marciais (branch GURPS-Saga)**
-- Primeira regra do mapa `Artes_Marciais_Regras_Combate.md` (ponte: regras que sobrevivem ao futuro pilar de hexágono). Estende o agarrão herói↔NPC (lote 422) com 2 finalizações sobre alvo AGARRADO.
+- Primeira regra do mapa `docs/pendencias/Artes_Marciais_Regras_Combate.md` (ponte: regras que sobrevivem ao futuro pilar de hexágono). Estende o agarrão herói↔NPC (lote 422) com 2 finalizações sobre alvo AGARRADO.
 - **Chave de Membro** (AM p69-70/81): Disputa Rápida de ST (vítima resiste com max ST/HT; +4 se perna) → dano por **contusão = margem** no braço/perna. **Mata-Leão** (AM p77): estrangular com 2 mãos (**+3 ST**) → dano no pescoço (×1,5) + **SUFOCANDO**. Nas **duas direções** (herói→NPC via manobra; NPC→herói via `npcChaveMembroHeroi`/`npcMataLeaoHeroi` despachados em `npcResolve`). `NpcCombatBrain`: NPC desarmado que já agarrou o herói escolhe Mata-Leão (agress≥8)/Chave (≥6)/Imobilizar por agressividade. UI: 2 diálogos de alvo agarrado. 2 testes determinísticos.
 - **Deferido honesto (sem chute):** sem NH de perícia de luta no perfil (Disputa por ST pura); RD flexível não distinguida da rígida; ramo "sanguíneo"/fadiga do mata-leão; chaves finas (dedo/cabeça/pescoço/tesoura/triângulo) que exigem ponto de impacto/posição que o modelo de faixas não carrega. Build verde 2 variantes (+revisão adversarial).
 ----------------------------------------------------------------------------------------------------------------------------------------------------

@@ -62,7 +62,7 @@ Construir e validar isso numa grade 2D (Compose Canvas) ANTES de gastar esforço
 ### Fase 4 — Regras posicionais 🔴 (MB + Artes Marciais) que o hex desbloqueia
 - Orientação/facing, alcance/reach reais, **cobertura**, **vários alvos por posição/linha**, "manter à
   distância", corredores de carga, e (quando o `NpcStats` ganhar peso/comprimento de arma) "quem golpeia
-  primeiro" por comprimento. Cruzar com o `docs/fonte-regras/Combate.md` (✅ fechado) e o `Artes_Marciais_Regras_Combate.md`.
+  primeiro" por comprimento. Cruzar com o `docs/fonte-regras/Combate.md` (✅ fechado) e o `docs/pendencias/Artes_Marciais_Regras_Combate.md`.
 
 ### Fase 5 — Render 3D (Filament/SceneView)
 - Trocar o Canvas 2D por **cena 3D**: terreno/grade em 3D, modelos `.glb` de herói/inimigos, **câmera tática**
@@ -87,7 +87,7 @@ Construir e validar isso numa grade 2D (Compose Canvas) ANTES de gastar esforço
   tokens/figuras simples (billboards) e evoluir.
 - **Performance no aparelho:** Filament é eficiente, mas grade + vários modelos + sombras exige cuidado.
 - **Dados faltantes:** algumas regras (comprimento/peso de arma do NPC) ainda dependem de campos novos no
-  `NpcStats` — já mapeado no `Artes_Marciais_Regras_Combate.md`.
+  `NpcStats` — já mapeado no `docs/pendencias/Artes_Marciais_Regras_Combate.md`.
 
 ## PRIMEIRO PASSO concreto (provar barato, sem 3D nem arte)
 **Fase 1 + início da Fase 2:** o motor `HexGrid` puro (com testes) + uma tela Compose Canvas que desenha a

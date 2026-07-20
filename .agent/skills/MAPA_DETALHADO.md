@@ -27,6 +27,8 @@ Base anterior: 2026-05-30 (Mestre IA pós-Lote 328) | 130+ arquivos documentados
 > ➕ **2026-06-14 (Lotes 349-370, branch `GURPS-Saga`, HEAD `41996c4`):** modo **SAGA / NARRADOR** (3º modo de IA)
 > + **motor de combate** (`domain/combat/`, Kotlin puro) + UI de combate. Arquivos novos na **§32** (nova).
 > `FichaDatabase` subiu p/ **v26** (migrações 24→25→26 explícitas, tabelas da Saga). Detalhe do fluxo de IA: `ARQUITETURA_MESTRE_IA.md §10`.
+>
+> ➕ **2026-07-17:** Atualização englobando novos módulos: Combate Tático Hexagonal (Saga/VTT), Motor de Magia Detalhado (`domain/magic`), sensores para rolagem 3D, e stores de imagens para VTT e Cenários.
 
 > ⚠️ **AUDITOR mudou de motor (Lotes 325-328):** saiu da busca semântica (RAG/HNSW) para
 > "grep + leitura dirigida" (`localizar_no_codex` + `ler_pagina`). Vários arquivos abaixo
@@ -161,6 +163,12 @@ Base anterior: 2026-05-30 (Mestre IA pós-Lote 328) | 130+ arquivos documentados
 
 - **`domain/magias/NexusArcanoModoAlvoAdapter.kt`** — Adapter entre o `NexusArcanoEngine` (módulo separado) e o ViewModel. Traduz `List<MagiaDefinicao>` em `ArcanoCatalogo`, chama o engine para calcular trilha ótima (A*/guloso), e retorna `NexusArcanoModoAlvoSnapshot` com relacionados, chaves, trilha mínima e avisos.
 
+- **`domain/magic/MagicCasting.kt`** — Lógica e regras de restrição de conjuração de magias no novo motor detalhado.
+- **`domain/magic/MagicClass.kt`** — Definições de classes e propriedades mecânicas das magias.
+- **`domain/magic/MagicCore.kt`** — Motor principal com a lógica da mecânica estendida de magias.
+- **`domain/magic/MagicMechanics.kt`** — Regras de mecânica de magias (resistências, redutores, modificadores de área).
+- **`domain/magic/MagicTime.kt`** — Sistema de controle de tempo de conjuração, duração e manutenção de magias.
+
 ---
 
 ## 10. Domain — Roll
@@ -237,7 +245,7 @@ Base anterior: 2026-05-30 (Mestre IA pós-Lote 328) | 130+ arquivos documentados
 
 ## 15. Data — Storage (Room / Persistência)
 
-- **`data/storage/FichaDatabase.kt`** — Configuração Room **v24** (Lote 259 adicionou `vec_chunks`). Entidades: `FichaEntity`, `ManualChunkEntity`, `GraphNodeEntity` (legado), `ChatSessionEntity`, `ChatMessageEntity`, `VecChunkEntity`. DAOs expostos: `fichaDao`, `manualChunkDao`, `graphNodeDao` (legado), `chatHistoryDao`, `vecChunkDao`. `fallbackToDestructiveMigration`. Método `prePopulateManual` (importa `chunks.jsonl` → `manual_chunks` FTS4 + embeddings → `vec_chunks`; reimporta só embeddings se chunks existem mas vec está vazio). `graphNodeDao` declarado mas GraphNode está descontinuado.
+- **`data/storage/FichaDatabase.kt`** — Configuração Room **v26** (Lote 259 adicionou `vec_chunks`; Lote 356 subiu p/ v26 com as tabelas da Saga — ver §32.2, migrações 24→25→26 explícitas). Entidades: `FichaEntity`, `ManualChunkEntity`, `GraphNodeEntity` (legado), `ChatSessionEntity`, `ChatMessageEntity`, `VecChunkEntity`. DAOs expostos: `fichaDao`, `manualChunkDao`, `graphNodeDao` (legado), `chatHistoryDao`, `vecChunkDao`. `fallbackToDestructiveMigration`. Método `prePopulateManual` (importa `chunks.jsonl` → `manual_chunks` FTS4 + embeddings → `vec_chunks`; reimporta só embeddings se chunks existem mas vec está vazio). `graphNodeDao` declarado mas GraphNode está descontinuado.
 
 - **`data/storage/FichaDao.kt`** — DAO Room para fichas: `upsert`, `getJson`, `deleteByName`, `listNames` (ordenado por `updatedAt` DESC).
 
@@ -256,6 +264,10 @@ Base anterior: 2026-05-30 (Mestre IA pós-Lote 328) | 130+ arquivos documentados
 - **`data/storage/ChatHistoryDao.kt`** — DAO Room para histórico de chat: sessões (`getAllSessions`, `createSession`, `updateSessionTitle`, `updateSessionTimestamp`) e mensagens (`insertMessage`, `getMessagesForSession`).
 
 - **`data/storage/ChatHistoryEntity.kt`** — Entidades Room: `ChatSessionEntity` (`chat_sessions`: id, title, createdAt, updatedAt) e `ChatMessageEntity` (`chat_messages`: id, sessionId, role, text, modelName, createdAt).
+
+- **`data/storage/CenarioImageStore.kt`** — Persistência e gerenciamento de imagens de cenário do VTT/Combate Tático.
+
+- **`data/storage/TokenImageStore.kt`** — Persistência e gerenciamento de imagens de tokens da Mesa Virtual.
 
 - **`data/storage/GraphNodeDao.kt`** — ⚠️ LEGADO — NÃO UTILIZADO. DAO Room para o grafo de conhecimento (descontinuado). Declarado no `FichaDatabase` mas nunca chamado pelo código ativo.
 
@@ -379,6 +391,8 @@ Base anterior: 2026-05-30 (Mestre IA pós-Lote 328) | 130+ arquivos documentados
 - **ui/features/dice3d/PhysicsWorld.kt** — Setup da engine JBullet. Mapeia a colisão, restituição, paredes elásticas e detecta os lados do dado.
 
 - **ui/features/dice3d/DiceSoundManager.kt** — Gerencia os sons físicos (batidas) mapeados pela simulação do JBullet em tempo real.
+
+- **ui/features/dice3d/DiceSensorManager.kt** — Gerencia eventos de acelerômetro e sensores para acionar fisicamente a rolagem de dados 3D balançando o aparelho.
 
 
 - **`ui/features/rolagem/DialogoSentidos.kt`** — **[+ 2026-06-14, Lote 372]** Diálogo de Testes de Sentidos: tocar **PER** (intercept em `TabRolagem`, sem alterar `AtributosQuickRollPanel`) abre os 5 sentidos com valor efetivo + "notinha" do motivo (via `SentidoRules`); cada um rola pelo mesmo caminho (`executarRolagem`→Discord) com o rótulo carregando o bônus/redutor. Sentido bloqueado fica desabilitado ("Cego"/"Surdo"). **Variante PraCego:** botão rotulado grande ("Rolar (14)") + semântica TalkBack.
@@ -536,7 +550,7 @@ Base anterior: 2026-05-30 (Mestre IA pós-Lote 328) | 130+ arquivos documentados
 - **`nexus/arcano/NexusArcanoEngine*Test.kt`** — Suíte massiva do motor de magias (Lote1/2/3, GlobalA/B, StressMagiasV2, AuditoriaTodasMagias) + `NexusArcanoTestCatalog.kt` (catálogo de fixtures).
 - **`vtt/VttBridgeCodecStressTest.kt`** — Teste de robustez do codec VTT.
 - **[+ 2026-06-14] Combate da Saga** (`domain/combat/`): `CombatEncounterTest`, `CombatActionsTest` (inclui Mover e Atacar correto), `HitLocationRulesTest`, `InjuryRulesTest`, `NpcCombatBrainTest`, `CombatResolverTest`, `CombatSessionTest` (sessão ponta a ponta: arma/tipo de dano/distância, narração, avaliar, postura, mover dirigido, rajada, **dual-wield: 2 golpes + mão inábil −4/Ambidestria, sem defesa após Ataque Total**).
-- **[+ 2026-06-14] Narrador/Saga** (`domain/saga/`): `NarradorToolsTest` (contrato das 16 tools), `NarradorOutputValidatorTest`, `NarradorToolExecutorCombatTest` (roteamento das 6 tools de combate via `CombatBridge` falsa). Instrumentado: `SagaFoundationTest` (FTS4 real).
+- **[+ 2026-06-14] Narrador/Saga** (`domain/saga/`): `NarradorToolsTest` (contrato das 19 tools — `assertEquals(19, TODAS.size)` após MA-4 `lancar_magia`), `NarradorOutputValidatorTest`, `NarradorToolExecutorCombatTest` (roteamento das 6 tools de combate via `CombatBridge` falsa). Instrumentado: `SagaFoundationTest` (FTS4 real).
 
 ---
 
@@ -607,7 +621,7 @@ Tudo em `domain/combat/` é Kotlin PURO (sem Android, determinístico por seed) 
 
 ### 32.1 Narrador (IA modo `saga`)
 - **`domain/MestreIANarradorUseCase.kt`** — Orquestrador do modo `saga` (clone do Generator: fila de fallback de modelos + loop de tool-use + Auto-Healing + `consultar_mundo` automático por palavra-chave). Narração no Gemini 2.5 Flash.
-- **`domain/saga/NarradorTools.kt`** — Schemas das **16 tools** (14 próprias + `localizar_no_codex`/`ler_pagina` reusadas do Auditor). Spec neutra única → Gemini + OpenAI. `NarradorToolsTest` garante toolset == executor.
+- **`domain/saga/NarradorTools.kt`** — Schemas das **19 tools** (17 próprias + `localizar_no_codex`/`ler_pagina` reusadas do Auditor). Spec neutra única → Gemini + OpenAI. `NarradorToolsTest` garante toolset == executor. Cresceu do MA-4 em diante (`lancar_magia`, `aplicar_modificador_combate`, `gerir_equipamento`); `magias_dos_inimigos` foi param novo do MEC-8, não tool nova.
 - **`domain/saga/NarradorToolExecutor.kt`** — Roteador nome→impl. Interfaces `RollBridge` (rolagem interativa) e **`CombatBridge`** (combate). Reais: fato/mundo/inspecionar/cena/rolagem/Códex + 6 de combate. `forjar_npc`/`avancar_relogio`/`passar_tempo` = `nao_implementado` (Fase C/D).
 - **`domain/saga/NarradorOutputValidator.kt`** — Anti-confabulação: alarme se a prosa cita número/regra que não veio de tool no turno.
 - **`domain/saga/CampanhaConfig.kt`** — Session zero (gênero/tom/dificuldade/magia/NT/livros) → bloco no prompt.
@@ -638,7 +652,22 @@ Tudo em `domain/combat/` é Kotlin PURO (sem Android, determinístico por seed) 
 ### 32.5 Regras de arma no combate — COMPLETAS (Lotes 371-375)
 Stats de arma vêm do catálogo → ficha (`Equipamento.arma*`) → `AtaqueHeroi`: **reach** ("C"/"1"/"2", engajamento), **Acc + Apontar**, **1/2D** (meio dano), **Máx** (não alcança além), **Mover-e-Atacar** (CaC −4+teto / à distância −2 ou **Bulk**), **Aparar E/D** (esgrima/desbalanceada/Não/à distância), **Sacar/Preparar** (arma pronta vs guardada; livre c/ Saque Rápido). Sentidos na Rolagem: §5 `SentidoRules` + §20 `DialogoSentidos`.
 
-### 32.6 Pendências
+### 32.6 Componentes Visuais e Efeitos Mágicos (Saga UI)
+- **`ui/saga/DefesaPorTiming.kt`** — Mecânica visual de interatividade para defesa baseada em timing.
+- **`ui/saga/EfeitoMagia.kt`** / **`ui/saga/EfeitoMagiaCanvas.kt`** — Estruturas e renderizador de efeitos visuais de magias no campo de batalha.
+- **`ui/saga/HexCanvas.kt`** — Renderizador 2D do grid hexagonal (Canvas) no Compose.
+- **`ui/saga/HexScene3D.kt`** — Cena 3D para o combate tático utilizando SceneView.
+
+### 32.7 Combate Tático Hexagonal (Saga / VTT)
+*Implementações do grid hexagonal para encontros táticos em `domain/combat/hex/`.*
+- **`HexGrid.kt`** / **`HexCoord.kt`** — Implementação e coordenadas geométricas da malha hexagonal.
+- **`HexCombatState.kt`** / **`HexCombatSync.kt`** — Estado tático do encontro e lógica de sincronização (VTT/Saga).
+- **`HexPortabilidade.kt`** / **`HexRegrasPosicionais.kt`** / **`HexRegrasFacing.kt`** — Regras de movimento, limites de terreno, vantagens de flanco/retaguarda e encaramento (facing).
+- **`HexRender3D.kt`** / **`HexSetup.kt`** — Motores de renderização 3D e preparação do cenário.
+- **`HexTaticaNpc.kt`** — IA posicional dos NPCs avaliando grid.
+- **`HexTaticoDemo.kt`** — Demonstração e fluxo de testes táticos independentes do modo principal.
+
+### 32.8 Pendências
 - **Validação no aparelho** do combate ponta a ponta (chaves de IA reais) — pendente.
 - **Futuro:** CdT/Recuo/rajada (RoF/Rcl), dual-wield, Ataque Total à distância (+1). **Retratos reais de NPC/cena** (Mestre Pintor em tempo real) — registro Lotes B7/E2 do plano. Fases C/D/E do plano Saga.
 

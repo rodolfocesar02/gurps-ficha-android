@@ -94,7 +94,40 @@ Os outros 8 continuam legitimamente fora (perícias de Artes Marciais, cinematog
 > ⚠️ **Lição registrada:** a marcação do `Combate.md` não é confiável sozinha — o Passo aparece como
 > "fora do escopo" e está pronto há lotes. Ao revisitar, confira o código.
 
-### 2.4 Simplificações honestas (não são bugs, são aproximações documentadas)
+### 2.4 GURPS Artes Marciais — o mapa próprio (`docs/pendencias/Artes_Marciais_Regras_Combate.md`)
+
+O Artes Marciais tem **inventário próprio**, com 62 itens classificados. Situação depois de conferir
+**no código** (o documento estava desatualizado, como o `Combate.md`):
+
+| Marcador | Qtd | Significado |
+|---|---:|---|
+| ⚪ JÁ FEITO | 9 → **13** | +4 remarcados agora: eram listados como pendentes e estão prontos |
+| 🟢 FIT | 6 → **2** | codável com o que já existe |
+| 🟡 PARCIAL | 39 | precisa de dado novo (perícia de luta do NPC, qualidade de arma, durabilidade de objeto) |
+| 🔴 FORA | 17 | posicional, montaria, cinematográfico ou construção de personagem |
+
+**Corrigidos agora (estavam como pendentes, mas já existem):** Chaves/imobilizações/estrangulamentos
+(PONTE-1), **Ataque Dedicado** e **Ataque Defensivo** (PONTE-4), **Ataque Telegráfico** (PONTE-3).
+O Sangramento das *Lesões Realistas* também saiu no PONTE-2.
+
+**O que de fato falta, por ordem de sinergia com o motor atual:**
+
+| Bloco | Itens | Por que trava |
+|---|---|---|
+| **Lesões Realistas** (p136–139) | resto do bloco além do Sangramento | 🟡 alta sinergia com o motor de dano — o melhor custo/benefício restante |
+| **Opções de Defesa** (p121–123) | Aparar com armas desbalanceadas, defesas específicas | 🟡 várias encaixam direto |
+| **Alvos específicos** | olhos, pontos de pressão | 🔴/🟡 exige tabela de locais estendida |
+| **Modos de ataque alternativos** | Corte com a Ponta, Golpe com o Pomo, Caneladas | 🟡 exige a arma ter modos alternativos na ficha |
+| **Combinações** (p109/80) | sequência fixa; falha cancela o resto | 🟡 novo tipo de manobra encadeada |
+| **Detectando Fintas**, **Ataque Total "Longo"** (+1 alcance) | — | 🟡 pequenos, isolados |
+| **Preparar** (p105–108) | Empunhadura Defensiva/Invertida, Sacar Rápido em Série | 🟡 o Saga não modela arco lateral nem série de saques |
+| **Golpeando Escudos** | destruir escudo/capa | 🟡 exige durabilidade de objeto, que não existe |
+| **Armas e Equipamentos** (p211–234) | qualidade, peso, balanceamento | 🟡/🔴 exige campos que o bestiário e o catálogo não têm |
+
+> ⚠️ **Os 17 🔴 merecem reavaliação.** A legenda do documento diz *"modelo de FAIXAS, **sem
+> hexágono**"* — escrita antes da grade existir. É a mesma justificativa caducada de 2.3.
+
+### 2.5 Simplificações honestas (não são bugs, são aproximações documentadas)
 
 - Tipo de dano do Projétil ≈ contusão (×1 de ferimento)
 - Ataque Inato ≈ DX do herói (a perícia não existe na ficha)
@@ -149,5 +182,20 @@ Aqui, se aparecer estranho, **é candidato a bug real** — vale reportar.
 1. **P1 + P2 juntos** (motor de tique/efeito persistente) — maior retorno: destrava Morte Candente,
    Morte Putrefata, Chuvas, Nuvens, Géiser e o "manter" de todas as magias de duração. Inclui UI.
 2. **P3** (efeito de buff aplicado) — 156 magias saem de "narrado" para mecânica.
-3. **2.3** (revisar os 5 itens de combate cuja justificativa caducou com a grade).
-4. O resto de 2.2, por ordem de aparição nos testes.
+3. **Lesões Realistas do Artes Marciais** (2.4) — maior sinergia com o motor de dano que já existe,
+   e o Sangramento (PONTE-2) já provou que o bloco encaixa bem.
+4. **Revisar as justificativas caducadas** (2.3 e os 17 🔴 de 2.4): foram escritas quando não havia
+   grade de hexágonos. Não é implementar — é reclassificar, e provavelmente destrava itens baratos.
+5. O resto de 2.2, por ordem de aparição nos seus testes.
+
+---
+
+## 6. Nota de higiene do repositório
+
+- `logcat_novo.md` (22 KB) é um despejo de logcat versionado na raiz. Não faz mal, mas é dado
+  transitório — candidato a `.gitignore` se virar hábito, agora que o `tag:Saga_Combate` (LOG-1)
+  dá o mesmo em tempo real.
+- O conserto do teste flaky do **Nexus Arcano** está em andamento **noutra sessão** e ainda está
+  vermelho. Os arquivos dele (`app/src/test/java/nexus/arcano/`, `motor modo alvo/`) foram deixados
+  fora dos commits desta sessão de propósito — commitar trabalho pela metade de outra sessão criaria
+  conflito e colocaria vermelho conhecido na branch.

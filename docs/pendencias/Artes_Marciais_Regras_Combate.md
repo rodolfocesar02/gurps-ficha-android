@@ -7,6 +7,12 @@ combate do modo **Saga** — análogo ao audit do `Combate.md`. NÃO é implemen
 (p258–262, lista TODAS as técnicas com pré-req/predefinido/dano/efeito) e o miolo do Capítulo 4 (Opções de
 Combate, p109–113). Seções de que só li o título estão marcadas "(ler antes de implementar)".
 
+> ⚠️ **AVISO DE VALIDADE (18/jul/2026).** Este mapa foi escrito quando o Saga usava **só faixas de
+> distância**. A **grade de hexágonos existe desde então** (HEX-1..9 + VTT 2D), então todo item
+> marcado 🔴 *"posicional/hexágono"* merece reavaliação — a justificativa caducou. Além disso, vários
+> itens 🟢/🟡 **já foram implementados** nos lotes PONTE-1..4 e estão remarcados ⚪ abaixo.
+> Consolidado em `docs/pendencias/PENDENCIAS.md`.
+
 ## Legenda de encaixe no Saga (modelo de FAIXAS, sem hexágono, NPC com dado limitado)
 - 🟢 **FIT** — encaixa no modelo abstrato; codável com o que já existe.
 - 🟡 **PARCIAL** — encaixa adaptado / precisa de dado novo (ex.: peso/qualidade de arma do NPC, perícia de luta do NPC).
@@ -38,7 +44,8 @@ Dependem de localização precisa + efeito tipo Atribulação (Cegueira, Dor, At
   **Pontos de Pressão***, **Tapa na Fuça** (Atordoa+Desarme). FORA enquanto não houver modelo de afflição/local
   fino para o herói desarmado; alguns (atordoar) seriam 🟡 se reduzidos a "teste → ATORDOADO".
 
-### 1C. Chaves, imobilizações e estrangulamentos — 🟢/🟡 (estende a luta agarrada já feita)
+### 1C. Chaves, imobilizações e estrangulamentos — ⚪ **FEITO (Lote PONTE-1)**
+> Chave de Membro e Mata-Leão herói↔NPC implementados; o NPC agressivo parte para a chave quando já agarrou.
 O Saga já tem Agarrar/Imobilizar/Estrangular/Desvencilhar (lotes 386/411/412/422). Estas adicionam **chaves
 por Disputa Rápida → dano/dor**:
 - **Chave de Braço/Pulso/Cotovelo**, **Chave de Cabeça**, **Chave de Dedo**, **Chave de Perna**, **Mata-Leão**
@@ -52,13 +59,11 @@ por Disputa Rápida → dano/dor**:
   CAIDO. O Saga já tem Derrubar/Encontrão; estes seriam variações com perícia de luta (dado do NPC limita).
 
 ### 1E. Técnicas defensivas — 🟡 PARCIAL
-- **Aparar Agressivo** (apara + dano), **Obstruir**, **Defesa de Linha Baixa**, **Evasão**, **Queda**,
-  **Rolar com o Golpe***, **Levantar Acrobático**, **Defesa Cronometrada***, **Defesa contra Duas Armas***.
+- **Aparar Agressivo** (apara + dano), **Obstruir**, **Defesa de Linha Baixa**, **Evasão**, **Queda**,   **Rolar com o Golpe***, **Levantar Acrobático**, **Defesa Cronometrada***, **Defesa contra Duas Armas***.
   Encaixe: modificadores de defesa ativa; alguns já cobertos por Esquiva Acrobática/Recuo do Saga.
 
 ### 1F. Técnicas com armas — 🟡/🔴
-- **Desarmar** (Desarme), **Reter Arma**, **Conservar a Arma**, **Golpe Rodopiante** (Finta), **Golpe Para
-  Trás**, **Enganchar**, **Envolver**, **Estalar** (chicote), **Quebrar Arma***, **Contra-Ataque**, **Fintar**
+- **Desarmar** (Desarme), **Reter Arma**, **Conservar a Arma**, **Golpe Rodopiante** (Finta), **Golpe Para   Trás**, **Enganchar**, **Envolver**, **Estalar** (chicote), **Quebrar Arma***, **Contra-Ataque**, **Fintar**
   (já existe). Encaixe parcial: Desarmar e Reter precisam do modelo de "arma na mão" (agora existe `confiscado`,
   lote 421); o resto é posicional/por tipo de arma.
 
@@ -84,8 +89,8 @@ por Disputa Rápida → dano/dor**:
 ### 2.1 Manobras de Combate Expandidas (p97–108) — (ler antes de implementar, salvo onde notado)
 - **Aguardar / Interromper Acertos / Aguardar Encadeado** (p97) — interromper o turno do oponente. 🟡 (Saga tem Aguardar/Interromper Investida, lote 399).
 - **Apontar** (p98) — ⚪ JÁ FEITO (lote 392/395).
-- **Ataque Dedicado** (p98) — +acerto OU +dano abrindo mão de defesa parcial. 🟡 nova manobra.
-- **Ataque Defensivo** (p98) — −dano por +defesa. 🟡 nova manobra.
+- **Ataque Dedicado** (p98) — +acerto OU +dano abrindo mão de defesa parcial. ⚪ **FEITO (Lote PONTE-4)**.
+- **Ataque Defensivo** (p98) — −dano por +defesa. ⚪ **FEITO (Lote PONTE-4)**.
 - **Ataque Total** (p99) — opções Determinado/Duplo/Fintar/Forte ⚪ JÁ FEITO; **nova opção "Longo"** (+1 alcance) 🟡.
 - **Avançar e Atacar** (p100) — ⚪ JÁ FEITO (Mover e Atacar, lote 378).
 - **Lidando com Oponentes em Carga** (p101): Aparar, **Obstrução**, **Manter à Distância**, **Movimento Acrobático** — 🟡/🔴 (parte posicional).
@@ -97,7 +102,7 @@ por Disputa Rápida → dano/dor**:
 ### 2.2 Opções de Combate (p109–113) — LIDO EM DETALHE
 - **Caneladas** (chutar com a canela) — 🟡 detalhe de dano desarmado.
 - **Combinações** (p109/80) — sequência fixa de ataques (caso especial de Golpe Rápido); falha cancela o resto (+3 defesa ao alvo). 🟡 (Saga tem Golpe Rápido, lote 408).
-- **Ataque Telegráfico** (p109) — **+4 para acertar, mas +2 à defesa do alvo** (oposto do Enganoso). 🟢 FIT — par natural do Ataque Enganoso já implementado; barato de adicionar.
+- **Ataque Telegráfico** (p109) — **+4 para acertar, mas +2 à defesa do alvo** (oposto do Enganoso). ⚪ **FEITO (Lote PONTE-3)** — inclusive a regra de que o crítico usa NH−4 mas nunca vira falha crítica.
 - **Balanço vs. Ponta / Peso da Arma / Comprimento da Arma** (p110) — modificadores finos em "quem golpeia primeiro"/Aguardar. 🔴 precisa de peso/comprimento/ST da arma (não modelado p/ NPC).
 - **Corte com a Ponta** (p111) — converter perfuração em corte (−2 dano). 🟡 modo de ataque alternativo da arma.
 - **Empunhadura Defensiva** (p111) — +1 aparar frontal / −1 lateral; gasta Preparar. 🟡 (Saga não modela arco lateral).
@@ -131,8 +136,7 @@ por Disputa Rápida → dano/dor**:
 - **Lesões Parciais** (Braço/Perna/Mão/Pé/Tronco), **Desmembramento Extremo**, **Sangramento Grave**,
   **Enfaixando Ferimentos Graves**, **Lesões Duradouras e Permanentes**, **Tabelas de Ferimentos** (Crânio,
   Órgãos Vitais, Veias/Artérias, Pescoço). 🟡 — o Saga já tem localização+multiplicadores+choque+desmaio;
-  **Sangramento** e **incapacitação de membro** seriam as adições de maior valor (e o usuário já perguntou
-  sobre sangramento no teste de batalha — item 5). ⚠️ ler as tabelas antes de codar.
+  **Sangramento** e **incapacitação de membro** seriam as adições de maior valor (e o usuário já perguntou sobre sangramento no teste de batalha — item 5). ⚠️ ler as tabelas antes de codar.
 
 ---
 
