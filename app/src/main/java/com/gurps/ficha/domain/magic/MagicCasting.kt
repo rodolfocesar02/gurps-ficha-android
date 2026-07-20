@@ -72,7 +72,14 @@ object MagicEnergy {
         if ("varia" in t) return am
         FAIXA.find(t)?.let { m ->
             val hi = maxOf(m.groupValues[1].toInt(), m.groupValues[2].toInt())
-            return hi.coerceAtLeast(1)
+            // Lote MEC-25 (Magia p.9, "Aptidão Mágica e Efeitos"): numa magia com faixa FINITA de
+            // efeitos, o teto é *"o maior número possível entre os níveis da mágica ou o nível de
+            // Aptidão Mágica do operador"*. Exemplo literal do livro: Cura Profunda (1 a 4) com
+            // Aptidão 10 vai a 10 níveis (2 a 20 PV).
+            //
+            // O MEC-9 travava em `hi` e ignorava a Aptidão — errado para o lado RESTRITIVO: o mago
+            // experiente não conseguia usar o que a regra lhe dá.
+            return maxOf(hi, am).coerceAtLeast(1)
         }
         // Custo fixo: o próprio valor é o teto.
         PRIMEIRO_INT.find(t)?.value?.toIntOrNull()?.let { if (it > 0) return it }

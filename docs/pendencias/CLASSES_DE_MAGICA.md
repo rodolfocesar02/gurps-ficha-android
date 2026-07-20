@@ -13,7 +13,7 @@
 | Regra (literal) | Estado |
 |---|---|
 | NH alto **reduz o custo** em energia | ✅ `MagicCost.custoAjustadoPorNH` |
-| 🔴 *"**Exceção**: o custo de uma mágica de **Bloqueio nunca é reduzido**"* | ❌ **o motor viola** — aplica o desconto a todas as classes |
+| *"**Exceção**: o custo de uma mágica de **Bloqueio nunca é reduzido**"* | ✅ **JÁ FEITO** — `MagicCasting.custoTotal` tem a exceção explícita **e há teste** (`Bloqueio NUNCA reduz custo por NH alto`). ⚠️ Eu havia marcado isto como ❌ na 1ª versão deste documento: contei ocorrências de `custoAjustadoPorNH` sem ler o contexto. Erro meu, corrigido. |
 | **Queimar PV** paga a mágica, com **−1 no NH por PV gasto** | ✅ implementado (seletor "Queimar PV") |
 | *"Essa penalidade substitui a penalidade de choque por lesão; **Hipoalgia não ajuda**"* | 🟡 conferir se substitui mesmo o choque |
 | **Amordaçado / sob silêncio não conjura** o que exige fala | ✅ (`Condicao.SILENCIADO`) |
@@ -25,7 +25,7 @@
 | Regra (literal) | Estado |
 |---|---|
 | Sem limite superior na descrição → **pode gastar quanta energia tiver** | ✅ |
-| 🔴 *"O limite superior é o **maior número** entre os **níveis da mágica** ou o **nível de Aptidão Mágica** do operador"* — exemplo do livro: Cura Profunda (1 a 4) com **AM 10** permite **10 níveis** (2 a 20 PV) | ❌ **o MEC-9 trava no teto da magia e IGNORA a Aptidão** — errei para o lado restritivo |
+| *"O limite superior é o **maior número** entre os **níveis da mágica** ou o **nível de Aptidão Mágica** do operador"* — exemplo do livro: Cura Profunda (1 a 4) com **AM 10** permite **10 níveis** | ✅ **FEITO (Lote MEC-25)** — o MEC-9 travava no teto da magia e ignorava a Aptidão; agora vale `max(faixa, Aptidão)`. Teste com o exemplo literal do livro. |
 | 🔴 *"Lançada mais de uma vez no mesmo objetivo, **só a mais poderosa conta** — não acumulam. **Exceções**: curar, causar dano e efeitos permanentes"* | ❌ não implementado — hoje buffs repetidos podem somar |
 
 ### A.3 Duração, manutenção e cancelamento
@@ -68,7 +68,7 @@
 | **Área** | 🟡 falta custo mínimo e afetar parte da área |
 | **Toque** | 🟡 falta o bloqueio de "não conjura enquanto sustenta" e o Aparar que não dispara |
 | **Projétil** | 🔴 falta **carregar em vários turnos** e o **teste de Vontade ao ser ferido** |
-| **Bloqueio** | 🔴 três regras estruturais faltando |
+| **Bloqueio** | 🔴 **duas** regras estruturais faltando (a 3ª, o custo, já estava feita) |
 | **Informação** | 🔴 tudo narrativo (por projeto), mas há regras mecânicas não aplicadas |
 | **Resistíveis** | 🟡 falta "optar por não resistir" e a regra de Área Resistível |
 | **Encantamento / Especiais** | ⏸️ fora de escopo (itens mágicos / regra própria por magia) |
@@ -150,7 +150,7 @@
 | 🔴 *"**Não** é possível usar mágicas de Bloqueio contra um **golpe fulminante**"* | ❌ não implementado (o `golpeFulminante` existe no motor, mas não gateia isto) |
 | 🔴 *"Interrompem **automaticamente a concentração** do operador — ele perde a mágica que preparava"* | ❌ não implementado |
 | Sustentando Toque → não é afetada; sustentando Projétil → não pode aumentar, mas guarda | ❌ |
-| 🔴 *"**Não sofrem redução de custo** em função de NH elevado"* | ❌ — `custoAjustadoPorNH` é aplicado a todas; Bloqueio é **exceção** |
+| *"**Não sofrem redução de custo** em função de NH elevado"* | ✅ **JÁ FEITO e testado** (ver A.1 — eu havia marcado errado) |
 
 ---
 
@@ -191,17 +191,12 @@
 
 ## O que eu recomendaria atacar primeiro
 
-0. 🔴 **Aptidão Mágica destrava o teto de energia** (A.2) — é o único item onde eu deixei o jogo
-   **mais restritivo que a regra**. Um mago com AM alta deveria poder ir além do "1 a 4" da magia.
-   Correção pequena (`max(teto da magia, Aptidão)`), mas **muda equilíbrio a favor do herói** —
-   por isso quero confirmação antes de mexer. O livro dá ao Mestre o direito de ignorar esta regra
-   se achar que desequilibra.
+0. ~~**Aptidão Mágica destrava o teto de energia**~~ ✅ **FEITO (MEC-25)**.
 1. 🔴 **Teste de Vontade ao ser ferido sustentando projétil** — é a regra mais perigosa que falta: hoje o mago segura uma Bola de Fogo, apanha, e nada acontece. Barato de implementar e tem consequência real.
 2. 🔴 **As três de Bloqueio** (uma por turno; não vale contra golpe fulminante; não reduz custo por NH) — regras curtas, todas com efeito direto no equilíbrio.
 3. 🟡 **"Não pode conjurar enquanto sustenta Toque/Projétil"** — uma trava, fecha as duas classes.
 4. 🟡 **Dissipar como ação livre** — pequeno, e destrava o jogador que ficou com a mão carregada sem querer.
-5. 🔴 **Bloqueio não reduz custo por NH** (A.1) — aparece **duas vezes** no livro (p.8 e p.9),
-   sinal de que é regra que o autor fez questão de reforçar. Uma linha de exceção no `custoAjustadoPorNH`.
+5. ~~**Bloqueio não reduz custo por NH**~~ ✅ **já estava feito** — erro de leitura meu.
 6. 🟡 **Mágicas não acumulam** (A.2) — só a mais poderosa conta, exceto cura/dano/permanente.
 7. 🟡 **Vontade−3 ao ser ferido mantendo mágica de concentração** (A.3) — irmã da regra do projétil.
 8. ⏸️ Informação e Longa Distância seguem narrativos por projeto (ver `PENDENCIAS.md`).

@@ -89,23 +89,31 @@ Documento próprio: **[CLASSES_DE_MAGICA.md](CLASSES_DE_MAGICA.md)** — **o cap
 (p.5–15)**, regra a regra, conferido **no código**. O PDF não foi necessário: o `chunks.jsonl` tem as
 11 páginas e preservou até as tabelas.
 
-**Achado que inverte a direção do erro:** o **MEC-9 deixou o jogo MAIS RESTRITIVO que a regra**.
-O livro diz que o teto de energia é *"o maior número entre os níveis da mágica ou o nível de
-Aptidão Mágica"* (exemplo literal: Cura Profunda 1 a 4, com AM 10, vai a **10 níveis**). Hoje o app
-trava no teto da magia. Correção pequena, mas **fortalece o herói** — aguardando decisão do usuário.
+✅ **Achado que invertia a direção do erro, já corrigido (MEC-25):** o MEC-9 deixava o jogo **mais
+restritivo que a regra**. O livro diz que o teto de energia é *"o maior número entre os níveis da
+mágica ou o nível de Aptidão Mágica"* (exemplo literal: Cura Profunda 1 a 4, com AM 10, vai a
+**10 níveis**). Agora vale `max(faixa, Aptidão)`, com teste usando o exemplo do livro.
 
 Achados que ninguém tinha registrado antes:
 
 | # | Regra que falta | Por que importa |
 |---|---|---|
-| C1 | **Teste de Vontade ao ser FERIDO sustentando um projétil** — falhando, *"o projétil o afeta imediatamente"* | O mago segura uma Bola de Fogo, apanha, e hoje nada acontece |
-| C2 | **Só UMA mágica de Bloqueio por turno** | Sem isso, defesa mágica ilimitada |
-| C3 | **Bloqueio não vale contra golpe fulminante** | O crítico deveria passar |
-| C4 | **Bloqueio NÃO reduz custo por NH alto** (é exceção à regra geral, que o motor aplica a todas) | Bloqueio sai barato demais |
-| C5 | **Não pode conjurar enquanto sustenta Toque ou Projétil** | Hoje dá para acumular mágicas |
-| C6 | **Dissipar mágica sustentada é ação livre** | O jogador fica preso com a mão carregada |
-| C7 | **Custo mínimo** de algumas mágicas de Área | 0 ocorrências no código |
-| C8 | Resistível: **optar por não resistir**; Área Resistível com **Abascanto em dobro** | Magia benéfica em aliado |
+| C1 | 🔴 **Teste de Vontade ao ser FERIDO sustentando um projétil** — falhando, *"o projétil o afeta imediatamente"* | O mago segura uma Bola de Fogo, apanha, e hoje nada acontece |
+| C2 | 🔴 **Só UMA mágica de Bloqueio por turno** | Sem isso, defesa mágica ilimitada |
+| C3 | 🔴 **Bloqueio não vale contra golpe fulminante** | O crítico deveria passar |
+| C4 | 🔴 **Vontade−3 ao ser ferido/atordoado mantendo mágica de concentração** — fracasso congela o efeito, falha crítica encerra | Irmã da C1; hoje manter é imune a dano |
+| C5 | 🟡 **Não pode conjurar enquanto sustenta Toque ou Projétil** | Hoje dá para acumular mágicas |
+| C6 | 🟡 **Dissipar mágica sustentada é ação livre** | O jogador fica preso com a mão carregada |
+| C7 | 🟡 **Mágicas não acumulam** — só a mais poderosa conta (exceto cura, dano e permanentes) | Buffs repetidos podem somar hoje |
+| C8 | 🟡 **Cancelar mágica no meio custa 1 ponto** de energia | 0 ocorrências no código |
+| C9 | 🟡 **Custo mínimo** de algumas mágicas de Área | 0 ocorrências no código |
+| C10 | 🟡 Resistível: **optar por não resistir**; Área Resistível com **Abascanto em dobro** | Magia benéfica em aliado |
+| C11 | ⚪ Manter **só parte** da área, pagando proporcional; área não pode ser **expandida** depois | Menor |
+| C12 | ⚪ **Rituais alternativos** (omitir gestos/fala por −2/−4; caprichar por +1) — regra **opcional** | Menor |
+
+✅ **Saíram da fila (20/jul):** **Aptidão Mágica destrava o teto de energia** — feito no **MEC-25**;
+e **"Bloqueio não reduz custo por NH"**, que eu havia listado por engano — **já estava implementado
+e com teste** desde antes.
 
 > ⚠️ **Honestidade sobre o processo:** eu vinha citando p.11/p.12 caso a caso conforme precisava,
 > mas nunca tinha lido a seção inteira. Estas 8 regras estavam invisíveis — não por decisão, por

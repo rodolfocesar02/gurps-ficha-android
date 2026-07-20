@@ -248,9 +248,21 @@ class MagicCastingTest {
 
     @Test fun `faixa simples limita o dano — Toque Candente 1 a 3 nao aceita 10`() {
         // O bug: com o seletor do MEC-7 e sem teto, 10 de energia saía 10d numa magia de custo 1 a 3.
-        assertEquals(3, MagicEnergy.tetoDeEnergiaDano("1 a 3", aptidaoMagica = 5))
-        assertEquals(4, MagicEnergy.tetoDeEnergiaDano("1 a 4", aptidaoMagica = 9))
+        // Lote MEC-25: com Aptidão MAIOR que a faixa, a Aptidão manda (Magia p.9).
+        assertEquals(5, MagicEnergy.tetoDeEnergiaDano("1 a 3", aptidaoMagica = 5))
+        assertEquals(9, MagicEnergy.tetoDeEnergiaDano("1 a 4", aptidaoMagica = 9)) // MEC-25
+        // Aptidão MENOR que a faixa: quem manda é a faixa da magia.
         assertEquals(6, MagicEnergy.tetoDeEnergiaDano("2 a 6", aptidaoMagica = 2))
+
+    }
+
+    @Test
+    fun `MEC-25 o exemplo literal do livro — Cura Profunda 1 a 4 com Aptidao 10 vai a 10 niveis`() {
+        // Magia p.9: "Cura Profunda permite gastar 1, 2, 3 ou 4 pontos... Aptidão Mágica 10
+        // permitiria aumentar esse limite para 10 níveis de efeito".
+        assertEquals(10, MagicEnergy.tetoDeEnergiaDano("1 a 4", aptidaoMagica = 10))
+        // E o teto NUNCA encolhe abaixo da faixa por causa de uma Aptidão baixa.
+        assertEquals(4, MagicEnergy.tetoDeEnergiaDano("1 a 4", aptidaoMagica = 1))
     }
 
     @Test fun `teto por APTIDAO nao pode ser lido como faixa — 2 a 2xAM e 2 vezes a aptidao`() {

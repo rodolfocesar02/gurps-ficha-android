@@ -3046,6 +3046,15 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - **Recomendação registrada** (maior valor × menor custo): Ataque Telegráfico (par do Enganoso), luta agarrada profunda (chaves/Mata-Leão estendendo o lote 422), Sangramento Grave + incapacitação de membro (item 5 do teste de batalha), Ataque Dedicado/Defensivo. Fora de escopo: posicional/hexágono, montaria, cinematográfico, dado de arma do NPC. Mudança só de documentação (não compila Kotlin).
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
+### Lote MEC-25 — 20 de Julho de 2026 (Aptidão Mágica destrava o teto de energia) + fila montada
+**"sim, e ja coloque na fila as pendencias necessarias!" — branch GURPS-Saga**
+- **O caso raro em que eu errei para o lado RESTRITIVO.** O MEC-9 travava a energia no teto da magia ("1 a 4" → 4). Magia p.9 diz: *"o limite superior é determinado pelo **maior número possível entre os níveis da mágica ou o nível de Aptidão Mágica** do operador"*, com exemplo literal: **Cura Profunda (1 a 4) com Aptidão 10 vai a 10 níveis** (2 a 20 PV). Agora vale `max(faixa, Aptidão)`.
+- **Teste com o exemplo do livro**, mais o caso oposto (Aptidão baixa **não** encolhe a faixa) — o segundo é o que impede a correção de virar bug novo.
+- 🐛 **Segundo item da lista estava ERRADO — meu erro, achado ao ir implementar.** Eu havia registrado "Bloqueio não reduz custo por NH" como pendência. **Já estava implementado**, com exceção explícita e comentada em `MagicCasting.custoTotal`, **e com teste** (`Bloqueio NUNCA reduz custo por NH alto`). Eu tinha contado ocorrências de `custoAjustadoPorNH` sem ler o contexto — a mesma preguiça que já me fez errar a varredura de `entrega: toque` no MEC-24. **Documentos corrigidos nos dois lugares.**
+- **Fila montada** no `PENDENCIAS.md`: **C1 a C12**, ordenadas por impacto. As três 🔴 do topo: Vontade ao ser ferido sustentando projétil; só uma mágica de Bloqueio por turno; Bloqueio não vale contra golpe fulminante. Mais a C4 (Vontade−3 ao manter mágica de concentração), irmã da C1.
+- 🟢 Gate: **762 testes, ZERO falhas**.
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
 ### Lote DOC-CLASSES — 20 de Julho de 2026 (varredura das Classes de Mágicas, p.11–14)
 **"confirma se vc ja lido sobre? se nao, pode agregar essas regras num arquivo dentro da pendencias" — branch GURPS-Saga**
 - **Resposta honesta ao usuário: eu tinha lido só EM PARTES.** Vinha citando p.11/p.12 caso a caso (Projétil, Toque, Área) conforme cada lote precisava, mas **nunca varri a seção inteira** — e a varredura achou regras com efeito mecânico que nunca foram implementadas **nem registradas em lugar nenhum**. Não foi decisão; foi omissão.
