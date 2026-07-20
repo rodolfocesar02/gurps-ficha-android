@@ -109,6 +109,7 @@ Achados que ninguém tinha registrado antes:
 | C9 | 🟡 **Custo mínimo** de algumas mágicas de Área | 0 ocorrências no código |
 | C10 | 🟡 Resistível: **optar por não resistir**; Área Resistível com **Abascanto em dobro** | Magia benéfica em aliado |
 | C11 | ⚪ Manter **só parte** da área, pagando proporcional; área não pode ser **expandida** depois | Menor |
+| C13 | 🟡 **Mágica Comum em alvo ADJACENTE não deveria ter redutor de distância** — a regra condiciona o redutor a *"se o operador não conseguir tocá-lo"*, mas `tocando` está fixo em `false`. Hoje tocar o alvo custa −1. | Achado ao investigar o relato do Toque (20/jul) |
 | C12 | ⚪ **Rituais alternativos** (omitir gestos/fala por −2/−4; caprichar por +1) — regra **opcional** | Menor |
 
 ✅ **Saíram da fila (20/jul):** **Aptidão Mágica destrava o teto de energia** — feito no **MEC-25**;

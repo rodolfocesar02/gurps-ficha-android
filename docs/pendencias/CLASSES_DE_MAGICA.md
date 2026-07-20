@@ -6,6 +6,25 @@
 
 ---
 
+> ## ⚠️ ARMADILHA: `classe` **não** é `entrega`
+>
+> Estes dois campos parecem sinônimos e **não são**. Já me enganaram **três vezes** nesta sessão, e a
+> terceira quase virou regressão em **86 magias**.
+>
+> | Campo | O que significa |
+> |---|---|
+> | **`classe`** (do livro) | *Como a mágica funciona.* `Toque` = **carrega a mão** e só sai num ataque corpo a corpo. |
+> | **`entrega`** (nosso schema) | *Onde o efeito chega.* `toque` = aplicada **num alvo que o operador toca**. |
+>
+> **Uma mágica Comum pode ter `entrega: toque`** — Armadura, Bênção, Aerovisão. Elas são lançadas
+> tocando o alvo (o que anula o redutor de distância, Magia p.11), mas **não** carregam a mão.
+> São **86** assim no catálogo.
+>
+> ❌ **Nunca** derive "é de Toque" a partir de `entrega`. Use a `classe`.
+> ✅ Se a classe estiver errada no catálogo, o conserto é **no dado** (ver D1), não na inferência.
+
+---
+
 ## PARTE A — Regras gerais (p.5–10)
 
 ### A.1 Custo, ritual e queima de PV
@@ -81,7 +100,7 @@
 |---|---|
 | Afeta **um objetivo por vez** | ✅ |
 | Custo × (1 + MT) para Modificador de Tamanho positivo; **MT negativo não reduz** | ✅ `MagicCost.custoAjustadoPorTamanho`, ligado em `MagicCasting` |
-| Penalidade = **distância em metros** se não puder tocar | ✅ `MagicDistance.penalidadeDistanciaMetros` |
+| Penalidade = **distância em metros** *"se o operador não conseguir tocá-lo"* | 🟡 aplica sempre que a distância > 0. **Falta o caso de tocar**: alvo adjacente deveria ser sem penalidade, mas `tocando` está fixo em `false` na conjuração. Ver **C13**. |
 | **−5 adicional** se não puder ver nem tocar | ✅ ligado (`"sem ver nem tocar"` no breakdown de NH) |
 | *"A distância deve ser calculada no momento em que o teste é feito"* | ✅ (o grid dá a distância no instante) |
 | **Barreiras físicas não afetam** mágicas Comuns | ✅ por omissão (nada bloqueia) |
