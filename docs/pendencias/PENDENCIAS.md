@@ -126,14 +126,14 @@ e com teste** desde antes.
 | # | O que falta | Afeta |
 |---|---|---|
 | P4 | ~~Bandas de distância do **Lampejo**~~ ✅ **FEITO (MEC-37)** — bandas + rider de ofuscamento (−N nas perícias de combate, com timer) — mecânica reusável nos Jatos (P9) | Lampejo |
-| P5 | **Respingo do Relâmpago Explosivo** — é `projetil` e o ramo acerta 1 alvo só | Relâmpago Explosivo |
-| P6 | **Precisão (Acc)** do projétil — só valeria com a manobra Apontar, que não existe no fluxo de conjuração | 12 magias de projétil |
+| P5 | 🔴 **precisa de projétil-contra-HEX** — o ramo de projétil resolve contra 1 combatente; para espalhar a explosão do ponto de impacto ele teria de mirar um hex e varrer os vizinhos (metade do trabalho do MEC-14 de área, do lado do projétil). Feature, não ajuste. | Relâmpago Explosivo |
+| P6 | ⛔ **BLOQUEADO por P11** — a Precisão só entra com a manobra **Apontar**, que exige o projétil poder ser **sustentado entre turnos**. Sem P11, não há onde a Prec somar. | 12 projéteis |
 | P7 | ~~**RD natural × armadura** do Toque Candente~~ ✅ **FEITO (MEC-38)** — campo `rdNatural` no bestiário + `armadura: "ignora_vestida"` → ignora a vestida, natural protege | Toque Candente |
 | P8 | ~~Degrau de custo dobrado (2d-2)~~ ✅ **FEITO (MEC-36)** — `danoDeAreaComDegrau`; limiar = custo-base 2 dobrado. O payoff pleno é o tique por segundo (P1b). | Chuva de Fogo/Pedras |
-| P9 | Projeção/derrubada dos Jatos (`1d de projeção por energia`, Géiser empurra + DX-5) | Jatos, Géiser |
+| P9 | 🔴 **precisa de resolução de FEIXE** — os Jatos são `narrado`/`feixe` e não têm caminho de acerto/dano no motor. Projeção (knockback) reusaria o Empurrão existente, mas o feixe em si (teste DX-4, esquiva/bloqueio) é ataque novo. A parte do Géiser (empurra + DX-5) mora no P1b (zona). | Jatos, Géiser |
 | P10 | ~~Raio mínimo de 2m~~ ✅ **FEITO (MEC-36)** — `raioEfetivo`; a mira eleva o raio ao mínimo | Nuvem de Faíscas, Sono Coletivo |
-| P11 | Projétil **carregado em vários turnos**; magia **cerimonial**; **cajados**; modificadores de longa distância para Informação | diversas |
-| P12 | **Conjurar no modo FAIXAS** — o chip 🔮 só existe no grid tático | todo combate sem grade |
+| P11 | 🔴 **feature grande — o keystone.** Projétil sustentado por 1–3 turnos (concentrar, investir energia por turno, segurar/mirar/atacar, Vontade ao ser ferido). Máquina de estados nova no fluxo de conjuração + escolhas turno-a-turno na UI (logo, **para para teste**). Destrava C1 e P6. **Cerimonial foi VETADO pelo usuário** (interpretativo, fora de combate). | Projéteis |
+| P12 | 🟡 **é UI** — a conjuração só existe no grid tático; levá-la ao modo de faixas é montar o seletor de magia lá. Lote de UI → **para para teste no aparelho**. | combate sem grade |
 
 ### 2.3 Combate — "fora do escopo" cuja justificativa CADUCOU
 
