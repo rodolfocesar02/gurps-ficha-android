@@ -822,6 +822,36 @@ class MagicCombatTest {
         assertEquals(20, MagicMechanics.danoDaExplosao(20, distanciaM = 5, divisorPorMetro = 0))
     }
 
+    // ── Lote MEC-38 (P7): Toque Candente — armadura não protege, RD natural sim ─────────────────
+
+    @Test
+    fun `ignora_vestida deixa a RD natural absorver mas ignora nao (P7)`() {
+        // Contraste forte: RD natural gigante. Com "ignora_vestida" ela protege (dano 0); com
+        // "ignora" nada protege (dano cheio). Descarrega o toque em modo BONECO para sempre acertar.
+        fun danoCom(armadura: String, rdNat: Int): Int {
+            var maiorDano = 0
+            for (seed in 0L until 30L) {
+                val enc = CombatEncounter(
+                    listOf(heroi(), goblin(pv = 50).copy(stats = NpcStats(ht = 11, pvMax = 50, rd = rdNat, rdNatural = rdNat))),
+                    mapOf("goblin" to 1), seed = 1L)
+                val s = CombatSession(enc, perfil(), Random(seed))
+                s.modoTesteNpc = ModoTesteNpc.BONECO
+                val fogo = MagiaMecanica(efeito = "dano", danoPorEnergia = "1d", energiaPorDado = 1,
+                    tipoDano = "quei", armadura = armadura, entrega = "toque")
+                val ctx = ContextoConjuracao(nhBasico = 25, classe = MagicClassParser.parse("Toque"),
+                    mana = NivelMana.NORMAL, mecanica = fogo, tocando = true)
+                s.heroiConjurar(ctx, MagicEnergy.parse("3"), energiaInvestida = 3,
+                    magiaNome = "Toque", alvoId = null)
+                s.heroiEntregarToque("goblin")
+                val g = s.encounter.combatentes.first { it.id == "goblin" }
+                maiorDano = maxOf(maiorDano, 50 - g.pvAtual)
+            }
+            return maiorDano
+        }
+        assertEquals("RD natural gigante + ignora_vestida = dano 0", 0, danoCom("ignora_vestida", rdNat = 100))
+        assertTrue("mas com 'ignora' o mesmo alvo leva dano", danoCom("ignora", rdNat = 100) > 0)
+    }
+
     // ── Lote MEC-37 (P4): Lampejo em bandas de distância + rider de ofuscamento ─────────────────
 
     @Test

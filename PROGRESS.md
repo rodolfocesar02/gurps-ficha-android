@@ -3046,6 +3046,15 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - **Recomendação registrada** (maior valor × menor custo): Ataque Telegráfico (par do Enganoso), luta agarrada profunda (chaves/Mata-Leão estendendo o lote 422), Sangramento Grave + incapacitação de membro (item 5 do teste de batalha), Ataque Dedicado/Defensivo. Fora de escopo: posicional/hexágono, montaria, cinematográfico, dado de arma do NPC. Mudança só de documentação (não compila Kotlin).
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
+### Lote MEC-38 — 20 de Julho de 2026 (P7: Toque Candente — armadura não protege, RD natural sim)
+**Loop de magia — branch GURPS-Saga**
+- ✅ **P7**: o bloqueio era o `NpcStats` ter um campo `rd` único. Adicionado **`rdNatural`** (a parcela pele/escamas) e um terceiro valor de `armadura`: **`"ignora_vestida"`** — ignora `rd − rdNatural` mas mantém a RD natural. Centralizado em `rdContraMagia`, que os 2 sites de dano de magia agora usam.
+- **Literal conferido**: a descrição do Toque Candente diz *"Armadura não protege, mas RD natural sim"* — curado para `ignora_vestida`.
+- **+1 teste forte** (contraste determinístico): RD natural gigante + `ignora_vestida` = dano **0**; o mesmo alvo com `ignora` leva dano. Prova que a distinção funciona sem depender de rolagem.
+- 🐛 **De novo o `;` no nome do teste** — o gate pegou pela 2ª vez neste loop. Vou parar de usar pontuação em nomes de teste.
+- 🟢 Gate: **783 testes, ZERO falhas**.
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
 ### Lote MEC-37 — 20 de Julho de 2026 (P4: Lampejo em bandas + rider de ofuscamento)
 **Loop de magia, cada item seu lote — branch GURPS-Saga**
 - ✅ **P4**: o Lampejo agora aplica efeito **por banda de distância** ao centro do clarão: **≤10m** cega 3s + ofusca −3 por 60s; **11–25m** só ofusca −3 por 60s; **26m+** ofusca −3 por 3s. Estrutura `CondicaoBanda` (lista no schema, Gson-friendly) + `bandaPara`/`usaBandas`.

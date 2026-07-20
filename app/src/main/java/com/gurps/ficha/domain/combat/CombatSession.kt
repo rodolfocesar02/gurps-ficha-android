@@ -1299,7 +1299,7 @@ class CombatSession(
                             if (divisorExpl > 0) SagaLog.mecanica(
                                 "explosão: ${a.nome} a ${distCentro}m do centro — bruto $bruto → $brutoAqui " +
                                     "(divisor ${divisorExpl}×dist)")
-                            val rd = if (ctx.mecanica?.armadura == "ignora") 0 else ((a.stats?.rd ?: 0) + a.buffRd)
+                            val rd = rdContraMagia(a, ctx.mecanica) // MEC-38 (P7)
                             val dn = HitLocationRules.aplicarDano(a.pvMax, brutoAqui, tipo, LocalAtaque.TORSO,
                                 rd, a.stats?.tolerancia ?: ToleranciaFerimentos.NORMAL)
                             InjuryRules.ferir(a, dn.pvSubtrair, a.htEfetivo, random)
@@ -1427,6 +1427,21 @@ class CombatSession(
      * houver (dado exato escalado por energia, tipo, regra de armadura e condição embutida); sem
      * mecânica, cai no padrão 1d × energia (contusão). Devolve o dano aplicado.
      */
+    /**
+     * Lote MEC-38 (P7): RD que protege o alvo contra uma mágica, respeitando `armadura`:
+     *  - "ignora"          → 0 (nem natural nem vestida);
+     *  - "ignora_vestida"  → só a RD NATURAL (Toque Candente: armadura não detém, pele sim);
+     *  - senão             → RD total + buff.
+     */
+    private fun rdContraMagia(alvo: Combatente, mecanica: com.gurps.ficha.domain.magic.MagiaMecanica?): Int {
+        val total = (alvo.stats?.rd ?: 0) + alvo.buffRd
+        return when (mecanica?.armadura) {
+            "ignora" -> 0
+            "ignora_vestida" -> (alvo.stats?.rdNatural ?: 0) + alvo.buffRd
+            else -> total
+        }
+    }
+
     private fun aplicarDanoMagico(
         alvo: Combatente,
         energia: Int,
@@ -1442,7 +1457,7 @@ class CombatSession(
             "corte" -> DanoTipo.CORT; "perf" -> DanoTipo.PERF
             else -> DanoTipo.CONT // queimadura/contusão/projeção → ×1 (sem enum de queimadura; documentado)
         }
-        val rd = if (mecanica?.armadura == "ignora") 0 else ((alvo.stats?.rd ?: 0) + alvo.buffRd)
+        val rd = rdContraMagia(alvo, mecanica) // MEC-38 (P7)
         val brutoCheio = rolarDano(expr, random)
         // Lote MEC-15: a partir de 1/2D (INCLUSIVE) o dano BÁSICO — antes da RD — cai pela metade,
         // arredondando para baixo.

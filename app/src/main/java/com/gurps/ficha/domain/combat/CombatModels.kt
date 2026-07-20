@@ -106,6 +106,12 @@ data class NpcStats(
     val ht: Int = 10,
     val pvMax: Int = st,
     val rd: Int = 0,
+    /**
+     * Lote MEC-38 (P7): parcela de [rd] que é NATURAL (pele/escamas/couro), não armadura vestida.
+     * O Toque Candente *"não é detido por armadura, mas a RD natural protege"* — então ele ignora
+     * `rd − rdNatural` e mantém `rdNatural`. Default 0 = toda a RD é considerada vestida.
+     */
+    val rdNatural: Int = 0,
     val velocidadeBasica: Double = (dx + ht) / 4.0,
     val deslocamento: Int = ((dx + ht) / 4.0).toInt(),
     val armaNome: String = "",
