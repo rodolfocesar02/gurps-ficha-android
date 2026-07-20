@@ -892,6 +892,35 @@ class CombatSession(
      * Lote MEC-2: dissipa uma mágica ativa pelo nome, REVERTENDO o buff que ela aplicou. Buff
      * permanente sai por aqui (não expira sozinho).
      */
+    /**
+     * Lote MEC-23: mágica do herói cuja manutenção venceu e **espera decisão dele**.
+     * Manter mágica é OPCIONAL em GURPS — o motor não pode cobrar PF por conta própria.
+     */
+    data class ManutencaoPendente(val magiaId: String, val custoPf: Int)
+
+    var manutencaoPendente: List<ManutencaoPendente> = emptyList(); private set
+
+    /**
+     * Lote MEC-23: o jogador decidiu. [manter] = paga o PF e a mágica segue; senão ela **acaba**
+     * e o gasto para. Sem PF suficiente, a mágica cai de qualquer jeito (não há como pagar).
+     */
+    fun resolverManutencao(magiaId: String, manter: Boolean) {
+        val p = manutencaoPendente.firstOrNull { it.magiaId == magiaId } ?: return
+        manutencaoPendente = manutencaoPendente - p
+        if (!manter) {
+            log += "✋ Você deixa $magiaId acabar — o gasto de manutenção para."
+            dissiparMagiaAtiva(magiaId)
+            return
+        }
+        if (heroi.pfAtual < p.custoPf) {
+            log += "😮‍💨 Fadiga insuficiente para manter $magiaId (precisa de ${p.custoPf} PF) — a mágica acaba."
+            dissiparMagiaAtiva(magiaId)
+            return
+        }
+        heroi.pfAtual -= p.custoPf
+        log += "✨ Você mantém $magiaId (−${p.custoPf} PF)."
+    }
+
     fun dissiparMagiaAtiva(magiaId: String): Boolean {
         val alvo = magiasAtivas.firstOrNull { it.magiaId.equals(magiaId, ignoreCase = true) } ?: return false
         removerBuffDe(alvo)
@@ -2384,8 +2413,16 @@ class CombatSession(
         if (anterior.ehHeroi && magiasAtivas.isNotEmpty()) {
             val res = MagicActive.avancarTurnoSegundos(magiasAtivas, 1)
             magiasAtivas = res.ativasApos
-            res.cobrancasPorOperador["heroi"]?.let { fp ->
-                if (fp > 0) { heroi.pfAtual = (heroi.pfAtual - fp).coerceAtLeast(0); log += "✨ Manutenção de mágicas: −$fp PF." }
+            // Lote MEC-23: MANTER É OPCIONAL (regra do usuário, e do livro). Antes o motor debitava
+            // o PF sozinho e a mágica seguia para sempre — o jogador não tinha como largar. Agora as
+            // do HERÓI ficam PENDENTES e a tela pergunta; o NPC continua automático (não há a quem
+            // perguntar).
+            manutencaoPendente = res.venceramManutencao
+                .filter { (m, _) -> m.operadorId == "heroi" }
+                .map { (m, custo) -> ManutencaoPendente(m.magiaId, custo) }
+            res.cobrancasPorOperador.filterKeys { it != "heroi" }.forEach { (id, fp) ->
+                val npc = encounter.combatentes.firstOrNull { it.id == id } ?: return@forEach
+                if (fp > 0) npc.pfAtual = (npc.pfAtual - fp).coerceAtLeast(0)
             }
             // MEC-2: expirar tem que REVERTER o buff — senão o bônus fica para sempre.
             res.expiradas.forEach { exp ->

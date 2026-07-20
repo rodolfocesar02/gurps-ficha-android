@@ -15,7 +15,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.liveRegion
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -123,6 +125,14 @@ fun BoxScope.OverlaysCombateTatico(
         PromptViradaFinal(viewModel, virada, Modifier.align(Alignment.BottomCenter).padding(bottom = 24.dp))
         return
     }
+    // Lote MEC-23: MANTER MÁGICA é opcional — pergunta antes de cobrar o PF. Vem logo depois da
+    // virada porque também é uma decisão que segura o turno.
+    val manut = viewModel.sagaManutencaoPendente
+    if (manut.isNotEmpty()) {
+        PromptManterMagia(viewModel, manut.first(),
+            Modifier.align(Alignment.Center).padding(24.dp))
+        return
+    }
     // Status + card "Defenda-se!" (é ele quem trata a defesa no tático 2D).
     CombateStatusTatico(viewModel, Modifier.align(Alignment.TopCenter).padding(top = paddingTopo))
     // Magias ATIVAS (buffs) — pílula discreta.
@@ -167,6 +177,48 @@ fun BoxScope.OverlaysCombateTatico(
             onFechar = { viewModel.sagaLimparSelecaoTatica() },
             modifier = mod
         )
+    }
+}
+
+/**
+ * Lote MEC-23: pergunta se o herói MANTÉM a mágica (paga o PF) ou deixa acabar.
+ *
+ * Existe porque manter mágica é **opcional** em GURPS e o motor cobrava sozinho — a Morte Candente
+ * ficava ativa para sempre, drenando fadiga sem o jogador poder largar.
+ */
+@Composable
+private fun PromptManterMagia(
+    viewModel: FichaViewModel,
+    pendente: com.gurps.ficha.domain.combat.CombatSession.ManutencaoPendente,
+    modifier: Modifier = Modifier,
+) {
+    val pf = viewModel.sagaCombateEstado?.combatentes?.firstOrNull { it.ehHeroi }
+    Card(
+        modifier = modifier.semantics { liveRegion = LiveRegionMode.Assertive },
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
+    ) {
+        Column(Modifier.padding(16.dp)) {
+            Text("Manter ${pendente.magiaId}?", fontWeight = FontWeight.Bold,
+                style = MaterialTheme.typography.titleMedium)
+            Spacer(Modifier.height(4.dp))
+            Text("Custa ${pendente.custoPf} PF por turno. Se não mantiver, a mágica acaba agora.",
+                style = MaterialTheme.typography.bodyMedium)
+            Spacer(Modifier.height(12.dp))
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                Button(
+                    onClick = { viewModel.sagaResolverManutencao(pendente.magiaId, true) },
+                    modifier = Modifier.semantics {
+                        contentDescription = "Manter ${pendente.magiaId}, gastando ${pendente.custoPf} pontos de fadiga"
+                    },
+                ) { Text("Manter (−${pendente.custoPf} PF)") }
+                OutlinedButton(
+                    onClick = { viewModel.sagaResolverManutencao(pendente.magiaId, false) },
+                    modifier = Modifier.semantics {
+                        contentDescription = "Deixar ${pendente.magiaId} acabar e parar o gasto de fadiga"
+                    },
+                ) { Text("Deixar acabar") }
+            }
+        }
     }
 }
 

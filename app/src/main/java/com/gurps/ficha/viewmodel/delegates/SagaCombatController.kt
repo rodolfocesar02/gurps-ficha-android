@@ -649,6 +649,18 @@ class SagaCombatController(
 
     fun limparAvisoSandbox() { avisoSandbox = null }
 
+    /**
+     * Lote MEC-23: mágicas do herói esperando ele decidir se MANTÉM (paga PF) ou deixa acabar.
+     * Manter é opcional em GURPS — antes o motor cobrava sozinho e a mágica nunca largava.
+     */
+    val manutencaoPendente: List<com.gurps.ficha.domain.combat.CombatSession.ManutencaoPendente>
+        get() = sessao?.manutencaoPendente.orEmpty()
+
+    fun resolverManutencao(magiaId: String, manter: Boolean) {
+        sessao?.resolverManutencao(magiaId, manter)
+        atualizarEstado()
+    }
+
     fun iniciarCombateSandbox(
         inimigos: List<Pair<String, Int>>, distanciaM: Int = 5,
         magiasDeclaradas: List<String> = emptyList(),

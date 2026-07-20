@@ -185,6 +185,13 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
             )
         }
     }
+    /** Lote MEC-23: mágicas esperando o herói decidir se mantém (manter é OPCIONAL em GURPS). */
+    val sagaManutencaoPendente: List<com.gurps.ficha.domain.combat.CombatSession.ManutencaoPendente>
+        get() = sagaDelegate.combate.manutencaoPendente
+
+    fun sagaResolverManutencao(magiaId: String, manter: Boolean) =
+        sagaDelegate.combate.resolverManutencao(magiaId, manter)
+
     /** Lote TESTE-SANDBOX: motivo de o combate de teste não ter aberto (null = abriu). */
     val sagaAvisoSandbox: String?
         get() = sagaDelegate.combate.avisoSandbox

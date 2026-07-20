@@ -277,6 +277,12 @@ object MagicActive {
         val ativasApos: List<MagiaAtivaNoCombate>,
         val cobrancasPorOperador: Map<String, Int>,
         val expiradas: List<MagiaAtivaNoCombate>,
+        /**
+         * Lote MEC-23: quais mágicas venceram manutenção NESTE avanço, e por quanto. O total
+         * agregado não serve para PERGUNTAR ao jogador se ele quer manter cada uma — em GURPS
+         * manter é OPCIONAL, então a decisão é por mágica.
+         */
+        val venceramManutencao: List<Pair<MagiaAtivaNoCombate, Int>> = emptyList(),
     )
 
     fun avancarTurnoSegundos(ativas: List<MagiaAtivaNoCombate>, segundos: Int): ResultadoTurno {
@@ -284,6 +290,7 @@ object MagicActive {
         val restantes = mutableListOf<MagiaAtivaNoCombate>()
         val cobrancas = mutableMapOf<String, Int>()
         val expiradas = mutableListOf<MagiaAtivaNoCombate>()
+        val venceram = mutableListOf<Pair<MagiaAtivaNoCombate, Int>>()
 
         for (m in ativas) {
             when (m.duracao) {
@@ -292,10 +299,12 @@ object MagicActive {
                 TipoDuracao.TEMPORARIA -> {
                     val novoTimer = m.segundosParaProximaCobranca - segundos
                     if (novoTimer <= 0) {
+                        val renovada = m.copy(segundosParaProximaCobranca = m.duracaoTotalSeg)
                         if (m.custoManutencaoSeg > 0) {
                             cobrancas.merge(m.operadorId, m.custoManutencaoSeg) { a, b -> a + b }
+                            venceram.add(renovada to m.custoManutencaoSeg) // MEC-23
                         }
-                        restantes.add(m.copy(segundosParaProximaCobranca = m.duracaoTotalSeg))
+                        restantes.add(renovada)
                     } else {
                         restantes.add(m.copy(segundosParaProximaCobranca = novoTimer))
                     }
@@ -306,6 +315,6 @@ object MagicActive {
                 }
             }
         }
-        return ResultadoTurno(restantes, cobrancas, expiradas)
+        return ResultadoTurno(restantes, cobrancas, expiradas, venceram)
     }
 }

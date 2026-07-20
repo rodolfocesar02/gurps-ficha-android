@@ -378,7 +378,7 @@ class MagicCombatTest {
     // ── Lote MA-3d-4: magias ativas + tick ──
 
     @Test
-    fun `magia ativa cobra manutencao ao completar o intervalo e expira a duradoura`() {
+    fun `magia ativa PERGUNTA a manutencao ao completar o intervalo (MEC-23)`() {
         val s = sessao(1L)
         // Temporária de 2s, manutenção 1 PF: após 2 turnos do herói, cobra 1 PF e reseta.
         s.registrarMagiaAtiva("Escudo", "heroi", null, duracaoSeg = 2, custoManutencaoSeg = 1,
@@ -388,8 +388,13 @@ class MagicCombatTest {
         // avancarTurno cobra quando o HERÓI termina o turno (1s cada). No começo é a vez do herói.
         s.avancarTurno() // herói → goblin (1s de manutenção decrementado)
         s.avancarTurno() // goblin → herói
-        s.avancarTurno() // herói → goblin (2º segundo → cobra 1 PF, reseta)
-        assertTrue("manutenção deve ter cobrado PF em algum tick", s.heroi.pfAtual < pfAntes)
+        s.avancarTurno() // herói → goblin (2º segundo → VENCE a manutenção)
+        // Lote MEC-23: manter é OPCIONAL — o motor não cobra sozinho, ele pergunta. Este teste
+        // trancava o comportamento ANTIGO (débito automático), que era a regra errada.
+        assertTrue("a manutenção deve ficar pendente de decisão", s.manutencaoPendente.isNotEmpty())
+        assertEquals("e nada pode ser cobrado antes da resposta", pfAntes, s.heroi.pfAtual)
+        s.resolverManutencao("Escudo", manter = true)
+        assertTrue("depois de MANTER, aí sim o PF cai", s.heroi.pfAtual < pfAntes)
     }
 
     @Test
@@ -818,6 +823,60 @@ class MagicCombatTest {
 
     // ── Lote TOK-PF: a barra de fadiga precisa refletir a manutenção ────────────────────────────
 
+    private fun comMorteCandenteAtiva(): CombatSession = (0L until 40L).map { seed ->
+        val x = sessao(seed, distGoblin = 1)
+        val ctx = ContextoConjuracao(nhBasico = 25, classe = MagicClassParser.parse("Toque"),
+            mana = NivelMana.NORMAL, mecanica = morteCandente(), tocando = true)
+        x.heroiConjurar(ctx, MagicEnergy.parse("3"), energiaInvestida = 3,
+            magiaNome = "Morte Candente", alvoId = null)
+        x.heroiEntregarToque("goblin")
+        x
+    }.first { it.magiasAtivas.any { m -> m.magiaId == "Morte Candente" } }
+
+    @Test
+    fun `MEC-23 o motor NAO cobra manutencao sozinho — ele PERGUNTA`() {
+        // Manter mágica é OPCIONAL em GURPS. Antes o PF era debitado automaticamente e a mágica
+        // ficava ativa para sempre, sem o jogador poder largar.
+        val s = comMorteCandenteAtiva()
+        val pfAntes = s.heroi.pfAtual
+        repeat(4) { s.avancarTurno() }
+        assertTrue("a manutenção tem que ficar PENDENTE de decisão", s.manutencaoPendente.isNotEmpty())
+        assertEquals("e o PF NÃO pode ter sido cobrado sem perguntar", pfAntes, s.heroi.pfAtual)
+    }
+
+    @Test
+    fun `escolher MANTER cobra o PF e a magia continua`() {
+        val s = comMorteCandenteAtiva()
+        repeat(4) { s.avancarTurno() }
+        val p = s.manutencaoPendente.first()
+        val pfAntes = s.heroi.pfAtual
+        s.resolverManutencao(p.magiaId, manter = true)
+        assertEquals("manter cobra exatamente o custo", pfAntes - p.custoPf, s.heroi.pfAtual)
+        assertTrue("e a mágica segue ativa", s.magiasAtivas.any { it.magiaId == p.magiaId })
+    }
+
+    @Test
+    fun `escolher NAO MANTER encerra a magia e para o gasto`() {
+        val s = comMorteCandenteAtiva()
+        repeat(4) { s.avancarTurno() }
+        val p = s.manutencaoPendente.first()
+        val pfAntes = s.heroi.pfAtual
+        s.resolverManutencao(p.magiaId, manter = false)
+        assertEquals("não manter NÃO pode cobrar PF", pfAntes, s.heroi.pfAtual)
+        assertTrue("e a mágica tem que sair das ativas", s.magiasAtivas.none { it.magiaId == p.magiaId })
+    }
+
+    @Test
+    fun `sem PF suficiente a magia cai mesmo que o jogador queira manter`() {
+        val s = comMorteCandenteAtiva()
+        repeat(4) { s.avancarTurno() }
+        val p = s.manutencaoPendente.first()
+        s.heroi.pfAtual = 0
+        s.resolverManutencao(p.magiaId, manter = true)
+        assertTrue("sem fadiga não há como manter", s.magiasAtivas.none { it.magiaId == p.magiaId })
+        assertEquals("e o PF não pode ficar negativo", 0, s.heroi.pfAtual)
+    }
+
     @Test
     fun `manter magia de tique DRENA PF do operador turno a turno`() {
         // É o que a barra azul mostra. Se a manutenção não drenasse, a barra seria decorativa.
@@ -832,8 +891,12 @@ class MagicCombatTest {
         }.first { it.magiasAtivas.any { m -> m.magiaId == "Morte Candente" } }
 
         val pfDepoisDoLancamento = s.heroi.pfAtual
-        repeat(6) { s.avancarTurno() }
-        assertTrue("manter a mágica tem que consumir PF ao longo dos turnos",
+        // MEC-23: agora é preciso CONFIRMAR a manutenção a cada vencimento.
+        repeat(6) {
+            s.avancarTurno()
+            s.manutencaoPendente.toList().forEach { p -> s.resolverManutencao(p.magiaId, manter = true) }
+        }
+        assertTrue("mantendo a mágica, o PF tem que cair ao longo dos turnos",
             s.heroi.pfAtual < pfDepoisDoLancamento)
     }
 

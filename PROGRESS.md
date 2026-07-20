@@ -3046,6 +3046,18 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - **Recomendação registrada** (maior valor × menor custo): Ataque Telegráfico (par do Enganoso), luta agarrada profunda (chaves/Mata-Leão estendendo o lote 422), Sangramento Grave + incapacitação de membro (item 5 do teste de batalha), Ataque Dedicado/Defensivo. Fora de escopo: posicional/hexágono, montaria, cinematográfico, dado de arma do NPC. Mudança só de documentação (não compila Kotlin).
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
+### Lote MEC-23 — 20 de Julho de 2026 (manter mágica virou OPCIONAL — era obrigatório)
+**"a magia esta sendo mantida de forma obrigatoria... em via de regras de gurps manter magias e opcional!" — teste no aparelho, branch GURPS-Saga**
+- **O usuário está certo e o MEC-22 estava errado.** O motor debitava o PF da manutenção **sozinho** e a mágica seguia para sempre: não havia como largar a Morte Candente. O log dele mostra `✨ Manutenção de mágicas: −2 PF` turno após turno, sem escolha.
+- **Implementado**: quando a manutenção vence, as mágicas **do herói** ficam em `manutencaoPendente` e a tela pergunta **"Manter X? (−N PF)"** com *Manter* / *Deixar acabar*. Manter cobra e segue; não manter **encerra a mágica e para o gasto**. O prompt tem prioridade no overlay (como a virada final), porque o turno espera a decisão.
+- **Sem PF suficiente a mágica cai de qualquer jeito** — não há como pagar, e o PF nunca fica negativo. Tem teste.
+- **NPC continua automático**: não há a quem perguntar. A cobrança dele foi separada e passou a debitar o PF do próprio NPC (antes o `cobrancasPorOperador` só era lido para o herói).
+- **`MagicActive` passou a devolver a cobrança POR MÁGICA** (`venceramManutencao`), não só o total agregado — sem isso não dá para perguntar mágica a mágica. Preferi estender o motor a duplicar a condição de vencimento no `CombatSession` (seria o mesmo "copiar a regra" que já criou dívida no TESTE-C).
+- 🔴 **Um teste PRÉ-EXISTENTE quebrou — e estava certo que quebrasse**: `magia ativa cobra manutencao ao completar o intervalo` trancava justamente o débito automático, ou seja, **trancava a regra errada**. Reescrito para exigir que a manutenção fique pendente e só cobre depois do "Manter".
+- **+4 testes**: o motor não cobra sozinho; manter cobra e mantém; não manter encerra sem cobrar; e sem PF a mágica cai mesmo querendo manter.
+- 🟢 Gate: **760 testes, ZERO falhas**.
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
 ### Lote TOK-PF — 18 de Julho de 2026 (barra azul de fadiga sobre o token)
 **"so temos barra de PV, podemos fazer uma barra Azul pra representar a de PF?" — branch GURPS-Saga**
 - **Motivo real**: o MEC-22 fez a manutenção de mágica drenar PF **por turno**. Sem barra, o jogador via o recurso sumir sem conseguir acompanhar — pedido veio direto do roteiro de teste.
