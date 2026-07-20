@@ -2642,7 +2642,7 @@
     "nome": "Bola de Relampagos",
     "dificuldade": "D",
     "pagina": 197,
-    "classe": "Área",
+    "classe": "Projétil",
     "escola": [
       "Clima",
       "Ar"

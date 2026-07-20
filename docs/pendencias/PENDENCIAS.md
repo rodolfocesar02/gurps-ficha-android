@@ -78,7 +78,7 @@ cujo efeito é `dano`/`condicao`/`cura` **é suspeito**.
 
 | # | O que está errado | Tamanho |
 |---|---|---|
-| D1 | ~~**magias com `classe` divergindo do livro**~~ ✅ **FEITO (Lote MEC-32)** — **18 corrigidas**, conferidas uma a uma contra a primeira linha da descrição (que é a classe oficial). Sobraram 4 divergências, todas **falso-positivo**: a 1ª linha delas é referência cruzada ("Como Ilusão Simples, mas…"), não linha de classe. |
+| D1 | ⚠️ **PARCIALMENTE REVERTIDO — precisa da sua conferência.** O MEC-32 corrigiu 18 classes usando a **1ª linha da `descricao`** como fonte. O usuário provou com foto do livro que essa fonte **pode estar corrompida**: a **Bola de Relâmpagos** tinha `Área` ali, mas o livro diz **Projétil** (a extração pegou a classe da coluna vizinha). Cruzei com o corpo da magia no `chunks.jsonl`: **só 3 das 18 eram verificáveis** — Bola de Relâmpagos (❌ eu errei, já corrigida para Projétil), Muralha de Relâmpagos (✅) e Teia de Aranha (✅). A tabela do apêndice está desalinhada na extração e não serve de fonte. **As outras 15 continuam aplicadas mas NÃO verificadas.** |
 
 > ⚠️ Cada caso exige ler a descrição: várias magias começam com referência cruzada ("Como Ilusão
 > Simples, mas…") em vez da linha de classe, então não dá para corrigir com regex.
