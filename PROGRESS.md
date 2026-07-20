@@ -3046,6 +3046,18 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - **Recomendação registrada** (maior valor × menor custo): Ataque Telegráfico (par do Enganoso), luta agarrada profunda (chaves/Mata-Leão estendendo o lote 422), Sangramento Grave + incapacitação de membro (item 5 do teste de batalha), Ataque Dedicado/Defensivo. Fora de escopo: posicional/hexágono, montaria, cinematográfico, dado de arma do NPC. Mudança só de documentação (não compila Kotlin).
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
+### Lotes MEC-28 e MEC-29 — 20 de Julho de 2026 (C5 a C10: dois feitos, dois já prontos, dois sem onde aplicar)
+**"e depois vamos do c5 a c10?" — branch GURPS-Saga**
+- ✅ **C5 (MEC-28)**: com a mão CARREGADA por mágica de Toque, o operador *"não pode fazer outras mágicas"*. Guarda no topo do `heroiConjurar`. A metade do **Projétil** da mesma regra é **moot** — ele nunca fica sustentado (mesma causa da C1 bloqueada).
+- ✅ **C7 (MEC-29)**: *"lançada mais de uma vez no mesmo objetivo, só a **mais poderosa** conta — não acumulam"*. Relançar Escudo agora **substitui** pela versão mais forte em vez de somar (+1 e +4 davam +5). Cura e dano continuam acumuláveis, que é a exceção do livro — e sai de graça, porque não passam por esse caminho.
+- 🔎 **Dois itens da lista JÁ ESTAVAM FEITOS** — e desta vez conferi **antes** de escrever código: **C6** (`dissiparToque` existe, é ação livre e tem botão na UI) e **C9** (`custo.minimo` é aplicado; eu havia procurado `custoMinimo`, identificador errado).
+- ⛔ **C8 sem onde aplicar**: *"cancelar de repente custa 1 ponto"*. **Não existe ação de cancelar** no app — os únicos caminhos que encerram mágica são os do MEC-23 (deixar acabar / não poder pagar), que por regra são **grátis**. Cobrar neles seria errado. Precisa antes de um botão de cancelar.
+- 🟡 **C10 moot na prática**: "optar por não resistir" só importa com **aliados**, que o jogo não tem. O Abascanto em dobro na Área Resistível continua pendente de verdade.
+- 📉 **Autocrítica com número**: dos 12 itens que levantei na varredura, **5 estavam errados** — todos marcados como faltando quando já existiam. A causa foi sempre a mesma: **contar ocorrências ou ler comentário em vez de ler o código**. A varredura ficou **pessimista**, que é o lado menos perigoso do erro, mas inflou a dívida. Registrado para calibrar leituras futuras.
+- **+4 testes**: mão carregada bloqueia conjurar; dissipar libera; o buff mais forte substitui; o mais fraco é ignorado.
+- 🟢 Gate: **773 testes, ZERO falhas**.
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
 ### Lote MEC-27 — 20 de Julho de 2026 (C2: uma mágica de Bloqueio por turno) — e C3 já estava certa
 **"enquanto a tarefa nao finaliza, ja deixe encaminhado o proximo lote!" — branch GURPS-Saga**
 - ✅ **C2 feita** (Magia p.12): *"o personagem pode operar apenas **uma mágica de Bloqueio por turno**, independentemente de seu nível de habilidade"*. Flag `bloqueioMagicoUsadoNoTurno` marcada em `aplicarBloqueioMagico` e **renovada quando o turno do herói recomeça**; o seletor de defesa deixa de oferecer bloqueio já usado. Sem isso o herói bloqueava magicamente **cada** ataque da rodada — defesa ilimitada, exatamente o que a regra proíbe.

@@ -844,6 +844,25 @@ class CombatSession(
         if (aplicado != null) {
             val alvo = encounter.combatentes.firstOrNull { it.id == aplicado.alvoId }
             if (alvo != null) {
+                // Lote MEC-29 (C7, Magia p.9): *"Se qualquer tipo de mágica com efeito variável for
+                // lançada sobre o mesmo objetivo mais de uma vez, só a MAIS PODEROSA deverá ser
+                // considerada — não se acumulam."* (Cura, dano e efeitos permanentes são exceção, e
+                // não passam por aqui: só buff chega neste ponto.)
+                //
+                // Sem isto, lançar Escudo três vezes somava +3 BD em cima de +3 BD.
+                val anterior = magiasAtivas.firstOrNull {
+                    it.magiaId.equals(nome, ignoreCase = true) && it.buff?.alvoId == aplicado.alvoId
+                }
+                val forcaAnterior = anterior?.buff?.let { forcaDoBuff(it) } ?: -1
+                if (forcaAnterior >= forcaDoBuff(aplicado)) {
+                    log += "✨ ${alvo.nome} já está sob $nome igual ou mais forte — as mágicas não se acumulam (Magia p.9)."
+                    return
+                }
+                if (anterior != null) {
+                    removerBuffDe(anterior)
+                    magiasAtivas = magiasAtivas - anterior
+                    log += "✨ $nome substitui a versão mais fraca em ${alvo.nome} (não acumula)."
+                }
                 alvo.buffs.add(aplicado)
                 log += "✨ ${alvo.nome}: $nome — ${descreverBuff(aplicado)}."
             }
@@ -921,6 +940,16 @@ class CombatSession(
         log += "✨ Você mantém $magiaId (−${p.custoPf} PF)."
     }
 
+    /**
+     * Lote MEC-29: "a mais poderosa" de duas versões da MESMA mágica. Soma os efeitos numéricos —
+     * serve para comparar Escudo +2 contra Escudo +4 sem precisar saber qual campo cada magia usa.
+     */
+    private fun forcaDoBuff(b: com.gurps.ficha.domain.magic.BuffAplicado): Int =
+        kotlin.math.abs(b.rd) + kotlin.math.abs(b.esquiva) + kotlin.math.abs(b.bd) +
+            kotlin.math.abs(b.st) + kotlin.math.abs(b.dx) + kotlin.math.abs(b.ht) +
+            kotlin.math.abs(b.deslocamento) + kotlin.math.abs(b.danoArma) +
+            kotlin.math.abs(b.penalidadeAtacantes) + (b.deslocamentoFixo ?: 0)
+
     fun dissiparMagiaAtiva(magiaId: String): Boolean {
         val alvo = magiasAtivas.firstOrNull { it.magiaId.equals(magiaId, ignoreCase = true) } ?: return false
         removerBuffDe(alvo)
@@ -977,6 +1006,18 @@ class CombatSession(
                 "$magiaNome (Máx ${ctx.mecanica?.alcanceMaximo}m)."
             log += t
             return ResultadoConjuracaoCombate(false, t)
+        }
+        // Lote MEC-28 (C5, Magia p.11-12): com a mão CARREGADA por uma mágica de Toque, o operador
+        // *"não pode fazer outras mágicas"*. Ele pode atacar, sustentar ou dissipar — não conjurar.
+        //
+        // A metade do PROJÉTIL da mesma regra ("não poderá fazer outra operação mágica enquanto
+        // segurar o projétil") não tem como ser violada hoje: o projétil é conjurado e arremessado no
+        // mesmo turno, nunca fica sustentado (ver C1, bloqueada pelo mesmo motivo).
+        toqueCarregado?.let { t ->
+            val msg = "✋ Sua mão está carregada com ${t.nome} — não dá para conjurar outra mágica. " +
+                "Ataque um adjacente para descarregar, ou dissipe (ação livre)."
+            log += msg
+            return ResultadoConjuracaoCombate(false, msg)
         }
         // Lote COND-1: silenciado não conjura (o ritual mágico exige fala, Magia p.8).
         if (Condicao.SILENCIADO in heroi.condicoes) {

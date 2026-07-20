@@ -45,7 +45,7 @@
 |---|---|
 | Sem limite superior na descrição → **pode gastar quanta energia tiver** | ✅ |
 | *"O limite superior é o **maior número** entre os **níveis da mágica** ou o **nível de Aptidão Mágica** do operador"* — exemplo do livro: Cura Profunda (1 a 4) com **AM 10** permite **10 níveis** | ✅ **FEITO (Lote MEC-25)** — o MEC-9 travava no teto da magia e ignorava a Aptidão; agora vale `max(faixa, Aptidão)`. Teste com o exemplo literal do livro. |
-| 🔴 *"Lançada mais de uma vez no mesmo objetivo, **só a mais poderosa conta** — não acumulam. **Exceções**: curar, causar dano e efeitos permanentes"* | ❌ não implementado — hoje buffs repetidos podem somar |
+| *"Lançada mais de uma vez no mesmo objetivo, **só a mais poderosa conta** — não acumulam"* | ✅ **FEITO (Lote MEC-29)** — cura/dano seguem acumuláveis, que é a exceção do livro |
 
 ### A.3 Duração, manutenção e cancelamento
 
@@ -119,7 +119,7 @@
 | Penalidade de NH = distância até a **borda mais próxima** da área | ✅ (`distBorda` na mira de área) |
 | Afeta **todos** os seres vivos dentro da área | ✅ |
 | **Raio de 1 m = 1 hex; 2 m = hex central + adjacentes; 3 m = anel seguinte** | ✅ (`HexGrid.range`) |
-| *"Algumas mágicas de Área especificam um **custo mínimo**: o operador sempre paga esse custo"* | ❌ **não implementado** — 0 ocorrências de `custoMinimo` no código |
+| *"Algumas mágicas de Área especificam um **custo mínimo**: o operador sempre paga esse custo"* | ✅ **JÁ ESTAVA FEITO** — `custoTotal` faz `.coerceAtLeast(custo.minimo)`. Marquei ❌ por procurar o identificador errado. |
 | *"O operador pode escolher afetar **apenas partes da área**, mas o custo é o mesmo"* | ❌ não implementado |
 
 ---
@@ -134,7 +134,7 @@
 | Alvo pode usar **qualquer defesa ativa**; se defende, a mágica **não dispara** e continua carregada | ✅ |
 | Se acerta, o ataque causa **dano normal** E a mágica afeta | 🟡 a mágica afeta (MEC-21); o **dano do soco** não é somado |
 | Certas mágicas de Toque são **Resistíveis** → 2º teste do operador | ✅ |
-| *"O operador **não pode fazer outras mágicas** enquanto sustenta uma mágica de Toque"* | ❌ **não implementado** |
+| *"O operador **não pode fazer outras mágicas** enquanto sustenta uma mágica de Toque"* | ✅ **FEITO (Lote MEC-28)** |
 | *"**Aparar** com essa mão ou cajado **não dispara** a mágica"* | ❌ não implementado |
 | *"Se a mágica ignorar armaduras, nem Aparar desarmado nem bloqueio protegem"* | 🟡 `armadura: "ignora"` existe, mas não interage com Aparar/bloquear |
 | **Cajados mágicos** (carregar em cajado, soltar dispersa, disputa pelo cajado) | ⏸️ deferido |

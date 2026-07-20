@@ -821,6 +821,69 @@ class MagicCombatTest {
         assertEquals(20, MagicMechanics.danoDaExplosao(20, distanciaM = 5, divisorPorMetro = 0))
     }
 
+    // ── Lote MEC-28 (C5) e MEC-29 (C7) ──────────────────────────────────────────────────────────
+
+    @Test
+    fun `mao carregada de Toque IMPEDE conjurar outra magia (C5, Magia p11-12)`() {
+        val s = sessao(7, distGoblin = 1)
+        val toque = ContextoConjuracao(nhBasico = 25, classe = MagicClassParser.parse("Toque"),
+            mana = NivelMana.NORMAL, mecanica = morteCandente(), tocando = true)
+        s.heroiConjurar(toque, MagicEnergy.parse("3"), energiaInvestida = 3,
+            magiaNome = "Morte Candente", alvoId = null)
+        assertTrue("cenário: a mão ficou carregada", s.toqueCarregado != null)
+
+        val outra = ContextoConjuracao(nhBasico = 25, classe = MagicClassParser.parse("Comum"),
+            mana = NivelMana.NORMAL)
+        val r = s.heroiConjurar(outra, MagicEnergy.parse("2"), energiaInvestida = 2,
+            magiaNome = "Outra Magia", alvoId = "goblin")
+        assertFalse("com a mão carregada não se conjura outra mágica", r.sucesso)
+        assertTrue(r.texto.contains("carregada"))
+        assertTrue("e a mágica de toque continua na mão", s.toqueCarregado != null)
+    }
+
+    @Test
+    fun `dissipar a mao carregada LIBERA a conjuracao (C6 — acao livre)`() {
+        val s = sessao(7, distGoblin = 1)
+        val toque = ContextoConjuracao(nhBasico = 25, classe = MagicClassParser.parse("Toque"),
+            mana = NivelMana.NORMAL, mecanica = morteCandente(), tocando = true)
+        s.heroiConjurar(toque, MagicEnergy.parse("3"), energiaInvestida = 3,
+            magiaNome = "Morte Candente", alvoId = null)
+        s.dissiparToque()
+        assertTrue("dissipar esvazia a mão", s.toqueCarregado == null)
+        val outra = ContextoConjuracao(nhBasico = 25, classe = MagicClassParser.parse("Comum"),
+            mana = NivelMana.NORMAL)
+        val r = s.heroiConjurar(outra, MagicEnergy.parse("2"), energiaInvestida = 2,
+            magiaNome = "Outra Magia", alvoId = "goblin")
+        assertTrue("com a mão livre, conjurar volta a funcionar", r.sucesso)
+    }
+
+    @Test
+    fun `o mesmo buff NAO acumula — fica a versao mais forte (C7, Magia p9)`() {
+        val s = sessao(7)
+        val fraco = com.gurps.ficha.domain.magic.BuffAplicado(alvoId = "heroi", rotulo = "Escudo +1", bd = 1)
+        val forte = com.gurps.ficha.domain.magic.BuffAplicado(alvoId = "heroi", rotulo = "Escudo +4", bd = 4)
+        s.registrarMagiaAtiva("Escudo", "heroi", "heroi", 10, 1,
+            com.gurps.ficha.domain.magic.TipoDuracao.TEMPORARIA, false, buff = fraco)
+        assertEquals("primeiro buff entra", 1, s.heroi.buffBd)
+        s.registrarMagiaAtiva("Escudo", "heroi", "heroi", 10, 1,
+            com.gurps.ficha.domain.magic.TipoDuracao.TEMPORARIA, false, buff = forte)
+        assertEquals("o mais forte SUBSTITUI — não soma 1+4", 4, s.heroi.buffBd)
+        assertEquals("e só resta UMA instância ativa", 1,
+            s.magiasAtivas.count { it.magiaId == "Escudo" })
+    }
+
+    @Test
+    fun `relancar o MESMO buff mais fraco nao enfraquece o que ja esta ativo`() {
+        val s = sessao(7)
+        val forte = com.gurps.ficha.domain.magic.BuffAplicado(alvoId = "heroi", rotulo = "Escudo +4", bd = 4)
+        val fraco = com.gurps.ficha.domain.magic.BuffAplicado(alvoId = "heroi", rotulo = "Escudo +1", bd = 1)
+        s.registrarMagiaAtiva("Escudo", "heroi", "heroi", 10, 1,
+            com.gurps.ficha.domain.magic.TipoDuracao.TEMPORARIA, false, buff = forte)
+        s.registrarMagiaAtiva("Escudo", "heroi", "heroi", 10, 1,
+            com.gurps.ficha.domain.magic.TipoDuracao.TEMPORARIA, false, buff = fraco)
+        assertEquals("o fraco é ignorado, o forte permanece", 4, s.heroi.buffBd)
+    }
+
     // ── Lote MEC-27 (C2): só UMA mágica de Bloqueio por turno (Magia p.12) ──────────────────────
 
     @Test

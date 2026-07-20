@@ -102,12 +102,12 @@ Achados que ninguém tinha registrado antes:
 | C2 | ~~**Só UMA mágica de Bloqueio por turno**~~ ✅ **FEITO (Lote MEC-27)** | — |
 | C3 | ✅ **já correto no resultado** (o crítico anula toda a defesa). 🟡 Resta só o jogador poder **gastar PF** escolhendo bloqueio num crítico que já ia passar — desperdício, não erro de regra. | — |
 | C4 | ~~**Vontade−3 ao ser ferido/atordoado mantendo mágica de concentração**~~ ✅ **FEITO (Lote MEC-26)** — fracasso congela o tique do turno, falha crítica desfaz a mágica | — |
-| C5 | 🟡 **Não pode conjurar enquanto sustenta Toque ou Projétil** | Hoje dá para acumular mágicas |
-| C6 | 🟡 **Dissipar mágica sustentada é ação livre** | O jogador fica preso com a mão carregada |
-| C7 | 🟡 **Mágicas não acumulam** — só a mais poderosa conta (exceto cura, dano e permanentes) | Buffs repetidos podem somar hoje |
-| C8 | 🟡 **Cancelar mágica no meio custa 1 ponto** de energia | 0 ocorrências no código |
-| C9 | 🟡 **Custo mínimo** de algumas mágicas de Área | 0 ocorrências no código |
-| C10 | 🟡 Resistível: **optar por não resistir**; Área Resistível com **Abascanto em dobro** | Magia benéfica em aliado |
+| C5 | ~~**Não pode conjurar enquanto sustenta Toque**~~ ✅ **FEITO (Lote MEC-28)**. A metade do Projétil é **moot** — ele nunca fica sustentado (mesma causa da C1). | — |
+| C6 | ✅ **JÁ ESTAVA FEITO** — `dissiparToque()` existe, não gasta o turno e tem botão na UI. Listei por engano. | — |
+| C7 | ~~**Mágicas não acumulam**~~ ✅ **FEITO (Lote MEC-29)** — relançar troca pela mais forte em vez de somar | — |
+| C8 | ⛔ **SEM ONDE APLICAR** — não existe ação de cancelar mágica no app. Os únicos caminhos que encerram são os do MEC-23 (deixar acabar / não poder pagar), que por regra são **grátis**. Precisa antes de um botão de cancelar. | — |
+| C9 | ✅ **JÁ ESTAVA FEITO** — `custoTotal` faz `.coerceAtLeast(custo.minimo)`. Procurei `custoMinimo`, identificador errado. | — |
+| C10 | 🟡 **moot na prática** — "optar por não resistir" só importa com **aliados**, que o jogo não tem. O **Abascanto em dobro** na Área Resistível segue pendente. | — |
 | C11 | ⚪ Manter **só parte** da área, pagando proporcional; área não pode ser **expandida** depois | Menor |
 | C13 | 🟡 **Mágica Comum em alvo ADJACENTE não deveria ter redutor de distância** — a regra condiciona o redutor a *"se o operador não conseguir tocá-lo"*, mas `tocando` está fixo em `false`. Hoje tocar o alvo custa −1. | Achado ao investigar o relato do Toque (20/jul) |
 | C12 | ⚪ **Rituais alternativos** (omitir gestos/fala por −2/−4; caprichar por +1) — regra **opcional** | Menor |
