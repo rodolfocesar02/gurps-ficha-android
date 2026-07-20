@@ -3046,6 +3046,15 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - **Recomendação registrada** (maior valor × menor custo): Ataque Telegráfico (par do Enganoso), luta agarrada profunda (chaves/Mata-Leão estendendo o lote 422), Sangramento Grave + incapacitação de membro (item 5 do teste de batalha), Ataque Dedicado/Defensivo. Fora de escopo: posicional/hexágono, montaria, cinematográfico, dado de arma do NPC. Mudança só de documentação (não compila Kotlin).
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
+### Lote MEC-35 — 20 de Julho de 2026 (D1 FECHADO: mais 3 erros meus revertidos; placar final)
+**"mas ja esta corrigido?" — branch GURPS-Saga**
+- Fui fechar as 10 que faltavam e achei **mais um erro meu**: as **3 Metamorfose Parcial**. A `descricao` do JSON diz "Especial", mas o **corpo do livro** diz *"Metamorfose Parcial (MD) — **Comum; Resistível com Vontade**"* — segundo caso comprovado de **descrição corrompida** (o 1º foi a Bola de Relâmpagos). Revertidas para `Comum/R-Vont`, que era o valor **original** do catálogo.
+- ✅ **As outras 7 fecharam sem mudança**: Petrificação Parcial, Muralha de Relâmpagos e Transportar Outro no Tempo batem com a descrição (o apêndice discorda, mas ele é o que não se deve seguir); **Audição Remota** e **Conexão** eram **falso-positivo do meu casamento** — a 1ª é `Informação` nas três fontes e a 2ª casou com uma linha do **sumário** do livro.
+- 📊 **PLACAR FINAL DO D1 — 7 das 18 correções minhas estavam ERRADAS (39%)**. As 11 certas ficaram. É bem pior do que os 22% que eu havia estimado no MEC-34, porque na hora eu ainda não tinha conferido as 8 sem entrada direta.
+- 💡 **A regra que fica**: a `descricao` do JSON é boa fonte (o usuário está certo), **mas não é infalível** — 2 casos comprovados de linha de classe vinda da coluna vizinha. Quando a mudança altera regra em jogo, cruzar com o **corpo do PDF** é o que decide. O **apêndice não serve** para isso.
+- 🟢 Gate: **776 testes, ZERO falhas**.
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
 ### Lote MEC-34 — 20 de Julho de 2026 (D1 conferido contra o PDF: 4 erros meus revertidos)
 **"C:\...\GURPS 4ª Edição - Magia.pdf, mas nao confie na lista do apendice... a fonte da verdade é a descrição" — branch GURPS-Saga**
 - **O usuário estava certo nos dois pontos.** O apêndice tem erros: é ele que lista a **Morte Putrefata** como `Comum`, quando o **corpo da magia** diz *"Morte Putrefata (MD) — **Toque**; Resistível com HT"*. Meu índice inicial casava com o apêndice porque o nome do corpo tem sufixo "(MD)" — refeito para **ignorar linhas do apêndice** (terminam em `*`) e limpar sufixos.

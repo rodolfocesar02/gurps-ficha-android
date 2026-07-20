@@ -78,8 +78,8 @@ cujo efeito é `dano`/`condicao`/`cura` **é suspeito**.
 
 | # | O que está errado | Tamanho |
 |---|---|---|
-| D1 | ✅ **CONFERIDO CONTRA O PDF DO LIVRO (Lote MEC-34).** Extraí as 285 páginas com `fitz` e comparei **739 magias** pelo **corpo da magia** (não pelo apêndice, que o usuário avisou ter muitos erros — e tinha: era ele que dizia "Comum" para a Morte Putrefata, que no corpo é **Toque**). Resultado: o catálogo está **muito bom — só 6 divergências em 739**. Do meu MEC-32: **5 confirmadas certas**, **4 confirmadas ERRADAS e revertidas** (Anular Mágica, Decapitação, Dissipar Água, Bola de Relâmpagos), **8 sem entrada própria no PDF** (são referências cruzadas) e seguem por conferir. |
-| D1b | 🟡 **2 divergências pré-existentes** (não vieram do meu lote): **Audição Remota** (catálogo `Informação`, PDF `Comum`) e **Conexão** (catálogo `Área`, PDF `Encantamento` — mas o casamento veio do índice do livro, então é suspeito). Precisam de olhada individual. |
+| D1 | ✅ **FECHADO (Lotes MEC-34/35).** Conferido contra o **PDF do livro** (285 páginas, `fitz`), comparando **739 magias pelo CORPO** — nunca pelo apêndice, que o usuário avisou ter erros (e tinha: era ele que dizia "Comum" para a Morte Putrefata, que no corpo é **Toque**). **O catálogo está muito bom: 6 divergências em 739.** Do meu MEC-32, **7 das 18 estavam ERRADAS e foram revertidas** (Anular Mágica, Decapitação, Dissipar Água, Bola de Relâmpagos e as 3 Metamorfose Parcial); **11 confirmadas certas**. |
+| D1b | ✅ **Resolvido** — as 2 "divergências pré-existentes" eram **falso-positivo do meu casamento**: **Audição Remota** é `Informação` (campo, descrição e corpo do PDF concordam; o "Comum" vinha de uma tabela de referência cruzada) e **Conexão** casou com uma linha do **sumário**. Nada a corrigir. |
 
 > ⚠️ Cada caso exige ler a descrição: várias magias começam com referência cruzada ("Como Ilusão
 > Simples, mas…") em vez da linha de classe, então não dá para corrigir com regex.

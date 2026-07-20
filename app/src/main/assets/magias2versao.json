@@ -12272,7 +12272,7 @@
     "nome": "Metamorfose Parcial (Criaturas do Ar)",
     "dificuldade": "MD",
     "pagina": 34,
-    "classe": "Especial",
+    "classe": "Comum/R-Vont",
     "escola": [
       "Animais"
     ],
@@ -12292,7 +12292,7 @@
     "nome": "Metamorfose Parcial (Criaturas da Terra)",
     "dificuldade": "MD",
     "pagina": 34,
-    "classe": "Especial",
+    "classe": "Comum/R-Vont",
     "escola": [
       "Animais"
     ],
@@ -12312,7 +12312,7 @@
     "nome": "Metamorfose Parcial (Criaturas do Mar)",
     "dificuldade": "MD",
     "pagina": 34,
-    "classe": "Especial",
+    "classe": "Comum/R-Vont",
     "escola": [
       "Animais"
     ],
