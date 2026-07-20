@@ -659,11 +659,27 @@ class SagaCombatController(
      * Lote MEC-23: mágicas do herói esperando ele decidir se MANTÉM (paga PF) ou deixa acabar.
      * Manter é opcional em GURPS — antes o motor cobrava sozinho e a mágica nunca largava.
      */
-    val manutencaoPendente: List<com.gurps.ficha.domain.combat.CombatSession.ManutencaoPendente>
-        get() = sessao?.manutencaoPendente.orEmpty()
+    /**
+     * Lote MEC-30: espelho OBSERVÁVEL da fila de manutenção do motor.
+     *
+     * Bug que isto corrige (achado no aparelho): o card "Manter X?" **não sumia** ao escolher, e
+     * travava a tela inteira. A causa é a mesma do TESTE-1c: no motor a lista é um `var` comum, e
+     * mutar um campo DENTRO da sessão não notifica o Compose — só a troca da referência de `sessao`
+     * notificaria. Pior no "Deixar acabar": ele não muda mais nada, então nem o `estado` (que é
+     * observável) mudava de valor, e sem mudança não há recomposição.
+     */
+    var manutencaoPendente by mutableStateOf<List<com.gurps.ficha.domain.combat.CombatSession.ManutencaoPendente>>(emptyList())
+        private set
+
+    /** Ressincroniza o espelho a partir do motor. Chamado sempre que o estado é publicado. */
+    private fun sincronizarManutencao() {
+        val doMotor = sessao?.manutencaoPendente.orEmpty()
+        if (doMotor != manutencaoPendente) manutencaoPendente = doMotor
+    }
 
     fun resolverManutencao(magiaId: String, manter: Boolean) {
         sessao?.resolverManutencao(magiaId, manter)
+        publicarLog()
         atualizarEstado()
     }
 
@@ -1492,6 +1508,7 @@ class SagaCombatController(
         sessao = null; estado = null; defesaPendente = null; logPublicado = 0; finalizado = false
         estadoTatico = null; avisoTatico = null // Lote TOK-4: limpa a grade tática
         viradaFinalPendente = null // HEX-FACING-2: pendência não pode vazar para a próxima luta
+        manutencaoPendente = emptyList() // MEC-30: idem — card de manutenção preso travaria a tela
     }
 
     // ── Loop de turnos ────────────────────────────────────────────────────────
@@ -1647,6 +1664,9 @@ class SagaCombatController(
     }
 
     private fun atualizarEstado() {
+        // Lote MEC-30: o espelho observável precisa ser ressincronizado ANTES do early-return, senão
+        // ao encerrar o combate a fila de manutenção ficaria presa na tela.
+        sincronizarManutencao()
         val s = sessao ?: run { estado = null; return }
         // Lote TOK-4: reprojeta a grade tática a partir do encounter (Encontrão/Empurrão/Projeção/
         // Mover do NPC mudaram distâncias; mortos saem). Roda ANTES de montar o CombatUiState.

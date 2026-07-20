@@ -3046,6 +3046,16 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - **Recomendação registrada** (maior valor × menor custo): Ataque Telegráfico (par do Enganoso), luta agarrada profunda (chaves/Mata-Leão estendendo o lote 422), Sangramento Grave + incapacitação de membro (item 5 do teste de batalha), Ataque Dedicado/Defensivo. Fora de escopo: posicional/hexágono, montaria, cinematográfico, dado de arma do NPC. Mudança só de documentação (não compila Kotlin).
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
+### Lote MEC-30 — 20 de Julho de 2026 (BUG: o card "Manter?" não saía da tela e travava tudo)
+**Print do aparelho: "o pop-up nao sai da tela, mesmo eu escolhendo 1 opção... nao consigo selecionar NPC nem o heroi" — branch GURPS-Saga**
+- 🔴 **Regressão do MEC-23, achada no teste.** O card de manutenção ficava preso e **bloqueava a tela inteira** (ele é modal e tem `return` antes do resto dos overlays).
+- **Causa — a MESMA do TESTE-1c**: no motor, `manutencaoPendente` é um `var` comum. Mutar um campo **dentro** da sessão **não notifica o Compose**; só a troca da referência de `sessao` notificaria. E o controller expunha por getter (`get() = sessao?.manutencaoPendente`), o que dá a ilusão de reatividade sem tê-la.
+- **Por que "Deixar acabar" travava pior**: essa opção não muda mais nada no `CombatUiState`. Como o `estado` é `mutableStateOf` com igualdade estrutural, o objeto novo era **igual** ao antigo → sem notificação → sem recomposição → card eterno.
+- **Corrigido** com espelho **observável** no controller (`mutableStateOf`), ressincronizado dentro de `atualizarEstado()` — **antes** do early-return, senão encerrar o combate deixaria a fila presa. E `encerrarManual` passa a limpá-lo, para não vazar para a luta seguinte (mesmo cuidado do `viradaFinalPendente`).
+- ⚠️ **Limite honesto**: este bug **não é pegável** pelos 773 testes — é reatividade de Compose na camada de ViewModel, exatamente a lacuna medida no TESTE-C (e o motivo de o Robolectric ter sido descartado). Só o teste no aparelho pega. É a **segunda vez** que esse padrão morde; a lição é que **getter sobre campo mutável do motor não é estado observável**.
+- 🟢 Gate: **773 testes, ZERO falhas** (sem teste novo — não há como cobrir isto na JVM).
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
 ### Lotes MEC-28 e MEC-29 — 20 de Julho de 2026 (C5 a C10: dois feitos, dois já prontos, dois sem onde aplicar)
 **"e depois vamos do c5 a c10?" — branch GURPS-Saga**
 - ✅ **C5 (MEC-28)**: com a mão CARREGADA por mágica de Toque, o operador *"não pode fazer outras mágicas"*. Guarda no topo do `heroiConjurar`. A metade do **Projétil** da mesma regra é **moot** — ele nunca fica sustentado (mesma causa da C1 bloqueada).
