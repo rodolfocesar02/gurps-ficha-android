@@ -1010,7 +1010,7 @@
     "nome": "Anular Mágica",
     "dificuldade": "D",
     "pagina": 126,
-    "classe": "Comum/R-Mágica",
+    "classe": "Área/R-Mágica",
     "escola": [
       "Metamágica"
     ],
@@ -6085,7 +6085,7 @@
     "nome": "Decapitação",
     "dificuldade": "MD",
     "pagina": 42,
-    "classe": "Toque/R-HT+2",
+    "classe": "Comum/R-HT+2",
     "escola": [
       "Corpo"
     ],
@@ -6837,7 +6837,7 @@
     "nome": "Dissipar Água",
     "dificuldade": "D",
     "pagina": 185,
-    "classe": "Comum",
+    "classe": "Área",
     "escola": [
       "Água"
     ],

@@ -3046,6 +3046,19 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - **Recomendação registrada** (maior valor × menor custo): Ataque Telegráfico (par do Enganoso), luta agarrada profunda (chaves/Mata-Leão estendendo o lote 422), Sangramento Grave + incapacitação de membro (item 5 do teste de batalha), Ataque Dedicado/Defensivo. Fora de escopo: posicional/hexágono, montaria, cinematográfico, dado de arma do NPC. Mudança só de documentação (não compila Kotlin).
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
+### Lote MEC-34 — 20 de Julho de 2026 (D1 conferido contra o PDF: 4 erros meus revertidos)
+**"C:\...\GURPS 4ª Edição - Magia.pdf, mas nao confie na lista do apendice... a fonte da verdade é a descrição" — branch GURPS-Saga**
+- **O usuário estava certo nos dois pontos.** O apêndice tem erros: é ele que lista a **Morte Putrefata** como `Comum`, quando o **corpo da magia** diz *"Morte Putrefata (MD) — **Toque**; Resistível com HT"*. Meu índice inicial casava com o apêndice porque o nome do corpo tem sufixo "(MD)" — refeito para **ignorar linhas do apêndice** (terminam em `*`) e limpar sufixos.
+- **Método**: PDF de **285 páginas** extraído com `fitz`, índice `nome → classe da linha seguinte`, comparado com as 879 do catálogo. **739 casaram pelo corpo da magia.**
+- 📊 **O catálogo está muito melhor do que minha varredura sugeria: só 6 divergências em 739.**
+- 🔴 **Quatro correções MINHAS do MEC-32 estavam ERRADAS e foram revertidas**: **Anular Mágica** (é Área, eu pus Comum), **Decapitação** (é Comum, eu pus Toque), **Dissipar Água** (é Área, eu pus Comum) e **Bola de Relâmpagos** (é Projétil, eu pus Área — já corrigida no MEC-33).
+- ✅ **Cinco confirmadas certas**: Extinguir Fogo, Retardar Fogo, Sopro de Vapor, Teia de Aranha e Controle de Elemental Ar.
+- 🟡 **Oito sem entrada própria no PDF** (aparecem só como referência cruzada "Como listada em…"): as 3 Metamorfose Parcial, 3 Controle de Elemental, Petrificação Parcial, Muralha de Relâmpagos e Transportar Outro no Tempo. Seguem aplicadas **por conferir**.
+- 🟡 **Duas divergências PRÉ-EXISTENTES** (não vieram do meu lote): Audição Remota e Conexão — registradas como D1b.
+- 💡 **A lição do dia, agora com evidência**: eu fechei o MEC-32 com **uma** fonte e declarei 18 correções. Cruzando com o livro, **4 estavam erradas** — 22% de erro. Quando a mudança altera regra em jogo, **uma fonte não basta**.
+- 🟢 Gate: **776 testes, ZERO falhas**.
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
 ### Lote MEC-33 — 20 de Julho de 2026 (o usuário provou que a fonte do D1 é falível)
 **Foto do livro: "Bola de Relâmpagos — Projétil", print do app: "Comum", meu D1: "Área" — branch GURPS-Saga**
 - 🔴 **ERREI no MEC-32, e a foto do livro provou.** Eu usei a **1ª linha da `descricao`** como classe oficial. Para a Bola de Relâmpagos essa linha diz **"Área"** — mas o livro diz **"Projétil"**. A descrição está **corrompida**: a extração pegou a linha de classe da **coluna vizinha** (o problema de PDF de duas colunas que o próprio usuário havia me alertado quando ofereceu o livro).
