@@ -3046,6 +3046,15 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - **Recomendação registrada** (maior valor × menor custo): Ataque Telegráfico (par do Enganoso), luta agarrada profunda (chaves/Mata-Leão estendendo o lote 422), Sangramento Grave + incapacitação de membro (item 5 do teste de batalha), Ataque Dedicado/Defensivo. Fora de escopo: posicional/hexágono, montaria, cinematográfico, dado de arma do NPC. Mudança só de documentação (não compila Kotlin).
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
+### Lote MEC-31 — 20 de Julho de 2026 (modo BONECO também não RESISTE)
+**"agora vc tirou a opção de manter? quando acertei a magia, nao apareceu o pop-up" — log do aparelho, branch GURPS-Saga**
+- ✅ **Não era regressão.** O log do usuário mostra a resposta: *"ACERTA! Goblin 2 **RESISTE** (resistência 10) — a mágica se dissipa."* A Morte Candente é `R-HT`; resistiu → nada fica ativo → nada a manter. Comportamento **correto** pela regra (Magia p.13: resistível só funciona automaticamente em sucesso decisivo).
+- 🟡 **Mas havia uma incoerência real no modo de teste**: o **Boneco** promete *"não agem nem defendem"* e o goblin continuava **resistindo**, então testar Morte Candente virava loteria — errar o toque, ou acertar e o alvo resistir. Corrigido: no Boneco o alvo **também não resiste** (`npcResistiu`, nos 4 pontos de disputa). Rótulo atualizado para "não agem, não defendem e não resistem".
+- **Escopo preservado**: resistência **não é** defesa ativa pela regra; a mudança vale **só no sandbox** (`ModoTesteNpc.BONECO`), nunca em campanha. O **Congelado continua resistindo** — e há teste de controle provando isso, para o modo não virar sinônimo do outro.
+- 🐛 **Meu teste passou por vacuidade e o controle pegou**: escrevi os dois casos com **NH 25**, e com margem tão alta o alvo praticamente nunca vence a disputa — então "nenhuma resistência no Boneco" era verdade **por acidente**. O teste do Congelado falhou justamente por isso e denunciou o cenário fraco. Baixei para **NH 12** (perto do NH 14 real do usuário) e ampliei a varredura; aí os dois passam **medindo o que deveriam**.
+- 🟢 Gate: **775 testes, ZERO falhas**.
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
 ### Lote MEC-30 — 20 de Julho de 2026 (BUG: o card "Manter?" não saía da tela e travava tudo)
 **Print do aparelho: "o pop-up nao sai da tela, mesmo eu escolhendo 1 opção... nao consigo selecionar NPC nem o heroi" — branch GURPS-Saga**
 - 🔴 **Regressão do MEC-23, achada no teste.** O card de manutenção ficava preso e **bloqueava a tela inteira** (ele é modal e tem `return` antes do resto dos overlays).

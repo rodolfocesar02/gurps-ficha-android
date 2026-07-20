@@ -151,7 +151,7 @@ enum class ModoTesteNpc(val rotulo: String, val descricao: String) {
      * jogada de acerto e pode errar. Tirar essa jogada esconderia bug no caminho de acerto, que é
      * justamente o que se quer validar.
      */
-    BONECO("Boneco", "não agem nem defendem (você ainda pode errar o ataque)"),
+    BONECO("Boneco", "não agem, não defendem e não resistem (você ainda pode errar o ataque)"),
 }
 
 /**

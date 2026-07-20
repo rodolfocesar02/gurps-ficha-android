@@ -821,6 +821,44 @@ class MagicCombatTest {
         assertEquals(20, MagicMechanics.danoDaExplosao(20, distanciaM = 5, divisorPorMetro = 0))
     }
 
+    // ── Lote MEC-31: no modo BONECO o alvo também não RESISTE ───────────────────────────────────
+
+    @Test
+    fun `no modo BONECO a magia resistivel NUNCA e resistida`() {
+        // Relato do aparelho: em Boneco, a Morte Candente acertava e o goblin RESISTIA, dissipando
+        // a mágica — então testar manutenção virava loteria. O modo promete "não defendem"; para a
+        // arena de teste, resistir é a mesma coisa.
+        var houveResistencia = false
+        for (seed in 0L until 120L) {
+            val s = sessao(seed, distGoblin = 1)
+            s.modoTesteNpc = ModoTesteNpc.BONECO
+            val ctx = ContextoConjuracao(nhBasico = 12, classe = MagicClassParser.parse("Toque/R-HT"),
+                mana = NivelMana.NORMAL, mecanica = morteCandente(), tocando = true)
+            s.heroiConjurar(ctx, MagicEnergy.parse("3"), energiaInvestida = 3,
+                magiaNome = "Morte Candente", alvoId = null)
+            s.heroiEntregarToque("goblin")
+            if (s.log.any { it.contains("RESISTE") }) houveResistencia = true
+        }
+        assertFalse("no Boneco nada pode resistir", houveResistencia)
+    }
+
+    @Test
+    fun `no modo CONGELADO a resistencia CONTINUA valendo`() {
+        // O contraste importa: Congelado só desliga a AÇÃO do NPC, não a regra.
+        var houveResistencia = false
+        for (seed in 0L until 120L) {
+            val s = sessao(seed, distGoblin = 1)
+            s.modoTesteNpc = ModoTesteNpc.CONGELADO
+            val ctx = ContextoConjuracao(nhBasico = 12, classe = MagicClassParser.parse("Toque/R-HT"),
+                mana = NivelMana.NORMAL, mecanica = morteCandente(), tocando = true)
+            s.heroiConjurar(ctx, MagicEnergy.parse("3"), energiaInvestida = 3,
+                magiaNome = "Morte Candente", alvoId = null)
+            s.heroiEntregarToque("goblin")
+            if (s.log.any { it.contains("RESISTE") }) { houveResistencia = true; break }
+        }
+        assertTrue("congelado ainda resiste em alguma das 60 tentativas", houveResistencia)
+    }
+
     // ── Lote MEC-28 (C5) e MEC-29 (C7) ──────────────────────────────────────────────────────────
 
     @Test

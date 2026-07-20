@@ -1137,7 +1137,8 @@ class CombatSession(
                 if (r.exigeResistencia && alvo != null && ctx.classe.resistencia != null) {
                     val resist = resistenciaDoAlvo(alvo, ctx.classe.resistencia!!)
                     val rr = MagicCasting.resolverResistencia(nhEf.valor, rol, resist, rolar3d6(), regraDo16 = true)
-                    alvoResistiu = rr.alvoResistiu
+                    // MEC-31: no modo BONECO nada resiste.
+                    alvoResistiu = npcResistiu(rr.alvoResistiu) // MEC-31
                     sb.append(if (alvoResistiu) " ${alvo.nome} RESISTE (resistência $resist)."
                               else " ${alvo.nome} não resiste (resistência $resist).")
                 }
@@ -1249,7 +1250,7 @@ class CombatSession(
                 val atingidos = mutableListOf<Combatente>(); val resistiram = mutableListOf<String>()
                 for (a in alvos) {
                     val resiste = r.exigeResistencia && ctx.classe.resistencia != null &&
-                        MagicCasting.resolverResistencia(nhEf.valor, rol, resistenciaDoAlvo(a, ctx.classe.resistencia!!), rolar3d6(), regraDo16 = true).alvoResistiu
+                        npcResistiu(MagicCasting.resolverResistencia(nhEf.valor, rol, resistenciaDoAlvo(a, ctx.classe.resistencia!!), rolar3d6(), regraDo16 = true).alvoResistiu)
                     if (resiste) resistiram.add(a.nome) else atingidos.add(a)
                 }
                 if (alvos.isEmpty()) sb.append(" Nenhum inimigo na área.")
@@ -1329,7 +1330,7 @@ class CombatSession(
             // 2º teste do operador (Magia p.12) vs a resistência do alvo.
             val resist = resistenciaDoAlvo(alvo, resistencia)
             val rr = MagicCasting.resolverResistencia(t.nhEfetivoCast, rolar3d6(), resist, rolar3d6(), regraDo16 = true)
-            resistiu = rr.alvoResistiu
+            resistiu = npcResistiu(rr.alvoResistiu) // MEC-31
             if (resistiu) sb.append(" ${alvo.nome} RESISTE (resistência $resist) — a mágica se dissipa.")
             else sb.append(" ${alvo.nome} não resiste (resistência $resist).")
         }
@@ -2673,6 +2674,17 @@ class CombatSession(
      * quando. Foi exatamente o bug que o teste pegou; no aparelho apareceria como "botei Boneco e
      * mesmo assim ele esquivou".
      */
+    /**
+     * Lote MEC-31: no modo BONECO o alvo também **não resiste**.
+     *
+     * Motivo (teste do usuário): o modo promete *"não agem nem defendem"*, mas o goblin ainda vencia
+     * a disputa de resistência e dissipava a mágica — então testar Morte Candente virava loteria
+     * (errar o toque, ou acertar e o alvo resistir). Resistência não é defesa ATIVA pela regra, mas
+     * na arena de teste a intenção é a mesma: nada bloqueia. Só vale no sandbox.
+     */
+    private fun npcResistiu(resistiuDeVerdade: Boolean): Boolean =
+        modoTesteNpc != ModoTesteNpc.BONECO && resistiuDeVerdade
+
     private fun npcSeDefendeu(valor: Int, rolagem: Int): Boolean =
         modoTesteNpc != ModoTesteNpc.BONECO && CombatResolver.defesaBemSucedida(valor, rolagem)
 
