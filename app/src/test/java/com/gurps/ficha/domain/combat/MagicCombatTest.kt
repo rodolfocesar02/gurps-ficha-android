@@ -821,6 +821,84 @@ class MagicCombatTest {
         assertEquals(20, MagicMechanics.danoDaExplosao(20, distanciaM = 5, divisorPorMetro = 0))
     }
 
+    // ── Lote MEC-26 (C4): apanhar abala a concentração de mágica mantida ────────────────────────
+    // Magia p.10: "Se for distraído, sofrer uma lesão ou ficar atordoado, ele deverá fazer um teste
+    // de Vontade com penalidade igual a -3. O fracasso não encerra a mágica, mas ela permanecerá
+    // exatamente como estava... A falha crítica encerra a mágica."
+
+    @Test
+    fun `sem levar dano nem atordoar, a concentracao NAO e testada`() {
+        // Trava o gatilho: testar sempre seria punir o mago sem motivo.
+        val s = comMorteCandenteAtiva()
+        repeat(3) {
+            s.heroi.choquePendente = 0
+            s.heroi.condicoes.remove(Condicao.ATORDOADO)
+            s.avancarTurno()
+            s.manutencaoPendente.toList().forEach { p -> s.resolverManutencao(p.magiaId, manter = true) }
+        }
+        assertTrue("não pode haver teste de concentração sem gatilho",
+            s.log.none { it.contains("concentração") })
+    }
+
+    /**
+     * Avança turnos remarcando o gatilho a cada passo. Necessário porque o abalo só é avaliado no
+     * fim do turno do HERÓI — e depois de descarregar o toque o turno já passou para o inimigo.
+     */
+    private fun avancarComGatilho(s: CombatSession, turnos: Int = 4, atordoar: Boolean = false) {
+        repeat(turnos) {
+            if (atordoar) s.heroi.condicoes.add(Condicao.ATORDOADO) else s.heroi.choquePendente = 5
+            s.avancarTurno()
+            s.manutencaoPendente.toList().forEach { p -> s.resolverManutencao(p.magiaId, manter = true) }
+        }
+    }
+
+    @Test
+    fun `levar dano DISPARA o teste de concentracao (Vontade-3)`() {
+        val s = comMorteCandenteAtiva()
+        avancarComGatilho(s)
+        assertTrue("apanhar tem que disparar o teste de Vontade−3",
+            s.log.any { it.contains("Vontade−3") })
+    }
+
+    @Test
+    fun `estar ATORDOADO tambem dispara o teste`() {
+        val s = comMorteCandenteAtiva()
+        s.heroi.choquePendente = 0
+        avancarComGatilho(s, atordoar = true)
+        assertTrue(s.log.any { it.contains("Vontade−3") && it.contains("atordoado") })
+    }
+
+    @Test
+    fun `os dois desfechos do abalo existem — congelar sem encerrar e falha critica desfazendo`() {
+        // Agregado em vez de por-sessão: uma mesma luta pode congelar num turno e a mágica sair
+        // depois por OUTRO motivo (a vítima quebrá-la com sucesso decisivo, MEC-22). Asserção
+        // por-sessão abortava nesse cruzamento e escondia o caso raro que eu queria provar.
+        var congeladas = 0; var desfeitas = 0; var mantidas = 0
+        var congelouSemEncerrar = 0
+        for (seed in 0L until 400L) {
+            val s = sessao(seed, distGoblin = 1)
+            val ctx = ContextoConjuracao(nhBasico = 25, classe = MagicClassParser.parse("Toque"),
+                mana = NivelMana.NORMAL, mecanica = morteCandente(), tocando = true)
+            s.heroiConjurar(ctx, MagicEnergy.parse("3"), energiaInvestida = 3,
+                magiaNome = "Morte Candente", alvoId = null)
+            s.heroiEntregarToque("goblin")
+            if (s.magiasAtivas.none { it.magiaId == "Morte Candente" }) continue
+            avancarComGatilho(s, turnos = 3)
+            val cong = s.log.count { it.contains("CONGELADA") }
+            val desf = s.log.count { it.contains("se DESFAZ") }
+            congeladas += cong; desfeitas += desf
+            mantidas += s.log.count { it.contains("mantém a concentração") }
+            // O invariante do fracasso: congelou e NÃO houve falha crítica → a mágica sobrevive.
+            if (cong > 0 && desf == 0 && s.magiasAtivas.any { it.magiaId == "Morte Candente" }) {
+                congelouSemEncerrar++
+            }
+        }
+        assertTrue("o fracasso (congelar) tem que acontecer", congeladas > 0)
+        assertTrue("e congelar NÃO pode encerrar a mágica", congelouSemEncerrar > 0)
+        assertTrue("a falha crítica (desfazer) tem que acontecer", desfeitas > 0)
+        assertTrue("e o sucesso (manter a concentração) também", mantidas > 0)
+    }
+
     // ── Lote MEC-24: quem já tem dano curado NÃO oferece o toggle genérico ──────────────────────
 
     @Test

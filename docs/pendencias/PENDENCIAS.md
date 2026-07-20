@@ -98,10 +98,10 @@ Achados que ninguém tinha registrado antes:
 
 | # | Regra que falta | Por que importa |
 |---|---|---|
-| C1 | 🔴 **Teste de Vontade ao ser FERIDO sustentando um projétil** — falhando, *"o projétil o afeta imediatamente"* | O mago segura uma Bola de Fogo, apanha, e hoje nada acontece |
+| C1 | ⛔ **BLOQUEADA** — *"teste de Vontade ao ser ferido sustentando um projétil"*. **Não tem quando disparar**: o motor conjura e arremessa o projétil no MESMO turno; nunca existe projétil sustentado. Depende do deferido **"Projétil carregado em vários turnos"**. Implementar hoje seria código morto. | — |
 | C2 | 🔴 **Só UMA mágica de Bloqueio por turno** | Sem isso, defesa mágica ilimitada |
 | C3 | 🔴 **Bloqueio não vale contra golpe fulminante** | O crítico deveria passar |
-| C4 | 🔴 **Vontade−3 ao ser ferido/atordoado mantendo mágica de concentração** — fracasso congela o efeito, falha crítica encerra | Irmã da C1; hoje manter é imune a dano |
+| C4 | ~~**Vontade−3 ao ser ferido/atordoado mantendo mágica de concentração**~~ ✅ **FEITO (Lote MEC-26)** — fracasso congela o tique do turno, falha crítica desfaz a mágica | — |
 | C5 | 🟡 **Não pode conjurar enquanto sustenta Toque ou Projétil** | Hoje dá para acumular mágicas |
 | C6 | 🟡 **Dissipar mágica sustentada é ação livre** | O jogador fica preso com a mão carregada |
 | C7 | 🟡 **Mágicas não acumulam** — só a mais poderosa conta (exceto cura, dano e permanentes) | Buffs repetidos podem somar hoje |

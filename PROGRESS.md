@@ -3046,6 +3046,16 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - **Recomendação registrada** (maior valor × menor custo): Ataque Telegráfico (par do Enganoso), luta agarrada profunda (chaves/Mata-Leão estendendo o lote 422), Sangramento Grave + incapacitação de membro (item 5 do teste de batalha), Ataque Dedicado/Defensivo. Fora de escopo: posicional/hexágono, montaria, cinematográfico, dado de arma do NPC. Mudança só de documentação (não compila Kotlin).
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
+### Lote MEC-26 — 20 de Julho de 2026 (C4: apanhar abala a concentração) — e C1 estava BLOQUEADA
+**"faz C1 e C4 juntas!" — branch GURPS-Saga**
+- ⛔ **A C1 não pôde ser feita, e o motivo só apareceu ao ir implementar**: a regra é *"se sofrer uma lesão enquanto **sustenta o projétil**, teste de Vontade; falhando, o projétil o afeta imediatamente"*. Mas o motor **conjura e arremessa o projétil no MESMO turno** — **nunca existe projétil sustentado**. Implementar seria código morto. Ela depende do deferido "Projétil carregado em vários turnos". Registrada como **BLOQUEADA com a dependência nomeada**, não como pendência solta.
+- ✅ **C4 feita** (Magia p.10): mágica que exige concentração é abalada quando o operador **apanha** ou fica **atordoado** → **Vontade−3**. Fracasso **congela** (a mágica não avança nem fere naquele turno, mas **não acaba**); **falha crítica desfaz**. Sucesso segue normal. Alvo real: a Morte Candente exige concentração desde o MEC-22.
+- 🐛 **Bug de ordem que o teste pegou**: eu chequei o abalo **depois** de `anterior.choquePendente = 0` — o gatilho "sofreu uma lesão" já tinha sido apagado e o teste nunca disparava. Movido para antes do reset, com comentário explicando por quê.
+- 🐛 **Dois erros meus no próprio teste**, ambos achados por instrumentação em vez de chute: (1) o laço reusava as mesmas 40 seeds, então as 200 iterações eram **idênticas** e a falha crítica (que exige 17–18) não podia aparecer; (2) a asserção **por sessão** abortava quando uma luta congelava num turno e a mágica saía depois por **outro** motivo (a vítima quebrando-a com sucesso decisivo, do MEC-22). Reescrito como **agregado** sobre 400 seeds, que é o formato que o diagnóstico provou: 219 congelamentos, 4 falhas críticas, 41 sucessos.
+- **+4 testes**: sem gatilho não há teste (não punir o mago à toa); dano dispara; atordoamento dispara; e os três desfechos existem.
+- 🟢 Gate: **766 testes, ZERO falhas**.
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
 ### Lote MEC-25 — 20 de Julho de 2026 (Aptidão Mágica destrava o teto de energia) + fila montada
 **"sim, e ja coloque na fila as pendencias necessarias!" — branch GURPS-Saga**
 - **O caso raro em que eu errei para o lado RESTRITIVO.** O MEC-9 travava a energia no teto da magia ("1 a 4" → 4). Magia p.9 diz: *"o limite superior é determinado pelo **maior número possível entre os níveis da mágica ou o nível de Aptidão Mágica** do operador"*, com exemplo literal: **Cura Profunda (1 a 4) com Aptidão 10 vai a 10 níveis** (2 a 20 PV). Agora vale `max(faixa, Aptidão)`.

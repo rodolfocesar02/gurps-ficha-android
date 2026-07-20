@@ -36,7 +36,7 @@
 | Manter **não exige tempo nem teste**; distância não importa | ✅ |
 | Manter é **opcional** | ✅ **MEC-23** |
 | *"A redução por NH alto **também vale para a manutenção**, podendo zerá-la"* | ✅ |
-| 🔴 *"Mágica que exige manipulação constante pede manobra **Concentrar**. Se distraído, **ferido** ou **atordoado**, teste de **Vontade−3**. Fracasso **congela** o efeito; **falha crítica encerra** a mágica"* | ❌ não implementado |
+| *"Mágica que exige manipulação constante pede manobra **Concentrar**. Se distraído, **ferido** ou **atordoado**, teste de **Vontade−3**. Fracasso **congela** o efeito; **falha crítica encerra** a mágica"* | ✅ **FEITO (Lote MEC-26)** |
 | *"Fazer outra operação mágica **não** interrompe a concentração"* (só penaliza o NH) | ✅ (penalidade por mágicas ativas existe) |
 | *"Cancelar de repente custa **1 ponto** de energia"* | ❌ não implementado — 0 ocorrências |
 | *"Área variável **não pode ser expandida** depois de operada; pode-se manter **só parte** da área, pagando proporcional"* | ❌ |

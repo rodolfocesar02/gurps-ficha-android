@@ -2304,9 +2304,58 @@ class CombatSession(
      * naquele turno; em um sucesso decisivo, a mágica está quebrada."* A Morte Putrefata troca o dado
      * por **6 pontos** na falha crítica. **RD não protege** em nenhuma das duas.
      */
-    private fun tiquePorTurnoDasMagias() {
+    /**
+     * Lote MEC-26 (C4, Magia p.10 "Concentração e Manutenção"): mágica que exige concentração
+     * contínua é abalada quando o operador apanha ou é atordoado.
+     *
+     * Regra literal: *"Se for distraído, **sofrer uma lesão** ou ficar **atordoado**, ele deverá
+     * fazer um teste de **Vontade com uma penalidade igual a −3**. O **fracasso não encerra** a
+     * mágica, mas ela permanecerá **exatamente como estava** e não irá se alterar até que ele possa
+     * se concentrar novamente. A **falha crítica encerra** a mágica."*
+     *
+     * Traduzido para o motor: fracasso **congela** o tique deste turno (a mágica não avança nem
+     * fere); falha crítica **derruba** a mágica. Sucesso segue normal.
+     *
+     * @return ids das mágicas CONGELADAS neste turno (o tique as pula).
+     */
+    private fun abaloDeConcentracao(): Set<String> {
+        val comConcentracao = magiasAtivas.filter { it.exigeConcentracao && it.operadorId == "heroi" }
+        if (comConcentracao.isEmpty()) return emptySet()
+        // O gatilho: levou dano desde o próprio turno anterior, ou está atordoado.
+        val feriu = heroi.choquePendente > 0
+        val atordoado = Condicao.ATORDOADO in heroi.condicoes
+        if (!feriu && !atordoado) return emptySet()
+
+        val congeladas = mutableSetOf<String>()
+        val derrubadas = mutableListOf<com.gurps.ficha.domain.magic.MagiaAtivaNoCombate>()
+        val motivo = if (atordoado) "atordoado" else "ferido"
+        for (m in comConcentracao) {
+            val alvo = heroiPerfil.vontade - 3
+            val rol = rolar3d6()
+            when {
+                CriticoRules.classificar(rol, alvo) == CriticoRules.ResultadoCritico.FALHA_CRITICA -> {
+                    derrubadas.add(m)
+                    log += "💥 $motivo — FALHA CRÍTICA de concentração (Vontade−3 $alvo, rolou $rol): ${m.magiaId} se DESFAZ."
+                }
+                rol > alvo -> {
+                    congeladas.add(m.magiaId)
+                    log += "😖 $motivo — você perde a concentração (Vontade−3 $alvo, rolou $rol): ${m.magiaId} fica CONGELADA neste turno."
+                }
+                else -> log += "🧘 Mesmo $motivo, você mantém a concentração em ${m.magiaId} (Vontade−3 $alvo, rolou $rol)."
+            }
+        }
+        if (derrubadas.isNotEmpty()) {
+            derrubadas.forEach { removerBuffDe(it) }
+            magiasAtivas = magiasAtivas.filter { a -> derrubadas.none { it === a } }
+        }
+        return congeladas
+    }
+
+    private fun tiquePorTurnoDasMagias(congeladas: Set<String> = emptySet()) {
         val comTique = magiasAtivas.filter {
-            com.gurps.ficha.domain.magic.MagicMechanics.temTiquePorTurno(it.mecanica)
+            com.gurps.ficha.domain.magic.MagicMechanics.temTiquePorTurno(it.mecanica) &&
+                // MEC-26: mágica congelada por perda de concentração NÃO avança nem fere neste turno.
+                it.magiaId !in congeladas
         }
         if (comTique.isEmpty()) return
         val quebradas = mutableListOf<com.gurps.ficha.domain.magic.MagiaAtivaNoCombate>()
@@ -2397,6 +2446,12 @@ class CombatSession(
         encounter.combatentes.filter { Condicao.DORMINDO in it.condicoes && it.choquePendente > 0 }.forEach {
             it.condicoes.remove(Condicao.DORMINDO); log += "• ${it.nome} ACORDA com o golpe."
         }
+        // Lote MEC-26 (C4): o abalo de concentração precisa rodar ANTES do reset do choque logo
+        // abaixo — senão o gatilho "sofreu uma lesão" já foi apagado e o teste nunca dispara.
+        // (Foi exatamente esse o bug: o teste ficava vermelho porque eu chequei tarde demais.)
+        val congeladasPorAbalo =
+            if (anterior.ehHeroi && magiasAtivas.isNotEmpty()) abaloDeConcentracao() else emptySet()
+
         // Choque (Lote 382): expira ao fim do turno de quem agiu (valeu só no turno seguinte ao ferimento).
         anterior.choquePendente = 0
         // Lote MEC-6: buff de UM ÚNICO USO some ao fim da PRÓXIMA ação do dono. O turno em que foi
@@ -2408,7 +2463,7 @@ class CombatSession(
         // (do PF do herói) e expira as duradouras (MagicActive, MB Magia p.9-10).
         // Lote MEC-22: mágicas que FEREM A CADA TURNO (Morte Candente, Morte Putrefata) resolvem
         // aqui, antes do relógio de manutenção — a vítima testa e pode quebrar a mágica.
-        if (anterior.ehHeroi && magiasAtivas.isNotEmpty()) tiquePorTurnoDasMagias()
+        if (anterior.ehHeroi && magiasAtivas.isNotEmpty()) tiquePorTurnoDasMagias(congeladasPorAbalo)
 
         if (anterior.ehHeroi && magiasAtivas.isNotEmpty()) {
             val res = MagicActive.avancarTurnoSegundos(magiasAtivas, 1)
