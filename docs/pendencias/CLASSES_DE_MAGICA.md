@@ -1,4 +1,54 @@
-# CLASSES DE MÁGICAS (Magia p.11–14) — regra × implementação
+# PRINCÍPIOS DA MAGIA (Magia p.5–15) — regra × implementação
+
+> **Cobertura:** o capítulo 1 inteiro do livro de Magia (**11 páginas, 5 a 15**) está no
+> `assets/chunks.jsonl` e foi varrido. O PDF não foi necessário — a extração preservou até as
+> tabelas. É a mesma fonte que o RAG do Narrador usa, então regra e app ficam consistentes.
+
+---
+
+## PARTE A — Regras gerais (p.5–10)
+
+### A.1 Custo, ritual e queima de PV
+
+| Regra (literal) | Estado |
+|---|---|
+| NH alto **reduz o custo** em energia | ✅ `MagicCost.custoAjustadoPorNH` |
+| 🔴 *"**Exceção**: o custo de uma mágica de **Bloqueio nunca é reduzido**"* | ❌ **o motor viola** — aplica o desconto a todas as classes |
+| **Queimar PV** paga a mágica, com **−1 no NH por PV gasto** | ✅ implementado (seletor "Queimar PV") |
+| *"Essa penalidade substitui a penalidade de choque por lesão; **Hipoalgia não ajuda**"* | 🟡 conferir se substitui mesmo o choque |
+| **Amordaçado / sob silêncio não conjura** o que exige fala | ✅ (`Condicao.SILENCIADO`) |
+| NH alto reduz **tempo** e exigência de ritual | 🟡 o custo reduz; tempo/ritual não |
+| **Rituais alternativos** (omitir gestos −2/−4, fala −2/−4; caprichar dobrando o tempo +1) | ❌ regra opcional, não implementada |
+
+### A.2 Limites de efeito e Aptidão Mágica
+
+| Regra (literal) | Estado |
+|---|---|
+| Sem limite superior na descrição → **pode gastar quanta energia tiver** | ✅ |
+| 🔴 *"O limite superior é o **maior número** entre os **níveis da mágica** ou o **nível de Aptidão Mágica** do operador"* — exemplo do livro: Cura Profunda (1 a 4) com **AM 10** permite **10 níveis** (2 a 20 PV) | ❌ **o MEC-9 trava no teto da magia e IGNORA a Aptidão** — errei para o lado restritivo |
+| 🔴 *"Lançada mais de uma vez no mesmo objetivo, **só a mais poderosa conta** — não acumulam. **Exceções**: curar, causar dano e efeitos permanentes"* | ❌ não implementado — hoje buffs repetidos podem somar |
+
+### A.3 Duração, manutenção e cancelamento
+
+| Regra (literal) | Estado |
+|---|---|
+| Manter = pagar o custo de manutenção; a mágica dura **outro período igual** | ✅ (MEC-22/23) |
+| Manter **não exige tempo nem teste**; distância não importa | ✅ |
+| Manter é **opcional** | ✅ **MEC-23** |
+| *"A redução por NH alto **também vale para a manutenção**, podendo zerá-la"* | ✅ |
+| 🔴 *"Mágica que exige manipulação constante pede manobra **Concentrar**. Se distraído, **ferido** ou **atordoado**, teste de **Vontade−3**. Fracasso **congela** o efeito; **falha crítica encerra** a mágica"* | ❌ não implementado |
+| *"Fazer outra operação mágica **não** interrompe a concentração"* (só penaliza o NH) | ✅ (penalidade por mágicas ativas existe) |
+| *"Cancelar de repente custa **1 ponto** de energia"* | ❌ não implementado — 0 ocorrências |
+| *"Área variável **não pode ser expandida** depois de operada; pode-se manter **só parte** da área, pagando proporcional"* | ❌ |
+| **Cinco tipos de duração** (instantânea, temporária, duradoura, permanente, encantamento) | ✅ `TipoDuracao` |
+
+> ✅ **Ponto a favor do MEC-23:** o livro cobra 1 ponto para **cancelar no meio**, mas **deixar a
+> duração acabar sem pagar manutenção é grátis**. O prompt do MEC-23 aparece exatamente no
+> vencimento, então "Deixar acabar" é gratuito — está certo.
+
+---
+
+# PARTE B — CLASSES DE MÁGICAS (p.11–14) — regra × implementação
 
 > **Origem.** O usuário perguntou se eu já tinha lido a seção *"Diferentes Tipos de Magia / Classes de
 > Mágicas"*. Resposta honesta: **só em partes**. Eu vinha citando p.11 e p.12 para Projétil, Toque e
@@ -141,8 +191,17 @@
 
 ## O que eu recomendaria atacar primeiro
 
+0. 🔴 **Aptidão Mágica destrava o teto de energia** (A.2) — é o único item onde eu deixei o jogo
+   **mais restritivo que a regra**. Um mago com AM alta deveria poder ir além do "1 a 4" da magia.
+   Correção pequena (`max(teto da magia, Aptidão)`), mas **muda equilíbrio a favor do herói** —
+   por isso quero confirmação antes de mexer. O livro dá ao Mestre o direito de ignorar esta regra
+   se achar que desequilibra.
 1. 🔴 **Teste de Vontade ao ser ferido sustentando projétil** — é a regra mais perigosa que falta: hoje o mago segura uma Bola de Fogo, apanha, e nada acontece. Barato de implementar e tem consequência real.
 2. 🔴 **As três de Bloqueio** (uma por turno; não vale contra golpe fulminante; não reduz custo por NH) — regras curtas, todas com efeito direto no equilíbrio.
 3. 🟡 **"Não pode conjurar enquanto sustenta Toque/Projétil"** — uma trava, fecha as duas classes.
 4. 🟡 **Dissipar como ação livre** — pequeno, e destrava o jogador que ficou com a mão carregada sem querer.
-5. ⏸️ Informação e Longa Distância seguem narrativos por projeto (ver `PENDENCIAS.md`).
+5. 🔴 **Bloqueio não reduz custo por NH** (A.1) — aparece **duas vezes** no livro (p.8 e p.9),
+   sinal de que é regra que o autor fez questão de reforçar. Uma linha de exceção no `custoAjustadoPorNH`.
+6. 🟡 **Mágicas não acumulam** (A.2) — só a mais poderosa conta, exceto cura/dano/permanente.
+7. 🟡 **Vontade−3 ao ser ferido mantendo mágica de concentração** (A.3) — irmã da regra do projétil.
+8. ⏸️ Informação e Longa Distância seguem narrativos por projeto (ver `PENDENCIAS.md`).

@@ -85,8 +85,14 @@ cujo efeito é `dano`/`condicao`/`cura` **é suspeito**.
 
 ### 2.1c Classes de Mágicas (Magia p.11–14) — varredura completa
 
-Documento próprio: **[CLASSES_DE_MAGICA.md](CLASSES_DE_MAGICA.md)** — cada regra das 8 classes,
-conferida uma a uma **no código**.
+Documento próprio: **[CLASSES_DE_MAGICA.md](CLASSES_DE_MAGICA.md)** — **o capítulo 1 inteiro
+(p.5–15)**, regra a regra, conferido **no código**. O PDF não foi necessário: o `chunks.jsonl` tem as
+11 páginas e preservou até as tabelas.
+
+**Achado que inverte a direção do erro:** o **MEC-9 deixou o jogo MAIS RESTRITIVO que a regra**.
+O livro diz que o teto de energia é *"o maior número entre os níveis da mágica ou o nível de
+Aptidão Mágica"* (exemplo literal: Cura Profunda 1 a 4, com AM 10, vai a **10 níveis**). Hoje o app
+trava no teto da magia. Correção pequena, mas **fortalece o herói** — aguardando decisão do usuário.
 
 Achados que ninguém tinha registrado antes:
 
