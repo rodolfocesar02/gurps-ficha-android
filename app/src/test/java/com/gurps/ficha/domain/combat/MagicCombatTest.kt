@@ -816,6 +816,86 @@ class MagicCombatTest {
         assertEquals(20, MagicMechanics.danoDaExplosao(20, distanciaM = 5, divisorPorMetro = 0))
     }
 
+    // ── Lote MEC-22: mágica que FERE A CADA TURNO (Morte Candente / Morte Putrefata) ────────────
+
+    private fun morteCandente(criticoFixo: Int = 0) = MagiaMecanica(
+        efeito = "dano", entrega = "toque", armadura = "ignora", condicaoResistencia = "HT",
+        danoPorTurnoExpr = "1d-1", danoPorTurnoTeste = "HT",
+        danoPorTurnoCriticoFixo = criticoFixo, quebraEmSucessoDecisivo = true,
+    )
+
+    @Test
+    fun `magia de tique NAO fere no turno em que e aplicada (regra da estreia)`() {
+        // O risco sinalizado antes de implementar: a mágica é registrada durante a ação do herói e o
+        // tique roda no fim desse mesmo turno — sem trava, a vítima levaria um turno de dano grátis.
+        val achou = (0L until 40L).map { seed ->
+            val s = sessao(seed, distGoblin = 1)
+            val ctx = ContextoConjuracao(nhBasico = 25, classe = MagicClassParser.parse("Toque"),
+                mana = NivelMana.NORMAL, mecanica = morteCandente(), tocando = true)
+            s.heroiConjurar(ctx, MagicEnergy.parse("3"), energiaInvestida = 3,
+                magiaNome = "Morte Candente", alvoId = null)
+            s.heroiEntregarToque("goblin")
+            s
+        }.firstOrNull { s -> s.magiasAtivas.any { it.magiaId == "Morte Candente" } }
+
+        assertTrue("nenhum seed conseguiu descarregar o toque", achou != null)
+        val g = achou!!.encounter.combatentes.first { it.id == "goblin" }
+        assertEquals("no turno da aplicação a vítima NÃO pode ter levado dano do tique",
+            g.pvMax, g.pvAtual)
+    }
+
+    @Test
+    fun `a partir do turno seguinte a magia fere, aguenta ou quebra — nunca fica inerte`() {
+        val s = (0L until 40L).map { seed ->
+            val x = sessao(seed, distGoblin = 1)
+            val ctx = ContextoConjuracao(nhBasico = 25, classe = MagicClassParser.parse("Toque"),
+                mana = NivelMana.NORMAL, mecanica = morteCandente(), tocando = true)
+            x.heroiConjurar(ctx, MagicEnergy.parse("3"), energiaInvestida = 3,
+                magiaNome = "Morte Candente", alvoId = null)
+            x.heroiEntregarToque("goblin")
+            x
+        }.first { it.magiasAtivas.any { m -> m.magiaId == "Morte Candente" } }
+
+        repeat(8) { s.avancarTurno() }
+        val houveTique = s.log.any {
+            it.contains("queima") || it.contains("aguenta") || it.contains("QUEBRA")
+        }
+        assertTrue("depois da estreia o tique tem que aparecer no log", houveTique)
+    }
+
+    @Test
+    fun `sucesso DECISIVO da vitima QUEBRA a magia — ela sai da lista de ativas`() {
+        // Varre seeds até achar um em que a vítima tire 3 ou 4 no teste de HT.
+        val quebrou = (0L until 120L).any { seed ->
+            val s = sessao(seed, distGoblin = 1)
+            val ctx = ContextoConjuracao(nhBasico = 25, classe = MagicClassParser.parse("Toque"),
+                mana = NivelMana.NORMAL, mecanica = morteCandente(), tocando = true)
+            s.heroiConjurar(ctx, MagicEnergy.parse("3"), energiaInvestida = 3,
+                magiaNome = "Morte Candente", alvoId = null)
+            s.heroiEntregarToque("goblin")
+            if (s.magiasAtivas.none { it.magiaId == "Morte Candente" }) return@any false
+            repeat(10) { s.avancarTurno() }
+            s.log.any { it.contains("QUEBRA") } &&
+                s.magiasAtivas.none { it.magiaId == "Morte Candente" }
+        }
+        assertTrue("em 120 tentativas alguma vítima devia tirar sucesso decisivo e quebrar a mágica",
+            quebrou)
+    }
+
+    @Test
+    fun `falha critica da Morte Putrefata usa os 6 pontos fixos, nao o dado`() {
+        val m = morteCandente(criticoFixo = 6)
+        assertEquals("o campo tem que guardar o 6 do livro", 6, m.danoPorTurnoCriticoFixo)
+        assertEquals("e a Morte Candente (sem o campo) continua no dado", 0,
+            morteCandente().danoPorTurnoCriticoFixo)
+    }
+
+    @Test
+    fun `magia SEM tique nao entra no motor de tique`() {
+        assertFalse(MagicMechanics.temTiquePorTurno(MagiaMecanica(efeito = "dano", danoPorEnergia = "1d")))
+        assertTrue(MagicMechanics.temTiquePorTurno(morteCandente()))
+    }
+
     // ── Lote MEC-21: o TOQUE agora aplica a mecânica ao descarregar ─────────────────────────────
     // Antes a conjuração de Toque dava `return` cedo (só carregava a mão) e o descarregar caía em
     // "Efeito narrado pelo Mestre" — NENHUMA magia de toque fazia nada. Isso também deixava o

@@ -3046,6 +3046,18 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - **Recomendação registrada** (maior valor × menor custo): Ataque Telegráfico (par do Enganoso), luta agarrada profunda (chaves/Mata-Leão estendendo o lote 422), Sangramento Grave + incapacitação de membro (item 5 do teste de batalha), Ataque Dedicado/Defensivo. Fora de escopo: posicional/hexágono, montaria, cinematográfico, dado de arma do NPC. Mudança só de documentação (não compila Kotlin).
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
+### Lote MEC-22 — 18 de Julho de 2026 (motor de TIQUE por turno — a Morte Candente finalmente queima)
+**Escolhido com o usuário como "o melhor a implementar agora" — branch GURPS-Saga**
+- **A regra, literal**: *"Toda vez, a vítima deve fazer um teste de HT; em uma falha (crítica ou não), ele recebe 1d-1 de dano por fogo. Em um sucesso, ele não leva dano naquele turno; em um sucesso decisivo, a mágica está quebrada."* + *"Nem RD nem Resistência ao Fogo protegem"*. A Morte Putrefata troca o dado por **6 pontos** na falha crítica.
+- **Decisão de escopo que valeu**: o P1 parecia um lote grande porque misturava **alvo único** (Morte Candente/Putrefata — são de Toque, a vítima já é um token) com **zona persistente** (Chuvas/Nuvens/Géiser — precisa desenhar área na grade). Separei e fiz **só a metade sem UI**, que não engorda a fila de coisa não validada do usuário.
+- **Implementado**: 4 campos novos (`danoPorTurnoExpr`, `danoPorTurnoTeste`, `danoPorTurnoCriticoFixo`, `quebraEmSucessoDecisivo`) + `temTiquePorTurno()`. O `MagiaAtivaNoCombate` (que já cobrava manutenção desde o MA-3d-4) passou a carregar a mecânica, e `tiquePorTurnoDasMagias()` resolve teste/dano/quebra no avanço do turno. **RD não protege** — o dano vai direto para `InjuryRules.ferir`.
+- **P2 saiu de brinde**: a mágica fica ATIVA, cobra manutenção por turno (custo "03/02" → 2) e exige concentração, tudo reusando o relógio que já existia. Não precisei criar estrutura paralela.
+- ✅ **O risco que eu mesmo sinalizei antes de começar não virou bug**: a "regra da estreia". A mágica é registrada durante a ação do herói e o tique roda no fim **desse mesmo turno** — sem trava, a vítima levaria um turno de dano de graça. `pularPrimeiroTique` resolve, e **tem teste dedicado** provando que no turno da aplicação o PV não muda.
+- **+5 testes**: estreia sem dano; o tique aparecendo a partir do turno seguinte; **sucesso decisivo quebrando a mágica e removendo-a das ativas** (varredura de 120 seeds até a vítima tirar 3–4); o 6 fixo da Putrefata; e magia sem tique não entrando no motor.
+- ⚠️ **Deferido honesto**: *"mortos-vivos não são afetados"* — o `NpcStats` não tem campo de tipo de criatura (mesma limitação da RD natural do Toque Candente). Registrado no PENDENCIAS.
+- 🟢 **Gate: 755 testes, ZERO falhas — primeiro gate inteiramente verde da sessão.** Honestidade: ficou verde porque o **flaky do Nexus passou desta vez** (ele é não-determinístico), não porque foi consertado. A outra sessão ainda vai finalizá-lo.
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
 ### Lote ORGANIZA-2 — 18 de Julho de 2026 (Artes Marciais entra no mapa — e estava desatualizado também)
 **"o arquivo Artes_Marciais_Regras_Combate.md possui pendencias nele tbm!" + autorização para commitar os arquivos antes intocados — branch GURPS-Saga**
 - **Movido** `Artes_Marciais_Regras_Combate.md` → `docs/pendencias/` (é **inventário**, não fonte de regra), com as 4 referências cruzadas atualizadas.

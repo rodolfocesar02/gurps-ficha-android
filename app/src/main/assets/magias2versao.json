@@ -12725,7 +12725,10 @@
       "armadura": "ignora",
       "entrega": "toque",
       "condicaoResistencia": "HT",
-      "notas": "Resistivel HT. Ataque p/ acionar (local irrelevante). Cada turno HT: falha=1d-1 quei, sucesso=0, sucesso decisivo quebra. Nem RD nem Resist. ao Fogo protegem. Sofre efeito de Enjoo. Nao afeta mortos-vivos. Necromantica."
+      "notas": "Resistivel HT. Ataque p/ acionar (local irrelevante). Cada turno HT: falha=1d-1 quei, sucesso=0, sucesso decisivo quebra. Nem RD nem Resist. ao Fogo protegem. Sofre efeito de Enjoo. Nao afeta mortos-vivos. Necromantica.",
+      "danoPorTurnoExpr": "1d-1",
+      "danoPorTurnoTeste": "HT",
+      "quebraEmSucessoDecisivo": true
     }
   },
   {
@@ -12751,7 +12754,11 @@
       "entrega": "toque",
       "condicaoResistencia": "HT",
       "notas": "Dano FIXO de 1d-1 por turno (não escala com energia; 3 para operar, 2 para manter). Alvo deve ser tocado. A cada turno testa HT: falha = 1d-1; falha crítica = 6 pontos fixos; sucesso = sem dano; sucesso decisivo = quebra a mágica. RD não protege. Local do acerto testado a cada dano; membro aleijado = apodreceu. Desconforto como Enjoo. Mortos-vivos imunes.",
-      "danoFixo": true
+      "danoFixo": true,
+      "danoPorTurnoExpr": "1d-1",
+      "danoPorTurnoTeste": "HT",
+      "quebraEmSucessoDecisivo": true,
+      "danoPorTurnoCriticoFixo": 6
     }
   },
   {

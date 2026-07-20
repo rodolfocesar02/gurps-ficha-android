@@ -104,6 +104,26 @@ data class MagiaMecanica(
      */
     val condicaoEscapeAtributo: String? = null,
     val condicaoEscapeEnergiaPorPonto: Int = 0,
+    /**
+     * Lote MEC-22: dano RECORRENTE por turno, com teste da vítima a cada turno.
+     *
+     * Morte Candente (literal): *"Toda vez, a vítima deve fazer um teste de HT; em uma falha
+     * (crítica ou não), ele recebe 1d-1 de dano por fogo. Em um sucesso, ele não leva dano naquele
+     * turno; em um sucesso decisivo, a mágica está quebrada."* — *"Nem RD nem Resistência ao Fogo
+     * protegem contra esta lesão!"*
+     *
+     * Morte Putrefata é igual, mas *"6 pontos em uma falha crítica"*.
+     *
+     * [danoPorTurnoExpr] é FIXO por turno — **não escala com a energia** (a energia paga o custo de
+     * operar/manter, não o dano). Por isso é campo próprio, e não o `danoPorEnergia`.
+     */
+    val danoPorTurnoExpr: String? = null,
+    /** Atributo testado pela vítima a cada turno ("HT"). */
+    val danoPorTurnoTeste: String? = null,
+    /** Dano fixo quando a vítima tira FALHA CRÍTICA (6 na Morte Putrefata; 0 = usa o normal). */
+    val danoPorTurnoCriticoFixo: Int = 0,
+    /** Sucesso DECISIVO da vítima quebra a mágica. */
+    val quebraEmSucessoDecisivo: Boolean = false,
 
     // ── condição embutida (rider no dano ou standalone) ──
     /** Condição imposta ("atordoado", "cego"…). */
@@ -383,6 +403,10 @@ object MagicMechanics {
         if (m == null) return 0
         return m.condicaoDuracaoSeg + m.condicaoDuracaoSegPorEnergia * energiaInvestida.coerceAtLeast(0)
     }
+
+    /** Lote MEC-22: esta magia fere a vítima a cada turno, contra um teste dela? */
+    fun temTiquePorTurno(m: MagiaMecanica?): Boolean =
+        m?.danoPorTurnoExpr != null && !m.danoPorTurnoTeste.isNullOrBlank()
 
     /** Lote MEC-19: penalidade no teste de fuga, pela energia investida (−1 a cada N pontos). */
     fun penalidadeEscapeCondicao(m: MagiaMecanica?, energiaInvestida: Int): Int {

@@ -246,6 +246,18 @@ data class MagiaAtivaNoCombate(
      * ENTROU é o que deixa a expiração reverter sem recalcular — imune a drift.
      */
     val buff: BuffAplicado? = null,
+    /**
+     * Lote MEC-22: a mecânica curada, quando esta mágica **fere a cada turno** (Morte Candente,
+     * Morte Putrefata). O tique lê daqui o dado, o atributo testado e a regra de quebra.
+     */
+    val mecanica: MagiaMecanica? = null,
+    /**
+     * Lote MEC-22 — **regra da estreia**: a mágica não pode ticar no mesmo turno em que foi
+     * aplicada. Ela é registrada durante a ação do herói e o tique roda no fim desse mesmo turno,
+     * então sem esta trava a vítima levaria um turno de dano de brinde. É o mesmo tropeço já
+     * corrigido em `aplicar_modificador_combate`.
+     */
+    val pularPrimeiroTique: Boolean = false,
 )
 
 object MagicActive {

@@ -820,6 +820,8 @@ class CombatSession(
         val ctx: ContextoConjuracao,
         val nhEfetivoCast: Int,
         val energiaInvestida: Int = 1,
+        /** Lote MEC-22: custo por turno para MANTER (Morte Candente: "03/02" → 2). */
+        val custoManutencao: Int = 0,
     )
     var toqueCarregado: ToqueCarregado? = null; private set
 
@@ -834,6 +836,8 @@ class CombatSession(
         nome: String, operadorId: String, alvoId: String?, duracaoSeg: Int,
         custoManutencaoSeg: Int, duracao: TipoDuracao, exigeConcentracao: Boolean,
         buff: com.gurps.ficha.domain.magic.BuffAplicado? = null,
+        /** Lote MEC-22: mecânica curada, quando a mágica fere a cada turno. */
+        mecanica: com.gurps.ficha.domain.magic.MagiaMecanica? = null,
     ) {
         // MEC-2: aplica o buff no alvo AGORA (a lista dele passa a somar no perfil efetivo).
         val aplicado = buff?.takeIf { !it.soNarrado }
@@ -849,6 +853,9 @@ class CombatSession(
             custoManutencaoSeg = custoManutencaoSeg, segundosParaProximaCobranca = duracaoSeg.coerceAtLeast(1),
             duracaoTotalSeg = duracaoSeg.coerceAtLeast(1), duracao = duracao, exigeConcentracao = exigeConcentracao,
             buff = aplicado,
+            mecanica = mecanica,
+            // MEC-22: regra da estreia — não fere no turno em que foi aplicada.
+            pularPrimeiroTique = com.gurps.ficha.domain.magic.MagicMechanics.temTiquePorTurno(mecanica),
         )
         val manut = if (custoManutencaoSeg > 0) "manutenção $custoManutencaoSeg PF a cada ${duracaoSeg}s" else "sem custo de manutenção"
         log += "✨ $nome fica ATIVA ($manut)."
@@ -1046,7 +1053,9 @@ class CombatSession(
                 // Toque (Lote MA-3d-2, Magia p.11-12): o sucesso CARREGA a mão; o efeito só ocorre ao
                 // descarregar num ataque corpo-a-corpo ([heroiEntregarToque]). Resistência é no 2º teste, lá.
                 if (TipoClasseMagia.TOQUE in ctx.classe.classes) {
-                    toqueCarregado = ToqueCarregado(magiaNome, ctx, nhEf.valor, energiaInvestida)
+                    // MEC-22: guarda tambem o custo de MANTER, que a magia de tique cobra por turno.
+                    toqueCarregado = ToqueCarregado(magiaNome, ctx, nhEf.valor, energiaInvestida,
+                        custoManutencao = custo.manutencao ?: (custo.base ?: custo.minimo).let { (it + 1) / 2 })
                     sb.append(" Sua mão fica CARREGADA — ataque um oponente adjacente para descarregar (Magia p.12).")
                     log += sb.toString().trim()
                     return ResultadoConjuracaoCombate(true, sb.toString().trim())
@@ -1264,6 +1273,19 @@ class CombatSession(
         val mec = t.ctx.mecanica
         val energia = t.energiaInvestida.coerceAtLeast(1)
         if (!resistiu) when {
+            // Lote MEC-22: mágica que fere A CADA TURNO não resolve o dano agora — ela fica ATIVA
+            // no alvo e tica no avanço de turno, cobrando manutenção do operador.
+            com.gurps.ficha.domain.magic.MagicMechanics.temTiquePorTurno(mec) -> {
+                // A manutenção vem do custo da magia ("03/02" → 2). Sem número, metade do operar.
+                val manut = (t.custoManutencao).coerceAtLeast(0)
+                registrarMagiaAtiva(
+                    nome = t.nome, operadorId = "heroi", alvoId = alvo.id, duracaoSeg = 1,
+                    custoManutencaoSeg = manut, duracao = com.gurps.ficha.domain.magic.TipoDuracao.TEMPORARIA,
+                    exigeConcentracao = true, // "O operador deve se concentrar enquanto mantém"
+                    mecanica = mec,
+                )
+                sb.append(" ${alvo.nome} começa a queimar por dentro — a cada turno ele testa HT.")
+            }
             com.gurps.ficha.domain.magic.MagicMechanics.temCuraEstruturada(mec) ->
                 aplicarCuraMagica(alvo, energia, mec!!, sb)
 
@@ -2245,6 +2267,62 @@ class CombatSession(
 
     // ── Avanço de turno / fim ─────────────────────────────────────────────────
 
+    /**
+     * Lote MEC-22: resolve o tique das mágicas que ferem a cada turno.
+     *
+     * Regra literal (Morte Candente / Morte Putrefata): *"Toda vez, a vítima deve fazer um teste de
+     * HT; em uma falha (crítica ou não), ele recebe 1d-1 de dano... Em um sucesso, ele não leva dano
+     * naquele turno; em um sucesso decisivo, a mágica está quebrada."* A Morte Putrefata troca o dado
+     * por **6 pontos** na falha crítica. **RD não protege** em nenhuma das duas.
+     */
+    private fun tiquePorTurnoDasMagias() {
+        val comTique = magiasAtivas.filter {
+            com.gurps.ficha.domain.magic.MagicMechanics.temTiquePorTurno(it.mecanica)
+        }
+        if (comTique.isEmpty()) return
+        val quebradas = mutableListOf<com.gurps.ficha.domain.magic.MagiaAtivaNoCombate>()
+
+        for (ativa in comTique) {
+            // Regra da estreia: não fere no turno em que foi aplicada.
+            if (ativa.pularPrimeiroTique) {
+                magiasAtivas = magiasAtivas.map {
+                    if (it === ativa) it.copy(pularPrimeiroTique = false) else it
+                }
+                continue
+            }
+            val vitima = encounter.combatentes.firstOrNull { it.id == ativa.alvoId && it.vivo }
+            if (vitima == null) { quebradas.add(ativa); continue } // alvo morreu/sumiu → mágica cai
+            val mec = ativa.mecanica!!
+            val atributo = if (vitima.ehHeroi) heroiPerfil.ht else vitima.htEfetivo
+            val rol = rolar3d6()
+            val crit = CriticoRules.classificar(rol, atributo)
+
+            when {
+                // Sucesso DECISIVO da vítima quebra a mágica (e não causa dano).
+                crit == CriticoRules.ResultadoCritico.DECISIVO && mec.quebraEmSucessoDecisivo -> {
+                    log += "✨ ${vitima.nome} resiste DECISIVAMENTE (HT $atributo, rolou $rol) — ${ativa.magiaId} se QUEBRA."
+                    quebradas.add(ativa)
+                }
+                // Sucesso simples: sem dano neste turno.
+                rol <= atributo -> {
+                    log += "✨ ${vitima.nome} aguenta ${ativa.magiaId} neste turno (HT $atributo, rolou $rol)."
+                }
+                // Falha: leva dano. RD NÃO protege (regra explícita das duas mágicas).
+                else -> {
+                    val critFalha = crit == CriticoRules.ResultadoCritico.FALHA_CRITICA
+                    val dano = if (critFalha && mec.danoPorTurnoCriticoFixo > 0) mec.danoPorTurnoCriticoFixo
+                    else rolarDano(mec.danoPorTurnoExpr!!, random)
+                    InjuryRules.ferir(vitima, dano, vitima.htEfetivo, random)
+                    val etiqueta = if (critFalha) " (FALHA CRÍTICA)" else ""
+                    log += "🔥 ${ativa.magiaId} queima ${vitima.nome} por dentro$etiqueta: $dano de dano " +
+                        "(HT $atributo, rolou $rol; RD não protege)" + (if (!vitima.vivo) " — fora de combate!" else "") + "."
+                }
+            }
+        }
+        if (quebradas.isNotEmpty()) magiasAtivas = magiasAtivas.filter { a -> quebradas.none { it === a } }
+        verificarFim()
+    }
+
     /** Avança até o próximo combatente que ainda pode agir; ao fim de cada turno, recupera atordoamento. */
     fun avancarTurno(): Combatente {
         if (encerrado) return combatenteAtual()
@@ -2299,6 +2377,10 @@ class CombatSession(
         anterior.buffs.filter { it.umUnicoUso && !it.estreou }.forEach { it.estreou = true }
         // Magias ativas (Lote MA-3d-4): o fim do turno do herói = 1 segundo de jogo; cobra manutenção
         // (do PF do herói) e expira as duradouras (MagicActive, MB Magia p.9-10).
+        // Lote MEC-22: mágicas que FEREM A CADA TURNO (Morte Candente, Morte Putrefata) resolvem
+        // aqui, antes do relógio de manutenção — a vítima testa e pode quebrar a mágica.
+        if (anterior.ehHeroi && magiasAtivas.isNotEmpty()) tiquePorTurnoDasMagias()
+
         if (anterior.ehHeroi && magiasAtivas.isNotEmpty()) {
             val res = MagicActive.avancarTurnoSegundos(magiasAtivas, 1)
             magiasAtivas = res.ativasApos

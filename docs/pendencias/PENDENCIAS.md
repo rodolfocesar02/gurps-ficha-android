@@ -19,7 +19,7 @@ projeto** — não por bug.
 | Efeito | Total | O motor executa | Observação |
 |---|---:|---:|---|
 | narrado | 379 | 0 | narrado por definição |
-| buff | 179 | **23** | os outros 156 não têm número no livro (`semNumero`) |
+| buff | 179 | **23** | os outros 156 só têm `buffRotulo` (texto), sem campo numérico — ver P3 |
 | ambiente | 110 | 0 | clima, luz, criar matéria |
 | informacao | 82 | 0 | adivinhação, localizar, detectar |
 | controle | 65 | 0 | dominar, comandar, mover objeto |
@@ -53,8 +53,9 @@ cujo efeito é `dano`/`condicao`/`cura` **é suspeito**.
 
 | # | O que falta | Afeta | Origem |
 |---|---|---|---|
-| P1 | **Tique por turno** — dano recorrente com teste a cada turno | Morte Candente, Morte Putrefata, Chuva de Ácido/Fogo/Pedras, Nuvem de Faíscas, Géiser, Mau Cheiro | auditoria #2 e #11 |
-| P2 | **Manter magia com efeito continuado** — a manutenção cobra PF, mas o efeito não persiste | todas as de duração | MAGIA_DEFERIDOS |
+| P1a | ~~**Tique por turno, alvo único**~~ ✅ **FEITO (Lote MEC-22)** — Morte Candente e Morte Putrefata ferem a cada turno, a vítima testa HT, sucesso decisivo quebra a mágica | — | auditoria #11 |
+| P1b | **Tique por turno em ZONA** — a área persiste e fere quem está dentro | Chuva de Ácido/Fogo/Pedras, Nuvem de Faíscas, Géiser, Mau Cheiro | auditoria #2 |
+| P2 | ~~**Manter magia com efeito continuado**~~ ✅ **FEITO (Lote MEC-22)** para as de tique — a mágica fica ativa, cobra manutenção por turno e exige concentração | — | MAGIA_DEFERIDOS |
 | P3 | **Curar os 156 buffs que só têm rótulo de texto** — não é bug de motor, é trabalho de catálogo | 156 dos 179 buffs | ver correção abaixo |
 
 > ✅ **Correção (18/jul)** — a versão anterior desta linha dizia *"Escudo não dá +DB, Armadura não dá
@@ -65,9 +66,13 @@ cujo efeito é `dano`/`condicao`/`cura` **é suspeito**.
 > outros **156 só têm `buffRotulo`** (rótulo em texto). Mecanizá-los é extrair número da prosa —
 > trabalho de curadoria de catálogo, como foi o MEC-2, não conserto de motor.
 
-> P1 e P2 são o **mesmo mecanismo** (zona/efeito que persiste e tica). Um lote resolve os dois.
-> ⚠️ P1 tem parte de UI: uma zona de dano precisa ser **desenhada na grade**, senão o jogador perde
-> PV sem causa visível — exatamente o bug que o usuário já reportou uma vez.
+> ✅ **O MEC-22 fechou a metade sem UI.** O motor de tique existe e é reusável: `MagiaAtivaNoCombate`
+> carrega a mecânica, e `tiquePorTurnoDasMagias()` resolve teste/dano/quebra no avanço do turno.
+> ⚠️ **O que sobra (P1b) é a metade com UI**: uma zona de dano precisa ser **desenhada na grade**,
+> senão o jogador perde PV sem causa visível — exatamente o bug já reportado uma vez. Por isso foi
+> deixada para um lote próprio, que **para para teste no aparelho**.
+> ⚠️ **Deferido honesto do MEC-22:** *"mortos-vivos não são afetados"* não é aplicado — o `NpcStats`
+> não tem campo de tipo de criatura (mesma limitação da RD natural do Toque Candente).
 
 ### 2.2 Regras de magia específicas
 
