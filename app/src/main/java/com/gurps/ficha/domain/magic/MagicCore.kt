@@ -111,7 +111,16 @@ object MagicMultiplasMagias {
 
 /** Resultado de um teste 3d contra o NH efetivo. */
 enum class ResultadoOperacao {
-    /** Rolagem ≤ NH−10 (ou o critério GURPS de sucesso decisivo). Efeito ampliado, custo perdoado. */
+    /**
+     * Critério do MB p.348: **3 ou 4** sempre; **5** com NH efetivo 15+; **6** com NH efetivo 16+.
+     * Efeito ampliado e **custo perdoado** — *"não há gasto de energia quando se obtém um sucesso
+     * decisivo durante uma operação mágica"* (Magia p.7).
+     *
+     * ⚠️ Não existe sucesso decisivo por MARGEM. O MB é explícito: *"Resultados muito altos ou
+     * baixos nos dados surtem efeitos especiais [...] independentemente da margem exata"*. Margem
+     * ≥ 10 só vale para a FALHA crítica. Esta KDoc já disse "rolagem ≤ NH−10", que nunca foi a
+     * regra nem foi o que o código faz — corrigido para não induzir mais ninguém ao erro.
+     */
     SUCESSO_DECISIVO,
     /** Rolagem ≤ NH efetivo. Efeito normal, custo pago integralmente. */
     SUCESSO,
@@ -123,9 +132,10 @@ enum class ResultadoOperacao {
 
 object MagicOperationRuling {
     /**
-     * Classifica o resultado de uma jogada 3d contra o NH efetivo, usando as regras padrão GURPS:
-     *  - Sucesso decisivo: 3 ou 4, OU rolagem ≤ NH−10 (com NH ≥ 15).
-     *  - Falha crítica: 18 sempre, 17 se NH < 16, ou rolagem ≥ NH+10.
+     * Classifica o resultado de uma jogada 3d contra o NH efetivo, usando as regras padrão GURPS
+     * (MB p.348 — conferido no livro, não de memória):
+     *  - Sucesso decisivo: **3 ou 4** sempre; **5** com NH 15+; **6** com NH 16+. Sem regra de margem.
+     *  - Falha crítica: 18 sempre, 17 se NH < 16, ou margem de fracasso ≥ 10.
      *  - Sucesso: rolagem ≤ NH efetivo (e não é decisivo).
      *  - Fracasso: resto.
      *
