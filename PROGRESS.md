@@ -3046,6 +3046,16 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - **Recomendação registrada** (maior valor × menor custo): Ataque Telegráfico (par do Enganoso), luta agarrada profunda (chaves/Mata-Leão estendendo o lote 422), Sangramento Grave + incapacitação de membro (item 5 do teste de batalha), Ataque Dedicado/Defensivo. Fora de escopo: posicional/hexágono, montaria, cinematográfico, dado de arma do NPC. Mudança só de documentação (não compila Kotlin).
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
+### Lote AM-0 — 21 de Julho de 2026 (a aba de Magias sumia de quem comprava Aptidão Mágica 0)
+**"ela começa no nível 0 e, deixando no 0, a aba de Magias não aparece" — relato do usuário na aba Traços › Vantagens**
+- 📖 **A regra, conferida no livro** (MB p.41): *"**Aptidão Mágica 0:** Representa uma 'consciência mágica' básica, **um pré-requisito para se aprender magia** na maior parte dos mundos. [...] 5 pontos."* AM 0 é **exatamente** o nível que habilita magia — a aba tinha que aparecer. É bug.
+- 🐞 **Causa**: o gate usava o **bônus de NH** como se fosse "tem a vantagem?" — `val temAptidaoMagica get() = nivelAptidaoMagica > 0`. Só que `nivelAptidaoMagica` é `getNivelAptidaoMagicaParaMagia`, o **bônus somado à IQ**, e o bônus de AM 0 é **zero por definição** (AM 0 não soma nada, só destranca o aprendizado). Ou seja: o único nível que a regra existe para habilitar era justamente o que o app desabilitava.
+- ✅ **Correção**: o gate pergunta pela **presença** da vantagem (`MagicEngine.possuiAptidaoMagica`), não pelo bônus. O filtro que varre a ficha **e o modelo racial** virou **fonte única** lida pelas duas funções — duas cópias do mesmo filtro divergem em silêncio (lição do LIMPEZA-1).
+- 📝 **Nota pra quem ler depois**: o nível **interno** da vantagem é **1-based** — interno 1 = AM 0, interno 2 = AM 1. É por isso que o bônus e a exibição são `nivel − 1` e o custo é `5 + (nivel−1)×10`. Isso **já estava certo**; só o gate mudou.
+- **+5 testes**, incluindo dois casos **não relatados** que quebrariam igual: ficha com nível interno **0** (antiga ou importada) e Aptidão Mágica vinda do **modelo racial** (elfo e dragão do MB vêm com *"Aptidão Mágica 0 [5]"* na raça).
+- 🟢 Gate: **823 testes por variante, ZERO falhas**, build nas duas.
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
 ### Lote MEC-47 — 21 de Julho de 2026 (herói × a própria área: decisão da regra + o "PV do nada" das faixas)
 **Achado no log de Chuva de Fogo do teste no aparelho — branch GURPS-Saga**
 - 🔎 **A divergência**: o dano inicial da área **excluía** o herói (`filter { it.id != "heroi" }`) e o tique da zona o **incluía**. Fui à fonte: o capítulo de Área tem **as duas regras**, e elas puxam para lados diferentes — *"afeta todos os seres vivos dentro da área"* e *"o operador pode escolher afetar apenas partes da área, pagando o mesmo custo"*.
