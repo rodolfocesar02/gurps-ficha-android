@@ -1298,6 +1298,13 @@ class SagaCombatController(
         // raio em metros = raio em hexes (1 hex = 1 m). raio 1 = só o hex central → alcance 0 de hex.
         val hexRaio = (mira.raio - 1).coerceAtLeast(0)
         val hexesArea = com.gurps.ficha.domain.combat.hex.HexGrid.range(centro, hexRaio).toSet()
+        // Lote MEC-47 — POR QUE o herói sai da lista: a regra base é "afeta todos os seres vivos
+        // dentro da área" (Magia p.11), MAS a mesma seção dá ao operador a escolha de "afetar
+        // apenas partes da área, pagando o mesmo custo". Aplicamos essa escolha por padrão em
+        // favor de quem conjura — ninguém mira a própria explosão de propósito.
+        // ⚠️ Isso vale só para o INSTANTE da conjuração. A ZONA que fica no chão (P1b) é um perigo
+        // contínuo e fere o herói normalmente — `tiqueDasZonas` não filtra ninguém, e avisa em
+        // alto e bom som quando é ele. As duas coisas são diferentes de propósito.
         val alvos = est?.posicoes?.filter { it.id != "heroi" && it.posicao in hexesArea }?.map { it.id } ?: emptyList()
         // Penalidade de distância = herói até a BORDA mais próxima da área (Magia p.11).
         val distBorda = est?.posicoes?.firstOrNull { it.id == "heroi" }

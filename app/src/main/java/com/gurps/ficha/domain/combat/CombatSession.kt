@@ -2590,15 +2590,32 @@ class CombatSession(
      * Quem está DENTRO da zona agora. O motor não tem a grade (ela vive no controller), então isto é
      * um ponto de injeção: o controller substitui pelo cálculo real por hex. O padrão usa a distância
      * ao herói — aproximação honesta do modelo de faixas.
+     *
+     * ⚠️ Lote MEC-47 — o herói é caso especial AQUI: no modelo de faixas `distancia(heroi)` é **0**
+     * por definição (todas as distâncias são medidas a partir dele), então ele caía dentro de
+     * QUALQUER zona, inclusive uma que ele mesmo largou a 20m. Sem grade não dá pra saber onde a
+     * nuvem está em relação a ele, então valem os donos: zona do próprio herói → ele escolheu onde
+     * pôr e fica de fora; zona de um NPC → foi mirada nele e o pega. Com grade (o caminho normal
+     * do tático) isto não é usado: lá a posição é real e quem pisar no fogo queima.
      */
     var ocupantesDaZona: (ZonaPersistente) -> List<Combatente> = { z ->
-        encounter.combatentes.filter { it.vivo && distancia(it) <= z.raioM }
+        encounter.combatentes.filter {
+            it.vivo && distancia(it) <= z.raioM && !(it.ehHeroi && z.operadorId == it.id)
+        }
     }
 
     fun registrarZona(z: ZonaPersistente) {
         zonasAtivas = zonasAtivas + z
         log += "☁️ ${z.nome} cobre a área (raio ${z.raioM}m) por ${z.segRestantes}s — " +
             "${z.danoExpr} a cada ${z.intervaloSeg}s em quem estiver dentro."
+        // Lote MEC-47: o operador se POUPA na conjuração ("pode escolher afetar apenas partes da
+        // área", Magia p.11), mas a nuvem que fica no chão é um perigo contínuo e não distingue
+        // ninguém. Se ele mesmo está lá dentro, isso precisa ser dito AGORA — senão o primeiro
+        // tique parece dano do nada, que é justamente a queixa histórica do teste no aparelho.
+        if (ocupantesDaZona(z).any { it.ehHeroi }) {
+            log += "⚠️ Você está DENTRO da ${z.nome} — vai queimar a cada ${z.intervaloSeg}s " +
+                "enquanto ficar aí. Saia da área."
+        }
     }
 
     fun limparZonas() { zonasAtivas = emptyList() }
@@ -2637,8 +2654,15 @@ class CombatSession(
                     val dn = HitLocationRules.aplicarDano(alvo.pvMax, bruto, tipo, LocalAtaque.TORSO, rd,
                         alvo.stats?.tolerancia ?: ToleranciaFerimentos.NORMAL)
                     InjuryRules.ferir(alvo, dn.pvSubtrair, if (alvo.ehHeroi) heroiPerfil.ht else alvo.htEfetivo, random)
-                    log += "☁️ ${z.nome} atinge ${alvo.nome}: ${z.danoExpr} → ${dn.pvSubtrair} de dano" +
-                        (if (!alvo.vivo) " — fora de combate!" else ".")
+                    // Lote MEC-47: quando é o próprio herói, o log diz na cara que ele está na
+                    // ZONA DELE — a linha genérica "atinge <nome>" não explicava a perda de PV.
+                    log += if (alvo.ehHeroi) {
+                        "☁️ VOCÊ está dentro da ${z.nome}: ${z.danoExpr} → ${dn.pvSubtrair} de dano" +
+                            (if (!alvo.vivo) " — você caiu!" else ". Saia da área.")
+                    } else {
+                        "☁️ ${z.nome} atinge ${alvo.nome}: ${z.danoExpr} → ${dn.pvSubtrair} de dano" +
+                            (if (!alvo.vivo) " — fora de combate!" else ".")
+                    }
                 }
             }
             if (z.segRestantes > 0) sobrevivem.add(z) else log += "☁️ ${z.nome} se dissipa."

@@ -987,6 +987,40 @@ class MagicCombatTest {
             s.log.none { it.contains("Mau Cheiro atinge") })
     }
 
+    // ── Lote MEC-47: as DUAS metades da regra de área, e o herói dentro da própria zona ─────────
+
+    @Test
+    fun `sem grade a zona do PROPRIO heroi nao o fere — distancia ao heroi e sempre zero`() {
+        // O bug: no modelo de faixas `distancia(heroi)` é 0 por definição, então ele caía dentro de
+        // QUALQUER zona — inclusive uma que ele largou longe. É o "perder PV do nada" reportado.
+        val s = sessao(7, distGoblin = 1)
+        val pvAntes = s.heroi.pvAtual
+        s.registrarZona(zona(dur = 6))          // operadorId = "heroi"
+        repeat(5) { s.avancarTurno() }
+        assertEquals("a zona do proprio heroi nao pode feri-lo sem grade", pvAntes, s.heroi.pvAtual)
+        assertTrue("e nem deve avisar que ele esta dentro",
+            s.log.none { it.contains("Você está DENTRO") })
+    }
+
+    @Test
+    fun `sem grade a zona de um NPC PEGA o heroi — foi mirada nele`() {
+        val s = sessao(7, distGoblin = 1)
+        val pvAntes = s.heroi.pvAtual
+        s.registrarZona(zona(dur = 6).copy(operadorId = "goblin"))
+        repeat(5) { s.avancarTurno() }
+        assertTrue("zona do inimigo tem que ferir o heroi", s.heroi.pvAtual < pvAntes)
+        assertTrue("e o log tem que dizer que e ELE",
+            s.log.any { it.contains("VOCÊ está dentro") })
+    }
+
+    @Test
+    fun `heroi dentro da zona e avisado JA na conjuracao, nao so no primeiro tique`() {
+        val s = sessao(7, distGoblin = 1)
+        s.registrarZona(zona(dur = 6).copy(operadorId = "goblin"))
+        assertTrue("o aviso tem que sair no registro, antes de qualquer turno",
+            s.log.any { it.contains("Você está DENTRO") })
+    }
+
     @Test
     fun `zona com TESTE deixa a vitima evitar o dano`() {
         // Com teste de HT, parte das tentativas tem que aguentar (log de "aguenta").

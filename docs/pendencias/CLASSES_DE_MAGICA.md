@@ -120,7 +120,8 @@
 | Afeta **todos** os seres vivos dentro da área | ✅ |
 | **Raio de 1 m = 1 hex; 2 m = hex central + adjacentes; 3 m = anel seguinte** | ✅ (`HexGrid.range`) |
 | *"Algumas mágicas de Área especificam um **custo mínimo**: o operador sempre paga esse custo"* | ✅ **JÁ ESTAVA FEITO** — `custoTotal` faz `.coerceAtLeast(custo.minimo)`. Marquei ❌ por procurar o identificador errado. |
-| *"O operador pode escolher afetar **apenas partes da área**, mas o custo é o mesmo"* | ❌ não implementado |
+| *"O operador pode escolher afetar **apenas partes da área**, mas o custo é o mesmo"* | 🟡 **MEC-47** — implementado num caso só, o que importa: o **operador se poupa** na conjuração (ninguém mira a própria explosão). Escolher outras partes da área continua ❌. |
+| **Quem conjura × a própria área** (decisão do usuário, MEC-47) | ✅ Duas metades **de propósito diferentes**: na **conjuração** o herói fica de fora (regra do "afetar apenas partes"); a **zona persistente** que fica no chão (P1b) é perigo contínuo e **fere ele sim**, com aviso no registro e no tique. Sem grade (faixas), a zona do próprio herói não o pega — `distancia(heroi)` é 0 por definição e o faria queimar sempre. |
 
 ---
 
