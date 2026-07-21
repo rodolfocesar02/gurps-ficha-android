@@ -227,6 +227,13 @@ class SagaCombatController(
          * rastreia fadiga de NPC, então mostrar barra neles seria inventar dado. `null` = sem barra.
          */
         val pfPct: Float? = null,
+        /**
+         * Lote TOK-7: valores ABSOLUTOS de PV e PF, para o token escrever o número dentro do
+         * hexágono ("19"/"21"). A fração sozinha desenha o preenchimento, mas não diz quanto é.
+         * `pfAtual` é null pelo mesmo motivo de [pfPct]: NPC não rastreia fadiga.
+         */
+        val pvAtual: Int = 0,
+        val pfAtual: Int? = null,
         val facing: com.gurps.ficha.domain.combat.hex.Direcao,
         /** Lote TOK-6b-1: condições como mini-ícones sobre a barra de HP (🩸💫🤼😮‍💨⬇). */
         val condicoesIcones: String = "",
@@ -253,6 +260,9 @@ class SagaCombatController(
                     val max = viewModel.personagem.pontosFadiga
                     if (max > 0) (c.pfAtual.toFloat() / max).coerceIn(0f, 1f) else null
                 } else null,
+                // Lote TOK-7: absolutos para o número dentro do hexágono.
+                pvAtual = c.pvAtual,
+                pfAtual = if (c.ehHeroi) c.pfAtual else null,
                 posicao = pos.posicao, facing = pos.facing,
                 condicoesIcones = icones,
             )

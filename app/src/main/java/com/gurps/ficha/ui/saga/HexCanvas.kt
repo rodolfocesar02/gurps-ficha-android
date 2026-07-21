@@ -520,7 +520,8 @@ private fun HexCanvasCombateReal(viewModel: FichaViewModel, modifier: Modifier =
                         else tokensInimigos[TokenImageStore.normalizarTipo(tipoDoId(t.id))]
                     if (imagem != null) desenharTokenImagem(cx, cy, hexSizePx, demoToken, selecionado, imagem)
                     else desenharToken(cx, cy, hexSizePx, demoToken, selecionado, textMeasurer)
-                    desenharBarraHpENome(cx, cy, hexSizePx, t.nome, t.pvPct, t.condicoesIcones, textMeasurer, t.pfPct)
+                    desenharBarraHpENome(cx, cy, hexSizePx, t.nome, t.pvPct, t.condicoesIcones,
+                        textMeasurer, t.pfPct, t.pvAtual, t.pfAtual)
                 }
             }
         }
@@ -538,79 +539,102 @@ internal fun DrawScope.desenharBarraHpENome(
     cx: Float, cy: Float, tam: Float, nome: String, pvPct: Float,
     condicoesIcones: String, textMeasurer: TextMeasurer,
     /**
-     * Lote TOK-PF: fração de FADIGA — barra azul fina sob a de PV. `null` = não desenha (NPCs não
-     * rastreiam PF). Ficou visível porque a manutenção de mágica do MEC-22 drena PF por turno, e
-     * sem isto o jogador via o recurso sumir sem acompanhar.
+     * Lote TOK-PF: fração de FADIGA. `null` = NPC (o bestiário não rastreia PF), e então o
+     * hexágono azul não é desenhado — o que também distingue herói de inimigo (ver TOK-7).
      */
     pfPct: Float? = null,
+    /** Lote TOK-7: valores absolutos escritos dentro dos hexágonos. */
+    pvAtual: Int = 0,
+    pfAtual: Int? = null,
 ) {
     val raio = tam * 0.62f
-    val corHp = when {
-        pvPct > 0.5f -> Color(0xFF10B981)
-        pvPct > 0.25f -> Color(0xFFF59E0B)
-        else -> Color(0xFFEF4444)
+    // ── NOME acima da cabeça, clampado à largura do hexágono ──────────────────────────────────
+    // A largura útil de um hex pointy-top é √3·tam entre os lados paralelos. O nome é truncado até
+    // caber: o pedido foi explícito de que ele não pode ultrapassar o hexágono.
+    val larguraUtil = SQRT3 * tam * 0.94f
+    var texto = nome
+    var label = textMeasurer.measure(androidx.compose.ui.text.AnnotatedString(texto), ESTILO_NOME_TOKEN)
+    while (label.size.width > larguraUtil && texto.length > 2) {
+        texto = texto.dropLast(1)
+        label = textMeasurer.measure(androidx.compose.ui.text.AnnotatedString(texto), ESTILO_NOME_TOKEN)
     }
-    val larguraBarra = raio * 2.1f
-    val alturaBarra = (tam * 0.13f).coerceIn(4f, 10f)
-    val topoBarra = cy - raio - alturaBarra - 5f
-    val canto = androidx.compose.ui.geometry.CornerRadius(alturaBarra / 2f)
-    // Trilho escuro + preenchimento proporcional ao PV.
-    drawRoundRect(
-        color = Color(0xAA10161F),
-        topLeft = Offset(cx - larguraBarra / 2f, topoBarra),
-        size = androidx.compose.ui.geometry.Size(larguraBarra, alturaBarra),
-        cornerRadius = canto
-    )
-    val pct = pvPct.coerceIn(0f, 1f)
-    if (pct > 0f) {
-        drawRoundRect(
-            color = corHp,
-            topLeft = Offset(cx - larguraBarra / 2f, topoBarra),
-            size = androidx.compose.ui.geometry.Size(larguraBarra * pct, alturaBarra),
-            cornerRadius = canto
-        )
-    }
-    // TOK-PF: barra de FADIGA, azul e mais fina, logo abaixo da de PV.
+    drawText(label, topLeft = Offset(cx - label.size.width / 2f, cy - tam * 0.92f))
+
+    // ── Hexágonos de recurso nos cantos de baixo ──────────────────────────────────────────────
+    // Herói: PV (vermelho) à esquerda e PF (azul) à direita. NPC: só PV — ele não tem fadiga, e a
+    // assimetria 2-contra-1 é o que substitui o anel azul como marcador de lado.
+    val tamMini = tam * 0.42f
+    val yMini = cy + tam * 0.46f
+    desenharHexRecurso(cx - tam * 0.60f, yMini, tamMini, pvPct, pvAtual, COR_PV_HEX, textMeasurer)
     if (pfPct != null) {
-        val alturaPf = (alturaBarra * 0.6f).coerceAtLeast(3f)
-        val topoPf = topoBarra + alturaBarra + 2f
-        val cantoPf = androidx.compose.ui.geometry.CornerRadius(alturaPf / 2f)
-        drawRoundRect(
-            color = Color(0xAA10161F),
-            topLeft = Offset(cx - larguraBarra / 2f, topoPf),
-            size = androidx.compose.ui.geometry.Size(larguraBarra, alturaPf),
-            cornerRadius = cantoPf
-        )
-        val pctPf = pfPct.coerceIn(0f, 1f)
-        if (pctPf > 0f) {
-            // Azul cheio → âmbar quando a fadiga fica crítica (mesma gramática de cor da barra de PV).
-            val corPf = if (pctPf > 0.25f) Color(0xFF3B82F6) else Color(0xFFF59E0B)
-            drawRoundRect(
-                color = corPf,
-                topLeft = Offset(cx - larguraBarra / 2f, topoPf),
-                size = androidx.compose.ui.geometry.Size(larguraBarra * pctPf, alturaPf),
-                cornerRadius = cantoPf
+        desenharHexRecurso(cx + tam * 0.60f, yMini, tamMini, pfPct, pfAtual ?: 0, COR_PF_HEX, textMeasurer)
+    }
+
+    // ── Condições no rodapé central, entre os dois hexágonos ──────────────────────────────────
+    // Sem .take(): cortaria um emoji composto (ZWJ/surrogate) no meio.
+    if (condicoesIcones.isNotBlank()) {
+        val icones = textMeasurer.measure(
+            androidx.compose.ui.text.AnnotatedString(condicoesIcones), ESTILO_NOME_TOKEN)
+        drawText(icones, topLeft = Offset(cx - icones.size.width / 2f, cy + tam * 0.60f))
+    }
+}
+
+/**
+ * Lote TOK-7: hexágono de recurso — o preenchimento ESVAZIA de cima para baixo conforme [pct] cai,
+ * e o valor absoluto vai escrito dentro.
+ *
+ * O corpo fica a 50% de opacidade (pedido do usuário) para não competir com o retrato. Abaixo de
+ * [TAM_MIN_NUMERO_TOKEN] o número não é desenhado: num token de ~30dp (a câmera abre assim ao
+ * mostrar o deslocamento inteiro — ver TOK-6b-3) ele viraria borrão. A COR continua contando a
+ * história, que é o que se enxerga de longe.
+ */
+internal fun DrawScope.desenharHexRecurso(
+    cx: Float, cy: Float, tam: Float, pct: Float, valor: Int, cor: Color, textMeasurer: TextMeasurer
+) {
+    val hex = pathDoHex(cx, cy, tam)
+    drawPath(hex, color = cor.copy(alpha = 0.18f))            // leito vazio
+    val altura = alturaPreenchidaDoHex(tam, pct)
+    if (altura > 0f) {
+        // Recorta o hex e pinta só a faixa de baixo proporcional ao recurso restante.
+        clipPath(hex) {
+            drawRect(
+                color = cor.copy(alpha = 0.5f),
+                topLeft = Offset(cx - tam, cy + tam - altura),
+                size = androidx.compose.ui.geometry.Size(tam * 2f, altura)
             )
         }
     }
-    // Condições (🩸💫🤼…) acima da barra. Sem .take() — cortaria um emoji composto (ZWJ/surrogate)
-    // no meio; a string é curta e controlada pelo controller (máx ~5 ícones).
-    if (condicoesIcones.isNotBlank()) {
-        val icones = textMeasurer.measure(
-            text = androidx.compose.ui.text.AnnotatedString(condicoesIcones),
-            style = ESTILO_NOME_TOKEN
-        )
-        drawText(icones, topLeft = Offset(cx - icones.size.width / 2f, topoBarra - icones.size.height - 2f))
+    drawPath(hex, color = cor.copy(alpha = 0.9f), style = Stroke(width = 1.5f))
+    if (mostraNumeroDeRecurso(tam)) {
+        val n = textMeasurer.measure(
+            androidx.compose.ui.text.AnnotatedString(valor.toString()), ESTILO_VALOR_RECURSO)
+        drawText(n, topLeft = Offset(cx - n.size.width / 2f, cy - n.size.height / 2f))
     }
-    // Nome sob o token.
-    val label = textMeasurer.measure(
-        text = androidx.compose.ui.text.AnnotatedString(nome.take(12)),
-        style = ESTILO_NOME_TOKEN
-    )
-    drawText(label, topLeft = Offset(cx - label.size.width / 2f, cy + raio + 6f))
 }
 
 internal val ESTILO_NOME_TOKEN = TextStyle(color = Color(0xEEFFFFFF), fontSize = 10.sp)
+
+/** Lote TOK-7: número dentro do hexágono de recurso. */
+internal val ESTILO_VALOR_RECURSO = TextStyle(color = Color(0xEEFFFFFF), fontSize = 11.sp)
+
+/**
+ * Lote TOK-7: abaixo deste tamanho de mini-hex o número não é desenhado (viraria borrão) e só a
+ * cor conta a história. Decisão do usuário: "sumir número, manter a cor".
+ */
+internal const val TAM_MIN_NUMERO_TOKEN = 13f
+
+/** Lote TOK-7: o número cabe neste mini-hex? Puro, para ter teste (o desenho em si só no aparelho). */
+internal fun mostraNumeroDeRecurso(tamMini: Float): Boolean = tamMini >= TAM_MIN_NUMERO_TOKEN
+
+/**
+ * Lote TOK-7: altura da faixa preenchida do hexágono de recurso, de baixo para cima.
+ * Cheio = a altura toda (2·tam); vazio = 0. `pct` fora de 0..1 é clampado — PV negativo existe em
+ * GURPS (o herói vai a PV negativo antes de morrer) e não pode virar retângulo invertido.
+ */
+internal fun alturaPreenchidaDoHex(tam: Float, pct: Float): Float = 2f * tam * pct.coerceIn(0f, 1f)
+
+private val COR_PV_HEX = Color(0xFFDC2626)   // vermelho — PV
+private val COR_PF_HEX = Color(0xFF2563EB)   // azul — PF
 
 // ── Câmera (Lote TOK-6a): enquadra os COMBATENTES, não a grade inteira ─────
 
@@ -815,7 +839,11 @@ internal fun DrawScope.desenharTokenImagem(
     cx: Float, cy: Float, tam: Float, t: TokenDemo, selecionado: Boolean,
     imagem: ImageBitmap
 ) {
-    val raio = tam * 0.62f
+    // Lote TOK-7: o ANEL COLORIDO SAIU. Ele comia a borda do retrato e o usuário pediu mais espaço
+    // para o rosto. Quem passou a marcar o lado é o par de hexágonos de recurso (herói tem PV+PF,
+    // inimigo só PV) — ver `desenharBarraHpENome`. Sem o anel, o raio pode crescer.
+    val raio = tam * 0.72f
+    // A cor ainda serve ao TRIÂNGULO de facing, que o usuário quis manter.
     val corBorda = if (t.ehHeroi) COR_TOKEN_HEROI else COR_TOKEN_INIMIGO
     // Imagem recortada em círculo.
     val clip = Path().apply { addOval(Rect(center = Offset(cx, cy), radius = raio)) }
@@ -826,9 +854,6 @@ internal fun DrawScope.desenharTokenImagem(
             dstSize = IntSize((raio * 2).roundToInt(), (raio * 2).roundToInt())
         )
     }
-    // Borda colorida por cima (herói azul / inimigo vermelho).
-    drawCircle(color = corBorda, radius = raio, center = Offset(cx, cy),
-        style = Stroke(width = (tam * 0.09f).coerceAtLeast(2f)))
     if (selecionado) drawCircle(color = Color.White, radius = raio + 4f, center = Offset(cx, cy),
         style = Stroke(width = 3f))
     // Facing: triângulo pequeno na borda externa apontando na direção.
