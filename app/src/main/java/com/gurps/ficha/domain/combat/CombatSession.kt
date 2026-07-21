@@ -2695,9 +2695,16 @@ class CombatSession(
         if (zonasAtivas.isEmpty()) return
         val sobrevivem = mutableListOf<ZonaPersistente>()
         for (z in zonasAtivas) {
+            // Lote TOK-9 — regra da estreia. A estreia é consumida no primeiro TURNO, não no
+            // primeiro intervalo: numa zona de intervalo longo (Mau Cheiro, 60s) amarrá-la ao
+            // intervalo pularia o primeiro tique REAL, lá no minuto 60.
+            val turnoDaConjuracao = !z.estreou
+            z.estreou = true
             z.segRestantes -= 1
             z.segAteProximo -= 1
-            if (z.segAteProximo <= 0) {
+            // O relógio corre normalmente; só o DANO deste primeiro segundo é pulado, porque ele
+            // já saiu na conjuração da área. Sem isto o alvo levava dobrado no mesmo instante.
+            if (z.segAteProximo <= 0 && !turnoDaConjuracao) {
                 z.segAteProximo = z.intervaloSeg.coerceAtLeast(1)
                 for (alvo in ocupantesDaZona(z)) {
                     // Lote A1: imune ao elemento não é ferido pela zona, mesmo pisando dentro dela.

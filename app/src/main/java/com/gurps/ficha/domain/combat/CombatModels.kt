@@ -228,6 +228,15 @@ data class ZonaPersistente(
     var segRestantes: Int,
     /** Conta regressiva até o próximo dano (chega a 0 → fere e reinicia). */
     var segAteProximo: Int,
+    /**
+     * Lote TOK-9 — **regra da estreia**, igual à do MEC-22: a zona não fere no turno em que foi
+     * criada. O dano daquele segundo **já saiu** na conjuração da área. Sem isto quem está dentro
+     * levava DUAS vezes no mesmo instante — foi o que o log do aparelho mostrou (Goblin 2 com 4 do
+     * lançamento e mais 4 do tique, ambos no mesmo timestamp).
+     *
+     * O relógio (duração e intervalo) corre normalmente nesse turno; só o DANO é pulado.
+     */
+    var estreou: Boolean = false,
     val operadorId: String,
 )
 

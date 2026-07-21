@@ -959,6 +959,46 @@ class MagicCombatTest {
         assertTrue(s.log.any { it.contains("atinge") })
     }
 
+    // ── Lote TOK-9: regra da estreia da ZONA (achado no log do aparelho) ───────────────────────
+
+    @Test
+    fun `a zona NAO fere no turno em que foi criada — o lancamento ja feriu`() {
+        // Bug do aparelho: Goblin 2 levou 4 do lançamento E 4 do tique, no MESMO timestamp. O
+        // comentário do MEC-46 já dizia a intenção ("a zona tica a partir do turno seguinte"),
+        // mas o código não fazia isso.
+        val s = sessao(7, distGoblin = 1)
+        val g = s.encounter.combatentes.first { it.id == "goblin" }
+        val pvAntes = g.pvAtual
+        s.registrarZona(zona(dur = 10))
+        s.avancarTurno()   // fim do turno do herói = turno da conjuração
+        assertEquals("o tique não pode dobrar o dano do lançamento", pvAntes, g.pvAtual)
+    }
+
+    @Test
+    fun `a partir do turno seguinte a zona fere normalmente`() {
+        val s = sessao(7, distGoblin = 1)
+        val g = s.encounter.combatentes.first { it.id == "goblin" }
+        val pvAntes = g.pvAtual
+        s.registrarZona(zona(dur = 10))
+        repeat(4) { s.avancarTurno() }
+        assertTrue("depois da estreia ela tem que ferir", g.pvAtual < pvAntes)
+    }
+
+    @Test
+    fun `zona de intervalo LONGO nao perde o primeiro tique real`() {
+        // Armadilha que eu mesmo criei ao consertar: se a estreia fosse consumida no primeiro
+        // INTERVALO (e não no primeiro TURNO), o Mau Cheiro pularia o tique do minuto 60 — o
+        // primeiro que ele tem. A estreia é do turno da conjuração, não do intervalo.
+        val s = sessao(7, distGoblin = 1)
+        val g = s.encounter.combatentes.first { it.id == "goblin" }
+        val pvAntes = g.pvAtual
+        s.registrarZona(zona(nome = "Mau Cheiro", intervalo = 3, dur = 30))
+        repeat(2) { s.avancarTurno() }
+        assertEquals("antes do intervalo vencer ninguém é ferido", pvAntes, g.pvAtual)
+        repeat(10) { s.avancarTurno() }
+        assertTrue("o primeiro tique REAL não pode ser engolido pela estreia", g.pvAtual < pvAntes)
+    }
+
     @Test
     fun `zona EXPIRA e para de ferir`() {
         val s = sessao(7, distGoblin = 1)
