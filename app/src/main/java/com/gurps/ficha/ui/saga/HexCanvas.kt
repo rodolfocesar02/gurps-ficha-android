@@ -4,8 +4,8 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
-import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.gestures.detectTransformGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -67,6 +67,10 @@ private val COR_GRADE_FUNDO = Color(0xFF1A2632)
 private val COR_HEX_SELECIONADO = Color(0x44FFC107)
 private val COR_HEX_VALIDO_2D = Color(0x5910B981)   // verde translúcido — vizinho válido pra mover
 private val COR_HEX_ZONA_2D = Color(0x66C2410C)     // laranja-queimado translúcido — MEC-46 (P1b): zona que FERE
+/** Lote TOK-ZOOM: limites da pinça de dois dedos. 1f = enquadramento automático da câmera. */
+internal const val ZOOM_MIN = 0.6f
+internal const val ZOOM_MAX = 4f
+
 private val COR_TOKEN_HEROI = Color(0xFF3B82F6)
 private val COR_TOKEN_INIMIGO = Color(0xFFEF4444)
 private val COR_FACING = Color(0xCCFFFFFF)
@@ -222,7 +226,10 @@ fun HexCanvasDemo(
             val camAy by animateFloatAsState(camAlvo.centroAy, tween(400), label = "camAy")
             var panPx by remember { mutableStateOf(Offset.Zero) }
             LaunchedEffect(camAlvo) { panPx = Offset.Zero }
-            val cam = cameraEfetiva(camTam, camAx, camAy, panPx.x, panPx.y, estado.raioGrade)
+            // Lote TOK-ZOOM: o zoom do usuário NÃO é resetado pelo reenquadramento — quem aproximou
+            // pra "achar o espaço" continua aproximado no turno seguinte.
+            var zoomUsuario by remember { mutableFloatStateOf(1f) }
+            val cam = cameraEfetiva(camTam, camAx, camAy, panPx.x, panPx.y, estado.raioGrade, zoomUsuario)
             val camAtual by rememberUpdatedState(cam)
             Canvas(
                 modifier = Modifier
@@ -236,9 +243,14 @@ fun HexCanvasDemo(
                         }
                     }
                     .pointerInput(Unit) {
-                        detectDragGestures { change, dragAmount ->
-                            change.consume()
-                            panPx += dragAmount
+                        // Lote TOK-ZOOM: pinça de DOIS DEDOS dá zoom; um dedo arrasta (pan). Antes só
+                        // havia arrasto, e o jogador "perdia a noção de espaço" quando a câmera
+                        // enquadrava tudo de longe.
+                        detectTransformGestures { _, pan, gestureZoom, _ ->
+                            panPx += pan
+                            if (gestureZoom != 1f) {
+                                zoomUsuario = (zoomUsuario * gestureZoom).coerceIn(ZOOM_MIN, ZOOM_MAX)
+                            }
                         }
                     }
             ) {
@@ -434,7 +446,10 @@ private fun HexCanvasCombateReal(viewModel: FichaViewModel, modifier: Modifier =
             // O CENTRO é clampado ao raio da grade — o usuário nunca "se perde" em tela vazia.
             var panPx by remember { mutableStateOf(Offset.Zero) }
             LaunchedEffect(camAlvo) { panPx = Offset.Zero }
-            val cam = cameraEfetiva(camTam, camAx, camAy, panPx.x, panPx.y, estado.raioGrade)
+            // Lote TOK-ZOOM: pinça de DOIS DEDOS. Multiplica o tamanho enquadrado pela câmera e
+            // NÃO é resetada no reenquadramento de cada turno.
+            var zoomUsuario by remember { mutableFloatStateOf(1f) }
+            val cam = cameraEfetiva(camTam, camAx, camAy, panPx.x, panPx.y, estado.raioGrade, zoomUsuario)
             val camAtual by rememberUpdatedState(cam)
             Canvas(
                 modifier = Modifier
@@ -448,9 +463,14 @@ private fun HexCanvasCombateReal(viewModel: FichaViewModel, modifier: Modifier =
                         }
                     }
                     .pointerInput(Unit) {
-                        detectDragGestures { change, dragAmount ->
-                            change.consume()
-                            panPx += dragAmount // o mapa segue o dedo
+                        // Lote TOK-ZOOM: pinça de DOIS DEDOS dá zoom; um dedo arrasta (pan). Antes só
+                        // havia arrasto, e o jogador "perdia a noção de espaço" quando a câmera
+                        // enquadrava tudo de longe.
+                        detectTransformGestures { _, pan, gestureZoom, _ ->
+                            panPx += pan
+                            if (gestureZoom != 1f) {
+                                zoomUsuario = (zoomUsuario * gestureZoom).coerceIn(ZOOM_MIN, ZOOM_MAX)
+                            }
                         }
                     }
             ) {
@@ -641,14 +661,21 @@ internal fun calcularCamera(
  * Lote TOK-6b-1: câmera EFETIVA = câmera animada + PAN do usuário, com o centro CLAMPADO à
  * extensão axial da grade (ax ∈ ±√3·R, ay ∈ ±1.5·R) — arrastar nunca "perde" o mapa. PURA.
  */
-internal fun cameraEfetiva(tam: Float, ax: Float, ay: Float, panX: Float, panY: Float, raioGrade: Int): CameraHex {
-    if (tam <= 0f) return CameraHex(tam, ax, ay)
+internal fun cameraEfetiva(
+    tam: Float, ax: Float, ay: Float, panX: Float, panY: Float, raioGrade: Int,
+    zoom: Float = 1f
+): CameraHex {
+    // Lote TOK-ZOOM: [zoom] é a pinça de dois dedos, MULTIPLICADA sobre o tamanho que a câmera
+    // enquadrou sozinha. Como o hex passa a medir `tam·zoom` px, o pan em px é convertido por
+    // esse mesmo produto — aproximado, o dedo anda menos hexes (comportamento de mapa).
+    val t = tam * zoom.coerceIn(ZOOM_MIN, ZOOM_MAX)
+    if (t <= 0f) return CameraHex(t, ax, ay)
     val limiteAx = raioGrade * SQRT3
     val limiteAy = raioGrade * 1.5f
     return CameraHex(
-        tam,
-        (ax - panX / tam).coerceIn(-limiteAx, limiteAx),
-        (ay - panY / tam).coerceIn(-limiteAy, limiteAy)
+        t,
+        (ax - panX / t).coerceIn(-limiteAx, limiteAx),
+        (ay - panY / t).coerceIn(-limiteAy, limiteAy)
     )
 }
 

@@ -129,4 +129,47 @@ class CameraHexTest {
             assertTrue("hex $hex deve estar visível (y=$y)", y in 0f..ALT)
         }
     }
+
+    // ---- Lote TOK-ZOOM: pinça de dois dedos ----
+
+    @Test
+    fun `zoom multiplica o tamanho do hex e o padrao 1f nao muda nada`() {
+        val semZoom = cameraEfetiva(tam = 40f, ax = 0f, ay = 0f, panX = 0f, panY = 0f, raioGrade = 7)
+        val comZoom = cameraEfetiva(tam = 40f, ax = 0f, ay = 0f, panX = 0f, panY = 0f, raioGrade = 7, zoom = 2f)
+        assertEquals(40f, semZoom.tam, 0.001f)   // chamada antiga (default) é idêntica
+        assertEquals(80f, comZoom.tam, 0.001f)
+    }
+
+    @Test
+    fun `zoom e clampado entre o minimo e o maximo`() {
+        val esmagado = cameraEfetiva(40f, 0f, 0f, 0f, 0f, 7, zoom = 0.01f)
+        val estourado = cameraEfetiva(40f, 0f, 0f, 0f, 0f, 7, zoom = 99f)
+        assertEquals(40f * ZOOM_MIN, esmagado.tam, 0.001f)
+        assertEquals(40f * ZOOM_MAX, estourado.tam, 0.001f)
+    }
+
+    @Test
+    fun `com zoom o mesmo arrasto em px anda MENOS hexes`() {
+        // Comportamento de mapa: aproximado, o dedo percorre menos terreno. O pan é convertido
+        // pelo tamanho JÁ ampliado — se dividisse pelo tam original, o mapa dispararia.
+        val perto = cameraEfetiva(40f, 0f, 0f, panX = 80f, panY = 0f, raioGrade = 7, zoom = 2f)
+        val longe = cameraEfetiva(40f, 0f, 0f, panX = 80f, panY = 0f, raioGrade = 7, zoom = 1f)
+        assertEquals(-1f, perto.centroAx, 0.001f)  // 80px / (40*2)
+        assertEquals(-2f, longe.centroAx, 0.001f)  // 80px / 40
+    }
+
+    @Test
+    fun `com zoom o centro continua clampado a grade`() {
+        val cam = cameraEfetiva(40f, 0f, 0f, panX = -99_000f, panY = 0f, raioGrade = 7, zoom = 4f)
+        assertTrue("centro não pode escapar da grade", cam.centroAx <= 7 * SQRT3 + 0.001f)
+    }
+
+    @Test
+    fun `toque continua acertando o hex certo sob zoom`() {
+        // Round-trip: com a câmera ampliada, o centro do hex na tela deve voltar ao mesmo hex.
+        val cam = cameraEfetiva(40f, 0f, 0f, 0f, 0f, 7, zoom = 2.5f)
+        val alvo = HexCoord(2, -1)
+        val (x, y) = hexParaTelaCam(alvo, cam, LARG, ALT)
+        assertEquals(alvo, telaParaHexCam(x, y, cam, LARG, ALT, 7))
+    }
 }

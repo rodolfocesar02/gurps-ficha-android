@@ -18,6 +18,7 @@ import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Tune
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -28,6 +29,7 @@ import androidx.compose.ui.semantics.liveRegion
 import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
@@ -493,8 +495,14 @@ private fun FeedDaCampanha(viewModel: FichaViewModel) {
     val rolagem = viewModel.sagaRolagemPendente
     val listState = rememberLazyListState()
 
-    LaunchedEffect(feed.size) {
-        if (feed.isNotEmpty()) listState.animateScrollToItem(feed.size - 1)
+    // Lote TOK-6b-3 / TOK-GRID-CHEIO: no combate TÁTICO o grid é o protagonista — o feed sai do
+    // fluxo e vira overlay, e a caixa do Narrador sobe pro topo (ver mais abaixo).
+    val taticoAtivo = viewModel.sagaCombateAtivo &&
+        (viewModel.sagaModoTaticoHex || viewModel.sagaModoTaticoHex3D)
+
+    // Só rola a LazyColumn quando ela existe de fato — no tático não há lista pra rolar.
+    LaunchedEffect(feed.size, taticoAtivo) {
+        if (!taticoAtivo && feed.isNotEmpty()) listState.animateScrollToItem(feed.size - 1)
     }
 
     Column(Modifier.fillMaxSize()) {
@@ -522,35 +530,34 @@ private fun FeedDaCampanha(viewModel: FichaViewModel) {
         }
         HorizontalDivider()
 
-        // Lote TOK-6b-3: no combate TÁTICO o grid é o protagonista — o feed encolhe (menos peso +
-        // cards compactos) e a caixa do Narrador sobe pro topo (ver mais abaixo).
-        val taticoAtivo = viewModel.sagaCombateAtivo &&
-            (viewModel.sagaModoTaticoHex || viewModel.sagaModoTaticoHex3D)
-
         // Feed
-        LazyColumn(
-            state = listState,
-            modifier = Modifier
-                .weight(if (taticoAtivo) 0.7f else 1f)
-                .fillMaxWidth()
-                .padding(horizontal = 12.dp),
-            verticalArrangement = Arrangement.spacedBy(if (taticoAtivo) 4.dp else 8.dp),
-            contentPadding = PaddingValues(vertical = if (taticoAtivo) 4.dp else 8.dp)
-        ) {
-            if (feed.isEmpty() && !processando) {
-                item {
-                    Text(
-                        "O Narrador está preparando a cena de abertura…",
-                        style = MaterialTheme.typography.bodyMedium,
-                        fontStyle = FontStyle.Italic,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        modifier = Modifier.padding(top = 8.dp)
-                    )
+        // Lote TOK-GRID-CHEIO: no tático o feed SAI do fluxo da Column — vira overlay flutuante
+        // sobre a grade (ver FeedFlutuanteTatico, mais abaixo), pra o grid ocupar a tela inteira.
+        if (!taticoAtivo) {
+            LazyColumn(
+                state = listState,
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxWidth()
+                    .padding(horizontal = 12.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+                contentPadding = PaddingValues(vertical = 8.dp)
+            ) {
+                if (feed.isEmpty() && !processando) {
+                    item {
+                        Text(
+                            "O Narrador está preparando a cena de abertura…",
+                            style = MaterialTheme.typography.bodyMedium,
+                            fontStyle = FontStyle.Italic,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            modifier = Modifier.padding(top = 8.dp)
+                        )
+                    }
                 }
-            }
-            items(feed, key = { it.uid }) { turno ->
-                val ehUltimoNarrador = turno.role == "narrador" && turno.uid == feed.lastOrNull()?.uid
-                TurnoBolha(turno, animar = ehUltimoNarrador, compacto = taticoAtivo)
+                items(feed, key = { it.uid }) { turno ->
+                    val ehUltimoNarrador = turno.role == "narrador" && turno.uid == feed.lastOrNull()?.uid
+                    TurnoBolha(turno, animar = ehUltimoNarrador, compacto = false)
+                }
             }
         }
 
@@ -592,13 +599,16 @@ private fun FeedDaCampanha(viewModel: FichaViewModel) {
                 emCombate = true,
                 compacto = true
             )
-            Box(Modifier.weight(3f).fillMaxWidth()) {
+            // Lote TOK-GRID-CHEIO: peso 1f e ÚNICO filho com peso — a grade ocupa TUDO que sobra
+            // abaixo do cabeçalho e da caixa do Narrador. O feed virou overlay translúcido no topo.
+            Box(Modifier.weight(1f).fillMaxWidth()) {
                 com.gurps.ficha.ui.saga.HexCanvasTatico(viewModel, Modifier.fillMaxSize())
                 // Lote LIMPEZA-1: pilha ÚNICA de overlays (status/Defenda-se, magias ativas, mira de
                 // área, menu do token). Antes este bloco vivia aqui E duplicado no diálogo do preview.
                 // Aqui o menu do HERÓI vai no TOPO (deixa os hexes verdes de movimento livres embaixo,
-                // Lote TOK-6b-3); 42dp de respiro evita cobrir o cabeçalho "Combate tático".
-                OverlaysCombateTatico(viewModel, menuHeroiNoTopo = true, paddingTopo = 42.dp)
+                // Lote TOK-6b-3); o respiro agora é maior porque o feed flutuante mora acima dele.
+                OverlaysCombateTatico(viewModel, menuHeroiNoTopo = true, paddingTopo = 88.dp)
+                FeedFlutuanteTatico(feed, processando)
             }
         } else {
             if (viewModel.sagaCombateAtivo) {
@@ -622,6 +632,80 @@ private fun FeedDaCampanha(viewModel: FichaViewModel) {
             pendente = defesaPendente,
             onEscolher = { opcao -> viewModel.sagaCombateDefender(opcao) }
         )
+    }
+}
+
+/**
+ * Lote TOK-GRID-CHEIO: feed do Narrador FLUTUANTE sobre a grade tática.
+ *
+ * Antes o feed roubava ~20% da altura (weight 0.7 contra 3 do grid). O usuário pediu o grid
+ * "tomando toda a tela de combate", mas a narração não pode sumir — então ela vira um cartão
+ * translúcido no topo: RECOLHIDO mostra só a última fala (3 linhas); tocando, EXPANDE pra
+ * metade da tela com o histórico rolável. A grade continua desenhada por baixo, inteira.
+ */
+@Composable
+private fun BoxScope.FeedFlutuanteTatico(feed: List<SagaTurn>, processando: Boolean) {
+    var expandido by rememberSaveable { mutableStateOf(false) }
+    val ultimo = feed.lastOrNull()
+    if (ultimo == null && !processando) return
+
+    val scroll = rememberScrollState()
+    // Ao expandir (ou ao chegar fala nova com o painel aberto) desce pro fim: a última fala é a
+    // que importa. `scroll.maxValue` só é conhecido depois do layout, daí depender dele também.
+    LaunchedEffect(expandido, feed.size, scroll.maxValue) {
+        if (expandido) scroll.scrollTo(scroll.maxValue)
+    }
+
+    Surface(
+        color = MaterialTheme.colorScheme.surface.copy(alpha = 0.86f),
+        shape = RoundedCornerShape(bottomStart = 12.dp, bottomEnd = 12.dp),
+        tonalElevation = 3.dp,
+        modifier = Modifier
+            .align(Alignment.TopCenter)
+            .fillMaxWidth()
+            .then(if (expandido) Modifier.fillMaxHeight(0.5f) else Modifier)
+            .clickable { expandido = !expandido }
+            .semantics {
+                contentDescription = if (expandido) "Narração; toque para recolher"
+                else "Última fala do Narrador; toque para ver o histórico"
+            }
+    ) {
+        Column(Modifier.padding(horizontal = 12.dp, vertical = 6.dp)) {
+            if (expandido) {
+                Column(
+                    Modifier.weight(1f).verticalScroll(scroll),
+                    verticalArrangement = Arrangement.spacedBy(4.dp)
+                ) {
+                    // Coluna com scroll (não é lazy): teto de 40 falas pra não montar a campanha
+                    // inteira de uma vez. Quem quiser o histórico completo sai do tático.
+                    feed.takeLast(40).forEach { turno ->
+                        TurnoBolha(turno, animar = false, compacto = true)
+                    }
+                }
+            } else if (ultimo != null) {
+                Text(
+                    ultimo.texto,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    maxLines = 3,
+                    overflow = TextOverflow.Ellipsis
+                )
+            }
+            if (processando) {
+                Text(
+                    "O Narrador está escrevendo…",
+                    style = MaterialTheme.typography.labelSmall,
+                    fontStyle = FontStyle.Italic,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+            Text(
+                if (expandido) "▲ recolher" else "▼ histórico",
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.align(Alignment.End)
+            )
+        }
     }
 }
 
