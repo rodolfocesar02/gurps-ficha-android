@@ -3046,6 +3046,22 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - **Recomendação registrada** (maior valor × menor custo): Ataque Telegráfico (par do Enganoso), luta agarrada profunda (chaves/Mata-Leão estendendo o lote 422), Sangramento Grave + incapacitação de membro (item 5 do teste de batalha), Ataque Dedicado/Defensivo. Fora de escopo: posicional/hexágono, montaria, cinematográfico, dado de arma do NPC. Mudança só de documentação (não compila Kotlin).
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
+### Lote A1 — 21 de Julho de 2026 (imunidade por ELEMENTO — o eixo que faltava para 23 mágicas de dano)
+**Primeiro passo do plano de maximizar mecânica em magia — branch GURPS-Saga**
+- **A medição que orientou a decisão**: o catálogo inteiro tem **92 de 879 executáveis (10,5%)**. Agrupando os 787 restantes por substrato faltante: Sentidos 108, Informação 55, Terreno 49, Tipo de criatura 40, **Imunidade por dano 38**, Luz 31, Controle 26. Imunidade era o **mais barato com maior alcance** — dois campos e um gancho.
+- **O eixo que faltava**: `tipoDano` é o multiplicador de ferimento do GURPS (cont/corte/perf), e `"quei"` caía em `DanoTipo.CONT` — o elemento se perdia. O próprio código documentava a lacuna (*"sem enum de queimadura"*). Sem elemento, "Imunidade ao Fogo" não tinha o que consultar. Novo campo **`elementoDano`**, separado do `tipoDano`.
+- **Um funil, três entradas**: `aplicarDanoMagico` já concentrava magia direta, área e NPC conjurador, então a checagem entrou lá — **antes de rolar o dado**, porque o livro diz *"torna-se imune"*, logo não há dano a reduzir. Mais dois ganchos onde o caminho é próprio: o ramo de área e o tique de zona (`ZonaPersistente` ganhou `elementoDano`). **Não** toquei nos 19 call sites de `aplicarDano` — dano físico não tem elemento, e passar parâmetro por todos seria a armadilha do MEC-14 de novo.
+- **Os dois lados com o mesmo código**: `Combatente.imunidades` soma o bestiário (`NpcStats.imunidades`, para o elemental de fogo) e os buffs (a mágica Imunidade, para o herói, que não tem `NpcStats`). Sem ramificação.
+- **Curadoria**: 23 mágicas com elemento (11 fogo, 6 eletricidade, 4 ácido, 2 frio) e as 4 mágicas de Imunidade ligadas.
+- **Duas correções que só apareceram indo ao livro**, em vez de deduzir pela escola:
+  - **Adaga de Gelo e Esfera de Gelo não são dano de frio.** A Adaga diz *"dano por perfuração"* e *"nenhum efeito extra em criaturas de fogo"* — é arma física de gelo. E a Imunidade ao Frio exclui literalmente *"lanças mágicas de gelo"*.
+  - **Jato e Sopro de Vapor não são fogo**: o livro diz que causam o **dobro** de dano a criaturas de fogo. Se fossem elemento fogo, um imune levaria zero — o oposto. O ×2 fica **deferido** (falta o eixo de vulnerabilidade).
+  - As quatro estão **travadas por teste** contra o catálogo real, para ninguém "corrigir" isso por engano.
+- **+7 testes**: imune não perde PV; a imunidade **não vaza** entre elementos (regra literal *"imunes ao calor e ao fogo, mas não da eletricidade"*); sem imunidade o dano passa; imunidade natural do bestiário; zona não fere o imune; e a trava do `soNarrado`.
+- Gate: **856 testes por variante, ZERO falhas**, build nas duas. Não toca UI.
+- O **primeiro gate falhou** por nome de teste com `:` — parente do `;` que já pegou duas vezes. Registrado na memória com o jeito certo de varrer.
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
 ### Lote P3-1 — 21 de Julho de 2026 (P3: IQ e Vontade no buff, 6 mágicas curadas — e a triagem honesta dos 156)
 **"faz o p3!" — branch GURPS-Saga**
 - ⛔ **A promessa do `PENDENCIAS.md` era FALSA.** Ele dizia que o P3 faria *"156 magias saírem de narrado para mecânica"*. Li os **156 rótulos um a um**: a maioria esmagadora **não** é "extrair número da prosa", é efeito **sem substrato no motor**. É o mesmo erro do texto do Escudo já corrigido naquele arquivo — frase herdada sem conferir o dado.
