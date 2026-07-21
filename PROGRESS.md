@@ -3046,6 +3046,16 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - **Recomendação registrada** (maior valor × menor custo): Ataque Telegráfico (par do Enganoso), luta agarrada profunda (chaves/Mata-Leão estendendo o lote 422), Sangramento Grave + incapacitação de membro (item 5 do teste de batalha), Ataque Dedicado/Defensivo. Fora de escopo: posicional/hexágono, montaria, cinematográfico, dado de arma do NPC. Mudança só de documentação (não compila Kotlin).
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
+### Lote MEC-45 — 21 de Julho de 2026 (a pergunta certa do usuário: "é DX? poderia ser Ataque Inato?")
+**Teste do P11 no aparelho FUNCIONOU (Segurar → Aumentar 2/3s → 3/3s → Apontar → Arremessar, e a C1 disparou) — branch GURPS-Saga**
+- ✅ **O P11 passou no aparelho**: o log dele mostra a bola crescendo (`+3 → 6`, `+3 → 9`), a mira somando, o arremesso a **9 de energia** saindo **4d-4** e tirando o goblin de combate. E a **C1** rodou sozinha quando o goblin acertou: *"Ferido, você segura firme (Vontade 20, rolou 6)"*.
+- 🎯 **A pergunta dele estava certa e achou uma limitação MINHA**: *"é baseada em DX? poderia ser alguma perícia, talvez Ataque Inato?"* — o livro manda usar a perícia **Ataque Inato** (Magia p.12); eu vinha aproximando por **DX** e havia registrado isso como "simplificação honesta" porque *achei* que a perícia não existia na ficha. **Ela existe no catálogo** (`pericias.json`). Era limitação minha, não do sistema.
+  - Agora o perfil carrega `nhAtaqueInato` (mesmo padrão da Acrobacia); o arremesso usa a **perícia** quando o herói a tem e **avisa no log** quando cai na DX por não tê-la.
+- 🔴 **Transparência que faltava**: no **erro** o log mostrava NH e rolagem, mas no **ACERTO** não — por isso ele não via de onde vinha o acerto. Agora mostra nos dois.
+- **+3 testes**: usa a perícia quando existe; avisa a queda para DX quando não; e o acerto exibe NH+rolagem.
+- 🟢 Gate: **798 testes, ZERO falhas**.
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
 ### Lote MEC-44 — 21 de Julho de 2026 (a FICHA também ressincroniza com o catálogo)
 **Print do usuário: a mesma magia aparecia "Comum" na aba Magias e "Projétil" no combate — branch GURPS-Saga**
 - 🎯 **O MEC-42/43 consertou só o caminho de COMBATE.** A **aba Magias** lê `personagem.magias` direto, então continuava mostrando a cópia velha — a Bola de Relâmpagos aparecia com **duas classes diferentes ao mesmo tempo**, dependendo da tela.

@@ -1347,19 +1347,25 @@ class CombatSession(
         /** Lote MEC-40 (P6): +Precisão quando o operador Apontou neste alvo antes de arremessar. */
         bonusPrecisao: Int = 0,
     ): Int {
-        val nhAcerto = heroiPerfil.dx + penalidadeDistancia(ctx.distanciaMetros) + bonusPrecisao
+        // Lote MEC-45: o 2º teste é a perícia **Ataque Inato** (Magia p.12). Se o herói TEM a
+        // perícia na ficha, usa o NH dela; senão cai na DX (aproximação documentada).
+        val base = heroiPerfil.nhAtaqueInato ?: heroiPerfil.dx
+        val comQue = if (heroiPerfil.nhAtaqueInato != null) "Ataque Inato" else "DX (sem a perícia)"
+        val nhAcerto = base + penalidadeDistancia(ctx.distanciaMetros) + bonusPrecisao
         if (bonusPrecisao > 0) sb.append(" (mira: +$bonusPrecisao)")
         val rolAcerto = rolar3d6()
         if (rolAcerto > nhAcerto) {
-            sb.append(" O projétil passa longe (Ataque Inato NH $nhAcerto, rolou $rolAcerto).")
+            sb.append(" O projétil passa longe ($comQue NH $nhAcerto, rolou $rolAcerto).")
             return 0
         }
         val esq = esquivaNpc(alvo)
         if (npcSeDefendeu(esq, rolar3d6())) {
-            sb.append(" ${alvo.nome} ESQUIVA do projétil (Esquiva $esq).")
+            sb.append(" ${alvo.nome} ESQUIVA do projétil ($comQue NH $nhAcerto, rolou $rolAcerto; Esquiva $esq).")
             return 0
         }
-        sb.append(" Projétil acerta —")
+        // Lote MEC-45: mostra a jogada TAMBÉM no acerto — antes só o erro exibia o número, então o
+        // jogador não via de onde vinha o acerto (dúvida real dele: "é baseada em DX?").
+        sb.append(" Projétil acerta ($comQue NH $nhAcerto, rolou $rolAcerto) —")
         return aplicarDanoMagico(alvo, energia, ctx.mecanica, sb, ctx.distanciaMetros)
     }
 
@@ -3206,6 +3212,12 @@ data class HeroiPerfilCombate(
     /** Lote 386: ST e DX do herói — para as Disputas Rápidas de luta agarrada (Agarrar/Derrubar, MB p.370/371). */
     val st: Int = 10,
     val dx: Int = 10,
+    /**
+     * Lote MEC-45: NH da perícia **Ataque Inato**, se o herói a tiver na ficha. É o teste correto
+     * para acertar com projétil mágico (Magia p.12). `null` = não tem a perícia → o motor cai na DX,
+     * que era a aproximação usada até aqui.
+     */
+    val nhAtaqueInato: Int? = null,
     /** Lote 395: Vontade — teste para não perder a pontaria (Apontar) ao ser ferido (MB p.364). */
     val vontade: Int = 10,
     /** Lote 410: dano por GdP (golpe de ponta/empurrão) do herói, p/ o Empurrão (MB p.371). */

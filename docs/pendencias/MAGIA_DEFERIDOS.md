@@ -62,7 +62,7 @@ que não cabe em regra geral é **narrado pelo Mestre**.
 
 ## Simplificações honestas (fiéis o bastante, documentadas)
 - **Tipo de dano do Projétil** aproximado por contusão (×1 de ferimento, como queimadura básica).
-- **Ataque Inato** do Projétil aproximado pela DX do herói (a perícia Ataque Inato não está na ficha).
+- ~~**Ataque Inato** aproximado pela DX~~ ✅ **RESOLVIDO (MEC-45)** — a perícia **existe** no catálogo; eu havia assumido que não. O arremesso usa o NH dela quando o herói a tem e **avisa no log** quando cai na DX.
 - **Vontade do NPC** ≈ IQ (o bestiário não tem campo de Vontade separado).
 - **Manutenção** ≈ metade do custo (p.15), reduzida por NH — o catálogo raramente traz o custo exato.
 - **Distância na narrativa** abstraída (o `lancar_magia` assume contato/curta distância; o Narrador

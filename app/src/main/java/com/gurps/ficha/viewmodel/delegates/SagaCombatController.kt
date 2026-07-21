@@ -1913,7 +1913,13 @@ class SagaCombatController(
         // NH em Acrobacia (null se não tem) — Esquiva Acrobática (Lote 414).
         acrobacia = p.periciasTotais.firstOrNull {
             CatalogFilters.normalizarBusca(it.definicaoId).removePrefix("racial_") == "acrobacia"
-        }?.calcularNivel(p)
+        }?.calcularNivel(p),
+        // Lote MEC-45: NH em Ataque Inato (null se não tem) — é a perícia CORRETA para acertar com
+        // projétil mágico (Magia p.12); sem ela o motor cai na DX, como fazia antes.
+        nhAtaqueInato = p.periciasTotais.firstOrNull {
+            CatalogFilters.normalizarBusca(it.definicaoId).removePrefix("racial_") == "ataqueinato" ||
+                CatalogFilters.normalizarBusca(it.nome) == "ataqueinato"
+        }?.calcularNivel(p),
     )
 
     /**

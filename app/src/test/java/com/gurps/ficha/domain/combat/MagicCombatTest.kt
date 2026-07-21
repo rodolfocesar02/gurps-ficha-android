@@ -941,6 +941,42 @@ class MagicCombatTest {
         assertEquals("simetrico", 6, s.distanciaEntre(b, a))
     }
 
+    // ── Lote MEC-45: o arremesso usa a perícia Ataque Inato e MOSTRA a jogada ───────────────────
+
+    @Test
+    fun `arremesso usa Ataque Inato quando o heroi tem a pericia`() {
+        val enc = CombatEncounter(listOf(heroi(), goblin()), mapOf("goblin" to 3), seed = 1L)
+        // Perfil com Ataque Inato 16 (DX e 13) — o log tem que citar a PERICIA, nao a DX.
+        val s = CombatSession(enc, perfil().copy(nhAtaqueInato = 16), Random(7))
+        s.heroiCarregarProjetil(ctxProjetilDano(), MagicEnergy.parse("Varia"), 3, "Bola de Fogo", tetoPorTurno = 4)
+        s.heroiArremessarProjetil("goblin")
+        assertTrue("deve citar Ataque Inato", s.log.any { it.contains("Ataque Inato") })
+        assertTrue("nao pode dizer que usou DX", s.log.none { it.contains("sem a perícia") })
+    }
+
+    @Test
+    fun `sem a pericia o arremesso cai na DX e AVISA`() {
+        val s = sessao(7, distGoblin = 3) // perfil() nao tem nhAtaqueInato
+        s.heroiCarregarProjetil(ctxProjetilDano(), MagicEnergy.parse("Varia"), 3, "Bola de Fogo", tetoPorTurno = 4)
+        s.heroiArremessarProjetil("goblin")
+        assertTrue("deve avisar que usou DX por falta da pericia",
+            s.log.any { it.contains("sem a perícia") })
+    }
+
+    @Test
+    fun `a jogada de ataque aparece no log TAMBEM quando acerta`() {
+        // Antes so o ERRO mostrava o numero; no acerto o jogador nao via de onde vinha.
+        var viuNoAcerto = false
+        for (seed in 0L until 40L) {
+            val s = sessao(seed, distGoblin = 3)
+            s.modoTesteNpc = ModoTesteNpc.BONECO // nao esquiva, entao sobra acerto/erro
+            s.heroiCarregarProjetil(ctxProjetilDano(), MagicEnergy.parse("Varia"), 3, "Bola de Fogo", tetoPorTurno = 4)
+            s.heroiArremessarProjetil("goblin")
+            if (s.log.any { it.contains("Projétil acerta") && it.contains("rolou") }) { viuNoAcerto = true; break }
+        }
+        assertTrue("o acerto tem que mostrar NH e rolagem", viuNoAcerto)
+    }
+
     // ── Lote MEC-40 (P6): Precisão do projétil ao Apontar ───────────────────────────────────────
 
     private fun ctxProjetilPrec(prec: Int) = ContextoConjuracao(
