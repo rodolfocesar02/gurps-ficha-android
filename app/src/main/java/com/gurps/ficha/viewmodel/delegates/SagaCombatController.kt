@@ -355,6 +355,12 @@ class SagaCombatController(
         val s = sessao ?: return emptySet()
         val est = estadoTatico ?: return emptySet()
         if (s.encerrado || !s.combatenteAtual().ehHeroi) return emptySet()
+        // Lote TOK-8 (bug do aparelho): com a VIRADA FINAL pendente, nenhum hex é alcançável.
+        // Sem esta trava o jogador movia de novo e de novo — cada movimento reabria o prompt e
+        // NINGUÉM chamava `depoisDaAcaoDoHeroi`, que é quem avança o turno. Resultado: 20+
+        // deslocamentos no mesmo turno (GURPS dá UM Mover por turno) e tudo que depende do avanço
+        // congelado — tique de zona, relógio das mágicas, turno dos NPCs.
+        if (viradaFinalPendente != null) return emptySet()
         // Só quando o HERÓI está selecionado no grid (toque no próprio token) — evita poluir a grade.
         if (est.idSelecionado != "heroi") return emptySet()
         // Lote TOK-6b-2 (achado da varredura): mesmas travas do MOVER de faixas — atordoado não
@@ -380,6 +386,12 @@ class SagaCombatController(
         val s = sessao ?: return
         // Lote MA-3d: com uma mira de ÁREA pendente, o toque é o CENTRO da magia — resolve e sai.
         if (miraAreaPendente != null) { resolverMiraAreaNoHex(hex); return }
+        // Lote TOK-8: a virada final tem que ser resolvida antes de qualquer outro toque no grid.
+        // Sem isto o turno nunca fechava (ver `hexesAlcancaveisHeroi`).
+        if (viradaFinalPendente != null) {
+            avisoTatico = "Escolha para onde você fica olhando antes de continuar"
+            return
+        }
         val est = estadoTatico ?: return
         val tokenAli = est.posicoes.firstOrNull { it.posicao == hex }
         if (tokenAli != null) {
@@ -1656,6 +1668,10 @@ class SagaCombatController(
     private fun depoisDaAcaoDoHeroi() {
         val s = sessao ?: return
         publicarLog()
+        // Lote TOK-8 — defesa em profundidade: a virada final é de FIM DE MOVIMENTO. Se o turno vai
+        // passar por qualquer outro caminho (ataque, magia, encerramento), a pendência é obsoleta e
+        // não pode sobreviver — senão fica um prompt preso pedindo direção de um turno que já foi.
+        viradaFinalPendente = null
         if (s.encerrado) { atualizarEstado(); finalizar(); return }
         s.avancarTurno()
         scope.launch { rodarLoop() }

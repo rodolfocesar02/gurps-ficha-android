@@ -547,35 +547,43 @@ internal fun DrawScope.desenharBarraHpENome(
     pvAtual: Int = 0,
     pfAtual: Int? = null,
 ) {
-    val raio = tam * 0.62f
-    // ── NOME acima da cabeça, clampado à largura do hexágono ──────────────────────────────────
-    // A largura útil de um hex pointy-top é √3·tam entre os lados paralelos. O nome é truncado até
-    // caber: o pedido foi explícito de que ele não pode ultrapassar o hexágono.
-    val larguraUtil = SQRT3 * tam * 0.94f
+    // ── NOME sobre o topo do retrato ──────────────────────────────────────────────────────────
+    // Lote TOK-8: a fonte agora ESCALA com o token. Antes era `sp` fixo, então num token grande
+    // (zoom perto) o texto ficava minúsculo — foi exatamente o que o usuário reportou: "de longe é
+    // legível, o problema é perto".
+    val estiloNome = ESTILO_NOME_TOKEN.copy(fontSize = (tam * 0.30f).toSp())
+    val dyNome = -tam * 0.66f
+    // A largura disponível é a do hexágono NAQUELA ALTURA, não a máxima (ver meiaLarguraDoHex).
+    val larguraUtil = 2f * meiaLarguraDoHex(tam, dyNome) * 0.92f
     var texto = nome
-    var label = textMeasurer.measure(androidx.compose.ui.text.AnnotatedString(texto), ESTILO_NOME_TOKEN)
+    var label = textMeasurer.measure(androidx.compose.ui.text.AnnotatedString(texto), estiloNome)
     while (label.size.width > larguraUtil && texto.length > 2) {
         texto = texto.dropLast(1)
-        label = textMeasurer.measure(androidx.compose.ui.text.AnnotatedString(texto), ESTILO_NOME_TOKEN)
+        label = textMeasurer.measure(androidx.compose.ui.text.AnnotatedString(texto), estiloNome)
     }
-    drawText(label, topLeft = Offset(cx - label.size.width / 2f, cy - tam * 0.92f))
+    drawText(label, topLeft = Offset(cx - label.size.width / 2f, cy + dyNome))
 
-    // ── Hexágonos de recurso nos cantos de baixo ──────────────────────────────────────────────
+    // ── Hexágonos de recurso ──────────────────────────────────────────────────────────────────
     // Herói: PV (vermelho) à esquerda e PF (azul) à direita. NPC: só PV — ele não tem fadiga, e a
     // assimetria 2-contra-1 é o que substitui o anel azul como marcador de lado.
-    val tamMini = tam * 0.42f
-    val yMini = cy + tam * 0.46f
-    desenharHexRecurso(cx - tam * 0.60f, yMini, tamMini, pvPct, pvAtual, COR_PV_HEX, textMeasurer)
+    //
+    // Lote TOK-8: encolhidos e puxados para DENTRO. O hexágono é PONTUDO embaixo, então perto do
+    // vértice inferior quase não há largura — na posição antiga (0.60·tam de centro, 0.42·tam de
+    // tamanho) eles vazavam para fora, como o usuário viu.
+    val tamMini = tam * 0.26f
+    val dyMini = tam * 0.38f
+    desenharHexRecurso(cx - tam * 0.47f, cy + dyMini, tamMini, pvPct, pvAtual, COR_PV_HEX, textMeasurer)
     if (pfPct != null) {
-        desenharHexRecurso(cx + tam * 0.60f, yMini, tamMini, pfPct, pfAtual ?: 0, COR_PF_HEX, textMeasurer)
+        desenharHexRecurso(cx + tam * 0.47f, cy + dyMini, tamMini, pfPct, pfAtual ?: 0, COR_PF_HEX, textMeasurer)
     }
 
-    // ── Condições no rodapé central, entre os dois hexágonos ──────────────────────────────────
+    // ── Condições entre os dois hexágonos ─────────────────────────────────────────────────────
     // Sem .take(): cortaria um emoji composto (ZWJ/surrogate) no meio.
     if (condicoesIcones.isNotBlank()) {
         val icones = textMeasurer.measure(
-            androidx.compose.ui.text.AnnotatedString(condicoesIcones), ESTILO_NOME_TOKEN)
-        drawText(icones, topLeft = Offset(cx - icones.size.width / 2f, cy + tam * 0.60f))
+            androidx.compose.ui.text.AnnotatedString(condicoesIcones),
+            ESTILO_NOME_TOKEN.copy(fontSize = (tam * 0.24f).toSp()))
+        drawText(icones, topLeft = Offset(cx - icones.size.width / 2f, cy + tam * 0.30f))
     }
 }
 
@@ -606,8 +614,10 @@ internal fun DrawScope.desenharHexRecurso(
     }
     drawPath(hex, color = cor.copy(alpha = 0.9f), style = Stroke(width = 1.5f))
     if (mostraNumeroDeRecurso(tam)) {
+        // Lote TOK-8: fonte proporcional ao mini-hex (era `sp` fixo e sumia num token grande).
         val n = textMeasurer.measure(
-            androidx.compose.ui.text.AnnotatedString(valor.toString()), ESTILO_VALOR_RECURSO)
+            androidx.compose.ui.text.AnnotatedString(valor.toString()),
+            ESTILO_VALOR_RECURSO.copy(fontSize = (tam * 0.95f).toSp()))
         drawText(n, topLeft = Offset(cx - n.size.width / 2f, cy - n.size.height / 2f))
     }
 }
@@ -625,6 +635,23 @@ internal const val TAM_MIN_NUMERO_TOKEN = 13f
 
 /** Lote TOK-7: o número cabe neste mini-hex? Puro, para ter teste (o desenho em si só no aparelho). */
 internal fun mostraNumeroDeRecurso(tamMini: Float): Boolean = tamMini >= TAM_MIN_NUMERO_TOKEN
+
+/**
+ * Lote TOK-8: MEIA-LARGURA do hexágono pointy-top na altura [dy] (deslocamento vertical do centro).
+ *
+ * Existe porque o TOK-7 clampou o nome pela largura MÁXIMA (`√3·tam`), que só vale na faixa central.
+ * O nome era desenhado a `0.92·tam` acima do centro, onde o hexágono tem só `0.14·tam` de meia-
+ * largura — e por isso vazava para o hex de cima, como o usuário viu no aparelho.
+ *
+ * Geometria (ver `pathDoHex`, vértices a 30°/90°/...): a meia-largura é constante `√3/2·tam` até
+ * `|dy| = tam/2` e daí decresce linearmente até 0 no vértice (`|dy| = tam`).
+ */
+internal fun meiaLarguraDoHex(tam: Float, dy: Float): Float {
+    val ay = kotlin.math.abs(dy)
+    if (ay >= tam) return 0f
+    val plena = tam * (SQRT3 / 2f)
+    return if (ay <= tam / 2f) plena else plena * (1f - 2f * (ay / tam - 0.5f))
+}
 
 /**
  * Lote TOK-7: altura da faixa preenchida do hexágono de recurso, de baixo para cima.
