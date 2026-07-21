@@ -216,6 +216,8 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
     fun sagaAumentarProjetil(energia: Int) = sagaDelegate.combate.aumentarProjetil(energia)
     fun sagaArremessarProjetil(alvoId: String) = sagaDelegate.combate.arremessarProjetil(alvoId)
     fun sagaDissiparProjetil() = sagaDelegate.combate.dissiparProjetilCarregado()
+    /** Lote MEC-46 (P1b): hexes cobertos por zona ativa (chuva/nuvem/gás) para pintar na grade. */
+    val sagaHexesDeZona get() = sagaDelegate.combate.hexesDeZona
     fun sagaCombateDissiparToque() = sagaDelegate.combate.heroiDissiparToque()                        // Lote MA-3d-2
     fun sagaCombateApontar(alvoId: String, firmado: Boolean = false) = sagaDelegate.combate.heroiApontar(alvoId, firmado)
     fun sagaCombateFogoRetencao() = sagaDelegate.combate.heroiFogoRetencao()

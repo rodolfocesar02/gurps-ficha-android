@@ -151,6 +151,16 @@ data class MagiaMecanica(
      */
     val areaRaioMinimoM: Int = 0,
     /**
+     * Lote MEC-46 (P1b): a mágica de área cria uma **ZONA PERSISTENTE** que fere quem estiver dentro,
+     * repetidamente, enquanto durar (Chuva de Ácido/Fogo/Pedras, Nuvem de Fogo/Faíscas, Tempestade
+     * de Faíscas, Mau Cheiro, o respingo do Géiser). Sem isto, a área feria **uma vez só**.
+     */
+    val zonaPersistente: Boolean = false,
+    /** Segundos entre os danos da zona: **1** nas chuvas/nuvens; **60** no Mau Cheiro ("uma vez por minuto"). */
+    val zonaIntervaloSeg: Int = 1,
+    /** A vítima testa este atributo a cada tique para evitar o dano ("HT" no Mau Cheiro); vazio = sem teste. */
+    val zonaTeste: String? = null,
+    /**
      * Lote MEC-37 (P4): efeito em BANDAS de distância (Lampejo). Cada faixa tem seu próprio
      * resultado. Ex.: ≤10m → cego 3s + ofuscado −3 por 60s; 11–25m → só ofuscado −3 por 60s;
      * 26m+ → ofuscado −3 por 3s. Vazio = a mágica não usa bandas.

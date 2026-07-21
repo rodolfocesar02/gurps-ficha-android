@@ -3046,6 +3046,18 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - **Recomendação registrada** (maior valor × menor custo): Ataque Telegráfico (par do Enganoso), luta agarrada profunda (chaves/Mata-Leão estendendo o lote 422), Sangramento Grave + incapacitação de membro (item 5 do teste de batalha), Ataque Dedicado/Defensivo. Fora de escopo: posicional/hexágono, montaria, cinematográfico, dado de arma do NPC. Mudança só de documentação (não compila Kotlin).
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
+### Lote MEC-46 — 21 de Julho de 2026 (P1b: ZONAS persistentes — a última funcionalidade de combate)
+**"faz o p1b, e coloca na fila as que necessitam delas" — branch GURPS-Saga**
+- ✅ **P1b**: mágica de área agora pode deixar uma **ZONA** que fere quem estiver dentro, **a cada intervalo**, enquanto durar. Antes a área feria **uma vez só**. `ZonaPersistente` (centro, raio, dado, intervalo, teste, relógio) + `tiqueDasZonas()` no avanço de turno + expiração com aviso.
+- 🎨 **A UI era o ponto crítico e foi feita**: a zona é **pintada na grade** (laranja-queimado translúcido), desenhada **antes** dos hexes de movimento e dos tokens. Sem isso o jogador perderia PV "do nada" — exatamente o bug que ele já reportou uma vez ("só de se movimentar ele tá perdendo PV").
+- 🧩 **Ocupação resolvida onde há informação**: o motor não tem a grade (ela vive no controller), então `ocupantesDaZona` é um **ponto de injeção** — o padrão usa a distância-ao-herói (aproximação de faixas) e o controller substitui pelo cálculo **real por hex**. Instalado no `iniciarCombate`, então vale em **campanha e sandbox**.
+- **7 magias curadas**: Chuva de Ácido/Fogo/Pedras, Nuvem de Fogo/Faíscas, Tempestade de Faíscas (1s) e **Mau Cheiro** (60s + teste de **HT**, *"uma vez por minuto"*).
+- 🔗 **Destravou o P8**: o degrau de custo dobrado (2d-2) só valia na aplicação única; agora vale em **cada tique** — que era o payoff pleno registrado lá no MEC-36.
+- **+5 testes**: fere por turno; expira e para; quem está fora do raio não é ferido; intervalo de 60s não dispara em 5s; e o teste de HT deixa a vítima aguentar.
+- 🟢 Gate: **803 testes, ZERO falhas**.
+- 🚦 **Toca UI → PARA para teste no aparelho.**
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
 ### Lote MEC-45 — 21 de Julho de 2026 (a pergunta certa do usuário: "é DX? poderia ser Ataque Inato?")
 **Teste do P11 no aparelho FUNCIONOU (Segurar → Aumentar 2/3s → 3/3s → Apontar → Arremessar, e a C1 disparou) — branch GURPS-Saga**
 - ✅ **O P11 passou no aparelho**: o log dele mostra a bola crescendo (`+3 → 6`, `+3 → 9`), a mira somando, o arremesso a **9 de energia** saindo **4d-4** e tirando o goblin de combate. E a **C1** rodou sozinha quando o goblin acertou: *"Ferido, você segura firme (Vontade 20, rolou 6)"*.

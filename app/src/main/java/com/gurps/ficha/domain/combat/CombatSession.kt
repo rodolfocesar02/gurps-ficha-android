@@ -2582,6 +2582,71 @@ class CombatSession(
         return congeladas
     }
 
+    // ── Lote MEC-46 (P1b): ZONAS PERSISTENTES (chuvas, nuvens, gás) ──────────────────────────────
+
+    var zonasAtivas: List<ZonaPersistente> = emptyList(); private set
+
+    /**
+     * Quem está DENTRO da zona agora. O motor não tem a grade (ela vive no controller), então isto é
+     * um ponto de injeção: o controller substitui pelo cálculo real por hex. O padrão usa a distância
+     * ao herói — aproximação honesta do modelo de faixas.
+     */
+    var ocupantesDaZona: (ZonaPersistente) -> List<Combatente> = { z ->
+        encounter.combatentes.filter { it.vivo && distancia(it) <= z.raioM }
+    }
+
+    fun registrarZona(z: ZonaPersistente) {
+        zonasAtivas = zonasAtivas + z
+        log += "☁️ ${z.nome} cobre a área (raio ${z.raioM}m) por ${z.segRestantes}s — " +
+            "${z.danoExpr} a cada ${z.intervaloSeg}s em quem estiver dentro."
+    }
+
+    fun limparZonas() { zonasAtivas = emptyList() }
+
+    /**
+     * Lote MEC-46: corre o relógio das zonas (1 turno = 1 segundo), fere quem está dentro quando o
+     * intervalo vence, e remove as que expiraram. Roda no avanço de turno, como o tique das mágicas.
+     */
+    private fun tiqueDasZonas() {
+        if (zonasAtivas.isEmpty()) return
+        val sobrevivem = mutableListOf<ZonaPersistente>()
+        for (z in zonasAtivas) {
+            z.segRestantes -= 1
+            z.segAteProximo -= 1
+            if (z.segAteProximo <= 0) {
+                z.segAteProximo = z.intervaloSeg.coerceAtLeast(1)
+                for (alvo in ocupantesDaZona(z)) {
+                    // Teste para evitar (Mau Cheiro: HT uma vez por minuto). Sem teste, o dano é certo.
+                    if (!z.teste.isNullOrBlank()) {
+                        val atributo = if (alvo.ehHeroi) heroiPerfil.ht else alvo.htEfetivo
+                        val rol = rolar3d6()
+                        if (rol <= atributo) {
+                            log += "☁️ ${alvo.nome} aguenta ${z.nome} (${z.teste} $atributo, rolou $rol)."
+                            continue
+                        }
+                    }
+                    val bruto = rolarDano(z.danoExpr, random)
+                    val rd = when (z.armadura) {
+                        "ignora" -> 0
+                        "ignora_vestida" -> (alvo.stats?.rdNatural ?: 0) + alvo.buffRd
+                        else -> if (alvo.ehHeroi) heroiPerfil.rd else ((alvo.stats?.rd ?: 0) + alvo.buffRd)
+                    }
+                    val tipo = when (z.tipoDano) {
+                        "corte" -> DanoTipo.CORT; "perf" -> DanoTipo.PERF; else -> DanoTipo.CONT
+                    }
+                    val dn = HitLocationRules.aplicarDano(alvo.pvMax, bruto, tipo, LocalAtaque.TORSO, rd,
+                        alvo.stats?.tolerancia ?: ToleranciaFerimentos.NORMAL)
+                    InjuryRules.ferir(alvo, dn.pvSubtrair, if (alvo.ehHeroi) heroiPerfil.ht else alvo.htEfetivo, random)
+                    log += "☁️ ${z.nome} atinge ${alvo.nome}: ${z.danoExpr} → ${dn.pvSubtrair} de dano" +
+                        (if (!alvo.vivo) " — fora de combate!" else ".")
+                }
+            }
+            if (z.segRestantes > 0) sobrevivem.add(z) else log += "☁️ ${z.nome} se dissipa."
+        }
+        zonasAtivas = sobrevivem
+        verificarFim()
+    }
+
     private fun tiquePorTurnoDasMagias(congeladas: Set<String> = emptySet()) {
         val comTique = magiasAtivas.filter {
             com.gurps.ficha.domain.magic.MagicMechanics.temTiquePorTurno(it.mecanica) &&
@@ -2728,6 +2793,8 @@ class CombatSession(
         // Lote MEC-22: mágicas que FEREM A CADA TURNO (Morte Candente, Morte Putrefata) resolvem
         // aqui, antes do relógio de manutenção — a vítima testa e pode quebrar a mágica.
         if (anterior.ehHeroi && magiasAtivas.isNotEmpty()) tiquePorTurnoDasMagias(congeladasPorAbalo)
+        // Lote MEC-46 (P1b): as ZONAS correm o mesmo relógio.
+        if (anterior.ehHeroi) tiqueDasZonas()
 
         if (anterior.ehHeroi && magiasAtivas.isNotEmpty()) {
             val res = MagicActive.avancarTurnoSegundos(magiasAtivas, 1)

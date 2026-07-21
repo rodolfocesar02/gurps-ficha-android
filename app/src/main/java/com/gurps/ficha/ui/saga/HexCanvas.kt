@@ -66,6 +66,7 @@ private val COR_GRADE_LINHA = Color(0x66FFFFFF)
 private val COR_GRADE_FUNDO = Color(0xFF1A2632)
 private val COR_HEX_SELECIONADO = Color(0x44FFC107)
 private val COR_HEX_VALIDO_2D = Color(0x5910B981)   // verde translúcido — vizinho válido pra mover
+private val COR_HEX_ZONA_2D = Color(0x66C2410C)     // laranja-queimado translúcido — MEC-46 (P1b): zona que FERE
 private val COR_TOKEN_HEROI = Color(0xFF3B82F6)
 private val COR_TOKEN_INIMIGO = Color(0xFFEF4444)
 private val COR_FACING = Color(0xCCFFFFFF)
@@ -395,6 +396,7 @@ private fun HexCanvasCombateReal(viewModel: FichaViewModel, modifier: Modifier =
     }
 
     val hexesAlcancaveis = viewModel.sagaHexesAlcancaveis()
+    val hexesDeZona = viewModel.sagaHexesDeZona // MEC-46 (P1b)
 
     Column(modifier = modifier.background(COR_GRADE_FUNDO)) {
         Column(Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 6.dp)) {
@@ -475,6 +477,12 @@ private fun HexCanvasCombateReal(viewModel: FichaViewModel, modifier: Modifier =
                     if (cx < -hexSizePx || cx > larguraPx + hexSizePx ||
                         cy < -hexSizePx || cy > alturaPx + hexSizePx) continue
                     desenharHex(cx, cy, hexSizePx, hex == estado.hexSelecionado, textMeasurer, hex)
+                }
+                // Lote MEC-46 (P1b): ZONA persistente (chuva/nuvem/gás) pintada ANTES dos hexes de
+                // movimento e dos tokens — o jogador precisa VER a área que fere.
+                for (hexZona in hexesDeZona) {
+                    val (cx, cy) = hexParaTelaCam(hexZona, cam, larguraPx, alturaPx)
+                    desenharHexPreenchido(cx, cy, hexSizePx, COR_HEX_ZONA_2D)
                 }
                 // Hexes alcançáveis (Mover real — deslocamento do herói).
                 for (hexValido in hexesAlcancaveis) {

@@ -941,6 +941,64 @@ class MagicCombatTest {
         assertEquals("simetrico", 6, s.distanciaEntre(b, a))
     }
 
+    // ── Lote MEC-46 (P1b): zonas persistentes que ferem por turno ───────────────────────────────
+
+    private fun zona(nome: String = "Chuva de Fogo", intervalo: Int = 1, dur: Int = 5, teste: String? = null) =
+        ZonaPersistente(nome = nome, centro = null, raioM = 3, danoExpr = "1d-1", tipoDano = "quei",
+            armadura = null, intervaloSeg = intervalo, teste = teste, segRestantes = dur,
+            segAteProximo = intervalo, operadorId = "heroi")
+
+    @Test
+    fun `zona fere quem esta dentro a cada turno (P1b)`() {
+        val s = sessao(7, distGoblin = 1)
+        val pvAntes = s.encounter.combatentes.first { it.id == "goblin" }.pvAtual
+        s.registrarZona(zona())
+        repeat(3) { s.avancarTurno() }
+        val g = s.encounter.combatentes.first { it.id == "goblin" }
+        assertTrue("o goblin dentro da zona tem que perder PV", g.pvAtual < pvAntes)
+        assertTrue(s.log.any { it.contains("atinge") })
+    }
+
+    @Test
+    fun `zona EXPIRA e para de ferir`() {
+        val s = sessao(7, distGoblin = 1)
+        s.registrarZona(zona(dur = 2))
+        repeat(8) { s.avancarTurno() }
+        assertTrue("a zona tem que se dissipar", s.log.any { it.contains("se dissipa") })
+        assertTrue("e sair da lista de ativas", s.zonasAtivas.isEmpty())
+    }
+
+    @Test
+    fun `quem esta FORA do raio nao e ferido`() {
+        val s = sessao(7, distGoblin = 20) // bem longe; a aproximacao usa distancia ao heroi
+        val pvAntes = s.encounter.combatentes.first { it.id == "goblin" }.pvAtual
+        s.registrarZona(zona())
+        repeat(3) { s.avancarTurno() }
+        assertEquals("fora do raio 3, nao leva dano", pvAntes,
+            s.encounter.combatentes.first { it.id == "goblin" }.pvAtual)
+    }
+
+    @Test
+    fun `intervalo maior espaca os danos (Mau Cheiro e 1 por minuto)`() {
+        val s = sessao(7, distGoblin = 1)
+        s.registrarZona(zona(nome = "Mau Cheiro", intervalo = 60, dur = 120))
+        repeat(5) { s.avancarTurno() }
+        assertTrue("em 5 segundos o intervalo de 60s nao pode ter vencido",
+            s.log.none { it.contains("Mau Cheiro atinge") })
+    }
+
+    @Test
+    fun `zona com TESTE deixa a vitima evitar o dano`() {
+        // Com teste de HT, parte das tentativas tem que aguentar (log de "aguenta").
+        val aguentouAlguma = (0L until 30L).any { seed ->
+            val s = sessao(seed, distGoblin = 1)
+            s.registrarZona(zona(nome = "Mau Cheiro", intervalo = 1, dur = 4, teste = "HT"))
+            repeat(4) { s.avancarTurno() }
+            s.log.any { it.contains("aguenta Mau Cheiro") }
+        }
+        assertTrue("com teste, alguem tem que aguentar em 30 tentativas", aguentouAlguma)
+    }
+
     // ── Lote MEC-45: o arremesso usa a perícia Ataque Inato e MOSTRA a jogada ───────────────────
 
     @Test

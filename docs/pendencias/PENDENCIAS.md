@@ -54,7 +54,7 @@ cujo efeito é `dano`/`condicao`/`cura` **é suspeito**.
 | # | O que falta | Afeta | Origem |
 |---|---|---|---|
 | P1a | ~~**Tique por turno, alvo único**~~ ✅ **FEITO (Lote MEC-22)** — Morte Candente e Morte Putrefata ferem a cada turno, a vítima testa HT, sucesso decisivo quebra a mágica | — | auditoria #11 |
-| P1b | **Tique por turno em ZONA** — a área persiste e fere quem está dentro | Chuva de Ácido/Fogo/Pedras, Nuvem de Faíscas, Géiser, Mau Cheiro | auditoria #2 |
+| P1b | ~~**Tique por turno em ZONA**~~ ✅ **FEITO (MEC-46)** — `ZonaPersistente` + tique no avanço de turno + **área pintada na grade** (laranja). 7 magias curadas. ⚠️ PARA para teste no aparelho (UI). | Chuvas, Nuvens, Tempestade de Faíscas, Mau Cheiro |
 | P2 | ~~**Manter magia com efeito continuado**~~ ✅ **FEITO (Lote MEC-22)** para as de tique — a mágica fica ativa, cobra manutenção por turno e exige concentração | — | MAGIA_DEFERIDOS |
 | P3 | **Curar os 156 buffs que só têm rótulo de texto** — não é bug de motor, é trabalho de catálogo | 156 dos 179 buffs | ver correção abaixo |
 
@@ -135,7 +135,7 @@ e com teste** desde antes.
 | P5 | 🔴 **precisa de projétil-contra-HEX** — o ramo de projétil resolve contra 1 combatente; para espalhar a explosão do ponto de impacto ele teria de mirar um hex e varrer os vizinhos (metade do trabalho do MEC-14 de área, do lado do projétil). Feature, não ajuste. | Relâmpago Explosivo |
 | P6 | ~~**Precisão do projétil**~~ ✅ **FEITO (MEC-40)** — Apontar antes de arremessar soma a Precisão (+ mira de vários turnos). Chip 🎯 Apontar no token inimigo. 12 magias curadas. | 12 projéteis |
 | P7 | ~~**RD natural × armadura** do Toque Candente~~ ✅ **FEITO (MEC-38)** — campo `rdNatural` no bestiário + `armadura: "ignora_vestida"` → ignora a vestida, natural protege | Toque Candente | ✅ VALIDADO no aparelho 21/jul |
-| P8 | ~~Degrau de custo dobrado (2d-2)~~ ✅ **FEITO (MEC-36)** — `danoDeAreaComDegrau`; limiar = custo-base 2 dobrado. O payoff pleno é o tique por segundo (P1b). | Chuva de Fogo/Pedras | ✅ VALIDADO no aparelho 21/jul |
+| P8 | ~~Degrau de custo dobrado (2d-2)~~ ✅ **FEITO (MEC-36)** — `danoDeAreaComDegrau`; limiar = custo-base 2 dobrado. ✅ O payoff pleno chegou com o P1b (MEC-46): o degrau agora vale em **cada tique** da zona. | Chuva de Fogo/Pedras | ✅ VALIDADO no aparelho 21/jul |
 | P9 | 🔴 **precisa de resolução de FEIXE** — os Jatos são `narrado`/`feixe` e não têm caminho de acerto/dano no motor. Projeção (knockback) reusaria o Empurrão existente, mas o feixe em si (teste DX-4, esquiva/bloqueio) é ataque novo. A parte do Géiser (empurra + DX-5) mora no P1b (zona). | Jatos, Géiser |
 | P10 | ~~Raio mínimo de 2m~~ ✅ **FEITO (MEC-36)** — `raioEfetivo`; a mira eleva o raio ao mínimo | Nuvem de Faíscas, Sono Coletivo | ✅ VALIDADO no aparelho 21/jul |
 | P11 | ~~**Projétil carregado em vários turnos**~~ ✅ **FEITO (MEC-39)** — carregar/aumentar (até 3s, +Aptidão/turno)/arremessar/dissipar, aditivo ao one-shot. UI: botão "Segurar" no diálogo + chips Arremessar/Aumentar/Dissipar no token. **Cerimonial VETADO pelo usuário.** ⚠️ PARA para teste no aparelho (UI). |

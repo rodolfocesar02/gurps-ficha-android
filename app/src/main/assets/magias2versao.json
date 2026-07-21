@@ -2655,7 +2655,7 @@
     "energia": "1 a 2×AM",
     "tempoOperacao": "1 a 3 seg.",
     "preRequisitos": "Aporte, Relampago",
-    "descricao": "Área\n\nCria uma bola de relâmpagos na mão do operador. Ao contrário de uma mágica comum de projétil, no entanto, uma Bola de Relâmpagos flutua na direção em que o operador desejar; não pode ser arremessado da maneira usual. A bola é totalmente silenciosa e se move em linha reta a uma velocidade máxima igual ao NH do operador dividida por 5 (arredondar para baixo), independentemente do vento e dos obstáculos não metálicos — a bola flutua através de janelas, cortinas, paredes, etc. Ela mantém seu rumo e velocidade, a menos que o operador se concentre em mudá-lo. A bola explode sob o comando mental do operador ou em contato com um ser vivo ou objeto metálico. Se a mágica expirar, a Bola desaparecerá sem explodir. Esta também é uma mágica do Ar.\n\nDuração: 1 minuto. Custo: Qualquer quantia até o dobro do seu nível de Aptidão Mágica por segundo, por três segundos; metade disso para manter. A bola causa 1d-1 de dano por queimadura a cada 2 pontos completos de energia a qualquer pessoa que esteja a menos de 1 metro da explosão. Os que estão mais distantes dividem o dano em três vezes a distância em metros (arredondar para baixo).\n\nTempo de operação: 1 a 3 segundos; a bola cresce na mão do operador à medida que a operação progride.\n\nPré-requisitos: Aporte e Relâmpago.\n\nItem\n\nCajado, varinha ou joias. Utilizável apenas por magos. Custo para criar: 600 de energia e uma opala de $500.",
+    "descricao": "Projetil\n\nCria uma bola de relâmpagos na mão do operador. Ao contrário de uma mágica comum de projétil, no entanto, uma Bola de Relâmpagos flutua na direção em que o operador desejar; não pode ser arremessado da maneira usual. A bola é totalmente silenciosa e se move em linha reta a uma velocidade máxima igual ao NH do operador dividida por 5 (arredondar para baixo), independentemente do vento e dos obstáculos não metálicos — a bola flutua através de janelas, cortinas, paredes, etc. Ela mantém seu rumo e velocidade, a menos que o operador se concentre em mudá-lo. A bola explode sob o comando mental do operador ou em contato com um ser vivo ou objeto metálico. Se a mágica expirar, a Bola desaparecerá sem explodir. Esta também é uma mágica do Ar.\n\nDuração: 1 minuto. Custo: Qualquer quantia até o dobro do seu nível de Aptidão Mágica por segundo, por três segundos; metade disso para manter. A bola causa 1d-1 de dano por queimadura a cada 2 pontos completos de energia a qualquer pessoa que esteja a menos de 1 metro da explosão. Os que estão mais distantes dividem o dano em três vezes a distância em metros (arredondar para baixo).\n\nTempo de operação: 1 a 3 segundos; a bola cresce na mão do operador à medida que a operação progride.\n\nPré-requisitos: Aporte e Relâmpago.\n\nItem\n\nCajado, varinha ou joias. Utilizável apenas por magos. Custo para criar: 600 de energia e uma opala de $500.",
     "mecanica": {
       "efeito": "dano",
       "danoPorEnergia": "1d-1",
@@ -3365,7 +3365,9 @@
       "energiaPorDado": 1,
       "entrega": "area",
       "notas": "Dano por ácido: 1d-1/seg fixo a todos na área (meio segundo = metade do dano). Só ao ar livre. Armadura protege normalmente; escudo BD 2+ acima da cabeça bloqueia. Dura 1 min. Custo fixo 3 (não escala por energia).",
-      "danoFixo": true
+      "danoFixo": true,
+      "zonaPersistente": true,
+      "zonaIntervaloSeg": 1
     },
     "duracaoTipo": "temporaria",
     "duracaoSeg": 60,
@@ -3412,7 +3414,9 @@
       "entrega": "area",
       "notas": "1d-1/seg a todos na area (min custo 2). Dobrando o custo base: 2d-2/seg. Menos de 1 seg na area = metade. Armadura protege; escudo BD2+ bloqueia. So ao ar livre.",
       "danoDegrauCustoDobrado": "2d-2",
-      "energiaParaDegrau": 4
+      "energiaParaDegrau": 4,
+      "zonaPersistente": true,
+      "zonaIntervaloSeg": 1
     },
     "duracaoTipo": "temporaria",
     "duracaoSeg": 60,
@@ -3463,7 +3467,9 @@
       "notas": "Dano FIXO 1d-1 por segundo na area (nao escala com energia gasta); pelo dobro do custo basico vira 2d-2/seg. Meio segundo = metade do dano. Armadura protege normal; escudo BD2+ levantado (Prontidao, 2 maos) bloqueia automatico. So ao ar livre. Dura 1 min.",
       "danoFixo": true,
       "danoDegrauCustoDobrado": "2d-2",
-      "energiaParaDegrau": 4
+      "energiaParaDegrau": 4,
+      "zonaPersistente": true,
+      "zonaIntervaloSeg": 1
     },
     "duracaoTipo": "temporaria",
     "duracaoSeg": 60,
@@ -12087,7 +12093,10 @@
       "armadura": "ignora",
       "entrega": "area",
       "condicaoResistencia": "HT",
-      "notas": "Custo básico 1 (Área). Nuvem de gás fétido: quem respira testa HT uma vez por minuto ou sofre 1d (dano tóxico inalado, a armadura não protege). Dano NÃO escala com energia. Quem está na área também começa a sufocar (MB437). A nuvem é pesada e desce declives. Dura 5 min em local fechado; ~10s a céu aberto com vento. Não Respira ou Pulmões com Filtro são imunes."
+      "notas": "Custo básico 1 (Área). Nuvem de gás fétido: quem respira testa HT uma vez por minuto ou sofre 1d (dano tóxico inalado, a armadura não protege). Dano NÃO escala com energia. Quem está na área também começa a sufocar (MB437). A nuvem é pesada e desce declives. Dura 5 min em local fechado; ~10s a céu aberto com vento. Não Respira ou Pulmões com Filtro são imunes.",
+      "zonaPersistente": true,
+      "zonaIntervaloSeg": 60,
+      "zonaTeste": "HT"
     },
     "duracaoTipo": "temporaria",
     "duracaoSeg": 300,
@@ -13251,7 +13260,9 @@
       "armadura": "metal_rd_1",
       "entrega": "area",
       "notas": "Nuvem ao nivel do solo. Dano FLAT: 1 ponto/segundo por ponto de energia no custo base (nao e dado). Nao bloqueia visao. Armadura protege normal; metalica da RD minima como contra relampago. Raio min 2m. Dur 10s.",
-      "areaRaioMinimoM": 2
+      "areaRaioMinimoM": 2,
+      "zonaPersistente": true,
+      "zonaIntervaloSeg": 1
     }
   },
   {
@@ -13274,7 +13285,9 @@
       "energiaPorDado": 1,
       "tipoDano": "quei",
       "entrega": "area",
-      "notas": "1 PONTO fixo de dano/seg por ponto de energia (custo base 1-5), NAO em dados. Nao bloqueia visao. Menos de 1 seg = metade. Armadura protege."
+      "notas": "1 PONTO fixo de dano/seg por ponto de energia (custo base 1-5), NAO em dados. Nao bloqueia visao. Menos de 1 seg = metade. Armadura protege.",
+      "zonaPersistente": true,
+      "zonaIntervaloSeg": 1
     },
     "duracaoTipo": "temporaria",
     "duracaoSeg": 10,
@@ -18493,7 +18506,9 @@
       "tipoDano": "quei",
       "armadura": "metal_rd_1",
       "entrega": "area",
-      "notas": "Nuvem ao nivel do solo de faiscas. Dano FLAT: 1 ponto/segundo por ponto de energia no custo base (nao e dado). Nao bloqueia visao. Armadura metalica da RD minima como contra relampago. Raio min 2m."
+      "notas": "Nuvem ao nivel do solo de faiscas. Dano FLAT: 1 ponto/segundo por ponto de energia no custo base (nao e dado). Nao bloqueia visao. Armadura metalica da RD minima como contra relampago. Raio min 2m.",
+      "zonaPersistente": true,
+      "zonaIntervaloSeg": 1
     }
   },
   {

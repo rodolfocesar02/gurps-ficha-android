@@ -815,6 +815,7 @@ class SagaCombatController(
         if (surpresa == "inimigos") combatentes.filter { !it.ehHeroi }.forEach { it.condicoes.add(Condicao.SURPRESO) }
         if (surpresa == "heroi") heroiComb.condicoes.add(Condicao.SURPRESO)
         sessao = s
+        instalarOcupacaoDeZonaPelaGrade() // MEC-46 (P1b): vale para campanha E sandbox
         logPublicado = 0
         finalizado = false
         ataques = construirAtaques(p)
@@ -1136,6 +1137,38 @@ class SagaCombatController(
         s.heroiArremessarProjetil(alvoId); sincronizarRecursosHeroi(s); depoisDaAcaoDoHeroi()
     }
 
+    /**
+     * Lote MEC-46 (P1b): ensina o motor a perguntar à GRADE quem está dentro da zona. Sem isto ele
+     * cai na aproximação por distância-ao-herói, que erraria bastante num mapa 2D.
+     */
+    private fun instalarOcupacaoDeZonaPelaGrade() {
+        val s = sessao ?: return
+        s.ocupantesDaZona = { z ->
+            val est = estadoTatico
+            val centro = z.centro
+            if (est == null || centro == null) {
+                s.encounter.combatentes.filter { it.vivo && s.distancia(it) <= z.raioM }
+            } else {
+                // raio em metros = raio em hexes (1 hex = 1 m); raio 1 = só o hex central.
+                val alcance = (z.raioM - 1).coerceAtLeast(0)
+                val dentro = est.posicoes.filter { it.posicao.distancia(centro) <= alcance }.map { it.id }.toSet()
+                s.encounter.combatentes.filter { it.vivo && it.id in dentro }
+            }
+        }
+    }
+
+    /**
+     * Lote MEC-46 (P1b): hexes cobertos por zonas ativas, para o canvas PINTAR a área. Sem desenhar,
+     * o jogador perderia PV "do nada" — exatamente o bug já reportado no teste de movimento.
+     */
+    val hexesDeZona: Set<com.gurps.ficha.domain.combat.hex.HexCoord> get() {
+        val s = sessao ?: return emptySet()
+        if (s.zonasAtivas.isEmpty()) return emptySet()
+        return s.zonasAtivas.mapNotNull { z -> z.centro?.let { c ->
+            com.gurps.ficha.domain.combat.hex.HexGrid.range(c, (z.raioM - 1).coerceAtLeast(0))
+        } }.flatten().toSet()
+    }
+
     /** Ação livre — não consome o turno. */
     fun dissiparProjetilCarregado() {
         val s = sessao ?: return
@@ -1284,7 +1317,23 @@ class SagaCombatController(
         // Lote MEC-14: distância de cada alvo ao CENTRO (1 hex = 1 m) — a explosão decai com ela.
         val distCentro = est?.posicoes?.filter { it.id in alvos }
             ?.associate { it.id to it.posicao.distancia(centro) } ?: emptyMap()
-        s.heroiConjurarArea(ctx, custoCanonico(def) ?: MagicEnergy.parse(magia.energia), mira.energia, magia.nome, alvos, distCentro)
+        val resArea = s.heroiConjurarArea(ctx, custoCanonico(def) ?: MagicEnergy.parse(magia.energia), mira.energia, magia.nome, alvos, distCentro)
+        // Lote MEC-46 (P1b): mágica de ZONA (chuvas, nuvens, gás) deixa a área ATIVA ferindo quem
+        // estiver dentro, a cada intervalo, enquanto durar. O 1º dano já saiu na conjuração acima
+        // (é o 1º segundo); a zona tica a partir do turno seguinte.
+        val mecZ = def?.mecanica
+        if (resArea.sucesso && mecZ?.zonaPersistente == true) {
+            val duracaoSeg = parseTempoSeg(def.duracao).coerceAtLeast(1)
+            val expr = com.gurps.ficha.domain.magic.MagicMechanics.danoDeAreaComDegrau(mecZ, mira.energia.coerceAtLeast(1))
+            val raio = com.gurps.ficha.domain.magic.MagicMechanics.raioEfetivo(mecZ, mira.raio)
+            s.registrarZona(com.gurps.ficha.domain.combat.ZonaPersistente(
+                nome = magia.nome, centro = centro, raioM = raio, danoExpr = expr,
+                tipoDano = mecZ.tipoDano, armadura = mecZ.armadura,
+                intervaloSeg = mecZ.zonaIntervaloSeg.coerceAtLeast(1), teste = mecZ.zonaTeste,
+                segRestantes = duracaoSeg, segAteProximo = mecZ.zonaIntervaloSeg.coerceAtLeast(1),
+                operadorId = "heroi",
+            ))
+        }
         sincronizarRecursosHeroi(s)
         depoisDaAcaoDoHeroi()
     }
@@ -1605,6 +1654,7 @@ class SagaCombatController(
         estadoTatico = null; avisoTatico = null // Lote TOK-4: limpa a grade tática
         viradaFinalPendente = null // HEX-FACING-2: pendência não pode vazar para a próxima luta
         manutencaoPendente = emptyList() // MEC-30: idem — card de manutenção preso travaria a tela
+        // MEC-46: zonas não podem vazar para a próxima luta.
     }
 
     // ── Loop de turnos ────────────────────────────────────────────────────────

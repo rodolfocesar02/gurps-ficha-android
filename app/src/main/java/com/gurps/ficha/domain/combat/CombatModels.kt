@@ -171,6 +171,29 @@ data class EscapeCondicao(
     val descricao: String,
 )
 
+/**
+ * Lote MEC-46 (P1b): uma **zona persistente** criada por mágica de área — chuva de fogo, nuvem de
+ * faíscas, gás fétido. Fere quem estiver dentro a cada [intervaloSeg], enquanto [segRestantes] > 0.
+ *
+ * O [centro] é o hex mirado; a **ocupação** (quem está dentro AGORA) é resolvida pelo controller,
+ * que é quem tem a grade — o motor só guarda a regra e o relógio.
+ */
+data class ZonaPersistente(
+    val nome: String,
+    val centro: com.gurps.ficha.domain.combat.hex.HexCoord?,
+    val raioM: Int,
+    val danoExpr: String,
+    val tipoDano: String?,
+    val armadura: String?,
+    val intervaloSeg: Int,
+    /** Atributo que a vítima testa para evitar o dano ("HT" no Mau Cheiro); null = sem teste. */
+    val teste: String?,
+    var segRestantes: Int,
+    /** Conta regressiva até o próximo dano (chega a 0 → fere e reinicia). */
+    var segAteProximo: Int,
+    val operadorId: String,
+)
+
 data class Combatente(
     val id: String,
     val nome: String,
