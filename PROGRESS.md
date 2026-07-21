@@ -3046,6 +3046,16 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - **Recomendação registrada** (maior valor × menor custo): Ataque Telegráfico (par do Enganoso), luta agarrada profunda (chaves/Mata-Leão estendendo o lote 422), Sangramento Grave + incapacitação de membro (item 5 do teste de batalha), Ataque Dedicado/Defensivo. Fora de escopo: posicional/hexágono, montaria, cinematográfico, dado de arma do NPC. Mudança só de documentação (não compila Kotlin).
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
+### Lote TOK-9 — 21 de Julho de 2026 (zona feria DOBRADO no turno da conjuração — regra da estreia)
+**Achado no log que o usuário mandou para validar o TOK-8 — branch GURPS-Saga**
+- 🔴 **O bug**, tudo no mesmo timestamp: `Atinge: Goblin 2. Dano 1d-1: Goblin 2 4.` (dano da conjuração) e logo em seguida `☁️ Chuva de Fogo atinge Goblin 2: 1d-1 → 4` (tique da zona). Quem estava dentro levava **duas vezes no mesmo segundo**.
+- 📌 **Documentação e código divergindo em silêncio, pela TERCEIRA vez nesta sessão.** O comentário do MEC-46 já dizia a intenção com todas as letras — *"o 1º dano já saiu na conjuração acima (é o 1º segundo); a zona tica a partir do turno seguinte"* — mas o código nunca fez isso. É a mesma **regra da estreia** que o MEC-22 resolveu para as mágicas de tique (`pularPrimeiroTique`) e que ninguém aplicou às zonas. (As outras duas: notas vencidas do Bloquear/Robustez no P3-1, e a KDoc do sucesso decisivo em `MagicCore`.)
+- ✅ **Correção**: `ZonaPersistente.estreou`. O relógio (duração e intervalo) corre normalmente no turno da conjuração; **só o dano** daquele segundo é pulado.
+- ⚠️ **Armadilha que eu mesmo criei e corrigi antes do gate**: a primeira versão amarrava a estreia ao primeiro **intervalo**. Funcionaria para a Chuva de Fogo (intervalo 1s), mas o **Mau Cheiro** tem intervalo de 60s — a estreia só seria consumida no minuto 60 e engoliria justamente o **primeiro tique real** dele. Teria trocado um bug por outro, mais difícil de achar. A estreia é do primeiro **turno**, não do primeiro intervalo.
+- **+3 testes**: não fere no turno da conjuração; fere a partir do seguinte; e zona de intervalo **longo** não perde o primeiro tique real (o caso que quase me escapou).
+- 🟢 Gate: **880 testes por variante, ZERO falhas**, build nas duas.
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
 ### Lote TOK-8 — 21 de Julho de 2026 (o TURNO não fechava sem escolher a direção + ajustes do token)
 **Dois achados do teste no aparelho. O primeiro é de REGRA e bem mais grave do que o relato sugeria.**
 - 🔴 **BUG 1 — o turno não fechava.** Mover no grid **não avança o turno**: abre o prompt de virada final e retorna. Quem chama `depoisDaAcaoDoHeroi()` (que avança) é **só** o `concluirViradaFinal`. E `hexesAlcancaveisHeroi()` **não tinha trava** para a pendência — os hexes seguiam verdes, o jogador movia de novo, cada movimento **reabria** o prompt, e o turno nunca terminava.
