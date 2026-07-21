@@ -3046,6 +3046,19 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - **Recomendação registrada** (maior valor × menor custo): Ataque Telegráfico (par do Enganoso), luta agarrada profunda (chaves/Mata-Leão estendendo o lote 422), Sangramento Grave + incapacitação de membro (item 5 do teste de batalha), Ataque Dedicado/Defensivo. Fora de escopo: posicional/hexágono, montaria, cinematográfico, dado de arma do NPC. Mudança só de documentação (não compila Kotlin).
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
+### Lote MEC-47 — 21 de Julho de 2026 (herói × a própria área: decisão da regra + o "PV do nada" das faixas)
+**Achado no log de Chuva de Fogo do teste no aparelho — branch GURPS-Saga**
+- 🔎 **A divergência**: o dano inicial da área **excluía** o herói (`filter { it.id != "heroi" }`) e o tique da zona o **incluía**. Fui à fonte: o capítulo de Área tem **as duas regras**, e elas puxam para lados diferentes — *"afeta todos os seres vivos dentro da área"* e *"o operador pode escolher afetar apenas partes da área, pagando o mesmo custo"*.
+- ⚖️ **Decisão do usuário — poupa na conjuração, queima na zona.** As duas metades agora são diferentes **de propósito** e estão documentadas; antes a divergência era **acidental** e não havia uma linha de comentário explicando qual regra cada lado aplicava.
+  - **Conjuração**: o operador usa a escolha de "afetar apenas partes" em favor de si mesmo — ninguém mira a própria explosão.
+  - **Zona persistente (P1b)**: a nuvem que fica no chão é perigo **contínuo** e não distingue ninguém. Quem pisar no fogo queima, inclusive ele.
+- 🐞 **Bug REAL achado na investigação (caminho SEM grade, modo faixas)**: `distancia(heroi)` é **0 por definição** — todas as distâncias do encontro são medidas a partir dele. Então o herói caía dentro de **qualquer** zona, inclusive uma Chuva de Fogo que ele mesmo largou a 20m. É o **"perder PV do nada"** que ele já tinha reportado, numa forma nova. Sem grade não dá pra saber onde a nuvem está em relação a ele, então vale o **dono**: zona do próprio herói fica de fora, zona de NPC pega (foi mirada nele). No tático **com grade nada muda** — lá a posição é real.
+- 📣 **Aviso explícito** (o que faltava pra não parecer dano do nada): no **registro** da zona sai `⚠️ Você está DENTRO da <nome> — vai queimar a cada Ns`; no **tique** o log diz `☁️ VOCÊ está dentro da <nome>` no lugar da linha genérica `atinge <nome>`, que não explicava a perda de PV.
+- **+3 testes**: zona do próprio herói não o fere sem grade; zona de NPC fere e nomeia; o aviso sai no registro, não só no primeiro tique.
+- 📄 Doc: a tabela de Área do `CLASSES_DE_MAGICA.md` registra a decisão e rebaixa *"afetar apenas partes"* de ❌ não-implementado para 🟡 **parcial honesto** (só o caso do operador).
+- 🟢 Gate: **818 testes por variante, ZERO falhas**, build nas duas. Não toca UI.
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
 ### Lote TOK-ZOOM — 21 de Julho de 2026 (pinça de dois dedos + grid ocupando a tela toda do combate)
 **"com dois dedos na tela eu consiga dar zoom-in e zoom-out, às vezes eu perco a noção de espaço" + "o grid, pode fazer ele tomar toda a tela de combate?" — branch GURPS-Saga**
 - 🔍 **Zoom de dois dedos** (`HexCanvas.kt`): `detectDragGestures` → `detectTransformGestures` nos **dois** canvas (combate real e preview). Um dedo arrasta, dois dedos dão zoom, no mesmo gesto — não há botão nem modo.
