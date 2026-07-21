@@ -2672,15 +2672,20 @@ class CombatSession(
     }
 
     fun registrarZona(z: ZonaPersistente) {
+        // Lote TOK-10: com duas zonas da MESMA mágica no mapa, o log ficava ambíguo — "Nenhum
+        // inimigo na área" e "Chuva de Fogo atinge Goblin 2" no mesmo instante, sem dizer que eram
+        // nuvens diferentes. A partir da segunda, cada uma ganha um número.
+        val jaTem = zonasAtivas.count { it.nome.equals(z.nome, ignoreCase = true) }
+        if (jaTem > 0) z.ordinal = jaTem + 1
         zonasAtivas = zonasAtivas + z
-        log += "☁️ ${z.nome} cobre a área (raio ${z.raioM}m) por ${z.segRestantes}s — " +
+        log += "☁️ ${z.rotulo} cobre a área (raio ${z.raioM}m) por ${z.segRestantes}s — " +
             "${z.danoExpr} a cada ${z.intervaloSeg}s em quem estiver dentro."
         // Lote MEC-47: o operador se POUPA na conjuração ("pode escolher afetar apenas partes da
         // área", Magia p.11), mas a nuvem que fica no chão é um perigo contínuo e não distingue
         // ninguém. Se ele mesmo está lá dentro, isso precisa ser dito AGORA — senão o primeiro
         // tique parece dano do nada, que é justamente a queixa histórica do teste no aparelho.
         if (ocupantesDaZona(z).any { it.ehHeroi }) {
-            log += "⚠️ Você está DENTRO da ${z.nome} — vai queimar a cada ${z.intervaloSeg}s " +
+            log += "⚠️ Você está DENTRO da ${z.rotulo} — vai queimar a cada ${z.intervaloSeg}s " +
                 "enquanto ficar aí. Saia da área."
         }
     }
@@ -2691,6 +2696,32 @@ class CombatSession(
      * Lote MEC-46: corre o relógio das zonas (1 turno = 1 segundo), fere quem está dentro quando o
      * intervalo vence, e remove as que expiraram. Roda no avanço de turno, como o tique das mágicas.
      */
+    /**
+     * Lote TOK-10: existe OUTRA zona **da mesma mágica** cobrindo [alvo] que é mais forte que [z]?
+     *
+     * Regra (Magia p.9, a mesma que o MEC-29 já aplica aos buffs): *"Se qualquer tipo de mágica com
+     * efeito variável for lançada sobre o mesmo objetivo mais de uma vez, só a MAIS PODEROSA deverá
+     * ser considerada — não se acumulam."*
+     *
+     * Decisão do usuário sobre o caso ambíguo: **a mesma mágica** não acumula (duas Chuvas de Fogo
+     * sobrepostas ferem uma vez só), mas **mágicas diferentes** somam — Chuva de Fogo com Chuva de
+     * Ácido queima E corrói, que é combinação tática legítima.
+     *
+     * Critério de "mais forte": dano máximo da expressão. O empate cai na ordem de registro (a
+     * primeira vence), para o resultado ser determinístico e não depender da ordem da lista.
+     */
+    private fun zonaSuplantadaPara(z: ZonaPersistente, alvo: Combatente): Boolean {
+        val rivais = zonasAtivas.filter {
+            it !== z && it.nome.equals(z.nome, ignoreCase = true) && ocupantesDaZona(it).any { o -> o.id == alvo.id }
+        }
+        if (rivais.isEmpty()) return false
+        val minha = danoMaximo(z.danoExpr)
+        return rivais.any { r ->
+            val dela = danoMaximo(r.danoExpr)
+            dela > minha || (dela == minha && zonasAtivas.indexOf(r) < zonasAtivas.indexOf(z))
+        }
+    }
+
     private fun tiqueDasZonas() {
         if (zonasAtivas.isEmpty()) return
         val sobrevivem = mutableListOf<ZonaPersistente>()
@@ -2707,9 +2738,14 @@ class CombatSession(
             if (z.segAteProximo <= 0 && !turnoDaConjuracao) {
                 z.segAteProximo = z.intervaloSeg.coerceAtLeast(1)
                 for (alvo in ocupantesDaZona(z)) {
+                    // Lote TOK-10 (Magia p.9, decisão do usuário): a MESMA mágica não acumula —
+                    // duas Chuvas de Fogo sobrepostas ferem UMA vez, valendo a mais forte. Mágicas
+                    // DIFERENTES somam (Chuva de Fogo + Chuva de Ácido queimam e corroem).
+                    // Sem isto dava para empilhar a mesma zona barata N vezes e multiplicar o dano.
+                    if (zonaSuplantadaPara(z, alvo)) continue
                     // Lote A1: imune ao elemento não é ferido pela zona, mesmo pisando dentro dela.
                     if (com.gurps.ficha.domain.magic.MagicMechanics.imuneAo(z.elementoDano, alvo.imunidades)) {
-                        log += "☁️ ${alvo.nome} atravessa ${z.nome} sem se ferir — imune a ${z.elementoDano}."
+                        log += "☁️ ${alvo.nome} atravessa ${z.rotulo} sem se ferir — imune a ${z.elementoDano}."
                         continue
                     }
                     // Teste para evitar (Mau Cheiro: HT uma vez por minuto). Sem teste, o dano é certo.
@@ -2717,7 +2753,7 @@ class CombatSession(
                         val atributo = if (alvo.ehHeroi) heroiPerfil.ht else alvo.htEfetivo
                         val rol = rolar3d6()
                         if (rol <= atributo) {
-                            log += "☁️ ${alvo.nome} aguenta ${z.nome} (${z.teste} $atributo, rolou $rol)."
+                            log += "☁️ ${alvo.nome} aguenta ${z.rotulo} (${z.teste} $atributo, rolou $rol)."
                             continue
                         }
                     }
@@ -2736,15 +2772,15 @@ class CombatSession(
                     // Lote MEC-47: quando é o próprio herói, o log diz na cara que ele está na
                     // ZONA DELE — a linha genérica "atinge <nome>" não explicava a perda de PV.
                     log += if (alvo.ehHeroi) {
-                        "☁️ VOCÊ está dentro da ${z.nome}: ${z.danoExpr} → ${dn.pvSubtrair} de dano" +
+                        "☁️ VOCÊ está dentro da ${z.rotulo}: ${z.danoExpr} → ${dn.pvSubtrair} de dano" +
                             (if (!alvo.vivo) " — você caiu!" else ". Saia da área.")
                     } else {
-                        "☁️ ${z.nome} atinge ${alvo.nome}: ${z.danoExpr} → ${dn.pvSubtrair} de dano" +
+                        "☁️ ${z.rotulo} atinge ${alvo.nome}: ${z.danoExpr} → ${dn.pvSubtrair} de dano" +
                             (if (!alvo.vivo) " — fora de combate!" else ".")
                     }
                 }
             }
-            if (z.segRestantes > 0) sobrevivem.add(z) else log += "☁️ ${z.nome} se dissipa."
+            if (z.segRestantes > 0) sobrevivem.add(z) else log += "☁️ ${z.rotulo} se dissipa."
         }
         zonasAtivas = sobrevivem
         verificarFim()

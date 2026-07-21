@@ -999,6 +999,68 @@ class MagicCombatTest {
         assertTrue("o primeiro tique REAL não pode ser engolido pela estreia", g.pvAtual < pvAntes)
     }
 
+    // ── Lote TOK-10: zonas sobrepostas (achado ao conjurar a mesma mágica duas vezes) ──────────
+
+    @Test
+    fun `duas zonas da MESMA magia nao somam dano — vale a mais forte`() {
+        // Magia p.9: "só a MAIS PODEROSA deverá ser considerada — não se acumulam". Sem isto dava
+        // para empilhar Chuva de Fogo N vezes no mesmo hex e multiplicar o dano por N.
+        val s = sessao(7, distGoblin = 1)
+        val g = s.encounter.combatentes.first { it.id == "goblin" }
+        s.registrarZona(zona(dur = 20))                       // 1d-1
+        s.registrarZona(zona(dur = 20))                       // outra igual, sobreposta
+        repeat(4) { s.avancarTurno() }
+        val perdidoDuas = g.pvMax - g.pvAtual
+
+        val s1 = sessao(7, distGoblin = 1)
+        val g1 = s1.encounter.combatentes.first { it.id == "goblin" }
+        s1.registrarZona(zona(dur = 20))                      // só uma
+        repeat(4) { s1.avancarTurno() }
+        val perdidoUma = g1.pvMax - g1.pvAtual
+
+        assertEquals("duas nuvens iguais não podem ferir mais que uma", perdidoUma, perdidoDuas)
+    }
+
+    @Test
+    fun `magias DIFERENTES sobrepostas SOMAM — fogo queima e acido corroi`() {
+        val s = sessao(7, distGoblin = 1)
+        val g = s.encounter.combatentes.first { it.id == "goblin" }
+        s.registrarZona(zona(nome = "Chuva de Fogo", dur = 20))
+        s.registrarZona(zona(nome = "Chuva de Ácido", dur = 20))
+        repeat(4) { s.avancarTurno() }
+        val perdidoDuas = g.pvMax - g.pvAtual
+
+        val s1 = sessao(7, distGoblin = 1)
+        val g1 = s1.encounter.combatentes.first { it.id == "goblin" }
+        s1.registrarZona(zona(nome = "Chuva de Fogo", dur = 20))
+        repeat(4) { s1.avancarTurno() }
+        val perdidoUma = g1.pvMax - g1.pvAtual
+
+        assertTrue("elementos diferentes têm que somar: $perdidoDuas vs $perdidoUma",
+            perdidoDuas > perdidoUma)
+    }
+
+    @Test
+    fun `entre duas iguais prevalece a de dano MAIOR`() {
+        val s = sessao(7, distGoblin = 1)
+        s.registrarZona(zona(dur = 20))                                   // 1d-1
+        s.registrarZona(zona(dur = 20).copy(danoExpr = "3d"))             // bem mais forte
+        repeat(4) { s.avancarTurno() }
+        assertTrue("o log tem que mostrar o dado da mais forte",
+            s.log.any { it.contains("3d") })
+    }
+
+    @Test
+    fun `a SEGUNDA nuvem da mesma magia ganha numero no log`() {
+        val s = sessao(7, distGoblin = 1)
+        s.registrarZona(zona(dur = 20))
+        s.registrarZona(zona(dur = 20))
+        assertTrue("sem número o jogador não sabe qual nuvem é qual",
+            s.log.any { it.contains("Chuva de Fogo #2") })
+        assertTrue("a primeira continua sem número",
+            s.log.any { it.contains("☁️ Chuva de Fogo cobre") })
+    }
+
     @Test
     fun `zona EXPIRA e para de ferir`() {
         val s = sessao(7, distGoblin = 1)

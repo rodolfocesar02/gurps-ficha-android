@@ -237,8 +237,17 @@ data class ZonaPersistente(
      * O relógio (duração e intervalo) corre normalmente nesse turno; só o DANO é pulado.
      */
     var estreou: Boolean = false,
+    /**
+     * Lote TOK-10: número da nuvem quando há MAIS DE UMA da mesma mágica no mapa (1 = a única).
+     * Sem isto o log dizia "Chuva de Fogo" para duas nuvens distintas e ficava impossível saber
+     * qual feriu quem — foi o que o usuário viu ao conjurar duas vezes.
+     */
+    var ordinal: Int = 1,
     val operadorId: String,
-)
+) {
+    /** Nome para o log: ganha o número só quando existe mais de uma nuvem da mesma mágica. */
+    val rotulo: String get() = if (ordinal > 1) "$nome #$ordinal" else nome
+}
 
 data class Combatente(
     val id: String,
