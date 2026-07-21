@@ -3046,6 +3046,17 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - **Recomendação registrada** (maior valor × menor custo): Ataque Telegráfico (par do Enganoso), luta agarrada profunda (chaves/Mata-Leão estendendo o lote 422), Sangramento Grave + incapacitação de membro (item 5 do teste de batalha), Ataque Dedicado/Defensivo. Fora de escopo: posicional/hexágono, montaria, cinematográfico, dado de arma do NPC. Mudança só de documentação (não compila Kotlin).
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
+### Lote SIM-1 — 21 de Julho de 2026 (rede de INVARIANTES por simulação — parar de achar bug no aparelho)
+**"já estou cansado de testar e testar e achar bugs... sinto que o projeto tá andando lento demais"**
+- 📊 **Fui ao dado antes de responder.** Testes por camada: `domain` **37** arquivos, `data` 7, `ui` 6, **`viewmodel` 0** — e o `SagaCombatController` tem **2.131 linhas**. Ele **não estava testando demais: eu estava testando a camada errada.** 884 testes no motor e **zero** no arquivo onde os bugs do dia moraram.
+- 🪞 **E a parte que é minha**: eu vinha escrevendo testes que **confirmam o que acabei de construir**, não testes que tentam **quebrar o fluxo**. TOK-9 e TOK-10 foram os dois *"coisa que fiz antes esbarrando na que fiz agora"* — e eu nunca escrevi um teste que fizesse as duas se encontrarem.
+- 🎲 **O que o arquivo faz**: 200 combates com ações legais **aleatórias**; a cada passo afirma o que **nunca** pode acontecer. Um teste comum diz *"isto deve dar 4"*; um invariante diz *"isto nunca pode ser negativo"* — e é o segundo que pega interação entre features.
+- **Invariantes**: PV nunca sobe sem cura / nunca passa do máximo / ninguém ressuscita; PF nunca negativo; **zona recém-criada não fere no turno em que nasceu** (classe do TOK-9); **ninguém sofre a mesma zona duas vezes num turno** (classe do TOK-10); **o relógio de toda zona sempre anda e ela sempre acaba** (classe do *"a mágica não conta tempo"*); zona expirada sai da lista; **o motor nunca fica mudo**; o turno sempre sai de quem está nele.
+- ⚠️ **Escopo honesto, escrito no cabeçalho do arquivo**: cobre o **motor**. **Não** cobre o `SagaCombatController`, onde morava o **TOK-8**. Ao oferecer esta opção eu afirmei que *"os três bugs de hoje"* seriam pegos — **não é exato**, e a correção ficou registrada no código para ninguém confiar demais nele.
+- 🔎 **Achado da primeira execução, contra mim**: o invariante do relógio falhou, e a causa era **minha premissa**. `avancarTurno` retorna na hora quando o combate já acabou, e a própria zona matava o goblin, encerrando a luta — aí o relógio para, o que é **correto**. O teste é que não previa esse caminho. Registrado em comentário, porque é exatamente o tipo de interação que este arquivo existe para provocar.
+- 🟢 Gate: **890 testes por variante, ZERO falhas**, build nas duas. Não toca UI.
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
 ### Lote TOK-10 — 21 de Julho de 2026 (zonas sobrepostas não acumulam a MESMA mágica + log distingue as nuvens)
 **O usuário conjurou Chuva de Fogo duas vezes e mandou o log — branch GURPS-Saga**
 - ✅ **Não havia bug no TOK-9.** O log até **prova** que ele funciona: a zona nova avisou `⚠️ Você está DENTRO` e **não** feriu no turno da conjuração. Mas a dupla conjuração expôs dois buracos.
