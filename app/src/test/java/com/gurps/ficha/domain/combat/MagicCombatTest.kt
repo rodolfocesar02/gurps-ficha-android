@@ -1062,6 +1062,107 @@ class MagicCombatTest {
             s.log.any { it.contains("Vontade +2") })
     }
 
+    // ── Lote A1: imunidade por ELEMENTO ────────────────────────────────────────────────────────
+
+    private fun magiaDeFogo(expr: String = "3d") = MagiaMecanica(
+        efeito = "dano", danoPorEnergia = expr, energiaPorDado = 1,
+        tipoDano = "quei", elementoDano = "fogo"
+    )
+
+    @Test
+    fun `imune ao fogo NAO perde PV para magia de fogo`() {
+        val s = sessao(7, distGoblin = 1)
+        val g = s.encounter.combatentes.first { it.id == "goblin" }
+        val buff = MagicMechanics.calcularBuff(
+            MagiaMecanica(efeito = "buff", buffImunidade = "fogo"), energia = 2, alvoId = "goblin")
+        s.registrarMagiaAtiva(
+            nome = "Imunidade ao Fogo", operadorId = "heroi", alvoId = "goblin", duracaoSeg = 60,
+            custoManutencaoSeg = 0, duracao = TipoDuracao.TEMPORARIA, exigeConcentracao = false,
+            buff = buff)
+        val pvAntes = g.pvAtual
+        s.heroiConjurar(
+            ContextoConjuracao(nhBasico = 30, classe = MagicClassParser.parse("Comum"),
+                mana = NivelMana.NORMAL, distanciaMetros = 1, mecanica = magiaDeFogo()),
+            MagicEnergy.parse("2"), 2, "Bola de Fogo", "goblin", 1)
+        assertEquals("imune ao fogo não pode perder PV", pvAntes, g.pvAtual)
+        assertTrue("e o log tem que dizer por quê", s.log.any { it.contains("IMUNE a fogo") })
+    }
+
+    @Test
+    fun `imunidade NAO vaza de um elemento para outro`() {
+        // Regra literal: "imunes aos efeitos do calor e do fogo (mas não da eletricidade)".
+        val s = sessao(7, distGoblin = 1)
+        val g = s.encounter.combatentes.first { it.id == "goblin" }
+        val buff = MagicMechanics.calcularBuff(
+            MagiaMecanica(efeito = "buff", buffImunidade = "fogo"), energia = 2, alvoId = "goblin")
+        s.registrarMagiaAtiva(
+            nome = "Imunidade ao Fogo", operadorId = "heroi", alvoId = "goblin", duracaoSeg = 60,
+            custoManutencaoSeg = 0, duracao = TipoDuracao.TEMPORARIA, exigeConcentracao = false,
+            buff = buff)
+        val pvAntes = g.pvAtual
+        s.heroiConjurar(
+            ContextoConjuracao(nhBasico = 30, classe = MagicClassParser.parse("Comum"),
+                mana = NivelMana.NORMAL, distanciaMetros = 1,
+                mecanica = magiaDeFogo().copy(elementoDano = "eletricidade")),
+            MagicEnergy.parse("2"), 2, "Relâmpago", "goblin", 1)
+        assertTrue("imune a fogo tem que levar dano de eletricidade", g.pvAtual < pvAntes)
+    }
+
+    @Test
+    fun `sem imunidade o dano de fogo passa normal`() {
+        val s = sessao(7, distGoblin = 1)
+        val g = s.encounter.combatentes.first { it.id == "goblin" }
+        val pvAntes = g.pvAtual
+        s.heroiConjurar(
+            ContextoConjuracao(nhBasico = 30, classe = MagicClassParser.parse("Comum"),
+                mana = NivelMana.NORMAL, distanciaMetros = 1, mecanica = magiaDeFogo()),
+            MagicEnergy.parse("2"), 2, "Bola de Fogo", "goblin", 1)
+        assertTrue(g.pvAtual < pvAntes)
+    }
+
+    @Test
+    fun `imunidade do BESTIARIO vale sem precisar de magia`() {
+        // Elemental de fogo não se queima — imunidade natural, sem buff.
+        val enc = CombatEncounter(
+            listOf(heroi(), goblin().copy(id = "elemental", nome = "Elemental de Fogo",
+                stats = goblin().stats!!.copy(imunidades = listOf("fogo")))),
+            mapOf("elemental" to 1), seed = 1L)
+        val s = CombatSession(enc, perfil(), Random(7))
+        val e = s.encounter.combatentes.first { it.id == "elemental" }
+        val pvAntes = e.pvAtual
+        s.heroiConjurar(
+            ContextoConjuracao(nhBasico = 30, classe = MagicClassParser.parse("Comum"),
+                mana = NivelMana.NORMAL, distanciaMetros = 1, mecanica = magiaDeFogo()),
+            MagicEnergy.parse("2"), 2, "Bola de Fogo", "elemental", 1)
+        assertEquals(pvAntes, e.pvAtual)
+    }
+
+    @Test
+    fun `ZONA de fogo nao fere quem e imune, mesmo pisando dentro`() {
+        val s = sessao(7, distGoblin = 1)
+        val g = s.encounter.combatentes.first { it.id == "goblin" }
+        val buff = MagicMechanics.calcularBuff(
+            MagiaMecanica(efeito = "buff", buffImunidade = "fogo"), energia = 2, alvoId = "goblin")
+        s.registrarMagiaAtiva(
+            nome = "Imunidade ao Fogo", operadorId = "heroi", alvoId = "goblin", duracaoSeg = 60,
+            custoManutencaoSeg = 0, duracao = TipoDuracao.TEMPORARIA, exigeConcentracao = false,
+            buff = buff)
+        val pvAntes = g.pvAtual
+        s.registrarZona(zona().copy(elementoDano = "fogo"))
+        repeat(4) { s.avancarTurno() }
+        assertEquals("imune ao fogo atravessa a Chuva de Fogo", pvAntes, g.pvAtual)
+        assertTrue(s.log.any { it.contains("sem se ferir") })
+    }
+
+    @Test
+    fun `buff so de imunidade NAO e considerado so-narrado`() {
+        // Mesma armadilha do MEC-14 travada no P3-1: campo novo tem que entrar em soNarrado.
+        val b = MagicMechanics.calcularBuff(
+            MagiaMecanica(efeito = "buff", buffImunidade = "fogo"), energia = 1, alvoId = "heroi")
+        assertFalse(b.soNarrado)
+        assertEquals(listOf("fogo"), b.imunidades)
+    }
+
     // ── Lote NARR-1: o Narrador precisa ser LEMBRADO das mágicas narradas ──────────────────────
 
     @Test

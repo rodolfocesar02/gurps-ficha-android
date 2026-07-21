@@ -1,6 +1,7 @@
 package com.gurps.ficha.domain.magic
 
 import org.json.JSONArray
+import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Assume
 import org.junit.Test
@@ -145,6 +146,41 @@ class MagicCatalogRealityCheckTest {
         }
         assertTrue("as 6 mágicas têm que existir no catálogo (achei $achadas)", achadas == 6)
         assertTrue("curadoria do P3-1 regrediu: $faltando", faltando.isEmpty())
+    }
+
+    /**
+     * Lote A1: as 4 mágicas de Imunidade têm que conceder o elemento certo, e as 23 de dano
+     * elemental têm que declarar o elemento — senão a imunidade não tem o que consultar.
+     */
+    @Test
+    fun `no catalogo real as imunidades concedem o elemento certo e o dano elemental o declara`() {
+        val catalogo = carregarCatalogo()
+        Assume.assumeNotNull(catalogo)
+        val esperadoImun = mapOf(
+            "imunidade_ao_fogo" to "fogo", "imunidade_ao_frio" to "frio",
+            "imunidade_a_relampagos" to "eletricidade", "imunidade_a_acido" to "acido",
+        )
+        val erros = mutableListOf<String>()
+        var comElemento = 0
+        var imunConferidas = 0
+        for (i in 0 until catalogo!!.length()) {
+            val magia = catalogo.getJSONObject(i)
+            val id = magia.optString("id")
+            val mec = magia.optJSONObject("mecanica") ?: continue
+            val elem = mec.optString("elementoDano", "").ifBlank { null }
+            if (elem != null) comElemento++
+            esperadoImun[id]?.let { esperado ->
+                imunConferidas++
+                if (mec.optString("buffImunidade", "") != esperado)
+                    erros += "$id: buffImunidade='${mec.optString("buffImunidade", "")}', esperado '$esperado'"
+            }
+            // O livro proíbe tratar estas como elemento — travar para ninguém "corrigir" por engano.
+            if (id in setOf("adaga_de_gelo", "esfera_de_gelo", "jato_de_vapor", "sopro_de_vapor") && elem != null)
+                erros += "$id NÃO pode ter elementoDano ('$elem'): o livro a exclui da imunidade"
+        }
+        assertEquals("as 4 mágicas de Imunidade têm que existir", 4, imunConferidas)
+        assertTrue("poucas mágicas com elemento ($comElemento) — a curadoria regrediu", comElemento >= 20)
+        assertTrue("curadoria de elemento regrediu: $erros", erros.isEmpty())
     }
 
     /** Lote P3-1: Bloquear e Robustez são de Bloqueio — valem UM ataque só, não a duração toda. */

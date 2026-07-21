@@ -1322,6 +1322,12 @@ class CombatSession(
                         // sem posições) todos levam cheio, que é o certo para chuva/nuvem.
                         val divisorExpl = ctx.mecanica?.explosaoDivisorPorMetro ?: 0
                         val partes = atingidos.map { a ->
+                            // Lote A1: imunidade por elemento vale na ÁREA também. Estar dentro do
+                            // raio não fere quem é imune ao que está caindo.
+                            if (com.gurps.ficha.domain.magic.MagicMechanics
+                                    .imuneAo(ctx.mecanica?.elementoDano, a.imunidades)) {
+                                return@map "${a.nome} IMUNE"
+                            }
                             val distCentro = distanciaAoCentro[a.id] ?: 0
                             val brutoAqui = com.gurps.ficha.domain.magic.MagicMechanics
                                 .danoDaExplosao(bruto, distCentro, divisorExpl)
@@ -1604,6 +1610,13 @@ class CombatSession(
         /** Lote MEC-15: distância ao alvo, para o 1/2D. 0 = perto/irrelevante. */
         distanciaM: Int = 0,
     ): Int {
+        // Lote A1: IMUNIDADE por elemento vem ANTES de rolar o dado. O livro é categórico — o alvo
+        // "torna-se imune aos efeitos do calor e do fogo" — então não há dano a reduzir: não há dano.
+        // Checar aqui, no funil, cobre as três entradas (magia direta, área e NPC conjurador).
+        if (com.gurps.ficha.domain.magic.MagicMechanics.imuneAo(mecanica?.elementoDano, alvo.imunidades)) {
+            sb.append(" ${alvo.nome} é IMUNE a ${mecanica?.elementoDano} — a mágica não o fere.")
+            return 0
+        }
         val expr = if (mecanica?.danoPorEnergia != null)
             com.gurps.ficha.domain.magic.MagicMechanics.expandirDano(mecanica.danoPorEnergia, energia.coerceAtLeast(1), mecanica.energiaPorDado, mecanica.danoFixo)
         else "${energia.coerceAtLeast(1)}d"
@@ -2645,6 +2658,11 @@ class CombatSession(
             if (z.segAteProximo <= 0) {
                 z.segAteProximo = z.intervaloSeg.coerceAtLeast(1)
                 for (alvo in ocupantesDaZona(z)) {
+                    // Lote A1: imune ao elemento não é ferido pela zona, mesmo pisando dentro dela.
+                    if (com.gurps.ficha.domain.magic.MagicMechanics.imuneAo(z.elementoDano, alvo.imunidades)) {
+                        log += "☁️ ${alvo.nome} atravessa ${z.nome} sem se ferir — imune a ${z.elementoDano}."
+                        continue
+                    }
                     // Teste para evitar (Mau Cheiro: HT uma vez por minuto). Sem teste, o dano é certo.
                     if (!z.teste.isNullOrBlank()) {
                         val atributo = if (alvo.ehHeroi) heroiPerfil.ht else alvo.htEfetivo

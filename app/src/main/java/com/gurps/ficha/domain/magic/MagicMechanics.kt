@@ -41,6 +41,22 @@ data class MagiaMecanica(
     val danoFixo: Boolean = false,
     /** "quei" (queimadura) | "cont" | "projecao" | "corte"… (default contusão no motor). */
     val tipoDano: String? = null,
+    /**
+     * Lote A1: **ELEMENTO** do dano — eixo SEPARADO do [tipoDano].
+     *
+     * `tipoDano` é o multiplicador de ferimento do GURPS (cont/corte/perf). `elementoDano` é a
+     * natureza: `"fogo"`, `"frio"`, `"eletricidade"`, `"acido"`, `"veneno"`, `"som"`, `"radiacao"`.
+     * `null` = dano físico comum.
+     *
+     * Precisou existir porque `tipoDano: "quei"` (20 magias) caía em `DanoTipo.CONT` e o elemento se
+     * perdia — sem ele, "Imunidade ao Fogo" não tinha o que consultar. Ver [imuneAo].
+     */
+    val elementoDano: String? = null,
+    /**
+     * Lote A1: elemento a que ESTA mágica dá imunidade (Imunidade ao Fogo → `"fogo"`).
+     * Usado para montar o [BuffAplicado.imunidades].
+     */
+    val buffImunidade: String? = null,
     /** null = RD normal; "ignora" = armadura não protege (Toque Chocante); "metal_rd_1" = metal vira RD 1 (aprox.: mantém RD). */
     val armadura: String? = null,
     /** Como acerta: "projetil" | "toque" | "feixe" (DX−4) | "area" | "auto". Complementa a `classe`. */
@@ -267,6 +283,11 @@ data class BuffAplicado(
      */
     val iq: Int = 0,
     val vontade: Int = 0,
+    /**
+     * Lote A1: elementos a que este buff dá IMUNIDADE (Imunidade ao Fogo/Frio/Relâmpagos/Ácido).
+     * Vazio = não concede imunidade nenhuma.
+     */
+    val imunidades: List<String> = emptyList(),
     val deslocamento: Int = 0,
     /** Deslocamento absoluto imposto (Voo). null = não mexeu. */
     val deslocamentoFixo: Int? = null,
@@ -298,7 +319,7 @@ data class BuffAplicado(
      * passado adiante), que só apareceu num teste de integração.
      */
     val soNarrado: Boolean get() = rd == 0 && esquiva == 0 && bd == 0 && st == 0 && dx == 0 && ht == 0 &&
-        iq == 0 && vontade == 0 &&
+        iq == 0 && vontade == 0 && imunidades.isEmpty() &&
         deslocamento == 0 && deslocamentoFixo == null && danoArma == 0 && penalidadeAtacantes == 0
 }
 
@@ -358,10 +379,38 @@ object MagicMechanics {
         return if (m.curaMaxPv > 0) (m.curaMaxPv / m.curaPvPorEnergia).coerceAtLeast(1) else 1
     }
 
+    /**
+     * Lote A1: o alvo é IMUNE ao elemento deste dano?
+     *
+     * *"O objetivo [...] se tornam imunes aos efeitos do calor e do fogo (mas não da eletricidade)"*
+     * (Imunidade ao Fogo, Magia p.75). A imunidade é por ELEMENTO, e o livro é explícito que não
+     * vaza de um para o outro.
+     *
+     * ⚠️ Cuidado que o livro deixa claro na Imunidade ao Frio: ela vale contra *"o frio e o
+     * congelamento"*, **não** contra *"gelo caindo, lanças mágicas de gelo"*. Ou seja, o que conta é
+     * o elemento do DANO, não o tema da mágica. Por isso o `elementoDano` é curado por magia em vez
+     * de deduzido da escola: uma Lança de Gelo é dano físico com sabor de gelo.
+     *
+     * Comparação sem acento e sem caixa — o catálogo é escrito à mão.
+     */
+    fun imuneAo(elementoDoDano: String?, imunidadesDoAlvo: Collection<String>): Boolean {
+        val e = normalizarElemento(elementoDoDano) ?: return false
+        return imunidadesDoAlvo.any { normalizarElemento(it) == e }
+    }
+
+    private fun normalizarElemento(s: String?): String? {
+        val t = s?.trim()?.lowercase()?.takeIf { it.isNotBlank() } ?: return null
+        return t.replace("á", "a").replace("â", "a").replace("ã", "a")
+            .replace("é", "e").replace("ê", "e").replace("í", "i")
+            .replace("ó", "o").replace("ô", "o").replace("õ", "o").replace("ú", "u")
+            .replace("ç", "c")
+    }
+
     /** true se o buff tem NÚMERO que o motor aplica (senão é narrado — regra de ouro). */
     fun temBuffEstruturado(m: MagiaMecanica?): Boolean = m != null && m.efeito == "buff" &&
         (m.buffRd != 0 || m.buffEsquiva != 0 || m.buffBd != 0 || m.buffAtributoValor != 0 || m.buffDeslocamento != 0 ||
-         m.buffDeslocamentoFixo != 0 || m.buffDanoArma != 0 || m.buffPenalidadeAtacantes != 0)
+         m.buffDeslocamentoFixo != 0 || m.buffDanoArma != 0 || m.buffPenalidadeAtacantes != 0 ||
+         !m.buffImunidade.isNullOrBlank())   // Lote A1
 
     /**
      * Lote MEC-7: quanto de energia ainda COMPRA efeito, e o que ela compra em português.
@@ -426,6 +475,7 @@ object MagicMechanics {
             ht = if (m.buffAtributo.equals("HT", true)) atr else 0,
             iq = if (m.buffAtributo.equals("IQ", true)) atr else 0,
             vontade = if (m.buffAtributo.equals("Vontade", true)) atr else 0,
+            imunidades = listOfNotNull(m.buffImunidade?.takeIf { it.isNotBlank() }),
             deslocamento = m.buffDeslocamento * n,
             deslocamentoFixo = if (m.buffDeslocamentoFixo > 0) m.buffDeslocamentoFixo else null,
             danoArma = m.buffDanoArma * n,

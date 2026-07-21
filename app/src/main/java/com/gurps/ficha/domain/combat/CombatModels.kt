@@ -112,6 +112,12 @@ data class NpcStats(
      * `rd − rdNatural` e mantém `rdNatural`. Default 0 = toda a RD é considerada vestida.
      */
     val rdNatural: Int = 0,
+    /**
+     * Lote A1: elementos a que a criatura é IMUNE por natureza — `"fogo"`, `"frio"`,
+     * `"eletricidade"`, `"acido"`, `"veneno"`, `"som"`, `"radiacao"`. Um elemental de fogo não se
+     * queima. Vazio = nada. O herói não tem `NpcStats`; a imunidade dele vem de buff (mágica).
+     */
+    val imunidades: List<String> = emptyList(),
     val velocidadeBasica: Double = (dx + ht) / 4.0,
     val deslocamento: Int = ((dx + ht) / 4.0).toInt(),
     val armaNome: String = "",
@@ -184,6 +190,8 @@ data class ZonaPersistente(
     val raioM: Int,
     val danoExpr: String,
     val tipoDano: String?,
+    /** Lote A1: elemento do dano da zona ("fogo" na Chuva de Fogo) — quem é imune não é ferido. */
+    val elementoDano: String? = null,
     val armadura: String?,
     val intervaloSeg: Int,
     /** Atributo que a vítima testa para evitar o dano ("HT" no Mau Cheiro); null = sem teste. */
@@ -255,6 +263,11 @@ data class Combatente(
     /** Lote P3-1: IQ e Vontade (Sabedoria/Tolice, Fortalecer/Enfraquecer Vontade). */
     val buffIq: Int get() = buffs.sumOf { it.iq }
     val buffVontade: Int get() = buffs.sumOf { it.vontade }
+    /**
+     * Lote A1: imunidades a elemento — as NATURAIS do bestiário mais as concedidas por mágica.
+     * Vale para o herói (só buff, `stats` é null) e para o NPC (bestiário + buff) com o mesmo código.
+     */
+    val imunidades: List<String> get() = (stats?.imunidades ?: emptyList()) + buffs.flatMap { it.imunidades }
     val buffDanoArma: Int get() = buffs.sumOf { it.danoArma }
     /** Penalidade ao NH de quem ATACA este combatente (Nublar). Valor positivo = quanto subtrair. */
     val buffPenalidadeAtacantes: Int get() = buffs.sumOf { it.penalidadeAtacantes }

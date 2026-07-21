@@ -152,7 +152,7 @@
       "energiaPorDado": 1,
       "tipoDano": "perf",
       "entrega": "projetil",
-      "notas": "1/2D 30, Max 60, Prec 3. Até AM de energia/seg por 3 seg. Sem efeito extra em criaturas de fogo.",
+      "notas": "Lote A1: NAO recebe elementoDano. O livro diz \"dano por perfuracao\" e \"nenhum efeito extra em criaturas de fogo\" -- e arma fisica de gelo. A Imunidade ao Frio e explicita ao excluir \"lancas magicas de gelo\". 1/2D 30, Max 60, Prec 3. Até AM de energia/seg por 3 seg. Sem efeito extra em criaturas de fogo.",
       "alcanceMeioDano": 30,
       "alcanceMaximo": 60,
       "precisao": 3
@@ -2560,7 +2560,8 @@
       "notas": "Dano por ácido (corrosão), sem tipo padrão. 1/2D 20, Max 40, Prec 1, perícia Ataque Inato. Até AM de energia/seg por 3 seg.",
       "alcanceMeioDano": 20,
       "alcanceMaximo": 40,
-      "precisao": 1
+      "precisao": 1,
+      "elementoDano": "acido"
     },
     "duracaoTipo": "instantanea",
     "duracaoSeg": 0,
@@ -2612,7 +2613,8 @@
       "notas": "1/2D 25, Max 50, Prec 1. Ate AM por seg por 3 seg.",
       "alcanceMeioDano": 25,
       "alcanceMaximo": 50,
-      "precisao": 1
+      "precisao": 1,
+      "elementoDano": "fogo"
     },
     "duracaoTipo": "instantanea",
     "duracaoSeg": 0,
@@ -2639,7 +2641,8 @@
       "tipoDano": "quei",
       "entrega": "area",
       "notas": "1d por 2 en. Alvo e ate 1m: dano total; alem disso divide por (3x distancia em m). -4 pra mirar superficie.",
-      "explosaoDivisorPorMetro": 3
+      "explosaoDivisorPorMetro": 3,
+      "elementoDano": "fogo"
     },
     "duracaoTipo": "instantanea",
     "duracaoSeg": 0,
@@ -2667,7 +2670,8 @@
       "tipoDano": "quei",
       "entrega": "area",
       "notas": "Bola flutua (Vel = NH/5) e explode ao comando ou ao tocar ser vivo/metal. 1d-1 por 2 pontos completos de energia a quem estiver a <1m; mais longe divide o dano por 3x a distancia em m.",
-      "explosaoDivisorPorMetro": 3
+      "explosaoDivisorPorMetro": 3,
+      "elementoDano": "eletricidade"
     }
   },
   {
@@ -3319,7 +3323,8 @@
       "condicao": "atordoado",
       "condicaoResistencia": "HT_por_pv",
       "notas": "Cria chicote (arma corpo a corpo). Dano FIXO 1d quei por acerto, NAO escala com energia (energia compra alcance: 1 por 2m, max 8m). Aplica efeitos de dano do Relampago (atordoar por 2 PV). Dur 10s.",
-      "danoFixo": true
+      "danoFixo": true,
+      "elementoDano": "eletricidade"
     },
     "duracaoTipo": "temporaria",
     "duracaoSeg": 10,
@@ -3371,7 +3376,8 @@
       "notas": "Dano por ácido: 1d-1/seg fixo a todos na área (meio segundo = metade do dano). Só ao ar livre. Armadura protege normalmente; escudo BD 2+ acima da cabeça bloqueia. Dura 1 min. Custo fixo 3 (não escala por energia).",
       "danoFixo": true,
       "zonaPersistente": true,
-      "zonaIntervaloSeg": 1
+      "zonaIntervaloSeg": 1,
+      "elementoDano": "acido"
     },
     "duracaoTipo": "temporaria",
     "duracaoSeg": 60,
@@ -3420,7 +3426,8 @@
       "danoDegrauCustoDobrado": "2d-2",
       "energiaParaDegrau": 4,
       "zonaPersistente": true,
-      "zonaIntervaloSeg": 1
+      "zonaIntervaloSeg": 1,
+      "elementoDano": "fogo"
     },
     "duracaoTipo": "temporaria",
     "duracaoSeg": 60,
@@ -8203,7 +8210,7 @@
       "energiaPorDado": 1,
       "tipoDano": "cont",
       "entrega": "projetil",
-      "notas": "1/2D 40, Max 80, Prec 2. Até AM de energia/seg por 3 seg. Esfera de 1 dado apaga fogo em 1m de raio.",
+      "notas": "Lote A1: NAO recebe elementoDano -- mesma classe da Adaga de Gelo (projetil fisico de gelo), que a Imunidade ao Frio nao cobre. 1/2D 40, Max 80, Prec 2. Até AM de energia/seg por 3 seg. Esfera de 1 dado apaga fogo em 1m de raio.",
       "alcanceMeioDano": 40,
       "alcanceMaximo": 80,
       "precisao": 2
@@ -9520,7 +9527,8 @@
       "energiaPorDado": 1,
       "armadura": "ignora",
       "entrega": "toque",
-      "notas": "Comum/R-HT. Dano por frio, armadura NÃO protege. 1 energia = 1 dado, até 3. À distância afeta corpo todo; por toque só a parte tocada."
+      "notas": "Comum/R-HT. Dano por frio, armadura NÃO protege. 1 energia = 1 dado, até 3. À distância afeta corpo todo; por toque só a parte tocada.",
+      "elementoDano": "frio"
     },
     "duracaoTipo": "permanente",
     "duracaoSeg": 0,
@@ -10156,7 +10164,8 @@
     "mecanica": {
       "efeito": "buff",
       "buffRotulo": "imune a ácido",
-      "notas": "Duracao 1 min; 2 para operar (6 se precisar resistir a Acido Essencial), metade para manter. Alvo e o que carrega ficam imunes aos efeitos do acido. Imunidade por tipo de dano — o motor nao modela -> narrado."
+      "notas": "Lote A1 EXECUTAVEL: concede imunidade ao elemento \"acido\" enquanto durar (1 min, 2 para operar / 1 para manter). O livro e explicito que a imunidade nao vaza de um elemento para outro (\"imunes aos efeitos do calor e do fogo, mas nao da eletricidade\"). Os multiplicadores de custo para forno/vulcao/estrela ficam narrados. Duracao 1 min; 2 para operar (6 se precisar resistir a Acido Essencial), metade para manter. Alvo e o que carrega ficam imunes aos efeitos do acido. Imunidade por tipo de dano — o motor nao modela -> narrado.",
+      "buffImunidade": "acido"
     },
     "duracaoTipo": "temporaria",
     "duracaoSeg": 60,
@@ -10325,7 +10334,8 @@
     "mecanica": {
       "efeito": "buff",
       "buffRotulo": "imune a raios/eletricidade",
-      "notas": "Duracao 1 min; 2 para operar, 1 para manter. Alvo e o que carrega ficam imunes a raios e eletricidade. Tambem magia do Ar. Imunidade por tipo de dano — o motor nao modela -> narrado."
+      "notas": "Lote A1 EXECUTAVEL: concede imunidade ao elemento \"eletricidade\" enquanto durar (1 min, 2 para operar / 1 para manter). O livro e explicito que a imunidade nao vaza de um elemento para outro (\"imunes aos efeitos do calor e do fogo, mas nao da eletricidade\"). Os multiplicadores de custo para forno/vulcao/estrela ficam narrados. Duracao 1 min; 2 para operar, 1 para manter. Alvo e o que carrega ficam imunes a raios e eletricidade. Tambem magia do Ar. Imunidade por tipo de dano — o motor nao modela -> narrado.",
+      "buffImunidade": "eletricidade"
     },
     "duracaoTipo": "temporaria",
     "duracaoSeg": 60,
@@ -10401,7 +10411,8 @@
     "mecanica": {
       "efeito": "buff",
       "buffRotulo": "imune a fogo/calor",
-      "notas": "NARRADO: imunidade a calor e fogo (nao a eletricidade) para o alvo e o que ele carrega. Custo dobra vs alto-forno/vulcao, triplica vs estrela/nuclear; contra magias de Fogo de combate basta o 1o nivel. Imunidade nao cabe em numero."
+      "notas": "Lote A1 EXECUTAVEL: concede imunidade ao elemento \"fogo\" enquanto durar (1 min, 2 para operar / 1 para manter). O livro e explicito que a imunidade nao vaza de um elemento para outro (\"imunes aos efeitos do calor e do fogo, mas nao da eletricidade\"). Os multiplicadores de custo para forno/vulcao/estrela ficam narrados. NARRADO: imunidade a calor e fogo (nao a eletricidade) para o alvo e o que ele carrega. Custo dobra vs alto-forno/vulcao, triplica vs estrela/nuclear; contra magias de Fogo de combate basta o 1o nivel. Imunidade nao cabe",
+      "buffImunidade": "fogo"
     },
     "duracaoTipo": "temporaria",
     "duracaoSeg": 60,
@@ -10426,7 +10437,8 @@
     "mecanica": {
       "efeito": "buff",
       "buffRotulo": "imune a frio",
-      "notas": "NARRADO: imunidade a frio e congelamento (nao a gelo caindo nem lancas magicas de gelo). Custo dobra vs frio de -20 C ou mais, triplica vs zero absoluto. Imunidade nao cabe em numero."
+      "notas": "Lote A1 EXECUTAVEL: concede imunidade ao elemento \"frio\" enquanto durar (1 min, 2 para operar / 1 para manter). O livro e explicito que a imunidade nao vaza de um elemento para outro (\"imunes aos efeitos do calor e do fogo, mas nao da eletricidade\"). Os multiplicadores de custo para forno/vulcao/estrela ficam narrados. NARRADO: imunidade a frio e congelamento (nao a gelo caindo nem lancas magicas de gelo). Custo dobra vs frio de -20 C ou mais, triplica vs zero absoluto. Imunidade nao cabe em numero.",
+      "buffImunidade": "frio"
     },
     "duracaoTipo": "temporaria",
     "duracaoSeg": 60,
@@ -10668,7 +10680,8 @@
       "condicao": "cego",
       "condicaoResistencia": "HT",
       "notas": "Dano por ácido. Teste DX-4/Ataque Inato para acertar; pode ser desviado, não aparado/bloqueado. 1 a 3 energia (1d-1 cada). Causa projeção (empurrão narrado). Se acerta o rosto pode cegar (MB p428).",
-      "condicaoDuracaoSegPorEnergia": 1
+      "condicaoDuracaoSegPorEnergia": 1,
+      "elementoDano": "acido"
     },
     "duracaoTipo": "temporaria",
     "duracaoSeg": 1,
@@ -10756,7 +10769,8 @@
       "energiaPorDado": 1,
       "tipoDano": "quei",
       "entrega": "feixe",
-      "notas": "Ataque DX-4 ou Ataque Inato; esquivavel/bloqueavel, NAO aparavel. 1-3 pontos; alcance em m = numero de dados. Mao inabil -4."
+      "notas": "Ataque DX-4 ou Ataque Inato; esquivavel/bloqueavel, NAO aparavel. 1-3 pontos; alcance em m = numero de dados. Mao inabil -4.",
+      "elementoDano": "fogo"
     },
     "duracaoTipo": "temporaria",
     "duracaoSeg": 1,
@@ -10905,7 +10919,7 @@
       "entrega": "feixe",
       "condicao": "cego",
       "condicaoResistencia": "HT",
-      "notas": "Teste DX-4/Ataque Inato; esquivável/bloqueável, não aparável. Dano por escaldamento 1d-1/energia (dobro vs criaturas de fogo/gelo) + projeção. Se acerta o rosto e falha HT, cega (mesma mecânica dos outros jatos). Apaga fogo em 1m.",
+      "notas": "Lote A1: NAO recebe elementoDano. O livro diz que causa o DOBRO de dano a criaturas de fogo -- se fosse elemento fogo, um imune levaria zero. Vulnerabilidade x2 fica DEFERIDA (falta o eixo de vulnerabilidade). Teste DX-4/Ataque Inato; esquivável/bloqueável, não aparável. Dano por escaldamento 1d-1/energia (dobro vs criaturas de fogo/gelo) + projeção. Se acerta o rosto e falha HT, cega (mesma mecânica dos ou",
       "condicaoDuracaoSegPorEnergia": 1
     },
     "duracaoTipo": "temporaria",
@@ -12779,7 +12793,8 @@
       "notas": "Resistivel HT. Ataque p/ acionar (local irrelevante). Cada turno HT: falha=1d-1 quei, sucesso=0, sucesso decisivo quebra. Nem RD nem Resist. ao Fogo protegem. Sofre efeito de Enjoo. Nao afeta mortos-vivos. Necromantica.",
       "danoPorTurnoExpr": "1d-1",
       "danoPorTurnoTeste": "HT",
-      "quebraEmSucessoDecisivo": true
+      "quebraEmSucessoDecisivo": true,
+      "elementoDano": "fogo"
     }
   },
   {
@@ -13274,7 +13289,8 @@
       "notas": "Nuvem ao nivel do solo. Dano FLAT: 1 ponto/segundo por ponto de energia no custo base (nao e dado). Nao bloqueia visao. Armadura protege normal; metalica da RD minima como contra relampago. Raio min 2m. Dur 10s.",
       "areaRaioMinimoM": 2,
       "zonaPersistente": true,
-      "zonaIntervaloSeg": 1
+      "zonaIntervaloSeg": 1,
+      "elementoDano": "fogo"
     }
   },
   {
@@ -13299,7 +13315,8 @@
       "entrega": "area",
       "notas": "1 PONTO fixo de dano/seg por ponto de energia (custo base 1-5), NAO em dados. Nao bloqueia visao. Menos de 1 seg = metade. Armadura protege.",
       "zonaPersistente": true,
-      "zonaIntervaloSeg": 1
+      "zonaIntervaloSeg": 1,
+      "elementoDano": "fogo"
     },
     "duracaoTipo": "temporaria",
     "duracaoSeg": 10,
@@ -13528,7 +13545,8 @@
       "energiaPorDado": 1,
       "tipoDano": "quei",
       "entrega": "feixe",
-      "notas": "Atira relampago dos olhos, acerta com DX-4 ou Ataque Inato; deve estar de frente ao alvo. 1d quei por ponto de energia; alcance 2m por ponto. Pode ser 'sem maos'. Custo 1 a 4, nao mantem."
+      "notas": "Atira relampago dos olhos, acerta com DX-4 ou Ataque Inato; deve estar de frente ao alvo. 1d quei por ponto de energia; alcance 2m por ponto. Pode ser 'sem maos'. Custo 1 a 4, nao mantem.",
+      "elementoDano": "eletricidade"
     }
   },
   {
@@ -15436,7 +15454,8 @@
       "notas": "Projetil 1/2D 75, Max 150, Prec 2, pericia Ataque Inato. Queima como laser (o texto tambem menciona perfuracao no custo; adotado queimadura pela descricao). Energia ate o nivel de Aptidao Magica/seg por ate 3seg. Golpe no rosto cega (teste HT); nos olhos dobra dano e cega (HT com -dano). Espelho reflete; escudo polido +50% BD; defensor c/ espelho pode Bloquear -2. Areas de Escuridao/Trevas resistem.",
       "alcanceMeioDano": 75,
       "alcanceMaximo": 150,
-      "precisao": 2
+      "precisao": 2,
+      "elementoDano": "fogo"
     }
   },
   {
@@ -15895,7 +15914,8 @@
       "notas": "1/2D 50, Max 100, Prec 3. Armadura metalica conta como RD 1. Se o alvo se ferir, testa HT (-1 por 2 PV sofridos) ou atordoa; novo teste HT a cada turno para recuperar. Ate AM de energia/seg por 3s. 1d-1 por ponto de energia.",
       "alcanceMeioDano": 50,
       "alcanceMaximo": 100,
-      "precisao": 3
+      "precisao": 3,
+      "elementoDano": "eletricidade"
     }
   },
   {
@@ -15926,7 +15946,8 @@
       "explosaoDivisorPorMetro": 3,
       "alcanceMeioDano": 50,
       "alcanceMaximo": 100,
-      "precisao": 3
+      "precisao": 3,
+      "elementoDano": "eletricidade"
     }
   },
   {
@@ -17874,7 +17895,8 @@
       "danoPorEnergia": "1d",
       "energiaPorDado": 1,
       "entrega": "feixe",
-      "notas": "Dano por ácido. Como Jato de Ácido mas sai da boca: 1d/energia (1 a 4), teste DX-2/Ataque Inato, esquivável/bloqueável, não aparável, sem mãos, não pode manter. Deve estar de frente ao alvo."
+      "notas": "Dano por ácido. Como Jato de Ácido mas sai da boca: 1d/energia (1 a 4), teste DX-2/Ataque Inato, esquivável/bloqueável, não aparável, sem mãos, não pode manter. Deve estar de frente ao alvo.",
+      "elementoDano": "acido"
     },
     "duracaoTipo": "temporaria",
     "duracaoSeg": 1,
@@ -17900,7 +17922,8 @@
       "energiaPorDado": 1,
       "tipoDano": "quei",
       "entrega": "feixe",
-      "notas": "Ataque DX-4 ou Ataque Inato; esquivavel/bloqueavel, NAO aparavel. 1-4 pontos, 1d-1 por ponto. Operavel sem maos. Deve estar de frente."
+      "notas": "Ataque DX-4 ou Ataque Inato; esquivavel/bloqueavel, NAO aparavel. 1-4 pontos, 1d-1 por ponto. Operavel sem maos. Deve estar de frente.",
+      "elementoDano": "frio"
     },
     "duracaoTipo": "temporaria",
     "duracaoSeg": 1,
@@ -17926,7 +17949,8 @@
       "energiaPorDado": 1,
       "tipoDano": "quei",
       "entrega": "feixe",
-      "notas": "1 a 4 de energia (1d+1 por ponto). Ataque com DX-2 ou Ataque Inato; a chama sai da boca, o operador deve estar de frente para o alvo. Nao pode ser mantida; operacao 2 seg. Pode ser operada sem maos em qualquer NH."
+      "notas": "1 a 4 de energia (1d+1 por ponto). Ataque com DX-2 ou Ataque Inato; a chama sai da boca, o operador deve estar de frente para o alvo. Nao pode ser mantida; operacao 2 seg. Pode ser operada sem maos em qualquer NH.",
+      "elementoDano": "fogo"
     },
     "duracaoTipo": "temporaria",
     "duracaoSeg": 1,
@@ -17974,7 +17998,7 @@
       "entrega": "feixe",
       "condicao": "cego",
       "condicaoResistencia": "HT",
-      "notas": "Como Jato de Vapor mas sai da boca: 1d/energia de escaldamento (1 a 4), teste DX-2/Ataque Inato, sem mãos, não pode manter. Área/sopro. Cega se acerta rosto e falha HT.",
+      "notas": "Lote A1: NAO recebe elementoDano -- mesmo caso do Jato de Vapor. Como Jato de Vapor mas sai da boca: 1d/energia de escaldamento (1 a 4), teste DX-2/Ataque Inato, sem mãos, não pode manter. Área/sopro. Cega se acerta rosto e falha HT.",
       "condicaoDuracaoSegPorEnergia": 1
     },
     "duracaoTipo": "temporaria",
@@ -18528,7 +18552,8 @@
       "entrega": "area",
       "notas": "Nuvem ao nivel do solo de faiscas. Dano FLAT: 1 ponto/segundo por ponto de energia no custo base (nao e dado). Nao bloqueia visao. Armadura metalica da RD minima como contra relampago. Raio min 2m.",
       "zonaPersistente": true,
-      "zonaIntervaloSeg": 1
+      "zonaIntervaloSeg": 1,
+      "elementoDano": "fogo"
     }
   },
   {
@@ -18838,7 +18863,8 @@
       "tipoDano": "quei",
       "armadura": "ignora_vestida",
       "entrega": "toque",
-      "notas": "1d quei por ponto (1-3). Primeiro alvo tocado apos operar. Armadura NAO protege, mas RD natural sim."
+      "notas": "1d quei por ponto (1-3). Primeiro alvo tocado apos operar. Armadura NAO protege, mas RD natural sim.",
+      "elementoDano": "fogo"
     },
     "duracaoTipo": "instantanea",
     "duracaoSeg": 0,
@@ -18866,7 +18892,8 @@
       "tipoDano": "quei",
       "armadura": "ignora",
       "entrega": "toque",
-      "notas": "Carrega maos/cajado; precisa acertar o alvo (local irrelevante). 1d+1 quei por ponto de energia. A armadura NAO protege. Efeitos colaterais em eletronicos como Relampago. Custo 1 a 3."
+      "notas": "Carrega maos/cajado; precisa acertar o alvo (local irrelevante). 1d+1 quei por ponto de energia. A armadura NAO protege. Efeitos colaterais em eletronicos como Relampago. Custo 1 a 3.",
+      "elementoDano": "eletricidade"
     }
   },
   {

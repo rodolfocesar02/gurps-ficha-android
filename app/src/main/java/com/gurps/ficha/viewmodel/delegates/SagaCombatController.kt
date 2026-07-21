@@ -1335,7 +1335,7 @@ class SagaCombatController(
             val raio = com.gurps.ficha.domain.magic.MagicMechanics.raioEfetivo(mecZ, mira.raio)
             s.registrarZona(com.gurps.ficha.domain.combat.ZonaPersistente(
                 nome = magia.nome, centro = centro, raioM = raio, danoExpr = expr,
-                tipoDano = mecZ.tipoDano, armadura = mecZ.armadura,
+                tipoDano = mecZ.tipoDano, elementoDano = mecZ.elementoDano, armadura = mecZ.armadura,
                 intervaloSeg = mecZ.zonaIntervaloSeg.coerceAtLeast(1), teste = mecZ.zonaTeste,
                 segRestantes = duracaoSeg, segAteProximo = mecZ.zonaIntervaloSeg.coerceAtLeast(1),
                 operadorId = "heroi",
