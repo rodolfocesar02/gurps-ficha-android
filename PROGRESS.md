@@ -3046,6 +3046,16 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - **Recomendação registrada** (maior valor × menor custo): Ataque Telegráfico (par do Enganoso), luta agarrada profunda (chaves/Mata-Leão estendendo o lote 422), Sangramento Grave + incapacitação de membro (item 5 do teste de batalha), Ataque Dedicado/Defensivo. Fora de escopo: posicional/hexágono, montaria, cinematográfico, dado de arma do NPC. Mudança só de documentação (não compila Kotlin).
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
+### Lote TOK-10 — 21 de Julho de 2026 (zonas sobrepostas não acumulam a MESMA mágica + log distingue as nuvens)
+**O usuário conjurou Chuva de Fogo duas vezes e mandou o log — branch GURPS-Saga**
+- ✅ **Não havia bug no TOK-9.** O log até **prova** que ele funciona: a zona nova avisou `⚠️ Você está DENTRO` e **não** feriu no turno da conjuração. Mas a dupla conjuração expôs dois buracos.
+- 🔴 **1) Zonas empilhavam sem limite.** `registrarZona` só fazia `zonasAtivas + z`, e o tique percorre **todas** as zonas aplicando dano em cada uma — quem estivesse na sobreposição levava de todas. Dava para conjurar Chuva de Fogo cinco vezes no mesmo hex e **multiplicar o dano por cinco**, a 1 PF cada (ou **0 PF** num sucesso decisivo). Contrariava a regra que o motor **já respeita para buffs** desde o MEC-29 (Magia p.9): *"só a MAIS PODEROSA deverá ser considerada — não se acumulam"*.
+- ⚖️ **Decisão do usuário** no caso ambíguo (duas áreas não são obviamente *"o mesmo objetivo"*): a **mesma** mágica não acumula — vale a mais forte; mágicas **diferentes somam**, porque Chuva de Fogo + Chuva de Ácido queima **e** corrói, combinação tática legítima. Critério de "mais forte": `danoMaximo` da expressão, que já existia para o Golpe Fulminante. Empate resolve pela ordem de registro, para não depender da ordem da lista.
+- 🔴 **2) O log não distinguia as duas nuvens.** *"Nenhum inimigo na área"* e *"Chuva de Fogo atinge Goblin 2"* no mesmo instante, sem dizer que eram nuvens diferentes — lido de cima para baixo parecia contradição. A partir da segunda nuvem da mesma mágica cada uma ganha número (`Chuva de Fogo #2`); a primeira segue sem.
+- **+4 testes.** Dois são **comparativos**: rodam a mesma luta com uma nuvem e com duas e comparam o PV perdido. É o jeito de provar que **não somou**, em vez de só verificar que uma linha de log apareceu.
+- 🟢 Gate: **884 testes por variante, ZERO falhas**, build nas duas.
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
 ### Lote TOK-9 — 21 de Julho de 2026 (zona feria DOBRADO no turno da conjuração — regra da estreia)
 **Achado no log que o usuário mandou para validar o TOK-8 — branch GURPS-Saga**
 - 🔴 **O bug**, tudo no mesmo timestamp: `Atinge: Goblin 2. Dano 1d-1: Goblin 2 4.` (dano da conjuração) e logo em seguida `☁️ Chuva de Fogo atinge Goblin 2: 1d-1 → 4` (tique da zona). Quem estava dentro levava **duas vezes no mesmo segundo**.
