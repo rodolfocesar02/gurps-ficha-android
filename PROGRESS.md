@@ -3046,6 +3046,20 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - **Recomendação registrada** (maior valor × menor custo): Ataque Telegráfico (par do Enganoso), luta agarrada profunda (chaves/Mata-Leão estendendo o lote 422), Sangramento Grave + incapacitação de membro (item 5 do teste de batalha), Ataque Dedicado/Defensivo. Fora de escopo: posicional/hexágono, montaria, cinematográfico, dado de arma do NPC. Mudança só de documentação (não compila Kotlin).
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
+### Lote TOK-8 — 21 de Julho de 2026 (o TURNO não fechava sem escolher a direção + ajustes do token)
+**Dois achados do teste no aparelho. O primeiro é de REGRA e bem mais grave do que o relato sugeria.**
+- 🔴 **BUG 1 — o turno não fechava.** Mover no grid **não avança o turno**: abre o prompt de virada final e retorna. Quem chama `depoisDaAcaoDoHeroi()` (que avança) é **só** o `concluirViradaFinal`. E `hexesAlcancaveisHeroi()` **não tinha trava** para a pendência — os hexes seguiam verdes, o jogador movia de novo, cada movimento **reabria** o prompt, e o turno nunca terminava.
+- **Consequências, todas relatadas pelo usuário como se fossem bugs separados:** Chuva de Fogo *"sem timer"* (o relógio roda no avanço de turno); tique de zona parou de ferir, nele e no goblin; NPCs congelados nunca agiam. **E o que ele não notou:** 20+ deslocamentos **no mesmo turno** — GURPS dá **um** Mover por turno, então isso era bug de regra por si só. A intuição dele estava certa: *"o bug não está na magia"*.
+- **Correção em três camadas:** (1) `hexesAlcancaveisHeroi()` devolve vazio com a virada pendente — sem hex verde o jogador também **vê** que precisa resolver; (2) `sagaAoTocarHexTatico` avisa em vez de mover; (3) `depoisDaAcaoDoHeroi()` limpa a pendência (defesa em profundidade, para não sobrar prompt preso se o turno passar por ataque ou magia).
+- 🎨 **BUG 2 — UI do token (corrige o TOK-7):**
+  - **Fonte fixa** era a causa da inversão que o usuário notou (*"de longe é legível, o problema é perto"*): `sp` fixo não escala com o token, então em zoom perto o texto ficava minúsculo em proporção. Nome, número e ícones agora **escalam com o hexágono**.
+  - **Hexágonos de PV/PF vazavam**: o hexágono é **pontudo embaixo** e quase não tem largura perto do vértice. Encolhidos de `0.42` para `0.26·tam` e puxados de `0.60` para `0.47·tam`.
+  - **Nome vazava** para o hex de cima pelo mesmo erro de geometria: clampei pela largura **máxima** (`√3·tam`), que só vale na faixa central — a `0.92·tam` do centro sobra ~16%. Nova função `meiaLarguraDoHex(tam, dy)` calcula a largura **naquela altura**, e o nome desceu para `0.66·tam`, sobre o topo do retrato como no mock.
+- **+4 testes de geometria**, incluindo a regressão exata que ele fotografou: os mini-hexágonos têm que caber dentro do hexágono do token.
+- 🟢 Gate: **877 testes por variante, ZERO falhas**, build nas duas.
+- 🚦 **Toca UI → PARA para teste no aparelho.**
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
 ### Lote TOK-7 — 21 de Julho de 2026 (token novo: nome acima, sem anel, PV e PF em hexágonos que esvaziam)
 **Redesenho pedido pelo usuário com dois mocks (antes/depois) — branch GURPS-Saga**
 - **Nome acima da cabeça** (era embaixo), **truncado** até caber na largura útil do hexágono (`√3·tam`). O pedido foi explícito: não pode ultrapassar o hex.
