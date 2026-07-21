@@ -125,19 +125,19 @@ e com teste** desde antes.
 
 | # | O que falta | Afeta |
 |---|---|---|
-| P13 | **Projétil que FLUTUA** — a Bola de Relâmpagos *"não pode ser arremessada da maneira usual"*: ela flutua a **NH/5 m/s** na direção que o operador quiser, atravessa obstáculos não-metálicos, dura **1 minuto** e **explode ao comando** ou ao tocar um ser vivo/objeto metálico. Hoje o app a trata como projétil arremessado normal. **A duração de 1 min do livro não é erro** — é o tempo que a bola fica flutuando. | Bola de Relâmpagos |
+| P13 | ⛔ **VETADO pelo usuário (21/jul)** — a Bola de Relâmpagos segue tratada como projétil comum. *"não vamos criar várias linhas de código por causa de 1 única magia"*. Decisão de escopo, não limitação técnica. | Bola de Relâmpagos |
 
 ### 2.2 Regras de magia específicas
 
 | # | O que falta | Afeta |
 |---|---|---|
-| P4 | ~~Bandas de distância do **Lampejo**~~ ✅ **FEITO (MEC-37)** — bandas + rider de ofuscamento (−N nas perícias de combate, com timer) — mecânica reusável nos Jatos (P9) | Lampejo |
+| P4 | ~~Bandas de distância do **Lampejo**~~ ✅ **FEITO (MEC-37)** — bandas + rider de ofuscamento (−N nas perícias de combate, com timer) — mecânica reusável nos Jatos (P9) | Lampejo | ✅ VALIDADO no aparelho 21/jul |
 | P5 | 🔴 **precisa de projétil-contra-HEX** — o ramo de projétil resolve contra 1 combatente; para espalhar a explosão do ponto de impacto ele teria de mirar um hex e varrer os vizinhos (metade do trabalho do MEC-14 de área, do lado do projétil). Feature, não ajuste. | Relâmpago Explosivo |
 | P6 | ~~**Precisão do projétil**~~ ✅ **FEITO (MEC-40)** — Apontar antes de arremessar soma a Precisão (+ mira de vários turnos). Chip 🎯 Apontar no token inimigo. 12 magias curadas. | 12 projéteis |
-| P7 | ~~**RD natural × armadura** do Toque Candente~~ ✅ **FEITO (MEC-38)** — campo `rdNatural` no bestiário + `armadura: "ignora_vestida"` → ignora a vestida, natural protege | Toque Candente |
-| P8 | ~~Degrau de custo dobrado (2d-2)~~ ✅ **FEITO (MEC-36)** — `danoDeAreaComDegrau`; limiar = custo-base 2 dobrado. O payoff pleno é o tique por segundo (P1b). | Chuva de Fogo/Pedras |
+| P7 | ~~**RD natural × armadura** do Toque Candente~~ ✅ **FEITO (MEC-38)** — campo `rdNatural` no bestiário + `armadura: "ignora_vestida"` → ignora a vestida, natural protege | Toque Candente | ✅ VALIDADO no aparelho 21/jul |
+| P8 | ~~Degrau de custo dobrado (2d-2)~~ ✅ **FEITO (MEC-36)** — `danoDeAreaComDegrau`; limiar = custo-base 2 dobrado. O payoff pleno é o tique por segundo (P1b). | Chuva de Fogo/Pedras | ✅ VALIDADO no aparelho 21/jul |
 | P9 | 🔴 **precisa de resolução de FEIXE** — os Jatos são `narrado`/`feixe` e não têm caminho de acerto/dano no motor. Projeção (knockback) reusaria o Empurrão existente, mas o feixe em si (teste DX-4, esquiva/bloqueio) é ataque novo. A parte do Géiser (empurra + DX-5) mora no P1b (zona). | Jatos, Géiser |
-| P10 | ~~Raio mínimo de 2m~~ ✅ **FEITO (MEC-36)** — `raioEfetivo`; a mira eleva o raio ao mínimo | Nuvem de Faíscas, Sono Coletivo |
+| P10 | ~~Raio mínimo de 2m~~ ✅ **FEITO (MEC-36)** — `raioEfetivo`; a mira eleva o raio ao mínimo | Nuvem de Faíscas, Sono Coletivo | ✅ VALIDADO no aparelho 21/jul |
 | P11 | ~~**Projétil carregado em vários turnos**~~ ✅ **FEITO (MEC-39)** — carregar/aumentar (até 3s, +Aptidão/turno)/arremessar/dissipar, aditivo ao one-shot. UI: botão "Segurar" no diálogo + chips Arremessar/Aumentar/Dissipar no token. **Cerimonial VETADO pelo usuário.** ⚠️ PARA para teste no aparelho (UI). |
 | P12 | 🟡 **é UI** — a conjuração só existe no grid tático; levá-la ao modo de faixas é montar o seletor de magia lá. Lote de UI → **para para teste no aparelho**. | combate sem grade |
 
