@@ -603,7 +603,7 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
             val result = persistenceDelegate.carregarFicha(nome)
             result.fold(
                 onSuccess = { 
-                    personagem = it 
+                    personagem = ressincronizarMagiasComCatalogo(it) // MEC-44
                     nomeFichaAtual = nome
                     estaCarregando = false
                     onResult(true, "Ficha carregada.")
@@ -615,6 +615,44 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
             )
         }
     }
+    /**
+     * Lote MEC-44: ressincroniza as magias da FICHA com o CATÁLOGO ao carregar.
+     *
+     * `MagiaSelecionada` guarda uma **cópia** de `classe`/`energia`/`tempoOperacao`, tirada quando a
+     * magia foi adicionada. Toda correção de catálogo (as classes do D1, o custo da Bola de
+     * Relâmpagos) ficava presa: a ABA MAGIAS seguia mostrando o valor velho — o usuário viu a Bola
+     * de Relâmpagos como "Comum" na lista e como "Projétil" no combate, ao mesmo tempo.
+     *
+     * O MEC-42/43 resolveu isso só no caminho de COMBATE; aqui a ficha inteira passa a refletir o
+     * catálogo. Busca por id e, falhando, pelo NOME normalizado (fichas antigas têm id de outro
+     * esquema). Magia que o catálogo não conhece (caseira) fica intacta.
+     */
+    private fun ressincronizarMagiasComCatalogo(p: Personagem): Personagem {
+        if (p.magias.isEmpty()) return p
+        fun chave(x: String?) = (x ?: "").lowercase()
+            .replace(Regex("[àáâãä]"), "a").replace(Regex("[éêë]"), "e").replace(Regex("[íî]"), "i")
+            .replace(Regex("[óôõö]"), "o").replace(Regex("[úû]"), "u").replace("ç", "c")
+            .replace(Regex("[^a-z0-9]"), "")
+        val porId = dataRepository.magias.associateBy { it.id }
+        val porNome = dataRepository.magias.associateBy { chave(it.nome) }
+        var mudou = 0
+        val novas = p.magias.map { m ->
+            val def = porId[m.definicaoId] ?: porNome[chave(m.nome)] ?: return@map m
+            val nova = m.copy(
+                classe = def.classe?.takeIf { it.isNotBlank() } ?: m.classe,
+                energia = def.energia?.takeIf { it.isNotBlank() } ?: m.energia,
+                tempoOperacao = def.tempoOperacao?.takeIf { it.isNotBlank() } ?: m.tempoOperacao,
+            )
+            if (nova.classe != m.classe || nova.energia != m.energia) mudou++
+            nova
+        }
+        if (mudou > 0) {
+            com.gurps.ficha.domain.combat.SagaLog.mecanica(
+                "ficha ressincronizada com o catálogo: $mudou magia(s) com classe/custo desatualizados")
+        }
+        return p.copy(magias = novas)
+    }
+
     fun excluirFicha(nome: String) { viewModelScope.launch { fichasSalvas = persistenceDelegate.excluirFicha(nome) } }
     fun novaFicha() { personagem = Personagem(); personagemPendenteLimpezaMagias = null; mostrarConfirmacaoLimpezaMagias = false; nomeFichaAtual = null; nomeSessaoIA = null }
     

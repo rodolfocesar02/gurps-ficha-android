@@ -121,6 +121,12 @@ e com teste** desde antes.
 > mas nunca tinha lido a seção inteira. Estas 8 regras estavam invisíveis — não por decisão, por
 > omissão. É o mesmo padrão dos documentos desatualizados: **o que não é varrido inteiro, engana**.
 
+### 2.1d Projéteis ESPECIAIS que não são arremessados
+
+| # | O que falta | Afeta |
+|---|---|---|
+| P13 | **Projétil que FLUTUA** — a Bola de Relâmpagos *"não pode ser arremessada da maneira usual"*: ela flutua a **NH/5 m/s** na direção que o operador quiser, atravessa obstáculos não-metálicos, dura **1 minuto** e **explode ao comando** ou ao tocar um ser vivo/objeto metálico. Hoje o app a trata como projétil arremessado normal. **A duração de 1 min do livro não é erro** — é o tempo que a bola fica flutuando. | Bola de Relâmpagos |
+
 ### 2.2 Regras de magia específicas
 
 | # | O que falta | Afeta |

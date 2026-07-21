@@ -3046,6 +3046,18 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - **Recomendação registrada** (maior valor × menor custo): Ataque Telegráfico (par do Enganoso), luta agarrada profunda (chaves/Mata-Leão estendendo o lote 422), Sangramento Grave + incapacitação de membro (item 5 do teste de batalha), Ataque Dedicado/Defensivo. Fora de escopo: posicional/hexágono, montaria, cinematográfico, dado de arma do NPC. Mudança só de documentação (não compila Kotlin).
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
+### Lote MEC-44 — 21 de Julho de 2026 (a FICHA também ressincroniza com o catálogo)
+**Print do usuário: a mesma magia aparecia "Comum" na aba Magias e "Projétil" no combate — branch GURPS-Saga**
+- 🎯 **O MEC-42/43 consertou só o caminho de COMBATE.** A **aba Magias** lê `personagem.magias` direto, então continuava mostrando a cópia velha — a Bola de Relâmpagos aparecia com **duas classes diferentes ao mesmo tempo**, dependendo da tela.
+- **Conserto de raiz**: ao **carregar a ficha**, as magias são ressincronizadas com o catálogo (`classe`, `energia`, `tempoOperacao`). Busca por id e, falhando, pelo **nome normalizado**. Magia que o catálogo não conhece (caseira) fica **intacta**. Loga no logcat quantas foram atualizadas.
+- ✅ **Confirmado o que JÁ estava certo** (investiguei antes de mexer, em vez de assumir):
+  - **Tempo de operação**: `"1 a 3 seg."` → 1 s no one-shot está **correto** — o livro diz que o operador *escolhe* de 1 a 3 segundos, e a bola **cresce conforme investe**. Esse crescimento é exatamente o **Segurar/Aumentar** do P11.
+  - **A conta da energia**: o teto 6 do diálogo revela **Aptidão 3**; a regra é *"até o **dobro** da AM **por segundo**"* = 6/segundo. Logo **6 de energia cabem em 1 segundo, sem espera**. Para 3 segundos seriam até 18, via Segurar/Aumentar.
+  - **O botão "Segurar" ESTAVA na tela** (visível no print do usuário, ao lado de Voltar/Conjurar). Ele usou "Conjurar", que é o arremesso imediato — daí o log de one-shot. Os chips **Apontar/Arremessar** só aparecem nos tokens **depois** de segurar.
+- ⚠️ **Divergência REAL registrada** (não corrigida): a Bola de Relâmpagos, no livro, **flutua** até 1 minuto e *"não pode ser arremessada da maneira usual"* — move-se sozinha a NH/5 m/s e explode ao comando ou ao tocar algo. O app a trata como projétil arremessado comum. Isso explica a duração de "1 minuto" que o usuário estranhou: **não é erro do livro**, é uma mecânica de projétil-que-flutua que não temos. Vai para o PENDENCIAS.
+- 🟢 Gate: **795 testes, ZERO falhas**.
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
 ### Lote MEC-43 — 21 de Julho de 2026 (o MEC-42 não bastou: a busca no catálogo falhava)
 **"eu sincronizei e dei run novamente, continua comum a magia!" — branch GURPS-Saga**
 - **O MEC-42 estava certo no diagnóstico mas incompleto no conserto.** Ele fazia o catálogo mandar sobre a cópia da ficha — mas via `getMagiaPorId(definicaoId)`. Se o `definicaoId` da ficha estiver **vazio ou de um esquema antigo**, a busca devolve `null`, o código cai no *fallback* e a magia **continua com a classe velha**. Era exatamente o caso.
