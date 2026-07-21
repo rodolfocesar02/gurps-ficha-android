@@ -359,6 +359,10 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
             fichaStorage.migrarDeSharedPreferencesSeNecessario()
             restaurarAutoSaveSeExistir()
             carregarListaFichas()
+            // Depois do auto-save restaurado: só aqui `personagem` já aponta para
+            // o retrato em uso, e a faxina precisa dessa informação para não
+            // apagá-lo.
+            faxinaDeRetratosOrfaos()
         }
 
         viewModelScope.launch {
@@ -723,6 +727,25 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     /**
+     * Apaga retratos que nenhuma ficha cita mais (ver
+     * [com.gurps.ficha.data.storage.ImagemPersonagemStore.faxinaDeOrfaos]).
+     * Roda uma vez por sessão, em segundo plano, e nunca derruba o app: se algo
+     * falhar, a pasta só continua como está.
+     */
+    private suspend fun faxinaDeRetratosOrfaos() {
+        runCatching {
+            com.gurps.ficha.data.storage.ImagemPersonagemStore.faxinaDeOrfaos(
+                context = getApplication(),
+                jsonsDasFichas = fichaStorage.todosOsJsons(),
+                emUso = listOf(
+                    personagem.imagemPersonagemUri,
+                    personagem.imagemPersonagemOriginalUri
+                ).filter { it.isNotBlank() }
+            )
+        }
+    }
+
+    /**
      * Se a ficha importada trouxe a imagem EMBUTIDA (imagemPersonagemBase64),
      * salva a imagem no aparelho (re-recorta o rosto → gera as 2 versões),
      * aponta os URIs e LIMPA o base64. Assíncrono — a foto aparece logo após.
@@ -791,7 +814,12 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
     // === UTILITÁRIOS / COMBATE ===
     fun calcularDanoArmaComSt(r: String?) = CharacterRules.resolverDanoPorSt(r?.trim().orEmpty(), personagem.forca)
     val nivelAptidaoMagica get() = MagicEngine.getNivelAptidaoMagicaParaMagia(personagem, null)
-    val temAptidaoMagica get() = nivelAptidaoMagica > 0
+    /**
+     * Gate da aba de Magias. É a PRESENÇA da vantagem, não o bônus: `nivelAptidaoMagica` vale 0 em
+     * AM 0, e AM 0 é exatamente o pré-requisito para aprender magia (MB p.41). Com `> 0` a aba
+     * sumia justamente de quem tinha comprado a vantagem no nível inicial.
+     */
+    val temAptidaoMagica get() = MagicEngine.possuiAptidaoMagica(personagem)
     val nivelCarga get() = personagem.nivelCarga
     val deslocamentoAtual get() = personagem.deslocamentoAtual
     val esquivaAtual get() = (personagem.esquiva - personagem.nivelCarga).coerceAtLeast(1)

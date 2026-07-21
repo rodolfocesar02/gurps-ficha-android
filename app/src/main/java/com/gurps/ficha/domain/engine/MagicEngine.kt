@@ -14,10 +14,29 @@ object MagicEngine {
      * Calculates the Magic Aptitude level for a specific spell, considering limitations like "One Single School".
      * Page 41 of GURPS Basic Set.
      */
+    /**
+     * Todas as instâncias da vantagem Aptidão Mágica — da ficha e do modelo racial.
+     *
+     * Fonte ÚNICA: [possuiAptidaoMagica] e [getNivelAptidaoMagicaParaMagia] leem daqui. Duas cópias
+     * do mesmo filtro divergem em silêncio (lição do LIMPEZA-1).
+     */
+    private fun aptidoesMagicas(personagem: Personagem) =
+        personagem.vantagens.filter { it.definicaoId.equals("aptidao_magica", ignoreCase = true) } +
+            personagem.modeloRacial.vantagens.filter { it.definicaoId.equals("aptidao_magica", ignoreCase = true) }
+
+    /**
+     * O personagem **tem** a vantagem Aptidão Mágica — em qualquer nível, inclusive **AM 0**.
+     *
+     * ⚠️ Não confunda com [getNivelAptidaoMagicaParaMagia], que devolve o **bônus de NH** e vale
+     * **0** em AM 0. Usar aquele valor como "tem magia?" escondia a aba de Magias de quem comprou
+     * AM 0 — e AM 0 é justamente o que habilita magia: *"Representa uma 'consciência mágica'
+     * básica, **um pré-requisito para se aprender magia** na maior parte dos mundos. 5 pontos."*
+     * (MB p.41). Quem paga os 5 pontos tem que ver a aba.
+     */
+    fun possuiAptidaoMagica(personagem: Personagem): Boolean = aptidoesMagicas(personagem).isNotEmpty()
+
     fun getNivelAptidaoMagicaParaMagia(personagem: Personagem, magia: MagiaDefinicao?): Int {
-        val personAptidoes = personagem.vantagens.filter { it.definicaoId.equals("aptidao_magica", ignoreCase = true) }
-        val racialAptidoes = personagem.modeloRacial.vantagens.filter { it.definicaoId.equals("aptidao_magica", ignoreCase = true) }
-        val todas = personAptidoes + racialAptidoes
+        val todas = aptidoesMagicas(personagem)
 
         if (todas.isEmpty()) return 0
         
