@@ -3046,6 +3046,20 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - **Recomendação registrada** (maior valor × menor custo): Ataque Telegráfico (par do Enganoso), luta agarrada profunda (chaves/Mata-Leão estendendo o lote 422), Sangramento Grave + incapacitação de membro (item 5 do teste de batalha), Ataque Dedicado/Defensivo. Fora de escopo: posicional/hexágono, montaria, cinematográfico, dado de arma do NPC. Mudança só de documentação (não compila Kotlin).
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
+### Lote TOK-ZOOM — 21 de Julho de 2026 (pinça de dois dedos + grid ocupando a tela toda do combate)
+**"com dois dedos na tela eu consiga dar zoom-in e zoom-out, às vezes eu perco a noção de espaço" + "o grid, pode fazer ele tomar toda a tela de combate?" — branch GURPS-Saga**
+- 🔍 **Zoom de dois dedos** (`HexCanvas.kt`): `detectDragGestures` → `detectTransformGestures` nos **dois** canvas (combate real e preview). Um dedo arrasta, dois dedos dão zoom, no mesmo gesto — não há botão nem modo.
+- `cameraEfetiva` ganhou o parâmetro **`zoom`** (default `1f`, então toda chamada antiga fica idêntica), que **multiplica** o tamanho de hex que a câmera enquadrou sozinha. Limites `ZOOM_MIN 0.6f` / `ZOOM_MAX 4f`.
+- ⚠️ **Detalhe que era fácil errar**: o pan em px é convertido pelo tamanho **já ampliado** (`tam·zoom`), não pelo original — aproximado, o dedo anda **menos** hexes, que é o comportamento de mapa. Dividir pelo `tam` original faria o mapa disparar sob zoom. Tem teste dedicado.
+- O zoom do usuário **não é resetado** no reenquadramento de cada turno (o pan continua sendo): quem aproximou pra "achar o espaço" segue aproximado no turno seguinte. O centro continua **clampado** à grade.
+- 🖥️ **Grid na tela toda** (`TabSaga.kt`): no tático o feed **saiu do fluxo** da `Column` — era `weight 0.7` contra `3` do grid, ~19% da altura roubados. Agora o `Box` do grid é o **único filho com peso** e ocupa tudo abaixo do cabeçalho e da caixa do Narrador.
+- 📜 A narração **não sumiu**: virou `FeedFlutuanteTatico`, cartão translúcido no topo da grade. **Recolhido** mostra a última fala (3 linhas); **tocando, expande** pra metade da tela com o histórico rolável. Teto de **40 falas** — é `Column` com scroll, não `LazyColumn`, então montar a campanha inteira custaria caro.
+- Menu do herói desceu de `42dp` pra `88dp` de respiro (mora abaixo do cartão); o auto-scroll da `LazyColumn` do feed agora só roda **quando ela existe** (no tático não há lista pra rolar).
+- **+5 testes** em `CameraHexTest`: zoom multiplica e o default não muda nada; clamp min/max; pan proporcional ao zoom; centro preso à grade sob zoom máximo; round-trip do toque (hex → tela → hex) sob zoom.
+- 🟢 Gate: **815 testes por variante, ZERO falhas**, build nas duas.
+- 🚦 **Toca UI → PARA para teste no aparelho.** Dois pontos a conferir, ditos honestamente: o cartão recolhido ocupa ~88dp no topo do grid e **captura o toque ali** (aquele espaço já era do menu do herói, mas confirme que não atrapalha mover); e enquanto **expandido** ele cobre o menu do herói — um toque recolhe.
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
 ### Lote MEC-46 — 21 de Julho de 2026 (P1b: ZONAS persistentes — a última funcionalidade de combate)
 **"faz o p1b, e coloca na fila as que necessitam delas" — branch GURPS-Saga**
 - ✅ **P1b**: mágica de área agora pode deixar uma **ZONA** que fere quem estiver dentro, **a cada intervalo**, enquanto durar. Antes a área feria **uma vez só**. `ZonaPersistente` (centro, raio, dado, intervalo, teste, relógio) + `tiqueDasZonas()` no avanço de turno + expiração com aviso.
