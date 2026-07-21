@@ -197,16 +197,54 @@ fun NexusArcanoEngine.planejarCaminhoMinimo(
         var passos = 0
         while (passos < maxPassos && !(magiaAprendivelAgora(alvoId, known, estado) || alvoId in known)) {
             passos++
-            val cadeiaPend = construirCadeiaObrigatoriaParaEstado(alvoId, known)
+            val cadeiaObrig = construirCadeiaObrigatoriaParaEstado(alvoId, known)
+            val cadeiaPend = cadeiaObrig
                 .filter { it != alvoId && it !in known }.toSet()
             val escolasAtuais = escolasConhecidas(known)
             val aprendiveis = allMagiaIds.asSequence()
                 .filter { it !in known }
                 .filterNot { escolaBloqueadaPorPolitica(it) }
                 .filter { magiaAprendivelAgora(it, known, estado) }
+                .toList()
             // 1) prioridade: pré-requisito obrigatório nomeado pendente
             val obrig = aprendiveis.firstOrNull { it in cadeiaPend }
-            val escolha = obrig ?: run {
+            // 1.5) Lote 425: requisito "N magias da escola X" / "N magias quaisquer"
+            //      pendente (ex: Proteger Animal = "3 mágicas sobre Animais"). O guloso
+            //      antigo não sabia fechar isso — nenhuma magia da escola X abre escola
+            //      NOVA nem é pré-req nomeado — então caía no A* sem gradiente, que numa
+            //      ficha cheia estourava o heap (OOM). Aqui pegamos a magia aprendível
+            //      MAIS BARATA que satisfaz a contagem pendente.
+            val escolhaContagem: String? = if (obrig == null) {
+                val regrasContagem = (cadeiaObrig + alvoId).asSequence()
+                    .flatMap { requisitoBranchesPorMagia(it).asSequence() }
+                    .flatMap { it.regrasNumericas.asSequence() }
+                    .filter { (it.escolaRequerida != null && it.minMagiasEscola != null) || it.minMagiasQuaisquer != null }
+                    .distinct()
+                    .toList()
+                var achou: String? = null
+                // escola/tema específico primeiro (mais restritivo)
+                for (r in regrasContagem) {
+                    val esc = r.escolaRequerida; val minEsc = r.minMagiasEscola
+                    if (esc != null && minEsc != null && contarMagiasPorEscolaOuNome(esc, known) < minEsc) {
+                        achou = aprendiveis
+                            .filter { magiaCasaEscolaOuTema(esc, it) }
+                            .minByOrNull { custoAproximadoDependencia(it, known, mutableSetOf()) }
+                        if (achou != null) break
+                    }
+                }
+                // "N magias quaisquer": qualquer aprendível barata avança a contagem
+                if (achou == null) {
+                    for (r in regrasContagem) {
+                        val minQ = r.minMagiasQuaisquer
+                        if (minQ != null && known.size < minQ) {
+                            achou = aprendiveis.minByOrNull { custoAproximadoDependencia(it, known, mutableSetOf()) }
+                            if (achou != null) break
+                        }
+                    }
+                }
+                achou
+            } else null
+            val escolha = obrig ?: escolhaContagem ?: run {
                 // 2) magia que abre escola NOVA, a mais barata (raiz)
                 aprendiveis
                     .map { it to escolaPrincipalNorm(it) }
@@ -244,8 +282,25 @@ fun NexusArcanoEngine.planejarCaminhoMinimo(
     open.add(start)
     bestG[assinatura(startKnown)] = 0
 
+    // GUARDA DE MEMÓRIA (Lote 425): numa ficha cheia cada nó do A* carrega um Set
+    // e uma assinatura longos, e cada expansão avalia o catálogo inteiro (879 magias)
+    // rodando diagnóstico de metas. Sem teto, um requisito que o guloso não fecha
+    // (ex: "N magias da escola X" em fichas grandes) esgota o heap → OutOfMemoryError
+    // que derruba o app (o crash aparecia na recomposição da navbar, mas a origem é
+    // aqui). Escalonamos o limite de nós pelo tamanho da ficha e limitamos os mapas de
+    // memo; se estourar o orçamento, devolvemos plano vazio (bloqueio honesto p/ o
+    // modelo resolver/forçar) em vez de crashar.
+    val tamFicha = startKnown.size
+    val limiteNosEff = when {
+        tamFicha > 40 -> 200
+        tamFicha > 25 -> 500
+        else -> limiteNos
+    }
+    val tetoMemo = 6000
+
     var explorados = 0
-    while (open.isNotEmpty() && explorados < limiteNos) {
+    while (open.isNotEmpty() && explorados < limiteNosEff &&
+        metasMemo.size < tetoMemo && bestG.size < tetoMemo * 2) {
         val atual = open.poll() ?: break
         explorados++
 

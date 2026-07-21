@@ -223,6 +223,53 @@ class NexusArcanoEngineLoteBGlobalTest {
         assertEquals("pequeno_desejo_local", plano.trilhaMagiasIds[1])
     }
 
+    @Test
+    fun planejador_resolve_requisito_de_contagem_por_escola() {
+        // Regressão Lote 425: requisito "N magias da escola X" (ex: Proteger Animal =
+        // "3 mágicas sobre Animais"). Antes o guloso não sabia fechar contagem-por-escola
+        // (nenhuma magia de Animais abre escola NOVA nem é pré-req nomeado) e caía num A*
+        // SEM gradiente que, numa ficha cheia, esgotava o heap → OutOfMemoryError que
+        // derrubava o app. Agora o guloso escolhe as magias da escola exigida e fecha.
+        val engine = NexusArcanoEngine(catalogoContagemPorEscola())
+        val estado = ArcanoEstadoPersonagem(
+            magiasConhecidasIds = emptySet(),
+            am = 3,
+            iq = 12,
+            dx = 10
+        )
+
+        val plano = engine.planejarCaminhoMinimo("alvo_conta", estado)
+
+        // A trilha deve conter 3 magias da escola Animais (a contagem exigida)...
+        val deAnimais = plano.trilhaMagiasIds.filter { it.startsWith("bicho") }
+        assertTrue(
+            "trilha deveria fechar 3 magias de Animais, veio: ${plano.trilhaMagiasIds}",
+            deAnimais.size >= 3
+        )
+        // ...sem incluir o próprio alvo (o executor adiciona o alvo depois da cadeia).
+        assertFalse(plano.trilhaMagiasIds.contains("alvo_conta"))
+    }
+
+    private fun catalogoContagemPorEscola(): ArcanoCatalogo {
+        data class M(val id: String, val nome: String, val escolas: List<String>, val pre: String)
+        val magias = listOf(
+            M("alvo_conta", "Alvo Conta", listOf("Protecao"), "3 magicas de Animais"),
+            M("bicho1", "Bicho Um", listOf("Animais"), ""),
+            M("bicho2", "Bicho Dois", listOf("Animais"), ""),
+            M("bicho3", "Bicho Tres", listOf("Animais"), ""),
+            M("bicho4", "Bicho Quatro", listOf("Animais"), ""),
+            M("distrator", "Distrator", listOf("Fogo"), "")
+        )
+        val byId = magias.associateBy { it.id }
+        return object : ArcanoCatalogo {
+            override fun preRequisitoRaw(magiaId: String): String = byId[magiaId]?.pre.orEmpty()
+            override fun escolas(magiaId: String): List<String> = byId[magiaId]?.escolas.orEmpty()
+            override fun nome(magiaId: String): String = byId[magiaId]?.nome ?: magiaId
+            override fun existe(magiaId: String): Boolean = byId.containsKey(magiaId)
+            override fun todasMagiasIds(): List<String> = byId.keys.sorted()
+        }
+    }
+
     private fun catalogoPasso2Escolas(): ArcanoCatalogo {
         data class M(val id: String, val nome: String, val escolas: List<String>, val pre: String)
         val magias = listOf(

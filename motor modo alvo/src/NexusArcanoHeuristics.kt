@@ -141,7 +141,7 @@ internal fun NexusArcanoEngine.avaliarCandidatasParaRegraDeEscolas(
         val depsMissing = dependenciasMinimasPendentes(candId, known)
         val regraNum = regrasNumericasRelevantes(candId, known, estado).firstOrNull()
         val faltaNum = if (regraNum == null) 0 else {
-            if (atendeRegraNumerica(regraNum, estado)) 0 else 1
+            if (atendeRegraNumerica(regraNum, estado, known)) 0 else 1
         }
         val regraEsc = regrasEscolasRelevantes(candId, known, estado).firstOrNull()
         val faltaEsc = if (regraEsc == null) 0 else {
@@ -183,7 +183,7 @@ internal fun NexusArcanoEngine.escolherBranchRelevante(
     return branches.minWithOrNull(
         compareBy<RequisitoBranch> { branch -> branch.dependencias.count { it !in known } }
             .thenBy { branch -> branch.regrasEscolas.count { !atendeRegraEscolas(it, known) } }
-            .thenBy { branch -> branch.regrasNumericas.count { !atendeRegraNumerica(it, estado) } }
+            .thenBy { branch -> branch.regrasNumericas.count { !atendeRegraNumerica(it, estado, known) } }
             .thenBy { branch -> branch.vantagensRequeridas.count { !atendeVantagemRequerida(it, estado) } }
             .thenBy { branch -> branch.gruposDependenciaOu.count { grupo -> grupo.none { it in known } } }
             .thenBy { it.dependencias.size }

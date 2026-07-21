@@ -614,7 +614,7 @@ class NexusArcanoEngine(
             return branches.any { branch ->
                 branch.dependencias.all { it in known } &&
                     branch.regrasEscolas.all { atendeRegraEscolas(it, known) } &&
-                    branch.regrasNumericas.all { atendeRegraNumerica(it, estado) } &&
+                    branch.regrasNumericas.all { atendeRegraNumerica(it, estado, known) } &&
                     branch.vantagensRequeridas.all { atendeVantagemRequerida(it, estado) } &&
                     branch.gruposDependenciaOu.all { grupo -> grupo.any { it in known } } &&
                     branch.condicoesProibidas.none { atendeCondicaoProibida(it, estado) }
@@ -625,7 +625,7 @@ class NexusArcanoEngine(
         val depsOk = if (gruposDeps.isEmpty()) true else gruposDeps.any { grupo -> grupo.all { it in known } }
         if (!depsOk) return false
         if (!coletarRegrasEscolasGlobais(listOf(magiaId)).all { atendeRegraEscolas(it, known) }) return false
-        return coletarRegrasNumericasGlobais(listOf(magiaId)).all { atendeRegraNumerica(it, estado) }
+        return coletarRegrasNumericasGlobais(listOf(magiaId)).all { atendeRegraNumerica(it, estado, known) }
     }
 
 
@@ -657,7 +657,23 @@ class NexusArcanoEngine(
             .toSet()
     }
 
-    internal fun atendeRegraNumerica(regra: RegraNumerica, estado: ArcanoEstadoPersonagem): Boolean {
+    /**
+     * [known] = repertório a considerar nas regras de CONTAGEM. Por padrão é o da ficha,
+     * mas o planejador passa o repertório SIMULADO do nó que está avaliando.
+     *
+     * Lote 425: antes as contagens liam sempre `estado.magiasConhecidasIds`. Como o
+     * planejador simula um `known` que cresce (sem copiar o estado), um requisito de
+     * contagem — "3 mágicas sobre Animais" — permanecia insatisfeito por mais magias da
+     * escola que a trilha somasse: a busca não tinha GRADIENTE. O guloso queimava os 40
+     * passos e o A* varria o catálogo sem nunca convergir, devolvendo trilha vazia (e,
+     * em fichas grandes, estourando o heap). Atributos (AM/IQ/soma) seguem vindo do
+     * [estado] — planejar magias não muda atributo.
+     */
+    internal fun atendeRegraNumerica(
+        regra: RegraNumerica,
+        estado: ArcanoEstadoPersonagem,
+        known: Set<String> = estado.magiasConhecidasIds
+    ): Boolean {
         val okAm = regra.minAm?.let { estado.am >= it } ?: true
         val okIq = regra.minIq?.let { estado.iq >= it } ?: true
         val okSoma = if (regra.somaAtributos.isNotEmpty() && regra.minSoma != null) {
@@ -666,14 +682,14 @@ class NexusArcanoEngine(
             true
         }
         val okEscola = if (regra.escolaRequerida != null && regra.minMagiasEscola != null) {
-            contarMagiasPorEscolaOuNome(regra.escolaRequerida, estado.magiasConhecidasIds) >= regra.minMagiasEscola
+            contarMagiasPorEscolaOuNome(regra.escolaRequerida, known) >= regra.minMagiasEscola
         } else {
             true
         }
-        // Lote 335: "N magias quaisquer" = total de magias da ficha. Não conta a própria
-        // magia-alvo (que ainda não foi aprendida) nem precisa: known já é o repertório atual.
+        // Lote 335: "N magias quaisquer" = total de magias do repertório considerado. Não
+        // conta a própria magia-alvo (que ainda não foi aprendida) nem precisa.
         val okQuaisquer = if (regra.minMagiasQuaisquer != null) {
-            estado.magiasConhecidasIds.size >= regra.minMagiasQuaisquer
+            known.size >= regra.minMagiasQuaisquer
         } else {
             true
         }
@@ -708,13 +724,22 @@ class NexusArcanoEngine(
      * Senão → conta magias cujo NOME normalizado contém o termo. Cobre os dois casos.
      */
     internal fun contarMagiasPorEscolaOuNome(termoNorm: String, known: Set<String>): Int {
+        return known.count { id -> magiaCasaEscolaOuTema(termoNorm, id) }
+    }
+
+    /**
+     * Lote 425: TRUE se a magia [id] conta para um requisito "N magias de [termoNorm]".
+     * Mesma semântica de [contarMagiasPorEscolaOuNome] por-item: se o termo é uma escola
+     * real, casa por escola; senão casa por TEMA (nome contém o termo). Extraído para o
+     * pathfinder poder ESCOLHER uma magia que satisfaça a contagem (antes o guloso só
+     * sabia abrir escola nova e caía num A* sem gradiente que estourava a memória).
+     */
+    internal fun magiaCasaEscolaOuTema(termoNorm: String, id: String): Boolean {
         val ehEscolaReal = termoNorm in escolasConhecidasNorm
-        return known.count { id ->
-            if (ehEscolaReal) {
-                escolasNormById[id].orEmpty().contains(termoNorm)
-            } else {
-                nomeNormById[id].orEmpty().contains(termoNorm)
-            }
+        return if (ehEscolaReal) {
+            escolasNormById[id].orEmpty().contains(termoNorm)
+        } else {
+            nomeNormById[id].orEmpty().contains(termoNorm)
         }
     }
 
