@@ -3046,6 +3046,23 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - **Recomendação registrada** (maior valor × menor custo): Ataque Telegráfico (par do Enganoso), luta agarrada profunda (chaves/Mata-Leão estendendo o lote 422), Sangramento Grave + incapacitação de membro (item 5 do teste de batalha), Ataque Dedicado/Defensivo. Fora de escopo: posicional/hexágono, montaria, cinematográfico, dado de arma do NPC. Mudança só de documentação (não compila Kotlin).
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
+### Lote A1-b / A1-c — 21 de Julho de 2026 (tipo de criatura — mortos-vivos e insubstancialidade viram regra)
+**Segunda metade do A1 — branch GURPS-Saga**
+- **A1-b — mortos-vivos** (deferido honesto do MEC-22, agora executado). Regras literais: *"Seres mortos-vivos não são afetados"* (Morte Candente) e *"Mortos-vivos não são afetados"* (Morte Putrefata). São justamente as **duas mágicas de tique que o motor já executava** — ele batia em esqueleto sem saber em quem. Novo `TipoCriatura` (VIVO / MORTO_VIVO / INSUBSTANCIAL / ELEMENTAL / CONSTRUCTO) e campo curado `naoAfeta`. Ganchos no funil de dano mágico e no tique; no tique a mágica **não fica pendurada** em quem ela não afeta — ela se desfaz.
+- ⚠️ **Eixo SEPARADO da tolerância**: `ToleranciaFerimentos.NAO_VIVO` diz **quanto** dano físico o corpo sofre; `tipoCriatura` diz **se a mágica pega nele**. Um golem é `NAO_VIVO` na tolerância e `CONSTRUCTO` no tipo — e a exclusão de Morte Candente **não** pode pegá-lo por tabela. Há teste só para travar essa confusão.
+- **A1-c — insubstancialidade** (MB, vantagem de 80 pontos), as quatro regras:
+  1. *"Ataques físicos e de energia não afetam o personagem"* → guarda **antes de rolar** para acertar (mesmo padrão do fora-de-alcance). Não é errar o golpe, é o golpe atravessar.
+  2. *"mas ele continua vulnerável a ataques psíquicos e mágicos"* → o funil `aplicarDanoMagico` **não** consulta a guarda. Magia passa.
+  3. *"Da mesma maneira, **seus** ataques físicos e de energia não afetam oponentes físicos"* → metade **simétrica** no `npcResolve`. Sem ela eu teria criado um fantasma **invulnerável e letal**, que não é regra nenhuma.
+  4. *"todas as jogadas sofrem uma penalidade de −3"* ao conjurar → em `npcConjurar`.
+  - A saída: **Afetar Espíritos** (*"uma arma com essa mágica pode prejudicar um espírito insubstancial"*) virou buff executável que destrava o golpe.
+- **Espectro adicionado ao bestiário**: sem criatura insubstancial a regra inteira seria **inalcançável em jogo** — código certo que nunca roda.
+- O carregador do bestiário passou a ler `tipo` e `imunidades` (o A1 criou os campos no `NpcStats`, mas nada os preenchia do JSON). Esqueleto e Zumbi marcados `morto_vivo`. Tipo desconhecido cai em **VIVO**, então nenhuma exclusão dispara por engano.
+- **+11 testes.** ⚠️ **O gate pegou um bug NO MEU TESTE**: a asserção de PV passava e a de log falhava — `IntencaoNpc` sem `alvoId` faz `intencaoAtacaHeroi` devolver false, o NPC nem tenta atacar e o herói ficava intacto **pelo motivo errado** (armadilha do MEC-31). Corrigido, e o teste do Afetar Espíritos ganhou um **controle** na mesma asserção pelo mesmo risco.
+- 🟢 Gate: **867 testes por variante, ZERO falhas**, build nas duas. Não toca UI.
+- ⚠️ Erro de processo meu: editei arquivos com um gate rodando e cheguei a ter **dois Gradle concorrentes**. Parei os dois, matei os daemons e refiz limpo — nenhum resultado daqueles builds foi usado.
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
 ### Lote A1 — 21 de Julho de 2026 (imunidade por ELEMENTO — o eixo que faltava para 23 mágicas de dano)
 **Primeiro passo do plano de maximizar mecânica em magia — branch GURPS-Saga**
 - **A medição que orientou a decisão**: o catálogo inteiro tem **92 de 879 executáveis (10,5%)**. Agrupando os 787 restantes por substrato faltante: Sentidos 108, Informação 55, Terreno 49, Tipo de criatura 40, **Imunidade por dano 38**, Luz 31, Controle 26. Imunidade era o **mais barato com maior alcance** — dois campos e um gancho.
