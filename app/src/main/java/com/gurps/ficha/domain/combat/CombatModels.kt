@@ -252,6 +252,9 @@ data class Combatente(
     val buffSt: Int get() = buffs.sumOf { it.st }
     val buffDx: Int get() = buffs.sumOf { it.dx }
     val buffHt: Int get() = buffs.sumOf { it.ht }
+    /** Lote P3-1: IQ e Vontade (Sabedoria/Tolice, Fortalecer/Enfraquecer Vontade). */
+    val buffIq: Int get() = buffs.sumOf { it.iq }
+    val buffVontade: Int get() = buffs.sumOf { it.vontade }
     val buffDanoArma: Int get() = buffs.sumOf { it.danoArma }
     /** Penalidade ao NH de quem ATACA este combatente (Nublar). Valor positivo = quanto subtrair. */
     val buffPenalidadeAtacantes: Int get() = buffs.sumOf { it.penalidadeAtacantes }
@@ -266,6 +269,8 @@ data class Combatente(
     val stEfetivo: Int get() = (stats?.st ?: 10) + buffSt
     val htEfetivo: Int get() = (stats?.ht ?: 10) + buffHt
     val dxEfetivo: Int get() = (stats?.dx ?: 10) + buffDx
+    /** Lote P3-1: IQ efetivo do NPC. A Vontade dele deriva daqui, então Tolice/Sabedoria mordem. */
+    val iqEfetivo: Int get() = (stats?.iq ?: 10) + buffIq
     /** Variante para os pontos que caem no DX do próprio combatente quando não há bestiário. */
     val dxEfetivoOuProprio: Int get() = (stats?.dx ?: dx) + buffDx
     val vivo: Boolean get() = pvAtual > -pvMax && Condicao.INCONSCIENTE !in condicoes

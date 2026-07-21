@@ -56,7 +56,7 @@ cujo efeito é `dano`/`condicao`/`cura` **é suspeito**.
 | P1a | ~~**Tique por turno, alvo único**~~ ✅ **FEITO (Lote MEC-22)** — Morte Candente e Morte Putrefata ferem a cada turno, a vítima testa HT, sucesso decisivo quebra a mágica | — | auditoria #11 |
 | P1b | ~~**Tique por turno em ZONA**~~ ✅ **FEITO (MEC-46)** — `ZonaPersistente` + tique no avanço de turno + **área pintada na grade** (laranja). 7 magias curadas. ⚠️ PARA para teste no aparelho (UI). | Chuvas, Nuvens, Tempestade de Faíscas, Mau Cheiro |
 | P2 | ~~**Manter magia com efeito continuado**~~ ✅ **FEITO (Lote MEC-22)** para as de tique — a mágica fica ativa, cobra manutenção por turno e exige concentração | — | MAGIA_DEFERIDOS |
-| P3 | **Curar os 156 buffs que só têm rótulo de texto** — não é bug de motor, é trabalho de catálogo | 156 dos 179 buffs | ver correção abaixo |
+| P3 | **Curar os buffs que só têm rótulo de texto** — 🟡 **parcial (Lote P3-1)**: 6 curadas, e a triagem dos 156 mostrou que a promessa antiga era falsa. Ver a seção 2.1e | 156 dos 179 buffs | ver correção abaixo |
 
 > ✅ **Correção (18/jul)** — a versão anterior desta linha dizia *"Escudo não dá +DB, Armadura não dá
 > +RD"*. **Está errado.** Conferido em `CombatSession.kt:44-60`: o BD mágico do Escudo soma em
@@ -83,6 +83,52 @@ cujo efeito é `dano`/`condicao`/`cura` **é suspeito**.
 
 > ⚠️ Cada caso exige ler a descrição: várias magias começam com referência cruzada ("Como Ilusão
 > Simples, mas…") em vez da linha de classe, então não dá para corrigir com regex.
+
+### 2.1e P3 — a triagem dos 156 buffs (Lote P3-1)
+
+> ⛔ **A promessa antiga estava errada.** Esta seção dizia que o P3 faria *"156 magias saírem de
+> narrado para mecânica"*. Li os **156 rótulos um a um** e isso é falso: a grande maioria **não** é
+> "extrair número da prosa" — é efeito **sem substrato no motor**. É o mesmo erro do texto do Escudo
+> que já foi corrigido aqui: eu havia herdado a frase sem conferir o dado.
+
+**Balde 1 — mecanizável (o que dá pra fazer):** ~8 mágicas.
+
+| Mágica | Regra do livro | Estado |
+|---|---|---|
+| **Bloquear** | BD +1 a +5, 1 de energia por ponto, **um único teste de defesa** (p.101) | ✅ **P3-1** |
+| **Robustez** | RD +1 a +5, 1 por ponto, **um único ataque** (p.101) | ✅ **P3-1** |
+| **Fortalecer Vontade** | Vontade +1 por energia, máx +5 (p.100) | ✅ **P3-1** |
+| **Enfraquecer Vontade** | Vontade −1 a cada **2** de energia, máx −5 (p.100) | ✅ **P3-1** |
+| **Sabedoria** | IQ +1 a cada **4** de energia, máx +5 (p.100) | ✅ **P3-1** |
+| **Tolice** | IQ −1 por energia, máx −5 (p.134) | ✅ **P3-1** |
+| **Bênção / Maldição** | ±1 a ±3 em **todas as jogadas** | 🟡 **próximo lote** — a regra diz *"a modificação não afetará os sucessos e falhas críticas"*, e honrar isso exige mudar a classificação de crítico no `CombatResolver`. Meia regra seria pior que nenhuma. |
+
+> 🔎 **Dois desses estavam bloqueados por notas VENCIDAS.** O `notas` do **Bloquear** dizia *"o motor
+> NÃO tem campo para BD"* — mas `buffBd` existe desde o **MEC-4** (Escudo). O da **Robustez** dizia
+> que o motor *"daria RD persistente"* — mas `buffUmUnicoUso` existe desde o **MEC-6**. As duas
+> ficaram narradas por documentação desatualizada, não por limitação. Mesmo padrão dos 5 itens
+> marcados ❌ na varredura de classes que já estavam feitos.
+
+**Balde 2 — falta SUBSTRATO no motor (não é curadoria, é feature):** ~94 mágicas.
+
+| Grupo | Qtd | O que falta |
+|---|---|---|
+| Sentidos e visões (Infravisão, Metalovisão, Ver o Invisível, Visão Noturna…) | ~35 | não existe sistema de Sentidos/Percepção no combate |
+| Formas de corpo (Corpo de Ar/Pedra/Fogo/Gelo/Sombra…) | ~14 | são **metacaracterísticas inteiras** do MB |
+| Imunidades (fogo, frio, ácido, veneno, doença, radiação…) | ~11 | não há flag de tipo de dano no `Combatente` — mesma classe do "mortos-vivos imunes" e da RD natural |
+| Terreno e movimento (Atravessar Terra, Caminhar nas Paredes, Nadar, Retardar Queda) | ~12 | a grade não tem terreno, obstáculo nem eixo vertical |
+| Perícias (Conceder/Requisitar Perícia, Serralheiro, Moldar Planta) | ~10 | o combate não roda perícias fora das de ataque |
+| Roubo de atributo (Roubar Força/Graça/Sabedoria/Vigor) | 4 | o buff é de **um lado só**; roubar exige debuff no alvo **e** buff no operador, amarrados |
+| Tamanho (Aumentar/Encolher/Outro) | 4 | MT muda ST/PV/Desloc por **multiplicação**; o substrato é aditivo |
+| Acelerar | 1 | Padrão de Tempo Alterado = **ação extra por turno** |
+
+**Balde 3 — narrativo, sem o que mecanizar:** ~54 mágicas (Banquete do Monge, Guarda-Chuva, Tepidez,
+Vigília, Dom das Línguas, Memorizar, Persuasão…). O rótulo **é** a mecânica; o Narrador já o recebe.
+
+> 📌 **Número honesto do P3:** de 156, **8 são mecanizáveis** (6 feitas, 2 no próximo lote), ~94
+> precisam de feature nova e ~54 não têm o que mecanizar. Quem quiser mais cobertura de magia em
+> combate ganha mais abrindo **Sentidos** ou **imunidade por tipo de dano** — cada um destrava uma
+> dezena de mágicas de uma vez — do que continuando a curar rótulo por rótulo.
 
 ### 2.1c Classes de Mágicas (Magia p.11–14) — varredura completa
 

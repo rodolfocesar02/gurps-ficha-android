@@ -56,6 +56,11 @@ class CombatSession(
                 st = b.st + h.buffSt,
                 dx = b.dx + h.buffDx,
                 ht = b.ht + h.buffHt,
+                // Lote P3-1: Fortalecer/Enfraquecer Vontade entram AQUI e, por isso, valem de uma
+                // vez em todo teste de Vontade do motor — concentração ao ser ferido (MEC-26),
+                // segurar o projétil (C1), pontaria perdida pela dor. Zero pontos de uso tocados:
+                // é o mesmo truque do MEC-2, que é o motivo de `heroiPerfil` ser computado.
+                vontade = b.vontade + h.buffVontade,
             )
         }
 
@@ -910,6 +915,9 @@ class CombatSession(
         val partes = buildList {
             if (b.st != 0) add("ST ${sinal(b.st)}"); if (b.dx != 0) add("DX ${sinal(b.dx)}")
             if (b.ht != 0) add("HT ${sinal(b.ht)}"); if (b.rd != 0) add("RD ${sinal(b.rd)}")
+            // Lote P3-1
+            if (b.iq != 0) add("IQ ${sinal(b.iq)}")
+            if (b.vontade != 0) add("Vontade ${sinal(b.vontade)}")
             if (b.esquiva != 0) add("Esquiva ${sinal(b.esquiva)}")
             if (b.deslocamentoFixo != null) add("Deslocamento ${b.deslocamentoFixo}")
             else if (b.deslocamento != 0) add("Deslocamento ${sinal(b.deslocamento)}")
@@ -960,6 +968,7 @@ class CombatSession(
     private fun forcaDoBuff(b: com.gurps.ficha.domain.magic.BuffAplicado): Int =
         kotlin.math.abs(b.rd) + kotlin.math.abs(b.esquiva) + kotlin.math.abs(b.bd) +
             kotlin.math.abs(b.st) + kotlin.math.abs(b.dx) + kotlin.math.abs(b.ht) +
+            kotlin.math.abs(b.iq) + kotlin.math.abs(b.vontade) +   // Lote P3-1
             kotlin.math.abs(b.deslocamento) + kotlin.math.abs(b.danoArma) +
             kotlin.math.abs(b.penalidadeAtacantes) + (b.deslocamentoFixo ?: 0)
 
@@ -2302,7 +2311,10 @@ class CombatSession(
                         log += "  └ arma no caminho (AM p.101): Disputa de ST — ${npc.nome} $stN rolou $rn vs você $stH rolou $rh → ${if (ok) "ele passa" else "ele NÃO passa"}."
                         ok
                     } else if (regra.testeVontadeMod != null) {
-                        val vontade = (npc.stats?.iq ?: 8) + regra.testeVontadeMod!!
+                        // Lote P3-1: `iqEfetivo` no lugar do IQ cru do bestiário — a Vontade do NPC
+                        // deriva do IQ, então Tolice (−IQ) e Sabedoria (+IQ) mordem aqui de fato.
+                        val vontade = (if (npc.stats != null) npc.iqEfetivo else 8 + npc.buffIq) +
+                            regra.testeVontadeMod!!
                         val rv = rolar3d6(); val ok = rv <= vontade
                         log += "  └ a lâmina está cravada (AM p.101): Vontade−3 de ${npc.nome} ($vontade, rolou $rv) → ${if (ok) "ele avança mesmo assim" else "ele recua da arma"}."
                         ok

@@ -252,6 +252,21 @@ data class BuffAplicado(
     val st: Int = 0,
     val dx: Int = 0,
     val ht: Int = 0,
+    /**
+     * Lote P3-1: IQ e Vontade abertos no buff. Antes só ST/DX/HT existiam, e por isso Fortalecer
+     * Vontade, Enfraquecer Vontade, Sabedoria e Tolice ficavam presas em rótulo de texto — não
+     * havia onde gravar o número que a prosa dava.
+     *
+     * Onde cada um MORDE de verdade, para não vender mais do que faz:
+     *  - **Vontade**: teste de concentração ao ser ferido (MEC-26), Vontade ao segurar projétil
+     *    (C1/MEC-39), pontaria perdida pela dor, e as mágicas resistidas por Vontade.
+     *  - **IQ**: no NPC, a Vontade dele deriva do IQ do bestiário, então mexer no IQ mexe nesses
+     *    testes. No herói o IQ quase não aparece em combate — e o NH das mágicas dele vem da
+     *    FICHA, não daqui, o que aliás é o comportamento certo para a Sabedoria (*"aumenta sua
+     *    habilidade com perícias, mas não com mágicas!"*, Magia p.100).
+     */
+    val iq: Int = 0,
+    val vontade: Int = 0,
     val deslocamento: Int = 0,
     /** Deslocamento absoluto imposto (Voo). null = não mexeu. */
     val deslocamentoFixo: Int? = null,
@@ -274,7 +289,16 @@ data class BuffAplicado(
         else -> true
     }
     /** true se nada numérico foi aplicado — o efeito é só narrado (Corpo de Água, Ambidestria). */
+    /**
+     * Nenhum número para o motor aplicar → só o texto vale.
+     *
+     * ⚠️ Lote P3-1: **todo campo novo tem que entrar aqui**. `registrarMagiaAtiva` usa este teste
+     * para DESCARTAR o buff antes de aplicá-lo; esquecer um campo faz o buff ser calculado
+     * corretamente e jogado fora em silêncio — a mesma armadilha do MEC-14 (dano calculado e não
+     * passado adiante), que só apareceu num teste de integração.
+     */
     val soNarrado: Boolean get() = rd == 0 && esquiva == 0 && bd == 0 && st == 0 && dx == 0 && ht == 0 &&
+        iq == 0 && vontade == 0 &&
         deslocamento == 0 && deslocamentoFixo == null && danoArma == 0 && penalidadeAtacantes == 0
 }
 
@@ -400,6 +424,8 @@ object MagicMechanics {
             st = if (m.buffAtributo.equals("ST", true)) atr else 0,
             dx = if (m.buffAtributo.equals("DX", true)) atr else 0,
             ht = if (m.buffAtributo.equals("HT", true)) atr else 0,
+            iq = if (m.buffAtributo.equals("IQ", true)) atr else 0,
+            vontade = if (m.buffAtributo.equals("Vontade", true)) atr else 0,
             deslocamento = m.buffDeslocamento * n,
             deslocamentoFixo = if (m.buffDeslocamentoFixo > 0) m.buffDeslocamentoFixo else null,
             danoArma = m.buffDanoArma * n,

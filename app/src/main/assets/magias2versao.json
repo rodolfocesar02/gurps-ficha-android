@@ -2502,7 +2502,11 @@
       "efeito": "buff",
       "entrega": "toque",
       "buffRotulo": "BD+1 a +5 em um unico teste de defesa (1 energia por ponto)",
-      "notas": "Magia de Bloqueio, instantanea: da BD +1 a +5 (1 energia por ponto, max 5) em UM unico teste de defesa. O motor NAO tem campo para Bonus de Defesa (BD), entao o efeito fica narrado. Nao cumulativa com Escudo (usa o maior). Pre-requisito: Aptidao Magica 1."
+      "notas": "Magia de Bloqueio, INSTANTANEA (Magia p.12/p.101): BD +1 a +5, 1 de energia por ponto, maximo 5, valendo em UM unico teste de defesa. EXECUTAVEL desde o lote P3-1: o campo de BD existe desde o MEC-4 (Escudo) e o buff de uso unico desde o MEC-6 -- a nota antiga dizia que o motor 'nao tem campo para BD', o que deixou de ser verdade. Nao cumulativa com Escudo (vale a maior; o MEC-29 ja resolve substituindo pela mais forte). Custo de Bloqueio NUNCA reduz por NH alto (Magia p.12). Pre-requisito: Aptidao Magica 1.",
+      "buffBd": 1,
+      "buffEnergiaPorNivel": 1,
+      "buffMaxNiveis": 5,
+      "buffUmUnicoUso": true
     },
     "duracaoTipo": "instantanea",
     "duracaoSeg": 0,
@@ -7672,7 +7676,11 @@
       "efeito": "buff",
       "entrega": "projetil",
       "buffRotulo": "Vontade -1 a cada 2 de energia (max -5)",
-      "notas": "R-Vontade, 1 min. 2 de energia por -1 de Vontade (max -5); metade para manter. NARRADO: o motor de combate nao usa Vontade. Pre-req Aptidao Magica 1 e Tolice."
+      "notas": "Resistivel com Vontade, 1 minuto. 2 de energia por -1 de Vontade, maximo -5; metade para manter (Magia p.100). EXECUTAVEL desde o lote P3-1. Pre-req: Aptidao Magica 1 e Tolice.",
+      "buffAtributo": "Vontade",
+      "buffAtributoValor": -1,
+      "buffEnergiaPorNivel": 2,
+      "buffMaxNiveis": 5
     },
     "duracaoTipo": "temporaria",
     "duracaoSeg": 60,
@@ -9204,7 +9212,11 @@
       "efeito": "buff",
       "entrega": "toque",
       "buffRotulo": "+1 Vontade por ponto de energia (max +5)",
-      "notas": "1 min. 1 de energia por +1 de Vontade (max +5); metade para manter. NARRADO: o motor de combate nao usa Vontade. Pre-req Aptidao Magica 1 e seis magias de Controle da Mente."
+      "notas": "1 minuto. 1 de energia por +1 de Vontade, maximo +5; metade para manter (Magia p.100). EXECUTAVEL desde o lote P3-1, que abriu Vontade no buff. Morde nos testes de Vontade do motor: concentracao ao ser ferido (MEC-26), segurar projetil (C1), pontaria perdida pela dor. Pre-req: Aptidao Magica 1 e seis magias de Controle da Mente.",
+      "buffAtributo": "Vontade",
+      "buffAtributoValor": 1,
+      "buffEnergiaPorNivel": 1,
+      "buffMaxNiveis": 5
     },
     "duracaoTipo": "temporaria",
     "duracaoSeg": 60,
@@ -16937,7 +16949,11 @@
       "efeito": "buff",
       "entrega": "toque",
       "buffRotulo": "RD+1 a +5 contra um ataque (1 energia por ponto)",
-      "notas": "Magia de Bloqueio, INSTANTANEA: RD +1 a +5 contra UM unico ataque (1 energia por ponto de RD, max 5). Nao cumulativa com Armadura (vale a maior) e so uma magia de Bloqueio por turno. Os numeros existem, mas o efeito dura um unico ataque — o motor aplica buff por duracao e daria RD persistente (regra errada) -> fica narrado. Use Armadura para RD executavel. Pre-requisito: Bloquear."
+      "notas": "Magia de Bloqueio, INSTANTANEA (Magia p.101): RD +1 a +5 contra UM unico ataque, 1 de energia por ponto, maximo 5. EXECUTAVEL desde o lote P3-1: `buffUmUnicoUso` existe desde o MEC-6, entao a RD ja expira depois do ataque em vez de virar RD persistente -- que era o motivo, hoje vencido, de deixar narrado. Nao cumulativa com Armadura (vale a maior) e so uma magia de Bloqueio por turno (MEC-27). Pre-requisito: Bloquear.",
+      "buffRd": 1,
+      "buffEnergiaPorNivel": 1,
+      "buffMaxNiveis": 5,
+      "buffUmUnicoUso": true
     },
     "duracaoTipo": "instantanea",
     "duracaoSeg": 0,
@@ -17230,7 +17246,11 @@
       "efeito": "buff",
       "entrega": "toque",
       "buffRotulo": "+1 a +5 IQ (pericias, nao magias)",
-      "notas": "1 min. 4 de energia por +1 de IQ (max +5); mesmo custo para manter. NARRADO: o motor de combate nao usa IQ. Melhora pericias mas NAO magias, e o IQ do alvo nao pode superar o do operador. Pre-req seis outras magias de Controle da Mente."
+      "notas": "1 minuto. 4 de energia por +1 de IQ, maximo +5; mesmo custo para manter (Magia p.100). EXECUTAVEL desde o lote P3-1. ATENCAO a regra: aumenta pericias mas NAO magias -- e o comportamento sai de graca, porque o NH das magias do heroi vem da FICHA e nao do buff. Deferido honesto: o teto 'IQ do alvo nao pode superar o do operador' NAO e checado. Pre-req: seis outras magias de Controle da Mente.",
+      "buffAtributo": "IQ",
+      "buffAtributoValor": 1,
+      "buffEnergiaPorNivel": 4,
+      "buffMaxNiveis": 5
     },
     "duracaoTipo": "temporaria",
     "duracaoSeg": 60,
@@ -18759,7 +18779,7 @@
     "escola": [
       "Mente"
     ],
-    "duracao": "2d dias",
+    "duracao": "1 min.",
     "energia": "1 por IQ-/M",
     "tempoOperacao": "1 seg.",
     "preRequisitos": "IQ 12+",
@@ -18768,7 +18788,11 @@
       "efeito": "buff",
       "entrega": "projetil",
       "buffRotulo": "IQ -1 por ponto de energia (max -5)",
-      "notas": "R-Vontade. -1 em IQ e em pericias baseadas em IQ (inclusive magias) por ponto de energia (1 a 5); metade para manter, arredondando para cima. NARRADO: o motor de combate nao usa IQ. Mestre pode exigir teste de IQ para lembrar coisas complexas. Pre-req IQ 12+."
+      "notas": "Resistivel com Vontade, 1 minuto. -1 de IQ por ponto de energia, de 1 a 5; metade para manter, arredondando para cima (Magia p.134). EXECUTAVEL desde o lote P3-1. No NPC a Vontade deriva do IQ do bestiario, entao a penalidade chega aos testes de Vontade dele. Pre-req: IQ 12 ou superior.",
+      "buffAtributo": "IQ",
+      "buffAtributoValor": -1,
+      "buffEnergiaPorNivel": 1,
+      "buffMaxNiveis": 5
     },
     "duracaoTipo": "temporaria",
     "duracaoSeg": 60,

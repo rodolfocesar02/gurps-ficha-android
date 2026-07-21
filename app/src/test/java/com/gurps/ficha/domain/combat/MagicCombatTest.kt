@@ -987,6 +987,81 @@ class MagicCombatTest {
             s.log.none { it.contains("Mau Cheiro atinge") })
     }
 
+    // ── Lote P3-1: Vontade e IQ do buff chegam ao MOTOR (não só ao BuffAplicado) ────────────────
+
+    @Test
+    fun `Fortalecer Vontade LIGADO — o perfil efetivo do heroi sobe`() {
+        // Teste de INTEGRAÇÃO, não da função pura: a lição do MEC-14 é que calcular certo e não
+        // ligar dá teste verde com jogo quebrado. Aqui o caminho é o real — registrarMagiaAtiva.
+        val s = sessao(7)
+        val antes = s.heroiPerfil.vontade
+        val buff = MagicMechanics.calcularBuff(
+            MagiaMecanica(efeito = "buff", buffAtributo = "Vontade", buffAtributoValor = 1,
+                buffEnergiaPorNivel = 1, buffMaxNiveis = 5),
+            energia = 3, alvoId = "heroi"
+        )
+        s.registrarMagiaAtiva(
+            nome = "Fortalecer Vontade", operadorId = "heroi", alvoId = "heroi", duracaoSeg = 60,
+            custoManutencaoSeg = 0, duracao = TipoDuracao.TEMPORARIA, exigeConcentracao = false,
+            buff = buff
+        )
+        assertEquals("o +3 de Vontade tem que chegar ao perfil que o motor lê", antes + 3,
+            s.heroiPerfil.vontade)
+    }
+
+    @Test
+    fun `Enfraquecer Vontade LIGADO — o perfil efetivo do heroi desce`() {
+        val s = sessao(7)
+        val antes = s.heroiPerfil.vontade
+        val buff = MagicMechanics.calcularBuff(
+            MagiaMecanica(efeito = "buff", buffAtributo = "Vontade", buffAtributoValor = -1,
+                buffEnergiaPorNivel = 2, buffMaxNiveis = 5),
+            energia = 4, alvoId = "heroi"
+        )
+        s.registrarMagiaAtiva(
+            nome = "Enfraquecer Vontade", operadorId = "goblin", alvoId = "heroi", duracaoSeg = 60,
+            custoManutencaoSeg = 0, duracao = TipoDuracao.TEMPORARIA, exigeConcentracao = false,
+            buff = buff
+        )
+        assertEquals(antes - 2, s.heroiPerfil.vontade)
+    }
+
+    @Test
+    fun `Tolice no NPC baixa o IQ efetivo dele`() {
+        val s = sessao(7)
+        val g = s.encounter.combatentes.first { it.id == "goblin" }
+        val antes = g.iqEfetivo
+        val buff = MagicMechanics.calcularBuff(
+            MagiaMecanica(efeito = "buff", buffAtributo = "IQ", buffAtributoValor = -1,
+                buffEnergiaPorNivel = 1, buffMaxNiveis = 5),
+            energia = 3, alvoId = "goblin"
+        )
+        s.registrarMagiaAtiva(
+            nome = "Tolice", operadorId = "heroi", alvoId = "goblin", duracaoSeg = 60,
+            custoManutencaoSeg = 0, duracao = TipoDuracao.TEMPORARIA, exigeConcentracao = false,
+            buff = buff
+        )
+        assertEquals("a Vontade do NPC deriva do IQ — por isso a Tolice tem que morder aqui",
+            antes - 3, g.iqEfetivo)
+    }
+
+    @Test
+    fun `o log NOMEIA Vontade e IQ em vez de cair no rotulo generico`() {
+        val s = sessao(7)
+        val buff = MagicMechanics.calcularBuff(
+            MagiaMecanica(efeito = "buff", buffAtributo = "Vontade", buffAtributoValor = 1,
+                buffEnergiaPorNivel = 1, buffMaxNiveis = 5, buffRotulo = "rotulo velho"),
+            energia = 2, alvoId = "heroi"
+        )
+        s.registrarMagiaAtiva(
+            nome = "Fortalecer Vontade", operadorId = "heroi", alvoId = "heroi", duracaoSeg = 60,
+            custoManutencaoSeg = 0, duracao = TipoDuracao.TEMPORARIA, exigeConcentracao = false,
+            buff = buff
+        )
+        assertTrue("o jogador precisa VER o número, não um rótulo",
+            s.log.any { it.contains("Vontade +2") })
+    }
+
     // ── Lote MEC-47: as DUAS metades da regra de área, e o herói dentro da própria zona ─────────
 
     @Test

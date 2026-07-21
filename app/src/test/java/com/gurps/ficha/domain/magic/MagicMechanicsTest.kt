@@ -51,6 +51,71 @@ class MagicMechanicsTest {
         assertEquals(1, MagicMechanics.calcularBuff(forca, energia = 1, alvoId = "heroi").st)  // piso: pagou, leva 1
     }
 
+    // ── Lote P3-1: IQ e Vontade abertos no buff ────────────────────────────────────────────────
+
+    @Test fun `Fortalecer Vontade — mais 1 por energia, teto mais 5 (Magia p100)`() {
+        val m = MagiaMecanica(efeito = "buff", buffAtributo = "Vontade", buffAtributoValor = 1,
+            buffEnergiaPorNivel = 1, buffMaxNiveis = 5)
+        assertEquals(3, MagicMechanics.calcularBuff(m, energia = 3, alvoId = "heroi").vontade)
+        assertEquals(5, MagicMechanics.calcularBuff(m, energia = 99, alvoId = "heroi").vontade)
+    }
+
+    @Test fun `Enfraquecer Vontade — menos 1 a cada DOIS de energia, teto menos 5`() {
+        val m = MagiaMecanica(efeito = "buff", buffAtributo = "Vontade", buffAtributoValor = -1,
+            buffEnergiaPorNivel = 2, buffMaxNiveis = 5)
+        assertEquals("2 de energia compram só -1", -1,
+            MagicMechanics.calcularBuff(m, energia = 2, alvoId = "goblin").vontade)
+        assertEquals(-3, MagicMechanics.calcularBuff(m, energia = 6, alvoId = "goblin").vontade)
+        assertEquals(-5, MagicMechanics.calcularBuff(m, energia = 99, alvoId = "goblin").vontade)
+    }
+
+    @Test fun `Sabedoria — mais 1 de IQ a cada QUATRO de energia, teto mais 5`() {
+        val m = MagiaMecanica(efeito = "buff", buffAtributo = "IQ", buffAtributoValor = 1,
+            buffEnergiaPorNivel = 4, buffMaxNiveis = 5)
+        assertEquals("4 de energia = +1", 1, MagicMechanics.calcularBuff(m, energia = 4, alvoId = "heroi").iq)
+        assertEquals(2, MagicMechanics.calcularBuff(m, energia = 8, alvoId = "heroi").iq)
+        assertEquals(5, MagicMechanics.calcularBuff(m, energia = 99, alvoId = "heroi").iq)
+    }
+
+    @Test fun `Tolice — menos 1 de IQ por energia, teto menos 5`() {
+        val m = MagiaMecanica(efeito = "buff", buffAtributo = "IQ", buffAtributoValor = -1,
+            buffEnergiaPorNivel = 1, buffMaxNiveis = 5)
+        assertEquals(-3, MagicMechanics.calcularBuff(m, energia = 3, alvoId = "goblin").iq)
+        assertEquals(-5, MagicMechanics.calcularBuff(m, energia = 99, alvoId = "goblin").iq)
+    }
+
+    @Test fun `um atributo nao vaza no outro`() {
+        val vont = MagiaMecanica(efeito = "buff", buffAtributo = "Vontade", buffAtributoValor = 2)
+        val b = MagicMechanics.calcularBuff(vont, energia = 1, alvoId = "heroi")
+        assertEquals(2, b.vontade)
+        assertEquals(0, b.iq); assertEquals(0, b.st); assertEquals(0, b.dx); assertEquals(0, b.ht)
+    }
+
+    @Test fun `buff so de IQ ou Vontade NAO e considerado so-narrado`() {
+        // Regressão da armadilha do MEC-14: `registrarMagiaAtiva` DESCARTA o buff quando
+        // `soNarrado` é true. Se um campo novo não entrar naquele teste, o buff é calculado
+        // certinho e jogado fora em silêncio.
+        val vont = MagicMechanics.calcularBuff(
+            MagiaMecanica(efeito = "buff", buffAtributo = "Vontade", buffAtributoValor = 1), 1, "heroi")
+        val iq = MagicMechanics.calcularBuff(
+            MagiaMecanica(efeito = "buff", buffAtributo = "IQ", buffAtributoValor = -1), 1, "goblin")
+        assertFalse("Vontade tem que ser executável", vont.soNarrado)
+        assertFalse("IQ tem que ser executável", iq.soNarrado)
+    }
+
+    @Test fun `Bloquear e Robustez sao buff de UM USO com escala de 1 por ponto ate 5`() {
+        val bloquear = MagiaMecanica(efeito = "buff", buffBd = 1, buffEnergiaPorNivel = 1,
+            buffMaxNiveis = 5, buffUmUnicoUso = true)
+        val robustez = MagiaMecanica(efeito = "buff", buffRd = 1, buffEnergiaPorNivel = 1,
+            buffMaxNiveis = 5, buffUmUnicoUso = true)
+        val b = MagicMechanics.calcularBuff(bloquear, energia = 3, alvoId = "heroi")
+        val r = MagicMechanics.calcularBuff(robustez, energia = 5, alvoId = "heroi")
+        assertEquals(3, b.bd); assertTrue(b.umUnicoUso)
+        assertEquals(5, r.rd); assertTrue(r.umUnicoUso)
+        assertEquals("teto de 5 (Magia p.101)", 5,
+            MagicMechanics.calcularBuff(robustez, energia = 99, alvoId = "heroi").rd)
+    }
+
     @Test fun `Debilitar aplica atributo NEGATIVO`() {
         val deb = MagiaMecanica(efeito = "buff", buffAtributo = "ST", buffAtributoValor = -1,
             buffEnergiaPorNivel = 1, buffMaxNiveis = 5)

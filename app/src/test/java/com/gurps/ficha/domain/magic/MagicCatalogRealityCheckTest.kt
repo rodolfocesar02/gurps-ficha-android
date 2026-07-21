@@ -109,4 +109,58 @@ class MagicCatalogRealityCheckTest {
         assertTrue("o catálogo real precisa ter mágicas nesse formato para o teste valer", comOperarManter > 100)
         assertTrue("Custo lido ERRADO em ${quebradas.size} magia(s): ${quebradas.take(5)}", quebradas.isEmpty())
     }
+
+    /**
+     * Lote P3-1: as 6 mágicas curadas neste lote têm que continuar EXECUTÁVEIS no catálogo real.
+     * Uma curadoria só vale enquanto o dado sobrevive — foi assim que 156 buffs viraram rótulo.
+     */
+    @Test
+    fun `as 6 magias curadas no P3-1 continuam executaveis no catalogo real`() {
+        val catalogo = carregarCatalogo()
+        Assume.assumeNotNull(catalogo)
+        // id → (campo que precisa existir, valor esperado)
+        val esperado = mapOf(
+            "bloquear" to Triple("buffBd", 1, 1),                    // BD +1 por 1 de energia
+            "robustez" to Triple("buffRd", 1, 1),                    // RD +1 por 1 de energia
+            "fortalecer_vontade" to Triple("buffAtributoValor", 1, 1),
+            "enfraquecer_vontade" to Triple("buffAtributoValor", -1, 2), // -1 a cada 2 de energia
+            "sabedoria" to Triple("buffAtributoValor", 1, 4),        // +1 de IQ a cada 4
+            "tolice" to Triple("buffAtributoValor", -1, 1),
+        )
+        val faltando = mutableListOf<String>()
+        var achadas = 0
+        for (i in 0 until catalogo!!.length()) {
+            val magia = catalogo.getJSONObject(i)
+            val alvo = esperado[magia.optString("id")] ?: continue
+            achadas++
+            val mec = magia.optJSONObject("mecanica")
+            if (mec == null) { faltando += "${magia.optString("id")}: sem mecanica"; continue }
+            val (campo, valor, porNivel) = alvo
+            if (mec.optInt(campo, 0) != valor)
+                faltando += "${magia.optString("id")}: $campo=${mec.optInt(campo, 0)}, esperado $valor"
+            if (mec.optInt("buffEnergiaPorNivel", 0) != porNivel)
+                faltando += "${magia.optString("id")}: energiaPorNivel=${mec.optInt("buffEnergiaPorNivel", 0)}, esperado $porNivel"
+            if (mec.optInt("buffMaxNiveis", 0) != 5)
+                faltando += "${magia.optString("id")}: maxNiveis deveria ser 5 (teto do livro)"
+        }
+        assertTrue("as 6 mágicas têm que existir no catálogo (achei $achadas)", achadas == 6)
+        assertTrue("curadoria do P3-1 regrediu: $faltando", faltando.isEmpty())
+    }
+
+    /** Lote P3-1: Bloquear e Robustez são de Bloqueio — valem UM ataque só, não a duração toda. */
+    @Test
+    fun `Bloquear e Robustez sao marcadas como buff de um unico uso`() {
+        val catalogo = carregarCatalogo()
+        Assume.assumeNotNull(catalogo)
+        val faltando = mutableListOf<String>()
+        for (i in 0 until catalogo!!.length()) {
+            val magia = catalogo.getJSONObject(i)
+            if (magia.optString("id") !in setOf("bloquear", "robustez")) continue
+            val mec = magia.optJSONObject("mecanica")
+            if (mec?.optBoolean("buffUmUnicoUso", false) != true)
+                faltando += magia.optString("id")
+        }
+        assertTrue("sem buffUmUnicoUso viram RD/BD persistente — regra errada: $faltando",
+            faltando.isEmpty())
+    }
 }
