@@ -1080,9 +1080,30 @@ class SagaCombatController(
     private fun energiaDaMagia(def: com.gurps.ficha.model.MagiaDefinicao?, m: com.gurps.ficha.model.MagiaSelecionada): String? =
         def?.energia?.takeIf { it.isNotBlank() } ?: m.energia
 
-    /** Busca a definição do catálogo (fonte da verdade das regras). */
-    private fun defDoCatalogo(m: com.gurps.ficha.model.MagiaSelecionada): com.gurps.ficha.model.MagiaDefinicao? =
-        context?.let { c -> runCatching { com.gurps.ficha.data.DataRepository.getInstance(c).getMagiaPorId(m.definicaoId) }.getOrNull() }
+    /**
+     * Busca a definição do catálogo (fonte da verdade das regras).
+     *
+     * Lote MEC-43: busca por `definicaoId` **e, se falhar, pelo NOME normalizado**. Fichas antigas
+     * podem ter `definicaoId` vazio ou de um esquema anterior — e aí a busca por id devolvia null,
+     * o MEC-42 caía no fallback e a magia continuava com a classe velha da ficha (foi o que manteve
+     * a Bola de Relâmpagos como "Comum" mesmo depois do conserto).
+     */
+    private fun defDoCatalogo(m: com.gurps.ficha.model.MagiaSelecionada): com.gurps.ficha.model.MagiaDefinicao? {
+        val c = context ?: return null
+        val repo = runCatching { com.gurps.ficha.data.DataRepository.getInstance(c) }.getOrNull() ?: return null
+        runCatching { repo.getMagiaPorId(m.definicaoId) }.getOrNull()?.let { return it }
+        fun chave(s: String?) = (s ?: "").lowercase()
+            .replace(Regex("[àáâãä]"), "a").replace(Regex("[éêë]"), "e").replace(Regex("[íî]"), "i")
+            .replace(Regex("[óôõö]"), "o").replace(Regex("[úû]"), "u").replace("ç", "c")
+            .replace(Regex("[^a-z0-9]"), "")
+        val alvo = chave(m.nome)
+        val achou = runCatching { repo.magias.firstOrNull { chave(it.nome) == alvo } }.getOrNull()
+        if (achou == null) {
+            com.gurps.ficha.domain.combat.SagaLog.mecanica(
+                "catálogo NÃO encontrou a magia '${m.nome}' (id='${m.definicaoId}') — usando os dados da ficha")
+        }
+        return achou
+    }
 
     // ── Lote MEC-39 (P11): projétil carregado por vários turnos ──────────────────────────────────
 
@@ -1093,7 +1114,7 @@ class SagaCombatController(
         val p = viewModel.personagem
         val magia = p.magias.firstOrNull { it.definicaoId == magiaId || it.nome == magiaId } ?: return
         val aptidao = MagicEngine.getNivelAptidaoMagicaParaMagia(p, null)
-        val def = context?.let { c -> runCatching { com.gurps.ficha.data.DataRepository.getInstance(c).getMagiaPorId(magia.definicaoId) }.getOrNull() }
+        val def = defDoCatalogo(magia) // MEC-43: por id, com fallback por nome
         val ctx = ContextoConjuracao(
             nhBasico = magia.calcularNivel(p, aptidao), classe = MagicClassParser.parse(classeDaMagia(def, magia)), // MEC-42
             mana = viewModel.sagaNivelMana, distanciaMetros = 0, tocando = false, veOuToca = true,
@@ -1220,7 +1241,7 @@ class SagaCombatController(
         val magia = viewModel.personagem.magias.firstOrNull { it.definicaoId == magiaId || it.nome == magiaId }
         val nome = magia?.nome ?: "magia"
         // Lote MEC-36 (P10): respeita o raio MÍNIMO da mágica (Nuvem de Faíscas, Sono Coletivo = 2m).
-        val mec = context?.let { c -> runCatching { com.gurps.ficha.data.DataRepository.getInstance(c).getMagiaPorId(magia?.definicaoId ?: "") }.getOrNull()?.mecanica }
+        val mec = magia?.let { defDoCatalogo(it)?.mecanica } // MEC-43
         val raioFinal = com.gurps.ficha.domain.magic.MagicMechanics.raioEfetivo(mec, raio)
         miraAreaPendente = MiraAreaUi(magiaId, nome, raioFinal, energia, pvQueimar.coerceAtLeast(0), causaDano)
         avisoTatico = "Toque um hex para o centro de $nome (raio ${raioFinal}m)" +
@@ -1239,7 +1260,7 @@ class SagaCombatController(
         val p = viewModel.personagem
         val magia = p.magias.firstOrNull { it.definicaoId == mira.magiaId || it.nome == mira.magiaId } ?: return
         val aptidao = MagicEngine.getNivelAptidaoMagicaParaMagia(p, null)
-        val def = context?.let { c -> runCatching { com.gurps.ficha.data.DataRepository.getInstance(c).getMagiaPorId(magia.definicaoId) }.getOrNull() }
+        val def = defDoCatalogo(magia) // MEC-43: por id, com fallback por nome
         val est = estadoTatico
         // raio em metros = raio em hexes (1 hex = 1 m). raio 1 = só o hex central → alcance 0 de hex.
         val hexRaio = (mira.raio - 1).coerceAtLeast(0)
@@ -1396,7 +1417,7 @@ class SagaCombatController(
             // Lote MEC-7: a curadoria diz se o EFEITO escala com energia e até onde (Escudo: 2 PF por
             // +1 de Defesa, teto +4). Sem isto o jogador não tinha como escolher e levava o mínimo.
             val mecUi = context?.let { c ->
-                runCatching { com.gurps.ficha.data.DataRepository.getInstance(c).getMagiaPorId(m.definicaoId)?.mecanica }.getOrNull()
+                runCatching { defDoCatalogo(m)?.mecanica }.getOrNull()
             }
             val escala = com.gurps.ficha.domain.magic.MagicMechanics.escalaDeEnergia(mecUi)
             // Lote MEC-10: cura também escala com energia — e o jogador precisa poder ESCOLHER

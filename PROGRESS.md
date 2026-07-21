@@ -3046,6 +3046,16 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - **Recomendação registrada** (maior valor × menor custo): Ataque Telegráfico (par do Enganoso), luta agarrada profunda (chaves/Mata-Leão estendendo o lote 422), Sangramento Grave + incapacitação de membro (item 5 do teste de batalha), Ataque Dedicado/Defensivo. Fora de escopo: posicional/hexágono, montaria, cinematográfico, dado de arma do NPC. Mudança só de documentação (não compila Kotlin).
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
+### Lote MEC-43 — 21 de Julho de 2026 (o MEC-42 não bastou: a busca no catálogo falhava)
+**"eu sincronizei e dei run novamente, continua comum a magia!" — branch GURPS-Saga**
+- **O MEC-42 estava certo no diagnóstico mas incompleto no conserto.** Ele fazia o catálogo mandar sobre a cópia da ficha — mas via `getMagiaPorId(definicaoId)`. Se o `definicaoId` da ficha estiver **vazio ou de um esquema antigo**, a busca devolve `null`, o código cai no *fallback* e a magia **continua com a classe velha**. Era exatamente o caso.
+- **Conserto**: `defDoCatalogo` agora busca por **id** e, falhando, pelo **NOME normalizado** (sem acento/pontuação). Conferido no catálogo: `id = "bola_de_relampagos"`, `classe = "Projétil"` — o dado está certo; o que faltava era **achá-lo**.
+- **Uniformizadas as 4 buscas restantes** que ainda chamavam `getMagiaPorId` direto (mira de área, lista de conjuráveis, mecânica da UI). Agora só existe **um** ponto de busca, dentro do helper.
+- 🔎 **Diagnóstico embutido**: quando o catálogo não acha a magia, sai no logcat `catálogo NÃO encontrou a magia 'X' (id='...') — usando os dados da ficha`. Se o sintoma voltar, o log diz na hora se é isto.
+- 💡 **Dois lotes para uma causa** — o MEC-42 tratou "o catálogo deve mandar" e o MEC-43 tratou "…mas só se a busca funcionar". A lição: quando o conserto depende de um *lookup*, **verificar que o lookup acha**, não só que a precedência está certa.
+- 🟢 Gate: **795 testes, ZERO falhas**.
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
 ### Lote MEC-42 — 21 de Julho de 2026 (A CAUSA REAL: a ficha guarda cópia velha do catálogo)
 **"isso era impossivel, eu sincronizei e dei RUN depois que vc falou pra testar" — o usuário derrubou meu diagnóstico, e tinha razão — branch GURPS-Saga**
 - 🔴 **Eu errei o diagnóstico por viés de confirmação.** Afirmei "build antiga" ao ver a Bola de Relâmpagos como "Comum": peguei o primeiro indício que encaixava e **parei de investigar**. O usuário respondeu que tinha sincronizado e dado RUN naquele momento — impossível ser build velha. Ele estava certo.
