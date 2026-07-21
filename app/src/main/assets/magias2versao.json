@@ -18545,7 +18545,7 @@
       "Clima",
       "Ar"
     ],
-    "duracao": "1 min.#",
+    "duracao": "10 seg.#",
     "energia": "2, 4 ou 6/M",
     "tempoOperacao": "Instant.#",
     "preRequisitos": "Furacao, Relampago",
@@ -18557,7 +18557,7 @@
       "tipoDano": "quei",
       "armadura": "metal_rd_1",
       "entrega": "area",
-      "notas": "Nuvem ao nivel do solo de faiscas. Dano FLAT: 1 ponto/segundo por ponto de energia no custo base (nao e dado). Nao bloqueia visao. Armadura metalica da RD minima como contra relampago. Raio min 2m.",
+      "notas": "Lote TOK-ZONA: duracao CORRIGIDA de \"1 min.\" para \"10 seg.\" -- o livro diz \"Duracao: 10 segundos\" e a descricao tem um unico bloco de duracao (a secao \"Item\" so traz custo de criacao). Erro de transcricao que o MEC-5 nao pegou; a magia durava 6x mais que a regra. Nuvem ao nivel do solo de faiscas. Dano FLAT: 1 ponto/segundo por ponto de energia no custo base (nao e dado). Nao bloqueia visao. Armadura metalica da RD minima como contra relampago. Raio min 2m.",
       "zonaPersistente": true,
       "zonaIntervaloSeg": 1,
       "elementoDano": "fogo"

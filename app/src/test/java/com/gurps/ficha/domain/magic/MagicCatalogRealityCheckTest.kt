@@ -205,6 +205,36 @@ class MagicCatalogRealityCheckTest {
         assertTrue("perderam a exclusão de morto-vivo: $erros", erros.isEmpty())
     }
 
+    /**
+     * Lote TOK-ZONA: a duração das mágicas de ZONA tem que bater com o livro.
+     *
+     * Achado no teste de aparelho: o usuário relatou não ver as zonas acabarem. A investigação
+     * mostrou que quase todas estão certas (Chuva de Fogo dura 1 minuto = 60 turnos, e uma luta não
+     * dura tanto), MAS a Tempestade de Faíscas estava com **1 min.** contra os **10 segundos** do
+     * livro — 6× mais. Erro de transcrição que o MEC-5 não pegou.
+     */
+    @Test
+    fun `duracao das magias de zona bate com o livro`() {
+        val catalogo = carregarCatalogo()
+        Assume.assumeNotNull(catalogo)
+        val esperado = mapOf(
+            "chuva_de_acido" to 60, "chuva_de_fogo" to 60, "chuva_de_pedras" to 60,
+            "mau_cheiro" to 300, "nuvem_de_faiscas" to 10, "nuvem_de_fogo" to 10,
+            "tempestade_de_faiscas" to 10,
+        )
+        val erros = mutableListOf<String>()
+        var vistas = 0
+        for (i in 0 until catalogo!!.length()) {
+            val magia = catalogo.getJSONObject(i)
+            val seg = esperado[magia.optString("id")] ?: continue
+            vistas++
+            val (_, lido) = MagicTime.parseDuracao(magia.optString("duracao", ""))
+            if (lido != seg) erros += "${magia.optString("id")}: leu ${lido}s, o livro diz ${seg}s"
+        }
+        assertEquals("as 7 mágicas de zona têm que existir", 7, vistas)
+        assertTrue("duração divergente do livro: $erros", erros.isEmpty())
+    }
+
     /** Lote P3-1: Bloquear e Robustez são de Bloqueio — valem UM ataque só, não a duração toda. */
     @Test
     fun `Bloquear e Robustez sao marcadas como buff de um unico uso`() {
