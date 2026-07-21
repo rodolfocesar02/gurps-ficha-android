@@ -3046,6 +3046,17 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - **Recomendação registrada** (maior valor × menor custo): Ataque Telegráfico (par do Enganoso), luta agarrada profunda (chaves/Mata-Leão estendendo o lote 422), Sangramento Grave + incapacitação de membro (item 5 do teste de batalha), Ataque Dedicado/Defensivo. Fora de escopo: posicional/hexágono, montaria, cinematográfico, dado de arma do NPC. Mudança só de documentação (não compila Kotlin).
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
+### Lote MEC-42 — 21 de Julho de 2026 (A CAUSA REAL: a ficha guarda cópia velha do catálogo)
+**"isso era impossivel, eu sincronizei e dei RUN depois que vc falou pra testar" — o usuário derrubou meu diagnóstico, e tinha razão — branch GURPS-Saga**
+- 🔴 **Eu errei o diagnóstico por viés de confirmação.** Afirmei "build antiga" ao ver a Bola de Relâmpagos como "Comum": peguei o primeiro indício que encaixava e **parei de investigar**. O usuário respondeu que tinha sincronizado e dado RUN naquele momento — impossível ser build velha. Ele estava certo.
+- 🎯 **A causa real, muito pior**: `MagiaSelecionada` (a magia **na ficha do personagem**) guarda **cópia própria** de `classe`, `energia` e `tempoOperacao`, tirada quando a magia foi adicionada à ficha. **Toda correção de catálogo era invisível para quem já tinha a magia.** Isso anulava, na prática:
+  - as **classes** corrigidas no D1/MEC-32..35 (por isso a Bola de Relâmpagos seguia "Comum" → `ehProjetil` falso → **sem os chips Segurar/Apontar/Arremessar do P11/P6**, e ela caía no caminho Comum);
+  - o **custo** corrigido no MEC-41 (`"1 a 2×AM"`), que continuava lendo o `"2 a 6/M"` velho da ficha.
+- **Conserto de raiz**: o **catálogo manda**; a cópia da ficha vira só *fallback* (magia caseira / catálogo ausente). Helpers `classeDaMagia` / `energiaDaMagia` / `defDoCatalogo` aplicados nos 8 pontos do caminho de combate. O custo já fazia isso desde o MEC-5b — a **classe** é que nunca fazia.
+- 💡 **Lição de método**: o sintoma tinha DUAS explicações compatíveis (build velha / dado velho). Eu escolhi a que me livrava de culpa e não testei a outra. O certo era conferir onde a UI lê a classe — o que levou 2 minutos quando finalmente fiz.
+- ⚠️ Gate: **795 testes, ZERO falhas**. Houve um `NoClassDefFoundError` isolado na variante **Release** (325/327), **transitório** — artefato de build; passou limpo na re-execução.
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
 ### Lote MEC-41 — 21 de Julho de 2026 (teste no aparelho: custo variável, Lampejo morto, atordoamento opaco)
 **"ainda estamos tendo problemas na conjuração de magias com custo variável! novamente!" — branch GURPS-Saga**
 - 🔴 **A raiz do custo variável, que o usuário já tinha reportado 2×**: o seletor de energia só aparecia se a magia fosse **projétil**, OU tivesse dano marcado, OU fosse buff que escala. Magia de **custo variável** fora desses casos (a maioria!) era lançada **no mínimo, sem o jogador escolher**. Agora `custoVariavel` abre o seletor — é o campo que faltava, não um ajuste de condição.

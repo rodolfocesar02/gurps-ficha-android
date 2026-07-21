@@ -1017,18 +1017,16 @@ class SagaCombatController(
         val p = viewModel.personagem
         val magia = p.magias.firstOrNull { it.definicaoId == magiaId || it.nome == magiaId } ?: return
         val aptidao = MagicEngine.getNivelAptidaoMagicaParaMagia(p, null)
-        val classe = MagicClassParser.parse(magia.classe)
+        // Lote AR-1/MA-8: a definição do CATÁLOGO (regra estruturada + descrição fiel). Buscada aqui
+        // no topo porque a CLASSE agora também vem dela (MEC-42), não da cópia da ficha.
+        val def = defDoCatalogo(magia)
+        val classe = MagicClassParser.parse(classeDaMagia(def, magia)) // MEC-42
         val distancia = if (alvoId == null) 0
             else s.encounter.combatentes.firstOrNull { it.id == alvoId }?.let { s.distancia(it) } ?: 0
         val mana = viewModel.sagaNivelMana // Lote MA-5: mana ambiente da cena
         if (!com.gurps.ficha.domain.magic.MagicMana.podeOperar(mana, ehMago = aptidao > 0)) {
             s.log += "🚫 Aqui a mana está ${mana.name.lowercase()} — você não consegue conjurar ${magia.nome}."
             publicarLog(); atualizarEstado(); return
-        }
-        // Lote AR-1/MA-8: pega do catálogo a `mecanica` (regra estruturada) e um RESUMO do efeito (da
-        // descrição fiel do livro) — o resumo vai pro log e chega ao Narrador (que lê o feed do combate).
-        val def = context?.let { c ->
-            runCatching { com.gurps.ficha.data.DataRepository.getInstance(c).getMagiaPorId(magia.definicaoId) }.getOrNull()
         }
         val mecanica = def?.mecanica
         // Lote MEC-5b: o custo CANÔNICO (conferido contra a descrição fiel do livro) manda; o parser
@@ -1067,6 +1065,25 @@ class SagaCombatController(
         depoisDaAcaoDoHeroi()
     }
 
+    /**
+     * Lote MEC-42: a ficha do personagem guarda uma **cópia** de `classe`/`energia`/`tempoOperacao`
+     * (`MagiaSelecionada`), tirada quando a magia foi adicionada. Toda correção de catálogo (as
+     * classes do D1, o custo da Bola de Relâmpagos…) ficava **invisível** para quem já tinha a magia
+     * na ficha — foi por isso que a Bola de Relâmpagos seguia aparecendo como "Comum" e sem os chips
+     * de projétil, mesmo com o app recém-compilado.
+     *
+     * Regra: **o catálogo manda**; a cópia da ficha é só fallback (magia caseira / catálogo ausente).
+     */
+    private fun classeDaMagia(def: com.gurps.ficha.model.MagiaDefinicao?, m: com.gurps.ficha.model.MagiaSelecionada): String? =
+        def?.classe?.takeIf { it.isNotBlank() } ?: m.classe
+
+    private fun energiaDaMagia(def: com.gurps.ficha.model.MagiaDefinicao?, m: com.gurps.ficha.model.MagiaSelecionada): String? =
+        def?.energia?.takeIf { it.isNotBlank() } ?: m.energia
+
+    /** Busca a definição do catálogo (fonte da verdade das regras). */
+    private fun defDoCatalogo(m: com.gurps.ficha.model.MagiaSelecionada): com.gurps.ficha.model.MagiaDefinicao? =
+        context?.let { c -> runCatching { com.gurps.ficha.data.DataRepository.getInstance(c).getMagiaPorId(m.definicaoId) }.getOrNull() }
+
     // ── Lote MEC-39 (P11): projétil carregado por vários turnos ──────────────────────────────────
 
     /** Cria um projétil e o SEGURA na mão (em vez de arremessar no mesmo turno). */
@@ -1078,7 +1095,7 @@ class SagaCombatController(
         val aptidao = MagicEngine.getNivelAptidaoMagicaParaMagia(p, null)
         val def = context?.let { c -> runCatching { com.gurps.ficha.data.DataRepository.getInstance(c).getMagiaPorId(magia.definicaoId) }.getOrNull() }
         val ctx = ContextoConjuracao(
-            nhBasico = magia.calcularNivel(p, aptidao), classe = MagicClassParser.parse(magia.classe),
+            nhBasico = magia.calcularNivel(p, aptidao), classe = MagicClassParser.parse(classeDaMagia(def, magia)), // MEC-42
             mana = viewModel.sagaNivelMana, distanciaMetros = 0, tocando = false, veOuToca = true,
             mecanica = def?.mecanica, danoPorEnergia = true,
             resumoEfeito = resumoDaDescricao(def?.descricao ?: magia.texto),
@@ -1233,7 +1250,7 @@ class SagaCombatController(
             ?.let { (it.posicao.distancia(centro) - hexRaio).coerceAtLeast(0) } ?: 0
         val ctx = ContextoConjuracao(
             nhBasico = magia.calcularNivel(p, aptidao),
-            classe = MagicClassParser.parse(magia.classe),
+            classe = MagicClassParser.parse(classeDaMagia(def, magia)), // MEC-42
             mana = viewModel.sagaNivelMana, // Lote MA-5
             distanciaMetros = distBorda,
             raioAreaMetros = mira.raio,
@@ -1362,8 +1379,10 @@ class SagaCombatController(
         val aptidao = MagicEngine.getNivelAptidaoMagicaParaMagia(p, null)
         val temPf = s.heroi.pfAtual > 0
         return p.magias.map { m ->
-            val classe = MagicClassParser.parse(m.classe)
-            val custo = MagicEnergy.parse(m.energia)
+            // MEC-42: catálogo manda sobre a cópia da ficha.
+            val defCat = defDoCatalogo(m)
+            val classe = MagicClassParser.parse(classeDaMagia(defCat, m))
+            val custo = MagicEnergy.parse(energiaDaMagia(defCat, m))
             val ehProjetil = TipoClasseMagia.PROJETIL in classe.classes
             val ehArea = TipoClasseMagia.AREA in classe.classes
             val ehToque = TipoClasseMagia.TOQUE in classe.classes
@@ -1400,7 +1419,7 @@ class SagaCombatController(
                 // Lote MEC-9: o teto do seletor de DANO vem da REGRA da magia ("1 a 3" → 3;
                 // "2 a 2×AM" → 2×Aptidão), não mais da Aptidão pura. Sem isto o MEC-7 deixava
                 // despejar 10 num Toque Candente (custo 1 a 3) e sair 10d.
-                aptidaoMagica = MagicEnergy.tetoDeEnergiaDano(m.energia, aptidao),
+                aptidaoMagica = MagicEnergy.tetoDeEnergiaDano(energiaDaMagia(defCat, m), aptidao), // MEC-42
                 efeito = mecUi?.efeito, // MEC-20
                 danoJaDefinido = com.gurps.ficha.domain.magic.MagicMechanics.temDanoEstruturado(mecUi) ||
                     com.gurps.ficha.domain.magic.MagicMechanics.temTiquePorTurno(mecUi), // MEC-24
