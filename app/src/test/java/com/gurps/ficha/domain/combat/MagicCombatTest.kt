@@ -901,6 +901,46 @@ class MagicCombatTest {
         assertTrue("sem dano, o teste de Vontade nem acontece", s.log.none { it.contains("dispara em VOCÊ") })
     }
 
+    // ── Lote MEC-41: conserta o Lampejo (bandas no caminho COMUM, não só Área) ──────────────────
+
+    @Test
+    fun `Lampejo COMUM aplica as bandas em todos no raio (conserta o MEC-37)`() {
+        // O Lampejo e classe COMUM no livro. As bandas estavam so no ramo de Area, entao nunca
+        // rodavam: o log do usuario mostrou apenas "fica CEGO", sem bandas nem ofuscamento.
+        val lampejo = MagiaMecanica(efeito = "condicao", condicao = "cego", condicaoRaioM = 10,
+            condicaoBandas = listOf(
+                CondicaoBanda(ateM = 2, cegoSeg = 3, riderPenalidade = 3, riderSeg = 60),
+                CondicaoBanda(ateM = 9999, riderPenalidade = 3, riderSeg = 3),
+            ))
+        val enc = CombatEncounter(
+            listOf(heroi(), goblin().copy(id = "perto"), goblin().copy(id = "longe")),
+            mapOf("perto" to 5, "longe" to 12), seed = 1L)
+        val s = CombatSession(enc, perfil(), Random(7))
+        val ctx = ContextoConjuracao(nhBasico = 25, classe = MagicClassParser.parse("Comum"),
+            mana = NivelMana.NORMAL, mecanica = lampejo)
+        s.heroiConjurar(ctx, MagicEnergy.parse("4"), energiaInvestida = 4, magiaNome = "Lampejo", alvoId = "perto")
+        val perto = s.encounter.combatentes.first { it.id == "perto" }
+        val longe = s.encounter.combatentes.first { it.id == "longe" }
+        // "perto" e o proprio centro (distancia 0 dele mesmo) -> banda de cegueira.
+        assertTrue("o alvo do clarao tem que cegar", Condicao.CEGO in perto.condicoes)
+        assertTrue("e ficar ofuscado", perto.penalidadeCombateTemp > 0)
+        // "longe" esta a 7m do centro -> banda distante: so ofusca.
+        assertTrue("quem esta longe tambem e afetado (ofuscado)", longe.penalidadeCombateTemp > 0)
+        assertFalse("mas nao cega", Condicao.CEGO in longe.condicoes)
+    }
+
+    @Test
+    fun `distanciaEntre e a diferenca das distancias ao heroi`() {
+        val enc = CombatEncounter(
+            listOf(heroi(), goblin().copy(id = "a"), goblin().copy(id = "b")),
+            mapOf("a" to 4, "b" to 10), seed = 1L)
+        val s = CombatSession(enc, perfil(), Random(7))
+        val a = s.encounter.combatentes.first { it.id == "a" }
+        val b = s.encounter.combatentes.first { it.id == "b" }
+        assertEquals(6, s.distanciaEntre(a, b))
+        assertEquals("simetrico", 6, s.distanciaEntre(b, a))
+    }
+
     // ── Lote MEC-40 (P6): Precisão do projétil ao Apontar ───────────────────────────────────────
 
     private fun ctxProjetilPrec(prec: Int) = ContextoConjuracao(

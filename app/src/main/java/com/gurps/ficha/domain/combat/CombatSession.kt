@@ -210,6 +210,17 @@ class CombatSession(
 
     fun distancia(c: Combatente): Int = encounter.distancia(c)
 
+    /**
+     * Lote MEC-41: distância entre DOIS combatentes.
+     *
+     * ⚠️ **Aproximação honesta**: o encounter só guarda distância ao HERÓI (modelo de faixas), então
+     * isto é `|dist(a) − dist(b)|` — exato quando os três estão em linha, subestimando quando não
+     * estão. Serve para as bandas do Lampejo; a grade tática tem a posição real, mas ela vive no
+     * controller, não aqui.
+     */
+    fun distanciaEntre(a: Combatente, b: Combatente): Int =
+        kotlin.math.abs(distancia(a) - distancia(b))
+
     // ── Turno do herói ───────────────────────────────────────────────────────
 
     /** Resultado de uma ação ofensiva (do herói ou de um NPC) já resolvida no motor. */
@@ -1157,6 +1168,23 @@ class CombatSession(
                     // Lote MEC-10: magia de CURA restaura PV. Sem alvo explícito, cura o próprio
                     // operador (automagia) — é o caso comum: o mago se cura no meio da luta.
                     aplicarCuraMagica(alvo ?: heroi, energiaInvestida, ctx.mecanica!!, sb)
+                } else if (!alvoResistiu && com.gurps.ficha.domain.magic.MagicMechanics.usaBandas(ctx.mecanica) && alvo != null) {
+                    // Lote MEC-41 (conserta o MEC-37): o LAMPEJO é classe **Comum** no livro, não Área —
+                    // então as bandas de distância, que eu havia posto SÓ no ramo de área, nunca rodavam.
+                    // O clarão pega TODOS dentro de `condicaoRaioM`, cada um pela sua distância ao alvo.
+                    val centro = alvo
+                    val raio = ctx.mecanica!!.condicaoRaioM.coerceAtLeast(1)
+                    val atingidos = inimigos.filter { it.vivo && distanciaEntre(centro, it) <= raio }
+                    atingidos.forEach { a ->
+                        val d = distanciaEntre(centro, a)
+                        val banda = com.gurps.ficha.domain.magic.MagicMechanics.bandaPara(ctx.mecanica, d) ?: return@forEach
+                        if (banda.cegoSeg > 0) imporCondicaoMagica(a, "cego", sb, banda.cegoSeg)
+                        if (banda.riderPenalidade > 0 && banda.riderSeg > 0) {
+                            a.penalidadeCombateTemp = maxOf(a.penalidadeCombateTemp, banda.riderPenalidade)
+                            a.penalidadeCombateSeg = maxOf(a.penalidadeCombateSeg, banda.riderSeg)
+                            sb.append(" ${a.nome} fica ofuscado (−${banda.riderPenalidade} nas perícias de combate por ${banda.riderSeg}s).")
+                        }
+                    }
                 } else if (!alvoResistiu && ctx.mecanica?.efeito == "condicao" && alvo != null) {
                     // Lote COND-1: magia de CONDIÇÃO pura (Sono, Cegueira, Medo, Paralisar…) — no sucesso
                     // não resistido, impõe a condição (a resistência já veio da classe R-XXX, se houver).
@@ -2605,9 +2633,14 @@ class CombatSession(
         val anterior = combatenteAtual()
         if (Condicao.ATORDOADO in anterior.condicoes) {
             val ht = if (anterior.ehHeroi) heroiPerfil.ht else (anterior.htEfetivo)
-            if (InjuryRules.recuperaAtordoamento(ht, random)) {
+            // Lote MEC-41: loga TAMBÉM a falha. Antes só o sucesso aparecia, então o jogador não via
+            // que houve teste de HT — parecia tempo fixo (dúvida real do usuário no teste).
+            val rolAtd = rolar3d6()
+            if (rolAtd <= ht) {
                 anterior.condicoes.remove(Condicao.ATORDOADO)
-                log += "• ${anterior.nome} recupera-se do atordoamento."
+                log += "• ${anterior.nome} recupera-se do atordoamento (HT $ht, rolou $rolAtd)."
+            } else {
+                log += "• ${anterior.nome} continua ATORDOADO (HT $ht, rolou $rolAtd)."
             }
         }
         // Lote MEC-19: quem está preso por uma condição de ESCAPE gasta o turno tentando romper

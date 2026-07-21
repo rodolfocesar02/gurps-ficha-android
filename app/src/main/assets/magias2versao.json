@@ -2652,7 +2652,7 @@
       "Ar"
     ],
     "duracao": "1 min.",
-    "energia": "2 a 6/M",
+    "energia": "1 a 2×AM",
     "tempoOperacao": "1 a 3 seg.",
     "preRequisitos": "Aporte, Relampago",
     "descricao": "Área\n\nCria uma bola de relâmpagos na mão do operador. Ao contrário de uma mágica comum de projétil, no entanto, uma Bola de Relâmpagos flutua na direção em que o operador desejar; não pode ser arremessado da maneira usual. A bola é totalmente silenciosa e se move em linha reta a uma velocidade máxima igual ao NH do operador dividida por 5 (arredondar para baixo), independentemente do vento e dos obstáculos não metálicos — a bola flutua através de janelas, cortinas, paredes, etc. Ela mantém seu rumo e velocidade, a menos que o operador se concentre em mudá-lo. A bola explode sob o comando mental do operador ou em contato com um ser vivo ou objeto metálico. Se a mágica expirar, a Bola desaparecerá sem explodir. Esta também é uma mágica do Ar.\n\nDuração: 1 minuto. Custo: Qualquer quantia até o dobro do seu nível de Aptidão Mágica por segundo, por três segundos; metade disso para manter. A bola causa 1d-1 de dano por queimadura a cada 2 pontos completos de energia a qualquer pessoa que esteja a menos de 1 metro da explosão. Os que estão mais distantes dividem o dano em três vezes a distância em metros (arredondar para baixo).\n\nTempo de operação: 1 a 3 segundos; a bola cresce na mão do operador à medida que a operação progride.\n\nPré-requisitos: Aporte e Relâmpago.\n\nItem\n\nCajado, varinha ou joias. Utilizável apenas por magos. Custo para criar: 600 de energia e uma opala de $500.",
@@ -10960,7 +10960,7 @@
       "entrega": "area",
       "condicao": "cego",
       "condicaoResistencia": "HT",
-      "condicaoRaioM": 10,
+      "condicaoRaioM": 30,
       "notas": "Lampejo cegante: afeta quem encara de olhos abertos. Teste HT p/ evitar o pior. Dentro de 10m, falha=cego 3seg + 1min DX-3; 11-25m falha=1min DX-3; 26m+ falha=3seg DX-3. Sucesso reduz muito. Operador imune se fechar os olhos. Instantaneo.",
       "condicaoBandas": [
         {

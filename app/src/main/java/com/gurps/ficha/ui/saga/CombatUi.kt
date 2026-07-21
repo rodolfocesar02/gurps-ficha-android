@@ -1672,8 +1672,11 @@ private fun SubDialogoConjurar(
 
                 // Energia. Lote MEC-7/MEC-9: o teto vem da REGRA da magia, não da Aptidão pura.
                 val escalaBuff = sel.escalaComEnergia
-                if (proj || (podeMarcarDano && causaDano) || escalaBuff) {
-                    val teto = if (proj || (podeMarcarDano && causaDano)) sel.aptidaoMagica else sel.energiaMax
+                // Lote MEC-41: CUSTO VARIÁVEL também abre o seletor. Sem isto, magia "Varia"/"1 a 4"
+                // que não fosse projétil/dano/buff-que-escala era lançada no mínimo, sem escolha.
+                if (proj || (podeMarcarDano && causaDano) || escalaBuff || sel.custoVariavel) {
+                    val teto = if (proj || (podeMarcarDano && causaDano)) sel.aptidaoMagica
+                        else if (escalaBuff) sel.energiaMax else sel.aptidaoMagica
                     val efeito = if (proj || (podeMarcarDano && causaDano)) "→ ${energia}d de dano" else (sel.dicaEnergia ?: "")
                     Spacer(Modifier.height(8.dp))
                     Text("Energia investida: ${energia} PF  ${if (efeito.isNotBlank()) "($efeito)" else ""}",
@@ -1710,7 +1713,7 @@ private fun SubDialogoConjurar(
         confirmButton = {
             Button(
                 onClick = {
-                    val energiaEfetiva = if (sel.ehProjetil || causaDano || sel.escalaComEnergia) energia else 1
+                    val energiaEfetiva = if (sel.ehProjetil || causaDano || sel.escalaComEnergia || sel.custoVariavel) energia else 1 // MEC-41
                     when {
                         sel.ehArea -> onMirarArea(sel.id, raio, energiaEfetiva, pvQueimar, causaDano)
                         sel.ehToque -> onConjurar(sel.id, null, 1, pvQueimar, false)

@@ -83,6 +83,12 @@ data class MagiaConjuravelUi(
     val classe: String,
     val nhBasico: Int,
     val custoTexto: String,
+    /**
+     * Lote MEC-41: o custo desta mágica é VARIÁVEL ("Varia", "1 a 4", "até 2×AM")? Se sim, o jogador
+     * TEM de poder escolher quanto gastar — antes o seletor só aparecia para projétil/dano/buff que
+     * escala, então magia de custo variável era lançada no mínimo sem o jogador poder decidir.
+     */
+    val custoVariavel: Boolean = false,
     /** Projétil habilita o controle de energia investida (1d por ponto). */
     val ehProjetil: Boolean,
     /** Área habilita o controle de raio + a mira no grid (Lote MA-3d). */
@@ -1387,6 +1393,7 @@ class SagaCombatController(
                 classe = classe.classes.joinToString("/") { rotuloClasse(it) },
                 nhBasico = m.calcularNivel(p, aptidao),
                 custoTexto = custoTxt,
+                custoVariavel = custo.variavel, // MEC-41
                 ehProjetil = ehProjetil,
                 ehArea = ehArea,
                 ehToque = ehToque,

@@ -3046,6 +3046,19 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - **Recomendação registrada** (maior valor × menor custo): Ataque Telegráfico (par do Enganoso), luta agarrada profunda (chaves/Mata-Leão estendendo o lote 422), Sangramento Grave + incapacitação de membro (item 5 do teste de batalha), Ataque Dedicado/Defensivo. Fora de escopo: posicional/hexágono, montaria, cinematográfico, dado de arma do NPC. Mudança só de documentação (não compila Kotlin).
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
+### Lote MEC-41 — 21 de Julho de 2026 (teste no aparelho: custo variável, Lampejo morto, atordoamento opaco)
+**"ainda estamos tendo problemas na conjuração de magias com custo variável! novamente!" — branch GURPS-Saga**
+- 🔴 **A raiz do custo variável, que o usuário já tinha reportado 2×**: o seletor de energia só aparecia se a magia fosse **projétil**, OU tivesse dano marcado, OU fosse buff que escala. Magia de **custo variável** fora desses casos (a maioria!) era lançada **no mínimo, sem o jogador escolher**. Agora `custoVariavel` abre o seletor — é o campo que faltava, não um ajuste de condição.
+- 🔴 **Bug MEU do MEC-37, achado pelo log dele**: pus as bandas do **Lampejo** só no ramo de **ÁREA**, mas o Lampejo é **classe Comum** no livro (confirmado no PDF). As bandas **nunca rodavam** — o log mostrava só "fica CEGO". Agora o caminho Comum também aplica as bandas, a todos dentro de `condicaoRaioM`, cada um pela sua distância ao centro.
+  - Precisou de `distanciaEntre(a, b)` — ⚠️ **aproximação honesta**: o encounter só guarda distância ao HERÓI, então é `|dist(a) − dist(b)|`, exato em linha e subestimando fora dela.
+  - `condicaoRaioM` do Lampejo subiu de 10 → **30** (as bandas do livro vão até 26m+).
+- 🟡 **Dúvida dele respondida no código**: *"eles voltaram a agir em 2 turnos — teve teste de HT ou é tempo fixo?"* — **tem teste de HT**, mas só o **sucesso** era logado. Agora loga os dois: "recupera-se (HT 11, rolou 8)" **e** "continua ATORDOADO (HT 11, rolou 14)".
+- 🔴 **Dado errado**: Bola de Relâmpagos tinha `energia: "2 a 6/M"`; o livro diz *"qualquer quantia até o **dobro** da Aptidão Mágica por segundo, por três segundos"*. Corrigido para `"1 a 2×AM"` — padrão que o `tetoDeEnergiaDano` já entende.
+- ⚠️ **Provável causa dos "sem opção de Segurar/Apontar"**: o aparelho estava com build **anterior** ao MEC-39/40 (o print mostra a Bola de Relâmpagos como "Comum", classe que eu já havia corrigido para Projétil no MEC-33). **Precisa reinstalar** para ver os chips do P11/P6.
+- **+2 testes**: Lampejo Comum aplica bandas em todos no raio; `distanciaEntre` simétrico.
+- 🟢 Gate: **795 testes, ZERO falhas**.
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
 ### Lote MEC-40 — 20 de Julho de 2026 (P6: Precisão do projétil ao Apontar)
 **"faz p6" — branch GURPS-Saga**
 - ✅ **P6**: desbloqueado pelo P11. Enquanto segura o projétil, **Apontar** no alvo soma a **Precisão (Acc)** da magia ao Ataque Inato do arremesso — mais a mira de vários turnos (+1 no 2º segundo, +2 no 3º+, MB p.364), reusando o `apontarAlvoId`/`apontarStacks` das armas.
