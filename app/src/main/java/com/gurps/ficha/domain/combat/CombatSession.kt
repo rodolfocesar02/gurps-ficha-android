@@ -2878,6 +2878,42 @@ class CombatSession(
     }
 
     /**
+     * Lote NARR-1: **o Narrador esquecia as mágicas narradas.**
+     *
+     * O motor executa o que tem número; o resto sai como *"Efeito narrado pelo Mestre — <nota>"* **na
+     * hora da conjuração** e nunca mais. Uma Aerovisão de 1 minuto era anunciada uma vez e ficava
+     * 60 turnos em silêncio — o Narrador aplicava no primeiro turno e esquecia. Não é falta de regra:
+     * é falta de LEMBRETE. (Decisão do usuário: assumir o narrativo e fazê-lo bem.)
+     *
+     * ⚠️ **Vai no [resumo], NÃO no [log].** São canais diferentes: o `log` é publicado no feed e **o
+     * jogador lê**; o `resumo()` é o estado factual servido ao Narrador pela tool `acao_npc` e
+     * ninguém mais vê. A primeira versão deste lembrete saía no `log` a cada turno do herói, e o
+     * usuário cortou na hora: *"não precisa colocar tudo o que for implementado no log"*. Contexto
+     * que existe para a IA aplicar regra não é linha de log — mesmo princípio do status que virou
+     * overlay no TOK-6b-3.
+     *
+     * Só entra o que o motor **não** aplica: buff sem número e sem tique. O que tem número já mexe
+     * na ficha sozinho, e repetir seria ruído no prompt.
+     */
+    fun lembreteDeMagiasNarradas(): String? {
+        if (magiasAtivas.isEmpty()) return null
+        val narradas = magiasAtivas.filter { m ->
+            (m.buff == null || m.buff!!.soNarrado) &&
+                !com.gurps.ficha.domain.magic.MagicMechanics.temTiquePorTurno(m.mecanica)
+        }
+        if (narradas.isEmpty()) return null
+        val itens = narradas.joinToString("; ") { m ->
+            val alvo = encounter.combatentes.firstOrNull { it.id == m.alvoId }?.nome
+            val regra = m.mecanica?.notas?.takeIf { it.isNotBlank() }
+                ?: m.buff?.rotulo?.takeIf { it.isNotBlank() }
+            m.magiaId +
+                (alvo?.let { " em $it" } ?: "") +
+                (regra?.let { " — ${it.take(160)}" } ?: "")
+        }
+        return "Mágicas ainda em efeito (aplique ao narrar): $itens"
+    }
+
+    /**
      * Sangramento (Lote PONTE-2, MB p.420): se o ferido fechou um intervalo (1 rodada ≈ 1s), testa HT ou perde PV.
      * Em combates curtos quase nunca dispara (intervalo de 60s/30s) — fiel à regra; importa em lutas longas.
      */
@@ -2902,7 +2938,10 @@ class CombatSession(
     fun reavaliarFim() = verificarFim()
 
     /** Resumo factual do estado atual — base do que o Narrador vai narrar. */
-    fun resumo(): String = encounter.estadoResumo()
+    fun resumo(): String = encounter.estadoResumo() +
+        // Lote NARR-1: o que o motor NÃO executa entra aqui, para o Narrador continuar aplicando
+        // enquanto durar. Este texto vai só para a IA (tool `acao_npc`) — nunca para o feed.
+        (lembreteDeMagiasNarradas()?.let { "\n$it" } ?: "")
 
     // ── Helpers internos ───────────────────────────────────────────────────
 

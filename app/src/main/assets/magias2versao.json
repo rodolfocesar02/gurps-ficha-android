@@ -2458,8 +2458,8 @@
     "mecanica": {
       "efeito": "buff",
       "entrega": "toque",
-      "buffRotulo": "+1 (ou +2/+3) em todas as jogadas",
-      "notas": "Buff de julgamento do Mestre, nao cabe em numero. Modifica TODAS as jogadas do alvo favoravelmente em +1/+2/+3 (custo 10/50/500), mas nao afeta sucessos/falhas criticas e dura ate a bencao evitar/reduzir um perigo serio - ai termina. O motor nao tem campo para bonus generico em todas as jogadas nem para o gatilho narrativo de encerramento. Fica narrado: o Narrador decide quando a bencao tem seu ef"
+      "buffRotulo": "+1 (ou +2/+3) em TODAS as jogadas do objetivo, enquanto durar",
+      "notas": "NARRADA POR DECISAO DE REGRA, nao por falta de motor. O livro entrega esta magia ao Mestre: 'Cabe ao Mestre decidir quando a bencao tem seu efeito final e qual a forma de protecao'. COMO APLICAR: some +1 (ou +2/+3, conforme a energia paga) a TODAS as jogadas de dados do objetivo. NAO altera sucessos nem falhas criticas. Dura INDEFINIDAMENTE ate o objetivo correr serio perigo -- entao a bencao milagrosamente evita ou reduz esse perigo e ACABA (ex.: a flecha que ia no coracao acerta o braco). Nao pode ser lancada em si mesmo e nao empilha. Custo: 10 para +1, 50 para +2, 200 para +3."
     }
   },
   {
@@ -11859,8 +11859,8 @@
     "mecanica": {
       "efeito": "buff",
       "entrega": "toque",
-      "buffRotulo": "-1 (ou -2/-3) em todas as jogadas",
-      "notas": "Debuff de julgamento do Mestre, nao cabe em numero. Oposto de Bencao: -1/-2/-3 em TODAS as jogadas do alvo (custo 3/10/20), durando ate ele conseguir um sucesso notavel apesar das jogadas ruins - ai o sucesso vira cinzas e a maldicao termina. O motor nao tem campo para penalidade generica em todas as jogadas nem para o gatilho narrativo. Nao empilha. Fica narrado."
+      "buffRotulo": "-1 (ou -2/-3) em TODAS as jogadas do objetivo, enquanto durar",
+      "notas": "NARRADA POR DECISAO DE REGRA, nao por falta de motor. O livro entrega esta magia ao Mestre: 'durando ate que ele consiga algum sucesso notavel -- o Mestre decide sobre exatamente o que e isso'. COMO APLICAR: subtraia 1 (ou 2/3, conforme a energia paga) de TODAS as jogadas do objetivo. Como na Bencao, nao altera criticos e nao empilha. Quando o alvo enfim consegue um sucesso notavel apesar das jogadas ruins, esse sucesso 'se transforma em cinzas' e a maldicao ACABA. Custo: 3 para -1, 10 para -2, 20 para -3."
     }
   },
   {

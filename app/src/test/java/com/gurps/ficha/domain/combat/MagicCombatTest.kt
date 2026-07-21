@@ -1062,6 +1062,61 @@ class MagicCombatTest {
             s.log.any { it.contains("Vontade +2") })
     }
 
+    // ── Lote NARR-1: o Narrador precisa ser LEMBRADO das mágicas narradas ──────────────────────
+
+    @Test
+    fun `magia NARRADA entra no resumo do Narrador, com a REGRA junto`() {
+        val s = sessao(7)
+        s.registrarMagiaAtiva(
+            nome = "Aerovisão", operadorId = "heroi", alvoId = "heroi", duracaoSeg = 60,
+            custoManutencaoSeg = 0, duracao = TipoDuracao.TEMPORARIA, exigeConcentracao = false,
+            mecanica = MagiaMecanica(efeito = "buff", buffRotulo = "ignora penalidades de Visão",
+                notas = "ignora penalidades de Visão por fumaça, neblina e poeira")
+        )
+        val resumo = s.resumo()
+        assertTrue("o Narrador tem que continuar sabendo da mágica: $resumo",
+            resumo.contains("ainda em efeito") && resumo.contains("Aerovisão"))
+        assertTrue("e o lembrete tem que trazer a REGRA, não só o nome",
+            resumo.contains("penalidades de Visão"))
+    }
+
+    @Test
+    fun `o lembrete NAO vaza para o log do jogador`() {
+        // Pedido explícito do usuário: "não precisa colocar tudo o que for implementado no log".
+        // O `log` é publicado no feed e o JOGADOR lê; o `resumo()` é só para a IA.
+        val s = sessao(7)
+        s.registrarMagiaAtiva(
+            nome = "Aerovisão", operadorId = "heroi", alvoId = "heroi", duracaoSeg = 60,
+            custoManutencaoSeg = 0, duracao = TipoDuracao.TEMPORARIA, exigeConcentracao = false,
+            mecanica = MagiaMecanica(efeito = "buff", notas = "ignora penalidades de Visão")
+        )
+        val antes = s.log.size
+        repeat(4) { s.avancarTurno() }
+        assertTrue("nenhuma linha de lembrete pode aparecer no feed: ${s.log.drop(antes)}",
+            s.log.drop(antes).none { it.contains("ainda em efeito", ignoreCase = true) })
+    }
+
+    @Test
+    fun `magia com NUMERO nao vira ruido no resumo — o motor ja a aplica`() {
+        val s = sessao(7)
+        val buff = MagicMechanics.calcularBuff(
+            MagiaMecanica(efeito = "buff", buffAtributo = "Vontade", buffAtributoValor = 1,
+                buffEnergiaPorNivel = 1, buffMaxNiveis = 5), energia = 2, alvoId = "heroi")
+        s.registrarMagiaAtiva(
+            nome = "Fortalecer Vontade", operadorId = "heroi", alvoId = "heroi", duracaoSeg = 60,
+            custoManutencaoSeg = 0, duracao = TipoDuracao.TEMPORARIA, exigeConcentracao = false,
+            buff = buff
+        )
+        assertFalse("buff executado não precisa de lembrete — seria ruído no prompt",
+            s.resumo().contains("ainda em efeito"))
+    }
+
+    @Test
+    fun `sem magia narrada ativa o resumo fica como era`() {
+        val s = sessao(7)
+        assertFalse(s.resumo().contains("ainda em efeito"))
+    }
+
     // ── Lote MEC-47: as DUAS metades da regra de área, e o herói dentro da própria zona ─────────
 
     @Test
