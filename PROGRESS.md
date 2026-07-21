@@ -3046,6 +3046,21 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - **Recomendação registrada** (maior valor × menor custo): Ataque Telegráfico (par do Enganoso), luta agarrada profunda (chaves/Mata-Leão estendendo o lote 422), Sangramento Grave + incapacitação de membro (item 5 do teste de batalha), Ataque Dedicado/Defensivo. Fora de escopo: posicional/hexágono, montaria, cinematográfico, dado de arma do NPC. Mudança só de documentação (não compila Kotlin).
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
+### Lote TOK-7 — 21 de Julho de 2026 (token novo: nome acima, sem anel, PV e PF em hexágonos que esvaziam)
+**Redesenho pedido pelo usuário com dois mocks (antes/depois) — branch GURPS-Saga**
+- **Nome acima da cabeça** (era embaixo), **truncado** até caber na largura útil do hexágono (`√3·tam`). O pedido foi explícito: não pode ultrapassar o hex.
+- **Anel azul REMOVIDO** — ele comia a borda do retrato. Sem ele o raio do rosto sobe de `0.62` para `0.72` do tamanho do hex.
+- **Hexágonos de recurso** nos cantos de baixo: vermelho (PV) e azul (PF), corpo a **50% de opacidade**, **esvaziando de cima para baixo** conforme o recurso cai, com o valor absoluto escrito dentro.
+- **Triângulo de facing** intocado. Ícones de condição desceram para o rodapé central, entre os hexágonos.
+- **Duas decisões do usuário**, porque o mock não respondia:
+  1. *Sem o anel, o que distingue herói de inimigo?* → O **par** de hexágonos: o herói tem PV+PF, o inimigo só PV, porque o bestiário não rastreia fadiga de NPC (já era assim, `pfPct` null). A assimetria 2-contra-1 vira o marcador **sem gastar espaço novo**.
+  2. *Token pequeno?* → Abaixo de `TAM_MIN_NUMERO_TOKEN` o número some e só a **cor** conta a história. Num token de ~30dp (a câmera abre assim ao mostrar o deslocamento inteiro — TOK-6b-3) o número viraria borrão.
+- **Dado novo**: `TokenTatico` ganhou `pvAtual`/`pfAtual`. Ele só carregava **frações**, que desenham o preenchimento mas não dizem quanto é.
+- **+5 testes, com escopo HONESTO**: cobrem só a matemática do preenchimento e o limiar do número. Posição, opacidade e estética do nome **não têm como eu verificar** — só no aparelho. Um deles trava **PV negativo**: em GURPS o herói vai a PV negativo antes de morrer, e sem clamp isso desenharia um retângulo de altura negativa, para cima. Não é hipótese, é o caminho normal de quem está caindo.
+- 🟢 Gate: **872 testes por variante, ZERO falhas**, build nas duas.
+- 🚦 **Toca UI → PARA para teste no aparelho.**
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
 ### Lote A1-b / A1-c — 21 de Julho de 2026 (tipo de criatura — mortos-vivos e insubstancialidade viram regra)
 **Segunda metade do A1 — branch GURPS-Saga**
 - **A1-b — mortos-vivos** (deferido honesto do MEC-22, agora executado). Regras literais: *"Seres mortos-vivos não são afetados"* (Morte Candente) e *"Mortos-vivos não são afetados"* (Morte Putrefata). São justamente as **duas mágicas de tique que o motor já executava** — ele batia em esqueleto sem saber em quem. Novo `TipoCriatura` (VIVO / MORTO_VIVO / INSUBSTANCIAL / ELEMENTAL / CONSTRUCTO) e campo curado `naoAfeta`. Ganchos no funil de dano mágico e no tique; no tique a mágica **não fica pendurada** em quem ela não afeta — ela se desfaz.
