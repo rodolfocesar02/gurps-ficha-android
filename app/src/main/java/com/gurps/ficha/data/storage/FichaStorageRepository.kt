@@ -39,6 +39,15 @@ class FichaStorageRepository private constructor(
 
     suspend fun listarFichas(): List<String> = withContext(Dispatchers.IO) { dao.listNames() }
 
+    /**
+     * JSON de todas as fichas (inclui o auto-save). Devolve null se a leitura
+     * FALHAR — quem chama precisa distinguir "não há fichas" de "não consegui
+     * ler", senão a faxina de retratos apagaria imagem em uso.
+     */
+    suspend fun todosOsJsons(): List<String>? = withContext(Dispatchers.IO) {
+        runCatching { dao.todosOsJsons() }.getOrNull()
+    }
+
     companion object {
         private const val PREFS_NAME = "gurps_fichas"
         private const val FICHA_PREFIX = "ficha_"

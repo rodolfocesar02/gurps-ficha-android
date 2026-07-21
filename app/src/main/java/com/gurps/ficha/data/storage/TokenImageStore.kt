@@ -4,10 +4,6 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
-import com.google.android.gms.tasks.Tasks
-import com.google.mlkit.vision.common.InputImage
-import com.google.mlkit.vision.face.FaceDetection
-import com.google.mlkit.vision.face.FaceDetectorOptions
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
@@ -256,20 +252,7 @@ Do NOT include any text, watermarks, logos, borders, or UI elements."""
         runCatching { BitmapFactory.decodeFile(cacheFile.absolutePath) }.getOrNull()
     }
 
-    /** Mesmo detector do ImagemPersonagemStore — maior rosto da imagem, ou null. */
-    private fun detectarRosto(bmp: Bitmap): android.graphics.Rect? {
-        val options = FaceDetectorOptions.Builder()
-            .setPerformanceMode(FaceDetectorOptions.PERFORMANCE_MODE_ACCURATE)
-            .build()
-        val detector = FaceDetection.getClient(options)
-        return try {
-            val input = InputImage.fromBitmap(bmp, 0)
-            val faces = Tasks.await(detector.process(input))
-            faces.maxByOrNull { it.boundingBox.width() * it.boundingBox.height() }?.boundingBox
-        } catch (_: Exception) {
-            null
-        } finally {
-            detector.close()
-        }
-    }
+    /** Delega ao [RostoDetector] — mesma cascata usada no cabeçalho da ficha. */
+    private fun detectarRosto(bmp: Bitmap): android.graphics.Rect? =
+        runCatching { RostoDetector.detectarRosto(bmp) }.getOrNull()
 }

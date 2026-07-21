@@ -21,12 +21,14 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddAPhoto
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Download
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.PhotoCamera
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -67,9 +69,12 @@ import coil.compose.AsyncImage
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.liveRegion
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.gurps.ficha.BuildConfig
@@ -674,6 +679,7 @@ fun FichaScreen(viewModel: FichaViewModel) {
         val recorte = viewModel.personagem.imagemPersonagemUri
         ImagemPersonagemFullscreenDialog(
             imagemUri = original.ifBlank { recorte },
+            nomePersonagem = viewModel.personagem.nome,
             onDismiss = { mostrarImagemFullscreen = false }
         )
     }
@@ -816,12 +822,53 @@ private fun CabecalhoComImagem(
     }
 }
 
-/** Mostra a foto do personagem em tela cheia; toque em qualquer lugar fecha. */
+/**
+ * Mostra a foto do personagem em tela cheia; toque em qualquer lugar fecha.
+ *
+ * Também é a porta de saída da imagem: o retrato mora em filesDir/portraits/,
+ * armazenamento privado do app, invisível para a galeria e para qualquer
+ * gerenciador de arquivos. O botão de baixar copia a foto para Imagens/GURPS —
+ * é o único jeito de o usuário ficar com o retrato do Mestre Pintor fora do app.
+ */
 @Composable
 private fun ImagemPersonagemFullscreenDialog(
     imagemUri: String,
+    nomePersonagem: String,
     onDismiss: () -> Unit
 ) {
+    val context = LocalContext.current
+    val escopo = rememberCoroutineScope()
+    var status by remember { mutableStateOf("") }
+    var salvando by remember { mutableStateOf(false) }
+
+    // Declarado ANTES do launcher de permissão porque o callback dele chama isto.
+    val salvarAgora: () -> Unit = {
+        if (!salvando) {
+            salvando = true
+            status = "Salvando na galeria…"
+            escopo.launch {
+                val resultado = com.gurps.ficha.data.storage.ImagemPersonagemStore
+                    .salvarNaGaleria(context, imagemUri, nomePersonagem)
+                salvando = false
+                status = when (resultado) {
+                    com.gurps.ficha.data.storage.ImagemPersonagemStore.ResultadoGaleria.OK ->
+                        "Foto salva na galeria, na pasta Imagens, GURPS."
+                    com.gurps.ficha.data.storage.ImagemPersonagemStore.ResultadoGaleria.SEM_PERMISSAO ->
+                        "Sem permissão para gravar na galeria. Libere o acesso a fotos nas configurações do app."
+                    com.gurps.ficha.data.storage.ImagemPersonagemStore.ResultadoGaleria.FALHOU ->
+                        "Não foi possível salvar a foto na galeria."
+                }
+            }
+        }
+    }
+
+    val permissaoLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { concedida ->
+        if (concedida) salvarAgora()
+        else status = "Permissão negada. Sem ela o app não consegue gravar na galeria."
+    }
+
     Dialog(
         onDismissRequest = onDismiss,
         properties = DialogProperties(usePlatformDefaultWidth = false)
@@ -838,14 +885,62 @@ private fun ImagemPersonagemFullscreenDialog(
                 modifier = Modifier.fillMaxSize(),
                 contentScale = ContentScale.Fit
             )
-            IconButton(
-                onClick = onDismiss,
+            Row(
                 modifier = Modifier
                     .align(Alignment.TopEnd)
                     .statusBarsPadding()
                     .padding(8.dp)
             ) {
-                Icon(Icons.Default.Close, contentDescription = "Fechar", tint = Color.White)
+                IconButton(
+                    onClick = {
+                        val jaTemPermissao =
+                            !com.gurps.ficha.data.storage.ImagemPersonagemStore.precisaPermissaoGaleria() ||
+                                ContextCompat.checkSelfPermission(
+                                    context, Manifest.permission.WRITE_EXTERNAL_STORAGE
+                                ) == PackageManager.PERMISSION_GRANTED
+                        if (salvando) return@IconButton
+                        if (jaTemPermissao) salvarAgora()
+                        else permissaoLauncher.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                    }
+                    // Sem `enabled = false` durante o salvamento: um IconButton
+                    // desabilitado deixa o toque VAZAR para o Box de trás, que
+                    // fecha a tela cheia. O bloqueio fica no próprio onClick.
+                ) {
+                    if (salvando) {
+                        CircularProgressIndicator(
+                            modifier = Modifier.size(20.dp),
+                            color = Color.White,
+                            strokeWidth = 2.dp
+                        )
+                    } else {
+                        Icon(
+                            Icons.Default.Download,
+                            contentDescription = "Salvar foto na galeria",
+                            tint = Color.White
+                        )
+                    }
+                }
+                IconButton(onClick = onDismiss) {
+                    Icon(Icons.Default.Close, contentDescription = "Fechar", tint = Color.White)
+                }
+            }
+
+            // liveRegion: o TalkBack anuncia o resultado sozinho, sem o usuário
+            // precisar caçar o texto na tela.
+            if (status.isNotBlank()) {
+                Text(
+                    text = status,
+                    color = Color.White,
+                    style = MaterialTheme.typography.bodyMedium,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier
+                        .align(Alignment.BottomCenter)
+                        .fillMaxWidth()
+                        .navigationBarsPadding()
+                        .background(Color.Black.copy(alpha = 0.6f))
+                        .padding(horizontal = 16.dp, vertical = 12.dp)
+                        .semantics { liveRegion = LiveRegionMode.Polite }
+                )
             }
         }
     }

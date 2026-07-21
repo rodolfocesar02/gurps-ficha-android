@@ -18,4 +18,12 @@ interface FichaDao {
 
     @Query("SELECT nomeArquivo FROM fichas ORDER BY updatedAt DESC")
     suspend fun listNames(): List<String>
+
+    /**
+     * JSON cru de TODAS as fichas, inclusive o auto-save de recuperação.
+     * Usado pela faxina de retratos órfãos, que precisa saber quais arquivos de
+     * imagem ainda são citados por alguma ficha antes de apagar.
+     */
+    @Query("SELECT json FROM fichas")
+    suspend fun todosOsJsons(): List<String>
 }

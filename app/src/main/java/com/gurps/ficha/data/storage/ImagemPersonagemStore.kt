@@ -1,21 +1,26 @@
 package com.gurps.ficha.data.storage
 
+import android.content.ContentValues
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Rect
 import android.net.Uri
+import android.os.Build
+import android.os.Environment
+import android.provider.MediaStore
 import android.util.Base64
 import androidx.exifinterface.media.ExifInterface
 import com.google.android.gms.tasks.Tasks
 import com.google.mlkit.vision.common.InputImage
-import com.google.mlkit.vision.face.FaceDetection
-import com.google.mlkit.vision.face.FaceDetectorOptions
 import com.google.mlkit.vision.segmentation.subject.SubjectSegmentation
 import com.google.mlkit.vision.segmentation.subject.SubjectSegmenterOptions
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 import java.util.UUID
 import kotlin.math.max
 import kotlin.math.min
@@ -42,13 +47,29 @@ import kotlin.math.roundToInt
 object ImagemPersonagemStore {
 
     private const val DIR = "portraits"
+    /** Subpasta criada dentro de Imagens/ ao salvar o retrato na galeria. */
+    private const val PASTA_GALERIA = "GURPS"
+    /**
+     * A faxina ignora arquivos criados na última hora: entre gravar a imagem e
+     * a ficha ser salva existe uma janela, e apagar aí destruiria o retrato que
+     * o usuário acabou de escolher.
+     */
+    private const val CARENCIA_FAXINA_MS = 60L * 60L * 1000L
     private const val LARGURA_ALVO = 1080       // px — largura do retrato recortado (cabeçalho)
     private const val MAIOR_LADO_ORIGINAL = 1600 // px — maior lado da imagem inteira (tela cheia)
-    private const val PROPORCAO = 2.0f          // faixa do cabeçalho (largura/altura)
+    // Faixa do cabeçalho (largura/altura). Tem que bater com a proporção REAL do
+    // CabecalhoComImagem (fillMaxWidth x 140.dp) — num celular comum isso dá
+    // ~2,8. Quando não batia (era 2.0), o Compose recortava a faixa DE NOVO na
+    // exibição e o enquadramento calculado aqui não era o que aparecia na tela.
+    private const val PROPORCAO = 2.8f
     // Fração da ALTURA da faixa que o rosto deve ocupar (enquadramento
     // consistente "rosto + ombros" — independe de quão grande o rosto aparece
-    // na arte original). 0.42 = rosto ocupa ~42% da faixa.
-    private const val ROSTO_FRACAO_ALTURA = 0.42f
+    // na arte original). 0.32 = rosto ocupa ~32% da faixa: 25% mais "afastado"
+    // que o valor antigo (0.42), a pedido do usuário, para caber rosto inteiro
+    // com folga em vez de um close cortado.
+    private const val ROSTO_FRACAO_ALTURA = 0.32f
+    /** Folga acima do topo do assunto, em frações da altura da faixa. */
+    private const val MARGEM_TOPO_ASSUNTO = 0.08f
     private const val QUALIDADE_JPEG = 88
     private const val MAX_DECODE = 2048          // limita o bitmap carregado em memória
 
@@ -80,8 +101,14 @@ object ImagemPersonagemStore {
         // por isso ficou OPCIONAL e protegida por detectarAssuntoSeguro, que
         // a desliga permanentemente ao primeiro erro. Rosto é o caminho
         // principal e estável.
-        val assuntoRect = detectarAssuntoSeguro(original)
-        val rostoRect = runCatching { detectarRosto(original) }.getOrNull()
+        val rostoRect = runCatching { RostoDetector.detectarRosto(original) }.getOrNull()
+        // Só vale gastar com o assunto se o rosto falhou — é ele que decide o
+        // enquadramento quando existe. Com a segmentação desligada, a saliência
+        // é o que impede o recorte cego "colado no topo" que cortava o rosto.
+        val assuntoRect = if (rostoRect != null) null else {
+            detectarAssuntoSeguro(original)
+                ?: runCatching { RostoDetector.estimarAssuntoPorSaliencia(original) }.getOrNull()
+        }
         val recortada = recortarFaixa(original, assuntoRect, rostoRect)
         val finalBmp = redimensionar(recortada)
         val arquivoRecorte = File(dir, "retrato_${UUID.randomUUID()}.jpg")
@@ -154,7 +181,191 @@ object ImagemPersonagemStore {
         }
     }
 
+    /** Como terminou o [salvarNaGaleria] — separado para a UI dar a mensagem certa. */
+    enum class ResultadoGaleria { OK, SEM_PERMISSAO, FALHOU }
+
+    /**
+     * Só até o Android 9 (API 28) gravar na galeria exige WRITE_EXTERNAL_STORAGE.
+     * Do Android 10 em diante o MediaStore cuida disso sem permissão nenhuma.
+     */
+    fun precisaPermissaoGaleria(): Boolean = Build.VERSION.SDK_INT <= Build.VERSION_CODES.P
+
+    /**
+     * Copia o retrato de [caminhoUri] (que vive em filesDir/portraits/, invisível
+     * para o usuário) para a GALERIA do aparelho, em Imagens/[PASTA_GALERIA].
+     *
+     * Existe porque o retrato — principalmente o gerado pelo Mestre Pintor — ficava
+     * preso no armazenamento privado do app: não aparecia na galeria, em nenhum
+     * gerenciador de arquivos, nem no backup de fotos. A única saída era exportar a
+     * ficha inteira.
+     */
+    suspend fun salvarNaGaleria(
+        context: Context,
+        caminhoUri: String,
+        nomePersonagem: String
+    ): ResultadoGaleria = withContext(Dispatchers.IO) {
+        if (caminhoUri.isBlank()) return@withContext ResultadoGaleria.FALHOU
+        val origem = caminhoUri.toUri()?.path?.let { File(it) }
+            ?: return@withContext ResultadoGaleria.FALHOU
+        if (!origem.exists()) return@withContext ResultadoGaleria.FALHOU
+        val bytes = runCatching { origem.readBytes() }.getOrNull()
+            ?: return@withContext ResultadoGaleria.FALHOU
+
+        val valores = ContentValues().apply {
+            put(MediaStore.Images.Media.DISPLAY_NAME, nomeDeArquivo(nomePersonagem))
+            put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                put(
+                    MediaStore.Images.Media.RELATIVE_PATH,
+                    "${Environment.DIRECTORY_PICTURES}/$PASTA_GALERIA"
+                )
+                // Segura a foto como "incompleta" até os bytes estarem gravados,
+                // para a galeria não exibir uma imagem pela metade.
+                put(MediaStore.Images.Media.IS_PENDING, 1)
+            }
+        }
+
+        val resolver = context.contentResolver
+        val destino = runCatching {
+            resolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, valores)
+        }.getOrNull()
+        if (destino == null) {
+            // Antes do Android 10 a falta da permissão aparece exatamente assim.
+            return@withContext if (precisaPermissaoGaleria()) {
+                ResultadoGaleria.SEM_PERMISSAO
+            } else {
+                ResultadoGaleria.FALHOU
+            }
+        }
+
+        val gravou = runCatching {
+            resolver.openOutputStream(destino)?.use { it.write(bytes) }
+                ?: error("sem stream de escrita")
+        }.isSuccess
+
+        if (!gravou) {
+            runCatching { resolver.delete(destino, null, null) }
+            return@withContext ResultadoGaleria.FALHOU
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            runCatching {
+                resolver.update(
+                    destino,
+                    ContentValues().apply { put(MediaStore.Images.Media.IS_PENDING, 0) },
+                    null,
+                    null
+                )
+            }
+        }
+        ResultadoGaleria.OK
+    }
+
+    /** Quanto a faxina apagou. */
+    data class ResultadoFaxina(val apagados: Int, val bytesLiberados: Long)
+
+    /**
+     * Apaga retratos ÓRFÃOS de filesDir/portraits/ — arquivos que nenhuma ficha
+     * cita mais.
+     *
+     * Cada gravação cria um par novo (`retrato_<uuid>`/`original_<uuid>`) e a
+     * ficha só guarda o caminho do último. Só a troca de foto pela galeria
+     * apagava o par anterior; gerar retrato pela IA, importar ficha com imagem
+     * embutida e excluir ficha deixavam os arquivos para trás — invisíveis para
+     * o usuário, porque a pasta é armazenamento privado do app.
+     *
+     * Varrer tudo de uma vez resolve os quatro casos e ainda limpa o que já
+     * ficou para trás, em vez de tapar cada buraco separadamente.
+     *
+     * @param jsonsDasFichas JSON cru de TODAS as fichas (inclusive o auto-save).
+     *   Passar null quando a leitura falhou — aí a faxina não roda. Uma lista
+     *   vazia significa "não há fichas mesmo" e é válida.
+     * @param emUso URIs do personagem carregado agora, que pode ainda não ter
+     *   sido salvo em ficha nenhuma.
+     */
+    suspend fun faxinaDeOrfaos(
+        context: Context,
+        jsonsDasFichas: List<String>?,
+        emUso: Collection<String>
+    ): ResultadoFaxina = withContext(Dispatchers.IO) {
+        // Na dúvida, NÃO apaga: sem a lista de fichas não dá para saber o que
+        // está em uso, e um falso positivo aqui apaga o retrato do usuário.
+        if (jsonsDasFichas == null) return@withContext ResultadoFaxina(0, 0)
+
+        val dir = File(context.filesDir, DIR)
+        val arquivos = dir.takeIf { it.isDirectory }?.listFiles()
+            ?: return@withContext ResultadoFaxina(0, 0)
+
+        val nomesEmUso = emUso.mapNotNull { it.toUri()?.lastPathSegment }.toSet()
+        val nascidoAntesDe = System.currentTimeMillis() - CARENCIA_FAXINA_MS
+
+        var apagados = 0
+        var bytes = 0L
+        for (arquivo in arquivos) {
+            if (!arquivo.isFile) continue
+            if (!ehOrfao(
+                    nome = arquivo.name,
+                    modificadoEm = arquivo.lastModified(),
+                    nascidoAntesDe = nascidoAntesDe,
+                    nomesEmUso = nomesEmUso,
+                    jsonsDasFichas = jsonsDasFichas
+                )
+            ) continue
+
+            val tamanho = arquivo.length()
+            if (runCatching { arquivo.delete() }.getOrDefault(false)) {
+                apagados++
+                bytes += tamanho
+            }
+        }
+        if (apagados > 0) {
+            android.util.Log.d(
+                RostoDetector.TAG,
+                "faxina de retratos: $apagados arquivo(s) orfao(s), ${bytes / 1024} KB liberados"
+            )
+        }
+        ResultadoFaxina(apagados, bytes)
+    }
+
+    /**
+     * Decide se um arquivo da pasta de retratos pode ser apagado. Separado do
+     * I/O e SEM dependência de Android porque é a única linha de código do app
+     * que destrói dado do usuário sem confirmação — precisa de teste.
+     *
+     * Toda regra aqui é uma razão para MANTER; só some o que não bate em nenhuma.
+     */
+    internal fun ehOrfao(
+        nome: String,
+        modificadoEm: Long,
+        nascidoAntesDe: Long,
+        nomesEmUso: Set<String>,
+        jsonsDasFichas: List<String>
+    ): Boolean {
+        // Só mexe no que este store cria — nunca em arquivo de terceiros.
+        if (!nome.startsWith("retrato_") && !nome.startsWith("original_")) return false
+        // Recém-criado pode ainda estar a caminho da ficha.
+        if (modificadoEm > nascidoAntesDe) return false
+        // Retrato do personagem carregado agora, que talvez nem esteja salvo.
+        if (nome in nomesEmUso) return false
+        // Busca por SUBSTRING no JSON cru em vez de desserializar a ficha: o nome
+        // é um UUID, não há risco de colisão, e assim uma ficha que falhasse no
+        // parse não faria a faxina apagar retrato em uso.
+        if (jsonsDasFichas.any { it.contains(nome) }) return false
+        return true
+    }
+
     // --- internos ---
+
+    /** Nome amigável e único: o personagem some da bagunça da galeria. */
+    private fun nomeDeArquivo(nomePersonagem: String): String {
+        val base = nomePersonagem.trim()
+            .replace(Regex("[^\\p{L}\\p{N} _-]"), "")
+            .replace(' ', '_')
+            .take(40)
+            .ifBlank { "personagem" }
+        val carimbo = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(Date())
+        return "GURPS_${base}_$carimbo.jpg"
+    }
 
     private fun String.toUri(): Uri? = runCatching { Uri.parse(this) }.getOrNull()
 
@@ -199,23 +410,6 @@ object ImagemPersonagemStore {
         val rotated = Bitmap.createBitmap(bmp, 0, 0, bmp.width, bmp.height, matrix, true)
         if (rotated != bmp) bmp.recycle()
         return rotated
-    }
-
-    /** Retorna o bounding box do maior rosto, ou null se nenhum for achado. */
-    private fun detectarRosto(bmp: Bitmap): Rect? {
-        val options = FaceDetectorOptions.Builder()
-            .setPerformanceMode(FaceDetectorOptions.PERFORMANCE_MODE_ACCURATE)
-            .build()
-        val detector = FaceDetection.getClient(options)
-        return try {
-            val input = InputImage.fromBitmap(bmp, 0)
-            val faces = Tasks.await(detector.process(input))
-            faces.maxByOrNull { it.boundingBox.width() * it.boundingBox.height() }?.boundingBox
-        } catch (_: Exception) {
-            null
-        } finally {
-            detector.close()
-        }
     }
 
     // Subject Segmentation é BETA e instável (crashava com MediaPipeException
@@ -343,12 +537,19 @@ object ImagemPersonagemStore {
             // Rosto centralizado na vertical (levemente acima do meio: cabelo
             // em cima, ombros embaixo). 0.46 = rosto um pouco acima do centro.
             rosto != null -> rosto.centerY() - (cropH * 0.46f).roundToInt()
-            assunto != null -> assunto.top
+            // Um respiro acima do topo do assunto: encostar a faixa exatamente
+            // na linha do cabelo dá um enquadramento sufocado.
+            assunto != null -> assunto.top - (cropH * MARGEM_TOPO_ASSUNTO).roundToInt()
             else -> 0
         }
 
         left = max(0, min(left, w - cropW))
         val topClamped = max(0, min(top, h - cropH))
+        android.util.Log.d(
+            RostoDetector.TAG,
+            "recorte ${cropW}x$cropH em ($left,$topClamped) de ${w}x$h " +
+                "[rosto=${rosto != null} assunto=${assunto != null}]"
+        )
 
         return if (left == 0 && topClamped == 0 && cropW == w && cropH == h) {
             bmp
