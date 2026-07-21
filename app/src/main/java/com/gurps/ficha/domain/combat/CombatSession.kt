@@ -287,6 +287,7 @@ class CombatSession(
         val alvo = inimigos.firstOrNull { it.id == alvoId && it.vivo }
             ?: return AtaqueResultado(false, false, 0, false, "Alvo inválido ou já fora de combate.").also { log += it.texto }
         golpeForaDeAlcance(ataque, alvo)?.let { return it }
+        golpeContraInsubstancial(alvo)?.let { return it }
         val r = resolverGolpeHeroi(ataque, alvo, manobra, local, ataqueTotalModo, enganoso = enganoso, telegrafico = telegrafico, dedicadoModo = dedicadoModo)
         limparAvaliar(); limparApontar(); limparFinta() // bônus de Avaliar/Mira consumidos neste ataque
         // Arma desbalanceada: quem atacou com ela não pode aparar até o próximo turno (MB p.270).
@@ -585,6 +586,26 @@ class CombatSession(
     }
 
     /** Golpe fora de alcance (Máx à distância OU reach corpo-a-corpo): loga e devolve o resultado; null se está no alcance. */
+    /**
+     * Lote A1-c — INSUBSTANCIALIDADE (MB, vantagem de 80 pontos):
+     * *"Ataques físicos e de energia não afetam o personagem, mas ele continua vulnerável a ataques
+     * psíquicos e mágicos."*
+     *
+     * Vale ANTES de rolar para acertar: não é errar o golpe, é o golpe atravessar. A saída é a
+     * mágica **Afetar Espíritos** — *"uma arma com essa mágica pode prejudicar um espírito
+     * insubstancial"* — que marca `afetaInsubstancial` em quem a recebeu.
+     *
+     * Só barra ARMA. Magia continua passando: o funil `aplicarDanoMagico` não consulta isto.
+     */
+    private fun golpeContraInsubstancial(alvo: Combatente): AtaqueResultado? {
+        if (alvo.tipoCriatura != TipoCriatura.INSUBSTANCIAL) return null
+        if (heroi.afetaInsubstancial) return null
+        val txt = "👻 Sua arma atravessa ${alvo.nome} sem resistência — ele é insubstancial. " +
+            "Só magia (ou uma arma sob Afetar Espíritos) o alcança."
+        log += txt
+        return AtaqueResultado(false, false, 0, false, txt)
+    }
+
     private fun golpeForaDeAlcance(ataque: AtaqueHeroi, alvo: Combatente): AtaqueResultado? {
         val dist = encounter.distancia(alvo)
         if (dist <= ataque.alcance) return null
@@ -1617,6 +1638,13 @@ class CombatSession(
             sb.append(" ${alvo.nome} é IMUNE a ${mecanica?.elementoDano} — a mágica não o fere.")
             return 0
         }
+        // Lote A1-b: a mágica simplesmente NÃO PEGA neste tipo de criatura ("Seres mortos-vivos não
+        // são afetados"). Diferente de imunidade a elemento: ali o alvo resiste ao dano, aqui a
+        // mágica nem incide.
+        if (com.gurps.ficha.domain.magic.MagicMechanics.naoAfetaTipo(mecanica, alvo.tipoCriatura.chave)) {
+            sb.append(" ${alvo.nome} é ${alvo.tipoCriatura.rotulo} — esta mágica não o afeta.")
+            return 0
+        }
         val expr = if (mecanica?.danoPorEnergia != null)
             com.gurps.ficha.domain.magic.MagicMechanics.expandirDano(mecanica.danoPorEnergia, energia.coerceAtLeast(1), mecanica.energiaPorDado, mecanica.danoFixo)
         else "${energia.coerceAtLeast(1)}d"
@@ -2136,7 +2164,12 @@ class CombatSession(
             resistencia = null, original = ""
         )
         // Projétil cria na mão (sem distância); Comum sofre a penalidade de distância.
-        val nhEf = magia.nh + if (magia.projetil) 0 else penalidadeDistancia(dist)
+        // Lote A1-c: *"Suas habilidades psíquicas e mágicas afetam o mundo físico, mas todas as
+        // jogadas sofrem uma penalidade de −3"* (MB, Insubstancialidade). É a contrapartida: o
+        // espírito NÃO fica inofensivo, mas conjura pior.
+        val penalInsub = if (npc.tipoCriatura == TipoCriatura.INSUBSTANCIAL) -3 else 0
+        val nhEf = magia.nh + (if (magia.projetil) 0 else penalidadeDistancia(dist)) + penalInsub
+        if (penalInsub != 0) log += "👻 ${npc.nome} conjura do plano insubstancial (−3 nas jogadas)."
         val rol = rolar3d6()
         val r = MagicCasting.resolver(nhEf, rol, magia.custoFP, classe, rolagemChoqueRetorno3d = rolar3d6())
         val sb = StringBuilder()
@@ -2400,6 +2433,15 @@ class CombatSession(
         }
 
         val stats = npc.stats ?: return AtaqueResultado(false, false, 0, false, "${npc.nome} sem stats de ataque.")
+        // Lote A1-c: a regra da insubstancialidade é SIMÉTRICA — *"Da mesma maneira, seus ataques
+        // físicos e de energia não afetam oponentes físicos"* (MB). Um espírito não soca ninguém;
+        // ele precisa de Solidificar (que o motor ainda não modela) ou de magia. Sem esta metade, o
+        // fantasma seria invulnerável E letal, o que não é regra nenhuma.
+        if (npc.tipoCriatura == TipoCriatura.INSUBSTANCIAL && !npc.afetaInsubstancial) {
+            val t = "👻 ${npc.nome} é insubstancial — o golpe atravessa você sem causar dano."
+            log += t
+            return AtaqueResultado(false, false, 0, false, t)
+        }
         // Lote TOK-5a: o NPC vira de frente pro herói ao atacar (facing é livre no próprio turno);
         // e se MESMO ASSIM o golpe pega o herói de FLANCO/COSTAS (posição real na grade), a defesa
         // do herói sofre (o ajuste das OPÇÕES é feito pelo controller via HexRegrasFacing; aqui só
@@ -2721,6 +2763,13 @@ class CombatSession(
             val vitima = encounter.combatentes.firstOrNull { it.id == ativa.alvoId && it.vivo }
             if (vitima == null) { quebradas.add(ativa); continue } // alvo morreu/sumiu → mágica cai
             val mec = ativa.mecanica!!
+            // Lote A1-b: Morte Candente e Morte Putrefata dizem, com todas as letras, que "mortos-
+            // vivos não são afetados". Era deferido honesto do MEC-22: o tique batia sem saber em
+            // quem. A mágica não fica ativa em quem ela não pega — cai fora.
+            if (com.gurps.ficha.domain.magic.MagicMechanics.naoAfetaTipo(mec, vitima.tipoCriatura.chave)) {
+                log += "✨ ${ativa.magiaId} não tem efeito em ${vitima.nome} (${vitima.tipoCriatura.rotulo}) — a mágica se desfaz."
+                quebradas.add(ativa); continue
+            }
             val atributo = if (vitima.ehHeroi) heroiPerfil.ht else vitima.htEfetivo
             val rol = rolar3d6()
             val crit = CriticoRules.classificar(rol, atributo)

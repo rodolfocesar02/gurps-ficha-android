@@ -1163,6 +1163,169 @@ class MagicCombatTest {
         assertEquals(listOf("fogo"), b.imunidades)
     }
 
+    // ── Lote A1-b: tipo de criatura (mortos-vivos não são afetados) ────────────────────────────
+
+    private fun morteCandente() = MagiaMecanica(
+        efeito = "dano", danoPorTurnoExpr = "1d-1", danoPorTurnoTeste = "HT",
+        quebraEmSucessoDecisivo = true, naoAfeta = listOf("morto_vivo"),
+        elementoDano = "fogo", tipoDano = "quei"
+    )
+
+    private fun mortoVivo(pv: Int = 11) = Combatente(
+        id = "esqueleto", nome = "Esqueleto", dx = 12, velocidadeBasica = 6.0, deslocamento = 6,
+        pvMax = pv, pvAtual = pv,
+        stats = NpcStats(st = 11, dx = 12, ht = 12, pvMax = pv, armaDano = "1d", armaTipo = "cont",
+            armaNh = 11, tipoCriatura = TipoCriatura.MORTO_VIVO,
+            tolerancia = ToleranciaFerimentos.NAO_VIVO)
+    )
+
+    @Test
+    fun `Morte Candente NAO afeta morto-vivo — a magia se desfaz`() {
+        val enc = CombatEncounter(listOf(heroi(), mortoVivo()), mapOf("esqueleto" to 1), seed = 1L)
+        val s = CombatSession(enc, perfil(), Random(7))
+        val alvo = s.encounter.combatentes.first { it.id == "esqueleto" }
+        val pvAntes = alvo.pvAtual
+        s.registrarMagiaAtiva(
+            nome = "Morte Candente", operadorId = "heroi", alvoId = "esqueleto", duracaoSeg = 60,
+            custoManutencaoSeg = 0, duracao = TipoDuracao.TEMPORARIA, exigeConcentracao = true,
+            mecanica = morteCandente())
+        repeat(4) { s.avancarTurno() }
+        assertEquals("morto-vivo não pode perder PV para Morte Candente", pvAntes, alvo.pvAtual)
+        assertTrue("a mágica não fica ativa em quem ela não pega", s.magiasAtivas.isEmpty())
+        assertTrue(s.log.any { it.contains("não tem efeito") && it.contains("morto-vivo") })
+    }
+
+    @Test
+    fun `a MESMA magia continua ferindo um alvo vivo (regressao)`() {
+        val s = sessao(7, distGoblin = 1)
+        val g = s.encounter.combatentes.first { it.id == "goblin" }
+        val pvAntes = g.pvAtual
+        s.registrarMagiaAtiva(
+            nome = "Morte Candente", operadorId = "heroi", alvoId = "goblin", duracaoSeg = 60,
+            custoManutencaoSeg = 0, duracao = TipoDuracao.TEMPORARIA, exigeConcentracao = true,
+            mecanica = morteCandente())
+        repeat(12) { s.avancarTurno() }
+        assertTrue("contra vivo a mágica tem que continuar valendo", g.pvAtual < pvAntes)
+    }
+
+    @Test
+    fun `magia de dano direto tambem respeita o tipo de criatura`() {
+        val enc = CombatEncounter(listOf(heroi(), mortoVivo()), mapOf("esqueleto" to 1), seed = 1L)
+        val s = CombatSession(enc, perfil(), Random(7))
+        val alvo = s.encounter.combatentes.first { it.id == "esqueleto" }
+        val pvAntes = alvo.pvAtual
+        s.heroiConjurar(
+            ContextoConjuracao(nhBasico = 30, classe = MagicClassParser.parse("Comum"),
+                mana = NivelMana.NORMAL, distanciaMetros = 1,
+                mecanica = MagiaMecanica(efeito = "dano", danoPorEnergia = "3d",
+                    naoAfeta = listOf("morto_vivo"))),
+            MagicEnergy.parse("2"), 2, "Morte Candente", "esqueleto", 1)
+        assertEquals(pvAntes, alvo.pvAtual)
+    }
+
+    @Test
+    fun `tipo de criatura e eixo SEPARADO da tolerancia a ferimentos`() {
+        // Um constructo é NAO_VIVO na tolerância (sofre menos dano perfurante) mas NÃO é morto-vivo
+        // — a exclusão de Morte Candente não pode pegá-lo por tabela.
+        val golem = NpcStats(tipoCriatura = TipoCriatura.CONSTRUCTO,
+            tolerancia = ToleranciaFerimentos.NAO_VIVO)
+        assertEquals(TipoCriatura.CONSTRUCTO, golem.tipoCriatura)
+        assertFalse(MagicMechanics.naoAfetaTipo(morteCandente(), golem.tipoCriatura.chave))
+        assertTrue(MagicMechanics.naoAfetaTipo(morteCandente(), TipoCriatura.MORTO_VIVO.chave))
+    }
+
+    @Test
+    fun `o heroi e sempre VIVO — nenhuma exclusao do catalogo o atinge`() {
+        val s = sessao(7)
+        assertEquals(TipoCriatura.VIVO, s.heroi.tipoCriatura)
+    }
+
+    // ── Lote A1-c: insubstancialidade (MB, vantagem de 80 pontos) ──────────────────────────────
+
+    private fun espectro(pv: Int = 11) = Combatente(
+        id = "espectro", nome = "Espectro", dx = 12, velocidadeBasica = 5.75, deslocamento = 5,
+        pvMax = pv, pvAtual = pv,
+        stats = NpcStats(st = 10, dx = 12, iq = 11, ht = 11, pvMax = pv, armaDano = "1d-2",
+            armaTipo = "cont", armaNh = 12, tipoCriatura = TipoCriatura.INSUBSTANCIAL)
+    )
+
+    private fun sessaoEspectro(seed: Long = 7) = CombatSession(
+        CombatEncounter(listOf(heroi(), espectro()), mapOf("espectro" to 1), seed = 1L),
+        perfil(), Random(seed))
+
+    private fun espadaDoHeroi() = AtaqueHeroi(
+        rotulo = "Espada", nh = 14, danoExpr = "1d+2", tipo = DanoTipo.CORT, alcance = 1)
+
+    @Test
+    fun `arma comum ATRAVESSA o insubstancial — sem rolar para acertar`() {
+        val s = sessaoEspectro()
+        val alvo = s.encounter.combatentes.first { it.id == "espectro" }
+        val pvAntes = alvo.pvAtual
+        val r = s.heroiAtaca(espadaDoHeroi(), "espectro")
+        assertFalse("não é errar o golpe, é o golpe atravessar", r.acertou)
+        assertEquals(pvAntes, alvo.pvAtual)
+        assertTrue(s.log.any { it.contains("insubstancial") })
+    }
+
+    @Test
+    fun `MAGIA continua ferindo o insubstancial — ele so resiste ao fisico`() {
+        // Regra literal: "continua vulnerável a ataques psíquicos e mágicos".
+        val s = sessaoEspectro()
+        val alvo = s.encounter.combatentes.first { it.id == "espectro" }
+        val pvAntes = alvo.pvAtual
+        s.heroiConjurar(
+            ContextoConjuracao(nhBasico = 30, classe = MagicClassParser.parse("Comum"),
+                mana = NivelMana.NORMAL, distanciaMetros = 1,
+                mecanica = MagiaMecanica(efeito = "dano", danoPorEnergia = "3d")),
+            MagicEnergy.parse("2"), 2, "Toque Chocante", "espectro", 1)
+        assertTrue("magia tem que passar", alvo.pvAtual < pvAntes)
+    }
+
+    @Test
+    fun `Afetar Espiritos DESTRAVA a arma contra o insubstancial`() {
+        val s = sessaoEspectro()
+        val buff = MagicMechanics.calcularBuff(
+            MagiaMecanica(efeito = "buff", buffAfetaInsubstancial = true), energia = 4, alvoId = "heroi")
+        s.registrarMagiaAtiva(
+            nome = "Afetar Espíritos", operadorId = "heroi", alvoId = "heroi", duracaoSeg = 60,
+            custoManutencaoSeg = 0, duracao = TipoDuracao.TEMPORARIA, exigeConcentracao = false,
+            buff = buff)
+        val logAntes = s.log.size
+        val r = s.heroiAtaca(espadaDoHeroi(), "espectro")
+        // Não basta "não ter a linha de atravessar" — isso passaria por vacuidade se o golpe fosse
+        // barrado por outro motivo. Comparo com o CONTROLE: sem a mágica, o mesmo ataque atravessa.
+        val controle = sessaoEspectro().heroiAtaca(espadaDoHeroi(), "espectro")
+        assertTrue("sem a mágica o golpe tem que atravessar (controle)",
+            controle.texto.contains("atravessa"))
+        assertFalse("com a mágica ativa o golpe NÃO pode mais atravessar", r.texto.contains("atravessa"))
+        assertTrue("e o ataque tem que ter sido de fato resolvido: ${s.log.drop(logAntes)}",
+            s.log.size > logAntes)
+    }
+
+    @Test
+    fun `a regra e SIMETRICA — o golpe do espectro tambem nao fere o heroi`() {
+        // "Da mesma maneira, seus ataques físicos e de energia não afetam oponentes físicos."
+        val s = sessaoEspectro()
+        val pvAntes = s.heroi.pvAtual
+        // `alvoId` é obrigatório: sem ele `intencaoAtacaHeroi` devolve false, o NPC nem tenta
+        // atacar e o PV ficaria intacto pelo motivo ERRADO — o teste passaria por vacuidade
+        // (mesma armadilha do MEC-31). Por isso a asserção do LOG é a que importa aqui.
+        val intencao = NpcCombatBrain.IntencaoNpc(
+            manobra = Manobra.ATAQUE, alvoId = "heroi", motivo = "ataca")
+        s.npcResolve("espectro", intencao)
+        assertEquals("espírito não soca ninguém", pvAntes, s.heroi.pvAtual)
+        assertTrue("e tem que ser POR SER insubstancial, não por não ter atacado: ${s.log}",
+            s.log.any { it.contains("atravessa você") })
+    }
+
+    @Test
+    fun `buff so de afetaInsubstancial NAO e so-narrado`() {
+        val b = MagicMechanics.calcularBuff(
+            MagiaMecanica(efeito = "buff", buffAfetaInsubstancial = true), energia = 1, alvoId = "heroi")
+        assertFalse(b.soNarrado)
+        assertTrue(b.afetaInsubstancial)
+    }
+
     // ── Lote NARR-1: o Narrador precisa ser LEMBRADO das mágicas narradas ──────────────────────
 
     @Test

@@ -1,91 +1,465 @@
 {
   "versao": 1,
   "criaturas": [
-    { "id": "goblin", "nome": "Goblin", "descricao": "Humanoide pequeno, covarde em grupo e cruel quando em vantagem.",
-      "st": 9, "dx": 11, "iq": 9, "ht": 10, "pv": 9, "rd": 1, "velocidadeBasica": 5.25, "deslocamento": 5,
-      "agressividade": 6, "moral": 4,
-      "ataques": [ { "nome": "Faca", "dano": "1d-2", "tipo": "corte", "nh": 11, "alcanceMetros": 1 } ] },
-
-    { "id": "goblin_arqueiro", "nome": "Goblin Arqueiro", "descricao": "Goblin que prefere atacar de longe e fugir do corpo-a-corpo.",
-      "st": 9, "dx": 12, "iq": 9, "ht": 10, "pv": 9, "rd": 0, "velocidadeBasica": 5.5, "deslocamento": 5,
-      "agressividade": 4, "moral": 4,
-      "ataques": [ { "nome": "Arco curto", "dano": "1d", "tipo": "perf", "nh": 12, "alcanceMetros": 30 },
-                   { "nome": "Adaga", "dano": "1d-2", "tipo": "perf", "nh": 10, "alcanceMetros": 1 } ] },
-
-    { "id": "kobold", "nome": "Kobold", "descricao": "Reptiliano pequeno e medroso; foge ao primeiro sinal de perigo real.",
-      "st": 8, "dx": 11, "iq": 9, "ht": 9, "pv": 8, "rd": 1, "velocidadeBasica": 5.0, "deslocamento": 5,
-      "agressividade": 3, "moral": 2,
-      "ataques": [ { "nome": "Lança curta", "dano": "1d-2", "tipo": "perf", "nh": 10, "alcanceMetros": 1 } ] },
-
-    { "id": "orc", "nome": "Orc", "descricao": "Guerreiro brutal, gosta de combate direto.",
-      "st": 12, "dx": 11, "iq": 9, "ht": 12, "pv": 12, "rd": 2, "velocidadeBasica": 5.75, "deslocamento": 5,
-      "agressividade": 8, "moral": 7,
-      "ataques": [ { "nome": "Machado", "dano": "2d+1", "tipo": "corte", "nh": 13, "alcanceMetros": 1 } ] },
-
-    { "id": "lobo", "nome": "Lobo", "descricao": "Predador que ataca em alcateia, recua se ferido e sozinho.",
-      "st": 10, "dx": 13, "iq": 4, "ht": 12, "pv": 10, "rd": 1, "velocidadeBasica": 6.25, "deslocamento": 7,
-      "agressividade": 7, "moral": 5,
-      "ataques": [ { "nome": "Mordida", "dano": "1d", "tipo": "corte", "nh": 13, "alcanceMetros": 1 } ] },
-
-    { "id": "lobo_atroz", "nome": "Lobo Atroz", "descricao": "Lobo gigante, feroz e tenaz.",
-      "st": 16, "dx": 13, "iq": 4, "ht": 13, "pv": 17, "rd": 2, "velocidadeBasica": 6.5, "deslocamento": 8,
-      "agressividade": 9, "moral": 8,
-      "ataques": [ { "nome": "Mordida", "dano": "2d", "tipo": "corte", "nh": 14, "alcanceMetros": 1 } ] },
-
-    { "id": "urso_pardo", "nome": "Urso-pardo", "descricao": "Fera enorme; investe e despedaça.",
-      "st": 22, "dx": 11, "iq": 4, "ht": 13, "pv": 24, "rd": 2, "velocidadeBasica": 6.0, "deslocamento": 6,
-      "agressividade": 9, "moral": 8,
-      "ataques": [ { "nome": "Garras", "dano": "2d+1", "tipo": "corte", "nh": 12, "alcanceMetros": 1 } ] },
-
-    { "id": "rato_gigante", "nome": "Rato Gigante", "descricao": "Praga das masmorras; ataca em bando.",
-      "st": 6, "dx": 13, "iq": 3, "ht": 11, "pv": 6, "rd": 0, "velocidadeBasica": 6.0, "deslocamento": 6,
-      "agressividade": 5, "moral": 3,
-      "ataques": [ { "nome": "Mordida", "dano": "1d-4", "tipo": "perf", "nh": 13, "alcanceMetros": 1 } ] },
-
-    { "id": "aranha_gigante", "nome": "Aranha Gigante", "descricao": "Emboscadora peçonhenta.",
-      "st": 11, "dx": 14, "iq": 5, "ht": 11, "pv": 11, "rd": 2, "velocidadeBasica": 6.25, "deslocamento": 6,
-      "agressividade": 7, "moral": 6,
-      "ataques": [ { "nome": "Presas", "dano": "1d-1", "tipo": "perf", "nh": 14, "alcanceMetros": 1 } ] },
-
-    { "id": "serpente_venenosa", "nome": "Serpente Venenosa", "descricao": "Bote rápido e venenoso.",
-      "st": 4, "dx": 14, "iq": 3, "ht": 11, "pv": 5, "rd": 0, "velocidadeBasica": 6.25, "deslocamento": 5,
-      "agressividade": 5, "moral": 5,
-      "ataques": [ { "nome": "Bote", "dano": "1d-3", "tipo": "perf", "nh": 14, "alcanceMetros": 1 } ] },
-
-    { "id": "esqueleto", "nome": "Esqueleto", "descricao": "Morto-vivo sem medo; luta até ser destruído.",
-      "st": 11, "dx": 12, "iq": 8, "ht": 12, "pv": 11, "rd": 2, "velocidadeBasica": 6.0, "deslocamento": 6,
-      "agressividade": 8, "moral": 10, "tolerancia": "nao_vivo",
-      "ataques": [ { "nome": "Espada curta", "dano": "1d+1", "tipo": "corte", "nh": 12, "alcanceMetros": 1 } ] },
-
-    { "id": "zumbi", "nome": "Zumbi", "descricao": "Morto-vivo lento e incansável.",
-      "st": 13, "dx": 8, "iq": 8, "ht": 14, "pv": 14, "rd": 1, "velocidadeBasica": 4.5, "deslocamento": 4,
-      "agressividade": 8, "moral": 10, "tolerancia": "nao_vivo",
-      "ataques": [ { "nome": "Pancada", "dano": "1d+1", "tipo": "cont", "nh": 10, "alcanceMetros": 1 } ] },
-
-    { "id": "bandido", "nome": "Bandido", "descricao": "Salteador humano; recua se a luta virar contra ele.",
-      "st": 11, "dx": 11, "iq": 10, "ht": 11, "pv": 11, "rd": 1, "velocidadeBasica": 5.5, "deslocamento": 5,
-      "agressividade": 6, "moral": 5,
-      "ataques": [ { "nome": "Espada", "dano": "1d+2", "tipo": "corte", "nh": 12, "alcanceMetros": 1 } ] },
-
-    { "id": "bandido_arqueiro", "nome": "Bandido Arqueiro", "descricao": "Salteador que cobre os companheiros com flechas.",
-      "st": 11, "dx": 12, "iq": 10, "ht": 11, "pv": 11, "rd": 0, "velocidadeBasica": 5.75, "deslocamento": 5,
-      "agressividade": 5, "moral": 5,
-      "ataques": [ { "nome": "Arco", "dano": "1d+1", "tipo": "perf", "nh": 13, "alcanceMetros": 50 },
-                   { "nome": "Faca", "dano": "1d-1", "tipo": "corte", "nh": 10, "alcanceMetros": 1 } ] },
-
-    { "id": "mercenario", "nome": "Mercenário", "descricao": "Soldado profissional, disciplinado e blindado.",
-      "st": 12, "dx": 12, "iq": 10, "ht": 12, "pv": 12, "rd": 4, "velocidadeBasica": 6.0, "deslocamento": 5,
-      "agressividade": 7, "moral": 8,
-      "ataques": [ { "nome": "Espada larga", "dano": "2d", "tipo": "corte", "nh": 14, "alcanceMetros": 1 } ] },
-
-    { "id": "ogro", "nome": "Ogro", "descricao": "Brutamontes gigante; avança sem hesitar e esmaga.",
-      "st": 20, "dx": 11, "iq": 7, "ht": 13, "pv": 22, "rd": 3, "velocidadeBasica": 6.0, "deslocamento": 6,
-      "agressividade": 9, "moral": 9,
-      "ataques": [ { "nome": "Clava enorme", "dano": "3d+2", "tipo": "cont", "nh": 13, "alcanceMetros": 2 } ] },
-
-    { "id": "cultista", "nome": "Cultista", "descricao": "Fanático humano; luta com fervor mas quebra se a fé vacila.",
-      "st": 10, "dx": 11, "iq": 11, "ht": 10, "pv": 10, "rd": 0, "velocidadeBasica": 5.25, "deslocamento": 5,
-      "agressividade": 7, "moral": 6,
-      "ataques": [ { "nome": "Adaga ritual", "dano": "1d-1", "tipo": "perf", "nh": 12, "alcanceMetros": 1 } ] }
+    {
+      "id": "goblin",
+      "nome": "Goblin",
+      "descricao": "Humanoide pequeno, covarde em grupo e cruel quando em vantagem.",
+      "st": 9,
+      "dx": 11,
+      "iq": 9,
+      "ht": 10,
+      "pv": 9,
+      "rd": 1,
+      "velocidadeBasica": 5.25,
+      "deslocamento": 5,
+      "agressividade": 6,
+      "moral": 4,
+      "ataques": [
+        {
+          "nome": "Faca",
+          "dano": "1d-2",
+          "tipo": "corte",
+          "nh": 11,
+          "alcanceMetros": 1
+        }
+      ]
+    },
+    {
+      "id": "goblin_arqueiro",
+      "nome": "Goblin Arqueiro",
+      "descricao": "Goblin que prefere atacar de longe e fugir do corpo-a-corpo.",
+      "st": 9,
+      "dx": 12,
+      "iq": 9,
+      "ht": 10,
+      "pv": 9,
+      "rd": 0,
+      "velocidadeBasica": 5.5,
+      "deslocamento": 5,
+      "agressividade": 4,
+      "moral": 4,
+      "ataques": [
+        {
+          "nome": "Arco curto",
+          "dano": "1d",
+          "tipo": "perf",
+          "nh": 12,
+          "alcanceMetros": 30
+        },
+        {
+          "nome": "Adaga",
+          "dano": "1d-2",
+          "tipo": "perf",
+          "nh": 10,
+          "alcanceMetros": 1
+        }
+      ]
+    },
+    {
+      "id": "kobold",
+      "nome": "Kobold",
+      "descricao": "Reptiliano pequeno e medroso; foge ao primeiro sinal de perigo real.",
+      "st": 8,
+      "dx": 11,
+      "iq": 9,
+      "ht": 9,
+      "pv": 8,
+      "rd": 1,
+      "velocidadeBasica": 5.0,
+      "deslocamento": 5,
+      "agressividade": 3,
+      "moral": 2,
+      "ataques": [
+        {
+          "nome": "Lança curta",
+          "dano": "1d-2",
+          "tipo": "perf",
+          "nh": 10,
+          "alcanceMetros": 1
+        }
+      ]
+    },
+    {
+      "id": "orc",
+      "nome": "Orc",
+      "descricao": "Guerreiro brutal, gosta de combate direto.",
+      "st": 12,
+      "dx": 11,
+      "iq": 9,
+      "ht": 12,
+      "pv": 12,
+      "rd": 2,
+      "velocidadeBasica": 5.75,
+      "deslocamento": 5,
+      "agressividade": 8,
+      "moral": 7,
+      "ataques": [
+        {
+          "nome": "Machado",
+          "dano": "2d+1",
+          "tipo": "corte",
+          "nh": 13,
+          "alcanceMetros": 1
+        }
+      ]
+    },
+    {
+      "id": "lobo",
+      "nome": "Lobo",
+      "descricao": "Predador que ataca em alcateia, recua se ferido e sozinho.",
+      "st": 10,
+      "dx": 13,
+      "iq": 4,
+      "ht": 12,
+      "pv": 10,
+      "rd": 1,
+      "velocidadeBasica": 6.25,
+      "deslocamento": 7,
+      "agressividade": 7,
+      "moral": 5,
+      "ataques": [
+        {
+          "nome": "Mordida",
+          "dano": "1d",
+          "tipo": "corte",
+          "nh": 13,
+          "alcanceMetros": 1
+        }
+      ]
+    },
+    {
+      "id": "lobo_atroz",
+      "nome": "Lobo Atroz",
+      "descricao": "Lobo gigante, feroz e tenaz.",
+      "st": 16,
+      "dx": 13,
+      "iq": 4,
+      "ht": 13,
+      "pv": 17,
+      "rd": 2,
+      "velocidadeBasica": 6.5,
+      "deslocamento": 8,
+      "agressividade": 9,
+      "moral": 8,
+      "ataques": [
+        {
+          "nome": "Mordida",
+          "dano": "2d",
+          "tipo": "corte",
+          "nh": 14,
+          "alcanceMetros": 1
+        }
+      ]
+    },
+    {
+      "id": "urso_pardo",
+      "nome": "Urso-pardo",
+      "descricao": "Fera enorme; investe e despedaça.",
+      "st": 22,
+      "dx": 11,
+      "iq": 4,
+      "ht": 13,
+      "pv": 24,
+      "rd": 2,
+      "velocidadeBasica": 6.0,
+      "deslocamento": 6,
+      "agressividade": 9,
+      "moral": 8,
+      "ataques": [
+        {
+          "nome": "Garras",
+          "dano": "2d+1",
+          "tipo": "corte",
+          "nh": 12,
+          "alcanceMetros": 1
+        }
+      ]
+    },
+    {
+      "id": "rato_gigante",
+      "nome": "Rato Gigante",
+      "descricao": "Praga das masmorras; ataca em bando.",
+      "st": 6,
+      "dx": 13,
+      "iq": 3,
+      "ht": 11,
+      "pv": 6,
+      "rd": 0,
+      "velocidadeBasica": 6.0,
+      "deslocamento": 6,
+      "agressividade": 5,
+      "moral": 3,
+      "ataques": [
+        {
+          "nome": "Mordida",
+          "dano": "1d-4",
+          "tipo": "perf",
+          "nh": 13,
+          "alcanceMetros": 1
+        }
+      ]
+    },
+    {
+      "id": "aranha_gigante",
+      "nome": "Aranha Gigante",
+      "descricao": "Emboscadora peçonhenta.",
+      "st": 11,
+      "dx": 14,
+      "iq": 5,
+      "ht": 11,
+      "pv": 11,
+      "rd": 2,
+      "velocidadeBasica": 6.25,
+      "deslocamento": 6,
+      "agressividade": 7,
+      "moral": 6,
+      "ataques": [
+        {
+          "nome": "Presas",
+          "dano": "1d-1",
+          "tipo": "perf",
+          "nh": 14,
+          "alcanceMetros": 1
+        }
+      ]
+    },
+    {
+      "id": "serpente_venenosa",
+      "nome": "Serpente Venenosa",
+      "descricao": "Bote rápido e venenoso.",
+      "st": 4,
+      "dx": 14,
+      "iq": 3,
+      "ht": 11,
+      "pv": 5,
+      "rd": 0,
+      "velocidadeBasica": 6.25,
+      "deslocamento": 5,
+      "agressividade": 5,
+      "moral": 5,
+      "ataques": [
+        {
+          "nome": "Bote",
+          "dano": "1d-3",
+          "tipo": "perf",
+          "nh": 14,
+          "alcanceMetros": 1
+        }
+      ]
+    },
+    {
+      "id": "esqueleto",
+      "nome": "Esqueleto",
+      "descricao": "Morto-vivo sem medo; luta até ser destruído.",
+      "st": 11,
+      "dx": 12,
+      "iq": 8,
+      "ht": 12,
+      "pv": 11,
+      "rd": 2,
+      "velocidadeBasica": 6.0,
+      "deslocamento": 6,
+      "agressividade": 8,
+      "moral": 10,
+      "tolerancia": "nao_vivo",
+      "ataques": [
+        {
+          "nome": "Espada curta",
+          "dano": "1d+1",
+          "tipo": "corte",
+          "nh": 12,
+          "alcanceMetros": 1
+        }
+      ],
+      "tipo": "morto_vivo"
+    },
+    {
+      "id": "zumbi",
+      "nome": "Zumbi",
+      "descricao": "Morto-vivo lento e incansável.",
+      "st": 13,
+      "dx": 8,
+      "iq": 8,
+      "ht": 14,
+      "pv": 14,
+      "rd": 1,
+      "velocidadeBasica": 4.5,
+      "deslocamento": 4,
+      "agressividade": 8,
+      "moral": 10,
+      "tolerancia": "nao_vivo",
+      "ataques": [
+        {
+          "nome": "Pancada",
+          "dano": "1d+1",
+          "tipo": "cont",
+          "nh": 10,
+          "alcanceMetros": 1
+        }
+      ],
+      "tipo": "morto_vivo"
+    },
+    {
+      "id": "bandido",
+      "nome": "Bandido",
+      "descricao": "Salteador humano; recua se a luta virar contra ele.",
+      "st": 11,
+      "dx": 11,
+      "iq": 10,
+      "ht": 11,
+      "pv": 11,
+      "rd": 1,
+      "velocidadeBasica": 5.5,
+      "deslocamento": 5,
+      "agressividade": 6,
+      "moral": 5,
+      "ataques": [
+        {
+          "nome": "Espada",
+          "dano": "1d+2",
+          "tipo": "corte",
+          "nh": 12,
+          "alcanceMetros": 1
+        }
+      ]
+    },
+    {
+      "id": "bandido_arqueiro",
+      "nome": "Bandido Arqueiro",
+      "descricao": "Salteador que cobre os companheiros com flechas.",
+      "st": 11,
+      "dx": 12,
+      "iq": 10,
+      "ht": 11,
+      "pv": 11,
+      "rd": 0,
+      "velocidadeBasica": 5.75,
+      "deslocamento": 5,
+      "agressividade": 5,
+      "moral": 5,
+      "ataques": [
+        {
+          "nome": "Arco",
+          "dano": "1d+1",
+          "tipo": "perf",
+          "nh": 13,
+          "alcanceMetros": 50
+        },
+        {
+          "nome": "Faca",
+          "dano": "1d-1",
+          "tipo": "corte",
+          "nh": 10,
+          "alcanceMetros": 1
+        }
+      ]
+    },
+    {
+      "id": "mercenario",
+      "nome": "Mercenário",
+      "descricao": "Soldado profissional, disciplinado e blindado.",
+      "st": 12,
+      "dx": 12,
+      "iq": 10,
+      "ht": 12,
+      "pv": 12,
+      "rd": 4,
+      "velocidadeBasica": 6.0,
+      "deslocamento": 5,
+      "agressividade": 7,
+      "moral": 8,
+      "ataques": [
+        {
+          "nome": "Espada larga",
+          "dano": "2d",
+          "tipo": "corte",
+          "nh": 14,
+          "alcanceMetros": 1
+        }
+      ]
+    },
+    {
+      "id": "ogro",
+      "nome": "Ogro",
+      "descricao": "Brutamontes gigante; avança sem hesitar e esmaga.",
+      "st": 20,
+      "dx": 11,
+      "iq": 7,
+      "ht": 13,
+      "pv": 22,
+      "rd": 3,
+      "velocidadeBasica": 6.0,
+      "deslocamento": 6,
+      "agressividade": 9,
+      "moral": 9,
+      "ataques": [
+        {
+          "nome": "Clava enorme",
+          "dano": "3d+2",
+          "tipo": "cont",
+          "nh": 13,
+          "alcanceMetros": 2
+        }
+      ]
+    },
+    {
+      "id": "cultista",
+      "nome": "Cultista",
+      "descricao": "Fanático humano; luta com fervor mas quebra se a fé vacila.",
+      "st": 10,
+      "dx": 11,
+      "iq": 11,
+      "ht": 10,
+      "pv": 10,
+      "rd": 0,
+      "velocidadeBasica": 5.25,
+      "deslocamento": 5,
+      "agressividade": 7,
+      "moral": 6,
+      "ataques": [
+        {
+          "nome": "Adaga ritual",
+          "dano": "1d-1",
+          "tipo": "perf",
+          "nh": 12,
+          "alcanceMetros": 1
+        }
+      ]
+    },
+    {
+      "id": "espectro",
+      "nome": "Espectro",
+      "descricao": "Espirito insubstancial. Armas comuns o atravessam; so magia (ou uma arma sob Afetar Espiritos) o alcanca. Seus proprios golpes tambem nao ferem os vivos.",
+      "st": 10,
+      "dx": 12,
+      "iq": 11,
+      "ht": 11,
+      "pv": 11,
+      "rd": 0,
+      "velocidadeBasica": 5.75,
+      "deslocamento": 5,
+      "agressividade": 6,
+      "moral": 9,
+      "tipo": "insubstancial",
+      "ataques": [
+        {
+          "nome": "Toque gelido",
+          "dano": "1d-2",
+          "tipo": "cont",
+          "nh": 12,
+          "alcanceMetros": 1
+        }
+      ],
+      "magias": [
+        {
+          "nome": "Toque Chocante",
+          "nh": 13,
+          "projetil": false,
+          "custoFP": 2,
+          "danoDados": 1
+        }
+      ]
+    }
   ]
 }

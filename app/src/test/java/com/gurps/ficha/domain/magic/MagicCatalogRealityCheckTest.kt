@@ -183,6 +183,28 @@ class MagicCatalogRealityCheckTest {
         assertTrue("curadoria de elemento regrediu: $erros", erros.isEmpty())
     }
 
+    /**
+     * Lote A1-b: as duas mágicas de tique que o motor EXECUTA dizem, com todas as letras, que
+     * mortos-vivos não são afetados. Se a curadoria sumir, o tique volta a bater em esqueleto.
+     */
+    @Test
+    fun `Morte Candente e Morte Putrefata excluem morto-vivo no catalogo real`() {
+        val catalogo = carregarCatalogo()
+        Assume.assumeNotNull(catalogo)
+        var conferidas = 0
+        val erros = mutableListOf<String>()
+        for (i in 0 until catalogo!!.length()) {
+            val magia = catalogo.getJSONObject(i)
+            if (magia.optString("id") !in setOf("morte_candente", "morte_putrefata")) continue
+            conferidas++
+            val lista = magia.optJSONObject("mecanica")?.optJSONArray("naoAfeta")
+            val tem = (0 until (lista?.length() ?: 0)).any { lista!!.optString(it) == "morto_vivo" }
+            if (!tem) erros += magia.optString("id")
+        }
+        assertEquals("as duas mágicas têm que existir no catálogo", 2, conferidas)
+        assertTrue("perderam a exclusão de morto-vivo: $erros", erros.isEmpty())
+    }
+
     /** Lote P3-1: Bloquear e Robustez são de Bloqueio — valem UM ataque só, não a duração toda. */
     @Test
     fun `Bloquear e Robustez sao marcadas como buff de um unico uso`() {

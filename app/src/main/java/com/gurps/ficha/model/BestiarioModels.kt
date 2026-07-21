@@ -46,6 +46,14 @@ data class BestiarioCriatura(
     val moral: Int = 5,             // 0-10
     val mt: Int = 0,                // Modificador de Tamanho (MT) — +MT no acerto à distância contra ela (MB p.549)
     val tolerancia: String = "",    // Lote 385: "" | "nao_vivo" | "homogeneo" | "difuso" (MB p.381)
+    /**
+     * Lote A1-b: natureza da criatura — "" (vivo) | "morto_vivo" | "insubstancial" | "elemental" |
+     * "constructo". NÃO é o mesmo que [tolerancia]: aquela diz quanto dano físico o corpo sofre,
+     * esta diz se a mágica pega nele. Um golem é `nao_vivo` na tolerância e `constructo` no tipo.
+     */
+    val tipo: String = "",
+    /** Lote A1: elementos a que a criatura é imune por natureza ("fogo" no elemental de fogo). */
+    val imunidades: List<String> = emptyList(),
     val ataques: List<AtaqueCriatura> = emptyList(),
     /** Lote MA-7: mágicas ofensivas do conjurador (nome, nh, projetil, custoFP, danoDados). */
     val magias: List<MagiaCriatura> = emptyList()
@@ -72,6 +80,11 @@ data class BestiarioCriatura(
             alcanceMetros = alcanceMaximo,
             agressividade = agressividade, moral = moral,
             modificadorTamanho = mt, tolerancia = toleranciaEnum(),
+            // Lote A1/A1-b: natureza e imunidades naturais. `tipo` desconhecido cai em VIVO — o
+            // padrão seguro: nenhuma exclusão de mágica dispara por engano.
+            tipoCriatura = com.gurps.ficha.domain.combat.TipoCriatura.porChave(tipo)
+                ?: com.gurps.ficha.domain.combat.TipoCriatura.VIVO,
+            imunidades = imunidades,
             magias = magias.map { NpcMagia(it.nome, it.nh, it.projetil, it.custoFP, it.danoDados) } // Lote MA-7
         )
         return Combatente(

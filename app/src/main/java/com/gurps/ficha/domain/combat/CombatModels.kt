@@ -99,6 +99,27 @@ data class NpcMagia(
     val danoDados: Int = 1,
 )
 
+/**
+ * Lote A1-b: natureza da criatura para efeito de mágica.
+ *
+ * Lista curta de propósito — só entram tipos que alguma regra do catálogo realmente distingue.
+ * O [chave] é o que o campo `naoAfeta` da mecânica escreve, em minúsculas e sem acento.
+ */
+enum class TipoCriatura(val chave: String, val rotulo: String) {
+    VIVO("vivo", "vivo"),
+    MORTO_VIVO("morto_vivo", "morto-vivo"),
+    /** Fantasma/espírito: existe, mas não é sólido. */
+    INSUBSTANCIAL("insubstancial", "insubstancial"),
+    ELEMENTAL("elemental", "elemental"),
+    /** Golem, autômato, objeto animado — não está vivo nem morto. */
+    CONSTRUCTO("constructo", "constructo");
+
+    companion object {
+        fun porChave(s: String?): TipoCriatura? =
+            s?.trim()?.lowercase()?.let { k -> entries.firstOrNull { it.chave == k } }
+    }
+}
+
 data class NpcStats(
     val st: Int = 10,
     val dx: Int = 10,
@@ -118,6 +139,14 @@ data class NpcStats(
      * queima. Vazio = nada. O herói não tem `NpcStats`; a imunidade dele vem de buff (mágica).
      */
     val imunidades: List<String> = emptyList(),
+    /**
+     * Lote A1-b: natureza da criatura, para as mágicas que excluem um tipo.
+     *
+     * Eixo SEPARADO da [tolerancia]: `ToleranciaFerimentos.NAO_VIVO` diz **quanto** dano físico o
+     * corpo sofre (multiplicadores de ferimento); `tipoCriatura` diz **se a mágica pega nele**.
+     * Morte Candente machuca um humano e não machuca um esqueleto — nada a ver com multiplicador.
+     */
+    val tipoCriatura: TipoCriatura = TipoCriatura.VIVO,
     val velocidadeBasica: Double = (dx + ht) / 4.0,
     val deslocamento: Int = ((dx + ht) / 4.0).toInt(),
     val armaNome: String = "",
@@ -268,6 +297,16 @@ data class Combatente(
      * Vale para o herói (só buff, `stats` é null) e para o NPC (bestiário + buff) com o mesmo código.
      */
     val imunidades: List<String> get() = (stats?.imunidades ?: emptyList()) + buffs.flatMap { it.imunidades }
+    /**
+     * Lote A1-b: natureza do combatente. O herói não tem `NpcStats` e é sempre VIVO — se um dia
+     * existir herói morto-vivo, é aqui que entra, e não em cada regra.
+     */
+    val tipoCriatura: TipoCriatura get() = stats?.tipoCriatura ?: TipoCriatura.VIVO
+    /**
+     * Lote A1-c: as armas deste combatente ferem insubstanciais (mágica **Afetar Espíritos**).
+     * Sem isto, *"ataques físicos [...] não afetam"* um espírito (MB, Insubstancialidade).
+     */
+    val afetaInsubstancial: Boolean get() = buffs.any { it.afetaInsubstancial }
     val buffDanoArma: Int get() = buffs.sumOf { it.danoArma }
     /** Penalidade ao NH de quem ATACA este combatente (Nublar). Valor positivo = quanto subtrair. */
     val buffPenalidadeAtacantes: Int get() = buffs.sumOf { it.penalidadeAtacantes }

@@ -57,6 +57,19 @@ data class MagiaMecanica(
      * Usado para montar o [BuffAplicado.imunidades].
      */
     val buffImunidade: String? = null,
+    /**
+     * Lote A1-b: tipos de criatura que esta mágica **não afeta**, por chave (`"morto_vivo"`,
+     * `"insubstancial"`, `"elemental"`, `"constructo"`, `"vivo"`).
+     *
+     * Regra literal que motivou: *"Seres mortos-vivos não são afetados"* (Morte Candente) e
+     * *"Mortos-vivos não são afetados"* (Morte Putrefata). Eram um deferido honesto do MEC-22 —
+     * o motor executava o tique dessas duas sem saber em quem estava batendo.
+     *
+     * Vazio = afeta todo mundo.
+     */
+    val naoAfeta: List<String> = emptyList(),
+    /** Lote A1-c: esta magia faz a arma do alvo ferir insubstanciais (Afetar Espiritos). */
+    val buffAfetaInsubstancial: Boolean = false,
     /** null = RD normal; "ignora" = armadura não protege (Toque Chocante); "metal_rd_1" = metal vira RD 1 (aprox.: mantém RD). */
     val armadura: String? = null,
     /** Como acerta: "projetil" | "toque" | "feixe" (DX−4) | "area" | "auto". Complementa a `classe`. */
@@ -288,6 +301,11 @@ data class BuffAplicado(
      * Vazio = não concede imunidade nenhuma.
      */
     val imunidades: List<String> = emptyList(),
+    /**
+     * Lote A1-c: a arma do portador passa a ferir insubstanciais (mágica **Afetar Espíritos**:
+     * *"Uma arma com essa mágica pode prejudicar um espírito insubstancial"*).
+     */
+    val afetaInsubstancial: Boolean = false,
     val deslocamento: Int = 0,
     /** Deslocamento absoluto imposto (Voo). null = não mexeu. */
     val deslocamentoFixo: Int? = null,
@@ -319,7 +337,7 @@ data class BuffAplicado(
      * passado adiante), que só apareceu num teste de integração.
      */
     val soNarrado: Boolean get() = rd == 0 && esquiva == 0 && bd == 0 && st == 0 && dx == 0 && ht == 0 &&
-        iq == 0 && vontade == 0 && imunidades.isEmpty() &&
+        iq == 0 && vontade == 0 && imunidades.isEmpty() && !afetaInsubstancial &&
         deslocamento == 0 && deslocamentoFixo == null && danoArma == 0 && penalidadeAtacantes == 0
 }
 
@@ -398,6 +416,18 @@ object MagicMechanics {
         return imunidadesDoAlvo.any { normalizarElemento(it) == e }
     }
 
+    /**
+     * Lote A1-b: a mágica [m] **não pega** numa criatura do tipo [chaveDoTipo]?
+     *
+     * O herói é sempre `"vivo"`, então nenhuma exclusão do catálogo o atinge hoje — o campo existe
+     * para os NPCs. Comparação sem acento e sem caixa, como o resto do catálogo.
+     */
+    fun naoAfetaTipo(m: MagiaMecanica?, chaveDoTipo: String?): Boolean {
+        val alvo = normalizarElemento(chaveDoTipo) ?: return false
+        val lista = m?.naoAfeta ?: return false
+        return lista.any { normalizarElemento(it) == alvo }
+    }
+
     private fun normalizarElemento(s: String?): String? {
         val t = s?.trim()?.lowercase()?.takeIf { it.isNotBlank() } ?: return null
         return t.replace("á", "a").replace("â", "a").replace("ã", "a")
@@ -410,7 +440,7 @@ object MagicMechanics {
     fun temBuffEstruturado(m: MagiaMecanica?): Boolean = m != null && m.efeito == "buff" &&
         (m.buffRd != 0 || m.buffEsquiva != 0 || m.buffBd != 0 || m.buffAtributoValor != 0 || m.buffDeslocamento != 0 ||
          m.buffDeslocamentoFixo != 0 || m.buffDanoArma != 0 || m.buffPenalidadeAtacantes != 0 ||
-         !m.buffImunidade.isNullOrBlank())   // Lote A1
+         !m.buffImunidade.isNullOrBlank() || m.buffAfetaInsubstancial)   // Lotes A1 / A1-c
 
     /**
      * Lote MEC-7: quanto de energia ainda COMPRA efeito, e o que ela compra em português.
@@ -476,6 +506,7 @@ object MagicMechanics {
             iq = if (m.buffAtributo.equals("IQ", true)) atr else 0,
             vontade = if (m.buffAtributo.equals("Vontade", true)) atr else 0,
             imunidades = listOfNotNull(m.buffImunidade?.takeIf { it.isNotBlank() }),
+            afetaInsubstancial = m.buffAfetaInsubstancial,
             deslocamento = m.buffDeslocamento * n,
             deslocamentoFixo = if (m.buffDeslocamentoFixo > 0) m.buffDeslocamentoFixo else null,
             danoArma = m.buffDanoArma * n,

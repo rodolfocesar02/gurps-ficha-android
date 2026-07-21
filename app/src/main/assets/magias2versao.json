@@ -246,7 +246,8 @@
       "efeito": "buff",
       "entrega": "toque",
       "buffRotulo": "afeta insubstanciais (arma fere espírito)",
-      "notas": "Permite que o alvo (pessoa ou objeto/arma) interaja com espíritos incorpóreos como se fossem sólidos — uma arma encantada pode ferir um espírito insubstancial. Não há bônus numérico: é uma permissão de interação (metacaracterística), não modifica RD, atributo, dano ou defesa. Fica narrado. 4 para operar, 2 para manter, duração 1 min."
+      "notas": "Lote A1-c EXECUTAVEL: \"Uma arma com essa magia pode prejudicar um espirito insubstancial\" (literal). Marca o portador, e o motor deixa de barrar o golpe dele contra alvo INSUBSTANCIAL. 1 minuto; 4 para operar, 2 para manter. Pre-requisito: Solidificar. DEFERIDO: a metade \"interagir com objetos incorporeos\" fora de combate segue narrada.",
+      "buffAfetaInsubstancial": true
     },
     "duracaoTipo": "temporaria",
     "duracaoSeg": 60,
@@ -12790,11 +12791,14 @@
       "armadura": "ignora",
       "entrega": "toque",
       "condicaoResistencia": "HT",
-      "notas": "Resistivel HT. Ataque p/ acionar (local irrelevante). Cada turno HT: falha=1d-1 quei, sucesso=0, sucesso decisivo quebra. Nem RD nem Resist. ao Fogo protegem. Sofre efeito de Enjoo. Nao afeta mortos-vivos. Necromantica.",
+      "notas": "Lote A1-b: \"Seres mortos-vivos nao sao afetados\" (literal do livro) agora e REGRA -- a magia nao incide em morto-vivo e se desfaz se for lancada num. Era deferido honesto do MEC-22. Resistivel HT. Ataque p/ acionar (local irrelevante). Cada turno HT: falha=1d-1 quei, sucesso=0, sucesso decisivo quebra. Nem RD nem Resist. ao Fogo protegem. Sofre efeito de Enjoo. Nao afeta mortos-vivos. Necromantica.",
       "danoPorTurnoExpr": "1d-1",
       "danoPorTurnoTeste": "HT",
       "quebraEmSucessoDecisivo": true,
-      "elementoDano": "fogo"
+      "elementoDano": "fogo",
+      "naoAfeta": [
+        "morto_vivo"
+      ]
     }
   },
   {
@@ -12819,12 +12823,15 @@
       "armadura": "ignora",
       "entrega": "toque",
       "condicaoResistencia": "HT",
-      "notas": "Dano FIXO de 1d-1 por turno (não escala com energia; 3 para operar, 2 para manter). Alvo deve ser tocado. A cada turno testa HT: falha = 1d-1; falha crítica = 6 pontos fixos; sucesso = sem dano; sucesso decisivo = quebra a mágica. RD não protege. Local do acerto testado a cada dano; membro aleijado = apodreceu. Desconforto como Enjoo. Mortos-vivos imunes.",
+      "notas": "Lote A1-b: \"Mortos-vivos nao sao afetados\" (literal do livro) agora e REGRA -- a magia nao incide em morto-vivo e se desfaz se for lancada num. Era deferido honesto do MEC-22. Dano FIXO de 1d-1 por turno (não escala com energia; 3 para operar, 2 para manter). Alvo deve ser tocado. A cada turno testa HT: falha = 1d-1; falha crítica = 6 pontos fixos; sucesso = sem dano; sucesso decisivo = quebra a mágica. RD não protege. Local do acerto testado a cada dano; membro aleijado ",
       "danoFixo": true,
       "danoPorTurnoExpr": "1d-1",
       "danoPorTurnoTeste": "HT",
       "quebraEmSucessoDecisivo": true,
-      "danoPorTurnoCriticoFixo": 6
+      "danoPorTurnoCriticoFixo": 6,
+      "naoAfeta": [
+        "morto_vivo"
+      ]
     }
   },
   {
