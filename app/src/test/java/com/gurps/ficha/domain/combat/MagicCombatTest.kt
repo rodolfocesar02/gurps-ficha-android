@@ -1164,6 +1164,95 @@ class MagicCombatTest {
             s.log.any { it.contains("Vontade +2") })
     }
 
+    // ── Lote P9: FEIXE (Jatos e Sopros) ────────────────────────────────────────────────────────
+
+    private fun mecFeixe(penal: Int = 4, bloqueavel: Boolean = true) = MagiaMecanica(
+        efeito = "dano", entrega = "feixe", danoPorEnergia = "1d-1", energiaPorDado = 1,
+        feixePenalidadeDx = penal, feixeBloqueavel = bloqueavel
+    )
+
+    private fun ctxFeixe(mec: MagiaMecanica) = ContextoConjuracao(
+        nhBasico = 30, classe = MagicClassParser.parse("Comum"), mana = NivelMana.NORMAL,
+        distanciaMetros = 3, mecanica = mec
+    )
+
+    @Test
+    fun `o feixe FAZ jogada de acerto — nao acerta sozinho`() {
+        // Antes do P9 o Jato caía no ramo de dano direto e acertava SEMPRE, sem teste nenhum.
+        // Com DX 13 e −4, o NH de acerto é 9: em 40 tentativas tem que haver erro E acerto.
+        var errou = false; var acertou = false
+        for (seed in 0L until 40L) {
+            val s = sessao(seed, distGoblin = 3)
+            s.heroiConjurar(ctxFeixe(mecFeixe()), MagicEnergy.parse("2"), 2, "Jato de Chamas", "goblin", 1)
+            if (s.log.any { it.contains("O jato passa longe") }) errou = true
+            if (s.log.any { it.contains("O jato acerta") }) acertou = true
+        }
+        assertTrue("o feixe tem que poder ERRAR", errou)
+        assertTrue("e tem que poder acertar", acertou)
+    }
+
+    @Test
+    fun `sem a pericia o feixe usa DX menos a penalidade, e o log diz qual`() {
+        val s = sessao(7, distGoblin = 3)
+        s.heroiConjurar(ctxFeixe(mecFeixe(penal = 4)), MagicEnergy.parse("2"), 2, "Jato", "goblin", 1)
+        assertTrue("o log tem que mostrar DX−4: ${s.log}",
+            s.log.any { it.contains("DX−4 (sem a perícia)") })
+    }
+
+    @Test
+    fun `os Sopros que saem da boca usam DX menos 2`() {
+        val s = sessao(7, distGoblin = 3)
+        s.heroiConjurar(ctxFeixe(mecFeixe(penal = 2)), MagicEnergy.parse("2"), 2, "Sopro de Fogo", "goblin", 1)
+        assertTrue(s.log.any { it.contains("DX−2 (sem a perícia)") })
+    }
+
+    @Test
+    fun `com a pericia Ataque Inato o feixe NAO sofre a penalidade da DX`() {
+        // A penalidade é da DX improvisada, não do feixe: quem tem a perícia rola o NH dela limpo.
+        val enc = CombatEncounter(listOf(heroi(), goblin()), mapOf("goblin" to 3), seed = 1L)
+        val s = CombatSession(enc, perfil().copy(nhAtaqueInato = 16), Random(7))
+        s.heroiConjurar(ctxFeixe(mecFeixe()), MagicEnergy.parse("2"), 2, "Jato", "goblin", 1)
+        assertTrue("tem que citar a perícia, não a DX: ${s.log}",
+            s.log.any { it.contains("Ataque Inato NH 16") })
+    }
+
+    @Test
+    fun `o alvo pode se defender do feixe`() {
+        var defendeu = false
+        for (seed in 0L until 60L) {
+            val enc = CombatEncounter(listOf(heroi(), goblin()), mapOf("goblin" to 3), seed = 1L)
+            val s = CombatSession(enc, perfil().copy(nhAtaqueInato = 20), Random(seed))
+            s.heroiConjurar(ctxFeixe(mecFeixe()), MagicEnergy.parse("2"), 2, "Jato", "goblin", 1)
+            if (s.log.any { it.contains("se defende do jato") }) { defendeu = true; break }
+        }
+        assertTrue("o feixe tem que ser defensável (esquiva ou bloqueio)", defendeu)
+    }
+
+    @Test
+    fun `contra o Jato de Acido o alvo so ESQUIVA — nunca bloqueia`() {
+        // Exceção que o livro marca numa mágica só: "pode ser desviado, mas não aparado ou bloqueado".
+        for (seed in 0L until 60L) {
+            val enc = CombatEncounter(listOf(heroi(), goblin()), mapOf("goblin" to 3), seed = 1L)
+            val s = CombatSession(enc, perfil().copy(nhAtaqueInato = 20), Random(seed))
+            s.heroiConjurar(ctxFeixe(mecFeixe(bloqueavel = false)), MagicEnergy.parse("2"), 2,
+                "Jato de Ácido", "goblin", 1)
+            assertTrue("Jato de Ácido não pode ser bloqueado: ${s.log}",
+                s.log.none { it.contains("Bloqueio") })
+        }
+    }
+
+    @Test
+    fun `feixe NUNCA e aparado — nem quando o NPC apara bem`() {
+        // Um jato não tem lâmina para desviar. Aparar não pode aparecer em feixe nenhum.
+        for (seed in 0L until 60L) {
+            val enc = CombatEncounter(listOf(heroi(), goblin()), mapOf("goblin" to 1), seed = 1L)
+            val s = CombatSession(enc, perfil().copy(nhAtaqueInato = 20), Random(seed))
+            s.heroiConjurar(ctxFeixe(mecFeixe()), MagicEnergy.parse("2"), 2, "Jato", "goblin", 1)
+            assertTrue("apareceu Aparar num feixe: ${s.log}",
+                s.log.none { it.contains("Aparar") || it.contains("APARA") })
+        }
+    }
+
     // ── Lote A1: imunidade por ELEMENTO ────────────────────────────────────────────────────────
 
     private fun magiaDeFogo(expr: String = "3d") = MagiaMecanica(

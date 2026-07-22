@@ -70,6 +70,22 @@ data class MagiaMecanica(
     val naoAfeta: List<String> = emptyList(),
     /** Lote A1-c: esta magia faz a arma do alvo ferir insubstanciais (Afetar Espiritos). */
     val buffAfetaInsubstancial: Boolean = false,
+    /**
+     * Lote P9 — FEIXE (`entrega: "feixe"`): penalidade na DX para acertar quando o operador **não**
+     * tem a perícia **Ataque Inato**. O livro é uniforme em **DX−4** nos Jatos; os Sopros que saem
+     * da boca usam **DX−2** (Sopro de Fogo, Sopro de Vapor, Sopro de Ácido).
+     *
+     * A penalidade vale só para a DX: quem tem a perícia rola o NH dela, sem redutor.
+     */
+    val feixePenalidadeDx: Int = 4,
+    /**
+     * Lote P9: o feixe pode ser BLOQUEADO? Quase todos sim — *"pode ser esquivado ou bloqueado, mas
+     * não aparado"*. A exceção que o livro marca é o **Jato de Ácido**: *"pode ser desviado, mas não
+     * aparado ou bloqueado"* — contra ele só a esquiva vale.
+     *
+     * Aparar nunca vale em feixe nenhum; por isso não há campo para isso.
+     */
+    val feixeBloqueavel: Boolean = true,
     /** null = RD normal; "ignora" = armadura não protege (Toque Chocante); "metal_rd_1" = metal vira RD 1 (aprox.: mantém RD). */
     val armadura: String? = null,
     /** Como acerta: "projetil" | "toque" | "feixe" (DX−4) | "area" | "auto". Complementa a `classe`. */

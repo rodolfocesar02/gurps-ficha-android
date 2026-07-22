@@ -9714,7 +9714,7 @@
     "mecanica": {
       "efeito": "narrado",
       "entrega": "feixe",
-      "notas": "Uma arma corpo a corpo do operador ganha alcance infinito contra 1 objetivo em linha de visão por 5s. Alvo defende normal. Aplica modificadores de ataque à distância (MB548). Propriedades mágicas da arma não passam."
+      "notas": "Lote P9 EXECUTAVEL: feixe com jogada de acerto propria -- DX-4 ou a pericia Ataque Inato; o alvo pode esquivar ou bloquear, mas NUNCA aparar. Uma arma corpo a corpo do operador ganha alcance infinito contra 1 objetivo em linha de visão por 5s. Alvo defende normal. Aplica modificadores de ataque à distância (MB548). Propriedades mágicas da arma não passam."
     },
     "duracaoTipo": "temporaria",
     "duracaoSeg": 5,
@@ -10680,9 +10680,10 @@
       "entrega": "feixe",
       "condicao": "cego",
       "condicaoResistencia": "HT",
-      "notas": "Dano por ácido. Teste DX-4/Ataque Inato para acertar; pode ser desviado, não aparado/bloqueado. 1 a 3 energia (1d-1 cada). Causa projeção (empurrão narrado). Se acerta o rosto pode cegar (MB p428).",
+      "notas": "Lote P9 EXECUTAVEL: feixe com jogada de acerto propria -- DX-4 ou a pericia Ataque Inato; o alvo pode esquivar (NAO bloquear -- excecao do livro), mas NUNCA aparar. Dano por ácido. Teste DX-4/Ataque Inato para acertar; pode ser desviado, não aparado/bloqueado. 1 a 3 energia (1d-1 cada). Causa projeção (empurrão narrado). Se acerta o rosto pode cegar (MB p428).",
       "condicaoDuracaoSegPorEnergia": 1,
-      "elementoDano": "acido"
+      "elementoDano": "acido",
+      "feixeBloqueavel": false
     },
     "duracaoTipo": "temporaria",
     "duracaoSeg": 1,
@@ -10705,7 +10706,7 @@
     "mecanica": {
       "efeito": "narrado",
       "entrega": "feixe",
-      "notas": "Teste DX-4/Ataque Inato; esquivável/bloqueável, não aparável. Efeito é PROJEÇÃO/empurrão (1d por energia, não dano de PV) — pode derrubar/matar criaturas voadoras; dano real só a criaturas de fogo. Acerto no rosto: -3 em combate no próx. turno por energia. Apaga fogo em 1m."
+      "notas": "Lote P9 EXECUTAVEL: feixe com jogada de acerto propria -- DX-4 ou a pericia Ataque Inato; o alvo pode esquivar ou bloquear, mas NUNCA aparar. Teste DX-4/Ataque Inato; esquivável/bloqueável, não aparável. Efeito é PROJEÇÃO/empurrão (1d por energia, não dano de PV) — pode derrubar/matar criaturas voadoras; dano real só a criaturas de fogo. Acerto no rosto: -3 em combate no próx. tu"
     }
   },
   {
@@ -10746,7 +10747,7 @@
       "entrega": "feixe",
       "condicao": "cego",
       "condicaoResistencia": "HT",
-      "notas": "Ataque a distancia: DX-4 ou Ataque Inato; pode ser esquivado/bloqueado, nao aparado. NAO causa dano. So cega se acertar o rosto. Falha no HT = cego 1 seg por ponto de energia (1 a 3); depois -3 em pericias de combate por 1d seg. Falha critica = cego 1d seg por ponto. Sucesso = nao ve por 1 seg. Sucesso decisivo = nada. Alcance em metros = energia.",
+      "notas": "Lote P9 EXECUTAVEL: feixe com jogada de acerto propria -- DX-4 ou a pericia Ataque Inato; o alvo pode esquivar ou bloquear, mas NUNCA aparar. Ataque a distancia: DX-4 ou Ataque Inato; pode ser esquivado/bloqueado, nao aparado. NAO causa dano. So cega se acertar o rosto. Falha no HT = cego 1 seg por ponto de energia (1 a 3); depois -3 em pericias de combate por 1d seg. Falha criti",
       "condicaoDuracaoSegPorEnergia": 1
     }
   },
@@ -10770,7 +10771,7 @@
       "energiaPorDado": 1,
       "tipoDano": "quei",
       "entrega": "feixe",
-      "notas": "Ataque DX-4 ou Ataque Inato; esquivavel/bloqueavel, NAO aparavel. 1-3 pontos; alcance em m = numero de dados. Mao inabil -4.",
+      "notas": "Lote P9 EXECUTAVEL: feixe com jogada de acerto propria -- DX-4 ou a pericia Ataque Inato; o alvo pode esquivar ou bloquear, mas NUNCA aparar. Ataque DX-4 ou Ataque Inato; esquivavel/bloqueavel, NAO aparavel. 1-3 pontos; alcance em m = numero de dados. Mao inabil -4.",
       "elementoDano": "fogo"
     },
     "duracaoTipo": "temporaria",
@@ -10797,7 +10798,7 @@
       "entrega": "feixe",
       "condicao": "cego",
       "condicaoResistencia": "HT",
-      "notas": "Teste DX-4/Ataque Inato; esquivável/bloqueável, não aparável. Efeito principal: cega o alvo se acerta o rosto e falha HT (1 seg de cegueira por energia; falha crítica 1d seg/energia; após, -3 combate por 1d seg). Também causa projeção/empurrão (1d/energia, não PV). Apaga fogo em 1m.",
+      "notas": "Lote P9 EXECUTAVEL: feixe com jogada de acerto propria -- DX-4 ou a pericia Ataque Inato; o alvo pode esquivar ou bloquear, mas NUNCA aparar. Teste DX-4/Ataque Inato; esquivável/bloqueável, não aparável. Efeito principal: cega o alvo se acerta o rosto e falha HT (1 seg de cegueira por energia; falha crítica 1d seg/energia; após, -3 combate por 1d seg). Também causa projeção/empur",
       "condicaoDuracaoSegPorEnergia": 1
     },
     "duracaoTipo": "temporaria",
@@ -10821,7 +10822,7 @@
     "mecanica": {
       "efeito": "narrado",
       "entrega": "feixe",
-      "notas": "Feixe de um dedo; so cega/ofusca em escuridao relativa (penalidade combate >= -5). Teste Ataque Inato ou DX-4 (-5 no rosto); esquivavel/bloqueavel, nao aparavel. Se acerta: -4 nas pericias de combate no proximo turno e -1 pelo resto do combate (nao cumulativo; dobra com Visao Noturna). Tambem lanterna 10m."
+      "notas": "Lote P9 EXECUTAVEL: feixe com jogada de acerto propria -- DX-4 ou a pericia Ataque Inato; o alvo pode esquivar ou bloquear, mas NUNCA aparar. Feixe de um dedo; so cega/ofusca em escuridao relativa (penalidade combate >= -5). Teste Ataque Inato ou DX-4 (-5 no rosto); esquivavel/bloqueavel, nao aparavel. Se acerta: -4 nas pericias de combate no proximo turno e -1 pelo resto do comb"
     },
     "duracaoTipo": "temporaria",
     "duracaoSeg": 60,
@@ -10848,7 +10849,7 @@
       "entrega": "feixe",
       "condicao": "cego",
       "condicaoResistencia": "HT",
-      "notas": "Teste DX-4/Ataque Inato; esquivável/bloqueável, não aparável. Cega se acerta o rosto e falha HT (mesma mecânica do Jato de Lama). Também projeta/empurra (1d/energia, não PV) e fere criaturas de fogo. Apaga fogo em 1m.",
+      "notas": "Lote P9 EXECUTAVEL: feixe com jogada de acerto propria -- DX-4 ou a pericia Ataque Inato; o alvo pode esquivar ou bloquear, mas NUNCA aparar. Teste DX-4/Ataque Inato; esquivável/bloqueável, não aparável. Cega se acerta o rosto e falha HT (mesma mecânica do Jato de Lama). Também projeta/empurra (1d/energia, não PV) e fere criaturas de fogo. Apaga fogo em 1m.",
       "condicaoDuracaoSegPorEnergia": 1
     },
     "duracaoTipo": "temporaria",
@@ -10872,7 +10873,7 @@
     "mecanica": {
       "efeito": "narrado",
       "entrega": "feixe",
-      "notas": "Feixe invisivel do dedo: 10 rads por ponto de energia (1 a 3) num alvo de tamanho humano. NAO causa dano em PV — usar as regras de radiacao. Ataque com DX-4 ou Ataque Inato; pode ser esquivado ou bloqueado (so escudo imune a radiacao), nunca aparado. Alcance em metros = energia gasta. Mesmo custo p/ manter."
+      "notas": "Lote P9 EXECUTAVEL: feixe com jogada de acerto propria -- DX-4 ou a pericia Ataque Inato; o alvo pode esquivar ou bloquear, mas NUNCA aparar. Feixe invisivel do dedo: 10 rads por ponto de energia (1 a 3) num alvo de tamanho humano. NAO causa dano em PV — usar as regras de radiacao. Ataque com DX-4 ou Ataque Inato; pode ser esquivado ou bloqueado (so escudo imune a radiacao), nunc"
     }
   },
   {
@@ -10894,7 +10895,7 @@
       "entrega": "feixe",
       "condicao": "atordoado",
       "condicaoResistencia": "HT_menos_energia",
-      "notas": "Não causa dano. Ataque Inato ou DX-4; pode ser esquivado ou bloqueado, não aparado. Teste de HT MENOS o custo de energia da magia ou fica atordoado; RD dá +1 ao HT efetivo a cada 5 pontos; repete o teste (HT - energia) a cada turno pra se recuperar.",
+      "notas": "Lote P9 EXECUTAVEL: feixe com jogada de acerto propria -- DX-4 ou a pericia Ataque Inato; o alvo pode esquivar ou bloquear, mas NUNCA aparar. Não causa dano. Ataque Inato ou DX-4; pode ser esquivado ou bloqueado, não aparado. Teste de HT MENOS o custo de energia da magia ou fica atordoado; RD dá +1 ao HT efetivo a cada 5 pontos; repete o teste (HT - energia) a cada turno pra se r",
       "condicaoRdBonusPor": 5
     }
   },
@@ -10920,7 +10921,7 @@
       "entrega": "feixe",
       "condicao": "cego",
       "condicaoResistencia": "HT",
-      "notas": "Lote A1: NAO recebe elementoDano. O livro diz que causa o DOBRO de dano a criaturas de fogo -- se fosse elemento fogo, um imune levaria zero. Vulnerabilidade x2 fica DEFERIDA (falta o eixo de vulnerabilidade). Teste DX-4/Ataque Inato; esquivável/bloqueável, não aparável. Dano por escaldamento 1d-1/energia (dobro vs criaturas de fogo/gelo) + projeção. Se acerta o rosto e falha HT, cega (mesma mecânica dos ou",
+      "notas": "Lote P9 EXECUTAVEL: feixe com jogada de acerto propria -- DX-4 ou a pericia Ataque Inato; o alvo pode esquivar ou bloquear, mas NUNCA aparar. Lote A1: NAO recebe elementoDano. O livro diz que causa o DOBRO de dano a criaturas de fogo -- se fosse elemento fogo, um imune levaria zero. Vulnerabilidade x2 fica DEFERIDA (falta o eixo de vulnerabilidade). Teste DX-4/Ataque Inato; esqui",
       "condicaoDuracaoSegPorEnergia": 1
     },
     "duracaoTipo": "temporaria",
@@ -13552,7 +13553,7 @@
       "energiaPorDado": 1,
       "tipoDano": "quei",
       "entrega": "feixe",
-      "notas": "Atira relampago dos olhos, acerta com DX-4 ou Ataque Inato; deve estar de frente ao alvo. 1d quei por ponto de energia; alcance 2m por ponto. Pode ser 'sem maos'. Custo 1 a 4, nao mantem.",
+      "notas": "Lote P9 EXECUTAVEL: feixe com jogada de acerto propria -- DX-4 ou a pericia Ataque Inato; o alvo pode esquivar ou bloquear, mas NUNCA aparar. Atira relampago dos olhos, acerta com DX-4 ou Ataque Inato; deve estar de frente ao alvo. 1d quei por ponto de energia; alcance 2m por ponto. Pode ser 'sem maos'. Custo 1 a 4, nao mantem.",
       "elementoDano": "eletricidade"
     }
   },
@@ -17902,8 +17903,9 @@
       "danoPorEnergia": "1d",
       "energiaPorDado": 1,
       "entrega": "feixe",
-      "notas": "Dano por ácido. Como Jato de Ácido mas sai da boca: 1d/energia (1 a 4), teste DX-2/Ataque Inato, esquivável/bloqueável, não aparável, sem mãos, não pode manter. Deve estar de frente ao alvo.",
-      "elementoDano": "acido"
+      "notas": "Lote P9 EXECUTAVEL: feixe com jogada de acerto propria -- DX-2 ou a pericia Ataque Inato; o alvo pode esquivar ou bloquear, mas NUNCA aparar. Dano por ácido. Como Jato de Ácido mas sai da boca: 1d/energia (1 a 4), teste DX-2/Ataque Inato, esquivável/bloqueável, não aparável, sem mãos, não pode manter. Deve estar de frente ao alvo.",
+      "elementoDano": "acido",
+      "feixePenalidadeDx": 2
     },
     "duracaoTipo": "temporaria",
     "duracaoSeg": 1,
@@ -17929,7 +17931,7 @@
       "energiaPorDado": 1,
       "tipoDano": "quei",
       "entrega": "feixe",
-      "notas": "Ataque DX-4 ou Ataque Inato; esquivavel/bloqueavel, NAO aparavel. 1-4 pontos, 1d-1 por ponto. Operavel sem maos. Deve estar de frente.",
+      "notas": "Lote P9 EXECUTAVEL: feixe com jogada de acerto propria -- DX-4 ou a pericia Ataque Inato; o alvo pode esquivar ou bloquear, mas NUNCA aparar. Ataque DX-4 ou Ataque Inato; esquivavel/bloqueavel, NAO aparavel. 1-4 pontos, 1d-1 por ponto. Operavel sem maos. Deve estar de frente.",
       "elementoDano": "frio"
     },
     "duracaoTipo": "temporaria",
@@ -17956,8 +17958,9 @@
       "energiaPorDado": 1,
       "tipoDano": "quei",
       "entrega": "feixe",
-      "notas": "1 a 4 de energia (1d+1 por ponto). Ataque com DX-2 ou Ataque Inato; a chama sai da boca, o operador deve estar de frente para o alvo. Nao pode ser mantida; operacao 2 seg. Pode ser operada sem maos em qualquer NH.",
-      "elementoDano": "fogo"
+      "notas": "Lote P9 EXECUTAVEL: feixe com jogada de acerto propria -- DX-2 ou a pericia Ataque Inato; o alvo pode esquivar ou bloquear, mas NUNCA aparar. 1 a 4 de energia (1d+1 por ponto). Ataque com DX-2 ou Ataque Inato; a chama sai da boca, o operador deve estar de frente para o alvo. Nao pode ser mantida; operacao 2 seg. Pode ser operada sem maos em qualquer NH.",
+      "elementoDano": "fogo",
+      "feixePenalidadeDx": 2
     },
     "duracaoTipo": "temporaria",
     "duracaoSeg": 1,
@@ -17980,7 +17983,7 @@
     "mecanica": {
       "efeito": "narrado",
       "entrega": "feixe",
-      "notas": "Radiação sai da boca (1 a 4 energia), teste DX-4/Ataque Inato, sem mãos, não pode manter. Dano por radiação NÃO especificado nesta descrição (ver Jato de Radiação) — narrar/deferir números."
+      "notas": "Lote P9 EXECUTAVEL: feixe com jogada de acerto propria -- DX-4 ou a pericia Ataque Inato; o alvo pode esquivar ou bloquear, mas NUNCA aparar. Radiação sai da boca (1 a 4 energia), teste DX-4/Ataque Inato, sem mãos, não pode manter. Dano por radiação NÃO especificado nesta descrição (ver Jato de Radiação) — narrar/deferir números."
     }
   },
   {
@@ -18005,8 +18008,9 @@
       "entrega": "feixe",
       "condicao": "cego",
       "condicaoResistencia": "HT",
-      "notas": "Lote A1: NAO recebe elementoDano -- mesmo caso do Jato de Vapor. Como Jato de Vapor mas sai da boca: 1d/energia de escaldamento (1 a 4), teste DX-2/Ataque Inato, sem mãos, não pode manter. Área/sopro. Cega se acerta rosto e falha HT.",
-      "condicaoDuracaoSegPorEnergia": 1
+      "notas": "Lote P9 EXECUTAVEL: feixe com jogada de acerto propria -- DX-2 ou a pericia Ataque Inato; o alvo pode esquivar ou bloquear, mas NUNCA aparar. Lote A1: NAO recebe elementoDano -- mesmo caso do Jato de Vapor. Como Jato de Vapor mas sai da boca: 1d/energia de escaldamento (1 a 4), teste DX-2/Ataque Inato, sem mãos, não pode manter. Área/sopro. Cega se acerta rosto e falha HT.",
+      "condicaoDuracaoSegPorEnergia": 1,
+      "feixePenalidadeDx": 2
     },
     "duracaoTipo": "temporaria",
     "duracaoSeg": 1,

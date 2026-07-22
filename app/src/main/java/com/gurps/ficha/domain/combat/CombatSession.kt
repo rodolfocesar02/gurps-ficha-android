@@ -1237,6 +1237,11 @@ class CombatSession(
                 } else if (!alvoResistiu && TipoClasseMagia.PROJETIL in ctx.classe.classes && alvo != null) {
                     // One-shot: conjura e arremessa no mesmo turno (o caso de "1 segundo").
                     dano = resolverArremessoProjetil(alvo, energiaInvestida.coerceAtLeast(1), ctx, sb)
+                } else if (!alvoResistiu && alvo != null && ctx.mecanica?.entrega == "feixe") {
+                    // Lote P9: FEIXE tem jogada de ACERTO própria (DX−4 ou Ataque Inato) e o alvo
+                    // pode esquivar ou bloquear. Antes caía no ramo de dano direto logo abaixo, que
+                    // aplica o dano SEM teste nenhum — o jato acertava sempre.
+                    dano = resolverFeixe(alvo, energiaInvestida, ctx, sb)
                 } else if (!alvoResistiu && alvo != null &&
                     (ctx.danoPorEnergia || com.gurps.ficha.domain.magic.MagicMechanics.temDanoEstruturado(ctx.mecanica))) {
                     // Lote MA-6/AR-1: magia de dano DIRETA (não-Projétil) — funciona no sucesso (sem teste
@@ -1403,6 +1408,65 @@ class CombatSession(
         // jogador não via de onde vinha o acerto (dúvida real dele: "é baseada em DX?").
         sb.append(" Projétil acerta ($comQue NH $nhAcerto, rolou $rolAcerto) —")
         return aplicarDanoMagico(alvo, energia, ctx.mecanica, sb, ctx.distanciaMetros)
+    }
+
+    /**
+     * Lote P9 — **FEIXE** (Jatos e Sopros). Regra uniforme no livro:
+     * *"A cada turno, o operador faz um teste de DX−4 ou a perícia Ataque Inato para acertar. Este
+     * ataque pode ser esquivado ou bloqueado, mas **não aparado**."*
+     *
+     * Três coisas que o separam do projétil e por isso ele não podia reusar `resolverArremessoProjetil`:
+     *  1. A **penalidade na DX** (−4, ou −2 nos Sopros que saem da boca). Quem tem a perícia Ataque
+     *     Inato rola o NH dela **sem** redutor — a penalidade é da DX improvisada, não do feixe.
+     *  2. O alvo pode **BLOQUEAR**, o que o projétil não modela.
+     *  3. **Aparar nunca vale** — é um jato, não tem lâmina para desviar.
+     *
+     * Exceção do livro, marcada só numa mágica: o **Jato de Ácido** *"pode ser desviado, mas não
+     * aparado ou bloqueado"* → `feixeBloqueavel = false`.
+     *
+     * Deferidos honestos: a **projeção** (knockback) que vários Jatos causam reusaria o Empurrão,
+     * mas exige decidir a direção na grade; e o *"dobro de dano em criaturas de fogo"* depende do
+     * eixo de VULNERABILIDADE, que o A1 deixou registrado como ausente.
+     */
+    private fun resolverFeixe(
+        alvo: Combatente, energia: Int, ctx: ContextoConjuracao, sb: StringBuilder,
+    ): Int {
+        val mec = ctx.mecanica
+        val penal = mec?.feixePenalidadeDx ?: 4
+        val temPericia = heroiPerfil.nhAtaqueInato != null
+        val nhAcerto = if (temPericia) heroiPerfil.nhAtaqueInato!! else heroiPerfil.dx - penal
+        val comQue = if (temPericia) "Ataque Inato" else "DX−$penal (sem a perícia)"
+        val rolAcerto = rolar3d6()
+        if (rolAcerto > nhAcerto) {
+            sb.append(" O jato passa longe ($comQue NH $nhAcerto, rolou $rolAcerto).")
+            return 0
+        }
+        // Defesa: esquiva sempre; bloqueio quase sempre; APARAR nunca.
+        val esq = esquivaNpc(alvo)
+        val podeBloquear = mec?.feixeBloqueavel ?: true
+        val bloq = if (podeBloquear) bloqueioNpc(alvo) else 0
+        val (rotulo, valor) = if (bloq > esq) "Bloqueio" to bloq else "Esquiva" to esq
+        if (npcSeDefendeu(valor, rolar3d6())) {
+            sb.append(" ${alvo.nome} se defende do jato ($comQue NH $nhAcerto, rolou $rolAcerto; $rotulo $valor).")
+            return 0
+        }
+        sb.append(" O jato acerta ($comQue NH $nhAcerto, rolou $rolAcerto) —")
+        return aplicarDanoMagico(alvo, energia, mec, sb, ctx.distanciaMetros)
+    }
+
+    /**
+     * Lote P9: bloqueio do NPC (escudo). O bestiário não tem campo de escudo, então isto é uma
+     * aproximação honesta: só quem tem arma de corpo-a-corpo tenta bloquear, com NH/2+3 como no
+     * aparar, e ninguém bloqueia atordoado/cego sem penalidade. Sem escudo no dado, inventar um
+     * valor alto seria pior que aproximar.
+     */
+    private fun bloqueioNpc(npc: Combatente): Int {
+        if (modoTesteNpc == ModoTesteNpc.BONECO) return 0
+        if (Condicao.IMOBILIZADO in npc.condicoes || Condicao.DORMINDO in npc.condicoes ||
+            Condicao.PARALISADO in npc.condicoes) return 0
+        val melee = (npc.stats?.alcanceMetros ?: 1) <= 2
+        if (!melee) return 0
+        return ((npc.stats?.armaNh ?: 0) / 2 + 3 - penDefesaAtordoado(npc)).coerceAtLeast(0)
     }
 
     // ── Lote MEC-39 (P11): projétil CARREGADO por vários turnos (Magia p.12) ─────────────────────
