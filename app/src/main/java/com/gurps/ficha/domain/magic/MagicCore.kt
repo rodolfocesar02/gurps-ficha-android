@@ -79,6 +79,62 @@ object MagicCost {
     }
 }
 
+// ────────────────── RITUAL ALTERNATIVO (Magia p.9) — Lote C12 ──────────────────
+
+/**
+ * Lote C12: como o mágico executa o ritual. **Regra opcional** do livro.
+ *
+ * Padrão (`COMPLETO`): *"todas as mágicas exigem gestos com as duas mãos, movimentos sutis dos pés,
+ * como passos de dança, e um encantamento entoado com clareza"* — sem modificador.
+ *
+ * O mágico pode **omitir** partes, aceitando penalidade, ou **caprichar**, dobrando o tempo de
+ * operação para ganhar +1. As penalidades **somam** entre si: sem gestos (−4) e em silêncio (−4)
+ * dá −8, que é o que a regra descreve para conjurar amarrado e amordaçado.
+ */
+enum class GestoDoRitual(val modificador: Int, val rotulo: String) {
+    DUAS_MAOS(0, "gestos com as duas mãos"),
+    UMA_MAO(-2, "gestos com uma mão só"),
+    SEM_GESTOS(-4, "sem gestos de mão"),
+}
+
+enum class VozDoRitual(val modificador: Int, val rotulo: String) {
+    ENTOADO(0, "encantamento entoado com clareza"),
+    SUAVE(-2, "encantamento falado suavemente"),
+    EM_SILENCIO(-4, "sem entoar nada"),
+}
+
+/**
+ * Lote C12: modificador total do ritual (Magia p.9). Domínio puro, testável.
+ *
+ * @param passos `false` = omitiu os movimentos dos pés (−2).
+ * @param caprichado `true` = **dobra o tempo de operação** para ganhar **+1**. É a única forma de o
+ *   ritual dar bônus, e não é de graça: quem capricha leva o dobro de segundos conjurando.
+ */
+data class RitualDeConjuracao(
+    val gesto: GestoDoRitual = GestoDoRitual.DUAS_MAOS,
+    val voz: VozDoRitual = VozDoRitual.ENTOADO,
+    val passos: Boolean = true,
+    val caprichado: Boolean = false,
+) {
+    val modificador: Int
+        get() = gesto.modificador + voz.modificador +
+            (if (passos) 0 else -2) + (if (caprichado) 1 else 0)
+
+    /** Tempo de operação efetivo: caprichar DOBRA os segundos (o preço do +1). */
+    fun tempoAjustado(tempoBaseSeg: Int): Int =
+        if (caprichado) (tempoBaseSeg * 2).coerceAtLeast(1) else tempoBaseSeg
+
+    /** Só o que FOGE do padrão, para o log não repetir "duas mãos, entoado, com passos". */
+    fun descricao(): String = buildList {
+        if (gesto != GestoDoRitual.DUAS_MAOS) add(gesto.rotulo)
+        if (voz != VozDoRitual.ENTOADO) add(voz.rotulo)
+        if (!passos) add("sem os movimentos dos pés")
+        if (caprichado) add("ritual caprichado (tempo dobrado)")
+    }.joinToString(", ")
+
+    val ehPadrao: Boolean get() = modificador == 0 && !caprichado
+}
+
 // ────────────────── PENALIDADES DE DISTÂNCIA (Magia p.11) ──────────────────
 
 object MagicDistance {

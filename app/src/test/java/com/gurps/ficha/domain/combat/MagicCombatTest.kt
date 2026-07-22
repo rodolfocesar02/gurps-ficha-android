@@ -1164,6 +1164,41 @@ class MagicCombatTest {
             s.log.any { it.contains("Vontade +2") })
     }
 
+    // ── Lote C11: a área encolhe, mas nunca expande (Magia p.10) ───────────────────────────────
+
+    @Test
+    fun `a zona pode ENCOLHER e quem ficou de fora deixa de ser atingido`() {
+        val s = sessao(7, distGoblin = 1)
+        s.registrarZona(zona(dur = 20))                       // raio 3
+        assertTrue(s.encolherZona("Chuva de Fogo", 1))
+        assertEquals(1, s.zonasAtivas.first().raioM)
+        assertTrue(s.log.any { it.contains("encolhe de 3m para 1m") })
+    }
+
+    @Test
+    fun `a zona NAO pode ser EXPANDIDA depois de operada`() {
+        // "Uma mágica com uma área variável de efeito não pode ser expandida depois de ter sido
+        // operada" — e a recusa é LOGADA, senão parece que o toque não funcionou.
+        val s = sessao(7, distGoblin = 1)
+        s.registrarZona(zona(dur = 20))                       // raio 3
+        assertFalse(s.encolherZona("Chuva de Fogo", 6))
+        assertEquals("o raio não pode ter mudado", 3, s.zonasAtivas.first().raioM)
+        assertTrue(s.log.any { it.contains("não pode ser EXPANDIDA") })
+    }
+
+    @Test
+    fun `encolher para o MESMO raio tambem e recusado`() {
+        val s = sessao(7, distGoblin = 1)
+        s.registrarZona(zona(dur = 20))
+        assertFalse(s.encolherZona("Chuva de Fogo", 3))
+    }
+
+    @Test
+    fun `encolher zona inexistente nao quebra nada`() {
+        val s = sessao(7, distGoblin = 1)
+        assertFalse(s.encolherZona("Nuvem que não existe", 1))
+    }
+
     // ── Lote P5: explosão do PROJÉTIL (Relâmpago Explosivo) ────────────────────────────────────
 
     private fun mecExplosivo() = MagiaMecanica(

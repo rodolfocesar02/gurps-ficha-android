@@ -186,6 +186,11 @@ data class ContextoConjuracao(
      * o efeito é narrado — assim o Narrador (IA), que lê o feed do combate, sabe o que a magia FAZ.
      */
     val resumoEfeito: String? = null,
+    /**
+     * Lote C12 (Magia p.9, regra OPCIONAL): como o mágico executou o ritual. O padrão não modifica
+     * nada — omitir gestos, passos ou fala penaliza; caprichar dá +1 dobrando o tempo de operação.
+     */
+    val ritual: RitualDeConjuracao = RitualDeConjuracao(),
 )
 
 object MagicCasting {
@@ -217,6 +222,12 @@ object MagicCasting {
         if (penMagias != 0) comps.add(ComponenteNH("outras mágicas ativas", penMagias))
 
         if (ctx.pvQueimados > 0) comps.add(ComponenteNH("queimar ${ctx.pvQueimados} PV", -ctx.pvQueimados))
+
+        // Lote C12: ritual alternativo. Entra como UMA parcela nomeada, para o jogador ver de onde
+        // veio o −4 no log em vez de descobrir sozinho que foi por ter conjurado em silêncio.
+        if (ctx.ritual.modificador != 0) {
+            comps.add(ComponenteNH(ctx.ritual.descricao(), ctx.ritual.modificador))
+        }
 
         val valor = ctx.nhBasico + comps.sumOf { it.valor }
         return NHEfetivo(valor, comps)

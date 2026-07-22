@@ -2814,6 +2814,35 @@ class CombatSession(
     fun limparZonas() { zonasAtivas = emptyList() }
 
     /**
+     * Lote C11 (Magia p.10): a área de uma mágica **encolhe, nunca cresce**.
+     *
+     * *"Uma mágica com uma área variável de efeito não pode ser expandida depois de ter sido
+     * operada. No entanto, um mágico pode optar por manter apenas parte da área de uma mágica."*
+     *
+     * Devolve `true` se encolheu. Tentar EXPANDIR é recusado e registrado — o jogador precisa saber
+     * por que não aconteceu, senão parece que o toque não funcionou.
+     *
+     * ⚠️ **Deferido honesto, e é a maior parte da regra**: o livro manda pagar *"o custo de
+     * manutenção de apenas uma parcela da área original"*. Zona **não tem manutenção** no motor, e
+     * isso está certo — você paga a operação e ganha a duração inteira; manutenção é para estender
+     * além dela. Enquanto não existir extensão de zona, não há custo proporcional a cobrar.
+     */
+    fun encolherZona(nomeDaZona: String, novoRaioM: Int): Boolean {
+        val z = zonasAtivas.firstOrNull { it.rotulo.equals(nomeDaZona, ignoreCase = true) ||
+            it.nome.equals(nomeDaZona, ignoreCase = true) } ?: return false
+        if (novoRaioM >= z.raioM) {
+            log += "⚠️ ${z.rotulo} não pode ser EXPANDIDA depois de operada (Magia p.10) — " +
+                "está com raio ${z.raioM}m."
+            return false
+        }
+        if (novoRaioM < 1) return false
+        val antes = z.raioM
+        z.raioM = novoRaioM
+        log += "☁️ ${z.rotulo} encolhe de ${antes}m para ${novoRaioM}m — quem ficou de fora deixa de ser atingido."
+        return true
+    }
+
+    /**
      * Lote MEC-46: corre o relógio das zonas (1 turno = 1 segundo), fere quem está dentro quando o
      * intervalo vence, e remove as que expiraram. Roda no avanço de turno, como o tique das mágicas.
      */

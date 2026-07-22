@@ -216,7 +216,12 @@ data class EscapeCondicao(
 data class ZonaPersistente(
     val nome: String,
     val centro: com.gurps.ficha.domain.combat.hex.HexCoord?,
-    val raioM: Int,
+    /**
+     * Lote C11: `var` porque a área pode ENCOLHER — *"um mágico pode optar por manter apenas parte
+     * da área"* (Magia p.10). Nunca cresce: *"uma mágica com uma área variável de efeito não pode
+     * ser expandida depois de ter sido operada"*. Quem garante isso é [CombatSession.encolherZona].
+     */
+    var raioM: Int,
     val danoExpr: String,
     val tipoDano: String?,
     /** Lote A1: elemento do dano da zona ("fogo" na Chuva de Fogo) — quem é imune não é ferido. */
