@@ -1407,7 +1407,58 @@ class CombatSession(
         // Lote MEC-45: mostra a jogada TAMBÉM no acerto — antes só o erro exibia o número, então o
         // jogador não via de onde vinha o acerto (dúvida real dele: "é baseada em DX?").
         sb.append(" Projétil acerta ($comQue NH $nhAcerto, rolou $rolAcerto) —")
-        return aplicarDanoMagico(alvo, energia, ctx.mecanica, sb, ctx.distanciaMetros)
+        val divisor = ctx.mecanica?.explosaoDivisorPorMetro ?: 0
+        if (divisor <= 0) return aplicarDanoMagico(alvo, energia, ctx.mecanica, sb, ctx.distanciaMetros)
+        return resolverExplosaoDoProjetil(alvo, energia, ctx, sb, divisor)
+    }
+
+    /**
+     * Lote P5 — **explosão do projétil** (Relâmpago Explosivo, Bola de Fogo Explosiva arremessada).
+     *
+     * Regra literal: *"O alvo e qualquer pessoa mais próxima do alvo que um metro recebe dano total.
+     * Os que estão mais distantes dividem o dano em três vezes a distância em metros da explosão."*
+     *
+     * O `explosaoDivisorPorMetro` existia desde o MEC-14, mas **só o ramo de ÁREA o usava** — o
+     * projétil resolvia contra um único combatente e a explosão nunca acontecia.
+     *
+     * ⚠️ O dado é rolado **UMA vez** e o resultado é dividido por vítima. Se cada uma rolasse o seu,
+     * não seria a mesma explosão — é a mesma escolha que o ramo de área já fazia.
+     */
+    private fun resolverExplosaoDoProjetil(
+        alvo: Combatente, energia: Int, ctx: ContextoConjuracao, sb: StringBuilder, divisor: Int,
+    ): Int {
+        val mec = ctx.mecanica
+        val expr = com.gurps.ficha.domain.magic.MagicMechanics.expandirDano(
+            mec?.danoPorEnergia ?: "1d", energia.coerceAtLeast(1),
+            mec?.energiaPorDado ?: 1, mec?.danoFixo ?: false)
+        val bruto = rolarDano(expr, random)
+        // Alvo direto: dano cheio, pelo caminho normal (RD, tolerância, condição embutida).
+        val danoAlvo = aplicarDanoMagico(alvo, energia, mec, sb, ctx.distanciaMetros, brutoForcado = bruto)
+        // Respingo nos vizinhos, com o MESMO bruto dividido pela distância ao ponto de impacto.
+        val respingos = vizinhosDoImpacto(alvo).mapNotNull { (v, distM) ->
+            val brutoAqui = com.gurps.ficha.domain.magic.MagicMechanics
+                .danoDaExplosao(bruto, distM, divisor)
+            if (brutoAqui <= 0) return@mapNotNull null
+            SagaLog.mecanica("explosão do projétil: ${v.nome} a ${distM}m do impacto — $bruto → $brutoAqui")
+            val d = aplicarDanoMagico(v, energia, mec, StringBuilder(), 0, brutoForcado = brutoAqui)
+            "${v.nome} $d"
+        }
+        if (respingos.isNotEmpty()) sb.append(" Respingo da explosão: ${respingos.joinToString(", ")}.")
+        return danoAlvo
+    }
+
+    /**
+     * Lote P5: quem está PERTO do ponto de impacto, com a distância em metros. Ponto de injeção,
+     * como o `ocupantesDaZona` do P1b: o motor não tem a grade, então o padrão usa a aproximação de
+     * faixas (`distanciaEntre`) e o controller substitui pelo cálculo real por hex.
+     *
+     * O alvo direto sai da lista — ele já levou o dano cheio.
+     */
+    var vizinhosDoImpacto: (Combatente) -> List<Pair<Combatente, Int>> = { alvo ->
+        encounter.combatentes
+            .filter { it.vivo && it.id != alvo.id }
+            .map { it to distanciaEntre(it, alvo) }
+            .filter { (_, d) -> d <= RAIO_RESPINGO_M }
     }
 
     /**
@@ -1694,6 +1745,12 @@ class CombatSession(
         sb: StringBuilder,
         /** Lote MEC-15: distância ao alvo, para o 1/2D. 0 = perto/irrelevante. */
         distanciaM: Int = 0,
+        /**
+         * Lote P5: dano bruto JÁ ROLADO. A explosão do Relâmpago Explosivo rola **uma vez** e
+         * divide o resultado por distância — se cada vítima rolasse o seu, não seria a mesma
+         * explosão. `null` = rola normalmente. É o mesmo que o ramo de ÁREA já fazia à mão.
+         */
+        brutoForcado: Int? = null,
     ): Int {
         // Lote A1: IMUNIDADE por elemento vem ANTES de rolar o dado. O livro é categórico — o alvo
         // "torna-se imune aos efeitos do calor e do fogo" — então não há dano a reduzir: não há dano.
@@ -1717,7 +1774,7 @@ class CombatSession(
             else -> DanoTipo.CONT // queimadura/contusão/projeção → ×1 (sem enum de queimadura; documentado)
         }
         val rd = rdContraMagia(alvo, mecanica) // MEC-38 (P7)
-        val brutoCheio = rolarDano(expr, random)
+        val brutoCheio = brutoForcado ?: rolarDano(expr, random)
         // Lote MEC-15: a partir de 1/2D (INCLUSIVE) o dano BÁSICO — antes da RD — cai pela metade,
         // arredondando para baixo.
         val bruto = com.gurps.ficha.domain.magic.MagicMechanics.aplicarMeioDano(brutoCheio, mecanica, distanciaM)
@@ -3301,6 +3358,11 @@ class CombatSession(
     companion object {
         /** Lote MEC-39 (P11): máximo de segundos criando/aumentando um projétil (Magia p.12). */
         const val MAX_TURNOS_PROJETIL = 3
+        /**
+         * Lote P5: até onde o respingo da explosão é procurado. Além disso o divisor `3×distância`
+         * já reduziria o dano a zero em qualquer expressão realista — varrer mais seria só custo.
+         */
+        const val RAIO_RESPINGO_M = 5
         /** A partir desta distância um NPC em fuga é considerado fora do encontro. */
         const val FUGA_METROS = 20
 

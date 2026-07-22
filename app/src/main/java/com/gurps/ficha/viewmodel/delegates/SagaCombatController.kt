@@ -838,6 +838,7 @@ class SagaCombatController(
         if (surpresa == "heroi") heroiComb.condicoes.add(Condicao.SURPRESO)
         sessao = s
         instalarOcupacaoDeZonaPelaGrade() // MEC-46 (P1b): vale para campanha E sandbox
+        instalarVizinhosDeImpactoPelaGrade() // P5: respingo da explosão pela posição real
         logPublicado = 0
         finalizado = false
         ataques = construirAtaques(p)
@@ -1163,6 +1164,33 @@ class SagaCombatController(
      * Lote MEC-46 (P1b): ensina o motor a perguntar à GRADE quem está dentro da zona. Sem isto ele
      * cai na aproximação por distância-ao-herói, que erraria bastante num mapa 2D.
      */
+    /**
+     * Lote P5: ensina o motor a achar os vizinhos do IMPACTO pela grade real. Sem isto ele cai na
+     * aproximação de faixas (`distanciaEntre` = |dist(a) − dist(b)|), que só é exata quando os três
+     * estão em linha. Mesmo padrão do `instalarOcupacaoDeZonaPelaGrade` do P1b.
+     */
+    private fun instalarVizinhosDeImpactoPelaGrade() {
+        val s = sessao ?: return
+        s.vizinhosDoImpacto = { alvo ->
+            val est = estadoTatico
+            val posAlvo = est?.posicoes?.firstOrNull { it.id == alvo.id }?.posicao
+            if (est == null || posAlvo == null) {
+                s.encounter.combatentes
+                    .filter { it.vivo && it.id != alvo.id }
+                    .map { it to s.distanciaEntre(it, alvo) }
+                    .filter { (_, d) -> d <= CombatSession.RAIO_RESPINGO_M }
+            } else {
+                est.posicoes
+                    .filter { it.id != alvo.id }
+                    .mapNotNull { p ->
+                        val c = s.encounter.combatentes.firstOrNull { it.id == p.id && it.vivo }
+                        if (c == null) null else c to p.posicao.distancia(posAlvo)
+                    }
+                    .filter { (_, d) -> d <= CombatSession.RAIO_RESPINGO_M }
+            }
+        }
+    }
+
     private fun instalarOcupacaoDeZonaPelaGrade() {
         val s = sessao ?: return
         s.ocupantesDaZona = { z ->

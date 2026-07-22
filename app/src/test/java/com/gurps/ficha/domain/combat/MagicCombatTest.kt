@@ -1164,6 +1164,59 @@ class MagicCombatTest {
             s.log.any { it.contains("Vontade +2") })
     }
 
+    // ── Lote P5: explosão do PROJÉTIL (Relâmpago Explosivo) ────────────────────────────────────
+
+    private fun mecExplosivo() = MagiaMecanica(
+        efeito = "dano", entrega = "projetil", danoPorEnergia = "3d", energiaPorDado = 1,
+        explosaoDivisorPorMetro = 3, elementoDano = "eletricidade"
+    )
+
+    private fun sessaoTresAlvos(seed: Long): CombatSession {
+        val enc = CombatEncounter(
+            listOf(heroi(), goblin().copy(id = "perto", nome = "Perto"),
+                goblin().copy(id = "longe", nome = "Longe")),
+            mapOf("perto" to 3, "longe" to 4), seed = 1L)
+        return CombatSession(enc, perfil().copy(nhAtaqueInato = 20), Random(seed))
+    }
+
+    @Test
+    fun `o projetil explosivo RESPINGA nos vizinhos — antes so feria o alvo`() {
+        // O `explosaoDivisorPorMetro` existia desde o MEC-14 mas SÓ o ramo de ÁREA o usava.
+        var respingou = false
+        for (seed in 0L until 40L) {
+            val s = sessaoTresAlvos(seed)
+            s.heroiConjurar(
+                ContextoConjuracao(nhBasico = 30, classe = MagicClassParser.parse("Projétil"),
+                    mana = NivelMana.NORMAL, distanciaMetros = 3, mecanica = mecExplosivo()),
+                MagicEnergy.parse("2"), 2, "Relâmpago Explosivo", "perto", 1)
+            if (s.log.any { it.contains("Respingo da explosão") }) { respingou = true; break }
+        }
+        assertTrue("o projétil explosivo tem que atingir quem está por perto", respingou)
+    }
+
+    @Test
+    fun `projetil SEM divisor de explosao nao respinga (regressao)`() {
+        for (seed in 0L until 20L) {
+            val s = sessaoTresAlvos(seed)
+            s.heroiConjurar(
+                ContextoConjuracao(nhBasico = 30, classe = MagicClassParser.parse("Projétil"),
+                    mana = NivelMana.NORMAL, distanciaMetros = 3,
+                    mecanica = mecExplosivo().copy(explosaoDivisorPorMetro = 0)),
+                MagicEnergy.parse("2"), 2, "Bola de Fogo", "perto", 1)
+            assertTrue("projétil comum não pode respingar",
+                s.log.none { it.contains("Respingo da explosão") })
+        }
+    }
+
+    @Test
+    fun `a explosao rola UMA vez e divide — quem esta longe sofre menos`() {
+        // Regra: "o alvo e quem está a menos de 1m recebe dano total; os mais afastados dividem o
+        // dano em três vezes a distância". Comparo o dano do vizinho a 1m com o de um a 4m.
+        val perto = com.gurps.ficha.domain.magic.MagicMechanics.danoDaExplosao(12, 1, 3)
+        val longe = com.gurps.ficha.domain.magic.MagicMechanics.danoDaExplosao(12, 4, 3)
+        assertTrue("quem está longe tem que sofrer menos: perto=$perto longe=$longe", longe < perto)
+    }
+
     // ── Lote P9: FEIXE (Jatos e Sopros) ────────────────────────────────────────────────────────
 
     private fun mecFeixe(penal: Int = 4, bloqueavel: Boolean = true) = MagiaMecanica(
