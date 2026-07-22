@@ -270,3 +270,10 @@ dependencies {
     implementation("com.github.stephengold:jbullet:1.0.3")
     implementation("javax.vecmath:vecmath:1.5.2")
 }
+
+// Lote BUILD-1 (22/jul): os testes JVM rodavam num unico fork, em fila. Com 12 nucleos, dividir
+// as CLASSES de teste entre varios JVMs e de graca. Metade dos nucleos deixa folga para o resto
+// do build, que roda em paralelo agora (org.gradle.parallel no gradle.properties).
+tasks.withType<Test>().configureEach {
+    maxParallelForks = (Runtime.getRuntime().availableProcessors() / 2).coerceAtLeast(1)
+}
