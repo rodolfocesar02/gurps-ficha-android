@@ -3046,6 +3046,31 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - **Recomendação registrada** (maior valor × menor custo): Ataque Telegráfico (par do Enganoso), luta agarrada profunda (chaves/Mata-Leão estendendo o lote 422), Sangramento Grave + incapacitação de membro (item 5 do teste de batalha), Ataque Dedicado/Defensivo. Fora de escopo: posicional/hexágono, montaria, cinematográfico, dado de arma do NPC. Mudança só de documentação (não compila Kotlin).
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
+### Lotes C11 e C12 — 22 de Julho de 2026 (área que encolhe mas não expande + ritual alternativo)
+- **C11 (Magia p.10)**: *"Uma mágica com uma área variável de efeito não pode ser expandida depois de ter sido operada. No entanto, um mágico pode optar por manter apenas parte da área."* `ZonaPersistente.raioM` virou `var` e ganhou `encolherZona`: reduz e loga; tentar **expandir** é recusado **e registrado** — sem a linha, o jogador acharia que o toque falhou em vez de entender que a regra proíbe.
+- ⚠️ **Deferido honesto, e é a MAIOR parte do C11**: o custo de manutenção proporcional. Zona **não tem manutenção** no motor — e isso está **certo**: paga-se a operação e ganha-se a duração inteira; manutenção é para **estender** além dela. Enquanto não existir extensão de zona, não há custo proporcional a cobrar.
+- **C12 (Magia p.9, regra OPCIONAL)**, valores conferidos no livro: omitir movimentos dos pés **−2**; gestos com uma mão só **−2**; sem gestos de mão **−4**; encantamento suave **−2**; sem entoar nada **−4**. Único bônus: *"dobrando o Tempo de Operação, ele recebe **+1**"*. As penalidades **somam** — amarrado e amordaçado dá **−8**, e há teste para isso.
+- `RitualDeConjuracao` no domínio puro, com `tempoAjustado` porque o +1 **não é de graça**: dobra os segundos. **Ligado, não só definido** — entra no `nhEfetivo` como **parcela nomeada**, então o log mostra *"sem gestos de mão −4"* em vez de um −4 sem explicação.
+- **+11 testes.** Gate: **911 por variante, 0 falhas**.
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
+### Lote P5 — 22 de Julho de 2026 (explosão do PROJÉTIL — o Relâmpago Explosivo agora respinga)
+- Regra: *"O alvo e qualquer pessoa mais próxima do alvo que um metro recebe dano total. Os que estão mais distantes dividem o dano em três vezes a distância em metros da explosão."*
+- O campo `explosaoDivisorPorMetro` existia desde o **MEC-14**, mas **só o ramo de ÁREA o usava**. A Bola de Fogo Explosiva funcionava por ser `entrega: area`; o Relâmpago Explosivo, que é `projetil`, resolvia contra **um** alvo e a explosão nunca acontecia.
+- O dado é rolado **uma vez** e o resultado dividido por vítima — se cada uma rolasse o seu, não seria a mesma explosão. Para isso o `aplicarDanoMagico` ganhou `brutoForcado`.
+- **Ponto de injeção**, mesmo padrão do `ocupantesDaZona` do P1b: `vizinhosDoImpacto` usa por padrão a aproximação de faixas e o controller substitui pela distância **real** entre hexes.
+- **+3 testes**, incluindo a regressão de que projétil **comum não respinga**. Gate: **900 por variante, 0 falhas**.
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
+### Lote P9 — 22 de Julho de 2026 (FEIXE — Jatos e Sopros ganham jogada de acerto e defesa)
+- Antes deste lote as **17 mágicas** de `entrega: feixe` caíam no ramo de dano **direto**: o jato acertava **sempre**, sem teste nenhum. Agora seguem a regra, uniforme entre elas: *"faz um teste de DX−4 ou a perícia Ataque Inato para acertar. Este ataque pode ser esquivado ou bloqueado, mas **não aparado**."*
+- **Três coisas** separam o feixe do projétil, e por isso ele não pôde reusar o `resolverArremessoProjetil`: a **penalidade na DX** (−4, ou **−2** nos Sopros que saem da boca — e quem tem a perícia rola o NH dela **sem** redutor, porque a penalidade é da DX improvisada); o alvo pode **bloquear**; e **aparar nunca vale**.
+- **Exceção que o livro marca numa mágica só**: o Jato de Ácido *"pode ser desviado, mas não aparado ou bloqueado"*. Conferida no texto antes de curar, com `assert` no script.
+- **Aproximação honesta** no `bloqueioNpc`: o bestiário não tem campo de escudo, então só quem tem arma de corpo-a-corpo tenta bloquear, com NH/2+3. Inventar um escudo seria pior que aproximar.
+- **Deferidos**: a **projeção** (knockback) exige decidir direção na grade; o *"dobro em criaturas de fogo"* depende do eixo de **vulnerabilidade**, ausente desde o A1 (foi o motivo de o Jato de Vapor não receber `elementoDano`).
+- **+7 testes**, incluindo que o feixe **pode errar** (antes acertava sempre) e que **nenhum** feixe mostra Aparar. Gate: **897 por variante, 0 falhas**.
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
 ### Lote SIM-1 — 21 de Julho de 2026 (rede de INVARIANTES por simulação — parar de achar bug no aparelho)
 **"já estou cansado de testar e testar e achar bugs... sinto que o projeto tá andando lento demais"**
 - 📊 **Fui ao dado antes de responder.** Testes por camada: `domain` **37** arquivos, `data` 7, `ui` 6, **`viewmodel` 0** — e o `SagaCombatController` tem **2.131 linhas**. Ele **não estava testando demais: eu estava testando a camada errada.** 884 testes no motor e **zero** no arquivo onde os bugs do dia moraram.
