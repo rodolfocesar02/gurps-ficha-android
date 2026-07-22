@@ -1,6 +1,7 @@
 package com.gurps.ficha.ui.saga
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -85,7 +86,16 @@ fun CombatePainel(
                 when {
                     estado.encerrado -> FimDeCombate(estado.resultado)
                     defesa != null -> DefendaSeCard(viewModel, defesa)
-                    estado.vezDoHeroi -> ManeuverCards(viewModel, estado)
+                    estado.vezDoHeroi -> {
+                        // Lote P12: conjurar no modo de FAIXAS. A magia só existia no grid tático —
+                        // sem grade o jogador simplesmente não tinha como lançar nada. Reusa o mesmo
+                        // diálogo de dois passos do token; o que muda é a resolução da ÁREA, que
+                        // sem hex acontece por faixa de distância (ver `resolverAreaPorFaixa`).
+                        if (!mostrarTracker) Unit else BotaoConjurarFaixas(viewModel, estado)
+                        // Lote C11: encolher uma zona ativa é ação do jogador e precisa de gatilho.
+                        ZonasAtivasFaixas(viewModel)
+                        ManeuverCards(viewModel, estado)
+                    }
                     else -> AguardandoInimigos()
                 }
             }
@@ -1500,14 +1510,14 @@ fun MenuTaticoDoToken(
         SubDialogoConjurar(
             magias = estado.magiasConjuraveis,
             inimigos = estado.combatentes.filter { !it.ehHeroi && it.vivo },
-            onConjurar = { magiaId, alvoId, energia, pvQueimar, causaDano ->
-                viewModel.sagaCombateConjurar(magiaId, alvoId, energia, pvQueimar, causaDano); conjurarDialogo = false; onFechar()
+            onConjurar = { magiaId, alvoId, energia, pvQueimar, causaDano, ritual ->
+                viewModel.sagaCombateConjurar(magiaId, alvoId, energia, pvQueimar, causaDano, ritual); conjurarDialogo = false; onFechar()
             },
             onCarregarProjetil = { magiaId, energia ->
                 viewModel.sagaCarregarProjetil(magiaId, energia); conjurarDialogo = false; onFechar()
             },
-            onMirarArea = { magiaId, raio, energia, pvQueimar, causaDano ->
-                viewModel.sagaIniciarMiraArea(magiaId, raio, energia, pvQueimar, causaDano); conjurarDialogo = false; onFechar()
+            onMirarArea = { magiaId, raio, energia, pvQueimar, causaDano, ritual ->
+                viewModel.sagaIniciarMiraArea(magiaId, raio, energia, pvQueimar, causaDano, ritual); conjurarDialogo = false; onFechar()
             },
             onFechar = { conjurarDialogo = false }
         )
@@ -1531,13 +1541,17 @@ fun MenuTaticoDoToken(
 private fun SubDialogoConjurar(
     magias: List<com.gurps.ficha.viewmodel.delegates.MagiaConjuravelUi>,
     inimigos: List<CombatenteUi>,
-    onConjurar: (magiaId: String, alvoId: String?, energia: Int, pvQueimar: Int, causaDano: Boolean) -> Unit,
+    onConjurar: (magiaId: String, alvoId: String?, energia: Int, pvQueimar: Int, causaDano: Boolean,
+                 ritual: com.gurps.ficha.domain.magic.RitualDeConjuracao) -> Unit,
     onCarregarProjetil: (magiaId: String, energia: Int) -> Unit = { _, _ -> },
-    onMirarArea: (magiaId: String, raio: Int, energia: Int, pvQueimar: Int, causaDano: Boolean) -> Unit,
+    onMirarArea: (magiaId: String, raio: Int, energia: Int, pvQueimar: Int, causaDano: Boolean,
+                  ritual: com.gurps.ficha.domain.magic.RitualDeConjuracao) -> Unit,
     onFechar: () -> Unit,
 ) {
     // null = ainda escolhendo a magia (passo 1); != null = configurando os parâmetros (passo 2).
     var magiaSel by remember { mutableStateOf<com.gurps.ficha.viewmodel.delegates.MagiaConjuravelUi?>(null) }
+    // Lote C12: ritual alternativo (Magia p.9). Começa no PADRÃO — quem não mexer não é penalizado.
+    var ritual by remember { mutableStateOf(com.gurps.ficha.domain.magic.RitualDeConjuracao()) }
     var busca by remember { mutableStateOf("") }
 
     val sel = magiaSel
@@ -1708,6 +1722,10 @@ private fun SubDialogoConjurar(
                             modifier = Modifier.semantics { contentDescription = "Mais PV queimado" }) { Text("+") }
                     }
                 }
+
+                // Lote C12: RITUAL (Magia p.9). Recolhido por padrão: quem não mexe conjura normal.
+                Spacer(Modifier.height(8.dp))
+                PainelRitual(ritual) { ritual = it }
             }
         },
         confirmButton = {
@@ -1715,9 +1733,9 @@ private fun SubDialogoConjurar(
                 onClick = {
                     val energiaEfetiva = if (sel.ehProjetil || causaDano || sel.escalaComEnergia || sel.custoVariavel) energia else 1 // MEC-41
                     when {
-                        sel.ehArea -> onMirarArea(sel.id, raio, energiaEfetiva, pvQueimar, causaDano)
-                        sel.ehToque -> onConjurar(sel.id, null, 1, pvQueimar, false)
-                        else -> onConjurar(sel.id, alvoId, energiaEfetiva, pvQueimar, causaDano)
+                        sel.ehArea -> onMirarArea(sel.id, raio, energiaEfetiva, pvQueimar, causaDano, ritual)
+                        sel.ehToque -> onConjurar(sel.id, null, 1, pvQueimar, false, ritual)
+                        else -> onConjurar(sel.id, alvoId, energiaEfetiva, pvQueimar, causaDano, ritual)
                     }
                 },
                 enabled = sel.castavel,
@@ -1828,4 +1846,155 @@ private fun SubDialogoTrocarArma(
         confirmButton = {},
         dismissButton = { TextButton(onClick = onFechar) { Text("Cancelar") } }
     )
+}
+
+/**
+ * Lote C12: painel do RITUAL (Magia p.9, regra opcional).
+ *
+ * Fica RECOLHIDO por padrão de propósito: a esmagadora maioria das conjurações é o ritual completo,
+ * e quem não abrir não é penalizado. Só aparece expandido quando o jogador quer conjurar de forma
+ * discreta — amarrado, amordaçado, escondido.
+ *
+ * O total é mostrado o tempo todo, porque o número é o que decide: `−4` no cabeçalho evita o
+ * jogador descobrir a penalidade só depois de errar a jogada.
+ */
+@Composable
+private fun PainelRitual(
+    ritual: com.gurps.ficha.domain.magic.RitualDeConjuracao,
+    onMudar: (com.gurps.ficha.domain.magic.RitualDeConjuracao) -> Unit,
+) {
+    var aberto by remember { mutableStateOf(false) }
+    val mod = ritual.modificador
+    val rotuloMod = when {
+        mod > 0 -> "+$mod"
+        mod < 0 -> "$mod"
+        else -> "sem modificador"
+    }
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { aberto = !aberto }
+            .semantics { contentDescription = "Ritual da conjuração, $rotuloMod. Toque para ajustar." }
+    ) {
+        Text("🕯️ Ritual: $rotuloMod", fontWeight = FontWeight.Bold,
+            style = MaterialTheme.typography.labelLarge,
+            color = if (mod < 0) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurface)
+        Spacer(Modifier.weight(1f))
+        Text(if (aberto) "▲" else "▼", style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.primary)
+    }
+    if (aberto) {
+        Text("Omitir partes do ritual penaliza o NH; caprichar dá +1 mas DOBRA o tempo de operação.",
+            style = MaterialTheme.typography.bodySmall, fontStyle = FontStyle.Italic,
+            color = MaterialTheme.colorScheme.onSurfaceVariant)
+        Spacer(Modifier.height(4.dp))
+
+        Text("Gestos", style = MaterialTheme.typography.labelMedium, fontWeight = FontWeight.Bold)
+        com.gurps.ficha.domain.magic.GestoDoRitual.entries.forEach { g ->
+            OpcaoRadio(ritual.gesto == g, "${g.rotulo}${modTexto(g.modificador)}", g.rotulo) {
+                onMudar(ritual.copy(gesto = g))
+            }
+        }
+        Text("Voz", style = MaterialTheme.typography.labelMedium, fontWeight = FontWeight.Bold)
+        com.gurps.ficha.domain.magic.VozDoRitual.entries.forEach { v ->
+            OpcaoRadio(ritual.voz == v, "${v.rotulo}${modTexto(v.modificador)}", v.rotulo) {
+                onMudar(ritual.copy(voz = v))
+            }
+        }
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Switch(checked = !ritual.passos, onCheckedChange = { onMudar(ritual.copy(passos = !it)) },
+                modifier = Modifier.semantics { contentDescription = "Omitir os movimentos dos pés" })
+            Spacer(Modifier.width(8.dp))
+            Text("Omitir os movimentos dos pés (−2)", style = MaterialTheme.typography.bodyMedium)
+        }
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Switch(checked = ritual.caprichado, onCheckedChange = { onMudar(ritual.copy(caprichado = it)) },
+                modifier = Modifier.semantics { contentDescription = "Caprichar no ritual" })
+            Spacer(Modifier.width(8.dp))
+            Text("Caprichar: +1, mas dobra o tempo", style = MaterialTheme.typography.bodyMedium)
+        }
+    }
+}
+
+private fun modTexto(m: Int): String = when {
+    m > 0 -> " (+$m)"
+    m < 0 -> " ($m)"
+    else -> ""
+}
+
+/**
+ * Lote P12: botão de conjurar no modo de FAIXAS (sem grade).
+ *
+ * A conjuração só existia dentro do menu do token, que só existe no grid tático. No modo de faixas
+ * o jogador com mágicas simplesmente **não tinha como lançá-las** — era o P12 da lista de
+ * pendências. Reusa exatamente o mesmo `SubDialogoConjurar` de dois passos, então busca, seletor de
+ * energia, "Segurar" projétil e o painel de ritual vêm de graça.
+ */
+@Composable
+private fun BotaoConjurarFaixas(
+    viewModel: FichaViewModel,
+    estado: com.gurps.ficha.viewmodel.delegates.CombatUiState,
+) {
+    if (estado.magiasConjuraveis.isEmpty()) return
+    // Conjuração multi-turno em andamento: o jogador só continua ou aborta (mesma regra do grid).
+    if (estado.conjurando != null) return
+    var dialogo by remember { mutableStateOf(false) }
+    Row(Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 4.dp)) {
+        Button(
+            onClick = { dialogo = true },
+            modifier = Modifier
+                .fillMaxWidth()
+                .semantics { contentDescription = "Conjurar uma mágica" }
+        ) { Text("🔮 Conjurar") }
+    }
+    if (dialogo) {
+        SubDialogoConjurar(
+            magias = estado.magiasConjuraveis,
+            inimigos = estado.combatentes.filter { !it.ehHeroi && it.vivo },
+            onConjurar = { magiaId, alvoId, energia, pvQueimar, causaDano, ritual ->
+                viewModel.sagaCombateConjurar(magiaId, alvoId, energia, pvQueimar, causaDano, ritual)
+                dialogo = false
+            },
+            onCarregarProjetil = { magiaId, energia ->
+                viewModel.sagaCarregarProjetil(magiaId, energia); dialogo = false
+            },
+            onMirarArea = { magiaId, raio, energia, pvQueimar, causaDano, ritual ->
+                // Sem grade não há hex para mirar: o controller resolve na hora, por faixa.
+                viewModel.sagaIniciarMiraArea(magiaId, raio, energia, pvQueimar, causaDano, ritual)
+                dialogo = false
+            },
+            onFechar = { dialogo = false }
+        )
+    }
+}
+
+/**
+ * Lote C11: zonas ativas com a opção de ENCOLHER (Magia p.10).
+ *
+ * *"Um mágico pode optar por manter apenas parte da área de uma mágica."* Sem este gatilho a regra
+ * existia no motor e era inalcançável em jogo. **Expandir não é oferecido** — o livro proíbe, e o
+ * motor recusa com uma linha no log se alguém tentar.
+ */
+@Composable
+private fun ZonasAtivasFaixas(viewModel: FichaViewModel) {
+    val zonas = viewModel.sagaZonasAtivas
+    if (zonas.isEmpty()) return
+    Column(Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 4.dp)) {
+        Text("☁️ Áreas ativas", fontWeight = FontWeight.Bold, style = MaterialTheme.typography.labelLarge)
+        zonas.forEach { (nome, raio) ->
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text("$nome — raio ${raio}m", style = MaterialTheme.typography.bodyMedium)
+                Spacer(Modifier.weight(1f))
+                if (raio > 1) {
+                    TextButton(
+                        onClick = { viewModel.sagaEncolherZona(nome, raio - 1) },
+                        modifier = Modifier.semantics {
+                            contentDescription = "Encolher $nome para ${raio - 1} metros"
+                        }
+                    ) { Text("Encolher para ${raio - 1}m") }
+                }
+            }
+        }
+    }
 }

@@ -160,13 +160,22 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
     fun sagaCombateMoverEAtacar(alvoId: String, local: com.gurps.ficha.domain.combat.LocalAtaque) =
         sagaDelegate.combate.heroiMoverEAtacar(alvoId, local)
     fun sagaCombateAvaliar(alvoId: String) = sagaDelegate.combate.heroiAvaliar(alvoId)
-    fun sagaCombateConjurar(magiaId: String, alvoId: String?, energiaInvestida: Int, pvQueimados: Int = 0, danoPorEnergia: Boolean = false) = // Lote MA-3a/3b/MA-6
-        sagaDelegate.combate.heroiConjurar(magiaId, alvoId, energiaInvestida, pvQueimados, danoPorEnergia)
+    fun sagaCombateConjurar(magiaId: String, alvoId: String?, energiaInvestida: Int, pvQueimados: Int = 0,
+                            danoPorEnergia: Boolean = false,
+                            ritual: com.gurps.ficha.domain.magic.RitualDeConjuracao =
+                                com.gurps.ficha.domain.magic.RitualDeConjuracao()) = // Lote MA-3a/3b/MA-6/C12
+        sagaDelegate.combate.heroiConjurar(magiaId, alvoId, energiaInvestida, pvQueimados, danoPorEnergia, ritual)
     fun sagaCombateContinuarConjuracao() = sagaDelegate.combate.heroiContinuarConjuracao() // Lote MA-3c
     fun sagaCombateAbortarConjuracao() = sagaDelegate.combate.heroiAbortarConjuracao()      // Lote MA-3c
     val sagaMiraAreaPendente get() = sagaDelegate.combate.miraAreaPendente                  // Lote MA-3d
-    fun sagaIniciarMiraArea(magiaId: String, raio: Int, energia: Int, pvQueimar: Int, causaDano: Boolean = false) =
-        sagaDelegate.combate.iniciarMiraArea(magiaId, raio, energia, pvQueimar, causaDano)
+    fun sagaIniciarMiraArea(magiaId: String, raio: Int, energia: Int, pvQueimar: Int, causaDano: Boolean = false,
+                            ritual: com.gurps.ficha.domain.magic.RitualDeConjuracao =
+                                com.gurps.ficha.domain.magic.RitualDeConjuracao()) =
+        sagaDelegate.combate.iniciarMiraArea(magiaId, raio, energia, pvQueimar, causaDano, ritual)
+    /** Lote C11: zonas ativas (rótulo, raio) para a UI oferecer o encolhimento. */
+    val sagaZonasAtivas get() = sagaDelegate.combate.zonasAtivasUi
+    /** Lote C11: encolhe uma zona; expandir é recusado pela regra (Magia p.10). */
+    fun sagaEncolherZona(nome: String, novoRaio: Int) = sagaDelegate.combate.encolherZona(nome, novoRaio)
     fun sagaCancelarMiraArea() = sagaDelegate.combate.cancelarMiraArea()
     /**
      * Lote TESTE-1: inicia um combate de TESTE direto do preview da grade tática, sem o Narrador.

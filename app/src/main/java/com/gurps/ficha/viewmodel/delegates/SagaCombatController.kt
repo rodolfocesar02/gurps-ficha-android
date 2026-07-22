@@ -131,7 +131,13 @@ data class MagiaConjuravelUi(
 data class ConjurandoUi(val nome: String, val turnosRestantes: Int)
 
 /** Lote MA-3d: mira de magia de área em andamento — o app espera o toque no hex central. */
-data class MiraAreaUi(val magiaId: String, val magiaNome: String, val raio: Int, val energia: Int, val pvQueimar: Int, val causaDano: Boolean = false)
+data class MiraAreaUi(
+    val magiaId: String, val magiaNome: String, val raio: Int, val energia: Int,
+    val pvQueimar: Int, val causaDano: Boolean = false,
+    /** Lote C12: ritual escolhido na hora de conjurar — precisa sobreviver até a mira resolver. */
+    val ritual: com.gurps.ficha.domain.magic.RitualDeConjuracao =
+        com.gurps.ficha.domain.magic.RitualDeConjuracao(),
+)
 
 /** Estado completo do combate para a UI. */
 data class CombatUiState(
@@ -1035,7 +1041,11 @@ class SagaCombatController(
      * controller extrai da ficha o NH básico e a Aptidão, monta o contexto puro e delega ao motor
      * ([CombatSession.heroiConjurar], que usa o resolvedor do MA-2). [alvoId] = null para automagia.
      */
-    fun heroiConjurar(magiaId: String, alvoId: String?, energiaInvestida: Int, pvQueimados: Int = 0, danoPorEnergia: Boolean = false) {
+    fun heroiConjurar(magiaId: String, alvoId: String?, energiaInvestida: Int, pvQueimados: Int = 0,
+                      danoPorEnergia: Boolean = false,
+                      /** Lote C12: ritual escolhido pelo jogador (padrao = sem modificador). */
+                      ritual: com.gurps.ficha.domain.magic.RitualDeConjuracao =
+                          com.gurps.ficha.domain.magic.RitualDeConjuracao()) {
         val s = sessao ?: return
         if (!s.combatenteAtual().ehHeroi || s.encerrado) return
         val p = viewModel.personagem
@@ -1079,10 +1089,13 @@ class SagaCombatController(
             danoPorEnergia = danoPorEnergia,  // Lote MA-6: magia de dano direta (1d/energia)
             mecanica = mecanica,              // Lote AR-1
             resumoEfeito = resumoEfeito,      // Lote MA-8: descrição do efeito pro Narrador
+            ritual = ritual,                  // Lote C12: gestos/voz/passos escolhidos
         )
         // Tempo de operação (Magia p.9): base do catálogo, reduzido por NH alto. >1s → multi-turno.
         val tempoBase = tempoDe(def, magia.tempoOperacao) // MEC-5b: canônico > texto do cabeçalho
-        val tempo = MagicCasting.tempoOperacaoAjustado(tempoBase, magia.calcularNivel(p, aptidao))
+        // Lote C12: caprichar dobra o tempo ANTES da reducao por NH alto — o +1 nao e de graca.
+        val tempo = MagicCasting.tempoOperacaoAjustado(
+            ritual.tempoAjustado(tempoBase), magia.calcularNivel(p, aptidao))
         val res = s.heroiConjurar(ctx, custo, energiaInvestida, magia.nome, alvoId, tempo)
         registrarSeMagiaAtiva(s, magia, classe, custo, res, alvoId, magia.calcularNivel(p, aptidao), mecanica, energiaInvestida, def)
         sincronizarRecursosHeroi(s)
@@ -1318,7 +1331,9 @@ class SagaCombatController(
      * Lote MA-3d: começa a MIRA de uma magia de ÁREA — o app entra em modo "toque um hex". A magia só
      * é lançada quando o jogador toca o centro no grid ([resolverMiraAreaNoHex]).
      */
-    fun iniciarMiraArea(magiaId: String, raio: Int, energia: Int, pvQueimar: Int, causaDano: Boolean = false) {
+    fun iniciarMiraArea(magiaId: String, raio: Int, energia: Int, pvQueimar: Int, causaDano: Boolean = false,
+                        ritual: com.gurps.ficha.domain.magic.RitualDeConjuracao =
+                            com.gurps.ficha.domain.magic.RitualDeConjuracao()) {
         val s = sessao ?: return
         if (!s.combatenteAtual().ehHeroi || s.encerrado) return
         val magia = viewModel.personagem.magias.firstOrNull { it.definicaoId == magiaId || it.nome == magiaId }
@@ -1326,10 +1341,78 @@ class SagaCombatController(
         // Lote MEC-36 (P10): respeita o raio MÍNIMO da mágica (Nuvem de Faíscas, Sono Coletivo = 2m).
         val mec = magia?.let { defDoCatalogo(it)?.mecanica } // MEC-43
         val raioFinal = com.gurps.ficha.domain.magic.MagicMechanics.raioEfetivo(mec, raio)
-        miraAreaPendente = MiraAreaUi(magiaId, nome, raioFinal, energia, pvQueimar.coerceAtLeast(0), causaDano)
+        // Lote P12: SEM GRADE não há hex para mirar. Antes a mira ficava pendurada para sempre —
+        // o jogador escolhia a magia de área no modo faixas e nada acontecia, porque o toque no hex
+        // que resolveria a mira nunca vinha. Agora resolve na hora, por FAIXA de distância.
+        if (estadoTatico == null) {
+            resolverAreaPorFaixa(MiraAreaUi(magiaId, nome, raioFinal, energia,
+                pvQueimar.coerceAtLeast(0), causaDano, ritual))
+            return
+        }
+        miraAreaPendente = MiraAreaUi(magiaId, nome, raioFinal, energia, pvQueimar.coerceAtLeast(0), causaDano, ritual)
         avisoTatico = "Toque um hex para o centro de $nome (raio ${raioFinal}m)" +
             (if (raioFinal > raio) " — mínimo desta mágica" else "")
     }
+
+    /**
+     * Lote P12: mágica de ÁREA no modo de FAIXAS (sem grade). O centro é o próprio herói e atinge
+     * quem estiver a até `raio` metros dele — a aproximação honesta que o modelo de faixas permite,
+     * já que ali só existe distância ao herói, não posição.
+     *
+     * ⚠️ Diferença de propósito para o grid: no tático o jogador ESCOLHE o centro e pode se poupar;
+     * aqui o centro é ele, então o MEC-47 (o operador não é atingido pela própria conjuração)
+     * continua valendo, mas a zona que fica no chão vai pegá-lo se ele não sair.
+     */
+    private fun resolverAreaPorFaixa(mira: MiraAreaUi) {
+        val s = sessao ?: return
+        val p = viewModel.personagem
+        val magia = p.magias.firstOrNull { it.definicaoId == mira.magiaId || it.nome == mira.magiaId } ?: return
+        val aptidao = MagicEngine.getNivelAptidaoMagicaParaMagia(p, null)
+        val def = defDoCatalogo(magia)
+        val alvos = s.inimigosVivos.filter { s.distancia(it) <= mira.raio }.map { it.id }
+        val distCentro = alvos.associateWith { id ->
+            s.inimigosVivos.firstOrNull { it.id == id }?.let { s.distancia(it) } ?: 0
+        }
+        val ctx = ContextoConjuracao(
+            nhBasico = magia.calcularNivel(p, aptidao),
+            classe = MagicClassParser.parse(classeDaMagia(def, magia)),
+            mana = viewModel.sagaNivelMana,
+            distanciaMetros = 0,               // o centro é o próprio herói
+            raioAreaMetros = mira.raio,
+            pvQueimados = mira.pvQueimar,
+            danoPorEnergia = mira.causaDano,
+            mecanica = def?.mecanica,
+            resumoEfeito = resumoDaDescricao(def?.descricao ?: magia.texto),
+            ritual = mira.ritual,
+        )
+        val res = s.heroiConjurarArea(ctx, custoCanonico(def) ?: MagicEnergy.parse(magia.energia),
+            mira.energia, magia.nome, alvos, distCentro)
+        val mecZ = def?.mecanica
+        if (res.sucesso && mecZ?.zonaPersistente == true) {
+            val duracaoSeg = parseTempoSeg(def!!.duracao).coerceAtLeast(1)
+            val expr = com.gurps.ficha.domain.magic.MagicMechanics.danoDeAreaComDegrau(mecZ, mira.energia.coerceAtLeast(1))
+            s.registrarZona(com.gurps.ficha.domain.combat.ZonaPersistente(
+                nome = magia.nome, centro = null, raioM = mira.raio, danoExpr = expr,
+                tipoDano = mecZ.tipoDano, elementoDano = mecZ.elementoDano, armadura = mecZ.armadura,
+                intervaloSeg = mecZ.zonaIntervaloSeg.coerceAtLeast(1), teste = mecZ.zonaTeste,
+                segRestantes = duracaoSeg, segAteProximo = mecZ.zonaIntervaloSeg.coerceAtLeast(1),
+                operadorId = "heroi",
+            ))
+        }
+        sincronizarRecursosHeroi(s)
+        depoisDaAcaoDoHeroi()
+    }
+
+    /** Lote C11: a UI pede para encolher uma zona ativa (nunca expandir — a regra recusa). */
+    fun encolherZona(nomeDaZona: String, novoRaio: Int) {
+        val s = sessao ?: return
+        if (s.encolherZona(nomeDaZona, novoRaio)) { publicarLog(); atualizarEstado() }
+        else publicarLog()
+    }
+
+    /** Lote C11: zonas ativas para a UI oferecer o encolhimento (nome exibido + raio atual). */
+    val zonasAtivasUi: List<Pair<String, Int>>
+        get() = sessao?.zonasAtivas?.map { it.rotulo to it.raioM } ?: emptyList()
 
     /** Lote MA-3d: cancela a mira de área sem lançar. */
     fun cancelarMiraArea() { miraAreaPendente = null; avisoTatico = null }
@@ -1369,6 +1452,7 @@ class SagaCombatController(
             danoPorEnergia = mira.causaDano, // Lote MA-6
             mecanica = def?.mecanica,        // Lote AR-1
             resumoEfeito = resumoDaDescricao(def?.descricao ?: magia.texto), // Lote MA-8
+            ritual = mira.ritual,             // Lote C12
         )
         // MEC-5b: canônico > texto também na área.
         // Lote MEC-14: distância de cada alvo ao CENTRO (1 hex = 1 m) — a explosão decai com ela.

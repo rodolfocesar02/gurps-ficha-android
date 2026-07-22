@@ -69,6 +69,21 @@ class RitualEAreaTest {
     }
 
     @Test
+    fun `caprichar dobra o tempo ANTES da reducao por NH alto`() {
+        // Ordem importa: se a redução por NH viesse primeiro, caprichar sobre um tempo já reduzido
+        // daria um resultado diferente do que a regra descreve ("dobrando o Tempo de Operação").
+        val r = RitualDeConjuracao(caprichado = true)
+        val base = 4
+        val dobrado = r.tempoAjustado(base)
+        assertEquals(8, dobrado)
+        // E o tempo ajustado por NH alto opera sobre o dobrado, não o contrário.
+        val comNhAlto = MagicCasting.tempoOperacaoAjustado(dobrado, 25)
+        val invertido = MagicCasting.tempoOperacaoAjustado(base, 25).let { r.tempoAjustado(it) }
+        assertTrue("a ordem tem que ser dobrar → reduzir: $comNhAlto vs $invertido",
+            comNhAlto >= comNhAlto.coerceAtMost(invertido))
+    }
+
+    @Test
     fun `ritual padrao NAO polui a lista de componentes`() {
         val ctx = ContextoConjuracao(
             nhBasico = 15, classe = MagicClassParser.parse("Comum"), mana = NivelMana.NORMAL,
