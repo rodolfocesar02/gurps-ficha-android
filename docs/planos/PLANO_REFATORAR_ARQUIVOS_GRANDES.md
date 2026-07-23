@@ -1,5 +1,12 @@
 # Plano — Refatorar os arquivos grandes do combate (separar MOTOR de TELA)
 
+> ✅ **CONCLUÍDO (22/jul).** Fase 0 (rede de invariantes ampliada, REFACTOR-0), Fase 1 (decisão →
+> `RegrasMovimentoTatico`, REFACTOR-1), Fase 2 (tradução → `TraducaoFichaParaCombate`, REFACTOR-2),
+> Fase 3 (UI de conjuração → `CombatUiConjuracao`, REFACTOR-3) e Fase final (MAPA_DETALHADO §32.4
+> revista). Resultado: controller 2243→2099, CombatUi 2000→1610; a decisão e a tradução ganharam
+> teste. **Fase 4 (dividir `CombatSession`) NÃO foi feita** — ele é puro e testado, risco/incômodo
+> baixos; fica para quando/se incomodar. Gate final: 935 testes, 0 falhas.
+
 **Decisão do usuário (22/jul):** só os arquivos que estamos mexendo agora. Os outros grandes
 (`TabVtt`, `MestreIAGeneratorUseCase`, `GeminiLiveService`, `Personagem`, `TabRolagem`,
 `CatalogLoaders`) estão **estáveis, sem bug**, e mexer neles só criaria testes e simulações novas

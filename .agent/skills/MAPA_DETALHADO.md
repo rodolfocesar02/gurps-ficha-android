@@ -1,9 +1,11 @@
 # Mapa Detalhado: Arquivos e Funções do Projeto GURPS
 
 Mapa de engenharia completo do projeto. Use para localizar lógicas específicas sem varrer o código.
-Atualizado em: 2026-07-22 (**§32.9 nova**: PILAR MAGIA no combate — onde vive cada peça do motor de
-conjuração após os lotes MA/MEC/AR/A1/P/C; motor executa 98 das 879 magias). Rede de invariantes
-SIM-1 e build paralelo BUILD-1 (gate 7-8min → 1m36s) registrados.
+Atualizado em: 2026-07-22 (**§32.9 nova**: PILAR MAGIA no combate; motor executa 98 das 879 magias).
+Rede de invariantes SIM-1 e build paralelo BUILD-1 (gate 7-8min → 1m36s). **§32.4 revista** após a
+refatoração REFACTOR-0..3: a DECISÃO e a TRADUÇÃO saíram do `SagaCombatController` (2243→2099) para
+arquivos puros e testáveis (`RegrasMovimentoTatico`, `TraducaoFichaParaCombate`), e a UI de
+conjuração saiu do `CombatUi` (2000→1610) para `CombatUiConjuracao`.
 Base anterior: 2026-06-08 (fidelidade linha-a-linha) | 2026-05-30 (Mestre IA pós-Lote 328) | 130+ arquivos.
 
 > ➕ **2026-06-08 — Feature Imagem/Retrato do Personagem:** novo `ImagemPersonagemStore.kt`
@@ -646,8 +648,13 @@ Tudo em `domain/combat/` é Kotlin PURO (sem Android, determinístico por seed) 
 - **`model/BestiarioModels.kt`** + **`domain/loaders/BestiarioCatalogo.kt`** — Catálogo de criaturas (`assets/bestiario.v1.json`) → `Combatente` (`novoCombatente`). Loader com cache. ⚠️ Gson não roda init de data class → `Bestiario.get()` busca direto (sem mapa cacheado).
 
 ### 32.4 UI e ponte de combate
-- **`viewmodel/delegates/SagaCombatController.kt`** — Embrulha `CombatSession` com estado Compose (`CombatUiState`/`CombatenteUi`/`FaixaDistancia`/`DefesaPendenteUi`) + corrotinas + ponte de defesa suspensa. `construirAtaques` lê as armas da ficha (corpo-a-corpo + fogo/distância, perícia casada por grupo/nome, dano por ST, tipo correto, reach/Acc/1-2D/Máx/Bulk/aparar). `heroiApontar`; **`sacarArma(indice)`** (Saque Rápido = livre, senão Preparar gasta o turno, Lote 374); alvos corpo-a-corpo por reach. Devolve PV/saque/XP à ficha (`sagaConcederXp`/`sagaDefinirPvAtual`/`sagaAdicionarItem` no ViewModel).
-- **`ui/saga/CombatUi.kt`** — Visual aprovado: `CombatTracker` (faixas Engajado→Extremo, barra de PV, postura/condições, avatar de inicial colorida = **placeholder do retrato real**), `SeletorDeArma` (mostra arma na mão + alcance; "Sacar" = Preparar), `ManeuverCards` + sub-diálogos (alvo/local, Mover dirigido, Avaliar, **Apontar**, Postura), `DefendaSeCard`. TalkBack em tudo.
+- **`viewmodel/delegates/SagaCombatController.kt`** (2099 linhas, era 2243) — Embrulha `CombatSession` com estado Compose (`CombatUiState`/`CombatenteUi`/`FaixaDistancia`/`DefesaPendenteUi`) + corrotinas + ponte de defesa suspensa. `heroiApontar`; **`sacarArma(indice)`** (Saque Rápido = livre, senão Preparar gasta o turno, Lote 374); alvos corpo-a-corpo por reach. Devolve PV/saque/XP à ficha.
+  - ⚙️ **Lote REFACTOR (jul/2026): a DECISÃO e a TRADUÇÃO saíram daqui para arquivos puros e testáveis** (o controller precisa de Android, não roda na JVM, e era onde os bugs TOK-8/9/10 nasceram):
+    - **`domain/combat/hex/RegrasMovimentoTatico.kt`** (REFACTOR-1) — `podeMoverAgora`/`motivoNaoPodeMover` (turno? virada pendente? preso?) e `interpretarToque` (o que um toque no hex significa). A trava do TOK-8 virou teste unitário em `HexRegrasFacingTest`.
+    - **`domain/combat/TraducaoFichaParaCombate.kt`** (REFACTOR-2) — `classeDaMagia`/`energiaDaMagia` (**o catálogo manda sobre a cópia da ficha**, bug MEC-42), `chaveNome` (normalização, MEC-43), `construirPerfilHeroi`/`construirAtaques` + ajudantes (`rdHeroi`/`acharPericiaDaArma`/`reachParaMetros`/`ehDuasMaos`/`melhorPericiaDesarmada`). Testes em `TraducaoFichaParaCombateTest`.
+    - O controller agora **coleta o estado e obedece** — não decide nem traduz.
+- **`ui/saga/CombatUi.kt`** (1610 linhas, era 2000) — `CombatTracker` (faixas, barra de PV, postura/condições), `SeletorDeArma`, `ManeuverCards` + sub-diálogos (alvo/local, Mover, Avaliar, Apontar, Postura, Virar, Trocar arma), `MenuTaticoDoToken`, `DefendaSeCard`, overlays. `OpcaoRadio` é `internal` (compartilhado). TalkBack em tudo.
+- **`ui/saga/CombatUiConjuracao.kt`** (428 linhas, REFACTOR-3) — UI de CONJURAÇÃO recortada do CombatUi: `SubDialogoConjurar` (2 passos, busca), `PainelRitual` (C12), `BotaoConjurarFaixas`/`ZonasAtivasFaixas` (P12/C11 no modo faixas). Composables `internal`.
 
 ### 32.5 Regras de arma no combate — COMPLETAS (Lotes 371-375)
 Stats de arma vêm do catálogo → ficha (`Equipamento.arma*`) → `AtaqueHeroi`: **reach** ("C"/"1"/"2", engajamento), **Acc + Apontar**, **1/2D** (meio dano), **Máx** (não alcança além), **Mover-e-Atacar** (CaC −4+teto / à distância −2 ou **Bulk**), **Aparar E/D** (esgrima/desbalanceada/Não/à distância), **Sacar/Preparar** (arma pronta vs guardada; livre c/ Saque Rápido). Sentidos na Rolagem: §5 `SentidoRules` + §20 `DialogoSentidos`.
