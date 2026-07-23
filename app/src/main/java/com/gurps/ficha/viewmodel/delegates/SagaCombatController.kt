@@ -841,7 +841,7 @@ class SagaCombatController(
             }
         }
 
-        val perfil = construirPerfilHeroi(p)
+        val perfil = com.gurps.ficha.domain.combat.TraducaoFichaParaCombate.construirPerfilHeroi(p)
         val encounter = CombatEncounter(combatentes, distancias, seed = Random.nextLong())
         val s = CombatSession(encounter, perfil, Random.Default)
         if (surpresa == "inimigos") combatentes.filter { !it.ehHeroi }.forEach { it.condicoes.add(Condicao.SURPRESO) }
@@ -851,7 +851,7 @@ class SagaCombatController(
         instalarVizinhosDeImpactoPelaGrade() // P5: respingo da explosão pela posição real
         logPublicado = 0
         finalizado = false
-        ataques = construirAtaques(p)
+        ataques = com.gurps.ficha.domain.combat.TraducaoFichaParaCombate.construirAtaques(p)
         ataqueSelecionado = 0
         s.log += "⚔️ Combate iniciado: ${inimigos.joinToString(", ") { "${it.second}× ${it.first}" }} a ${distanciaM}m."
 
@@ -904,7 +904,7 @@ class SagaCombatController(
     }
 
     /** Perfil de combate do herói montado da ficha ATUAL (o bridge usa p/ dano fora do loop). */
-    fun perfilHeroi(): HeroiPerfilCombate = construirPerfilHeroi(viewModel.personagem)
+    fun perfilHeroi(): HeroiPerfilCombate = com.gurps.ficha.domain.combat.TraducaoFichaParaCombate.construirPerfilHeroi(viewModel.personagem)
 
     /** Lote 424 (T1-2): modificador situacional do Narrador (ação improvisada → mecânica). Null = alvo inválido. */
     fun aplicarModificador(alvoId: String, valor: Int, aplicaEm: String, motivo: String, duracaoRodadas: Int?): String? {
@@ -1115,11 +1115,13 @@ class SagaCombatController(
      *
      * Regra: **o catálogo manda**; a cópia da ficha é só fallback (magia caseira / catálogo ausente).
      */
+    // Lote REFACTOR-2: a REGRA (catálogo manda sobre a ficha) mora em TraducaoFichaParaCombate,
+    // testável. Estes wrappers finos só encurtam as ~6 chamadas.
     private fun classeDaMagia(def: com.gurps.ficha.model.MagiaDefinicao?, m: com.gurps.ficha.model.MagiaSelecionada): String? =
-        def?.classe?.takeIf { it.isNotBlank() } ?: m.classe
+        com.gurps.ficha.domain.combat.TraducaoFichaParaCombate.classeDaMagia(def, m)
 
     private fun energiaDaMagia(def: com.gurps.ficha.model.MagiaDefinicao?, m: com.gurps.ficha.model.MagiaSelecionada): String? =
-        def?.energia?.takeIf { it.isNotBlank() } ?: m.energia
+        com.gurps.ficha.domain.combat.TraducaoFichaParaCombate.energiaDaMagia(def, m)
 
     /**
      * Busca a definição do catálogo (fonte da verdade das regras).
@@ -1133,12 +1135,9 @@ class SagaCombatController(
         val c = context ?: return null
         val repo = runCatching { com.gurps.ficha.data.DataRepository.getInstance(c) }.getOrNull() ?: return null
         runCatching { repo.getMagiaPorId(m.definicaoId) }.getOrNull()?.let { return it }
-        fun chave(s: String?) = (s ?: "").lowercase()
-            .replace(Regex("[àáâãä]"), "a").replace(Regex("[éêë]"), "e").replace(Regex("[íî]"), "i")
-            .replace(Regex("[óôõö]"), "o").replace(Regex("[úû]"), "u").replace("ç", "c")
-            .replace(Regex("[^a-z0-9]"), "")
-        val alvo = chave(m.nome)
-        val achou = runCatching { repo.magias.firstOrNull { chave(it.nome) == alvo } }.getOrNull()
+        val chaveNome = com.gurps.ficha.domain.combat.TraducaoFichaParaCombate::chaveNome
+        val alvo = chaveNome(m.nome)
+        val achou = runCatching { repo.magias.firstOrNull { chaveNome(it.nome) == alvo } }.getOrNull()
         if (achou == null) {
             com.gurps.ficha.domain.combat.SagaLog.mecanica(
                 "catálogo NÃO encontrou a magia '${m.nome}' (id='${m.definicaoId}') — usando os dados da ficha")
@@ -1971,7 +1970,7 @@ class SagaCombatController(
         val heroiPreso = Condicao.AGARRADO in s.heroi.condicoes || Condicao.IMOBILIZADO in s.heroi.condicoes
         if (heroiPreso != ataquesAgarrado) {
             ataquesAgarrado = heroiPreso
-            ataques = construirAtaques(viewModel.personagem, agarrado = heroiPreso)
+            ataques = com.gurps.ficha.domain.combat.TraducaoFichaParaCombate.construirAtaques(viewModel.personagem, agarrado = heroiPreso)
             ataqueSelecionado = ataqueSelecionado.coerceIn(0, (ataques.size - 1).coerceAtLeast(0))
         }
         val combs = s.encounter.combatentes.map { c ->
@@ -2093,155 +2092,8 @@ class SagaCombatController(
     // ── Perfil de combate do herói (a partir da ficha) ─────────────────────────
 
     /** Defesas do herói (Lote 368: o ataque agora é uma lista escolhível, ver [construirAtaques]). */
-    private fun construirPerfilHeroi(p: Personagem): HeroiPerfilCombate = HeroiPerfilCombate(
-        esquiva = p.defesasAtivas.calcularEsquiva(p),
-        apara = p.defesasAtivas.calcularApara(p),
-        bloqueio = p.defesasAtivas.calcularBloqueio(p),
-        ht = p.ht,
-        rd = rdHeroi(p),
-        // BD do escudo já está embutido acima; guardado à parte p/ removê-lo quando não vale (Lote 380, MB p.375).
-        bonusEscudo = p.defesasAtivas.getBonusEscudo(p),
-        // MT do herói (alvo) — somado ao acerto quando um NPC atira nele (Lote 381, MB p.549).
-        modificadorTamanho = p.modificadorTamanho,
-        // ST/DX para as Disputas de luta agarrada (Lote 386).
-        st = p.forca, dx = p.dx,
-        // Vontade — teste p/ não perder a mira ao ser ferido (Lote 395).
-        vontade = p.vontade,
-        // Dano por GdP do herói — usado no Empurrão (Lote 410).
-        danoGdP = p.danoGdP,
-        // NH em Acrobacia (null se não tem) — Esquiva Acrobática (Lote 414).
-        acrobacia = p.periciasTotais.firstOrNull {
-            CatalogFilters.normalizarBusca(it.definicaoId).removePrefix("racial_") == "acrobacia"
-        }?.calcularNivel(p),
-        // Lote MEC-45: NH em Ataque Inato (null se não tem) — é a perícia CORRETA para acertar com
-        // projétil mágico (Magia p.12); sem ela o motor cai na DX, como fazia antes.
-        nhAtaqueInato = p.periciasTotais.firstOrNull {
-            CatalogFilters.normalizarBusca(it.definicaoId).removePrefix("racial_") == "ataqueinato" ||
-                CatalogFilters.normalizarBusca(it.nome) == "ataqueinato"
-        }?.calcularNivel(p),
-    )
-
-    /**
-     * Lista de ataques utilizáveis (Lote 368): cada arma EQUIPADA (corpo-a-corpo e à distância/fogo)
-     * com sua perícia, NH, dano resolvido por ST e tipo correto; mais o desarmado como último recurso.
-     */
-    private fun construirAtaques(p: Personagem, agarrado: Boolean = false): List<AtaqueHeroi> {
-        val out = mutableListOf<AtaqueHeroi>()
-        // Armas CONFISCADAS (tiradas pela narrativa — desarmado/capturado) não aparecem: herói luta no soco.
-        p.equipamentos.filter { it.tipo == TipoEquipamento.ARMA && !it.confiscado }.forEach { arma ->
-            // Modo do catálogo: "corpo_a_corpo" | "distancia" (arcos/arremesso) | "armas_de_fogo".
-            val modo = arma.armaTipoCombate?.lowercase().orEmpty()
-            val aDistancia = modo.contains("dist") || modo.contains("fogo")
-            val pericia = acharPericiaDaArma(p, arma)
-            val nh = pericia?.calcularNivel(p) ?: p.dx
-            // Dano bruto traz o token de tipo ("2d-1 pa"): o tipo vem dele; a expressão fica só com os dados.
-            val danoBruto = (arma.danoCalculadoComSt(p, pericia?.definicaoId) ?: arma.armaDanoRaw).orEmpty()
-            if (danoBruto.isBlank()) return@forEach
-            val tipoArma = CombatSession.tipoDano(danoBruto)
-            val danoExpr = CombatSession.semTokenTipo(danoBruto)
-            // Alcance real (Lote 371): à distância usa o Máx do catálogo; corpo-a-corpo, o reach ("C"/"1"/"1,2").
-            val alcanceReal = if (aDistancia) (arma.armaMaximoMetros ?: 50)
-                else (arma.armaAlcanceCorpoACorpo?.let { reachParaMetros(it) } ?: 1)
-            out.add(AtaqueHeroi(
-                rotulo = arma.nome + (pericia?.let { " (${it.nome})" } ?: " (sem perícia, usa DX)"),
-                nh = nh, danoExpr = danoExpr, tipo = tipoArma,
-                aDistancia = aDistancia, alcance = alcanceReal, precisao = arma.armaPrecisao ?: 0,
-                meioDano = if (aDistancia) (arma.armaMeioDanoMetros ?: 0) else 0,
-                magnitude = arma.armaMagnitude ?: 0,
-                apararTipo = CombatSession.parseAparar(arma.armaAparar).second,
-                cadenciaTiro = arma.armaCadenciaTiro ?: 1,
-                recuo = arma.armaRecuo ?: 1,
-                duasMaos = ehDuasMaos(arma),
-                armaDeFogo = modo.contains("fogo"), // Lote 395: arma de fogo → pode firmar ao Apontar (+1)
-                stMinimo = arma.armaStMinimo ?: 0, // Lote 398: ST mínima → desbalanceada fica despreparada se ST < 1,5×
-                temPericia = pericia != null
-            ))
-        }
-        // Desarmado (sempre disponível): melhor perícia de luta sem arma, ou DX.
-        val desarmada = melhorPericiaDesarmada(p)
-        val aparaMarcial = desarmada?.let {
-            CatalogFilters.normalizarBusca(it.definicaoId).removePrefix("racial_") in MARCIAIS_APARA
-        } ?: false
-        out.add(AtaqueHeroi(
-            rotulo = (desarmada?.nome ?: "Desarmado"),
-            nh = desarmada?.calcularNivel(p) ?: p.dx,
-            danoExpr = p.danoGdP, tipo = DanoTipo.CONT, aDistancia = false, alcance = 1,
-            desarmado = true, aparaMarcial = aparaMarcial, temPericia = desarmada != null
-        ))
-        // Armas à distância primeiro quando há (pistoleiro saca o revólver, não soca).
-        val resultado = out.sortedByDescending { it.aDistancia }
-        // Lote 422 (MB p.371): herói AGARRADO/IMOBILIZADO não empunha nem golpeia arma — só ataque desarmado.
-        return if (agarrado) resultado.filter { it.desarmado } else resultado
-    }
-
-    /** Converte o alcance corpo-a-corpo ("C", "1", "1,2") em metros (maior alcance da arma). "C" → 1 (adjacente). */
-    private fun reachParaMetros(raw: String): Int =
-        Regex("\\d+").findAll(raw).mapNotNull { it.value.toIntOrNull() }.maxOrNull() ?: 1
-
-    /**
-     * Lote 380: a arma ocupa as DUAS mãos (sem mão livre para o escudo, MB p.375)? Orientado a DADO: a flag
-     * do catálogo (`armaDuasMaos`, do †/‡ corpo-a-corpo ou já resolvida por grupo no loader) e, para fichas
-     * antigas, o GRUPO da arma (não o nome) via [ArmaCatalogoItem.duasMaosPorGrupo].
-     */
-    private fun ehDuasMaos(arma: com.gurps.ficha.model.Equipamento): Boolean =
-        arma.armaDuasMaos ||
-            com.gurps.ficha.model.ArmaCatalogoItem.duasMaosPorGrupo(
-                arma.armaTipoCombate.orEmpty(), arma.armaGrupo.orEmpty()
-            )
-
-    /**
-     * Casa uma arma com a perícia do herói (Lote 378 — robusto). Confere grupo/nome da arma contra
-     * nome/ESPECIALIZAÇÃO/id da perícia: armas de fogo usam a perícia "Armas de Fogo/NT" com a
-     * especialização ("Pistola"/"Rifle") guardada à parte, então só comparar o nome falhava. Se a ficha
-     * veio sem o grupo da arma (ex.: criada pela IA), cai num fallback por FAMÍLIA derivada do tipo de
-     * combate (fogo → "Armas de Fogo"; distância → arco/besta/arremesso…), preferindo a especialização
-     * que casa a arma, senão a perícia de maior NH.
-     */
-    private fun acharPericiaDaArma(p: Personagem, arma: com.gurps.ficha.model.Equipamento): com.gurps.ficha.model.PericiaSelecionada? {
-        val tokens = listOfNotNull(arma.armaGrupo, arma.nome)
-            .map { CatalogFilters.normalizarBusca(it) }.filter { it.isNotBlank() }
-
-        fun casa(per: com.gurps.ficha.model.PericiaSelecionada): Boolean {
-            val campos = listOf(per.nome, per.especializacao, per.definicaoId)
-                .map { CatalogFilters.normalizarBusca(it) }.filter { it.isNotBlank() }
-            return campos.any { c -> tokens.any { a -> c == a || c.contains(a) || a.contains(c) } }
-        }
-        // 1) Match direto: grupo/nome da arma × nome/especialização/id da perícia.
-        p.periciasTotais.firstOrNull { casa(it) }?.let { return it }
-
-        // 2) Fallback por FAMÍLIA (grupo pode vir vazio): tipo de combate da arma → perícia base.
-        val modo = arma.armaTipoCombate?.lowercase().orEmpty()
-        val familia: List<String> = when {
-            modo.contains("fogo") -> listOf("armas de fogo", "arma de fogo")
-            modo.contains("dist") -> listOf("arco", "besta", "arremesso", "funda", "zarabatana")
-            else -> emptyList()
-        }
-        if (familia.isEmpty()) return null
-        val candidatas = p.periciasTotais.filter { per ->
-            val n = CatalogFilters.normalizarBusca(per.nome)
-            familia.any { n.contains(it) }
-        }
-        if (candidatas.isEmpty()) return null
-        return candidatas.firstOrNull { per ->
-            val esp = CatalogFilters.normalizarBusca(per.especializacao)
-            esp.isNotBlank() && tokens.any { a -> esp == a || esp.contains(a) || a.contains(esp) }
-        } ?: candidatas.maxByOrNull { it.calcularNivel(p) }
-    }
-
-    private fun melhorPericiaDesarmada(p: Personagem): com.gurps.ficha.model.PericiaSelecionada? =
-        p.periciasTotais.filter {
-            CatalogFilters.normalizarBusca(it.definicaoId).removePrefix("racial_") in DESARMADAS
-        }.maxByOrNull { it.calcularNivel(p) }
-
-    /** RD do herói: maior RD entre as armaduras equipadas (aproximação de torso). Armadura CONFISCADA não conta. */
-    private fun rdHeroi(p: Personagem): Int = p.equipamentos
-        .filter { it.tipo == TipoEquipamento.ARMADURA && !it.confiscado }
-        .mapNotNull { it.rdArmaduraExibicao()?.let { s -> Regex("\\d+").find(s)?.value?.toIntOrNull() } }
-        .maxOrNull() ?: 0
-
-    private companion object {
-        val DESARMADAS = setOf("briga", "boxe", "carate", "judo", "luta_grecoromana", "caratê", "judô")
-        // Lote 391: aparar uma ARMA desarmado tem o valor cheio (sem −3) com Caratê ou Judô (MB p.376).
-        val MARCIAIS_APARA = setOf("carate", "caratê", "judo", "judô")
-    }
+    // Lote REFACTOR-2: `construirPerfilHeroi`, `construirAtaques` e seus ajudantes
+    // (`rdHeroi`/`acharPericiaDaArma`/`reachParaMetros`/`ehDuasMaos`/`melhorPericiaDesarmada` +
+    // as constantes DESARMADAS/MARCIAIS_APARA) foram para `TraducaoFichaParaCombate` (domínio puro,
+    // testável). O controller chama `TraducaoFichaParaCombate.construir*` diretamente.
 }
