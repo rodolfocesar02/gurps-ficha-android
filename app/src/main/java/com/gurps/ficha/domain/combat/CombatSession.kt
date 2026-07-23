@@ -2772,169 +2772,36 @@ class CombatSession(
 
     // ── Lote MEC-46 (P1b): ZONAS PERSISTENTES (chuvas, nuvens, gás) ──────────────────────────────
 
-    var zonasAtivas: List<ZonaPersistente> = emptyList(); private set
-
-    /**
-     * Quem está DENTRO da zona agora. O motor não tem a grade (ela vive no controller), então isto é
-     * um ponto de injeção: o controller substitui pelo cálculo real por hex. O padrão usa a distância
-     * ao herói — aproximação honesta do modelo de faixas.
-     *
-     * ⚠️ Lote MEC-47 — o herói é caso especial AQUI: no modelo de faixas `distancia(heroi)` é **0**
-     * por definição (todas as distâncias são medidas a partir dele), então ele caía dentro de
-     * QUALQUER zona, inclusive uma que ele mesmo largou a 20m. Sem grade não dá pra saber onde a
-     * nuvem está em relação a ele, então valem os donos: zona do próprio herói → ele escolheu onde
-     * pôr e fica de fora; zona de um NPC → foi mirada nele e o pega. Com grade (o caminho normal
-     * do tático) isto não é usado: lá a posição é real e quem pisar no fogo queima.
-     */
-    var ocupantesDaZona: (ZonaPersistente) -> List<Combatente> = { z ->
-        encounter.combatentes.filter {
-            it.vivo && distancia(it) <= z.raioM && !(it.ehHeroi && z.operadorId == it.id)
-        }
-    }
-
-    fun registrarZona(z: ZonaPersistente) {
-        // Lote TOK-10: com duas zonas da MESMA mágica no mapa, o log ficava ambíguo — "Nenhum
-        // inimigo na área" e "Chuva de Fogo atinge Goblin 2" no mesmo instante, sem dizer que eram
-        // nuvens diferentes. A partir da segunda, cada uma ganha um número.
-        val jaTem = zonasAtivas.count { it.nome.equals(z.nome, ignoreCase = true) }
-        if (jaTem > 0) z.ordinal = jaTem + 1
-        zonasAtivas = zonasAtivas + z
-        log += "☁️ ${z.rotulo} cobre a área (raio ${z.raioM}m) por ${z.segRestantes}s — " +
-            "${z.danoExpr} a cada ${z.intervaloSeg}s em quem estiver dentro."
-        // Lote MEC-47: o operador se POUPA na conjuração ("pode escolher afetar apenas partes da
-        // área", Magia p.11), mas a nuvem que fica no chão é um perigo contínuo e não distingue
-        // ninguém. Se ele mesmo está lá dentro, isso precisa ser dito AGORA — senão o primeiro
-        // tique parece dano do nada, que é justamente a queixa histórica do teste no aparelho.
-        if (ocupantesDaZona(z).any { it.ehHeroi }) {
-            log += "⚠️ Você está DENTRO da ${z.rotulo} — vai queimar a cada ${z.intervaloSeg}s " +
-                "enquanto ficar aí. Saia da área."
-        }
-    }
-
-    fun limparZonas() { zonasAtivas = emptyList() }
-
-    /**
-     * Lote C11 (Magia p.10): a área de uma mágica **encolhe, nunca cresce**.
-     *
-     * *"Uma mágica com uma área variável de efeito não pode ser expandida depois de ter sido
-     * operada. No entanto, um mágico pode optar por manter apenas parte da área de uma mágica."*
-     *
-     * Devolve `true` se encolheu. Tentar EXPANDIR é recusado e registrado — o jogador precisa saber
-     * por que não aconteceu, senão parece que o toque não funcionou.
-     *
-     * ⚠️ **Deferido honesto, e é a maior parte da regra**: o livro manda pagar *"o custo de
-     * manutenção de apenas uma parcela da área original"*. Zona **não tem manutenção** no motor, e
-     * isso está certo — você paga a operação e ganha a duração inteira; manutenção é para estender
-     * além dela. Enquanto não existir extensão de zona, não há custo proporcional a cobrar.
-     */
-    fun encolherZona(nomeDaZona: String, novoRaioM: Int): Boolean {
-        val z = zonasAtivas.firstOrNull { it.rotulo.equals(nomeDaZona, ignoreCase = true) ||
-            it.nome.equals(nomeDaZona, ignoreCase = true) } ?: return false
-        if (novoRaioM >= z.raioM) {
-            log += "⚠️ ${z.rotulo} não pode ser EXPANDIDA depois de operada (Magia p.10) — " +
-                "está com raio ${z.raioM}m."
-            return false
-        }
-        if (novoRaioM < 1) return false
-        val antes = z.raioM
-        z.raioM = novoRaioM
-        log += "☁️ ${z.rotulo} encolhe de ${antes}m para ${novoRaioM}m — quem ficou de fora deixa de ser atingido."
-        return true
-    }
-
-    /**
-     * Lote MEC-46: corre o relógio das zonas (1 turno = 1 segundo), fere quem está dentro quando o
-     * intervalo vence, e remove as que expiraram. Roda no avanço de turno, como o tique das mágicas.
-     */
-    /**
-     * Lote TOK-10: existe OUTRA zona **da mesma mágica** cobrindo [alvo] que é mais forte que [z]?
-     *
-     * Regra (Magia p.9, a mesma que o MEC-29 já aplica aos buffs): *"Se qualquer tipo de mágica com
-     * efeito variável for lançada sobre o mesmo objetivo mais de uma vez, só a MAIS PODEROSA deverá
-     * ser considerada — não se acumulam."*
-     *
-     * Decisão do usuário sobre o caso ambíguo: **a mesma mágica** não acumula (duas Chuvas de Fogo
-     * sobrepostas ferem uma vez só), mas **mágicas diferentes** somam — Chuva de Fogo com Chuva de
-     * Ácido queima E corrói, que é combinação tática legítima.
-     *
-     * Critério de "mais forte": dano máximo da expressão. O empate cai na ordem de registro (a
-     * primeira vence), para o resultado ser determinístico e não depender da ordem da lista.
-     */
-    private fun zonaSuplantadaPara(z: ZonaPersistente, alvo: Combatente): Boolean {
-        val rivais = zonasAtivas.filter {
-            it !== z && it.nome.equals(z.nome, ignoreCase = true) && ocupantesDaZona(it).any { o -> o.id == alvo.id }
-        }
-        if (rivais.isEmpty()) return false
-        val minha = danoMaximo(z.danoExpr)
-        return rivais.any { r ->
-            val dela = danoMaximo(r.danoExpr)
-            dela > minha || (dela == minha && zonasAtivas.indexOf(r) < zonasAtivas.indexOf(z))
-        }
-    }
-
-    private fun tiqueDasZonas() {
-        if (zonasAtivas.isEmpty()) return
-        val sobrevivem = mutableListOf<ZonaPersistente>()
-        for (z in zonasAtivas) {
-            // Lote TOK-9 — regra da estreia. A estreia é consumida no primeiro TURNO, não no
-            // primeiro intervalo: numa zona de intervalo longo (Mau Cheiro, 60s) amarrá-la ao
-            // intervalo pularia o primeiro tique REAL, lá no minuto 60.
-            val turnoDaConjuracao = !z.estreou
-            z.estreou = true
-            z.segRestantes -= 1
-            z.segAteProximo -= 1
-            // O relógio corre normalmente; só o DANO deste primeiro segundo é pulado, porque ele
-            // já saiu na conjuração da área. Sem isto o alvo levava dobrado no mesmo instante.
-            if (z.segAteProximo <= 0 && !turnoDaConjuracao) {
-                z.segAteProximo = z.intervaloSeg.coerceAtLeast(1)
-                for (alvo in ocupantesDaZona(z)) {
-                    // Lote TOK-10 (Magia p.9, decisão do usuário): a MESMA mágica não acumula —
-                    // duas Chuvas de Fogo sobrepostas ferem UMA vez, valendo a mais forte. Mágicas
-                    // DIFERENTES somam (Chuva de Fogo + Chuva de Ácido queimam e corroem).
-                    // Sem isto dava para empilhar a mesma zona barata N vezes e multiplicar o dano.
-                    if (zonaSuplantadaPara(z, alvo)) continue
-                    // Lote A1: imune ao elemento não é ferido pela zona, mesmo pisando dentro dela.
-                    if (com.gurps.ficha.domain.magic.MagicMechanics.imuneAo(z.elementoDano, alvo.imunidades)) {
-                        log += "☁️ ${alvo.nome} atravessa ${z.rotulo} sem se ferir — imune a ${z.elementoDano}."
-                        continue
-                    }
-                    // Teste para evitar (Mau Cheiro: HT uma vez por minuto). Sem teste, o dano é certo.
-                    if (!z.teste.isNullOrBlank()) {
-                        val atributo = if (alvo.ehHeroi) heroiPerfil.ht else alvo.htEfetivo
-                        val rol = rolar3d6()
-                        if (rol <= atributo) {
-                            log += "☁️ ${alvo.nome} aguenta ${z.rotulo} (${z.teste} $atributo, rolou $rol)."
-                            continue
-                        }
-                    }
-                    val bruto = rolarDano(z.danoExpr, random)
-                    val rd = when (z.armadura) {
-                        "ignora" -> 0
-                        "ignora_vestida" -> (alvo.stats?.rdNatural ?: 0) + alvo.buffRd
-                        else -> if (alvo.ehHeroi) heroiPerfil.rd else ((alvo.stats?.rd ?: 0) + alvo.buffRd)
-                    }
-                    val tipo = when (z.tipoDano) {
-                        "corte" -> DanoTipo.CORT; "perf" -> DanoTipo.PERF; else -> DanoTipo.CONT
-                    }
-                    val dn = HitLocationRules.aplicarDano(alvo.pvMax, bruto, tipo, LocalAtaque.TORSO, rd,
-                        alvo.stats?.tolerancia ?: ToleranciaFerimentos.NORMAL)
-                    InjuryRules.ferir(alvo, dn.pvSubtrair, if (alvo.ehHeroi) heroiPerfil.ht else alvo.htEfetivo, random)
-                    // Lote MEC-47: quando é o próprio herói, o log diz na cara que ele está na
-                    // ZONA DELE — a linha genérica "atinge <nome>" não explicava a perda de PV.
-                    log += if (alvo.ehHeroi) {
-                        "☁️ VOCÊ está dentro da ${z.rotulo}: ${z.danoExpr} → ${dn.pvSubtrair} de dano" +
-                            (if (!alvo.vivo) " — você caiu!" else ". Saia da área.")
-                    } else {
-                        "☁️ ${z.rotulo} atinge ${alvo.nome}: ${z.danoExpr} → ${dn.pvSubtrair} de dano" +
-                            (if (!alvo.vivo) " — fora de combate!" else ".")
-                    }
-                }
+    // Lote MOTOR-1: o subsistema INTEIRO de zonas (estado + registrar/encolher/tique/suplantação)
+    // foi para `subsistemas/ZonaDelegate`, testável sozinho. O motor injeta o que o tique precisa
+    // (log, RNG, HT/RD do alvo, reavaliar fim) por lambda, e reexpõe a API pública por delegação —
+    // quem chamava `s.registrarZona`/`s.zonasAtivas`/`s.ocupantesDaZona` continua chamando igual.
+    private val zonaDelegate = com.gurps.ficha.domain.combat.subsistemas.ZonaDelegate(
+        log = log,
+        random = random,
+        combatentes = { encounter.combatentes },
+        distanciaAoHeroi = { distancia(it) },
+        htDoAlvo = { if (it.ehHeroi) heroiPerfil.ht else it.htEfetivo },
+        rdDaZona = { alvo, z ->
+            when (z.armadura) {
+                "ignora" -> 0
+                "ignora_vestida" -> (alvo.stats?.rdNatural ?: 0) + alvo.buffRd
+                else -> if (alvo.ehHeroi) heroiPerfil.rd else ((alvo.stats?.rd ?: 0) + alvo.buffRd)
             }
-            if (z.segRestantes > 0) sobrevivem.add(z) else log += "☁️ ${z.rotulo} se dissipa."
-        }
-        zonasAtivas = sobrevivem
-        verificarFim()
-    }
+        },
+        aoMudarEstado = { verificarFim() },
+    )
+
+    val zonasAtivas: List<ZonaPersistente> get() = zonaDelegate.zonasAtivas
+    /** Ponto de injeção da OCUPAÇÃO (o controller troca pelo cálculo real por hex). */
+    var ocupantesDaZona: (ZonaPersistente) -> List<Combatente>
+        get() = zonaDelegate.ocupantesDaZona
+        set(v) { zonaDelegate.ocupantesDaZona = v }
+
+    fun registrarZona(z: ZonaPersistente) = zonaDelegate.registrarZona(z)
+    fun limparZonas() = zonaDelegate.limparZonas()
+    fun encolherZona(nomeDaZona: String, novoRaioM: Int): Boolean = zonaDelegate.encolherZona(nomeDaZona, novoRaioM)
+    private fun tiqueDasZonas() = zonaDelegate.tiqueDasZonas()
 
     private fun tiquePorTurnoDasMagias(congeladas: Set<String> = emptySet()) {
         val comTique = magiasAtivas.filter {
