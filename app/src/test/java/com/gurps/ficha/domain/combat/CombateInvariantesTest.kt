@@ -241,4 +241,82 @@ class CombateInvariantesTest {
             assertTrue(ultimo.isNotBlank())
         }
     }
+
+    // ── Lote REFACTOR-0: rede ANTES de refatorar o controller ──────────────────────────────────
+    // Estes invariantes cobrem os fluxos DO MOTOR que os caminhos do SagaCombatController
+    // ultimamente exercitam — mover+turno, zona encolhendo. NÃO alcançam o controller em si (ele
+    // precisa de Context/Android e não roda na JVM); isso é o que a Fase 1 do plano vai extrair
+    // para arquivos puros. Aqui só garantimos que o MOTOR por baixo continua íntegro antes de mexer.
+
+    @Test
+    fun `mover no grid e avancar o turno em cadeia nunca viola invariante`() {
+        // Simula o padrão do TOK-8: mover várias vezes, sempre seguido de avançar o turno.
+        val todas = mutableListOf<String>()
+        for (seed in 0L until 100L) {
+            val s = sessao(seed, nInimigos = 2)
+            val rnd = Random(seed * 17 + 3)
+            var passos = 0
+            while (!s.encerrado && passos < 30) {
+                val antes = fotografar(s)
+                s.heroiMoveTatico(emptyMap(), 1 + rnd.nextInt(5))
+                todas += violacoes(s, antes, "seed $seed mover")
+                val antesTurno = fotografar(s)
+                s.avancarTurno()
+                todas += violacoes(s, antesTurno, "seed $seed avançar após mover")
+                passos++
+            }
+        }
+        assertTrue("invariantes violados no mover+turno:\n${todas.take(8).joinToString("\n")}",
+            todas.isEmpty())
+    }
+
+    @Test
+    fun `encolher zona nunca AUMENTA o raio nem viola invariante`() {
+        // O TOK-10/C11: a zona encolhe, nunca cresce. Roda uma sequência aleatória de encolhimentos.
+        for (seed in 0L until 60L) {
+            val s = sessao(seed, nInimigos = 1)
+            s.registrarZona(zonaDe("Chuva de Fogo", "1d-1", 1, 30))
+            val rnd = Random(seed * 13 + 1)
+            var raioAnterior = s.zonasAtivas.firstOrNull()?.raioM ?: 0
+            repeat(15) {
+                val antes = fotografar(s)
+                // Tenta um raio aleatório — às vezes maior (deve ser recusado), às vezes menor.
+                s.encolherZona("Chuva de Fogo", 1 + rnd.nextInt(6))
+                val z = s.zonasAtivas.firstOrNull()
+                if (z != null) {
+                    assertTrue("seed $seed: a zona AUMENTOU de $raioAnterior para ${z.raioM}",
+                        z.raioM <= raioAnterior)
+                    raioAnterior = z.raioM
+                }
+                assertTrue("seed $seed: encolher violou invariante",
+                    violacoes(s, antes, "encolher").isEmpty())
+                s.avancarTurno()
+            }
+        }
+    }
+
+    @Test
+    fun `zona encolhida deixa de ferir quem ficou de fora — e nunca fere mais que antes`() {
+        // Prova o EFEITO do encolhimento comparando o dano com o raio grande vs. reduzido.
+        val goblinLonge = fun(seed: Long, raio: Int): Int {
+            // Goblin a 2m; zona raio 3 pega, raio 1 não.
+            val enc = CombatEncounter(
+                listOf(heroi(), goblin(1).copy(id = "g", nome = "G")),
+                mapOf("g" to 2), seed = seed)
+            val s = CombatSession(enc, perfil(), Random(seed))
+            val z = zonaDe("Chuva de Fogo", "1d-1", 1, 20).copy(raioM = 3)
+            s.registrarZona(z)
+            if (raio < 3) s.encolherZona("Chuva de Fogo", raio)
+            val g = s.encounter.combatentes.first { it.id == "g" }
+            val pvAntes = g.pvAtual
+            repeat(6) { s.avancarTurno() }
+            return pvAntes - g.pvAtual
+        }
+        for (seed in 0L until 40L) {
+            val comRaioGrande = goblinLonge(seed, 3)
+            val comRaioPequeno = goblinLonge(seed, 1)
+            assertTrue("seed $seed: encolher não pode aumentar o dano ($comRaioPequeno vs $comRaioGrande)",
+                comRaioPequeno <= comRaioGrande)
+        }
+    }
 }
