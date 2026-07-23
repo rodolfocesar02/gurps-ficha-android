@@ -1738,61 +1738,23 @@ class CombatSession(
         }
     }
 
+    // Lote MOTOR-2: o funil de dano mágico (imunidade → tipo de criatura → rolar/RD/1-2D → condição)
+    // foi para `subsistemas/DanoMagicoResolver`, testável sozinho. As 4 entradas (magia direta, área,
+    // feixe, explosão de projétil) chamam este `aplicarDanoMagico`, que agora só delega.
+    private val danoMagico = com.gurps.ficha.domain.combat.subsistemas.DanoMagicoResolver(
+        random = random,
+        rdContraMagia = { alvo, mec -> rdContraMagia(alvo, mec) },
+        imporCondicao = { alvo, cond, sb, dur -> imporCondicaoMagica(alvo, cond, sb, dur) },
+    )
+
     private fun aplicarDanoMagico(
         alvo: Combatente,
         energia: Int,
         mecanica: com.gurps.ficha.domain.magic.MagiaMecanica?,
         sb: StringBuilder,
-        /** Lote MEC-15: distância ao alvo, para o 1/2D. 0 = perto/irrelevante. */
         distanciaM: Int = 0,
-        /**
-         * Lote P5: dano bruto JÁ ROLADO. A explosão do Relâmpago Explosivo rola **uma vez** e
-         * divide o resultado por distância — se cada vítima rolasse o seu, não seria a mesma
-         * explosão. `null` = rola normalmente. É o mesmo que o ramo de ÁREA já fazia à mão.
-         */
         brutoForcado: Int? = null,
-    ): Int {
-        // Lote A1: IMUNIDADE por elemento vem ANTES de rolar o dado. O livro é categórico — o alvo
-        // "torna-se imune aos efeitos do calor e do fogo" — então não há dano a reduzir: não há dano.
-        // Checar aqui, no funil, cobre as três entradas (magia direta, área e NPC conjurador).
-        if (com.gurps.ficha.domain.magic.MagicMechanics.imuneAo(mecanica?.elementoDano, alvo.imunidades)) {
-            sb.append(" ${alvo.nome} é IMUNE a ${mecanica?.elementoDano} — a mágica não o fere.")
-            return 0
-        }
-        // Lote A1-b: a mágica simplesmente NÃO PEGA neste tipo de criatura ("Seres mortos-vivos não
-        // são afetados"). Diferente de imunidade a elemento: ali o alvo resiste ao dano, aqui a
-        // mágica nem incide.
-        if (com.gurps.ficha.domain.magic.MagicMechanics.naoAfetaTipo(mecanica, alvo.tipoCriatura.chave)) {
-            sb.append(" ${alvo.nome} é ${alvo.tipoCriatura.rotulo} — esta mágica não o afeta.")
-            return 0
-        }
-        val expr = if (mecanica?.danoPorEnergia != null)
-            com.gurps.ficha.domain.magic.MagicMechanics.expandirDano(mecanica.danoPorEnergia, energia.coerceAtLeast(1), mecanica.energiaPorDado, mecanica.danoFixo)
-        else "${energia.coerceAtLeast(1)}d"
-        val tipo = when (mecanica?.tipoDano) {
-            "corte" -> DanoTipo.CORT; "perf" -> DanoTipo.PERF
-            else -> DanoTipo.CONT // queimadura/contusão/projeção → ×1 (sem enum de queimadura; documentado)
-        }
-        val rd = rdContraMagia(alvo, mecanica) // MEC-38 (P7)
-        val brutoCheio = brutoForcado ?: rolarDano(expr, random)
-        // Lote MEC-15: a partir de 1/2D (INCLUSIVE) o dano BÁSICO — antes da RD — cai pela metade,
-        // arredondando para baixo.
-        val bruto = com.gurps.ficha.domain.magic.MagicMechanics.aplicarMeioDano(brutoCheio, mecanica, distanciaM)
-        val meioDano = bruto < brutoCheio
-        if (meioDano) sb.append(" (além de ${mecanica?.alcanceMeioDano}m: metade do dano)")
-        val dn = HitLocationRules.aplicarDano(alvo.pvMax, bruto, tipo, LocalAtaque.TORSO, rd, alvo.stats?.tolerancia ?: ToleranciaFerimentos.NORMAL)
-        InjuryRules.ferir(alvo, dn.pvSubtrair, alvo.htEfetivo, random)
-        sb.append(" $expr → ${dn.pvSubtrair} de dano em ${alvo.nome}" + (if (!alvo.vivo) " (fora de combate!)" else "") + ".")
-        // Condição embutida (ex.: Relâmpago atordoa: HT −1 por 2 PV; Concussão: HT−3). Testa e impõe.
-        if (mecanica?.condicao != null && alvo.vivo && dn.pvSubtrair > 0) {
-            val pen = com.gurps.ficha.domain.magic.MagicMechanics.penalidadeCondicaoPorPv(mecanica.condicaoResistencia, dn.pvSubtrair)
-            // Lote MEC-15: além do 1/2D o alvo resiste à atribulação com +3 (MB, seção "Distância").
-            val ht = (alvo.htEfetivo) + pen + (if (meioDano) 3 else 0)
-            if (rolar3d6() > ht) imporCondicaoMagica(alvo, mecanica.condicao, sb, com.gurps.ficha.domain.magic.MagicMechanics.duracaoCondicaoSeg(mecanica, energia))
-            else sb.append(" (${alvo.nome} resiste à condição, HT $ht).")
-        }
-        return dn.pvSubtrair
-    }
+    ): Int = danoMagico.aplicar(alvo, energia, mecanica, sb, distanciaM, brutoForcado)
 
     /**
      * Lote MEC-10: aplica CURA mágica — restaura PV de verdade (Cura Superficial 1 PV/energia até 3;
