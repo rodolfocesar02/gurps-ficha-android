@@ -635,6 +635,16 @@ Tudo em `domain/combat/` é Kotlin PURO (sem Android, determinístico por seed) 
 - **`data/storage/SagaEntities.kt`** — `CampanhaEntity` (+`configJson`), `CenaEntity`, `CampaignFactEntity` (FTS4), `WorldStateEntity`.
 - **`data/storage/SagaDao.kt`** — CRUD + `buscarFatos` (MATCH AND/fallback OR, ranking peso→frequência) + `excluirCampanhaCompleta` (@Transaction). `FichaDatabase` v24→25→26 com `MIGRATION_24_25`/`MIGRATION_25_26` explícitas.
 
+### 32.3b Subsistemas extraídos do motor (`domain/combat/subsistemas/`) — Lote MOTOR (jul/2026)
+> O `CombatSession` (3675 linhas) **não é estável — vai crescer** com as ~700 magias restantes +
+> vantagens/perícias/itens que ainda tocam o combate. Por isso está sendo decomposto em subsistemas
+> ANTES da enxurrada, cada um num delegate testável sozinho. O motor injeta o que cada um precisa por
+> **lambda** (log, RNG, HT/RD, callbacks) e reexpõe a API por delegação — quem chamava `s.registrarZona`
+> etc. continua igual. Comportamento preservado (rede de invariantes SIM-1 prova).
+- **`subsistemas/ZonaDelegate.kt`** (MOTOR-1) — zonas persistentes: `zonasAtivas`, `ocupantesDaZona` (ponto de injeção da grade), `registrarZona`/`limparZonas`/`encolherZona`/`tiqueDasZonas`, não-acúmulo da mesma mágica. Teste próprio: `ZonaDelegateTest`.
+- **`subsistemas/DanoMagicoResolver.kt`** (MOTOR-2) — o **funil de dano mágico** compartilhado pelas 4 entradas (magia direta, área, feixe P9, explosão de projétil P5): imunidade por elemento (A1) → tipo de criatura (A1-b) → rola/1-2D/RD → condição embutida. Extraí-lo **destravou** projétil/feixe/área (antes presos a ele). Teste próprio: `DanoMagicoResolverTest`.
+- Estado após MOTOR-1/2: `CombatSession` 3675 → **3504**. Próximos candidatos (mais acoplados): projétil carregado, feixe, área, turno do NPC.
+
 ### 32.3 Motor de combate puro (`domain/combat/`)
 - **`CombatModels.kt`** — `Postura`/`Condicao`/`Manobra`, `NpcStats` (com `armaNh`), `Combatente` (PV/PF/postura/condições mutáveis; `vivo`/`caido`).
 - **`CombatEncounter.kt`** — Iniciativa (Vel.Básica→DX→seed), `proximoTurno`, `manobrasLegais`, `estadoResumo`, distância MUTÁVEL (`moverEmRelacaoAoHeroi`/`definirDistancia`).
