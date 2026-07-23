@@ -1383,83 +1383,48 @@ class CombatSession(
      * Inato para acertar (aprox. DX + SSR de distância), o alvo ESQUIVA ou bloqueia mas NUNCA apara,
      * e no acerto aplica o dano (1/2D pela distância). Reusado pelo one-shot e pelo projétil carregado.
      */
+    // Lote MOTOR-2: o funil de dano mágico (imunidade → tipo de criatura → rolar/RD/1-2D → condição)
+    // foi para `subsistemas/DanoMagicoResolver`, testável sozinho. As 4 entradas (magia direta, área,
+    // feixe, explosão de projétil) chamam este `aplicarDanoMagico`, que agora só delega.
+    private val danoMagico = com.gurps.ficha.domain.combat.subsistemas.DanoMagicoResolver(
+        random = random,
+        rdContraMagia = { alvo, mec -> rdContraMagia(alvo, mec) },
+        imporCondicao = { alvo, cond, sb, dur -> imporCondicaoMagica(alvo, cond, sb, dur) },
+    )
+
+    // Lote MOTOR-3: a resolução de ACERTO+DEFESA da magia à distância (feixe, arremesso, explosão)
+    // foi para `subsistemas/AtaqueMagicoResolver`, testável sozinho. O motor injeta o funil de dano
+    // (MOTOR-2), a DX/Ataque Inato do herói e as defesas do NPC; a conjuração em si (NH/custo/PF)
+    // continua aqui, porque é o coração e não um subsistema à parte.
+    private val ataqueMagico = com.gurps.ficha.domain.combat.subsistemas.AtaqueMagicoResolver(
+        random = random,
+        danoMagico = danoMagico,
+        heroiNhAtaqueInato = { heroiPerfil.nhAtaqueInato },
+        heroiDx = { heroiPerfil.dx },
+        esquivaNpc = { esquivaNpc(it) },
+        bloqueioNpc = { bloqueioNpc(it) },
+        npcSeDefendeu = { valor, rol -> npcSeDefendeu(valor, rol) },
+    ).also {
+        // Ocupação-padrão do respingo (faixas). O controller a troca pelo cálculo real por hex via
+        // o `vizinhosDoImpacto` reexposto abaixo.
+        it.vizinhosDoImpacto = { alvo ->
+            encounter.combatentes.filter { c -> c.vivo && c.id != alvo.id }
+                .map { c -> c to distanciaEntre(c, alvo) }
+                .filter { (_, d) -> d <= RAIO_RESPINGO_M }
+        }
+    }
+
     private fun resolverArremessoProjetil(
-        alvo: Combatente, energia: Int, ctx: ContextoConjuracao, sb: StringBuilder,
-        /** Lote MEC-40 (P6): +Precisão quando o operador Apontou neste alvo antes de arremessar. */
-        bonusPrecisao: Int = 0,
-    ): Int {
-        // Lote MEC-45: o 2º teste é a perícia **Ataque Inato** (Magia p.12). Se o herói TEM a
-        // perícia na ficha, usa o NH dela; senão cai na DX (aproximação documentada).
-        val base = heroiPerfil.nhAtaqueInato ?: heroiPerfil.dx
-        val comQue = if (heroiPerfil.nhAtaqueInato != null) "Ataque Inato" else "DX (sem a perícia)"
-        val nhAcerto = base + penalidadeDistancia(ctx.distanciaMetros) + bonusPrecisao
-        if (bonusPrecisao > 0) sb.append(" (mira: +$bonusPrecisao)")
-        val rolAcerto = rolar3d6()
-        if (rolAcerto > nhAcerto) {
-            sb.append(" O projétil passa longe ($comQue NH $nhAcerto, rolou $rolAcerto).")
-            return 0
-        }
-        val esq = esquivaNpc(alvo)
-        if (npcSeDefendeu(esq, rolar3d6())) {
-            sb.append(" ${alvo.nome} ESQUIVA do projétil ($comQue NH $nhAcerto, rolou $rolAcerto; Esquiva $esq).")
-            return 0
-        }
-        // Lote MEC-45: mostra a jogada TAMBÉM no acerto — antes só o erro exibia o número, então o
-        // jogador não via de onde vinha o acerto (dúvida real dele: "é baseada em DX?").
-        sb.append(" Projétil acerta ($comQue NH $nhAcerto, rolou $rolAcerto) —")
-        val divisor = ctx.mecanica?.explosaoDivisorPorMetro ?: 0
-        if (divisor <= 0) return aplicarDanoMagico(alvo, energia, ctx.mecanica, sb, ctx.distanciaMetros)
-        return resolverExplosaoDoProjetil(alvo, energia, ctx, sb, divisor)
-    }
+        alvo: Combatente, energia: Int, ctx: ContextoConjuracao, sb: StringBuilder, bonusPrecisao: Int = 0,
+    ): Int = ataqueMagico.resolverArremesso(alvo, energia, ctx, sb, bonusPrecisao)
 
-    /**
-     * Lote P5 — **explosão do projétil** (Relâmpago Explosivo, Bola de Fogo Explosiva arremessada).
-     *
-     * Regra literal: *"O alvo e qualquer pessoa mais próxima do alvo que um metro recebe dano total.
-     * Os que estão mais distantes dividem o dano em três vezes a distância em metros da explosão."*
-     *
-     * O `explosaoDivisorPorMetro` existia desde o MEC-14, mas **só o ramo de ÁREA o usava** — o
-     * projétil resolvia contra um único combatente e a explosão nunca acontecia.
-     *
-     * ⚠️ O dado é rolado **UMA vez** e o resultado é dividido por vítima. Se cada uma rolasse o seu,
-     * não seria a mesma explosão — é a mesma escolha que o ramo de área já fazia.
-     */
-    private fun resolverExplosaoDoProjetil(
-        alvo: Combatente, energia: Int, ctx: ContextoConjuracao, sb: StringBuilder, divisor: Int,
-    ): Int {
-        val mec = ctx.mecanica
-        val expr = com.gurps.ficha.domain.magic.MagicMechanics.expandirDano(
-            mec?.danoPorEnergia ?: "1d", energia.coerceAtLeast(1),
-            mec?.energiaPorDado ?: 1, mec?.danoFixo ?: false)
-        val bruto = rolarDano(expr, random)
-        // Alvo direto: dano cheio, pelo caminho normal (RD, tolerância, condição embutida).
-        val danoAlvo = aplicarDanoMagico(alvo, energia, mec, sb, ctx.distanciaMetros, brutoForcado = bruto)
-        // Respingo nos vizinhos, com o MESMO bruto dividido pela distância ao ponto de impacto.
-        val respingos = vizinhosDoImpacto(alvo).mapNotNull { (v, distM) ->
-            val brutoAqui = com.gurps.ficha.domain.magic.MagicMechanics
-                .danoDaExplosao(bruto, distM, divisor)
-            if (brutoAqui <= 0) return@mapNotNull null
-            SagaLog.mecanica("explosão do projétil: ${v.nome} a ${distM}m do impacto — $bruto → $brutoAqui")
-            val d = aplicarDanoMagico(v, energia, mec, StringBuilder(), 0, brutoForcado = brutoAqui)
-            "${v.nome} $d"
-        }
-        if (respingos.isNotEmpty()) sb.append(" Respingo da explosão: ${respingos.joinToString(", ")}.")
-        return danoAlvo
-    }
+    private fun resolverFeixe(alvo: Combatente, energia: Int, ctx: ContextoConjuracao, sb: StringBuilder): Int =
+        ataqueMagico.resolverFeixe(alvo, energia, ctx, sb)
 
-    /**
-     * Lote P5: quem está PERTO do ponto de impacto, com a distância em metros. Ponto de injeção,
-     * como o `ocupantesDaZona` do P1b: o motor não tem a grade, então o padrão usa a aproximação de
-     * faixas (`distanciaEntre`) e o controller substitui pelo cálculo real por hex.
-     *
-     * O alvo direto sai da lista — ele já levou o dano cheio.
-     */
-    var vizinhosDoImpacto: (Combatente) -> List<Pair<Combatente, Int>> = { alvo ->
-        encounter.combatentes
-            .filter { it.vivo && it.id != alvo.id }
-            .map { it to distanciaEntre(it, alvo) }
-            .filter { (_, d) -> d <= RAIO_RESPINGO_M }
-    }
+    /** Ponto de injeção do respingo (o controller troca pelo cálculo real por hex). */
+    var vizinhosDoImpacto: (Combatente) -> List<Pair<Combatente, Int>>
+        get() = ataqueMagico.vizinhosDoImpacto
+        set(v) { ataqueMagico.vizinhosDoImpacto = v }
 
     /**
      * Lote P9 — **FEIXE** (Jatos e Sopros). Regra uniforme no livro:
@@ -1479,32 +1444,6 @@ class CombatSession(
      * mas exige decidir a direção na grade; e o *"dobro de dano em criaturas de fogo"* depende do
      * eixo de VULNERABILIDADE, que o A1 deixou registrado como ausente.
      */
-    private fun resolverFeixe(
-        alvo: Combatente, energia: Int, ctx: ContextoConjuracao, sb: StringBuilder,
-    ): Int {
-        val mec = ctx.mecanica
-        val penal = mec?.feixePenalidadeDx ?: 4
-        val temPericia = heroiPerfil.nhAtaqueInato != null
-        val nhAcerto = if (temPericia) heroiPerfil.nhAtaqueInato!! else heroiPerfil.dx - penal
-        val comQue = if (temPericia) "Ataque Inato" else "DX−$penal (sem a perícia)"
-        val rolAcerto = rolar3d6()
-        if (rolAcerto > nhAcerto) {
-            sb.append(" O jato passa longe ($comQue NH $nhAcerto, rolou $rolAcerto).")
-            return 0
-        }
-        // Defesa: esquiva sempre; bloqueio quase sempre; APARAR nunca.
-        val esq = esquivaNpc(alvo)
-        val podeBloquear = mec?.feixeBloqueavel ?: true
-        val bloq = if (podeBloquear) bloqueioNpc(alvo) else 0
-        val (rotulo, valor) = if (bloq > esq) "Bloqueio" to bloq else "Esquiva" to esq
-        if (npcSeDefendeu(valor, rolar3d6())) {
-            sb.append(" ${alvo.nome} se defende do jato ($comQue NH $nhAcerto, rolou $rolAcerto; $rotulo $valor).")
-            return 0
-        }
-        sb.append(" O jato acerta ($comQue NH $nhAcerto, rolou $rolAcerto) —")
-        return aplicarDanoMagico(alvo, energia, mec, sb, ctx.distanciaMetros)
-    }
-
     /**
      * Lote P9: bloqueio do NPC (escudo). O bestiário não tem campo de escudo, então isto é uma
      * aproximação honesta: só quem tem arma de corpo-a-corpo tenta bloquear, com NH/2+3 como no
@@ -1738,14 +1677,6 @@ class CombatSession(
         }
     }
 
-    // Lote MOTOR-2: o funil de dano mágico (imunidade → tipo de criatura → rolar/RD/1-2D → condição)
-    // foi para `subsistemas/DanoMagicoResolver`, testável sozinho. As 4 entradas (magia direta, área,
-    // feixe, explosão de projétil) chamam este `aplicarDanoMagico`, que agora só delega.
-    private val danoMagico = com.gurps.ficha.domain.combat.subsistemas.DanoMagicoResolver(
-        random = random,
-        rdContraMagia = { alvo, mec -> rdContraMagia(alvo, mec) },
-        imporCondicao = { alvo, cond, sb, dur -> imporCondicaoMagica(alvo, cond, sb, dur) },
-    )
 
     private fun aplicarDanoMagico(
         alvo: Combatente,
