@@ -207,4 +207,70 @@ class HexRegrasFacingTest {
         assertEquals(Facing.FRENTE, HexRegrasFacing.facingDoAtaque(longeNordeste, alvo, Direcao.LESTE))
         assertEquals(Facing.FLANCO, HexRegrasFacing.facingDoAtaque(longeNordeste, alvo, Direcao.SUDESTE))
     }
+
+    // ── Lote REFACTOR-1: a DECISÃO de mover, extraída do SagaCombatController ───────────────────
+    // Estes testes exercitam a lógica que ANTES vivia presa no controller (sem teste, porque ele
+    // precisa de Android). O caso do TOK-8 — virada pendente bloqueia o movimento — agora é um
+    // teste unitário, não mais só um comentário no controller.
+
+    private fun podeMover(
+        encerrado: Boolean = false, turnoHeroi: Boolean = true, virada: Boolean = false,
+        selecionado: Boolean = true, condicoes: Set<Condicao> = emptySet(), conjurando: Boolean = false,
+    ) = RegrasMovimentoTatico.podeMoverAgora(encerrado, turnoHeroi, virada, selecionado, condicoes, conjurando)
+
+    @Test fun `na situacao normal o heroi PODE mover`() {
+        assertTrue(podeMover())
+    }
+
+    @Test fun `TOK-8 — virada final pendente BLOQUEIA o movimento`() {
+        assertFalse("com virada pendente não pode mover (era o bug)", podeMover(virada = true))
+        assertEquals(RegrasMovimentoTatico.MotivoBloqueio.VIRADA_PENDENTE,
+            RegrasMovimentoTatico.motivoNaoPodeMover(false, true, true, true, emptySet(), false))
+    }
+
+    @Test fun `fora do turno, sem selecao, preso ou concentrando — nao move`() {
+        assertFalse(podeMover(turnoHeroi = false))
+        assertFalse(podeMover(encerrado = true))
+        assertFalse(podeMover(selecionado = false))
+        assertFalse(podeMover(condicoes = setOf(Condicao.AGARRADO)))
+        assertFalse(podeMover(conjurando = true))
+    }
+
+    @Test fun `a ORDEM dos motivos e a de origem — turno antes de virada antes de selecao`() {
+        // Se o jogador está fora do turno E com virada pendente, o aviso é "não é seu turno".
+        assertEquals(RegrasMovimentoTatico.MotivoBloqueio.NAO_E_SEU_TURNO,
+            RegrasMovimentoTatico.motivoNaoPodeMover(false, false, true, false, emptySet(), false))
+    }
+
+    // ── A INTERPRETAÇÃO do toque (precedência que era metade do TOK-8) ─────────────────────────
+
+    @Test fun `mira de area vence tudo — o toque resolve a mira, nao move`() {
+        assertEquals(RegrasMovimentoTatico.TipoDeToque.RESOLVER_MIRA_AREA,
+            RegrasMovimentoTatico.interpretarToque(
+                temMiraAreaPendente = true, temViradaPendente = true, hexTemToken = true,
+                heroiSelecionado = true, podeMover = true))
+    }
+
+    @Test fun `virada pendente vence o movimento — avisa em vez de mover`() {
+        assertEquals(RegrasMovimentoTatico.TipoDeToque.AVISAR_ESCOLHA_DIRECAO,
+            RegrasMovimentoTatico.interpretarToque(false, true, false, true, true))
+    }
+
+    @Test fun `hex com token seleciona antes de mover`() {
+        assertEquals(RegrasMovimentoTatico.TipoDeToque.SELECIONAR_TOKEN,
+            RegrasMovimentoTatico.interpretarToque(false, false, true, true, true))
+    }
+
+    @Test fun `heroi selecionado e hex alcancavel MOVE`() {
+        assertEquals(RegrasMovimentoTatico.TipoDeToque.MOVER,
+            RegrasMovimentoTatico.interpretarToque(false, false, false, true, true))
+    }
+
+    @Test fun `sem nada disso o toque so DESTACA`() {
+        assertEquals(RegrasMovimentoTatico.TipoDeToque.APENAS_DESTACAR,
+            RegrasMovimentoTatico.interpretarToque(false, false, false, false, false))
+        // Herói selecionado mas hex fora do alcance também cai em destacar (o "muito longe").
+        assertEquals(RegrasMovimentoTatico.TipoDeToque.APENAS_DESTACAR,
+            RegrasMovimentoTatico.interpretarToque(false, false, false, true, false))
+    }
 }

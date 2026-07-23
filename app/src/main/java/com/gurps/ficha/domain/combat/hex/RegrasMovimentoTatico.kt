@@ -53,4 +53,65 @@ object RegrasMovimentoTatico {
             Condicao.AGARRADO !in condicoes &&
             Condicao.IMOBILIZADO !in condicoes
     }
+
+    // ── Lote REFACTOR-1: julgamento que vivia SOLTO no SagaCombatController ─────────────────────
+    // As funções abaixo respondem "o que é permitido agora?" a partir de dados SIMPLES (booleans,
+    // conjuntos, o estado da grade). O controller só COLETA esses dados e OBEDECE — a decisão em si
+    // deixou de estar amarrada ao ViewModel e virou testável na JVM. É isto que fecha, com teste, a
+    // porta do TOK-8 (a virada final pendente bloqueando o movimento).
+
+    /**
+     * Por que o herói **não** pode mover na grade agora — ou `null` se pode.
+     *
+     * A ordem das checagens é a mesma do controller de origem, de propósito: uma mudança de ordem
+     * mudaria qual aviso o jogador vê primeiro. `heroiSelecionado` = o token do herói está escolhido
+     * na grade (senão a grade nem oferece movimento). [temViradaPendente] é a trava do TOK-8.
+     */
+    fun motivoNaoPodeMover(
+        combateEncerrado: Boolean,
+        ehTurnoDoHeroi: Boolean,
+        temViradaPendente: Boolean,
+        heroiSelecionado: Boolean,
+        condicoes: Set<Condicao>,
+        conjurandoMultiTurno: Boolean,
+    ): MotivoBloqueio? = when {
+        combateEncerrado || !ehTurnoDoHeroi -> MotivoBloqueio.NAO_E_SEU_TURNO
+        temViradaPendente -> MotivoBloqueio.VIRADA_PENDENTE
+        !heroiSelecionado -> MotivoBloqueio.HEROI_NAO_SELECIONADO
+        !podeMoverNaGrade(condicoes, conjurandoMultiTurno) -> MotivoBloqueio.PRESO_OU_CONCENTRANDO
+        else -> null
+    }
+
+    /** true se o herói pode mover agora (nenhum motivo de bloqueio). */
+    fun podeMoverAgora(
+        combateEncerrado: Boolean, ehTurnoDoHeroi: Boolean, temViradaPendente: Boolean,
+        heroiSelecionado: Boolean, condicoes: Set<Condicao>, conjurandoMultiTurno: Boolean,
+    ): Boolean = motivoNaoPodeMover(combateEncerrado, ehTurnoDoHeroi, temViradaPendente,
+        heroiSelecionado, condicoes, conjurandoMultiTurno) == null
+
+    enum class MotivoBloqueio { NAO_E_SEU_TURNO, VIRADA_PENDENTE, HEROI_NAO_SELECIONADO, PRESO_OU_CONCENTRANDO }
+
+    /**
+     * O que um TOQUE num hex significa. Decisão pura; o controller executa o [TipoDeToque] devolvido.
+     *
+     * A precedência importa e é a de origem: mira de área e virada pendente vêm ANTES de tudo, senão
+     * o toque que deveria resolvê-las viraria movimento (foi metade do bug TOK-8).
+     */
+    fun interpretarToque(
+        temMiraAreaPendente: Boolean,
+        temViradaPendente: Boolean,
+        hexTemToken: Boolean,
+        heroiSelecionado: Boolean,
+        podeMover: Boolean,
+    ): TipoDeToque = when {
+        temMiraAreaPendente -> TipoDeToque.RESOLVER_MIRA_AREA
+        temViradaPendente -> TipoDeToque.AVISAR_ESCOLHA_DIRECAO
+        hexTemToken -> TipoDeToque.SELECIONAR_TOKEN
+        heroiSelecionado && podeMover -> TipoDeToque.MOVER
+        else -> TipoDeToque.APENAS_DESTACAR
+    }
+
+    enum class TipoDeToque {
+        RESOLVER_MIRA_AREA, AVISAR_ESCOLHA_DIRECAO, SELECIONAR_TOKEN, MOVER, APENAS_DESTACAR
+    }
 }

@@ -360,22 +360,18 @@ class SagaCombatController(
     fun hexesAlcancaveisHeroi(): Set<com.gurps.ficha.domain.combat.hex.HexCoord> {
         val s = sessao ?: return emptySet()
         val est = estadoTatico ?: return emptySet()
-        if (s.encerrado || !s.combatenteAtual().ehHeroi) return emptySet()
-        // Lote TOK-8 (bug do aparelho): com a VIRADA FINAL pendente, nenhum hex é alcançável.
-        // Sem esta trava o jogador movia de novo e de novo — cada movimento reabria o prompt e
-        // NINGUÉM chamava `depoisDaAcaoDoHeroi`, que é quem avança o turno. Resultado: 20+
-        // deslocamentos no mesmo turno (GURPS dá UM Mover por turno) e tudo que depende do avanço
-        // congelado — tique de zona, relógio das mágicas, turno dos NPCs.
-        if (viradaFinalPendente != null) return emptySet()
-        // Só quando o HERÓI está selecionado no grid (toque no próprio token) — evita poluir a grade.
-        if (est.idSelecionado != "heroi") return emptySet()
-        // Lote TOK-6b-2 (achado da varredura): mesmas travas do MOVER de faixas — atordoado não
-        // se move (MB p.420) e agarrado/imobilizado não desloca sem se Desvencilhar (MB p.371).
-        // Sem isso a grade driblava a luta agarrada: bastava tocar num hex verde e sair andando.
-        // Lote MA-3c: concentrando numa magia multi-turno → não se move (só continuar/abortar).
-        // Lote TESTE-C: as travas moram no domain e são testadas lá.
-        if (!com.gurps.ficha.domain.combat.hex.RegrasMovimentoTatico
-                .podeMoverNaGrade(s.heroi.condicoes, s.conjuracaoEmAndamento != null)) return emptySet()
+        // Lote REFACTOR-1: a DECISÃO (é meu turno? virada pendente? herói selecionado? preso?) saiu
+        // para `RegrasMovimentoTatico.podeMoverAgora`, testável na JVM. Aqui o controller só COLETA
+        // o estado e OBEDECE. A trava do TOK-8 (virada pendente) agora tem teste unitário.
+        val pode = com.gurps.ficha.domain.combat.hex.RegrasMovimentoTatico.podeMoverAgora(
+            combateEncerrado = s.encerrado,
+            ehTurnoDoHeroi = s.combatenteAtual().ehHeroi,
+            temViradaPendente = viradaFinalPendente != null,
+            heroiSelecionado = est.idSelecionado == "heroi",
+            condicoes = s.heroi.condicoes,
+            conjurandoMultiTurno = s.conjuracaoEmAndamento != null,
+        )
+        if (!pode) return emptySet()
         return com.gurps.ficha.domain.combat.hex.HexSetup.hexesAlcancaveis(
             est, s.heroi.deslocamentoEfetivo.coerceAtLeast(1)
         )
@@ -390,29 +386,30 @@ class SagaCombatController(
      */
     fun aoTocarHexTatico(hex: com.gurps.ficha.domain.combat.hex.HexCoord) {
         val s = sessao ?: return
-        // Lote MA-3d: com uma mira de ÁREA pendente, o toque é o CENTRO da magia — resolve e sai.
-        if (miraAreaPendente != null) { resolverMiraAreaNoHex(hex); return }
-        // Lote TOK-8: a virada final tem que ser resolvida antes de qualquer outro toque no grid.
-        // Sem isto o turno nunca fechava (ver `hexesAlcancaveisHeroi`).
-        if (viradaFinalPendente != null) {
-            avisoTatico = "Escolha para onde você fica olhando antes de continuar"
-            return
-        }
         val est = estadoTatico ?: return
         val tokenAli = est.posicoes.firstOrNull { it.posicao == hex }
-        if (tokenAli != null) {
-            estadoTatico = est.copy(hexSelecionado = hex, idSelecionado = tokenAli.id)
-            return
-        }
-        if (est.idSelecionado == "heroi") {
-            if (s.encerrado || !s.combatenteAtual().ehHeroi) {
-                avisoTatico = "Não é seu turno"
-                estadoTatico = est.copy(hexSelecionado = hex)
-                return
+        // Lote REFACTOR-1: o SIGNIFICADO do toque saiu para `RegrasMovimentoTatico.interpretarToque`
+        // (decisão pura, com a precedência testada). O controller só EXECUTA o que ela devolve.
+        val tipo = com.gurps.ficha.domain.combat.hex.RegrasMovimentoTatico.interpretarToque(
+            temMiraAreaPendente = miraAreaPendente != null,
+            temViradaPendente = viradaFinalPendente != null,
+            hexTemToken = tokenAli != null,
+            heroiSelecionado = est.idSelecionado == "heroi",
+            podeMover = hex in hexesAlcancaveisHeroi(),
+        )
+        when (tipo) {
+            com.gurps.ficha.domain.combat.hex.RegrasMovimentoTatico.TipoDeToque.RESOLVER_MIRA_AREA -> {
+                resolverMiraAreaNoHex(hex); return
             }
-            val pHeroi = est.posicoes.firstOrNull { it.id == "heroi" } ?: return
-            val distancia = pHeroi.posicao.distancia(hex)
-            if (hex in hexesAlcancaveisHeroi()) {
+            com.gurps.ficha.domain.combat.hex.RegrasMovimentoTatico.TipoDeToque.AVISAR_ESCOLHA_DIRECAO -> {
+                avisoTatico = "Escolha para onde você fica olhando antes de continuar"; return
+            }
+            com.gurps.ficha.domain.combat.hex.RegrasMovimentoTatico.TipoDeToque.SELECIONAR_TOKEN -> {
+                estadoTatico = est.copy(hexSelecionado = hex, idSelecionado = tokenAli!!.id); return
+            }
+            com.gurps.ficha.domain.combat.hex.RegrasMovimentoTatico.TipoDeToque.MOVER -> {
+                val pHeroi = est.posicoes.firstOrNull { it.id == "heroi" } ?: return
+                val distancia = pHeroi.posicao.distancia(hex)
                 val movido = com.gurps.ficha.domain.combat.hex.HexSetup.moverHeroi(est, hex)
                 estadoTatico = movido
                 avisoTatico = null
@@ -440,14 +437,21 @@ class SagaCombatController(
                 atualizarEstado()
                 return
             }
-            avisoTatico = "Muito longe — deslocamento ${s.heroi.deslocamentoEfetivo}m"
+            com.gurps.ficha.domain.combat.hex.RegrasMovimentoTatico.TipoDeToque.APENAS_DESTACAR -> {
+                // Herói selecionado mas o hex não é alcançável = "muito longe"; senão só destaca.
+                // Lote TOK-6b-2: tocar num hex vazio com INIMIGO selecionado fecha o menu dele
+                // (limpa a seleção); com o herói selecionado a seleção fica (pra tentar outro hex).
+                if (est.idSelecionado == "heroi" && !s.encerrado && s.combatenteAtual().ehHeroi) {
+                    avisoTatico = "Muito longe — deslocamento ${s.heroi.deslocamentoEfetivo}m"
+                } else if (est.idSelecionado == "heroi") {
+                    avisoTatico = "Não é seu turno"
+                }
+                estadoTatico = est.copy(
+                    hexSelecionado = hex,
+                    idSelecionado = if (est.idSelecionado == "heroi") "heroi" else null
+                )
+            }
         }
-        // Lote TOK-6b-2: tocar num hex vazio com INIMIGO selecionado fecha o menu dele (limpa a
-        // seleção); com o herói selecionado a seleção fica (pra tentar outro hex de movimento).
-        estadoTatico = est.copy(
-            hexSelecionado = hex,
-            idSelecionado = if (est.idSelecionado == "heroi") "heroi" else null
-        )
     }
 
     /** Lote TOK-6b-2: fecha o menu do token — limpa a seleção da grade. */
