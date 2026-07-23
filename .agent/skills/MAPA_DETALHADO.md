@@ -1,10 +1,10 @@
 # Mapa Detalhado: Arquivos e Funções do Projeto GURPS
 
 Mapa de engenharia completo do projeto. Use para localizar lógicas específicas sem varrer o código.
-Atualizado em: 2026-06-08 (revisão de fidelidade linha-a-linha contra o código real: corrigidos nomes de
-assets, tipos de pré-requisito, tools do Forjador, Voz GeminiLive, Room v24, tema, abas e testes;
-adicionados arquivos novos — IdiomaRule, VecChunk*, ObjectBoxStore, GeminiLive*, AppUiEntry).
-Base anterior: 2026-05-30 (Mestre IA pós-Lote 328) | 130+ arquivos documentados.
+Atualizado em: 2026-07-22 (**§32.9 nova**: PILAR MAGIA no combate — onde vive cada peça do motor de
+conjuração após os lotes MA/MEC/AR/A1/P/C; motor executa 98 das 879 magias). Rede de invariantes
+SIM-1 e build paralelo BUILD-1 (gate 7-8min → 1m36s) registrados.
+Base anterior: 2026-06-08 (fidelidade linha-a-linha) | 2026-05-30 (Mestre IA pós-Lote 328) | 130+ arquivos.
 
 > ➕ **2026-06-08 — Feature Imagem/Retrato do Personagem:** novo `ImagemPersonagemStore.kt`
 > (seção 15) + funções novas em `Personagem`, `FichaAttributeDelegate`, `FichaViewModel`,
@@ -667,9 +667,23 @@ Stats de arma vêm do catálogo → ficha (`Equipamento.arma*`) → `AtaqueHeroi
 - **`HexTaticaNpc.kt`** — IA posicional dos NPCs avaliando grid.
 - **`HexTaticoDemo.kt`** — Demonstração e fluxo de testes táticos independentes do modo principal.
 
+### 32.9 PILAR MAGIA no combate (Lotes MA/MEC/AR/A1/P/C — jul/2026)
+*O motor de conjuração vive em `domain/magic/` (puro) e é orquestrado por `CombatSession`/`SagaCombatController`. Onde está cada coisa:*
+- **`domain/magic/MagicMechanics.kt`** — a `MagiaMecanica` (schema curado ao lado da descrição fiel) e o `BuffAplicado`. Campos por eixo: dano (`danoPorEnergia`/`danoFixo`/`elementoDano`), condição, buff (`buffAtributo`/`buffImunidade`/`buffAfetaInsubstancial`), zona, **feixe** (`feixePenalidadeDx`/`feixeBloqueavel`), `naoAfeta` (tipo de criatura). ⚠️ **`soNarrado`**: descarta o buff antes de aplicar — **todo campo novo tem que entrar nele** (armadilha do MEC-14).
+- **`domain/magic/MagicCore.kt`** — custo (`custoAjustadoPorNH`, redução por NH alto), resultado da operação (sucesso decisivo perdoa energia), **`RitualDeConjuracao`** (C12: gestos/voz/passos + caprichar, `tempoAjustado`).
+- **`domain/magic/MagicCasting.kt`** — `ContextoConjuracao`, `nhEfetivo` (o ritual entra como parcela nomeada), `custoTotal`.
+- **`CombatSession.kt` — funil de dano mágico**: `aplicarDanoMagico` (checa imunidade por elemento A1 e `naoAfetaTipo` A1-b **antes** de rolar; `brutoForcado` para explosão), `resolverFeixe` (P9: DX−4/Ataque Inato, esquiva/bloqueio, nunca aparar; `bloqueioNpc`), `resolverExplosaoDoProjetil` (P5: alvo cheio + respingo dividido por `3×dist`; injeção `vizinhosDoImpacto`), `resolverArremessoProjetil` (P6/P11), `golpeContraInsubstancial` (A1-c: arma atravessa espírito).
+- **`CombatSession.kt` — zonas persistentes (P1b)**: `ZonaPersistente` (raio `var` p/ C11 encolher, `estreou` p/ regra da estreia TOK-9, `ordinal` p/ log TOK-10), `tiqueDasZonas` (não acumula a mesma magia — `zonaSuplantadaPara`), `encolherZona`, `registrarZona`.
+- **`SagaCombatController.kt`** — pontes: `heroiConjurar`/`iniciarMiraArea` (carregam o ritual), `resolverAreaPorFaixa` (P12: área sem grade), `resolverMiraAreaNoHex` (grid), `instalarOcupacaoDeZonaPelaGrade`/`instalarVizinhosDeImpactoPelaGrade` (posição real por hex), `zonasAtivasUi`/`encolherZona`.
+- **`ui/saga/CombatUi.kt`** — `SubDialogoConjurar` (2 passos, busca), `PainelRitual` (C12), `BotaoConjurarFaixas`/`ZonasAtivasFaixas` (P12/C11 no modo faixas).
+- **Bestiário**: `NpcStats` ganhou `imunidades`/`tipoCriatura`/`rdNatural`; `BestiarioModels` lê `tipo`/`imunidades` do JSON. Espectro (insubstancial) e os mortos-vivos marcados.
+- **Rede de invariantes**: `test/…/combat/CombateInvariantesTest.kt` (SIM-1) — 200 combates aleatórios afirmando o que nunca pode acontecer. Cobre o **motor**, não o controller.
+- **Estado das pendências de magia**: `docs/pendencias/PENDENCIAS.md` (sempre a fonte da verdade).
+
 ### 32.8 Pendências
-- **Validação no aparelho** do combate ponta a ponta (chaves de IA reais) — pendente.
-- **Futuro:** CdT/Recuo/rajada (RoF/Rcl), dual-wield, Ataque Total à distância (+1). **Retratos reais de NPC/cena** (Mestre Pintor em tempo real) — registro Lotes B7/E2 do plano. Fases C/D/E do plano Saga.
+- **Validação no aparelho**: fila em `docs/pendencias/PENDENCIAS.md §3` e na memória `project_testes_aparelho_pendentes`.
+- **Magia**: A2 (visibilidade, ~139 magias, alto risco de integração — estender o SIM-1 antes), vulnerabilidade por tipo de dano, projeção/knockback dos Jatos. C8/C10/P13 bloqueados ou vetados.
+- **Combate base:** CdT/Recuo/rajada, Ataque Total à distância (+1). Fases C/D/E do plano Saga.
 
 ---
 

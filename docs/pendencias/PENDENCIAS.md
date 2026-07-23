@@ -13,15 +13,21 @@
 
 ## 1. O número que explica quase tudo
 
-**87 das 879 magias (9,9%) são executadas mecanicamente pelo motor.** O resto é narrado **por
-projeto** — não por bug.
+**98 das 879 magias (11,1%) são executadas mecanicamente pelo motor** (medição de 22/jul, após os
+lotes A1/P5/P9/C11/C12). O resto é narrado **por projeto** — não por bug. Além dos 98 contados pelos
+campos do catálogo, o **P9** transformou 17 feixes (já contados em `dano`) de "acerta sempre" em
+ataque de verdade, e o **P5** ligou a explosão do projétil.
 
 | Efeito | Total | O motor executa | Observação |
 |---|---:|---:|---|
+| dano | 40 | **40** | inclui feixe (P9), explosão de projétil (P5), zonas (P1b) |
+| condicao | 21 | **21** | atordoar, cegar, dormir, paralisar |
+| buff | 179 | **34** | os outros 145 são rótulo-só; a triagem do P3 mostrou que a maioria precisa de substrato, não de curadoria — ver 2.1e |
+| cura | 3 | **3** | Cura Superficial/Profunda/Superior |
 | narrado | 379 | 0 | narrado por definição |
-| buff | 179 | **23** | os outros 156 só têm `buffRotulo` (texto), sem campo numérico — ver P3 |
 | ambiente | 110 | 0 | clima, luz, criar matéria |
 | informacao | 82 | 0 | adivinhação, localizar, detectar |
+| controle | 65 | 0 | dominar, convocar, controlar NPC |
 | controle | 65 | 0 | dominar, comandar, mover objeto |
 | dano | 40 | **40** | ✅ completo |
 | condicao | 21 | **21** | ✅ completo |
@@ -155,9 +161,9 @@ Achados que ninguém tinha registrado antes:
 | C8 | ⛔ **SEM ONDE APLICAR** — não existe ação de cancelar mágica no app. Os únicos caminhos que encerram são os do MEC-23 (deixar acabar / não poder pagar), que por regra são **grátis**. Precisa antes de um botão de cancelar. | — |
 | C9 | ✅ **JÁ ESTAVA FEITO** — `custoTotal` faz `.coerceAtLeast(custo.minimo)`. Procurei `custoMinimo`, identificador errado. | — |
 | C10 | ⛔ **INIMPLEMENTÁVEL hoje** — as duas metades faltam base: "optar por não resistir" exige **aliados** (o jogo só tem herói × inimigos) e o "Abascanto em dobro" exige o campo **Abascanto** no `NpcStats`, que **não existe**. Mesma classe do C1/C8. | — |
-| C11 | ⚪ Manter **só parte** da área, pagando proporcional; área não pode ser **expandida** depois | Menor |
+| C11 | 🟡 **parcial (Lote C11 + UI-MAGIA-1, 22/jul)** — `encolherZona` reduz a área e loga; **expandir é recusado** (regra). Chip "Encolher para Nm" na UI. ⛔ **Deferido, e é a MAIOR parte**: o custo de manutenção proporcional. Zona **não tem manutenção** no motor (e está certo: paga-se a operação e ganha-se a duração inteira). Sem extensão de zona, não há proporcional a cobrar. | Menor |
 | C13 | ~~**Comum em alvo ADJACENTE sem redutor**~~ ✅ **FEITO (Lote MEC-32)** — `tocando = distancia <= 1` | — |
-| C12 | ⚪ **Rituais alternativos** (omitir gestos/fala por −2/−4; caprichar por +1) — regra **opcional** | Menor |
+| C12 | ~~**Rituais alternativos**~~ ✅ **FEITO (Lote C12 + UI-MAGIA-1, 22/jul)** — `RitualDeConjuracao` (gestos/voz/passos + caprichar): omitir penaliza (−2/−4, somam), caprichar dá +1 **dobrando o tempo**. Entra no NH como parcela nomeada. Painel 🕯️ Ritual recolhido por padrão. | Menor |
 
 ✅ **Saíram da fila (20/jul):** **Aptidão Mágica destrava o teto de energia** — feito no **MEC-25**;
 e **"Bloqueio não reduz custo por NH"**, que eu havia listado por engano — **já estava implementado
@@ -178,14 +184,14 @@ e com teste** desde antes.
 | # | O que falta | Afeta |
 |---|---|---|
 | P4 | ~~Bandas de distância do **Lampejo**~~ ✅ **FEITO (MEC-37)** — bandas + rider de ofuscamento (−N nas perícias de combate, com timer) — mecânica reusável nos Jatos (P9) | Lampejo | ✅ VALIDADO no aparelho 21/jul |
-| P5 | 🔴 **precisa de projétil-contra-HEX** — o ramo de projétil resolve contra 1 combatente; para espalhar a explosão do ponto de impacto ele teria de mirar um hex e varrer os vizinhos (metade do trabalho do MEC-14 de área, do lado do projétil). Feature, não ajuste. | Relâmpago Explosivo |
+| P5 | ~~**projétil-contra-HEX**~~ ✅ **FEITO (Lote P5, 22/jul)** — `resolverExplosaoDoProjetil`: o alvo leva dano cheio, os vizinhos dividem por `3×distância`. O dado rola **uma vez** (campo `brutoForcado`). Ponto de injeção `vizinhosDoImpacto` (faixas no motor, hex real no controller), como o P1b. | Relâmpago Explosivo |
 | P6 | ~~**Precisão do projétil**~~ ✅ **FEITO (MEC-40)** — Apontar antes de arremessar soma a Precisão (+ mira de vários turnos). Chip 🎯 Apontar no token inimigo. 12 magias curadas. | 12 projéteis |
 | P7 | ~~**RD natural × armadura** do Toque Candente~~ ✅ **FEITO (MEC-38)** — campo `rdNatural` no bestiário + `armadura: "ignora_vestida"` → ignora a vestida, natural protege | Toque Candente | ✅ VALIDADO no aparelho 21/jul |
 | P8 | ~~Degrau de custo dobrado (2d-2)~~ ✅ **FEITO (MEC-36)** — `danoDeAreaComDegrau`; limiar = custo-base 2 dobrado. ✅ O payoff pleno chegou com o P1b (MEC-46): o degrau agora vale em **cada tique** da zona. | Chuva de Fogo/Pedras | ✅ VALIDADO no aparelho 21/jul |
-| P9 | 🔴 **precisa de resolução de FEIXE** — os Jatos são `narrado`/`feixe` e não têm caminho de acerto/dano no motor. Projeção (knockback) reusaria o Empurrão existente, mas o feixe em si (teste DX-4, esquiva/bloqueio) é ataque novo. A parte do Géiser (empurra + DX-5) mora no P1b (zona). | Jatos, Géiser |
+| P9 | ~~**resolução de FEIXE**~~ ✅ **FEITO (Lote P9, 22/jul)** — `resolverFeixe`: DX−4 (ou DX−2 nos Sopros da boca) ou o NH da perícia Ataque Inato **sem** redutor; o alvo esquiva ou bloqueia, **nunca apara**. 17 magias curadas. Exceção do **Jato de Ácido** (não bloqueável) travada por teste. **Deferidos**: projeção/knockback (exige direção na grade) e o "dobro em criaturas de fogo" (falta o eixo de vulnerabilidade). | Jatos, Sopros |
 | P10 | ~~Raio mínimo de 2m~~ ✅ **FEITO (MEC-36)** — `raioEfetivo`; a mira eleva o raio ao mínimo | Nuvem de Faíscas, Sono Coletivo | ✅ VALIDADO no aparelho 21/jul |
 | P11 | ~~**Projétil carregado em vários turnos**~~ ✅ **FEITO (MEC-39)** — carregar/aumentar (até 3s, +Aptidão/turno)/arremessar/dissipar, aditivo ao one-shot. UI: botão "Segurar" no diálogo + chips Arremessar/Aumentar/Dissipar no token. **Cerimonial VETADO pelo usuário.** ⚠️ PARA para teste no aparelho (UI). |
-| P12 | 🟡 **é UI** — a conjuração só existe no grid tático; levá-la ao modo de faixas é montar o seletor de magia lá. Lote de UI → **para para teste no aparelho**. | combate sem grade |
+| P12 | ~~**conjurar no modo de faixas**~~ ✅ **FEITO (Lote UI-MAGIA-1, 22/jul)** — botão 🔮 Conjurar no painel de combate reusa o `SubDialogoConjurar`; área sem grade resolve por FAIXA (`resolverAreaPorFaixa`, centro = herói). ⚠️ PARA para teste no aparelho. | combate sem grade |
 
 ### 2.3 Combate — "fora do escopo" cuja justificativa CADUCOU
 
@@ -289,16 +295,29 @@ Aqui, se aparecer estranho, **é candidato a bug real** — vale reportar.
 
 ---
 
-## 5. Recomendação de ordem
+## 5. Recomendação de ordem (atualizada 22/jul)
 
-1. **P1 + P2 juntos** (motor de tique/efeito persistente) — maior retorno: destrava Morte Candente,
-   Morte Putrefata, Chuvas, Nuvens, Géiser e o "manter" de todas as magias de duração. Inclui UI.
-2. **P3** (efeito de buff aplicado) — 156 magias saem de "narrado" para mecânica.
-3. **Lesões Realistas do Artes Marciais** (2.4) — maior sinergia com o motor de dano que já existe,
-   e o Sangramento (PONTE-2) já provou que o bloco encaixa bem.
-4. **Revisar as justificativas caducadas** (2.3 e os 17 🔴 de 2.4): foram escritas quando não havia
-   grade de hexágonos. Não é implementar — é reclassificar, e provavelmente destrava itens baratos.
-5. O resto de 2.2, por ordem de aparição nos seus testes.
+**O que já saiu da fila:** P1, P2, P4–P12, C1–C7, C9, C11, C12 e os lotes A1/A1-b/A1-c (imunidade
+por elemento, tipo de criatura, insubstancialidade). O executável em combate está em **~120 de 879**.
+
+**Bloqueados por falta de base (não é preguiça — falta o pré-requisito):**
+- **C8** — cancelar mágica: não existe ação de cancelar no app; os caminhos que encerram hoje são grátis por regra.
+- **C10** — "optar por não resistir" exige **aliados** (o jogo só tem herói × inimigos); o Abascanto exige campo no `NpcStats`.
+- **P13** — vetado pelo usuário (Bola de Relâmpagos segue projétil comum).
+
+**O que sobra e vale fazer, por retorno:**
+1. **A2 — visibilidade** (sentidos + luz/escuridão): **~139 magias**, o maior prêmio. Mas mexe nos
+   modificadores de ataque e defesa, o coração do combate. **Alto risco de regressão de integração**
+   (perfil dos bugs TOK-8/9/10). Recomendação: **estender a rede de invariantes (SIM-1) para cobrir
+   os modificadores ANTES** de mexer neles, e atacar em lotes pequenos.
+2. **P3 — buffs restantes**: dos 145 buffs sem número, a maioria precisa de substrato (Sentidos,
+   imunidades) que o A2 e o A1 destravam — não é curadoria. Ver seção 2.1e.
+3. **Vulnerabilidade por tipo de dano** (o "dobro em criaturas de fogo" do Jato de Vapor, deferido no
+   P9): fecharia o par do A1 (imunidade), reusando o mesmo eixo de `elementoDano`.
+4. **Projeção/knockback dos Jatos** (deferido no P9): reusa o Empurrão, mas precisa de direção na grade.
+
+> ⚠️ **Teto realista**: os 379 `narrado` são narrativa de verdade e **não** são fila de trabalho.
+> Fazendo A2, o executável chega a ~250 (28%), não 879.
 
 ---
 
@@ -307,7 +326,10 @@ Aqui, se aparecer estranho, **é candidato a bug real** — vale reportar.
 - `logcat_novo.md` (22 KB) é um despejo de logcat versionado na raiz. Não faz mal, mas é dado
   transitório — candidato a `.gitignore` se virar hábito, agora que o `tag:Saga_Combate` (LOG-1)
   dá o mesmo em tempo real.
-- O conserto do teste flaky do **Nexus Arcano** está em andamento **noutra sessão** e ainda está
-  vermelho. Os arquivos dele (`app/src/test/java/nexus/arcano/`, `motor modo alvo/`) foram deixados
-  fora dos commits desta sessão de propósito — commitar trabalho pela metade de outra sessão criaria
-  conflito e colocaria vermelho conhecido na branch.
+- O trabalho do **Nexus Arcano** de outra sessão foi **commitado (22/jul, `793d59ae`)** com
+  autorização do usuário: planejador de requisito por contagem de escola + pathfinder. O gate ficou
+  verde na execução em que foi commitado; como o teste era **intermitente**, uma passada verde não
+  prova que a intermitência acabou — quem fez a correção confirma.
+- 🏗️ **BUILD-1 (22/jul)**: `org.gradle.parallel` + `org.gradle.caching` + `maxParallelForks` no
+  Gradle. O gate caiu de **7-8 min para 1m36s**. Durante o trabalho, `./gradlew testVisualDebugUnitTest`
+  (12s) basta; o `build` completo só antes de commitar.
