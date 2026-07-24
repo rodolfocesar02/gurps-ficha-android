@@ -3063,6 +3063,15 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - **+11 testes.** Gate: **911 por variante, 0 falhas**.
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
+### Lote MAG-3 — 24 de Julho de 2026 (controle que impõe PARALISADO — 5 magias, e uma DESCOBERTA do plano)
+- **Descoberta que reformula o plano**: a resistência da CLASSE (`resistenciaDoAlvo`) já suporta HT/IQ/Vontade/DX/ST. Ou seja, magia "Resistível com Vontade/DX/ST" **já resiste certo** — o campo `condicaoResistencia` novo (premissa original do MAG-3) era menos necessário do que eu achava. E o `imporCondicaoMagica` já aplica `paralisado`, que **incapacita de verdade** no combate (só NÃO_FAZER_NADA).
+- Resultado: um bloco de controle virou **JSON-only** — `efeito=condicao`, `condicao=paralisado`, e a classe carrega o R-XXX. Mecanizadas: **Carne para Pedra**, **Soterramento**, **Enclausuramento Arbóreo** (indefinidas, `duracaoSeg=0`, saem por reversão/resgate), **Agonizar** e **Cócegas** (1 min).
+- Correção de dado junto: `carne_para_pedra` estava com `classe: "Comum/R/HT"` (barra dupla) → normalizada para `Comum/R-HT`.
+- **Deferidos honestamente** (têm complicação real): **Paralisar Membro** (é classe Toque → outro caminho, carrega a mão), **Vomitar** (duração 25−HT computada, sem campo), **Forma de Planta em Outro** (30s para conjurar, impraticável em luta), **Dominar/Controle de Animal** (só afeta animal, e o motor não checa tipo de criatura no alvo — mecanizar como paralisar-qualquer-um seria forte demais).
+- Teste: curadoria dos 5 (efeito/condição/duração + classe resiste) + **simulação de combate** (conjura Agonizar em 40 seeds num alvo de HT 11 e prova que o PARALISADO entra; alvo paralisado só pode NÃO_FAZER_NADA).
+- **+3 testes.** Gate: **974 por variante, 0 falhas**, build nas duas.
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
 ### Lote MAG-2 — 24 de Julho de 2026 (buffs de DANO DE ARMA elementais — 6 magias)
 - Arma Flamejante/Congelante/de Relâmpago e as três versões de projétil: todas dão **+2 de dano após penetrar a RD** (o motor já aplica isso via `bonusArmaMagica` → `bonusAposRd`, do MEC-9). Mecanização = só JSON.
 - `buffDanoArma=2` + `buffArmaTipo`: **"cac"** (corpo a corpo) nas armas de mão, **"distancia"** nos projéteis — o filtro `danoArmaVale(aDistancia)` impede o +2 do gume vazar para o arco (e vice-versa).

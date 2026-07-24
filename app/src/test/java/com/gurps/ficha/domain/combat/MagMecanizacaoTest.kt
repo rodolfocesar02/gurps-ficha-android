@@ -2,16 +2,19 @@ package com.gurps.ficha.domain.combat
 
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import com.gurps.ficha.domain.magic.ContextoConjuracao
 import com.gurps.ficha.domain.magic.MagiaMecanica
 import com.gurps.ficha.domain.magic.MagicClassParser
+import com.gurps.ficha.domain.magic.MagicEnergy
 import com.gurps.ficha.domain.magic.MagicMechanics
+import com.gurps.ficha.domain.magic.NivelMana
 import com.gurps.ficha.model.MagiaDefinicao
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
 import org.junit.Assume
 import org.junit.Test
 import java.io.File
+import kotlin.random.Random
 
 /**
  * Testes dos lotes de MECANIZAÇÃO de magias (MAG-1..7), rodados contra o catálogo REAL
@@ -173,5 +176,60 @@ class MagMecanizacaoTest {
         assertEquals(2, dist.danoArma)
         assertTrue("Projéteis Flamejantes valem à distância", dist.danoArmaVale(aDistancia = true))
         assertTrue("mas NÃO no corpo a corpo", !dist.danoArmaVale(aDistancia = false))
+    }
+
+    // ═══════════════ MAG-3 — controle que impõe PARALISADO (resistência pela CLASSE) ══════════════
+
+    private fun heroiComb() = Combatente(
+        id = "heroi", nome = "Herói", dx = 12, velocidadeBasica = 6.0, deslocamento = 6, pvMax = 20, pvAtual = 20,
+        ehHeroi = true, pfAtual = 30, stats = NpcStats(st = 12, dx = 12, ht = 12, pvMax = 20)
+    )
+
+    @Test
+    fun `MAG-3 curadoria — 5 magias de controle impoem paralisado e a classe resiste`() {
+        val cat = catalogo(); Assume.assumeNotNull(cat)
+        // id -> duração em segundos (0 = indefinida, sai pela regra própria)
+        val esperado = mapOf(
+            "carne_para_pedra" to 0, "soterramento" to 0, "enclausuramento_arboreo" to 0,
+            "agonizar" to 60, "cocegas" to 60,
+        )
+        val erros = mutableListOf<String>()
+        for ((id, dur) in esperado) {
+            val m = mec(cat!!, id)
+            if (m.efeito != "condicao") erros += "$id: efeito=${m.efeito}"
+            if (m.condicao != "paralisado") erros += "$id: condicao=${m.condicao}"
+            if (m.condicaoDuracaoSeg != dur) erros += "$id: duracao=${m.condicaoDuracaoSeg} (esperado $dur)"
+            // A resistência é da CLASSE (o campo condicaoResistencia não é usado aqui) — tem que existir.
+            if (MagicClassParser.parse(cat[id]!!.classe).resistencia == null)
+                erros += "$id: classe '${cat[id]!!.classe}' perdeu a resistência"
+        }
+        assertTrue("MAG-3 curadoria regrediu: $erros", erros.isEmpty())
+    }
+
+    @Test
+    fun `MAG-3 efeito — conjurar Agonizar num alvo nao resistido o deixa PARALISADO`() {
+        val cat = catalogo(); Assume.assumeNotNull(cat)
+        val m = mec(cat!!, "agonizar")
+        val classe = MagicClassParser.parse(cat["agonizar"]!!.classe) // Comum/R-HT
+        var paralisouAlgumaVez = false
+        for (seed in 0L until 40L) {
+            val g = alvo(ht = 11) // HT baixo → às vezes falha em resistir
+            val enc = CombatEncounter(listOf(heroiComb(), g), mapOf("g" to 2), seed = seed)
+            val s = CombatSession(enc, HeroiPerfilCombate(esquiva = 9, apara = 11, ht = 12, rd = 0), Random(seed))
+            val ctx = ContextoConjuracao(nhBasico = 30, classe = classe, mana = NivelMana.NORMAL,
+                distanciaMetros = 2, mecanica = m)
+            s.heroiConjurar(ctx, MagicEnergy.parse("3"), energiaInvestida = 2, magiaNome = "Agonizar", alvoId = "g")
+            if (s.encounter.combatentes.first { it.id == "g" }.condicoes.contains(Condicao.PARALISADO)) {
+                paralisouAlgumaVez = true; break
+            }
+        }
+        assertTrue("em 40 seeds, um alvo de HT 11 tem que ficar PARALISADO ao menos uma vez", paralisouAlgumaVez)
+    }
+
+    @Test
+    fun `MAG-3 efeito — alvo PARALISADO fica indefeso (so pode nao fazer nada)`() {
+        val g = alvo().apply { condicoes.add(Condicao.PARALISADO) }
+        val enc = CombatEncounter(listOf(heroiComb(), g), mapOf("g" to 2), seed = 1L)
+        assertEquals(listOf(Manobra.NAO_FAZER_NADA), enc.manobrasLegais(g))
     }
 }

@@ -316,9 +316,10 @@
     "preRequisitos": "AM2, Sensibilizar",
     "descricao": "Comum: Resistível com HT\n\nAmplia o sentido de tato do objetivo a níveis dolorosos: um leve toque parece um golpe, o sopro de alguém parece uma chama ardente, uma brisa fresca parece uma rajada congelante. Mesmo o contato com as roupas se torna insuportável; o objetivo sente como se sua pele estivesse sendo esfolada. O objetivo fica indefeso devido à agonia (veja Condições Incapacitantes, pág. MB428).\n\nDuração: 1 minuto.\n\nCusto: 8 para operar. 6 para manter.\n\nPré-requisitos: Aptidão Mágica 2 e Sensibilizar.\n\nItem\n\n(a) Qualquer item. Sempre ativo; afeta apenas o usuário. Custo para criar: 500 de energia. (b) Cajado ou varinha. Utilizável apenas por magos; o item deve tocar o objetivo. Custo para criar: 800 de energia.",
     "mecanica": {
-      "efeito": "narrado",
-      "condicaoResistencia": "HT",
-      "notas": "Tato ampliado a niveis dolorosos: alvo fica INDEFESO (incapacitado) por agonia enquanto durar. Estado fora da lista do motor."
+      "efeito": "condicao",
+      "condicao": "paralisado",
+      "condicaoDuracaoSeg": 60,
+      "notas": "Dor incapacitante (R-HT): indefeso (PARALISADO) por 1 min."
     },
     "duracaoTipo": "temporaria",
     "duracaoSeg": 60,
@@ -2956,7 +2957,7 @@
     "nome": "Carne para Pedra",
     "dificuldade": "D",
     "pagina": 51,
-    "classe": "Comum/R/HT",
+    "classe": "Comum/R-HT",
     "escola": [
       "Terra"
     ],
@@ -2966,8 +2967,10 @@
     "preRequisitos": "Terra para Pedra",
     "descricao": "Comum; Resistível com HT\n\n“Petrifica” um ser vivo (e todo o seu equipamento!), o transformando em pedra. Esta mágica deve afetar o objetivo inteiro.\n\nDuração: Instantânea, a menos que seja revertida por Pedra para Carne.\n\nCusto: 10. Pelo dobro do custo, um objetivo pode ser transformado em uma estátua metálica.\n\nTempo de operação: 2 segundos. Pré-requisito: Terra para Pedra.\n\nItem\n\nCajado ou varinha. Utilizável apenas por magos. Custo de energia para criar: 1.000. O item deve tocar a vítima para que a mágica funcione.",
     "mecanica": {
-      "efeito": "narrado",
-      "notas": "Petrifica o alvo inteiro (R-HT). Estado fora da lista do motor: alvo vira estatua ate Pedra para Carne. Narrar como fora de combate."
+      "efeito": "condicao",
+      "condicao": "paralisado",
+      "condicaoDuracaoSeg": 0,
+      "notas": "Petrifica o alvo inteiro (R-HT): PARALISADO até ser revertido por Pedra para Carne."
     },
     "duracaoTipo": "instantanea",
     "duracaoSeg": 0,
@@ -3523,9 +3526,10 @@
     "preRequisitos": "Espasmo",
     "descricao": "Comum; Resistível com Vontade\n\nO objetivo sente que estão lhe fazendo cócegas. Se ele não resistir, ficará indefeso com gargalhadas, contorcendo-se para tentar se livrar de seu torturador invisível. Esta mágica causa cócegas graves; a vítima fica incapacitada como se estivesse sofrendo de convulsões (veja Condições Incapacitantes, pág. MB428). O objetivo deve fazer um segundo teste de Vontade se ele tentar se manter em silêncio. Hipoalgia/Hiperalgia não afeta o resultado da mágica. Personagens com Fleuma ganham bônus de +5 em seu teste de resistência.\n\nDuração: 1 minuto. Custo: 5 para operar. 5 para manter (requer concentração). Pré-requisitos: Espasmo.\n\nItem\n\n(a) Varinha, cajado ou pluma. Utilizável apenas por magos; o item deve tocar o objetivo. Custo para criar: 600 de energia. (b) Cadeira, almofada ou travesseiro. Sempre ativo. Qualquer um que use o item é imediatamente “atacado” pela mágica. É uma ótima peça a se pregar. Custo para criar: 250 de energia.",
     "mecanica": {
-      "efeito": "narrado",
-      "condicaoResistencia": "Vontade",
-      "notas": "R-Vont. Alvo fica INDEFESO com gargalhadas (incapacitado como convulsoes). 2o teste Vont p/ ficar em silencio. Fleuma da +5. Estado fora da lista."
+      "efeito": "condicao",
+      "condicao": "paralisado",
+      "condicaoDuracaoSeg": 60,
+      "notas": "Cócegas (R-Vontade): indefeso rindo (PARALISADO) por 1 min."
     },
     "duracaoTipo": "temporaria",
     "duracaoSeg": 60,
@@ -7451,9 +7455,10 @@
     "preRequisitos": "AM2, Atravessar Madeira",
     "descricao": "Comum; Resistível com HT\n\nSemelhante à Soterramento, exceto que uma árvore, em vez da terra, confina o objetivo. O objetivo é imediatamente engolido pela árvore mais próxima o suficiente para contê-lo. Ele permanece em animação suspensa (como Animação Suspensa, pág. 94) em uma minúscula câmara cilíndrica dentro da árvore, até ser resgatado cortando a árvore ou cancelando a mágica.\n\nUm mago que opera Enclausuramento Arbóreo em si mesmo pode optar por ficar acordado, mas isso não é sábio a menos que ele possa criar ar!\n\nModificadores: Aplique os Modificadores de Longa Distância (pág. 14) para a distância do objetivo até a árvore mais próxima, grande o suficiente para segurá-lo.\n\nDuração: Indefinida.\n\nCusto: 8 para operar: 5 para reverter um Enclausuramento Arbóreo.\n\nTempo de operação: 3 segundos. Pré-requisitos: Aptidão Mágica 2 e Atravessar Madeira.\n\nItem\n\nVarinha ou cajado. O item deve ser de madeira e funciona apenas com árvores dessa madeira. Utilizável apenas por magos; o item deve tocar o objetivo. Custo de energia para criar: 1.000.",
     "mecanica": {
-      "efeito": "controle",
-      "entrega": "auto",
-      "notas": "R-HT: o alvo é engolido pela árvore próxima e fica em animação suspensa até cortarem a árvore ou cancelarem (5 de energia). Aplica Modificadores de Longa Distância até a árvore. Duração indefinida. NÃO é a condição 'paralisado' do motor — o Narrador tira o alvo de cena."
+      "efeito": "condicao",
+      "condicao": "paralisado",
+      "condicaoDuracaoSeg": 0,
+      "notas": "Uma árvore engole o alvo (R-HT): PARALISADO até cortar a árvore/reverter."
     }
   },
   {
@@ -18052,8 +18057,10 @@
     "preRequisitos": "Aptidão Mágica 2 e 5 mágicas da Terra.",
     "descricao": "Comum; Resistível com HT\n\nA terra engole instantaneamente o objetivo. Ele fica em Animação Suspensa (como na pág. 94), e preso dentro de uma pequena câmara esférica a 15 metros abaixo da superfície até que consiga escapar por um túnel ou ser resgatado pela forma reversa desta mágica. O mago que aplicar Soterramento a si mesmo poderá optar por ficar acordado, mas não será uma decisão muito inteligente, a menos que ele tenha algum outro meio para respirar enquanto soterrado.\n\nDuração: Permanente, a menos que seja revertida por esta mágica.\n\nCusto: 10 (6 para reverter um soterramento).\n\nTempo de operação: 3 segundos.\n\nPré-requisitos: Aptidão Mágica 2 e cinco mágicas da Terra.\n\nItem\n\nVarinha ou cajado — deve ser de cor preta. Utilizável apenas por magos. Custo de energia para criar: 1.200. O item deve tocar a vítima para que a mágica funcione.",
     "mecanica": {
-      "efeito": "narrado",
-      "notas": "R-HT: a terra engole o alvo, que entra em Animacao Suspensa numa camara a 15 m de profundidade ate ser resgatado ou reverter a magia. Custo 10 (6 pra reverter). Estado fora da lista do motor - narrar."
+      "efeito": "condicao",
+      "condicao": "paralisado",
+      "condicaoDuracaoSeg": 0,
+      "notas": "A terra engole o alvo (R-HT): PARALISADO/preso em animação suspensa até escapar/resgate."
     },
     "duracaoTipo": "permanente",
     "duracaoSeg": 0,

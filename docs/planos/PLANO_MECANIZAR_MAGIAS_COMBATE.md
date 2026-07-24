@@ -96,9 +96,12 @@ vocabulário. Priorizadas por número de magias que destravam:
 - **MAG-2 ✅ CONCLUÍDO (24/jul)** — Buffs de dano de arma elementais: Arma Flamejante/Congelante/de
   Relâmpago + as 3 versões de projétil (`buffDanoArma=2` + `buffArmaTipo` cac/distancia). 6 magias, zero
   motor novo. Gate 971/0.
-- **MAG-3 — `condicaoResistencia` Vontade/DX/ST:** o campo novo do motor. Destrava Animais (dominar/
-  controlar), Trança-Pés, Pés Plantados, Soterramento, Carne para Pedra, e várias de Mente já-ok ganham
-  base sólida. ~30 magias passam a resistir certo.
+- **MAG-3 ✅ CONCLUÍDO (24/jul)** — Controle que impõe PARALISADO (JSON-only). **DESCOBERTA:** a
+  resistência da CLASSE já cobre HT/IQ/Vontade/DX/ST, então o campo `condicaoResistencia` novo era
+  desnecessário para esses — basta `efeito=condicao`/`condicao=paralisado` e a classe carregar o R-XXX.
+  Mecanizadas: Carne para Pedra, Soterramento, Enclausuramento Arbóreo (indefinidas), Agonizar, Cócegas.
+  Deferidos: Paralisar Membro (Toque), Vomitar (dur. 25−HT), Forma de Planta em Outro (30s p/ conjurar),
+  Dominar/Controle de Animal (o motor não checa tipo de criatura no alvo). Gate 974/0.
 - **MAG-4 — Condições novas:** SURDO, NAUSEADO, DESARMADO, DOMINADO, RETARDADO, REMOVIDO + as magias que
   as usam (Ensurdecer/Estrondo, Nausear/Enjoo, Espasmo, Controle de Animal, Retardar, Banir).
 - **MAG-5 — Cura que limpa (`removeCondicao`):** Cessar Sangramento, Despertar, Neutralizar Veneno, Cessar
