@@ -3063,6 +3063,16 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - **+11 testes.** Gate: **911 por variante, 0 falhas**.
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
+### Lote MAG-5 — 24 de Julho de 2026 (condições novas: Náusea = debuff DX, e REMOVIDO = fora do combate — 3 magias)
+- Do lote "condições novas", peguei o que dá **dente real com risco controlado**, deferindo o frágil/baixo-valor:
+  - **Nausear** → não virou condição nova, virou **debuff DX−2** (JSON, R-HT). A náusea do GURPS é ~−2 nas ações físicas; sai limpo pelo pipeline de buff do MAG-1. (Enjoo, que é "meio deslocamento", ficou de fora — não há campo para metade.)
+  - **REMOVIDO** (condição nova) → **Banir** (Viagem Planar para Outro) e **Transportar Outro no Tempo** tiram o alvo do combate. Achado-chave: `vivo = ... && INCONSCIENTE !in condicoes` — bastou somar `&& REMOVIDO !in condicoes` no getter e **tudo cascateia** (o alvo some de `inimigosVivos`, do laço de turno, do `verificarFim`). Banir o último inimigo encerra em VITÓRIA.
+- Bônus de arquitetura: `imporCondicaoMagica` deixou de ter um `when` duplicado e passou a usar o mapa canônico `Condicao.deChave` (o mesmo do `removerCondicoes` do MAG-4) — **encolheu** o `CombatSession` e já habilita "removido"/"caido"/"imobilizado".
+- **Deferidos honestamente**: **SURDO** (surdez quase não muda uma luta — baixo valor mecânico), **Desarmado/Espasmo** (re-armar o NPC é complexo), **Retardar** (pular turnos mexe no laço central — arriscado). Ficam para um lote dedicado se valer a pena.
+- Teste: curadoria + efeito da náusea (dxEfetivo cai 2) + REMOVIDO tira do combate (vivo=false, PV intacto) + **integração** (banir o único inimigo de Vontade 8 encerra em VITÓRIA). A rede de invariantes (SIM-1) validou a mudança no getter core `vivo`.
+- **+4 testes.** Gate: **982 por variante, 0 falhas**, build nas duas.
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
 ### Lote MAG-4 — 24 de Julho de 2026 (cura que LIMPA condição — `removeCondicoes`, 3 magias; 1º lote com motor novo)
 - **Reordenação honesta**: o MAG-4 original ("condições novas") mostrou-se arriscado — IMOBILIZADO/CAIDO por magia não neutralizam o NPC de verdade (o `manobrasLegais` não restringe IMOBILIZADO; um NPC "preso" ainda atacaria). Puxei para frente o que é LIMPO e de alto valor: a **cura que limpa condição** (era o MAG-5 do plano).
 - Mecânica nova bem contida: campo `removeCondicoes: List<String>` + `curaAoLimpar: Int` no `MagiaMecanica`; mapa canônico `Condicao.deChave` (reutilizável, inverso do `imporCondicaoMagica`); e o método `removerCondicoes` no **`EfeitosMagicosDelegate`** — o `CombatSession` só ganhou um branch de 3 linhas no `resolverConjuracao` (respeita a regra "motor não cresce").

@@ -13115,9 +13115,11 @@
     "preRequisitos": "2 mágicas de Corpo incl. Perfume",
     "descricao": "Comum; Resistível com HT\n\nO objetivo fica nauseado (veja Condições Irritantes, pág. MB428).\n\nDuração: 10 segundos. Custo: 2. O mesmo custo para manter. Pré-requisitos: Perfume e pelo menos uma outra mágica de Controle do Corpo.\n\nItem\n\nCajado ou varinha. Utilizável apenas por magos; o item deve tocar o objetivo. Custo para criar: 100 de energia.",
     "mecanica": {
-      "efeito": "narrado",
-      "condicaoResistencia": "HT",
-      "notas": "Alvo nauseado por 10 seg (Condicoes Irritantes MB428). Nausea fora da lista de condicoes do motor."
+      "efeito": "buff",
+      "buffAtributo": "DX",
+      "buffAtributoValor": -2,
+      "buffRotulo": "Náusea (−2 DX)",
+      "notas": "Nauseado (R-HT): −2 DX nas ações físicas por 10s (aprox. Condições Irritantes, MB p.428)."
     },
     "duracaoTipo": "temporaria",
     "duracaoSeg": 10,
@@ -19324,9 +19326,10 @@
     "preRequisitos": "Viagem no Tempo",
     "descricao": "Especial; Resistível com Vontade+1\n\nO mesmo que Teleportar Outro (pág. 147), exceto que o objetivo é Transportado no Tempo para longe do (ou para perto) do operador.\n\nAplique a penalidade usual para mágicas comuns para a distância entre o operador e o objetivo; as penalidades de Transportar no Tempo aplicam-se ao intervalo de tempo durante o qual o operador deseja transportar no tempo o objetivo.\n\nUma diferença importante entre Viagem no tempo e Transportar Outro no Tempo é que, se o operador falhar na operação da mágica, ou se a mágica for resistida com sucesso, o objetivo não será transportado no tempo!\n\nCusto: 1 por segundo do lapso pretendido. O teste de NH da mágica sofre -1 de penalidade por cada segundo de deslocamento pretendido além do primeiro. Pré-requisito: Viagem no Tempo.\n\nItem\n\nRoupas, joias ou relógios. Custo de energia para criar: 500.",
     "mecanica": {
-      "efeito": "controle",
-      "entrega": "projetil",
-      "notas": "Como Teleportar Outro, mas desloca o alvo no TEMPO. Resistido com Vontade+1. Penalidade normal de magia Comum pela distancia ate o alvo + penalidades de Viagem no Tempo pelo intervalo. Se o operador falhar OU o alvo resistir, nada acontece com o alvo. Custo 1 por segundo de lapso; -1 de NH por segundo alem do primeiro."
+      "efeito": "condicao",
+      "condicao": "removido",
+      "condicaoDuracaoSeg": 0,
+      "notas": "Desloca o alvo no tempo (R-Vontade+1): tira o alvo do combate."
     }
   },
   {
@@ -19737,9 +19740,10 @@
     "preRequisitos": "AM3, Viagem Planar",
     "descricao": "Comum: Resistível com Vontade +1\n\nComo Viagem Planar, mas utilizável em qualquer ser ou objeto. Um objetivo que não espera ser deslocado de plano deve testar seu NH na perícia Percepção do Corpo ou ficar desorientado por um segundo.\n\nDuração: Permanente.\n\nCusto: 20. Alguns planos podem custar mais e/ou impor uma penalidade no NH.\n\nTempo de operação: 5 segundos. Pré-requisito: Viagem Planar.\n\nItem\n\nVarinha, cajado ou joias. Utilizável apenas por magos; envia o objetivo para um único plano. Custo de energia para criar: 100 vezes o custo de operação do plano.",
     "mecanica": {
-      "efeito": "controle",
-      "entrega": "toque",
-      "notas": "Como Viagem Planar, mas em qualquer ser ou objeto; resistido com Vontade+1. Alvo que nao espera o deslocamento testa Percepcao do Corpo ou fica desorientado por 1 segundo. Custo 20."
+      "efeito": "condicao",
+      "condicao": "removido",
+      "condicaoDuracaoSeg": 0,
+      "notas": "Banir para outro plano (R-Vontade+1): tira o alvo do combate. Só ida."
     },
     "duracaoTipo": "permanente",
     "duracaoSeg": 0,

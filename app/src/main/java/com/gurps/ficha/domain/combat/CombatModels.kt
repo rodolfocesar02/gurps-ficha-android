@@ -34,7 +34,8 @@ enum class Condicao(val rotulo: String) {
     DORMINDO("dormindo"),         // incapacitado + indefeso; ACORDA ao sofrer dano (MB p.428)
     PARALISADO("paralisado"),     // incapacitado + indefeso; NÃO acorda com dano (MB p.429)
     AMEDRONTADO("amedrontado"),   // só recua/defende — não ataca (medo/pânico, MB p.428)
-    SILENCIADO("silenciado");     // não consegue conjurar (o ritual mágico exige fala, Magia p.8)
+    SILENCIADO("silenciado"),     // não consegue conjurar (o ritual mágico exige fala, Magia p.8)
+    REMOVIDO("fora de combate");  // Lote MAG-5: banido/deslocado no tempo — sai do combate (vivo=false)
 
     companion object {
         /**
@@ -52,6 +53,7 @@ enum class Condicao(val rotulo: String) {
             "sangrando", "sangramento" -> SANGRANDO
             "caido", "caído", "derrubado" -> CAIDO
             "imobilizado", "preso" -> IMOBILIZADO
+            "removido", "banido", "fora_de_combate" -> REMOVIDO
             else -> null
         }
     }
@@ -368,7 +370,8 @@ data class Combatente(
     val iqEfetivo: Int get() = (stats?.iq ?: 10) + buffIq
     /** Variante para os pontos que caem no DX do próprio combatente quando não há bestiário. */
     val dxEfetivoOuProprio: Int get() = (stats?.dx ?: dx) + buffDx
-    val vivo: Boolean get() = pvAtual > -pvMax && Condicao.INCONSCIENTE !in condicoes
+    val vivo: Boolean get() = pvAtual > -pvMax && Condicao.INCONSCIENTE !in condicoes &&
+        Condicao.REMOVIDO !in condicoes // Lote MAG-5: banido/deslocado no tempo conta como fora do combate
     /** Caído = derrubado (condição) ou postura deitada. */
     val caido: Boolean get() = Condicao.CAIDO in condicoes || postura == Postura.DEITADO
     /** Cambaleante (MB p.380): com menos de 1/3 do PV Inicial, Vel.Básica/Deslocamento e Esquiva caem à metade. */

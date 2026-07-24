@@ -43,10 +43,10 @@ class MagMecanizacaoTest {
         return d.mecanica ?: error("magia '$id' está sem mecanica")
     }
 
-    /** Alvo de teste com ST/DX/HT explícitos (o combate lê stEfetivo = stats.st + buffSt). */
-    private fun alvo(st: Int = 12, dx: Int = 12, ht: Int = 12) = Combatente(
+    /** Alvo de teste com ST/DX/HT/IQ explícitos (o combate lê stEfetivo = stats.st + buffSt; Vontade ~ IQ). */
+    private fun alvo(st: Int = 12, dx: Int = 12, ht: Int = 12, iq: Int = 10) = Combatente(
         id = "g", nome = "Alvo", dx = dx, velocidadeBasica = 6.0, deslocamento = 6, pvMax = 20, pvAtual = 20,
-        stats = NpcStats(st = st, dx = dx, ht = ht, pvMax = 20)
+        stats = NpcStats(st = st, dx = dx, ht = ht, iq = iq, pvMax = 20)
     )
 
     // ═══════════════════════════ MAG-1 — buffs/debuffs de atributo de Corpo ═══════════════════════
@@ -293,5 +293,56 @@ class MagMecanizacaoTest {
         val heroi = s.encounter.combatentes.first { it.ehHeroi }
         assertTrue("herói não sangra mais", !heroi.condicoes.contains(Condicao.SANGRANDO))
         assertEquals("recuperou 1 PV", 16, heroi.pvAtual)
+    }
+
+    // ══════════════ MAG-5 — condições novas: Náusea (debuff DX) e REMOVIDO (fora do combate) ══════════
+
+    @Test
+    fun `MAG-5 curadoria — Nausear e debuff de DX e as duas de banimento removem do combate`() {
+        val cat = catalogo(); Assume.assumeNotNull(cat)
+        val erros = mutableListOf<String>()
+        val n = mec(cat!!, "nausear")
+        if (n.efeito != "buff" || !n.buffAtributo.equals("DX", true) || n.buffAtributoValor != -2)
+            erros += "nausear: esperado buff DX −2, veio ${n.efeito}/${n.buffAtributo}/${n.buffAtributoValor}"
+        for (id in listOf("viagem_planar_para_outro", "transportar_outro_no_tempo")) {
+            val m = mec(cat, id)
+            if (m.efeito != "condicao" || m.condicao != "removido") erros += "$id: esperado condicao=removido"
+            if (MagicClassParser.parse(cat[id]!!.classe).resistencia == null) erros += "$id: classe perdeu o R-Vont"
+        }
+        assertTrue("MAG-5 curadoria regrediu: $erros", erros.isEmpty())
+    }
+
+    @Test
+    fun `MAG-5 efeito — Nausear baixa a DX efetiva do alvo em 2`() {
+        val cat = catalogo(); Assume.assumeNotNull(cat)
+        val a = alvo(dx = 11)
+        a.buffs.add(MagicMechanics.calcularBuff(mec(cat!!, "nausear"), energia = 2, a.id))
+        assertEquals("−2 DX (piora ataque e defesa do alvo)", 9, a.dxEfetivo)
+    }
+
+    @Test
+    fun `MAG-5 efeito — REMOVIDO tira o combatente do combate (vivo falso)`() {
+        val g = alvo().apply { condicoes.add(Condicao.REMOVIDO) }
+        assertTrue("banido não conta como vivo/ativo", !g.vivo)
+        // pvAtual intacto: não está morto, está FORA.
+        assertEquals(20, g.pvAtual)
+    }
+
+    @Test
+    fun `MAG-5 integracao — banir o unico inimigo encerra o combate em VITORIA`() {
+        val cat = catalogo(); Assume.assumeNotNull(cat)
+        val m = mec(cat!!, "viagem_planar_para_outro")
+        val classe = MagicClassParser.parse(cat["viagem_planar_para_outro"]!!.classe) // Comum/R-Vont+1
+        var venceuBanindo = false
+        for (seed in 0L until 40L) {
+            val g = alvo(iq = 8) // Vontade baixa → às vezes não resiste ao banimento
+            val enc = CombatEncounter(listOf(heroiComb(), g), mapOf("g" to 2), seed = seed)
+            val s = CombatSession(enc, HeroiPerfilCombate(esquiva = 9, apara = 11, ht = 12, rd = 0), Random(seed))
+            val ctx = ContextoConjuracao(nhBasico = 30, classe = classe, mana = NivelMana.NORMAL,
+                distanciaMetros = 2, mecanica = m)
+            s.heroiConjurar(ctx, MagicEnergy.parse("Varia"), energiaInvestida = 3, magiaNome = "Banir", alvoId = "g")
+            if (s.encerrado && s.resultado == ResultadoCombate.VITORIA) { venceuBanindo = true; break }
+        }
+        assertTrue("em 40 seeds, banir o único inimigo (Vont 8) tem que encerrar em VITÓRIA ao menos uma vez", venceuBanindo)
     }
 }

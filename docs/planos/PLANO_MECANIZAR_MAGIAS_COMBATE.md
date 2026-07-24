@@ -106,10 +106,11 @@ vocabulário. Priorizadas por número de magias que destravam:
   ser limpo e de alto valor (era o MAG-5). Campo novo `removeCondicoes`/`curaAoLimpar` + `Condicao.deChave`
   + `EfeitosMagicosDelegate.removerCondicoes` (motor só encaminha). Mecanizadas: **Cessar Sangramento**
   (+1 PV), **Cessar Paralisia**, **Restaurar Visão**. Deferido Despertar (Área). Gate 978/0.
-- **MAG-5 (reformulado) — Condições NOVAS que precisam de EFEITO no motor:** SURDO, NAUSEADO, DESARMADO,
-  RETARDADO, REMOVIDO. ⚠️ Descoberta do MAG-4: IMOBILIZADO/CAIDO por magia hoje NÃO neutralizam o NPC (o
-  `manobrasLegais` não restringe IMOBILIZADO) — este lote precisa DAR DENTE a essas condições, não só
-  mapeá-las. Náusea pode sair como debuff (`buffAtributo` DX−2) sem condição nova.
+- **MAG-5 ✅ CONCLUÍDO (24/jul)** — Náusea (Nausear) saiu como **debuff DX−2** (JSON, sem condição nova);
+  **REMOVIDO** (condição nova) para Banir + Transportar no Tempo — bastou `&& REMOVIDO !in condicoes` no
+  getter `vivo` e tudo cascateia (banir o último inimigo → VITÓRIA). `imporCondicaoMagica` passou a usar
+  `Condicao.deChave` (encolheu o motor). Deferidos: SURDO (baixo valor), Desarmado (re-armar complexo),
+  Retardar (pular turnos — arriscado). Gate 982/0.
 - **MAG-6 — Zonas de condição:** estender `ZonaDelegate` — Cola, Ensebar, Entrelaçamento, Silêncio, Teia de
   Aranha, Muralha de Relâmpagos.
 - **MAG-7 — Penetração e anti-magia:** `divisorArmadura` (Mágica Penetrante), `buffResistenciaMagia`

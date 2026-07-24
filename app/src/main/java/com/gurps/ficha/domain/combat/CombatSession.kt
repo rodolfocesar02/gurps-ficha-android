@@ -1643,15 +1643,9 @@ class CombatSession(
         /** Lote MEC-19: se a condição sai por teste de atributo (gelo), em vez de por tempo. */
         escape: EscapeCondicao? = null,
     ) {
-        val cond = when (condicaoStr?.lowercase()?.trim()) {
-            "atordoado", "atordoar" -> Condicao.ATORDOADO
-            "cego", "cegueira", "cegar" -> Condicao.CEGO
-            "dormindo", "sono", "adormecido", "dormir" -> Condicao.DORMINDO
-            "paralisado", "paralisia", "paralisar" -> Condicao.PARALISADO
-            "amedrontado", "medo", "panico", "pânico" -> Condicao.AMEDRONTADO
-            "silenciado", "silencio", "silêncio", "silenciar" -> Condicao.SILENCIADO
-            else -> return
-        }
+        // Lote MAG-5: usa o mapa canônico Condicao.deChave (inverso do removerCondicoes) — antes era
+        // um `when` duplicado aqui. Agora "removido"/"caido"/"imobilizado"/"sangrando" também entram.
+        val cond = Condicao.deChave(condicaoStr) ?: return
         alvo.condicoes.add(cond)
         // MEC-17: com prazo, registra o relógio. Se já havia um, fica o MAIOR — a segunda Cegar não
         // pode encurtar a primeira.
