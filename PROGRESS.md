@@ -3063,6 +3063,14 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - **+11 testes.** Gate: **911 por variante, 0 falhas**.
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
+### Lote MAG-2 — 24 de Julho de 2026 (buffs de DANO DE ARMA elementais — 6 magias)
+- Arma Flamejante/Congelante/de Relâmpago e as três versões de projétil: todas dão **+2 de dano após penetrar a RD** (o motor já aplica isso via `bonusArmaMagica` → `bonusAposRd`, do MEC-9). Mecanização = só JSON.
+- `buffDanoArma=2` + `buffArmaTipo`: **"cac"** (corpo a corpo) nas armas de mão, **"distancia"** nos projéteis — o filtro `danoArmaVale(aDistancia)` impede o +2 do gume vazar para o arco (e vice-versa).
+- Efeitos secundários (frio que reduz o alvo, etc.) ficam narrados — só o +2 de dano é mecânico.
+- Teste: curadoria dos 6 + efeito real (calcularBuff dá `danoArma=2` e `danoArmaVale` filtra CaC × distância).
+- **+2 testes.** Gate: **971 por variante, 0 falhas**, build nas duas.
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
 ### Lote MAG-1 — 24 de Julho de 2026 (buffs/debuffs de ATRIBUTO de Corpo — 11 magias, motor pronto)
 - Primeiro lote do loop de mecanização (MAG-1..7) que saiu do levantamento por 9 agentes de todas as 879 magias (`docs/planos/PLANO_MECANIZAR_MAGIAS_COMBATE.md`): ~102 magias com efeito de combate real, 75 já ok, 702 legitimamente narrativas.
 - **Corpo era o ouro**: quase tudo é buff/debuff de atributo que o motor JÁ executa (`buffAtributo` → `calcularBuff` → `stEfetivo`/`dxEfetivo`/`htEfetivo`, o caminho provado no P3-1). Mecanização = **só editar o JSON**, zero motor novo.

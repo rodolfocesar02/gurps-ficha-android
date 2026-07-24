@@ -93,8 +93,9 @@ vocabulário. Priorizadas por número de magias que destravam:
   Inabilidade, Fragilidade, Aumentar Força/Destreza/Vitalidade (um-uso), Estorvar, Reflexos (11 magias).
   Campos já existiam (`buffAtributo`/`buffBd`/`buffEsquiva`/`buffDeslocamento`), zero motor novo. Gate 969/0.
   *(Dor, Coceira, Magreza — duração especial "1 turno"/"até coçar" — ficaram para tratamento próprio.)*
-- **MAG-2 — Buffs de dano de arma elementais:** Arma Flamejante/Congelante/de Relâmpago e as versões de
-  projétil (`buffDanoArma` + `buffArmaTipo`, já existem). ~6 magias.
+- **MAG-2 ✅ CONCLUÍDO (24/jul)** — Buffs de dano de arma elementais: Arma Flamejante/Congelante/de
+  Relâmpago + as 3 versões de projétil (`buffDanoArma=2` + `buffArmaTipo` cac/distancia). 6 magias, zero
+  motor novo. Gate 971/0.
 - **MAG-3 — `condicaoResistencia` Vontade/DX/ST:** o campo novo do motor. Destrava Animais (dominar/
   controlar), Trança-Pés, Pés Plantados, Soterramento, Carne para Pedra, e várias de Mente já-ok ganham
   base sólida. ~30 magias passam a resistir certo.

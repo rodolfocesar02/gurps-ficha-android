@@ -139,4 +139,39 @@ class MagMecanizacaoTest {
         assertEquals("−3 Deslocamento", -3, buff.deslocamento)
         assertEquals("−3 Esquiva", -3, buff.esquiva)
     }
+
+    // ═══════════════════════════ MAG-2 — buffs de dano de arma elementais ═════════════════════════
+
+    @Test
+    fun `MAG-2 curadoria — os 6 buffs de arma dao +2 de dano com o tipo de arma certo`() {
+        val cat = catalogo(); Assume.assumeNotNull(cat)
+        // id -> tipo de arma esperado (cac = corpo a corpo, distancia = projetil)
+        val esperado = mapOf(
+            "arma_flamejante" to "cac", "projeteis_flamejantes" to "distancia",
+            "arma_congelante" to "cac", "projeteis_congelantes" to "distancia",
+            "arma_de_relampago" to "cac", "projeteis_de_relampago" to "distancia",
+        )
+        val erros = mutableListOf<String>()
+        for ((id, tipo) in esperado) {
+            val m = mec(cat!!, id)
+            if (m.efeito != "buff") erros += "$id: efeito=${m.efeito}"
+            if (m.buffDanoArma != 2) erros += "$id: buffDanoArma=${m.buffDanoArma} (esperado 2)"
+            if (m.buffArmaTipo != tipo) erros += "$id: buffArmaTipo=${m.buffArmaTipo} (esperado $tipo)"
+        }
+        assertTrue("MAG-2 curadoria regrediu: $erros", erros.isEmpty())
+    }
+
+    @Test
+    fun `MAG-2 efeito — Arma Flamejante so vale corpo a corpo, Projeteis so a distancia`() {
+        val cat = catalogo(); Assume.assumeNotNull(cat)
+        val cac = MagicMechanics.calcularBuff(mec(cat!!, "arma_flamejante"), energia = 4, "heroi")
+        assertEquals("+2 de dano de arma", 2, cac.danoArma)
+        assertTrue("Arma Flamejante vale no golpe corpo a corpo", cac.danoArmaVale(aDistancia = false))
+        assertTrue("mas NÃO vaza para o ataque à distância", !cac.danoArmaVale(aDistancia = true))
+
+        val dist = MagicMechanics.calcularBuff(mec(cat, "projeteis_flamejantes"), energia = 4, "heroi")
+        assertEquals(2, dist.danoArma)
+        assertTrue("Projéteis Flamejantes valem à distância", dist.danoArmaVale(aDistancia = true))
+        assertTrue("mas NÃO no corpo a corpo", !dist.danoArmaVale(aDistancia = false))
+    }
 }

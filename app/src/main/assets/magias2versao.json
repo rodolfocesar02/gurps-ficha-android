@@ -1290,10 +1290,10 @@
     "descricao": "Comum\n\nFaz com que qualquer arma esfrie ao toque (sem prejudicar o usuário) e cause +2 de dano à maioria dos inimigos (depois de penetrar na armadura). Armas de metal não são danificadas; as de madeira se quebram assim que a mágica termina. A arma também libera frio, reduzindo a temperatura em sua vizinhança.\n\nDuração: 1 minuto.\n\nCusto: 4 para operar: 1 para manter.\n\nTempo de operação: 2 segundos.\n\nPré-requisitos: Aptidão Mágica 2 e Frio.\n\nItem\n\nUma arma que se torna gelada sempre que usada, sem custo de energia para o usuário. Custo de energia para criar: 750; uma safira de $400 deve ser colocada na arma.",
     "mecanica": {
       "efeito": "buff",
-      "buffRotulo": "arma +2 dano (frio)",
-      "notas": "Arma corpo a corpo esfria e causa +2 de dano após penetrar a RD, por 1 min. Não escala com energia (4 para operar, 1 para manter). Armas de madeira quebram ao fim da magia; a arma também libera frio na vizinhança.",
       "buffDanoArma": 2,
-      "buffArmaTipo": "cac"
+      "buffArmaTipo": "cac",
+      "buffRotulo": "Arma Congelante (+2 frio)",
+      "notas": "+2 de dano (frio) após a RD, arma corpo a corpo. Efeito de frio que reduz o alvo fica narrado. Duração 1 min."
     },
     "duracaoTipo": "temporaria",
     "duracaoSeg": 60,
@@ -1340,10 +1340,10 @@
     "descricao": "Comum\n\nA arma corpo a corpo objetivo fica carregada de relâmpagos, visivelmente crepitando e faiscando, sem prejudicar o usuário. A arma deve ser pelo menos parcialmente metálica; armas feitas inteiramente de madeira e/ou pedra não sustentam a mágica. A arma causa mais 2 pontos de dano após a penetração da armadura e os modificadores de ferimento. Contra armaduras metálicas, a arma causa pelo menos 1 ponto de dano em qualquer golpe.\n\nEsta também é uma mágica do Ar.\n\nDuração: 1 minuto.\n\nCusto: 4 para operar: 1 para manter. Tempo de operação: 2 segundos.\n\nPré-requisitos: Aptidão Mágica 2 e Relâmpago.\n\nItem\n\nUma arma que se torna eletrificada sempre que usada, sem custo de energia para o usuário. Custo de energia para criar: 750; pelo menos US $ 300 devem ser gastos em decorações de platina e opala.",
     "mecanica": {
       "efeito": "buff",
-      "buffRotulo": "arma +2 quei (relampago)",
-      "notas": "Arma corpo a corpo ao menos parcialmente metalica: +2 de dano apos RD/ferimento. Contra armadura metalica causa min 1 ponto (nao modelado). Dur 1min. Nao escala com energia.",
       "buffDanoArma": 2,
-      "buffArmaTipo": "cac"
+      "buffArmaTipo": "cac",
+      "buffRotulo": "Arma de Relâmpago (+2 elétrico)",
+      "notas": "+2 de dano (eletricidade) após a RD, arma corpo a corpo metálica. Duração 1 min."
     },
     "duracaoTipo": "temporaria",
     "duracaoSeg": 60,
@@ -1411,10 +1411,10 @@
     "descricao": "Comum\n\nFaz com que qualquer arma arda em fogo, o que não prejudica o usuário, mas permite que a arma cause +2 de dano a inimigos ou objetos inflamáveis (depois de penetrar na armadura e acrescentar outros bônus). Armas de metal não são danificadas; as de madeira se tornam cinzas assim que a mágica termina. A arma também libera luz como uma tocha.\n\nDuração: 1 minuto.\n\nCusto: 4 para operar: 1 para manter.\n\nTempo de operação: 2 segundos.\n\nPré-requisitos: Aptidão Mágica 2 e Calor.\n\nItem\n\nUma arma que arde sempre que usada, sem custo de energia para o usuário. Custo de energia para criar: 750; um rubi de $400 deve ser colocado na arma.",
     "mecanica": {
       "efeito": "buff",
-      "buffRotulo": "arma flamejante +2 quei",
-      "notas": "+2 de dano a inimigos/objetos inflamaveis, aplicado depois de penetrar a armadura. So corpo a corpo. Arma tambem ilumina como tocha; armas de madeira viram cinzas ao fim. Duracao 1 min (4 p/ operar, 1 p/ manter).",
       "buffDanoArma": 2,
-      "buffArmaTipo": "cac"
+      "buffArmaTipo": "cac",
+      "buffRotulo": "Arma Flamejante (+2 fogo)",
+      "notas": "+2 de dano (fogo) após penetrar a RD, arma corpo a corpo. Duração 1 min."
     },
     "duracaoTipo": "temporaria",
     "duracaoSeg": 60,
@@ -14991,10 +14991,10 @@
     "descricao": "Comum\n\nComo Arma Congelante, mas operada em uma arma de projétil. A arma em si fica fria ao toque, mas não prejudica o usuário. Qualquer projétil que disparar se torna muito frio, causando +2 de dano à maioria dos inimigos; quebra após atingir um alvo ou após 10 segundos, o que ocorrer primeiro.\n\nDuração: 1 minuto.\n\nCusto: 4 para operar: 2 para manter.\n\nTempo de operação: 3 segundos.\n\nPré-requisito: Arma Congelante.\n\nItem\n\nUma arma de projétil que dispara projéteis congelados sempre que usados, sem custo de energia para o usuário. Custo de energia para criar: 1.000; uma safira de $500 deve ser colocada na arma.",
     "mecanica": {
       "efeito": "buff",
-      "buffRotulo": "projétil +2 dano (frio)",
-      "notas": "Como Arma Congelante, mas em arma de projétil: cada projétil disparado causa +2 de dano após penetrar a RD, por 1 min. Não escala com energia. O projétil quebra ao acertar ou após 10 seg.",
       "buffDanoArma": 2,
-      "buffArmaTipo": "distancia"
+      "buffArmaTipo": "distancia",
+      "buffRotulo": "Projéteis Congelantes (+2 frio)",
+      "notas": "+2 de dano (frio) após a RD, arma de projétil. Duração 1 min."
     },
     "duracaoTipo": "temporaria",
     "duracaoSeg": 60,
@@ -15019,10 +15019,10 @@
     "descricao": "Comum\n\nComo Arma Relâmpago, mas operada em uma arma de projétil. A arma em si fica cercada por um halo elétrico. Qualquer projétil que disparar é carregado com um relâmpago, causando 2 pontos adicionais de dano conforme a Arma de Relâmpago. As partes de madeira do projétil se tornam cinzas depois de atingir um alvo ou após 10 segundos, o que ocorrer primeiro.\n\nEsta também é uma mágica do Ar.\n\nDuração: 1 minuto.\n\nCusto: 4 para operar. 2 para manter. O custo dobra se os projéteis a serem lançados não forem metálicos.\n\nTempo de operação: 3 segundos.\n\nPré-requisito: Arma de Relâmpago.\n\nItem\n\nUma arma de projétil que dispara projéteis de relâmpagos sempre que usada, sem custo de energia para o usuário. Custo de energia para criar: 1.000; pelo menos $400 devem ser gastos em decorações de platina e opala.",
     "mecanica": {
       "efeito": "buff",
-      "buffRotulo": "projetil +2 quei (relampago)",
-      "notas": "Arma de projetil: cada projetil disparado causa +2 de dano apos RD/ferimento (como Arma de Relampago). Partes de madeira viram cinzas. Custo dobra se os projeteis nao forem metalicos. Dur 1min. Nao escala com energia.",
       "buffDanoArma": 2,
-      "buffArmaTipo": "distancia"
+      "buffArmaTipo": "distancia",
+      "buffRotulo": "Projéteis de Relâmpago (+2 elétrico)",
+      "notas": "+2 de dano (eletricidade) após a RD, arma de projétil metálica. Duração 1 min."
     },
     "duracaoTipo": "temporaria",
     "duracaoSeg": 60,
@@ -15046,10 +15046,10 @@
     "descricao": "Comum\n\nComo Arma Flamejante, mas operada em uma arma de projétil. A própria arma adquire uma aparência brilhante e ardente. Qualquer projétil dispara em chamas, causando +2 de dano conforme Arma Flamejante; queima em cinzas depois de atingir um alvo ou após 10 segundos, o que ocorrer primeiro.\n\nDuração: 1 minuto.\n\nCusto: 4 para operar: 2 para manter. O custo dobra se os projéteis a serem disparados forem de perda ou metal.\n\nTempo de operação: 3 segundos.\n\nPré-requisito: Arma Flamejante.\n\nItem\n\nUma arma de projétil que dispara projéteis flamejantes sempre que usada, sem custo de energia para o usuário. Custo de energia para criar: 1.000; um rubi de $500 deve ser colocado na arma.",
     "mecanica": {
       "efeito": "buff",
-      "buffRotulo": "projeteis flamejantes +2 quei",
-      "notas": "Como Arma Flamejante, porem em arma de projetil: +2 de dano depois de penetrar a armadura. Projetil vira cinzas ao atingir o alvo ou apos 10 seg. Custo dobra se os projeteis forem de metal.",
       "buffDanoArma": 2,
-      "buffArmaTipo": "distancia"
+      "buffArmaTipo": "distancia",
+      "buffRotulo": "Projéteis Flamejantes (+2 fogo)",
+      "notas": "+2 de dano (fogo) após a RD, arma de projétil. Duração 1 min."
     },
     "duracaoTipo": "temporaria",
     "duracaoSeg": 60,
