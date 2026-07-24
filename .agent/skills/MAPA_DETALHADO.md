@@ -636,14 +636,16 @@ Tudo em `domain/combat/` é Kotlin PURO (sem Android, determinístico por seed) 
 - **`data/storage/SagaDao.kt`** — CRUD + `buscarFatos` (MATCH AND/fallback OR, ranking peso→frequência) + `excluirCampanhaCompleta` (@Transaction). `FichaDatabase` v24→25→26 com `MIGRATION_24_25`/`MIGRATION_25_26` explícitas.
 
 ### 32.3b Subsistemas extraídos do motor (`domain/combat/subsistemas/`) — Lote MOTOR (jul/2026)
-> O `CombatSession` (3675 linhas) **não é estável — vai crescer** com as ~700 magias restantes +
-> vantagens/perícias/itens que ainda tocam o combate. Por isso está sendo decomposto em subsistemas
-> ANTES da enxurrada, cada um num delegate testável sozinho. O motor injeta o que cada um precisa por
+> O `CombatSession` (era 3675, hoje **3230**) **não é estável — vai crescer** com as ~700 magias
+> restantes + vantagens/perícias/itens que ainda tocam o combate. Por isso foi decomposto em
+> subsistemas ANTES da enxurrada, cada um num delegate testável sozinho. O motor injeta o que cada um precisa por
 > **lambda** (log, RNG, HT/RD, callbacks) e reexpõe a API por delegação — quem chamava `s.registrarZona`
 > etc. continua igual. Comportamento preservado (rede de invariantes SIM-1 prova).
 - **`subsistemas/ZonaDelegate.kt`** (MOTOR-1) — zonas persistentes: `zonasAtivas`, `ocupantesDaZona` (ponto de injeção da grade), `registrarZona`/`limparZonas`/`encolherZona`/`tiqueDasZonas`, não-acúmulo da mesma mágica. Teste próprio: `ZonaDelegateTest`.
 - **`subsistemas/DanoMagicoResolver.kt`** (MOTOR-2) — o **funil de dano mágico** compartilhado pelas 4 entradas (magia direta, área, feixe P9, explosão de projétil P5): imunidade por elemento (A1) → tipo de criatura (A1-b) → rola/1-2D/RD → condição embutida. Extraí-lo **destravou** projétil/feixe/área (antes presos a ele). Teste próprio: `DanoMagicoResolverTest`.
-- Estado após MOTOR-1/2: `CombatSession` 3675 → **3504**. Próximos candidatos (mais acoplados): projétil carregado, feixe, área, turno do NPC.
+- **`subsistemas/AtaqueMagicoResolver.kt`** (MOTOR-3) — **acerto+defesa da magia à distância** (a camada ENTRE conjuração e funil de dano): feixe (P9, DX−4/−2 ou Ataque Inato, esquiva/bloqueio nunca aparar), arremesso de projétil (P6/P11, mira + distância), explosão (P5, alvo cheio + respingo ÷ `3×dist`, dado rolado 1×). `vizinhosDoImpacto` é o ponto de injeção do respingo. **O projétil CARREGADO (segurar/aumentar/arremessar, P11) NÃO saiu** — está tecido no coração da conjuração (NH/custo/PF/choque). Teste próprio: `AtaqueMagicoResolverTest`.
+- **`subsistemas/EfeitosMagicosDelegate.kt`** (MOTOR-4) — **efeitos mágicos ativos**: `magiasAtivas`/`manutencaoPendente`, `registrar`/`aplicarBuffDeUmUso`/`dissipar`/`resolverManutencao`, `tiquePorTurno` (Morte Candente/Putrefata), `abaloDeConcentracao` (Vontade−3 ao ser ferido/atordoado), `avancarUmSegundo` (manutenção + expiração revertendo o buff). Guarda as 3 regras sutis: **não-acúmulo** (Magia p.9), **regra da estreia** (MEC-22), **abalo** (Magia p.7). `CombatSession.ManutencaoPendente` fica aninhado (controller/UI o referenciam). Teste próprio: `EfeitosMagicosDelegateTest`.
+- **Fim do loop MOTOR: `CombatSession` 3675 → 3230 (−445, −12%).** Extraídos os 4 subsistemas com **estado próprio e ciclo fechado**. O que resta (`npcResolve`, `resolverGolpeHeroi`, `avancarTurno`, `resolverConjuracao`, conjuração de área/toque, agarrão) é o **núcleo interativo acoplado**: o laço de turno em si + a conjuração tecida em NH/custo/PF/choque, tudo compartilhando `resolverTroca`. A matemática de ataque (`CombatResolver`) e as tabelas de crítico (`CriticoRules`) **já são objetos à parte**. Puxar mais espalharia acoplamento (delegates de N injeções) em vez de reduzi-lo — a decomposição limpa parou aqui. A pressão das ~700 magias já foi desviada para os delegates de dano/ataque/efeitos.
 
 ### 32.3 Motor de combate puro (`domain/combat/`)
 - **`CombatModels.kt`** — `Postura`/`Condicao`/`Manobra`, `NpcStats` (com `armaNh`), `Combatente` (PV/PF/postura/condições mutáveis; `vivo`/`caido`).
