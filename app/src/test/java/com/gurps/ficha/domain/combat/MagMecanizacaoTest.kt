@@ -8,6 +8,7 @@ import com.gurps.ficha.domain.magic.MagicClassParser
 import com.gurps.ficha.domain.magic.MagicEnergy
 import com.gurps.ficha.domain.magic.MagicMechanics
 import com.gurps.ficha.domain.magic.NivelMana
+import com.gurps.ficha.domain.combat.subsistemas.EfeitosMagicosDelegate
 import com.gurps.ficha.model.MagiaDefinicao
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
@@ -231,5 +232,66 @@ class MagMecanizacaoTest {
         val g = alvo().apply { condicoes.add(Condicao.PARALISADO) }
         val enc = CombatEncounter(listOf(heroiComb(), g), mapOf("g" to 2), seed = 1L)
         assertEquals(listOf(Manobra.NAO_FAZER_NADA), enc.manobrasLegais(g))
+    }
+
+    // ═══════════════════ MAG-4 — cura que LIMPA condição (removeCondicoes) ════════════════════════
+
+    /** Delegate mínimo, só para exercitar removerCondicoes. */
+    private fun delegateVazio(mundo: List<Combatente>) = EfeitosMagicosDelegate(
+        log = mutableListOf(), random = Random(1), combatentes = { mundo },
+        heroi = { mundo.first { it.ehHeroi } }, heroiHt = { 12 }, heroiVontade = { 12 }, verificarFim = { })
+
+    @Test
+    fun `MAG-4 curadoria — as 3 magias de cura limpam a condicao certa`() {
+        val cat = catalogo(); Assume.assumeNotNull(cat)
+        val esperado = mapOf(
+            "cessar_sangramento" to "sangrando", "cessar_paralisia" to "paralisado", "restaurar_visao" to "cego",
+        )
+        val erros = mutableListOf<String>()
+        for ((id, cond) in esperado) {
+            val m = mec(cat!!, id)
+            if (m.efeito != "cura") erros += "$id: efeito=${m.efeito}"
+            if (!m.removeCondicoes.contains(cond)) erros += "$id: removeCondicoes=${m.removeCondicoes} (falta $cond)"
+        }
+        if (mec(cat!!, "cessar_sangramento").curaAoLimpar != 1) erros += "cessar_sangramento: curaAoLimpar != 1"
+        assertTrue("MAG-4 curadoria regrediu: $erros", erros.isEmpty())
+    }
+
+    @Test
+    fun `MAG-4 efeito — Cessar Sangramento remove SANGRANDO e restaura 1 PV`() {
+        val a = alvo().apply { condicoes.add(Condicao.SANGRANDO); sangramentoAtivo = true; pvAtual = 15 }
+        val sb = StringBuilder()
+        val fez = delegateVazio(listOf(heroiComb(), a)).removerCondicoes(a, listOf("sangrando"), curaPv = 1, sb)
+        assertTrue("tem que reportar que curou", fez)
+        assertTrue("SANGRANDO removido", !a.condicoes.contains(Condicao.SANGRANDO))
+        assertTrue("flag interna de sangramento zerada", !a.sangramentoAtivo)
+        assertEquals("+1 PV", 16, a.pvAtual)
+    }
+
+    @Test
+    fun `MAG-4 efeito — Cessar Paralisia e Restaurar Visao removem PARALISADO e CEGO`() {
+        val a = alvo().apply { condicoes.add(Condicao.PARALISADO); condicoes.add(Condicao.CEGO) }
+        val d = delegateVazio(listOf(heroiComb(), a))
+        d.removerCondicoes(a, listOf("paralisado"), curaPv = 0, StringBuilder())
+        assertTrue("PARALISADO removido", !a.condicoes.contains(Condicao.PARALISADO))
+        assertTrue("CEGO ainda está lá (Cessar Paralisia não mexe nele)", a.condicoes.contains(Condicao.CEGO))
+        d.removerCondicoes(a, listOf("cego"), curaPv = 0, StringBuilder())
+        assertTrue("CEGO removido por Restaurar Visão", !a.condicoes.contains(Condicao.CEGO))
+    }
+
+    @Test
+    fun `MAG-4 integracao — o heroi sangrando conjura Cessar Sangramento em si e sara`() {
+        val cat = catalogo(); Assume.assumeNotNull(cat)
+        val h = heroiComb().apply { condicoes.add(Condicao.SANGRANDO); sangramentoAtivo = true; pvAtual = 15 }
+        val g = alvo()
+        val enc = CombatEncounter(listOf(h, g), mapOf("g" to 3), seed = 1L)
+        val s = CombatSession(enc, HeroiPerfilCombate(esquiva = 9, apara = 11, ht = 12, rd = 0), Random(1))
+        val ctx = ContextoConjuracao(nhBasico = 30, classe = MagicClassParser.parse("Comum"),
+            mana = NivelMana.NORMAL, mecanica = mec(cat!!, "cessar_sangramento"))
+        val r = s.heroiConjurar(ctx, MagicEnergy.parse("1"), energiaInvestida = 1, magiaNome = "Cessar Sangramento", alvoId = null)
+        assertTrue("a conjuração deve ter sucesso", r.sucesso)
+        val heroi = s.encounter.combatentes.first { it.ehHeroi }
+        assertTrue("herói não sangra mais", !heroi.condicoes.contains(Condicao.SANGRANDO))
+        assertEquals("recuperou 1 PV", 16, heroi.pvAtual)
     }
 }

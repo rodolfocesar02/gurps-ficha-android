@@ -1095,7 +1095,11 @@ class CombatSession(
                               else " ${alvo.nome} não resiste (resistência $resist).")
                 }
 
-                if (com.gurps.ficha.domain.magic.MagicMechanics.temCuraEstruturada(ctx.mecanica)) {
+                if (ctx.mecanica?.removeCondicoes?.isNotEmpty() == true) {
+                    // Lote MAG-4: cura que LIMPA condição (Cessar Sangramento/Paralisia, Restaurar
+                    // Visão). Sem alvo explícito, limpa o próprio operador (automagia). O delegate faz.
+                    efeitos.removerCondicoes(alvo ?: heroi, ctx.mecanica!!.removeCondicoes, ctx.mecanica!!.curaAoLimpar, sb)
+                } else if (com.gurps.ficha.domain.magic.MagicMechanics.temCuraEstruturada(ctx.mecanica)) {
                     // Lote MEC-10: magia de CURA restaura PV. Sem alvo explícito, cura o próprio
                     // operador (automagia) — é o caso comum: o mago se cura no meio da luta.
                     aplicarCuraMagica(alvo ?: heroi, energiaInvestida, ctx.mecanica!!, sb)

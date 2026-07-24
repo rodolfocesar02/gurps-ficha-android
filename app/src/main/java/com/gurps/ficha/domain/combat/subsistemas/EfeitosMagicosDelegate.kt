@@ -325,4 +325,35 @@ class EfeitosMagicosDelegate(
             log += "✨ ${exp.magiaId} termina$volta."
         }
     }
+
+    /**
+     * Lote MAG-4: cura que LIMPA condições (Cessar Sangramento, Cessar Paralisia, Restaurar Visão).
+     * Remove do alvo cada condição conhecida (e o relógio/escape dela), zera o sangramento interno se
+     * limpar SANGRANDO, e restaura [curaPv] PV. Devolve true se limpou/curou algo. É o inverso do
+     * imporCondicaoMagica — por isso usa o mesmo mapa canônico `Condicao.deChave`.
+     */
+    fun removerCondicoes(alvo: Combatente, chaves: List<String>, curaPv: Int, sb: StringBuilder): Boolean {
+        val limpas = mutableListOf<Condicao>()
+        for (ch in chaves) {
+            val cond = Condicao.deChave(ch) ?: continue
+            if (alvo.condicoes.remove(cond)) {
+                alvo.condicoesTemporarias.remove(cond)
+                if (alvo.escapeCondicao?.condicao == cond) alvo.escapeCondicao = null
+                if (cond == Condicao.SANGRANDO) alvo.sangramentoAtivo = false
+                limpas += cond
+            }
+        }
+        var curou = 0
+        if (curaPv > 0 && alvo.pvAtual < alvo.pvMax) {
+            curou = minOf(curaPv, alvo.pvMax - alvo.pvAtual)
+            alvo.pvAtual += curou
+        }
+        if (limpas.isEmpty() && curou == 0) return false
+        val partes = buildList {
+            if (limpas.isNotEmpty()) add(limpas.joinToString(", ") { it.rotulo })
+            if (curou > 0) add("+$curou PV")
+        }
+        sb.append(" ✨ ${alvo.nome}: ${partes.joinToString("; ")} (curado).")
+        return true
+    }
 }

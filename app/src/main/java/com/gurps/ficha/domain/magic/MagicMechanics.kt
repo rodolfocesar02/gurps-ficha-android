@@ -266,6 +266,16 @@ data class MagiaMecanica(
      */
     val buffUmUnicoUso: Boolean = false,
 
+    // ── efeito "cura" que LIMPA condição (Lote MAG-4) ──
+    /**
+     * Condições que esta magia REMOVE do alvo, por chave (Cessar Sangramento → "sangrando";
+     * Cessar Paralisia → "paralisado"; Restaurar Visão → "cego"; Despertar → "atordoado","dormindo").
+     * Vazio = não limpa nada. A remoção é o inverso de [condicao]/[imporCondicaoMagica].
+     */
+    val removeCondicoes: List<String> = emptyList(),
+    /** PV restaurados ao limpar (Cessar Sangramento restaura 1 PV junto). 0 = só limpa, não cura. */
+    val curaAoLimpar: Int = 0,
+
     // ── notas para o Narrador (ambiente/controle/utilidade: o motor tagueia, o Mestre descreve) ──
     val notas: String? = null,
 )

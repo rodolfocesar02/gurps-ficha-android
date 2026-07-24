@@ -3063,6 +3063,15 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - **+11 testes.** Gate: **911 por variante, 0 falhas**.
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
+### Lote MAG-4 — 24 de Julho de 2026 (cura que LIMPA condição — `removeCondicoes`, 3 magias; 1º lote com motor novo)
+- **Reordenação honesta**: o MAG-4 original ("condições novas") mostrou-se arriscado — IMOBILIZADO/CAIDO por magia não neutralizam o NPC de verdade (o `manobrasLegais` não restringe IMOBILIZADO; um NPC "preso" ainda atacaria). Puxei para frente o que é LIMPO e de alto valor: a **cura que limpa condição** (era o MAG-5 do plano).
+- Mecânica nova bem contida: campo `removeCondicoes: List<String>` + `curaAoLimpar: Int` no `MagiaMecanica`; mapa canônico `Condicao.deChave` (reutilizável, inverso do `imporCondicaoMagica`); e o método `removerCondicoes` no **`EfeitosMagicosDelegate`** — o `CombatSession` só ganhou um branch de 3 linhas no `resolverConjuracao` (respeita a regra "motor não cresce").
+- Mecanizadas: **Cessar Sangramento** (remove SANGRANDO + restaura 1 PV), **Cessar Paralisia** (remove PARALISADO), **Restaurar Visão** (remove CEGO). Alvo padrão = o próprio operador (automagia).
+- Deferido: **Despertar** (é Área → outro caminho, `heroiConjurarArea`; entra num lote de zonas/área). Nuances de "condição de origem mágica resiste" (Cessar Paralisia / Restaurar Visão) ficam ao Mestre.
+- Teste: curadoria + delegate direto (SANGRANDO→limpa+1 PV; PARALISADO; CEGO, sem afetar os outros) + **integração** (herói sangrando conjura Cessar Sangramento em si e sara).
+- **+4 testes.** Gate: **978 por variante, 0 falhas**, build nas duas.
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
 ### Lote MAG-3 — 24 de Julho de 2026 (controle que impõe PARALISADO — 5 magias, e uma DESCOBERTA do plano)
 - **Descoberta que reformula o plano**: a resistência da CLASSE (`resistenciaDoAlvo`) já suporta HT/IQ/Vontade/DX/ST. Ou seja, magia "Resistível com Vontade/DX/ST" **já resiste certo** — o campo `condicaoResistencia` novo (premissa original do MAG-3) era menos necessário do que eu achava. E o `imporCondicaoMagica` já aplica `paralisado`, que **incapacita de verdade** no combate (só NÃO_FAZER_NADA).
 - Resultado: um bloco de controle virou **JSON-only** — `efeito=condicao`, `condicao=paralisado`, e a classe carrega o R-XXX. Mecanizadas: **Carne para Pedra**, **Soterramento**, **Enclausuramento Arbóreo** (indefinidas, `duracaoSeg=0`, saem por reversão/resgate), **Agonizar** e **Cócegas** (1 min).

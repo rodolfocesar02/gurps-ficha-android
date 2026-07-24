@@ -34,7 +34,27 @@ enum class Condicao(val rotulo: String) {
     DORMINDO("dormindo"),         // incapacitado + indefeso; ACORDA ao sofrer dano (MB p.428)
     PARALISADO("paralisado"),     // incapacitado + indefeso; NÃO acorda com dano (MB p.429)
     AMEDRONTADO("amedrontado"),   // só recua/defende — não ataca (medo/pânico, MB p.428)
-    SILENCIADO("silenciado")      // não consegue conjurar (o ritual mágico exige fala, Magia p.8)
+    SILENCIADO("silenciado");     // não consegue conjurar (o ritual mágico exige fala, Magia p.8)
+
+    companion object {
+        /**
+         * Lote MAG-4: mapa canônico chave→condição, usado tanto por quem IMPÕE (imporCondicaoMagica)
+         * quanto por quem LIMPA (removeCondicoes/cura). Aceita os sinônimos do catálogo. null = não é
+         * condição conhecida do motor.
+         */
+        fun deChave(chave: String?): Condicao? = when (chave?.lowercase()?.trim()) {
+            "atordoado", "atordoar" -> ATORDOADO
+            "cego", "cegueira", "cegar" -> CEGO
+            "dormindo", "sono", "adormecido", "dormir" -> DORMINDO
+            "paralisado", "paralisia", "paralisar" -> PARALISADO
+            "amedrontado", "medo", "panico", "pânico" -> AMEDRONTADO
+            "silenciado", "silencio", "silêncio", "silenciar" -> SILENCIADO
+            "sangrando", "sangramento" -> SANGRANDO
+            "caido", "caído", "derrubado" -> CAIDO
+            "imobilizado", "preso" -> IMOBILIZADO
+            else -> null
+        }
+    }
 }
 
 /** Manobras de turno (MB p.362-366 / Skill_GURPS "Manobras"). */

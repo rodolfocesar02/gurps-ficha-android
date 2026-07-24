@@ -102,10 +102,14 @@ vocabulário. Priorizadas por número de magias que destravam:
   Mecanizadas: Carne para Pedra, Soterramento, Enclausuramento Arbóreo (indefinidas), Agonizar, Cócegas.
   Deferidos: Paralisar Membro (Toque), Vomitar (dur. 25−HT), Forma de Planta em Outro (30s p/ conjurar),
   Dominar/Controle de Animal (o motor não checa tipo de criatura no alvo). Gate 974/0.
-- **MAG-4 — Condições novas:** SURDO, NAUSEADO, DESARMADO, DOMINADO, RETARDADO, REMOVIDO + as magias que
-  as usam (Ensurdecer/Estrondo, Nausear/Enjoo, Espasmo, Controle de Animal, Retardar, Banir).
-- **MAG-5 — Cura que limpa (`removeCondicao`):** Cessar Sangramento, Despertar, Neutralizar Veneno, Cessar
-  Paralisia, Restaurar Visão.
+- **MAG-4 ✅ CONCLUÍDO (24/jul)** — Cura que LIMPA condição (`removeCondicoes`), trazido para frente por
+  ser limpo e de alto valor (era o MAG-5). Campo novo `removeCondicoes`/`curaAoLimpar` + `Condicao.deChave`
+  + `EfeitosMagicosDelegate.removerCondicoes` (motor só encaminha). Mecanizadas: **Cessar Sangramento**
+  (+1 PV), **Cessar Paralisia**, **Restaurar Visão**. Deferido Despertar (Área). Gate 978/0.
+- **MAG-5 (reformulado) — Condições NOVAS que precisam de EFEITO no motor:** SURDO, NAUSEADO, DESARMADO,
+  RETARDADO, REMOVIDO. ⚠️ Descoberta do MAG-4: IMOBILIZADO/CAIDO por magia hoje NÃO neutralizam o NPC (o
+  `manobrasLegais` não restringe IMOBILIZADO) — este lote precisa DAR DENTE a essas condições, não só
+  mapeá-las. Náusea pode sair como debuff (`buffAtributo` DX−2) sem condição nova.
 - **MAG-6 — Zonas de condição:** estender `ZonaDelegate` — Cola, Ensebar, Entrelaçamento, Silêncio, Teia de
   Aranha, Muralha de Relâmpagos.
 - **MAG-7 — Penetração e anti-magia:** `divisorArmadura` (Mágica Penetrante), `buffResistenciaMagia`

@@ -3207,8 +3207,11 @@
     "preRequisitos": "Cura Profunda ou Cura Superficial e Paralisar Membro",
     "descricao": "Comum\n\nAnula uma paralisia temporária (devido à mágica, arma paralisante, etc.). Uma mágica em andamento (como Paralisar Membro ou Paralisia Total) recebe um teste de resistência.\n\nCusto: 1 para um único membro. 2 para todo o corpo.\n\nPré-requisitos: Cura Superficial e Paralisia ou Cura Profunda.\n\nItem\n\nCajado, varinha ou joia. Custo de energia para criar. 200.",
     "mecanica": {
-      "efeito": "narrado",
-      "notas": "Anula paralisia temporaria (magica/arma paralisante). Custo 1 (um membro) ou 2 (corpo todo). Magia em andamento (Paralisar Membro/Total) ganha teste de resistencia."
+      "efeito": "cura",
+      "removeCondicoes": [
+        "paralisado"
+      ],
+      "notas": "Anula paralisia temporária (remove PARALISADO). Paralisia de origem mágica pode resistir — nuance deixada ao Mestre."
     }
   },
   {
@@ -3226,8 +3229,12 @@
     "preRequisitos": "Conceder Vitalidade",
     "descricao": "Comum\n\nO sangramento do objetivo é interrompido imediatamente, como se estivesse enfaixado por alguém com a perícia Primeiros Socorros (pág. MB219). Isso restaura 1 PV e evita mais perda de PV devido ao sangramento se as Regras Opcionais de Sangramento (pág. MB420) estiverem em vigor. O objetivo desta mágica não pode se beneficiar subsequentemente do enfaixamento dos mesmos ferimentos.\n\nEsta mágica também pode ser usada para estabilizar um ferimento fatal (pág. MB423), a um custo substancialmente maior.\n\nDuração: Permanente, embora lesões posteriores sangrem normalmente.\n\nCusto: 1 para parar o sangramento em um ferimento normal; 10 para estabilizar um ferimento mortal.\n\nPré-requisito: Conceder Vitalidade.\n\nItem\n\nQualquer item; O item deve ter uma gravura de um pelicano. Evita que o usuário sangre e sofra ferimentos mortais. Custo de energia para criar: 500.",
     "mecanica": {
-      "efeito": "narrado",
-      "notas": "Estanca o sangramento na hora (como Primeiros Socorros): restaura 1 PV e impede perda por sangramento. Custo 1 normal; 10 p/ estabilizar ferimento mortal. Mesmo ferimento nao se beneficia de enfaixamento depois."
+      "efeito": "cura",
+      "removeCondicoes": [
+        "sangrando"
+      ],
+      "curaAoLimpar": 1,
+      "notas": "Interrompe o sangramento (remove SANGRANDO) e restaura 1 PV. Alvo padrão: o próprio operador."
     },
     "duracaoTipo": "permanente",
     "duracaoSeg": 0,
@@ -16707,9 +16714,11 @@
     "preRequisitos": "Cura Superficial, Visão Aguçada ou Cegar",
     "descricao": "Regular\n\nRestaura temporariamente a visão do objetivo, independentemente do que causou a perda (se a perda da visão é de natureza mágica, no entanto, a mágica responsável consegue resistir). Os olhos não devem estar completamente ausentes (isso requer Regeneração). Para uma cura permanente, use Restauração.\n\nDuração: 1 hora.\n\nCusto: Igual a metade dos pontos de Visão restaurados (Per+Visão Aguçada); metade para manter.\n\nTempo de operação: 5 segundos.\n\nPré-requisitos: Cura Superficial e Visão Aguçada ou Cegar.\n\nItem\n\nJoias ou roupas. Sempre ativo. Custo de energia para criar: 1.000.",
     "mecanica": {
-      "efeito": "buff",
-      "buffRotulo": "visao restaurada 1h",
-      "notas": "Restaura temporariamente a visao por 1 hora, seja qual for a causa (perda magica pode resistir); olhos nao podem estar ausentes. Custo = metade dos pontos de Visao restaurados (Per+Visao Aguda); metade p/ manter. Cura permanente = Restauracao. Per/sentidos nao entram no motor."
+      "efeito": "cura",
+      "removeCondicoes": [
+        "cego"
+      ],
+      "notas": "Restaura a visão por 1h (remove CEGO). Cegueira de origem mágica pode resistir — nuance deixada ao Mestre."
     },
     "duracaoTipo": "temporaria",
     "duracaoSeg": 3600,
