@@ -5,7 +5,6 @@ import com.gurps.ficha.domain.magic.ContextoConjuracao
 import com.gurps.ficha.domain.magic.CustoEnergia
 import com.gurps.ficha.domain.magic.EfeitoChoqueRetorno
 import com.gurps.ficha.domain.magic.MagiaAtivaNoCombate
-import com.gurps.ficha.domain.magic.MagicActive
 import com.gurps.ficha.domain.magic.MagicCasting
 import com.gurps.ficha.domain.magic.TipoDuracao
 import com.gurps.ficha.domain.magic.ResistenciaMagia
@@ -864,148 +863,50 @@ class CombatSession(
     )
     var toqueCarregado: ToqueCarregado? = null; private set
 
-    /** Lote MA-3d-4: mágicas TEMPORÁRIAS/DURADOURAS ativas no combate (o efeito é narrado; aqui rastreia manutenção/expiração). */
-    var magiasAtivas: List<MagiaAtivaNoCombate> = emptyList(); private set
-
     /**
-     * Lote MA-3d-4: registra uma mágica ativa (chamada pelo controller após uma conjuração
-     * bem-sucedida de magia com duração). O tick de manutenção roda em [avancarTurno].
+     * Lote MEC-23: mágica do herói cuja manutenção venceu e **espera decisão dele**.
+     * Manter mágica é OPCIONAL em GURPS — o motor não pode cobrar PF por conta própria.
+     * (Tipo aninhado: o controller/UI referenciam `CombatSession.ManutencaoPendente`.)
      */
+    data class ManutencaoPendente(val magiaId: String, val custoPf: Int)
+
+    // Lote MOTOR-4: o subsistema INTEIRO de EFEITOS MÁGICOS ATIVOS (buffs, mágicas duradouras,
+    // manutenção, dano por turno, abalo de concentração) foi para `subsistemas/EfeitosMagicosDelegate`,
+    // testável sozinho. O motor injeta o que o ciclo precisa (log, RNG, combatentes, herói, "reavaliar
+    // fim") por lambda e reexpõe a API pública por delegação — quem chamava `registrarMagiaAtiva`/
+    // `magiasAtivas`/`resolverManutencao` continua chamando igual.
+    private val efeitos = com.gurps.ficha.domain.combat.subsistemas.EfeitosMagicosDelegate(
+        log = log,
+        random = random,
+        combatentes = { encounter.combatentes },
+        heroi = { heroi },
+        heroiHt = { heroiPerfil.ht },
+        heroiVontade = { heroiPerfil.vontade },
+        verificarFim = { verificarFim() },
+    )
+
+    /** Lote MA-3d-4: mágicas TEMPORÁRIAS/DURADOURAS ativas no combate (delegado ao MOTOR-4). */
+    val magiasAtivas: List<MagiaAtivaNoCombate> get() = efeitos.ativas
+
+    val manutencaoPendente: List<ManutencaoPendente> get() = efeitos.manutencaoPendente
+
+    /** Lote MA-3d-4: registra uma mágica ativa (o controller chama após uma conjuração com duração). */
     fun registrarMagiaAtiva(
         nome: String, operadorId: String, alvoId: String?, duracaoSeg: Int,
         custoManutencaoSeg: Int, duracao: TipoDuracao, exigeConcentracao: Boolean,
         buff: com.gurps.ficha.domain.magic.BuffAplicado? = null,
-        /** Lote MEC-22: mecânica curada, quando a mágica fere a cada turno. */
         mecanica: com.gurps.ficha.domain.magic.MagiaMecanica? = null,
-    ) {
-        // MEC-2: aplica o buff no alvo AGORA (a lista dele passa a somar no perfil efetivo).
-        val aplicado = buff?.takeIf { !it.soNarrado }
-        if (aplicado != null) {
-            val alvo = encounter.combatentes.firstOrNull { it.id == aplicado.alvoId }
-            if (alvo != null) {
-                // Lote MEC-29 (C7, Magia p.9): *"Se qualquer tipo de mágica com efeito variável for
-                // lançada sobre o mesmo objetivo mais de uma vez, só a MAIS PODEROSA deverá ser
-                // considerada — não se acumulam."* (Cura, dano e efeitos permanentes são exceção, e
-                // não passam por aqui: só buff chega neste ponto.)
-                //
-                // Sem isto, lançar Escudo três vezes somava +3 BD em cima de +3 BD.
-                val anterior = magiasAtivas.firstOrNull {
-                    it.magiaId.equals(nome, ignoreCase = true) && it.buff?.alvoId == aplicado.alvoId
-                }
-                val forcaAnterior = anterior?.buff?.let { forcaDoBuff(it) } ?: -1
-                if (forcaAnterior >= forcaDoBuff(aplicado)) {
-                    log += "✨ ${alvo.nome} já está sob $nome igual ou mais forte — as mágicas não se acumulam (Magia p.9)."
-                    return
-                }
-                if (anterior != null) {
-                    removerBuffDe(anterior)
-                    magiasAtivas = magiasAtivas - anterior
-                    log += "✨ $nome substitui a versão mais fraca em ${alvo.nome} (não acumula)."
-                }
-                alvo.buffs.add(aplicado)
-                log += "✨ ${alvo.nome}: $nome — ${descreverBuff(aplicado)}."
-            }
-        }
-        magiasAtivas = magiasAtivas + MagiaAtivaNoCombate(
-            magiaId = nome, operadorId = operadorId, alvoId = alvoId, energiaInvestida = 0,
-            custoManutencaoSeg = custoManutencaoSeg, segundosParaProximaCobranca = duracaoSeg.coerceAtLeast(1),
-            duracaoTotalSeg = duracaoSeg.coerceAtLeast(1), duracao = duracao, exigeConcentracao = exigeConcentracao,
-            buff = aplicado,
-            mecanica = mecanica,
-            // MEC-22: regra da estreia — não fere no turno em que foi aplicada.
-            pularPrimeiroTique = com.gurps.ficha.domain.magic.MagicMechanics.temTiquePorTurno(mecanica),
-        )
-        val manut = if (custoManutencaoSeg > 0) "manutenção $custoManutencaoSeg PF a cada ${duracaoSeg}s" else "sem custo de manutenção"
-        log += "✨ $nome fica ATIVA ($manut)."
-    }
+    ) = efeitos.registrar(nome, operadorId, alvoId, duracaoSeg, custoManutencaoSeg, duracao, exigeConcentracao, buff, mecanica)
 
-    /**
-     * Lote MEC-6: buff de UM ÚNICO USO (Aumentar Força/Destreza/Vitalidade — "Instant.", vale para um
-     * teste). NÃO é mágica ativa: não tem manutenção nem relógio. Entra na lista do alvo (então o
-     * perfil efetivo já o enxerga) e sai ao fim da PRÓXIMA ação do dono — ver [avancarTurno].
-     */
-    fun aplicarBuffDeUmUso(nome: String, buff: com.gurps.ficha.domain.magic.BuffAplicado) {
-        if (buff.soNarrado) return
-        val alvo = encounter.combatentes.firstOrNull { it.id == buff.alvoId } ?: return
-        alvo.buffs.add(buff)
-        log += "✨ ${alvo.nome}: $nome — ${descreverBuff(buff)} (vale para a próxima ação)."
-    }
+    /** Lote MEC-6: buff de UM ÚNICO USO (Aumentar Força/Destreza/Vitalidade — vale para um teste). */
+    fun aplicarBuffDeUmUso(nome: String, buff: com.gurps.ficha.domain.magic.BuffAplicado) =
+        efeitos.aplicarBuffDeUmUso(nome, buff)
 
-    /** Lote MEC-2: descreve os deltas de um buff em texto factual (o Narrador transforma em prosa). */
-    private fun descreverBuff(b: com.gurps.ficha.domain.magic.BuffAplicado): String {
-        val partes = buildList {
-            if (b.st != 0) add("ST ${sinal(b.st)}"); if (b.dx != 0) add("DX ${sinal(b.dx)}")
-            if (b.ht != 0) add("HT ${sinal(b.ht)}"); if (b.rd != 0) add("RD ${sinal(b.rd)}")
-            // Lote P3-1
-            if (b.iq != 0) add("IQ ${sinal(b.iq)}")
-            if (b.vontade != 0) add("Vontade ${sinal(b.vontade)}")
-            if (b.esquiva != 0) add("Esquiva ${sinal(b.esquiva)}")
-            if (b.deslocamentoFixo != null) add("Deslocamento ${b.deslocamentoFixo}")
-            else if (b.deslocamento != 0) add("Deslocamento ${sinal(b.deslocamento)}")
-            if (b.danoArma != 0) add("arma ${sinal(b.danoArma)} de dano")
-            if (b.penalidadeAtacantes != 0) add("−${b.penalidadeAtacantes} a quem o atacar")
-        }
-        return if (partes.isEmpty()) (b.rotulo.ifBlank { "efeito narrado" }) else partes.joinToString(", ")
-    }
-    private fun sinal(n: Int) = if (n >= 0) "+$n" else "$n"
+    /** Lote MEC-23: o jogador decidiu se mantém a mágica (paga o PF) ou a deixa acabar. */
+    fun resolverManutencao(magiaId: String, manter: Boolean) = efeitos.resolverManutencao(magiaId, manter)
 
-    /**
-     * Lote MEC-2: dissipa uma mágica ativa pelo nome, REVERTENDO o buff que ela aplicou. Buff
-     * permanente sai por aqui (não expira sozinho).
-     */
-    /**
-     * Lote MEC-23: mágica do herói cuja manutenção venceu e **espera decisão dele**.
-     * Manter mágica é OPCIONAL em GURPS — o motor não pode cobrar PF por conta própria.
-     */
-    data class ManutencaoPendente(val magiaId: String, val custoPf: Int)
-
-    var manutencaoPendente: List<ManutencaoPendente> = emptyList(); private set
-
-    /**
-     * Lote MEC-23: o jogador decidiu. [manter] = paga o PF e a mágica segue; senão ela **acaba**
-     * e o gasto para. Sem PF suficiente, a mágica cai de qualquer jeito (não há como pagar).
-     */
-    fun resolverManutencao(magiaId: String, manter: Boolean) {
-        val p = manutencaoPendente.firstOrNull { it.magiaId == magiaId } ?: return
-        manutencaoPendente = manutencaoPendente - p
-        if (!manter) {
-            log += "✋ Você deixa $magiaId acabar — o gasto de manutenção para."
-            dissiparMagiaAtiva(magiaId)
-            return
-        }
-        if (heroi.pfAtual < p.custoPf) {
-            log += "😮‍💨 Fadiga insuficiente para manter $magiaId (precisa de ${p.custoPf} PF) — a mágica acaba."
-            dissiparMagiaAtiva(magiaId)
-            return
-        }
-        heroi.pfAtual -= p.custoPf
-        log += "✨ Você mantém $magiaId (−${p.custoPf} PF)."
-    }
-
-    /**
-     * Lote MEC-29: "a mais poderosa" de duas versões da MESMA mágica. Soma os efeitos numéricos —
-     * serve para comparar Escudo +2 contra Escudo +4 sem precisar saber qual campo cada magia usa.
-     */
-    private fun forcaDoBuff(b: com.gurps.ficha.domain.magic.BuffAplicado): Int =
-        kotlin.math.abs(b.rd) + kotlin.math.abs(b.esquiva) + kotlin.math.abs(b.bd) +
-            kotlin.math.abs(b.st) + kotlin.math.abs(b.dx) + kotlin.math.abs(b.ht) +
-            kotlin.math.abs(b.iq) + kotlin.math.abs(b.vontade) +   // Lote P3-1
-            kotlin.math.abs(b.deslocamento) + kotlin.math.abs(b.danoArma) +
-            kotlin.math.abs(b.penalidadeAtacantes) + (b.deslocamentoFixo ?: 0)
-
-    fun dissiparMagiaAtiva(magiaId: String): Boolean {
-        val alvo = magiasAtivas.firstOrNull { it.magiaId.equals(magiaId, ignoreCase = true) } ?: return false
-        removerBuffDe(alvo)
-        magiasAtivas = magiasAtivas - alvo
-        log += "✨ $magiaId é dissipada."
-        return true
-    }
-
-    /** Tira da lista do combatente exatamente o BuffAplicado que esta mágica pôs (por identidade). */
-    private fun removerBuffDe(m: MagiaAtivaNoCombate) {
-        val b = m.buff ?: return
-        encounter.combatentes.firstOrNull { it.id == b.alvoId }?.buffs?.removeIf { it === b }
-    }
+    /** Lote MEC-2: dissipa uma mágica ativa pelo nome, REVERTENDO o buff que ela aplicou. */
+    fun dissiparMagiaAtiva(magiaId: String): Boolean = efeitos.dissipar(magiaId)
 
     /**
      * Lote MA-3a/3b/3c: o herói CONJURA uma magia no combate (manobra Concentrar). O CONTROLLER monta
@@ -2630,38 +2531,8 @@ class CombatSession(
      *
      * @return ids das mágicas CONGELADAS neste turno (o tique as pula).
      */
-    private fun abaloDeConcentracao(): Set<String> {
-        val comConcentracao = magiasAtivas.filter { it.exigeConcentracao && it.operadorId == "heroi" }
-        if (comConcentracao.isEmpty()) return emptySet()
-        // O gatilho: levou dano desde o próprio turno anterior, ou está atordoado.
-        val feriu = heroi.choquePendente > 0
-        val atordoado = Condicao.ATORDOADO in heroi.condicoes
-        if (!feriu && !atordoado) return emptySet()
-
-        val congeladas = mutableSetOf<String>()
-        val derrubadas = mutableListOf<com.gurps.ficha.domain.magic.MagiaAtivaNoCombate>()
-        val motivo = if (atordoado) "atordoado" else "ferido"
-        for (m in comConcentracao) {
-            val alvo = heroiPerfil.vontade - 3
-            val rol = rolar3d6()
-            when {
-                CriticoRules.classificar(rol, alvo) == CriticoRules.ResultadoCritico.FALHA_CRITICA -> {
-                    derrubadas.add(m)
-                    log += "💥 $motivo — FALHA CRÍTICA de concentração (Vontade−3 $alvo, rolou $rol): ${m.magiaId} se DESFAZ."
-                }
-                rol > alvo -> {
-                    congeladas.add(m.magiaId)
-                    log += "😖 $motivo — você perde a concentração (Vontade−3 $alvo, rolou $rol): ${m.magiaId} fica CONGELADA neste turno."
-                }
-                else -> log += "🧘 Mesmo $motivo, você mantém a concentração em ${m.magiaId} (Vontade−3 $alvo, rolou $rol)."
-            }
-        }
-        if (derrubadas.isNotEmpty()) {
-            derrubadas.forEach { removerBuffDe(it) }
-            magiasAtivas = magiasAtivas.filter { a -> derrubadas.none { it === a } }
-        }
-        return congeladas
-    }
+    // Lote MOTOR-4: abalo de concentração e tique de dano por turno agora moram no
+    // EfeitosMagicosDelegate; avancarTurno chama efeitos.abaloDeConcentracao()/tiquePorTurno().
 
     // ── Lote MEC-46 (P1b): ZONAS PERSISTENTES (chuvas, nuvens, gás) ──────────────────────────────
 
@@ -2696,62 +2567,7 @@ class CombatSession(
     fun encolherZona(nomeDaZona: String, novoRaioM: Int): Boolean = zonaDelegate.encolherZona(nomeDaZona, novoRaioM)
     private fun tiqueDasZonas() = zonaDelegate.tiqueDasZonas()
 
-    private fun tiquePorTurnoDasMagias(congeladas: Set<String> = emptySet()) {
-        val comTique = magiasAtivas.filter {
-            com.gurps.ficha.domain.magic.MagicMechanics.temTiquePorTurno(it.mecanica) &&
-                // MEC-26: mágica congelada por perda de concentração NÃO avança nem fere neste turno.
-                it.magiaId !in congeladas
-        }
-        if (comTique.isEmpty()) return
-        val quebradas = mutableListOf<com.gurps.ficha.domain.magic.MagiaAtivaNoCombate>()
-
-        for (ativa in comTique) {
-            // Regra da estreia: não fere no turno em que foi aplicada.
-            if (ativa.pularPrimeiroTique) {
-                magiasAtivas = magiasAtivas.map {
-                    if (it === ativa) it.copy(pularPrimeiroTique = false) else it
-                }
-                continue
-            }
-            val vitima = encounter.combatentes.firstOrNull { it.id == ativa.alvoId && it.vivo }
-            if (vitima == null) { quebradas.add(ativa); continue } // alvo morreu/sumiu → mágica cai
-            val mec = ativa.mecanica!!
-            // Lote A1-b: Morte Candente e Morte Putrefata dizem, com todas as letras, que "mortos-
-            // vivos não são afetados". Era deferido honesto do MEC-22: o tique batia sem saber em
-            // quem. A mágica não fica ativa em quem ela não pega — cai fora.
-            if (com.gurps.ficha.domain.magic.MagicMechanics.naoAfetaTipo(mec, vitima.tipoCriatura.chave)) {
-                log += "✨ ${ativa.magiaId} não tem efeito em ${vitima.nome} (${vitima.tipoCriatura.rotulo}) — a mágica se desfaz."
-                quebradas.add(ativa); continue
-            }
-            val atributo = if (vitima.ehHeroi) heroiPerfil.ht else vitima.htEfetivo
-            val rol = rolar3d6()
-            val crit = CriticoRules.classificar(rol, atributo)
-
-            when {
-                // Sucesso DECISIVO da vítima quebra a mágica (e não causa dano).
-                crit == CriticoRules.ResultadoCritico.DECISIVO && mec.quebraEmSucessoDecisivo -> {
-                    log += "✨ ${vitima.nome} resiste DECISIVAMENTE (HT $atributo, rolou $rol) — ${ativa.magiaId} se QUEBRA."
-                    quebradas.add(ativa)
-                }
-                // Sucesso simples: sem dano neste turno.
-                rol <= atributo -> {
-                    log += "✨ ${vitima.nome} aguenta ${ativa.magiaId} neste turno (HT $atributo, rolou $rol)."
-                }
-                // Falha: leva dano. RD NÃO protege (regra explícita das duas mágicas).
-                else -> {
-                    val critFalha = crit == CriticoRules.ResultadoCritico.FALHA_CRITICA
-                    val dano = if (critFalha && mec.danoPorTurnoCriticoFixo > 0) mec.danoPorTurnoCriticoFixo
-                    else rolarDano(mec.danoPorTurnoExpr!!, random)
-                    InjuryRules.ferir(vitima, dano, vitima.htEfetivo, random)
-                    val etiqueta = if (critFalha) " (FALHA CRÍTICA)" else ""
-                    log += "🔥 ${ativa.magiaId} queima ${vitima.nome} por dentro$etiqueta: $dano de dano " +
-                        "(HT $atributo, rolou $rol; RD não protege)" + (if (!vitima.vivo) " — fora de combate!" else "") + "."
-                }
-            }
-        }
-        if (quebradas.isNotEmpty()) magiasAtivas = magiasAtivas.filter { a -> quebradas.none { it === a } }
-        verificarFim()
-    }
+    // Lote MOTOR-4: tiquePorTurnoDasMagias virou efeitos.tiquePorTurno(congeladas) no delegate.
 
     /** Avança até o próximo combatente que ainda pode agir; ao fim de cada turno, recupera atordoamento. */
     fun avancarTurno(): Combatente {
@@ -2835,7 +2651,7 @@ class CombatSession(
         // abaixo — senão o gatilho "sofreu uma lesão" já foi apagado e o teste nunca dispara.
         // (Foi exatamente esse o bug: o teste ficava vermelho porque eu chequei tarde demais.)
         val congeladasPorAbalo =
-            if (anterior.ehHeroi && magiasAtivas.isNotEmpty()) abaloDeConcentracao() else emptySet()
+            if (anterior.ehHeroi && efeitos.temAtivas()) efeitos.abaloDeConcentracao() else emptySet()
 
         // Choque (Lote 382): expira ao fim do turno de quem agiu (valeu só no turno seguinte ao ferimento).
         anterior.choquePendente = 0
@@ -2844,35 +2660,14 @@ class CombatSession(
         // a ação, então o bônus tem que sobreviver até o turno seguinte para ele poder usá-lo.
         anterior.buffs.removeAll { it.umUnicoUso && it.estreou }
         anterior.buffs.filter { it.umUnicoUso && !it.estreou }.forEach { it.estreou = true }
-        // Magias ativas (Lote MA-3d-4): o fim do turno do herói = 1 segundo de jogo; cobra manutenção
-        // (do PF do herói) e expira as duradouras (MagicActive, MB Magia p.9-10).
-        // Lote MEC-22: mágicas que FEREM A CADA TURNO (Morte Candente, Morte Putrefata) resolvem
-        // aqui, antes do relógio de manutenção — a vítima testa e pode quebrar a mágica.
-        if (anterior.ehHeroi && magiasAtivas.isNotEmpty()) tiquePorTurnoDasMagias(congeladasPorAbalo)
+        // Magias ativas (Lote MA-3d-4/MOTOR-4): o fim do turno do herói = 1 segundo de jogo. O tique de
+        // dano (Morte Candente/Putrefata, MEC-22) resolve ANTES do relógio de manutenção; depois o
+        // delegate cobra manutenção e expira as duradouras (MagicActive, MB Magia p.9-10).
+        if (anterior.ehHeroi && efeitos.temAtivas()) efeitos.tiquePorTurno(congeladasPorAbalo)
         // Lote MEC-46 (P1b): as ZONAS correm o mesmo relógio.
         if (anterior.ehHeroi) tiqueDasZonas()
 
-        if (anterior.ehHeroi && magiasAtivas.isNotEmpty()) {
-            val res = MagicActive.avancarTurnoSegundos(magiasAtivas, 1)
-            magiasAtivas = res.ativasApos
-            // Lote MEC-23: MANTER É OPCIONAL (regra do usuário, e do livro). Antes o motor debitava
-            // o PF sozinho e a mágica seguia para sempre — o jogador não tinha como largar. Agora as
-            // do HERÓI ficam PENDENTES e a tela pergunta; o NPC continua automático (não há a quem
-            // perguntar).
-            manutencaoPendente = res.venceramManutencao
-                .filter { (m, _) -> m.operadorId == "heroi" }
-                .map { (m, custo) -> ManutencaoPendente(m.magiaId, custo) }
-            res.cobrancasPorOperador.filterKeys { it != "heroi" }.forEach { (id, fp) ->
-                val npc = encounter.combatentes.firstOrNull { it.id == id } ?: return@forEach
-                if (fp > 0) npc.pfAtual = (npc.pfAtual - fp).coerceAtLeast(0)
-            }
-            // MEC-2: expirar tem que REVERTER o buff — senão o bônus fica para sempre.
-            res.expiradas.forEach { exp ->
-                removerBuffDe(exp)
-                val volta = exp.buff?.let { " — ${it.rotulo.ifBlank { "o efeito" }} se desfaz" } ?: ""
-                log += "✨ ${exp.magiaId} termina$volta."
-            }
-        }
+        if (anterior.ehHeroi && efeitos.temAtivas()) efeitos.avancarUmSegundo()
         // Modificadores situacionais (Lote 424): decrementam ao fim do turno do DONO; expirados saem da lista.
         // O turno da CRIAÇÃO não conta (o chat roda no turno do dono — senão "1 rodada" expiraria antes de valer).
         modsSituacionais.removeAll { m ->
