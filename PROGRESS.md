@@ -1,8 +1,8 @@
 # Acompanhamento do Projeto da Ficha GURPS (Para Rodolfo)
 
-**Última Atualização:** 19 de Junho de 2026
-**Status Atual:** Lote_dados_3D 006 CONCLUÍDO — Acessibilidade PraCego na Rolagem 3D.
-**Último Lote Registrado:** Lote_dados_3D 006 — última entrada deste arquivo
+**Última Atualização:** 24 de Julho de 2026
+**Status Atual:** Loop de MECANIZAÇÃO de magias (MAG-1..7). MAG-1 CONCLUÍDO — buffs/debuffs de atributo de Corpo.
+**Último Lote Registrado:** Lote MAG-1 (ver logo abaixo, agrupado com os lotes de magia P5/P9/A1/P3-1)
 **HEAD (branch GURPS-Saga):** Lotes recentes: Lote 001=429865b, Lotes 002/003=64d4223, Lote 004=585f040, Lote 005=c3f0c47, Lote 006=448c674.
 
 ### Sincro V24: Super Release 2.0 (Lote 86)
@@ -3061,6 +3061,15 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - **C12 (Magia p.9, regra OPCIONAL)**, valores conferidos no livro: omitir movimentos dos pés **−2**; gestos com uma mão só **−2**; sem gestos de mão **−4**; encantamento suave **−2**; sem entoar nada **−4**. Único bônus: *"dobrando o Tempo de Operação, ele recebe **+1**"*. As penalidades **somam** — amarrado e amordaçado dá **−8**, e há teste para isso.
 - `RitualDeConjuracao` no domínio puro, com `tempoAjustado` porque o +1 **não é de graça**: dobra os segundos. **Ligado, não só definido** — entra no `nhEfetivo` como **parcela nomeada**, então o log mostra *"sem gestos de mão −4"* em vez de um −4 sem explicação.
 - **+11 testes.** Gate: **911 por variante, 0 falhas**.
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
+### Lote MAG-1 — 24 de Julho de 2026 (buffs/debuffs de ATRIBUTO de Corpo — 11 magias, motor pronto)
+- Primeiro lote do loop de mecanização (MAG-1..7) que saiu do levantamento por 9 agentes de todas as 879 magias (`docs/planos/PLANO_MECANIZAR_MAGIAS_COMBATE.md`): ~102 magias com efeito de combate real, 75 já ok, 702 legitimamente narrativas.
+- **Corpo era o ouro**: quase tudo é buff/debuff de atributo que o motor JÁ executa (`buffAtributo` → `calcularBuff` → `stEfetivo`/`dxEfetivo`/`htEfetivo`, o caminho provado no P3-1). Mecanização = **só editar o JSON**, zero motor novo.
+- Ligadas (custo do livro): **Força** (+1 ST/2en, máx 5), **Graça** (+1 DX/4en), **Vigor** (+1 HT/2en), **Debilitar** (−1 ST/en, R-HT), **Inabilidade** (−1 DX/en, R-HT), **Fragilidade** (−1 HT/2en, R-HT), **Aumentar Força/Destreza/Vitalidade** (+1/en, `buffUmUnicoUso`), **Estorvar** (−1 Desloc/−1 Esquiva por en, R-HT) e **Reflexos** (Reflexos em Combate = `buffBd=1`).
+- **Duas correções pegas validando contra a REGRA, não contra a proposta do agente**: (1) Reflexos é +1 a TODAS as defesas ativas = `buffBd`, não `buffEsquiva` (que dobraria a esquiva); (2) Estorvar estava com `classe: "Comum"` sem o **R-HT** do livro — sem isso o debuff aplicaria sem resistência. Corrigida para `Comum/R-HT` (o parser só reconhece o formato com barra, não `;`).
+- Teste: `MagMecanizacaoTest` em duas camadas — **curadoria** (trava os 11 no catálogo real, anti-regressão) + **efeito real** (calcularBuff move o `stEfetivo`/`dxEfetivo` que o combate lê; teto de −5 respeitado; um-único-uso; Reflexos não empilha esquiva).
+- **+7 testes.** Gate: **969 por variante, 0 falhas**, build nas duas.
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
 ### Lote P5 — 22 de Julho de 2026 (explosão do PROJÉTIL — o Relâmpago Explosivo agora respinga)

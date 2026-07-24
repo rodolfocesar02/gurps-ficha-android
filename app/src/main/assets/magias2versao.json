@@ -2005,13 +2005,13 @@
     "descricao": "Comum ou Bloqueio\n\nExistem, na verdade, quatro variações desta mágica: Aumentar Força, Aumentar Destreza, Aumentar Inteligência e Aumentar Vitalidade. Cada mágica deve ser estudada separadamente, mas todas as quatro funcionam de maneira idêntica.\n\nEsta mágica aumenta o atributo do objetivo apenas por tempo suficiente para um único teste ou ação curta — uma Disputa Rápida, um teste de atributo, um golpe, preparar uma arma, resistir a uma mágica, arremessar um objeto, etc. Não pode ser utilizada para melhorar um teste que represente vários segundos de esforço, como uma Disputa Normal. O atributo incrementado afeta todas as características secundárias, com exceção de PV e PF. Um NH elevado não reduz o custo para operar esta mágica.\n\nAumentar Inteligência é uma mágica de Controle da Mente, não uma mágica de Controle do Corpo.\n\nCusto: 1 para cada ponto de incremento de atributo (máximo de 5).\n\nPré-requisitos: Há um pré-requisito diferente para cada versão:\n\nMágica Pré-requisito Aumentar Destreza Graça Aumentar Vitalidade Vigor Aumentar Força Força Aumentar Inteligência Sabedoria\n\nItem\n\nCajado, varinha, joias ou artigo de vestuário. Custo para criar: 300 de energia.",
     "mecanica": {
       "efeito": "buff",
-      "buffRotulo": "DX +N (um unico teste/acao)",
-      "notas": "1 energia por +1 DX, max +5. Duracao Instantanea: vale para UM UNICO teste ou acao curta (um golpe, uma Disputa Rapida, preparar arma, resistir a magia) — nao serve para Disputa Normal nem esforco de varios segundos. Afeta caracteristicas secundarias, exceto PV/PF. NH alto nao reduz o custo. Narrador: se o motor mantiver o buff por mais de uma acao, encerre manualmente apos o teste. Pre-req Graca.",
-      "buffEnergiaPorNivel": 1,
-      "buffMaxNiveis": 5,
       "buffAtributo": "DX",
       "buffAtributoValor": 1,
-      "buffUmUnicoUso": true
+      "buffEnergiaPorNivel": 1,
+      "buffMaxNiveis": 5,
+      "buffUmUnicoUso": true,
+      "buffRotulo": "Aumentar Destreza",
+      "notas": "+1 DX por energia (1 a 5), vale para um único teste/ação."
     },
     "duracaoTipo": "instantanea",
     "duracaoSeg": 0,
@@ -2034,13 +2034,13 @@
     "descricao": "Comum ou Bloqueio\n\nExistem, na verdade, quatro variações desta mágica: Aumentar Força, Aumentar Destreza, Aumentar Inteligência e Aumentar Vitalidade. Cada mágica deve ser estudada separadamente, mas todas as quatro funcionam de maneira idêntica.\n\nEsta mágica aumenta o atributo do objetivo apenas por tempo suficiente para um único teste ou ação curta — uma Disputa Rápida, um teste de atributo, um golpe, preparar uma arma, resistir a uma mágica, arremessar um objeto, etc. Não pode ser utilizada para melhorar um teste que represente vários segundos de esforço, como uma Disputa Normal. O atributo incrementado afeta todas as características secundárias, com exceção de PV e PF. Um NH elevado não reduz o custo para operar esta mágica.\n\nAumentar Inteligência é uma mágica de Controle da Mente, não uma mágica de Controle do Corpo.\n\nCusto: 1 para cada ponto de incremento de atributo (máximo de 5).\n\nPré-requisitos: Há um pré-requisito diferente para cada versão:\n\nMágica Pré-requisito Aumentar Destreza Graça Aumentar Vitalidade Vigor Aumentar Força Força Aumentar Inteligência Sabedoria\n\nItem\n\nCajado, varinha, joias ou artigo de vestuário. Custo para criar: 300 de energia.",
     "mecanica": {
       "efeito": "buff",
-      "buffRotulo": "ST +N (um unico teste/acao)",
-      "notas": "1 energia por +1 ST, max +5. Duracao Instantanea: vale para UM UNICO teste ou acao curta (um golpe, arremessar objeto, uma Disputa Rapida) — nao serve para Disputa Normal. Afeta secundarias (inclusive dano por ST), exceto PV/PF. NH alto nao reduz o custo. Narrador: encerre o buff apos a acao. Pre-req Forca.",
-      "buffEnergiaPorNivel": 1,
-      "buffMaxNiveis": 5,
       "buffAtributo": "ST",
       "buffAtributoValor": 1,
-      "buffUmUnicoUso": true
+      "buffEnergiaPorNivel": 1,
+      "buffMaxNiveis": 5,
+      "buffUmUnicoUso": true,
+      "buffRotulo": "Aumentar Força",
+      "notas": "+1 ST por energia (1 a 5), vale para um único teste/ação."
     },
     "duracaoTipo": "instantanea",
     "duracaoSeg": 0,
@@ -2087,14 +2087,13 @@
     "descricao": "Comum ou Bloqueio\n\nExistem, na verdade, quatro variações desta mágica: Aumentar Força, Aumentar Destreza, Aumentar Inteligência e Aumentar Vitalidade. Cada mágica deve ser estudada separadamente, mas todas as quatro funcionam de maneira idêntica.\n\nEsta mágica aumenta o atributo do objetivo apenas por tempo suficiente para um único teste ou ação curta — uma Disputa Rápida, um teste de atributo, um golpe, preparar uma arma, resistir a uma mágica, arremessar um objeto, etc. Não pode ser utilizada para melhorar um teste que represente vários segundos de esforço, como uma Disputa Normal. O atributo incrementado afeta todas as características secundárias, com exceção de PV e PF. Um NH elevado não reduz o custo para operar esta mágica.\n\nAumentar Inteligência é uma mágica de Controle da Mente, não uma mágica de Controle do Corpo.\n\nCusto: 1 para cada ponto de incremento de atributo (máximo de 5).\n\nPré-requisitos: Há um pré-requisito diferente para cada versão:\n\nMágica Pré-requisito Aumentar Destreza Graça Aumentar Vitalidade Vigor Aumentar Força Força Aumentar Inteligência Sabedoria\n\nItem\n\nCajado, varinha, joias ou artigo de vestuário. Custo para criar: 300 de energia.",
     "mecanica": {
       "efeito": "buff",
-      "entrega": "toque",
-      "buffRotulo": "HT +N (um unico teste/acao)",
-      "notas": "1 de energia por +1 de HT, max +5. NARRADO apesar de HT ser atributo executavel: a duracao e INSTANTANEA — o bonus vale so para UM unico teste ou acao curta (Disputa Rapida, teste de atributo, um golpe, resistir a uma magia). Aplicar como buff de duracao daria +HT persistente por toda a cena, o que seria regra errada. O Narrador soma o bonus ao teste pontual. Afeta secundarias exceto PV/PF. Pre-re",
       "buffAtributo": "HT",
       "buffAtributoValor": 1,
       "buffEnergiaPorNivel": 1,
       "buffMaxNiveis": 5,
-      "buffUmUnicoUso": true
+      "buffUmUnicoUso": true,
+      "buffRotulo": "Aumentar Vitalidade",
+      "notas": "+1 HT por energia (1 a 5), vale para um único teste/ação."
     },
     "duracaoTipo": "instantanea",
     "duracaoSeg": 0,
@@ -6094,13 +6093,12 @@
     "descricao": "Comum; Resistível com HT\n\nReduz temporariamente a ST do objetivo. Isso afetará o dano básico do objetivo com armas, mas não os PV. Afeta a Base de Carga, mas o MJ, se quiser, pode ignorar esse detalhe para fins de jogabilidade.\n\nDuração: 1 minuto.\n\nCusto: 1 para cada ponto de redução de ST (máximo 5). Metade do total (arredondar para cima) para manter.\n\nPré-requisitos: Inabilidade ou Apressar (pág. 142).\n\nItem\n\n(a) Cajado ou varinha. Utilizável apenas por magos; o item deve ser apontado para (mas não deve necessariamente tocar) o objetivo. Custo para criar: 900 de energia. (b) Qualquer item. Sempre ativo; reduz a ST do usuário. Custo para criar: 100 de energia para cada ponto de redução da ST do usuário.",
     "mecanica": {
       "efeito": "buff",
-      "condicaoResistencia": "HT",
-      "buffRotulo": "ST -N (max 5)",
-      "notas": "Debuff resistivel com HT. 1 energia por -1 ST, max 5. Reduz dano basico com armas, NAO os PV. Afeta Base de Carga. Manter custa metade (arred. p/ cima).",
+      "buffAtributo": "ST",
+      "buffAtributoValor": -1,
       "buffEnergiaPorNivel": 1,
       "buffMaxNiveis": 5,
-      "buffAtributo": "ST",
-      "buffAtributoValor": -1
+      "buffRotulo": "Debilitar −ST",
+      "notas": "−1 ST por energia, máx −5, R-HT (reduz dano do alvo). Duração 1 min."
     },
     "duracaoTipo": "temporaria",
     "duracaoSeg": 60,
@@ -8482,7 +8480,7 @@
     "nome": "Estorvar",
     "dificuldade": "D",
     "pagina": 36,
-    "classe": "Comum",
+    "classe": "Comum/R-HT",
     "escola": [
       "Corpo",
       "Deslocamento"
@@ -8493,9 +8491,13 @@
     "preRequisitos": "Apressar ou Inabilidade",
     "descricao": "Comum; Resistível com HT\n\nPara cada ponto de energia aplicado nesta mágica, o objetivo sofrerá uma penalidade igual a -1 em seus valores de Deslocamento e Esquiva.\n\nEsta mágica também é considerada uma mágica de Deslocamento.\n\nDuração: 1 minuto.\n\nCusto: 1 a 4 para operar. O mesmo para manter.\n\nPré-requisitos: Inabilidade ou Apressar (pág. 142).\n\nItem\n\n(a) Cajado ou varinha. Utilizável apenas por magos; o item deve ser apontado para (mas não deve necessariamente tocar) o objetivo. Custo para criar: 600 de energia. (b) Qualquer item. Sempre ativo; reduz o parâmetro Deslocamento do usuário. Custo para criar: 200 de energia para cada 1 metro de redução no Deslocamento do usuário.",
     "mecanica": {
-      "efeito": "narrado",
-      "condicaoResistencia": "HT",
-      "notas": "Debuff: -1 em Deslocamento e Esquiva por ponto de energia (1 a 4), R-HT, por 1 min. Motor pode aplicar como penalidade se suportar; senão narrar."
+      "efeito": "buff",
+      "buffDeslocamento": -1,
+      "buffEsquiva": -1,
+      "buffEnergiaPorNivel": 1,
+      "buffMaxNiveis": 4,
+      "buffRotulo": "Estorvar −Desloc/−Esquiva",
+      "notas": "−1 Deslocamento e −1 Esquiva por energia (1 a 4), R-HT. Duração 1 min."
     },
     "duracaoTipo": "temporaria",
     "duracaoSeg": 60,
@@ -9125,12 +9127,12 @@
     "descricao": "Comum\n\nAumenta a ST do objetivo temporariamente. Isso tem influência sobre o dano, Base de Carga e Pontos de Vida, mas não cura ferimentos. Se, ao término da mágica, as feridas do objetivo deixarem-no com -1×PV Inicial ou menos, ele terá que fazer um teste HT para sobreviver. Um NH alto não diminui o custo para operar esta mágica.\n\nDuração: 1 minuto.\n\nCusto: 2 para cada ponto de incremento de ST (máximo de 5). O mesmo custo para manter.\n\nPré-requisitos: Conceder Energia.\n\nItem\n\n(a) Qualquer item. Sempre ativo; a ST do usuário é aumentada enquanto o item é usado. Custo para criar: 1.500 de energia por ponto de incremento (máximo 5). (b) Cajado ou varinha. Utilizável apenas por magos; o item deve tocar o objetivo. Custo para criar: 1.000 de energia.",
     "mecanica": {
       "efeito": "buff",
-      "buffRotulo": "ST +N (max 5), afeta dano/Carga/PV",
-      "notas": "2 energia por +1 ST, max 5. Afeta dano, Base de Carga e PV, mas nao cura ferimentos. Se ao fim as feridas deixarem o alvo com -1xPV Inicial ou menos, teste de HT pra sobreviver.",
+      "buffAtributo": "ST",
+      "buffAtributoValor": 1,
       "buffEnergiaPorNivel": 2,
       "buffMaxNiveis": 5,
-      "buffAtributo": "ST",
-      "buffAtributoValor": 1
+      "buffRotulo": "Força +ST",
+      "notas": "+1 ST por 2 de energia, máx +5 (dano/Carga/PV). Duração 1 min."
     },
     "duracaoTipo": "temporaria",
     "duracaoSeg": 60,
@@ -9268,13 +9270,12 @@
     "descricao": "Comum; Resistível com HT\n\nReduz a HT do objetivo temporariamente. Isso afeta todas as características que dependem de HT (Velocidade Básica, perícias baseadas em HT, resistência a veneno e magia, inconsciência, morte, etc.), com exceção daquelas que dependem dos PF, as quais não são afetadas. O custo para operar não é reduzido devido a um NH elevado.\n\nDuração: 1 minuto.\n\nCusto: 2 por ponto de decréscimo de HT (máximo de 5). O mesmo custo para manter.\n\nPré-requisitos: Conceder Energia (pág. 89).\n\nItem\n\n(a) Qualquer item. Sempre ativo; a HT do usuário é reduzida enquanto o item é usado. Custo para criar: 200 de energia por ponto de redução de HT. (b) Cajado ou varinha. Utilizável apenas por magos; o usuário deve tocar o objetivo. Custo para criar: 1.000 de energia.",
     "mecanica": {
       "efeito": "buff",
-      "condicaoResistencia": "HT",
-      "buffRotulo": "HT -N (max 5)",
-      "notas": "Debuff resistivel com HT. 2 energia por -1 HT, max 5. Afeta tudo que depende de HT (Vel Basica, pericias-HT, resistencias, inconsciencia, morte), exceto o que depende de PF.",
+      "buffAtributo": "HT",
+      "buffAtributoValor": -1,
       "buffEnergiaPorNivel": 2,
       "buffMaxNiveis": 5,
-      "buffAtributo": "HT",
-      "buffAtributoValor": -1
+      "buffRotulo": "Fragilidade −HT",
+      "notas": "−1 HT por 2 de energia, máx −5, R-HT. Duração 1 min."
     },
     "duracaoTipo": "temporaria",
     "duracaoSeg": 60,
@@ -9738,12 +9739,12 @@
     "descricao": "Comum\n\nAumenta a DX do objetivo temporariamente. Sua Velocidade Básica e NH com todas as perícias baseadas em DX também são aumentados. Um operador pode incrementar sua própria DX para melhorar suas chances de atingir o alvo com mágicas de projétil, etc.\n\nDuração: 1 minuto.\n\nCusto: 4 para cada ponto de incremento de DX (máximo de 5). O mesmo custo para manter.\n\nPré-requisitos: Inabilidade.\n\nItem\n\n(a) Qualquer item. Sempre ativo; a DX do usuário é aumentada enquanto o item é usado! Trata-se de um item muito raro. Custo para criar: 2.000 de energia por ponto de incremento (máximo 5). (b) Cajado ou varinha. Utilizável apenas por magos; o item deve tocar o objetivo. Custo para criar: 2.000 de energia.",
     "mecanica": {
       "efeito": "buff",
-      "buffRotulo": "DX +N (max 5), +Vel Basica e pericias-DX",
-      "notas": "4 energia por +1 DX, max 5. Aumenta Velocidade Basica e todas as pericias baseadas em DX (inclusive mira de magias de projetil).",
+      "buffAtributo": "DX",
+      "buffAtributoValor": 1,
       "buffEnergiaPorNivel": 4,
       "buffMaxNiveis": 5,
-      "buffAtributo": "DX",
-      "buffAtributoValor": 1
+      "buffRotulo": "Graça +DX",
+      "notas": "+1 DX por 4 de energia, máx +5 (ataque/defesa/perícias-DX). Duração 1 min."
     },
     "duracaoTipo": "temporaria",
     "duracaoSeg": 60,
@@ -10489,13 +10490,12 @@
     "descricao": "Comum; Resistível com HT\n\nPara cada ponto de energia aplicado nesta mágica, o objetivo sofrerá uma penalidade igual a -1 na DX e nas perícias com base em DX.\n\nDuração: 1 minuto.\n\nCusto: 1 a 5 para fazer. Metade desse valor (arredondado para cima) para manter.\n\nPré-requisitos: Espasmo.\n\nItem\n\n(a) Qualquer item. Sempre ativo; reduz a DX do usuário. Custo para criar: 100 de energia para cada ponto de redução de DX. (b) Cajado ou varinha. Utilizável apenas por magos; o item deve tocar o objetivo. Custo para criar: 800 de energia.",
     "mecanica": {
       "efeito": "buff",
-      "condicaoResistencia": "HT",
-      "buffRotulo": "DX -N por energia (max 5) e pericias-DX",
-      "notas": "Debuff resistivel com HT. Cada ponto de energia = -1 na DX e nas pericias baseadas em DX, max 5. Manter custa metade (arred. p/ cima).",
+      "buffAtributo": "DX",
+      "buffAtributoValor": -1,
       "buffEnergiaPorNivel": 1,
       "buffMaxNiveis": 5,
-      "buffAtributo": "DX",
-      "buffAtributoValor": -1
+      "buffRotulo": "Inabilidade −DX",
+      "notas": "−1 DX por energia (1 a 5), R-HT (reduz ataque/defesa do alvo). Duração 1 min."
     },
     "duracaoTipo": "temporaria",
     "duracaoSeg": 60,
@@ -15778,8 +15778,9 @@
     "descricao": "Comum\n\nO objetivo ganha Reflexos em Combate (pág. MB82) pelo tempo de duração da mágica. Não tem efeito sobre seres que já tenham essa vantagem.\n\nDuração: 1 minuto.\n\nCusto: 5 para operar: 3 para manter. Pré-requisitos: Graça e Apressar.\n\nItem\n\n(a) Qualquer item. Sempre ativo; o usuário ganha a vantagem Reflexos em Combate. É um item raro! Custo para criar: 1.200 de energia. (b) Cajado ou varinha. Utilizável apenas por magos. Custo para criar: 800 de energia.",
     "mecanica": {
       "efeito": "buff",
+      "buffBd": 1,
       "buffRotulo": "Reflexos em Combate",
-      "notas": "Vantagem Reflexos em Combate (MB82) por 1 min; sem efeito em quem ja possui. O livro nao da um numero unico (a vantagem tem varios efeitos) -> narrado."
+      "notas": "Reflexos em Combate: +1 a todas as defesas ativas (esquiva/aparar/bloquear). Custo 5 fixo. Duração 1 min."
     },
     "duracaoTipo": "temporaria",
     "duracaoSeg": 60,
@@ -19766,12 +19767,12 @@
     "descricao": "Comum\n\nAumenta a HT do objetivo temporariamente. Isso afeta a Velocidade Básica, PF e capacidade de resistir a traumas e doenças. Um operador pode incrementar sua própria HT. Se os PF do objetivo, ao término da mágica, estiverem abaixo de zero, ele sofrerá imediatamente 1 ponto de dano para cada PF abaixo de zero, correndo o risco de desmaiar. Um NH elevado não reduz o custo para operar esta mágica.\n\nDuração: 1 minuto.\n\nCusto: 2 para cada ponto de incremento de HT (máximo de 5). O mesmo custo para manter.\n\nPré-requisitos: Conceder Vitalidade ou Fragilidade.\n\nItem\n\n(a) Qualquer item. Sempre ativo; a HT do usuário é aumentada enquanto o item é usado. Custo para criar: 1.500 de energia por ponto de incremento (máximo 5). (b) Cajado ou varinha. Utilizável apenas por magos; o item deve tocar o objetivo. Custo para criar: 1.000 de energia.",
     "mecanica": {
       "efeito": "buff",
-      "buffRotulo": "HT +N (max 5), +Vel Basica/PF",
-      "notas": "2 energia por +1 HT, max 5. Afeta Velocidade Basica, PF e resistencia a trauma/doenca. Se ao fim os PF estiverem abaixo de zero, sofre 1 de dano por PF negativo (risco de desmaio).",
+      "buffAtributo": "HT",
+      "buffAtributoValor": 1,
       "buffEnergiaPorNivel": 2,
       "buffMaxNiveis": 5,
-      "buffAtributo": "HT",
-      "buffAtributoValor": 1
+      "buffRotulo": "Vigor +HT",
+      "notas": "+1 HT por 2 de energia, máx +5 (Vel Básica/resistências). Duração 1 min."
     },
     "duracaoTipo": "temporaria",
     "duracaoSeg": 60,
