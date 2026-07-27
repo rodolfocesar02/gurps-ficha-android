@@ -17665,9 +17665,10 @@
     "preRequisitos": "Som",
     "descricao": "Área\n\nCria uma área de quietude. Ninguém na área consegue ouvir nada, e nada que aconteça lá produzirá qualquer som. É a área que fica afetada e não as pessoas dentro dela; qualquer um que saia poderá falar. Observe que uma área de Silêncio impedirá que mágicas faladas funcionem!\n\nDuração: 1 minuto. Custo básico: 2 para operar. 1 para manter. Pré-requisito: Som.\n\nItem\n\nUma área pode ser permanentemente silenciada; a mágica está no piso ou no chão e será quebrado se essa área for destruída. Ou um tapete grande pode ser encantado para uma área silenciosa portátil. Custo de energia para criar: 80 por metro de raio, mas apenas uma mágica é necessária para toda a área.",
     "mecanica": {
-      "efeito": "ambiente",
-      "entrega": "area",
-      "notas": "Área de quietude: ninguém ouve nada e nada produz som lá dentro; afeta a ÁREA, não as pessoas (quem sai pode falar). Impede magias faladas dentro dela."
+      "efeito": "condicao",
+      "condicao": "silenciado",
+      "condicaoDuracaoSeg": 60,
+      "notas": "Área de quietude (1 min): quem é pego fica SILENCIADO (não conjura). Simplificação: o motor silencia quem estava na área; a nuance 'sai da área, volta a falar' fica ao Mestre."
     },
     "duracaoTipo": "temporaria",
     "duracaoSeg": 60,

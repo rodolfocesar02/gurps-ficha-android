@@ -111,8 +111,10 @@ vocabulário. Priorizadas por número de magias que destravam:
   getter `vivo` e tudo cascateia (banir o último inimigo → VITÓRIA). `imporCondicaoMagica` passou a usar
   `Condicao.deChave` (encolheu o motor). Deferidos: SURDO (baixo valor), Desarmado (re-armar complexo),
   Retardar (pular turnos — arriscado). Gate 982/0.
-- **MAG-6 — Zonas de condição:** estender `ZonaDelegate` — Cola, Ensebar, Entrelaçamento, Silêncio, Teia de
-  Aranha, Muralha de Relâmpagos.
+- **MAG-6 ✅ CONCLUÍDO (24/jul)** — Silêncio em ÁREA (anti-conjurador). Descoberta: `heroiConjurarArea` já
+  impõe condição em área → foi JSON-only (`efeito=condicao, condicao=silenciado`). SILENCIADO trava o
+  `npcConjurar` (dente confirmado). Deferidos: Ensebar (precisa de gatilho de movimento), Cola/
+  Entrelaçamento (IMOBILIZADO é fraco). Gate 984/0.
 - **MAG-7 — Penetração e anti-magia:** `divisorArmadura` (Mágica Penetrante), `buffResistenciaMagia`
   (Resistência à Magia), `buffImunidade` a condição (Imunidade ao Som/à Dor, Visão Brilhante).
 - **MAG-8 (grande, opcional) — Iluminação/visibilidade:** Invisibilidade (barato, `buffPenalidadeAtacantes`),

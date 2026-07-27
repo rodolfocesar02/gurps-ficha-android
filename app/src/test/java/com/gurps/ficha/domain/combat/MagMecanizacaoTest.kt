@@ -345,4 +345,31 @@ class MagMecanizacaoTest {
         }
         assertTrue("em 40 seeds, banir o único inimigo (Vont 8) tem que encerrar em VITÓRIA ao menos uma vez", venceuBanindo)
     }
+
+    // ══════════════════════ MAG-6 — Silêncio em ÁREA (anti-conjurador) ════════════════════════════
+
+    @Test
+    fun `MAG-6 curadoria — Silencio impoe SILENCIADO`() {
+        val cat = catalogo(); Assume.assumeNotNull(cat)
+        val m = mec(cat!!, "silencio")
+        assertEquals("condicao", m.efeito)
+        assertEquals("silenciado", m.condicao)
+    }
+
+    @Test
+    fun `MAG-6 integracao — Silencio em area silencia o conjurador inimigo, que nao conjura`() {
+        val cat = catalogo(); Assume.assumeNotNull(cat)
+        val g = alvo()
+        val enc = CombatEncounter(listOf(heroiComb(), g), mapOf("g" to 2), seed = 1L)
+        val s = CombatSession(enc, HeroiPerfilCombate(esquiva = 9, apara = 11, ht = 12, rd = 0), Random(1))
+        val ctx = ContextoConjuracao(nhBasico = 30, classe = MagicClassParser.parse("Área"),
+            mana = NivelMana.NORMAL, raioAreaMetros = 3, mecanica = mec(cat!!, "silencio"))
+        s.heroiConjurarArea(ctx, MagicEnergy.parse("2"), energiaInvestida = 2, magiaNome = "Silêncio", alvosNaArea = listOf("g"))
+        val goblin = s.encounter.combatentes.first { it.id == "g" }
+        assertTrue("o inimigo na área fica SILENCIADO", goblin.condicoes.contains(Condicao.SILENCIADO))
+        // Dente real: silenciado, ele NÃO consegue conjurar.
+        val res = s.npcConjurar("g", NpcMagia(nome = "Raio", nh = 15, projetil = true, custoFP = 1, danoDados = 2))
+        assertTrue("NPC silenciado não conjura (${res.texto})",
+            !res.acertou && res.texto.contains("silenciado"))
+    }
 }

@@ -3063,6 +3063,14 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - **+11 testes.** Gate: **911 por variante, 0 falhas**.
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
+### Lote MAG-6 — 24 de Julho de 2026 (Silêncio em ÁREA — anti-conjurador; JSON-only)
+- Investigação virou o lote do avesso: o `heroiConjurarArea` **já impõe condição em área** (`efeito=="condicao"` → impõe em todos os atingidos, como o Sono Coletivo). Então **Silêncio não precisou de "sistema de zona" novo** — é JSON-only: `efeito=condicao, condicao=silenciado, condicaoDuracaoSeg=60`.
+- Dente confirmado: `SILENCIADO in npc.condicoes` **trava o `npcConjurar`** (linha 2069) — Silêncio em área é anti-conjurador real. Simplificação honesta: o motor silencia quem estava na área pela duração; a nuance "sai da área e volta a falar" fica ao Mestre (mesmo modelo do Sono Coletivo, que também não rastreia saída).
+- **Deferidos** (não têm encaixe limpo no modelo de área/tique): Ensebar (semântica "quem se move cai" precisa de gatilho de movimento), Cola/Entrelaçamento (IMOBILIZADO é fraco — não restringe o NPC).
+- Teste: curadoria + integração (Silêncio em área → inimigo fica SILENCIADO e o `npcConjurar` recusa).
+- **+2 testes.** Gate: **984 por variante, 0 falhas**, build nas duas.
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
 ### Lote MAG-5 — 24 de Julho de 2026 (condições novas: Náusea = debuff DX, e REMOVIDO = fora do combate — 3 magias)
 - Do lote "condições novas", peguei o que dá **dente real com risco controlado**, deferindo o frágil/baixo-valor:
   - **Nausear** → não virou condição nova, virou **debuff DX−2** (JSON, R-HT). A náusea do GURPS é ~−2 nas ações físicas; sai limpo pelo pipeline de buff do MAG-1. (Enjoo, que é "meio deslocamento", ficou de fora — não há campo para metade.)
