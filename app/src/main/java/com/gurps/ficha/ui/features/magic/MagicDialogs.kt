@@ -320,18 +320,12 @@ fun AdicionarMagiaDialog(
     }
 
     if (mostrarDescricaoMagiaPopup) {
-        AlertDialog(
-            onDismissRequest = { mostrarDescricaoMagiaPopup = false },
-            title = { Text(definicao.nome, color = MaterialTheme.colorScheme.primary) },
-            text = {
-                Text(
-                    text = descricaoMagia.ifBlank { "Sem descrição disponível." },
-                    style = MaterialTheme.typography.bodyMedium
-                )
-            },
-            confirmButton = {
-                TextButton(onClick = { mostrarDescricaoMagiaPopup = false }) { Text(UiActionLabels.FECHAR) }
-            }
+        // Lote UI-MAG-1: passou a usar o componente ÚNICO (o mesmo do diálogo de conjurar no
+        // combate), que tem barra de rolagem — antes a descrição longa ficava cortada aqui.
+        DialogoDescricaoMagia(
+            nome = definicao.nome,
+            descricao = descricaoMagia,
+            onFechar = { mostrarDescricaoMagiaPopup = false },
         )
     }
 }
@@ -476,23 +470,11 @@ fun EditarMagiaDialog(
     )
 
     if (mostrarDescricaoMagiaPopup) {
-        AlertDialog(
-            onDismissRequest = { mostrarDescricaoMagiaPopup = false },
-            title = { Text(magia.nome, color = MaterialTheme.colorScheme.primary) },
-            text = {
-                Text(
-                    text = descricaoMagia.ifBlank { "Sem descrição disponível." },
-                    style = MaterialTheme.typography.bodyMedium
-                )
-            },
-            confirmButton = {
-                TextButton(
-                    onClick = { mostrarDescricaoMagiaPopup = false },
-                    modifier = Modifier.semantics {
-                        if (isPraCegoVariant) contentDescription = "Fechar descrição da magia"
-                    }
-                ) { Text(UiActionLabels.FECHAR) }
-            }
+        // Lote UI-MAG-1: componente ÚNICO, com barra de rolagem (ver acima).
+        DialogoDescricaoMagia(
+            nome = magia.nome,
+            descricao = descricaoMagia,
+            onFechar = { mostrarDescricaoMagiaPopup = false },
         )
     }
 }

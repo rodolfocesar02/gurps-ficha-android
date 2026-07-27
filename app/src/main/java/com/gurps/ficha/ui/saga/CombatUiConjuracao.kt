@@ -1,7 +1,9 @@
 package com.gurps.ficha.ui.saga
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -48,7 +50,12 @@ import com.gurps.ficha.viewmodel.delegates.FaixaDistancia
  * Com muitas magias (o usuário citou o caso de 200) rolar até o fim a cada conjuração trava o ritmo
  * do combate. Agora: **passo 1** = escolher a magia (cada uma é um BOTÃO, com busca); **passo 2** =
  * um diálogo só com os parâmetros daquela magia.
+ *
+ * Lote UI-MAG-1: **segurar um card por 2 segundos abre a descrição da magia** (regra fiel do livro +
+ * ficha técnica), sem sair do combate. Era o atrito relatado no aparelho: para lembrar o que a magia
+ * faz o jogador tinha de fechar a luta, ir à aba de Magias e abrir a magia lá.
  */
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 internal fun SubDialogoConjurar(
     magias: List<com.gurps.ficha.viewmodel.delegates.MagiaConjuravelUi>,
@@ -65,6 +72,24 @@ internal fun SubDialogoConjurar(
     // Lote C12: ritual alternativo (Magia p.9). Começa no PADRÃO — quem não mexer não é penalizado.
     var ritual by remember { mutableStateOf(com.gurps.ficha.domain.magic.RitualDeConjuracao()) }
     var busca by remember { mutableStateOf("") }
+    // Lote UI-MAG-1: magia cuja DESCRIÇÃO está aberta (segurar o card 2s). Fica FORA do `if` do passo
+    // 1 para o pop-up poder ser aberto também do passo 2 (consultar a regra antes de confirmar).
+    var descricaoDe by remember { mutableStateOf<com.gurps.ficha.viewmodel.delegates.MagiaConjuravelUi?>(null) }
+
+    // Pop-up de consulta: o MESMO componente da aba de Magias, agora com barra de rolagem.
+    descricaoDe?.let { d ->
+        com.gurps.ficha.ui.features.magic.DialogoDescricaoMagia(
+            nome = d.nome,
+            descricao = d.descricao,
+            fichaTecnica = buildList {
+                add(d.classe); add("NH ${d.nhBasico}"); add("custo ${d.custoTexto}")
+                d.duracao?.let { add("duração $it") }
+                d.tempoOperacao?.let { add("operação $it") }
+                d.pagina?.let { add("p.$it") }
+            }.joinToString(" · "),
+            onFechar = { descricaoDe = null },
+        )
+    }
 
     val sel = magiaSel
     if (sel == null) {
@@ -97,15 +122,31 @@ internal fun SubDialogoConjurar(
                     Column(Modifier.verticalScroll(rememberScrollState())) {
                         filtradas.forEach { m ->
                             // Cada magia é um BOTÃO: um toque já leva ao passo 2 (sem rolar até o fim).
-                            OutlinedButton(
-                                onClick = { magiaSel = m },
-                                enabled = m.castavel,
-                                modifier = Modifier.fillMaxWidth().padding(vertical = 2.dp).semantics {
-                                    contentDescription = "Escolher ${m.nome}, ${m.classe}, NH ${m.nhBasico}, custo ${m.custoTexto}" +
-                                        if (!m.castavel) ", indisponível: ${m.motivo}" else ""
-                                }
+                            // Lote UI-MAG-1: SEGURAR 2s abre a descrição do livro (sem sair do combate).
+                            // Por isso é um Surface com combinedClickable, e não um OutlinedButton: o
+                            // Button do Material3 não expõe onLongClick (o visual foi preservado).
+                            Surface(
+                                shape = ButtonDefaults.outlinedShape,
+                                color = Color.Transparent,
+                                contentColor = if (m.castavel) MaterialTheme.colorScheme.primary
+                                    else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f),
+                                border = ButtonDefaults.outlinedButtonBorder,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(vertical = 2.dp)
+                                    .combinedClickable(
+                                        enabled = m.castavel || !m.descricao.isNullOrBlank(),
+                                        onClick = { if (m.castavel) magiaSel = m },
+                                        onLongClick = { if (!m.descricao.isNullOrBlank()) descricaoDe = m },
+                                        onLongClickLabel = "Ler a descrição de ${m.nome}",
+                                    )
+                                    .semantics {
+                                        contentDescription = "Escolher ${m.nome}, ${m.classe}, NH ${m.nhBasico}, custo ${m.custoTexto}" +
+                                            (if (!m.castavel) ", indisponível: ${m.motivo}" else "") +
+                                            (if (!m.descricao.isNullOrBlank()) ". Segure para ler a descrição." else "")
+                                    }
                             ) {
-                                Column(Modifier.fillMaxWidth()) {
+                                Column(Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 10.dp)) {
                                     Text(m.nome, fontWeight = FontWeight.Bold, style = MaterialTheme.typography.bodyMedium)
                                     Text(
                                         "${m.classe} · NH ${m.nhBasico} · ${m.custoTexto}" + if (!m.castavel) " · ${m.motivo}" else "",

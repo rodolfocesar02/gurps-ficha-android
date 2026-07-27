@@ -125,6 +125,18 @@ data class MagiaConjuravelUi(
     val custoEstimado: Int,
     val castavel: Boolean,
     val motivo: String,
+    /**
+     * Lote UI-MAG-1: a descrição FIEL do livro, para o pop-up de consulta (segurar o card 2s) dentro
+     * do combate. Sem isto o jogador tinha de sair da luta e ir até a aba de Magias só para lembrar
+     * o que a magia faz — caminho que custa o ritmo do jogo.
+     */
+    val descricao: String? = null,
+    /** Duração declarada no catálogo ("1 min.", "Instant."). Entra na ficha técnica do pop-up. */
+    val duracao: String? = null,
+    /** Tempo de operação ("1 seg.", "5 min.") — quantos turnos de Concentrar a magia custa. */
+    val tempoOperacao: String? = null,
+    /** Página do livro, para quem quiser conferir a regra na fonte. */
+    val pagina: Int? = null,
 )
 
 /** Lote MA-3c: conjuração multi-turno em andamento (o herói está concentrando). */
@@ -1644,6 +1656,14 @@ class SagaCombatController(
                 energiaMax = escala?.energiaMax ?: tetoCura,
                 dicaEnergia = escala?.dica ?: dicaCura,
                 ehCura = ehCuraMagia,
+                // Lote UI-MAG-1: a regra do livro viaja junto, para o pop-up de consulta no combate.
+                // O catálogo manda (MEC-42); a cópia da ficha é só fallback.
+                descricao = (defCat?.descricao?.takeIf { it.isNotBlank() }
+                    ?: defCat?.texto?.takeIf { it.isNotBlank() }
+                    ?: m.texto)?.trim(),
+                duracao = defCat?.duracao?.trim()?.takeIf { it.isNotBlank() },
+                tempoOperacao = defCat?.tempoOperacao?.trim()?.takeIf { it.isNotBlank() },
+                pagina = defCat?.pagina?.takeIf { it > 0 },
             )
         }
     }
