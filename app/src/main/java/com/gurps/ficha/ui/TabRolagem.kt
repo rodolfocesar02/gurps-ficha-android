@@ -554,64 +554,34 @@ fun TabRolagem(viewModel: FichaViewModel) {
             }
 
             if (isPraCegoVariant) SectionHeaderPraCego("Atributos e Status")
-        Card(
-            modifier = Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(16.dp),
-            colors = appCardColors()
-        ) {
-            Column(
-                modifier = Modifier.padding(horizontal = 10.dp, vertical = outerCardVerticalPadding),
-                verticalArrangement = Arrangement.spacedBy(6.dp)
-            ) {
-                if (!isPraCegoVariant) {
-                    Text(
-                        text = "Deslize para cima/baixo em cada atributo para ajustar o modificador.",
-                        style = compactLabelStyle,
-                        color = MaterialTheme.colorScheme.onSecondaryContainer
-                    )
+        PainelAtributosEStatus(
+            personagem = p,
+            atributosRapidos = atributosRapidos,
+            modificadoresAtributo = modificadoresAtributo,
+            pvFixo = pvFixoRolagem,
+            pvAtual = pvAtualRolagem,
+            pfFixo = pfFixoRolagem,
+            pfAtual = pfAtualRolagem,
+            isPraCegoVariant = isPraCegoVariant,
+            cardTitleStyle = cardTitleStyle,
+            statsNumberStyle = statsNumberStyle,
+            defenseNumberStyle = defenseNumberStyle,
+            compactLabelStyle = compactLabelStyle,
+            outerCardVerticalPadding = outerCardVerticalPadding,
+            innerCardVerticalPadding = innerCardVerticalPadding,
+            onRolarAtributo = { attr, valor, modAttr ->
+                if (attr == "PER") {
+                    // Lote 372: PER abre o diálogo de Testes de Sentidos.
+                    showSentidosDialog = true
+                } else {
+                    executarRolagem(TipoTeste.ATRIBUTO, attr, valor, modAttr)
                 }
-
-                AtributosQuickRollPanel(
-                    personagem = p,
-                    atributosRapidos = atributosRapidos,
-                    modificadoresAtributo = modificadoresAtributo,
-                    isPraCegoVariant = isPraCegoVariant,
-                    cardTitleStyle = cardTitleStyle,
-                    statsNumberStyle = statsNumberStyle,
-                    compactLabelStyle = compactLabelStyle,
-                    innerCardVerticalPadding = innerCardVerticalPadding,
-                    onExecutarRolagem = { attr, valor, modAttr ->
-                        if (attr == "PER") {
-                            // Lote 372: PER abre o diálogo de Testes de Sentidos (Visão/Audição/Olfato-Paladar/Tato).
-                            showSentidosDialog = true
-                        } else {
-                            executarRolagem(
-                                tipo = TipoTeste.ATRIBUTO,
-                                contextoLabel = attr,
-                                alvo = valor,
-                                mod = modAttr
-                            )
-                        }
-                    }
-                )
-
-                PvPfQuickRollPanel(
-                    pvFixo = pvFixoRolagem,
-                    pvAtual = pvAtualRolagem,
-                    pfFixo = pfFixoRolagem,
-                    pfAtual = pfAtualRolagem,
-                    isPraCegoVariant = isPraCegoVariant,
-                    cardTitleStyle = cardTitleStyle,
-                    defenseNumberStyle = defenseNumberStyle,
-                    innerCardVerticalPadding = innerCardVerticalPadding,
-                    onEditPv = { showEditarPvRolagemDialog = true },
-                    onEditPf = { showEditarPfRolagemDialog = true },
-                    onAjustarPv = { inc -> ajustarPvRolagemPorSwipe(incrementar = inc) },
-                    onAjustarPf = { inc -> ajustarPfRolagemPorSwipe(incrementar = inc) }
-                )
-
-            }
-        }
+            },
+            onEditPv = { showEditarPvRolagemDialog = true },
+            onEditPf = { showEditarPfRolagemDialog = true },
+            onAjustarPv = { inc -> ajustarPvRolagemPorSwipe(incrementar = inc) },
+            onAjustarPf = { inc -> ajustarPfRolagemPorSwipe(incrementar = inc) }
+        )
 
         DefesasAtivasQuickRollPanel(
             defesasAtivas = defesasAtivas,
@@ -694,6 +664,16 @@ fun TabRolagem(viewModel: FichaViewModel) {
             onShowTecnicas = { showTecnicasDialog = true },
             onShowMagias = { showMagiasDialog = true },
             onShowRolagemLivre = { showRolagemPersonalizadaDialog = true }
+        )
+
+        // Autocontrole: so aparece se a ficha tiver desvantagem com NA.
+        PainelAutocontrole(
+            personagem = p,
+            isPraCegoVariant = isPraCegoVariant,
+            modSituacional = if (isPraCegoVariant) modificadorGlobalPraCego else 0,
+            onRolar = { label, alvo, mod ->
+                executarRolagem(tipo = TipoTeste.ATRIBUTO, contextoLabel = label, alvo = alvo, mod = mod)
+            }
         )
 
         HistoricoRolagemPanel(
