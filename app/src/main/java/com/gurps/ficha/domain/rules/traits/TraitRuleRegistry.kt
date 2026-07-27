@@ -58,6 +58,27 @@ object TraitRuleRegistry {
     /**
      * Retorna a soma de bônus em perícia vindo de todas as vantagens do personagem.
      */
+    /** De onde veio um pedaço do bônus: o traço que o concedeu e quanto. */
+    data class OrigemDeBonus(val nomeDoTraco: String, val valor: Int)
+
+    /**
+     * As origens do bônus de uma perícia, em vez do total somado.
+     *
+     * Existe para a ficha poder EXPLICAR o número: sem isso, o NH da Escalada
+     * pula de 12 para 14 e nada na tela diz por quê — a automação vira caixa
+     * preta e o jogador perde como conferir se está certa.
+     *
+     * Só devolve quem realmente contribuiu (valor != 0), na ordem em que os
+     * traços estão na ficha.
+     */
+    fun getSkillBonusOrigens(personagem: Personagem, skillName: String): List<OrigemDeBonus> =
+        todosOsTracos(personagem).mapNotNull { selection ->
+            val valor = getRuleFor(selection.definicaoId)
+                ?.getSkillModifiers(personagem, selection)
+                ?.get(skillName) ?: 0
+            if (valor != 0) OrigemDeBonus(selection.nome, valor) else null
+        }
+
     fun getSkillBonus(personagem: Personagem, skillName: String): Int {
         var total = 0
         todosOsTracos(personagem).forEach { selection ->

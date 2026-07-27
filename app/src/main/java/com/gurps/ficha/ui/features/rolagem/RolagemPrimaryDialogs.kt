@@ -135,6 +135,8 @@ fun RolagemPericiasDialog(
     opcoesPericia: List<PericiaRollOption>,
     modificadoresPericia: MutableMap<String, Int>,
     isPraCegoVariant: Boolean,
+    // Opcional: quando vem, o card mostra de onde vem o bonus da pericia.
+    personagem: com.gurps.ficha.model.Personagem? = null,
     onShowDescricao: (RollDescricaoDialog) -> Unit,
     onExecutarRolagem: (contextoLabel: String, alvo: Int, mod: Int) -> Unit,
     onDismiss: () -> Unit
@@ -230,6 +232,13 @@ fun RolagemPericiasDialog(
                                                     textAlign = TextAlign.Start,
                                                     maxLines = 1,
                                                     overflow = TextOverflow.Ellipsis
+                                                )
+                                            }
+                                            // De onde vem o bônus — mesmo componente da aba Perícias.
+                                            personagem?.let { p ->
+                                                com.gurps.ficha.ui.features.traits.OrigemDoBonusPericia(
+                                                    personagem = p,
+                                                    nomeDaPericia = pericia.nome
                                                 )
                                             }
                                         }

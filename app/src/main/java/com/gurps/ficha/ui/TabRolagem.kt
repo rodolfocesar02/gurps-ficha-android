@@ -779,6 +779,7 @@ fun TabRolagem(viewModel: FichaViewModel) {
 
     if (showPericiasDialog) {
         RolagemPericiasDialog(
+            personagem = p,
             opcoesPericia = opcoesPericia,
             modificadoresPericia = modificadoresPericia,
             isPraCegoVariant = isPraCegoVariant,

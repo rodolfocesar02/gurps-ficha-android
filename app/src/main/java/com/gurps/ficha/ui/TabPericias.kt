@@ -83,6 +83,7 @@ fun TabPericias(viewModel: FichaViewModel) {
                 Column {
                     PericiaItem(
                         pericia = pericia,
+                        personagem = p,
                         nivel = pericia.calcularNivel(p),
                         nivelRelativo = pericia.getNivelRelativo(p),
                         failureMsg = failureMsg,
@@ -206,6 +207,7 @@ private fun ResumoPericiasFooter(totalPericias: Int, pontosPericias: Int) {
 @Composable
 fun PericiaItem(
     pericia: PericiaSelecionada,
+    personagem: com.gurps.ficha.model.Personagem,
     nivel: Int,
     nivelRelativo: String,
     failureMsg: String? = null,
@@ -221,7 +223,11 @@ fun PericiaItem(
             .semantics {
                 if (isPraCegoVariant) {
                     val statusPart = if (hasFailure) ". AVISO: $failureMsg" else ""
-                    contentDescription = "Perícia ${pericia.nome}. NH $nivel$statusPart. Toque para editar."
+                    val origemPart = com.gurps.ficha.ui.features.traits.descricaoAcessivelDeOrigem(
+                        com.gurps.ficha.domain.rules.traits.TraitRuleRegistry
+                            .getSkillBonusOrigens(personagem, pericia.nome)
+                    )
+                    contentDescription = "Perícia ${pericia.nome}. NH $nivel$origemPart$statusPart. Toque para editar."
                 }
             }
             .clickable { onEdit() },
@@ -246,6 +252,11 @@ fun PericiaItem(
                 "${pericia.atributoBase.sigla}/${pericia.dificuldade.sigla} • ${pericia.pontosGastos} pts",
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+            // De onde vem o bônus, quando há: sem isso o NH muda e nada explica.
+            com.gurps.ficha.ui.features.traits.OrigemDoBonusPericia(
+                personagem = personagem,
+                nomeDaPericia = pericia.nome
             )
         }
         Row(
