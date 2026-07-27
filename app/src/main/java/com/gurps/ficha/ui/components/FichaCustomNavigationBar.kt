@@ -93,7 +93,6 @@ fun FichaCustomNavigationBar(
                         "Técnicas" -> R.drawable.tab_tecnicas
                         "Magia" -> R.drawable.tab_magia
                         "Equip." -> R.drawable.tab_equipamentos
-                        "Defesas" -> R.drawable.tab_defesas
                         "Rolagem" -> R.drawable.tab_rolagem
                         "Saga" -> R.drawable.tab_mestre_ia
                         else -> R.drawable.tab_geral
