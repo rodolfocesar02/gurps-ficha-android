@@ -1,8 +1,8 @@
 # Acompanhamento do Projeto da Ficha GURPS (Para Rodolfo)
 
 **Última Atualização:** 27 de Julho de 2026
-**Status Atual:** Lote **V-1 CONCLUÍDO** — 5 primeiras vantagens automatizadas via JSON (gate 1054/0). Trilhos M-1/V-0/D-0 fechados antes. — catálogo de modificadores fiel ao livro, botões Ampliações/Limitações, faxina de 3 telas mortas (−3.076 linhas) e `TabRolagem` abaixo do teto (gate 1014/0). ⏭️ Próximo: **TESTE NO APARELHO** do V-1 (ficha com Pendulear → Escalada +2).
-**Último Lote Registrado:** Lote V-1 (no FIM deste arquivo) — anteriores: AUTOM-2, AUTOM-1
+**Status Atual:** Lote **AUTOM-3 CONCLUÍDO** — FASE 2 completa (D-2, NOTA-1, V-2, IA-1, D-1) + correção de custo D-3. Gate **1108/0**. — catálogo de modificadores fiel ao livro, botões Ampliações/Limitações, faxina de 3 telas mortas (−3.076 linhas) e `TabRolagem` abaixo do teto (gate 1014/0). ⏭️ Próximo: **TESTE NO APARELHO** de tudo (lista entregue ao usuário).
+**Último Lote Registrado:** Lote AUTOM-3 (no FIM deste arquivo) — anteriores: V-1, AUTOM-2, AUTOM-1
 **HEAD (branch GURPS-Saga):** Lotes recentes: Lote 001=429865b, Lotes 002/003=64d4223, Lote 004=585f040, Lote 005=c3f0c47, Lote 006=448c674.
 
 ### Sincro V24: Super Release 2.0 (Lote 86)
@@ -4912,3 +4912,15 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - **Fora de propósito**: bônus de reação (precisa do GANCHO-D), "Arremedo" (só existe com especialização), "+2 em testes de Visão" (é sentido, já tratado por `SentidoRules` — daria bônus em dobro) e "+5 HT para recuperar PV" (teste pontual, não é perícia).
 - `EfeitosDeclaradosCatalogoTest`: lê o **catálogo real** e valida as invariantes no gate — alvo existe com nome exato, tipo reconhecido, sem valor zero, e nenhum traço com `efeitos` **e** regra Kotlin (a Kotlin venceria e o JSON seria ignorado em silêncio).
 - **Status:** ✅ Build OK nas 2 variantes · gate **1054/0** · ⏭️ **PENDENTE: teste no aparelho** — abrir uma ficha com Pendulear e conferir se Escalada mostra o NH +2.
+
+### Lote AUTOM-3 — 27 de Julho de 2026 (commits f608fb18, 340a9d95, 5c80c534, 049d7c0b, 1a48076f, 3045c37a, 191ec0c3)
+**Loop autônomo: FASE 2 completa + correção de custo (branch GURPS-Saga)**
+- **Teste ponta a ponta** (`f608fb18`): prova o caminho INTEIRO — `vantagens.v3.json` → parser do loader → interpretador → Registry → `calcularNivel`. Foi o buraco por onde o bug do V-1 entrou: cada pedaço tinha teste verde e ninguém testava a linha toda.
+- **D-2** (`340a9d95`): 4 desvantagens automatizadas (Acima do Peso, Gordo, Características Distintas, Veracidade). Prova que o Lote D-0 funciona no caminho real.
+- **NOTA-1** (`5c80c534`): o card da perícia passa a mostrar **de onde vem o bônus** (`+2 Pendulear`, `+1 (Bênção +3, Gordo -2)`), nas abas Perícias **e** Rolagem, com o mesmo componente. TalkBack recebe a origem na descrição do card.
+- **V-2** (`049d7c0b`): Reflexos em Combate — primeiro efeito de **defesa** declarativo (+1 Esquiva/Aparar/Bloqueio, +1 Sacar Rápido).
+- **IA-1** (`1a48076f`): o Narrador passa a **ler a mecânica** dos traços em vez de adivinhar pela prosa. Bônus condicional vem marcado `[só ...]` para a IA não somar duas vezes.
+- **D-1** (`3045c37a`): **Testes de Autocontrole** no fim da aba Rolagem — 35 desvantagens que o app guardava mas nunca rolava. Só aparece se a ficha tiver desvantagem com NA. Cobre duas armadilhas: Vontade **não** ajuda, e NA baixo é **pior**.
+- **D-3** (`191ec0c3`): bug reproduzido e corrigido — Flashbacks escolhido em −20 com NA 12 devolvia −5; a escolha do jogador era descartada. Afetava 5 desvantagens.
+- **Teto de linhas**: `TabRolagem` chegou a 1.004 ao ganhar o autocontrole; extraído `PainelAtributosEStatus.kt` e voltou a 974.
+- **Status:** ✅ Build OK nas 2 variantes · gate **1108/0** (+50 testes no loop) · ⏭️ **PENDENTE: teste no aparelho** — ver lista no fim da conversa.

@@ -640,19 +640,19 @@ arquivos é subordinada a esta.**
 | # | Lote | UI? | Depende de | O que entrega |
 |---|---|---|---|---|
 | 2.1 | ✅ **V-1** — vantagens simples em JSON | — | 1.2 | **FEITO 27/07** (caf75184). 5 vantagens, 16 efeitos, zero Kotlin. ⏸ aguarda teste no aparelho |
-| 2.2 | **D-2** — desvantagens simples em JSON | — | 1.2 + 1.3 | Gordo, Acima do Peso… mesmo interpretador |
-| 2.3 | **NOTA-1** — origem do bônus no card da perícia | 🖐 | 1.2 | nota discreta nas abas Perícias e Rolagem (componente único) |
-| 2.4 | **D-1** — autocontrole no fim da Rolagem | 🖐 | 1.3 | **35 desvantagens.** Maior valor percebido no jogo |
-| 2.5 | **IA-1** — `efeitos` no contexto da IA | — | 2.1 | o Narrador passa a LER a mecânica em vez de adivinhar pela prosa |
+| 2.2 | ✅ **D-2** | — | | **FEITO 27/07** (340a9d95). 4 desvantagens |
+| 2.3 | ✅ **NOTA-1** | 🖐 | | **FEITO 27/07** (5c80c534). ⏸ aguarda teste |
+| 2.4 | ✅ **D-1** — autocontrole | 🖐 | | **FEITO 27/07** (3045c37a). ⏸ aguarda teste |
+| 2.5 | ✅ **IA-1** | — | | **FEITO 27/07** (1a48076f) |
 
 ### FASE 3 — Ganchos novos (o contrato do `TraitRule` cresce)
 
 | # | Lote | UI? | Depende de | O que entrega |
 |---|---|---|---|---|
-| 3.1 | **V-2** — `reflexos_em_combate` | — | — | +1 nas 3 defesas + Sacar Rápido + Pânico. Gancho existente |
+| 3.1 | ✅ **V-2** — Reflexos em Combate | — | | **FEITO 27/07** (049d7c0b) |
 | 3.2 | **V-3** — GANCHO-A (bônus de atributo) | — | — | `AtributoBonusRules.kt`; `Personagem.kt` só ganha 1 linha por propriedade. Teste de recursão obrigatório |
 | 3.3 | **V-4** — vantagens de atributo + **escopo por membro** | — | 3.2 | ST Braçal, DX Braçal, Crescimento. Resolve o `escopo` adiado duas vezes |
-| 3.4 | **D-3** — bug da dupla aplicação de custo | — | — | `CharacterRules.kt:290`, já documentado no código. É custo, não efeito |
+| 3.4 | ✅ **D-3** — bug de custo | — | | **FEITO 27/07** (191ec0c3). Bug REPRODUZIDO e corrigido |
 
 ### FASE 4 — Avançado
 
@@ -697,7 +697,8 @@ mão**. Juntos, todo número da ficha passa a dizer de onde veio.
 
 ### Resumo
 
-- **21 lotes**, 7 concluídos, 1 cancelado → **13 pendentes**
+- **21 lotes**, 13 concluídos, 1 cancelado → **7 pendentes**
+- FASE 0, 1 e 2 fechadas. Restam: V-3/V-4 (atributo+escopo), V-5 (condicional), REACAO-1, V-6/V-7 (RD/deslocamento), D-6, NOTA-2
 - FASE 0 e FASE 1 fechadas (27/07/2026). Próximo: **2.1 (V-1)** — declarar as vantagens simples em JSON
 - 🖐 = toca UI ⇒ **PARA para teste no aparelho**: M-1, NOTA-1, D-1, V-5, REACAO-1 (**5 paradas**)
 - Caminho crítico: **1.2 (V-0)** destrava 2.1, 2.2, 2.3 e 4.1 · **1.3 (D-0)** destrava tudo de desvantagem
