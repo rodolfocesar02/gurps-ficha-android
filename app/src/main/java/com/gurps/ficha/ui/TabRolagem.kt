@@ -946,9 +946,10 @@ fun TabRolagem(viewModel: FichaViewModel) {
     if (showEditarEsquivaDialog) {
         EditarEsquivaBonusDialog(
             bonusAtual = p.defesasAtivas.bonusManualEsquiva,
+            notaAtual = p.defesasAtivas.notaBonusManualEsquiva,
             onDismiss = { showEditarEsquivaDialog = false },
-            onConfirm = { bonus ->
-                viewModel.atualizarBonusManualEsquiva(bonus)
+            onConfirm = { bonus, nota ->
+                viewModel.atualizarBonusManualEsquiva(bonus, nota)
                 showEditarEsquivaDialog = false
             }
         )
@@ -960,10 +961,11 @@ fun TabRolagem(viewModel: FichaViewModel) {
             pericias = viewModel.periciasParaApara,
             periciaSelecionadaId = p.defesasAtivas.periciaAparaId,
             bonusAtual = p.defesasAtivas.bonusManualApara,
+            notaAtual = p.defesasAtivas.notaBonusManualApara,
             onDismiss = { showEditarAparaDialog = false },
-            onConfirm = { periciaId, bonus ->
+            onConfirm = { periciaId, bonus, nota ->
                 viewModel.atualizarPericiaApara(periciaId)
-                viewModel.atualizarBonusManualApara(bonus)
+                viewModel.atualizarBonusManualApara(bonus, nota)
                 showEditarAparaDialog = false
             }
         )
@@ -977,11 +979,12 @@ fun TabRolagem(viewModel: FichaViewModel) {
             periciaSelecionadaId = p.defesasAtivas.periciaBloqueioId,
             escudoSelecionadoNome = p.defesasAtivas.escudoSelecionadoNome,
             bonusAtual = p.defesasAtivas.bonusManualBloqueio,
+            notaAtual = p.defesasAtivas.notaBonusManualBloqueio,
             onDismiss = { showEditarBloqueioDialog = false },
-            onConfirm = { periciaId, escudoNome, bonus ->
+            onConfirm = { periciaId, escudoNome, bonus, nota ->
                 viewModel.atualizarPericiaBloqueio(periciaId)
                 viewModel.atualizarEscudoBloqueio(escudoNome)
-                viewModel.atualizarBonusManualBloqueio(bonus)
+                viewModel.atualizarBonusManualBloqueio(bonus, nota)
                 showEditarBloqueioDialog = false
             }
         )

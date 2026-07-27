@@ -810,7 +810,16 @@ data class DefesasAtivas(
     // Bloqueio
     var periciaBloqueioId: String? = null,
     var escudoSelecionadoNome: String? = null,
-    var bonusManualBloqueio: Int = 0
+    var bonusManualBloqueio: Int = 0,
+
+    // Notas do bônus manual: o jogador anota DE ONDE vem cada bônus digitado
+    // (item, magia temporária, decisão do Mestre...). Existem porque, quando as
+    // vantagens forem automatizadas, um bônus digitado à mão para algo que o app
+    // passou a calcular sozinho vira contagem dupla — e sem a nota ninguém tem
+    // como saber a origem para decidir. Aditivas: ficha antiga desserializa "".
+    var notaBonusManualEsquiva: String = "",
+    var notaBonusManualApara: String = "",
+    var notaBonusManualBloqueio: String = ""
 ) {
     /**
      * Calcula Esquiva = Esquiva Básica - Penalidade de Carga + Bonus Manual

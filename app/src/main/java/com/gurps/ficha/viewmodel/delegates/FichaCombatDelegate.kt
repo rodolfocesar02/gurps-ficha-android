@@ -7,8 +7,17 @@ import com.gurps.ficha.viewmodel.DefenseType
 
 class FichaCombatDelegate {
 
-    fun atualizarBonusManualEsquiva(personagem: Personagem, bonus: Int): Personagem {
-        val defesas = personagem.defesasAtivas.copy(bonusManualEsquiva = bonus.coerceIn(-20, 20))
+    private companion object {
+        /** Nota é lembrete curto ("anel +1", "bênção do clérigo"), não texto livre. */
+        const val MAX_NOTA = 120
+    }
+
+    /** Bônus e nota andam juntos: a nota explica de onde o bônus veio. */
+    fun atualizarBonusManualEsquiva(personagem: Personagem, bonus: Int, nota: String = ""): Personagem {
+        val defesas = personagem.defesasAtivas.copy(
+            bonusManualEsquiva = bonus.coerceIn(-20, 20),
+            notaBonusManualEsquiva = nota.trim().take(MAX_NOTA)
+        )
         return personagem.copy(defesasAtivas = defesas)
     }
 
@@ -17,8 +26,12 @@ class FichaCombatDelegate {
         return personagem.copy(defesasAtivas = defesas)
     }
 
-    fun atualizarBonusManualApara(personagem: Personagem, bonus: Int): Personagem {
-        val defesas = personagem.defesasAtivas.copy(bonusManualApara = bonus.coerceIn(-20, 20))
+    /** Bônus e nota andam juntos: a nota explica de onde o bônus veio. */
+    fun atualizarBonusManualApara(personagem: Personagem, bonus: Int, nota: String = ""): Personagem {
+        val defesas = personagem.defesasAtivas.copy(
+            bonusManualApara = bonus.coerceIn(-20, 20),
+            notaBonusManualApara = nota.trim().take(MAX_NOTA)
+        )
         return personagem.copy(defesasAtivas = defesas)
     }
 
@@ -32,8 +45,12 @@ class FichaCombatDelegate {
         return personagem.copy(defesasAtivas = defesas)
     }
 
-    fun atualizarBonusManualBloqueio(personagem: Personagem, bonus: Int): Personagem {
-        val defesas = personagem.defesasAtivas.copy(bonusManualBloqueio = bonus.coerceIn(-20, 20))
+    /** Bônus e nota andam juntos: a nota explica de onde o bônus veio. */
+    fun atualizarBonusManualBloqueio(personagem: Personagem, bonus: Int, nota: String = ""): Personagem {
+        val defesas = personagem.defesasAtivas.copy(
+            bonusManualBloqueio = bonus.coerceIn(-20, 20),
+            notaBonusManualBloqueio = nota.trim().take(MAX_NOTA)
+        )
         return personagem.copy(defesasAtivas = defesas)
     }
 

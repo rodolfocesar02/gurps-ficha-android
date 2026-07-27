@@ -970,12 +970,12 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    fun atualizarBonusManualEsquiva(b: Int) { personagem = combatDelegate.atualizarBonusManualEsquiva(personagem, b) }
+    fun atualizarBonusManualEsquiva(b: Int, nota: String = "") { personagem = combatDelegate.atualizarBonusManualEsquiva(personagem, b, nota) }
     fun atualizarPericiaApara(id: String?) { personagem = combatDelegate.atualizarPericiaApara(personagem, id) }
-    fun atualizarBonusManualApara(b: Int) { personagem = combatDelegate.atualizarBonusManualApara(personagem, b) }
+    fun atualizarBonusManualApara(b: Int, nota: String = "") { personagem = combatDelegate.atualizarBonusManualApara(personagem, b, nota) }
     fun atualizarPericiaBloqueio(id: String?) { personagem = combatDelegate.atualizarPericiaBloqueio(personagem, id); ajustarEscudo() }
     fun atualizarEscudoBloqueio(n: String?) { personagem = combatDelegate.atualizarEscudoBloqueio(personagem, n) }
-    fun atualizarBonusManualBloqueio(b: Int) { personagem = combatDelegate.atualizarBonusManualBloqueio(personagem, b) }
+    fun atualizarBonusManualBloqueio(b: Int, nota: String = "") { personagem = combatDelegate.atualizarBonusManualBloqueio(personagem, b, nota) }
 
     val armasEquipamentosFiltradas get() = searchDelegate.filtrarArmas(personagem.forca) { equipmentDelegate.categoriaArmaFogoParaFiltro(it) }
     val escudosEquipamentosFiltrados get() = searchDelegate.filtrarEscudos(personagem.forca)

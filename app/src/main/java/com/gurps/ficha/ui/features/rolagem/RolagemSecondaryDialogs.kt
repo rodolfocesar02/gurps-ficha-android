@@ -656,11 +656,13 @@ fun RolagemEditarCanalDialog(
 @Composable
 fun EditarEsquivaBonusDialog(
     bonusAtual: Int,
+    notaAtual: String = "",
     onDismiss: () -> Unit,
-    onConfirm: (Int) -> Unit
+    onConfirm: (Int, String) -> Unit
 ) {
     var bonus by remember(bonusAtual) { mutableIntStateOf(bonusAtual.coerceIn(-20, 20)) }
     var texto by remember(bonusAtual) { mutableStateOf(if (bonusAtual >= 0) "+$bonusAtual" else "$bonusAtual") }
+    var nota by remember(notaAtual) { mutableStateOf(notaAtual) }
 
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -707,9 +709,10 @@ fun EditarEsquivaBonusDialog(
                         contentPadding = PaddingValues(horizontal = 8.dp, vertical = 2.dp)
                     ) { Text("+1") }
                 }
+                CampoNotaBonus(nota = nota, onNotaChange = { nota = it })
             }
         },
-        confirmButton = { TextButton(onClick = { onConfirm(bonus) }) { Text("Salvar") } },
+        confirmButton = { TextButton(onClick = { onConfirm(bonus, nota) }) { Text("Salvar") } },
         dismissButton = { TextButton(onClick = onDismiss) { Text("Cancelar") } }
     )
 }
@@ -721,13 +724,15 @@ fun EditarAparaDialog(
     pericias: List<PericiaSelecionada>,
     periciaSelecionadaId: String?,
     bonusAtual: Int,
+    notaAtual: String = "",
     onDismiss: () -> Unit,
-    onConfirm: (String?, Int) -> Unit
+    onConfirm: (String?, Int, String) -> Unit
 ) {
     var selectedPericiaId by remember(periciaSelecionadaId) { mutableStateOf(periciaSelecionadaId) }
     var expandedPericia by remember { mutableStateOf(false) }
     var bonus by remember(bonusAtual) { mutableIntStateOf(bonusAtual.coerceIn(-20, 20)) }
     var textoBonus by remember(bonusAtual) { mutableStateOf(if (bonusAtual >= 0) "+$bonusAtual" else "$bonusAtual") }
+    var nota by remember(notaAtual) { mutableStateOf(notaAtual) }
 
     val periciaAtual = pericias.find { it.definicaoId == selectedPericiaId }
 
@@ -812,9 +817,10 @@ fun EditarAparaDialog(
                         contentPadding = PaddingValues(horizontal = 8.dp, vertical = 2.dp)
                     ) { Text("+1") }
                 }
+                CampoNotaBonus(nota = nota, onNotaChange = { nota = it })
             }
         },
-        confirmButton = { TextButton(onClick = { onConfirm(selectedPericiaId, bonus) }) { Text("Salvar") } },
+        confirmButton = { TextButton(onClick = { onConfirm(selectedPericiaId, bonus, nota) }) { Text("Salvar") } },
         dismissButton = { TextButton(onClick = onDismiss) { Text("Cancelar") } }
     )
 }
@@ -828,8 +834,9 @@ fun EditarBloqueioDialog(
     periciaSelecionadaId: String?,
     escudoSelecionadoNome: String?,
     bonusAtual: Int,
+    notaAtual: String = "",
     onDismiss: () -> Unit,
-    onConfirm: (String?, String?, Int) -> Unit
+    onConfirm: (String?, String?, Int, String) -> Unit
 ) {
     var selectedPericiaId by remember(periciaSelecionadaId) { mutableStateOf(periciaSelecionadaId) }
     var selectedEscudoNome by remember(escudoSelecionadoNome) { mutableStateOf(escudoSelecionadoNome) }
@@ -837,6 +844,7 @@ fun EditarBloqueioDialog(
     var expandedEscudo by remember { mutableStateOf(false) }
     var bonus by remember(bonusAtual) { mutableIntStateOf(bonusAtual.coerceIn(-20, 20)) }
     var textoBonus by remember(bonusAtual) { mutableStateOf(if (bonusAtual >= 0) "+$bonusAtual" else "$bonusAtual") }
+    var nota by remember(notaAtual) { mutableStateOf(notaAtual) }
 
     val periciaAtual = pericias.find { it.definicaoId == selectedPericiaId }
     val escudoAtual = escudos.find { it.nome.equals(selectedEscudoNome ?: "", ignoreCase = true) }
@@ -957,9 +965,10 @@ fun EditarBloqueioDialog(
                         contentPadding = PaddingValues(horizontal = 8.dp, vertical = 2.dp)
                     ) { Text("+1") }
                 }
+                CampoNotaBonus(nota = nota, onNotaChange = { nota = it })
             }
         },
-        confirmButton = { TextButton(onClick = { onConfirm(selectedPericiaId, selectedEscudoNome, bonus) }) { Text("Salvar") } },
+        confirmButton = { TextButton(onClick = { onConfirm(selectedPericiaId, selectedEscudoNome, bonus, nota) }) { Text("Salvar") } },
         dismissButton = { TextButton(onClick = onDismiss) { Text("Cancelar") } }
     )
 }
