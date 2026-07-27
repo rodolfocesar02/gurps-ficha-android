@@ -1,8 +1,8 @@
 # Acompanhamento do Projeto da Ficha GURPS (Para Rodolfo)
 
-**Última Atualização:** 24 de Julho de 2026
-**Status Atual:** Loop de MECANIZAÇÃO de magias **MAG-1..7 CONCLUÍDO** (32 magias mecanizadas; gate 987/0). ⏭️ Próximo: **TESTE NO APARELHO**.
-**Último Lote Registrado:** Lote MAG-7 (ver logo abaixo, agrupado com os lotes de magia P5/P9/A1/P3-1)
+**Última Atualização:** 27 de Julho de 2026
+**Status Atual:** Lote **AUTOM-1 CONCLUÍDO** — catálogo de modificadores fiel ao livro, botões Ampliações/Limitações, faxina de 3 telas mortas (−3.076 linhas) e `TabRolagem` abaixo do teto (gate 1014/0). ⏭️ Próximo: **TESTE NO APARELHO**.
+**Último Lote Registrado:** Lote AUTOM-1 (no FIM deste arquivo) — anterior: Lote MAG-7
 **HEAD (branch GURPS-Saga):** Lotes recentes: Lote 001=429865b, Lotes 002/003=64d4223, Lote 004=585f040, Lote 005=c3f0c47, Lote 006=448c674.
 
 ### Sincro V24: Super Release 2.0 (Lote 86)
@@ -4887,3 +4887,13 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 **Acessibilidade PraCego na Rolagem 3D (branch GURPS-Saga)**
 - **TalkBack Dinâmico**: Implementação de `LaunchedEffect` aliado ao `LocalView.current.announceForAccessibility()` para forçar a leitura do resultado exato da rolagem na variante PraCego.
 - **Interpretação Narrativa**: Textos convertidos de dados crus para frases descritivas claras (ex: "Esquiva (NH 14). Falhou por 2", "Dano causou 8").
+
+### Lote AUTOM-1 — 27 de Julho de 2026 (commits 899f9ea3, e11406c9, 30eed049, 64548fc6)
+**Catálogo de modificadores, botões Ampliações/Limitações e faxina de UI (branch GURPS-Saga)**
+- **Descrições fiéis ao livro**: as 218 descrições de `modificadores.v1.json` estavam resumidas (183 abaixo de 160 caracteres). Agora são recortadas verbatim do Módulo Básico (`chunks.jsonl`) — 202 substituídas, média de 150 → 768 caracteres. O livro rotula modificador de 4 formas diferentes e o campo `pagina` erra de 1 a 50 páginas; a extração usa cascata de formatos + janela de páginas + mapa de exceções conferido à mão.
+- **`donoId`**: 52 modificadores que no livro são "Ampliações/Limitações Especiais" de UMA vantagem passaram a declarar o dono. Marcados, não movidos — `RacaCatalogo` procura esses ids no catálogo geral.
+- **Botões Ampliações / Limitações**: substituem "Modificadores (%)" e "Modificadores de Poder", que separavam por arquivo de origem e misturavam os dois tipos. Agora separam pelo que o modificador faz e filtram por pertinência (média por traço: 114 → 90 ampliações, 104 → 76 limitações). Corrigido de brinde um botão morto na tela de editar vantagem.
+- **Faxina de UI**: removidas `TabVtt.kt` (2.270 linhas), `TabCombate.kt` (775) e `TabNotas.kt` (31) — nenhuma era renderizada. O duplo check pegou que `TabCombate` não era 100% órfão: continha a regra `mensagemBloqueioPendente` com teste ativo, preservada em `domain/rules/MensagensDefesa.kt`.
+- **`TabRolagem` 1.128 → 990 linhas**: extraídos `OverlayDados3D.kt` e `PainelModificadorGlobal.kt`. O cálculo do texto de resultado virou função pura e ganhou 14 testes (piso de dano em 1, margem 0 em NH exato, modificador global só na variante PraCego).
+- **Planos criados** em `docs/pendencias/`: `Automações_Vantagens.md`, `Automações_Desvantagens.md`, `Revisao_Abas_e_Navegacao.md`.
+- **Status:** ✅ Build OK nas 2 variantes · gate 1014/0 · ⏭️ **PENDENTE: teste no aparelho** (mexeu na aba Rolagem e nos diálogos de traços).
