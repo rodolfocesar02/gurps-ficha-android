@@ -3063,6 +3063,17 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - **+11 testes.** Gate: **911 por variante, 0 falhas**.
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
+### Lote UI-MAG-1 — 24 de Julho de 2026 (ler a descrição da magia DENTRO do combate) ✅ VALIDADO NO APARELHO
+- **Queixa do usuário no aparelho:** no diálogo "Conjurar magia" não dava para saber o que a magia faz. Para conferir custo/duração/efeito era preciso FECHAR o combate, ir à aba de Magias, abrir a magia e clicar no nome — caminho que quebra o ritmo da luta.
+- Agora **segurar o card por 2 segundos** abre a descrição fiel do livro, com uma **ficha técnica** no topo (classe · NH · custo · duração · tempo de operação · página).
+- **Reuso, como ele pediu:** o pop-up da aba de Magias era código INLINE dentro de outro composable (não reutilizável) e **sem scroll** — descrição longa (Aporte, Relâmpago) ficava cortada. Extraí o componente único `DialogoDescricaoMagia` **com barra de rolagem** e liguei nos TRÊS pontos: o diálogo de conjurar no combate e os dois pop-ups da aba de Magias. Um código, três telas — e a aba de Magias ganhou o scroll de brinde.
+- Detalhe técnico: o card virou `Surface` + `combinedClickable` porque o Button do Material3 **não expõe `onLongClick`**; o visual foi preservado com `ButtonDefaults.outlinedShape`/`outlinedButtonBorder`. Toque curto = escolher (passo 2); toque longo = ler. O estado do pop-up mora fora do `if` do passo 1, então a consulta também funciona com a magia já escolhida.
+- `MagiaConjuravelUi` ganhou `descricao`/`duracao`/`tempoOperacao`/`pagina`, preenchidos pelo **catálogo** (MEC-42: o catálogo manda; a cópia da ficha é fallback).
+- Acessibilidade: `onLongClickLabel` + `contentDescription` anunciam *"Segure para ler a descrição"* (variante PraCego).
+- **UI-MAG-1b** (mesmo dia, após o teste): a dica *"Pressione por 2 segundos o card da magia para ler a descrição dela!"* passou a aparecer no topo do diálogo, no mesmo estilo da linha do Concentrar — recurso de toque longo não se descobre sozinho.
+- Gate: **987 por variante, 0 falhas**, build nas duas. **Testado e aprovado no aparelho pelo usuário.**
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
 ### Lote MAG-7 — 24 de Julho de 2026 (Mágica Penetrante — divisor de armadura; FECHA o loop MAG-1..7)
 - **Mágica Penetrante** (Metamágica): não fere sozinha — **PREPARA um divisor de armadura** para a PRÓXIMA magia de dano (MB p.378), escalando com a energia (1→÷2, 2→÷3, 3→÷5, 4+→÷10, a progressão do livro).
 - Onde entrou: campo `concedeDivisorArmadura` + `MagicMechanics.divisorArmaduraPorEnergia`; o parâmetro `divisorArmadura` no **`DanoMagicoResolver`** (divide a RD antes do `HitLocationRules`); e no `CombatSession` só o estado `divisorArmaduraPendente` + um branch curto que prepara e um wrapper que consome. A mecânica de dano continua morando no delegate.

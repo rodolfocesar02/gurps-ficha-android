@@ -105,6 +105,11 @@ internal fun SubDialogoConjurar(
                     Text("Conjurar é a manobra Concentrar — gasta o turno.",
                         style = MaterialTheme.typography.bodySmall, fontStyle = FontStyle.Italic,
                         color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    // Lote UI-MAG-1b: a dica precisa estar À VISTA — o recurso de segurar o card não
+                    // se descobre sozinho. Mesmo estilo da linha acima (bodySmall itálico).
+                    Text("Pressione por 2 segundos o card da magia para ler a descrição dela!",
+                        style = MaterialTheme.typography.bodySmall, fontStyle = FontStyle.Italic,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant)
                     Spacer(Modifier.height(8.dp))
                     // Busca: o que realmente resolve uma lista longa (o caso das 200 magias).
                     if (magias.size > 6) {
