@@ -1,11 +1,13 @@
 package com.gurps.ficha.domain.rules.traits
 
 import com.google.gson.JsonParser
+import com.gurps.ficha.domain.loaders.parseDesvantagemParaTeste
 import com.gurps.ficha.domain.loaders.parseVantagemParaTeste
 import com.gurps.ficha.model.AtributoBase
 import com.gurps.ficha.model.Dificuldade
 import com.gurps.ficha.model.PericiaSelecionada
 import com.gurps.ficha.model.Personagem
+import com.gurps.ficha.model.DesvantagemSelecionada
 import com.gurps.ficha.model.VantagemSelecionada
 import org.junit.After
 import org.junit.Assert.assertEquals
@@ -50,6 +52,12 @@ class EfeitoPontaAPontaTest {
             .mapNotNull { parseVantagemParaTeste(it) }
             .firstOrNull { it.id == id }
 
+    private fun definicaoDesvantagem(id: String) =
+        JsonParser.parseString(asset("desvantagens.v2.json").readText(Charsets.UTF_8))
+            .asJsonArray
+            .mapNotNull { parseDesvantagemParaTeste(it) }
+            .firstOrNull { it.id == id }
+
     /**
      * Liga o interpretador ao catálogo real, como acontece no app — mas sem o
      * `DataRepository`, que exigiria Context.
@@ -57,7 +65,10 @@ class EfeitoPontaAPontaTest {
     private fun ligarCatalogoReal() {
         val cache = mutableMapOf<String, List<EfeitoDeclarado>?>()
         EfeitoInterpretador.buscador = { id ->
-            cache.getOrPut(id) { definicaoDoCatalogo(id)?.efeitos }
+            cache.getOrPut(id) {
+                definicaoDoCatalogo(id)?.efeitos?.takeIf { e -> e.isNotEmpty() }
+                    ?: definicaoDesvantagem(id)?.efeitos
+            }
         }
     }
 
@@ -152,5 +163,55 @@ class EfeitoPontaAPontaTest {
             )
         )
         assertEquals(5, TraitRuleRegistry.getSkillBonus(p, "Escalada"))
+    }
+
+    // --- desvantagens (caminho aberto pelo Lote D-0) ---
+
+    @Test
+    fun `Gordo na ficha REDUZ o NH de Disfarce em 2`() {
+        ligarCatalogoReal()
+
+        val disfarce = PericiaSelecionada(
+            definicaoId = "disfarce", nome = "Disfarce/NT",
+            atributoBase = AtributoBase.IQ, dificuldade = Dificuldade.MEDIA, pontosGastos = 2
+        )
+        val limpo = Personagem(nome = "Teste", inteligencia = 12, pericias = listOf(disfarce))
+        val gordo = limpo.copy(
+            desvantagens = listOf(DesvantagemSelecionada(definicaoId = "gordo", nome = "Gordo"))
+        )
+
+        assertEquals(
+            "a penalidade de Gordo nao chegou ao NH",
+            limpo.pericias.first().calcularNivel(limpo) - 2,
+            gordo.pericias.first().calcularNivel(gordo)
+        )
+    }
+
+    @Test
+    fun `Veracidade impoe menos 5 permanentes em Labia`() {
+        ligarCatalogoReal()
+        val p = Personagem(
+            nome = "Teste",
+            desvantagens = listOf(DesvantagemSelecionada(definicaoId = "veracidade", nome = "Veracidade"))
+        )
+        assertEquals(-5, TraitRuleRegistry.getSkillBonus(p, "Lábia"))
+    }
+
+    @Test
+    fun `vantagem e desvantagem na mesma ficha se somam`() {
+        // Prova que o Registry varre os dois lados (Lote D-0) no caminho real.
+        EfeitoInterpretador.buscador = { id ->
+            when (id) {
+                "bonus" -> listOf(EfeitoDeclarado(tipo = "pericia", alvo = "Disfarce/NT", valor = 3))
+                "gordo" -> listOf(EfeitoDeclarado(tipo = "pericia", alvo = "Disfarce/NT", valor = -2))
+                else -> null
+            }
+        }
+        val p = Personagem(
+            nome = "Teste",
+            vantagens = listOf(VantagemSelecionada(definicaoId = "bonus", nome = "B")),
+            desvantagens = listOf(DesvantagemSelecionada(definicaoId = "gordo", nome = "Gordo"))
+        )
+        assertEquals(1, TraitRuleRegistry.getSkillBonus(p, "Disfarce/NT"))
     }
 }

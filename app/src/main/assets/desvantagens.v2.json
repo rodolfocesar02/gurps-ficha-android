@@ -31,7 +31,14 @@
     "tags": [
       "fisica"
     ],
-    "descricao": "O peso do personagem pesa aproximadamente 130% da média para sua ST. Ele sofre -1 em Disfarce ou em Perseguição, se estiver tentando seguir alguém no meio da multidão. No entanto, essa gordura adicional concede +1 nos testes de Natação e +1 na ST para resistir a ser derrubado."
+    "descricao": "O peso do personagem pesa aproximadamente 130% da média para sua ST. Ele sofre -1 em Disfarce ou em Perseguição, se estiver tentando seguir alguém no meio da multidão. No entanto, essa gordura adicional concede +1 nos testes de Natação e +1 na ST para resistir a ser derrubado.",
+    "efeitos": [
+      {
+        "tipo": "pericia",
+        "alvo": "Disfarce/NT",
+        "valor": -1
+      }
+    ]
   },
   {
     "id": "acomodado",
@@ -504,7 +511,19 @@
     "tags": [
       "fisica"
     ],
-    "descricao": "O personagem tem uma caracte rística física — “cabelo azul brilhan te”, por exemplo — que o torna dife rente das outras pessoas. Isso resulta em uma penalidade de -1 nas perícias Disfarce e Perseguição e um bônus de +1 nas tentativas de identificá-lo ou persegui-lo. Algumas Características Distintas podem se originar de ou tras desvantagens. Por exemplo, um albino (pessoa sem os pigmentos na turais da pele, o que resulta em olhos róseos e pele e cabelos que vão desde o avermelhado até quase brancos) também poderia ter Fraqueza (Luz do Sol). Compare Características Sobrenaturais (pág. 125) e Feições Estra nhas (pág. 22). Castrado ou Assexuado O personagem não tem os órgãos sexuais típicos de sua raça, gênero e faixa etária ou talvez seja genui namente assexuado e apenas se pa reça com alguém de uma raça ou sexo em particular. Isso pode fazer com que ele tenha uma aparência diferente, Estigma Social ou Feições Estranhas em alguns cenários. No entanto, existem alguns benefícios menores: ele é imune à sedução e nunca terá um filho por acidente. Isso é muito mais que uma simples esterilidade (que é uma característi ca que vale 0 ponto)."
+    "descricao": "O personagem tem uma caracte rística física — “cabelo azul brilhan te”, por exemplo — que o torna dife rente das outras pessoas. Isso resulta em uma penalidade de -1 nas perícias Disfarce e Perseguição e um bônus de +1 nas tentativas de identificá-lo ou persegui-lo. Algumas Características Distintas podem se originar de ou tras desvantagens. Por exemplo, um albino (pessoa sem os pigmentos na turais da pele, o que resulta em olhos róseos e pele e cabelos que vão desde o avermelhado até quase brancos) também poderia ter Fraqueza (Luz do Sol). Compare Características Sobrenaturais (pág. 125) e Feições Estra nhas (pág. 22). Castrado ou Assexuado O personagem não tem os órgãos sexuais típicos de sua raça, gênero e faixa etária ou talvez seja genui namente assexuado e apenas se pa reça com alguém de uma raça ou sexo em particular. Isso pode fazer com que ele tenha uma aparência diferente, Estigma Social ou Feições Estranhas em alguns cenários. No entanto, existem alguns benefícios menores: ele é imune à sedução e nunca terá um filho por acidente. Isso é muito mais que uma simples esterilidade (que é uma característi ca que vale 0 ponto).",
+    "efeitos": [
+      {
+        "tipo": "pericia",
+        "alvo": "Disfarce/NT",
+        "valor": -1
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Perseguição",
+        "valor": -1
+      }
+    ]
   },
   {
     "id": "caracteristicas_sobrenaturais",
@@ -1977,7 +1996,14 @@
     "tags": [
       "fisica"
     ],
-    "descricao": "O peso do personagem pesa aproximada mente 150% da média para sua ST. Ele sofre -2 em Disfarce — ou em Perseguição, se esti ver tentando seguir alguém no meio da mul tidão. No entanto, essa gordura adicional concede +3 nos testes de Natação e +2 na ST para resistir a ser derrubado. O valor da HT do personagem não pode ser superior a 15."
+    "descricao": "O peso do personagem pesa aproximada mente 150% da média para sua ST. Ele sofre -2 em Disfarce — ou em Perseguição, se esti ver tentando seguir alguém no meio da mul tidão. No entanto, essa gordura adicional concede +3 nos testes de Natação e +2 na ST para resistir a ser derrubado. O valor da HT do personagem não pode ser superior a 15.",
+    "efeitos": [
+      {
+        "tipo": "pericia",
+        "alvo": "Disfarce/NT",
+        "valor": -2
+      }
+    ]
   },
   {
     "id": "gula",
@@ -3802,7 +3828,14 @@
     "tags": [
       "mental"
     ],
-    "descricao": "O personagem odeia dizer uma mentira ou o faz muito mal.\n\nPara conseguir se manter calado sobre uma verdade desconfortável (mentir por omissão), ele precisa de um sucesso em um teste de autocontrole.\n\nPara chegar a realmente dizer uma mentira, o teste precisa de um sucesso com uma penalidade de -5.\n\nUm fracasso indica que ele deixou escapar a verdade ou gaguejou tanto que sua mentira ficou óbvia.\n\nEsta desvantagem impõe uma penalidade permanente de -5 na perícia Lábia e a mesma penalidade em Dissimulação quando o personagem estiver com a intenção de enganar alguém."
+    "descricao": "O personagem odeia dizer uma mentira ou o faz muito mal.\n\nPara conseguir se manter calado sobre uma verdade desconfortável (mentir por omissão), ele precisa de um sucesso em um teste de autocontrole.\n\nPara chegar a realmente dizer uma mentira, o teste precisa de um sucesso com uma penalidade de -5.\n\nUm fracasso indica que ele deixou escapar a verdade ou gaguejou tanto que sua mentira ficou óbvia.\n\nEsta desvantagem impõe uma penalidade permanente de -5 na perícia Lábia e a mesma penalidade em Dissimulação quando o personagem estiver com a intenção de enganar alguém.",
+    "efeitos": [
+      {
+        "tipo": "pericia",
+        "alvo": "Lábia",
+        "valor": -5
+      }
+    ]
   },
   {
     "id": "viciado_em_trabalho",
