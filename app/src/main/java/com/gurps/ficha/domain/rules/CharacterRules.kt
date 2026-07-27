@@ -306,6 +306,13 @@ object CharacterRules {
             }
             val baseCrua = when (tipoCusto) {
                 TipoCusto.POR_NIVEL -> custoBase * nivel
+                // ESCOLHA/VARIÁVEL: aqui `custoEscolhido` é a escolha do jogador
+                // (Flashbacks −5/−10/−20), não um valor já multiplicado — o
+                // diálogo de escolha não aplica autocontrole. Usar `custoBase`
+                // aqui descartava a escolha: Flashbacks −20 com NA 12 virava −5.
+                // São 5 desvantagens com essa combinação no catálogo.
+                TipoCusto.ESCOLHA, TipoCusto.VARIAVEL ->
+                    if (custoEscolhido != 0) custoEscolhido else custoBase
                 else -> custoBase
             }
             (baseCrua * multiplicador).toInt()
