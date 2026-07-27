@@ -1,7 +1,6 @@
 package com.gurps.ficha.domain.rules.traits
 
 import com.gurps.ficha.model.Personagem
-import com.gurps.ficha.model.VantagemSelecionada
 
 /**
  * Regra para a vantagem Flexibilidade.
@@ -12,7 +11,7 @@ class FlexibilidadeRule : TraitRule {
 
     override fun getSkillModifiers(
         personagem: Personagem,
-        selection: VantagemSelecionada
+        selection: TracoSelecionado
     ): Map<String, Int> {
         return mapOf(
             "Escalada" to 3,

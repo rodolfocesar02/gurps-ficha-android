@@ -2,7 +2,6 @@ package com.gurps.ficha.domain.rules.traits
 
 import com.gurps.ficha.model.ModificadorSelecao
 import com.gurps.ficha.model.Personagem
-import com.gurps.ficha.model.VantagemSelecionada
 import com.gurps.ficha.ui.features.rolagem.RollMappedOption
 import com.gurps.ficha.viewmodel.ActiveDefense
 import com.gurps.ficha.ui.features.rolagem.DamageSourceOption
@@ -19,7 +18,7 @@ interface TraitRule {
      * Retorna null se deve usar o cálculo padrão do CharacterRules.
      */
     fun calculateCost(
-        selection: VantagemSelecionada,
+        selection: TracoSelecionado,
         modifiers: List<ModificadorSelecao>
     ): Int? = null
 
@@ -28,7 +27,7 @@ interface TraitRule {
      */
     fun getAttackOptions(
         personagem: Personagem,
-        selection: VantagemSelecionada
+        selection: TracoSelecionado
     ): List<RollMappedOption> = emptyList()
 
     /**
@@ -36,7 +35,7 @@ interface TraitRule {
      */
     fun getDefenseOptions(
         personagem: Personagem,
-        selection: VantagemSelecionada
+        selection: TracoSelecionado
     ): List<ActiveDefense> = emptyList()
 
     /**
@@ -44,7 +43,7 @@ interface TraitRule {
      */
     fun getDamageOptions(
         personagem: Personagem,
-        selection: VantagemSelecionada
+        selection: TracoSelecionado
     ): List<DamageSourceOption> = emptyList()
 
     /**
@@ -52,7 +51,7 @@ interface TraitRule {
      */
     fun getDodgeModifier(
         personagem: Personagem,
-        selection: VantagemSelecionada
+        selection: TracoSelecionado
     ): Int = 0
 
     /**
@@ -60,7 +59,7 @@ interface TraitRule {
      */
     fun getBlockModifier(
         personagem: Personagem,
-        selection: VantagemSelecionada
+        selection: TracoSelecionado
     ): Int = 0
 
     /**
@@ -68,7 +67,7 @@ interface TraitRule {
      */
     fun getParryModifier(
         personagem: Personagem,
-        selection: VantagemSelecionada,
+        selection: TracoSelecionado,
         periciaId: String?
     ): Int = 0
 
@@ -78,7 +77,7 @@ interface TraitRule {
      */
     fun getSkillModifiers(
         personagem: Personagem,
-        selection: VantagemSelecionada
+        selection: TracoSelecionado
     ): Map<String, Int> = emptyMap()
 
     /**
@@ -86,7 +85,7 @@ interface TraitRule {
      */
     fun getDamageBonusPerDie(
         personagem: Personagem,
-        selection: VantagemSelecionada,
+        selection: TracoSelecionado,
         periciaId: String?,
         weaponName: String? = null,
         armaGrupo: String? = null

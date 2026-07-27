@@ -1,7 +1,6 @@
 package com.gurps.ficha.domain.rules.traits
 
 import com.gurps.ficha.model.ModificadorSelecao
-import com.gurps.ficha.model.VantagemSelecionada
 
 /**
  * Regra para Idioma (GURPS p.23).
@@ -23,7 +22,7 @@ class IdiomaRule : TraitRule {
     override val traitId: String = "idioma"
 
     override fun calculateCost(
-        selection: VantagemSelecionada,
+        selection: TracoSelecionado,
         modifiers: List<ModificadorSelecao>
     ): Int {
         val falado = metadeCusto(selection.metadados?.get("nivelFalado"))

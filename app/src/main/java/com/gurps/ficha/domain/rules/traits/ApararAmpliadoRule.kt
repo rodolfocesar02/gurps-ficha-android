@@ -1,7 +1,6 @@
 package com.gurps.ficha.domain.rules.traits
 
 import com.gurps.ficha.model.Personagem
-import com.gurps.ficha.model.VantagemSelecionada
 
 /**
  * Regra para Aparar Ampliado (Enhanced Parry).
@@ -18,7 +17,7 @@ class ApararAmpliadoRule : TraitRule {
 
     override fun getParryModifier(
         personagem: Personagem,
-        selection: VantagemSelecionada,
+        selection: TracoSelecionado,
         periciaId: String?
     ): Int {
         val type = selection.metadados?.get("tipo") ?: "global"

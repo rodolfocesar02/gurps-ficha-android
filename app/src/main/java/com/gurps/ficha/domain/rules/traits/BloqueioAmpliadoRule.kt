@@ -1,7 +1,6 @@
 package com.gurps.ficha.domain.rules.traits
 
 import com.gurps.ficha.model.Personagem
-import com.gurps.ficha.model.VantagemSelecionada
 
 /**
  * Regra para Bloqueio Ampliado (Enhanced Block).
@@ -13,7 +12,7 @@ class BloqueioAmpliadoRule : TraitRule {
 
     override fun getBlockModifier(
         personagem: Personagem,
-        selection: VantagemSelecionada
+        selection: TracoSelecionado
     ): Int {
         // Por padrão, se o personagem tem a vantagem, ele ganha +1.
         // Se no futuro houver níveis (ex: +2, +3), podemos ler do 'nivel' ou metadados.

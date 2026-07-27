@@ -2,7 +2,6 @@ package com.gurps.ficha.domain.rules.traits
 
 import com.gurps.ficha.model.ModificadorSelecao
 import com.gurps.ficha.model.Personagem
-import com.gurps.ficha.model.VantagemSelecionada
 import com.gurps.ficha.ui.features.rolagem.RollMappedOption
 import com.gurps.ficha.ui.features.rolagem.DamageSourceOption
 import kotlin.math.ceil
@@ -15,7 +14,7 @@ class AtaqueInatoRule : TraitRule {
     override val traitId: String = "ataque_inato"
 
     override fun calculateCost(
-        selection: VantagemSelecionada,
+        selection: TracoSelecionado,
         modifiers: List<ModificadorSelecao>
     ): Int {
         val metadados = selection.metadados ?: emptyMap()
@@ -55,7 +54,7 @@ class AtaqueInatoRule : TraitRule {
 
     override fun getAttackOptions(
         personagem: Personagem,
-        selection: VantagemSelecionada
+        selection: TracoSelecionado
     ): List<RollMappedOption> {
         val nomePers = selection.metadados?.get("nomePersonalizado") ?: selection.nome
         
@@ -77,7 +76,7 @@ class AtaqueInatoRule : TraitRule {
 
     override fun getDamageOptions(
         personagem: Personagem,
-        selection: VantagemSelecionada
+        selection: TracoSelecionado
     ): List<DamageSourceOption> {
         val dice = selection.metadados?.get("dice") ?: "1"
         val bonus = selection.metadados?.get("bonus")?.toIntOrNull() ?: 0

@@ -2,7 +2,6 @@ package com.gurps.ficha.domain.rules.traits
 
 import com.gurps.ficha.model.ModificadorSelecao
 import com.gurps.ficha.model.Personagem
-import com.gurps.ficha.model.VantagemSelecionada
 import com.gurps.ficha.ui.features.rolagem.*
 import com.gurps.ficha.viewmodel.*
 import kotlin.math.ceil
@@ -15,7 +14,7 @@ class DentesRule : TraitRule {
     override val traitId: String = "dentes"
 
     override fun calculateCost(
-        selection: VantagemSelecionada,
+        selection: TracoSelecionado,
         modifiers: List<ModificadorSelecao>
     ): Int {
         val tipoDentes = selection.metadados?.get("tipoDentes") ?: "rombo"
@@ -43,7 +42,7 @@ class DentesRule : TraitRule {
 
     override fun getAttackOptions(
         personagem: Personagem,
-        selection: VantagemSelecionada
+        selection: TracoSelecionado
     ): List<RollMappedOption> {
         val tipoDentes = selection.metadados?.get("tipoDentes") ?: "rombo"
         val label = when (tipoDentes) {
@@ -71,7 +70,7 @@ class DentesRule : TraitRule {
 
     override fun getDamageOptions(
         personagem: Personagem,
-        selection: VantagemSelecionada
+        selection: TracoSelecionado
     ): List<DamageSourceOption> {
         val tipoDentes = selection.metadados?.get("tipoDentes") ?: "rombo"
         

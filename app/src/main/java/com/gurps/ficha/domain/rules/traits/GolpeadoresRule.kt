@@ -2,7 +2,6 @@ package com.gurps.ficha.domain.rules.traits
 
 import com.gurps.ficha.model.ModificadorSelecao
 import com.gurps.ficha.model.Personagem
-import com.gurps.ficha.model.VantagemSelecionada
 import com.gurps.ficha.ui.features.rolagem.*
 import com.gurps.ficha.viewmodel.*
 import kotlin.math.ceil
@@ -15,7 +14,7 @@ class GolpeadoresRule : TraitRule {
     override val traitId: String = "golpeadores"
 
     override fun calculateCost(
-        selection: VantagemSelecionada,
+        selection: TracoSelecionado,
         modifiers: List<ModificadorSelecao>
     ): Int {
         val metadados = selection.metadados ?: emptyMap()
@@ -52,7 +51,7 @@ class GolpeadoresRule : TraitRule {
 
     override fun getAttackOptions(
         personagem: Personagem,
-        selection: VantagemSelecionada
+        selection: TracoSelecionado
     ): List<RollMappedOption> {
         val nomePers = selection.metadados?.get("nomePersonalizado") ?: selection.nome
         
@@ -80,7 +79,7 @@ class GolpeadoresRule : TraitRule {
 
     override fun getDefenseOptions(
         personagem: Personagem,
-        selection: VantagemSelecionada
+        selection: TracoSelecionado
     ): List<ActiveDefense> {
         val nomePers = selection.metadados?.get("nomePersonalizado") ?: selection.nome
         
@@ -102,7 +101,7 @@ class GolpeadoresRule : TraitRule {
 
     override fun getDamageOptions(
         personagem: Personagem,
-        selection: VantagemSelecionada
+        selection: TracoSelecionado
     ): List<DamageSourceOption> {
         val dice = selection.metadados?.get("dice") ?: "0"
         val bonus = selection.metadados?.get("bonus")?.toIntOrNull() ?: 0

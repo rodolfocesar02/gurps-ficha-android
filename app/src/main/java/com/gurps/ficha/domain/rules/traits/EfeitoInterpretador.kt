@@ -3,7 +3,6 @@ package com.gurps.ficha.domain.rules.traits
 import android.util.Log
 import com.gurps.ficha.domain.rules.CharacterRules
 import com.gurps.ficha.model.Personagem
-import com.gurps.ficha.model.VantagemSelecionada
 
 /**
  * Transforma o campo `efeitos` do catálogo numa [TraitRule], sem escrever uma
@@ -63,7 +62,7 @@ object EfeitoInterpretador {
 
         override fun getSkillModifiers(
             personagem: Personagem,
-            selection: VantagemSelecionada
+            selection: TracoSelecionado
         ): Map<String, Int> {
             val mapa = mutableMapOf<String, Int>()
             efeitos.filter { it.tipoResolvido == TipoEfeito.PERICIA }.forEach { efeito ->
@@ -78,19 +77,19 @@ object EfeitoInterpretador {
             return mapa
         }
 
-        override fun getDodgeModifier(personagem: Personagem, selection: VantagemSelecionada): Int =
+        override fun getDodgeModifier(personagem: Personagem, selection: TracoSelecionado): Int =
             somaDefesa(selection, ALVO_ESQUIVA)
 
-        override fun getBlockModifier(personagem: Personagem, selection: VantagemSelecionada): Int =
+        override fun getBlockModifier(personagem: Personagem, selection: TracoSelecionado): Int =
             somaDefesa(selection, ALVO_BLOQUEIO)
 
         override fun getParryModifier(
             personagem: Personagem,
-            selection: VantagemSelecionada,
+            selection: TracoSelecionado,
             periciaId: String?
         ): Int = somaDefesa(selection, ALVO_APARAR)
 
-        private fun somaDefesa(selection: VantagemSelecionada, alvos: Set<String>): Int =
+        private fun somaDefesa(selection: TracoSelecionado, alvos: Set<String>): Int =
             efeitos.filter { it.tipoResolvido == TipoEfeito.DEFESA }
                 .filter { aplicavel(it) && it.alvo.trim().lowercase() in alvos }
                 .sumOf { it.valorPara(selection.nivel) }

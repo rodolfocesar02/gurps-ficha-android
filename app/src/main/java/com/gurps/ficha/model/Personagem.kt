@@ -385,19 +385,19 @@ data class VantagemDefinicao(
 
 @Stable
 data class VantagemSelecionada(
-    val definicaoId: String = "",
-    val nome: String = "",
+    override val definicaoId: String = "",
+    override val nome: String = "",
     var custoBase: Int = 0, // Custo unitario (por nivel) ou custo fixo
-    var nivel: Int = 1,
+    override var nivel: Int = 1,
     var custoEscolhido: Int = 0, // Custo total escolhido (para VARIAVEL/ESCOLHA)
     var descricao: String = "",
     val tipoCusto: TipoCusto = TipoCusto.FIXO,
     val pagina: Int = 0,
     val specialRule: String? = null,
     var modificadores: List<ModificadorSelecao> = emptyList(),
-    var metadados: Map<String, String>? = null, // Para regras especiais como Ataque Inato
+    override var metadados: Map<String, String>? = null, // Para regras especiais como Ataque Inato
     var poderId: String? = null // Referência ao Poder que possui esta Vantagem
-) {
+) : com.gurps.ficha.domain.rules.traits.TracoSelecionado {
     val custoFinal: Int get() {
         val rule = specialRule ?: CharacterRules.DATA_REPOSITORY_INSTANCE?.getVantagemPorId(definicaoId)?.specialRule
         return CharacterRules.calcularCustoVantagem(
@@ -473,10 +473,10 @@ data class DesvantagemDefinicao(
 
 @Stable
 data class DesvantagemSelecionada(
-    val definicaoId: String = "",
-    val nome: String = "",
+    override val definicaoId: String = "",
+    override val nome: String = "",
     var custoBase: Int = 0,
-    var nivel: Int = 1,
+    override var nivel: Int = 1,
     var custoEscolhido: Int = 0,
     var descricao: String = "",
     var autocontrole: Int? = null,
@@ -484,9 +484,9 @@ data class DesvantagemSelecionada(
     val pagina: Int = 0,
     val specialRule: String? = null,
     var modificadores: List<ModificadorSelecao> = emptyList(),
-    var metadados: Map<String, String>? = null,
+    override var metadados: Map<String, String>? = null,
     var poderId: String? = null // Referência ao Poder que possui esta Desvantagem
-) {
+) : com.gurps.ficha.domain.rules.traits.TracoSelecionado {
     val custoFinal: Int get() {
         val rule = specialRule ?: CharacterRules.DATA_REPOSITORY_INSTANCE?.getDesvantagemPorId(definicaoId)?.specialRule
         return CharacterRules.calcularCustoDesvantagem(

@@ -2,7 +2,6 @@ package com.gurps.ficha.domain.rules.traits
 
 import com.gurps.ficha.model.ModificadorSelecao
 import com.gurps.ficha.model.Personagem
-import com.gurps.ficha.model.VantagemSelecionada
 import com.gurps.ficha.ui.features.rolagem.*
 import kotlin.math.ceil
 
@@ -14,7 +13,7 @@ class GarrasRule : TraitRule {
     override val traitId: String = "garras"
 
     override fun calculateCost(
-        selection: VantagemSelecionada,
+        selection: TracoSelecionado,
         modifiers: List<ModificadorSelecao>
     ): Int {
         val tipo = selection.metadados?.get("tipoGarras") ?: "afiadas"
@@ -39,7 +38,7 @@ class GarrasRule : TraitRule {
 
     override fun getDamageOptions(
         personagem: Personagem,
-        selection: VantagemSelecionada
+        selection: TracoSelecionado
     ): List<DamageSourceOption> {
         val tipo = selection.metadados?.get("tipoGarras") ?: "afiadas"
         val gdp = personagem.danoGdP

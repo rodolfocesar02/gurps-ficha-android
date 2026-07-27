@@ -1,7 +1,6 @@
 package com.gurps.ficha.domain.rules.traits
 
 import com.gurps.ficha.model.ModificadorSelecao
-import com.gurps.ficha.model.VantagemSelecionada
 import kotlin.math.ceil
 
 /**
@@ -29,7 +28,7 @@ class TelecomunicacaoRule : TraitRule {
     override val traitId: String = "telecomunicacao"
 
     override fun calculateCost(
-        selection: VantagemSelecionada,
+        selection: TracoSelecionado,
         modifiers: List<ModificadorSelecao>
     ): Int {
         val tipo = selection.metadados?.get("tipoTelecomunicacao") ?: "radio"

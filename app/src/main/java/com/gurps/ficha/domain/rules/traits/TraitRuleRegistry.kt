@@ -24,6 +24,16 @@ object TraitRuleRegistry {
         register(IdiomaRule())
     }
 
+    /**
+     * Vantagens E desvantagens.
+     *
+     * Antes do Lote D-0 os agregadores varriam só `personagem.vantagens`: uma
+     * regra registrada com id de desvantagem nunca era chamada — sem erro, sem
+     * aviso. Isso bloqueava toda a automação de desvantagem.
+     */
+    private fun todosOsTracos(personagem: Personagem): List<TracoSelecionado> =
+        personagem.vantagens + personagem.desvantagens
+
     private fun register(rule: TraitRule) {
         rules[rule.traitId] = rule
     }
@@ -50,7 +60,7 @@ object TraitRuleRegistry {
      */
     fun getSkillBonus(personagem: Personagem, skillName: String): Int {
         var total = 0
-        personagem.vantagens.forEach { selection ->
+        todosOsTracos(personagem).forEach { selection ->
             val rule = getRuleFor(selection.definicaoId)
             if (rule != null) {
                 val bonuses = rule.getSkillModifiers(personagem, selection)
@@ -66,7 +76,7 @@ object TraitRuleRegistry {
      */
     fun getParryBonus(personagem: Personagem, periciaId: String?): Int {
         var total = 0
-        personagem.vantagens.forEach { selection ->
+        todosOsTracos(personagem).forEach { selection ->
             val rule = getRuleFor(selection.definicaoId)
             if (rule != null) {
                 total += rule.getParryModifier(personagem, selection, periciaId)
@@ -80,7 +90,7 @@ object TraitRuleRegistry {
      */
     fun getDodgeBonus(personagem: Personagem): Int {
         var total = 0
-        personagem.vantagens.forEach { selection ->
+        todosOsTracos(personagem).forEach { selection ->
             val rule = getRuleFor(selection.definicaoId)
             if (rule != null) {
                 total += rule.getDodgeModifier(personagem, selection)
@@ -94,7 +104,7 @@ object TraitRuleRegistry {
      */
     fun getBlockBonus(personagem: Personagem): Int {
         var total = 0
-        personagem.vantagens.forEach { selection ->
+        todosOsTracos(personagem).forEach { selection ->
             val rule = getRuleFor(selection.definicaoId)
             if (rule != null) {
                 total += rule.getBlockModifier(personagem, selection)
@@ -113,7 +123,7 @@ object TraitRuleRegistry {
         armaGrupo: String? = null
     ): Int {
         var total = 0
-        personagem.vantagens.forEach { selection ->
+        todosOsTracos(personagem).forEach { selection ->
             val rule = getRuleFor(selection.definicaoId)
             if (rule != null) {
                 total += rule.getDamageBonusPerDie(personagem, selection, periciaId, weaponName, armaGrupo)

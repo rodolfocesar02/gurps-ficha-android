@@ -1,7 +1,6 @@
 package com.gurps.ficha.domain.rules.traits
 
 import com.gurps.ficha.model.Personagem
-import com.gurps.ficha.model.VantagemSelecionada
 
 /**
  * Regra para Esquiva Ampliada (Enhanced Dodge).
@@ -13,7 +12,7 @@ class EsquivaAmpliadaRule : TraitRule {
 
     override fun getDodgeModifier(
         personagem: Personagem,
-        selection: VantagemSelecionada
+        selection: TracoSelecionado
     ): Int {
         // Segundo o manual GURPS pág. 51, é bônus fixo de +1.
         // Se houver níveis futuros, podemos multiplicar pelo nível.

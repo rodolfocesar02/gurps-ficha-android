@@ -1,7 +1,6 @@
 package com.gurps.ficha.domain.rules.traits
 
 import com.gurps.ficha.model.Personagem
-import com.gurps.ficha.model.VantagemSelecionada
 import java.text.Normalizer
 
 /**
@@ -12,7 +11,7 @@ class MestreDeArmasRule : TraitRule {
     override val traitId: String = "mestre_de_armas"
 
     override fun calculateCost(
-        selection: com.gurps.ficha.model.VantagemSelecionada,
+        selection: TracoSelecionado,
         modifiers: List<com.gurps.ficha.model.ModificadorSelecao>
     ): Int? {
         val classId = selection.metadados?.get("classId") ?: "todas"
@@ -92,7 +91,7 @@ class MestreDeArmasRule : TraitRule {
 
     override fun getDamageBonusPerDie(
         personagem: com.gurps.ficha.model.Personagem,
-        selection: com.gurps.ficha.model.VantagemSelecionada,
+        selection: TracoSelecionado,
         periciaId: String?,
         weaponName: String?,
         armaGrupo: String?
@@ -178,7 +177,7 @@ class MestreDeArmasRule : TraitRule {
     }
 
     // Função utilitária para o catálogo
-    fun isWeaponCovered(personagem: com.gurps.ficha.model.Personagem, selection: com.gurps.ficha.model.VantagemSelecionada, weaponName: String?, armaGrupo: String?): Boolean {
+    fun isWeaponCovered(personagem: com.gurps.ficha.model.Personagem, selection: TracoSelecionado, weaponName: String?, armaGrupo: String?): Boolean {
         val metadados = selection.metadados ?: emptyMap()
         val classId = metadados["classId"] ?: "todas"
         val periciasCobertasRaw = metadados["pericias_cobertas"] ?: ""
