@@ -631,9 +631,9 @@ arquivos é subordinada a esta.**
 
 | # | Lote | UI? | Depende de | O que entrega |
 |---|---|---|---|---|
-| 1.1 | **M-1** — nota no bônus manual | 🖐 | — | pop-up de escrever/editar/apagar a nota. Fecha o risco da duplicação ANTES de qualquer automação de defesa |
-| 1.2 | **V-0** — interpretador do campo `efeitos` | — | — | o trilho do JSON, já com `condicao` e `escopo` no desenho + validador Python + 7 testes |
-| 1.3 | **D-0** — Registry enxergar desvantagens | — | — | hoje só varre `personagem.vantagens`; sem isso NENHUMA regra de desvantagem roda |
+| 1.1 | ✅ **M-1** — nota no bônus manual | 🖐 | — | **FEITO 27/07** (e77029ac). ⏸ aguarda teste no aparelho |
+| 1.2 | ✅ **V-0** — interpretador do campo `efeitos` | — | — | **FEITO 27/07** (c9686caa). 16 testes + validador |
+| 1.3 | ✅ **D-0** — Registry enxergar desvantagens | — | — | **FEITO 27/07** (ec719e66). Interface `TracoSelecionado`, 13 arquivos migrados, 8 testes |
 
 ### FASE 2 — Primeiras automações de verdade
 
@@ -666,7 +666,8 @@ arquivos é subordinada a esta.**
 
 ### Resumo
 
-- **20 lotes**, 3 concluídos, 1 cancelado → **16 pendentes**
+- **20 lotes**, 6 concluídos, 1 cancelado → **13 pendentes**
+- FASE 0 e FASE 1 fechadas (27/07/2026). Próximo: **2.1 (V-1)** — declarar as vantagens simples em JSON
 - 🖐 = toca UI ⇒ **PARA para teste no aparelho**: M-1, NOTA-1, D-1, V-5, REACAO-1 (**5 paradas**)
 - Caminho crítico: **1.2 (V-0)** destrava 2.1, 2.2, 2.3 e 4.1 · **1.3 (D-0)** destrava tudo de desvantagem
 - Se o objetivo for "ver automação funcionando o quanto antes": **1.2 → 2.1** (duas etapas)
