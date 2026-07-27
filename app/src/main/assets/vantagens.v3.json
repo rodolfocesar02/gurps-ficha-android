@@ -323,6 +323,14 @@
         "valor": "-40%",
         "pagina": 41,
         "descricao": "A Aptidão Mágica favorece apenas uma escola de magia específica."
+      },
+      {
+        "id": "mod_item_magico",
+        "nome": "Item_magico",
+        "tipo": "limitação",
+        "valor": "-35%",
+        "pagina": 41,
+        "descricao": "A magia só pode ser usada com itens mágicos em mão, exemplos, varinhas magicas, cajados, aneis, cartola mágica, etc."
       }
     ]
   },
@@ -3193,7 +3201,24 @@
     "rawCost": "10",
     "specialRule": null,
     "tags": [],
-    "descricao": "Bônus do Senso de Direção, +1 em Pilotagem e +2 em Acrobacia, Queda Livre e Navegação (Espaço). Custa 10 pontos."
+    "descricao": "Bônus do Senso de Direção, +1 em Pilotagem e +2 em Acrobacia, Queda Livre e Navegação (Espaço). Custa 10 pontos.",
+    "efeitos": [
+      {
+        "tipo": "pericia",
+        "alvo": "Pilotagem/NT",
+        "valor": 1
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Acrobacia",
+        "valor": 2
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Queda Livre",
+        "valor": 2
+      }
+    ]
   },
   {
     "id": "nt_alto",
@@ -3390,7 +3415,14 @@
     "rawCost": "5",
     "specialRule": null,
     "tags": [],
-    "descricao": "O personagem pode se locomover pendurado, com bônus de +2 em Escalada. Custa 5 pontos."
+    "descricao": "O personagem pode se locomover pendurado, com bônus de +2 em Escalada. Custa 5 pontos.",
+    "efeitos": [
+      {
+        "tipo": "pericia",
+        "alvo": "Escalada",
+        "valor": 2
+      }
+    ]
   },
   {
     "id": "permissao_de_seguranca",
@@ -4074,7 +4106,19 @@
     "rawCost": "5",
     "specialRule": null,
     "tags": [],
-    "descricao": "O personagem possui um excelente senso de orientação e localização.\n\nEle sempre sabe onde fica o norte e consegue refazer qualquer trajeto percorrido nos últimos 30 dias, independentemente de quão complexo, tortuoso ou confuso ele tenha sido.\n\nEsta habilidade não funciona em ambientes sem referências direcionais significativas, como:\n\n- Espaço interestelar.\n- Limbo.\n- Plano astral.\n- Ambientes equivalentes definidos pelo Mestre.\n\nPor outro lado, ela funciona normalmente em:\n\n- Ambientes subterrâneos.\n- Ambientes subaquáticos.\n- Outros planetas.\n- Regiões desconhecidas ou sem marcos visíveis.\n\n## Benefícios\n\n- Sempre sabe a direção do norte.\n- Consegue refazer qualquer percurso realizado nos últimos 30 dias.\n- Recebe bônus de +3 em Percepção do Corpo.\n- Recebe bônus de +3 em Navegação (Ar).\n- Recebe bônus de +3 em Navegação (Terra).\n- Recebe bônus de +3 em Navegação (Mar).\n\n## Observação\n\nO instinto migratório natural de animais não é sofisticado o suficiente para ser considerado Senso de Direção.\n\nQuando necessário, esse tipo de comportamento deve ser tratado apenas como uma característica de 0 ponto.\n\nCusto: 5 pontos."
+    "descricao": "O personagem possui um excelente senso de orientação e localização.\n\nEle sempre sabe onde fica o norte e consegue refazer qualquer trajeto percorrido nos últimos 30 dias, independentemente de quão complexo, tortuoso ou confuso ele tenha sido.\n\nEsta habilidade não funciona em ambientes sem referências direcionais significativas, como:\n\n- Espaço interestelar.\n- Limbo.\n- Plano astral.\n- Ambientes equivalentes definidos pelo Mestre.\n\nPor outro lado, ela funciona normalmente em:\n\n- Ambientes subterrâneos.\n- Ambientes subaquáticos.\n- Outros planetas.\n- Regiões desconhecidas ou sem marcos visíveis.\n\n## Benefícios\n\n- Sempre sabe a direção do norte.\n- Consegue refazer qualquer percurso realizado nos últimos 30 dias.\n- Recebe bônus de +3 em Percepção do Corpo.\n- Recebe bônus de +3 em Navegação (Ar).\n- Recebe bônus de +3 em Navegação (Terra).\n- Recebe bônus de +3 em Navegação (Mar).\n\n## Observação\n\nO instinto migratório natural de animais não é sofisticado o suficiente para ser considerado Senso de Direção.\n\nQuando necessário, esse tipo de comportamento deve ser tratado apenas como uma característica de 0 ponto.\n\nCusto: 5 pontos.",
+    "efeitos": [
+      {
+        "tipo": "pericia",
+        "alvo": "Percepção do Corpo",
+        "valor": 3
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Navegação/NT",
+        "valor": 3
+      }
+    ]
   },
   {
     "id": "sentido_de_monitoramento",
@@ -4706,7 +4750,24 @@
     "rawCost": "0 ou 10",
     "specialRule": null,
     "tags": [],
-    "descricao": "O personagem é capaz de enxergar a faixa ultravioleta (UV) do espectro eletromagnético.\n\nIsso permite perceber cores, padrões, rastros e detalhes invisíveis para a visão humana comum.\n\nA luz ultravioleta está presente naturalmente na luz solar, mesmo em dias nublados, e também pode ser emitida por algumas fontes artificiais, como lâmpadas fluorescentes.\n\n## Funcionamento\n\nQuando existe iluminação ultravioleta disponível, o personagem consegue perceber informações adicionais além daquelas fornecidas pela luz visível.\n\nIsso amplia sua capacidade de identificar contornos, rastros, resíduos e diferenças sutis entre objetos.\n\n## Benefícios Sob Luz UV\n\nEnquanto houver luz ultravioleta disponível, o personagem recebe:\n\n- +2 em todos os testes de Visão.\n- +2 em Observação.\n- +2 em Perícia Forense.\n- +2 em Revistar.\n\nEsses bônus se aplicam quando a luz UV pode ajudar na identificação de pistas, rastros, objetos ocultos ou detalhes visuais.\n\n## Aplicações Práticas\n\nO personagem pode perceber com maior facilidade:\n\n- Resíduos de tinta.\n- Poeira e sujeira recentes.\n- Marcas de sangue ou fluidos.\n- Rastros biológicos.\n- Minerais específicos.\n- Certos tipos de plantas.\n- Objetos escondidos.\n- Alterações em superfícies aparentemente normais.\n\n## Visão Noturna Parcial\n\nDurante a noite, pequenas quantidades de radiação ultravioleta provenientes das estrelas ainda atingem o ambiente.\n\nIsso não permite enxergar no escuro.\n\nEntretanto, o personagem ignora:\n\n- Até -2 em penalidades por escuridão.\n\nEsse benefício é cumulativo com Visão Noturna.\n\n## Visão Sob a Água\n\nA luz ultravioleta atravessa a água com mais eficiência do que a luz visível.\n\nPor esse motivo, o personagem reduz pela metade todas as penalidades visuais causadas pela água.\n\nExemplo:\n\n- Penalidade normal: -6.\n- Com Visão Ultravioleta: -3.\n\nEssa vantagem não permite enxergar em águas totalmente escuras.\n\nNa ausência completa de iluminação, o personagem enxerga tão mal quanto qualquer outra pessoa.\n\n## Limitações\n\nA luz ultravioleta é bloqueada por:\n\n- Vidro comum.\n- Terra.\n- Pedra.\n- Metal.\n- Paredes.\n- Qualquer barreira sólida significativa.\n\nConsequentemente, muitos ambientes fechados possuem pouca ou nenhuma iluminação UV natural.\n\n## Versões da Vantagem\n\n### Apenas Visão Ultravioleta\n\nO personagem só consegue enxergar na faixa ultravioleta.\n\nConsequências:\n\n- Fica praticamente cego em ambientes sem UV.\n- Não consegue utilizar luz visível normal.\n- Pode ficar cego mesmo em locais iluminados artificialmente.\n\nCusto: 0 ponto.\n\n### Visão Ultravioleta Completa\n\nO personagem consegue enxergar simultaneamente:\n\n- Luz visível.\n- Luz ultravioleta.\n\nRecebe todos os benefícios da vantagem sem perder a visão comum.\n\nCusto: 10 pontos.\n\n## Usuários Comuns\n\nEsta vantagem é frequentemente encontrada em:\n\n- Insetos.\n- Alienígenas.\n- Criaturas feéricas.\n- Predadores exóticos.\n- Mutantes.\n- Supers.\n- Investigadores sobrenaturais.\n- Robôs equipados com sensores multiespectrais.\n\n## Resumo\n\nVisão Ultravioleta permite enxergar a faixa UV do espectro luminoso, revelando detalhes invisíveis para a visão comum.\n\nO personagem recebe bônus em testes visuais, reduz penalidades por escuridão leve, melhora sua capacidade de investigação e sofre menos penalidades visuais debaixo d'água.\n\nCustos:\n\n| Variante | Custo |\n|-----------|--------|\n| Apenas UV | 0 ponto |\n| Luz Visível + UV | 10 pontos |\n"
+    "descricao": "O personagem é capaz de enxergar a faixa ultravioleta (UV) do espectro eletromagnético.\n\nIsso permite perceber cores, padrões, rastros e detalhes invisíveis para a visão humana comum.\n\nA luz ultravioleta está presente naturalmente na luz solar, mesmo em dias nublados, e também pode ser emitida por algumas fontes artificiais, como lâmpadas fluorescentes.\n\n## Funcionamento\n\nQuando existe iluminação ultravioleta disponível, o personagem consegue perceber informações adicionais além daquelas fornecidas pela luz visível.\n\nIsso amplia sua capacidade de identificar contornos, rastros, resíduos e diferenças sutis entre objetos.\n\n## Benefícios Sob Luz UV\n\nEnquanto houver luz ultravioleta disponível, o personagem recebe:\n\n- +2 em todos os testes de Visão.\n- +2 em Observação.\n- +2 em Perícia Forense.\n- +2 em Revistar.\n\nEsses bônus se aplicam quando a luz UV pode ajudar na identificação de pistas, rastros, objetos ocultos ou detalhes visuais.\n\n## Aplicações Práticas\n\nO personagem pode perceber com maior facilidade:\n\n- Resíduos de tinta.\n- Poeira e sujeira recentes.\n- Marcas de sangue ou fluidos.\n- Rastros biológicos.\n- Minerais específicos.\n- Certos tipos de plantas.\n- Objetos escondidos.\n- Alterações em superfícies aparentemente normais.\n\n## Visão Noturna Parcial\n\nDurante a noite, pequenas quantidades de radiação ultravioleta provenientes das estrelas ainda atingem o ambiente.\n\nIsso não permite enxergar no escuro.\n\nEntretanto, o personagem ignora:\n\n- Até -2 em penalidades por escuridão.\n\nEsse benefício é cumulativo com Visão Noturna.\n\n## Visão Sob a Água\n\nA luz ultravioleta atravessa a água com mais eficiência do que a luz visível.\n\nPor esse motivo, o personagem reduz pela metade todas as penalidades visuais causadas pela água.\n\nExemplo:\n\n- Penalidade normal: -6.\n- Com Visão Ultravioleta: -3.\n\nEssa vantagem não permite enxergar em águas totalmente escuras.\n\nNa ausência completa de iluminação, o personagem enxerga tão mal quanto qualquer outra pessoa.\n\n## Limitações\n\nA luz ultravioleta é bloqueada por:\n\n- Vidro comum.\n- Terra.\n- Pedra.\n- Metal.\n- Paredes.\n- Qualquer barreira sólida significativa.\n\nConsequentemente, muitos ambientes fechados possuem pouca ou nenhuma iluminação UV natural.\n\n## Versões da Vantagem\n\n### Apenas Visão Ultravioleta\n\nO personagem só consegue enxergar na faixa ultravioleta.\n\nConsequências:\n\n- Fica praticamente cego em ambientes sem UV.\n- Não consegue utilizar luz visível normal.\n- Pode ficar cego mesmo em locais iluminados artificialmente.\n\nCusto: 0 ponto.\n\n### Visão Ultravioleta Completa\n\nO personagem consegue enxergar simultaneamente:\n\n- Luz visível.\n- Luz ultravioleta.\n\nRecebe todos os benefícios da vantagem sem perder a visão comum.\n\nCusto: 10 pontos.\n\n## Usuários Comuns\n\nEsta vantagem é frequentemente encontrada em:\n\n- Insetos.\n- Alienígenas.\n- Criaturas feéricas.\n- Predadores exóticos.\n- Mutantes.\n- Supers.\n- Investigadores sobrenaturais.\n- Robôs equipados com sensores multiespectrais.\n\n## Resumo\n\nVisão Ultravioleta permite enxergar a faixa UV do espectro luminoso, revelando detalhes invisíveis para a visão comum.\n\nO personagem recebe bônus em testes visuais, reduz penalidades por escuridão leve, melhora sua capacidade de investigação e sofre menos penalidades visuais debaixo d'água.\n\nCustos:\n\n| Variante | Custo |\n|-----------|--------|\n| Apenas UV | 0 ponto |\n| Luz Visível + UV | 10 pontos |\n",
+    "efeitos": [
+      {
+        "tipo": "pericia",
+        "alvo": "Observação",
+        "valor": 2
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Perícia Forense/NT",
+        "valor": 2
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Revistar",
+        "valor": 2
+      }
+    ]
   },
   {
     "id": "venturoso",
@@ -4967,7 +5028,44 @@
     "tags": [
       "social"
     ],
-    "descricao": "O personagem tem uma voz clara, atraente e ressonante.\n\nSua fala é agradável de ouvir e naturalmente persuasiva, tornando mais fácil influenciar, impressionar ou entreter outras pessoas.\n\n## Benefícios em Perícias\n\nO personagem recebe um bônus de +2 nas seguintes perícias:\n\n- Arremedo.\n- Atuação.\n- Canto.\n- Diplomacia.\n- Lábia.\n- Oratória.\n- Política.\n- Sex Appeal.\n\nO bônus se aplica sempre que a voz do personagem puder contribuir para a utilização da perícia.\n\n## Testes de Reação\n\nO personagem também recebe:\n\n- +2 em qualquer teste de reação.\n\nEsse bônus só se aplica a indivíduos capazes de ouvir sua voz.\n\n## Limitações\n\nOs benefícios desta vantagem dependem da audição do alvo.\n\nEla não fornece bônus contra:\n\n- Pessoas que não conseguem ouvir o personagem.\n- Indivíduos completamente surdos.\n- Situações onde a comunicação vocal seja impossível.\n\nO Mestre pode determinar outras circunstâncias em que a voz não possa influenciar a reação de terceiros.\n\n## Resumo\n\nO personagem possui uma voz clara, atraente e ressonante.\n\nRecebe +2 em Arremedo, Atuação, Canto, Diplomacia, Lábia, Oratória, Política e Sex Appeal.\n\nRecebe também +2 em qualquer teste de reação realizado por alguém que possa ouvir sua voz.\n\nCusto: 10 pontos."
+    "descricao": "O personagem tem uma voz clara, atraente e ressonante.\n\nSua fala é agradável de ouvir e naturalmente persuasiva, tornando mais fácil influenciar, impressionar ou entreter outras pessoas.\n\n## Benefícios em Perícias\n\nO personagem recebe um bônus de +2 nas seguintes perícias:\n\n- Arremedo.\n- Atuação.\n- Canto.\n- Diplomacia.\n- Lábia.\n- Oratória.\n- Política.\n- Sex Appeal.\n\nO bônus se aplica sempre que a voz do personagem puder contribuir para a utilização da perícia.\n\n## Testes de Reação\n\nO personagem também recebe:\n\n- +2 em qualquer teste de reação.\n\nEsse bônus só se aplica a indivíduos capazes de ouvir sua voz.\n\n## Limitações\n\nOs benefícios desta vantagem dependem da audição do alvo.\n\nEla não fornece bônus contra:\n\n- Pessoas que não conseguem ouvir o personagem.\n- Indivíduos completamente surdos.\n- Situações onde a comunicação vocal seja impossível.\n\nO Mestre pode determinar outras circunstâncias em que a voz não possa influenciar a reação de terceiros.\n\n## Resumo\n\nO personagem possui uma voz clara, atraente e ressonante.\n\nRecebe +2 em Arremedo, Atuação, Canto, Diplomacia, Lábia, Oratória, Política e Sex Appeal.\n\nRecebe também +2 em qualquer teste de reação realizado por alguém que possa ouvir sua voz.\n\nCusto: 10 pontos.",
+    "efeitos": [
+      {
+        "tipo": "pericia",
+        "alvo": "Atuação",
+        "valor": 2
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Canto",
+        "valor": 2
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Diplomacia",
+        "valor": 2
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Lábia",
+        "valor": 2
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Oratória",
+        "valor": 2
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Política",
+        "valor": 2
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Sex Appeal",
+        "valor": 2
+      }
+    ]
   },
   {
     "id": "voz_penetrante",
