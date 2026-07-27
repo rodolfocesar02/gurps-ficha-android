@@ -349,7 +349,10 @@ data class VantagemDefinicao(
     val descricao: String? = "",
     val specialRule: String? = null,
     @SerializedName(value = "modificadoresEspecificos", alternate = ["modificadores_especificos"])
-    val modificadoresEspecificos: List<ModificadorDefinicao> = emptyList()
+    val modificadoresEspecificos: List<ModificadorDefinicao> = emptyList(),
+    // Efeitos mecanicos declarados no catalogo (bonus simples lidos pelo
+    // EfeitoInterpretador). Regra complexa continua sendo classe Kotlin.
+    val efeitos: List<com.gurps.ficha.domain.rules.traits.EfeitoDeclarado> = emptyList()
 ) {
     fun getCustoBase(): Int {
         val cleaned = custo.replace(Regex("[^0-9-]"), " ").trim()
@@ -425,7 +428,10 @@ data class DesvantagemDefinicao(
     val descricao: String? = "",
     val specialRule: String? = null,
     @SerializedName(value = "modificadoresEspecificos", alternate = ["modificadores_especificos"])
-    val modificadoresEspecificos: List<ModificadorDefinicao> = emptyList()
+    val modificadoresEspecificos: List<ModificadorDefinicao> = emptyList(),
+    // Efeitos mecanicos declarados no catalogo (bonus simples lidos pelo
+    // EfeitoInterpretador). Regra complexa continua sendo classe Kotlin.
+    val efeitos: List<com.gurps.ficha.domain.rules.traits.EfeitoDeclarado> = emptyList()
 ) {
     fun usaAutocontroleMental(): Boolean {
         val ehMental = tags.any { it.equals("mental", ignoreCase = true) }

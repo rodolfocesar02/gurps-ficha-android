@@ -29,10 +29,15 @@ object TraitRuleRegistry {
     }
 
     /**
-     * Retorna a regra para uma determinada vantagem ou null se for custo padrão.
+     * Regra que vale para o traço: primeiro a classe Kotlin registrada; na
+     * falta dela, os `efeitos` declarados no catálogo (arquitetura híbrida).
+     *
+     * PRECEDÊNCIA: Kotlin vence JSON. Isso permite migrar um caso de
+     * declarativo para código sem precisar apagar o JSON — e o interpretador
+     * avisa no log quando encontra os dois.
      */
     fun getRuleFor(traitId: String): TraitRule? {
-        return rules[traitId]
+        return rules[traitId] ?: EfeitoInterpretador.regraPara(traitId)
     }
 
     /**
@@ -46,7 +51,7 @@ object TraitRuleRegistry {
     fun getSkillBonus(personagem: Personagem, skillName: String): Int {
         var total = 0
         personagem.vantagens.forEach { selection ->
-            val rule = rules[selection.definicaoId]
+            val rule = getRuleFor(selection.definicaoId)
             if (rule != null) {
                 val bonuses = rule.getSkillModifiers(personagem, selection)
                 val bonus = bonuses[skillName] ?: 0
@@ -62,7 +67,7 @@ object TraitRuleRegistry {
     fun getParryBonus(personagem: Personagem, periciaId: String?): Int {
         var total = 0
         personagem.vantagens.forEach { selection ->
-            val rule = rules[selection.definicaoId]
+            val rule = getRuleFor(selection.definicaoId)
             if (rule != null) {
                 total += rule.getParryModifier(personagem, selection, periciaId)
             }
@@ -76,7 +81,7 @@ object TraitRuleRegistry {
     fun getDodgeBonus(personagem: Personagem): Int {
         var total = 0
         personagem.vantagens.forEach { selection ->
-            val rule = rules[selection.definicaoId]
+            val rule = getRuleFor(selection.definicaoId)
             if (rule != null) {
                 total += rule.getDodgeModifier(personagem, selection)
             }
@@ -90,7 +95,7 @@ object TraitRuleRegistry {
     fun getBlockBonus(personagem: Personagem): Int {
         var total = 0
         personagem.vantagens.forEach { selection ->
-            val rule = rules[selection.definicaoId]
+            val rule = getRuleFor(selection.definicaoId)
             if (rule != null) {
                 total += rule.getBlockModifier(personagem, selection)
             }
@@ -109,7 +114,7 @@ object TraitRuleRegistry {
     ): Int {
         var total = 0
         personagem.vantagens.forEach { selection ->
-            val rule = rules[selection.definicaoId]
+            val rule = getRuleFor(selection.definicaoId)
             if (rule != null) {
                 total += rule.getDamageBonusPerDie(personagem, selection, periciaId, weaponName, armaGrupo)
             }
