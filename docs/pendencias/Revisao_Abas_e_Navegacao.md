@@ -606,13 +606,71 @@ Saldo: o projeto **encolhe** ~138 KB e ganha 13 arquivos pequenos e focados.
 | 8 | **IA-1** — `efeitos` no contexto da IA | não | provável maior retorno (C7) |
 | 9 | **D-0** — Registry enxergar desvantagens | não | bloqueia todas as desvantagens |
 | 10 | **D-1** — autocontrole no fim da Rolagem | **sim** | maior valor percebido no jogo. Só aparece se houver desvantagem com NA (D6) |
-| 11 | resto conforme `Automações_Vantagens.md` §7 e `Automações_Desvantagens.md` §6 | | |
-
-**Regra do projeto:** todo lote marcado "toca UI" **para para teste no
-aparelho** antes do próximo. São 5 paradas — UI-3, UI-2, M-1, NOTA-1, D-1.
+| 11+ | ver a LISTA COMPLETA abaixo | | |
 
 **Abas:** ❌ não serão reorganizadas (decisão D3/D5.2/D5.3). O que muda é só o
 que está por baixo.
+
+---
+
+## Lista completa dos lotes (fonte única — consolida os 3 planos)
+
+Substitui as ordens parciais de `Automações_Vantagens.md` §7 e
+`Automações_Desvantagens.md` §6. **Toda ordem que aparecer nos outros dois
+arquivos é subordinada a esta.**
+
+### FASE 0 — Limpeza ✅ CONCLUÍDA (27/07/2026)
+
+| # | Lote | Status |
+|---|---|---|
+| 0.1 | **UI-1** — apagar as 3 telas mortas + salvar `MensagensDefesa` | ✅ feito |
+| 0.2 | **UI-3** — notas/histórico só na Geral | ❌ cancelado (já estava certo) |
+| 0.3 | **UI-2** — dividir `TabRolagem` (1.128 → 990) | ✅ feito e validado no aparelho |
+
+### FASE 1 — Trilhos (nada visível ainda; destrava todo o resto)
+
+| # | Lote | UI? | Depende de | O que entrega |
+|---|---|---|---|---|
+| 1.1 | **M-1** — nota no bônus manual | 🖐 | — | pop-up de escrever/editar/apagar a nota. Fecha o risco da duplicação ANTES de qualquer automação de defesa |
+| 1.2 | **V-0** — interpretador do campo `efeitos` | — | — | o trilho do JSON, já com `condicao` e `escopo` no desenho + validador Python + 7 testes |
+| 1.3 | **D-0** — Registry enxergar desvantagens | — | — | hoje só varre `personagem.vantagens`; sem isso NENHUMA regra de desvantagem roda |
+
+### FASE 2 — Primeiras automações de verdade
+
+| # | Lote | UI? | Depende de | O que entrega |
+|---|---|---|---|---|
+| 2.1 | **V-1** — vantagens simples em JSON | — | 1.2 | ~8 vantagens (Pendulear, Senso de Direção…). Zero Kotlin novo |
+| 2.2 | **D-2** — desvantagens simples em JSON | — | 1.2 + 1.3 | Gordo, Acima do Peso… mesmo interpretador |
+| 2.3 | **NOTA-1** — origem do bônus no card da perícia | 🖐 | 1.2 | nota discreta nas abas Perícias e Rolagem (componente único) |
+| 2.4 | **D-1** — autocontrole no fim da Rolagem | 🖐 | 1.3 | **35 desvantagens.** Maior valor percebido no jogo |
+| 2.5 | **IA-1** — `efeitos` no contexto da IA | — | 2.1 | o Narrador passa a LER a mecânica em vez de adivinhar pela prosa |
+
+### FASE 3 — Ganchos novos (o contrato do `TraitRule` cresce)
+
+| # | Lote | UI? | Depende de | O que entrega |
+|---|---|---|---|---|
+| 3.1 | **V-2** — `reflexos_em_combate` | — | — | +1 nas 3 defesas + Sacar Rápido + Pânico. Gancho existente |
+| 3.2 | **V-3** — GANCHO-A (bônus de atributo) | — | — | `AtributoBonusRules.kt`; `Personagem.kt` só ganha 1 linha por propriedade. Teste de recursão obrigatório |
+| 3.3 | **V-4** — vantagens de atributo + **escopo por membro** | — | 3.2 | ST Braçal, DX Braçal, Crescimento. Resolve o `escopo` adiado duas vezes |
+| 3.4 | **D-3** — bug da dupla aplicação de custo | — | — | `CharacterRules.kt:290`, já documentado no código. É custo, não efeito |
+
+### FASE 4 — Avançado
+
+| # | Lote | UI? | Depende de | O que entrega |
+|---|---|---|---|---|
+| 4.1 | **V-5** — bônus condicional | 🖐 | 1.2 | "aplicar +1 de Rosto Sincero?" na hora de rolar. **Destrava a maioria dos bônus do GURPS** |
+| 4.2 | **REACAO-1** — GANCHO-D + UI de Teste de Reação | 🖐 | — | serve vantagens (Aparência, Carisma) E desvantagens (~23) — UI **compartilhada**, não duplicar |
+| 4.3 | **V-6** — GANCHO-B (RD natural) | — | — | consumo em `domain/combat/subsistemas/` |
+| 4.4 | **V-7 / D-5** — GANCHO-C (deslocamento) | — | — | Voo, Natação, Anfíbio + as 3 desvantagens de deslocamento |
+| 4.5 | **D-6** — vulnerabilidade a dano | — | — | pertence ao `InjuryRules`, não ao `TraitRule` |
+
+### Resumo
+
+- **20 lotes**, 3 concluídos, 1 cancelado → **16 pendentes**
+- 🖐 = toca UI ⇒ **PARA para teste no aparelho**: M-1, NOTA-1, D-1, V-5, REACAO-1 (**5 paradas**)
+- Caminho crítico: **1.2 (V-0)** destrava 2.1, 2.2, 2.3 e 4.1 · **1.3 (D-0)** destrava tudo de desvantagem
+- Se o objetivo for "ver automação funcionando o quanto antes": **1.2 → 2.1** (duas etapas)
+- Se for "maior valor de jogo": **1.3 → 2.4** (autocontrole, 35 desvantagens)
 
 ---
 
