@@ -596,7 +596,11 @@ private data class VantagemV3(
     val specialRule: String? = null,
     val tags: List<String>? = null,
     val descricao: String? = null,
-    val modificadores_especificos: List<ModificadorDefinicao>? = null
+    val modificadores_especificos: List<ModificadorDefinicao>? = null,
+    // Efeitos mecanicos declarativos (Lote V-0). PRECISA estar aqui: o JSON e
+    // parseado nesta classe intermediaria antes de virar a definicao final --
+    // campo ausente aqui e silenciosamente descartado.
+    val efeitos: List<com.gurps.ficha.domain.rules.traits.EfeitoDeclarado>? = null
 ) {
     fun toLegacy(): VantagemDefinicao {
         val tipo = when {
@@ -644,7 +648,8 @@ private data class VantagemV3(
             pagina = pagina ?: 0,
             tags = tags.orEmpty(),
             descricao = descricao,
-            modificadoresEspecificos = modificadores_especificos.orEmpty()
+            modificadoresEspecificos = modificadores_especificos.orEmpty(),
+            efeitos = efeitos.orEmpty()
         )
     }
 }
@@ -663,7 +668,11 @@ private data class DesvantagemV2(
     val specialRule: String? = null,
     val tags: List<String>? = null,
     val descricao: String? = null,
-    val modificadores_especificos: List<ModificadorDefinicao>? = null
+    val modificadores_especificos: List<ModificadorDefinicao>? = null,
+    // Efeitos mecanicos declarativos (Lote V-0). PRECISA estar aqui: o JSON e
+    // parseado nesta classe intermediaria antes de virar a definicao final --
+    // campo ausente aqui e silenciosamente descartado.
+    val efeitos: List<com.gurps.ficha.domain.rules.traits.EfeitoDeclarado>? = null
 ) {
     fun toLegacy(): DesvantagemDefinicao {
         val tipo = when (costKind) {
@@ -706,7 +715,8 @@ private data class DesvantagemV2(
             tags = tags.orEmpty(),
             descricao = descricao,
             specialRule = specialRule,
-            modificadoresEspecificos = modificadores_especificos.orEmpty()
+            modificadoresEspecificos = modificadores_especificos.orEmpty(),
+            efeitos = efeitos.orEmpty()
         )
     }
 }
@@ -745,6 +755,11 @@ private fun JsonElement.asVantagemV3OrNull(): VantagemV3? {
         descricao = obj.string("descricao"),
         modificadores_especificos = obj.array("modificadores_especificos")?.mapNotNull {
             gson.fromJson(it, ModificadorDefinicao::class.java)
+        },
+        // Lote V-0/V-1: sem esta linha o campo e lido do JSON e DESCARTADO aqui
+        // -- o parser monta a intermediaria campo a campo, nao por reflexao.
+        efeitos = obj.array("efeitos")?.mapNotNull {
+            gson.fromJson(it, com.gurps.ficha.domain.rules.traits.EfeitoDeclarado::class.java)
         }
     )
 }
@@ -768,6 +783,11 @@ private fun JsonElement.asDesvantagemV2OrNull(): DesvantagemV2? {
         descricao = obj.string("descricao"),
         modificadores_especificos = obj.array("modificadores_especificos")?.mapNotNull {
             gson.fromJson(it, ModificadorDefinicao::class.java)
+        },
+        // Lote V-0/V-1: sem esta linha o campo e lido do JSON e DESCARTADO aqui
+        // -- o parser monta a intermediaria campo a campo, nao por reflexao.
+        efeitos = obj.array("efeitos")?.mapNotNull {
+            gson.fromJson(it, com.gurps.ficha.domain.rules.traits.EfeitoDeclarado::class.java)
         }
     )
 }
@@ -1067,3 +1087,18 @@ fun String.fixMojibakeIfNeeded(): String {
     return current
 }
 */
+
+// ============================================================================
+// Portas de teste do pipeline de catálogo
+// ============================================================================
+// O caminho JSON -> intermediária -> definição converte CAMPO A CAMPO em dois
+// pontos. Campo novo esquecido em qualquer um deles some sem erro — foi o que
+// aconteceu com `efeitos` no Lote V-1 (bônus não aplicava no aparelho, com
+// todos os testes verdes, porque eles liam o JSON direto e pulavam estas
+// etapas). Expostas só para o teste poder exercitar o pipeline real.
+
+internal fun parseVantagemParaTeste(elemento: JsonElement): VantagemDefinicao? =
+    elemento.asVantagemV3OrNull()?.toLegacy()?.normalizada()
+
+internal fun parseDesvantagemParaTeste(elemento: JsonElement): DesvantagemDefinicao? =
+    elemento.asDesvantagemV2OrNull()?.toLegacy()?.normalizada()
