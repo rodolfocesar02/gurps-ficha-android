@@ -32,11 +32,32 @@ object EfeitoInterpretador {
      */
     fun regraPara(traitId: String): TraitRule? {
         if (traitId.isBlank()) return null
-        val repo = CharacterRules.DATA_REPOSITORY_INSTANCE ?: return null
-        val efeitos = repo.getVantagemPorId(traitId)?.efeitos?.takeIf { it.isNotEmpty() }
-            ?: repo.getDesvantagemPorId(traitId)?.efeitos?.takeIf { it.isNotEmpty() }
-            ?: return null
+        val efeitos = buscador(traitId)?.takeIf { it.isNotEmpty() } ?: return null
         return regraDe(traitId, efeitos)
+    }
+
+    /**
+     * De onde saem os efeitos de um traço. Em produção é o catálogo carregado;
+     * o teste troca por um mapa para poder exercitar o caminho COMPLETO
+     * (JSON → loader → Registry → NH da perícia) sem precisar de um
+     * `DataRepository`, que exige Context do Android.
+     *
+     * Essa costura existe porque o bug do Lote V-1 passou justamente por não
+     * haver teste do caminho inteiro: cada pedaço estava verde e o conjunto
+     * estava quebrado.
+     */
+    @Volatile
+    internal var buscador: (String) -> List<EfeitoDeclarado>? = ::buscarNoCatalogo
+
+    private fun buscarNoCatalogo(traitId: String): List<EfeitoDeclarado>? {
+        val repo = CharacterRules.DATA_REPOSITORY_INSTANCE ?: return null
+        return repo.getVantagemPorId(traitId)?.efeitos?.takeIf { it.isNotEmpty() }
+            ?: repo.getDesvantagemPorId(traitId)?.efeitos?.takeIf { it.isNotEmpty() }
+    }
+
+    /** Restaura o comportamento de produção. Chamar no `@After` do teste. */
+    internal fun restaurarBuscadorPadrao() {
+        buscador = ::buscarNoCatalogo
     }
 
     /**
