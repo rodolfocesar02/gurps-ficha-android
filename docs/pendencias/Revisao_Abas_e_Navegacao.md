@@ -663,10 +663,41 @@ arquivos é subordinada a esta.**
 | 4.3 | **V-6** — GANCHO-B (RD natural) | — | — | consumo em `domain/combat/subsistemas/` |
 | 4.4 | **V-7 / D-5** — GANCHO-C (deslocamento) | — | — | Voo, Natação, Anfíbio + as 3 desvantagens de deslocamento |
 | 4.5 | **D-6** — vulnerabilidade a dano | — | — | pertence ao `InjuryRules`, não ao `TraitRule` |
+| 4.6 | **NOTA-2** — nota de bônus em ARMAS, PERÍCIAS e ITENS | 🖐 | 1.1 | pedido do usuário em 27/07 ao validar o M-1 — ver detalhe abaixo |
+
+### Lote NOTA-2 — estender a nota de bônus (pedido em 27/07/2026)
+
+O M-1 resolveu o bônus manual das **defesas** (Esquiva/Apara/Bloqueio). O
+usuário validou no aparelho e pediu o mesmo tratamento nos outros lugares onde
+existe número digitado à mão:
+
+| Onde | O que precisa investigar antes |
+|---|---|
+| **Armas** | há bônus/ajuste manual de dano ou de NH por arma? Onde é editado (`TabEquipamentos` ou o diálogo de arma)? |
+| **Perícias** | existe campo de bônus manual por perícia hoje, ou só pontos gastos? Se não existe, o lote pode ser *criar* o campo junto com a nota |
+| **Itens/Equipamento** | peso, custo e RD podem ter ajuste manual — conferir quais |
+
+**Reaproveitar:** `ui/features/rolagem/CampoNotaBonus.kt` já existe e é genérico
+(recebe `nota` + `onNotaChange`). Não criar componente novo — só mover para uma
+pasta mais neutra se passar a servir abas fora da Rolagem.
+
+**Padrão a seguir (do M-1):**
+- campos de nota **aditivos** no modelo, default `""` (ficha antiga não quebra);
+- estender método existente com parâmetro de default em vez de criar método
+  novo — foi assim que o `FichaViewModel.kt` não cresceu nenhuma linha;
+- nota e valor **independentes**: apagar um não mexe no outro;
+- teste cobrindo essa independência.
+
+⚠️ Antes de começar, **medir** os arquivos alvo (regra R3): `TabEquipamentos.kt`
+e `TabPericias.kt` ainda não foram medidos neste plano.
+
+**Relação com o NOTA-1 (2.3):** são complementares. O NOTA-1 mostra a origem de
+bônus **automáticos** (vindos de vantagem); o NOTA-2 cobre os **digitados à
+mão**. Juntos, todo número da ficha passa a dizer de onde veio.
 
 ### Resumo
 
-- **20 lotes**, 6 concluídos, 1 cancelado → **13 pendentes**
+- **21 lotes**, 6 concluídos, 1 cancelado → **14 pendentes**
 - FASE 0 e FASE 1 fechadas (27/07/2026). Próximo: **2.1 (V-1)** — declarar as vantagens simples em JSON
 - 🖐 = toca UI ⇒ **PARA para teste no aparelho**: M-1, NOTA-1, D-1, V-5, REACAO-1 (**5 paradas**)
 - Caminho crítico: **1.2 (V-0)** destrava 2.1, 2.2, 2.3 e 4.1 · **1.3 (D-0)** destrava tudo de desvantagem

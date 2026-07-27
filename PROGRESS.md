@@ -1,7 +1,7 @@
 # Acompanhamento do Projeto da Ficha GURPS (Para Rodolfo)
 
 **Última Atualização:** 27 de Julho de 2026
-**Status Atual:** Lote **AUTOM-2 CONCLUÍDO** (trilhos M-1/V-0/D-0; gate 1047/0) — anterior: AUTOM-1 validado no aparelho — catálogo de modificadores fiel ao livro, botões Ampliações/Limitações, faxina de 3 telas mortas (−3.076 linhas) e `TabRolagem` abaixo do teto (gate 1014/0). ⏭️ Próximo: **TESTE NO APARELHO** do M-1, depois Lote V-1 (declarar vantagens simples em JSON).
+**Status Atual:** Lote **AUTOM-2 CONCLUÍDO** (trilhos M-1/V-0/D-0; gate 1047/0) — anterior: AUTOM-1 validado no aparelho — catálogo de modificadores fiel ao livro, botões Ampliações/Limitações, faxina de 3 telas mortas (−3.076 linhas) e `TabRolagem` abaixo do teto (gate 1014/0). ⏭️ Próximo: Lote V-1 (declarar vantagens simples em JSON).
 **Último Lote Registrado:** Lote AUTOM-2 (no FIM deste arquivo) — anterior: AUTOM-1
 **HEAD (branch GURPS-Saga):** Lotes recentes: Lote 001=429865b, Lotes 002/003=64d4223, Lote 004=585f040, Lote 005=c3f0c47, Lote 006=448c674.
 
@@ -4903,4 +4903,4 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - **M-1 — nota no bônus manual**: os campos `bonusManual*` eram um número solto; ninguém sabia se o +1 veio de anel, magia ou de uma vantagem que o app não calculava. Ao editar a defesa, o diálogo agora tem "De onde vem este bônus?" com botão de apagar. **Bônus e nota são independentes** — apagar a nota não zera o bônus. Componente único (`CampoNotaBonus.kt`) usado pelos 3 diálogos; os métodos do delegate/ViewModel foram estendidos com parâmetro de default, então `FichaViewModel.kt` não cresceu.
 - **V-0 — interpretador de efeitos declarativos**: campo `efeitos` no JSON lido por um interpretador único (arquitetura híbrida: dado para bônus simples, Kotlin para os complexos). O ponto-chave: os 5 agregadores do Registry ignoravam em silêncio quem não tinha classe Kotlin — agora resolvem em cascata (Kotlin vence JSON). `condicao` e `escopo` entraram **no desenho**, não adiados. `scripts/validar_efeitos.py` pega erro de digitação que o compilador não pega.
 - **D-0 — Registry enxerga desvantagens**: falha silenciosa — os agregadores varriam só `personagem.vantagens`, então regra de desvantagem nunca era chamada. Interface comum `TracoSelecionado` com os 4 campos que as regras usam de fato; 13 arquivos migrados.
-- **Status:** ✅ Build OK nas 2 variantes · gate **1047/0** (+33 testes) · ⏭️ **PENDENTE: teste no aparelho** (M-1 toca UI: diálogos de Esquiva/Apara/Bloqueio).
+- **Status:** ✅ Build OK nas 2 variantes · gate **1047/0** (+33 testes) · ✅ **M-1 VALIDADO NO APARELHO em 27/07** (campo "De onde vem este bônus?" no diálogo de Esquiva). Pedido novo do usuário: estender a nota para Armas/Perícias/Itens → registrado como Lote NOTA-2 em `docs/pendencias/Revisao_Abas_e_Navegacao.md`.
