@@ -199,8 +199,6 @@ fun ConfigurarVantagemDialog(
     var mostrarDescricaoCatalogo by remember { mutableStateOf(false) }
 
     var mods by remember { mutableStateOf(emptyList<ModificadorSelecao>()) }
-    var showAddMod by remember { mutableStateOf(false) }
-    var showAddModPoder by remember { mutableStateOf(false) }
     var showSchoolPicker by remember { mutableStateOf(false) }
     var pendingModForSchool by remember { mutableStateOf<ModificadorDefinicao?>(null) }
 
@@ -622,20 +620,17 @@ fun ConfigurarVantagemDialog(
                 }
 
                 HorizontalDivider()
-                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
-                    Text("Modificadores (%)", style = MaterialTheme.typography.labelLarge)
-                    TextButton(onClick = { showAddMod = true }) {
-                        Icon(Icons.Default.Add, null)
-                        Text("Add")
-                    }
-                }
-                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
-                    Text("Modificadores de Poder", style = MaterialTheme.typography.labelLarge)
-                    TextButton(onClick = { showAddModPoder = true }) {
-                        Icon(Icons.Default.Add, null)
-                        Text("Add")
-                    }
-                }
+                BotoesModificadoresPorTipo(
+                    especificos = definicao.modificadoresEspecificos ?: emptyList(),
+                    gerais = CharacterRules.DATA_REPOSITORY_INSTANCE?.modificadoresGerais ?: emptyList(),
+                    poderes = CharacterRules.DATA_REPOSITORY_INSTANCE?.modificadoresPoderes ?: emptyList(),
+                    tracoId = definicao.id,
+                    onEscolher = { modDef ->
+                        val valorInt = Regex("-?\\d+").find(modDef.valor)?.value?.toIntOrNull() ?: 0
+                        mods = mods.toMutableList().apply { add(ModificadorSelecao(modDef.id, modDef.nome, valorInt, modDef.porNivel, 1, modDef.descricao, modDef.pagina, bonusBase = modDef.bonusBase)) }
+                    },
+                    onModAptidaoEscola = { modDef -> pendingModForSchool = modDef; showSchoolPicker = true }
+                )
 
                 if (mods.isEmpty()) {
                     Text("Nenhum modificador aplicado.", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.outline)
@@ -659,44 +654,12 @@ fun ConfigurarVantagemDialog(
         dismissButton = { TextButton(onClick = onDismiss) { Text(UiActionLabels.CANCELAR) } }
     )
 
-    if (showAddMod) {
-        EscopoModificadoresDialog(
-            especificos = definicao.modificadoresEspecificos ?: emptyList(),
-            gerais = CharacterRules.DATA_REPOSITORY_INSTANCE?.modificadoresGerais ?: emptyList(),
-            poderes = emptyList(),
-            onDismiss = { showAddMod = false },
-            onSelect = { modDef ->
-                if (modDef.id == "mod_aptidao_escola") { pendingModForSchool = modDef; showSchoolPicker = true; showAddMod = false }
-                else {
-                    val valorInt = Regex("-?\\d+").find(modDef.valor)?.value?.toIntOrNull() ?: 0
-                    mods = mods.toMutableList().apply { add(ModificadorSelecao(modDef.id, modDef.nome, valorInt, modDef.porNivel, 1, modDef.descricao, modDef.pagina, bonusBase = modDef.bonusBase)) }
-                    showAddMod = false
-                }
-            }
-        )
-    }
-
-    if (showAddModPoder) {
-        EscopoModificadoresDialog(
-            especificos = emptyList(),
-            gerais = emptyList(),
-            poderes = CharacterRules.DATA_REPOSITORY_INSTANCE?.modificadoresPoderes ?: emptyList(),
-            onDismiss = { showAddModPoder = false },
-            onSelect = { modDef ->
-                val valorInt = Regex("-?\\d+").find(modDef.valor)?.value?.toIntOrNull() ?: 0
-                mods = mods.toMutableList().apply { add(ModificadorSelecao(modDef.id, modDef.nome, valorInt, modDef.porNivel, 1, modDef.descricao, modDef.pagina, bonusBase = modDef.bonusBase)) }
-                showAddModPoder = false
-            }
-        )
-    }
-
     if (showSchoolPicker) {
         SeletorEscolaMagiaDialog(onDismiss = { showSchoolPicker = false }, onSelect = { escola ->
             pendingModForSchool?.let { modDef ->
                 mods = mods.toMutableList().apply { add(ModificadorSelecao(modDef.id, modDef.nome, -40, false, 1, escola, modDef.pagina)) }
             }
             showSchoolPicker = false
-            showAddMod = false
         })
     }
 
@@ -724,8 +687,6 @@ fun EditarVantagemDialog(
     var descricao by remember { mutableStateOf(vantagem.descricao) }
     var mods by remember { mutableStateOf(vantagem.modificadores.toList()) }
 
-    var showAddMod by remember { mutableStateOf(false) }
-    var showAddModPoder by remember { mutableStateOf(false) }
     var showSchoolPicker by remember { mutableStateOf(false) }
     var pendingModForSchool by remember { mutableStateOf<ModificadorDefinicao?>(null) }
     var mostrarDescricaoCatalogo by remember { mutableStateOf(false) }
@@ -979,14 +940,17 @@ fun EditarVantagemDialog(
 
 
                 HorizontalDivider()
-                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
-                    Text("Modificadores (%)", style = MaterialTheme.typography.labelLarge)
-                    TextButton(onClick = { showAddMod = true }) { Icon(Icons.Default.Add, null); Text("Add") }
-                }
-                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
-                    Text("Modificadores de Poder", style = MaterialTheme.typography.labelLarge)
-                    TextButton(onClick = { showAddModPoder = true }) { Icon(Icons.Default.Add, null); Text("Add") }
-                }
+                BotoesModificadoresPorTipo(
+                    especificos = def?.modificadoresEspecificos ?: emptyList(),
+                    gerais = CharacterRules.DATA_REPOSITORY_INSTANCE?.modificadoresGerais ?: emptyList(),
+                    poderes = CharacterRules.DATA_REPOSITORY_INSTANCE?.modificadoresPoderes ?: emptyList(),
+                    tracoId = def?.id ?: vantagem.definicaoId,
+                    onEscolher = { modDef ->
+                        val valorInt = Regex("-?\\d+").find(modDef.valor)?.value?.toIntOrNull() ?: 0
+                        mods = mods.toMutableList().apply { add(ModificadorSelecao(modDef.id, modDef.nome, valorInt, modDef.porNivel, 1, modDef.descricao, modDef.pagina, bonusBase = modDef.bonusBase)) }
+                    },
+                    onModAptidaoEscola = { modDef -> pendingModForSchool = modDef; showSchoolPicker = true }
+                )
 
                 mods.forEachIndexed { idx, mod ->
                     ModificadorSelecionadoItem(mod, onUpdate = { m -> mods = mods.toMutableList().apply { this[idx] = m } }, onDelete = { mods = mods.toMutableList().apply { removeAt(idx) } })
@@ -1004,29 +968,12 @@ fun EditarVantagemDialog(
         dismissButton = { TextButton(onClick = onDismiss) { Text(UiActionLabels.CANCELAR) } }
     )
 
-    if (showAddMod) {
-        EscopoModificadoresDialog(
-            especificos = def?.modificadoresEspecificos ?: emptyList(),
-            gerais = CharacterRules.DATA_REPOSITORY_INSTANCE?.modificadoresGerais ?: emptyList(),
-            onDismiss = { showAddMod = false },
-            onSelect = { modDef ->
-                if (modDef.id == "mod_aptidao_escola") { pendingModForSchool = modDef; showSchoolPicker = true }
-                else {
-                    val valorInt = Regex("-?\\d+").find(modDef.valor)?.value?.toIntOrNull() ?: 0
-                    mods = mods.toMutableList().apply { add(ModificadorSelecao(modDef.id, modDef.nome, valorInt, modDef.porNivel, 1, modDef.descricao, modDef.pagina, bonusBase = modDef.bonusBase)) }
-                    showAddMod = false
-                }
-            }
-        )
-    }
-
     if (showSchoolPicker) {
         SeletorEscolaMagiaDialog(onDismiss = { showSchoolPicker = false }, onSelect = { escola ->
             pendingModForSchool?.let { modDef ->
                 mods = mods.toMutableList().apply { add(ModificadorSelecao(modDef.id, modDef.nome, -40, false, 1, escola, modDef.pagina)) }
             }
             showSchoolPicker = false
-            showAddMod = false
         })
     }
 

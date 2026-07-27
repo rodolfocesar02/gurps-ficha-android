@@ -109,8 +109,6 @@ fun ConfigurarDesvantagemDialog(definicao: DesvantagemDefinicao, onDismiss: () -
     var mostrarDescricaoCatalogo by remember { mutableStateOf(false) }
     var autocontrole by remember { mutableStateOf<Int?>(null) }
     var mods by remember { mutableStateOf(emptyList<ModificadorSelecao>()) }
-    var showAddMod by remember { mutableStateOf(false) }
-    var showAddModPoder by remember { mutableStateOf(false) }
 
     // Estados para Regras Especiais
     var enemyBasePower by remember { mutableStateOf(-5) }
@@ -322,14 +320,16 @@ fun ConfigurarDesvantagemDialog(definicao: DesvantagemDefinicao, onDismiss: () -
                 }
 
                 HorizontalDivider()
-                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
-                    Text("Modificadores (%)", style = MaterialTheme.typography.labelLarge)
-                    TextButton(onClick = { showAddMod = true }) { Icon(Icons.Default.Add, null); Text("Add") }
-                }
-                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
-                    Text("Modificadores de Poder", style = MaterialTheme.typography.labelLarge)
-                    TextButton(onClick = { showAddModPoder = true }) { Icon(Icons.Default.Add, null); Text("Add") }
-                }
+                BotoesModificadoresPorTipo(
+                    especificos = definicao.modificadoresEspecificos ?: emptyList(),
+                    gerais = CharacterRules.DATA_REPOSITORY_INSTANCE?.modificadoresGerais ?: emptyList(),
+                    poderes = CharacterRules.DATA_REPOSITORY_INSTANCE?.modificadoresPoderes ?: emptyList(),
+                    tracoId = definicao.id,
+                    onEscolher = { modDef ->
+                        val valorInt = Regex("-?\\d+").find(modDef.valor)?.value?.toIntOrNull() ?: 0
+                        mods = mods.toMutableList().apply { add(ModificadorSelecao(modDef.id, modDef.nome, valorInt, modDef.porNivel, 1, modDef.descricao, modDef.pagina, bonusBase = modDef.bonusBase)) }
+                    }
+                )
                 mods.forEachIndexed { idx, mod ->
                     ModificadorSelecionadoItem(mod, onUpdate = { m -> mods = mods.toMutableList().apply { this[idx] = m } }, onDelete = { mods = mods.toMutableList().apply { removeAt(idx) } })
                 }
@@ -342,34 +342,6 @@ fun ConfigurarDesvantagemDialog(definicao: DesvantagemDefinicao, onDismiss: () -
         },
         dismissButton = { TextButton(onClick = onDismiss) { Text(UiActionLabels.CANCELAR) } }
     )
-
-    if (showAddMod) {
-        EscopoModificadoresDialog(
-            especificos = definicao.modificadoresEspecificos ?: emptyList(),
-            gerais = CharacterRules.DATA_REPOSITORY_INSTANCE?.modificadoresGerais ?: emptyList(),
-            poderes = emptyList(),
-            onDismiss = { showAddMod = false },
-            onSelect = { modDef ->
-                val valorInt = Regex("-?\\d+").find(modDef.valor)?.value?.toIntOrNull() ?: 0
-                mods = mods.toMutableList().apply { add(ModificadorSelecao(modDef.id, modDef.nome, valorInt, modDef.porNivel, 1, modDef.descricao, modDef.pagina, bonusBase = modDef.bonusBase)) }
-                showAddMod = false
-            }
-        )
-    }
-
-    if (showAddModPoder) {
-        EscopoModificadoresDialog(
-            especificos = emptyList(),
-            gerais = emptyList(),
-            poderes = CharacterRules.DATA_REPOSITORY_INSTANCE?.modificadoresPoderes ?: emptyList(),
-            onDismiss = { showAddModPoder = false },
-            onSelect = { modDef ->
-                val valorInt = Regex("-?\\d+").find(modDef.valor)?.value?.toIntOrNull() ?: 0
-                mods = mods.toMutableList().apply { add(ModificadorSelecao(modDef.id, modDef.nome, valorInt, modDef.porNivel, 1, modDef.descricao, modDef.pagina, bonusBase = modDef.bonusBase)) }
-                showAddModPoder = false
-            }
-        )
-    }
 
     if (mostrarDescricaoCatalogo) {
         CatalogoDescricaoDialog(
@@ -395,8 +367,6 @@ fun EditarDesvantagemDialog(
     var descricao by remember { mutableStateOf(desvantagem.descricao) }
     var autocontrole by remember { mutableStateOf(desvantagem.autocontrole) }
     var mods by remember { mutableStateOf(desvantagem.modificadores) }
-    var showAddMod by remember { mutableStateOf(false) }
-    var showAddModPoder by remember { mutableStateOf(false) }
     var mostrarDescricaoCatalogo by remember { mutableStateOf(false) }
     var poderIdSelecionado by remember { mutableStateOf(desvantagem.poderId) }
     val descricaoCatalogoFinal = descricaoCatalogo.trim()
@@ -654,14 +624,16 @@ fun EditarDesvantagemDialog(
                 }
 
                 HorizontalDivider()
-                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
-                    Text("Modificadores (%)", style = MaterialTheme.typography.labelLarge)
-                    TextButton(onClick = { showAddMod = true }) { Icon(Icons.Default.Add, null); Text("Add") }
-                }
-                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
-                    Text("Modificadores de Poder", style = MaterialTheme.typography.labelLarge)
-                    TextButton(onClick = { showAddModPoder = true }) { Icon(Icons.Default.Add, null); Text("Add") }
-                }
+                BotoesModificadoresPorTipo(
+                    especificos = def?.modificadoresEspecificos ?: emptyList(),
+                    gerais = CharacterRules.DATA_REPOSITORY_INSTANCE?.modificadoresGerais ?: emptyList(),
+                    poderes = CharacterRules.DATA_REPOSITORY_INSTANCE?.modificadoresPoderes ?: emptyList(),
+                    tracoId = def?.id ?: desvantagem.definicaoId,
+                    onEscolher = { modDef ->
+                        val valorInt = Regex("-?\\d+").find(modDef.valor)?.value?.toIntOrNull() ?: 0
+                        mods = mods.toMutableList().apply { add(ModificadorSelecao(modDef.id, modDef.nome, valorInt, modDef.porNivel, 1, modDef.descricao, modDef.pagina, bonusBase = modDef.bonusBase)) }
+                    }
+                )
 
                 mods.forEachIndexed { idx, mod ->
                     ModificadorSelecionadoItem(mod, onUpdate = { m -> mods = mods.toMutableList().apply { this[idx] = m } }, onDelete = { mods = mods.toMutableList().apply { removeAt(idx) } })
@@ -671,46 +643,18 @@ fun EditarDesvantagemDialog(
         confirmButton = {
             TextButton(onClick = {
                 onSave(desvantagem.copy(
-                    nivel = nivel, 
-                    custoEscolhido = if (specialRule == "vicio") (vicioBase + vicioEffect + vicioLegal) else custoEscolhido, 
-                    autocontrole = autocontrole, 
-                    descricao = descricao, 
-                    modificadores = mods, 
-                    metadados = currentMetadados, 
+                    nivel = nivel,
+                    custoEscolhido = if (specialRule == "vicio") (vicioBase + vicioEffect + vicioLegal) else custoEscolhido,
+                    autocontrole = autocontrole,
+                    descricao = descricao,
+                    modificadores = mods,
+                    metadados = currentMetadados,
                     poderId = poderIdSelecionado
                 ))
             }) { Text("Salvar") }
         },
         dismissButton = { TextButton(onClick = onDismiss) { Text("Cancelar") } }
     )
-
-    if (showAddMod) {
-        EscopoModificadoresDialog(
-            especificos = def?.modificadoresEspecificos ?: emptyList(),
-            gerais = CharacterRules.DATA_REPOSITORY_INSTANCE?.modificadoresGerais ?: emptyList(),
-            poderes = emptyList(),
-            onDismiss = { showAddMod = false },
-            onSelect = { modDef ->
-                val valorInt = Regex("-?\\d+").find(modDef.valor)?.value?.toIntOrNull() ?: 0
-                mods = mods.toMutableList().apply { add(ModificadorSelecao(modDef.id, modDef.nome, valorInt, modDef.porNivel, 1, modDef.descricao, modDef.pagina, bonusBase = modDef.bonusBase)) }
-                showAddMod = false
-            }
-        )
-    }
-
-    if (showAddModPoder) {
-        EscopoModificadoresDialog(
-            especificos = emptyList(),
-            gerais = emptyList(),
-            poderes = CharacterRules.DATA_REPOSITORY_INSTANCE?.modificadoresPoderes ?: emptyList(),
-            onDismiss = { showAddModPoder = false },
-            onSelect = { modDef ->
-                val valorInt = Regex("-?\\d+").find(modDef.valor)?.value?.toIntOrNull() ?: 0
-                mods = mods.toMutableList().apply { add(ModificadorSelecao(modDef.id, modDef.nome, valorInt, modDef.porNivel, 1, modDef.descricao, modDef.pagina, bonusBase = modDef.bonusBase)) }
-                showAddModPoder = false
-            }
-        )
-    }
 
     if (mostrarDescricaoCatalogo) {
         CatalogoDescricaoDialog(

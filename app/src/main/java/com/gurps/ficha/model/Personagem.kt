@@ -328,7 +328,14 @@ data class ModificadorDefinicao(
     val bonusBase: Int = 0,
     val pagina: Int? = null,
     val tags: List<String> = emptyList(),
-    val descricao: String? = null
+    val descricao: String? = null,
+    // Id da vantagem/desvantagem DONA, quando o modificador só existe para ela
+    // (no livro, as seções "Ampliações/Limitações Especiais" de um traço — ex.:
+    // Guelras só vale para Não Respira). Null = modificador geral, vale para
+    // qualquer traço. Serve à UI para não oferecer opção sem sentido; o item
+    // continua no catálogo geral porque `RacaCatalogo` o procura por id ali.
+    @SerializedName(value = "donoId", alternate = ["dono_id"])
+    val donoId: String? = null
 )
 
 @Stable

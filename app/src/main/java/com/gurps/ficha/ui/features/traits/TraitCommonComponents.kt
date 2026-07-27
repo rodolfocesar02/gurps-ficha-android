@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Search
@@ -28,12 +29,119 @@ import com.gurps.ficha.model.ModificadorSelecao
 import com.gurps.ficha.domain.rules.CharacterRules
 import com.gurps.ficha.ui.UiActionLabels
 
+// --- Classificação de modificador: ampliação x limitação ---
+
+/**
+ * Um modificador é ampliação (encarece a vantagem) ou limitação (barateia).
+ * Os catálogos separam isso pelo campo `tipo`, mas ele não é confiável sozinho:
+ * há um registro com "limitation" em inglês (mod_gatilho_30) e específicos de
+ * vantagem futuros podem vir sem tipo. Por isso a classificação cai em cascata:
+ *   1. `tipo` começando com "amp"/"lim" (cobre "ampliação"/"limitação"/"limitation");
+ *   2. como rede, o SINAL do valor — limitação é sempre negativa no GURPS.
+ * Assim nenhum item some dos dois botões por causa de dado torto.
+ */
+enum class TipoModificador { AMPLIACAO, LIMITACAO }
+
+fun classificarModificador(mod: ModificadorDefinicao): TipoModificador {
+    val t = mod.tipo.trim().lowercase()
+    return when {
+        t.startsWith("amp") -> TipoModificador.AMPLIACAO
+        t.startsWith("lim") -> TipoModificador.LIMITACAO
+        // Sem tipo utilizável: decide pelo sinal do primeiro número do valor.
+        else -> {
+            val n = Regex("-?\\d+").find(mod.valor)?.value?.toIntOrNull() ?: 0
+            if (n < 0) TipoModificador.LIMITACAO else TipoModificador.AMPLIACAO
+        }
+    }
+}
+
+/**
+ * Um modificador do catálogo geral só cabe no traço aberto se não pertencer a
+ * outro. `donoId` nulo = modificador geral, serve a qualquer traço.
+ *
+ * Sem esse filtro o catálogo geral inteiro aparecia em toda vantagem: abrir
+ * "Abafador de Mana" oferecia Guelras (só de Não Respira), Pele Resistente (só
+ * de Resistência a Dano), Incapaz de Aparar (só de Golpeadores)...
+ */
+fun modificadorCabeEm(mod: ModificadorDefinicao, tracoId: String?): Boolean =
+    mod.donoId.isNullOrBlank() || mod.donoId == tracoId
+
+/**
+ * Os dois botões da ficha — "Ampliações" e "Limitações" — no lugar dos antigos
+ * "Modificadores (%)" e "Modificadores de Poder". A diferença: os antigos
+ * separavam por ARQUIVO de origem (catálogo geral x poderes) e jogavam
+ * ampliações e limitações misturadas na mesma lista. Estes separam pelo que o
+ * modificador FAZ, juntando os dois arquivos e filtrando por tipo.
+ *
+ * @param especificos modificadores próprios da vantagem/desvantagem aberta.
+ * @param gerais catálogo geral (modificadores.v1.json).
+ * @param poderes catálogo de poderes (modificadores_poderes.v1.json).
+ * @param tracoId id da vantagem/desvantagem aberta. Os modificadores do catálogo
+ *   geral que pertencem a OUTRO traço são escondidos; os que pertencem a ESTE
+ *   sobem para a seção "Específicos desta característica".
+ * @param onEscolher chamado com o modificador escolhido pelo usuário.
+ * @param onModAptidaoEscola caso especial: o modificador de Aptidão Mágica por
+ *   escola abre um seletor de escola em vez de entrar direto. Null = trata como
+ *   um modificador comum (usado nas desvantagens, onde ele não aparece).
+ */
+@Composable
+fun BotoesModificadoresPorTipo(
+    especificos: List<ModificadorDefinicao>,
+    gerais: List<ModificadorDefinicao>,
+    poderes: List<ModificadorDefinicao>,
+    tracoId: String? = null,
+    onEscolher: (ModificadorDefinicao) -> Unit,
+    onModAptidaoEscola: ((ModificadorDefinicao) -> Unit)? = null
+) {
+    var tipoAberto by remember { mutableStateOf<TipoModificador?>(null) }
+
+    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+        Text("Ampliações", style = MaterialTheme.typography.labelLarge)
+        TextButton(onClick = { tipoAberto = TipoModificador.AMPLIACAO }) {
+            Icon(androidx.compose.material.icons.Icons.Default.Add, null)
+            Text("Add")
+        }
+    }
+    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+        Text("Limitações", style = MaterialTheme.typography.labelLarge)
+        TextButton(onClick = { tipoAberto = TipoModificador.LIMITACAO }) {
+            Icon(androidx.compose.material.icons.Icons.Default.Add, null)
+            Text("Add")
+        }
+    }
+
+    tipoAberto?.let { tipo ->
+        val filtro = { lista: List<ModificadorDefinicao> ->
+            lista.filter { classificarModificador(it) == tipo && modificadorCabeEm(it, tracoId) }
+        }
+        // Os do catálogo geral que pertencem a ESTE traço são dele: sobem para a
+        // seção "Específicos" em vez de ficarem perdidos no meio dos gerais.
+        val dosDois = (especificos + gerais.filter { !it.donoId.isNullOrBlank() && it.donoId == tracoId })
+            .distinctBy { it.id to it.valor }
+        EscopoModificadoresDialog(
+            especificos = filtro(dosDois),
+            gerais = filtro(gerais).filter { it.donoId.isNullOrBlank() },
+            poderes = filtro(poderes),
+            titulo = if (tipo == TipoModificador.AMPLIACAO) "Adicionar Ampliação" else "Adicionar Limitação",
+            onDismiss = { tipoAberto = null },
+            onSelect = { modDef ->
+                if (modDef.id == "mod_aptidao_escola" && onModAptidaoEscola != null) {
+                    onModAptidaoEscola(modDef)
+                } else {
+                    onEscolher(modDef)
+                }
+                tipoAberto = null
+            }
+        )
+    }
+}
+
 // --- Seletores Genéricos de Catálogo ---
 
 @Composable
-fun EscopoModificadoresDialog(especificos: List<ModificadorDefinicao>, gerais: List<ModificadorDefinicao>, poderes: List<ModificadorDefinicao> = emptyList(), onDismiss: () -> Unit, onSelect: (ModificadorDefinicao) -> Unit) {
+fun EscopoModificadoresDialog(especificos: List<ModificadorDefinicao>, gerais: List<ModificadorDefinicao>, poderes: List<ModificadorDefinicao> = emptyList(), titulo: String = "Adicionar Modificador", onDismiss: () -> Unit, onSelect: (ModificadorDefinicao) -> Unit) {
     var busca by remember { mutableStateOf("") }
-    
+
     val especificosFiltrados = especificos.filter { it.nome.contains(busca, ignoreCase = true) }
     val especificosIds = especificos.map { it.id }.toSet()
     val geraisFiltrados = gerais.filter { it.id !in especificosIds && it.nome.contains(busca, ignoreCase = true) }
@@ -41,7 +149,7 @@ fun EscopoModificadoresDialog(especificos: List<ModificadorDefinicao>, gerais: L
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Adicionar Modificador") },
+        title = { Text(titulo) },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 OutlinedTextField(
@@ -61,12 +169,12 @@ fun EscopoModificadoresDialog(especificos: List<ModificadorDefinicao>, gerais: L
                     }
                     if (geraisFiltrados.isNotEmpty()) {
                         item { Spacer(modifier = Modifier.height(16.dp)) }
-                        item { Text("Gerais (Catálogo)", style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.primary) }
+                        item { Text("Catálogo Geral", style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.primary) }
                         items(geraisFiltrados) { mod -> ModificadorItemRow(mod) { onSelect(mod) } }
                     }
                     if (poderesFiltrados.isNotEmpty()) {
                         item { Spacer(modifier = Modifier.height(16.dp)) }
-                        item { Text("Modificadores de Poder", style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.primary) }
+                        item { Text("Poderes", style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.primary) }
                         items(poderesFiltrados) { mod -> ModificadorItemRow(mod) { onSelect(mod) } }
                     }
                     if (especificosFiltrados.isEmpty() && geraisFiltrados.isEmpty() && poderesFiltrados.isEmpty()) {
