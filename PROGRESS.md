@@ -1,8 +1,8 @@
 # Acompanhamento do Projeto da Ficha GURPS (Para Rodolfo)
 
 **Última Atualização:** 27 de Julho de 2026
-**Status Atual:** Lote **AUTOM-2 CONCLUÍDO** (trilhos M-1/V-0/D-0; gate 1047/0) — anterior: AUTOM-1 validado no aparelho — catálogo de modificadores fiel ao livro, botões Ampliações/Limitações, faxina de 3 telas mortas (−3.076 linhas) e `TabRolagem` abaixo do teto (gate 1014/0). ⏭️ Próximo: Lote V-1 (declarar vantagens simples em JSON).
-**Último Lote Registrado:** Lote AUTOM-2 (no FIM deste arquivo) — anterior: AUTOM-1
+**Status Atual:** Lote **V-1 CONCLUÍDO** — 5 primeiras vantagens automatizadas via JSON (gate 1054/0). Trilhos M-1/V-0/D-0 fechados antes. — catálogo de modificadores fiel ao livro, botões Ampliações/Limitações, faxina de 3 telas mortas (−3.076 linhas) e `TabRolagem` abaixo do teto (gate 1014/0). ⏭️ Próximo: **TESTE NO APARELHO** do V-1 (ficha com Pendulear → Escalada +2).
+**Último Lote Registrado:** Lote V-1 (no FIM deste arquivo) — anteriores: AUTOM-2, AUTOM-1
 **HEAD (branch GURPS-Saga):** Lotes recentes: Lote 001=429865b, Lotes 002/003=64d4223, Lote 004=585f040, Lote 005=c3f0c47, Lote 006=448c674.
 
 ### Sincro V24: Super Release 2.0 (Lote 86)
@@ -4904,3 +4904,11 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - **V-0 — interpretador de efeitos declarativos**: campo `efeitos` no JSON lido por um interpretador único (arquitetura híbrida: dado para bônus simples, Kotlin para os complexos). O ponto-chave: os 5 agregadores do Registry ignoravam em silêncio quem não tinha classe Kotlin — agora resolvem em cascata (Kotlin vence JSON). `condicao` e `escopo` entraram **no desenho**, não adiados. `scripts/validar_efeitos.py` pega erro de digitação que o compilador não pega.
 - **D-0 — Registry enxerga desvantagens**: falha silenciosa — os agregadores varriam só `personagem.vantagens`, então regra de desvantagem nunca era chamada. Interface comum `TracoSelecionado` com os 4 campos que as regras usam de fato; 13 arquivos migrados.
 - **Status:** ✅ Build OK nas 2 variantes · gate **1047/0** (+33 testes) · ✅ **M-1 VALIDADO NO APARELHO em 27/07** (campo "De onde vem este bônus?" no diálogo de Esquiva). Pedido novo do usuário: estender a nota para Armas/Perícias/Itens → registrado como Lote NOTA-2 em `docs/pendencias/Revisao_Abas_e_Navegacao.md`.
+
+### Lote V-1 — 27 de Julho de 2026 (commit caf75184)
+**Primeiras 5 vantagens automatizadas — só dados, zero Kotlin novo (branch GURPS-Saga)**
+- Usando o interpretador do V-0, foram declarados 16 efeitos em 5 vantagens: `pendulear` (+2 Escalada), `senso_de_direcao` (+3 Percepção do Corpo e Navegação/NT), `ultravisao` (+2 Observação, Perícia Forense/NT, Revistar), `nocao_tridimensional_do_espaco` (+1 Pilotagem/NT, +2 Acrobacia e Queda Livre), `voz_melodiosa` (+2 em 7 perícias sociais).
+- **A armadilha do nome era real**: o catálogo usa sufixo `/NT` (`Navegação/NT`, `Perícia Forense/NT`). Declarar `"Navegação"` não pegaria nada — e sem erro nenhum. Todos os 16 alvos foram conferidos contra `pericias.json` antes de escrever.
+- **Fora de propósito**: bônus de reação (precisa do GANCHO-D), "Arremedo" (só existe com especialização), "+2 em testes de Visão" (é sentido, já tratado por `SentidoRules` — daria bônus em dobro) e "+5 HT para recuperar PV" (teste pontual, não é perícia).
+- `EfeitosDeclaradosCatalogoTest`: lê o **catálogo real** e valida as invariantes no gate — alvo existe com nome exato, tipo reconhecido, sem valor zero, e nenhum traço com `efeitos` **e** regra Kotlin (a Kotlin venceria e o JSON seria ignorado em silêncio).
+- **Status:** ✅ Build OK nas 2 variantes · gate **1054/0** · ⏭️ **PENDENTE: teste no aparelho** — abrir uma ficha com Pendulear e conferir se Escalada mostra o NH +2.

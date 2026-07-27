@@ -639,7 +639,7 @@ arquivos é subordinada a esta.**
 
 | # | Lote | UI? | Depende de | O que entrega |
 |---|---|---|---|---|
-| 2.1 | **V-1** — vantagens simples em JSON | — | 1.2 | ~8 vantagens (Pendulear, Senso de Direção…). Zero Kotlin novo |
+| 2.1 | ✅ **V-1** — vantagens simples em JSON | — | 1.2 | **FEITO 27/07** (caf75184). 5 vantagens, 16 efeitos, zero Kotlin. ⏸ aguarda teste no aparelho |
 | 2.2 | **D-2** — desvantagens simples em JSON | — | 1.2 + 1.3 | Gordo, Acima do Peso… mesmo interpretador |
 | 2.3 | **NOTA-1** — origem do bônus no card da perícia | 🖐 | 1.2 | nota discreta nas abas Perícias e Rolagem (componente único) |
 | 2.4 | **D-1** — autocontrole no fim da Rolagem | 🖐 | 1.3 | **35 desvantagens.** Maior valor percebido no jogo |
@@ -697,7 +697,7 @@ mão**. Juntos, todo número da ficha passa a dizer de onde veio.
 
 ### Resumo
 
-- **21 lotes**, 6 concluídos, 1 cancelado → **14 pendentes**
+- **21 lotes**, 7 concluídos, 1 cancelado → **13 pendentes**
 - FASE 0 e FASE 1 fechadas (27/07/2026). Próximo: **2.1 (V-1)** — declarar as vantagens simples em JSON
 - 🖐 = toca UI ⇒ **PARA para teste no aparelho**: M-1, NOTA-1, D-1, V-5, REACAO-1 (**5 paradas**)
 - Caminho crítico: **1.2 (V-0)** destrava 2.1, 2.2, 2.3 e 4.1 · **1.3 (D-0)** destrava tudo de desvantagem
