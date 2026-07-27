@@ -95,4 +95,23 @@ data class EfeitoDeclarado(
 
     /** Valor final considerando o nível do traço na ficha. */
     fun valorPara(nivel: Int): Int = if (porNivel) valor * nivel.coerceAtLeast(1) else valor
+
+    /**
+     * Uma linha legível do efeito, para o contexto enviado à IA:
+     * `+2 Escalada`, `-5 Lábia`, `+1 Esquiva`, `+2 Furtividade (por nível)`,
+     * `+1 Dissimulação [só para parecer honesto]`.
+     *
+     * A condição entra entre colchetes de propósito: o Narrador precisa saber
+     * que aquele bônus NÃO está somado na ficha, e em que situação vale.
+     */
+    fun resumo(nivel: Int = 1): String {
+        val v = valorPara(nivel)
+        val sinal = if (v >= 0) "+$v" else "$v"
+        val porNivelTxt = if (porNivel && nivel <= 1) " (por nível)" else ""
+        val condicaoTxt = if (ehCondicional) " [só $condicao]" else ""
+        val escopoTxt = if (escopoResolvido != EscopoEfeito.GLOBAL) {
+            " (${escopoResolvido.name.lowercase().replace('_', ' ')})"
+        } else ""
+        return "$sinal $alvo$porNivelTxt$escopoTxt$condicaoTxt"
+    }
 }

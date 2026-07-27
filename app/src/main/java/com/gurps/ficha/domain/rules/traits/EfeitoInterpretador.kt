@@ -61,6 +61,15 @@ object EfeitoInterpretador {
     }
 
     /**
+     * Efeitos declarados de um traço, crus.
+     *
+     * Serve a quem precisa DESCREVER a mecânica em vez de aplicá-la — hoje o
+     * contexto enviado à IA, que assim para de adivinhar pela prosa e passa a
+     * saber que "Pendulear" significa "+2 Escalada".
+     */
+    fun efeitosDe(traitId: String): List<EfeitoDeclarado> = buscador(traitId).orEmpty()
+
+    /**
      * Monta a regra a partir de efeitos já em mãos, sem passar pelo catálogo.
      *
      * Separado de [regraPara] para o teste poder exercitar a interpretação sem

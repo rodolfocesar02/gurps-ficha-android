@@ -30,11 +30,42 @@ object MestreIAContextFilter {
             sb.append("Perícias Principais: ${personagem.pericias.take(15).joinToString { "${it.nome} (NH ${it.calcularNivel(personagem)})" }}\n")
         }
         
+        val efeitos = resumoDeEfeitos(personagem)
+        if (efeitos.isNotBlank()) sb.append(efeitos)
+
         if (modo == "conversa") {
             sb.append("Aparência: ${personagem.aparencia}\n")
             sb.append("Histórico: ${personagem.historico}\n")
         }
 
         return sb.toString()
+    }
+
+    /**
+     * O que os traços do personagem FAZEM em números.
+     *
+     * Sem isto, a IA recebe só "Vantagens: Pendulear, Reflexos em Combate" e
+     * tem de adivinhar a mecânica pela prosa da descrição — ou inventar. Com o
+     * campo `efeitos` declarado no catálogo, ela passa a saber que Pendulear é
+     * "+2 Escalada" e pode raciocinar sobre isso.
+     *
+     * ⚠️ Só os traços que o personagem TEM. Mandar o catálogo inteiro (272
+     * vantagens) estouraria o contexto.
+     *
+     * Traços sem efeito declarado não aparecem — a maioria é narrativa e já
+     * está listada acima pelo nome.
+     */
+    internal fun resumoDeEfeitos(personagem: Personagem): String {
+        val linhas = (personagem.vantagens + personagem.desvantagens).mapNotNull { traco ->
+            val efeitos = com.gurps.ficha.domain.rules.traits.EfeitoInterpretador
+                .efeitosDe(traco.definicaoId)
+            if (efeitos.isEmpty()) null
+            else "- ${traco.nome}: ${efeitos.joinToString(", ") { it.resumo(traco.nivel) }}"
+        }
+        if (linhas.isEmpty()) return ""
+        return buildString {
+            append("Efeitos mecânicos dos traços (já somados na ficha, exceto os marcados com [só ...]):\n")
+            linhas.forEach { append("$it\n") }
+        }
     }
 }
