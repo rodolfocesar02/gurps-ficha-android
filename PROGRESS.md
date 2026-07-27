@@ -1,7 +1,7 @@
 # Acompanhamento do Projeto da Ficha GURPS (Para Rodolfo)
 
 **Última Atualização:** 27 de Julho de 2026
-**Status Atual:** Lote **AUTOM-1 CONCLUÍDO** — catálogo de modificadores fiel ao livro, botões Ampliações/Limitações, faxina de 3 telas mortas (−3.076 linhas) e `TabRolagem` abaixo do teto (gate 1014/0). ⏭️ Próximo: **TESTE NO APARELHO**.
+**Status Atual:** Lote **AUTOM-1 CONCLUÍDO e VALIDADO NO APARELHO** — catálogo de modificadores fiel ao livro, botões Ampliações/Limitações, faxina de 3 telas mortas (−3.076 linhas) e `TabRolagem` abaixo do teto (gate 1014/0). ⏭️ Próximo: Lote M-1 (nota no bônus manual) — ver `docs/pendencias/Revisao_Abas_e_Navegacao.md`.
 **Último Lote Registrado:** Lote AUTOM-1 (no FIM deste arquivo) — anterior: Lote MAG-7
 **HEAD (branch GURPS-Saga):** Lotes recentes: Lote 001=429865b, Lotes 002/003=64d4223, Lote 004=585f040, Lote 005=c3f0c47, Lote 006=448c674.
 
@@ -4896,4 +4896,4 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - **Faxina de UI**: removidas `TabVtt.kt` (2.270 linhas), `TabCombate.kt` (775) e `TabNotas.kt` (31) — nenhuma era renderizada. O duplo check pegou que `TabCombate` não era 100% órfão: continha a regra `mensagemBloqueioPendente` com teste ativo, preservada em `domain/rules/MensagensDefesa.kt`.
 - **`TabRolagem` 1.128 → 990 linhas**: extraídos `OverlayDados3D.kt` e `PainelModificadorGlobal.kt`. O cálculo do texto de resultado virou função pura e ganhou 14 testes (piso de dano em 1, margem 0 em NH exato, modificador global só na variante PraCego).
 - **Planos criados** em `docs/pendencias/`: `Automações_Vantagens.md`, `Automações_Desvantagens.md`, `Revisao_Abas_e_Navegacao.md`.
-- **Status:** ✅ Build OK nas 2 variantes · gate 1014/0 · ⏭️ **PENDENTE: teste no aparelho** (mexeu na aba Rolagem e nos diálogos de traços).
+- **Status:** ✅ Build OK nas 2 variantes · gate 1014/0 · ✅ **VALIDADO NO APARELHO em 27/07/2026**: diálogos de vantagem/desvantagem com os botões novos OK; aba Rolagem OK (DX 20, dados 6+3+3=12 → "Sucesso (por 8)" no overlay, no Histórico da Sessão e no Discord — os três concordando).
