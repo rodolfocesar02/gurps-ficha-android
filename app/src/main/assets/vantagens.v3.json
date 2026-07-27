@@ -3738,7 +3738,29 @@
     "tags": [
       "combate"
     ],
-    "descricao": "O personagem tem reações fantásticas e raramente fica surpreso por mais do que alguns segundos.\n\nEle recebe:\n\n- Bônus de +1 em todas as jogadas de defesa ativa (v. Defendendo, pág. 374).\n- Bônus de +1 nos testes de Sacar Rápido.\n- Bônus de +2 nas Verificações de Pânico (pág. 360).\n\nO personagem nunca fica “paralisado” em situações de surpresa.\n\nAlém disso, recebe um bônus de +6 em todos os testes de IQ para voltar a si ou se recuperar de surpresa ou atordoamento mental.\n\nO grupo do personagem recebe:\n\n- Bônus de +1 nos testes de iniciativa para evitar ataques surpresa.\n- Bônus de +2 se o personagem for o líder do grupo.\n\nPara maiores detalhes, consulte Ataques Surpresa e Iniciativa (pág. 393).\n\nReflexos em Combate já está incluída na vantagem Noção do Tempo Ampliada (pág. 73).\n\nPersonagens com Noção do Tempo Ampliada não podem adquirir Reflexos em Combate separadamente."
+    "descricao": "O personagem tem reações fantásticas e raramente fica surpreso por mais do que alguns segundos.\n\nEle recebe:\n\n- Bônus de +1 em todas as jogadas de defesa ativa (v. Defendendo, pág. 374).\n- Bônus de +1 nos testes de Sacar Rápido.\n- Bônus de +2 nas Verificações de Pânico (pág. 360).\n\nO personagem nunca fica “paralisado” em situações de surpresa.\n\nAlém disso, recebe um bônus de +6 em todos os testes de IQ para voltar a si ou se recuperar de surpresa ou atordoamento mental.\n\nO grupo do personagem recebe:\n\n- Bônus de +1 nos testes de iniciativa para evitar ataques surpresa.\n- Bônus de +2 se o personagem for o líder do grupo.\n\nPara maiores detalhes, consulte Ataques Surpresa e Iniciativa (pág. 393).\n\nReflexos em Combate já está incluída na vantagem Noção do Tempo Ampliada (pág. 73).\n\nPersonagens com Noção do Tempo Ampliada não podem adquirir Reflexos em Combate separadamente.",
+    "efeitos": [
+      {
+        "tipo": "defesa",
+        "alvo": "esquiva",
+        "valor": 1
+      },
+      {
+        "tipo": "defesa",
+        "alvo": "aparar",
+        "valor": 1
+      },
+      {
+        "tipo": "defesa",
+        "alvo": "bloqueio",
+        "valor": 1
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Sacar Rápido",
+        "valor": 1
+      }
+    ]
   },
   {
     "id": "regeneracao",

@@ -214,4 +214,57 @@ class EfeitoPontaAPontaTest {
         )
         assertEquals(1, TraitRuleRegistry.getSkillBonus(p, "Disfarce/NT"))
     }
+
+    // --- defesas (Lote V-2) ---
+
+    @Test
+    fun `Reflexos em Combate soma mais 1 nas TRES defesas ativas`() {
+        ligarCatalogoReal()
+
+        val limpo = Personagem(nome = "Teste", destreza = 12, vitalidade = 12)
+        val comReflexos = limpo.copy(
+            vantagens = listOf(
+                VantagemSelecionada(definicaoId = "reflexos_em_combate", nome = "Reflexos em Combate")
+            )
+        )
+
+        // Esquiva percorre o caminho completo ate o valor exibido na ficha.
+        assertEquals(
+            "o bonus nao chegou na Esquiva",
+            limpo.defesasAtivas.calcularEsquiva(limpo) + 1,
+            comReflexos.defesasAtivas.calcularEsquiva(comReflexos)
+        )
+
+        // Aparar e Bloqueio pelo agregador (dependem de pericia/escudo para o
+        // valor final, mas o bonus tem de estar la).
+        assertEquals(1, TraitRuleRegistry.getParryBonus(comReflexos, null))
+        assertEquals(1, TraitRuleRegistry.getBlockBonus(comReflexos))
+        assertEquals(1, TraitRuleRegistry.getDodgeBonus(comReflexos))
+    }
+
+    @Test
+    fun `Reflexos em Combate tambem da mais 1 em Sacar Rapido`() {
+        ligarCatalogoReal()
+        val p = Personagem(
+            nome = "Teste",
+            vantagens = listOf(
+                VantagemSelecionada(definicaoId = "reflexos_em_combate", nome = "Reflexos em Combate")
+            )
+        )
+        assertEquals(1, TraitRuleRegistry.getSkillBonus(p, "Sacar Rápido"))
+    }
+
+    @Test
+    fun `bonus de defesa nao vaza para pericia`() {
+        ligarCatalogoReal()
+        val p = Personagem(
+            nome = "Teste",
+            vantagens = listOf(
+                VantagemSelecionada(definicaoId = "reflexos_em_combate", nome = "Reflexos em Combate")
+            )
+        )
+        // "esquiva" e alvo de DEFESA; nao pode aparecer como bonus de pericia.
+        assertEquals(0, TraitRuleRegistry.getSkillBonus(p, "esquiva"))
+        assertEquals(0, TraitRuleRegistry.getSkillBonus(p, "Escalada"))
+    }
 }
