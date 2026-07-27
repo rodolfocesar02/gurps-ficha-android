@@ -52,6 +52,8 @@ class DanoMagicoResolver(
         sb: StringBuilder,
         distanciaM: Int = 0,
         brutoForcado: Int? = null,
+        /** Lote MAG-7 (Mágica Penetrante): divisor de armadura — divide a RD do alvo (MB p.378). 1 = normal. */
+        divisorArmadura: Int = 1,
     ): Int {
         // 1. IMUNIDADE por elemento vem ANTES de rolar (A1). "Imune ao fogo" = não há dano.
         if (MagicMechanics.imuneAo(mecanica?.elementoDano, alvo.imunidades)) {
@@ -70,7 +72,11 @@ class DanoMagicoResolver(
             "corte" -> DanoTipo.CORT; "perf" -> DanoTipo.PERF
             else -> DanoTipo.CONT // queimadura/contusão/projeção → ×1 (sem enum de queimadura)
         }
-        val rd = rdContraMagia(alvo, mecanica) // MEC-38 (P7)
+        val rdBase = rdContraMagia(alvo, mecanica) // MEC-38 (P7)
+        // Lote MAG-7: Mágica Penetrante divide a RD do alvo (divisor de armadura, MB p.378).
+        val rd = if (divisorArmadura > 1) (rdBase / divisorArmadura).also {
+            sb.append(" (Mágica Penetrante ÷$divisorArmadura: RD $rdBase→$it)")
+        } else rdBase
         val brutoCheio = brutoForcado ?: CombatSession.rolarDano(expr, random)
         // MEC-15: a partir de 1/2D (INCLUSIVE) o dano BÁSICO — antes da RD — cai pela metade.
         val bruto = MagicMechanics.aplicarMeioDano(brutoCheio, mecanica, distanciaM)

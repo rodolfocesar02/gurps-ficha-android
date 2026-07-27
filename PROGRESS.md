@@ -1,8 +1,8 @@
 # Acompanhamento do Projeto da Ficha GURPS (Para Rodolfo)
 
 **Última Atualização:** 24 de Julho de 2026
-**Status Atual:** Loop de MECANIZAÇÃO de magias (MAG-1..7). MAG-1 CONCLUÍDO — buffs/debuffs de atributo de Corpo.
-**Último Lote Registrado:** Lote MAG-1 (ver logo abaixo, agrupado com os lotes de magia P5/P9/A1/P3-1)
+**Status Atual:** Loop de MECANIZAÇÃO de magias **MAG-1..7 CONCLUÍDO** (32 magias mecanizadas; gate 987/0). ⏭️ Próximo: **TESTE NO APARELHO**.
+**Último Lote Registrado:** Lote MAG-7 (ver logo abaixo, agrupado com os lotes de magia P5/P9/A1/P3-1)
 **HEAD (branch GURPS-Saga):** Lotes recentes: Lote 001=429865b, Lotes 002/003=64d4223, Lote 004=585f040, Lote 005=c3f0c47, Lote 006=448c674.
 
 ### Sincro V24: Super Release 2.0 (Lote 86)
@@ -3061,6 +3061,15 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - **C12 (Magia p.9, regra OPCIONAL)**, valores conferidos no livro: omitir movimentos dos pés **−2**; gestos com uma mão só **−2**; sem gestos de mão **−4**; encantamento suave **−2**; sem entoar nada **−4**. Único bônus: *"dobrando o Tempo de Operação, ele recebe **+1**"*. As penalidades **somam** — amarrado e amordaçado dá **−8**, e há teste para isso.
 - `RitualDeConjuracao` no domínio puro, com `tempoAjustado` porque o +1 **não é de graça**: dobra os segundos. **Ligado, não só definido** — entra no `nhEfetivo` como **parcela nomeada**, então o log mostra *"sem gestos de mão −4"* em vez de um −4 sem explicação.
 - **+11 testes.** Gate: **911 por variante, 0 falhas**.
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
+### Lote MAG-7 — 24 de Julho de 2026 (Mágica Penetrante — divisor de armadura; FECHA o loop MAG-1..7)
+- **Mágica Penetrante** (Metamágica): não fere sozinha — **PREPARA um divisor de armadura** para a PRÓXIMA magia de dano (MB p.378), escalando com a energia (1→÷2, 2→÷3, 3→÷5, 4+→÷10, a progressão do livro).
+- Onde entrou: campo `concedeDivisorArmadura` + `MagicMechanics.divisorArmaduraPorEnergia`; o parâmetro `divisorArmadura` no **`DanoMagicoResolver`** (divide a RD antes do `HitLocationRules`); e no `CombatSession` só o estado `divisorArmaduraPendente` + um branch curto que prepara e um wrapper que consome. A mecânica de dano continua morando no delegate.
+- **RESISTÊNCIA À MAGIA foi DEFERIDA — e o motivo é honesto**: o `npcConjurar` **não tem caminho de resistência do herói** (magia de NPC ou faz dano ou nada; o Abascanto não pluga em lugar nenhum). Um `buffResistenciaMagia` hoje seria **campo fantasma** — não teria onde morder. Fica para quando/se existir "herói resiste a magia de NPC".
+- Também deferidos: Escudo Antimágica / Muralha Mágica (barreiras anti-magia — mesmo problema: não há o que interceptar).
+- Teste: curadoria + escala do divisor + **efeito determinístico no funil** (RD 6 cheia = 4 de dano; RD 6÷5 = 9 de dano) + **integração** (conjura Penetrante → `divisorArmaduraPendente=5`; a magia de dano seguinte consome e zera).
+- **+3 testes.** Gate: **987 por variante, 0 falhas**, build nas duas.
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
 ### Lote MAG-6 — 24 de Julho de 2026 (Silêncio em ÁREA — anti-conjurador; JSON-only)

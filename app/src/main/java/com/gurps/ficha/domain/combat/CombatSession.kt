@@ -1083,6 +1083,15 @@ class CombatSession(
                     return ResultadoConjuracaoCombate(true, sb.toString().trim())
                 }
 
+                // Lote MAG-7: Mágica Penetrante não fere — PREPARA um divisor de armadura para a
+                // PRÓXIMA magia de dano (MB p.378). Escala com a energia investida.
+                if (ctx.mecanica?.concedeDivisorArmadura == true) {
+                    divisorArmaduraPendente = com.gurps.ficha.domain.magic.MagicMechanics.divisorArmaduraPorEnergia(energiaInvestida)
+                    sb.append(" A próxima magia de dano fura a armadura (÷$divisorArmaduraPendente).")
+                    verificarFim(); log += sb.toString().trim()
+                    return ResultadoConjuracaoCombate(true, sb.toString().trim())
+                }
+
                 var alvoResistiu = false
                 var dano = 0
 
@@ -1583,6 +1592,9 @@ class CombatSession(
     }
 
 
+    /** Lote MAG-7: divisor de armadura preparado pela Mágica Penetrante para a PRÓXIMA magia de dano. */
+    var divisorArmaduraPendente: Int = 0; private set
+
     private fun aplicarDanoMagico(
         alvo: Combatente,
         energia: Int,
@@ -1590,7 +1602,12 @@ class CombatSession(
         sb: StringBuilder,
         distanciaM: Int = 0,
         brutoForcado: Int? = null,
-    ): Int = danoMagico.aplicar(alvo, energia, mecanica, sb, distanciaM, brutoForcado)
+    ): Int {
+        // Lote MAG-7: consome o divisor preparado pela Mágica Penetrante (vale para o próximo dano).
+        val div = divisorArmaduraPendente.coerceAtLeast(1)
+        if (divisorArmaduraPendente > 0) divisorArmaduraPendente = 0
+        return danoMagico.aplicar(alvo, energia, mecanica, sb, distanciaM, brutoForcado, divisorArmadura = div)
+    }
 
     /**
      * Lote MEC-10: aplica CURA mágica — restaura PV de verdade (Cura Superficial 1 PV/energia até 3;

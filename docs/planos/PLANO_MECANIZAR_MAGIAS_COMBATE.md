@@ -115,8 +115,14 @@ vocabulário. Priorizadas por número de magias que destravam:
   impõe condição em área → foi JSON-only (`efeito=condicao, condicao=silenciado`). SILENCIADO trava o
   `npcConjurar` (dente confirmado). Deferidos: Ensebar (precisa de gatilho de movimento), Cola/
   Entrelaçamento (IMOBILIZADO é fraco). Gate 984/0.
-- **MAG-7 — Penetração e anti-magia:** `divisorArmadura` (Mágica Penetrante), `buffResistenciaMagia`
-  (Resistência à Magia), `buffImunidade` a condição (Imunidade ao Som/à Dor, Visão Brilhante).
+- **MAG-7 ✅ CONCLUÍDO (24/jul)** — **Mágica Penetrante**: prepara um divisor de armadura para a próxima
+  magia de dano (1→÷2, 2→÷3, 3→÷5, 4+→÷10). Campo `concedeDivisorArmadura` + `divisorArmaduraPorEnergia`
+  + parâmetro `divisorArmadura` no `DanoMagicoResolver`; o motor só guarda `divisorArmaduraPendente`.
+  **Resistência à Magia DEFERIDA**: o `npcConjurar` não tem caminho de resistência do herói, então o campo
+  seria fantasma. Idem Escudo Antimágica/Muralha Mágica. Gate 987/0.
+
+> **LOOP MAG-1..7 FECHADO.** 32 magias mecanizadas, 987 testes por variante, 0 falhas.
+> Próximo passo: **validar no aparelho** antes de abrir novas frentes (MAG-8 iluminação e os deferidos).
 - **MAG-8 (grande, opcional) — Iluminação/visibilidade:** Invisibilidade (barato, `buffPenalidadeAtacantes`),
   depois Escuridão/Trevas/Jato de Luz (caro: exige camada de luz por área).
 

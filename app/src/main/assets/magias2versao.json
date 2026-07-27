@@ -11840,9 +11840,8 @@
     "descricao": "Esta mágica é operada em outra mágica de dano, concedendo-lhe um divisor de armadura (pág. MB378). As mágicas são operadas uma após a outra, sem atrasos entre as operações. Mágica Penetrante é operada primeiro e conta como uma mágica “ativa” para determinar o NH efetivo para a segunda mágica.\n\nDuração: 1 minuto.\n\nCusto: 1 a 5 para operar. Mesmo custo para manter.\n\nTempo de operação: 3 segundos.\n\nPré-requisitos: Aptidão Mágica 1 e pelo menos uma mágica em sete escolas diferentes.\n\nUma mágica fortificada com Mágica Penetrante não causa dano extra a inimigos não vestindo armaduras. RD endurecida defende contra o divisor de armadura conferido por esta mágica normalmente.\n\nCusto: Veja a tabela abaixo.\n\nDivisor de Armadura Custo\n2 2\n3 4\n5 6\n10 8\nIgnora RD 10\n\nTempo de operação: 3 segundos. Pré-requisitos: Retardo e Detectar Pontos Fracos.",
     "mecanica": {
       "efeito": "buff",
-      "entrega": "auto",
-      "buffRotulo": "divisor de armadura na próxima magia de dano",
-      "notas": "Concede DIVISOR DE ARMADURA a proxima magia de dano - o motor nao tem campo para divisor de armadura (so buffDanoArma, que e bonus apos penetrar a RD, semantica DIFERENTE e incompativel). Custo 2/4/6/8/10 da divisor (2)/(3)/(5)/(10)/ignora RD. Dura 1 min; conta como magia ativa (-1 no NH da segunda magia). Nao causa dano extra contra alvo sem armadura; RD endurecida reduz o divisor normalmente. Fi"
+      "concedeDivisorArmadura": true,
+      "notas": "Operada antes de uma magia de dano: concede um divisor de armadura (MB p.378) a proxima magia, escalando com a energia (1->2, 2->3, 3->5, 4+->10). Nao fere sozinha."
     }
   },
   {

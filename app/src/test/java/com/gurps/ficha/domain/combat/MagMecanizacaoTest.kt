@@ -8,6 +8,7 @@ import com.gurps.ficha.domain.magic.MagicClassParser
 import com.gurps.ficha.domain.magic.MagicEnergy
 import com.gurps.ficha.domain.magic.MagicMechanics
 import com.gurps.ficha.domain.magic.NivelMana
+import com.gurps.ficha.domain.combat.subsistemas.DanoMagicoResolver
 import com.gurps.ficha.domain.combat.subsistemas.EfeitosMagicosDelegate
 import com.gurps.ficha.model.MagiaDefinicao
 import org.junit.Assert.assertEquals
@@ -371,5 +372,49 @@ class MagMecanizacaoTest {
         val res = s.npcConjurar("g", NpcMagia(nome = "Raio", nh = 15, projetil = true, custoFP = 1, danoDados = 2))
         assertTrue("NPC silenciado não conjura (${res.texto})",
             !res.acertou && res.texto.contains("silenciado"))
+    }
+
+    // ══════════════════════ MAG-7 — Mágica Penetrante (divisor de armadura) ═══════════════════════
+
+    @Test
+    fun `MAG-7 curadoria — Magica Penetrante concede divisor e a escala por energia bate com o livro`() {
+        val cat = catalogo(); Assume.assumeNotNull(cat)
+        assertTrue("magica_penetrante deve conceder divisor", mec(cat!!, "magica_penetrante").concedeDivisorArmadura)
+        // Progressão de divisores (MB p.378): 1→2, 2→3, 3→5, 4+→10.
+        assertEquals(2, MagicMechanics.divisorArmaduraPorEnergia(1))
+        assertEquals(3, MagicMechanics.divisorArmaduraPorEnergia(2))
+        assertEquals(5, MagicMechanics.divisorArmaduraPorEnergia(3))
+        assertEquals(10, MagicMechanics.divisorArmaduraPorEnergia(5))
+    }
+
+    @Test
+    fun `MAG-7 efeito — o divisor de armadura FURA a RD e aumenta o dano`() {
+        // Funil direto, determinístico (brutoForcado remove o dado): RD 6, dano bruto 10.
+        val funil = DanoMagicoResolver(random = Random(1), rdContraMagia = { _, _ -> 6 }, imporCondicao = { _, _, _, _ -> })
+        val mecDano = MagiaMecanica(efeito = "dano", danoPorEnergia = "1d")
+        val semPen = funil.aplicar(alvo(), energia = 1, mecanica = mecDano, sb = StringBuilder(), brutoForcado = 10, divisorArmadura = 1)
+        val comPen = funil.aplicar(alvo(), energia = 1, mecanica = mecDano, sb = StringBuilder(), brutoForcado = 10, divisorArmadura = 5)
+        assertEquals("RD 6 cheia: 10−6 = 4", 4, semPen)
+        assertEquals("RD 6÷5 = 1: 10−1 = 9", 9, comPen)
+        assertTrue("penetrar tem que doer mais", comPen > semPen)
+    }
+
+    @Test
+    fun `MAG-7 integracao — conjurar Magica Penetrante prepara o divisor e a proxima magia o consome`() {
+        val cat = catalogo(); Assume.assumeNotNull(cat)
+        val g = alvo()
+        val enc = CombatEncounter(listOf(heroiComb(), g), mapOf("g" to 2), seed = 1L)
+        val s = CombatSession(enc, HeroiPerfilCombate(esquiva = 9, apara = 11, ht = 12, rd = 0), Random(1))
+        // 1) Conjura Mágica Penetrante com 3 de energia → prepara divisor 5.
+        val ctxPen = ContextoConjuracao(nhBasico = 30, classe = MagicClassParser.parse("Comum"),
+            mana = NivelMana.NORMAL, mecanica = mec(cat!!, "magica_penetrante"))
+        s.heroiConjurar(ctxPen, MagicEnergy.parse("1 a 5"), energiaInvestida = 3, magiaNome = "Mágica Penetrante", alvoId = null)
+        assertEquals("preparou o divisor 5", 5, s.divisorArmaduraPendente)
+        // 2) Conjura uma magia de dano direta → consome o divisor.
+        val ctxDano = ContextoConjuracao(nhBasico = 30, classe = MagicClassParser.parse("Comum"),
+            mana = NivelMana.NORMAL, distanciaMetros = 1,
+            mecanica = MagiaMecanica(efeito = "dano", danoPorEnergia = "1d"))
+        s.heroiConjurar(ctxDano, MagicEnergy.parse("Varia"), energiaInvestida = 2, magiaNome = "Dano", alvoId = "g")
+        assertEquals("o divisor foi consumido pela magia de dano", 0, s.divisorArmaduraPendente)
     }
 }

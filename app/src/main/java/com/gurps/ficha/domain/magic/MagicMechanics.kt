@@ -276,6 +276,13 @@ data class MagiaMecanica(
     /** PV restaurados ao limpar (Cessar Sangramento restaura 1 PV junto). 0 = só limpa, não cura. */
     val curaAoLimpar: Int = 0,
 
+    // ── Lote MAG-7: Mágica Penetrante ──
+    /**
+     * Marca a **Mágica Penetrante**: não fere sozinha; concede um DIVISOR DE ARMADURA (MB p.378) à
+     * PRÓXIMA magia de dano do operador, escalando com a energia (ver [divisorArmaduraPorEnergia]).
+     */
+    val concedeDivisorArmadura: Boolean = false,
+
     // ── notas para o Narrador (ambiente/controle/utilidade: o motor tagueia, o Mestre descreve) ──
     val notas: String? = null,
 )
@@ -610,6 +617,19 @@ object MagicMechanics {
     /** Lote MEC-22: esta magia fere a vítima a cada turno, contra um teste dela? */
     fun temTiquePorTurno(m: MagiaMecanica?): Boolean =
         m?.danoPorTurnoExpr != null && !m.danoPorTurnoTeste.isNullOrBlank()
+
+    /**
+     * Lote MAG-7: divisor de armadura da Mágica Penetrante pela energia investida (1 a 5), seguindo a
+     * progressão de divisores do GURPS (MB p.378): (2), (3), (5), (10). Piso 2 (1 de energia já fura),
+     * teto 10. 0/negativo = sem divisor (1).
+     */
+    fun divisorArmaduraPorEnergia(energia: Int): Int = when {
+        energia <= 0 -> 1
+        energia == 1 -> 2
+        energia == 2 -> 3
+        energia == 3 -> 5
+        else -> 10
+    }
 
     /** Lote MEC-19: penalidade no teste de fuga, pela energia investida (−1 a cada N pontos). */
     fun penalidadeEscapeCondicao(m: MagiaMecanica?, energiaInvestida: Int): Int {
