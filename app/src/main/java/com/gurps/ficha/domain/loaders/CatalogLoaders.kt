@@ -66,6 +66,20 @@ class CatalogLoaders(private val context: Context) {
         }
     }
 
+    fun carregarPoderes(): List<PoderDefinicao> {
+        return try {
+            val json = context.assets.open("poderes.v1.json").bufferedReader().use { it.readText() }
+            val type = object : TypeToken<List<PoderDefinicao>>() {}.type
+            val poderes: List<PoderDefinicao> = gson.fromJson(json, type)
+            clearLoadError("poderes")
+            poderes.map { it.normalizada() }
+        } catch (e: Exception) {
+            registerLoadError("poderes", e)
+            e.printStackTrace()
+            emptyList()
+        }
+    }
+
     fun carregarVantagensExtrasArtesMarciaisV1(): List<VantagemDefinicao> {
         return try {
             val json = context.assets.open("vantagens_artes_marciais.v1.json")
@@ -547,6 +561,18 @@ class CatalogLoaders(private val context: Context) {
             gson.fromJson<List<ModificadorDefinicao>>(json, type) ?: emptyList()
         } catch (e: Exception) {
             registerLoadError("modificadores", e)
+            e.printStackTrace()
+            emptyList()
+        }
+    }
+
+    fun carregarModificadoresPoderes(): List<ModificadorDefinicao> {
+        return try {
+            val json = context.assets.open("modificadores_poderes.v1.json").bufferedReader().use { it.readText() }
+            val type = object : TypeToken<List<ModificadorDefinicao>>() {}.type
+            gson.fromJson<List<ModificadorDefinicao>>(json, type) ?: emptyList()
+        } catch (e: Exception) {
+            registerLoadError("modificadores_poderes", e)
             e.printStackTrace()
             emptyList()
         }

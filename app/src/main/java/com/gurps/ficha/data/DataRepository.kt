@@ -46,6 +46,7 @@ open class DataRepository(internal val context: Context) {
     )
 
 
+    private var _poderes: List<PoderDefinicao>? = null
     private var _vantagens: List<VantagemDefinicao>? = null
 
     private var _desvantagens: List<DesvantagemDefinicao>? = null
@@ -59,9 +60,13 @@ open class DataRepository(internal val context: Context) {
     private var _escudosCatalogo: List<EscudoCatalogoItem>? = null
     private var _armadurasCatalogo: List<ArmaduraCatalogoItem>? = null
     private var _modificadoresGerais: List<ModificadorDefinicao>? = null
+    private var _modificadoresPoderes: List<ModificadorDefinicao>? = null
     private var _temasMestreIA: List<MestreIaTema>? = null
     
     val mestreIARepository by lazy { MestreIARepository(context, database) }
+
+    open val poderes: List<PoderDefinicao>
+        get() = _poderes ?: carregarPoderes().also { _poderes = it }
 
     open val vantagens: List<VantagemDefinicao>
         get() = _vantagens ?: carregarVantagens().also { _vantagens = it }
@@ -108,6 +113,9 @@ open class DataRepository(internal val context: Context) {
     val modificadoresGerais: List<ModificadorDefinicao>
         get() = _modificadoresGerais ?: carregarModificadoresGerais().also { _modificadoresGerais = it }
 
+    val modificadoresPoderes: List<ModificadorDefinicao>
+        get() = _modificadoresPoderes ?: carregarModificadoresPoderes().also { _modificadoresPoderes = it }
+
     open val magias: List<MagiaDefinicao>
         get() = _magias ?: carregarMagias().also { _magias = it }
 
@@ -124,6 +132,7 @@ open class DataRepository(internal val context: Context) {
         return synchronized(catalogLoaders.loadErrors) { catalogLoaders.loadErrors.toMap() }
     }
 
+    private fun carregarPoderes(): List<PoderDefinicao> = catalogLoaders.carregarPoderes()
     private fun carregarVantagens(): List<VantagemDefinicao> = catalogLoaders.carregarVantagens()
     private fun carregarDesvantagens(): List<DesvantagemDefinicao> = catalogLoaders.carregarDesvantagens()
     private fun carregarPericias(): List<PericiaDefinicao> = catalogLoaders.carregarPericias()
@@ -135,6 +144,7 @@ open class DataRepository(internal val context: Context) {
     private fun carregarEscudosCatalogo(): List<EscudoCatalogoItem> = catalogLoaders.carregarEscudosCatalogo()
     private fun carregarArmadurasCatalogo(): List<ArmaduraCatalogoItem> = catalogLoaders.carregarArmadurasCatalogo()
     private fun carregarModificadoresGerais(): List<ModificadorDefinicao> = catalogLoaders.carregarModificadoresGerais()
+    private fun carregarModificadoresPoderes(): List<ModificadorDefinicao> = catalogLoaders.carregarModificadoresPoderes()
 
     private fun carregarTemasMestreIA(): List<MestreIaTema> {
         return try {

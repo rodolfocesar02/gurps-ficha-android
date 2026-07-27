@@ -43,6 +43,7 @@ data class Personagem(
     // Listas
     var vantagens: List<VantagemSelecionada> = emptyList(),
     var desvantagens: List<DesvantagemSelecionada> = emptyList(),
+    var poderes: List<Poder> = emptyList(),
     var qualidades: List<String> = emptyList(),
     var peculiaridades: List<String> = emptyList(),
     var pericias: List<PericiaSelecionada> = emptyList(),
@@ -77,7 +78,8 @@ data class Personagem(
     var sagaSangrando: Boolean = false,
     var sagaSangramentoPenalidadeLocal: Int? = null,
     var sagaSangramentoIntervaloSeg: Int? = null,
-    var modeloRacial: ModeloRacial = ModeloRacial()
+    var modeloRacial: ModeloRacial = ModeloRacial(),
+    var historicoLog: List<RegistroLog> = emptyList()
 ) {
     /**
      * Lista consolidada de todas as perícias (pessoais + raciais).
@@ -270,6 +272,9 @@ data class Personagem(
             if (!jsonObject.has("modeloRacial")) {
                 jsonObject.add("modeloRacial", com.google.gson.JsonObject())
             }
+            if (!jsonObject.has("historicoLog")) {
+                jsonObject.add("historicoLog", com.google.gson.JsonArray())
+            }
             return gson.fromJson(jsonObject, Personagem::class.java)
         }
     }
@@ -380,7 +385,8 @@ data class VantagemSelecionada(
     val pagina: Int = 0,
     val specialRule: String? = null,
     var modificadores: List<ModificadorSelecao> = emptyList(),
-    var metadados: Map<String, String>? = null // Para regras especiais como Ataque Inato
+    var metadados: Map<String, String>? = null, // Para regras especiais como Ataque Inato
+    var poderId: String? = null // Referência ao Poder que possui esta Vantagem
 ) {
     val custoFinal: Int get() {
         val rule = specialRule ?: CharacterRules.DATA_REPOSITORY_INSTANCE?.getVantagemPorId(definicaoId)?.specialRule
@@ -465,7 +471,8 @@ data class DesvantagemSelecionada(
     val pagina: Int = 0,
     val specialRule: String? = null,
     var modificadores: List<ModificadorSelecao> = emptyList(),
-    var metadados: Map<String, String>? = null
+    var metadados: Map<String, String>? = null,
+    var poderId: String? = null // Referência ao Poder que possui esta Desvantagem
 ) {
     val custoFinal: Int get() {
         val rule = specialRule ?: CharacterRules.DATA_REPOSITORY_INSTANCE?.getDesvantagemPorId(definicaoId)?.specialRule

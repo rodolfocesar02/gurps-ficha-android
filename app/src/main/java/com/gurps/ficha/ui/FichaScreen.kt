@@ -90,6 +90,10 @@ import com.gurps.ficha.ui.features.dice3d.ConfigurarDadosDialog
 import com.gurps.ficha.ui.components.GeminiLiveTools
 import kotlinx.coroutines.launch
 
+// Flag para ligar/desligar a Aba SAGA na compilação do APK.
+// Mude para true para mostrar a aba, ou false para escondê-la e desacoplar.
+const val HABILITAR_ABA_SAGA = true
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FichaScreen(viewModel: FichaViewModel) {
@@ -219,10 +223,15 @@ fun FichaScreen(viewModel: FichaViewModel) {
     } else {
         configuration.screenWidthDp < 390 || density.fontScale > 1.1f
     }
-    val tabs = if (temAptidaoMagica) {
-        listOf("Geral", "Traços", "Perícias", "Técnicas", "Magia", "Equip.", "Rolagem", "Saga")
-    } else {
-        listOf("Geral", "Traços", "Perícias", "Técnicas", "Equip.", "Rolagem", "Saga")
+    val tabs = buildList {
+        add("Geral")
+        add("Traços")
+        add("Perícias")
+        add("Técnicas")
+        if (temAptidaoMagica) add("Magia")
+        add("Equip.")
+        add("Rolagem")
+        if (HABILITAR_ABA_SAGA) add("Saga")
     }
     val selectedTitle = tabs.getOrNull(selectedTab).orEmpty()
     val vttFullscreen = selectedTitle == "VTT" && vttImmersiveUi

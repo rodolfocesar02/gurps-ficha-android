@@ -207,4 +207,38 @@ class FichaTraitDelegate(private val dataRepository: DataRepository) {
         }
         return nivel.coerceAtLeast(1)
     }
+
+    fun adicionarPoder(personagem: Personagem, poder: Poder): List<Poder> {
+        return personagem.poderes + poder
+    }
+
+    fun removerPoder(personagem: Personagem, index: Int): List<Poder> {
+        val lista = personagem.poderes.toMutableList()
+        if (index in lista.indices) lista.removeAt(index)
+        return lista
+    }
+
+    fun atualizarPoder(personagem: Personagem, index: Int, poder: Poder): List<Poder> {
+        val lista = personagem.poderes.toMutableList()
+        if (index in lista.indices) lista[index] = poder
+        return lista
+    }
+
+    fun vincularVantagemPoder(personagem: Personagem, indexVantagem: Int, poderId: String?): List<VantagemSelecionada> {
+        val lista = personagem.vantagens.toMutableList()
+        if (indexVantagem in lista.indices) {
+            val v = lista[indexVantagem]
+            lista[indexVantagem] = v.copy(poderId = poderId)
+        }
+        return lista
+    }
+
+    fun vincularDesvantagemPoder(personagem: Personagem, indexDesvantagem: Int, poderId: String?): List<DesvantagemSelecionada> {
+        val lista = personagem.desvantagens.toMutableList()
+        if (indexDesvantagem in lista.indices) {
+            val d = lista[indexDesvantagem]
+            lista[indexDesvantagem] = d.copy(poderId = poderId)
+        }
+        return lista
+    }
 }

@@ -28,6 +28,7 @@ import com.gurps.ficha.model.VantagemSelecionada
 import com.gurps.ficha.viewmodel.FichaViewModel
 import com.gurps.ficha.BuildConfig
 import androidx.compose.ui.semantics.contentDescription
+import com.gurps.ficha.ui.features.traits.DialogsPoderes
 import androidx.compose.ui.semantics.semantics
 import com.gurps.ficha.ui.features.traits.*
 
@@ -51,6 +52,7 @@ fun TabTracos(viewModel: FichaViewModel) {
     var showQualidadeDialog by remember { mutableStateOf(false) }
     var showPeculiaridadeDialog by remember { mutableStateOf(false) }
     var showModeloRacialDialog by remember { mutableStateOf(false) }
+    var showPoderesDialog by remember { mutableStateOf(false) }
     var editingVantagemIndex by remember { mutableStateOf<Int?>(null) }
     var editingDesvantagemIndex by remember { mutableStateOf<Int?>(null) }
     var editingQualidadeIndex by remember { mutableStateOf<Int?>(null) }
@@ -65,6 +67,10 @@ fun TabTracos(viewModel: FichaViewModel) {
         BotaoAcaoTracosPadrao(
             texto = "Raça e Metacaracterísticas (${p.modeloRacial.nome})",
             onClick = { showModeloRacialDialog = true }
+        )
+        BotaoAcaoTracosPadrao(
+            texto = "Configurar Poderes",
+            onClick = { showPoderesDialog = true }
         )
         BotaoAcaoTracosPadrao(
             texto = "Adicionar Vantagem",
@@ -228,6 +234,7 @@ fun TabTracos(viewModel: FichaViewModel) {
             vantagem = vantagem,
             descricaoCatalogo = descricaoCatalogo,
             weaponSuggestions = weaponSuggestions,
+            poderesDisponiveis = p.poderes,
             onDismiss = { editingVantagemIndex = null },
             onSave = { novaVantagem ->
                 viewModel.atualizarVantagem(index, novaVantagem)
@@ -250,12 +257,17 @@ fun TabTracos(viewModel: FichaViewModel) {
             desvantagem = desvantagem,
             permiteAutocontrole = permiteAutocontrole,
             descricaoCatalogo = descricaoCatalogo,
+            poderesDisponiveis = p.poderes,
             onDismiss = { editingDesvantagemIndex = null },
             onSave = { novaDesvantagem ->
                 viewModel.atualizarDesvantagem(index, novaDesvantagem)
                 editingDesvantagemIndex = null
             }
         )
+    }
+
+    if (showPoderesDialog) {
+        DialogsPoderes(viewModel = viewModel, onDismiss = { showPoderesDialog = false })
     }
 }
 

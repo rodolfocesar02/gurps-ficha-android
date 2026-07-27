@@ -46,6 +46,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import androidx.compose.ui.platform.LocalContext
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Share
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import com.gurps.ficha.BuildConfig
 import com.gurps.ficha.viewmodel.FichaViewModel
 import kotlin.math.abs
@@ -60,18 +68,42 @@ fun TabGeral(viewModel: FichaViewModel) {
     val rowSpacing = if (isCompactScreen) 6.dp else 8.dp
     val dialogPadding = if (isCompactScreen) 8.dp else 10.dp
     val dialogSpacing = if (isCompactScreen) 3.dp else 4.dp
+    
+    var nomeInput by rememberSaveable { mutableStateOf(p.nome) }
+    var nomeEmFoco by remember { mutableStateOf(false) }
+    var jogadorInput by rememberSaveable { mutableStateOf(p.jogador) }
+    var jogadorEmFoco by remember { mutableStateOf(false) }
     var pontosInput by rememberSaveable { mutableStateOf(p.pontosIniciais.toString()) }
     var ultimoPontosValidos by rememberSaveable { mutableStateOf(p.pontosIniciais.toString()) }
     var pontosEmFoco by remember { mutableStateOf(false) }
     var showAnotacoesDialog by remember { mutableStateOf(false) }
     var showResumoDialog by remember { mutableStateOf(false) }
     var showBasesDialog by remember { mutableStateOf(false) }
+    var showHistoricoDialog by remember { mutableStateOf(false) }
+    var showConfirmLimparHistorico by remember { mutableStateOf(false) }
+
+    val context = LocalContext.current
+    val exportLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.CreateDocument("text/plain")
+    ) { uri ->
+        if (uri != null) {
+            viewModel.exportarHistoricoParaTxt(uri, context)
+        }
+    }
 
     LaunchedEffect(p.pontosIniciais) {
         if (!pontosEmFoco) {
             pontosInput = p.pontosIniciais.toString()
             ultimoPontosValidos = pontosInput
         }
+    }
+    
+    LaunchedEffect(p.nome) {
+        if (!nomeEmFoco) nomeInput = p.nome
+    }
+    
+    LaunchedEffect(p.jogador) {
+        if (!jogadorEmFoco) jogadorInput = p.jogador
     }
 
     Column(
@@ -83,10 +115,18 @@ fun TabGeral(viewModel: FichaViewModel) {
     ) {
         SectionCard(title = "") {
             OutlinedTextField(
-                value = p.nome,
-                onValueChange = { viewModel.atualizarNome(it) },
+                value = nomeInput,
+                onValueChange = { nomeInput = it },
                 label = { Text("Nome do Personagem") },
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .onFocusChanged { focusState ->
+                        val perdeuFoco = nomeEmFoco && !focusState.isFocused
+                        nomeEmFoco = focusState.isFocused
+                        if (perdeuFoco) {
+                            viewModel.atualizarNome(nomeInput)
+                        }
+                    },
                 singleLine = true
             )
             Spacer(modifier = Modifier.height(4.dp))
@@ -95,10 +135,18 @@ fun TabGeral(viewModel: FichaViewModel) {
                 horizontalArrangement = Arrangement.spacedBy(rowSpacing)
             ) {
                 OutlinedTextField(
-                    value = p.jogador,
-                    onValueChange = { viewModel.atualizarJogador(it) },
+                    value = jogadorInput,
+                    onValueChange = { jogadorInput = it },
                     label = { Text("Jogador") },
-                    modifier = Modifier.weight(1f),
+                    modifier = Modifier
+                        .weight(1f)
+                        .onFocusChanged { focusState ->
+                            val perdeuFoco = jogadorEmFoco && !focusState.isFocused
+                            jogadorEmFoco = focusState.isFocused
+                            if (perdeuFoco) {
+                                viewModel.atualizarJogador(jogadorInput)
+                            }
+                        },
                     singleLine = true
                 )
                 OutlinedTextField(
@@ -310,15 +358,113 @@ fun TabGeral(viewModel: FichaViewModel) {
                     }
                     Row(
                         modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.Start
+                        horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         TextButton(onClick = { showAnotacoesDialog = false }) {
+                            Text("Fechar")
+                        }
+                        TextButton(
+                            onClick = { showHistoricoDialog = true },
+                            modifier = Modifier.semantics { contentDescription = "Abrir Histórico de Alterações" }
+                        ) {
+                            Text("Ver Histórico de Alterações")
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    if (showHistoricoDialog) {
+        Dialog(
+            onDismissRequest = { showHistoricoDialog = false },
+            properties = DialogProperties(usePlatformDefaultWidth = false)
+        ) {
+            Card(modifier = Modifier.fillMaxSize().padding(16.dp), shape = RoundedCornerShape(12.dp)) {
+                Column(
+                    modifier = Modifier.fillMaxSize().padding(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Row {
+                            IconButton(
+                                onClick = { showConfirmLimparHistorico = true },
+                                modifier = Modifier.semantics { contentDescription = "Apagar todo o Histórico de Alterações" }
+                            ) {
+                                Text("🗑️", style = MaterialTheme.typography.titleLarge)
+                            }
+                            IconButton(
+                                onClick = { exportLauncher.launch("historico_ficha.txt") },
+                                modifier = Modifier.semantics { contentDescription = "Exportar Histórico para arquivo de texto" }
+                            ) {
+                                Text("📄", style = MaterialTheme.typography.titleLarge)
+                            }
+                        }
+                        Text(
+                            "Histórico de Alterações",
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+                    HorizontalDivider()
+                    Column(
+                        modifier = Modifier.weight(1f).verticalScroll(rememberScrollState()),
+                        verticalArrangement = Arrangement.spacedBy(4.dp)
+                    ) {
+                        if (p.historicoLog.isEmpty()) {
+                            Text("Nenhum registro encontrado.", style = MaterialTheme.typography.bodyMedium)
+                        } else {
+                            p.historicoLog.forEach { log ->
+                                val sdf = java.text.SimpleDateFormat("dd/MM/yyyy HH:mm", java.util.Locale.getDefault())
+                                val dateStr = sdf.format(java.util.Date(log.timestamp))
+                                Card(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .semantics(mergeDescendants = true) {
+                                            contentDescription = "$dateStr. ${log.descricao}"
+                                        },
+                                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
+                                ) {
+                                    Column(modifier = Modifier.padding(8.dp)) {
+                                        Text(dateStr, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                                        Text(log.descricao, style = MaterialTheme.typography.bodyMedium)
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.End
+                    ) {
+                        TextButton(onClick = { showHistoricoDialog = false }) {
                             Text("Fechar")
                         }
                     }
                 }
             }
         }
+    }
+
+    if (showConfirmLimparHistorico) {
+        AlertDialog(
+            onDismissRequest = { showConfirmLimparHistorico = false },
+            title = { Text("Apagar Histórico") },
+            text = { Text("Deseja realmente apagar todo o histórico de alterações? Essa ação não pode ser desfeita.") },
+            confirmButton = {
+                TextButton(onClick = { 
+                    viewModel.limparHistoricoLog()
+                    showConfirmLimparHistorico = false 
+                }) { Text("Apagar Tudo", color = MaterialTheme.colorScheme.error) }
+            },
+            dismissButton = {
+                TextButton(onClick = { showConfirmLimparHistorico = false }) { Text("Cancelar") }
+            }
+        )
     }
 
     if (showResumoDialog) {

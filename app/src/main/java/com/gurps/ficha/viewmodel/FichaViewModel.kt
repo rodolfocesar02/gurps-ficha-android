@@ -43,8 +43,17 @@ data class RollDispatchStatus(val enviado: Boolean, val detalhe: String? = null)
 @OptIn(FlowPreview::class)
 class FichaViewModel(application: Application) : AndroidViewModel(application) {
     private val autoSaveRecuperacaoNome = "_autosave_recuperacao"
-    var personagem by mutableStateOf(Personagem())
-        private set
+    private val _personagem = mutableStateOf(Personagem())
+    var personagem: Personagem
+        get() = _personagem.value
+        private set(value) {
+            if (estaCarregando) {
+                _personagem.value = value
+            } else {
+                val old = _personagem.value
+                _personagem.value = historyDelegate.diffAndLog(old, value)
+            }
+        }
 
     var fichasSalvas by mutableStateOf<List<String>>(emptyList())
         private set
@@ -74,6 +83,7 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
     private val searchDelegate = FichaSearchDelegate(dataRepository)
     private val attributeDelegate = FichaAttributeDelegate()
     private val combatDelegate = FichaCombatDelegate()
+    private val historyDelegate = FichaHistoryDelegate()
     
     // Novos Delegados (Refatoração Lote 15)
     private val iaDelegate = FichaIADelegate(this, dataRepository, viewModelScope, application)
@@ -459,7 +469,14 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
     }
     fun removerVantagem(index: Int) { atualizarVantagensComConfirmacao(traitDelegate.removerVantagem(personagem, index)) }
     fun atualizarVantagem(index: Int, v: VantagemSelecionada) { 
-        atualizarVantagensComConfirmacao(traitDelegate.atualizarVantagem(personagem, index, v))
+        val poder = personagem.poderes.find { it.id == v.poderId }
+        val modsSemPoder = v.modificadores.filter { !it.nome.startsWith("Mod. de Poder:") }.toMutableList()
+        if (poder != null && poder.modificadorDePoder != 0) {
+            modsSemPoder.add(ModificadorSelecao(id = "mod_poder_${poder.id}", nome = "Mod. de Poder: ${poder.nome}", valor = poder.modificadorDePoder))
+        }
+        val vToSave = v.copy(modificadores = modsSemPoder)
+        
+        atualizarVantagensComConfirmacao(traitDelegate.atualizarVantagem(personagem, index, vToSave))
         salvarFicha()
     }
     
@@ -477,7 +494,14 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
     }
     fun removerDesvantagem(index: Int) { personagem = personagem.copy(desvantagens = traitDelegate.removerDesvantagem(personagem, index)) }
     fun atualizarDesvantagem(index: Int, d: DesvantagemSelecionada) { 
-        personagem = personagem.copy(desvantagens = traitDelegate.atualizarDesvantagem(personagem, index, d))
+        val poder = personagem.poderes.find { it.id == d.poderId }
+        val modsSemPoder = d.modificadores.filter { !it.nome.startsWith("Mod. de Poder:") }.toMutableList()
+        if (poder != null && poder.modificadorDePoder != 0) {
+            modsSemPoder.add(ModificadorSelecao(id = "mod_poder_${poder.id}", nome = "Mod. de Poder: ${poder.nome}", valor = poder.modificadorDePoder))
+        }
+        val dToSave = d.copy(modificadores = modsSemPoder)
+
+        personagem = personagem.copy(desvantagens = traitDelegate.atualizarDesvantagem(personagem, index, dToSave))
         salvarFicha()
     }
 
@@ -486,6 +510,65 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
     fun removerQualidade(index: Int) { personagem = personagem.copy(qualidades = traitDelegate.removerQualidade(personagem, index)); salvarFicha() }
     fun atualizarQualidade(index: Int, q: String) { personagem = personagem.copy(qualidades = traitDelegate.atualizarQualidade(personagem, index, q)); salvarFicha() }
     fun adicionarPeculiaridade(p: String) { personagem = personagem.copy(peculiaridades = traitDelegate.adicionarPeculiaridade(personagem, p)); salvarFicha() }
+    // ==========================================
+    // PODERES
+    // ==========================================
+
+    fun adicionarPoder(poder: Poder) {
+        personagem = personagem.copy(poderes = traitDelegate.adicionarPoder(personagem, poder))
+        salvarFicha()
+    }
+
+    fun atualizarPoder(index: Int, poder: Poder) {
+        val oldPoder = personagem.poderes.getOrNull(index)
+        personagem = personagem.copy(poderes = traitDelegate.atualizarPoder(personagem, index, poder))
+        if (oldPoder != null) {
+            personagem = personagem.copy(vantagens = personagem.vantagens.map { v ->
+                if (v.poderId == poder.id) {
+                    val mods = v.modificadores.filter { !it.nome.startsWith("Mod. de Poder:") }.toMutableList()
+                    if (poder.modificadorDePoder != 0) mods.add(ModificadorSelecao(id = "mod_poder_${poder.id}", nome = "Mod. de Poder: ${poder.nome}", valor = poder.modificadorDePoder))
+                    v.copy(modificadores = mods)
+                } else v
+            })
+            // Repetir para desvantagens se tiverem modifier
+        }
+        salvarFicha()
+    }
+
+    fun removerPoder(index: Int) {
+        val oldPoder = personagem.poderes.getOrNull(index)
+        personagem = personagem.copy(poderes = traitDelegate.removerPoder(personagem, index))
+        if (oldPoder != null) {
+            personagem = personagem.copy(vantagens = personagem.vantagens.map { v ->
+                if (v.poderId == oldPoder.id) {
+                    val mods = v.modificadores.filter { !it.nome.startsWith("Mod. de Poder:") }
+                    v.copy(poderId = null, modificadores = mods)
+                } else v
+            })
+        }
+        salvarFicha()
+    }
+
+    fun vincularVantagemPoder(indexVantagem: Int, poderId: String?) {
+        personagem = personagem.copy(vantagens = traitDelegate.vincularVantagemPoder(personagem, indexVantagem, poderId))
+        // Atualizar o modificador da vantagem
+        val v = personagem.vantagens[indexVantagem]
+        val poder = personagem.poderes.find { it.id == poderId }
+        val modsSemPoder = v.modificadores.filter { !it.nome.startsWith("Mod. de Poder:") }.toMutableList()
+        if (poder != null && poder.modificadorDePoder != 0) {
+            modsSemPoder.add(ModificadorSelecao(id = "mod_poder_${poder.id}", nome = "Mod. de Poder: ${poder.nome}", valor = poder.modificadorDePoder))
+        }
+        personagem = personagem.copy(vantagens = personagem.vantagens.mapIndexed { idx, it -> 
+            if (idx == indexVantagem) it.copy(modificadores = modsSemPoder) else it
+        })
+        salvarFicha()
+    }
+
+    fun vincularDesvantagemPoder(indexDesvantagem: Int, poderId: String?) {
+        personagem = personagem.copy(desvantagens = traitDelegate.vincularDesvantagemPoder(personagem, indexDesvantagem, poderId))
+        salvarFicha()
+    }
+
     fun removerPeculiaridade(index: Int) { personagem = personagem.copy(peculiaridades = traitDelegate.removerPeculiaridade(personagem, index)); salvarFicha() }
     fun atualizarPeculiaridade(index: Int, p: String) { personagem = personagem.copy(peculiaridades = traitDelegate.atualizarPeculiaridade(personagem, index, p)); salvarFicha() }
 
@@ -596,7 +679,29 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
     fun atualizarEquipamento(i: Int, e: Equipamento) { personagem = personagem.copy(equipamentos = equipmentDelegate.atualizarEquipamento(personagem, i, e)); ajustarEscudo() }
     private fun ajustarEscudo() { personagem = combatDelegate.ajustarEscudoAutomatico(personagem, escudosEquipados) }
 
-    // === PERSISTÊNCIA ===
+    // === PERSISTÊNCIA E LOG ===
+    fun limparHistoricoLog() {
+        personagem = historyDelegate.limparHistorico(personagem)
+        salvarFicha()
+    }
+    
+    fun exportarHistoricoParaTxt(uri: android.net.Uri, context: Context) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                context.contentResolver.openOutputStream(uri)?.use { output ->
+                    val txt = personagem.historicoLog.joinToString("\n") { 
+                        val sdf = java.text.SimpleDateFormat("dd/MM/yyyy HH:mm", java.util.Locale.getDefault())
+                        val date = sdf.format(java.util.Date(it.timestamp))
+                        "[$date] ${it.descricao}"
+                    }
+                    output.write(txt.toByteArray(Charsets.UTF_8))
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
+
     fun salvarFicha(nome: String = personagem.nome.ifBlank { "Sem_Nome" }) {
         nomeFichaAtual = nome
         viewModelScope.launch { fichasSalvas = persistenceDelegate.salvarFicha(nome, personagem) }

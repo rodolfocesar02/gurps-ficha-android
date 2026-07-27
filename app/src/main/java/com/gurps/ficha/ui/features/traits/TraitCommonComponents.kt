@@ -31,12 +31,13 @@ import com.gurps.ficha.ui.UiActionLabels
 // --- Seletores Genéricos de Catálogo ---
 
 @Composable
-fun EscopoModificadoresDialog(especificos: List<ModificadorDefinicao>, gerais: List<ModificadorDefinicao>, onDismiss: () -> Unit, onSelect: (ModificadorDefinicao) -> Unit) {
+fun EscopoModificadoresDialog(especificos: List<ModificadorDefinicao>, gerais: List<ModificadorDefinicao>, poderes: List<ModificadorDefinicao> = emptyList(), onDismiss: () -> Unit, onSelect: (ModificadorDefinicao) -> Unit) {
     var busca by remember { mutableStateOf("") }
     
     val especificosFiltrados = especificos.filter { it.nome.contains(busca, ignoreCase = true) }
     val especificosIds = especificos.map { it.id }.toSet()
     val geraisFiltrados = gerais.filter { it.id !in especificosIds && it.nome.contains(busca, ignoreCase = true) }
+    val poderesFiltrados = poderes.filter { it.id !in especificosIds && it.nome.contains(busca, ignoreCase = true) }
 
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -63,7 +64,12 @@ fun EscopoModificadoresDialog(especificos: List<ModificadorDefinicao>, gerais: L
                         item { Text("Gerais (Catálogo)", style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.primary) }
                         items(geraisFiltrados) { mod -> ModificadorItemRow(mod) { onSelect(mod) } }
                     }
-                    if (especificosFiltrados.isEmpty() && geraisFiltrados.isEmpty()) {
+                    if (poderesFiltrados.isNotEmpty()) {
+                        item { Spacer(modifier = Modifier.height(16.dp)) }
+                        item { Text("Modificadores de Poder", style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.primary) }
+                        items(poderesFiltrados) { mod -> ModificadorItemRow(mod) { onSelect(mod) } }
+                    }
+                    if (especificosFiltrados.isEmpty() && geraisFiltrados.isEmpty() && poderesFiltrados.isEmpty()) {
                         item { 
                             Box(modifier = Modifier.fillMaxWidth().padding(32.dp), contentAlignment = Alignment.Center) {
                                 Text("Nenhum modificador encontrado", style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.outline)
@@ -118,7 +124,7 @@ fun ModificadorItemRow(mod: ModificadorDefinicao, onClick: () -> Unit) {
         }
     }
     if (mostrarDescricao) {
-        AlertDialog(onDismissRequest = { mostrarDescricao = false }, title = { Text(mod.nome) }, text = { Text(mod.descricao ?: "") }, confirmButton = { TextButton(onClick = { mostrarDescricao = false }) { Text("Fechar") } })
+        CatalogoDescricaoDialog(nome = mod.nome, descricao = mod.descricao ?: "", onDismiss = { mostrarDescricao = false })
     }
 }
 

@@ -200,6 +200,7 @@ fun ConfigurarVantagemDialog(
 
     var mods by remember { mutableStateOf(emptyList<ModificadorSelecao>()) }
     var showAddMod by remember { mutableStateOf(false) }
+    var showAddModPoder by remember { mutableStateOf(false) }
     var showSchoolPicker by remember { mutableStateOf(false) }
     var pendingModForSchool by remember { mutableStateOf<ModificadorDefinicao?>(null) }
 
@@ -628,6 +629,13 @@ fun ConfigurarVantagemDialog(
                         Text("Add")
                     }
                 }
+                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+                    Text("Modificadores de Poder", style = MaterialTheme.typography.labelLarge)
+                    TextButton(onClick = { showAddModPoder = true }) {
+                        Icon(Icons.Default.Add, null)
+                        Text("Add")
+                    }
+                }
 
                 if (mods.isEmpty()) {
                     Text("Nenhum modificador aplicado.", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.outline)
@@ -655,6 +663,7 @@ fun ConfigurarVantagemDialog(
         EscopoModificadoresDialog(
             especificos = definicao.modificadoresEspecificos ?: emptyList(),
             gerais = CharacterRules.DATA_REPOSITORY_INSTANCE?.modificadoresGerais ?: emptyList(),
+            poderes = emptyList(),
             onDismiss = { showAddMod = false },
             onSelect = { modDef ->
                 if (modDef.id == "mod_aptidao_escola") { pendingModForSchool = modDef; showSchoolPicker = true; showAddMod = false }
@@ -663,6 +672,20 @@ fun ConfigurarVantagemDialog(
                     mods = mods.toMutableList().apply { add(ModificadorSelecao(modDef.id, modDef.nome, valorInt, modDef.porNivel, 1, modDef.descricao, modDef.pagina, bonusBase = modDef.bonusBase)) }
                     showAddMod = false
                 }
+            }
+        )
+    }
+
+    if (showAddModPoder) {
+        EscopoModificadoresDialog(
+            especificos = emptyList(),
+            gerais = emptyList(),
+            poderes = CharacterRules.DATA_REPOSITORY_INSTANCE?.modificadoresPoderes ?: emptyList(),
+            onDismiss = { showAddModPoder = false },
+            onSelect = { modDef ->
+                val valorInt = Regex("-?\\d+").find(modDef.valor)?.value?.toIntOrNull() ?: 0
+                mods = mods.toMutableList().apply { add(ModificadorSelecao(modDef.id, modDef.nome, valorInt, modDef.porNivel, 1, modDef.descricao, modDef.pagina, bonusBase = modDef.bonusBase)) }
+                showAddModPoder = false
             }
         )
     }
@@ -686,11 +709,13 @@ fun ConfigurarVantagemDialog(
     }
 }
 
+@OptIn(androidx.compose.material3.ExperimentalMaterial3Api::class)
 @Composable
 fun EditarVantagemDialog(
     vantagem: VantagemSelecionada,
     descricaoCatalogo: String = "",
     weaponSuggestions: List<String> = emptyList(),
+    poderesDisponiveis: List<com.gurps.ficha.model.Poder> = emptyList(),
     onDismiss: () -> Unit,
     onSave: (VantagemSelecionada) -> Unit
 ) {
@@ -700,9 +725,11 @@ fun EditarVantagemDialog(
     var mods by remember { mutableStateOf(vantagem.modificadores.toList()) }
 
     var showAddMod by remember { mutableStateOf(false) }
+    var showAddModPoder by remember { mutableStateOf(false) }
     var showSchoolPicker by remember { mutableStateOf(false) }
     var pendingModForSchool by remember { mutableStateOf<ModificadorDefinicao?>(null) }
     var mostrarDescricaoCatalogo by remember { mutableStateOf(false) }
+    var poderIdSelecionado by remember { mutableStateOf(vantagem.poderId) }
     
     val descricaoCatalogoFinal = if (vantagem.definicaoId == "retencao") {
         "O personagem tem um ataque capaz de manter o alvo preso no lugar..." 
@@ -876,6 +903,40 @@ fun EditarVantagemDialog(
 
                 Text("Tipo: ${vantagem.tipoCusto.name} | Custo base: ${def?.custo ?: vantagem.custoBase} | Pag. ${def?.pagina ?: vantagem.pagina}", style = MaterialTheme.typography.bodySmall)
                 
+                // Vinculação de Poderes
+                if (poderesDisponiveis.isNotEmpty()) {
+                    var expandedPoder by remember { mutableStateOf(false) }
+                    val selectedPoder = poderesDisponiveis.find { it.id == poderIdSelecionado }
+                    
+                    ExposedDropdownMenuBox(expanded = expandedPoder, onExpandedChange = { expandedPoder = !expandedPoder }) {
+                        OutlinedTextField(
+                            value = selectedPoder?.nome ?: "Nenhum Poder",
+                            onValueChange = {},
+                            readOnly = true,
+                            label = { Text("Vincular a Poder") },
+                            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expandedPoder) },
+                            modifier = Modifier.menuAnchor().fillMaxWidth()
+                        )
+                        ExposedDropdownMenu(expanded = expandedPoder, onDismissRequest = { expandedPoder = false }) {
+                            DropdownMenuItem(text = { Text("Nenhum Poder") }, onClick = { 
+                                poderIdSelecionado = null 
+                                expandedPoder = false 
+                            })
+                            poderesDisponiveis.forEach { poder ->
+                                DropdownMenuItem(
+                                    text = { Text("${poder.nome} (${poder.modificadorDePoder}%)") },
+                                    onClick = {
+                                        poderIdSelecionado = poder.id
+                                        expandedPoder = false
+                                    }
+                                )
+                            }
+                        }
+                    }
+                    
+                    // Como passar o poderId de volta no onSave? Modificando a cópia final.
+                }
+
                 if (vantagem.tipoCusto == TipoCusto.POR_NIVEL) {
                     Text("Nível:")
                     val nivelMinimo = 1
@@ -922,6 +983,10 @@ fun EditarVantagemDialog(
                     Text("Modificadores (%)", style = MaterialTheme.typography.labelLarge)
                     TextButton(onClick = { showAddMod = true }) { Icon(Icons.Default.Add, null); Text("Add") }
                 }
+                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+                    Text("Modificadores de Poder", style = MaterialTheme.typography.labelLarge)
+                    TextButton(onClick = { showAddModPoder = true }) { Icon(Icons.Default.Add, null); Text("Add") }
+                }
 
                 mods.forEachIndexed { idx, mod ->
                     ModificadorSelecionadoItem(mod, onUpdate = { m -> mods = mods.toMutableList().apply { this[idx] = m } }, onDelete = { mods = mods.toMutableList().apply { removeAt(idx) } })
@@ -932,7 +997,7 @@ fun EditarVantagemDialog(
             TextButton(
                 onClick = {
                     val descFinal = if (vantagem.definicaoId == "idioma" && nomeIdioma.isNotBlank()) nomeIdioma else descricao
-                    onSave(vantagem.copy(nivel = nivel, custoEscolhido = custoEscolhido, descricao = descFinal, modificadores = mods, metadados = metadados))
+                    onSave(vantagem.copy(nivel = nivel, custoEscolhido = custoEscolhido, descricao = descFinal, modificadores = mods, metadados = metadados, poderId = poderIdSelecionado))
                 }
             ) { Text(UiActionLabels.SALVAR) }
         },

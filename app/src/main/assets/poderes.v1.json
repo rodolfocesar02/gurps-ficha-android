@@ -1,0 +1,398 @@
+[
+  {
+    "id": "poder.",
+    "nome": "poder.",
+    "fontes_possiveis": "Fontes adequadas para o poder; consulte Fonte (pág. 7). Se o poder for conhecido por outro nome quando associado com uma fonte em particular, esse nome aparecerá entre parênteses. Cabe ao Mestre decidir quais fontes serão válidas em sua campanha.",
+    "foco": "O foco do poder; consulte Foco (pág.",
+    "descricao": "7). Descrição: O que o poder faz, alguns precedentes ficcionais (frequentemente associados a fontes específicas), e quaisquer observações especiais aplicáveis à maioria das habilidades do poder ou a todas elas.",
+    "modificadorDePoder": 0,
+    "pagina": 121
+  },
+  {
+    "id": "água",
+    "nome": "Água",
+    "fontes_possiveis": "Divina, Elemental, Espiritual, Mágica, ou Super.",
+    "foco": "Água.",
+    "descricao": "Este é o poder de criar e manipular água. Usuários com este poder podem até mesmo se tornar água. Ele pode representar o controle direto sobre a água (Elemental e Super), magia elemental tradicional (Mágica), o favor de um deus do mar (Divina), ou o controle sobre os elementais da água (Espiritual). Água inclui o gelo e o vapor, mas Frio/ Gelo (pág. 129) e Ar (pág. 123) abordam de modo mais completo o congelamento e os gases, respectivamente.",
+    "modificadorDePoder": 0,
+    "pagina": 121
+  },
+  {
+    "id": "corporal",
+    "nome": "Corporal",
+    "fontes_possiveis": "Biológica, Divina, Mágica, ou Super.",
+    "foco": "A forma física do usuário.",
+    "descricao": "Este é o poder de alterar a aparência, estrutura e composição do próprio corpo. A ficção normalmente atribui a Alteração Corporal à fisiologia alienígena (Biológica), magia poderosa (Mágica), ou mutações bizarras de “corpo de borracha” (Super). Em cenários de fantasia, os servos de demônios e deuses travessos às vezes possuem este poder (Divina).",
+    "modificadorDePoder": 0,
+    "pagina": 121
+  },
+  {
+    "id": "probabilidades",
+    "nome": "Probabilidades",
+    "fontes_possiveis": "Divina, Espiritual, Mágica (“Desejos”), Psíquica, ou Super.",
+    "foco": "Sorte e destino.",
+    "descricao": "Este é o poder de alterar resultados incertos, desencadear coincidências fortuitas e “abençoar” ou “amaldiçoar” aos outros. Ele pode representar a intervenção divina (Divina), manipulação mística (Mágica), visualização psíquica (Psíquica), os esforços de servos espirituais invisíveis (Espiritual), ou um poder cósmico sutil (Super). A Alteração de Probabilidades não faz nada visivelmente; seus efeitos se manifestam sobre os resultados das tarefas que ela influencia.",
+    "modificadorDePoder": 0,
+    "pagina": 121
+  },
+  {
+    "id": "antimagia",
+    "nome": "Antimagia",
+    "fontes_possiveis": "Antimagia, Divina, ou Espiritual.",
+    "foco": "Anular o mana, magos e magias.",
+    "descricao": "Este poder lida com a neutralização da magia. Em alguns mundos, a antimagia é uma fonte de poder única e oposta à magia, assim como a antimatéria é o “oposto” da matéria. Em outros, ela se origina dos deuses (Divina) ou espíritos (Espiritual) que censuram o uso da magia para interferir com a criação. Em todos os casos, ela será o antipoder do poder Magia (pág. 130).",
+    "modificadorDePoder": 0,
+    "pagina": 121
+  },
+  {
+    "id": "antipsi",
+    "nome": "Antipsi",
+    "fontes_possiveis": "Antipsi, Biológica, Chi, ou Super.",
+    "foco": "Bloqueio de energia e poderes psíquicos.",
+    "descricao": "Antipsi é o antipoder de todos os poderes com o modificador Psíquico, independente do foco. Em muitos cenários, a explicação é uma energia psíquica incomum que interfere com a variedade comum. Essas emissões “antipsi” podem ser categorizadas como psiquismo, mas são imunes a efeitos que bloqueiam o psiquismo (inclusive o próprio antipsi). Outra explicação comum é a interferência por meio da bioenergia, quer através de mutação (Biológica ou Super) ou de meditação (Chi).",
+    "modificadorDePoder": 0,
+    "pagina": 121
+  },
+  {
+    "id": "antissuper",
+    "nome": "Antissuper",
+    "fontes_possiveis": "Antissuper, Biológica, Divina, Natureza, ou Psíquica.",
+    "foco": "Anular superpoderes.",
+    "descricao": "Cenários com superpoderes genéricos normalmente incluem indivíduos capazes de anular esses poderes, independente do foco. Como este poder é capaz de interferir com outros sem ser ele mesmo suscetível a interferência, ele frequentemente está isolado em sua própria categoria “Antissuper”. Outras possibilidades são o controle sobre genes mutantes através da bioenergia (Biológica ou Natureza) ou do psiquismo (Psíquica), ou a vontade de uma divindade que se oponha às “abominações” (Divina).",
+    "modificadorDePoder": 0,
+    "pagina": 121
+  },
+  {
+    "id": "ar",
+    "nome": "Ar",
+    "fontes_possiveis": "Divina, Elemental, Espiritual, Mágica, ou Super.",
+    "foco": "Gases.",
+    "descricao": "Este é o poder de criar e manipular gases. Em alguns cenários, praticantes com extenso treinamento podem até mesmo se tornar um gás. Ele pode representar o controle direto sobre o ar (Elemental e Super), uma escola de mágicas do ar (Mágica), a aliança com espíritos elementais do ar (Espiritual), ou o favor sagrado de uma divindade celeste (Divina). As habilidades de Ar afetam apenas gases verdadeiros, não nuvens de poeira, plasmas energéticos ou o “éter” sobrenatural ou da superci- ência.",
+    "modificadorDePoder": 0,
+    "pagina": 121
+  },
+  {
+    "id": "bem",
+    "nome": "Bem",
+    "fontes_possiveis": "Divina, Espiritual, Mágica (“Magia Branca”), ou Moral.",
+    "foco": "O Bem puro e simples.",
+    "descricao": "Este poder permite ao usuário perceber e canalizar as forças do Bem. Ele pode convocar o auxílio de espíritos benevolentes (“anjos”), e pode proporcionar calor, cura e bênçãos às pessoas ao seu redor. Este poder normalmente se origina do Bem tangível (Moral), mas pode, em vez disso fluir da magia altruísta (Mágica) ou de um poder superior benéfico (Divina ou Espiritual). Ele é o antipoder de Mal (pág. 131), e inclui defesas contra aquele poder.",
+    "modificadorDePoder": 0,
+    "pagina": 121
+  },
+  {
+    "id": "bioenergia",
+    "nome": "Bioenergia",
+    "fontes_possiveis": "Biológica, Chi, Psíquica, ou Super.",
+    "foco": "A energia interna do corpo.",
+    "descricao": "HQs e animes costumam retratar mutantes poderosos (Biológica), artistas marciais (Chi), psis (Psíquica) e supers (Super) como sendo capazes de direcionar energias corporais, em quantidade muito superior ao que o corpo humano poderia conter em termos realistas, para disparar contra inimigos, projetar campos de força, voar etc. Diferente das maioria dos poderes de disparo de raios, a Bioenergia não está associada a um elemento como o fogo ou a luz. Isto faz com que ela seja um poder abrangente útil para heróis projetores de energia que não se encaixem em nenhum outro lugar.",
+    "modificadorDePoder": 0,
+    "pagina": 121
+  },
+  {
+    "id": "calor_fogo",
+    "nome": "Calor/Fogo",
+    "fontes_possiveis": "Divina, Elemental, Espiritual, Mágica, Psíquica (“Pirocinese”), ou Super.",
+    "foco": "Calor e chamas.",
+    "descricao": "O poder Calor/Fogo controla o calor e sua consequência costumeira, o fogo, embora Calor e Fogo possam ser poderes separados em alguns mundos de jogo. Um poder comum nas lendas e na ficção, ele está associado com os deuses do fogo (Divina), mágicas do fogo (Mágica), espíritos elementais do fogo (Espiritual) e controle elemental direto (Elemental e Super). Psíquicos com essas capacidades podem ter Psicocinese (pág. 132)… mas a pirocinese (Psíquica) é costumeiramente um poder único.",
+    "modificadorDePoder": 0,
+    "pagina": 121
+  },
+  {
+    "id": "caos",
+    "nome": "Caos",
+    "fontes_possiveis": "Divina, Espiritual, Moral, ou Super (“Controle da Entropia”).",
+    "foco": "Desordem.",
+    "descricao": "Este poder lida com o aumento da desordem no universo. Ele funciona em todos os níveis, permitindo ao portador desorganizar objetos materiais e atormentar outros com delírios. Ele também inclui habilidades que protegem o usuário contra ter a ordem imposta sobre a sua mente ou seu corpo. O poder Caos frequentemente representa a personificação do caos (Moral). Outras possibilidades são a vontade de um deus louco (Divina) ou espíritos trapaceiros (Espiritual), ou até mesmo o “controle da entropia” pseudocientífica (Super). Seja qual for sua fonte, o Caos é o antipoder de Ordem (pág. 131).",
+    "modificadorDePoder": 0,
+    "pagina": 121
+  },
+  {
+    "id": "de_força",
+    "nome": "de Força",
+    "fontes_possiveis": "Mágica, Psíquica ou Super.",
+    "foco": "Campos de força semissólidos.",
+    "descricao": "Este poder permite que o usuário conjure uma força que ele seja capaz de moldar como ataques, barreiras, objetos e até mesmo criaturas (embora elas não sejam sencientes). Esta não é uma força fundamental como a gravidade ou o eletromagnetismo, mas algo ligeiramente misterioso; talvez um fenômeno supercientífico (Super), ou energia mágica (Mágica) ou psíquica (Psíquica) em estado bruto. Construtos de força costumam transmitir a sensação de solidez e funcionam como objetos físicos, mas não são materiais e sempre têm uma aparência ligeiramente peculiar (reluzente, verde, sombria etc.).",
+    "modificadorDePoder": 0,
+    "pagina": 121
+  },
+  {
+    "id": "corporal",
+    "nome": "Corporal",
+    "fontes_possiveis": "Biológica, Chi, Psíquica, ou Super.",
+    "foco": "O metabolismo do usuário.",
+    "descricao": "O Controle Corporal permite que o usuário assuma o controle de seu metabolismo para curar lesões, realizar feitos físicos espetaculares, purificar o corpo de venenos e assim por diante. Ele é quase obrigatório para os mestres cinematográficos de yoga e artes marciais (Chi), mas pode, em vez disso, ser um poder mutante (Biológica ou Super) ou até mesmo uma forma variante de cura psíquica (Psíquica). A ficção costuma retratar o Controle Corporal e a Bioenergia como os caminhos “interno” e “externo” de uma mesma disciplina.",
+    "modificadorDePoder": 0,
+    "pagina": 121
+  },
+  {
+    "id": "animais",
+    "nome": "Animais",
+    "fontes_possiveis": "Divina, Espiritual, Natureza, Psíquica (“Telepatia Animal”), ou Super.",
+    "foco": "Criaturas naturais e não-sapientes.",
+    "descricao": "O Controle de Animais permite que o usuário compreenda animais comuns e que dê ordens a eles. Ele não tem efeito sobre criaturas sapientes ou sobrenaturais. Entre as explicações estão uma sintonia inata com os animais (Natureza ou Super), telepatia especializada (Psíquica), e o favor das divindades da natureza (Divina) ou espíritos totêmicos (Espiritual). A Metamorfose serve para xamãs e supers, mas não para psis; o Mestre pode querer substituir habilidades telepáticas (veja Telepatia, pág. 133), especializada em animais, por aquelas com o modificador Psíquico.",
+    "modificadorDePoder": 0,
+    "pagina": 121
+  },
+  {
+    "id": "plantas",
+    "nome": "Plantas",
+    "fontes_possiveis": "Divina, Espiritual, Natureza, Psíquica (“Telepatia com Plantas”), ou Super.",
+    "foco": "Plantas naturais, não-sapientes.",
+    "descricao": "O Controle de Plantas permite que o usuário comungue com plantas normais e as controle. Ele não tem qualquer efeito sobre a vida vegetal sapiente, flora mágica, ou outras formas de vegetação não-naturais. Na ficção, este poder costuma ser o resultado de uma profunda empatia com as plantas (Natureza ou Super), uma variação de telepatia (Psíquica), ou o favor de deuses ou espíritos da natureza (Divina ou Espiritual).",
+    "modificadorDePoder": 0,
+    "pagina": 121
+  },
+  {
+    "id": "clima",
+    "nome": "Clima",
+    "fontes_possiveis": "Divina, Espiritual, Mágica, Natureza, ou Super.",
+    "foco": "Condições atmosféricas.",
+    "descricao": "Este é o poder de manipular a umidade, pressão e temperatura ambiente. Ele pode canalizar deuses ou espíritos da tempestade (Divina ou Espiritual), envolver “bruxaria climática” (Mágica), ou representar o controle direto (Natureza ou Super). Seus efeitos às vezes se sobrepõem ao Ar, Calor/Fogo, Eletricidade, Frio/Gelo, e Água, mas o Controle do Clima não é um poder elemental. O usuário pode produzir somente clima; por exemplo, granizo, relâmpagos, chuva, calor incômodo e vento. Ele não pode emitir ondas de concussão, disparar raios congelantes, interferir com rádios, transformar-se em chamas etc.",
+    "modificadorDePoder": 0,
+    "pagina": 121
+  },
+  {
+    "id": "espiritual",
+    "nome": "Espiritual",
+    "fontes_possiveis": "Divina, Espiritual, ou Mágica.",
+    "foco": "Espíritos e o mundo espiritual.",
+    "descricao": "Uma variedade de poderes pode ser transformada em “poderes espirituais” com a simples inclusão do modificador Espiritual. Ele cria um poder que lida com uma classe específica de espírito: demônios, fantasmas, totens, elementais do fogo etc. O Controle Espiritual concede ao usuário o poder de perceber todos os tipos de espíritos, bem como de comunicar-se com eles e prendê-los. Magos rituais devem comprar este poder com o modificador Espiritual, mas a capacidade de controlar espíritos é igualmente adequada para clérigos de fantasia (Divina) e magos (Mágica).",
+    "modificadorDePoder": 0,
+    "pagina": 121
+  },
+  {
+    "id": "cura",
+    "nome": "Cura",
+    "fontes_possiveis": "Biológica, Chi, Divina (“Cura pela Fé”), Espiritual, Mágica, Psiquismo (“Cura Psíquica”), ou Super.",
+    "foco": "A cura de seres vivos.",
+    "descricao": "Habilidades de cura permitem que o usuário diagnostique e trate de doenças e lesões. A maioria dos curandeiros podem curar a si mesmos e a outros, mas uma escolha adequada de vantagens e modificadores pode criar um curandeiro capaz de fazer apenas uma coisa ou a outra. Explicações comuns para a Cura incluem um campo bioenergético restaurador (Biológica ou Super), controle sobre o yin e o yang (Chi), cura pela fé (Divina ou Espiritual), mágicas de cura (Mágica), e cura psíquica (Psíquica).",
+    "modificadorDePoder": 0,
+    "pagina": 121
+  },
+  {
+    "id": "tempo",
+    "nome": "Tempo",
+    "fontes_possiveis": "Divina, Mágica, Psíquica ou Super.",
+    "foco": "Tempo.",
+    "descricao": "O Domínio do Tempo permite ao usuário observar o passado e se comunicar com ele; receber e enviar informações e mensagens do e para o futuro (e talvez até mesmo convocar suas versões futuras para auxiliá-lo!); viajar no tempo; e influenciar o fluxo do tempo. As explicações incluem o favor de uma divindade capaz de controlar o tempo (Divina), feitiçaria poderosa (Mágica), um elo psíquico entre as versões passadas, presente e futuras do personagem (Psíquica), ou “controle temporal” direto (Super).",
+    "modificadorDePoder": 0,
+    "pagina": 121
+  },
+  {
+    "id": "eletricidade",
+    "nome": "Eletricidade",
+    "fontes_possiveis": "Divina, Elemental ou Super.",
+    "foco": "Fenômenos elétricos.",
+    "descricao": "Este poder lida com a geração e canalização da eletricidade. Seus efeitos mais impressionantes são as descargas destrutivas, como relâmpagos, mas a modulação precisa também é possível, o que permite ao usuário gerar sinais de rádio. Devido às suas características tecnológicas, este é normalmente um superpoder (Elemental e Super), e raramente adequado para poderes sobrenaturais além daqueles associados a deuses do trovão (Divina). O Mestre é livre para fazer exceções.",
+    "modificadorDePoder": 0,
+    "pagina": 121
+  },
+  {
+    "id": "eletrocinese",
+    "nome": "Eletrocinese",
+    "fontes_possiveis": "Psíquica ou Super.",
+    "foco": "Campos eletromagnéticos.",
+    "descricao": "A eletrocinese permite que o usuário sinta a eletricidade e energia eletromagnética (EM) existente, gere campos EM de baixo nível de potência para controlar essa energia e produza efeitos sutis em sua ausência. Explicações comuns são o “controle de campo” psíquico (Psíquica) ou exótico (Super). A eletrocinese não pode gerar as descargas energéticas associadas ao poder Eletricidade (anterior), mas oferece maior controle e sutileza; tanto que em conjunto com Telepatia sobre Máquinas (pág. 133) ela poderia ser, justificavelmente, um único poder, se o Mestre desejar.",
+    "modificadorDePoder": 0,
+    "pagina": 121
+  },
+  {
+    "id": "cinética",
+    "nome": "Cinética",
+    "fontes_possiveis": "Elemental ou Super.",
+    "foco": "Força física bruta.",
+    "descricao": "Este é o poder de projetar feixes e campos de força capazes de atrair ou repelir objetos, agir como propulsores sem reação e assim por diante. Ela é chamada de “Energia Cinética” em vez de “Força”, pois a única coisa que ela tem em comum com qualquer força física crível é o fato de ambas alterarem a energia cinética. O poder Energia Cinética serve principalmente para supers altamente cinematográficos. Gravidade (pág. 129) e Magnetismo (pág. 130) são ligeiramente mais realistas, e Psicocinese (pág. 132) é mais adequada para o controle de força psíquica.",
+    "modificadorDePoder": 0,
+    "pagina": 121
+  },
+  {
+    "id": "frio_gelo",
+    "nome": "Frio/Gelo",
+    "fontes_possiveis": "Divina, Elemental ou Super.",
+    "foco": "Frio e gelo.",
+    "descricao": "O poder Frio/Gelo possibilita ao usuário congelar seus inimigos ou prendê-los com gelo, “surfar” por uma camada de gelo e assim por diante. Geralmente, ele representa o controle direto sobre o frio (Elemental e Super), mas pode, em vez disso, emanar de um deus que reine sobre o inverno (Divina). O Frio não é um elemento tradicional para magos e alquimistas, mas o Mestre tem a liberdade para ignorar esse fato e permitir uma versão Mágica ou Espiritual deste poder. Em alguns cenários, Frio e Gelo são poderes separados.",
+    "modificadorDePoder": 0,
+    "pagina": 121
+  },
+  {
+    "id": "gravidade",
+    "nome": "Gravidade",
+    "fontes_possiveis": "Elemental ou Super.",
+    "foco": "Gravidade.",
+    "descricao": "Este é o poder de controlar os campos gravitacionais de objetos massivos (afetando o peso) e projetar ondas gravitacionais concentradas. Ele quase sempre é uma forma de manipulação direta de força (Elemental e Super). Uma vez que a gravidade não é um elemento mágico ou esfera divina tradicional, este poder raramente possui uma fonte sobrenatural. Use Psicocinese (pág. 132) para o controle por uma força sobrenatural.",
+    "modificadorDePoder": 0,
+    "pagina": 121
+  },
+  {
+    "id": "ilusão",
+    "nome": "Ilusão",
+    "fontes_possiveis": "Divina, Espiritual, Mágica, Psíquica, ou Super.",
+    "foco": "Disfarce sensorial.",
+    "descricao": "Este é o poder de controlar o que é percebido por outros. O ilusionista Criação de Poderes pode alterar sua voz e sua aparência; conjurar cenários e seres ilusórios (talvez até mesmo semimateriais); e fazer as coisas sumirem de vista. Frequentemente esta é uma escola de magia (Mágica) ou uma especialidade psíquica que combina aspectos da Eletrocinese e da Telepatia (Psíquica). Em vez disso, ela pode ser originada de demô- nio enganosos, espíritos travessos, ou trapaceiros divinos (Divina ou Espiritual). O controle direto e sutil sobre a luz e o som é uma outra possibilidade (Super).",
+    "modificadorDePoder": 0,
+    "pagina": 121
+  },
+  {
+    "id": "luz",
+    "nome": "Luz",
+    "fontes_possiveis": "Divina, Elemental, Psíquica (“Fotocinese”) ou Super.",
+    "foco": "A luz visível e semivisível.",
+    "descricao": "O poder luz concede ao portador o controle quase completo sobre a luz. Ele pode focá-la para melhorar sua visão, curvá-la para evitar que objetos sejam vistos ou concentrá-la para atacar seus inimigos com clarões cegantes e lasers. Geralmente, este é um controle elemental direto (Elemental e Super) ou a “fotocinese” psíquica especializada (Psíquica); mas as divindades associadas ao sol, à pureza ou ao bem também podem conceder esse poder (Divina).",
+    "modificadorDePoder": 0,
+    "pagina": 121
+  },
+  {
+    "id": "magnetismo",
+    "nome": "Magnetismo",
+    "fontes_possiveis": "Elemental ou Super.",
+    "foco": "Magnetismo.",
+    "descricao": "Este é um poder cinematográfico de controle do magnetismo. Ele permite que o portador realize os tipos de truques que são justificados por “magnetismo” nas histórias em quadrinhos, como surfar pelo campo magnético da Terra, arremessar objetos pesados e moldar metais, a maioria dos quais são difíceis de explicar em termos de magnetismo realista. Personagens que possuem este poder parecem usar manipulação direta de forças (Elemental e Super), justificada por meio de pseudociência, isso se houver justificativa.",
+    "modificadorDePoder": 0,
+    "pagina": 121
+  },
+  {
+    "id": "mal",
+    "nome": "Mal",
+    "fontes_possiveis": "Divina, Espiritual (“Demonologia”), Mágica (“Magia Negra”), ou Moral.",
+    "foco": "O Mal puro e simples.",
+    "descricao": "Este poder existe apenas em cenários em que o Mal é uma força tangível. O portador está ciente do Mal em todas as suas formas e pode usá-lo para corromper inimigos, invocar demônios e atormentar os outros com calafrios, doenças, terror e muitos outros efeitos desagradáveis. É possível que este poder emane do puro Mal (Moral), de magia proibida (Mágica), ou entidades demoníacas (Divina ou Espiritual). Ele é o antipoder de Bem (pág. 123), e inclui proteção contra esse poder.",
+    "modificadorDePoder": 0,
+    "pagina": 121
+  },
+  {
+    "id": "morte",
+    "nome": "Morte",
+    "fontes_possiveis": "Divina, Espiritual, ou Mágica (“Necromancia”).",
+    "foco": "A morte e os mortos.",
+    "descricao": "Este poder lida com cada aspecto da morte: cadáveres, fantasmas e maldições que roubam a força vital da vítima. Ele é mais comum entre adoradores de deuses que regem a morte ou o mundo inferior (Divina), magos necromantes (Mágica) e personagens capazes de controlar fantasmas e espíritos da morte (Espiritual). Muitos consideram o poder Morte como maligno, mas isto não é necessariamente verdade; consulte Mal (anterior) para isso.",
+    "modificadorDePoder": 0,
+    "pagina": 121
+  },
+  {
+    "id": "ordem",
+    "nome": "Ordem",
+    "fontes_possiveis": "Divina, Espiritual, ou Moral.",
+    "foco": "Estrutura e serenidade.",
+    "descricao": "O poder Ordem busca combater a desorganização e impor a estrutura no mundo. Ele permite que o usuário bloqueie danos, ruídos e outras perturbações; restaure o estado de paz interior da mente e do corpo; e alcance a iluminação ao perceber os padrões ocultos em meio ao caos da existência. Ele frequentemente representa a personificação da ordem (Moral) ou a vontade de campeões sobrenaturais da justiça, lei ou paz (Divina ou Espiritual). A Ordem é o antipoder de Caos (pág. 124), e proporciona proteção contra aquele poder.",
+    "modificadorDePoder": 0,
+    "pagina": 121
+  },
+  {
+    "id": "pes",
+    "nome": "PES",
+    "fontes_possiveis": "Chi, Divina (“Profecia”), Espiritual, Mágica (“Adivinhação”), Psíquica, ou Super.",
+    "foco": "Conhecimento.",
+    "descricao": "A Percepção Extra-Sensorial (PES) é o poder de obter conhecimento através de meios além dos cinco sentidos naturais. Os mitos e as lendas atribuem este dom sobrenatural a mestres das artes marciais (Chi), profetas (Divina), magos (Mágica), psíquicos (Psíquica), xamãs (Espiritual), e à maioria dos outros místicos e iluminados. O Mestre faz os testes de habilidade para o uso de PES em segredo. Quanto melhor o teste, maior a qualidade da informação recebida. No caso de qualquer fracasso, o Mestre dirá ao jogador “você não descobriu nada”. Se o teste fracassar por mais do que 5, o Mestre mentirá!",
+    "modificadorDePoder": 0,
+    "pagina": 121
+  },
+  {
+    "id": "astral",
+    "nome": "Astral",
+    "fontes_possiveis": "Divina, Espiritual, Mágica, ou Psíquica.",
+    "foco": "O Plano Astral.",
+    "descricao": "Este é o poder de perceber o Plano Astral e viajar por ele. Alguns viajantes permanecem em um plano “exterior” que se sobrepõe ao mundo material, permitindo que eles o vejam sem serem percebidos; outros seguem para um plano “interior”, vizinho de planos superiores da existência. Projetores treinados são capazes de fazer ambos. A Projeção Astral é tradicionalmente uma disciplina mediúnica (Psíquica) ou um presente dos habitantes do Plano Astral ou de um reino adjacente (Divina ou Espiritual). Às vezes os magos também conseguem desvendar seus segredos (Mágica).",
+    "modificadorDePoder": 0,
+    "pagina": 121
+  },
+  {
+    "id": "psicocinese",
+    "nome": "Psicocinese",
+    "fontes_possiveis": "Divina, Espiritual, Mágica, Psíquica, ou Super.",
+    "foco": "Movimento.",
+    "descricao": "As habilidades de Psicocinese (PC) permitem que o usuário produza efeitos cinéticos, tanto macroscópicos (movimentos visíveis) quanto microscópicos (resfriamento e aquecimento), bastando, para isso, desejar que ocorram. Tradicionalmente, este é um poder psíquico (Psíquica), mas sacerdotes com o dom (Divina), xamãs (Espiritual), e magos (Mágica) podem obter resultados similares com o uso de seu controle sobre as forças sobrenaturais. A PC também é adequado como um superpoder genérico (Super), mas consulte Calor/Fogo (pág. 124), Gravidade (pág. 129), Energia Cinética (pág. 129) e Magnetismo (pág. 130) antes de decidir.",
+    "modificadorDePoder": 0,
+    "pagina": 121
+  },
+  {
+    "id": "radiação",
+    "nome": "Radiação",
+    "fontes_possiveis": "Elemental ou Super.",
+    "foco": "Partículas energéticas e radiação eletromagnética.",
+    "descricao": "Este poder permite que o usuário detecte, controle e emita radiação perigosa. Ele realmente é adequado apenas como um superpoder (Elemental e Super); a sofisticação científica implicada pela compreensão da radiação não se mistura muito bem com os poderes sobrenaturais. Assim como as histórias em quadrinhos, o poder Radiação trata a radiação como um fenômeno monolítico. Na realidade, partículas alfa, raios gama, nêutrons, raios-X e assim por diante diferem em muito entre si. Cabe ao Mestre decidir qual será o impacto dessas distinções, se houver, sobre este poder. Criação de Poderes 3",
+    "modificadorDePoder": 0,
+    "pagina": 121
+  },
+  {
+    "id": "som_vibração",
+    "nome": "Som/Vibração",
+    "fontes_possiveis": "Elemental, Psiquismo (“Sonocinese”), ou Super.",
+    "foco": "Vibrações mecânicas de todos os tipos.",
+    "descricao": "O poder Som/Vibração proporciona controle total sobre as vibrações mecâ- nicas, — inclusive o som, a menos que o Mestre determine que o Som e a Vibração sejam poderes separados — no ar, na água ou em materiais sólidos. Isto permite que o usuário amplie seus sentidos de audição e tato, gere ruídos como distração, ataque seus inimigos com som concentrado, e assim por diante. O poder Som/Vibração frequentemente é uma ramificação especializada da Psicocinese (Psíquica) ou uma forma de controle elemental direto (Elemental e Super).",
+    "modificadorDePoder": 0,
+    "pagina": 121
+  },
+  {
+    "id": "telepatia",
+    "nome": "Telepatia",
+    "fontes_possiveis": "Biológica, Mágica (“Controle da Mente”), Psíquica, ou Super.",
+    "foco": "Mentes vivas e sapientes.",
+    "descricao": "A Telepatia é o poder de comunicação e controle mental direto. Tradicionalmente, é um poder psíquico (Psíquica), mas parte da ficção moderna a descreve como um fenômeno “neural” que usa um campo bioenergético (Biológica ou Super). O controle mental místico (Mágica) é uma outra possibilidade. Normalmente, a Telepatia afeta apenas seres vivos sapientes (IQ 6+), mas o Mestre deve permitir que ela funcione em todas as mentes sencientes (IQ 1+) nos mundos de jogo em que não exista o poder Controle de Animais. Tentativas de afetar máquinas ou plantas fracassarão automaticamente.",
+    "modificadorDePoder": 0,
+    "pagina": 121
+  },
+  {
+    "id": "máquinas",
+    "nome": "Máquinas",
+    "fontes_possiveis": "Psíquica ou Super.",
+    "foco": "Mentes Digitais.",
+    "descricao": "Este é o poder de estabelecer uma conexão mental com um computador para comunicar-se com ele ou controlá-lo. Ele é, para as Mentes Digitais, o mesmo que a Telepatia (acima) é para as mentes vivas, e frequentemente é um poder híbrido entre a Eletrocinese e a Telepatia (Psíquica). Ela pode, em vez disso, ser uma capacidade de força bruta para emissão de sinais que tomam o controle da operação normal de máquinas (Super). Ela afeta apenas máquinas que possuam pelo menos um “cérebro” computadorizado rudimentar, e nunca afeta seres vivos. Criação de Poderes",
+    "modificadorDePoder": 0,
+    "pagina": 121
+  },
+  {
+    "id": "teleporte",
+    "nome": "Teleporte",
+    "fontes_possiveis": "Mágica, Psíquica ou Super.",
+    "foco": "Movimento instantâneo.",
+    "descricao": "O Teleporte permite que o usuário se mova ou mova outros objetos pelo espaço sem transpor a distância intermediária. As explicações incluem a transmissão de matéria até seu destino como um feixe de energia (Super) e a distorção do espaço por meio de pura força de vontade (Mágica ou Psíquica). Em alguns cenários, o Teleporte permite que o usuário visite mundos paralelos, muitas vezes por acidente (inclua Incontrolável e Inconsciente em Saltador), embora Viagem Dimensional (pág. 135) seja mais adequada para a tarefa.",
+    "modificadorDePoder": 0,
+    "pagina": 121
+  },
+  {
+    "id": "terra",
+    "nome": "Terra",
+    "fontes_possiveis": "Divina, Elemental, Espiritual, Mágica, ou Super.",
+    "foco": "Terra e pedra.",
+    "descricao": "Este é o poder para moldar e criar terra em qualquer forma: solo, areia, barro, pedra etc. Ele pode envolver o controle direto sobre a terra (Elemental e Super), feitiçaria que lide com a terra como elemento mágico tradicional (Mágica), ou a convocação do auxílio de uma deusa da terra (Divina) ou espíritos elementais da terra (Espiritual). As habilidades da Terra normalmente não afetam metais refinados ou outros materiais sólidos. O Mestre pode facilmente adicionar essas capacidades se assim desejar.",
+    "modificadorDePoder": 0,
+    "pagina": 121
+  },
+  {
+    "id": "trevas",
+    "nome": "Trevas",
+    "fontes_possiveis": "Divina, Elemental, Espiritual (“Controle das Sombras”) ou Super.",
+    "foco": "Sombra.",
+    "descricao": "Este é o poder de criar e controlar sombra. Seus efeitos vão desde a capa- Criação de Poderes 3 O Vampirismo envolve muito mais que o mero roubo de vitalidade com um toque gélido ou ao beber o sangue da vítima. Ele é o poder de roubar pensamentos, sonhos e habilidades dos vivos; talvez até mesmo suas formas físicas. cidade de obscurecer a luz até permitir que o usuário se transforme em uma sombra. Alguns usuários treinados podem até mesmo conjurar sombras semimateriais para atacar seus inimigos. O poder Trevas normalmente é uma forma de controle direto (Elemental e Super), mas pode representar ainda o favor dos deuses sombrios (Divina) ou um vínculo com sombras animadas (Espírito).",
+    "modificadorDePoder": 0,
+    "pagina": 121
+  },
+  {
+    "id": "vampirismo",
+    "nome": "Vampirismo",
+    "fontes_possiveis": "Biológica, Mágica, Psíquica (“Vampirismo Psíquico”) ou Super.",
+    "foco": "Roubo da força vital.",
+    "descricao": "O Vampirismo envolve muito mais que o mero roubo de vitalidade com um toque gélido ou ao beber o sangue da vítima. Ele é o poder de roubar pensamentos, sonhos e habilidades dos vivos; talvez até mesmo suas formas físicas. Este pode ser um mecanismo de alimentação (Biológica), uma ramificação da necromancia (Mágica), “vampirismo psíquico” tradicional (Psíquica), ou uma variação do poder Antissuper (Super). O Vampirismo não afeta máquinas ou objetos inanimados.",
+    "modificadorDePoder": 0,
+    "pagina": 121
+  },
+  {
+    "id": "dimensional",
+    "nome": "Dimensional",
+    "fontes_possiveis": "Divina, Espiritual, Mágica (“Mágica de Portal”), Psíquica, ou Super.",
+    "foco": "Realidades paralelas.",
+    "descricao": "A Viagem Dimensional lida com o contato e trânsito entre outras realidades. A quantidade e a natureza desses reinos dependerá do cenário; este Criação de Poderes poder é mais valioso em cenários com muitos planos de existência. A Viagem Dimensional é comum entre magos que estudam portais dimensionais (Mágica) e santos capazes de visitar os domínios dos deuses ou espíritos (Divina ou Espiritual). Cenários de supers costumam ter mundos paralelos, e alguns supers podem viajar entre eles com o uso de poderes psíquicos (Psíquica) ou “controle dimensional” direto (Super).",
+    "modificadorDePoder": 0,
+    "pagina": 121
+  },
+  {
+    "id": "vida",
+    "nome": "Vida",
+    "fontes_possiveis": "Divina, Espiritual, Mágica (“Magia Druídica”), ou Natureza.",
+    "foco": "Força vital.",
+    "descricao": "Este poder representa uma sintonia especial com a vida e as coisas vivas. Ele concede ao usuário uma longa vida em harmonia com a natureza, e é encontrado entre sacerdotes de divindades da natureza (Divina), xamãs capazes de influenciar os espíritos da natureza (Espiritual), “druidas” de fantasia, que operam magia natural (Mágica). Ele costuma ocorrer juntamente com Controle de Animais (pág. 125), Controle de Plantas (pág. 126), ou Controle Espiritual (pág. 126). Em alguns cenários, a “força vital” de todas as coisas vivas gera um campo energético universal que pode ser percebido diretamente por aqueles dotados do poder (Natureza).",
+    "modificadorDePoder": 0,
+    "pagina": 121
+  }
+]

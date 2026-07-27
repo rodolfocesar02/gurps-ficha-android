@@ -110,6 +110,7 @@ fun ConfigurarDesvantagemDialog(definicao: DesvantagemDefinicao, onDismiss: () -
     var autocontrole by remember { mutableStateOf<Int?>(null) }
     var mods by remember { mutableStateOf(emptyList<ModificadorSelecao>()) }
     var showAddMod by remember { mutableStateOf(false) }
+    var showAddModPoder by remember { mutableStateOf(false) }
 
     // Estados para Regras Especiais
     var enemyBasePower by remember { mutableStateOf(-5) }
@@ -325,6 +326,10 @@ fun ConfigurarDesvantagemDialog(definicao: DesvantagemDefinicao, onDismiss: () -
                     Text("Modificadores (%)", style = MaterialTheme.typography.labelLarge)
                     TextButton(onClick = { showAddMod = true }) { Icon(Icons.Default.Add, null); Text("Add") }
                 }
+                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+                    Text("Modificadores de Poder", style = MaterialTheme.typography.labelLarge)
+                    TextButton(onClick = { showAddModPoder = true }) { Icon(Icons.Default.Add, null); Text("Add") }
+                }
                 mods.forEachIndexed { idx, mod ->
                     ModificadorSelecionadoItem(mod, onUpdate = { m -> mods = mods.toMutableList().apply { this[idx] = m } }, onDelete = { mods = mods.toMutableList().apply { removeAt(idx) } })
                 }
@@ -342,11 +347,26 @@ fun ConfigurarDesvantagemDialog(definicao: DesvantagemDefinicao, onDismiss: () -
         EscopoModificadoresDialog(
             especificos = definicao.modificadoresEspecificos ?: emptyList(),
             gerais = CharacterRules.DATA_REPOSITORY_INSTANCE?.modificadoresGerais ?: emptyList(),
+            poderes = emptyList(),
             onDismiss = { showAddMod = false },
             onSelect = { modDef ->
                 val valorInt = Regex("-?\\d+").find(modDef.valor)?.value?.toIntOrNull() ?: 0
                 mods = mods.toMutableList().apply { add(ModificadorSelecao(modDef.id, modDef.nome, valorInt, modDef.porNivel, 1, modDef.descricao, modDef.pagina, bonusBase = modDef.bonusBase)) }
                 showAddMod = false
+            }
+        )
+    }
+
+    if (showAddModPoder) {
+        EscopoModificadoresDialog(
+            especificos = emptyList(),
+            gerais = emptyList(),
+            poderes = CharacterRules.DATA_REPOSITORY_INSTANCE?.modificadoresPoderes ?: emptyList(),
+            onDismiss = { showAddModPoder = false },
+            onSelect = { modDef ->
+                val valorInt = Regex("-?\\d+").find(modDef.valor)?.value?.toIntOrNull() ?: 0
+                mods = mods.toMutableList().apply { add(ModificadorSelecao(modDef.id, modDef.nome, valorInt, modDef.porNivel, 1, modDef.descricao, modDef.pagina, bonusBase = modDef.bonusBase)) }
+                showAddModPoder = false
             }
         )
     }
@@ -366,6 +386,7 @@ fun EditarDesvantagemDialog(
     desvantagem: DesvantagemSelecionada,
     permiteAutocontrole: Boolean = false,
     descricaoCatalogo: String = "",
+    poderesDisponiveis: List<com.gurps.ficha.model.Poder> = emptyList(),
     onDismiss: () -> Unit,
     onSave: (DesvantagemSelecionada) -> Unit
 ) {
@@ -375,7 +396,9 @@ fun EditarDesvantagemDialog(
     var autocontrole by remember { mutableStateOf(desvantagem.autocontrole) }
     var mods by remember { mutableStateOf(desvantagem.modificadores) }
     var showAddMod by remember { mutableStateOf(false) }
+    var showAddModPoder by remember { mutableStateOf(false) }
     var mostrarDescricaoCatalogo by remember { mutableStateOf(false) }
+    var poderIdSelecionado by remember { mutableStateOf(desvantagem.poderId) }
     val descricaoCatalogoFinal = descricaoCatalogo.trim()
 
     // Reconstruir metadados se necessário (caso venham nulos mas a regra exija)
@@ -459,6 +482,38 @@ fun EditarDesvantagemDialog(
                 
                 Text("Tipo: ${desvantagem.tipoCusto.name} | Custo base: ${def?.custo ?: desvantagem.custoBase} | Pag. ${def?.pagina ?: desvantagem.pagina}", style = MaterialTheme.typography.bodySmall)
                 
+                // Vinculação de Poderes
+                if (poderesDisponiveis.isNotEmpty()) {
+                    var expandedPoder by remember { mutableStateOf(false) }
+                    val selectedPoder = poderesDisponiveis.find { it.id == poderIdSelecionado }
+                    
+                    ExposedDropdownMenuBox(expanded = expandedPoder, onExpandedChange = { expandedPoder = !expandedPoder }) {
+                        OutlinedTextField(
+                            value = selectedPoder?.nome ?: "Nenhum Poder",
+                            onValueChange = {},
+                            readOnly = true,
+                            label = { Text("Vincular a Poder") },
+                            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expandedPoder) },
+                            modifier = Modifier.menuAnchor().fillMaxWidth()
+                        )
+                        ExposedDropdownMenu(expanded = expandedPoder, onDismissRequest = { expandedPoder = false }) {
+                            DropdownMenuItem(text = { Text("Nenhum Poder") }, onClick = { 
+                                poderIdSelecionado = null 
+                                expandedPoder = false 
+                            })
+                            poderesDisponiveis.forEach { poder ->
+                                DropdownMenuItem(
+                                    text = { Text("${poder.nome} (${poder.modificadorDePoder}%)") },
+                                    onClick = {
+                                        poderIdSelecionado = poder.id
+                                        expandedPoder = false
+                                    }
+                                )
+                            }
+                        }
+                    }
+                }
+
                 HorizontalDivider()
 
                 when (desvantagem.tipoCusto) {
@@ -603,6 +658,10 @@ fun EditarDesvantagemDialog(
                     Text("Modificadores (%)", style = MaterialTheme.typography.labelLarge)
                     TextButton(onClick = { showAddMod = true }) { Icon(Icons.Default.Add, null); Text("Add") }
                 }
+                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+                    Text("Modificadores de Poder", style = MaterialTheme.typography.labelLarge)
+                    TextButton(onClick = { showAddModPoder = true }) { Icon(Icons.Default.Add, null); Text("Add") }
+                }
 
                 mods.forEachIndexed { idx, mod ->
                     ModificadorSelecionadoItem(mod, onUpdate = { m -> mods = mods.toMutableList().apply { this[idx] = m } }, onDelete = { mods = mods.toMutableList().apply { removeAt(idx) } })
@@ -610,15 +669,16 @@ fun EditarDesvantagemDialog(
             }
         },
         confirmButton = {
-            TextButton(onClick = { 
+            TextButton(onClick = {
                 onSave(desvantagem.copy(
-                    nivel = nivel,
-                    custoEscolhido = if (specialRule == "vicio") (vicioBase + vicioEffect + vicioLegal) else custoEscolhido,
-                    descricao = descricao,
-                    autocontrole = autocontrole,
-                    modificadores = mods,
-                    metadados = currentMetadados
-                )) 
+                    nivel = nivel, 
+                    custoEscolhido = if (specialRule == "vicio") (vicioBase + vicioEffect + vicioLegal) else custoEscolhido, 
+                    autocontrole = autocontrole, 
+                    descricao = descricao, 
+                    modificadores = mods, 
+                    metadados = currentMetadados, 
+                    poderId = poderIdSelecionado
+                ))
             }) { Text("Salvar") }
         },
         dismissButton = { TextButton(onClick = onDismiss) { Text("Cancelar") } }
@@ -628,11 +688,26 @@ fun EditarDesvantagemDialog(
         EscopoModificadoresDialog(
             especificos = def?.modificadoresEspecificos ?: emptyList(),
             gerais = CharacterRules.DATA_REPOSITORY_INSTANCE?.modificadoresGerais ?: emptyList(),
+            poderes = emptyList(),
             onDismiss = { showAddMod = false },
             onSelect = { modDef ->
                 val valorInt = Regex("-?\\d+").find(modDef.valor)?.value?.toIntOrNull() ?: 0
                 mods = mods.toMutableList().apply { add(ModificadorSelecao(modDef.id, modDef.nome, valorInt, modDef.porNivel, 1, modDef.descricao, modDef.pagina, bonusBase = modDef.bonusBase)) }
                 showAddMod = false
+            }
+        )
+    }
+
+    if (showAddModPoder) {
+        EscopoModificadoresDialog(
+            especificos = emptyList(),
+            gerais = emptyList(),
+            poderes = CharacterRules.DATA_REPOSITORY_INSTANCE?.modificadoresPoderes ?: emptyList(),
+            onDismiss = { showAddModPoder = false },
+            onSelect = { modDef ->
+                val valorInt = Regex("-?\\d+").find(modDef.valor)?.value?.toIntOrNull() ?: 0
+                mods = mods.toMutableList().apply { add(ModificadorSelecao(modDef.id, modDef.nome, valorInt, modDef.porNivel, 1, modDef.descricao, modDef.pagina, bonusBase = modDef.bonusBase)) }
+                showAddModPoder = false
             }
         )
     }
