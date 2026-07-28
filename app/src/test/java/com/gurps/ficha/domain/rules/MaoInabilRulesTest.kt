@@ -68,11 +68,24 @@ class MaoInabilRulesTest {
 
     @Test
     fun `a descricao acessivel diz por extenso`() {
-        val d = MaoInabilRules.rotuloAcessivel(semAmbidestria, true)
+        val d = MaoInabilRules.rotuloAcessivel(semAmbidestria)
         assertTrue(d, d.contains("menos 4"))
         assertTrue("nao pode vazar o sinal cru", !d.contains("-4"))
 
-        val comVantagem = MaoInabilRules.rotuloAcessivel(comAmbidestria, true)
+        val comVantagem = MaoInabilRules.rotuloAcessivel(comAmbidestria)
         assertTrue(comVantagem, comVantagem.contains("Ambidestria"))
+    }
+
+    @Test
+    fun `a descricao acessivel NAO repete o estado da caixinha`() {
+        // O TalkBack ja anuncia "marcada"/"nao marcada" pelo papel de checkbox.
+        // Repetir aqui virava eco -- corrigido na auditoria de 28/07.
+        listOf(
+            MaoInabilRules.rotuloAcessivel(semAmbidestria),
+            MaoInabilRules.rotuloAcessivel(comAmbidestria)
+        ).forEach { d ->
+            assertTrue(d, !d.contains("Ativado") && !d.contains("Desativado"))
+            assertTrue(d, !d.lowercase().contains("marcad"))
+        }
     }
 }

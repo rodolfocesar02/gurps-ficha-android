@@ -25,6 +25,7 @@ import com.gurps.ficha.domain.rules.DxBracalRules
 import com.gurps.ficha.domain.rules.StBracalRules
 import com.gurps.ficha.model.Personagem
 import com.gurps.ficha.ui.appCardColors
+import com.gurps.ficha.ui.linhaAlternavel
 
 /**
  * Cartão de Atributos + PV/PF do topo da aba Rolagem.
@@ -151,13 +152,16 @@ fun PainelStBracal(
         modifier = Modifier
             .fillMaxWidth()
             .heightIn(max = 32.dp)
-            .clickable { onAlternar() }
-            .semantics {
-                contentDescription = StBracalRules.rotuloAcessivel(personagem, ativo)
-            },
+            // linhaAlternavel: UM ponto de parada no TalkBack, com rótulo E
+            // estado. Ver o porquê em `UiA11y.kt`.
+            .linhaAlternavel(
+                marcado = ativo,
+                descricao = StBracalRules.rotuloAcessivel(personagem),
+                onAlternar = onAlternar
+            ),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Checkbox(checked = ativo, onCheckedChange = { onAlternar() })
+        Checkbox(checked = ativo, onCheckedChange = null)
         Text(
             StBracalRules.rotulo(personagem),
             style = MaterialTheme.typography.labelSmall,
@@ -193,13 +197,14 @@ fun PainelDxBracal(
         modifier = Modifier
             .fillMaxWidth()
             .heightIn(max = 32.dp)
-            .clickable { onAlternar() }
-            .semantics {
-                contentDescription = DxBracalRules.rotuloAcessivel(personagem, ativo)
-            },
+            .linhaAlternavel(
+                marcado = ativo,
+                descricao = DxBracalRules.rotuloAcessivel(personagem),
+                onAlternar = onAlternar
+            ),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Checkbox(checked = ativo, onCheckedChange = { onAlternar() })
+        Checkbox(checked = ativo, onCheckedChange = null)
         Text(
             DxBracalRules.rotulo(personagem),
             style = MaterialTheme.typography.labelSmall,

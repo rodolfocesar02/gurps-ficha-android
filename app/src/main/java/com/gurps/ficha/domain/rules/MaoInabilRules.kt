@@ -54,11 +54,17 @@ object MaoInabilRules {
         else -> "Mão inábil ($PENALIDADE)"
     }
 
-    /** O mesmo, escrito para o TalkBack. */
-    fun rotuloAcessivel(personagem: Personagem, usandoMaoInabil: Boolean): String = when {
-        !usandoMaoInabil -> "Usando a mão hábil. Sem penalidade."
-        temAmbidestria(personagem) ->
-            "Usando a mão inábil. Sem penalidade, porque o personagem tem Ambidestria."
-        else -> "Usando a mão inábil. Penalidade de menos 4."
-    }
+    /**
+     * O mesmo, escrito para o TalkBack.
+     *
+     * ⚠️ Descreve **o que marcar significa**, não o estado atual: quem anuncia
+     * marcado/não marcado é o TalkBack, pelo papel de caixa de seleção. Dizer
+     * aqui também viraria eco.
+     */
+    fun rotuloAcessivel(personagem: Personagem): String =
+        if (temAmbidestria(personagem)) {
+            "Usar a mão inábil. Sem penalidade, porque o personagem tem Ambidestria."
+        } else {
+            "Usar a mão inábil. Penalidade de menos 4."
+        }
 }

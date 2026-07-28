@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.sp
 import com.gurps.ficha.model.Personagem
 import com.gurps.ficha.ui.appCardColors
 import com.gurps.ficha.ui.SectionCard
+import com.gurps.ficha.ui.linhaAlternavel
 import kotlin.math.abs
 
 @Composable
@@ -402,11 +403,14 @@ fun AtaqueDanoQuickArea(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clickable { onAlternarMao() }
-                    .semantics { contentDescription = descricaoDaMao },
+                    .linhaAlternavel(
+                        marcado = usandoMaoInabil,
+                        descricao = descricaoDaMao,
+                        onAlternar = onAlternarMao
+                    ),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Checkbox(checked = usandoMaoInabil, onCheckedChange = { onAlternarMao() })
+                Checkbox(checked = usandoMaoInabil, onCheckedChange = null)
                 Text(
                     rotuloDaMao,
                     style = MaterialTheme.typography.labelSmall,

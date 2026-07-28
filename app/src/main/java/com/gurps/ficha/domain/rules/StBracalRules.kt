@@ -62,9 +62,15 @@ object StBracalRules {
         return "ST Braçal +$bonus (braços agem como ST ${stDosBracos(personagem)})"
     }
 
-    /** O mesmo rótulo, escrito para o TalkBack ler. */
-    fun rotuloAcessivel(personagem: Personagem, ativo: Boolean): String =
+    /**
+     * O mesmo rótulo, escrito para o TalkBack ler.
+     *
+     * ⚠️ **Não diz se está marcado.** O seletor usa `Modifier.linhaAlternavel`
+     * com papel de caixa de seleção, e o próprio TalkBack anuncia o estado —
+     * repetir aqui viraria eco ("marcada... Ativado").
+     */
+    fun rotuloAcessivel(personagem: Personagem): String =
         "ST Braçal, mais ${bonusDe(personagem)}. Braços agem como ST " +
-            "${stDosBracos(personagem)}. ${if (ativo) "Ativado." else "Desativado."} " +
-            "Vale para erguer, arremessar e atacar com os braços."
+            "${stDosBracos(personagem)}. Vale para erguer, arremessar e atacar " +
+            "com os braços."
 }

@@ -57,9 +57,14 @@ object DxBracalRules {
         "DX Braçal +${bonusDe(personagem)} (braços agem como DX " +
             "${dxDosBracos(personagem)}; não vale para combate)"
 
-    /** O mesmo rótulo, escrito para o TalkBack ler. */
-    fun rotuloAcessivel(personagem: Personagem, ativo: Boolean): String =
+    /**
+     * O mesmo rótulo, escrito para o TalkBack ler.
+     *
+     * ⚠️ **Não diz se está marcado** — quem anuncia o estado é o TalkBack, pelo
+     * papel de caixa de seleção. Ver `UiA11y.linhaAlternavel`.
+     */
+    fun rotuloAcessivel(personagem: Personagem): String =
         "DX Braçal, mais ${bonusDe(personagem)}. Braços agem como DX " +
-            "${dxDosBracos(personagem)}. ${if (ativo) "Ativado." else "Desativado."} " +
-            "Vale para tarefas de mão. Não vale para perícias de combate."
+            "${dxDosBracos(personagem)}. Vale para tarefas de mão. " +
+            "Não vale para perícias de combate."
 }

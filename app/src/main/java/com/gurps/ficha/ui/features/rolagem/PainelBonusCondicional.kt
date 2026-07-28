@@ -15,6 +15,7 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import com.gurps.ficha.domain.rules.traits.BonusCondicional
+import com.gurps.ficha.ui.linhaAlternavel
 
 /**
  * Caixas para o jogador marcar os bônus que valem NESTA rolagem.
@@ -51,17 +52,25 @@ fun PainelBonusCondicional(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .semantics {
-                        contentDescription =
-                            "${b.nomeDoTraco}, ${if (b.valor >= 0) "mais" else "menos"} " +
-                                "${kotlin.math.abs(b.valor)}, ${b.condicao}. " +
-                                if (indice in marcados) "Marcado." else "Não marcado."
-                    },
+                    // A linha inteira passa a ser o alvo do toque. Antes ela só
+                    // tinha descrição, e a caixinha era um SEGUNDO foco sem
+                    // rótulo nenhum.
+                    //
+                    // O "Marcado."/"Não marcado." saiu do texto: o próprio
+                    // TalkBack anuncia o estado quando o papel é Checkbox, e
+                    // repetir virava eco.
+                    .linhaAlternavel(
+                        marcado = indice in marcados,
+                        descricao = "${b.nomeDoTraco}, " +
+                            "${if (b.valor >= 0) "mais" else "menos"} " +
+                            "${kotlin.math.abs(b.valor)}, ${b.condicao}",
+                        onAlternar = { onAlternar(indice) }
+                    ),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Checkbox(
                     checked = indice in marcados,
-                    onCheckedChange = { onAlternar(indice) }
+                    onCheckedChange = null
                 )
                 Text(
                     b.rotulo,

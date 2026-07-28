@@ -721,7 +721,7 @@ fun TabRolagem(viewModel: FichaViewModel) {
             origensDoDano = origensDoDano,
             usandoMaoInabil = usandoMaoInabil,
             rotuloDaMao = MaoInabilRules.rotuloDe(p, usandoMaoInabil),
-            descricaoDaMao = MaoInabilRules.rotuloAcessivel(p, usandoMaoInabil),
+            descricaoDaMao = MaoInabilRules.rotuloAcessivel(p),
             onAlternarMao = { usandoMaoInabil = !usandoMaoInabil },
             onExecutarDano = { dano ->
                 val perId = if (ataqueAtual?.id?.startsWith("pericia_") == true) {
