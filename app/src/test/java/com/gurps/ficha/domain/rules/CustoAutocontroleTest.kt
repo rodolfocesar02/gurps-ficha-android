@@ -13,10 +13,14 @@ import org.junit.Test
  * o `custoBase` cru quando há autocontrole.
  *
  * Só que isso quebrava o caso oposto: desvantagem de ESCOLHA, onde
- * `custoEscolhido` é a escolha do jogador e NÃO está multiplicada. Flashbacks
- * (−5/−10/−20) escolhido em −20 com NA 12 devolvia **−5** — a escolha ia para o
- * lixo. São 5 desvantagens do catálogo com essa combinação: Atavismo por
- * Estresse, Flashbacks, Obsessão, Vício e Vozes Fantasmagóricas.
+ * `custoEscolhido` é a escolha do jogador e NÃO está multiplicada: escolhido em
+ * −20 com NA 12, o custo voltava **−5** — a escolha ia para o lixo.
+ *
+ * Os casos REAIS no catálogo são **Fobias** (−5/−10/−15/−20*) e **Obsessão**
+ * (−1/−5/−10*): custo de escolha E marcador `*` de autocontrole. Flashbacks
+ * parecia ser um terceiro, mas não é — o livro define o custo dele pela
+ * INTENSIDADE do episódio, não por número de autocontrole (conferido no
+ * Módulo Básico p.141 em 27/07/2026).
  *
  * Os dois casos precisam conviver, e é isso que estes testes travam.
  */

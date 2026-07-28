@@ -80,7 +80,9 @@ fun PainelAutocontrole(
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Column(modifier = Modifier.padding(end = 8.dp)) {
+                    // weight(1f): sem isso a coluna do texto ocupa a linha toda
+                    // e espreme o "NA 15", que quebra letra a letra na vertical.
+                    Column(modifier = Modifier.weight(1f).padding(end = 8.dp)) {
                         Text(
                             teste.rotulo,
                             style = MaterialTheme.typography.bodyMedium,
@@ -98,7 +100,11 @@ fun PainelAutocontrole(
                         if (isPraCegoVariant) "Rolar ($alvo)" else "NA $alvo",
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.primary
+                        color = MaterialTheme.colorScheme.primary,
+                        // Nome de desvantagem pode ser longo; o NA não pode
+                        // quebrar de jeito nenhum — é o número da rolagem.
+                        maxLines = 1,
+                        softWrap = false
                     )
                 }
             }

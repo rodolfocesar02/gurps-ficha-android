@@ -11,7 +11,15 @@ import com.gurps.ficha.model.Personagem
  * cede à desvantagem.
  *
  * O app já GUARDA o NA (usado no multiplicador de custo) mas nunca rolou nada:
- * 35 desvantagens do catálogo dependem disso e o jogador tinha de fazer na mão.
+ * o jogador tinha de fazer na mão.
+ *
+ * QUANTAS SÃO: **30** desvantagens, não 35. O sinal correto é o `*` no custo
+ * (convenção do GURPS: "-10*" = usa número de autocontrole), não a palavra
+ * "autocontrole" na descrição. Cinco desvantagens só CITAM autocontrole sem ter
+ * o seu: Flashbacks e Vozes Fantasmagóricas disparam quando o personagem falha
+ * no autocontrole de OUTRA desvantagem; Dorminhoco e Vício PENALIZAM testes de
+ * autocontrole alheios; Atavismo por Estresse tem redação ambígua no catálogo.
+ * `DesvantagemDefinicao.usaAutocontroleMental()` já usa o critério certo.
  *
  * Kotlin puro, sem Android, para poder ser testado — o mesmo desenho de
  * `SentidoRules`, que resolveu o problema equivalente para os Sentidos.
