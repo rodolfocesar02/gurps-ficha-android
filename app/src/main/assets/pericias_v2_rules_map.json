@@ -3667,33 +3667,6 @@
         "difficulty": null,
         "raw": "IQ/Variável"
       },
-      "preRequisito": {
-        "raw": "Antecedentes Incomuns (a critério do Mestre)",
-        "kind": "structured",
-        "allowWithoutPrerequisite": false,
-        "logic": {
-          "and": [
-            {
-              "or": [
-                {
-                  "raw": "Antecedentes Incomuns (a critério do Mestre)",
-                  "normalized": "antecedentes incomuns (a criterio do mestre)",
-                  "type": "text",
-                  "value": "Antecedentes Incomuns (a critério do Mestre)"
-                }
-              ]
-            }
-          ]
-        },
-        "tokens": [
-          {
-            "raw": "Antecedentes Incomuns (a critério do Mestre)",
-            "normalized": "antecedentes incomuns (a criterio do mestre)",
-            "type": "text",
-            "value": "Antecedentes Incomuns (a critério do Mestre)"
-          }
-        ]
-      },
       "preDefinido": {
         "raw": "-",
         "kind": "empty",
