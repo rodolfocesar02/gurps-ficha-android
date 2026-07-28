@@ -650,19 +650,19 @@ arquivos é subordinada a esta.**
 | # | Lote | UI? | Depende de | O que entrega |
 |---|---|---|---|---|
 | 3.1 | ✅ **V-2** — Reflexos em Combate | — | | **FEITO 27/07** (049d7c0b) |
-| 3.2 | **V-3** — GANCHO-A (bônus de atributo) | — | — | `AtributoBonusRules.kt`; `Personagem.kt` só ganha 1 linha por propriedade. Teste de recursão obrigatório |
-| 3.3 | **V-4** — vantagens de atributo + **escopo por membro** | — | 3.2 | ST Braçal, DX Braçal, Crescimento. Resolve o `escopo` adiado duas vezes |
+| 3.2 | ✅ **V-3** — GANCHO-A | — | | **FEITO 27/07** (dcd86a5a). Trava de recursão testada |
+| 3.3 | ✅ **V-4** | — | | **FEITO 27/07**. As 4 são escopadas/condicionais — declaradas e documentadas, não somadas |
 | 3.4 | ✅ **D-3** — bug de custo | — | | **FEITO 27/07** (191ec0c3). Bug REPRODUZIDO e corrigido |
 
 ### FASE 4 — Avançado
 
 | # | Lote | UI? | Depende de | O que entrega |
 |---|---|---|---|---|
-| 4.1 | **V-5** — bônus condicional | 🖐 | 1.2 | "aplicar +1 de Rosto Sincero?" na hora de rolar. **Destrava a maioria dos bônus do GURPS** |
-| 4.2 | **REACAO-1** — GANCHO-D + UI de Teste de Reação | 🖐 | — | serve vantagens (Aparência, Carisma) E desvantagens (~23) — UI **compartilhada**, não duplicar |
-| 4.3 | **V-6** — GANCHO-B (RD natural) | — | — | consumo em `domain/combat/subsistemas/` |
-| 4.4 | **V-7 / D-5** — GANCHO-C (deslocamento) | — | — | Voo, Natação, Anfíbio + as 3 desvantagens de deslocamento |
-| 4.5 | **D-6** — vulnerabilidade a dano | — | — | pertence ao `InjuryRules`, não ao `TraitRule` |
+| 4.1 | ✅ **V-5** — bônus condicional | 🖐 | | **FEITO 27/07** (fc7a1596). ⏸ aguarda teste |
+| 4.2 | ✅ **REACAO-1** | 🖐 | | **FEITO 27/07** (56d75f22). ⏸ aguarda teste |
+| 4.3 | ❌ **V-6** — RD natural | — | | **DESCARTADO** — é regra, não dado. Ver abaixo |
+| 4.4 | ❌ **V-7 / D-5** — deslocamento | — | | **DESCARTADO** — já há cálculo próprio; declarar duplicaria |
+| 4.5 | ❌ **D-6** — vulnerabilidade | — | | **DESCARTADO** — pertence ao motor de combate |
 | 4.6 | **NOTA-2** — nota de bônus em ARMAS, PERÍCIAS e ITENS | 🖐 | 1.1 | pedido do usuário em 27/07 ao validar o M-1 — ver detalhe abaixo |
 
 ### Lote NOTA-2 — estender a nota de bônus (pedido em 27/07/2026)
@@ -695,9 +695,38 @@ e `TabPericias.kt` ainda não foram medidos neste plano.
 bônus **automáticos** (vindos de vantagem); o NOTA-2 cobre os **digitados à
 mão**. Juntos, todo número da ficha passa a dizer de onde veio.
 
+### Lotes V-6, V-7/D-5 e D-6 — ❌ NÃO CABEM no formato declarativo (27/07/2026)
+
+Investigados e **descartados com motivo**, não adiados. Registrar o porquê evita
+que a próxima sessão tente de novo.
+
+**V-6 — RD natural.** O catálogo não tem vantagem que conceda RD de forma
+simples: `Resistência a Dano` é `costKind=special`, com nove modificadores
+próprios (Pele Resistente, Semiablativa, Parcial por local...) que mudam COMO a
+RD funciona, não só quanto. Um campo `{"tipo":"rd","valor":2}` não expressa
+"RD 2 apenas contra corte, ablativa, no torso". Isso é regra, não dado — se um
+dia for automatizado, é classe Kotlin.
+
+**V-7 / D-5 — modos de deslocamento.** `Voo`, `Deslocamento Aquático` e
+`Anfíbio` **já têm cálculo próprio** no `Personagem`
+(`bonusDeslocamentoAquatico` soma a vantagem por nível). Declarar os mesmos
+efeitos criaria CONTAGEM DUPLA — o erro que o Lote M-1 existe para evitar.
+Antes de mexer aqui, seria preciso remover a lógica antiga, e isso é
+refatoração de regra, não declaração de dado.
+
+**D-6 — Vulnerabilidade a dano.** Multiplica o dano recebido (×2, ×3) conforme
+o tipo. Não é bônus somado a lugar nenhum: pertence ao `InjuryRules`, dentro do
+motor de combate, onde o dano é aplicado. O `TraitRule` não tem — nem deveria
+ter — gancho para "multiplicar dano recebido".
+
+**O padrão dos três:** o formato declarativo cobre bem *"+N em X"*. Quando o
+efeito muda COMO uma regra funciona (multiplicar, restringir por tipo, conceder
+um modo de movimento), ele é código. Forçá-lo no JSON produziria declaração que
+mente sobre o que o app faz.
+
 ### Resumo
 
-- **21 lotes**, 13 concluídos, 1 cancelado → **7 pendentes**
+- **21 lotes**: 17 concluídos, 1 cancelado, 3 descartados com motivo → **1 pendente** (NOTA-2)
 - FASE 0, 1 e 2 fechadas. Restam: V-3/V-4 (atributo+escopo), V-5 (condicional), REACAO-1, V-6/V-7 (RD/deslocamento), D-6, NOTA-2
 - FASE 0 e FASE 1 fechadas (27/07/2026). Próximo: **2.1 (V-1)** — declarar as vantagens simples em JSON
 - 🖐 = toca UI ⇒ **PARA para teste no aparelho**: M-1, NOTA-1, D-1, V-5, REACAO-1 (**5 paradas**)
