@@ -160,20 +160,21 @@ object EfeitoInterpretador {
          * Um efeito só é aplicado quando é incondicional e global.
          *
          *  - CONDICIONAL ("ao tentar parecer honesto") não pode entrar no NH
-         *    base: valeria sempre e inflaria a ficha. Vai virar opção marcável
-         *    na hora da rolagem (Lote V-5).
-         *  - ESCOPO por membro (+1 ST só dos braços) ainda não tem como entrar
-         *    no cálculo — falta decidir como um bônus por membro se aplica.
+         *    base: valeria sempre e inflaria a ficha. Vira opção marcável na
+         *    hora da rolagem (Lote V-5).
+         *  - ESCOPO por membro (+1 ST só dos braços) não entra no cálculo
+         *    global — a ST Braçal, por exemplo, tem seletor próprio.
+         *
+         * **Sem log aqui de propósito.** Recusar um efeito condicional ou
+         * escopado é operação NORMAL, não problema, e este método roda a cada
+         * recomposição de cada perícia: o Logcat virava uma enxurrada de
+         * "Furtividade é condicional" (relatado pelo usuário em 28/07). Só o
+         * que é realmente ERRO — tipo desconhecido — continua avisando, e a
+         * `EfeitosDeclaradosCatalogoTest` já impede que isso chegue ao release.
          */
         private fun aplicavel(efeito: EfeitoDeclarado): Boolean = when {
-            efeito.ehCondicional -> {
-                Log.d(TAG, "$traitId: '${efeito.alvo}' e condicional (${efeito.condicao}), fora do NH base")
-                false
-            }
-            efeito.escopoResolvido != EscopoEfeito.GLOBAL -> {
-                Log.d(TAG, "$traitId: '${efeito.alvo}' tem escopo ${efeito.escopoResolvido}, ainda nao suportado")
-                false
-            }
+            efeito.ehCondicional -> false
+            efeito.escopoResolvido != EscopoEfeito.GLOBAL -> false
             efeito.tipoResolvido == null -> {
                 Log.w(TAG, "$traitId: tipo '${efeito.tipo}' desconhecido, ignorado")
                 false
