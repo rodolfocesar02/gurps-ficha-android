@@ -52,10 +52,16 @@ de bônus condicional só existe para perícia e defesa: a rolagem de atributo �
 toque direto no número, sem diálogo onde a caixinha caiba. **Declarar hoje seria
 efeito morto na ficha.** Precisa de decisão de UI antes.
 
-Traços afetados: `duro_de_matar`, `dificil_de_subjugar`, `hipoalgia`,
-`tolerancia_ao_alcool`, `facil_de_matar`, `enjoo`, `enjoo_espacial`,
-`estomago_sensivel`, `fanatismo`, `sangue_frio`, `vicio`, `dorminhoco`,
-`supersensitivismo`.
+Traços afetados: `hipoalgia`, `tolerancia_ao_alcool`, `facil_de_matar`, `enjoo`,
+`enjoo_espacial`, `estomago_sensivel`, `fanatismo`, `sangue_frio`, `vicio`,
+`dorminhoco`, `supersensitivismo`.
+
+⚠️ **Corrigido em 28/07:** `duro_de_matar` e `dificil_de_subjugar` estavam nesta
+lista e **saíram**. Eu os classifiquei como "sem onde aparecer" sem ler a
+descrição até o fim — os dois nomeiam um **marco de PV exato** ("quando os PV
+ficam menores que −1×PVInicial", "para evitar a inconsciência"), e o §11.1
+mostrou que esse marco tem onde aparecer. São os dois primeiros clientes do
+lote MARCOS-1.
 
 ---
 
@@ -692,28 +698,94 @@ falte afogamento, exaustão, tontura e choque.
 ⚠️ **R1**: `TabRolagem.kt` está em ~999 linhas. O botão novo cabe, mas o diálogo
 **tem que nascer em arquivo próprio** — não há espaço para embutir.
 
-## 11.1 Testes disparados por DANO (Pânico e Inconsciência)
+## 11.1 Testes disparados pela queda de PV / PF — ✅ VIÁVEL (decisão do usuário, 28/07)
 
-Duas ideias do usuário, com a mesma mecânica: *"quando o personagem tomar dano,
-automaticamente ele deve fazer o teste"*.
+> *"vamos tratar quando tomar o dano do PV e quando diminuir ali a relação
+> 'dano' entra em ação! o mesmo quando envolver PF"*
 
-| Vantagem | Efeito | MB |
+**A ideia funciona, e é melhor do que a versão anterior deste texto.** Eu havia
+escrito que o disparo automático "só existe dentro do combate". Está errado: a
+aba Rolagem **já tem** os controles de PV/PF (`PvPfQuickRollPanel`, com
+`onAjustarPv` / `onEditPv` e `pontosVidaRolagemAtual` persistido na ficha).
+**Baixar o PV na ficha É o evento de dano** — não precisa do combate.
+
+O gatilho, então, é: *PV atual caiu de X para Y* ⇒ conferir quais marcos foram
+cruzados ⇒ oferecer os testes correspondentes.
+
+### Os marcos que EXIGEM teste (compêndio §20, MB p.419-423)
+
+| Situação | Teste | Vantagem que soma |
 |---|---|---|
-| `destemor` | soma o nível à **Vontade** na Verificação de Pânico e ao resistir a Intimidação; **subtrai** dos testes de Intimidação feitos contra ele | p.55 |
-| `dificil_de_subjugar` | soma o nível ao **HT** no teste para evitar inconsciência | p.59 |
+| Perda ≥ **PV máx / 2** num golpe | HT — knockdown e atordoamento | `dificil_de_subjugar` (parte do atordoamento) |
+| **PV ≤ 0** | HT a cada turno para continuar consciente | **`dificil_de_subjugar`**, `boa_forma` |
+| **PV ≤ −1× PV máx** (e a cada múltiplo: −2×, −3×, −4×) | HT ou morre | **`duro_de_matar`**, `boa_forma` |
+| PV ≤ −5× PV máx | morte automática — **sem teste** | — |
 
-**O que trava:** "automaticamente ao tomar dano" só existe **dentro do combate**.
-Na aba Rolagem não há evento de dano — o jogador rola o dano que ele causa, não
-o que recebe. Então a ideia se parte em duas:
+⚠️ **Correção de escopo:** `duro_de_matar` estava na minha lista de "13
+condicionais de atributo sem onde aparecer". **Estava errado.** A descrição dele
+é literal: *"+1 nos testes de HT feitos para ver se o personagem consegue
+sobreviver quando seu número de Pontos de Vida é menor que −1×PVInicial"*. Isso
+é exatamente o marco acima — tem onde aparecer, sim.
 
-- **Na ficha (barato):** o teste aparece no botão do §11.0, com o bônus já
-  somado, e o jogador toca quando o Mestre pedir.
-- **No combate (caro):** o disparo automático. O motor já sabe aplicar dano
-  (`InjuryRules`), então o gancho existe; o risco é de regressão no fluxo de
-  turno, que já mordeu antes (TOK-8/9/10).
+### Os marcos de PV que são ESTADO, não teste
 
-**Recomendação:** fazer só a metade da ficha primeiro. A metade do combate é lote
-próprio, depois do §11.0 estar validado no aparelho.
+| PV atual | Estado |
+|---|---|
+| ≤ 1/3 do máximo | **Cambaleante**: Deslocamento e Esquiva pela metade, e teste de HT a cada turno de esforço para não cair |
+
+### O lado do PF: quase tudo é estado, não rolagem
+
+| PF atual | Efeito |
+|---|---|
+| ≤ 1/3 do máximo | **Cansado**: ST e DX caem pela metade |
+| 0 | qualquer esforço extra passa a custar **PV** |
+| ≤ −1× PF máx | desmaia — **automático, sem teste** |
+
+**Ou seja:** o PF não gera teste novo. O que ele pede é **aviso de estado** na
+tela ("Cansado — ST e DX pela metade"), que hoje não existe. Vale fazer junto,
+porque é a mesma leitura de marcos, mas é entrega diferente: *mostrar*, não
+*rolar*.
+
+`boa_forma` toca o PF por outro caminho: recupera PF no **dobro** da velocidade
+(e o nível Ótima Forma perde PF pela **metade**). Isso é tempo de descanso, não
+marco — fica para o §11.7.
+
+### ⚠️ A Verificação de Pânico NÃO entra aqui
+
+`destemor` foi listado junto com `dificil_de_subjugar` na versão anterior, como
+se os dois disparassem com dano. **Não é o caso.** A Verificação de Pânico é
+disparada por **situação assustadora** (horror, sobrenatural, cena chocante), não
+por perder PV. Conferido no compêndio §14 e na descrição da vantagem.
+
+`destemor` continua valendo — mas como teste **manual**, dentro do botão do
+§11.0, onde o Mestre pede e o jogador toca.
+
+### Como implementar sem virar bug de fluxo
+
+O risco aqui é o app rolar sozinho e o jogador não entender de onde veio o
+número — o mesmo defeito que a zona de dano invisível causou no TOK-9.
+
+**Regra de desenho: o app OFERECE, não rola.** Ao cruzar um marco, aparece um
+aviso com o teste já montado (alvo, bônus e origem), e o jogador toca. Assim ele
+vê *por que* está rolando, e o Mestre pode dispensar.
+
+**Onde mora (R2):**
+
+| Arquivo | Pasta | Papel |
+|---|---|---|
+| `MarcosDeVidaRules.kt` | `domain/rules/` **CRIAR** | Kotlin puro: recebe PV antes/depois e PV máx, devolve os marcos cruzados e os testes exigidos, com bônus e origem. Testável sem Android |
+| `AvisoDeMarco.kt` | `ui/features/rolagem/` **CRIAR** | o aviso na tela, com o botão de rolar |
+
+**Testes obrigatórios** (a lição do V-1 — testar o caminho todo, não a ponta):
+
+- cair de 10 para 4 num golpe (PV máx 10) cruza o marco de ferimento grave;
+- cair de 4 para 3 **não** cruza nada de novo (já estava cambaleante);
+- cair para 0 oferece o teste de consciência **com** o bônus de Difícil de
+  Subjugar somado;
+- cair para −10 (PV máx 10) oferece o teste de morte **com** Duro de Matar;
+- **subir** o PV (cura) não dispara nada;
+- editar o PV máximo não dispara nada;
+- ficha sem as vantagens recebe o mesmo teste, só sem o bônus.
 
 ## 11.2 Campo novo: Resistência à Magia (Abascanto)
 
@@ -729,8 +801,37 @@ Restrições do livro que a ficha deveria respeitar:
 - **não protege** de projéteis mágicos, armas mágicas nem adivinhação;
 - não pode ser "desligada" para receber magia benéfica.
 
-⚠️ A validação "incompatível com Aptidão Mágica" é o tipo de trava que já mordeu
-no `conhecimento_oculto` (bloqueava compra legítima). **Avisar, não impedir.**
+### ✅ Decisão do usuário (28/07): trava mútua e automática
+
+> *"se houver uma dessas vantagem na ficha, bloqueia automático a outra, e
+> vice-versa"*
+
+Ou seja: com Abascanto na ficha, **Aptidão Mágica não pode ser adicionada**, e
+com Aptidão Mágica na ficha, **Abascanto não pode**.
+
+Eu havia levantado o risco de repetir o erro do `conhecimento_oculto`, que
+bloqueava uma compra legítima. **Não é o mesmo caso, e a decisão está certa:**
+
+- no `conhecimento_oculto` o pré-requisito era *"Antecedentes Incomuns **a
+  critério do Mestre**"* — decisão de mesa, que o app não tem como conhecer;
+- aqui o livro é categórico: *"Esta vantagem **não pode** ser combinada com
+  Aptidão Mágica"* (MB p.85). Não há margem de mesa.
+
+**Onde mora:** `FichaTraitDelegate.adicionarVantagem` já devolve
+`Result.failure(Exception(...))` para vantagem duplicada, e a UI já mostra a
+mensagem em Toast. A trava entra no mesmo ponto — **não criar caminho novo**.
+
+A mensagem precisa dizer o porquê, não só "não pode":
+> *"Abascanto não combina com Aptidão Mágica (MB p.85): quem resiste à magia não
+> consegue lançá-la. Remova uma para adicionar a outra."*
+
+⚠️ **A trava vale para adicionar, não para fichas já salvas.** Ficha antiga com
+as duas não pode quebrar ao abrir — nesse caso, **avisar** e deixar o jogador
+resolver. Bloquear a abertura seria perder a ficha.
+
+⚠️ **Generalizar com cuidado.** Se um dia isto virar uma tabela de
+incompatibilidades, cada par precisa da mesma checagem: o livro proíbe, ou é
+"a critério do Mestre"? Só o primeiro caso vira trava.
 
 ## 11.3 Mão hábil / inábil no botão de Ataque
 
@@ -774,7 +875,9 @@ Recomendação: declarar Disfarce e registrar a Perseguição como sabida-e-omit
 
 ⚠️ **`magro` e `muito_gordo` também travam a HT** (máximo 14 e 13). Isso é regra
 de **criação de personagem**, não bônus — vive no validador da ficha, não no
-`efeitos`. Fora do escopo deste plano.
+`efeitos`. **Decisão do usuário (28/07): fazer, mas por último** — virou o item
+final da fila (§11.9). Fica separado da declaração dos bônus porque toca outro
+arquivo e outra regra.
 
 ⚠️ **`flexibilidade` tem regra Kotlin**, então a correção é no `.kt`, não no
 JSON — a Kotlin vence e o JSON seria ignorado em silêncio.
@@ -845,12 +948,14 @@ prontas** — não reabrir:
 | # | Lote | Custo | Depende de |
 |---|---|---|---|
 | 1 | **DX-BRACAL** — fechar a lacuna do §11.6 | baixo | — |
+| 1b | **MARCOS-1** — testes disparados pela queda de PV, e aviso de estado no PF (§11.1) | médio, **toca UI** | — |
 | 2 | **RESIST-1** — botão "Reação e Resistência" (§11.0), movendo Reação e Autocontrole para dentro | médio, **toca UI** | — |
 | 3 | **MAO-1** — seletor hábil/inábil no Ataque (§11.3) | baixo, **toca UI** | — |
 | 4 | **V-9** — as declaráveis do §11.4 | baixo | 2 (só para `boa_forma`) |
 | 5 | **RESIST-2** — Abascanto e campo de Resistência à Magia | médio | 2 |
 | 6 | **DANO-TESTE** — Pânico e Inconsciência disparados por dano, no combate | alto, **risco de regressão** | 2 |
 | 7 | **CAP14** — documento próprio (§11.7) | — | — |
+| 8 | **TETO-HT** — `magro` trava HT em 14, `muito_gordo` em 13 (§11.4) | baixo | — |
 
 > Os itens 2, 3 e 6 tocam UI ⇒ **param para teste no aparelho**, pela regra do
 > projeto.
