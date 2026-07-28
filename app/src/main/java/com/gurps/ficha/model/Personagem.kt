@@ -772,19 +772,31 @@ data class Equipamento(
     // confiscada (não dá RD). Aditivo/anulável → fichas antigas (Gson sem o campo) desserializam como false.
     var confiscado: Boolean = false
 ) {
-    fun danoCalculadoComSt(personagem: Personagem, periciaId: String? = null): String? {
+    /**
+     * Dano da arma já resolvido contra a ST de quem a empunha.
+     *
+     * [stExtra] existe para a **ST Braçal** (MB p.89): empunhar uma arma é ação
+     * de braço, então quando o jogador liga o seletor na aba Rolagem a arma
+     * passa a bater com a força dos braços. Fica em zero por padrão — o combate
+     * tático e a tela de equipamento continuam usando a ST do corpo.
+     */
+    fun danoCalculadoComSt(
+        personagem: Personagem,
+        periciaId: String? = null,
+        stExtra: Int = 0
+    ): String? {
         val raw = armaDanoRaw?.trim().orEmpty()
         if (raw.isBlank()) return null
-        
+
         // Consulta bônus de vantagens (ex: Mestre de Armas)
         val bonusPorDado = com.gurps.ficha.domain.rules.traits.TraitRuleRegistry.getDamageBonusPerDie(
             personagem,
-            periciaId, 
+            periciaId,
             nome,
             armaGrupo
         )
-        
-        return CharacterRules.resolverDanoPorSt(raw, personagem.forca, bonusPorDado)
+
+        return CharacterRules.resolverDanoPorSt(raw, personagem.forca + stExtra, bonusPorDado)
     }
 
     fun rdArmaduraExibicao(): String? {

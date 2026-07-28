@@ -1,19 +1,26 @@
 package com.gurps.ficha.ui.features.rolagem
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.snapshots.SnapshotStateMap
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.gurps.ficha.domain.rules.StBracalRules
 import com.gurps.ficha.model.Personagem
 import com.gurps.ficha.ui.appCardColors
 
@@ -43,6 +50,8 @@ fun PainelAtributosEStatus(
     compactLabelStyle: TextStyle,
     outerCardVerticalPadding: Dp,
     innerCardVerticalPadding: Dp,
+    stBracalAtivo: Boolean,
+    onAlternarStBracal: () -> Unit,
     onRolarAtributo: (atributo: String, valor: Int, mod: Int) -> Unit,
     onEditPv: () -> Unit,
     onEditPf: () -> Unit,
@@ -75,7 +84,15 @@ fun PainelAtributosEStatus(
                 statsNumberStyle = statsNumberStyle,
                 compactLabelStyle = compactLabelStyle,
                 innerCardVerticalPadding = innerCardVerticalPadding,
+                bonusStBracal = if (stBracalAtivo) StBracalRules.bonusDe(personagem) else 0,
                 onExecutarRolagem = onRolarAtributo
+            )
+
+            // Logo abaixo do ST, porque é dele que a ST Braçal fala.
+            PainelStBracal(
+                personagem = personagem,
+                ativo = stBracalAtivo,
+                onAlternar = onAlternarStBracal
             )
 
             PvPfQuickRollPanel(
@@ -93,5 +110,47 @@ fun PainelAtributosEStatus(
                 onAjustarPf = onAjustarPf
             )
         }
+    }
+}
+
+/**
+ * Seletor da **ST Braçal**, logo abaixo da linha de atributos.
+ *
+ * Por que é uma caixinha e não um número somado ao ST: o livro (MB p.89) diz
+ * que a ST Braçal vale para erguer, arremessar e **atacar com os braços** — e
+ * não vale para PV, Base de Carga nem esforço do corpo inteiro. Somar no ST
+ * daria força de sobra para chutar e aumentaria os PV, que é justamente o que a
+ * regra proíbe.
+ *
+ * Marcado, o ST rolado e o **Dano ST** passam a usar a ST dos braços. É o mesmo
+ * gesto do bônus condicional de perícia: quem sabe se a ação é de braço é o
+ * jogador, na hora.
+ *
+ * **Não renderiza nada** sem ST Braçal na ficha.
+ */
+@Composable
+fun PainelStBracal(
+    personagem: Personagem,
+    ativo: Boolean,
+    onAlternar: () -> Unit
+) {
+    if (!StBracalRules.temStBracal(personagem)) return
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { onAlternar() }
+            .semantics {
+                contentDescription = StBracalRules.rotuloAcessivel(personagem, ativo)
+            },
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Checkbox(checked = ativo, onCheckedChange = { onAlternar() })
+        Text(
+            StBracalRules.rotulo(personagem),
+            style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.outline,
+            modifier = Modifier.padding(start = 2.dp)
+        )
     }
 }

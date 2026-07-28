@@ -71,12 +71,18 @@ fun AtributosQuickRollPanel(
     statsNumberStyle: androidx.compose.ui.text.TextStyle,
     compactLabelStyle: androidx.compose.ui.text.TextStyle,
     innerCardVerticalPadding: androidx.compose.ui.unit.Dp,
+    bonusStBracal: Int = 0,
     onExecutarRolagem: (String, Int, Int) -> Unit
 ) {
+    // ST Braçal ligada: o ST rolado passa a ser o dos braços (MB p.89). Vale
+    // para erguer, arremessar e atacar -- e SÓ para o ST, nunca para os outros.
+    fun valorDe(attr: String): Int =
+        personagem.getAtributo(attr) + if (attr == "ST") bonusStBracal else 0
+
     if (isPraCegoVariant) {
         Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
             atributosRapidos.forEach { attr ->
-                val valor = personagem.getAtributo(attr)
+                val valor = valorDe(attr)
                 val nomeAttr = atributoNomeCompleto(attr)
                 Card(
                     modifier = Modifier.fillMaxWidth(),
@@ -116,7 +122,7 @@ fun AtributosQuickRollPanel(
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             atributosRapidos.forEach { attr ->
-                val valor = personagem.getAtributo(attr)
+                val valor = valorDe(attr)
                 val modAttr = modificadoresAtributo[attr] ?: 0
                 Column(
                     modifier = Modifier

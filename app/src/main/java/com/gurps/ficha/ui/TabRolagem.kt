@@ -29,6 +29,7 @@ import com.gurps.ficha.data.network.DiscordVoiceChannel
 
 import com.gurps.ficha.domain.roll.CriticoRules
 import com.gurps.ficha.domain.rules.MagiaEnergiaRules
+import com.gurps.ficha.domain.rules.StBracalRules
 import com.gurps.ficha.model.PericiaSelecionada
 import com.gurps.ficha.model.PERICIAS_COMBATE
 import com.gurps.ficha.model.TipoEquipamento
@@ -152,7 +153,12 @@ fun TabRolagem(viewModel: FichaViewModel) {
         opcoesAtaque.find { it.id == viewModel.ataqueSelecionadoId } ?: opcoesAtaque.firstOrNull()
     }
 
-    val fontesDano = remember(armas, p.vantagens, viewModel.ataqueSelecionadoId) {
+    // ST Bracal: ligada, o ST rolado e o Dano ST passam a usar a forca dos
+    // bracos (MB p.89). Fica desligada por padrao -- nem toda acao e de braco.
+    var stBracalAtivo by remember { mutableStateOf(false) }
+    val bonusStBracal = if (stBracalAtivo) StBracalRules.bonusDe(p) else 0
+
+    val fontesDano = remember(armas, p.vantagens, viewModel.ataqueSelecionadoId, bonusStBracal) {
         val list = mutableListOf<DamageSourceOption>()
         list.add(DamageSourceOption(id = "st_base", label = "Dano ST", contextLabel = "Dano ST", damageExpression = ""))
         
@@ -161,7 +167,8 @@ fun TabRolagem(viewModel: FichaViewModel) {
         }
 
         armas.forEach { arma ->
-            val danoExibicao = arma.danoCalculadoComSt(p, selectedSkillId)
+            // stExtra: empunhar arma e acao de braco, entao a ST Bracal conta.
+            val danoExibicao = arma.danoCalculadoComSt(p, selectedSkillId, bonusStBracal)
             if (!danoExibicao.isNullOrBlank()) {
                 list.add(DamageSourceOption(
                     id = "arma_${arma.nome}",
@@ -186,10 +193,18 @@ fun TabRolagem(viewModel: FichaViewModel) {
         }
     }
 
-    val fonteDanoAtual = remember(viewModel.fonteDanoSelecionadaId, fontesDano, viewModel.stDamageMode, p.st) {
+    // Dano de ST com a forca dos bracos quando a ST Bracal esta ligada: no GURPS
+    // o dano corpo a corpo sai da ST, e atacar com arma e acao de braco.
+    val danoGdPEfetivo = if (stBracalAtivo) StBracalRules.danoGdPDosBracos(p) else p.danoGdP
+    val danoGeBEfetivo = if (stBracalAtivo) StBracalRules.danoGeBDosBracos(p) else p.danoGeB
+
+    val fonteDanoAtual = remember(
+        viewModel.fonteDanoSelecionadaId, fontesDano, viewModel.stDamageMode,
+        danoGdPEfetivo, danoGeBEfetivo
+    ) {
         val base = fontesDano.find { it.id == viewModel.fonteDanoSelecionadaId } ?: fontesDano.first()
         if (base.id == "st_base") {
-            val expr = if (viewModel.stDamageMode == StDamageMode.GDP) p.danoGdP else p.danoGeB
+            val expr = if (viewModel.stDamageMode == StDamageMode.GDP) danoGdPEfetivo else danoGeBEfetivo
             base.copy(damageExpression = expr)
         } else {
             base
@@ -197,6 +212,7 @@ fun TabRolagem(viewModel: FichaViewModel) {
     }
 
     var modificadorAtaque by remember { mutableIntStateOf(0) }
+
 
     val opcoesPericia = p.periciasTotais.filter { per ->
         val defId = if (per.definicaoId.startsWith("racial_")) per.definicaoId.removePrefix("racial_") else per.definicaoId
@@ -569,6 +585,8 @@ fun TabRolagem(viewModel: FichaViewModel) {
             compactLabelStyle = compactLabelStyle,
             outerCardVerticalPadding = outerCardVerticalPadding,
             innerCardVerticalPadding = innerCardVerticalPadding,
+            stBracalAtivo = stBracalAtivo,
+            onAlternarStBracal = { stBracalAtivo = !stBracalAtivo },
             onRolarAtributo = { attr, valor, modAttr ->
                 if (attr == "PER") {
                     // Lote 372: PER abre o diálogo de Testes de Sentidos.
@@ -619,8 +637,8 @@ fun TabRolagem(viewModel: FichaViewModel) {
             opcoesAtaque = opcoesAtaque,
             ataqueAtual = ataqueAtual,
             fonteDanoAtual = fonteDanoAtual,
-            gdp = p.danoGdP,
-            geb = p.danoGeB,
+            gdp = danoGdPEfetivo,
+            geb = danoGeBEfetivo,
             stDamageMode = viewModel.stDamageMode,
             modificadorAtaque = modificadorAtaque,
             isPraCegoVariant = isPraCegoVariant,
