@@ -389,7 +389,7 @@ data class VantagemSelecionada(
     override val nome: String = "",
     var custoBase: Int = 0, // Custo unitario (por nivel) ou custo fixo
     override var nivel: Int = 1,
-    var custoEscolhido: Int = 0, // Custo total escolhido (para VARIAVEL/ESCOLHA)
+    override var custoEscolhido: Int = 0, // Custo total escolhido (para VARIAVEL/ESCOLHA)
     var descricao: String = "",
     val tipoCusto: TipoCusto = TipoCusto.FIXO,
     val pagina: Int = 0,
@@ -477,7 +477,7 @@ data class DesvantagemSelecionada(
     override val nome: String = "",
     var custoBase: Int = 0,
     override var nivel: Int = 1,
-    var custoEscolhido: Int = 0,
+    override var custoEscolhido: Int = 0,
     var descricao: String = "",
     var autocontrole: Int? = null,
     val tipoCusto: TipoCusto = TipoCusto.FIXO,
@@ -487,6 +487,9 @@ data class DesvantagemSelecionada(
     override var metadados: Map<String, String>? = null,
     var poderId: String? = null // Referência ao Poder que possui esta Desvantagem
 ) : com.gurps.ficha.domain.rules.traits.TracoSelecionado {
+    /** Seis ids existem nos dois catálogos; ver `TracoSelecionado.ehDesvantagem`. */
+    override val ehDesvantagem: Boolean get() = true
+
     val custoFinal: Int get() {
         val rule = specialRule ?: CharacterRules.DATA_REPOSITORY_INSTANCE?.getDesvantagemPorId(definicaoId)?.specialRule
         return CharacterRules.calcularCustoDesvantagem(

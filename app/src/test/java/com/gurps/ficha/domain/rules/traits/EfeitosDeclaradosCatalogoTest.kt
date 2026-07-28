@@ -51,8 +51,15 @@ class EfeitosDeclaradosCatalogoTest {
     private data class TracoCru(
         val id: String = "",
         val nome: String = "",
+        val options: List<Int>? = null,
         val efeitos: List<EfeitoDeclarado> = emptyList()
     )
+
+    /** Traços crus de UM catálogo — quem precisa saber de qual lado veio. */
+    private fun lerCru(nome: String): List<TracoCru> {
+        val tipo = object : TypeToken<List<TracoCru>>() {}.type
+        return lerLista(nome, tipo)
+    }
 
     private data class PericiaCrua(val nome: String = "")
 
@@ -111,10 +118,60 @@ class EfeitosDeclaradosCatalogoTest {
     @Test
     fun `nenhum efeito tem valor zero`() {
         // Valor 0 nao muda nada: ou e engano de digitacao, ou o efeito nao
-        // deveria estar declarado.
+        // deveria estar declarado. Quem usa `porOpcao` fica de fora: la o
+        // `valor` nao e usado, a tabela e que manda.
         val erros = tracosComEfeitos().flatMap { traco ->
-            traco.efeitos.filter { it.valor == 0 }
+            traco.efeitos.filter { !it.ehPorOpcao && it.valor == 0 }
                 .map { "${traco.nome} [${traco.id}] -> '${it.alvo}' com valor 0" }
+        }
+        assertTrue(erros.joinToString("\n"), erros.isEmpty())
+    }
+
+    @Test
+    fun `toda chave de porOpcao existe entre as opcoes de custo do traco`() {
+        // A armadilha do Lote OPCAO-1: chave que nao casa com nenhuma opcao do
+        // traco nunca aplica -- e nao gera erro nenhum. Aparencia de desvantagem
+        // guarda custo NEGATIVO; escrever "4" em vez de "-4" faria o efeito
+        // existir no JSON e nao acontecer na ficha.
+        val erros = mutableListOf<String>()
+        (lerCru("vantagens.v3.json") + lerCru("desvantagens.v2.json"))
+            .filter { it.efeitos.any { e -> e.ehPorOpcao } }
+            .forEach { traco ->
+                val opcoes = traco.options.orEmpty().toSet()
+                if (opcoes.isEmpty()) {
+                    erros.add("${traco.nome} [${traco.id}] usa porOpcao mas nao tem `options`")
+                    return@forEach
+                }
+                traco.efeitos.filter { it.ehPorOpcao }.forEach { efeito ->
+                    efeito.porOpcao.orEmpty().keys.forEach { chave ->
+                        val custo = chave.toIntOrNull()
+                        if (custo == null || custo !in opcoes) {
+                            erros.add(
+                                "${traco.nome} [${traco.id}] -> porOpcao['$chave'] " +
+                                    "nao existe nas opcoes $opcoes"
+                            )
+                        }
+                    }
+                }
+            }
+        assertTrue(erros.joinToString("\n"), erros.isEmpty())
+    }
+
+    @Test
+    fun `id repetido nos DOIS catalogos nao pode trocar de lado`() {
+        // Seis ids existem em vantagens E desvantagens (aparencia, destino,
+        // forma_de_sombras, reputacao, riqueza, status): sao escalas do GURPS
+        // que atravessam o zero. Se os dois lados declararem efeitos, o sinal
+        // TEM que ser oposto -- caso contrario alguem colou o bloco errado.
+        val vant = lerCru("vantagens.v3.json").filter { it.efeitos.isNotEmpty() }.associateBy { it.id }
+        val desv = lerCru("desvantagens.v2.json").filter { it.efeitos.isNotEmpty() }.associateBy { it.id }
+        val erros = (vant.keys intersect desv.keys).flatMap { id ->
+            val positivos = vant.getValue(id).efeitos.flatMap { it.porOpcao.orEmpty().values }
+            val negativos = desv.getValue(id).efeitos.flatMap { it.porOpcao.orEmpty().values }
+            buildList {
+                if (positivos.any { it < 0 }) add("$id: lado VANTAGEM tem valor negativo")
+                if (negativos.any { it > 0 }) add("$id: lado DESVANTAGEM tem valor positivo")
+            }
         }
         assertTrue(erros.joinToString("\n"), erros.isEmpty())
     }

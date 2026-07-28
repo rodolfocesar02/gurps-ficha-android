@@ -209,7 +209,30 @@
     "tags": [
       "social"
     ],
-    "descricao": "A aparência é, principalmente, um “efeito especial” — você pode escolher a aparência que quiser para seu personagem. No mínimo, anote a cor de pele, dos cabelos e dos olhos (e outras características apropriadas à sua raça, como escamas, penas, tatuagens etc.). Contudo, algumas características são sim consideradas vantagens ou desvantagens. Níveis de Aparência: A aparência é expressa em níveis. A maior parte das pessoas tem uma aparência “comum” que custa 0 ponto. A beleza concede um bônus de reação, o que é uma vantagem e, portanto, custa pontos. Uma aparência desagradável impõe uma penalidade de reação, o que é uma desvantagem e concede pontos de personagem. Modificadores de reação só afetam pessoas capazes de enxergar o personagem! Se não for possível enxergá-lo, um novo teste de reação pode ser necessário quando a pessoa encontrar o personagem pessoalmente (a critério do Mestre). Os modificadores de reação provenientes da aparência afetam apenas os membros da raça do personagem, os membros de uma raça muito semelhante ou de outra diferente que considera a raça dele atraente (por qualquer que seja o motivo). Nesses casos, o Mestre tem sempre a palavra final; os humanos são “muito parecidos” com os elfos, mas monstros de olhos esbugalhados provavelmente não se importam com a aparência de um ser humano — exceto numa campanha de gozação. Horrendo: O personagem é indescritivelmente monstruoso ou repugnante e não pode interagir com seres humanos comuns. Ele recebe uma penalidade de -6 nos testes de reação. O Mestre pode decidir que esta é uma característica sobrenatural e não está disponível para personagens normais. -24 pontos. Monstruoso: O personagem é horrível e obviamente anormal de alguma forma. A maioria das pessoas o vê como um monstro, não como um ser inteligente. Ele recebe uma penalidade de -5 nos testes de reação. Mais uma vez, esta característica pode não ser apropriada a personagens normais. -20 pontos. Hediondo: O personagem tem alguma característica repugnante em sua aparência — talvez uma doença de pele grave ou um glaucoma. É provável inclusive que ele tenha vários destes problemas ao mesmo tempo. O personagem recebe uma penalidade de -4 nos testes de reação. -16 pontos. Feio: Como no caso anterior, mas não tão grave — talvez apenas um cabelo seboso ou dentes tortos. O personagem recebe uma penalidade de -2 nos testes de reação. -8 pontos. Sem Atrativos: O personagem tem algo de antipático nele, mas nada que possa ser apontado com precisão. Ele recebe uma penalidade de -1 nos testes de reação. -4 pontos. Comum: A aparência do personagem não apresenta nenhum modificador de reação; ele se mistura facilmente na multidão. A impressão que as pessoas têm dele depende exclusivamente do seu comportamento. Se sorrir e agir de maneira cortês, ele terá uma aparência agradável. Se estiver de cara fechada e resmungando, será tido como desagradável. 0 ponto. Atraente: O personagem não poderia participar de concursos de beleza, mas definitivamente tem uma boa aparência. Esta característica concede um bônus de +1 nos testes de reação. 4 pontos. Elegante (ou Bonito): O personagem poderia entrar em concursos de beleza. Esta característica concede um bônus de +4 nos testes de reação feitos por pessoas que se sentem atraídas por membros do sexo do personagem e um bônus de +2 para todas as outras. 12 pontos. Muito Elegante (ou Muito Bonito): O personagem poderia vencer concursos de beleza — com regularidade. Esta característica concede um bônus de +6 nos testes de reação feitos por pessoas que se sentem atraídas por membros do sexo do personagem e um bônus de +2 para todas as outras. Exceção: Pessoas do mesmo sexo que já tenham algum motivo para não gostar do personagem (uma penalidade de -4 ou mais nos testes de reação, sem considerar os bônus), sentem-se ressentidas por sua boa aparência e reagem com uma penalidade adicional de -2. Dependendo de onde estiver, o personagem pode ser importunado por caçadores de talentos, bêbados amigáveis, mercadores de escravos e sofrer outros inconvenientes. 16 pontos. Lindo: O personagem é o “espécime ideal”. Ele recebe um bônus de +8 (!) nos testes de reação feitos por pessoas que se sentem atraídas por membros do sexo do personagem, um bônus de +2 para todas as outras e sofre todos os inconvenientes resultantes da aparência Muito Elegante. O Mestre tem liberdade de reservar esta característica para anjos, divindades e outras criaturas semelhantes. Essas entidades também costumam possuir Carisma (pág. 47) ou Terror (pág. 94). 20 pontos. Opções Especiais: As opções a seguir estão disponíveis para personagens com uma aparência acima da média e não custam pontos adicionais: Andrógeno: Personagens de aparência Elegante (ou Bonito) ou superior podem especificar que suas características atraem membros de ambos os sexos. Nesses casos ele recebe um modificador de reação fixo, em vez de um bônus que depende do gênero; +3 para Elegante, +4 para Muito Elegante e +5 para Lindo. Impressionante: Personagens de aparência Atraente ou superior podem especificar que possuem uma presença física excepcional que não se manifesta como atração sexual. Esta é uma característica típica de tigres e membros mais idosos da realeza. Se a aparência do personagem for Elegante (Bonito) ou superior, utilize os bônus de reação “fixos” concedidos aos Andrógenos."
+    "descricao": "A aparência é, principalmente, um “efeito especial” — você pode escolher a aparência que quiser para seu personagem. No mínimo, anote a cor de pele, dos cabelos e dos olhos (e outras características apropriadas à sua raça, como escamas, penas, tatuagens etc.). Contudo, algumas características são sim consideradas vantagens ou desvantagens. Níveis de Aparência: A aparência é expressa em níveis. A maior parte das pessoas tem uma aparência “comum” que custa 0 ponto. A beleza concede um bônus de reação, o que é uma vantagem e, portanto, custa pontos. Uma aparência desagradável impõe uma penalidade de reação, o que é uma desvantagem e concede pontos de personagem. Modificadores de reação só afetam pessoas capazes de enxergar o personagem! Se não for possível enxergá-lo, um novo teste de reação pode ser necessário quando a pessoa encontrar o personagem pessoalmente (a critério do Mestre). Os modificadores de reação provenientes da aparência afetam apenas os membros da raça do personagem, os membros de uma raça muito semelhante ou de outra diferente que considera a raça dele atraente (por qualquer que seja o motivo). Nesses casos, o Mestre tem sempre a palavra final; os humanos são “muito parecidos” com os elfos, mas monstros de olhos esbugalhados provavelmente não se importam com a aparência de um ser humano — exceto numa campanha de gozação. Horrendo: O personagem é indescritivelmente monstruoso ou repugnante e não pode interagir com seres humanos comuns. Ele recebe uma penalidade de -6 nos testes de reação. O Mestre pode decidir que esta é uma característica sobrenatural e não está disponível para personagens normais. -24 pontos. Monstruoso: O personagem é horrível e obviamente anormal de alguma forma. A maioria das pessoas o vê como um monstro, não como um ser inteligente. Ele recebe uma penalidade de -5 nos testes de reação. Mais uma vez, esta característica pode não ser apropriada a personagens normais. -20 pontos. Hediondo: O personagem tem alguma característica repugnante em sua aparência — talvez uma doença de pele grave ou um glaucoma. É provável inclusive que ele tenha vários destes problemas ao mesmo tempo. O personagem recebe uma penalidade de -4 nos testes de reação. -16 pontos. Feio: Como no caso anterior, mas não tão grave — talvez apenas um cabelo seboso ou dentes tortos. O personagem recebe uma penalidade de -2 nos testes de reação. -8 pontos. Sem Atrativos: O personagem tem algo de antipático nele, mas nada que possa ser apontado com precisão. Ele recebe uma penalidade de -1 nos testes de reação. -4 pontos. Comum: A aparência do personagem não apresenta nenhum modificador de reação; ele se mistura facilmente na multidão. A impressão que as pessoas têm dele depende exclusivamente do seu comportamento. Se sorrir e agir de maneira cortês, ele terá uma aparência agradável. Se estiver de cara fechada e resmungando, será tido como desagradável. 0 ponto. Atraente: O personagem não poderia participar de concursos de beleza, mas definitivamente tem uma boa aparência. Esta característica concede um bônus de +1 nos testes de reação. 4 pontos. Elegante (ou Bonito): O personagem poderia entrar em concursos de beleza. Esta característica concede um bônus de +4 nos testes de reação feitos por pessoas que se sentem atraídas por membros do sexo do personagem e um bônus de +2 para todas as outras. 12 pontos. Muito Elegante (ou Muito Bonito): O personagem poderia vencer concursos de beleza — com regularidade. Esta característica concede um bônus de +6 nos testes de reação feitos por pessoas que se sentem atraídas por membros do sexo do personagem e um bônus de +2 para todas as outras. Exceção: Pessoas do mesmo sexo que já tenham algum motivo para não gostar do personagem (uma penalidade de -4 ou mais nos testes de reação, sem considerar os bônus), sentem-se ressentidas por sua boa aparência e reagem com uma penalidade adicional de -2. Dependendo de onde estiver, o personagem pode ser importunado por caçadores de talentos, bêbados amigáveis, mercadores de escravos e sofrer outros inconvenientes. 16 pontos. Lindo: O personagem é o “espécime ideal”. Ele recebe um bônus de +8 (!) nos testes de reação feitos por pessoas que se sentem atraídas por membros do sexo do personagem, um bônus de +2 para todas as outras e sofre todos os inconvenientes resultantes da aparência Muito Elegante. O Mestre tem liberdade de reservar esta característica para anjos, divindades e outras criaturas semelhantes. Essas entidades também costumam possuir Carisma (pág. 47) ou Terror (pág. 94). 20 pontos. Opções Especiais: As opções a seguir estão disponíveis para personagens com uma aparência acima da média e não custam pontos adicionais: Andrógeno: Personagens de aparência Elegante (ou Bonito) ou superior podem especificar que suas características atraem membros de ambos os sexos. Nesses casos ele recebe um modificador de reação fixo, em vez de um bônus que depende do gênero; +3 para Elegante, +4 para Muito Elegante e +5 para Lindo. Impressionante: Personagens de aparência Atraente ou superior podem especificar que possuem uma presença física excepcional que não se manifesta como atração sexual. Esta é uma característica típica de tigres e membros mais idosos da realeza. Se a aparência do personagem for Elegante (Bonito) ou superior, utilize os bônus de reação “fixos” concedidos aos Andrógenos.",
+    "efeitos": [
+      {
+        "tipo": "pericia",
+        "alvo": "reacao",
+        "porOpcao": {
+          "4": 1,
+          "12": 2,
+          "16": 2,
+          "20": 2
+        },
+        "condicao": "de quem pode enxergar você"
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "reacao",
+        "porOpcao": {
+          "12": 2,
+          "16": 4,
+          "20": 6
+        },
+        "condicao": "adicional, de quem se sente atraído pelo seu sexo"
+      }
+    ]
   },
   {
     "id": "apetrechos",
@@ -557,143 +580,204 @@
         "nome": "Atordoamento",
         "tipo": "ampliação",
         "valor": 10,
-        "pagina": 43
+        "pagina": 43,
+        "descricao": "Só pode acompanhar Vantagem, Penalidade em Atributo, Desvantagem ou Vantagem Anulada. Se não resistir ao ataque, a vítima também fica atordoada (como numa Atribulação não modificada), além de sucumbir aos efeitos de outras ampliações. +10%."
       },
       {
         "id": "coma",
         "nome": "Coma",
         "tipo": "ampliação",
         "valor": 250,
-        "pagina": 43
+        "pagina": 43,
+        "descricao": "A vítima fica inconsciente e provavelmente morrerá em alguns dias se não for tratada; v. Condições Fatais (pág. 429). +250%."
       },
       {
         "id": "ataque_cardiaco",
         "nome": "Ataque Cardíaco",
         "tipo": "ampliação",
         "valor": 300,
-        "pagina": 43
+        "pagina": 43,
+        "descricao": "A vítima sofre um ataque cardíaco incapacitante e morrerá em alguns minutos se não for tratada; v. Condições Fatais (pág. 429). +300%."
       },
       {
-        "id": "paralisia",
-        "nome": "Paralisia",
+        "id": "incapacitacao_paralisia",
+        "nome": "Incapacitação Paralisia",
         "tipo": "ampliação",
         "valor": 150,
-        "pagina": 43
+        "pagina": 43,
+        "descricao": "A vítima fica incapacitada durante um número de minutos igual à margem de fracasso no teste de HT. Depois disso, ela fica atordoada até ser bem-sucedida num teste de HT (uma vez por segundo). Se a Incapacitação for combinada com outros efeitos (como Irritante), esses outros efeitos só ocorrem depois que a incapacitação terminar. Eles substituem o atordoamento e têm uma duração igual à da Incapacitação."
       },
       {
-        "id": "sono",
-        "nome": "Sono",
+        "id": "incapacitacao_sono",
+        "nome": "Incapacitação Sono",
         "tipo": "ampliação",
         "valor": 150,
-        "pagina": 43
+        "pagina": 43,
+        "descricao": "A vítima fica incapacitada durante um número de minutos igual à margem de fracasso no teste de HT. Depois disso, ela fica atordoada até ser bem-sucedida num teste de HT (uma vez por segundo). Se a Incapacitação for combinada com outros efeitos (como Irritante), esses outros efeitos só ocorrem depois que a incapacitação terminar. Eles substituem o atordoamento e têm uma duração igual à da Incapacitação."
       },
       {
-        "id": "inconsciencia",
-        "nome": "Inconsciência",
+        "id": "incapacitacao_inconsciencia",
+        "nome": "Incapacitação Inconsciência",
         "tipo": "ampliação",
         "valor": 200,
-        "pagina": 43
+        "pagina": 43,
+        "descricao": "A vítima fica incapacitada durante um número de minutos igual à margem de fracasso no teste de HT. Depois disso, ela fica atordoada até ser bem-sucedida num teste de HT (uma vez por segundo). Se a Incapacitação for combinada com outros efeitos (como Irritante), esses outros efeitos só ocorrem depois que a incapacitação terminar. Eles substituem o atordoamento e têm uma duração igual à da Incapacitação."
       },
       {
-        "id": "agonia",
-        "nome": "Agonia",
+        "id": "incapacitacao_agonia",
+        "nome": "Incapacitação Agonia",
         "tipo": "ampliação",
         "valor": 100,
-        "pagina": 43
+        "pagina": 43,
+        "descricao": "A vítima fica incapacitada durante um número de minutos igual à margem de fracasso no teste de HT. Depois disso, ela fica atordoada até ser bem-sucedida num teste de HT (uma vez por segundo). Se a Incapacitação for combinada com outros efeitos (como Irritante), esses outros efeitos só ocorrem depois que a incapacitação terminar. Eles substituem o atordoamento e têm uma duração igual à da Incapacitação."
       },
       {
-        "id": "engasgo",
-        "nome": "Engasgo",
+        "id": "incapacitacao_asfixia",
+        "nome": "Incapacitação Asfixia",
         "tipo": "ampliação",
         "valor": 100,
-        "pagina": 43
+        "pagina": 43,
+        "descricao": "A vítima fica incapacitada durante um número de minutos igual à margem de fracasso no teste de HT. Depois disso, ela fica atordoada até ser bem-sucedida num teste de HT (uma vez por segundo). Se a Incapacitação for combinada com outros efeitos (como Irritante), esses outros efeitos só ocorrem depois que a incapacitação terminar. Eles substituem o atordoamento e têm uma duração igual à da Incapacitação."
       },
       {
-        "id": "imobilizacao",
-        "nome": "Imobilização",
+        "id": "incapacitacao_alucinação",
+        "nome": "Incapacitação Alucinação",
         "tipo": "ampliação",
         "valor": 50,
-        "pagina": 43
+        "pagina": 43,
+        "descricao": "A vítima fica incapacitada durante um número de minutos igual à margem de fracasso no teste de HT. Depois disso, ela fica atordoada até ser bem-sucedida num teste de HT (uma vez por segundo). Se a Incapacitação for combinada com outros efeitos (como Irritante), esses outros efeitos só ocorrem depois que a incapacitação terminar. Eles substituem o atordoamento e têm uma duração igual à da Incapacitação."
       },
       {
-        "id": "nausea",
-        "nome": "Náusea",
+        "id": "incapacitacao_ataque_de_epilepsia",
+        "nome": "Incapacitação Ataque de Epilepsia",
         "tipo": "ampliação",
-        "valor": 10,
-        "pagina": 43
+        "valor": 100,
+        "pagina": 43,
+        "descricao": "A vítima fica incapacitada durante um número de minutos igual à margem de fracasso no teste de HT. Depois disso, ela fica atordoada até ser bem-sucedida num teste de HT (uma vez por segundo). Se a Incapacitação for combinada com outros efeitos (como Irritante), esses outros efeitos só ocorrem depois que a incapacitação terminar. Eles substituem o atordoamento e têm uma duração igual à da Incapacitação."
       },
       {
-        "id": "tosse_espirro",
-        "nome": "Tosse ou Espirro",
+        "id": "incapacitacao_extase",
+        "nome": "Incapacitação Êxtase",
         "tipo": "ampliação",
-        "valor": 10,
-        "pagina": 43
+        "valor": 100,
+        "pagina": 43,
+        "descricao": "A vítima fica incapacitada durante um número de minutos igual à margem de fracasso no teste de HT. Depois disso, ela fica atordoada até ser bem-sucedida num teste de HT (uma vez por segundo). Se a Incapacitação for combinada com outros efeitos (como Irritante), esses outros efeitos só ocorrem depois que a incapacitação terminar. Eles substituem o atordoamento e têm uma duração igual à da Incapacitação."
       },
       {
-        "id": "calafrios",
-        "nome": "Calafrios",
+        "id": "incapacitacao_torpor",
+        "nome": "Incapacitação Torpor",
         "tipo": "ampliação",
-        "valor": 10,
-        "pagina": 43
+        "valor": 50,
+        "pagina": 43,
+        "descricao": "A vítima fica incapacitada durante um número de minutos igual à margem de fracasso no teste de HT. Depois disso, ela fica atordoada até ser bem-sucedida num teste de HT (uma vez por segundo). Se a Incapacitação for combinada com outros efeitos (como Irritante), esses outros efeitos só ocorrem depois que a incapacitação terminar. Eles substituem o atordoamento e têm uma duração igual à da Incapacitação."
       },
       {
-        "id": "dor",
-        "nome": "Dor",
+        "id": "irritante_nauseado",
+        "nome": "Irritante Nauseado",
+        "tipo": "ampliação",
+        "valor": 30,
+        "pagina": 43,
+        "descricao": "\nIrritante: A vítima sofre uma condição\ndebilitante, mas não incapacitante, em\nvez de ficar atordoada. Este efeito dura\num número de minutos igual à margem\nde fracasso no teste de HT A definição desses efeitos podem ser encontradas em Condições Irritantes (pág. 428)."
+      },
+      {
+        "id": "irritante_tosse",
+        "nome": "Irritante Tosse",
         "tipo": "ampliação",
         "valor": 20,
-        "pagina": 43
+        "pagina": 43,
+        "descricao": "\nIrritante: A vítima sofre uma condição\ndebilitante, mas não incapacitante, em\nvez de ficar atordoada. Este efeito dura\num número de minutos igual à margem\nde fracasso no teste de HT A definição desses efeitos podem ser encontradas em Condições Irritantes (pág. 428)."
       },
       {
-        "id": "dor_terrivel",
-        "nome": "Dor Terrível",
+        "id": "irritante_dor_moderada",
+        "nome": "Irritante Dor Moderada",
+        "tipo": "ampliação",
+        "valor": 20,
+        "pagina": 43,
+        "descricao": "\nIrritante: A vítima sofre uma condição\ndebilitante, mas não incapacitante, em\nvez de ficar atordoada. Este efeito dura\num número de minutos igual à margem\nde fracasso no teste de HT  A definição desses efeitos podem ser encontradas em Condições Irritantes (pág. 428)."
+      },
+      {
+        "id": "irritante_dor_severa",
+        "nome": "Irritante Dor Severa",
+        "tipo": "ampliação",
+        "valor": 40,
+        "pagina": 43,
+        "descricao": "\nIrritante: A vítima sofre uma condição\ndebilitante, mas não incapacitante, em\nvez de ficar atordoada. Este efeito dura\num número de minutos igual à margem\nde fracasso no teste de HT  A definição desses efeitos podem ser encontradas em Condições Irritantes (pág. 428)."
+      },
+      {
+        "id": "irritante_dor_terrível",
+        "nome": "Irritante Dor Terrível",
         "tipo": "ampliação",
         "valor": 60,
-        "pagina": 43
+        "pagina": 43,
+        "descricao": "\nIrritante: A vítima sofre uma condição\ndebilitante, mas não incapacitante, em\nvez de ficar atordoada. Este efeito dura\num número de minutos igual à margem\nde fracasso no teste de HT  A definição desses efeitos podem ser encontradas em Condições Irritantes (pág. 428)."
       },
       {
-        "id": "embriaguez",
-        "nome": "Embriaguez",
+        "id": "irritante_embriagado",
+        "nome": "Irritante Embriagado",
+        "tipo": "ampliação",
+        "valor": 30,
+        "pagina": 43,
+        "descricao": "\nIrritante: A vítima sofre uma condição\ndebilitante, mas não incapacitante, em\nvez de ficar atordoada. Este efeito dura\num número de minutos igual à margem\nde fracasso no teste de HT  A definição desses efeitos podem ser encontradas em Condições Irritantes (pág. 428)."
+      },
+      {
+        "id": "irritante_bêbado",
+        "nome": "Irritante Bêbado",
         "tipo": "ampliação",
         "valor": 20,
-        "pagina": 43
+        "pagina": 43,
+        "descricao": "\nIrritante: A vítima sofre uma condição\ndebilitante, mas não incapacitante, em\nvez de ficar atordoada. Este efeito dura\num número de minutos igual à margem\nde fracasso no teste de HT  A definição desses efeitos podem ser encontradas em Condições Irritantes (pág. 428)."
       },
       {
-        "id": "esgotamento",
-        "nome": "Esgotamento",
+        "id": "irritante_euforia",
+        "nome": "Irritante Euforia",
         "tipo": "ampliação",
-        "valor": 20,
-        "pagina": 43
+        "valor": 30,
+        "pagina": 43,
+        "descricao": "\nIrritante: A vítima sofre uma condição\ndebilitante, mas não incapacitante, em\nvez de ficar atordoada. Este efeito dura\num número de minutos igual à margem\nde fracasso no teste de HT  A definição desses efeitos podem ser encontradas em Condições Irritantes (pág. 428)."
       },
       {
-        "id": "vomito",
-        "nome": "Vômito",
-        "tipo": "ampliação",
-        "valor": 20,
-        "pagina": 43
-      },
-      {
-        "id": "sonolencia",
-        "nome": "Sonolência",
-        "tipo": "ampliação",
-        "valor": 20,
-        "pagina": 43
-      },
-      {
-        "id": "penalidade_atributo",
-        "nome": "Penalidade em Atributo",
+        "id": "penalidade_atributo_st",
+        "nome": "Penalidade em Atributo ST",
         "tipo": "ampliação",
         "valor": 5,
         "por_nivel": true,
-        "descricao": "+5% por cada -1 em ST, DX, IQ, HT, PV ou PF. +10% por cada -1 em NH ou Esquiva.",
+        "descricao": " A vítima sofre uma redução temporária de atributo. Isso custa +5% para cada -1 de redutor no atributo.  Esse efeito também diminui o NH de todas as perícias baseadas nos atributos afetados na mesma proporção. Os redutores na ST também reduzem a BC e o dano do indivíduo, enquanto reduções na IQ também se aplicam à Vontade e Percepção. As características secundárias não são afetadas: por exemplo, uma redução na HT não afeta a Velocidade Básica nem o número de PF. Esses redutores  duram um número de minutos igual à margem de fracasso no teste de HT. ",
         "pagina": 43
       },
       {
-        "id": "desvantagem_atrib",
-        "nome": "Desvantagem",
+        "id": "penalidade_atributo_dx",
+        "nome": "Penalidade em Atributo DX",
+        "tipo": "ampliação",
+        "valor": 10,
+        "por_nivel": true,
+        "descricao": " A vítima sofre uma redução temporária de atributo. Isso custa +5% para cada -1 de redutor no atributo.  Esse efeito também diminui o NH de todas as perícias baseadas nos atributos afetados na mesma proporção. Os redutores na ST também reduzem a BC e o dano do indivíduo, enquanto reduções na IQ também se aplicam à Vontade e Percepção. As características secundárias não são afetadas: por exemplo, uma redução na HT não afeta a Velocidade Básica nem o número de PF. Esses redutores  duram um número de minutos igual à margem de fracasso no teste de HT. ",
+        "pagina": 43
+      },
+      {
+        "id": "penalidade_atributo_iq",
+        "nome": "Penalidade em Atributo IQ",
+        "tipo": "ampliação",
+        "valor": 10,
+        "por_nivel": true,
+        "descricao": " A vítima sofre uma redução temporária de atributo. Isso custa +5% para cada -1 de redutor no atributo.  Esse efeito também diminui o NH de todas as perícias baseadas nos atributos afetados na mesma proporção. Os redutores na ST também reduzem a BC e o dano do indivíduo, enquanto reduções na IQ também se aplicam à Vontade e Percepção. As características secundárias não são afetadas: por exemplo, uma redução na HT não afeta a Velocidade Básica nem o número de PF. Esses redutores  duram um número de minutos igual à margem de fracasso no teste de HT. ",
+        "pagina": 43
+      },
+      {
+        "id": "penalidade_atributo_ht",
+        "nome": "Penalidade em Atributo HT",
+        "tipo": "ampliação",
+        "valor": 5,
+        "por_nivel": true,
+        "descricao": " A vítima sofre uma redução temporária de atributo. Isso custa +5% para cada -1 de redutor no atributo.  Esse efeito também diminui o NH de todas as perícias baseadas nos atributos afetados na mesma proporção. Os redutores na ST também reduzem a BC e o dano do indivíduo, enquanto reduções na IQ também se aplicam à Vontade e Percepção. As características secundárias não são afetadas: por exemplo, uma redução na HT não afeta a Velocidade Básica nem o número de PF. Esses redutores  duram um número de minutos igual à margem de fracasso no teste de HT. ",
+        "pagina": 43
+      },
+      {
+        "id": "desvantagem_temporaria",
+        "nome": "Desvantagem Temporária",
         "tipo": "ampliação",
         "valor": 1,
         "por_nivel": true,
-        "descricao": "+1% por cada ponto que a desvantagem custaria.",
+        "descricao": "A vítima adquire temporariamente uma ou mais desvantagens físicas ou mentais específicas (exceto desvantagens mentais autoimpostas — v. pág. 121). Isso vale +1% para cada ponto de personagem que custa a desvantagem temporária; ex., Paranoia [-10] custa +10%. Se a desvantagem pode ser comprada em níveis, especifique-o. A desvantagem dura um número de minutos igual à margem de fracasso no teste de HT.",
         "pagina": 43
       },
       {
@@ -702,16 +786,16 @@
         "tipo": "ampliação",
         "valor": 1,
         "por_nivel": true,
-        "descricao": "+1% por cada ponto que a vantagem anulada custa.",
+        "descricao": "A vítima deixa de ter uma vantagem específica durante um número de minutos igual à margem de fracasso no teste de HT. Se a vítima não possuir a vantagem em questão, ela não sofre maiores efeitos! Esta ampliação vale +1% para cada ponto de personagem no custo da vantagem. Se a vantagem tiver níveis, especifique o nível anulado.",
         "pagina": 43
       },
       {
-        "id": "vantagem_atrib",
-        "nome": "Vantagem",
+        "id": "vantagem_temporaria",
+        "nome": "Vantagem Temporária",
         "tipo": "ampliação",
         "valor": 10,
         "por_nivel": true,
-        "descricao": "+10% por cada ponto que a vantagem concedida custa.",
+        "descricao": "A vítima sente imediatamente os efeitos de uma vantagem física ou mental específica. As vantagens com efeitos instantâneos afetam o alvo uma vez — tão logo ele é atingido — se ele fracassar no teste de HT; por exemplo, a vantagem Dobra teleporta o alvo instantaneamente. As vantagens que podem ser ativadas e desativadas (como Insubstancialidade) ficam “ativadas” automaticamente por um número de minutos igual à margem de fracasso no teste de HT (a diferença entre o resultado obtido em um fracasso e o número alvo do teste) e não ficam sob o controle do indivíduo. Isso vale +10% para cada ponto de personagem que custa a vantagem; por exemplo, Insubstancialidade custaria +800%! Se a vantagem tiver níveis, especifique-o.",
         "pagina": 43
       },
       {
@@ -719,7 +803,8 @@
         "nome": "Cumulativo",
         "tipo": "ampliação",
         "valor": 400,
-        "pagina": 43
+        "pagina": 43,
+        "descricao": "Ataques contínuos são cumulativos! O jogador deve comprar esta ampliação junto com Penalidade em Atributo, ou com uma Vantagem, Desvantagem ou Vantagem Anulada que resulte em uma característica com “níveis”. +400%"
       }
     ]
   },

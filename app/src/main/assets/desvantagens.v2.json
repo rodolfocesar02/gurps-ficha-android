@@ -190,7 +190,21 @@
     "tags": [
       "fisica"
     ],
-    "descricao": "Uma aparência abaixo da média é considerada uma desvantagem. Os níveis são: Desagradável (-4), Feio (-8), Hediondo (-16), Monstruoso (-20) ou Horroroso (-24)."
+    "descricao": "Uma aparência abaixo da média é considerada uma desvantagem. Os níveis são: Desagradável (-4), Feio (-8), Hediondo (-16), Monstruoso (-20) ou Horroroso (-24).",
+    "efeitos": [
+      {
+        "tipo": "pericia",
+        "alvo": "reacao",
+        "porOpcao": {
+          "-4": -1,
+          "-8": -2,
+          "-16": -4,
+          "-20": -5,
+          "-24": -6
+        },
+        "condicao": "de quem pode enxergar você"
+      }
+    ]
   },
   {
     "id": "apetite_incontrolavel",
@@ -2047,7 +2061,19 @@
     "rawCost": "-5, -10, ou -15",
     "specialRule": null,
     "tags": [],
-    "descricao": "-5, -10 ou -15 pontos O personagem normalmente (ou sempre) se comporta de uma ma neira considerada repugnante pelos outros. Um Hábito Detestável vale -5 pontos para cada redutor de -1 nos testes de reação das pessoas que per cebem esse problema. Especifique o comportamento quando criar o per sonagem e defina com o Mestre o seu valor em pontos. Exemplos: Cheiro ruim, coçar-se constantemente ou voz irritante, são exemplos de hábitos que concedem -1 nos testes de reação e, portanto, valem -5 pontos cada. Ficar o tempo todo fazendo trocadilhos irritantes ou cuspir no chão constantemente pode riam impor penalidades de -2 nos tes -tes de reação e, por isso, valeriam -10 pontos cada. Hábitos de -15 pontos (-3 nos testes de reação) ficam a cargo da imaginação dos jogadores depravados o bastante para querê-los! A penalidade decorrente de um hábi to detestável só deve ser usada nos testes de reação com membros da raça do per sonagem; deixando a cargo do Mestre as reações de outras raças. Uma pessoa que fica babando constantemente pode irritar outras pessoas, mas um marcia no talvez nem notasse e um troll poderia achar atraente. Uma raça inteira pode se comportar de modo repugnante para a maioria das outras raças. Esses “Hábitos Detestáveis” raciais têm o mesmo custo que os Hábitos Detestáveis pessoais."
+    "descricao": "-5, -10 ou -15 pontos O personagem normalmente (ou sempre) se comporta de uma ma neira considerada repugnante pelos outros. Um Hábito Detestável vale -5 pontos para cada redutor de -1 nos testes de reação das pessoas que per cebem esse problema. Especifique o comportamento quando criar o per sonagem e defina com o Mestre o seu valor em pontos. Exemplos: Cheiro ruim, coçar-se constantemente ou voz irritante, são exemplos de hábitos que concedem -1 nos testes de reação e, portanto, valem -5 pontos cada. Ficar o tempo todo fazendo trocadilhos irritantes ou cuspir no chão constantemente pode riam impor penalidades de -2 nos tes -tes de reação e, por isso, valeriam -10 pontos cada. Hábitos de -15 pontos (-3 nos testes de reação) ficam a cargo da imaginação dos jogadores depravados o bastante para querê-los! A penalidade decorrente de um hábi to detestável só deve ser usada nos testes de reação com membros da raça do per sonagem; deixando a cargo do Mestre as reações de outras raças. Uma pessoa que fica babando constantemente pode irritar outras pessoas, mas um marcia no talvez nem notasse e um troll poderia achar atraente. Uma raça inteira pode se comportar de modo repugnante para a maioria das outras raças. Esses “Hábitos Detestáveis” raciais têm o mesmo custo que os Hábitos Detestáveis pessoais.",
+    "efeitos": [
+      {
+        "tipo": "pericia",
+        "alvo": "reacao",
+        "porOpcao": {
+          "-5": -1,
+          "-10": -2,
+          "-15": -3
+        },
+        "condicao": "de quem percebe o hábito"
+      }
+    ]
   },
   {
     "id": "habitos_ou_expressoes",

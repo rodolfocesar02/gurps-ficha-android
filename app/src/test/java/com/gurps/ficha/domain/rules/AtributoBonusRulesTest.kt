@@ -24,7 +24,7 @@ class AtributoBonusRulesTest {
     fun limpar() = EfeitoInterpretador.restaurarBuscadorPadrao()
 
     private fun comEfeitos(mapa: Map<String, List<EfeitoDeclarado>>) {
-        EfeitoInterpretador.buscador = { id -> mapa[id] }
+        EfeitoInterpretador.buscador = { id, _ -> mapa[id] }
     }
 
     // --- o gancho funciona ---
@@ -146,7 +146,7 @@ class AtributoBonusRulesTest {
         // Bug clássico: a regra consulta o atributo que ela mesma modifica.
         // Sem a trava, isto entraria em laço infinito e congelaria o app.
         var chamadas = 0
-        EfeitoInterpretador.buscador = { id ->
+        EfeitoInterpretador.buscador = { id, _ ->
             if (id == "recursiva") {
                 chamadas++
                 // Simula a regra lendo o proprio ST durante o calculo do ST.

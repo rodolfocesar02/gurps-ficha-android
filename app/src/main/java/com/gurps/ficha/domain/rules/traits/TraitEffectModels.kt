@@ -133,7 +133,9 @@ data class EfeitoDeclarado(
     @SerializedName(value = "porNivel", alternate = ["por_nivel"])
     val porNivel: Boolean = false,
     val condicao: String? = null,
-    val escopo: String? = null
+    val escopo: String? = null,
+    @SerializedName(value = "porOpcao", alternate = ["por_opcao"])
+    val porOpcao: Map<String, Int>? = null
 ) {
     val tipoResolvido: TipoEfeito? get() = TipoEfeito.de(tipo)
     val escopoResolvido: EscopoEfeito get() = EscopoEfeito.de(escopo)
@@ -143,6 +145,29 @@ data class EfeitoDeclarado(
 
     /** Valor final considerando o nível do traço na ficha. */
     fun valorPara(nivel: Int): Int = if (porNivel) valor * nivel.coerceAtLeast(1) else valor
+
+    /**
+     * Valor final considerando TUDO que a ficha sabe do traço.
+     *
+     * Existe por causa dos traços que não têm nível e sim **degraus de custo**:
+     * Aparência (4/12/16/20 pts → +1/+2/+2/+2 de reação, MB p.21) e Hábitos
+     * Detestáveis (−5/−10/−15 → −1/−2/−3). Neles o `valor` fixo não serve, e
+     * `porNivel` também não — o que muda o efeito é a OPÇÃO comprada.
+     *
+     * Analogia: `porNivel` é preço por quilo; `porOpcao` é tabela de tamanhos —
+     * P, M e G não são múltiplos um do outro, cada um tem seu número.
+     *
+     * Se o custo da ficha não estiver na tabela (opção que o livro não prevê,
+     * ou ficha antiga com 0), devolve **0** em vez de chutar. Preferir não dar
+     * o bônus a dar o bônus errado é a mesma regra do resto do interpretador.
+     */
+    fun valorPara(selecao: TracoSelecionado): Int {
+        val tabela = porOpcao ?: return valorPara(selecao.nivel)
+        return tabela[selecao.custoEscolhido.toString()] ?: 0
+    }
+
+    /** Se o efeito depende da faixa de custo escolhida pelo jogador. */
+    val ehPorOpcao: Boolean get() = !porOpcao.isNullOrEmpty()
 
     /**
      * Uma linha legível do efeito, para o contexto enviado à IA:

@@ -54,6 +54,19 @@ object TraitRuleRegistry {
     }
 
     /**
+     * Versão que sabe de qual catálogo o traço veio.
+     *
+     * Seis ids existem em vantagens E desvantagens (Aparência, Reputação,
+     * Riqueza, Status, Destino, Forma de Sombras). Buscar só pelo id daria os
+     * efeitos do lado errado da escala. Todos os agregadores daqui usam esta,
+     * porque todos partem de uma seleção da ficha; a versão só-com-id continua
+     * para quem tem apenas o id em mãos (cálculo de custo, opções de ataque).
+     */
+    fun getRuleFor(selection: TracoSelecionado): TraitRule? =
+        rules[selection.definicaoId]
+            ?: EfeitoInterpretador.regraPara(selection.definicaoId, selection.ehDesvantagem)
+
+    /**
      * Retorna se a vantagem tem regras complexas/especiais.
      */
     fun hasSpecialRule(traitId: String): Boolean = rules.containsKey(traitId)
@@ -69,7 +82,7 @@ object TraitRuleRegistry {
      */
     fun getAttributeBonus(personagem: Personagem, atributo: Atributo): Int =
         todosOsTracos(personagem).sumOf { selection ->
-            getRuleFor(selection.definicaoId)
+            getRuleFor(selection)
                 ?.getAttributeModifiers(personagem, selection)
                 ?.get(atributo) ?: 0
         }
@@ -83,7 +96,7 @@ object TraitRuleRegistry {
      */
     fun getBonusCondicionais(personagem: Personagem, alvo: String): List<BonusCondicional> =
         todosOsTracos(personagem).flatMap { selection ->
-            getRuleFor(selection.definicaoId)
+            getRuleFor(selection)
                 ?.getBonusCondicionais(personagem, selection)
                 ?.filter { it.alvo.equals(alvo, ignoreCase = true) }
                 .orEmpty()
@@ -104,7 +117,7 @@ object TraitRuleRegistry {
      */
     fun getSkillBonusOrigens(personagem: Personagem, skillName: String): List<OrigemDeBonus> =
         todosOsTracos(personagem).mapNotNull { selection ->
-            val valor = getRuleFor(selection.definicaoId)
+            val valor = getRuleFor(selection)
                 ?.getSkillModifiers(personagem, selection)
                 ?.get(skillName) ?: 0
             if (valor != 0) OrigemDeBonus(selection.nome, valor) else null
@@ -125,7 +138,7 @@ object TraitRuleRegistry {
         armaGrupo: String? = null
     ): List<OrigemDeBonus> =
         todosOsTracos(personagem).mapNotNull { selection ->
-            val valor = getRuleFor(selection.definicaoId)
+            val valor = getRuleFor(selection)
                 ?.getDamageBonusPerDie(personagem, selection, periciaId, weaponName, armaGrupo) ?: 0
             if (valor != 0) OrigemDeBonus(selection.nome, valor) else null
         }
@@ -133,7 +146,7 @@ object TraitRuleRegistry {
     fun getSkillBonus(personagem: Personagem, skillName: String): Int {
         var total = 0
         todosOsTracos(personagem).forEach { selection ->
-            val rule = getRuleFor(selection.definicaoId)
+            val rule = getRuleFor(selection)
             if (rule != null) {
                 val bonuses = rule.getSkillModifiers(personagem, selection)
                 val bonus = bonuses[skillName] ?: 0
@@ -149,7 +162,7 @@ object TraitRuleRegistry {
     fun getParryBonus(personagem: Personagem, periciaId: String?): Int {
         var total = 0
         todosOsTracos(personagem).forEach { selection ->
-            val rule = getRuleFor(selection.definicaoId)
+            val rule = getRuleFor(selection)
             if (rule != null) {
                 total += rule.getParryModifier(personagem, selection, periciaId)
             }
@@ -163,7 +176,7 @@ object TraitRuleRegistry {
     fun getDodgeBonus(personagem: Personagem): Int {
         var total = 0
         todosOsTracos(personagem).forEach { selection ->
-            val rule = getRuleFor(selection.definicaoId)
+            val rule = getRuleFor(selection)
             if (rule != null) {
                 total += rule.getDodgeModifier(personagem, selection)
             }
@@ -177,7 +190,7 @@ object TraitRuleRegistry {
     fun getBlockBonus(personagem: Personagem): Int {
         var total = 0
         todosOsTracos(personagem).forEach { selection ->
-            val rule = getRuleFor(selection.definicaoId)
+            val rule = getRuleFor(selection)
             if (rule != null) {
                 total += rule.getBlockModifier(personagem, selection)
             }
@@ -196,7 +209,7 @@ object TraitRuleRegistry {
     ): Int {
         var total = 0
         todosOsTracos(personagem).forEach { selection ->
-            val rule = getRuleFor(selection.definicaoId)
+            val rule = getRuleFor(selection)
             if (rule != null) {
                 total += rule.getDamageBonusPerDie(personagem, selection, periciaId, weaponName, armaGrupo)
             }

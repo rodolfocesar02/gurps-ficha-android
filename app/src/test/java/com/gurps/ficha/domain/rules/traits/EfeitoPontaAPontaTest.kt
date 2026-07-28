@@ -64,7 +64,7 @@ class EfeitoPontaAPontaTest {
      */
     private fun ligarCatalogoReal() {
         val cache = mutableMapOf<String, List<EfeitoDeclarado>?>()
-        EfeitoInterpretador.buscador = { id ->
+        EfeitoInterpretador.buscador = { id, _ ->
             cache.getOrPut(id) {
                 definicaoDoCatalogo(id)?.efeitos?.takeIf { e -> e.isNotEmpty() }
                     ?: definicaoDesvantagem(id)?.efeitos
@@ -148,7 +148,7 @@ class EfeitoPontaAPontaTest {
     fun `duas vantagens que tocam a mesma pericia somam`() {
         // Senso de Direcao e Nocao Tridimensional nao colidem hoje, mas o
         // contrato de SOMA precisa valer -- e o que permite empilhar bonus.
-        EfeitoInterpretador.buscador = { id ->
+        EfeitoInterpretador.buscador = { id, _ ->
             when (id) {
                 "a" -> listOf(EfeitoDeclarado(tipo = "pericia", alvo = "Escalada", valor = 2))
                 "b" -> listOf(EfeitoDeclarado(tipo = "pericia", alvo = "Escalada", valor = 3))
@@ -200,7 +200,7 @@ class EfeitoPontaAPontaTest {
     @Test
     fun `vantagem e desvantagem na mesma ficha se somam`() {
         // Prova que o Registry varre os dois lados (Lote D-0) no caminho real.
-        EfeitoInterpretador.buscador = { id ->
+        EfeitoInterpretador.buscador = { id, _ ->
             when (id) {
                 "bonus" -> listOf(EfeitoDeclarado(tipo = "pericia", alvo = "Disfarce/NT", valor = 3))
                 "gordo" -> listOf(EfeitoDeclarado(tipo = "pericia", alvo = "Disfarce/NT", valor = -2))

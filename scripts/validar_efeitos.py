@@ -109,6 +109,25 @@ def ids_com_regra_kotlin():
     return ids
 
 
+def opcoes_de_custo(traco):
+    """Faixas de custo que o traco oferece, do campo `options` do catalogo.
+
+    Desvantagem guarda as opcoes com sinal negativo na ficha (a UI forca isso),
+    entao o `porOpcao` precisa usar a mesma convencao -- e este confronto e o
+    que impede uma chave escrita com o sinal trocado de virar efeito morto.
+    """
+    opts = traco.get("options")
+    if not isinstance(opts, list):
+        return set()
+    valores = set()
+    for o in opts:
+        try:
+            valores.add(int(o))
+        except (TypeError, ValueError):
+            pass
+    return valores
+
+
 def main():
     pericias = nomes_de_pericia()
     kotlin = ids_com_regra_kotlin()
@@ -145,7 +164,40 @@ def main():
                     erros.append(f"{onde}: sem `alvo`")
                     continue
 
-                if not isinstance(ef.get("valor"), int):
+                # `porOpcao` substitui `valor` nos tracos que tem DEGRAUS de
+                # custo em vez de niveis (Aparencia: 4/12/16/20 pts ->
+                # +1/+2/+2/+2 de reacao). Um dos dois precisa existir.
+                por_opcao = ef.get("porOpcao")
+                if por_opcao is not None:
+                    if not isinstance(por_opcao, dict) or not por_opcao:
+                        erros.append(f"{onde}: `porOpcao` precisa ser um objeto nao vazio")
+                    else:
+                        for chave, valor in por_opcao.items():
+                            try:
+                                int(str(chave))
+                            except ValueError:
+                                erros.append(
+                                    f"{onde}: chave {chave!r} de `porOpcao` nao e um custo inteiro"
+                                )
+                            if not isinstance(valor, int):
+                                erros.append(
+                                    f"{onde}: `porOpcao[{chave}]` precisa ser inteiro, "
+                                    f"veio {valor!r}"
+                                )
+                            elif valor == 0:
+                                erros.append(f"{onde}: `porOpcao[{chave}]` com valor 0")
+                        opcoes = opcoes_de_custo(traco)
+                        if opcoes:
+                            # A armadilha: chave que NAO existe entre as opcoes do
+                            # traco nunca casa, e o efeito simplesmente nao aplica
+                            # -- falha invisivel, sem erro nenhum.
+                            sobrando = [c for c in por_opcao if int(str(c)) not in opcoes]
+                            if sobrando:
+                                erros.append(
+                                    f"{onde}: `porOpcao` cita custo(s) {sobrando} que nao "
+                                    f"existem nas opcoes do traco {sorted(opcoes)}"
+                                )
+                elif not isinstance(ef.get("valor"), int):
                     erros.append(f"{onde}: `valor` precisa ser inteiro, veio {ef.get('valor')!r}")
 
                 if tipo.startswith("per"):

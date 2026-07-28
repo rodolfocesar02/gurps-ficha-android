@@ -27,12 +27,16 @@ object EfeitoInterpretador {
      * Regra construída a partir dos `efeitos` declarados para [traitId], ou
      * null quando o traço não declara nenhum.
      *
-     * Busca no catálogo de vantagens e, se não achar, no de desvantagens — o
-     * mesmo id nunca existe nos dois.
+     * [ehDesvantagem] diz em QUAL catálogo procurar primeiro. **Seis ids existem
+     * nos dois** (`aparencia`, `destino`, `forma_de_sombras`, `reputacao`,
+     * `riqueza`, `status`) — são escalas do GURPS que atravessam o zero. Este
+     * método afirmava que "o mesmo id nunca existe nos dois" e procurava sempre
+     * em vantagens: quem comprasse a Aparência FEIA levaria os efeitos da
+     * BONITA. Só não fazia mal porque nenhum id repetido tinha `efeitos` ainda.
      */
-    fun regraPara(traitId: String): TraitRule? {
+    fun regraPara(traitId: String, ehDesvantagem: Boolean = false): TraitRule? {
         if (traitId.isBlank()) return null
-        val efeitos = buscador(traitId)?.takeIf { it.isNotEmpty() } ?: return null
+        val efeitos = buscador(traitId, ehDesvantagem)?.takeIf { it.isNotEmpty() } ?: return null
         return regraDe(traitId, efeitos)
     }
 
@@ -47,12 +51,15 @@ object EfeitoInterpretador {
      * estava quebrado.
      */
     @Volatile
-    internal var buscador: (String) -> List<EfeitoDeclarado>? = ::buscarNoCatalogo
+    internal var buscador: (String, Boolean) -> List<EfeitoDeclarado>? = ::buscarNoCatalogo
 
-    private fun buscarNoCatalogo(traitId: String): List<EfeitoDeclarado>? {
+    private fun buscarNoCatalogo(traitId: String, ehDesvantagem: Boolean): List<EfeitoDeclarado>? {
         val repo = CharacterRules.DATA_REPOSITORY_INSTANCE ?: return null
-        return repo.getVantagemPorId(traitId)?.efeitos?.takeIf { it.isNotEmpty() }
-            ?: repo.getDesvantagemPorId(traitId)?.efeitos?.takeIf { it.isNotEmpty() }
+        val naVantagem = { repo.getVantagemPorId(traitId)?.efeitos?.takeIf { it.isNotEmpty() } }
+        val naDesvantagem = { repo.getDesvantagemPorId(traitId)?.efeitos?.takeIf { it.isNotEmpty() } }
+        // A ORDEM e o conserto: procurar primeiro no catalogo de onde o traco veio.
+        return if (ehDesvantagem) naDesvantagem() ?: naVantagem()
+        else naVantagem() ?: naDesvantagem()
     }
 
     /** Restaura o comportamento de produção. Chamar no `@After` do teste. */
@@ -67,7 +74,8 @@ object EfeitoInterpretador {
      * contexto enviado à IA, que assim para de adivinhar pela prosa e passa a
      * saber que "Pendulear" significa "+2 Escalada".
      */
-    fun efeitosDe(traitId: String): List<EfeitoDeclarado> = buscador(traitId).orEmpty()
+    fun efeitosDe(traitId: String, ehDesvantagem: Boolean = false): List<EfeitoDeclarado> =
+        buscador(traitId, ehDesvantagem).orEmpty()
 
     /**
      * Monta a regra a partir de efeitos já em mãos, sem passar pelo catálogo.
@@ -102,7 +110,7 @@ object EfeitoInterpretador {
                     return@forEach
                 }
                 // Soma quando o mesmo alvo aparece mais de uma vez.
-                mapa[efeito.alvo] = (mapa[efeito.alvo] ?: 0) + efeito.valorPara(selection.nivel)
+                mapa[efeito.alvo] = (mapa[efeito.alvo] ?: 0) + efeito.valorPara(selection)
             }
             return mapa
         }
@@ -117,7 +125,7 @@ object EfeitoInterpretador {
                 BonusCondicional(
                     nomeDoTraco = selection.nome,
                     alvo = it.alvo,
-                    valor = it.valorPara(selection.nivel),
+                    valor = it.valorPara(selection),
                     condicao = it.condicao.orEmpty()
                 )
             }
@@ -134,7 +142,7 @@ object EfeitoInterpretador {
                     Log.w(TAG, "$traitId: atributo '${efeito.alvo}' desconhecido, ignorado")
                     return@forEach
                 }
-                mapa[atributo] = (mapa[atributo] ?: 0) + efeito.valorPara(selection.nivel)
+                mapa[atributo] = (mapa[atributo] ?: 0) + efeito.valorPara(selection)
             }
             return mapa
         }
@@ -154,7 +162,7 @@ object EfeitoInterpretador {
         private fun somaDefesa(selection: TracoSelecionado, alvos: Set<String>): Int =
             efeitos.filter { it.tipoResolvido == TipoEfeito.DEFESA }
                 .filter { aplicavel(it) && it.alvo.trim().lowercase() in alvos }
-                .sumOf { it.valorPara(selection.nivel) }
+                .sumOf { it.valorPara(selection) }
 
         /**
          * Um efeito só é aplicado quando é incondicional e global.

@@ -26,7 +26,7 @@ class BonusCondicionalTest {
     fun limpar() = EfeitoInterpretador.restaurarBuscadorPadrao()
 
     private fun comEfeitos(mapa: Map<String, List<EfeitoDeclarado>>) {
-        EfeitoInterpretador.buscador = { id -> mapa[id] }
+        EfeitoInterpretador.buscador = { id, _ -> mapa[id] }
     }
 
     private fun fichaRostoSincero(): Personagem {
