@@ -5022,3 +5022,12 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - **Números**: 45 traços declarados, 77 efeitos, 13 regras Kotlin, **6 regras novas em `domain/rules/`**.
 - **Status:** ✅ Build OK nas 2 variantes · gate **1246/0** (+67 testes na fila) · ⏭️ **PENDENTE: teste no aparelho** — roteiro T10..T14.
 
+### ✅ VALIDADO + 4 correções — 28 de Julho de 2026 (commit 37025fc3, versão 2.8-PVNEG)
+**Teste no aparelho dos T10..T15, com prints do usuário.**
+- **Validados**: DX Braçal (e o NH da Faca não muda — o item crítico passou), Boa Forma dentro do botão novo, Cambaleante e Cansado, mão inábil com e sem Ambidestria, a trava Abascanto × Aptidão Mágica nos dois sentidos, e as notas novas (`+3 Empatia`, `+3 Gordo`, `-2 Gordo`, `+3 Flexibilidade` na Arte Erótica, `⚠ Magro limita a HT em 14`).
+- 🔴 **O PV era travado em ZERO — causa raiz de duas falhas.** `FichaAttributeDelegate` fazia `coerceIn(0, max)`. Isso travava o marco mais comum do GURPS: o personagem **vive abaixo de zero** (0 PV = teste de consciência por turno; múltiplos negativos = teste de morte; −5× = morte automática). Com o piso em zero, **o teste de morte criado no MARCOS-1 era inalcançável**. Havia um segundo bloqueio no mesmo caminho: o filtro do campo de texto era `filter { it.isDigit() }`, que come o sinal de menos. Pisos novos: PV de −5× a +5×; PF de −1× a +5×.
+- **O teste de consciência sumia depois da primeira rolagem.** O usuário está certo — o livro manda testar **a cada turno**. Separei os dois tipos: `testesAoPerderPv` são disparados por **evento** e somem ao rolar; `testesPersistentes` são derivados do **estado** e voltam enquanto a condição valer. O de consciência mudou de um para o outro.
+- **Espaçamento** dos dois quadrados Braçais, a pedido.
+- **Sobre "editar o PV para 5 não disparou"**: não achei defeito nesse caminho e o teste do limiar passa. A hipótese é que a queda tenha sido por toques de −1 — nesse caso **não disparar é o certo**, porque o livro fala de metade do PV num **único golpe**. Vale reconferir usando o campo de edição.
+- **Status:** ✅ Build OK nas 2 variantes · gate **1257/0** · ⏭️ reconferir no aparelho: PV negativo e o teste de morte.
+
