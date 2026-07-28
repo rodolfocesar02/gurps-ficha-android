@@ -29,6 +29,7 @@ import com.gurps.ficha.data.network.DiscordVoiceChannel
 
 import com.gurps.ficha.domain.roll.CriticoRules
 import com.gurps.ficha.domain.rules.MagiaEnergiaRules
+import com.gurps.ficha.domain.rules.DxBracalRules
 import com.gurps.ficha.domain.rules.StBracalRules
 import com.gurps.ficha.model.PericiaSelecionada
 import com.gurps.ficha.model.PERICIAS_COMBATE
@@ -157,6 +158,10 @@ fun TabRolagem(viewModel: FichaViewModel) {
     // bracos (MB p.89). Fica desligada por padrao -- nem toda acao e de braco.
     var stBracalAtivo by remember { mutableStateOf(false) }
     val bonusStBracal = if (stBracalAtivo) StBracalRules.bonusDe(p) else 0
+
+    // DX Bracal: mexe SO no DX rolado. O livro proibe que ela ajude pericia de
+    // combate, entao ela nao entra em NH nenhum -- nem no dano, nem no ataque.
+    var dxBracalAtivo by remember { mutableStateOf(false) }
 
     val fontesDano = remember(armas, p.vantagens, viewModel.ataqueSelecionadoId, bonusStBracal) {
         val list = mutableListOf<DamageSourceOption>()
@@ -598,6 +603,8 @@ fun TabRolagem(viewModel: FichaViewModel) {
             innerCardVerticalPadding = innerCardVerticalPadding,
             stBracalAtivo = stBracalAtivo,
             onAlternarStBracal = { stBracalAtivo = !stBracalAtivo },
+            dxBracalAtivo = dxBracalAtivo,
+            onAlternarDxBracal = { dxBracalAtivo = !dxBracalAtivo },
             onRolarAtributo = { attr, valor, modAttr ->
                 if (attr == "PER") {
                     // Lote 372: PER abre o diálogo de Testes de Sentidos.

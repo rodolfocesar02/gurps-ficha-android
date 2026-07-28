@@ -20,6 +20,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.gurps.ficha.domain.rules.DxBracalRules
 import com.gurps.ficha.domain.rules.StBracalRules
 import com.gurps.ficha.model.Personagem
 import com.gurps.ficha.ui.appCardColors
@@ -52,6 +53,8 @@ fun PainelAtributosEStatus(
     innerCardVerticalPadding: Dp,
     stBracalAtivo: Boolean,
     onAlternarStBracal: () -> Unit,
+    dxBracalAtivo: Boolean,
+    onAlternarDxBracal: () -> Unit,
     onRolarAtributo: (atributo: String, valor: Int, mod: Int) -> Unit,
     onEditPv: () -> Unit,
     onEditPf: () -> Unit,
@@ -85,14 +88,21 @@ fun PainelAtributosEStatus(
                 compactLabelStyle = compactLabelStyle,
                 innerCardVerticalPadding = innerCardVerticalPadding,
                 bonusStBracal = if (stBracalAtivo) StBracalRules.bonusDe(personagem) else 0,
+                bonusDxBracal = if (dxBracalAtivo) DxBracalRules.bonusDe(personagem) else 0,
                 onExecutarRolagem = onRolarAtributo
             )
 
-            // Logo abaixo do ST, porque é dele que a ST Braçal fala.
+            // Logo abaixo dos atributos, porque é deles que as Braçais falam.
             PainelStBracal(
                 personagem = personagem,
                 ativo = stBracalAtivo,
                 onAlternar = onAlternarStBracal
+            )
+
+            PainelDxBracal(
+                personagem = personagem,
+                ativo = dxBracalAtivo,
+                onAlternar = onAlternarDxBracal
             )
 
             PvPfQuickRollPanel(
@@ -148,6 +158,47 @@ fun PainelStBracal(
         Checkbox(checked = ativo, onCheckedChange = { onAlternar() })
         Text(
             StBracalRules.rotulo(personagem),
+            style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.outline,
+            modifier = Modifier.padding(start = 2.dp)
+        )
+    }
+}
+
+/**
+ * Seletor da **DX Braçal**, irmão do de ST — com uma diferença que importa.
+ *
+ * O livro (MB p.56) diz que *"as perícias de combate dependem da DX corporal e
+ * não se beneficiam de forma alguma da destreza braçal"*. Então, ao contrário
+ * do ST Braçal — que faz a arma bater mais forte —, este seletor **não** mexe
+ * em NH de ataque nenhum. Ele muda só o valor de DX rolado, para as tarefas de
+ * mão que não são combate: Arrombamento, Prestidigitação, Cirurgia, Costura.
+ *
+ * O rótulo carrega esse aviso de propósito: é a pegadinha da vantagem, e quem
+ * lê "+3 DX" no meio da mesa assume que o ataque melhorou.
+ *
+ * **Não renderiza nada** sem DX Braçal na ficha.
+ */
+@Composable
+fun PainelDxBracal(
+    personagem: Personagem,
+    ativo: Boolean,
+    onAlternar: () -> Unit
+) {
+    if (!DxBracalRules.temDxBracal(personagem)) return
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { onAlternar() }
+            .semantics {
+                contentDescription = DxBracalRules.rotuloAcessivel(personagem, ativo)
+            },
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Checkbox(checked = ativo, onCheckedChange = { onAlternar() })
+        Text(
+            DxBracalRules.rotulo(personagem),
             style = MaterialTheme.typography.labelSmall,
             color = MaterialTheme.colorScheme.outline,
             modifier = Modifier.padding(start = 2.dp)
