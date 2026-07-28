@@ -1926,7 +1926,25 @@
     "rawCost": "15",
     "specialRule": null,
     "tags": [],
-    "descricao": "O personagem tem uma “sensibilidade” para as outras pessoas.\n\nQuando conhece ou encontra alguém depois de uma longa separação, ele pode pedir ao Mestre que faça um teste de IQ em seu lugar.\n\nO Mestre lhe dirá então o que o personagem “sente” em relação àquela pessoa.\n\nNo caso de um fracasso no teste, o Mestre deve dar uma informação falsa para o jogador.\n\nEste talento é excelente para identificar impostores, possessões por espíritos, etc., e para descobrir a verdadeira lealdade dos PdMs.\n\nEle também pode ser usado para descobrir se alguém está mentindo — ele não revela a verdade, somente se a pessoa está sendo sincera ou não com o personagem.\n\nEsta vantagem pode ser comprada em dois níveis:\n\n## Sensível\n\nA habilidade do personagem não é totalmente confiável; o teste de IQ sofre uma penalidade de -3.\n\nO personagem recebe um bônus de +1 nas perícias Detecção de Mentiras e Adivinhação, e nos testes de Psicologia para analisar um indivíduo com quem o personagem pode manter um diálogo.\n\nCusto: 5 pontos.\n\n## Empatia\n\nA habilidade funciona com o valor total da IQ, e o bônus para Detecção de Mentiras, Adivinhação e Psicologia é igual a +3.\n\nCusto: 15 pontos.\n\nEsta vantagem funciona apenas com criaturas inteligentes (IQ 6+) e naturais.\n\nOs equivalentes para animais, plantas e entidades sobrenaturais são Empatia com Animais (pág. 57), Empatia com Plantas (pág. 57) e Empatia com Espíritos (pág. 57), respectivamente."
+    "descricao": "O personagem tem uma “sensibilidade” para as outras pessoas.\n\nQuando conhece ou encontra alguém depois de uma longa separação, ele pode pedir ao Mestre que faça um teste de IQ em seu lugar.\n\nO Mestre lhe dirá então o que o personagem “sente” em relação àquela pessoa.\n\nNo caso de um fracasso no teste, o Mestre deve dar uma informação falsa para o jogador.\n\nEste talento é excelente para identificar impostores, possessões por espíritos, etc., e para descobrir a verdadeira lealdade dos PdMs.\n\nEle também pode ser usado para descobrir se alguém está mentindo — ele não revela a verdade, somente se a pessoa está sendo sincera ou não com o personagem.\n\nEsta vantagem pode ser comprada em dois níveis:\n\n## Sensível\n\nA habilidade do personagem não é totalmente confiável; o teste de IQ sofre uma penalidade de -3.\n\nO personagem recebe um bônus de +1 nas perícias Detecção de Mentiras e Adivinhação, e nos testes de Psicologia para analisar um indivíduo com quem o personagem pode manter um diálogo.\n\nCusto: 5 pontos.\n\n## Empatia\n\nA habilidade funciona com o valor total da IQ, e o bônus para Detecção de Mentiras, Adivinhação e Psicologia é igual a +3.\n\nCusto: 15 pontos.\n\nEsta vantagem funciona apenas com criaturas inteligentes (IQ 6+) e naturais.\n\nOs equivalentes para animais, plantas e entidades sobrenaturais são Empatia com Animais (pág. 57), Empatia com Plantas (pág. 57) e Empatia com Espíritos (pág. 57), respectivamente.",
+    "efeitos": [
+      {
+        "tipo": "pericia",
+        "alvo": "Detecção de Mentiras",
+        "valor": 3
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Adivinhação",
+        "valor": 3
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Psicologia",
+        "valor": 3,
+        "condicao": "ao analisar alguém com quem pode conversar"
+      }
+    ]
   },
   {
     "id": "empatia_com_animais",

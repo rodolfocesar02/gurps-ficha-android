@@ -37,6 +37,11 @@
         "tipo": "pericia",
         "alvo": "Disfarce/NT",
         "valor": -1
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Natação",
+        "valor": 1
       }
     ]
   },
@@ -2093,6 +2098,11 @@
         "tipo": "pericia",
         "alvo": "Disfarce/NT",
         "valor": -2
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Natação",
+        "valor": 3
       }
     ]
   },
@@ -2683,7 +2693,14 @@
     "rawCost": "-5",
     "specialRule": null,
     "tags": [],
-    "descricao": "O personagem pesa aproximadamente 2/3 do normal para sua ST. Sofre penalidades para resistir a ser derrubado."
+    "descricao": "O personagem pesa aproximadamente 2/3 do normal para sua ST. Sofre penalidades para resistir a ser derrubado.",
+    "efeitos": [
+      {
+        "tipo": "pericia",
+        "alvo": "Disfarce/NT",
+        "valor": -2
+      }
+    ]
   },
   {
     "id": "maldicao",
@@ -2967,7 +2984,19 @@
     "tags": [
       "fisica"
     ],
-    "descricao": "O personagem pesa o dobro do normal para sua altura e ST. Sofre penalidades em Disfarce e para se movimentar."
+    "descricao": "O personagem pesa o dobro do normal para sua altura e ST. Sofre penalidades em Disfarce e para se movimentar.",
+    "efeitos": [
+      {
+        "tipo": "pericia",
+        "alvo": "Disfarce/NT",
+        "valor": -3
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Natação",
+        "valor": 5
+      }
+    ]
   },
   {
     "id": "nanismo",
