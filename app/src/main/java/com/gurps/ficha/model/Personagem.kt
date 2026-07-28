@@ -116,6 +116,34 @@ data class Personagem(
         return pericias + raciais
     }
 
+    /**
+     * TODAS as vantagens: as compradas na ficha **mais as da raça**.
+     *
+     * Irmã de [periciasTotais], e existe pelo mesmo motivo — só chegou depois.
+     *
+     * ## O bug que ela conserta (28/07/2026)
+     *
+     * Achado pelo usuário: uma raça com **ST de Levantamento** não dava bônus
+     * nenhum. Investigando, o problema era muito maior que aquela vantagem: o
+     * `TraitRuleRegistry` e as dez regras de `domain/rules/` liam apenas
+     * `personagem.vantagens`. Ou seja, **toda a automação ignorava a raça** —
+     * os 91 efeitos declarados, as defesas, a reação, o autocontrole.
+     *
+     * Alguns pontos já mesclavam à mão (`SentidoRules`, `bonusDeslocamentoAquatico`,
+     * `MagicEngine`), cada um do seu jeito. Era o sinal de que faltava um lugar
+     * único — este.
+     *
+     * ⚠️ **Quem soma efeito de traço deve usar esta lista, não `vantagens`.**
+     * A lista crua continua existindo para quem precisa distinguir o que o
+     * jogador comprou (custo em pontos, edição, remoção).
+     */
+    val vantagensTotais: List<VantagemSelecionada>
+        get() = vantagens + modeloRacial.vantagens
+
+    /** O mesmo para desvantagens. Ver [vantagensTotais]. */
+    val desvantagensTotais: List<DesvantagemSelecionada>
+        get() = desvantagens + modeloRacial.desvantagens
+
     // Atributos combinados (Personagem + Modelo Racial)
     val st: Int get() = forca + modeloRacial.modForca + com.gurps.ficha.domain.rules.AtributoBonusRules.bonusDe(this, com.gurps.ficha.domain.rules.traits.Atributo.ST)
     val dx: Int get() = destreza + modeloRacial.modDestreza + com.gurps.ficha.domain.rules.AtributoBonusRules.bonusDe(this, com.gurps.ficha.domain.rules.traits.Atributo.DX)

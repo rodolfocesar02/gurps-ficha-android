@@ -29,7 +29,7 @@ object MaoInabilRules {
 
     /** Se a ficha tem Ambidestria (MB p.41). */
     fun temAmbidestria(personagem: Personagem): Boolean =
-        personagem.vantagens.any { it.definicaoId == ID_AMBIDESTRIA }
+        personagem.vantagensTotais.any { it.definicaoId == ID_AMBIDESTRIA }
 
     /**
      * Quanto vale usar a mão inábil para ESTE personagem.

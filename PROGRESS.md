@@ -5040,3 +5040,16 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - **Aba Saga desligada do APK** (`9d68de5d`, alteração do usuário): `HABILITAR_ABA_SAGA = false`. Conferido antes de commitar — a flag tem um único consumidor, e o gate passa inteiro nas duas variantes com a aba fora. **Nada do código da Saga era pré-requisito da ficha**, o que mostra que a separação está limpa. É o primeiro passo concreto do desacoplamento em dois apps.
 - **Status:** ✅ Build OK nas 2 variantes · gate **1263/0** · ⏭️ pendente no aparelho: PV negativo, teste de morte, teste de consciência persistente, e a navegação por toque nas caixinhas.
 
+
+### 🔴 Vantagem de RAÇA não valia nada — 28 de Julho de 2026 (versão 3.5-RACIAL)
+**Achado pelo usuário:** *"adicionei uma raça com a vantagem ST de Levantamento, e os bônus da vantagem não entraram"*. Era muito maior que aquela vantagem.
+
+- **A causa.** A ficha guarda os traços em **duas listas separadas**: `personagem.vantagens` (o que o jogador comprou com pontos) e `modeloRacial.vantagens` (o que vem da raça). Toda a camada de automação lia **só a primeira**. Analogia: é como uma calculadora de salário que soma só o holerite e ignora o vale — o valor sai errado e nada acusa, porque a conta em si está certa; o que falta é uma das entradas.
+- **O alcance.** `TraitRuleRegistry` (o agregador de onde saem **todos** os 91 efeitos declarados do catálogo + as 13 regras Kotlin) e mais **onze** objetos de `domain/rules/`. Na prática: raça com Garras não virava opção de ataque; raça com Reflexos em Combate não somava nas defesas; raça com Boa Forma não entrava no teste de morte; raça com Ambidestria não anulava a mão inábil; raça com Aptidão Mágica não destravava magia nem bloqueava o Abascanto.
+- **Por que ficou tanto tempo escondido.** Três pontos já mesclavam as duas listas **na mão** (`SentidoRules`, `bonusDeslocamentoAquatico`, `MagicEngine`), cada um do seu jeito. Como esses funcionavam, nada denunciava que o resto não funcionava. É o padrão do *"só acha bug no aparelho"*: faltava a camada certa de teste, não mais um teste.
+- **O conserto.** Um lugar único — `Personagem.vantagensTotais` / `desvantagensTotais` —, irmão do `periciasTotais` que já fazia isso para perícias desde sempre. Os 14 arquivos passaram a ler dele.
+- ⚠️ **A armadilha que ficou travada por teste:** `vantagensTotais` serve para **efeito**, nunca para **custo**. A vantagem racial já está paga dentro de `modeloRacial.custoTotal`; usar a lista total em `pontosVantagens` cobraria o jogador **duas vezes**. `vantagem racial NAO e cobrada duas vezes` guarda isso.
+- **De quebra, pré-requisito também.** `DataRepository` e `FichaMagicDelegate` montavam o contexto de pré-requisito só com o comprado — perícia e vantagem raciais não contavam a favor, e desvantagem racial não contava contra num "não pode ter X".
+- **Meia-correção encontrada no caminho:** em `ResistenciaRules`, o **alvo** do teste já somava o bônus racial mas a **explicação** na tela não citava a origem racial. Números certos, texto mentindo.
+- **Testes:** `VantagemRacialContaTest`, 13 casos, um por família de regra, todos com a vantagem **só na raça**.
+- **Status:** ✅ Build OK nas 2 variantes · lint OK · gate verde · ⏭️ **PENDENTE: teste no aparelho** — roteiro T-RACIAL abaixo.

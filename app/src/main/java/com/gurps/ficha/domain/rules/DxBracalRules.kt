@@ -37,7 +37,7 @@ object DxBracalRules {
      * O nível É o bônus: "DX Braçal +3" é nível 3.
      */
     fun bonusDe(personagem: Personagem): Int =
-        personagem.vantagens
+        personagem.vantagensTotais
             .filter { it.definicaoId == DxBracalRule.ID }
             .sumOf { it.nivel.coerceAtLeast(1) }
 

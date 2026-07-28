@@ -35,7 +35,7 @@ object TraitRuleRegistry {
      * aviso. Isso bloqueava toda a automação de desvantagem.
      */
     private fun todosOsTracos(personagem: Personagem): List<TracoSelecionado> =
-        personagem.vantagens + personagem.desvantagens
+        personagem.vantagensTotais + personagem.desvantagensTotais
 
     private fun register(rule: TraitRule) {
         rules[rule.traitId] = rule

@@ -42,7 +42,7 @@ fun PainelAutocontrole(
     modSituacional: Int,
     onRolar: (label: String, alvo: Int, mod: Int) -> Unit
 ) {
-    val testes = remember(personagem.desvantagens) {
+    val testes = remember(personagem.desvantagensTotais) {
         AutocontroleRules.testesDisponiveis(personagem)
     }
     if (testes.isEmpty()) return

@@ -28,7 +28,7 @@ object AutocontroleRules {
 
     /** Uma desvantagem da ficha que pode ser testada. */
     data class TesteDisponivel(
-        /** Índice na lista `personagem.desvantagens` — identifica a instância. */
+        /** Índice na lista `desvantagensTotais` — só identifica a instância. */
         val indice: Int,
         val nome: String,
         /** Número de autocontrole: 6, 9, 12 ou 15. */
@@ -53,7 +53,7 @@ object AutocontroleRules {
      * rolar.
      */
     fun testesDisponiveis(personagem: Personagem): List<TesteDisponivel> =
-        personagem.desvantagens.mapIndexedNotNull { indice, d ->
+        personagem.desvantagensTotais.mapIndexedNotNull { indice, d ->
             val na = d.autocontrole ?: return@mapIndexedNotNull null
             if (na !in NAS_VALIDOS) return@mapIndexedNotNull null
             TesteDisponivel(

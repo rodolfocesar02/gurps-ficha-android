@@ -50,8 +50,8 @@ object IncompatibilidadeDeTracos {
      */
     fun motivoParaRecusar(personagem: Personagem, novoId: String): String? {
         val jaTem = { id: String ->
-            personagem.vantagens.any { it.definicaoId == id } ||
-                personagem.desvantagens.any { it.definicaoId == id }
+            personagem.vantagensTotais.any { it.definicaoId == id } ||
+                personagem.desvantagensTotais.any { it.definicaoId == id }
         }
         return PARES.firstOrNull { par ->
             (novoId == par.umId && jaTem(par.outroId)) ||

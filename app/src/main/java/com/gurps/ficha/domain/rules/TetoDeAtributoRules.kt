@@ -46,7 +46,7 @@ object TetoDeAtributoRules {
      * que o personagem tem, não sobre os pontos gastos.
      */
     fun violacoes(personagem: Personagem): List<Violacao> {
-        val comTeto = personagem.desvantagens
+        val comTeto = personagem.desvantagensTotais
             .mapNotNull { d -> TETOS_DE_HT[d.definicaoId]?.let { teto -> d.nome to teto } }
         if (comTeto.isEmpty()) return emptyList()
 

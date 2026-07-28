@@ -33,7 +33,7 @@ object StBracalRules {
      * a ficha que comprou um braço separado do outro.
      */
     fun bonusDe(personagem: Personagem): Int =
-        personagem.vantagens
+        personagem.vantagensTotais
             .filter { it.definicaoId == StBracalRule.ID }
             .sumOf { it.nivel.coerceAtLeast(1) }
 

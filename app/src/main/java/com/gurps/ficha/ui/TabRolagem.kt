@@ -126,7 +126,7 @@ fun TabRolagem(viewModel: FichaViewModel) {
         } else false
     }
 
-    val opcoesAtaque = remember(periciasCombate, p.vantagens) {
+    val opcoesAtaque = remember(periciasCombate, p.vantagensTotais) {
         val list = mutableListOf<RollMappedOption>()
         periciasCombate.forEach { per ->
             list.add(RollMappedOption(
@@ -138,7 +138,9 @@ fun TabRolagem(viewModel: FichaViewModel) {
             ))
         }
 
-        p.vantagens.forEach { vant ->
+        // vantagensTotais: inclui as da RACA. Uma raca com Garras tem de
+        // aparecer aqui igual a quem comprou Garras com pontos.
+        p.vantagensTotais.forEach { vant ->
             com.gurps.ficha.domain.rules.traits.TraitRuleRegistry.getRuleFor(vant.definicaoId)?.let { rule ->
                 list.addAll(rule.getAttackOptions(p, vant))
             }
@@ -174,7 +176,7 @@ fun TabRolagem(viewModel: FichaViewModel) {
     // TESTES DE ST (erguer, forcar porta, agarrar). MB p.65.
     var stLevantamentoAtivo by remember { mutableStateOf(false) }
 
-    val fontesDano = remember(armas, p.vantagens, viewModel.ataqueSelecionadoId, bonusStBracal) {
+    val fontesDano = remember(armas, p.vantagensTotais, viewModel.ataqueSelecionadoId, bonusStBracal) {
         val list = mutableListOf<DamageSourceOption>()
         list.add(DamageSourceOption(id = "st_base", label = "Dano ST", contextLabel = "Dano ST", damageExpression = ""))
         
@@ -194,7 +196,7 @@ fun TabRolagem(viewModel: FichaViewModel) {
                 ))
             }
         }
-        p.vantagens.forEach { vant ->
+        p.vantagensTotais.forEach { vant ->
             com.gurps.ficha.domain.rules.traits.TraitRuleRegistry.getRuleFor(vant.definicaoId)?.let { rule ->
                 list.addAll(rule.getDamageOptions(p, vant))
             }
@@ -210,7 +212,7 @@ fun TabRolagem(viewModel: FichaViewModel) {
     }
 
     // Lote NOTA-2: de onde veio o bonus de dano da fonte escolhida.
-    val origensDoDano = remember(p.vantagens, p.desvantagens, viewModel.ataqueSelecionadoId, viewModel.fonteDanoSelecionadaId) {
+    val origensDoDano = remember(p.vantagensTotais, p.desvantagensTotais, viewModel.ataqueSelecionadoId, viewModel.fonteDanoSelecionadaId) {
         val periciaId = viewModel.ataqueSelecionadoId
             ?.takeIf { it.startsWith("pericia_") }?.removePrefix("pericia_")
         val nomeArma = viewModel.fonteDanoSelecionadaId
@@ -669,7 +671,7 @@ fun TabRolagem(viewModel: FichaViewModel) {
         PainelMarcosDeVida(
             // Persistentes vem do ESTADO (repetem a cada turno); pendentes vem
             // do EVENTO (somem depois de rolados).
-            testesPendentes = remember(testesDeMarco, pvAtualRolagem, p.pontosVida, p.vantagens) {
+            testesPendentes = remember(testesDeMarco, pvAtualRolagem, p.pontosVida, p.vantagensTotais) {
                 MarcosDeVidaRules.testesPersistentes(p, pvAtualRolagem) + testesDeMarco
             },
             estados = remember(pvAtualRolagem, pfAtualRolagem, p.pontosVida, p.pontosFadiga) {

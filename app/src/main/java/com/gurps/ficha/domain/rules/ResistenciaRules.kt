@@ -143,21 +143,21 @@ object ResistenciaRules {
 
     /** Se a ficha tem Aptidão Mágica — usado pela trava do Abascanto. */
     fun temAptidaoMagica(personagem: Personagem): Boolean =
-        personagem.vantagens.any { it.definicaoId == "aptidao_magica" }
+        personagem.vantagensTotais.any { it.definicaoId == "aptidao_magica" }
 
     private fun nivelDe(personagem: Personagem, id: String): Int =
-        personagem.vantagens.filter { it.definicaoId == id }
+        personagem.vantagensTotais.filter { it.definicaoId == id }
             .sumOf { it.nivel.coerceAtLeast(1) }
 
     private fun origemDe(personagem: Personagem, id: String): List<String> =
-        personagem.vantagens.filter { it.definicaoId == id }
+        personagem.vantagensTotais.filter { it.definicaoId == id }
             .map { "${it.nome} +${it.nivel.coerceAtLeast(1)}" }
 
     /** Boa Forma: +1 (5 pts) ou +2 (15 pts) em **todos** os testes de HT. */
     private fun bonusBoaForma(personagem: Personagem): Pair<Int, List<String>> {
         var total = 0
         val origens = mutableListOf<String>()
-        personagem.vantagens.filter { it.definicaoId == ID_BOA_FORMA }.forEach { v ->
+        personagem.vantagensTotais.filter { it.definicaoId == ID_BOA_FORMA }.forEach { v ->
             val b = if (v.custoEscolhido >= 15) 2 else 1
             total += b
             origens += "${v.nome} +$b"

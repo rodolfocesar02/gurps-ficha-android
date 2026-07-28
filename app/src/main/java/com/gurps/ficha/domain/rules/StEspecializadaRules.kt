@@ -105,7 +105,7 @@ object StEspecializadaRules {
             "puxar, forçar portas e agarrar. A Base de Carga já usa esta força sempre."
 
     private fun somaDe(personagem: Personagem, id: String): Int =
-        personagem.vantagens
+        personagem.vantagensTotais
             .filter { it.definicaoId == id }
             .sumOf { it.nivel.coerceAtLeast(1) }
 }

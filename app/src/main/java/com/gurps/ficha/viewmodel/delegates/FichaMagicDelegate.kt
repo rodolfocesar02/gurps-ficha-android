@@ -126,7 +126,7 @@ class FichaMagicDelegate(
     // motor (NexusArcanoEngine.normalize): sem acento, minúsculas, só [a-z0-9 espaço].
     // Assim o pré-requisito "ou Empatia com Animais" casa com a vantagem da ficha.
     private fun vantagensNormDe(personagem: Personagem): Set<String> {
-        val base = personagem.vantagens.asSequence().map { normalizarNome(it.nome) }.filter { it.isNotBlank() }.toMutableSet()
+        val base = personagem.vantagensTotais.asSequence().map { normalizarNome(it.nome) }.filter { it.isNotBlank() }.toMutableSet()
         base += tokensIdioma(personagem)
         return base
     }
@@ -140,7 +140,7 @@ class FichaMagicDelegate(
      * plural e com numeral por extenso. Assim o motor (atendeVantagemRequerida) casa.
      */
     private fun tokensIdioma(personagem: Personagem): Set<String> {
-        val idiomas = personagem.vantagens.filter { it.definicaoId.equals("idioma", ignoreCase = true) }
+        val idiomas = personagem.vantagensTotais.filter { it.definicaoId.equals("idioma", ignoreCase = true) }
         if (idiomas.isEmpty()) return emptySet()
         // nível efetivo de cada idioma = melhor entre falado e escrito (o que dá mais alcance)
         fun ordem(n: String?) = when (n?.lowercase()) {
@@ -173,11 +173,11 @@ class FichaMagicDelegate(
     }
 
     private fun periciasNormDe(personagem: Personagem): Set<String> =
-        personagem.pericias.asSequence().map { normalizarNome(it.nome) }.filter { it.isNotBlank() }.toSet()
+        personagem.periciasTotais.asSequence().map { normalizarNome(it.nome) }.filter { it.isNotBlank() }.toSet()
 
     // Lote 337: desvantagens da ficha NORMALIZADAS, p/ pré-requisitos "não ter Desvantagem X".
     private fun desvantagensNormDe(personagem: Personagem): Set<String> =
-        personagem.desvantagens.asSequence().map { normalizarNome(it.nome) }.filter { it.isNotBlank() }.toSet()
+        personagem.desvantagensTotais.asSequence().map { normalizarNome(it.nome) }.filter { it.isNotBlank() }.toSet()
 
     private fun normalizarNome(raw: String): String {
         val semAcento = java.text.Normalizer.normalize(raw, java.text.Normalizer.Form.NFD)

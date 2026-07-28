@@ -588,7 +588,11 @@ open class DataRepository(internal val context: Context) {
         mapa["IQ"] = personagem.iq
         mapa["HT"] = personagem.ht
 
-        val nivelAptidaoMagica = personagem.vantagens
+        // vantagensTotais / periciasTotais / desvantagensTotais em todo este
+        // mapa: um traco que veio da RACA satisfaz pre-requisito igual ao
+        // comprado com pontos. Uma raca com Aptidao Magica tem de destravar
+        // as magias -- antes nao destravava.
+        val nivelAptidaoMagica = personagem.vantagensTotais
             .filter { it.definicaoId.equals("aptidao_magica", ignoreCase = true) }
             .maxOfOrNull { (it.nivel - 1).coerceAtLeast(0) }
             ?: 0
@@ -618,7 +622,7 @@ open class DataRepository(internal val context: Context) {
         mapa["escolas_conhecidas_normalizadas"] = magiasPorEscolaNormalizada.keys.toSet()
         mapa["escolas_por_magia_normalizadas"] = escolasPorMagiaNormalizadas.mapValues { it.value.toSet() }
 
-        val vantagensConhecidasNormalizadas = personagem.vantagens
+        val vantagensConhecidasNormalizadas = personagem.vantagensTotais
             .map { v -> normalizarNomeRequisito(v.nome) }
             .filter { it.isNotBlank() }
             .toSet()
@@ -626,7 +630,7 @@ open class DataRepository(internal val context: Context) {
 
         val periciasConhecidasNormalizadas = mutableSetOf<String>()
         val periciasNiveisNormalizadas = mutableMapOf<String, Int>()
-        personagem.pericias.forEach { p ->
+        personagem.periciasTotais.forEach { p ->
             val nomeNorm = normalizarNomeRequisito(p.nome)
             if (nomeNorm.isNotBlank()) {
                 val nivel = p.calcularNivel(personagem)
@@ -655,7 +659,9 @@ open class DataRepository(internal val context: Context) {
             .toSet()
 
         val condicoesEstado = mutableSetOf<String>()
-        personagem.desvantagens.forEach { condicoesEstado.add(normalizarNomeRequisito(it.nome)) }
+        personagem.desvantagensTotais.forEach { condicoesEstado.add(normalizarNomeRequisito(it.nome)) }
+        personagem.modeloRacial.qualidades.forEach { condicoesEstado.add(normalizarNomeRequisito(it)) }
+        personagem.modeloRacial.peculiaridades.forEach { condicoesEstado.add(normalizarNomeRequisito(it)) }
         personagem.qualidades.forEach { condicoesEstado.add(normalizarNomeRequisito(it)) }
         personagem.peculiaridades.forEach { condicoesEstado.add(normalizarNomeRequisito(it)) }
         mapa["condicoes_estado_normalizadas"] = condicoesEstado
@@ -760,7 +766,7 @@ open class DataRepository(internal val context: Context) {
         personagem: Personagem
     ): Boolean {
         return when (condicao.type.lowercase()) {
-            "required_advantage" -> personagem.vantagens.any { vantagem ->
+            "required_advantage" -> personagem.vantagensTotais.any { vantagem ->
                 val alvo = normalizarComparacao(condicao.value)
                 val nome = normalizarComparacao(vantagem.nome)
                 val id = normalizarComparacao(vantagem.definicaoId)
@@ -768,7 +774,7 @@ open class DataRepository(internal val context: Context) {
             }
             "required_skill_level" -> {
                 val min = condicao.minLevel ?: return false
-                personagem.pericias.any { pericia ->
+                personagem.periciasTotais.any { pericia ->
                     periciaCorrespondeNome(condicao.value, pericia) &&
                         pericia.calcularNivel(personagem) >= min
                 }

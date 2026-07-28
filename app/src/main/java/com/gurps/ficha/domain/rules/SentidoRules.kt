@@ -43,11 +43,11 @@ object SentidoRules {
         var bloqueio: String? = null
 
         fun nivelVant(id: String): Int =
-            (p.vantagens + p.modeloRacial.vantagens).filter { it.definicaoId == id }.sumOf { it.nivel }
+            p.vantagensTotais.filter { it.definicaoId == id }.sumOf { it.nivel }
         fun temVant(id: String): Boolean =
-            (p.vantagens + p.modeloRacial.vantagens).any { it.definicaoId == id }
+            p.vantagensTotais.any { it.definicaoId == id }
         fun temDesv(id: String): Boolean =
-            (p.desvantagens + p.modeloRacial.desvantagens).any { it.definicaoId == id }
+            p.desvantagensTotais.any { it.definicaoId == id }
 
         when (sentido) {
             Sentido.PERCEPCAO -> { /* teste de Percepção geral: só a Per */ }

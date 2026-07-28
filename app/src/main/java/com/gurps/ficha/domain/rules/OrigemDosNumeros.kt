@@ -76,7 +76,7 @@ object OrigemDosNumeros {
         tipo: DefenseType
     ): List<OrigemDeBonus> {
         val periciaApara = personagem.defesasAtivas.getPericiaApara(personagem)?.definicaoId
-        return (personagem.vantagens + personagem.desvantagens).mapNotNull { selecao ->
+        return (personagem.vantagensTotais + personagem.desvantagensTotais).mapNotNull { selecao ->
             val regra = TraitRuleRegistry.getRuleFor(selecao.definicaoId) ?: return@mapNotNull null
             val valor = when (tipo) {
                 DefenseType.ESQUIVA -> regra.getDodgeModifier(personagem, selecao)

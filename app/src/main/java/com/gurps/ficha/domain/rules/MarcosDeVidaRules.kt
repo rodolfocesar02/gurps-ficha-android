@@ -179,13 +179,13 @@ object MarcosDeVidaRules {
         val origens = mutableListOf<String>()
         var total = 0
 
-        personagem.vantagens.filter { it.definicaoId == idEspecifico }.forEach { v ->
+        personagem.vantagensTotais.filter { it.definicaoId == idEspecifico }.forEach { v ->
             val nivel = v.nivel.coerceAtLeast(1)
             total += nivel
             origens += "${v.nome} +$nivel"
         }
 
-        personagem.vantagens.filter { it.definicaoId == ID_BOA_FORMA }.forEach { v ->
+        personagem.vantagensTotais.filter { it.definicaoId == ID_BOA_FORMA }.forEach { v ->
             val bonus = if (v.custoEscolhido >= 15) 2 else 1
             total += bonus
             origens += "${v.nome} +$bonus"

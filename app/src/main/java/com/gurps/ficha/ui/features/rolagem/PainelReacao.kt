@@ -47,7 +47,7 @@ fun PainelReacao(
     isPraCegoVariant: Boolean,
     onRolar: (label: String, alvo: Int?, mod: Int) -> Unit
 ) {
-    val chave = personagem.vantagens to personagem.desvantagens
+    val chave = personagem.vantagensTotais to personagem.desvantagensTotais
     val fixos = remember(chave) { ReacaoRules.modificadoresDe(personagem) }
     val condicionais = remember(chave) { ReacaoRules.condicionaisDe(personagem) }
     if (fixos.isEmpty() && condicionais.isEmpty()) return

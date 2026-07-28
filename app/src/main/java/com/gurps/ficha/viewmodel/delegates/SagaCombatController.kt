@@ -1038,7 +1038,7 @@ class SagaCombatController(
 
     /** Ambidestria (MB p.38) — anula o −4 da mão inábil. Mesmo padrão de varredura por id de [SentidoRules]. */
     private fun temAmbidestria(p: Personagem): Boolean =
-        (p.vantagens + p.modeloRacial.vantagens).any { it.definicaoId == "ambidestria" }
+        p.vantagensTotais.any { it.definicaoId == "ambidestria" }
 
     fun heroiMove(alvoId: String?, afastar: Boolean, metros: Int) {
         val s = sessao ?: return
