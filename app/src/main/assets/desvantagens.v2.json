@@ -944,7 +944,34 @@
     "tags": [
       "fisica"
     ],
-    "descricao": "O personagem não é capaz de distin guir nenhuma cor (isto é, sofre de acro matopsia). Em situações que exigem a identificação de cores (compra de pedras preciosas, identificação de um uniforme ou apertar o botão vermelho para dar partida num motor), o Mestre deve impor as dificuldades adequadas à situação. Além disso, algumas perícias serão sempre mais difíceis para um dal tônico. Ele sofre uma penalidade de -1 nos testes de Comércio, Condução, Pi lotagem, Química e Rastreamento."
+    "descricao": "O personagem não é capaz de distin guir nenhuma cor (isto é, sofre de acro matopsia). Em situações que exigem a identificação de cores (compra de pedras preciosas, identificação de um uniforme ou apertar o botão vermelho para dar partida num motor), o Mestre deve impor as dificuldades adequadas à situação. Além disso, algumas perícias serão sempre mais difíceis para um dal tônico. Ele sofre uma penalidade de -1 nos testes de Comércio, Condução, Pi lotagem, Química e Rastreamento.",
+    "efeitos": [
+      {
+        "tipo": "pericia",
+        "alvo": "Comércio",
+        "valor": -1
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Condução/NT",
+        "valor": -1
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Pilotagem/NT",
+        "valor": -1
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Química/NT",
+        "valor": -1
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Rastreamento",
+        "valor": -1
+      }
+    ]
   },
   {
     "id": "deficiencia_fisica",

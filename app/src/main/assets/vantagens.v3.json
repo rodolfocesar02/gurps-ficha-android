@@ -2001,7 +2001,24 @@
     "rawCost": "15",
     "specialRule": null,
     "tags": [],
-    "descricao": "Em condições normais, o personagem sempre consegue manter o equilíbrio, independente de quão estreita é a superfície sobre a qual ele está caminhando.\n\nIsso permite ao personagem caminhar sobre uma corda bamba, recifes, galhos de árvore ou qualquer outra superfície fixa sem precisar de um teste.\n\nSe a superfície estiver úmida, escorregadia ou instável, o personagem recebe um bônus de +6 nos testes para verificar se ele consegue se manter em pé.\n\nDurante o combate, ele recebe um bônus de +4 nos testes de DX e de perícias baseadas em DX para se manter em pé ou não ser derrubado.\n\nPor último, o personagem recebe um bônus de +1 nos testes de Acrobacia, Escalada e Pilotagem."
+    "descricao": "Em condições normais, o personagem sempre consegue manter o equilíbrio, independente de quão estreita é a superfície sobre a qual ele está caminhando.\n\nIsso permite ao personagem caminhar sobre uma corda bamba, recifes, galhos de árvore ou qualquer outra superfície fixa sem precisar de um teste.\n\nSe a superfície estiver úmida, escorregadia ou instável, o personagem recebe um bônus de +6 nos testes para verificar se ele consegue se manter em pé.\n\nDurante o combate, ele recebe um bônus de +4 nos testes de DX e de perícias baseadas em DX para se manter em pé ou não ser derrubado.\n\nPor último, o personagem recebe um bônus de +1 nos testes de Acrobacia, Escalada e Pilotagem.",
+    "efeitos": [
+      {
+        "tipo": "pericia",
+        "alvo": "Acrobacia",
+        "valor": 1
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Escalada",
+        "valor": 1
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Pilotagem/NT",
+        "valor": 1
+      }
+    ]
   },
   {
     "id": "equipamento_caracteristico",
@@ -2218,7 +2235,14 @@
     "rawCost": "0 a 10",
     "specialRule": null,
     "tags": [],
-    "descricao": "O personagem é capaz de falar utilizando sons de frequência extremamente baixa.\n\nEsta característica abrange Audição Subsônica.\n\nA Fala Subsônica é lenta, funcionando com metade da velocidade usual.\n\nMesmo que a frequência seja alterada para o tom comum, os personagens que fazem uso desse tipo de fala sofrem uma penalidade de -2 em Lábia e qualquer outra perícia para a qual uma fala versátil seja importante.\n\nNo entanto, essa vantagem tem um alcance duas vezes maior que a fala normal.\n\nO custo depende do nível de habilidade concedida ao personagem.\n\n## Apenas Fala Subsônica\n\nO personagem só é capaz de se comunicar com a Fala Subsônica.\n\nCusto: 0 ponto.\n\n## Fala Normal e Subsônica\n\nO personagem é capaz de alternar à vontade entre a fala normal e a Fala Subsônica.\n\nCusto: 10 pontos."
+    "descricao": "O personagem é capaz de falar utilizando sons de frequência extremamente baixa.\n\nEsta característica abrange Audição Subsônica.\n\nA Fala Subsônica é lenta, funcionando com metade da velocidade usual.\n\nMesmo que a frequência seja alterada para o tom comum, os personagens que fazem uso desse tipo de fala sofrem uma penalidade de -2 em Lábia e qualquer outra perícia para a qual uma fala versátil seja importante.\n\nNo entanto, essa vantagem tem um alcance duas vezes maior que a fala normal.\n\nO custo depende do nível de habilidade concedida ao personagem.\n\n## Apenas Fala Subsônica\n\nO personagem só é capaz de se comunicar com a Fala Subsônica.\n\nCusto: 0 ponto.\n\n## Fala Normal e Subsônica\n\nO personagem é capaz de alternar à vontade entre a fala normal e a Fala Subsônica.\n\nCusto: 10 pontos.",
+    "efeitos": [
+      {
+        "tipo": "pericia",
+        "alvo": "Lábia",
+        "valor": -2
+      }
+    ]
   },
   {
     "id": "fala_ultrassonica",
@@ -2803,7 +2827,15 @@
     "rawCost": "10",
     "specialRule": null,
     "tags": [],
-    "descricao": "O personagem consegue enxergar frequências de infravermelho, o que lhe permite detectar variações de temperatura.\n\nCom esta vantagem, um personagem pode lutar sem sofrer penalidades mesmo sob escuridão absoluta, se o oponente emitir calor.\n\nIsso inclui todos os seres vivos e a maioria das máquinas.\n\nAlém disso, ele recebe um bônus de +2 nos testes de Visão feitos para encontrar esses alvos, pois o calor emitido se destaca no ambiente.\n\nO personagem também pode seguir rastros de calor.\n\nEle recebe um bônus de +3 nos testes de Rastreamento se a pista tiver menos de uma hora.\n\nA Infravisão não permite que o personagem distinga cores.\n\nEla possibilita apenas a percepção do tamanho e da forma geral dos objetos que emitem calor, inclusive dos seres vivos.\n\nPor exemplo, o personagem pode ter problemas para diferenciar duas pessoas do mesmo tamanho.\n\nEle deve fazer um teste com uma penalidade de -4 para distinguir objetos do mesmo tamanho e formato.\n\nO Mestre pode exigir um teste de Visão com uma penalidade de -4 para “ler” o calor refletido.\n\nFlashes repentinos de calor, como uma chama, explosão ou laser infravermelho, podem cegar o personagem da mesma forma que um flash de luz cega uma pessoa com visão comum.\n\nO custo depende da capacidade da visão do personagem.\n\n## Apenas Infravisão\n\nO personagem só enxerga por meio da Infravisão e sofre as limitações dessa vantagem o tempo todo.\n\nCusto: 0 ponto.\n\n## Infravisão Alternável\n\nO personagem é capaz de alternar entre a visão comum e a Infravisão, e vice-versa.\n\nCusto: 10 pontos."
+    "descricao": "O personagem consegue enxergar frequências de infravermelho, o que lhe permite detectar variações de temperatura.\n\nCom esta vantagem, um personagem pode lutar sem sofrer penalidades mesmo sob escuridão absoluta, se o oponente emitir calor.\n\nIsso inclui todos os seres vivos e a maioria das máquinas.\n\nAlém disso, ele recebe um bônus de +2 nos testes de Visão feitos para encontrar esses alvos, pois o calor emitido se destaca no ambiente.\n\nO personagem também pode seguir rastros de calor.\n\nEle recebe um bônus de +3 nos testes de Rastreamento se a pista tiver menos de uma hora.\n\nA Infravisão não permite que o personagem distinga cores.\n\nEla possibilita apenas a percepção do tamanho e da forma geral dos objetos que emitem calor, inclusive dos seres vivos.\n\nPor exemplo, o personagem pode ter problemas para diferenciar duas pessoas do mesmo tamanho.\n\nEle deve fazer um teste com uma penalidade de -4 para distinguir objetos do mesmo tamanho e formato.\n\nO Mestre pode exigir um teste de Visão com uma penalidade de -4 para “ler” o calor refletido.\n\nFlashes repentinos de calor, como uma chama, explosão ou laser infravermelho, podem cegar o personagem da mesma forma que um flash de luz cega uma pessoa com visão comum.\n\nO custo depende da capacidade da visão do personagem.\n\n## Apenas Infravisão\n\nO personagem só enxerga por meio da Infravisão e sofre as limitações dessa vantagem o tempo todo.\n\nCusto: 0 ponto.\n\n## Infravisão Alternável\n\nO personagem é capaz de alternar entre a visão comum e a Infravisão, e vice-versa.\n\nCusto: 10 pontos.",
+    "efeitos": [
+      {
+        "tipo": "pericia",
+        "alvo": "Rastreamento",
+        "valor": 3,
+        "condicao": "se a pista tiver menos de uma hora"
+      }
+    ]
   },
   {
     "id": "insubstancialidade",
@@ -2885,7 +2917,15 @@
     "rawCost": "40",
     "specialRule": null,
     "tags": [],
-    "descricao": "O personagem é invisível.\n\nAo contrário da maioria das vantagens, esta vantagem está “sempre ativa”, a menos que o jogador compre uma ampliação especial.\n\nO personagem faz barulho, deixa pegadas e exala odores.\n\nVia de regra, qualquer coisa que ele estiver carregando permanece visível.\n\nSe não estiver carregando nada, o personagem recebe um bônus de +9 em Furtividade em qualquer situação onde é importante não ser visto.\n\nIndivíduos utilizando visão remota paranormal, como bola de cristal, Clarividência, etc., não conseguem enxergar o personagem se ele estiver invisível para os sentidos normais dessas pessoas.\n\nOs dispositivos com esses poderes ainda conseguem localizá-lo, assim como habilidades paranormais que detectam inimigos, vida, etc., mas apenas de modo não-visual.\n\nA Invisibilidade funciona apenas contra um tipo de visão.\n\nEntre os tipos de visão se incluem visão eletromagnética, que abrange a visão comum, a Infravisão, a Ultravisão e os radares, sonares, campos magnéticos e qualquer outra coisa que o Mestre possa criar.\n\nSe for invisível para a visão eletromagnética, o personagem não apresenta sombra ou reflexo."
+    "descricao": "O personagem é invisível.\n\nAo contrário da maioria das vantagens, esta vantagem está “sempre ativa”, a menos que o jogador compre uma ampliação especial.\n\nO personagem faz barulho, deixa pegadas e exala odores.\n\nVia de regra, qualquer coisa que ele estiver carregando permanece visível.\n\nSe não estiver carregando nada, o personagem recebe um bônus de +9 em Furtividade em qualquer situação onde é importante não ser visto.\n\nIndivíduos utilizando visão remota paranormal, como bola de cristal, Clarividência, etc., não conseguem enxergar o personagem se ele estiver invisível para os sentidos normais dessas pessoas.\n\nOs dispositivos com esses poderes ainda conseguem localizá-lo, assim como habilidades paranormais que detectam inimigos, vida, etc., mas apenas de modo não-visual.\n\nA Invisibilidade funciona apenas contra um tipo de visão.\n\nEntre os tipos de visão se incluem visão eletromagnética, que abrange a visão comum, a Infravisão, a Ultravisão e os radares, sonares, campos magnéticos e qualquer outra coisa que o Mestre possa criar.\n\nSe for invisível para a visão eletromagnética, o personagem não apresenta sombra ou reflexo.",
+    "efeitos": [
+      {
+        "tipo": "pericia",
+        "alvo": "Furtividade",
+        "valor": 9,
+        "condicao": "sem carregar nada, quando importa não ser visto"
+      }
+    ]
   },
   {
     "id": "lacrado",
@@ -4952,7 +4992,24 @@
     "rawCost": "15",
     "specialRule": null,
     "tags": [],
-    "descricao": "\n\n## Ultraflexibilidade das Juntas\n\nFunciona da mesma maneira que o caso anterior, mas um pouco melhor.\n\nO personagem não é capaz de se esticar ou espremer de maneira anormal, mas qualquer parte do seu corpo pode ser dobrada em qualquer direção.\n\nO personagem recebe um bônus de +5 nos testes de Escalada, Arte Erótica e Fuga, nas tentativas de se libertar, e em todas as tentativas de se libertar durante um combate corporal (pág. 391)..\n\nO personagem pode ignorar penalidades de até -5 por trabalhar em espaços apertados.(incluindo em testes com Explosivos e Mecânica\n\nCusto: 15 pontos."
+    "descricao": "\n\n## Ultraflexibilidade das Juntas\n\nFunciona da mesma maneira que o caso anterior, mas um pouco melhor.\n\nO personagem não é capaz de se esticar ou espremer de maneira anormal, mas qualquer parte do seu corpo pode ser dobrada em qualquer direção.\n\nO personagem recebe um bônus de +5 nos testes de Escalada, Arte Erótica e Fuga, nas tentativas de se libertar, e em todas as tentativas de se libertar durante um combate corporal (pág. 391)..\n\nO personagem pode ignorar penalidades de até -5 por trabalhar em espaços apertados.(incluindo em testes com Explosivos e Mecânica\n\nCusto: 15 pontos.",
+    "efeitos": [
+      {
+        "tipo": "pericia",
+        "alvo": "Escalada",
+        "valor": 5
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Arte Erótica",
+        "valor": 5
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Fuga",
+        "valor": 5
+      }
+    ]
   },
   {
     "id": "ultravisao",
