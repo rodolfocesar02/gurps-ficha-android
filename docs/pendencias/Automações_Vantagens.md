@@ -654,6 +654,30 @@ O LOTE V-1 muda: **antes** de escrever qualquer regra, construir o trilho.
 > Nada aqui está implementado. Cada item traz **o que é**, **onde mora** (regra
 > R2) e **o que trava**, para o lote poder ser aberto sem reler o livro.
 
+## ⛔ REGRA DE ESCOPO (reafirmada pelo usuário em 28/07) — ler antes de tudo
+
+> *"todas as implementações estão sendo pra beneficiar 1º as jogadas dentro da
+> aba Rolagem... se por ventura beneficia a aba Saga ok, mantém; agora se for
+> apenas pra aba Saga, analise e não faça"*
+
+**O alvo é a aba ROLAGEM**, que é por onde o usuário joga via Discord. A Saga é
+jogo solo, ainda em desenvolvimento, e o app vai se dividir em dois no futuro.
+
+| Camada | Pastas | Serve a |
+|---|---|---|
+| **Ficha / Rolagem** | `ui/TabRolagem.kt`, `ui/features/rolagem/`, `domain/rules/` | ✅ **o alvo** — e envia para o Discord |
+| **Combate tático** | `domain/combat/`, `ui/saga/`, `viewmodel/delegates/SagaCombatController.kt` | só a Saga |
+
+**Como aplicar o filtro:** se a entrega só aparece com o combate aberto, **não
+fazer**. Se aparece na aba Rolagem e *de brinde* também no combate, fazer.
+
+⚠️ **Eu já errei isso nesta seção** — o lote 6 original ("disparo automático
+dentro do combate") era Saga puro e foi **descartado**. Ver §11.10.
+
+⚠️ Vale para o que já está pronto também: o **ST Braçal** (STB-2) foi feito só
+para a aba Rolagem de propósito; o combate tático segue com a ST do corpo. Isso
+não é lacuna — é o escopo certo.
+
 ## 11.0 O fio condutor: a ficha não tem onde pôr "teste de resistir"
 
 Sete das ideias caem no mesmo buraco. O GURPS está cheio de testes que **não são
@@ -795,6 +819,17 @@ MB p.85. O nível é **subtraído do NH de quem lança magia** no personagem e
 **Por que é campo e não bônus:** não modifica perícia nem atributo do personagem
 — modifica o **teste de outra pessoa**. Não existe gancho para isso.
 
+### ⛔ Filtro de escopo: esta vantagem se parte em duas
+
+| Metade | Onde aparece | Fazer? |
+|---|---|---|
+| **O personagem resiste** — teste de HT + nível contra elixires, e o bônus para resistir a magias lançadas nele | aba Rolagem, dentro do botão do §11.0 | ✅ **sim** |
+| **O mago inimigo perde NH** — o −N no NH de quem lança magia no personagem | só existe com um conjurador PdM agindo, ou seja, **dentro do combate** | ❌ **não** — Saga pura |
+
+O lote **RESIST-2 entrega só a primeira metade**: o campo na ficha e o teste que
+o jogador rola. O número fica visível para o Mestre aplicar no Discord, que é o
+uso real.
+
 Restrições do livro que a ficha deveria respeitar:
 
 - **incompatível com Aptidão Mágica** — o personagem não consegue lançar magia;
@@ -931,6 +966,12 @@ de HT de sangramento e de recuperação de doença e envenenamento.
 de traços — inventário do capítulo, classificação do que já existe no motor, e só
 então a fila. Encaixar isso aqui misturaria duas frentes.
 
+⛔ **E aplicar o filtro de escopo já no inventário.** Boa parte do Capítulo 14 é
+efeito de turno de combate (choque, atordoamento, knockback) e seria Saga pura.
+O que interessa à aba Rolagem é o outro lado: **estados que duram** (cambaleante,
+cansado, sangrando, doente, envenenado) e **recuperação** (cura natural, descanso,
+tratamento). O documento tem que separar os dois antes de propor qualquer lote.
+
 ## 11.8 Já feitas, que estavam na lista do usuário
 
 O usuário marcou como sugestão, sem saber se já existiam. Estas **já estão
@@ -945,17 +986,36 @@ prontas** — não reabrir:
 
 ## 11.9 Ordem sugerida
 
+Todos os lotes abaixo entregam **na aba Rolagem**. Nenhum é Saga-only.
+
 | # | Lote | Custo | Depende de |
 |---|---|---|---|
 | 1 | **DX-BRACAL** — fechar a lacuna do §11.6 | baixo | — |
-| 1b | **MARCOS-1** — testes disparados pela queda de PV, e aviso de estado no PF (§11.1) | médio, **toca UI** | — |
-| 2 | **RESIST-1** — botão "Reação e Resistência" (§11.0), movendo Reação e Autocontrole para dentro | médio, **toca UI** | — |
-| 3 | **MAO-1** — seletor hábil/inábil no Ataque (§11.3) | baixo, **toca UI** | — |
-| 4 | **V-9** — as declaráveis do §11.4 | baixo | 2 (só para `boa_forma`) |
-| 5 | **RESIST-2** — Abascanto e campo de Resistência à Magia | médio | 2 |
-| 6 | **DANO-TESTE** — Pânico e Inconsciência disparados por dano, no combate | alto, **risco de regressão** | 2 |
-| 7 | **CAP14** — documento próprio (§11.7) | — | — |
+| 2 | **MARCOS-1** — testes oferecidos pela queda de PV, e aviso de estado no PF (§11.1) | médio, **toca UI** | — |
+| 3 | **RESIST-1** — botão "Reação e Resistência" (§11.0), movendo Reação e Autocontrole para dentro | médio, **toca UI** | — |
+| 4 | **MAO-1** — seletor hábil/inábil no Ataque (§11.3) | baixo, **toca UI** | — |
+| 5 | **V-9** — as declaráveis do §11.4 | baixo | 3 (só para `boa_forma`) |
+| 6 | **RESIST-2** — Abascanto: campo e teste na ficha (só a metade da Rolagem, §11.2) | médio | 3 |
+| 7 | **CAP14** — documento próprio, já com o filtro de escopo (§11.7) | — | — |
 | 8 | **TETO-HT** — `magro` trava HT em 14, `muito_gordo` em 13 (§11.4) | baixo | — |
 
-> Os itens 2, 3 e 6 tocam UI ⇒ **param para teste no aparelho**, pela regra do
+> Os itens 2, 3 e 4 tocam UI ⇒ **param para teste no aparelho**, pela regra do
 > projeto.
+
+## 11.10 ❌ DESCARTADO por escopo — o antigo lote 6
+
+**"DANO-TESTE — Pânico e Inconsciência disparados por dano, dentro do combate."**
+
+Eu havia proposto isto como a "metade cara" do §11.1: o motor de combate
+dispararia os testes sozinho ao aplicar dano, em `domain/combat/InjuryRules`.
+
+**É Saga pura** — só acontece com o combate tático aberto, e não aparece na aba
+Rolagem. Pela regra de escopo do topo desta seção, **não fazer**.
+
+E é redundante: o **MARCOS-1** já entrega o mesmo valor onde o usuário joga. Lá
+o gatilho é a queda do PV **na própria ficha**, que funciona no Discord, no
+papel, ou em qualquer mesa — sem depender do combate do app.
+
+> Se um dia a Saga precisar disso, o `MarcosDeVidaRules` criado no MARCOS-1 já
+> serve: é Kotlin puro, sem UI. O combate só precisaria chamá-lo. **Mas isso é
+> trabalho da frente da Saga, não desta.**
