@@ -96,7 +96,7 @@ class ResistenciaRulesTest {
 
     @Test
     fun `Abascanto acrescenta o teste de elixir e expoe o nivel`() {
-        val p = heroi(vantagens = listOf(vant("abascanto", "Abascanto", nivel = 3)))
+        val p = heroi(vantagens = listOf(vant(ResistenciaRules.ID_RESISTENCIA_MAGIA, "Abascanto", nivel = 3)))
         val testes = ResistenciaRules.testesDe(p)
         val elixir = testes.first { it.familia == ResistenciaRules.Familia.SOBRENATURAL }
         assertEquals("HT 10 + RM 3", 13, elixir.alvo)

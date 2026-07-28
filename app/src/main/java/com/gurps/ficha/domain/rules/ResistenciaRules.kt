@@ -47,7 +47,15 @@ object ResistenciaRules {
 
     private const val ID_BOA_FORMA = "boa_forma"
     private const val ID_DESTEMOR = "destemor"
-    private const val ID_RESISTENCIA_MAGIA = "abascanto"
+    /**
+     * ⚠️ O id do catálogo é `abascanto_resistencia_a_magia`, não `abascanto`.
+     *
+     * Escrevi `abascanto` no Lote RESIST-1 e o teste passou — porque o teste
+     * inventava o id em vez de ler o catálogo. Mesma falha do bug do V-1: cada
+     * pedaço verde e o conjunto quebrado. Agora há um teste que confronta esta
+     * constante com `vantagens.v3.json`.
+     */
+    internal const val ID_RESISTENCIA_MAGIA = "abascanto_resistencia_a_magia"
     private const val ID_DIFICIL_DE_SUBJUGAR = "dificil_de_subjugar"
     private const val ID_DURO_DE_MATAR = "duro_de_matar"
 

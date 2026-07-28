@@ -1,6 +1,7 @@
 package com.gurps.ficha.viewmodel.delegates
 
 import com.gurps.ficha.data.DataRepository
+import com.gurps.ficha.domain.rules.IncompatibilidadeDeTracos
 import com.gurps.ficha.model.*
 
 class FichaTraitDelegate(private val dataRepository: DataRepository) {
@@ -29,6 +30,11 @@ class FichaTraitDelegate(private val dataRepository: DataRepository) {
         if (jaExisteIdentica && !ehAcumulativa && !permiteMultiplas) {
             return Result.failure(Exception("Você já possui esta Vantagem com esta descrição."))
         }
+
+        // MB p.85: ha pares que o livro proibe de conviver. Ver
+        // `IncompatibilidadeDeTracos` -- a regra e pura para poder ter teste.
+        IncompatibilidadeDeTracos.motivoParaRecusar(personagem, definicao.id)
+            ?.let { return Result.failure(Exception(it)) }
 
         val nivelNormalizado = normalizarNivelVantagem(definicao.id, nivel)
         val vantagem = dataRepository.criarVantagemSelecionada(
@@ -241,4 +247,5 @@ class FichaTraitDelegate(private val dataRepository: DataRepository) {
         }
         return lista
     }
+
 }
