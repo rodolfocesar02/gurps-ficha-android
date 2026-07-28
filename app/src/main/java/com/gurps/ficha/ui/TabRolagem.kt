@@ -85,6 +85,7 @@ fun TabRolagem(viewModel: FichaViewModel) {
 
     // Testes que a queda de PV exigiu e o jogador ainda nao rolou nem dispensou.
     var testesDeMarco by remember { mutableStateOf(emptyList<MarcosDeVidaRules.TesteExigido>()) }
+    var showResistenciaDialog by remember { mutableStateOf(false) }
 
     var pendingRoll by remember { mutableStateOf<PendingRollState?>(null) }
     var pendingResults by remember { mutableStateOf<List<Int>?>(null) }
@@ -725,26 +726,8 @@ fun TabRolagem(viewModel: FichaViewModel) {
             onShowPericias = { showPericiasDialog = true },
             onShowTecnicas = { showTecnicasDialog = true },
             onShowMagias = { showMagiasDialog = true },
-            onShowRolagemLivre = { showRolagemPersonalizadaDialog = true }
-        )
-
-        // Reacao: so aparece se algum traco mexer em reacao.
-        PainelReacao(
-            personagem = p,
-            isPraCegoVariant = isPraCegoVariant,
-            onRolar = { label, alvo, mod ->
-                executarRolagem(tipo = TipoTeste.ATRIBUTO, contextoLabel = label, alvo = alvo, mod = mod)
-            }
-        )
-
-        // Autocontrole: so aparece se a ficha tiver desvantagem com NA.
-        PainelAutocontrole(
-            personagem = p,
-            isPraCegoVariant = isPraCegoVariant,
-            modSituacional = if (isPraCegoVariant) modificadorGlobalPraCego else 0,
-            onRolar = { label, alvo, mod ->
-                executarRolagem(tipo = TipoTeste.ATRIBUTO, contextoLabel = label, alvo = alvo, mod = mod)
-            }
+            onShowRolagemLivre = { showRolagemPersonalizadaDialog = true },
+            onShowResistencia = { showResistenciaDialog = true }
         )
 
         HistoricoRolagemPanel(
@@ -942,6 +925,18 @@ fun TabRolagem(viewModel: FichaViewModel) {
                 showSentidosDialog = false
             },
             onFechar = { showSentidosDialog = false }
+        )
+    }
+
+    if (showResistenciaDialog) {
+        DialogoReacaoEResistencia(
+            personagem = p,
+            isPraCegoVariant = isPraCegoVariant,
+            modSituacional = if (isPraCegoVariant) modificadorGlobalPraCego else 0,
+            onRolar = { label, alvo, mod ->
+                executarRolagem(tipo = TipoTeste.ATRIBUTO, contextoLabel = label, alvo = alvo, mod = mod)
+            },
+            onDismiss = { showResistenciaDialog = false }
         )
     }
 

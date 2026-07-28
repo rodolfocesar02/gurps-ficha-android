@@ -591,7 +591,8 @@ fun MenuBotoesNavegacaoRolagem(
     onShowPericias: () -> Unit,
     onShowTecnicas: () -> Unit,
     onShowMagias: () -> Unit,
-    onShowRolagemLivre: () -> Unit
+    onShowRolagemLivre: () -> Unit,
+    onShowResistencia: () -> Unit = {}
 ) {
     Column(
         modifier = Modifier.fillMaxWidth(),
@@ -604,6 +605,21 @@ fun MenuBotoesNavegacaoRolagem(
         ) {
             Text(
                 "Perícias",
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Center
+            )
+        }
+
+        // Lote RESIST-1: tudo que e "resistir" num lugar so -- Reacao,
+        // Autocontrole, consciencia, morte, doenca, veneno, medo.
+        Button(
+            onClick = onShowResistencia,
+            modifier = Modifier.fillMaxWidth().height(42.dp),
+            contentPadding = PaddingValues(vertical = 2.dp)
+        ) {
+            Text(
+                "Reação e Resistência",
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center
