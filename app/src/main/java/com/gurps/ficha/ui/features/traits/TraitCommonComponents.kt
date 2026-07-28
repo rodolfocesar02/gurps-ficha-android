@@ -28,6 +28,7 @@ import com.gurps.ficha.model.ModificadorDefinicao
 import com.gurps.ficha.model.ModificadorSelecao
 import com.gurps.ficha.domain.rules.CharacterRules
 import com.gurps.ficha.ui.UiActionLabels
+import com.gurps.ficha.ui.barraDeRolagem
 
 // --- Classificação de modificador: ampliação x limitação ---
 
@@ -385,10 +386,15 @@ fun CatalogoDescricaoDialog(nome: String, descricao: String, onDismiss: () -> Un
                     color = MaterialTheme.colorScheme.primary
                 )
                 Spacer(Modifier.height(12.dp))
+                // Uma correção aqui cobre as descrições de vantagem,
+                // desvantagem e modificador — são 5 chamadas deste diálogo.
+                val rolagem = rememberScrollState()
                 Column(
                     modifier = Modifier
                         .weight(1f)
-                        .verticalScroll(rememberScrollState())
+                        .barraDeRolagem(rolagem)
+                        .verticalScroll(rolagem)
+                        .padding(end = 10.dp)
                 ) {
                     Text(
                         descricao.ifBlank { "Sem descrição disponível." },

@@ -305,7 +305,14 @@ fun ConfigurarPericiaDialog(viewModel: FichaViewModel, definicao: PericiaDefinic
         onDismissRequest = onDismiss,
         title = null,
         text = {
-            Column(verticalArrangement = Arrangement.spacedBy(UiTokens.DialogContentSpacing), modifier = Modifier.verticalScroll(rememberScrollState())) {
+            val rolagemConfig = rememberScrollState()
+            Column(
+                verticalArrangement = Arrangement.spacedBy(UiTokens.DialogContentSpacing),
+                modifier = Modifier
+                    .barraDeRolagem(rolagemConfig)
+                    .verticalScroll(rolagemConfig)
+                    .padding(end = 10.dp)
+            ) {
                 TextButton(
                     onClick = { mostrarDescricao = true },
                     modifier = Modifier.semantics {
@@ -638,13 +645,19 @@ fun EditarPericiaDialog(
     )
 
     if (mostrarDescricao) {
+        // A descrição de perícia costuma ser longa (Arrombamento, Mecânica).
+        // Sem barra, o texto some no meio da frase e nada indica que há mais.
+        val rolagemDescricao = rememberScrollState()
         AlertDialog(
             onDismissRequest = { mostrarDescricao = false },
             title = { Text(pericia.nome) },
             text = {
                 Column(
                     verticalArrangement = Arrangement.spacedBy(UiTokens.DialogContentSpacing),
-                    modifier = Modifier.verticalScroll(rememberScrollState())
+                    modifier = Modifier
+                        .barraDeRolagem(rolagemDescricao)
+                        .verticalScroll(rolagemDescricao)
+                        .padding(end = 10.dp)
                 ) {
                     Text(
                         descricaoRegra.ifBlank { "Sem descrição detalhada disponível." },
@@ -682,13 +695,17 @@ private fun PericiaDescricaoDialog(
     modificadores: String,
     onDismiss: () -> Unit
 ) {
+    val rolagem = rememberScrollState()
     AlertDialog(
         onDismissRequest = onDismiss,
         title = { Text(definicao.nome) },
         text = {
             Column(
                 verticalArrangement = Arrangement.spacedBy(UiTokens.DialogContentSpacing),
-                modifier = Modifier.verticalScroll(rememberScrollState())
+                modifier = Modifier
+                    .barraDeRolagem(rolagem)
+                    .verticalScroll(rolagem)
+                    .padding(end = 10.dp)
             ) {
                 Text(
                     descricao.ifBlank { "Sem descrição detalhada disponível." },
