@@ -178,6 +178,39 @@ object CharacterRules {
         }
     }
 
+    /**
+     * Aplica ampliações e limitações sobre um custo já calculado (MB p.102).
+     *
+     * Extraído em 28/07 para as regras de ST/DX Braçal poderem reusá-lo: uma
+     * [com.gurps.ficha.domain.rules.traits.TraitRule] que devolve `calculateCost`
+     * pula o cálculo padrão, então precisaria repetir esta conta — e o livro
+     * manda aplicar as mesmas limitações da ST normal à ST Braçal.
+     *
+     * Regras embutidas: teto de −80% para o líquido negativo; ampliação
+     * arredonda para cima, limitação elimina frações.
+     */
+    fun aplicarModificadoresPercentuais(
+        valorBase: Int,
+        modificadores: List<ModificadorSelecao>
+    ): Int {
+        if (modificadores.isEmpty()) return valorBase
+
+        val somaPercentual = modificadores.sumOf {
+            // bonusBase (fixo) + (valor*níveis se porNivel, senão valor).
+            // Cobre modificadores tipo Cone (+50% base + 10%/metro);
+            // bonusBase=0 (default) preserva comportamento anterior.
+            it.bonusBase + if (it.porNivel) it.valor * it.niveis else it.valor
+        }
+
+        // Regra canônica: Limite de -80% para modificadores negativos líquidos (pág. 102)
+        val percentualFinal = somaPercentual.coerceAtLeast(-80)
+        val multiplicador = 1.0 + (percentualFinal / 100.0)
+        return if (percentualFinal < 0)
+            kotlin.math.floor(valorBase * multiplicador).toInt()
+        else
+            kotlin.math.ceil(valorBase * multiplicador).toInt()
+    }
+
     fun calcularCustoVantagem(
         personagem: com.gurps.ficha.model.Personagem? = null, // Tornar opcional para compatibilidade
         definicaoId: String,
@@ -219,28 +252,7 @@ object CharacterRules {
             }
         }
 
-        if (modificadores.isEmpty()) {
-            return valorBase
-        }
-
-        val somaPercentual = modificadores.sumOf {
-            // bonusBase (fixo) + (valor*níveis se porNivel, senão valor).
-            // Cobre modificadores tipo Cone (+50% base + 10%/metro);
-            // bonusBase=0 (default) preserva comportamento anterior.
-            it.bonusBase + if (it.porNivel) it.valor * it.niveis else it.valor
-        }
-
-        // Regra canônica: Limite de -80% para modificadores negativos líquidos (pág. 102)
-        val percentualFinal = somaPercentual.coerceAtLeast(-80)
-
-        val multiplicador = 1.0 + (percentualFinal / 100.0)
-        // GURPS p.102: ampliações arredondam para cima (ceil); limitações
-        // eliminam frações (floor). Quando o resultado líquido é redução,
-        // floor evita pagar mais do que o esperado.
-        val custoCalculado = if (percentualFinal < 0)
-            kotlin.math.floor(valorBase * multiplicador).toInt()
-        else
-            kotlin.math.ceil(valorBase * multiplicador).toInt()
+        val custoCalculado = aplicarModificadoresPercentuais(valorBase, modificadores)
 
         // Vantagem deve custar no mínimo 1 ponto se o base era positivo e não foi reduzido a zero
         return if (custoCalculado < 1 && valorBase > 0) 1 else custoCalculado

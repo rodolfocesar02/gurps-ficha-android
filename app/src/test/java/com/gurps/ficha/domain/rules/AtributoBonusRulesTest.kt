@@ -95,14 +95,18 @@ class AtributoBonusRulesTest {
 
     @Test
     fun `bonus com escopo por membro NAO entra no atributo global`() {
-        // ST Bracal: +1 ST so dos bracos. Somar no ST global daria forca de
-        // corpo inteiro ao personagem -- erro de regra, nao so de exibicao.
-        comEfeitos(mapOf("st_bracal" to listOf(
+        // Bonus de ST so de um membro. Somar no ST global daria forca de corpo
+        // inteiro ao personagem -- erro de regra, nao so de exibicao.
+        //
+        // O id NAO e "st_bracal" de proposito: desde 28/07 aquele tem regra
+        // Kotlin propria (`StBracalRule`), que vence o JSON -- o efeito
+        // declarado nem seria lido e o teste passaria sem testar nada.
+        comEfeitos(mapOf("membro_forte" to listOf(
             EfeitoDeclarado(tipo = "atributo", alvo = "ST", valor = 2, escopo = "bracos")
         )))
         val p = Personagem(
             nome = "Teste", forca = 10,
-            vantagens = listOf(VantagemSelecionada(definicaoId = "st_bracal", nome = "ST Braçal"))
+            vantagens = listOf(VantagemSelecionada(definicaoId = "membro_forte", nome = "Membro Forte"))
         )
         assertEquals(10, p.st)
     }

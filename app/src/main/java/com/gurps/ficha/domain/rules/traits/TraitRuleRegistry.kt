@@ -22,6 +22,9 @@ object TraitRuleRegistry {
         register(MestreDeArmasRule())
         register(TelecomunicacaoRule())
         register(IdiomaRule())
+        // Custo = preço-por-braço × níveis. Ver `BracalCustoRules.kt`.
+        register(StBracalRule())
+        register(DxBracalRule())
     }
 
     /**
