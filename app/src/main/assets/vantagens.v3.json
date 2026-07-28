@@ -1661,11 +1661,34 @@
     "descricao": "O personagem possui uma habilidade motora notável. Cada nível (até no máximo 4) concede um bônus de +1 na DX para tarefas que exigem um toque delicado. Isso inclui todos os testes de DX das perícias Arrombamento, Artista,  Cirurgia, Costura, Habilidade com Nós, Joalheiro, Prestidigitação, Punga e Trabalhos em Couro, assim como aqueles  necessários para se fazer um trabalho preciso como Maquinista ou Mecânica (numa relojoaria, por exemplo). Esse bônus não se aplica a tarefas baseadas em IQ, tarefas em grande-escala baseadas em DX ou jogadas de dado relacionadas a combates de qualquer tipo.",
     "efeitos": [
       {
-        "tipo": "atributo",
-        "alvo": "DX",
+        "tipo": "pericia",
+        "alvo": "Costura/NT",
         "valor": 1,
-        "porNivel": true,
-        "condicao": "tarefas que exigem toque delicado"
+        "porNivel": true
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Habilidade com Nós",
+        "valor": 1,
+        "porNivel": true
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Prestidigitação",
+        "valor": 1,
+        "porNivel": true
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Punga",
+        "valor": 1,
+        "porNivel": true
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Trabalhos em Couro",
+        "valor": 1,
+        "porNivel": true
       }
     ]
   },

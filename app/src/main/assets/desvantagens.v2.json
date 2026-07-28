@@ -42,6 +42,11 @@
         "tipo": "pericia",
         "alvo": "Natação",
         "valor": 1
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Perseguição",
+        "valor": -1
       }
     ]
   },
@@ -2103,6 +2108,11 @@
         "tipo": "pericia",
         "alvo": "Natação",
         "valor": 3
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Perseguição",
+        "valor": -2
       }
     ]
   },
@@ -2699,6 +2709,11 @@
         "tipo": "pericia",
         "alvo": "Disfarce/NT",
         "valor": -2
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Perseguição",
+        "valor": -2
       }
     ]
   },
@@ -2995,6 +3010,11 @@
         "tipo": "pericia",
         "alvo": "Natação",
         "valor": 5
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Perseguição",
+        "valor": -3
       }
     ]
   },

@@ -2035,7 +2035,7 @@
   },
   {
     "id": "mecanica_nt",
-    "nome": "Mecnica/NT",
+    "nome": "Mecânica/NT",
     "atributoBase": "IQ",
     "atributosPossiveis": null,
     "atributoEscolhaObrigatoria": false,
