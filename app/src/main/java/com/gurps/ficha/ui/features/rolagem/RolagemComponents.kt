@@ -348,7 +348,12 @@ fun AtaqueDanoQuickArea(
     onExecutarDano: (String) -> Unit,
     // Lote NOTA-2: de onde veio o bonus de dano. Vem pronta de fora porque
     // quem sabe montar a lista e a regra, nao o componente de tela.
-    origensDoDano: List<com.gurps.ficha.domain.rules.traits.TraitRuleRegistry.OrigemDeBonus> = emptyList()
+    origensDoDano: List<com.gurps.ficha.domain.rules.traits.TraitRuleRegistry.OrigemDeBonus> = emptyList(),
+    // Lote MAO-1: qual mao esta empunhando, e quanto isso custa nesta ficha.
+    usandoMaoInabil: Boolean = false,
+    rotuloDaMao: String = "",
+    descricaoDaMao: String = "",
+    onAlternarMao: () -> Unit = {}
 ) {
     if (opcoesAtaque.isEmpty()) {
         Text(
@@ -386,6 +391,27 @@ fun AtaqueDanoQuickArea(
                     "Dano",
                     style = if (isVerySmallScreen) MaterialTheme.typography.labelMedium else MaterialTheme.typography.labelLarge,
                     maxLines = 1
+                )
+            }
+        }
+
+        // Seletor de mao: a penalidade e da SITUACAO, e a Ambidestria a zera.
+        // Por isso o quadrado continua funcionando mesmo com a vantagem -- so o
+        // numero some.
+        if (rotuloDaMao.isNotBlank()) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { onAlternarMao() }
+                    .semantics { contentDescription = descricaoDaMao },
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Checkbox(checked = usandoMaoInabil, onCheckedChange = { onAlternarMao() })
+                Text(
+                    rotuloDaMao,
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.outline,
+                    modifier = Modifier.padding(start = 2.dp)
                 )
             }
         }

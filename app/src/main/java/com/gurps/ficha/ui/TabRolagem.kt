@@ -30,6 +30,7 @@ import com.gurps.ficha.data.network.DiscordVoiceChannel
 import com.gurps.ficha.domain.roll.CriticoRules
 import com.gurps.ficha.domain.rules.MagiaEnergiaRules
 import com.gurps.ficha.domain.rules.DxBracalRules
+import com.gurps.ficha.domain.rules.MaoInabilRules
 import com.gurps.ficha.domain.rules.MarcosDeVidaRules
 import com.gurps.ficha.domain.rules.StBracalRules
 import com.gurps.ficha.model.PericiaSelecionada
@@ -233,6 +234,11 @@ fun TabRolagem(viewModel: FichaViewModel) {
     }
 
     var modificadorAtaque by remember { mutableIntStateOf(0) }
+
+    // Mao inabil: -4 (MB p.14), zerado pela Ambidestria. O seletor continua
+    // valendo com a vantagem -- so o numero some.
+    var usandoMaoInabil by remember { mutableStateOf(false) }
+    val penalidadeDaMao = MaoInabilRules.penalidadeDe(p, usandoMaoInabil)
 
 
     val opcoesPericia = p.periciasTotais.filter { per ->
@@ -703,10 +709,14 @@ fun TabRolagem(viewModel: FichaViewModel) {
                     tipo = TipoTeste.ATAQUE,
                     contextoLabel = att.contextLabel,
                     alvo = att.target,
-                    mod = mod
+                    mod = mod + penalidadeDaMao
                 )
             },
             origensDoDano = origensDoDano,
+            usandoMaoInabil = usandoMaoInabil,
+            rotuloDaMao = MaoInabilRules.rotuloDe(p, usandoMaoInabil),
+            descricaoDaMao = MaoInabilRules.rotuloAcessivel(p, usandoMaoInabil),
+            onAlternarMao = { usandoMaoInabil = !usandoMaoInabil },
             onExecutarDano = { dano ->
                 val perId = if (ataqueAtual?.id?.startsWith("pericia_") == true) {
                     ataqueAtual.id.removePrefix("pericia_")
