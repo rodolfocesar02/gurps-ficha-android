@@ -5007,3 +5007,18 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - **Números**: 33 → **42 traços** declarados, 60 → **69 efeitos**.
 - **Status:** ✅ Build OK nas 2 variantes · gate **1184/0** · ⏭️ teste no aparelho: reusar o T9, agora com Paranoia (−2 direto) e Estigma Social (−2 em −10 pts).
 
+### Lote AUTOM-8 — 28 de Julho de 2026 (commits 07c73016, ff07c0d5, 21f78030, 294118ef, 7309e669, 3fc4e459, 9060397f)
+**A fila da seção 11 inteira, em loop (branch GURPS-Saga)**
+- Origem: o usuário releu as vantagens no livro e anotou ideias em `Possiveis_Automações.md`. Viraram a seção 11 do plano; esta entrada é a execução dos 8 lotes.
+- **DX-BRACAL** (`07c73016`): fecha dívida do STB-2 — o custo das duas Braçais tinha sido corrigido, mas só a ST ganhou efeito. **A armadilha:** o livro diz que *"as perícias de combate não se beneficiam de forma alguma da destreza braçal"*, então, ao contrário da ST (que aumenta o dano), a DX Braçal **não pode** tocar NH de ataque. Metade dos testes é sobre o que ela NÃO faz.
+- **MARCOS-1** (`ff07c0d5`): a ideia do usuário de usar a queda de PV como gatilho. Funciona e é melhor do que eu havia proposto — a aba Rolagem já tem os controles de PV/PF, então **baixar o PV na ficha é o evento de dano**, e funciona no Discord sem o combate. Os marcos: ferimento grave, 0 PV, cada múltiplo negativo, morte automática. **Regra de desenho: o app oferece, não rola** — e tem "Dispensar", porque às vezes o Mestre não pede o teste.
+- **RESIST-1** (`21f78030`): o botão **"Reação e Resistência"**. O GURPS tem muito teste que não é perícia nem atributo puro, e a ficha não tinha onde pô-los — por isso Reação e Autocontrole tinham virado painéis soltos. Agora são 8 testes num lugar só. Os de HT existem sempre; só o sobrenatural depende de traço.
+- **MAO-1** (`294118ef`): seletor mão hábil/inábil no Ataque. **O ponto do lote:** a Ambidestria não concede bônus, ela **remove** uma penalidade. Declará-la como efeito daria −4 a quem comprou. A penalidade pertence à situação e a vantagem a zera — e o rótulo explica por que o número sumiu.
+- **V-9** (`7309e669`): Empatia, Magro, Muito Gordo, e a Natação que faltava em Acima do Peso e Gordo. **Furo corrigido:** a `FlexibilidadeRule` dava Escalada e Fuga, mas o livro lista **três** — faltava Arte Erótica desde que a regra foi escrita.
+- **RESIST-2** (`3fc4e459`): trava mútua Abascanto × Aptidão Mágica, decisão do usuário. Foi para `domain/rules/` e não para o delegate, porque o delegate exige Context e a regra não teria teste.
+  - 🔴 **Bug meu achado aqui**: no RESIST-1 escrevi o id `abascanto`; o real é `abascanto_resistencia_a_magia`. Os onze testes passaram porque **inventavam o id** em vez de ler o catálogo — o mesmo perfil do V-1. Criei o `IdsDeVantagemNoCatalogoTest`, que confronta todo id usado em regra Kotlin com os catálogos.
+- **TETO-HT** (`9060397f`): Magro limita a HT em 14, Muito Gordo em 13. **Avisa, não impede** — repetir a trava do `conhecimento_oculto` seria pior que o problema.
+- **CAP14**: virou `docs/pendencias/Capitulo14_Lesoes_e_Fadiga.md`. Ao inventariar, descobri que **boa parte do capítulo já foi coberta de lado** pelos lotes de traços (testes de resistir, marcos de PV, estados). O que sobra é menor do que parecia: sangramento visível na ficha, descanso/cura e doença como estado.
+- **Números**: 45 traços declarados, 77 efeitos, 13 regras Kotlin, **6 regras novas em `domain/rules/`**.
+- **Status:** ✅ Build OK nas 2 variantes · gate **1246/0** (+67 testes na fila) · ⏭️ **PENDENTE: teste no aparelho** — roteiro T10..T14.
+

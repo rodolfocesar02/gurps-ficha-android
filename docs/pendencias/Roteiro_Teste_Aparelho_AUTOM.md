@@ -1,6 +1,7 @@
 # Roteiro de teste no aparelho — fase AUTOM-4
 
-> Versão **2.5-CATALOGO** (versionCode 104), branch `GURPS-Saga`.
+> Versões **2.5-CATALOGO** (T1..T9, já validados) e **2.7-RESISTENCIA**
+> (versionCode 106, T10..T15). Branch `GURPS-Saga`.
 > Cobre V-3, V-4, V-5, REACAO-1/2/3, STB-1, STB-2, NOTA-2, OPCAO-1 e V-8.
 > Gate: 1.178 testes, 0 falhas, build OK nas duas variantes.
 >
@@ -204,3 +205,121 @@ um bônus no lugar de uma penalidade.
 - **Condicional de atributo** ("+1 HT para ver se sobrevive", 13 traços) — não
   foi declarado. A caixinha só existe para perícia e defesa; a rolagem de
   atributo é um toque direto, sem diálogo onde ela caiba.
+
+---
+
+# FASE 2 — versão 2.7-RESISTENCIA (28/07, gate 1246/0)
+
+Cobre os 8 lotes da fila nova: DX-BRACAL, MARCOS-1, RESIST-1, MAO-1, V-9,
+RESIST-2 e TETO-HT.
+
+> Os T1..T9 já foram validados. **Comece daqui.**
+
+## Preparo
+
+Na mesma ficha de teste, acrescente:
+
+| Traço | Para quê |
+|---|---|
+| **DX Braçal** +3 em dois braços | T10 |
+| **Duro de Matar** 2 e **Boa Forma** (15 pts) | T11 e T12 |
+| **Ambidestria** | T13 |
+| **Empatia** e a perícia **Adivinhação** | T14 |
+| **Magro** (desvantagem) | T14 |
+
+## T10 — DX Braçal (a dívida que fechou)
+
+1. Aba **Rolagem**, logo abaixo dos atributos.
+2. ✅ Aparece uma segunda caixinha:
+   `DX Braçal +3 (braços agem como DX 13; não vale para combate)`.
+3. Marque.
+4. ✅ O **DX** passa de 10 para **13**.
+5. ✅ 🔴 **O NH da Faca NÃO muda.** Continua 12. Este é o teste que importa: o
+   livro proíbe a DX Braçal de ajudar perícia de combate. Se o NH subir, avise.
+6. ✅ O **ST** e os outros atributos não mudam.
+7. ✅ A caixinha do **ST Braçal** continua funcionando junto, independente.
+
+## T11 — Testes exigidos pela queda de PV
+
+Com **PV 10** na ficha.
+
+1. Baixe o PV de 10 para **9** (um toque no menos).
+2. ✅ **Nada acontece.** Arranhão não pede teste.
+3. Edite o PV direto para **5**.
+4. ✅ Aparece um card avisando **Ferimento grave — não cair**, com `HT` e a
+   explicação de quanto se perdeu.
+5. ✅ Se você tiver **Boa Forma 15 pts**, o alvo vem **+2**, e a linha embaixo
+   diz de onde veio.
+6. Toque no teste.
+7. ✅ Rola 3d6 normalmente e o card some.
+8. Baixe o PV para **0**.
+9. ✅ Aparece **Manter a consciência**.
+10. Baixe para **−10**.
+11. ✅ Aparece **Evitar a morte (−1× PV)**, com o bônus do **Duro de Matar**.
+12. ✅ 🔴 **O Duro de Matar NÃO aparece no teste de consciência**, e o Difícil de
+    Subjugar não aparece no de morte. São vantagens diferentes.
+13. **Cure** o personagem (suba o PV).
+14. ✅ **Nenhum** teste novo aparece. Curar nunca dispara nada.
+15. Toque em **Dispensar** com um teste na tela.
+16. ✅ O card some sem rolar.
+
+## T12 — Estado de PV e PF
+
+1. Deixe o PV em **3** (de 10).
+2. ✅ Aparece `Cambaleante — Deslocamento e Esquiva pela metade`.
+3. Baixe o **PF** para **3** (de 10).
+4. ✅ Aparece também `Cansado — ST e DX caem pela metade`.
+5. ✅ O PF **não** pede rolagem — só avisa. É a diferença: PV rola, PF informa.
+6. Volte os dois ao máximo.
+7. ✅ Os avisos somem.
+
+## T13 — Botão "Reação e Resistência" e a mão inábil
+
+1. Aba **Rolagem**: entre *Perícias* e *Rolagem Livre* há um botão novo,
+   **Reação e Resistência**.
+2. ✅ O card de **Teste de Reação** e o de **Autocontrole** **não estão mais** no
+   fim da tela — mudaram para dentro do diálogo.
+3. Abra o botão.
+4. ✅ Lá dentro estão: Reação, Autocontrole, e os grupos **Corpo**, **Mente**.
+5. ✅ Em Corpo: manter consciência, evitar a morte, doença, veneno, esforço.
+6. ✅ Em Mente: Verificação de Pânico e resistir a Intimidação, saindo da
+   **Vontade** (não do HT).
+7. ✅ A Verificação de Pânico diz que **NÃO é disparada por dano**.
+8. ✅ Com **Boa Forma**, todos os de Corpo sobem +2 e os de Mente **não**.
+9. Feche e olhe o card de **Ataque**.
+10. ✅ Há uma caixinha `Mão hábil`.
+11. Marque-a.
+12. ✅ Com **Ambidestria** na ficha, o texto vira
+    `Mão inábil — sem penalidade (Ambidestria)` e **não mostra −4**.
+13. Remova a Ambidestria e marque de novo.
+14. ✅ Agora diz `Mão inábil (-4)`, e rolar o ataque aplica o −4.
+
+## T14 — Declarações novas e o teto de HT
+
+1. Com **Empatia** e **Adivinhação** na ficha, abra **Perícias**.
+2. ✅ O card mostra a nota `+3 Empatia`.
+3. Adicione **Natação** e a desvantagem **Gordo**.
+4. ✅ Nota `+3 Gordo` na Natação — e `-2 Gordo` no Disfarce.
+5. Com **Flexibilidade**, adicione **Arte Erótica**.
+6. ✅ Nota `+3 Flexibilidade` (era o furo corrigido; antes só Escalada e Fuga
+   tinham).
+7. Adicione **Magro** e deixe a **HT em 15**.
+8. ✅ No topo da aba **Traços** aparece um aviso vermelho:
+   `⚠ Magro limita a HT em 14, e a ficha está com 15.`
+9. ✅ 🔴 **A ficha continua funcionando.** É aviso, não bloqueio.
+10. Baixe a HT para 14.
+11. ✅ O aviso some.
+
+## T15 — A trava do Abascanto
+
+1. Adicione **Aptidão Mágica**.
+2. Tente adicionar **Abascanto (Resistência à Magia)**.
+3. ✅ 🔴 O app **recusa**, com a mensagem explicando o motivo e citando a p.85.
+4. Remova a Aptidão Mágica e adicione o Abascanto.
+5. ✅ Agora entra normalmente.
+6. Tente adicionar a Aptidão Mágica de volta.
+7. ✅ Recusa também — a trava vale **nos dois sentidos**.
+8. Com o Abascanto nível 3, abra **Reação e Resistência**.
+9. ✅ Aparece um card `Resistência à Magia 3`, dizendo que o mago sofre −3 e que
+   você deve informar ao Mestre.
+10. ✅ E um teste novo no grupo **Sobrenatural**: resistir a elixir mágico.

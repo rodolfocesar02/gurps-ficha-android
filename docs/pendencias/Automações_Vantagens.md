@@ -986,21 +986,36 @@ prontas** — não reabrir:
 
 ## 11.9 Ordem sugerida
 
-Todos os lotes abaixo entregam **na aba Rolagem**. Nenhum é Saga-only.
+## ✅ FILA CUMPRIDA — 28 de Julho de 2026
 
-| # | Lote | Custo | Depende de |
+Os oito lotes foram feitos em sequência. Todos entregam **na aba Rolagem**.
+
+| # | Lote | Commit | Estado |
 |---|---|---|---|
-| 1 | **DX-BRACAL** — fechar a lacuna do §11.6 | baixo | — |
-| 2 | **MARCOS-1** — testes oferecidos pela queda de PV, e aviso de estado no PF (§11.1) | médio, **toca UI** | — |
-| 3 | **RESIST-1** — botão "Reação e Resistência" (§11.0), movendo Reação e Autocontrole para dentro | médio, **toca UI** | — |
-| 4 | **MAO-1** — seletor hábil/inábil no Ataque (§11.3) | baixo, **toca UI** | — |
-| 5 | **V-9** — as declaráveis do §11.4 | baixo | 3 (só para `boa_forma`) |
-| 6 | **RESIST-2** — Abascanto: campo e teste na ficha (só a metade da Rolagem, §11.2) | médio | 3 |
-| 7 | **CAP14** — documento próprio, já com o filtro de escopo (§11.7) | — | — |
-| 8 | **TETO-HT** — `magro` trava HT em 14, `muito_gordo` em 13 (§11.4) | baixo | — |
+| 1 | **DX-BRACAL** | `07c73016` | ✅ ⏸ aguarda teste |
+| 2 | **MARCOS-1** | `ff07c0d5` | ✅ ⏸ aguarda teste |
+| 3 | **RESIST-1** | `21f78030` | ✅ ⏸ aguarda teste |
+| 4 | **MAO-1** | `294118ef` | ✅ ⏸ aguarda teste |
+| 5 | **V-9** | `7309e669` | ✅ ⏸ aguarda teste |
+| 6 | **RESIST-2** | `3fc4e459` | ✅ ⏸ aguarda teste |
+| 7 | **CAP14** | — | ✅ virou `docs/pendencias/Capitulo14_Lesoes_e_Fadiga.md` |
+| 8 | **TETO-HT** | `9060397f` | ✅ ⏸ aguarda teste |
 
-> Os itens 2, 3 e 4 tocam UI ⇒ **param para teste no aparelho**, pela regra do
-> projeto.
+### Dois achados durante a execução
+
+**A `FlexibilidadeRule` esquecia Arte Erótica.** O MB p.61 lista três perícias
+(Escalada, Fuga, Arte Erótica) e a regra dava duas. Corrigido no `.kt` — como é
+regra Kotlin, declarar no JSON seria ignorado em silêncio.
+
+**🔴 Eu escrevi o id errado do Abascanto** no RESIST-1: `abascanto`, quando o
+catálogo usa `abascanto_resistencia_a_magia`. Os onze testes daquele lote
+passaram porque **inventavam o id** em vez de ler o catálogo — mesmo perfil do
+bug do V-1. Um id errado não dá erro: simplesmente nunca casa, e a vantagem fica
+sem efeito para sempre.
+
+Criado o `IdsDeVantagemNoCatalogoTest`, que confronta **todo id usado em regra
+Kotlin** com os catálogos reais. **Ao escrever regra nova que casa por id,
+acrescente o id lá.**
 
 ## 11.10 ❌ DESCARTADO por escopo — o antigo lote 6
 
