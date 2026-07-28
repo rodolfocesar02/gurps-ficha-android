@@ -23,6 +23,17 @@ import java.io.File
  */
 class EfeitosDeclaradosCatalogoTest {
 
+    private companion object {
+        /**
+         * Alvos que NÃO são perícia do catálogo, mas são válidos de propósito.
+         *
+         * `reacao` é o alvo reservado do Teste de Reação (`ReacaoRules`) — reusa
+         * o tipo "pericia" em vez de inventar um tipo novo só para ele.
+         * Precisa estar em sincronia com `scripts/validar_efeitos.py`.
+         */
+        val ALVOS_RESERVADOS = setOf("reacao")
+    }
+
     private val gson = Gson()
 
     /** Lê do módulo `app/` — é o diretório de trabalho do Gradle nos testes. */
@@ -71,7 +82,7 @@ class EfeitosDeclaradosCatalogoTest {
             traco.efeitos
                 .filter { it.tipoResolvido == TipoEfeito.PERICIA }
                 .forEach { efeito ->
-                    if (efeito.alvo !in pericias) {
+                    if (efeito.alvo !in pericias && efeito.alvo !in ALVOS_RESERVADOS) {
                         erros.add("${traco.nome} [${traco.id}] -> pericia '${efeito.alvo}' nao existe")
                     }
                 }

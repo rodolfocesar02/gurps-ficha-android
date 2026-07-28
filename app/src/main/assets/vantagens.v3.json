@@ -1094,7 +1094,15 @@
     "tags": [
       "social"
     ],
-    "descricao": "O personagem tem uma aptidão natural para impressionar e liderar outras pessoas. Qualquer um pode conseguir um carisma ilusório por meio da boa aparência, boas maneiras e inteligência, mas o carisma real funciona independente desses fatores. Cada nível concede um bônus de +1 em todos os testes de reação feitos por seres inteligentes com quem o personagem interage ativamente (em conversas, palestras, etc.), além de um bônus de +1 nos testes de Influência (v. Testes de Influência, pág. 359) e +1 em Adivinhação, Liderança, Mendicância e Oratória. O Mestre pode definir que o Carisma do personagem não afeta os membros de raças muito diferentes."
+    "descricao": "O personagem tem uma aptidão natural para impressionar e liderar outras pessoas. Qualquer um pode conseguir um carisma ilusório por meio da boa aparência, boas maneiras e inteligência, mas o carisma real funciona independente desses fatores. Cada nível concede um bônus de +1 em todos os testes de reação feitos por seres inteligentes com quem o personagem interage ativamente (em conversas, palestras, etc.), além de um bônus de +1 nos testes de Influência (v. Testes de Influência, pág. 359) e +1 em Adivinhação, Liderança, Mendicância e Oratória. O Mestre pode definir que o Carisma do personagem não afeta os membros de raças muito diferentes.",
+    "efeitos": [
+      {
+        "tipo": "pericia",
+        "alvo": "reacao",
+        "valor": 1,
+        "porNivel": true
+      }
+    ]
   },
   {
     "id": "clarissenciencia",
@@ -5161,6 +5169,12 @@
         "tipo": "pericia",
         "alvo": "Sex Appeal",
         "valor": 2
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "reacao",
+        "valor": 2,
+        "condicao": "de quem pode ouvir sua voz"
       }
     ]
   },

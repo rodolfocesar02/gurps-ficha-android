@@ -123,7 +123,11 @@ def main():
                     erros.append(f"{onde}: `valor` precisa ser inteiro, veio {ef.get('valor')!r}")
 
                 if tipo.startswith("per"):
-                    if alvo not in pericias:
+                    # "reacao" nao e pericia do catalogo: e o alvo reservado
+                    # para modificador de Teste de Reacao (ReacaoRules).
+                    if alvo == "reacao":
+                        pass
+                    elif alvo not in pericias:
                         sugestao = [p for p in pericias if p.lower().startswith(alvo.lower()[:5])][:3]
                         extra = f" (parecidas: {sugestao})" if sugestao else ""
                         erros.append(f"{onde}: pericia {alvo!r} nao existe no catalogo{extra}")

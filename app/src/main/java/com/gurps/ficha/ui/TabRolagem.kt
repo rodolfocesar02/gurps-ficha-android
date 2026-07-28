@@ -666,6 +666,15 @@ fun TabRolagem(viewModel: FichaViewModel) {
             onShowRolagemLivre = { showRolagemPersonalizadaDialog = true }
         )
 
+        // Reacao: so aparece se algum traco mexer em reacao.
+        PainelReacao(
+            personagem = p,
+            isPraCegoVariant = isPraCegoVariant,
+            onRolar = { label, alvo, mod ->
+                executarRolagem(tipo = TipoTeste.ATRIBUTO, contextoLabel = label, alvo = alvo, mod = mod)
+            }
+        )
+
         // Autocontrole: so aparece se a ficha tiver desvantagem com NA.
         PainelAutocontrole(
             personagem = p,
