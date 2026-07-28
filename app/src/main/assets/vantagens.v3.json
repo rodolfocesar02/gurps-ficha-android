@@ -1530,7 +1530,16 @@
     "tags": [
       "fisica"
     ],
-    "descricao": "O personagem possui uma habilidade motora notável. Cada nível (até no máximo 4) concede um bônus de +1 na DX para tarefas que exigem um toque delicado. Isso inclui todos os testes de DX das perícias Arrombamento, Artista,  Cirurgia, Costura, Habilidade com Nós, Joalheiro, Prestidigitação, Punga e Trabalhos em Couro, assim como aqueles  necessários para se fazer um trabalho preciso como Maquinista ou Mecânica (numa relojoaria, por exemplo). Esse bônus não se aplica a tarefas baseadas em IQ, tarefas em grande-escala baseadas em DX ou jogadas de dado relacionadas a combates de qualquer tipo."
+    "descricao": "O personagem possui uma habilidade motora notável. Cada nível (até no máximo 4) concede um bônus de +1 na DX para tarefas que exigem um toque delicado. Isso inclui todos os testes de DX das perícias Arrombamento, Artista,  Cirurgia, Costura, Habilidade com Nós, Joalheiro, Prestidigitação, Punga e Trabalhos em Couro, assim como aqueles  necessários para se fazer um trabalho preciso como Maquinista ou Mecânica (numa relojoaria, por exemplo). Esse bônus não se aplica a tarefas baseadas em IQ, tarefas em grande-escala baseadas em DX ou jogadas de dado relacionadas a combates de qualquer tipo.",
+    "efeitos": [
+      {
+        "tipo": "atributo",
+        "alvo": "DX",
+        "valor": 1,
+        "porNivel": true,
+        "condicao": "tarefas que exigem toque delicado"
+      }
+    ]
   },
   {
     "id": "deslocamento_aquatico",
@@ -1713,7 +1722,16 @@
     "rawCost": "12 ou 16",
     "specialRule": null,
     "tags": [],
-    "descricao": "Um ou mais braços do personagem têm uma DX adicional em relação ao restante do corpo.\n\nEsse valor se aplica somente às ações feitas com os braços ou mãos em questão — ele não afeta a Velocidade Básica.\n\nSe uma tarefa exigir duas mãos ou mais e elas não tiverem a mesma DX, utilize o menor valor.\n\nAs perícias de combate dependem da DX corporal e não se beneficiam de forma alguma da destreza braçal.\n\nA DX Braçal custa 12 pontos para cada +1 de DX para um braço e 16 pontos para cada +1 de DX nos dois braços.\n\nNão vale a pena aumentar esse valor para três braços ou mais — nesse caso, é melhor comprar a DX corporal.\n\nSe a DX do personagem foi adquirida com a limitação Manuseadores Precários, aplique-a também à DX Braçal."
+    "descricao": "Um ou mais braços do personagem têm uma DX adicional em relação ao restante do corpo.\n\nEsse valor se aplica somente às ações feitas com os braços ou mãos em questão — ele não afeta a Velocidade Básica.\n\nSe uma tarefa exigir duas mãos ou mais e elas não tiverem a mesma DX, utilize o menor valor.\n\nAs perícias de combate dependem da DX corporal e não se beneficiam de forma alguma da destreza braçal.\n\nA DX Braçal custa 12 pontos para cada +1 de DX para um braço e 16 pontos para cada +1 de DX nos dois braços.\n\nNão vale a pena aumentar esse valor para três braços ou mais — nesse caso, é melhor comprar a DX corporal.\n\nSe a DX do personagem foi adquirida com a limitação Manuseadores Precários, aplique-a também à DX Braçal.",
+    "efeitos": [
+      {
+        "tipo": "atributo",
+        "alvo": "DX",
+        "valor": 1,
+        "porNivel": true,
+        "escopo": "bracos"
+      }
+    ]
   },
   {
     "id": "elasticidade",
@@ -3676,7 +3694,15 @@
     "rawCost": "5",
     "specialRule": null,
     "tags": [],
-    "descricao": "Bônus de +5 em HT para recuperar PV e lesões. Custa 5 pts (HT 10+). Muito Acelerada: cura 2 PV por sucesso, custa 15 pts (HT 12+)."
+    "descricao": "Bônus de +5 em HT para recuperar PV e lesões. Custa 5 pts (HT 10+). Muito Acelerada: cura 2 PV por sucesso, custa 15 pts (HT 12+).",
+    "efeitos": [
+      {
+        "tipo": "atributo",
+        "alvo": "HT",
+        "valor": 5,
+        "condicao": "testes para recuperar PV e lesões"
+      }
+    ]
   },
   {
     "id": "recuperacao_da_consciencia",
@@ -4272,7 +4298,16 @@
     "rawCost": "3, 5, ou 8",
     "specialRule": null,
     "tags": [],
-    "descricao": "Um ou mais braços do personagem possuem uma Força superior à do restante do corpo.\n\nEssa ST adicional se aplica apenas a ações realizadas com os braços ou mãos beneficiados.\n\nEla pode ser utilizada para:\n\n- Erguer objetos.\n- Empurrar ou puxar utilizando os braços.\n- Arremessar objetos.\n- Realizar ataques.\n- Executar outras tarefas dependentes da força dos membros superiores.\n\nA ST Braçal não afeta:\n\n- Os Pontos de Vida do personagem.\n- A Base de Carga geral.\n- Testes que dependam da força do corpo inteiro.\n- Chutes ou outras ações realizadas com as pernas.\n\nQuando uma tarefa exige o uso simultâneo de várias mãos com valores diferentes de ST Braçal, utilize a média dos valores envolvidos.\n\n## Custo\n\nA vantagem é comprada separadamente para o número de braços beneficiados.\n\n| Braços Afetados | Custo por +1 de ST |\n|---|---|\n| Um braço | 3 pontos |\n| Dois braços | 5 pontos |\n| Três braços | 8 pontos |\n\nNão é economicamente vantajoso adquirir ST Braçal para quatro braços ou mais.\n\nNesses casos, normalmente é melhor comprar ST geral para todo o corpo.\n\n## Limitações\n\nSe a ST normal do personagem possuir limitações como:\n\n- Manuseadores Precários.\n- Tamanho.\n\nessas mesmas limitações devem ser aplicadas à ST Braçal.\n\n## Exemplo\n\nUm personagem com ST 10 e ST Braçal +4 em ambos os braços continua possuindo:\n\n- ST 10 para Base de Carga.\n- ST 10 para determinar PV.\n- ST 10 para esforços corporais gerais.\n\nEntretanto, ao erguer, arremessar ou atacar utilizando os braços, ele age como se tivesse ST 14."
+    "descricao": "Um ou mais braços do personagem possuem uma Força superior à do restante do corpo.\n\nEssa ST adicional se aplica apenas a ações realizadas com os braços ou mãos beneficiados.\n\nEla pode ser utilizada para:\n\n- Erguer objetos.\n- Empurrar ou puxar utilizando os braços.\n- Arremessar objetos.\n- Realizar ataques.\n- Executar outras tarefas dependentes da força dos membros superiores.\n\nA ST Braçal não afeta:\n\n- Os Pontos de Vida do personagem.\n- A Base de Carga geral.\n- Testes que dependam da força do corpo inteiro.\n- Chutes ou outras ações realizadas com as pernas.\n\nQuando uma tarefa exige o uso simultâneo de várias mãos com valores diferentes de ST Braçal, utilize a média dos valores envolvidos.\n\n## Custo\n\nA vantagem é comprada separadamente para o número de braços beneficiados.\n\n| Braços Afetados | Custo por +1 de ST |\n|---|---|\n| Um braço | 3 pontos |\n| Dois braços | 5 pontos |\n| Três braços | 8 pontos |\n\nNão é economicamente vantajoso adquirir ST Braçal para quatro braços ou mais.\n\nNesses casos, normalmente é melhor comprar ST geral para todo o corpo.\n\n## Limitações\n\nSe a ST normal do personagem possuir limitações como:\n\n- Manuseadores Precários.\n- Tamanho.\n\nessas mesmas limitações devem ser aplicadas à ST Braçal.\n\n## Exemplo\n\nUm personagem com ST 10 e ST Braçal +4 em ambos os braços continua possuindo:\n\n- ST 10 para Base de Carga.\n- ST 10 para determinar PV.\n- ST 10 para esforços corporais gerais.\n\nEntretanto, ao erguer, arremessar ou atacar utilizando os braços, ele age como se tivesse ST 14.",
+    "efeitos": [
+      {
+        "tipo": "atributo",
+        "alvo": "ST",
+        "valor": 1,
+        "porNivel": true,
+        "escopo": "bracos"
+      }
+    ]
   },
   {
     "id": "st_de_golpe",

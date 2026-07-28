@@ -58,6 +58,19 @@ object TraitRuleRegistry {
     /**
      * Retorna a soma de bônus em perícia vindo de todas as vantagens do personagem.
      */
+    /**
+     * Soma o bônus de um atributo vindo de todos os traços (GANCHO-A).
+     *
+     * Consumido por `AtributoBonusRules`, que protege contra recursão — chamar
+     * este método direto de dentro de `Personagem` pularia essa proteção.
+     */
+    fun getAttributeBonus(personagem: Personagem, atributo: Atributo): Int =
+        todosOsTracos(personagem).sumOf { selection ->
+            getRuleFor(selection.definicaoId)
+                ?.getAttributeModifiers(personagem, selection)
+                ?.get(atributo) ?: 0
+        }
+
     /** De onde veio um pedaço do bônus: o traço que o concedeu e quanto. */
     data class OrigemDeBonus(val nomeDoTraco: String, val valor: Int)
 

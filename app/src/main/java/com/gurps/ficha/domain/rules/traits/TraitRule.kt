@@ -81,6 +81,19 @@ interface TraitRule {
     ): Map<String, Int> = emptyMap()
 
     /**
+     * Bônus em atributo ou característica secundária (GANCHO-A).
+     *
+     * ⚠️ NUNCA leia aqui o atributo que este método modifica: `Personagem.pontosVida`
+     * chama o agregador, que chama isto — ler `personagem.pontosVida` de dentro
+     * de uma regra de PV entra em laço infinito. Use os campos crus
+     * (`personagem.forca`, `personagem.st`) quando precisar de contexto.
+     */
+    fun getAttributeModifiers(
+        personagem: Personagem,
+        selection: TracoSelecionado
+    ): Map<Atributo, Int> = emptyMap()
+
+    /**
      * Retorna o bônus de dano por dado (ex: Mestre de Armas).
      */
     fun getDamageBonusPerDie(

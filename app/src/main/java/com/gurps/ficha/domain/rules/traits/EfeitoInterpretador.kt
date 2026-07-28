@@ -107,6 +107,23 @@ object EfeitoInterpretador {
             return mapa
         }
 
+        override fun getAttributeModifiers(
+            personagem: Personagem,
+            selection: TracoSelecionado
+        ): Map<Atributo, Int> {
+            val mapa = mutableMapOf<Atributo, Int>()
+            efeitos.filter { it.tipoResolvido == TipoEfeito.ATRIBUTO }.forEach { efeito ->
+                if (!aplicavel(efeito)) return@forEach
+                val atributo = Atributo.de(efeito.alvo)
+                if (atributo == null) {
+                    Log.w(TAG, "$traitId: atributo '${efeito.alvo}' desconhecido, ignorado")
+                    return@forEach
+                }
+                mapa[atributo] = (mapa[atributo] ?: 0) + efeito.valorPara(selection.nivel)
+            }
+            return mapa
+        }
+
         override fun getDodgeModifier(personagem: Personagem, selection: TracoSelecionado): Int =
             somaDefesa(selection, ALVO_ESQUIVA)
 

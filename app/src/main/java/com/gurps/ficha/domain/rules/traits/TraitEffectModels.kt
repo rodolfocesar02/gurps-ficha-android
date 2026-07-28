@@ -32,6 +32,33 @@ enum class TipoEfeito {
 }
 
 /**
+ * Atributo ou característica secundária alvo de um efeito.
+ *
+ * PV/PF/VEL/DESL são derivados (PV vem de ST, PF de HT...), mas o GURPS permite
+ * mexer neles direto — por isso entram na mesma lista.
+ */
+enum class Atributo {
+    ST, DX, IQ, HT, VONT, PER, PV, PF, VEL, DESL;
+
+    companion object {
+        /** Tolerante às grafias que aparecem no livro e no JSON escrito à mão. */
+        fun de(texto: String?): Atributo? = when (texto?.trim()?.uppercase()) {
+            "ST", "FORCA", "FORÇA" -> ST
+            "DX", "DESTREZA" -> DX
+            "IQ", "INTELIGENCIA", "INTELIGÊNCIA" -> IQ
+            "HT", "VITALIDADE" -> HT
+            "VONT", "VONTADE" -> VONT
+            "PER", "PERCEPCAO", "PERCEPÇÃO" -> PER
+            "PV", "HP" -> PV
+            "PF", "FP" -> PF
+            "VEL", "VELOCIDADE" -> VEL
+            "DESL", "DESLOCAMENTO" -> DESL
+            else -> null
+        }
+    }
+}
+
+/**
  * Parte do corpo a que o efeito se restringe.
  *
  * Existe desde o começo porque o problema apareceu nos DOIS planos e foi adiado
