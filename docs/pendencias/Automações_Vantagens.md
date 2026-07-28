@@ -11,7 +11,10 @@
 
 # ✅ STATUS FINAL — 28 de Julho de 2026 (ler primeiro)
 
-**Este plano está CUMPRIDO.** Números reais, medidos no catálogo:
+**As categorias CAT-1..CAT-10 estão CUMPRIDAS.** Números reais, medidos no
+catálogo. ⚠️ **O plano foi REABERTO em 28/07** com a fila do §11 — ideias do
+usuário que pedem tela nova, não só declaração.
+
 
 | Categoria | Previsto no plano | Situação real |
 |---|---|---|
@@ -631,3 +634,223 @@ O LOTE V-1 muda: **antes** de escrever qualquer regra, construir o trilho.
 - **LOTE V-1** — passa a ser só **dados**: declarar `efeitos` das ~8 vantagens
   incondicionais da CAT-1. Zero Kotlin novo.
 - Os demais lotes seguem como em §7.
+
+---
+
+# 11. FILA NOVA — ideias do usuário (revisão de 28/07/2026)
+
+> Origem: `docs/pendencias/Possiveis_Automações.md`, escrito pelo usuário ao
+> reler as vantagens no Módulo Básico. **Isto reabre o plano**: o STATUS FINAL
+> lá em cima continua valendo para as categorias CAT-1..CAT-10, mas as ideias
+> abaixo pedem coisas que aquelas categorias não previam — telas novas e testes
+> disparados por evento, não só bônus declarado.
+>
+> Nada aqui está implementado. Cada item traz **o que é**, **onde mora** (regra
+> R2) e **o que trava**, para o lote poder ser aberto sem reler o livro.
+
+## 11.0 O fio condutor: a ficha não tem onde pôr "teste de resistir"
+
+Sete das ideias caem no mesmo buraco. O GURPS está cheio de testes que **não são
+perícia nem atributo puro**: manter consciência, evitar a morte, resistir a
+doença, veneno, magia, medo. Hoje a aba Rolagem só sabe rolar contra um NH ou
+contra um atributo, e o Teste de Reação e o Autocontrole foram encaixados como
+painéis soltos no fim da tela.
+
+**A proposta do usuário resolve isso de uma vez:** um botão **"Reação e
+Resistência"** na aba Rolagem, ao lado de *Perícias* e *Rolagem Livre*, que abre
+um diálogo com todos os testes desse tipo que a ficha tiver.
+
+Isso muda o desenho do que já existe — Reação e Autocontrole sairiam do fim da
+tela e entrariam no diálogo — então **é o primeiro lote da fila**, e boa parte
+dos outros depende dele.
+
+### O que entra no botão
+
+| Teste | Origem | Situação hoje |
+|---|---|---|
+| **Reação** | MB p.494 | ✅ pronto, é só mudar de lugar |
+| **Autocontrole** | MB p.121 | ✅ pronto, é só mudar de lugar |
+| **Resistência à Magia** (Abascanto) | MB p.85 | ❌ campo não existe — §11.2 |
+| **Manter consciência** | MB p.419 | ❌ — §11.1 |
+| **Evitar a morte** | MB p.423 | ❌ |
+| **Resistir a doença / veneno** | MB p.442-443 | ❌ |
+| **Verificação de Pânico** | MB p.360 | ❌ — §11.1 |
+
+⚠️ **Antes de abrir o lote, varrer o Módulo Básico atrás dos outros tipos de
+teste de resistência** — o usuário pediu isso explicitamente, e a lista acima
+saiu das vantagens que ele leu, não de uma varredura do livro. É provável que
+falte afogamento, exaustão, tontura e choque.
+
+**Onde mora (R2):**
+
+| Arquivo | Pasta | Papel |
+|---|---|---|
+| `ResistenciaRules.kt` | `domain/rules/` **CRIAR** | Kotlin puro: lista os testes que a ficha tem, com alvo e origem. Irmão de `AutocontroleRules` e `ReacaoRules` |
+| `DialogoReacaoEResistencia.kt` | `ui/features/rolagem/` **CRIAR** | o diálogo, ao lado de `DialogoSentidos.kt` |
+| `PainelReacao.kt`, `PainelAutocontrole.kt` | (existentes) | passam a ser chamados de dentro do diálogo |
+
+⚠️ **R1**: `TabRolagem.kt` está em ~999 linhas. O botão novo cabe, mas o diálogo
+**tem que nascer em arquivo próprio** — não há espaço para embutir.
+
+## 11.1 Testes disparados por DANO (Pânico e Inconsciência)
+
+Duas ideias do usuário, com a mesma mecânica: *"quando o personagem tomar dano,
+automaticamente ele deve fazer o teste"*.
+
+| Vantagem | Efeito | MB |
+|---|---|---|
+| `destemor` | soma o nível à **Vontade** na Verificação de Pânico e ao resistir a Intimidação; **subtrai** dos testes de Intimidação feitos contra ele | p.55 |
+| `dificil_de_subjugar` | soma o nível ao **HT** no teste para evitar inconsciência | p.59 |
+
+**O que trava:** "automaticamente ao tomar dano" só existe **dentro do combate**.
+Na aba Rolagem não há evento de dano — o jogador rola o dano que ele causa, não
+o que recebe. Então a ideia se parte em duas:
+
+- **Na ficha (barato):** o teste aparece no botão do §11.0, com o bônus já
+  somado, e o jogador toca quando o Mestre pedir.
+- **No combate (caro):** o disparo automático. O motor já sabe aplicar dano
+  (`InjuryRules`), então o gancho existe; o risco é de regressão no fluxo de
+  turno, que já mordeu antes (TOK-8/9/10).
+
+**Recomendação:** fazer só a metade da ficha primeiro. A metade do combate é lote
+próprio, depois do §11.0 estar validado no aparelho.
+
+## 11.2 Campo novo: Resistência à Magia (Abascanto)
+
+MB p.85. O nível é **subtraído do NH de quem lança magia** no personagem e
+**somado** à resistência dele. Também vale para elixires (teste de HT + nível).
+
+**Por que é campo e não bônus:** não modifica perícia nem atributo do personagem
+— modifica o **teste de outra pessoa**. Não existe gancho para isso.
+
+Restrições do livro que a ficha deveria respeitar:
+
+- **incompatível com Aptidão Mágica** — o personagem não consegue lançar magia;
+- **não protege** de projéteis mágicos, armas mágicas nem adivinhação;
+- não pode ser "desligada" para receber magia benéfica.
+
+⚠️ A validação "incompatível com Aptidão Mágica" é o tipo de trava que já mordeu
+no `conhecimento_oculto` (bloqueava compra legítima). **Avisar, não impedir.**
+
+## 11.3 Mão hábil / inábil no botão de Ataque
+
+Ideia do usuário, e a mais barata de todas com retorno imediato:
+
+> Um quadrado no botão de Ataque distinguindo **mão hábil** / **mão inábil**.
+> Marcando inábil, −4 nos testes (MB p.14). Se o personagem tiver
+> **Ambidestria**, o redutor não aparece, mas **o seletor continua funcionando**.
+
+É o mesmo padrão do seletor de ST Braçal, já validado no aparelho em 28/07.
+
+**Nota importante:** este é o caso em que declarar `ambidestria` como efeito
+seria **errado** — o "−4 na DX" é a penalidade que ela **REMOVE**, não concede.
+Ver a tabela de descartes no STATUS FINAL. A automação certa é esta: a penalidade
+é da UI, e a vantagem a zera.
+
+**Onde mora:** o seletor em `ui/features/rolagem/`, ao lado do card de Ataque; a
+regra ("quanto vale a mão inábil para este personagem") em
+`domain/rules/MaoInabilRules.kt` **CRIAR**, para ter teste.
+
+## 11.4 Declaráveis JÁ, sem tela nova
+
+Estas cabem no campo `efeitos` como ele está hoje. **Lote barato.**
+
+| id | Efeito | Formato |
+|---|---|---|
+| `empatia` | +1 ou +3 em Detecção de Mentiras, Adivinhação e Psicologia | `porOpcao` (5 pts → +1, 15 pts → +3) |
+| `magro` | −2 Disfarce/NT | declaração simples; ver ⚠️ abaixo |
+| `muito_gordo` | −3 Disfarce/NT, +5 Natação | idem |
+| `acima_do_peso` | falta **+1 Natação** | já declarado só o Disfarce |
+| `gordo` | falta a parte de Natação | já declarado só o Disfarce |
+| `flexibilidade` | falta **Arte Erótica +3** | a `FlexibilidadeRule` dá só Escalada e Fuga; o livro lista as três |
+| `boa_forma` | +1 ou +2 em **todos** os testes de HT | ⚠️ precisa do §11.0 — não é perícia |
+
+⚠️ **A armadilha do "ou" nas de peso.** O livro diz *"−N em Disfarce — **ou** em
+Perseguição, se estiver tentando seguir alguém no meio da multidão"*. São duas
+perícias **alternativas**, não somadas. Declarar as duas daria penalidade dobrada
+a quem tem as duas na ficha. Ou declara só Disfarce (o caso comum), ou o formato
+ganha "efeito alternativo" — **e não vale criar recurso por um caso**.
+Recomendação: declarar Disfarce e registrar a Perseguição como sabida-e-omitida.
+
+⚠️ **`magro` e `muito_gordo` também travam a HT** (máximo 14 e 13). Isso é regra
+de **criação de personagem**, não bônus — vive no validador da ficha, não no
+`efeitos`. Fora do escopo deste plano.
+
+⚠️ **`flexibilidade` tem regra Kotlin**, então a correção é no `.kt`, não no
+JSON — a Kotlin vence e o JSON seria ignorado em silêncio.
+
+## 11.5 Precisam de gancho que não existe
+
+| id | O que pede | Por que não cabe hoje |
+|---|---|---|
+| `dx_bracal` | o mesmo seletor do ST Braçal | 🔴 **LACUNA REAL** — ver §11.6 |
+| `destreza_manual_elevada` | o bônus aparecer **dentro de cada perícia** que o livro lista (Arrombamento, Artista, Cirurgia, Costura, Habilidade com Nós, Joalheiro, Prestidigitação, Punga, Trabalhos em Couro) | hoje está declarado como **condicional genérico**. O livro dá a lista fechada — dá para declarar perícia a perícia, e fica melhor |
+| `facilidade_para_idiomas` | baratear o custo dos idiomas comprados | mexe em **custo de outro traço**. O `IdiomaRule` existe, mas precisaria ler a ficha inteira, não só a própria seleção |
+| `reputacao` | caixinhas como as da Voz Melodiosa | tem 4 componentes **e uma rolagem de reconhecimento** — o modificador só vale se reconhecerem o personagem |
+| `status` | idem | é hierarquia social; o efeito em reação é ocasional e "a critério do Mestre" |
+| `controle_do_metabolismo` | ver §11.7 | — |
+
+### 11.6 🔴 LACUNA ACHADA: DX Braçal ficou pela metade
+
+Conferido no código em 28/07: o Lote **STB-1** corrigiu o **custo** das duas (ST
+e DX Braçal), mas o **STB-2** implementou o efeito só da **ST**. Quem compra DX
+Braçal paga certo e **não recebe nada na tela**.
+
+O que falta, espelhando o que já existe para ST:
+
+- `DxBracalRules.kt` em `domain/rules/` (irmão de `StBracalRules.kt`);
+- seletor abaixo do **DX** no painel de atributos;
+- ⚠️ **e uma diferença de regra**: o livro diz que *"as perícias de combate
+  dependem da DX corporal e **não se beneficiam** da destreza braçal"*. O seletor
+  da DX Braçal **não pode** afetar o NH de ataque — ao contrário do ST Braçal,
+  que afeta o dano. Isso precisa de teste próprio.
+
+**Prioridade alta**: é dívida de um lote que o usuário já pagou em pontos.
+
+## 11.7 O pedido grande: Capítulo 14 (MB p.418+)
+
+> *"preciso que analise o Capítulo Quatorze — Lesões, Enfermidades e Fadiga, a
+> partir da pág. 418, como podemos automatizar esses elementos na ficha"*
+
+Isto **não é um lote**, é uma frente inteira — do tamanho do que foi a automação
+de traços. Cobre sangramento, choque, inconsciência, morte, doença, veneno,
+fadiga e recuperação.
+
+Parte já existe no motor de combate (o Sangramento saiu no PONTE-2; o
+`InjuryRules` aplica dano). O que o usuário quer é o outro lado: **a ficha** saber
+desses estados fora do combate.
+
+`controle_do_metabolismo` é a vantagem que puxa esse fio — dá +1/nível em testes
+de HT de sangramento e de recuperação de doença e envenenamento.
+
+**Recomendação honesta:** abrir documento próprio
+(`docs/pendencias/Capitulo14_Lesoes_e_Fadiga.md`) com o mesmo método dos planos
+de traços — inventário do capítulo, classificação do que já existe no motor, e só
+então a fila. Encaixar isso aqui misturaria duas frentes.
+
+## 11.8 Já feitas, que estavam na lista do usuário
+
+O usuário marcou como sugestão, sem saber se já existiam. Estas **já estão
+prontas** — não reabrir:
+
+| id | Onde |
+|---|---|
+| `camaleao_social` | declarado no REACAO-3 (+1 condicional) |
+| `lamentavel` | declarado no REACAO-4 (+3 condicional) |
+| `equilibrio_perfeito` | declarado no V-8 (+1 Acrobacia, Escalada, Pilotagem/NT) |
+| `destreza_manual_elevada` | declarado, mas dá para melhorar — §11.5 |
+
+## 11.9 Ordem sugerida
+
+| # | Lote | Custo | Depende de |
+|---|---|---|---|
+| 1 | **DX-BRACAL** — fechar a lacuna do §11.6 | baixo | — |
+| 2 | **RESIST-1** — botão "Reação e Resistência" (§11.0), movendo Reação e Autocontrole para dentro | médio, **toca UI** | — |
+| 3 | **MAO-1** — seletor hábil/inábil no Ataque (§11.3) | baixo, **toca UI** | — |
+| 4 | **V-9** — as declaráveis do §11.4 | baixo | 2 (só para `boa_forma`) |
+| 5 | **RESIST-2** — Abascanto e campo de Resistência à Magia | médio | 2 |
+| 6 | **DANO-TESTE** — Pânico e Inconsciência disparados por dano, no combate | alto, **risco de regressão** | 2 |
+| 7 | **CAP14** — documento próprio (§11.7) | — | — |
+
+> Os itens 2, 3 e 6 tocam UI ⇒ **param para teste no aparelho**, pela regra do
+> projeto.
