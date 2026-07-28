@@ -138,10 +138,17 @@ data class Personagem(
         return racial + pessoal
     }
     val deslocamentoAquatico: Int get() = deslocamentoBasico / 5 + bonusDeslocamentoAquatico
-    val baseCarga: Float get() = (st * st) / 10f
+    // ST de Levantamento entra AQUI e so aqui (MB p.65): carga sim, dano nao, PV nao.
+    val baseCarga: Float get() {
+        val stCarga = com.gurps.ficha.domain.rules.StEspecializadaRules.stParaCarga(this)
+        return (stCarga * stCarga) / 10f
+    }
     val modificadorTamanho: Int get() = modeloRacial.modificadorTamanho
-    val danoGdP: String get() = CharacterRules.calcularDanoGdP(st)
-    val danoGeB: String get() = CharacterRules.calcularDanoGeB(st)
+    // ST de Golpe entra AQUI e so aqui (MB p.88): dano sim, carga nao, PV nao.
+    val danoGdP: String get() =
+        CharacterRules.calcularDanoGdP(com.gurps.ficha.domain.rules.StEspecializadaRules.stParaDano(this))
+    val danoGeB: String get() =
+        CharacterRules.calcularDanoGeB(com.gurps.ficha.domain.rules.StEspecializadaRules.stParaDano(this))
 
     val pesoTotalEquipamentos: Float get() = equipamentos.sumOf {
         (it.peso * it.quantidade).toDouble()
@@ -799,7 +806,11 @@ data class Equipamento(
             armaGrupo
         )
 
-        return CharacterRules.resolverDanoPorSt(raw, personagem.forca + stExtra, bonusPorDado)
+        // A ST de Golpe vale para "armas que utilizam a ST do personagem para
+        // determinar seu potencial ofensivo" (MB p.88), entao entra aqui junto
+        // com o stExtra da ST Bracal -- sao vantagens diferentes e somam.
+        val stGolpe = com.gurps.ficha.domain.rules.StEspecializadaRules.bonusDeGolpe(personagem)
+        return CharacterRules.resolverDanoPorSt(raw, personagem.forca + stExtra + stGolpe, bonusPorDado)
     }
 
     fun rdArmaduraExibicao(): String? {

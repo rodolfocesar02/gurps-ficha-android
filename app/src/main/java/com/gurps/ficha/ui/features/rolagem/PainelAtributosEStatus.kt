@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.gurps.ficha.domain.rules.DxBracalRules
 import com.gurps.ficha.domain.rules.StBracalRules
+import com.gurps.ficha.domain.rules.StEspecializadaRules
 import com.gurps.ficha.model.Personagem
 import com.gurps.ficha.ui.appCardColors
 import com.gurps.ficha.ui.linhaAlternavel
@@ -106,6 +107,17 @@ fun PainelAtributosEStatus(
                 ativo = dxBracalAtivo,
                 onAlternar = onAlternarDxBracal
             )
+
+            // ST de Golpe / Levantamento: sem caixinha, porque valem sempre.
+            // A linha existe só para o número não mudar sozinho sem explicação.
+            StEspecializadaRules.resumo(personagem)?.let { texto ->
+                Text(
+                    texto,
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.outline,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
 
             PvPfQuickRollPanel(
                 pvFixo = pvFixo,
