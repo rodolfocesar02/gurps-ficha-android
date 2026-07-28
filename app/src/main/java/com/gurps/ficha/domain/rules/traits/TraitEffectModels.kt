@@ -32,6 +32,27 @@ enum class TipoEfeito {
 }
 
 /**
+ * Um bônus que só vale em certa situação, oferecido na hora da rolagem.
+ *
+ * A maioria dos bônus do GURPS é assim ("ao tentar parecer honesto", "quando
+ * não quer ser visto"). Eles NÃO entram no NH base — quem decide se a situação
+ * se aplica é o jogador, no momento do teste.
+ *
+ * @param alvo perícia (ou "esquiva"/"aparar"/"bloqueio") a que o bônus se aplica.
+ * @param condicao texto do livro, mostrado ao jogador para ele decidir.
+ */
+data class BonusCondicional(
+    val nomeDoTraco: String,
+    val alvo: String,
+    val valor: Int,
+    val condicao: String
+) {
+    /** Rótulo para a caixa de seleção: `Rosto Sincero +1 — para parecer honesto`. */
+    val rotulo: String
+        get() = "$nomeDoTraco ${if (valor >= 0) "+$valor" else "$valor"} — $condicao"
+}
+
+/**
  * Atributo ou característica secundária alvo de um efeito.
  *
  * PV/PF/VEL/DESL são derivados (PV vem de ST, PF de HT...), mas o GURPS permite

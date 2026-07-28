@@ -71,6 +71,21 @@ object TraitRuleRegistry {
                 ?.get(atributo) ?: 0
         }
 
+    /**
+     * Bônus condicionais que podem valer para [alvo] — perícia ou defesa.
+     *
+     * São oferecidos ao jogador na hora da rolagem, em vez de somados no NH:
+     * "aplicar +1 de Rosto Sincero?". Aplicar sempre seria errado, porque a
+     * condição pode não valer no teste em questão.
+     */
+    fun getBonusCondicionais(personagem: Personagem, alvo: String): List<BonusCondicional> =
+        todosOsTracos(personagem).flatMap { selection ->
+            getRuleFor(selection.definicaoId)
+                ?.getBonusCondicionais(personagem, selection)
+                ?.filter { it.alvo.equals(alvo, ignoreCase = true) }
+                .orEmpty()
+        }
+
     /** De onde veio um pedaço do bônus: o traço que o concedeu e quanto. */
     data class OrigemDeBonus(val nomeDoTraco: String, val valor: Int)
 

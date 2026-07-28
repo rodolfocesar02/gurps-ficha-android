@@ -107,6 +107,21 @@ object EfeitoInterpretador {
             return mapa
         }
 
+        override fun getBonusCondicionais(
+            personagem: Personagem,
+            selection: TracoSelecionado
+        ): List<BonusCondicional> = efeitos
+            .filter { it.ehCondicional && it.escopoResolvido == EscopoEfeito.GLOBAL }
+            .filter { it.tipoResolvido == TipoEfeito.PERICIA || it.tipoResolvido == TipoEfeito.DEFESA }
+            .map {
+                BonusCondicional(
+                    nomeDoTraco = selection.nome,
+                    alvo = it.alvo,
+                    valor = it.valorPara(selection.nivel),
+                    condicao = it.condicao.orEmpty()
+                )
+            }
+
         override fun getAttributeModifiers(
             personagem: Personagem,
             selection: TracoSelecionado

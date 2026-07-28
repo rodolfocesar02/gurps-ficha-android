@@ -973,6 +973,22 @@
         "valor": -10,
         "pagina": 46
       }
+    ],
+    "efeitos": [
+      {
+        "tipo": "pericia",
+        "alvo": "Furtividade",
+        "valor": 2,
+        "porNivel": true,
+        "condicao": "imóvel, quando não quer ser visto"
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Furtividade",
+        "valor": 1,
+        "porNivel": true,
+        "condicao": "em movimento, quando não quer ser visto"
+      }
     ]
   },
   {
@@ -4094,7 +4110,15 @@
     "rawCost": "1",
     "specialRule": null,
     "tags": [],
-    "descricao": "Parece honesto/inofensivo; não é revistado sem razão, +1 em Dissimulação para \"parecer inocente\". 1 ponto. (pág. 101)"
+    "descricao": "Parece honesto/inofensivo; não é revistado sem razão, +1 em Dissimulação para \"parecer inocente\". 1 ponto. (pág. 101)",
+    "efeitos": [
+      {
+        "tipo": "pericia",
+        "alvo": "Dissimulação",
+        "valor": 1,
+        "condicao": "para parecer inocente"
+      }
+    ]
   },
   {
     "id": "saltador",
@@ -4243,7 +4267,23 @@
     "rawCost": "5/nível",
     "specialRule": null,
     "tags": [],
-    "descricao": "O personagem consegue se mover, respirar e realizar ações sem produzir ruídos perceptíveis.\n\nCada nível de Silêncio concede bônus em testes de Furtividade relacionados à detecção auditiva.\n\n## Benefícios\n\n| Situação | Bônus por Nível |\n|---|---|\n| Imóvel | +2 |\n| Em movimento | +1 |\n\nOs bônus se aplicam mesmo quando o personagem está utilizando armaduras ou equipamentos que normalmente produziriam ruído.\n\n## Aplicações\n\nSilêncio é especialmente útil contra:\n\n- Oponentes na escuridão.\n- Guardas utilizando apenas a audição.\n- Dispositivos de escuta.\n- Criaturas cegas.\n- Seres que dependem principalmente da audição para localizar alvos.\n\n## Limitações\n\nOs bônus de Silêncio só ajudam quando a audição é relevante para detectar o personagem.\n\nEles não fornecem benefícios contra:\n\n- Observação visual.\n- Radar.\n- Sonar.\n- Sentido de Vibração.\n- Rastreamento por cheiro.\n- Outros sentidos especiais.\n\nSe o observador estiver usando principalmente a visão ou outro sentido que não a audição, Silêncio não concede vantagem.\n\n## Exemplo\n\nUm personagem com Silêncio 3 recebe:\n\n- +6 em Furtividade quando permanece imóvel.\n- +3 em Furtividade quando se desloca.\n\nEsses bônus são considerados apenas para evitar detecção sonora.\n\nCusto: 5 pontos por nível."
+    "descricao": "O personagem consegue se mover, respirar e realizar ações sem produzir ruídos perceptíveis.\n\nCada nível de Silêncio concede bônus em testes de Furtividade relacionados à detecção auditiva.\n\n## Benefícios\n\n| Situação | Bônus por Nível |\n|---|---|\n| Imóvel | +2 |\n| Em movimento | +1 |\n\nOs bônus se aplicam mesmo quando o personagem está utilizando armaduras ou equipamentos que normalmente produziriam ruído.\n\n## Aplicações\n\nSilêncio é especialmente útil contra:\n\n- Oponentes na escuridão.\n- Guardas utilizando apenas a audição.\n- Dispositivos de escuta.\n- Criaturas cegas.\n- Seres que dependem principalmente da audição para localizar alvos.\n\n## Limitações\n\nOs bônus de Silêncio só ajudam quando a audição é relevante para detectar o personagem.\n\nEles não fornecem benefícios contra:\n\n- Observação visual.\n- Radar.\n- Sonar.\n- Sentido de Vibração.\n- Rastreamento por cheiro.\n- Outros sentidos especiais.\n\nSe o observador estiver usando principalmente a visão ou outro sentido que não a audição, Silêncio não concede vantagem.\n\n## Exemplo\n\nUm personagem com Silêncio 3 recebe:\n\n- +6 em Furtividade quando permanece imóvel.\n- +3 em Furtividade quando se desloca.\n\nEsses bônus são considerados apenas para evitar detecção sonora.\n\nCusto: 5 pontos por nível.",
+    "efeitos": [
+      {
+        "tipo": "pericia",
+        "alvo": "Furtividade",
+        "valor": 2,
+        "porNivel": true,
+        "condicao": "imóvel"
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Furtividade",
+        "valor": 1,
+        "porNivel": true,
+        "condicao": "em movimento"
+      }
+    ]
   },
   {
     "id": "sonda_mental",
@@ -5139,7 +5179,15 @@
     "tags": [
       "social"
     ],
-    "descricao": "Voz que se destaca; +3 em testes de Audição para ser ouvido, +1 em Intimidação se surpreender com um berro. 1 ponto. (pág. 101)"
+    "descricao": "Voz que se destaca; +3 em testes de Audição para ser ouvido, +1 em Intimidação se surpreender com um berro. 1 ponto. (pág. 101)",
+    "efeitos": [
+      {
+        "tipo": "pericia",
+        "alvo": "Intimidação",
+        "valor": 1,
+        "condicao": "ao surpreender com um berro"
+      }
+    ]
   },
   {
     "id": "xeno_adaptabilidade",

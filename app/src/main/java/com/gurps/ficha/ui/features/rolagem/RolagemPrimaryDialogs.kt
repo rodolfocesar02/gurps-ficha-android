@@ -143,6 +143,9 @@ fun RolagemPericiasDialog(
 ) {
     val defenseNumberStyle = MaterialTheme.typography.headlineMedium
     val compactLabelStyle = MaterialTheme.typography.labelSmall
+    // Bonus condicionais marcados, por id de pericia. Zerado ao fechar o
+    // dialogo: a condicao vale para AQUELA rolagem, nao para sempre.
+    val condicionaisMarcados = remember { mutableStateMapOf<String, Set<Int>>() }
 
     Dialog(
         onDismissRequest = onDismiss,
@@ -240,6 +243,17 @@ fun RolagemPericiasDialog(
                                                     personagem = p,
                                                     nomeDaPericia = pericia.nome
                                                 )
+                                                val condicionais = com.gurps.ficha.domain.rules.traits
+                                                    .TraitRuleRegistry.getBonusCondicionais(p, pericia.nome)
+                                                PainelBonusCondicional(
+                                                    bonus = condicionais,
+                                                    marcados = condicionaisMarcados[pericia.id].orEmpty(),
+                                                    onAlternar = { idx ->
+                                                        val atual = condicionaisMarcados[pericia.id].orEmpty()
+                                                        condicionaisMarcados[pericia.id] =
+                                                            if (idx in atual) atual - idx else atual + idx
+                                                    }
+                                                )
                                             }
                                         }
                                         Text(
@@ -276,7 +290,16 @@ fun RolagemPericiasDialog(
                                                     contentDescription = "Rolar perícia ${pericia.nome} com nível ${pericia.target}"
                                                 }
                                                 .clickable {
-                                                    onExecutarRolagem(pericia.contextLabel, pericia.target, modPericia)
+                                                    // Os condicionais MARCADOS entram como modificador
+                                                    // desta rolagem -- nunca no NH da ficha.
+                                                    val extraCond = personagem?.let { p ->
+                                                        somaDosMarcados(
+                                                            com.gurps.ficha.domain.rules.traits.TraitRuleRegistry
+                                                                .getBonusCondicionais(p, pericia.nome),
+                                                            condicionaisMarcados[pericia.id].orEmpty()
+                                                        )
+                                                    } ?: 0
+                                                    onExecutarRolagem(pericia.contextLabel, pericia.target, modPericia + extraCond)
                                                     onDismiss()
                                                 },
                                             style = defenseNumberStyle,

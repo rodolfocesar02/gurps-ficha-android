@@ -81,6 +81,17 @@ interface TraitRule {
     ): Map<String, Int> = emptyMap()
 
     /**
+     * Bônus que só valem em certas situações ("ao tentar parecer honesto").
+     *
+     * Ficam FORA do NH base de propósito: somá-los sempre inflaria a ficha e
+     * mentiria sobre o personagem. Viram opção marcável na hora de rolar.
+     */
+    fun getBonusCondicionais(
+        personagem: Personagem,
+        selection: TracoSelecionado
+    ): List<BonusCondicional> = emptyList()
+
+    /**
      * Bônus em atributo ou característica secundária (GANCHO-A).
      *
      * ⚠️ NUNCA leia aqui o atributo que este método modifica: `Personagem.pontosVida`
