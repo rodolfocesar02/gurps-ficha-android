@@ -5031,3 +5031,12 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - **Sobre "editar o PV para 5 não disparou"**: não achei defeito nesse caminho e o teste do limiar passa. A hipótese é que a queda tenha sido por toques de −1 — nesse caso **não disparar é o certo**, porque o livro fala de metade do PV num **único golpe**. Vale reconferir usando o campo de edição.
 - **Status:** ✅ Build OK nas 2 variantes · gate **1257/0** · ⏭️ reconferir no aparelho: PV negativo e o teste de morte.
 
+### Auditoria de TalkBack + desacoplamento da Saga — 28 de Julho de 2026 (commits 2897b3ca, 9d68de5d, versão 2.9-A11Y)
+- **Pergunta do usuário: "tudo rotulado pra TalkBack?"** A resposta honesta era *quase*.
+  - **Estava certo**: os cards e linhas de rolagem (marcos de PV, testes de resistência, reação, autocontrole, aviso do teto de HT). `Row.clickable` funde os filhos e vira **um** ponto de parada, com número e motivo juntos.
+  - 🔴 **Estava errado em 4 lugares — as caixinhas.** `Checkbox` com `onCheckedChange` preenchido é clicável por conta própria e **não se funde ao pai**: virava um **segundo** ponto de parada, sem rótulo nenhum. Quem navega por toque ouvia a descrição, arrastava o dedo, e ouvia *"caixa de seleção, não marcada"* sozinha. E a linha era anunciada como botão, sem dizer se estava marcada. Atingia ST Braçal, DX Braçal, mão hábil/inábil e os bônus condicionais de perícia e reação — **esses últimos desde o Lote V-5**, e passaram no teste de aparelho porque na variante visual nada muda.
+  - **Conserto**: `Modifier.linhaAlternavel` em `UiA11y.kt` — `toggleable` com papel de caixa de seleção na linha, e o `Checkbox` só como desenho.
+  - **E um eco que eu mesmo criei**: com o papel de checkbox o TalkBack já anuncia o estado; minhas descrições diziam "Ativado."/"Marcado." e podiam **contradizer** o estado real. Removido dos três rótulos, com `RotulosAcessiveisTest` travando a convenção. Esse teste existe porque o eco é **invisível para quem não usa leitor de tela**.
+- **Aba Saga desligada do APK** (`9d68de5d`, alteração do usuário): `HABILITAR_ABA_SAGA = false`. Conferido antes de commitar — a flag tem um único consumidor, e o gate passa inteiro nas duas variantes com a aba fora. **Nada do código da Saga era pré-requisito da ficha**, o que mostra que a separação está limpa. É o primeiro passo concreto do desacoplamento em dois apps.
+- **Status:** ✅ Build OK nas 2 variantes · gate **1263/0** · ⏭️ pendente no aparelho: PV negativo, teste de morte, teste de consciência persistente, e a navegação por toque nas caixinhas.
+
