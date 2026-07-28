@@ -57,21 +57,52 @@ object StEspecializadaRules {
     fun temAlguma(personagem: Personagem): Boolean =
         bonusDeGolpe(personagem) > 0 || bonusDeLevantamento(personagem) > 0
 
+    /** Se a ficha tem ST de Levantamento — o seletor só aparece então. */
+    fun temLevantamento(personagem: Personagem): Boolean = bonusDeLevantamento(personagem) > 0
+
     /**
-     * A linha que a tela mostra, ou null quando não há o que dizer.
+     * A linha automática da tela: só a **ST de Golpe**.
      *
-     * Existe porque o dano sobe sozinho e nada explicaria por quê — o mesmo
-     * motivo da notinha de origem das perícias (Lote NOTA-1).
+     * Ela não tem seletor porque vale para todo dano, sempre. A linha existe
+     * porque o dano subiria sozinho e nada explicaria por quê — o mesmo motivo
+     * da notinha de origem das perícias (Lote NOTA-1).
+     *
+     * A ST de Levantamento saiu daqui: ela **tem** seletor, ver [rotuloLevantamento].
      */
     fun resumo(personagem: Personagem): String? {
-        val partes = buildList {
-            val golpe = bonusDeGolpe(personagem)
-            if (golpe > 0) add("ST de Golpe +$golpe (dano usa ST ${stParaDano(personagem)})")
-            val carga = bonusDeLevantamento(personagem)
-            if (carga > 0) add("ST de Levantamento +$carga (carga usa ST ${stParaCarga(personagem)})")
-        }
-        return partes.joinToString(" · ").ifBlank { null }
+        val golpe = bonusDeGolpe(personagem)
+        if (golpe <= 0) return null
+        return "ST de Golpe +$golpe (dano usa ST ${stParaDano(personagem)})"
     }
+
+    /**
+     * Rótulo do seletor de **ST de Levantamento**.
+     *
+     * ## Por que ela ganhou seletor e a de Golpe não
+     *
+     * A Base de Carga sempre usa a ST aumentada — isso é automático e não pede
+     * confirmação. Mas o livro lista mais dez usos que são **testes de ST**:
+     * erguer, empurrar, puxar, rebocar, forçar portas, dobrar barras, aplicar
+     * pressão contínua, agarrar, estrangular.
+     *
+     * Nesses o app não tem como saber a intenção: rolar ST para arrombar uma
+     * porta recebe o bônus; rolar ST para não ser derrubado, não. Quem sabe é o
+     * jogador, na hora — mesma decisão da ST Braçal.
+     */
+    fun rotuloLevantamento(personagem: Personagem): String =
+        "ST de Levantamento +${bonusDeLevantamento(personagem)} " +
+            "(erguer, empurrar, forçar: ST ${stParaCarga(personagem)})"
+
+    /**
+     * O mesmo, para o TalkBack.
+     *
+     * ⚠️ Não diz se está marcado — quem anuncia o estado é o leitor de tela.
+     * Ver `UiA11y.linhaAlternavel`.
+     */
+    fun rotuloAcessivelLevantamento(personagem: Personagem): String =
+        "ST de Levantamento, mais ${bonusDeLevantamento(personagem)}. " +
+            "Rolar com ST ${stParaCarga(personagem)}. Vale para erguer, empurrar, " +
+            "puxar, forçar portas e agarrar. A Base de Carga já usa esta força sempre."
 
     private fun somaDe(personagem: Personagem, id: String): Int =
         personagem.vantagens

@@ -58,6 +58,8 @@ fun PainelAtributosEStatus(
     onAlternarStBracal: () -> Unit,
     dxBracalAtivo: Boolean,
     onAlternarDxBracal: () -> Unit,
+    stLevantamentoAtivo: Boolean,
+    onAlternarStLevantamento: () -> Unit,
     onRolarAtributo: (atributo: String, valor: Int, mod: Int) -> Unit,
     onEditPv: () -> Unit,
     onEditPf: () -> Unit,
@@ -92,6 +94,9 @@ fun PainelAtributosEStatus(
                 innerCardVerticalPadding = innerCardVerticalPadding,
                 bonusStBracal = if (stBracalAtivo) StBracalRules.bonusDe(personagem) else 0,
                 bonusDxBracal = if (dxBracalAtivo) DxBracalRules.bonusDe(personagem) else 0,
+                bonusStLevantamento = if (stLevantamentoAtivo) {
+                    StEspecializadaRules.bonusDeLevantamento(personagem)
+                } else 0,
                 onExecutarRolagem = onRolarAtributo
             )
 
@@ -108,7 +113,13 @@ fun PainelAtributosEStatus(
                 onAlternar = onAlternarDxBracal
             )
 
-            // ST de Golpe / Levantamento: sem caixinha, porque valem sempre.
+            PainelStLevantamento(
+                personagem = personagem,
+                ativo = stLevantamentoAtivo,
+                onAlternar = onAlternarStLevantamento
+            )
+
+            // ST de Golpe: sem caixinha, porque vale para TODO dano, sempre.
             // A linha existe só para o número não mudar sozinho sem explicação.
             StEspecializadaRules.resumo(personagem)?.let { texto ->
                 Text(
@@ -219,6 +230,49 @@ fun PainelDxBracal(
         Checkbox(checked = ativo, onCheckedChange = null)
         Text(
             DxBracalRules.rotulo(personagem),
+            style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.outline,
+            modifier = Modifier.padding(start = 2.dp)
+        )
+    }
+}
+
+/**
+ * Seletor da **ST de Levantamento** (MB p.65).
+ *
+ * A Base de Carga já usa a força aumentada **sempre** — isso é automático e não
+ * aparece aqui. O que este seletor cobre são os outros dez usos que o livro
+ * lista e que são **testes de ST**: erguer, empurrar, puxar, rebocar, forçar
+ * portas, dobrar barras, pressão contínua, agarrar, estrangular.
+ *
+ * Nesses o app não tem como saber a intenção: rolar ST para arrombar uma porta
+ * recebe o bônus; rolar ST para não ser derrubado, não. Mesma decisão da ST
+ * Braçal.
+ *
+ * **Não renderiza nada** sem a vantagem na ficha.
+ */
+@Composable
+fun PainelStLevantamento(
+    personagem: Personagem,
+    ativo: Boolean,
+    onAlternar: () -> Unit
+) {
+    if (!StEspecializadaRules.temLevantamento(personagem)) return
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .heightIn(max = 32.dp)
+            .linhaAlternavel(
+                marcado = ativo,
+                descricao = StEspecializadaRules.rotuloAcessivelLevantamento(personagem),
+                onAlternar = onAlternar
+            ),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Checkbox(checked = ativo, onCheckedChange = null)
+        Text(
+            StEspecializadaRules.rotuloLevantamento(personagem),
             style = MaterialTheme.typography.labelSmall,
             color = MaterialTheme.colorScheme.outline,
             modifier = Modifier.padding(start = 2.dp)

@@ -76,12 +76,15 @@ fun AtributosQuickRollPanel(
     innerCardVerticalPadding: androidx.compose.ui.unit.Dp,
     bonusStBracal: Int = 0,
     bonusDxBracal: Int = 0,
+    bonusStLevantamento: Int = 0,
     onExecutarRolagem: (String, Int, Int) -> Unit
 ) {
     // Braçais ligadas: o atributo rolado passa a ser o dos braços. Cada uma
     // mexe SÓ no seu (MB p.89 e p.56) -- a ST Braçal nunca toca a DX e vice-versa.
     fun valorDe(attr: String): Int = personagem.getAtributo(attr) + when (attr) {
-        "ST" -> bonusStBracal
+        // ST Bracal e ST de Levantamento SOMAM: sao vantagens diferentes, e
+        // erguer com os bracos usa as duas.
+        "ST" -> bonusStBracal + bonusStLevantamento
         "DX" -> bonusDxBracal
         else -> 0
     }

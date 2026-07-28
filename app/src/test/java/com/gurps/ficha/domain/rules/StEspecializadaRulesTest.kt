@@ -134,11 +134,42 @@ class StEspecializadaRulesTest {
     }
 
     @Test
-    fun `o resumo diz o numero FINAL, nao so o bonus`() {
-        // "+3" sozinho nao diz contra o que; quem le no meio da mesa nao faz a
-        // conta. Mesma regra do rotulo da ST Bracal.
+    fun `o resumo automatico e SO da ST de Golpe`() {
+        // A de Levantamento saiu do resumo porque ganhou SELETOR: a Base de Carga
+        // e automatica, mas os testes de ST (erguer, forcar porta, agarrar)
+        // dependem da intencao, e so o jogador sabe.
         val texto = StEspecializadaRules.resumo(heroi(golpe = 3, levantamento = 5))!!
         assertTrue(texto, texto.contains("+3") && texto.contains("13"))
+        assertTrue("Levantamento nao entra no resumo", !texto.contains("Levantamento"))
+    }
+
+    @Test
+    fun `so com ST de Levantamento nao ha resumo automatico`() {
+        assertEquals(null, StEspecializadaRules.resumo(heroi(levantamento = 5)))
+    }
+
+    // --- o seletor de Levantamento (os testes de ST) ---
+
+    @Test
+    fun `o seletor so aparece com a vantagem na ficha`() {
+        assertTrue(!StEspecializadaRules.temLevantamento(semNada))
+        assertTrue(StEspecializadaRules.temLevantamento(heroi(levantamento = 1)))
+    }
+
+    @Test
+    fun `o rotulo do seletor diz o numero final e os usos`() {
+        val texto = StEspecializadaRules.rotuloLevantamento(heroi(levantamento = 5))
         assertTrue(texto, texto.contains("+5") && texto.contains("15"))
+        assertTrue("precisa dizer para que serve", texto.contains("erguer"))
+    }
+
+    @Test
+    fun `a descricao acessivel avisa que a carga ja e automatica`() {
+        // Senao o jogador acha que precisa marcar a caixinha para a Base de
+        // Carga valer -- e ela vale sempre.
+        val d = StEspecializadaRules.rotuloAcessivelLevantamento(heroi(levantamento = 5))
+        assertTrue(d, d.contains("Base de Carga"))
+        assertTrue(d, d.contains("sempre"))
+        assertTrue("nao pode repetir o estado", !d.lowercase().contains("marcad"))
     }
 }

@@ -170,6 +170,10 @@ fun TabRolagem(viewModel: FichaViewModel) {
     // combate, entao ela nao entra em NH nenhum -- nem no dano, nem no ataque.
     var dxBracalAtivo by remember { mutableStateOf(false) }
 
+    // ST de Levantamento: a Base de Carga ja usa sempre; o seletor cobre os
+    // TESTES DE ST (erguer, forcar porta, agarrar). MB p.65.
+    var stLevantamentoAtivo by remember { mutableStateOf(false) }
+
     val fontesDano = remember(armas, p.vantagens, viewModel.ataqueSelecionadoId, bonusStBracal) {
         val list = mutableListOf<DamageSourceOption>()
         list.add(DamageSourceOption(id = "st_base", label = "Dano ST", contextLabel = "Dano ST", damageExpression = ""))
@@ -624,6 +628,8 @@ fun TabRolagem(viewModel: FichaViewModel) {
             onAlternarStBracal = { stBracalAtivo = !stBracalAtivo },
             dxBracalAtivo = dxBracalAtivo,
             onAlternarDxBracal = { dxBracalAtivo = !dxBracalAtivo },
+            stLevantamentoAtivo = stLevantamentoAtivo,
+            onAlternarStLevantamento = { stLevantamentoAtivo = !stLevantamentoAtivo },
             onRolarAtributo = { attr, valor, modAttr ->
                 if (attr == "PER") {
                     // Lote 372: PER abre o diálogo de Testes de Sentidos.
