@@ -4941,3 +4941,19 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
   - **O padrão:** o campo `efeitos` cobre bem *"+N em X"*. Quando o efeito muda **como** uma regra funciona, ele é código. Forçá-lo no JSON produziria declaração que **mente** sobre o que o app faz.
 - **Pendente por decisão do usuário:** NOTA-2 (nota de origem do bônus em Armas e Itens — a de Perícias já está pronta desde o NOTA-1), registrada como lote 4.6 em `docs/pendencias/Revisao_Abas_e_Navegacao.md`.
 - **Status:** ✅ Build OK nas 2 variantes · gate **1140/0** (+32 testes na fase) · ⏭️ **PENDENTE: teste no aparelho** — roteiro entregue ao usuário em 27/07.
+
+### Lote AUTOM-5 — 28 de Julho de 2026 (commits 91993a8d, 8c710360, e34b2dcd)
+**Correções vindas do teste no aparelho: reação condicional, ST Braçal e limpeza dos cards (branch GURPS-Saga)**
+- **REACAO-2** (`91993a8d`): com Carisma +2 e Voz Melodiosa na ficha, o card mostrava só `+2` e a Voz Melodiosa aparecia apenas **no resultado da rolagem** — o jogador não tinha como escolher se ela valia. Agora o modificador condicional vira **caixinha**, igual ao Rosto Sincero das perícias.
+  - Detalhe de layout que quase passou: só o **cabeçalho** do card rola. Antes a coluna inteira era clicável, e marcar uma condição dispararia a rolagem junto.
+  - `temAlgumModificador` existe para a ficha que **só** tem traço condicional não ficar sem painel nenhum — era exatamente o caso da ficha de teste.
+  - Limpeza pedida pelo usuário: fora a linha da tabela 3d6 no card de Reação e a explicação do NA no de Autocontrole; espaçamento de 6dp para 1dp. A explicação do NA continua no TalkBack, onde não ocupa espaço.
+- **STB-1** (`8c710360`): **erro de regra** encontrado pelo usuário. O app tratava ST Braçal como custo de ESCOLHA — três botões (3, 5 ou 8 pts) e pronto. O livro (MB p.89) diz outra coisa: esses números são o preço de **cada +1**, e o que muda entre eles é **quantos braços** recebem o aumento. O exemplo do próprio livro — ST Braçal +4 nos dois braços — custa 5 × 4 = **20 pontos**; a ficha cobrava 5. E não havia nem onde dizer quantos níveis: o jogador pagava um e levava quantos quisesse. DX Braçal (p.56) tinha o mesmo defeito.
+  - Viraram **classe Kotlin**, não `efeitos` no JSON: o preço depende de **duas** escolhas do jogador (braços × níveis). É regra, não dado — o mesmo critério que descartou V-6, V-7/D-5 e D-6. Os `efeitos` declarados saíram do catálogo, porque Kotlin vence JSON e manter os dois faria o JSON ser ignorado em silêncio.
+  - `CharacterRules.aplicarModificadoresPercentuais` foi extraído para as duas regras reusarem — o livro manda aplicar à ST Braçal as mesmas limitações da ST normal, e uma regra que devolve `calculateCost` pula o cálculo padrão.
+  - **Teto de linhas**: `VantagemDialogs.kt` chegou a 1.031 com o bloco novo; `EditarVantagemDialog` mudou de arquivo (`VantagemEditarDialog.kt`) e o original voltou a 696.
+- **STB-2** (`e34b2dcd`): até aqui a ST Braçal era **só custo** — o app cobrava os pontos e não fazia nada com eles. Agora tem seletor logo abaixo do ST na aba Rolagem e, marcado, muda o **ST rolado**, o **Dano ST** (GdP e GeB) e as **armas empunhadas**.
+  - É caixinha e não número somado ao ST porque o livro é explícito: vale para erguer, arremessar e atacar com os braços, e **não** vale para PV, Base de Carga nem esforço do corpo inteiro. Somar no ST daria força de sobra para chutar e aumentaria os PV — justamente o que a regra proíbe.
+  - Fora do escopo de propósito: o **combate tático** continua usando a ST do corpo. Lá a escolha teria de ser por ataque, não um botão da ficha.
+- **Status:** ✅ Build OK nas 2 variantes · gate **1156/0** (+16 testes) · ⏭️ **PENDENTE: teste no aparelho** — roteiro atualizado em `docs/pendencias/Roteiro_Teste_Aparelho_AUTOM.md` (T6 e T7).
+
