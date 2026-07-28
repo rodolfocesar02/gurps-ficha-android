@@ -67,19 +67,45 @@ def nomes_de_pericia():
 
 
 def ids_com_regra_kotlin():
-    """Ids registrados no TraitRuleRegistry.init -- a classe Kotlin vence o JSON."""
+    """Ids registrados no TraitRuleRegistry.init -- a classe Kotlin vence o JSON.
+
+    Varre a PASTA inteira em vez de supor um arquivo por classe: `StBracalRule`
+    e `DxBracalRule` moram juntas em `BracalCustoRules.kt`, e o mapeamento
+    classe->arquivo as perdia em silencio -- justamente o tipo de falha
+    invisivel que este validador existe para evitar.
+
+    Aceita as duas formas de declarar o id:
+        override val traitId: String = "pendulear"
+        override val traitId: String = ID   (com `const val ID = "st_bracal"`)
+    """
     if not os.path.exists(REGISTRY):
         return set()
-    fonte = open(REGISTRY, encoding="utf-8").read()
-    classes = re.findall(r"register\((\w+)\(\)\)", fonte)
-    ids = set()
+    classes = set(re.findall(r"register\((\w+)\(\)\)", open(REGISTRY, encoding="utf-8").read()))
+    if not classes:
+        return set()
+
     pasta = os.path.dirname(REGISTRY)
-    for classe in classes:
-        arq = os.path.join(pasta, f"{classe}.kt")
-        if os.path.exists(arq):
-            m = re.search(r'traitId[^=]*=\s*"([^"]+)"', open(arq, encoding="utf-8").read())
+    ids = set()
+    for nome in os.listdir(pasta):
+        if not nome.endswith(".kt"):
+            continue
+        fonte = open(os.path.join(pasta, nome), encoding="utf-8").read()
+        # Corta o arquivo em blocos por declaracao de classe, para nao atribuir
+        # o traitId de uma classe a outra que more no mesmo arquivo.
+        partes = re.split(r"\n(?=(?:open |abstract )?class\s+\w+)", fonte)
+        for parte in partes:
+            m_classe = re.search(r"class\s+(\w+)", parte)
+            if not m_classe or m_classe.group(1) not in classes:
+                continue
+            m = re.search(r'traitId[^=]*=\s*"([^"]+)"', parte)
             if m:
                 ids.add(m.group(1))
+                continue
+            # traitId = ID -> procurar a constante no mesmo bloco
+            if re.search(r"traitId[^=]*=\s*ID\b", parte):
+                m_const = re.search(r'const val ID\s*=\s*"([^"]+)"', parte)
+                if m_const:
+                    ids.add(m_const.group(1))
     return ids
 
 

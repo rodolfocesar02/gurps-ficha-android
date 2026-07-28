@@ -1122,7 +1122,15 @@
       "fisica",
       "magica"
     ],
-    "descricao": "O personagem carrega uma aura sobre natural de morte. A grama sob as suas pega das morre e nunca mais cresce naquele local, plantas maiores murcham comple tamente diante de sua presença e os inse tos e outras criaturas pequenas morrem se ficarem a menos de um metro dele. Essa aura não surte efeito sobre animais que pesam alguns quilos, plantas grandes como árvores (embora suas folhas mais próximas morram — e uma árvore que se encontra num caminho diário acabará sendo afetada após alguns anos), formas de vida comuns controladas por meios sobrenaturais (ex. : enxames conjurados por magia) ou enti dades sobrenaturais de qualquer espécie. Esta desvantagem impõe uma penalidade de -2 nos testes de reação feitos por qualquer pessoa capaz de perceber a devastação causada pelo personagem. Se esta característica se originar de poderes demoníacos, vampirismo, etc. , os observa dores recebem um bônus de +2 em todos os testes para descobrir o segredo do personagem. Esta desvantagem dificulta também a realização de atos furtivos ou"
+    "descricao": "O personagem carrega uma aura sobre natural de morte. A grama sob as suas pega das morre e nunca mais cresce naquele local, plantas maiores murcham comple tamente diante de sua presença e os inse tos e outras criaturas pequenas morrem se ficarem a menos de um metro dele. Essa aura não surte efeito sobre animais que pesam alguns quilos, plantas grandes como árvores (embora suas folhas mais próximas morram — e uma árvore que se encontra num caminho diário acabará sendo afetada após alguns anos), formas de vida comuns controladas por meios sobrenaturais (ex. : enxames conjurados por magia) ou enti dades sobrenaturais de qualquer espécie. Esta desvantagem impõe uma penalidade de -2 nos testes de reação feitos por qualquer pessoa capaz de perceber a devastação causada pelo personagem. Se esta característica se originar de poderes demoníacos, vampirismo, etc. , os observa dores recebem um bônus de +2 em todos os testes para descobrir o segredo do personagem. Esta desvantagem dificulta também a realização de atos furtivos ou",
+    "efeitos": [
+      {
+        "tipo": "pericia",
+        "alvo": "reacao",
+        "valor": -2,
+        "condicao": "de quem percebe a devastação que você causa"
+      }
+    ]
   },
   {
     "id": "dever",

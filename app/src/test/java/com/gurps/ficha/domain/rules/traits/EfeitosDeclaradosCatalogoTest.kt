@@ -145,6 +145,43 @@ class EfeitosDeclaradosCatalogoTest {
     }
 
     @Test
+    fun `Reconhecimento Social soma por nivel na reacao, sem condicao`() {
+        // Lote REACAO-3. MB p.81: "5 pontos para cada bonus de +1 nos testes de
+        // reacao". Nao tem "quando" no livro -- e o jeito como a sociedade
+        // recebe o personagem, entao entra direto no total, igual ao Carisma.
+        val traco = tracosComEfeitos().firstOrNull { it.id == "reconhecimento_social" }
+        assertTrue("reconhecimento_social deveria estar declarado", traco != null)
+
+        val efeito = traco!!.efeitos.single()
+        assertEquals("reacao", efeito.alvo)
+        assertTrue("precisa ser por nivel", efeito.porNivel)
+        assertTrue("nao pode ser condicional", !efeito.ehCondicional)
+        assertEquals(3, efeito.valorPara(nivel = 3))
+    }
+
+    @Test
+    fun `modificador de reacao com publico especifico e CONDICIONAL`() {
+        // A armadilha do lote: o livro quase sempre diz de QUEM vem o bonus
+        // ("de correligionarios", "de criaturas Illuminati"). Somar sempre
+        // daria bonus contra qualquer um -- inclusive contra quem o traco nao
+        // alcanca. Estes PRECISAM ter condicao para virar caixinha na tela.
+        val comPublico = setOf(
+            "camaleao_social", "clericato", "iluminado",
+            "por_dentro_da_moda", "reivindicar_hospitalidade", "destruidor_da_vida"
+        )
+        val erros = tracosComEfeitos()
+            .filter { it.id in comPublico }
+            .flatMap { traco ->
+                traco.efeitos.filter { it.alvo == "reacao" && !it.ehCondicional }
+                    .map { "${traco.nome} [${traco.id}] -> reacao sem condicao" }
+            }
+        assertTrue(erros.joinToString("\n"), erros.isEmpty())
+        // E todos precisam estar declarados de fato.
+        val declarados = tracosComEfeitos().map { it.id }.toSet()
+        assertEquals(emptySet<String>(), comPublico - declarados)
+    }
+
+    @Test
     fun `Voz Melodiosa entrega bonus em varias pericias sociais`() {
         val voz = tracosComEfeitos().firstOrNull { it.id == "voz_melodiosa" }
         assertTrue("voz_melodiosa deveria estar declarada", voz != null)

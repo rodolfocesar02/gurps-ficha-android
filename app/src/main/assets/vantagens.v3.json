@@ -1006,7 +1006,15 @@
     "tags": [
       "social"
     ],
-    "descricao": "O personagem sabe exatamente quando e o que dizer a pessoas consideradas socialmente superiores a ele. Isso o isenta de penalidades de reação impostos pelas diferenças em Hierarquia ou Status. Em situações em que essas penalidades não seriam necessárias, o personagem recebe um bônus de +1 nos testes de reação de pessoas que exigem respeito (sacerdotes, reis, etc.). Esta é uma vantagem cinematográfica."
+    "descricao": "O personagem sabe exatamente quando e o que dizer a pessoas consideradas socialmente superiores a ele. Isso o isenta de penalidades de reação impostos pelas diferenças em Hierarquia ou Status. Em situações em que essas penalidades não seriam necessárias, o personagem recebe um bônus de +1 nos testes de reação de pessoas que exigem respeito (sacerdotes, reis, etc.). Esta é uma vantagem cinematográfica.",
+    "efeitos": [
+      {
+        "tipo": "pericia",
+        "alvo": "reacao",
+        "valor": 1,
+        "condicao": "de quem exige respeito (sacerdotes, reis)"
+      }
+    ]
   },
   {
     "id": "caminhar_no_ar",
@@ -1132,7 +1140,15 @@
     "rawCost": "5",
     "specialRule": null,
     "tags": [],
-    "descricao": "O personagem foi ordenado sacerdote de alguma religião reconhecida. Um clérigo tem alguns poderes e privilégios que um leigo não tem, entre os quais estão a autoridade para presidir casamentos, funerais e outras cerimônias semelhantes. Isso concede ao personagem um bônus de +1 nos testes de reação de correligionários ou pessoas que respeitam sua fé. Outros indivíduos se dirigirão a ele (ou ela) usando um título: Padre, Irmã, Rabino, etc. Lembre-se que nem todos os clérigos são “bonzinhos”! Aka’Ar, alto sacerdote da seita profana de Set, também é um clérigo ordenado. As bênçãos que ele conceder aos casamentos que realizar serão tão significativas para seu rebanho quanto as de um vigário para religiões tradicionais. Além disso, se Set assim o desejar, Aka’Ar será capaz de realizar exorcismos tão poderosos quanto os realizados por um sacerdote cristão — ou mais, afinal Aka’Ar conhece como atuam os demônios… O Clericato tem uma natureza puramente social e não confere poderes milagrosos. Se o jogador desejar que o personagem tenha poderes divinos por procuração, adquira as vantagens Abençoado (pág. 35), Investidura de Poder (pág. 67) ou Fé Verdadeira (pág. 60). Clericato inclui Hierarquia Religiosa 0 (pág. 30). Se o jogador quiser que seu personagem tenha mais influência dentro da igreja, agora pode aumentar o nível à Hierarquia dele."
+    "descricao": "O personagem foi ordenado sacerdote de alguma religião reconhecida. Um clérigo tem alguns poderes e privilégios que um leigo não tem, entre os quais estão a autoridade para presidir casamentos, funerais e outras cerimônias semelhantes. Isso concede ao personagem um bônus de +1 nos testes de reação de correligionários ou pessoas que respeitam sua fé. Outros indivíduos se dirigirão a ele (ou ela) usando um título: Padre, Irmã, Rabino, etc. Lembre-se que nem todos os clérigos são “bonzinhos”! Aka’Ar, alto sacerdote da seita profana de Set, também é um clérigo ordenado. As bênçãos que ele conceder aos casamentos que realizar serão tão significativas para seu rebanho quanto as de um vigário para religiões tradicionais. Além disso, se Set assim o desejar, Aka’Ar será capaz de realizar exorcismos tão poderosos quanto os realizados por um sacerdote cristão — ou mais, afinal Aka’Ar conhece como atuam os demônios… O Clericato tem uma natureza puramente social e não confere poderes milagrosos. Se o jogador desejar que o personagem tenha poderes divinos por procuração, adquira as vantagens Abençoado (pág. 35), Investidura de Poder (pág. 67) ou Fé Verdadeira (pág. 60). Clericato inclui Hierarquia Religiosa 0 (pág. 30). Se o jogador quiser que seu personagem tenha mais influência dentro da igreja, agora pode aumentar o nível à Hierarquia dele.",
+    "efeitos": [
+      {
+        "tipo": "pericia",
+        "alvo": "reacao",
+        "valor": 1,
+        "condicao": "de correligionários ou de quem respeita sua fé"
+      }
+    ]
   },
   {
     "id": "companheiro_animal",
@@ -2610,7 +2626,15 @@
     "rawCost": "15",
     "specialRule": null,
     "tags": [],
-    "descricao": "O personagem é um “Illuminatus” no sentido original da palavra — ele é iluminado.\n\nEle sabe intuitivamente o que está acontecendo ao seu redor.\n\nO personagem é capaz de reconhecer outros Illuminati imediatamente, sem chance de erro.\n\nAlém disso, sempre que o Mestre pedir um teste de perícias como Análise da Informação, Assuntos Atuais ou Conhecimento Oculto para descobrir se um determinado acontecimento estranho é realmente uma coincidência ou resultado de uma conspiração, o personagem sempre pode fazer um teste de IQ no lugar, utilizando o que for maior.\n\nPor último, ele é capaz de perceber criaturas sobrenaturais que estão ligadas a conspirações Illuminati existentes no cenário da campanha, a critério do Mestre, e de se comunicar com elas.\n\nIsso não concede ao personagem o poder de controlar essas criaturas, mas elas o reconhecem e o tratam com certo respeito.\n\nO personagem recebe um bônus de +3 nos testes de reação dessas criaturas.\n\nA única desvantagem é que outros Illuminati e criaturas espirituais também conseguem perceber a natureza Iluminada do personagem e nada pode ser feito em relação a isso, a não ser ficar escondido.\n\nEsta vantagem é mais apropriada a campanhas místicas ou fantásticas e pouco adequada a campanhas que envolvem conspirações mais “mundanas”.\n\nO Mestre deve decidir quem pode ou não possuir essa característica."
+    "descricao": "O personagem é um “Illuminatus” no sentido original da palavra — ele é iluminado.\n\nEle sabe intuitivamente o que está acontecendo ao seu redor.\n\nO personagem é capaz de reconhecer outros Illuminati imediatamente, sem chance de erro.\n\nAlém disso, sempre que o Mestre pedir um teste de perícias como Análise da Informação, Assuntos Atuais ou Conhecimento Oculto para descobrir se um determinado acontecimento estranho é realmente uma coincidência ou resultado de uma conspiração, o personagem sempre pode fazer um teste de IQ no lugar, utilizando o que for maior.\n\nPor último, ele é capaz de perceber criaturas sobrenaturais que estão ligadas a conspirações Illuminati existentes no cenário da campanha, a critério do Mestre, e de se comunicar com elas.\n\nIsso não concede ao personagem o poder de controlar essas criaturas, mas elas o reconhecem e o tratam com certo respeito.\n\nO personagem recebe um bônus de +3 nos testes de reação dessas criaturas.\n\nA única desvantagem é que outros Illuminati e criaturas espirituais também conseguem perceber a natureza Iluminada do personagem e nada pode ser feito em relação a isso, a não ser ficar escondido.\n\nEsta vantagem é mais apropriada a campanhas místicas ou fantásticas e pouco adequada a campanhas que envolvem conspirações mais “mundanas”.\n\nO Mestre deve decidir quem pode ou não possuir essa característica.",
+    "efeitos": [
+      {
+        "tipo": "pericia",
+        "alvo": "reacao",
+        "valor": 3,
+        "condicao": "de criaturas sobrenaturais ligadas aos Illuminati"
+      }
+    ]
   },
   {
     "id": "impossivel_de_matar",
@@ -3542,7 +3566,15 @@
     "rawCost": "5",
     "specialRule": null,
     "tags": [],
-    "descricao": "O visual do personagem está sempre um passo à frente da maioria das pessoas. Ele tem a capacidade de criar moda a partir de materiais baratos e comuns. O personagem recebe um bônus de +1 nos testes de reação em situações sociais quando tiver a chance de escolher sua roupa com antecedência. Ele também pode conceder para outra pessoa um bônus de +1 nos testes de reação quando criar um modelo para ela."
+    "descricao": "O visual do personagem está sempre um passo à frente da maioria das pessoas. Ele tem a capacidade de criar moda a partir de materiais baratos e comuns. O personagem recebe um bônus de +1 nos testes de reação em situações sociais quando tiver a chance de escolher sua roupa com antecedência. Ele também pode conceder para outra pessoa um bônus de +1 nos testes de reação quando criar um modelo para ela.",
+    "efeitos": [
+      {
+        "tipo": "pericia",
+        "alvo": "reacao",
+        "valor": 1,
+        "condicao": "em situação social, se pôde escolher a roupa antes"
+      }
+    ]
   },
   {
     "id": "possessao",
@@ -3694,7 +3726,15 @@
     "tags": [
       "social"
     ],
-    "descricao": "O personagem é membro de uma classe, raça, sexo ou outro grupo muito respeitado pela sociedade.\n\nPara ser considerada uma vantagem, essa condição precisa ser óbvia para qualquer pessoa que conheça o personagem.\n\nReconhecimento Social representa o oposto de Estigma Social (pág. 138).\n\nO pertencimento a um grupo social não pode conceder Reconhecimento Social e Estigma Social ao mesmo tempo.\n\nEsta vantagem custa 5 pontos para cada bônus de +1 nos testes de reação, até um máximo de +4.\n\nEla não é o mesmo que Reputação.\n\nO personagem é bem tratado pelo que ele é, e não por quem ele é.\n\nPense nisso como um “privilégio por associação”.\n\n## Tipos de Reconhecimento\n\n### Respeitado\n\nO personagem é recebido com deferência educada e servil, como se tivesse Status elevado, independentemente de seu status verdadeiro.\n\nAs interações sociais normalmente são confortáveis, embora o excesso de servilismo possa atrapalhar em algumas situações.\n\nExemplos:\n\n- Membro de uma casta sacerdotal.\n- Integrante de uma raça soberana.\n\n### Temido\n\nAs pessoas reagem ao personagem como se ele tivesse utilizado Intimidação (pág. 204).\n\nQuem gosta dele tende a apoiá-lo.\n\nQuem não gosta prefere evitar confronto.\n\nO personagem é tratado com respeito silencioso e cautela, mas raramente recebe amizade genuína.\n\nExemplos:\n\n- Um deus entre mortais.\n- Uma guerreira amazona.\n\n### Venerado\n\nMesmo desconhecidos reagem com profundo respeito.\n\nEles cedem lugar, deixam o personagem passar na frente e tratam suas palavras como sabedoria valiosa.\n\nTambém fazem esforço para protegê-lo de desconforto ou perigo, mesmo quando isso causa inconvenientes.\n\nExemplo:\n\n- Uma pessoa idosa em determinadas sociedades."
+    "descricao": "O personagem é membro de uma classe, raça, sexo ou outro grupo muito respeitado pela sociedade.\n\nPara ser considerada uma vantagem, essa condição precisa ser óbvia para qualquer pessoa que conheça o personagem.\n\nReconhecimento Social representa o oposto de Estigma Social (pág. 138).\n\nO pertencimento a um grupo social não pode conceder Reconhecimento Social e Estigma Social ao mesmo tempo.\n\nEsta vantagem custa 5 pontos para cada bônus de +1 nos testes de reação, até um máximo de +4.\n\nEla não é o mesmo que Reputação.\n\nO personagem é bem tratado pelo que ele é, e não por quem ele é.\n\nPense nisso como um “privilégio por associação”.\n\n## Tipos de Reconhecimento\n\n### Respeitado\n\nO personagem é recebido com deferência educada e servil, como se tivesse Status elevado, independentemente de seu status verdadeiro.\n\nAs interações sociais normalmente são confortáveis, embora o excesso de servilismo possa atrapalhar em algumas situações.\n\nExemplos:\n\n- Membro de uma casta sacerdotal.\n- Integrante de uma raça soberana.\n\n### Temido\n\nAs pessoas reagem ao personagem como se ele tivesse utilizado Intimidação (pág. 204).\n\nQuem gosta dele tende a apoiá-lo.\n\nQuem não gosta prefere evitar confronto.\n\nO personagem é tratado com respeito silencioso e cautela, mas raramente recebe amizade genuína.\n\nExemplos:\n\n- Um deus entre mortais.\n- Uma guerreira amazona.\n\n### Venerado\n\nMesmo desconhecidos reagem com profundo respeito.\n\nEles cedem lugar, deixam o personagem passar na frente e tratam suas palavras como sabedoria valiosa.\n\nTambém fazem esforço para protegê-lo de desconforto ou perigo, mesmo quando isso causa inconvenientes.\n\nExemplo:\n\n- Uma pessoa idosa em determinadas sociedades.",
+    "efeitos": [
+      {
+        "tipo": "pericia",
+        "alvo": "reacao",
+        "valor": 1,
+        "porNivel": true
+      }
+    ]
   },
   {
     "id": "recuperacao_acelerada",
@@ -3836,7 +3876,15 @@
     "rawCost": "1 a 10",
     "specialRule": null,
     "tags": [],
-    "descricao": "O personagem pertence a um grupo social que incentiva seus membros a ajudarem uns aos outros.\n\nQuando está longe de casa, ele pode recorrer a outros membros desse grupo para obter alimento, abrigo e auxílio básico.\n\nO custo em pontos depende do tamanho e da riqueza da organização.\n\n## Exemplos de Escala\n\n| Grupo | Custo |\n|---|---|\n| Um único amigo em outra cidade | 1 ponto |\n| Pequena família | 2 pontos |\n| Sociedade de mercadores ao longo de uma rota comercial importante | 5 pontos |\n| Grande aliança de indivíduos ricos, como todos os comerciantes do mundo | 10 pontos |\n\nNo local apropriado, encontrar membros do grupo normalmente exige um resultado de 14 ou menos após 1d-1 horas de busca.\n\nEncontrá-los aleatoriamente é mais difícil.\n\nNesse caso, a chance é 6 ou menos em meio a uma pequena multidão, desde que em um local apropriado.\n\nReivindicar Hospitalidade evita principalmente os custos e dificuldades comuns de viagem.\n\nDependendo da riqueza dos anfitriões, eles podem esperar presentes ou favores em troca.\n\nAlém disso, os membros do grupo:\n\n- Reagem amigavelmente entre si.\n- Concedem bônus de +3 nos testes de reação.\n- Podem fornecer informações.\n- Fazem apresentações sociais.\n- Às vezes realizam pequenos empréstimos.\n\nEm alguns casos, a ajuda pode se aproximar dos benefícios da vantagem Contatos (pág. 48).\n\nPara apoio mais poderoso ou constante, o personagem deve adquirir Aliados (pág. 35) ou Patrono (pág. 75).\n\nEsta vantagem funciona nos dois sentidos.\n\nQuando estiver em casa, o personagem deve oferecer a mesma hospitalidade que recebeu durante suas viagens.\n\nRecusar ajuda pode prejudicar sua reputação dentro do grupo e resultar na perda da vantagem."
+    "descricao": "O personagem pertence a um grupo social que incentiva seus membros a ajudarem uns aos outros.\n\nQuando está longe de casa, ele pode recorrer a outros membros desse grupo para obter alimento, abrigo e auxílio básico.\n\nO custo em pontos depende do tamanho e da riqueza da organização.\n\n## Exemplos de Escala\n\n| Grupo | Custo |\n|---|---|\n| Um único amigo em outra cidade | 1 ponto |\n| Pequena família | 2 pontos |\n| Sociedade de mercadores ao longo de uma rota comercial importante | 5 pontos |\n| Grande aliança de indivíduos ricos, como todos os comerciantes do mundo | 10 pontos |\n\nNo local apropriado, encontrar membros do grupo normalmente exige um resultado de 14 ou menos após 1d-1 horas de busca.\n\nEncontrá-los aleatoriamente é mais difícil.\n\nNesse caso, a chance é 6 ou menos em meio a uma pequena multidão, desde que em um local apropriado.\n\nReivindicar Hospitalidade evita principalmente os custos e dificuldades comuns de viagem.\n\nDependendo da riqueza dos anfitriões, eles podem esperar presentes ou favores em troca.\n\nAlém disso, os membros do grupo:\n\n- Reagem amigavelmente entre si.\n- Concedem bônus de +3 nos testes de reação.\n- Podem fornecer informações.\n- Fazem apresentações sociais.\n- Às vezes realizam pequenos empréstimos.\n\nEm alguns casos, a ajuda pode se aproximar dos benefícios da vantagem Contatos (pág. 48).\n\nPara apoio mais poderoso ou constante, o personagem deve adquirir Aliados (pág. 35) ou Patrono (pág. 75).\n\nEsta vantagem funciona nos dois sentidos.\n\nQuando estiver em casa, o personagem deve oferecer a mesma hospitalidade que recebeu durante suas viagens.\n\nRecusar ajuda pode prejudicar sua reputação dentro do grupo e resultar na perda da vantagem.",
+    "efeitos": [
+      {
+        "tipo": "pericia",
+        "alvo": "reacao",
+        "valor": 3,
+        "condicao": "de membros do seu grupo"
+      }
+    ]
   },
   {
     "id": "renda_propria",
