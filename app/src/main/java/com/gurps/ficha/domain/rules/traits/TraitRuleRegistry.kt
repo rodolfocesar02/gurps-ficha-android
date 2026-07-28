@@ -110,6 +110,26 @@ object TraitRuleRegistry {
             if (valor != 0) OrigemDeBonus(selection.nome, valor) else null
         }
 
+    /**
+     * As origens do bônus de dano por dado, em vez do total somado.
+     *
+     * Irmã de [getSkillBonusOrigens], para a arma poder EXPLICAR o número: sem
+     * isto a Faca passa de `1d-3` para `2d-1` e nada na tela diz que foi o
+     * Mestre de Armas. Automação que o jogador não consegue conferir é caixa
+     * preta — foi a decisão C6 do plano, aplicada agora às armas (Lote NOTA-2).
+     */
+    fun getDamageBonusOrigens(
+        personagem: Personagem,
+        periciaId: String?,
+        weaponName: String? = null,
+        armaGrupo: String? = null
+    ): List<OrigemDeBonus> =
+        todosOsTracos(personagem).mapNotNull { selection ->
+            val valor = getRuleFor(selection.definicaoId)
+                ?.getDamageBonusPerDie(personagem, selection, periciaId, weaponName, armaGrupo) ?: 0
+            if (valor != 0) OrigemDeBonus(selection.nome, valor) else null
+        }
+
     fun getSkillBonus(personagem: Personagem, skillName: String): Int {
         var total = 0
         todosOsTracos(personagem).forEach { selection ->

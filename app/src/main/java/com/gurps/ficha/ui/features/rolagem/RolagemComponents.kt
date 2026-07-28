@@ -341,7 +341,10 @@ fun AtaqueDanoQuickArea(
     onModificarAtaque: (Int) -> Unit,
     onShowDescricao: (RollDescricaoDialog) -> Unit,
     onExecutarAtaque: (RollMappedOption, Int) -> Unit,
-    onExecutarDano: (String) -> Unit
+    onExecutarDano: (String) -> Unit,
+    // Lote NOTA-2: de onde veio o bonus de dano. Vem pronta de fora porque
+    // quem sabe montar a lista e a regra, nao o componente de tela.
+    origensDoDano: List<com.gurps.ficha.domain.rules.traits.TraitRuleRegistry.OrigemDeBonus> = emptyList()
 ) {
     if (opcoesAtaque.isEmpty()) {
         Text(
@@ -554,6 +557,13 @@ fun AtaqueDanoQuickArea(
                                     fontWeight = if (danoRolavel) FontWeight.Bold else FontWeight.Normal
                                 )
                             }
+                            // "+1/dado Mestre de Armas" -- sem isto a Faca pula
+                            // de 1d-3 para 2d-1 e nada diz por que.
+                            com.gurps.ficha.ui.features.traits.OrigemDoBonusNumero(
+                                origens = origensDoDano,
+                                unidade = "/dado",
+                                modifier = Modifier.fillMaxWidth()
+                            )
                             if (!isPraCegoVariant && modAtaqueAtual != 0) {
                                 Text(
                                     "mod ${if (modAtaqueAtual >= 0) "+$modAtaqueAtual" else "$modAtaqueAtual"}",

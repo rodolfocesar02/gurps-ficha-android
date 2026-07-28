@@ -99,4 +99,30 @@ class OrigemDoBonusTest {
     fun `sem origem nao acrescenta nada a descricao do card`() {
         assertEquals("", descricaoAcessivelDeOrigem(emptyList()))
     }
+
+    // --- unidade: o bônus de dano é POR DADO (Lote NOTA-2) ---
+
+    @Test
+    fun `bonus de dano diz por dado`() {
+        // "+1 Mestre de Armas" numa arma de 3d seria mentira: o ganho e +3.
+        assertEquals(
+            "+1/dado Mestre de Armas",
+            textoDeOrigem(listOf(OrigemDeBonus("Mestre de Armas", 1)), unidade = "/dado")
+        )
+    }
+
+    @Test
+    fun `com varias origens a unidade aparece em cada parcela e no total`() {
+        val texto = textoDeOrigem(
+            listOf(OrigemDeBonus("Mestre de Armas", 1), OrigemDeBonus("Dom da Lâmina", 1)),
+            unidade = "/dado"
+        )
+        assertEquals("+2/dado (Mestre de Armas +1/dado, Dom da Lâmina +1/dado)", texto)
+    }
+
+    @Test
+    fun `sem unidade o texto continua exatamente como era`() {
+        // Garante que o parametro novo nao mexeu no formato do NOTA-1.
+        assertEquals("+2 Pendulear", textoDeOrigem(listOf(OrigemDeBonus("Pendulear", 2))))
+    }
 }

@@ -39,25 +39,55 @@ fun OrigemDoBonusPericia(
 }
 
 /**
+ * A mesma linha, para números que **não** são de perícia (Lote NOTA-2).
+ *
+ * Recebe as origens já apuradas em vez de buscá-las: quem sabe montar a lista é
+ * a regra (`OrigemDosNumeros`, `TraitRuleRegistry`), e cada número tem a sua.
+ *
+ * [unidade] existe porque o bônus de dano é **por dado**: escrever "+1 Mestre
+ * de Armas" numa arma de 3d seria mentira — o ganho real é +3. Passando
+ * `"/dado"` a linha sai `+1/dado Mestre de Armas`, que é o que o livro diz.
+ */
+@Composable
+fun OrigemDoBonusNumero(
+    origens: List<TraitRuleRegistry.OrigemDeBonus>,
+    modifier: Modifier = Modifier,
+    unidade: String = ""
+) {
+    if (origens.isEmpty()) return
+
+    Text(
+        text = textoDeOrigem(origens, unidade),
+        style = MaterialTheme.typography.labelSmall,
+        color = MaterialTheme.colorScheme.outline,
+        modifier = modifier
+    )
+}
+
+/**
  * Monta o rótulo. Kotlin puro, sem Compose, para ter teste — é aqui que mora a
  * decisão de formato.
  *
  *  - uma origem:      `+2 Pendulear`
  *  - várias:          `+3 (Pendulear +2, Reflexos +1)`
  *  - saldo negativo:  `-2 Gordo`
+ *  - com unidade:     `+1/dado Mestre de Armas`
  *
  * O total aparece primeiro porque é o que o jogador quer saber; a decomposição
  * só é necessária quando há mais de uma fonte.
  */
-internal fun textoDeOrigem(origens: List<TraitRuleRegistry.OrigemDeBonus>): String {
+internal fun textoDeOrigem(
+    origens: List<TraitRuleRegistry.OrigemDeBonus>,
+    unidade: String = ""
+): String {
     if (origens.isEmpty()) return ""
     if (origens.size == 1) {
         val u = origens.first()
-        return "${comSinal(u.valor)} ${u.nomeDoTraco}"
+        return "${comSinal(u.valor)}$unidade ${u.nomeDoTraco}"
     }
     val total = origens.sumOf { it.valor }
-    val detalhe = origens.joinToString(", ") { "${it.nomeDoTraco} ${comSinal(it.valor)}" }
-    return "${comSinal(total)} ($detalhe)"
+    val detalhe = origens.joinToString(", ") { "${it.nomeDoTraco} ${comSinal(it.valor)}$unidade" }
+    return "${comSinal(total)}$unidade ($detalhe)"
 }
 
 private fun comSinal(valor: Int): String = if (valor >= 0) "+$valor" else "$valor"

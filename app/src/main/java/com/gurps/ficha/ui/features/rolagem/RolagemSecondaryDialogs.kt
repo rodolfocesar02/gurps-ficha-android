@@ -23,6 +23,7 @@ import com.gurps.ficha.ui.appCardColors
 import com.gurps.ficha.data.network.DiscordVoiceChannel
 import com.gurps.ficha.domain.rules.MagiaEnergiaRules
 import com.gurps.ficha.model.*
+import com.gurps.ficha.viewmodel.DefenseType
 import kotlin.math.abs
 
 @Composable
@@ -655,6 +656,7 @@ fun RolagemEditarCanalDialog(
 
 @Composable
 fun EditarEsquivaBonusDialog(
+    personagem: Personagem,
     bonusAtual: Int,
     notaAtual: String = "",
     onDismiss: () -> Unit,
@@ -674,6 +676,7 @@ fun EditarEsquivaBonusDialog(
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
+                ComposicaoDaDefesa(personagem, DefenseType.ESQUIVA)
                 OutlinedTextField(
                     value = texto,
                     onValueChange = { novo ->
@@ -746,6 +749,9 @@ fun EditarAparaDialog(
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
+                // Lote NOTA-2: dizer QUAIS vantagens e QUAL escudo. "somados
+                // automaticamente" nao deixa o jogador conferir a conta.
+                ComposicaoDaDefesa(personagem, DefenseType.APARA)
                 ExposedDropdownMenuBox(
                     expanded = expandedPericia,
                     onExpandedChange = { expandedPericia = !expandedPericia }
@@ -859,6 +865,7 @@ fun EditarBloqueioDialog(
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
+                ComposicaoDaDefesa(personagem, DefenseType.BLOQUEIO)
                 ExposedDropdownMenuBox(
                     expanded = expandedPericia,
                     onExpandedChange = { expandedPericia = !expandedPericia }

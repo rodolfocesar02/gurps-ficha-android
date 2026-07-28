@@ -193,6 +193,17 @@ fun TabRolagem(viewModel: FichaViewModel) {
         }
     }
 
+    // Lote NOTA-2: de onde veio o bonus de dano da fonte escolhida.
+    val origensDoDano = remember(p.vantagens, p.desvantagens, viewModel.ataqueSelecionadoId, viewModel.fonteDanoSelecionadaId) {
+        val periciaId = viewModel.ataqueSelecionadoId
+            ?.takeIf { it.startsWith("pericia_") }?.removePrefix("pericia_")
+        val nomeArma = viewModel.fonteDanoSelecionadaId
+            ?.takeIf { it.startsWith("arma_") }?.removePrefix("arma_")
+        val grupo = nomeArma?.let { n -> armas.find { it.nome == n }?.armaGrupo }
+        com.gurps.ficha.domain.rules.traits.TraitRuleRegistry
+            .getDamageBonusOrigens(p, periciaId, nomeArma, grupo)
+    }
+
     // Dano de ST com a forca dos bracos quando a ST Bracal esta ligada: no GURPS
     // o dano corpo a corpo sai da ST, e atacar com arma e acao de braco.
     val danoGdPEfetivo = if (stBracalAtivo) StBracalRules.danoGdPDosBracos(p) else p.danoGdP
@@ -662,6 +673,7 @@ fun TabRolagem(viewModel: FichaViewModel) {
                     mod = mod
                 )
             },
+            origensDoDano = origensDoDano,
             onExecutarDano = { dano ->
                 val perId = if (ataqueAtual?.id?.startsWith("pericia_") == true) {
                     ataqueAtual.id.removePrefix("pericia_")
@@ -953,6 +965,7 @@ fun TabRolagem(viewModel: FichaViewModel) {
     // --- Diálogos de Configuração de Defesa ---
     if (showEditarEsquivaDialog) {
         EditarEsquivaBonusDialog(
+            personagem = p,
             bonusAtual = p.defesasAtivas.bonusManualEsquiva,
             notaAtual = p.defesasAtivas.notaBonusManualEsquiva,
             onDismiss = { showEditarEsquivaDialog = false },
