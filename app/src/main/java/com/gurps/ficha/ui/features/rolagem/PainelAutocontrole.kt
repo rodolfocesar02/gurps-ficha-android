@@ -55,14 +55,15 @@ fun PainelAutocontrole(
         colors = appCardColors()
     ) {
         Column(
-            modifier = Modifier.padding(horizontal = 10.dp, vertical = 8.dp),
-            verticalArrangement = Arrangement.spacedBy(6.dp)
+            modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp),
+            verticalArrangement = Arrangement.spacedBy(1.dp)
         ) {
             if (!isPraCegoVariant) {
                 Text(
                     "Autocontrole",
                     style = MaterialTheme.typography.titleSmall,
-                    fontWeight = FontWeight.SemiBold
+                    fontWeight = FontWeight.SemiBold,
+                    maxLines = 1
                 )
             }
 
@@ -76,26 +77,23 @@ fun PainelAutocontrole(
                             contentDescription =
                                 "Rolar autocontrole de ${teste.rotulo}. Alvo $alvo. ${teste.explicacao}"
                         }
-                        .padding(vertical = 4.dp),
+                        .padding(vertical = 2.dp),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    // weight(1f): sem isso a coluna do texto ocupa a linha toda
-                    // e espreme o "NA 15", que quebra letra a letra na vertical.
-                    Column(modifier = Modifier.weight(1f).padding(end = 8.dp)) {
-                        Text(
-                            teste.rotulo,
-                            style = MaterialTheme.typography.bodyMedium,
-                            fontWeight = FontWeight.Medium
-                        )
-                        // A "notinha": NA baixo e PIOR, o contrario do resto do
-                        // GURPS. Sem explicar, o jogador le errado.
-                        Text(
-                            teste.explicacao,
-                            style = MaterialTheme.typography.labelSmall,
-                            color = MaterialTheme.colorScheme.outline
-                        )
-                    }
+                    // weight(1f): sem isso o texto ocupa a linha toda e espreme
+                    // o "NA 15", que quebra letra a letra na vertical.
+                    //
+                    // A explicação do NA ("costuma resistir...") saiu da tela em
+                    // 28/07 a pedido do usuário — o card ficava alto demais.
+                    // Continua no TalkBack, onde não ocupa espaço.
+                    Text(
+                        teste.rotulo,
+                        style = MaterialTheme.typography.bodyMedium,
+                        fontWeight = FontWeight.Medium,
+                        maxLines = 1,
+                        modifier = Modifier.weight(1f).padding(end = 8.dp)
+                    )
                     Text(
                         if (isPraCegoVariant) "Rolar ($alvo)" else "NA $alvo",
                         style = MaterialTheme.typography.titleMedium,

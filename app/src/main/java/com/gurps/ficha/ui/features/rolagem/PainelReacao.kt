@@ -11,7 +11,10 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.contentDescription
@@ -29,6 +32,12 @@ import com.gurps.ficha.ui.appCardColors
  * lembrava de cabeça os modificadores das vantagens sociais. Agora o total já
  * vem somado, com a lista de onde cada ponto veio.
  *
+ * Os modificadores vêm em dois sabores:
+ *  - **fixos** (Carisma) entram direto no total;
+ *  - **condicionais** (Voz Melodiosa, "de quem pode ouvir sua voz") viram
+ *    caixinha para o jogador marcar — igual ao bônus condicional de perícia.
+ *    Somar sempre daria bônus contra surdos e contra máquinas.
+ *
  * **Não renderiza nada** quando o personagem não tem nenhum traço que mexa em
  * reação — mesma regra do painel de autocontrole e da aba Magia.
  */
@@ -38,12 +47,15 @@ fun PainelReacao(
     isPraCegoVariant: Boolean,
     onRolar: (label: String, alvo: Int?, mod: Int) -> Unit
 ) {
-    val modificadores = remember(personagem.vantagens, personagem.desvantagens) {
-        ReacaoRules.modificadoresDe(personagem)
-    }
-    if (modificadores.isEmpty()) return
+    val chave = personagem.vantagens to personagem.desvantagens
+    val fixos = remember(chave) { ReacaoRules.modificadoresDe(personagem) }
+    val condicionais = remember(chave) { ReacaoRules.condicionaisDe(personagem) }
+    if (fixos.isEmpty() && condicionais.isEmpty()) return
 
-    val total = modificadores.sumOf { it.valor }
+    var marcados by remember(chave) { mutableStateOf(emptySet<Int>()) }
+
+    val totalFixo = fixos.sumOf { it.valor }
+    val total = totalFixo + somaDosMarcados(condicionais, marcados)
     val sinal = if (total >= 0) "+$total" else "$total"
 
     if (isPraCegoVariant) SectionHeaderPraCego("Teste de Reação")
@@ -56,21 +68,21 @@ fun PainelReacao(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                // Reação NÃO tem NH: rola 3d6 e consulta a tabela. O
-                // modificador vai como `mod`, e o alvo fica nulo de propósito.
-                .clickable { onRolar("Reação ($sinal)", null, total) }
-                .semantics {
-                    contentDescription = "Rolar teste de reação. Modificador $sinal. " +
-                        modificadores.joinToString(", ") { m ->
-                            "${m.nomeDoTraco} ${if (m.valor >= 0) "mais" else "menos"} " +
-                                "${kotlin.math.abs(m.valor)}"
-                        }
-                }
-                .padding(horizontal = 10.dp, vertical = 8.dp),
-            verticalArrangement = Arrangement.spacedBy(4.dp)
+                .padding(horizontal = 10.dp, vertical = 6.dp),
+            verticalArrangement = Arrangement.spacedBy(1.dp)
         ) {
+            // Só o cabeçalho rola. As caixinhas ficam FORA do clicável: dentro
+            // dele, marcar uma condição dispararia a rolagem junto.
             Row(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    // Reação NÃO tem NH: rola 3d6 e consulta a tabela. O
+                    // modificador vai como `mod`, e o alvo fica nulo de propósito.
+                    .clickable { onRolar("Reação ($sinal)", null, total) }
+                    .semantics {
+                        contentDescription = "Rolar teste de reação. Modificador $sinal."
+                    }
+                    .padding(vertical = 2.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -78,7 +90,8 @@ fun PainelReacao(
                     "Teste de Reação",
                     style = MaterialTheme.typography.titleSmall,
                     fontWeight = FontWeight.SemiBold,
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier.weight(1f),
+                    maxLines = 1
                 )
                 Text(
                     if (isPraCegoVariant) "Rolar ($sinal)" else sinal,
@@ -89,18 +102,23 @@ fun PainelReacao(
                     softWrap = false
                 )
             }
-            // A "notinha": de onde vem cada ponto do modificador.
-            Text(
-                modificadores.joinToString(", ") {
-                    "${it.nomeDoTraco} ${if (it.valor >= 0) "+${it.valor}" else "${it.valor}"}"
-                },
-                style = MaterialTheme.typography.labelSmall,
-                color = MaterialTheme.colorScheme.outline
-            )
-            Text(
-                "3d6: 6- péssima · 7-9 ruim · 10-12 neutra · 13-15 boa · 16+ excelente",
-                style = MaterialTheme.typography.labelSmall,
-                color = MaterialTheme.colorScheme.outline
+
+            // A "notinha": de onde vem cada ponto do modificador fixo.
+            if (fixos.isNotEmpty()) {
+                Text(
+                    fixos.joinToString(", ") {
+                        "${it.nomeDoTraco} ${if (it.valor >= 0) "+${it.valor}" else "${it.valor}"}"
+                    },
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.outline,
+                    maxLines = 1
+                )
+            }
+
+            PainelBonusCondicional(
+                bonus = condicionais,
+                marcados = marcados,
+                onAlternar = { i -> marcados = if (i in marcados) marcados - i else marcados + i }
             )
         }
     }

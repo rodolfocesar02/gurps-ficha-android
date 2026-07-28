@@ -1,5 +1,6 @@
 package com.gurps.ficha.domain.rules
 
+import com.gurps.ficha.domain.rules.traits.BonusCondicional
 import com.gurps.ficha.domain.rules.traits.TraitRuleRegistry
 import com.gurps.ficha.model.Personagem
 
@@ -54,6 +55,27 @@ object ReacaoRules {
 
     /** Soma dos modificadores da ficha. */
     fun totalDe(personagem: Personagem): Int = modificadoresDe(personagem).sumOf { it.valor }
+
+    /**
+     * Modificadores de reação que dependem de uma CONDIÇÃO.
+     *
+     * *Voz Melodiosa* dá +2 só "de quem pode ouvir sua voz" — somar sempre daria
+     * bônus contra surdos e contra máquinas. Quem sabe se a condição vale é o
+     * jogador, no momento do teste, então isso vira caixinha marcável na tela,
+     * igual ao bônus condicional de perícia (Lote V-5).
+     */
+    fun condicionaisDe(personagem: Personagem): List<BonusCondicional> =
+        TraitRuleRegistry.getBonusCondicionais(personagem, ALVO_REACAO)
+
+    /**
+     * Se há QUALQUER coisa de reação na ficha — fixa ou condicional.
+     *
+     * O painel usa isto para decidir se aparece. Olhar só [modificadoresDe]
+     * esconderia a tela de quem só tem traço condicional: era o caso da ficha de
+     * teste com Voz Melodiosa, em que o +2 só surgia no resultado da rolagem.
+     */
+    fun temAlgumModificador(personagem: Personagem): Boolean =
+        modificadoresDe(personagem).isNotEmpty() || condicionaisDe(personagem).isNotEmpty()
 
     /**
      * Em que faixa cai um resultado.

@@ -122,6 +122,48 @@ class ReacaoRulesTest {
             vantagens = listOf(VantagemSelecionada(definicaoId = "voz", nome = "Voz Melodiosa"))
         )
         assertEquals(0, ReacaoRules.totalDe(p))
+        // ...mas PRECISA aparecer como caixinha para o jogador marcar.
+        val cond = ReacaoRules.condicionaisDe(p)
+        assertEquals(1, cond.size)
+        assertEquals(2, cond.first().valor)
+        assertEquals("de quem pode ouvir sua voz", cond.first().condicao)
+    }
+
+    @Test
+    fun `ficha SO com modificador condicional ainda mostra o painel`() {
+        // O defeito visto no aparelho em 28/07: com Voz Melodiosa e mais nada,
+        // `modificadoresDe` vinha vazia e o card sumia -- o +2 so aparecia no
+        // resultado da rolagem, sem o jogador poder escolher.
+        comEfeitos(mapOf("voz" to listOf(
+            EfeitoDeclarado(tipo = "pericia", alvo = "reacao", valor = 2, condicao = "quem ouve")
+        )))
+        val p = Personagem(
+            nome = "Teste",
+            vantagens = listOf(VantagemSelecionada(definicaoId = "voz", nome = "Voz Melodiosa"))
+        )
+        assertTrue(ReacaoRules.modificadoresDe(p).isEmpty())
+        assertTrue(ReacaoRules.temAlgumModificador(p))
+    }
+
+    @Test
+    fun `ficha sem traco nenhum nao mostra o painel`() {
+        comEfeitos(emptyMap())
+        assertTrue(!ReacaoRules.temAlgumModificador(Personagem(nome = "Teste")))
+    }
+
+    @Test
+    fun `bonus condicional de PERICIA nao vira condicional de reacao`() {
+        comEfeitos(mapOf("rosto" to listOf(
+            EfeitoDeclarado(
+                tipo = "pericia", alvo = "Dissimulação", valor = 1,
+                condicao = "para parecer inocente"
+            )
+        )))
+        val p = Personagem(
+            nome = "Teste",
+            vantagens = listOf(VantagemSelecionada(definicaoId = "rosto", nome = "Rosto Sincero"))
+        )
+        assertTrue(ReacaoRules.condicionaisDe(p).isEmpty())
     }
 
     @Test
