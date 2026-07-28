@@ -92,7 +92,7 @@ import kotlinx.coroutines.launch
 
 // Flag para ligar/desligar a Aba SAGA na compilação do APK.
 // Mude para true para mostrar a aba, ou false para escondê-la e desacoplar.
-const val HABILITAR_ABA_SAGA = true
+const val HABILITAR_ABA_SAGA = false
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
