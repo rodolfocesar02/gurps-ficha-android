@@ -30,6 +30,7 @@ import com.gurps.ficha.data.network.DiscordVoiceChannel
 import com.gurps.ficha.domain.roll.CriticoRules
 import com.gurps.ficha.domain.rules.MagiaEnergiaRules
 import com.gurps.ficha.domain.rules.DxBracalRules
+import com.gurps.ficha.domain.rules.MarcosDeVidaRules
 import com.gurps.ficha.domain.rules.StBracalRules
 import com.gurps.ficha.model.PericiaSelecionada
 import com.gurps.ficha.model.PERICIAS_COMBATE
@@ -81,6 +82,9 @@ fun TabRolagem(viewModel: FichaViewModel) {
     val canaisErro = viewModel.canaisDiscordErro
     val backendOnline = canaisErro.isNullOrBlank()
     var showEditarCanalDialog by remember { mutableStateOf(false) }
+
+    // Testes que a queda de PV exigiu e o jogador ainda nao rolou nem dispensou.
+    var testesDeMarco by remember { mutableStateOf(emptyList<MarcosDeVidaRules.TesteExigido>()) }
 
     var pendingRoll by remember { mutableStateOf<PendingRollState?>(null) }
     var pendingResults by remember { mutableStateOf<List<Int>?>(null) }
@@ -526,10 +530,17 @@ fun TabRolagem(viewModel: FichaViewModel) {
         }
     }
 
-    fun ajustarPvRolagemPorSwipe(incrementar: Boolean) {
-        val atual = pvAtualRolagem
-        val novo = if (incrementar) atual + 1 else atual - 1
+    // Lote MARCOS-1: baixar o PV na ficha E o evento de dano. Toda mudanca passa
+    // por aqui para os marcos serem conferidos uma vez so.
+    fun aplicarPvRolagem(novo: Int) {
+        val antes = pvAtualRolagem
         viewModel.atualizarPontosVidaRolagemAtual(novo)
+        val exigidos = MarcosDeVidaRules.testesAoPerderPv(p, antes, novo)
+        if (exigidos.isNotEmpty()) testesDeMarco = exigidos
+    }
+
+    fun ajustarPvRolagemPorSwipe(incrementar: Boolean) {
+        aplicarPvRolagem(if (incrementar) pvAtualRolagem + 1 else pvAtualRolagem - 1)
     }
 
     fun ajustarPfRolagemPorSwipe(incrementar: Boolean) {
@@ -638,6 +649,20 @@ fun TabRolagem(viewModel: FichaViewModel) {
                     mod = mod
                 )
             }
+        )
+
+        // Marcos de PV/PF: testes exigidos pelo ferimento e estado atual.
+        PainelMarcosDeVida(
+            testesPendentes = testesDeMarco,
+            estados = remember(pvAtualRolagem, pfAtualRolagem, p.pontosVida, p.pontosFadiga) {
+                MarcosDeVidaRules.estadosDe(p, pvAtualRolagem, pfAtualRolagem)
+            },
+            isPraCegoVariant = isPraCegoVariant,
+            onRolar = { teste ->
+                testesDeMarco = testesDeMarco - teste
+                executarRolagem(TipoTeste.ATRIBUTO, teste.rotulo, teste.alvo, 0)
+            },
+            onDispensar = { testesDeMarco = emptyList() }
         )
 
         if (isPraCegoVariant) {
@@ -920,40 +945,21 @@ fun TabRolagem(viewModel: FichaViewModel) {
         )
     }
 
-    if (showEditarPvRolagemDialog) {
-        RolagemEditarPvDialog(
-            pvFixoRolagem = pvFixoRolagem,
-            maxPvRolagem = maxPvRolagem,
-            pvAtualInput = pvAtualInput,
-            onInputMudou = { raw -> pvAtualInput = raw.filter { it.isDigit() }.take(4) },
-            onSalvar = {
-                val valor = pvAtualInput.toIntOrNull() ?: pvAtualRolagem
-                viewModel.atualizarPontosVidaRolagemAtual(valor)
-                showEditarPvRolagemDialog = false
-            },
-            onDismiss = {
-                pvAtualInput = pvAtualRolagem.toString()
-                showEditarPvRolagemDialog = false
-            }
-        )
-    }
-
-    if (showEditarPfRolagemDialog) {
-        RolagemEditarPfDialog(
-            pfFixoRolagem = pfFixoRolagem,
-            pfAtualInput = pfAtualInput,
-            onInputMudou = { raw -> pfAtualInput = raw.filter { it.isDigit() }.take(4) },
-            onSalvar = {
-                val valor = pfAtualInput.toIntOrNull() ?: pfAtualRolagem
-                viewModel.atualizarPontosFadigaRolagemAtual(valor)
-                showEditarPfRolagemDialog = false
-            },
-            onDismiss = {
-                pfAtualInput = pfAtualRolagem.toString()
-                showEditarPfRolagemDialog = false
-            }
-        )
-    }
+    DialogosDePvPfRolagem(
+        mostrarPv = showEditarPvRolagemDialog,
+        mostrarPf = showEditarPfRolagemDialog,
+        pvFixo = pvFixoRolagem,
+        maxPv = maxPvRolagem,
+        pfFixo = pfFixoRolagem,
+        pvInput = pvAtualInput,
+        pfInput = pfAtualInput,
+        onPvInputMudou = { pvAtualInput = it },
+        onPfInputMudou = { pfAtualInput = it },
+        onSalvarPv = { aplicarPvRolagem(it ?: pvAtualRolagem); showEditarPvRolagemDialog = false },
+        onSalvarPf = { viewModel.atualizarPontosFadigaRolagemAtual(it ?: pfAtualRolagem); showEditarPfRolagemDialog = false },
+        onFecharPv = { pvAtualInput = pvAtualRolagem.toString(); showEditarPvRolagemDialog = false },
+        onFecharPf = { pfAtualInput = pfAtualRolagem.toString(); showEditarPfRolagemDialog = false }
+    )
 
     descricaoDialog?.let { dialog ->
         RolagemDescricaoDialogModal(
@@ -969,53 +975,15 @@ fun TabRolagem(viewModel: FichaViewModel) {
         )
     }
 
-    // --- Diálogos de Configuração de Defesa ---
-    if (showEditarEsquivaDialog) {
-        EditarEsquivaBonusDialog(
+        DialogosDeDefesaRolagem(
+            viewModel = viewModel,
             personagem = p,
-            bonusAtual = p.defesasAtivas.bonusManualEsquiva,
-            notaAtual = p.defesasAtivas.notaBonusManualEsquiva,
-            onDismiss = { showEditarEsquivaDialog = false },
-            onConfirm = { bonus, nota ->
-                viewModel.atualizarBonusManualEsquiva(bonus, nota)
-                showEditarEsquivaDialog = false
-            }
+            mostrarEsquiva = showEditarEsquivaDialog,
+            mostrarApara = showEditarAparaDialog,
+            mostrarBloqueio = showEditarBloqueioDialog,
+            onFecharEsquiva = { showEditarEsquivaDialog = false },
+            onFecharApara = { showEditarAparaDialog = false },
+            onFecharBloqueio = { showEditarBloqueioDialog = false }
         )
-    }
-
-    if (showEditarAparaDialog) {
-        EditarAparaDialog(
-            personagem = p,
-            pericias = viewModel.periciasParaApara,
-            periciaSelecionadaId = p.defesasAtivas.periciaAparaId,
-            bonusAtual = p.defesasAtivas.bonusManualApara,
-            notaAtual = p.defesasAtivas.notaBonusManualApara,
-            onDismiss = { showEditarAparaDialog = false },
-            onConfirm = { periciaId, bonus, nota ->
-                viewModel.atualizarPericiaApara(periciaId)
-                viewModel.atualizarBonusManualApara(bonus, nota)
-                showEditarAparaDialog = false
-            }
-        )
-    }
-
-    if (showEditarBloqueioDialog) {
-        EditarBloqueioDialog(
-            personagem = p,
-            pericias = viewModel.periciasParaBloqueio,
-            escudos = viewModel.escudosEquipados,
-            periciaSelecionadaId = p.defesasAtivas.periciaBloqueioId,
-            escudoSelecionadoNome = p.defesasAtivas.escudoSelecionadoNome,
-            bonusAtual = p.defesasAtivas.bonusManualBloqueio,
-            notaAtual = p.defesasAtivas.notaBonusManualBloqueio,
-            onDismiss = { showEditarBloqueioDialog = false },
-            onConfirm = { periciaId, escudoNome, bonus, nota ->
-                viewModel.atualizarPericiaBloqueio(periciaId)
-                viewModel.atualizarEscudoBloqueio(escudoNome)
-                viewModel.atualizarBonusManualBloqueio(bonus, nota)
-                showEditarBloqueioDialog = false
-            }
-        )
-    }
     }
 }
