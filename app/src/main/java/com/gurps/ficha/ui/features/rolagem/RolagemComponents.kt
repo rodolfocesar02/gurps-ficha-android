@@ -173,6 +173,18 @@ fun AtributosQuickRollPanel(
                                     }
                                 )
                             }
+                            // Sem isto o TalkBack lia so o numero ("10, botao"),
+                            // porque o rotulo "ST" e um Text separado acima. Na
+                            // variante PraCego ja havia descricao; a visual
+                            // ficou sem ate 28/07 -- e ela tambem e usada com
+                            // leitor de tela.
+                            .semantics {
+                                contentDescription = "Rolar $attr $valor" +
+                                    if (modAttr != 0) {
+                                        ", modificador ${if (modAttr > 0) "mais" else "menos"} " +
+                                            "${abs(modAttr)}"
+                                    } else ""
+                            }
                             .clickable {
                                 onExecutarRolagem(attr, valor, modAttr)
                             },
