@@ -112,7 +112,17 @@
     "tags": [
       "mental"
     ],
-    "descricao": "O personagem se dá bem com outras pessoas e sempre está à procura de companhia. Amigável (-5): Reação +2, penalidade -1 se sozinho. Gregário (-10): Reação +4, penalidade -2 se sozinho (-1 se em grupo pequeno)."
+    "descricao": "O personagem se dá bem com outras pessoas e sempre está à procura de companhia. Amigável (-5): Reação +2, penalidade -1 se sozinho. Gregário (-10): Reação +4, penalidade -2 se sozinho (-1 se em grupo pequeno).",
+    "efeitos": [
+      {
+        "tipo": "pericia",
+        "alvo": "reacao",
+        "porOpcao": {
+          "-5": 2,
+          "-10": 4
+        }
+      }
+    ]
   },
   {
     "id": "amnesia",
@@ -256,7 +266,15 @@
     "tags": [
       "magica"
     ],
-    "descricao": "Os animais ficam assustados e agressivos na presença do personagem. Os cavalos não permitem que ele os monte, os cachorros fogem ou o atacam com selvageria e o cheiro do indivíduo é o suficiente para deixar em pânico a maioria das criaturas. Ele sofre uma penalidade de -4 em todos os testes de reação feitos por animais."
+    "descricao": "Os animais ficam assustados e agressivos na presença do personagem. Os cavalos não permitem que ele os monte, os cachorros fogem ou o atacam com selvageria e o cheiro do indivíduo é o suficiente para deixar em pânico a maioria das criaturas. Ele sofre uma penalidade de -4 em todos os testes de reação feitos por animais.",
+    "efeitos": [
+      {
+        "tipo": "pericia",
+        "alvo": "reacao",
+        "valor": -4,
+        "condicao": "de animais"
+      }
+    ]
   },
   {
     "id": "ataque_infeccioso",
@@ -1699,7 +1717,19 @@
     "tags": [
       "social"
     ],
-    "descricao": "O personagem pertence a uma raça, classe, sexo ou outro grupo que sua cultura considera inferior. Resulta em uma penalidade nos testes de reação (-1 para cada -5 pontos desta desvantagem) ou restringe sua ascensão social."
+    "descricao": "O personagem pertence a uma raça, classe, sexo ou outro grupo que sua cultura considera inferior. Resulta em uma penalidade nos testes de reação (-1 para cada -5 pontos desta desvantagem) ou restringe sua ascensão social.",
+    "efeitos": [
+      {
+        "tipo": "pericia",
+        "alvo": "reacao",
+        "porOpcao": {
+          "-5": -1,
+          "-10": -2,
+          "-15": -3,
+          "-20": -4
+        }
+      }
+    ]
   },
   {
     "id": "estomago_sensivel",
@@ -1827,7 +1857,19 @@
     "tags": [
       "mental"
     ],
-    "descricao": "O personagem acredita em alguma coisa que simplesmente não é verdade. Menor (-5): afeta comportamento, reação -1 de estranhos. Grave (-10): reação -2 de estranhos. Maior (-15): reação -3 de estranhos."
+    "descricao": "O personagem acredita em alguma coisa que simplesmente não é verdade. Menor (-5): afeta comportamento, reação -1 de estranhos. Grave (-10): reação -2 de estranhos. Maior (-15): reação -3 de estranhos.",
+    "efeitos": [
+      {
+        "tipo": "pericia",
+        "alvo": "reacao",
+        "porOpcao": {
+          "-5": -1,
+          "-10": -2,
+          "-15": -3
+        },
+        "condicao": "de estranhos"
+      }
+    ]
   },
   {
     "id": "ferido",
@@ -3134,7 +3176,14 @@
     "tags": [
       "mental"
     ],
-    "descricao": "O personagem perdeu o contato com a realidade e acredita que alguém está planejando alguma coisa contra ele.\n\nEle nunca confiará em ninguém, com exceção de seus velhos amigos.\n\nMesmo assim, não deixará de vigiá-los e desconfiar deles ocasionalmente.\n\nA reação da maioria das pessoas sofre uma penalidade de -2 em relação ao personagem.\n\nA reação de um PdM paranoico diante de qualquer pessoa estranha sofre uma penalidade de -4.\n\nAlém disso, qualquer penalidade de reação legítima, como raça ou nacionalidade não amistosa, é dobrada.\n\nEsta desvantagem combina muito bem com Fantasias (pág. 139), que frequentemente servem para explicar ou reforçar as crenças paranoicas do personagem.\n\nParanoia vale -10 pontos."
+    "descricao": "O personagem perdeu o contato com a realidade e acredita que alguém está planejando alguma coisa contra ele.\n\nEle nunca confiará em ninguém, com exceção de seus velhos amigos.\n\nMesmo assim, não deixará de vigiá-los e desconfiar deles ocasionalmente.\n\nA reação da maioria das pessoas sofre uma penalidade de -2 em relação ao personagem.\n\nA reação de um PdM paranoico diante de qualquer pessoa estranha sofre uma penalidade de -4.\n\nAlém disso, qualquer penalidade de reação legítima, como raça ou nacionalidade não amistosa, é dobrada.\n\nEsta desvantagem combina muito bem com Fantasias (pág. 139), que frequentemente servem para explicar ou reforçar as crenças paranoicas do personagem.\n\nParanoia vale -10 pontos.",
+    "efeitos": [
+      {
+        "tipo": "pericia",
+        "alvo": "reacao",
+        "valor": -2
+      }
+    ]
   },
   {
     "id": "pesadelos",
@@ -3562,7 +3611,15 @@
     "tags": [
       "mental"
     ],
-    "descricao": "O personagem sente um dever para com uma determinada classe de pessoas.\n\nEle nunca vai traí-las ou abandoná-las quando estiverem enfrentando um problema, nem deixar que sofram ou passem fome, se puder ajudar.\n\nEsta desvantagem é diferente de um Dever verdadeiro. Um Dever é imposto. O Senso do Dever vem do coração.\n\nSe o personagem for conhecido por ter um Senso do Dever, a reação de outras pessoas em relação a ele recebe um bônus de +2 sempre que o Mestre for verificar se os outros confiam nele numa situação de perigo.\n\nContudo, se o personagem agir contra seu Senso do Dever, indo contra os interesses daqueles que supostamente deveria proteger, o Mestre pode penalizá-lo por má atuação.\n\nO valor em pontos depende do tamanho do grupo que o personagem se sente compelido a ajudar.\n\nIndivíduos (o Presidente, seu braço-direito, etc.): -2 pontos.\n\nGrupo Pequeno (amigos íntimos, companheiros de aventura ou esquadrão): -5 pontos.\n\nGrupo Grande (uma nação, religião ou todos aqueles que o personagem conhece pessoalmente): -10 pontos.\n\nUma Raça Inteira (toda a humanidade, todos os elfos, etc.): -15 pontos.\n\nTodos os Seres Vivos: -20 pontos.\n\nNão é permitido receber pontos por um Senso do Dever relacionado a Aliados, Dependentes ou Patronos. Os custos dessas características já levam esses vínculos em consideração.\n\nO personagem pode ter um Senso do Dever em relação aos companheiros de aventura.\n\nNesse caso, ele deve compartilhar seu equipamento, prestar auxílio aos outros membros do grupo e acatar todas as decisões da maioria.\n\nO Mestre pode tornar esta desvantagem obrigatória em campanhas nas quais o grupo precisa cooperar. Nesse caso, todos os personagens recebem 5 pontos adicionais para gastar.\n\nSe um personagem passar a trair seus companheiros, preocupar-se apenas consigo mesmo ou agir contra o espírito desta desvantagem, o Mestre pode desconsiderar suas ações e utilizar os pontos recebidos por ela como justificativa para essa decisão."
+    "descricao": "O personagem sente um dever para com uma determinada classe de pessoas.\n\nEle nunca vai traí-las ou abandoná-las quando estiverem enfrentando um problema, nem deixar que sofram ou passem fome, se puder ajudar.\n\nEsta desvantagem é diferente de um Dever verdadeiro. Um Dever é imposto. O Senso do Dever vem do coração.\n\nSe o personagem for conhecido por ter um Senso do Dever, a reação de outras pessoas em relação a ele recebe um bônus de +2 sempre que o Mestre for verificar se os outros confiam nele numa situação de perigo.\n\nContudo, se o personagem agir contra seu Senso do Dever, indo contra os interesses daqueles que supostamente deveria proteger, o Mestre pode penalizá-lo por má atuação.\n\nO valor em pontos depende do tamanho do grupo que o personagem se sente compelido a ajudar.\n\nIndivíduos (o Presidente, seu braço-direito, etc.): -2 pontos.\n\nGrupo Pequeno (amigos íntimos, companheiros de aventura ou esquadrão): -5 pontos.\n\nGrupo Grande (uma nação, religião ou todos aqueles que o personagem conhece pessoalmente): -10 pontos.\n\nUma Raça Inteira (toda a humanidade, todos os elfos, etc.): -15 pontos.\n\nTodos os Seres Vivos: -20 pontos.\n\nNão é permitido receber pontos por um Senso do Dever relacionado a Aliados, Dependentes ou Patronos. Os custos dessas características já levam esses vínculos em consideração.\n\nO personagem pode ter um Senso do Dever em relação aos companheiros de aventura.\n\nNesse caso, ele deve compartilhar seu equipamento, prestar auxílio aos outros membros do grupo e acatar todas as decisões da maioria.\n\nO Mestre pode tornar esta desvantagem obrigatória em campanhas nas quais o grupo precisa cooperar. Nesse caso, todos os personagens recebem 5 pontos adicionais para gastar.\n\nSe um personagem passar a trair seus companheiros, preocupar-se apenas consigo mesmo ou agir contra o espírito desta desvantagem, o Mestre pode desconsiderar suas ações e utilizar os pontos recebidos por ela como justificativa para essa decisão.",
+    "efeitos": [
+      {
+        "tipo": "pericia",
+        "alvo": "reacao",
+        "valor": 2,
+        "condicao": "quando os outros avaliam se confiam em você num perigo"
+      }
+    ]
   },
   {
     "id": "solitario",

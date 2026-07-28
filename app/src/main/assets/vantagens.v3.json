@@ -2272,7 +2272,15 @@
     "rawCost": "25",
     "specialRule": null,
     "tags": [],
-    "descricao": "O personagem é capaz de falar com os animais.\n\nA qualidade das informações que ele recebe depende da IQ da criatura e da decisão do Mestre em relação ao que o animal tem a dizer.\n\nInsetos e outras criaturas minúsculas são capazes apenas de transmitir emoções como fome e medo, enquanto um chimpanzé ou um gato conseguem participar de uma discussão razoavelmente inteligente.\n\nO personagem normalmente demora um minuto para fazer uma pergunta e obter uma resposta, isso se o animal decidir falar.\n\nO Mestre pode exigir um teste de reação, com bônus de +2 se o personagem oferecer alimento ao animal.\n\nO Mestre tem liberdade para decidir que criaturas alienígenas, sobrenaturais ou místicas não contam como “animais” no que se refere a esta vantagem."
+    "descricao": "O personagem é capaz de falar com os animais.\n\nA qualidade das informações que ele recebe depende da IQ da criatura e da decisão do Mestre em relação ao que o animal tem a dizer.\n\nInsetos e outras criaturas minúsculas são capazes apenas de transmitir emoções como fome e medo, enquanto um chimpanzé ou um gato conseguem participar de uma discussão razoavelmente inteligente.\n\nO personagem normalmente demora um minuto para fazer uma pergunta e obter uma resposta, isso se o animal decidir falar.\n\nO Mestre pode exigir um teste de reação, com bônus de +2 se o personagem oferecer alimento ao animal.\n\nO Mestre tem liberdade para decidir que criaturas alienígenas, sobrenaturais ou místicas não contam como “animais” no que se refere a esta vantagem.",
+    "efeitos": [
+      {
+        "tipo": "pericia",
+        "alvo": "reacao",
+        "valor": 2,
+        "condicao": "de animal a quem ofereceu alimento"
+      }
+    ]
   },
   {
     "id": "falar_com_plantas",
@@ -2955,7 +2963,15 @@
     "rawCost": "5",
     "specialRule": null,
     "tags": [],
-    "descricao": "Alguma coisa na aparência do personagem faz com que as pessoas sintam pena e vontade de cuidar dele. Ele recebe um bônus de +3 em todos os testes de reação feitos por aqueles que o considerarem fraco, indefeso ou desamparado (o que nunca vai incluir pessoas com a desvantagem Insensível). Em conjunto com uma aparência física acima da média, ser Lamentável significa que o personagem é “bonitinho”, em vez de “sexy”; em conjunto com uma aparência física abaixo da média, significa que ele é um “feioso simpático”, como um cão bassê."
+    "descricao": "Alguma coisa na aparência do personagem faz com que as pessoas sintam pena e vontade de cuidar dele. Ele recebe um bônus de +3 em todos os testes de reação feitos por aqueles que o considerarem fraco, indefeso ou desamparado (o que nunca vai incluir pessoas com a desvantagem Insensível). Em conjunto com uma aparência física acima da média, ser Lamentável significa que o personagem é “bonitinho”, em vez de “sexy”; em conjunto com uma aparência física abaixo da média, significa que ele é um “feioso simpático”, como um cão bassê.",
+    "efeitos": [
+      {
+        "tipo": "pericia",
+        "alvo": "reacao",
+        "valor": 3,
+        "condicao": "de quem o considera fraco ou desamparado"
+      }
+    ]
   },
   {
     "id": "leitura_da_mente",
@@ -3203,7 +3219,15 @@
     "rawCost": "1",
     "specialRule": null,
     "tags": [],
-    "descricao": "Corpo produz detritos mínimos, sem mau hálito, transpiração excessiva. Penalidade de -1 para rastreamento por faro, +1 em reações em ambientes fechados. 1 ponto. (pág. 101)"
+    "descricao": "Corpo produz detritos mínimos, sem mau hálito, transpiração excessiva. Penalidade de -1 para rastreamento por faro, +1 em reações em ambientes fechados. 1 ponto. (pág. 101)",
+    "efeitos": [
+      {
+        "tipo": "pericia",
+        "alvo": "reacao",
+        "valor": 1,
+        "condicao": "em ambiente fechado"
+      }
+    ]
   },
   {
     "id": "metamorfose",
