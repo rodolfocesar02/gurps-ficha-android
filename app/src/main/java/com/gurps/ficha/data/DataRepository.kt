@@ -645,6 +645,15 @@ open class DataRepository(internal val context: Context) {
         mapa["pericias_conhecidas_normalizadas"] = periciasConhecidasNormalizadas
         mapa["pericias_niveis_normalizadas"] = periciasNiveisNormalizadas
 
+        // O CATÁLOGO inteiro, por núcleo do nome (sem "/NT", sem parênteses).
+        // Serve para o rótulo do pré-requisito dizer o que a coisa É — antes ele
+        // decidia "Perícia ou Vantagem" pelo que o personagem JÁ TINHA, e
+        // "Matemática (Aplicada)" aparecia como Vantagem até você comprá-la.
+        mapa["pericias_catalogo_nucleos"] = pericias
+            .map { PreRequisitoChecker.nucleoDoNome(it.nome) }
+            .filter { it.isNotBlank() }
+            .toSet()
+
         val condicoesEstado = mutableSetOf<String>()
         personagem.desvantagens.forEach { condicoesEstado.add(normalizarNomeRequisito(it.nome)) }
         personagem.qualidades.forEach { condicoesEstado.add(normalizarNomeRequisito(it)) }

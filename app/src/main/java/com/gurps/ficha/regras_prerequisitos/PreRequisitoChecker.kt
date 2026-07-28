@@ -111,9 +111,17 @@ object PreRequisitoChecker {
                     val label = when (req) {
                         is PreRequisitoType.VantagemConhecida, is PreRequisitoType.PericiaConhecida -> {
                             val nome = if (req is PreRequisitoType.VantagemConhecida) req.nomeVantagem else (req as PreRequisitoType.PericiaConhecida).nomePericia
-                            val alvo = normalizar(nome)
-                            val emPericias = periciasConhecidas(personagem).any { it == alvo || it.contains(alvo) || alvo.contains(it) }
-                            val prefixo = if (emPericias) "Perícia" else "Vantagem"
+                            // O rótulo tem que dizer o que a coisa É, e para isso
+                            // manda o CATÁLOGO. Antes ele olhava o que o
+                            // personagem já tinha, então "Matemática (Aplicada)"
+                            // virava "Vantagem" até você comprar a perícia.
+                            val prefixo = when (ehPericiaDoCatalogo(personagem, nome)) {
+                                true -> "Perícia"
+                                false -> "Vantagem"
+                                // Catálogo ausente (chamada antiga): volta ao
+                                // palpite pela ficha, em vez de errar sempre.
+                                null -> if (temPericiaCompativel(personagem, nome)) "Perícia" else "Vantagem"
+                            }
                             "$prefixo: $nome"
                         }
                         else -> req.readableName()
@@ -242,7 +250,9 @@ object PreRequisitoChecker {
                     return if (temMagiaEscudo) null else "Conhecimento magico requerido: ${requisito.nomeVantagem}"
                 }
                 val emVantagens = vantagensConhecidas(personagem).any { it == alvo || it.contains(alvo) || alvo.contains(it) }
-                val emPericias = periciasConhecidas(personagem).any { it == alvo || it.contains(alvo) || alvo.contains(it) }
+                // Compara pelo NÚCLEO: "Matemática (Aplicada)" tem que casar com
+                // a perícia "Matemática/NT" da ficha. Ver `nucleoDoNome`.
+                val emPericias = temPericiaCompativel(personagem, requisito.nomeVantagem)
                 val emMagias = magiasNomes(personagem).any { it == alvo || it.contains(alvo) || alvo.contains(it) }
 
                 if (!emVantagens && !emPericias && !emMagias) {
@@ -256,7 +266,7 @@ object PreRequisitoChecker {
                     val temMagiaEscudo = magiasNomes(personagem).any { it == alvo || it.contains(alvo) }
                     return if (temMagiaEscudo) null else "Conhecimento magico requerido: ${requisito.nomePericia}"
                 }
-                val emPericias = periciasConhecidas(personagem).any { it == alvo || it.contains(alvo) || alvo.contains(it) }
+                val emPericias = temPericiaCompativel(personagem, requisito.nomePericia)
                 val emVantagens = vantagensConhecidas(personagem).any { it == alvo || it.contains(alvo) || alvo.contains(it) }
 
                 if (!emPericias && !emVantagens) {
@@ -341,6 +351,63 @@ object PreRequisitoChecker {
     @Suppress("UNCHECKED_CAST")
     private fun periciasConhecidas(personagem: Map<String, Any>): Set<String> {
         return personagem["pericias_conhecidas_normalizadas"] as? Set<String> ?: emptySet()
+    }
+
+    /**
+     * O NÚCLEO do nome: sem sufixo `/NT` e sem a especialização entre parênteses.
+     *
+     * Existe por causa de um bug achado em 28/07: as perícias Astronomia,
+     * Engenharia e Física pedem **"Matemática (Aplicada)"**, e o catálogo chama
+     * a perícia de **"Matemática/NT"**. Normalizados viram `matematica aplicada`
+     * e `matematica nt` — nenhum contém o outro, então o pré-requisito **nunca
+     * era satisfeito**, mesmo com a perícia na ficha.
+     *
+     * São duas convenções diferentes se cruzando: o `/NT` é do catálogo (marca
+     * perícia que depende de Nível Tecnológico) e o parêntese é do livro
+     * (especialização). Nenhuma das duas faz parte do nome de verdade.
+     *
+     * `Matemática (Aplicada)` → `matematica`
+     * `Matemática/NT`         → `matematica`
+     */
+    fun nucleoDoNome(valor: String): String {
+        val semParenteses = valor.substringBefore("(").trim()
+        val semNt = semParenteses.replace(Regex("(?i)/\\s*NT\\b"), " ")
+        return normalizar(semNt).removeSuffix(" nt").trim()
+    }
+
+    /**
+     * Se o nome pedido bate com alguma perícia da ficha, comparando pelo núcleo.
+     *
+     * A comparação por `contains` continua valendo depois do núcleo — é ela que
+     * faz "Armas de Fogo" casar com "Armas de Fogo (Pistola)".
+     */
+    private fun temPericiaCompativel(personagem: Map<String, Any>, nomePedido: String): Boolean {
+        val alvo = nucleoDoNome(nomePedido)
+        if (alvo.isBlank()) return false
+        return periciasConhecidas(personagem).any { conhecida ->
+            val nucleo = nucleoDoNome(conhecida)
+            nucleo == alvo || nucleo.contains(alvo) || alvo.contains(nucleo)
+        }
+    }
+
+    /**
+     * Se o nome pedido é uma PERÍCIA DO CATÁLOGO — independente de o personagem
+     * já tê-la.
+     *
+     * O rótulo mostrado ("Perícia: X" ou "Vantagem: X") era decidido olhando o
+     * que o personagem **já tinha**, não o que a coisa **é**. Resultado: antes de
+     * comprar Matemática, o app dizia *"Vantagem: Matemática (Aplicada)"* — que
+     * é exatamente o que o usuário reportou.
+     *
+     * Quando o catálogo não está no contexto (chamadas antigas), devolve null e
+     * quem chama volta ao palpite anterior, em vez de quebrar.
+     */
+    @Suppress("UNCHECKED_CAST")
+    private fun ehPericiaDoCatalogo(personagem: Map<String, Any>, nomePedido: String): Boolean? {
+        val catalogo = personagem["pericias_catalogo_nucleos"] as? Set<String> ?: return null
+        val alvo = nucleoDoNome(nomePedido)
+        if (alvo.isBlank()) return null
+        return catalogo.any { it == alvo || it.contains(alvo) || alvo.contains(it) }
     }
 
     @Suppress("UNCHECKED_CAST")
