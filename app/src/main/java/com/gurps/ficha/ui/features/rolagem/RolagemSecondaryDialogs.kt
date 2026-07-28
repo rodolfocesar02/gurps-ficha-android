@@ -504,7 +504,9 @@ fun RolagemEditarPvDialog(
         title = { Text("Editar PV da Rolagem") },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                Text("PV fixo: $pvFixoRolagem | Limite atual: 0 a $maxPvRolagem")
+                // O piso e negativo de proposito: -1x PV e risco de morte,
+                // -5x e morte automatica (MB p.423).
+                Text("PV fixo: $pvFixoRolagem | Limite: ${-maxPvRolagem} a $maxPvRolagem")
                 OutlinedTextField(
                     value = pvAtualInput,
                     onValueChange = onInputMudou,

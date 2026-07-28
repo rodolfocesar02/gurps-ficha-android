@@ -105,7 +105,7 @@ fun DialogosDePvPfRolagem(
             pvFixoRolagem = pvFixo,
             maxPvRolagem = maxPv,
             pvAtualInput = pvInput,
-            onInputMudou = { raw -> onPvInputMudou(raw.filter { it.isDigit() }.take(4)) },
+            onInputMudou = { raw -> onPvInputMudou(apenasInteiroComSinal(raw)) },
             onSalvar = { onSalvarPv(pvInput.toIntOrNull()) },
             onDismiss = onFecharPv
         )
@@ -115,10 +115,25 @@ fun DialogosDePvPfRolagem(
         RolagemEditarPfDialog(
             pfFixoRolagem = pfFixo,
             pfAtualInput = pfInput,
-            onInputMudou = { raw -> onPfInputMudou(raw.filter { it.isDigit() }.take(4)) },
+            onInputMudou = { raw -> onPfInputMudou(apenasInteiroComSinal(raw)) },
             onSalvar = { onSalvarPf(pfInput.toIntOrNull()) },
             onDismiss = onFecharPf
         )
     }
+}
+
+/**
+ * Filtra o texto digitado deixando um inteiro com sinal.
+ *
+ * O filtro antigo era `filter { it.isDigit() }`, que **comia o sinal de menos**
+ * — e por isso não dava para digitar PV negativo, embora o GURPS vá até −5× o
+ * PV máximo. Achado no aparelho em 28/07.
+ *
+ * O `-` só vale na primeira posição; `1-2` não é número.
+ */
+internal fun apenasInteiroComSinal(bruto: String): String {
+    val negativo = bruto.startsWith("-")
+    val digitos = bruto.filter { it.isDigit() }.take(4)
+    return if (negativo) "-$digitos" else digitos
 }
 

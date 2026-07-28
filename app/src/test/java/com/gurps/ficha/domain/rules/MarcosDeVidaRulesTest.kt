@@ -85,27 +85,41 @@ class MarcosDeVidaRulesTest {
 
     // --- consciência ---
 
+    // --- consciência: PERSISTENTE, não some depois de rolar ---
+
     @Test
-    fun `chegar a zero exige teste para manter a consciencia`() {
+    fun `com PV em zero o teste de consciencia fica na tela`() {
+        // Achado no aparelho em 28/07: o livro manda testar A CADA TURNO. Se o
+        // card sumisse na primeira rolagem, o jogador esqueceria de repetir.
         val p = heroi()
-        val testes = MarcosDeVidaRules.testesAoPerderPv(p, 3, 0)
-        assertTrue(testes.any { it.rotulo.contains("consciência") })
+        val persistentes = MarcosDeVidaRules.testesPersistentes(p, pvAtual = 0)
+        assertEquals(1, persistentes.size)
+        assertTrue(persistentes.first().rotulo.contains("consciência"))
     }
 
     @Test
-    fun `ja estando abaixo de zero nao repete o marco de consciencia`() {
-        // O teste de consciencia se repete a cada TURNO, mas isso e do combate.
-        // Aqui o marco e o cruzamento -- de -2 para -3 nao cruza nada.
-        val p = heroi()
-        val testes = MarcosDeVidaRules.testesAoPerderPv(p, -2, -3)
+    fun `o teste de consciencia NAO e disparado por evento`() {
+        // Ele vive em `testesPersistentes`, derivado do estado -- por isso nao
+        // pode aparecer tambem na lista de eventos, ou viria em dobro.
+        val testes = MarcosDeVidaRules.testesAoPerderPv(heroi(), 3, 0)
         assertTrue(testes.none { it.rotulo.contains("consciência") })
+    }
+
+    @Test
+    fun `com PV positivo nao ha teste persistente`() {
+        assertTrue(MarcosDeVidaRules.testesPersistentes(heroi(), pvAtual = 1).isEmpty())
+    }
+
+    @Test
+    fun `morto de vez nao testa mais nada`() {
+        // -5x o PV maximo e morte automatica: nao ha o que rolar.
+        assertTrue(MarcosDeVidaRules.testesPersistentes(heroi(), pvAtual = -50).isEmpty())
     }
 
     @Test
     fun `Boa Forma entra em cima de qualquer teste de HT`() {
         val p = heroi(vantagens = listOf(dificilDeSubjugar(1), boaForma(15)))
-        val teste = MarcosDeVidaRules.testesAoPerderPv(p, 3, 0)
-            .first { it.rotulo.contains("consciência") }
+        val teste = MarcosDeVidaRules.testesPersistentes(p, pvAtual = 0).first()
         assertEquals("HT 10 + Dificil 1 + Boa Forma 2", 13, teste.alvo)
         assertEquals(2, teste.origens.size)
     }
@@ -113,8 +127,7 @@ class MarcosDeVidaRulesTest {
     @Test
     fun `Boa Forma de 5 pontos da apenas mais 1`() {
         val p = heroi(vantagens = listOf(boaForma(5)))
-        val teste = MarcosDeVidaRules.testesAoPerderPv(p, 3, 0).first()
-        assertEquals(11, teste.alvo)
+        assertEquals(11, MarcosDeVidaRules.testesPersistentes(p, 0).first().alvo)
     }
 
     // --- morte ---
@@ -150,8 +163,7 @@ class MarcosDeVidaRulesTest {
         // Sao vantagens diferentes: uma e para nao desmaiar, a outra para nao
         // morrer. Trocar as duas seria dar bonus onde o livro nao da.
         val p = heroi(vantagens = listOf(duroDeMatar(3)))
-        val teste = MarcosDeVidaRules.testesAoPerderPv(p, 3, 0)
-            .first { it.rotulo.contains("consciência") }
+        val teste = MarcosDeVidaRules.testesPersistentes(p, pvAtual = 0).first()
         assertEquals("HT puro, sem Duro de Matar", 10, teste.alvo)
     }
 

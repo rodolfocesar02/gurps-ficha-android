@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
@@ -149,6 +150,7 @@ fun PainelStBracal(
     Row(
         modifier = Modifier
             .fillMaxWidth()
+            .heightIn(max = 32.dp)
             .clickable { onAlternar() }
             .semantics {
                 contentDescription = StBracalRules.rotuloAcessivel(personagem, ativo)
@@ -190,6 +192,7 @@ fun PainelDxBracal(
     Row(
         modifier = Modifier
             .fillMaxWidth()
+            .heightIn(max = 32.dp)
             .clickable { onAlternar() }
             .semantics {
                 contentDescription = DxBracalRules.rotuloAcessivel(personagem, ativo)

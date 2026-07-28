@@ -660,12 +660,18 @@ fun TabRolagem(viewModel: FichaViewModel) {
 
         // Marcos de PV/PF: testes exigidos pelo ferimento e estado atual.
         PainelMarcosDeVida(
-            testesPendentes = testesDeMarco,
+            // Persistentes vem do ESTADO (repetem a cada turno); pendentes vem
+            // do EVENTO (somem depois de rolados).
+            testesPendentes = remember(testesDeMarco, pvAtualRolagem, p.pontosVida, p.vantagens) {
+                MarcosDeVidaRules.testesPersistentes(p, pvAtualRolagem) + testesDeMarco
+            },
             estados = remember(pvAtualRolagem, pfAtualRolagem, p.pontosVida, p.pontosFadiga) {
                 MarcosDeVidaRules.estadosDe(p, pvAtualRolagem, pfAtualRolagem)
             },
             isPraCegoVariant = isPraCegoVariant,
             onRolar = { teste ->
+                // Persistente nao sai da lista: ele volta na proxima composicao
+                // porque e derivado do PV atual.
                 testesDeMarco = testesDeMarco - teste
                 executarRolagem(TipoTeste.ATRIBUTO, teste.rotulo, teste.alvo, 0)
             },

@@ -72,16 +72,9 @@ object MarcosDeVidaRules {
             )
         }
 
-        // 2. Chegou a 0 ou menos: teste a cada turno para não desmaiar.
-        if (pvAntes > 0 && pvDepois <= 0) {
-            val (bonus, origens) = bonusDe(personagem, ID_DIFICIL_DE_SUBJUGAR)
-            testes += TesteExigido(
-                rotulo = "Manter a consciência",
-                alvo = ht + bonus,
-                explicacao = "PV chegou a $pvDepois. Repete a cada turno; falha = desmaia.",
-                origens = origens
-            )
-        }
+        // 2. O teste de consciencia NAO entra aqui: ele se repete a cada turno
+        //    enquanto o PV estiver em 0 ou menos, entao vive em
+        //    `testesPersistentes` e nao some depois de rolado.
 
         // 3. Cada múltiplo negativo do PV máximo é um teste de morte.
         //    -1×, -2×, -3×, -4× exigem teste; -5× é morte automática.
@@ -110,6 +103,33 @@ object MarcosDeVidaRules {
             val limite = -multiplo * maximo
             pvAntes > limite && pvDepois <= limite
         }
+
+    /**
+     * Testes que **continuam valendo** enquanto o PV estiver na faixa.
+     *
+     * Diferente dos de [testesAoPerderPv], que são disparados por um evento e
+     * somem depois de rolados. O livro diz que a 0 PV o personagem testa HT
+     * **a cada turno** para continuar consciente — some da tela depois da
+     * primeira rolagem e o jogador esquece de repetir.
+     *
+     * Achado no aparelho em 28/07: *"precisa manter o teste na tela, mesmo
+     * depois de rolar pela primeira vez"*.
+     *
+     * Só sai quando o personagem sobe de 0 PV — ou morre de vez, quando não há
+     * mais o que testar.
+     */
+    fun testesPersistentes(personagem: Personagem, pvAtual: Int): List<TesteExigido> {
+        if (pvAtual > 0 || morteAutomatica(personagem, pvAtual)) return emptyList()
+        val (bonus, origens) = bonusDe(personagem, ID_DIFICIL_DE_SUBJUGAR)
+        return listOf(
+            TesteExigido(
+                rotulo = "Manter a consciência",
+                alvo = personagem.ht + bonus,
+                explicacao = "PV em $pvAtual. Repete a cada turno; falha = desmaia.",
+                origens = origens
+            )
+        )
+    }
 
     /** Se o personagem já morreu de vez (−5× o PV máximo). Sem teste. */
     fun morteAutomatica(personagem: Personagem, pvAtual: Int): Boolean =

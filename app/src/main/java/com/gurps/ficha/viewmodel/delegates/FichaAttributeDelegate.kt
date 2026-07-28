@@ -50,13 +50,32 @@ class FichaAttributeDelegate {
 
     fun atualizarModDeslocamentoBasico(personagem: Personagem, valor: Int) = personagem.copy(modDeslocamentoBasico = valor.coerceIn(-10, 10))
 
+    /**
+     * PV atual da rolagem, com o piso do LIVRO e não zero.
+     *
+     * O piso era 0 e travava a ficha no marco mais banal do GURPS: o
+     * personagem some de 0 PV para baixo — testa HT para não desmaiar, e a cada
+     * múltiplo negativo do PV máximo testa para não morrer, até −5× que é morte
+     * automática (MB p.423). Com o piso em zero, nada disso podia ser
+     * registrado, e o teste de morte do Lote MARCOS-1 era inalcançável.
+     *
+     * Achado no aparelho em 28/07: *"não consigo descer o PV pra −10"*.
+     */
     fun atualizarPontosVidaRolagemAtual(personagem: Personagem, valor: Int?): Personagem {
-        val maxPvRolagem = (personagem.pontosVida.coerceAtLeast(0) * 5).coerceAtLeast(0)
-        return personagem.copy(pontosVidaRolagemAtual = valor?.coerceIn(0, maxPvRolagem))
+        val pvMax = personagem.pontosVida.coerceAtLeast(1)
+        val teto = pvMax * 5
+        val piso = -pvMax * 5     // morte automática; abaixo disso não há regra
+        return personagem.copy(pontosVidaRolagemAtual = valor?.coerceIn(piso, teto))
     }
 
-    fun atualizarPontosFadigaRolagemAtual(personagem: Personagem, valor: Int?) =
-        personagem.copy(pontosFadigaRolagemAtual = valor?.coerceAtLeast(0))
+    /**
+     * PF atual, idem: o livro vai até −1× o PF máximo, onde o personagem
+     * desmaia (MB p.426). Zero não é o fundo.
+     */
+    fun atualizarPontosFadigaRolagemAtual(personagem: Personagem, valor: Int?): Personagem {
+        val pfMax = personagem.pontosFadiga.coerceAtLeast(1)
+        return personagem.copy(pontosFadigaRolagemAtual = valor?.coerceIn(-pfMax, pfMax * 5))
+    }
         
     fun atualizarModeloRacial(personagem: Personagem, novoModelo: ModeloRacial): Personagem {
         val novaAparencia = if (novoModelo.descricao.isNotBlank() && personagem.aparencia.isBlank()) {
