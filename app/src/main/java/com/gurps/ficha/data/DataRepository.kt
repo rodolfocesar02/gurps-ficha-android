@@ -660,8 +660,8 @@ open class DataRepository(internal val context: Context) {
 
         val condicoesEstado = mutableSetOf<String>()
         personagem.desvantagensTotais.forEach { condicoesEstado.add(normalizarNomeRequisito(it.nome)) }
-        personagem.modeloRacial.qualidades.forEach { condicoesEstado.add(normalizarNomeRequisito(it)) }
-        personagem.modeloRacial.peculiaridades.forEach { condicoesEstado.add(normalizarNomeRequisito(it)) }
+        personagem.modeloRacial.todasAsQualidades().forEach { condicoesEstado.add(normalizarNomeRequisito(it)) }
+        personagem.modeloRacial.todasAsPeculiaridades().forEach { condicoesEstado.add(normalizarNomeRequisito(it)) }
         personagem.qualidades.forEach { condicoesEstado.add(normalizarNomeRequisito(it)) }
         personagem.peculiaridades.forEach { condicoesEstado.add(normalizarNomeRequisito(it)) }
         mapa["condicoes_estado_normalizadas"] = condicoesEstado

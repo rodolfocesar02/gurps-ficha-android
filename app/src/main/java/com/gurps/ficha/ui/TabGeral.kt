@@ -1,5 +1,10 @@
 package com.gurps.ficha.ui
 
+import com.gurps.ficha.model.modForcaTotal
+import com.gurps.ficha.model.modDestrezaTotal
+import com.gurps.ficha.model.modInteligenciaTotal
+import com.gurps.ficha.model.modVitalidadeTotal
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectVerticalDragGestures
 import androidx.compose.foundation.layout.Arrangement
@@ -194,16 +199,16 @@ fun TabGeral(viewModel: FichaViewModel) {
             if (isPraCegoVariant) {
                 Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
                     AtributoPrimarioLinearCard("ST", p.st, (p.forca - p.forcaBase) * 10) { delta ->
-                        viewModel.atualizarForca(delta - p.modeloRacial.modForca)
+                        viewModel.atualizarForca(delta - p.modeloRacial.modForcaTotal())
                     }
                     AtributoPrimarioLinearCard("DX", p.dx, (p.destreza - p.destrezaBase) * 20) { delta ->
-                        viewModel.atualizarDestreza(delta - p.modeloRacial.modDestreza)
+                        viewModel.atualizarDestreza(delta - p.modeloRacial.modDestrezaTotal())
                     }
                     AtributoPrimarioLinearCard("IQ", p.iq, (p.inteligencia - p.inteligenciaBase) * 20) { delta ->
-                        viewModel.atualizarInteligencia(delta - p.modeloRacial.modInteligencia)
+                        viewModel.atualizarInteligencia(delta - p.modeloRacial.modInteligenciaTotal())
                     }
                     AtributoPrimarioLinearCard("HT", p.ht, (p.vitalidade - p.vitalidadeBase) * 10) { delta ->
-                        viewModel.atualizarVitalidade(delta - p.modeloRacial.modVitalidade)
+                        viewModel.atualizarVitalidade(delta - p.modeloRacial.modVitalidadeTotal())
                     }
                 }
             } else {
@@ -212,16 +217,16 @@ fun TabGeral(viewModel: FichaViewModel) {
                     horizontalArrangement = Arrangement.SpaceEvenly
                 ) {
                     AtributoEditor("ST", p.st, (p.forca - p.forcaBase) * 10) { delta ->
-                        viewModel.atualizarForca(delta - p.modeloRacial.modForca)
+                        viewModel.atualizarForca(delta - p.modeloRacial.modForcaTotal())
                     }
                     AtributoEditor("DX", p.dx, (p.destreza - p.destrezaBase) * 20) { delta ->
-                        viewModel.atualizarDestreza(delta - p.modeloRacial.modDestreza)
+                        viewModel.atualizarDestreza(delta - p.modeloRacial.modDestrezaTotal())
                     }
                     AtributoEditor("IQ", p.iq, (p.inteligencia - p.inteligenciaBase) * 20) { delta ->
-                        viewModel.atualizarInteligencia(delta - p.modeloRacial.modInteligencia)
+                        viewModel.atualizarInteligencia(delta - p.modeloRacial.modInteligenciaTotal())
                     }
                     AtributoEditor("HT", p.ht, (p.vitalidade - p.vitalidadeBase) * 10) { delta ->
-                        viewModel.atualizarVitalidade(delta - p.modeloRacial.modVitalidade)
+                        viewModel.atualizarVitalidade(delta - p.modeloRacial.modVitalidadeTotal())
                     }
                 }
             }

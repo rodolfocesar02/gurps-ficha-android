@@ -89,7 +89,8 @@ data class Personagem(
         // Só CONCEDIDA entra como perícia própria (p.454). BONUS (p.453)
         // NÃO concede a perícia — é só +N no NH quando o personagem usa
         // a perícia (aplicado em calcularNivel via bonusRacial).
-        val raciais = modeloRacial.pericias
+        // todasAsPericias: inclui as de dentro das metacaracteristicas.
+        val raciais = modeloRacial.todasAsPericias()
             .filter { it.tipo == TipoPericiaRacial.CONCEDIDA }
             .map { pr ->
             PericiaSelecionada(
@@ -133,30 +134,33 @@ data class Personagem(
      * `MagicEngine`), cada um do seu jeito. Era o sinal de que faltava um lugar
      * único — este.
      *
+     * Inclui também os componentes das **metacaracterísticas** da raça, que
+     * são um pacote dentro do pacote. Ver `ModeloRacial.todasAsVantagens`.
+     *
      * ⚠️ **Quem soma efeito de traço deve usar esta lista, não `vantagens`.**
      * A lista crua continua existindo para quem precisa distinguir o que o
      * jogador comprou (custo em pontos, edição, remoção).
      */
     val vantagensTotais: List<VantagemSelecionada>
-        get() = vantagens + modeloRacial.vantagens
+        get() = vantagens + modeloRacial.todasAsVantagens()
 
     /** O mesmo para desvantagens. Ver [vantagensTotais]. */
     val desvantagensTotais: List<DesvantagemSelecionada>
-        get() = desvantagens + modeloRacial.desvantagens
+        get() = desvantagens + modeloRacial.todasAsDesvantagens()
 
     // Atributos combinados (Personagem + Modelo Racial)
-    val st: Int get() = forca + modeloRacial.modForca + com.gurps.ficha.domain.rules.AtributoBonusRules.bonusDe(this, com.gurps.ficha.domain.rules.traits.Atributo.ST)
-    val dx: Int get() = destreza + modeloRacial.modDestreza + com.gurps.ficha.domain.rules.AtributoBonusRules.bonusDe(this, com.gurps.ficha.domain.rules.traits.Atributo.DX)
-    val iq: Int get() = inteligencia + modeloRacial.modInteligencia + com.gurps.ficha.domain.rules.AtributoBonusRules.bonusDe(this, com.gurps.ficha.domain.rules.traits.Atributo.IQ)
-    val ht: Int get() = vitalidade + modeloRacial.modVitalidade + com.gurps.ficha.domain.rules.AtributoBonusRules.bonusDe(this, com.gurps.ficha.domain.rules.traits.Atributo.HT)
+    val st: Int get() = forca + modeloRacial.modForcaTotal() + com.gurps.ficha.domain.rules.AtributoBonusRules.bonusDe(this, com.gurps.ficha.domain.rules.traits.Atributo.ST)
+    val dx: Int get() = destreza + modeloRacial.modDestrezaTotal() + com.gurps.ficha.domain.rules.AtributoBonusRules.bonusDe(this, com.gurps.ficha.domain.rules.traits.Atributo.DX)
+    val iq: Int get() = inteligencia + modeloRacial.modInteligenciaTotal() + com.gurps.ficha.domain.rules.AtributoBonusRules.bonusDe(this, com.gurps.ficha.domain.rules.traits.Atributo.IQ)
+    val ht: Int get() = vitalidade + modeloRacial.modVitalidadeTotal() + com.gurps.ficha.domain.rules.AtributoBonusRules.bonusDe(this, com.gurps.ficha.domain.rules.traits.Atributo.HT)
 
     // === CALCULOS AUTOMATICOS ===
-    val pontosVida: Int get() = st + modPontosVida + modeloRacial.modPontosVida + com.gurps.ficha.domain.rules.AtributoBonusRules.bonusDe(this, com.gurps.ficha.domain.rules.traits.Atributo.PV)
-    val vontade: Int get() = iq + modVontade + modeloRacial.modVontade + com.gurps.ficha.domain.rules.AtributoBonusRules.bonusDe(this, com.gurps.ficha.domain.rules.traits.Atributo.VONT)
-    val percepcao: Int get() = iq + modPercepcao + modeloRacial.modPercepcao + com.gurps.ficha.domain.rules.AtributoBonusRules.bonusDe(this, com.gurps.ficha.domain.rules.traits.Atributo.PER)
-    val pontosFadiga: Int get() = ht + modPontosFadiga + modeloRacial.modPontosFadiga + com.gurps.ficha.domain.rules.AtributoBonusRules.bonusDe(this, com.gurps.ficha.domain.rules.traits.Atributo.PF)
-    val velocidadeBasica: Float get() = (ht + dx) / 4f + modVelocidadeBasica + modeloRacial.modVelocidadeBasica
-    val deslocamentoBasico: Int get() = velocidadeBasica.toInt() + modDeslocamentoBasico + modeloRacial.modDeslocamentoBasico + com.gurps.ficha.domain.rules.AtributoBonusRules.bonusDe(this, com.gurps.ficha.domain.rules.traits.Atributo.DESL)
+    val pontosVida: Int get() = st + modPontosVida + modeloRacial.modPontosVidaTotal() + com.gurps.ficha.domain.rules.AtributoBonusRules.bonusDe(this, com.gurps.ficha.domain.rules.traits.Atributo.PV)
+    val vontade: Int get() = iq + modVontade + modeloRacial.modVontadeTotal() + com.gurps.ficha.domain.rules.AtributoBonusRules.bonusDe(this, com.gurps.ficha.domain.rules.traits.Atributo.VONT)
+    val percepcao: Int get() = iq + modPercepcao + modeloRacial.modPercepcaoTotal() + com.gurps.ficha.domain.rules.AtributoBonusRules.bonusDe(this, com.gurps.ficha.domain.rules.traits.Atributo.PER)
+    val pontosFadiga: Int get() = ht + modPontosFadiga + modeloRacial.modPontosFadigaTotal() + com.gurps.ficha.domain.rules.AtributoBonusRules.bonusDe(this, com.gurps.ficha.domain.rules.traits.Atributo.PF)
+    val velocidadeBasica: Float get() = (ht + dx) / 4f + modVelocidadeBasica + modeloRacial.modVelocidadeBasicaTotal()
+    val deslocamentoBasico: Int get() = velocidadeBasica.toInt() + modDeslocamentoBasico + modeloRacial.modDeslocamentoBasicoTotal() + com.gurps.ficha.domain.rules.AtributoBonusRules.bonusDe(this, com.gurps.ficha.domain.rules.traits.Atributo.DESL)
     val esquiva: Int get() = (velocidadeBasica + 3).toInt() // Esquiva Básica (sem carga)
 
     // Deslocamento Aquático: floor(desloc/5) + bônus da vantagem deslocamento_aquatico (racial + pessoal)

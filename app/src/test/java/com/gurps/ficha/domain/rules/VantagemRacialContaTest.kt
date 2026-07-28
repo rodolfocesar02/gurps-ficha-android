@@ -4,7 +4,10 @@ import com.gurps.ficha.domain.rules.traits.EfeitoDeclarado
 import com.gurps.ficha.domain.rules.traits.EfeitoInterpretador
 import com.gurps.ficha.domain.rules.traits.TraitRuleRegistry
 import com.gurps.ficha.model.DesvantagemSelecionada
+import com.gurps.ficha.model.MetacaracteristicaRef
 import com.gurps.ficha.model.ModeloRacial
+import com.gurps.ficha.model.PericiaRacial
+import com.gurps.ficha.model.TipoPericiaRacial
 import com.gurps.ficha.model.Personagem
 import com.gurps.ficha.model.VantagemSelecionada
 import com.gurps.ficha.viewmodel.DefenseType
@@ -193,6 +196,82 @@ class VantagemRacialContaTest {
                 p, IncompatibilidadeDeTracos.ID_ABASCANTO
             ) != null
         )
+    }
+
+    // --- metacaracterística: o pacote DENTRO do pacote (MB p.262) ---
+
+    private fun metaCom(nome: String, conteudo: ModeloRacial) =
+        MetacaracteristicaRef(id = nome.lowercase(), nome = nome, conteudo = conteudo)
+
+    @Test
+    fun `vantagem dentro de METACARACTERISTICA conta`() {
+        // O usuário perguntou por raça E metacaracterística. A metacaracterística
+        // é um segundo nível: os traços não estão em `modeloRacial.vantagens`,
+        // estão em `metacaracteristicas[i].conteudo.vantagens`.
+        val p = Personagem(
+            nome = "Teste", forca = 10,
+            modeloRacial = ModeloRacial(
+                nome = "Espírito",
+                metacaracteristicas = listOf(
+                    metaCom("Corpo de Pedra", ModeloRacial(
+                        vantagens = listOf(vant(StEspecializadaRules.ID_LEVANTAMENTO, "ST de Levantamento", 5))
+                    ))
+                )
+            )
+        )
+        assertEquals(5, StEspecializadaRules.bonusDeLevantamento(p))
+    }
+
+    @Test
+    fun `modificador de atributo da METACARACTERISTICA entra na conta`() {
+        // "Corpo de Madeira" do catálogo dá −1 de Velocidade Básica. O custo já
+        // era cobrado (custoTotal soma custoMeta); o EFEITO não chegava.
+        val p = Personagem(
+            nome = "Teste", forca = 10, destreza = 10, vitalidade = 10,
+            modeloRacial = ModeloRacial(
+                nome = "Boneco",
+                metacaracteristicas = listOf(
+                    metaCom("Corpo de Madeira", ModeloRacial(modVelocidadeBasica = -1f))
+                )
+            )
+        )
+        assertEquals(4.0f, p.velocidadeBasica, 0.001f)
+    }
+
+    @Test
+    fun `metacaracteristica dentro de metacaracteristica ainda conta`() {
+        val interna = ModeloRacial(vantagens = listOf(vant("ambidestria", "Ambidestria")))
+        val p = Personagem(
+            nome = "Teste",
+            modeloRacial = ModeloRacial(
+                metacaracteristicas = listOf(
+                    metaCom("Externa", ModeloRacial(
+                        metacaracteristicas = listOf(metaCom("Interna", interna))
+                    ))
+                )
+            )
+        )
+        assertEquals(0, MaoInabilRules.penalidadeDe(p, usandoMaoInabil = true))
+    }
+
+    @Test
+    fun `pericia concedida dentro da metacaracteristica aparece para rolar`() {
+        val p = Personagem(
+            nome = "Teste",
+            modeloRacial = ModeloRacial(
+                metacaracteristicas = listOf(
+                    metaCom("Bicho", ModeloRacial(
+                        pericias = listOf(
+                            PericiaRacial(
+                                nome = "Rastreamento", nivelRelativo = 0,
+                                tipo = TipoPericiaRacial.CONCEDIDA
+                            )
+                        )
+                    ))
+                )
+            )
+        )
+        assertTrue(p.periciasTotais.any { it.nome == "Rastreamento" })
     }
 
     // --- a rede de segurança ---

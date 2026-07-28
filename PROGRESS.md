@@ -5053,3 +5053,14 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - **Meia-correção encontrada no caminho:** em `ResistenciaRules`, o **alvo** do teste já somava o bônus racial mas a **explicação** na tela não citava a origem racial. Números certos, texto mentindo.
 - **Testes:** `VantagemRacialContaTest`, 13 casos, um por família de regra, todos com a vantagem **só na raça**.
 - **Status:** ✅ Build OK nas 2 variantes · lint OK · gate verde · ⏭️ **PENDENTE: teste no aparelho** — roteiro T-RACIAL abaixo.
+
+### 🔴 O segundo andar do mesmo buraco: METACARACTERÍSTICA — 28 de Julho de 2026 (versão 3.6-META)
+O usuário perguntou por raça **e metacaracterística**. Consertada a raça, a metacaracterística ainda estava fora.
+
+- **Ela é um pacote dentro do pacote** (MB p.262). "Espírito" guarda Idade Imutável, Imunidade a Dano e mais uma dúzia; "Corpo de Madeira" guarda −1 de Velocidade Básica. Os traços não estão em `modeloRacial.vantagens` — estão em `metacaracteristicas[i].conteudo.vantagens`, um nível abaixo. `vantagensTotais` sozinha ainda não os via.
+- 🔴 **E os modificadores de atributo dela nunca valeram.** O `custoTotal` já somava `custoMeta` desde sempre, então o personagem **pagava** os 20 pontos do −1 de Velocidade do Corpo de Madeira e continuava com a Velocidade cheia. Custo cobrado, efeito ausente — o pior tipo de erro, porque a ficha fecha a conta certinho.
+- **Conserto:** `ModeloRacialTotais.kt` (arquivo novo, extensões no mesmo pacote) achata raça + metacaracterísticas: traços, perícias, qualidades, peculiaridades e os dez modificadores de atributo. `Personagem` e `TabGeral` passaram a ler dos totais — os dois juntos, porque a TabGeral converte o valor digitado subtraindo o modificador racial, e divergir faria o atributo sair torto ao digitar.
+- **Vai em arquivo próprio** porque `Personagem.kt` já passa de 1300 linhas: a regra do projeto é criar ao lado, não engordar.
+- ⚠️ **Guarda de profundidade (4).** Metacaracterística pode conter outra. O limite não é regra do GURPS — é freio contra ficha salva defeituosa que aponte para si mesma e travaria o app num laço infinito.
+- **Testes:** +4 casos em `VantagemRacialContaTest` (17 no total), inclusive metacaracterística dentro de metacaracterística.
+- **Status:** ✅ Build OK nas 2 variantes · lint OK · gate verde · APKs gerados · ⏭️ **PENDENTE: teste no aparelho**.
