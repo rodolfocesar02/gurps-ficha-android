@@ -7,6 +7,54 @@
 >
 > Criado em 2026-07-27. Escopo: só VANTAGENS. Desvantagens virão em arquivo
 > irmão (`Automações_Desvantagens.md`) depois.
+---
+
+# ✅ STATUS FINAL — 28 de Julho de 2026 (ler primeiro)
+
+**Este plano está CUMPRIDO.** Números reais, medidos no catálogo:
+
+| Categoria | Previsto no plano | Situação real |
+|---|---|---|
+| CAT-1 Perícia | ~20 | ✅ **14/14 dos nomeados** declarados |
+| CAT-2 Defesa | ~10 | ✅ 3 em Kotlin + Reflexos em Combate declarado |
+| CAT-3 Atributo | ~15 | ✅ só existem 4 no catálogo, e **as 4 são escopadas** (ver abaixo) |
+| CAT-4 RD | ~10 | ❌ descartado — é regra, não dado |
+| CAT-5 Deslocamento | ~15 | ❌ descartado — já há cálculo próprio; declarar duplicaria |
+| CAT-6 Reação | ~10 | ✅ **10 declarados** (REACAO-1/3/4) |
+| CAT-7 Ataque/dano | ~6 | ✅ 4 em Kotlin; os 3 "verificar" foram lidos e não geram bônus |
+| CAT-8 Sentidos | ~19 | ✅ `SentidoRules` já tratava |
+| CAT-9 Custo especial | 30 | ✅ já implementadas |
+| CAT-10 Narrativa | ~118 | fora do escopo por definição |
+
+**Total: 42 traços com efeito declarado + 13 regras Kotlin.**
+
+## O que foi LIDO e descartado, com motivo (não repetir)
+
+| id | Por quê |
+|---|---|
+| `crescimento`, `encolhimento` | mudam o **Modificador de Tamanho**, que não é atributo do modelo. Precisa de um gancho de MT — é regra nova, não declaração |
+| `durabilidade_sobrenatural` | "imune a choque, atordoamento e nocaute" é comportamento do **motor de combate**, como a Vulnerabilidade (D-6) |
+| `neutralizar` | gera rolagem, sim — mas é **Disputa Rápida de Vontade contra um alvo**, e a aba Rolagem só rola contra número-alvo |
+| `dominacao`, `restaurar_membros` | narrativa e tempo de recuperação; sem número por rolagem |
+| `ambidestria` | o "−4 na DX" é a penalidade que ela **REMOVE**. Declarar daria −4 a quem comprou |
+| `infravisao` (+2 Visão), sentidos em geral | já tratados pelo `SentidoRules` — declarar daria o bônus **em dobro** |
+| `versatil` | 5 pts fixos com três especialidades; `porOpcao` não ajuda porque o custo é o mesmo |
+| `abencoado` | `costKind: special` sem lista de `options` — o `porOpcao` precisa delas para o validador conferir |
+| 13 traços de "teste pontual de atributo" | "+1 HT para ver se sobrevive" e afins. **Única pendência real** — ver abaixo |
+
+## Única pendência
+
+**Condicional de ATRIBUTO.** O interpretador sabe representá-los, mas a caixinha
+de bônus condicional só existe para perícia e defesa: a rolagem de atributo é um
+toque direto no número, sem diálogo onde a caixinha caiba. **Declarar hoje seria
+efeito morto na ficha.** Precisa de decisão de UI antes.
+
+Traços afetados: `duro_de_matar`, `dificil_de_subjugar`, `hipoalgia`,
+`tolerancia_ao_alcool`, `facil_de_matar`, `enjoo`, `enjoo_espacial`,
+`estomago_sensivel`, `fanatismo`, `sangue_frio`, `vicio`, `dorminhoco`,
+`supersensitivismo`.
+
+---
 
 ---
 

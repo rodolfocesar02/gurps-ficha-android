@@ -10,6 +10,50 @@
 > desvantagem**.
 >
 > Criado em 2026-07-27.
+---
+
+# ✅ STATUS FINAL — 28 de Julho de 2026 (ler primeiro)
+
+**Este plano está CUMPRIDO.** Números reais, medidos no catálogo:
+
+| Categoria | Previsto | Situação real |
+|---|---|---|
+| CAT-D1 Autocontrole | 35 | ✅ FEITO (D-1). São **30**, não 35 — contei pela palavra na descrição em vez do marcador `*` do custo |
+| CAT-D2 Penalidade | ~35 | ✅ triado um a um (V-8): dos candidatos brutos sobraram poucos. `gordo`, `acima_do_peso`, `caracteristicas_distintas`, `veracidade`, `daltonismo` declarados |
+| CAT-D3 Reação negativa | ~23 | ✅ **9 declarados** (REACAO-3/4). Os outros não têm número por rolagem — ver descartes |
+| CAT-D4 Perda de sentido | 3 | ✅ `SentidoRules` já tratava |
+| CAT-D5 Deslocamento | 3 | ❌ descartado — declarar duplicaria o cálculo existente |
+| CAT-D6 Vulnerabilidade | 1 | ❌ pertence ao `InjuryRules` |
+| CAT-D7 Custo especial | 15 | ✅ já implementadas |
+| CAT-D8 Interpretação pura | ~124 | fora do escopo por definição |
+
+> ⚠️ **A estimativa de ~23 em CAT-D3 era alta.** A classificação foi por
+> palavra-chave; lendo as descrições, a maioria menciona reação sem dar número
+> por rolagem ("as pessoas o evitam"). Isso vale para todas as contagens "~"
+> deste plano — foram chutes de varredura, não leitura.
+
+## Descartes de CAT-D3, com motivo
+
+| id | Por quê |
+|---|---|
+| `reputacao` | quatro componentes (modificador, público, frequência) **e uma rolagem** para ver se reconheceram. Não é dado |
+| `viciado_em_trabalho` | "+1 no início, depois −1 ou −2" — depende do tempo de convivência, que o app não acompanha |
+| `deficiencias_menores` | "o Mestre **pode** impor −1". Discricionário, não regra |
+| `vicio` | custo Variável, e a penalidade é de abstinência |
+
+## Armadilhas achadas na leitura (valem para o próximo lote)
+
+- `facil_de_decifrar`: o "+4 em Empatia" é para **quem lê** o personagem, não
+  para ele. Declarar daria o bônus à pessoa errada.
+- `amigavel` e `senso_do_dever` dão bônus **positivo** sendo desvantagens. Não é
+  engano: o GURPS cobra em outro lugar.
+- `sem_um_dedo`: escopo por membro, mesmo impasse do `st_bracal`.
+
+## Única pendência
+
+A mesma do plano de vantagens: **condicional de atributo** sem UI onde caiba.
+
+---
 
 ---
 

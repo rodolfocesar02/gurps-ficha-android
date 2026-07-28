@@ -4994,3 +4994,16 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - **Dúvida esclarecida sem mudar código** (`a2a27c2e`): a nota do Mestre de Armas não aparecia porque o bônus era **zero** — a ficha tinha Faca NH 10 com DX 10, e o MB p.99 só dá bônus a partir de DX+1. Subindo para NH 12 apareceu `+2/dado`. Virou teste.
 - **Fecha as fases AUTOM-3 a AUTOM-7.** Nada pendente de teste.
 
+### Lote REACAO-4 — 28 de Julho de 2026 (commit de7c066b)
+**Conferência dos dois planos item a item; +9 modificadores de reação (branch GURPS-Saga)**
+- Motivo do lote: o usuário perguntou se faltava algo dos planos de Vantagens/Desvantagens. Em vez de responder de memória, cada traço nomeado nos dois documentos foi confrontado com o catálogo.
+- **O que a conferência achou:** a varredura do REACAO-3 usava uma regex que só pegava `[+-]N ... reação` nessa ordem. Várias descrições escrevem ao contrário — *"a reação sofre uma penalidade de −2"* — e escaparam. Mais **9 traços** entraram.
+  - Vantagens: `lamentavel` (+3), `metabolismo_impoluto` (+1), `falar_com_animais` (+2) — todas condicionais.
+  - Desvantagens: `paranoia` (−2, incondicional), `estigma_social` (`porOpcao` −1/−2/−3/−4, espelho exato do Reconhecimento Social), `amigavel` (+2/+4), `fantasias` (−1/−2/−3), `assustar_animais` (−4), `senso_do_dever` (+2).
+- **Duas armadilhas na leitura**: `metabolismo_impoluto` também diz "−1 para rastreamento por faro" — esse −1 é penalidade para **quem rastreia** o personagem, não para ele (mesma família do `facil_de_decifrar`). E `amigavel`/`senso_do_dever` dão bônus **positivo** sendo desvantagens: no GURPS elas cobram em outro lugar.
+- **Os 6 itens dos planos que nunca tinham sido verificados** foram lidos e descartados com motivo: `crescimento`/`encolhimento` mexem no Modificador de Tamanho (precisa de gancho novo, não é declaração); `durabilidade_sobrenatural` é comportamento do motor de combate; `neutralizar` gera rolagem mas é **Disputa Rápida contra alvo**, que a aba Rolagem não modela; `dominacao` e `restaurar_membros` são narrativa.
+- **Os dois planos foram FECHADOS** com um bloco `STATUS FINAL` no topo, com os números reais e a tabela de descartes. Registro honesto: as contagens "~" dos planos eram chutes de varredura por palavra-chave. CAT-D3 previa ~23 e a realidade são 9 com número por rolagem.
+- **Única pendência real das duas frentes**: condicional de **atributo** ("+1 HT para ver se sobrevive", 13 traços). O interpretador sabe representá-los, mas a caixinha só existe para perícia e defesa — a rolagem de atributo é um toque direto no número, sem diálogo onde ela caiba. Declarar hoje seria efeito morto.
+- **Números**: 33 → **42 traços** declarados, 60 → **69 efeitos**.
+- **Status:** ✅ Build OK nas 2 variantes · gate **1184/0** · ⏭️ teste no aparelho: reusar o T9, agora com Paranoia (−2 direto) e Estigma Social (−2 em −10 pts).
+
