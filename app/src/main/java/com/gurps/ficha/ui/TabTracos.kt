@@ -23,6 +23,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.gurps.ficha.domain.rules.TetoDeAtributoRules
 import com.gurps.ficha.model.DesvantagemSelecionada
 import com.gurps.ficha.model.VantagemSelecionada
 import com.gurps.ficha.viewmodel.FichaViewModel
@@ -63,7 +64,25 @@ fun TabTracos(viewModel: FichaViewModel) {
         viewModel.dataRepository.desvantagens.associateBy { it.id }
     }
 
+    // Lote TETO-HT: Magro limita a HT em 14, Muito Gordo em 13 (MB p.19).
+    // AVISA, nao impede -- o jogador pode ter comprado a HT antes, ou o Mestre
+    // pode ter liberado. Bloquear repetiria o erro do `conhecimento_oculto`.
+    val tetosViolados = remember(p.desvantagens, p.ht) {
+        TetoDeAtributoRules.violacoes(p)
+    }
+
     StandardTabColumn {
+        tetosViolados.forEach { violacao ->
+            Text(
+                "⚠ ${violacao.aviso}",
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.error,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .semantics { contentDescription = "Atenção. ${violacao.aviso}" }
+            )
+        }
+
         BotaoAcaoTracosPadrao(
             texto = "Raça e Metacaracterísticas (${p.modeloRacial.nome})",
             onClick = { showModeloRacialDialog = true }
