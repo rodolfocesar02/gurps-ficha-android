@@ -1689,6 +1689,48 @@
         "alvo": "Trabalhos em Couro",
         "valor": 1,
         "porNivel": true
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Arrombamento/NT",
+        "valor": 1,
+        "porNivel": true,
+        "condicao": "se o Mestre pedir teste baseado em DX (trabalho delicado)"
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Artista",
+        "valor": 1,
+        "porNivel": true,
+        "condicao": "se o Mestre pedir teste baseado em DX (trabalho delicado)"
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Cirurgia/NT",
+        "valor": 1,
+        "porNivel": true,
+        "condicao": "se o Mestre pedir teste baseado em DX (trabalho delicado)"
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Joalheiro/NT",
+        "valor": 1,
+        "porNivel": true,
+        "condicao": "se o Mestre pedir teste baseado em DX (trabalho delicado)"
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Maquinista/NT",
+        "valor": 1,
+        "porNivel": true,
+        "condicao": "se o Mestre pedir teste baseado em DX (trabalho delicado)"
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Mecânica/NT",
+        "valor": 1,
+        "porNivel": true,
+        "condicao": "se o Mestre pedir teste baseado em DX (trabalho delicado)"
       }
     ]
   },
