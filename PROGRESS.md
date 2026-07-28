@@ -4985,3 +4985,12 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - **Pendência registrada**: condicional de **atributo** ("+1 HT para ver se sobrevive") — 13 traços. O interpretador sabe representá-los, mas a caixinha só existe para perícia e defesa; a rolagem de atributo é um toque direto, sem diálogo onde caiba. Declarar hoje seria efeito morto.
 - **Status:** ✅ Build OK nas 2 variantes · gate **1178/0** (+10 testes) · ⏭️ **PENDENTE: teste no aparelho** — T9 no roteiro.
 
+### ✅ VALIDADO NO APARELHO — 28 de Julho de 2026 (versão 2.5-CATALOGO)
+**Roteiro T1..T9 conferido pelo usuário, com prints.**
+- **T6/T7 (ST/DX Braçal)**: custo por nível certo, o seletor liga o ST e o dano dos braços, PV/PF não mudam.
+- **T3 (Reação)**: Carisma soma direto; Voz Melodiosa, Camaleão Social e Aparência viram caixinha. Marcar não dispara a rolagem.
+- **T8 (NOTA-2)**: `+2/dado Mestre de Armas` aparece com Faca NH 12 e DX 10 — é DX+2, o degrau do MB p.99. A composição da defesa mostra `+2 (Escudo Leve +1, Reflexos em Combate +1)` no Bloqueio, e `BD+1` nas outras.
+- **T9 (catálogo novo)**: 🔴 **o item crítico passou** — Aparência como DESVANTAGEM (−16) dá `−4`, não bônus. A correção da colisão de id entre os dois catálogos está de pé no aparelho, não só no teste. Aparência 12 pts → `+2` e `+4`; 20 pts → `+2` e `+6`. Reconhecimento Social nível 3 soma `+3` direto, sem caixinha. `-1 Daltonismo` no card da Química/NT. Invisibilidade `+9` como caixinha na Furtividade. Camaleão nível 2 → `+4/+2`, por nível.
+- **Dúvida esclarecida sem mudar código** (`a2a27c2e`): a nota do Mestre de Armas não aparecia porque o bônus era **zero** — a ficha tinha Faca NH 10 com DX 10, e o MB p.99 só dá bônus a partir de DX+1. Subindo para NH 12 apareceu `+2/dado`. Virou teste.
+- **Fecha as fases AUTOM-3 a AUTOM-7.** Nada pendente de teste.
+
