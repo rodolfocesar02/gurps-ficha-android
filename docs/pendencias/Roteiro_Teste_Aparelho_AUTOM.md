@@ -1,8 +1,8 @@
 # Roteiro de teste no aparelho — fase AUTOM-4
 
 > Versão **2.3-BRACAL** (versionCode 102), branch `GURPS-Saga`.
-> Cobre V-3, V-4, V-5, REACAO-1 e as correções de 28/07 (REACAO-2, STB-1,
-> STB-2). Gate: 1.156 testes, 0 falhas, build OK nas duas variantes.
+> Cobre V-3, V-4, V-5, REACAO-1, REACAO-2, STB-1, STB-2 e NOTA-2.
+> Gate: 1.168 testes, 0 falhas, build OK nas duas variantes.
 >
 > Marque o que passou. O que falhar, anote **o que apareceu na tela**, não só
 > "quebrou" — o número errado diz onde está o defeito.
@@ -136,13 +136,35 @@ Com a ST Braçal +4 em dois braços da etapa anterior, numa ficha de **ST 10**.
 6. Remova a ST Braçal da ficha.
 7. ✅ A caixinha **some por completo**.
 
+## T8 — Todo número diz de onde veio (NOTA-2)
+
+Precisa de uma ficha com **Mestre de Armas** e uma **arma** equipada, e de um
+**escudo** selecionado no Bloqueio.
+
+1. Aba **Rolagem**, card **Dano**, com a arma escolhida.
+2. ✅ Abaixo do dano aparece uma linha pequena: `+1/dado Mestre de Armas`.
+3. ✅ Diz **/dado**, não só `+1` — numa arma de 3d o ganho real é +3, e "+1"
+   sozinho seria mentira.
+4. Troque a fonte de dano para **Dano ST** (sem arma).
+5. ✅ A linha **some** — o Mestre de Armas não vale para dano de ST puro.
+6. Toque no botão **BLOQUEIO** para abrir a configuração.
+7. ✅ Aparece `Somado à base:` e a lista, com o escudo **pelo nome**
+   (ex.: `+3 (Escudo Grande +2, Reflexos em Combate +1)`).
+8. Digite um bônus manual de `+1` e escreva a nota "poção do Mestre".
+9. ✅ Ao reabrir, a nota aparece na lista no lugar da palavra "Manual".
+10. ✅ **A soma da lista bate com o número do card.** Se o card mostra 10 e a
+    base é 7, a lista tem que somar 3. Explicação que não bate é pior que
+    explicação nenhuma — anote e me avise.
+11. Numa ficha **sem** escudo, sem vantagem de defesa e sem bônus manual:
+12. ✅ O bloco `Somado à base:` **não aparece** no diálogo.
+
 ---
 
 ## O que NÃO precisa testar (e por quê)
 
 - **RD natural, Voo/Natação e Vulnerabilidade** — descartados nesta fase, não há
   código novo. Motivo registrado em `Revisao_Abas_e_Navegacao.md`.
-- **Nota de bônus em Armas e Itens** — é o lote NOTA-2, ainda não feito. Em
-  **Perícias** a nota já existe desde o NOTA-1 e já foi validada.
+- **Nota de bônus em Perícias** — já existe desde o NOTA-1 e já foi validada em
+  27/07.
 - **ST Braçal no combate tático** — de propósito, o combate continua usando a ST
   do corpo. Lá a escolha teria de ser por ataque, não um botão da ficha.

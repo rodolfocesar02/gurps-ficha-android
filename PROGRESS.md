@@ -4957,3 +4957,16 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
   - Fora do escopo de propósito: o **combate tático** continua usando a ST do corpo. Lá a escolha teria de ser por ataque, não um botão da ficha.
 - **Status:** ✅ Build OK nas 2 variantes · gate **1156/0** (+16 testes) · ⏭️ **PENDENTE: teste no aparelho** — roteiro atualizado em `docs/pendencias/Roteiro_Teste_Aparelho_AUTOM.md` (T6 e T7).
 
+### Lote AUTOM-6 — 28 de Julho de 2026 (commits 04e3846f, 99a1419b, 9057cc94)
+**NOTA-2, o log que não parava, e o fechamento do plano (branch GURPS-Saga)**
+- **Correção do usuário** (`04e3846f`): `Conhecimento Oculto` carregava um pré-requisito estruturado de "Antecedentes Incomuns (a critério do Mestre)" com `allowWithoutPrerequisite: false` — o app **bloqueava** a compra da perícia. "A critério do Mestre" não é pré-requisito de ficha, é decisão de mesa; o app não tem como saber o que o Mestre decidiu, então tratar isso como trava fazia a ficha recusar algo que o livro permite.
+- **Log** (`99a1419b`): o usuário relatou que o Logcat não parava de subir com mensagens sobre Furtividade e Dissimulação. Era meu. O `aplicavel()` do `EfeitoInterpretador` logava toda vez que recusava um efeito condicional ou escopado — só que isso é operação **normal**, não problema, e o método roda a cada recomposição de cada perícia. Erro de desenho meu no Lote V-0: eu estava logando o caminho feliz. Ficou só o que é erro de verdade, e mesmo esse a `EfeitosDeclaradosCatalogoTest` já impede de chegar ao release.
+- **NOTA-2** (`9057cc94`): fecha o par com o NOTA-1 — agora **nenhum número que o app calcula sozinho fica sem explicação**.
+  - **A investigação mudou o lote.** O plano dizia "nota no bônus manual de armas, perícias e itens"; medindo o código, descobri que **não existe** campo de bônus manual em arma, perícia ou item — só nas defesas, que o M-1 já cobriu. O lote real era estender a nota de **origem** do NOTA-1.
+  - **Armas**: o card de Dano ganha `+1/dado Mestre de Armas`. A unidade `/dado` é obrigatória — "+1" numa arma de 3d seria mentira, o ganho real é +3.
+  - **Itens**: o BD do escudo é o único bônus de item que entra numa defesa (MB p.375). Aparece **pelo nome**, junto das vantagens e do bônus manual com a nota do M-1.
+  - **Onde**: a explicação da defesa ficou no **diálogo**, não no card. Os três cards dividem a largura da tela e uma linha como `+3 (Escudo Grande +2, Reflexos +1)` quebraria em três linhas.
+  - **O teste que mais importa**: `a soma da explicação bate com o que o app somou de fato`. Se a notinha disser +3 e o card mostrar +4, a explicação vira mentira — pior do que não ter explicação.
+- **PLANO FECHADO.** `Revisao_Abas_e_Navegacao.md`: 21 lotes → 18 concluídos, 1 cancelado, 3 descartados com motivo, **0 pendentes**. Fora do plano original entraram, vindos do teste no aparelho, STB-1, STB-2 e REACAO-2.
+- **Status:** ✅ Build OK nas 2 variantes · gate **1168/0** (+12 testes) · ⏭️ **PENDENTE: teste no aparelho** — T8 no roteiro.
+

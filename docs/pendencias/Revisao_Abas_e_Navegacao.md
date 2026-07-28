@@ -663,9 +663,26 @@ arquivos é subordinada a esta.**
 | 4.3 | ❌ **V-6** — RD natural | — | | **DESCARTADO** — é regra, não dado. Ver abaixo |
 | 4.4 | ❌ **V-7 / D-5** — deslocamento | — | | **DESCARTADO** — já há cálculo próprio; declarar duplicaria |
 | 4.5 | ❌ **D-6** — vulnerabilidade | — | | **DESCARTADO** — pertence ao motor de combate |
-| 4.6 | **NOTA-2** — nota de bônus em ARMAS, PERÍCIAS e ITENS | 🖐 | 1.1 | pedido do usuário em 27/07 ao validar o M-1 — ver detalhe abaixo |
+| 4.6 | ✅ **NOTA-2** | 🖐 | | **FEITO 28/07** (9057cc94). ⏸ aguarda teste |
 
-### Lote NOTA-2 — estender a nota de bônus (pedido em 27/07/2026)
+### Lote NOTA-2 — ✅ FEITO em 28/07/2026 (commit 9057cc94)
+
+**O que a investigação achou, antes de codar:** não existe campo de bônus
+manual em arma, perícia ou item — só nas defesas (que o M-1 já cobriu). Então
+o lote não era "nota no bônus digitado": era estender a nota de ORIGEM do
+NOTA-1 aos números que o app calcula sozinho.
+
+- **Armas** → card de Dano: `+1/dado Mestre de Armas`. A unidade `/dado` é
+  obrigatória — "+1" numa arma de 3d seria mentira, o ganho real é +3.
+- **Itens** → o BD do escudo é o único bônus de item que entra numa defesa
+  (MB p.375). Aparece pelo nome, junto das vantagens e do manual.
+- **Perícias** → já estava pronto desde o NOTA-1. Nada a fazer.
+- A explicação da defesa ficou no **diálogo**, não no card: os três cards
+  dividem a largura da tela e a linha quebraria em três.
+
+Registro do plano original abaixo.
+
+#### Plano original (27/07/2026)
 
 O M-1 resolveu o bônus manual das **defesas** (Esquiva/Apara/Bloqueio). O
 usuário validou no aparelho e pediu o mesmo tratamento nos outros lugares onde
@@ -726,8 +743,8 @@ mente sobre o que o app faz.
 
 ### Resumo
 
-- **21 lotes**: 17 concluídos, 1 cancelado, 3 descartados com motivo → **1 pendente** (NOTA-2)
-- FASE 0, 1 e 2 fechadas. Restam: V-3/V-4 (atributo+escopo), V-5 (condicional), REACAO-1, V-6/V-7 (RD/deslocamento), D-6, NOTA-2
+- **21 lotes**: 18 concluídos, 1 cancelado, 3 descartados com motivo → **0 pendentes**. ✅ **PLANO FECHADO em 28/07/2026.**
+- Todas as fases fechadas. Fora do plano original, entraram das correções de aparelho: STB-1 e STB-2 (ST/DX Braçal) e REACAO-2 (reação condicional).
 - FASE 0 e FASE 1 fechadas (27/07/2026). Próximo: **2.1 (V-1)** — declarar as vantagens simples em JSON
 - 🖐 = toca UI ⇒ **PARA para teste no aparelho**: M-1, NOTA-1, D-1, V-5, REACAO-1 (**5 paradas**)
 - Caminho crítico: **1.2 (V-0)** destrava 2.1, 2.2, 2.3 e 4.1 · **1.3 (D-0)** destrava tudo de desvantagem
