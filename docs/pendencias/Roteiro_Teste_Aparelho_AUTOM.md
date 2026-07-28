@@ -1,8 +1,8 @@
 # Roteiro de teste no aparelho — fase AUTOM-4
 
-> Versão **2.3-BRACAL** (versionCode 102), branch `GURPS-Saga`.
-> Cobre V-3, V-4, V-5, REACAO-1, REACAO-2, STB-1, STB-2 e NOTA-2.
-> Gate: 1.168 testes, 0 falhas, build OK nas duas variantes.
+> Versão **2.5-CATALOGO** (versionCode 104), branch `GURPS-Saga`.
+> Cobre V-3, V-4, V-5, REACAO-1/2/3, STB-1, STB-2, NOTA-2, OPCAO-1 e V-8.
+> Gate: 1.178 testes, 0 falhas, build OK nas duas variantes.
 >
 > Marque o que passou. O que falhar, anote **o que apareceu na tela**, não só
 > "quebrou" — o número errado diz onde está o defeito.
@@ -158,6 +158,39 @@ Precisa de uma ficha com **Mestre de Armas** e uma **arma** equipada, e de um
 11. Numa ficha **sem** escudo, sem vantagem de defesa e sem bônus manual:
 12. ✅ O bloco `Somado à base:` **não aparece** no diálogo.
 
+## T9 — Os traços novos do catálogo (REACAO-3, OPCAO-1, V-8)
+
+São 16 traços novos. Não precisa testar todos — estes quatro cobrem os riscos.
+
+**A Aparência é o teste mais importante do lote**, porque foi onde quase entrou
+um bônus no lugar de uma penalidade.
+
+1. Adicione **Aparência** como **vantagem**, escolhendo **12 pts** (Elegante).
+2. Aba **Rolagem**, card **Teste de Reação**.
+3. ✅ Aparecem **duas** caixinhas da Aparência: `+2 — de quem pode enxergar você`
+   e `+2 — adicional, de quem se sente atraído pelo seu sexo`.
+4. ✅ Marcando as duas, o total sobe **+4** — é o número do livro para Elegante.
+5. Troque para **20 pts** (Lindo).
+6. ✅ Agora as parcelas são `+2` e `+6`, total **+8**.
+7. Remova e adicione **Aparência** como **desvantagem**, com **−16** (Hediondo).
+8. ✅ 🔴 A caixinha tem que ser **−4**, penalidade. Se aparecer bônus positivo,
+   a correção da colisão de id falhou — **anote e me avise na hora**.
+
+9. Adicione **Reconhecimento Social** nível 3.
+10. ✅ O card de Reação mostra `+3` direto no total, **sem caixinha** — é o único
+    modificador de reação incondicional do lote.
+
+11. Adicione **Daltonismo** e a perícia **Química/NT**.
+12. ✅ No card da perícia aparece a nota `-1 Daltonismo`, nas abas **Perícias** e
+    **Rolagem**.
+13. ✅ O NH mostrado já vem com o −1 aplicado.
+
+14. Adicione **Invisibilidade** e a perícia **Furtividade**.
+15. ✅ Ao rolar Furtividade aparece a caixinha
+    `Invisibilidade +9 — sem carregar nada, quando importa não ser visto`.
+16. ✅ Com ela **desmarcada** o NH não muda — +9 é grande demais para valer
+    sempre.
+
 ---
 
 ## O que NÃO precisa testar (e por quê)
@@ -168,3 +201,6 @@ Precisa de uma ficha com **Mestre de Armas** e uma **arma** equipada, e de um
   27/07.
 - **ST Braçal no combate tático** — de propósito, o combate continua usando a ST
   do corpo. Lá a escolha teria de ser por ataque, não um botão da ficha.
+- **Condicional de atributo** ("+1 HT para ver se sobrevive", 13 traços) — não
+  foi declarado. A caixinha só existe para perícia e defesa; a rolagem de
+  atributo é um toque direto, sem diálogo onde ela caiba.

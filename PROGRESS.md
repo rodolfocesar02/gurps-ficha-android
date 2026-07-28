@@ -4970,3 +4970,18 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - **PLANO FECHADO.** `Revisao_Abas_e_Navegacao.md`: 21 lotes → 18 concluídos, 1 cancelado, 3 descartados com motivo, **0 pendentes**. Fora do plano original entraram, vindos do teste no aparelho, STB-1, STB-2 e REACAO-2.
 - **Status:** ✅ Build OK nas 2 variantes · gate **1168/0** (+12 testes) · ⏭️ **PENDENTE: teste no aparelho** — T8 no roteiro.
 
+### Lote AUTOM-7 — 28 de Julho de 2026 (commits 79b980ec, 40961139, eb6bb368)
+**Preenchimento do catálogo: de 17 para 33 traços automatizados (branch GURPS-Saga)**
+- Contexto: o plano de *lotes* tinha fechado, mas só **17 de 493** traços tinham efeito declarado. O encanamento estava pronto e quase vazio.
+- **REACAO-3** (`79b980ec`): +7 modificadores de reação. Só **um** é incondicional (`reconhecimento_social`, +1/nível, MB p.81); nos outros seis o livro diz de QUEM vem o bônus, então são condicionais e viram caixinha. O teste novo trava isso: declarar um deles sem condição quebra o gate.
+  - Achado de brinde: o `validar_efeitos.py` contava **11** regras Kotlin quando já eram 13. Ele supunha um arquivo por classe, e `StBracalRule`/`DxBracalRule` moram juntas em `BracalCustoRules.kt` — perdia as duas em silêncio, que é o tipo exato de falha invisível que esse validador existe para pegar.
+- **OPCAO-1** (`40961139`): campo `porOpcao` — efeito que muda com a **faixa de custo**. Terceira vez que o mesmo buraco aparecia (Aparência, Hábitos Detestáveis, Reputação), então virou recurso em vez de três classes Kotlin. `porNivel` é preço por quilo; `porOpcao` é tabela de tamanhos — P, M e G não são múltiplos um do outro.
+  - A Aparência ficou em **duas parcelas** porque o livro dá dois números ("+4 de quem se sente atraído e +2 para todas as outras"). Marcadas juntas dão o número cheio.
+  - 🔴 **O bug que isto quase introduziu**: **seis ids existem nos DOIS catálogos** (`aparencia`, `destino`, `forma_de_sombras`, `reputacao`, `riqueza`, `status`) — são escalas do GURPS que atravessam o zero. O interpretador procurava **sempre em vantagens primeiro**, com um comentário afirmando que "o mesmo id nunca existe nos dois". Estava errado desde o Lote V-0; só não fazia mal porque nenhum id repetido tinha `efeitos`. Ao declarar a Aparência, quem comprasse a versão **hedionda** (−16 pts) receberia a tabela **positiva**. Corrigido com `TracoSelecionado.ehDesvantagem` + `getRuleFor(selection)`.
+  - **Não dava para achar com teste de unidade usando a costura** — só lendo os dois catálogos reais.
+- **V-8** (`eb6bb368`): triagem de perícia/atributo. A varredura bruta achou **29** candidatos; lendo um por um contra o livro sobraram **6**. Meu palpite de "20 a 25" estava errado e fica registrado. Os descartes viraram seis categorias de motivo no commit — a mais perigosa é *"já tem dono no código"* (Infravisão, Dislexia, Sem Pernas são sentidos que o `SentidoRules` já trata; declarar daria o bônus **em dobro**, que foi exatamente o bug do V-1).
+  - A armadilha do `/NT` de novo: `Pilotagem/NT`, `Condução/NT`, `Química/NT`.
+- **Números**: 17 → **33 traços** com efeito declarado; 24 → **60 efeitos**.
+- **Pendência registrada**: condicional de **atributo** ("+1 HT para ver se sobrevive") — 13 traços. O interpretador sabe representá-los, mas a caixinha só existe para perícia e defesa; a rolagem de atributo é um toque direto, sem diálogo onde caiba. Declarar hoje seria efeito morto.
+- **Status:** ✅ Build OK nas 2 variantes · gate **1178/0** (+10 testes) · ⏭️ **PENDENTE: teste no aparelho** — T9 no roteiro.
+
