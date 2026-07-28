@@ -1,5 +1,7 @@
 package com.gurps.ficha.viewmodel
 
+import com.gurps.ficha.domain.rules.LocalAtaque
+
 import android.app.Application
 import android.content.Context
 import android.provider.Settings
@@ -158,16 +160,16 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
     fun sagaDirecoesViradaFinal() = sagaDelegate.combate.direcoesDaViradaFinal()
     fun sagaConcluirViradaFinal(direcao: com.gurps.ficha.domain.combat.hex.Direcao?) =
         sagaDelegate.combate.concluirViradaFinal(direcao)
-    fun sagaCombateAtacar(alvoId: String, manobra: com.gurps.ficha.domain.combat.Manobra, local: com.gurps.ficha.domain.combat.LocalAtaque, modo: com.gurps.ficha.domain.combat.AtaqueTotalModo = com.gurps.ficha.domain.combat.AtaqueTotalModo.DETERMINADO, enganoso: Int = 0, telegrafico: Boolean = false) =
+    fun sagaCombateAtacar(alvoId: String, manobra: com.gurps.ficha.domain.combat.Manobra, local: com.gurps.ficha.domain.rules.LocalAtaque, modo: com.gurps.ficha.domain.combat.AtaqueTotalModo = com.gurps.ficha.domain.combat.AtaqueTotalModo.DETERMINADO, enganoso: Int = 0, telegrafico: Boolean = false) =
         sagaDelegate.combate.heroiAtaca(alvoId, manobra, local, modo, enganoso, telegrafico)
-    fun sagaCombateAtaqueDedicado(alvoId: String, local: com.gurps.ficha.domain.combat.LocalAtaque, dedicadoModo: com.gurps.ficha.domain.combat.DedicadoModo) = // Lote PONTE-4
+    fun sagaCombateAtaqueDedicado(alvoId: String, local: com.gurps.ficha.domain.rules.LocalAtaque, dedicadoModo: com.gurps.ficha.domain.combat.DedicadoModo) = // Lote PONTE-4
         sagaDelegate.combate.heroiAtaca(alvoId, com.gurps.ficha.domain.combat.Manobra.ATAQUE_DEDICADO, local, dedicadoModo = dedicadoModo)
-    fun sagaCombateAtaqueDefensivo(alvoId: String, local: com.gurps.ficha.domain.combat.LocalAtaque, benefDefensivo: com.gurps.ficha.domain.combat.CombatResolver.TipoDefesa?) = // Lote PONTE-4
+    fun sagaCombateAtaqueDefensivo(alvoId: String, local: com.gurps.ficha.domain.rules.LocalAtaque, benefDefensivo: com.gurps.ficha.domain.combat.CombatResolver.TipoDefesa?) = // Lote PONTE-4
         sagaDelegate.combate.heroiAtaca(alvoId, com.gurps.ficha.domain.combat.Manobra.ATAQUE_DEFENSIVO, local, benefDefensivo = benefDefensivo)
-    fun sagaCombateAtacarDuplo(alvoId: String, local: com.gurps.ficha.domain.combat.LocalAtaque, offHandIndex: Int) =
+    fun sagaCombateAtacarDuplo(alvoId: String, local: com.gurps.ficha.domain.rules.LocalAtaque, offHandIndex: Int) =
         sagaDelegate.combate.heroiAtaqueDuplo(alvoId, local, offHandIndex)
     fun sagaCombateMover(alvoId: String?, afastar: Boolean, metros: Int) = sagaDelegate.combate.heroiMove(alvoId, afastar, metros)
-    fun sagaCombateMoverEAtacar(alvoId: String, local: com.gurps.ficha.domain.combat.LocalAtaque) =
+    fun sagaCombateMoverEAtacar(alvoId: String, local: com.gurps.ficha.domain.rules.LocalAtaque) =
         sagaDelegate.combate.heroiMoverEAtacar(alvoId, local)
     fun sagaCombateAvaliar(alvoId: String) = sagaDelegate.combate.heroiAvaliar(alvoId)
     fun sagaCombateConjurar(magiaId: String, alvoId: String?, energiaInvestida: Int, pvQueimados: Int = 0,
@@ -241,7 +243,7 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
     fun sagaCombateApontar(alvoId: String, firmado: Boolean = false) = sagaDelegate.combate.heroiApontar(alvoId, firmado)
     fun sagaCombateFogoRetencao() = sagaDelegate.combate.heroiFogoRetencao()
     fun sagaCombateAguardar() = sagaDelegate.combate.heroiAguardar()
-    fun sagaCombateGolpeRapido(alvoId: String, local: com.gurps.ficha.domain.combat.LocalAtaque) =
+    fun sagaCombateGolpeRapido(alvoId: String, local: com.gurps.ficha.domain.rules.LocalAtaque) =
         sagaDelegate.combate.heroiGolpeRapido(alvoId, local)
     fun sagaCombateEncontrao(alvoId: String) = sagaDelegate.combate.heroiEncontrao(alvoId)
     fun sagaCombateEmpurrao(alvoId: String) = sagaDelegate.combate.heroiEmpurrao(alvoId)

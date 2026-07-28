@@ -1,11 +1,12 @@
 package com.gurps.ficha.domain.combat.subsistemas
 
+import com.gurps.ficha.domain.rules.LocalAtaque
+
 import com.gurps.ficha.domain.combat.Combatente
 import com.gurps.ficha.domain.combat.CombatSession
 import com.gurps.ficha.domain.combat.DanoTipo
 import com.gurps.ficha.domain.combat.HitLocationRules
 import com.gurps.ficha.domain.combat.InjuryRules
-import com.gurps.ficha.domain.combat.LocalAtaque
 import com.gurps.ficha.domain.combat.ToleranciaFerimentos
 import com.gurps.ficha.domain.magic.MagiaMecanica
 import com.gurps.ficha.domain.magic.MagicMechanics

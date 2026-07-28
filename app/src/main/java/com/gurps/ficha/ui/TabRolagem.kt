@@ -87,6 +87,7 @@ fun TabRolagem(viewModel: FichaViewModel) {
     // Testes que a queda de PV exigiu e o jogador ainda nao rolou nem dispensou.
     var testesDeMarco by remember { mutableStateOf(emptyList<MarcosDeVidaRules.TesteExigido>()) }
     var showResistenciaDialog by remember { mutableStateOf(false) }
+    var miraDoAtaque by remember { mutableStateOf<RollMappedOption?>(null) }
 
     var pendingRoll by remember { mutableStateOf<PendingRollState?>(null) }
     var pendingResults by remember { mutableStateOf<List<Int>?>(null) }
@@ -723,6 +724,7 @@ fun TabRolagem(viewModel: FichaViewModel) {
             rotuloDaMao = MaoInabilRules.rotuloDe(p, usandoMaoInabil),
             descricaoDaMao = MaoInabilRules.rotuloAcessivel(p),
             onAlternarMao = { usandoMaoInabil = !usandoMaoInabil },
+            onAbrirMira = { miraDoAtaque = it },
             onExecutarDano = { dano ->
                 val perId = if (ataqueAtual?.id?.startsWith("pericia_") == true) {
                     ataqueAtual.id.removePrefix("pericia_")
@@ -941,6 +943,19 @@ fun TabRolagem(viewModel: FichaViewModel) {
                 showSentidosDialog = false
             },
             onFechar = { showSentidosDialog = false }
+        )
+    }
+
+    miraDoAtaque?.let { ataque ->
+        DialogoMira(
+            rotuloDoAtaque = ataque.contextLabel,
+            nhBase = (ataque.target ?: 0) + penalidadeDaMao,
+            isPraCegoVariant = isPraCegoVariant,
+            onEscolher = { rotulo, nh ->
+                miraDoAtaque = null
+                executarRolagem(tipo = TipoTeste.ATAQUE, contextoLabel = rotulo, alvo = nh, mod = 0)
+            },
+            onDismiss = { miraDoAtaque = null }
         )
     }
 

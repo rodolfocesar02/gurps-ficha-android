@@ -1,5 +1,7 @@
 package com.gurps.ficha.domain.combat
 
+import com.gurps.ficha.domain.rules.LocalAtaque
+
 import com.gurps.ficha.domain.magic.ClasseParseada
 import com.gurps.ficha.domain.magic.ContextoConjuracao
 import com.gurps.ficha.domain.magic.CustoEnergia

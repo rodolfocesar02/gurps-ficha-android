@@ -1,5 +1,7 @@
 package com.gurps.ficha.domain.combat
 
+import com.gurps.ficha.domain.rules.LocalAtaque
+
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue

@@ -1,5 +1,7 @@
 package com.gurps.ficha.viewmodel.delegates
 
+import com.gurps.ficha.domain.rules.LocalAtaque
+
 import android.content.Context
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -612,11 +614,11 @@ class FichaSagaDelegate(
         )
     }
 
-    private fun localDeString(local: String?): com.gurps.ficha.domain.combat.LocalAtaque {
+    private fun localDeString(local: String?): com.gurps.ficha.domain.rules.LocalAtaque {
         val n = CatalogFilters.normalizarBusca(local ?: "")
-        return com.gurps.ficha.domain.combat.LocalAtaque.values().firstOrNull {
+        return com.gurps.ficha.domain.rules.LocalAtaque.values().firstOrNull {
             CatalogFilters.normalizarBusca(it.rotulo) == n
-        } ?: com.gurps.ficha.domain.combat.LocalAtaque.TORSO
+        } ?: com.gurps.ficha.domain.rules.LocalAtaque.TORSO
     }
 
     private fun condicaoDeString(condicao: String): com.gurps.ficha.domain.combat.Condicao? {

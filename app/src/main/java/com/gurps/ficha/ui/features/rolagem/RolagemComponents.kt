@@ -1,6 +1,8 @@
 package com.gurps.ficha.ui.features.rolagem
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.gestures.detectVerticalDragGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -322,7 +324,7 @@ fun PvPfQuickRollPanel(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun AtaqueDanoQuickArea(
     opcoesAtaque: List<RollMappedOption>,
@@ -354,7 +356,9 @@ fun AtaqueDanoQuickArea(
     usandoMaoInabil: Boolean = false,
     rotuloDaMao: String = "",
     descricaoDaMao: String = "",
-    onAlternarMao: () -> Unit = {}
+    onAlternarMao: () -> Unit = {},
+    // Lote MIRA-1: toque longo no NH abre a lista de onde acertar.
+    onAbrirMira: (RollMappedOption) -> Unit = {}
 ) {
     if (opcoesAtaque.isEmpty()) {
         Text(
@@ -499,11 +503,16 @@ fun AtaqueDanoQuickArea(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .semantics {
-                                        contentDescription = "Rolar ${ataqueAtual?.contextLabel ?: "Ataque"} com nível ${ataqueAtual?.target ?: "-"}"
+                                        contentDescription = "Rolar ${ataqueAtual?.contextLabel ?: "Ataque"} com nível ${ataqueAtual?.target ?: "-"}. Segure para escolher onde acertar."
                                     }
-                                    .clickable(enabled = ataqueAtual?.target != null) {
-                                        ataqueAtual?.let { onExecutarAtaque(it, modAtaqueAtual) }
-                                    },
+                                    // Toque = rola no torso (o padrao do livro).
+                                    // Segurar = abre a mira. O toque simples,
+                                    // que e o gesto de sempre, nao mudou.
+                                    .combinedClickable(
+                                        enabled = ataqueAtual?.target != null,
+                                        onClick = { ataqueAtual?.let { onExecutarAtaque(it, modAtaqueAtual) } },
+                                        onLongClick = { ataqueAtual?.let { onAbrirMira(it) } }
+                                    ),
                                 style = defenseNumberStyle,
                                 fontWeight = FontWeight.Bold,
                                 color = MaterialTheme.colorScheme.primary,

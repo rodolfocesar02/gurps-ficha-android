@@ -1,24 +1,16 @@
 package com.gurps.ficha.domain.combat
 
+import com.gurps.ficha.domain.rules.LocalAtaque
+
 /**
  * Lote 360 (Saga B2): tabelas de modificadores de combate do GURPS 4ª ed. (Kotlin puro).
  * Valores do Módulo Básico — referência // MB nos comentários. Reutilizado pelo B3 (dano localizado).
  */
 
-/** Local visado no alvo: penalidade PARA ACERTAR (mira). MB p.398 (tabela de localização). */
-enum class LocalAtaque(val rotulo: String, val penalidadeAtaque: Int) {
-    TORSO("torso", 0),
-    CRANIO("crânio", -7),     // MB p.398
-    OLHO("olho", -9),
-    ROSTO("rosto", -5),
-    PESCOCO("pescoço", -5),
-    VITAIS("vitais", -3),
-    INGLE("virilha", -3),
-    BRACO("braço", -2),
-    PERNA("perna", -2),
-    MAO("mão", -4),
-    PE("pé", -4)
-}
+// `LocalAtaque` MUDOU DE PACOTE em 28/07: foi para `domain/rules/LocaisDeAtaque.kt`.
+// Motivo: e tabela do livro, nao logica de combate -- e a aba Rolagem passou a
+// precisar dela (Lote MIRA-1). Deixa-la aqui amarraria a ficha a Saga, no ponto
+// exato que o projeto quer separar em dois apps. Nenhum valor mudou.
 
 /** Penumbra/escuridão/névoa — penalidade ao ataque por visibilidade. MB p.394 (combate no escuro). */
 enum class Visibilidade(val rotulo: String, val penalidade: Int) {

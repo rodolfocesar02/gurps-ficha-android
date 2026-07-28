@@ -1,5 +1,7 @@
 package com.gurps.ficha.ui.saga
 
+import com.gurps.ficha.domain.rules.LocalAtaque
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll

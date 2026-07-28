@@ -1,6 +1,7 @@
 package com.gurps.ficha.domain.combat.hex
 
-import com.gurps.ficha.domain.combat.LocalAtaque
+import com.gurps.ficha.domain.rules.LocalAtaque
+
 import com.gurps.ficha.domain.combat.Manobra
 import com.gurps.ficha.domain.combat.NpcCombatBrain
 import org.junit.Assert.assertEquals

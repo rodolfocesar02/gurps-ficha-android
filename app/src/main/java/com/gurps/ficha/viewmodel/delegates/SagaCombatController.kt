@@ -1,5 +1,7 @@
 package com.gurps.ficha.viewmodel.delegates
 
+import com.gurps.ficha.domain.rules.LocalAtaque
+
 import android.content.Context
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
