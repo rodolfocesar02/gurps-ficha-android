@@ -5120,3 +5120,14 @@ Itens 6 e 8 do plano. A Visão Noturna custa 1 ponto por nível e era **decorati
 - **Não fiz o "Sem Sangue"** (item 12): o sangramento vive todo em `domain/combat/`, que é da Saga. Pela sua regra, fica fora.
 - **Testes:** `IluminacaoEDeslocamentoTest`, 14 casos.
 - **Status:** ✅ Build OK nas 2 variantes · lint OK · gate verde · ⏭️ **PENDENTE: teste no aparelho** — roteiro T-L1..T-L7.
+
+### Lote MESTRE-1 — Golpe Rápido e apara repetida — 29 de Julho de 2026 (versão 4.1-MESTRE1)
+Item 7 do plano. Duas contas que o jogador faz de cabeça no meio do combate, e as duas mudam com Treinado por um Mestre ou Mestre de Armas.
+
+- **Golpe Rápido** virou caixinha no diálogo de Mira, junto das outras opções de ataque: dois ataques no turno, os dois a **−6** (MB p.371), ou **−3** para quem tem mestria. Só aparece em ataque **corpo a corpo** — Golpe Rápido não existe à distância.
+- 🔴 **A apara repetida tem QUATRO resultados, não dois.** Fui ler a página e o livro é mais minucioso do que eu havia planejado (p.377): a penalidade cumulativa é **−4**, cai para **−2** com **arma de esgrima** *ou* com mestria, e para **−1** para quem tem **as duas**. Um esgrimista com Treinado por um Mestre paga **um quarto** do que a tabela sugere de cabeça: quatro aparas no turno custam −3 para ele e −12 para os outros. Ninguém faz essa conta na mesa.
+- **Painel "Apara nº do turno"** com contador, e a conta escrita: *"3 apara(s) extra × −1 (reduzido por Treinado por um Mestre e arma de esgrima)"*. Só aparece se a ficha tiver Apara, e só chama atenção quando sai de 1. ⚠️ A penalidade entra **apenas na Apara** — esquivar duas vezes no mesmo turno não tem penalidade nenhuma no livro. E o painel diz *"zera no turno seguinte"*, porque um número acumulado que não está na tela é um número que vai ser esquecido.
+- **Mestre de Armas dá o mesmo benefício.** Fui conferir a entrada dela (p.71) porque o texto de Treinado por um Mestre não menciona: *"O personagem sofre apenas metade da penalidade habitual para executar um Golpe Rápido ou para Aparar mais de uma vez por turno"*. As duas vantagens entram na mesma regra.
+- ⚠️ **O limite honesto, escrito no código:** Mestre de Armas vale só para a **classe de armas dela**, e a ficha não guarda qual classe é; e o livro fecha o parágrafo com *"nenhum desses benefícios se aplica ao uso de valores predefinidos"*. O app não tem como conferir nenhuma das duas coisas — então **oferece** o número reduzido e escreve a condição no rótulo. Quem decide é o jogador, mesma filosofia das caixinhas. Fingir que sabe seria pior que perguntar.
+- **Testes:** `GolpeRapidoEAparaRulesTest`, 11 casos — os quatro degraus da apara, a acumulação, e o caso do esgrimista com mestria.
+- **Status:** ✅ Build OK nas 2 variantes · lint OK · gate verde · ⏭️ **PENDENTE: teste no aparelho** — roteiro T-M1..T-M6.

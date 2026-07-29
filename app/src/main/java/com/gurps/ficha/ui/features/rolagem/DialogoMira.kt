@@ -26,6 +26,7 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.gurps.ficha.domain.rules.GolpeRapidoEAparaRules
 import com.gurps.ficha.domain.rules.MiraRules
 import com.gurps.ficha.ui.FullscreenDialogContainer
 import com.gurps.ficha.ui.UiActionLabels
@@ -65,6 +66,8 @@ fun DialogoMira(
     // --- Lote MIRA-2: só chegam preenchidos em ataque à distância. ---
     ehADistancia: Boolean = false,
     alcance: AlcanceDoAtaque.Alcance = AlcanceDoAtaque.Alcance(null, null),
+    // Lote MESTRE-1: Golpe Rapido e opcao de corpo a corpo (MB p.371).
+    personagem: com.gurps.ficha.model.Personagem? = null,
     // O seletor anda de DEGRAU da tabela, não de metro em metro: cada toque
     // vale exatamente −1. Ver `TabelaVelocidadeDistancia`.
     //
@@ -76,7 +79,13 @@ fun DialogoMira(
     onIndices: (distancia: Int, velocidade: Int) -> Unit = { _, _ -> }
 ) {
     var desarmar by remember { mutableStateOf(false) }
+    var golpeRapido by remember { mutableStateOf(false) }
     val opcoes = MiraRules.opcoes(desarmar)
+
+    // Golpe Rapido nao existe em ataque a distancia -- e opcao de corpo a corpo.
+    val penalidadeGolpeRapido = if (golpeRapido && !ehADistancia && personagem != null) {
+        GolpeRapidoEAparaRules.penalidadeGolpeRapido(personagem)
+    } else 0
 
     val metros = TabelaVelocidadeDistancia.degrau(indiceDistancia).metros
     val velocidade = if (indiceVelocidade < 0) 0 else
@@ -86,7 +95,7 @@ fun DialogoMira(
     } else {
         0
     }
-    val nhComDistancia = nhBase + penalidadeDistancia
+    val nhComDistancia = nhBase + penalidadeDistancia + penalidadeGolpeRapido
 
     FullscreenDialogContainer(onDismiss = onDismiss) {
         Column(modifier = Modifier.fillMaxSize()) {
@@ -144,6 +153,32 @@ fun DialogoMira(
                         )
                     }
 
+                    // Golpe Rápido é opção de ataque corpo a corpo: dois
+                    // ataques no turno, os dois penalizados (MB p.371).
+                    if (grupo == MiraRules.Grupo.CORPO && !ehADistancia && personagem != null) {
+                        item {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .linhaAlternavel(
+                                        marcado = golpeRapido,
+                                        descricao = GolpeRapidoEAparaRules
+                                            .rotuloAcessivelGolpeRapido(personagem),
+                                        onAlternar = { golpeRapido = !golpeRapido }
+                                    ),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Checkbox(checked = golpeRapido, onCheckedChange = null)
+                                Text(
+                                    GolpeRapidoEAparaRules.rotuloGolpeRapido(personagem),
+                                    style = MaterialTheme.typography.labelSmall,
+                                    color = MaterialTheme.colorScheme.outline,
+                                    modifier = Modifier.padding(start = 2.dp)
+                                )
+                            }
+                        }
+                    }
+
                     // A opção de desarmar só faz sentido sobre a arma do
                     // oponente — no corpo não existe "desarmar".
                     if (grupo == MiraRules.Grupo.ARMA) {
@@ -175,11 +210,13 @@ fun DialogoMira(
                             // O rótulo leva a distância junto: sem isso o log do
                             // Discord diria "Crânio 5" e ninguém saberia de onde
                             // saiu o 5.
-                            val ondeEQuando = if (ehADistancia && penalidadeDistancia != 0) {
+                            val onde = if (ehADistancia && penalidadeDistancia != 0) {
                                 "$rotuloDoAtaque — ${opcao.rotulo} a ${metros}m"
                             } else {
                                 "$rotuloDoAtaque — ${opcao.rotulo}"
                             }
+                            val ondeEQuando =
+                                if (penalidadeGolpeRapido != 0) "$onde (Golpe Rápido)" else onde
                             onEscolher(ondeEQuando, opcao.nhCom(nhComDistancia))
                         }
                     }

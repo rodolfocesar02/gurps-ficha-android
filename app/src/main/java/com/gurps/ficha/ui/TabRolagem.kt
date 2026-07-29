@@ -100,6 +100,9 @@ fun TabRolagem(viewModel: FichaViewModel) {
     // Escolhida uma vez, entra no ataque e nas defesas -- e a Visao
     // Noturna do personagem ja vem descontada.
     var luzDaCena by remember { mutableIntStateOf(0) }
+    // Lote MESTRE-1: a apara repetida acumula -4 (ou menos, com mestria e
+    // esgrima) e zera no turno seguinte. MB p.377.
+    var numeroDaApara by remember { mutableIntStateOf(1) }
 
     var pendingRoll by remember { mutableStateOf<PendingRollState?>(null) }
     var pendingResults by remember { mutableStateOf<List<Int>?>(null) }
@@ -174,6 +177,13 @@ fun TabRolagem(viewModel: FichaViewModel) {
     val ataqueAtual = remember(viewModel.ataqueSelecionadoId, opcoesAtaque) {
         opcoesAtaque.find { it.id == viewModel.ataqueSelecionadoId } ?: opcoesAtaque.firstOrNull()
     }
+
+    // Esgrima paga metade na apara repetida (MB p.377) -- e um quarto para
+    // quem tambem tem mestria.
+    val aparaEhEsgrima = com.gurps.ficha.domain.rules.GolpeRapidoEAparaRules
+        .ehEsgrima(p.defesasAtivas.getPericiaApara(p)?.definicaoId)
+    val penalidadeApara = com.gurps.ficha.domain.rules.GolpeRapidoEAparaRules
+        .penalidadeAcumulada(p, numeroDaApara, aparaEhEsgrima)
 
     // A escuridao que sobra depois das vantagens do personagem.
     val penalidadeLuz = com.gurps.ficha.domain.rules.IluminacaoRules
@@ -698,10 +708,24 @@ fun TabRolagem(viewModel: FichaViewModel) {
                     // A escuridao atrapalha defender tanto quanto atacar
                     // (MB p.395). Zero de dia, que e o padrao.
                     alvo = defesa.finalValue,
-                    mod = mod + penalidadeLuz
+                    // A apara repetida vale so para a Apara: esquivar de novo
+                    // no mesmo turno nao tem penalidade nenhuma no livro.
+                    mod = mod + penalidadeLuz +
+                        if (defesa.type == DefenseType.APARA) penalidadeApara else 0
                 )
             }
         )
+
+        // So aparece quando existe Apara na ficha -- sem arma nem mao livre,
+        // nao ha o que contar.
+        if (defesasAtivas.any { it.type == DefenseType.APARA }) {
+            PainelAparaRepetida(
+                personagem = p,
+                numeroDaApara = numeroDaApara,
+                armaDeEsgrima = aparaEhEsgrima,
+                onMudar = { numeroDaApara = it }
+            )
+        }
 
         PainelIluminacao(
             personagem = p,
@@ -1033,6 +1057,7 @@ fun TabRolagem(viewModel: FichaViewModel) {
             rotuloDoAtaque = ataque.contextLabel,
             nhBase = (ataque.target ?: 0) + penalidadeDaMao,
             isPraCegoVariant = isPraCegoVariant,
+            personagem = p,
             ehADistancia = miraEhADistancia,
             // O alcance do arco é múltiplo da ST de quem empunha — e se a ST
             // Braçal estiver ligada, é a força dos braços que atira.
