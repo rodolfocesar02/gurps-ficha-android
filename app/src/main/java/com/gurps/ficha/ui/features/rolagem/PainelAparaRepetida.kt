@@ -53,7 +53,8 @@ fun PainelAparaRepetida(
     personagem: Personagem,
     numeroDaApara: Int,
     armaDeEsgrima: Boolean,
-    onMudar: (Int) -> Unit
+    onMudar: (Int) -> Unit,
+    onNovoTurno: () -> Unit = {}
 ) {
     val degrau = GolpeRapidoEAparaRules.penalidadePorAparaExtra(personagem, armaDeEsgrima)
     val total = GolpeRapidoEAparaRules.penalidadeAcumulada(personagem, numeroDaApara, armaDeEsgrima)
@@ -129,11 +130,18 @@ fun PainelAparaRepetida(
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.outline
                 )
-                Text(
-                    "Zera no turno seguinte.",
-                    style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.outline
-                )
+                // O contador ANDA sozinho a cada apara rolada, entao o botao de
+                // zerar e a unica coisa que o jogador precisa lembrar -- e ele
+                // esta aqui, na frente, em vez de virar regra decorada.
+                TextButton(
+                    onClick = onNovoTurno,
+                    contentPadding = PaddingValues(horizontal = 4.dp, vertical = 0.dp),
+                    modifier = Modifier.semantics {
+                        contentDescription = "Novo turno: zera a penalidade de apara repetida."
+                    }
+                ) {
+                    Text("Novo turno — zerar", style = MaterialTheme.typography.labelSmall)
+                }
             }
         }
     }

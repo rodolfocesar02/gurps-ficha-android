@@ -760,6 +760,11 @@ fun TabRolagem(viewModel: FichaViewModel) {
                     mod = mod + penalidadeLuz +
                         if (defesa.type == DefenseType.APARA) penalidadeApara else 0
                 )
+                // Achado pelo usuario no T-M4: depois de aparar, o contador tem de
+                // ANDAR sozinho -- ele acabou de gastar uma apara do turno, e a
+                // proxima ja custa mais. Deixar parado obrigava a lembrar de
+                // avancar na mao, no meio do combate.
+                if (defesa.type == DefenseType.APARA) numeroDaApara += 1
             }
         )
 
@@ -770,7 +775,8 @@ fun TabRolagem(viewModel: FichaViewModel) {
                 personagem = p,
                 numeroDaApara = numeroDaApara,
                 armaDeEsgrima = aparaEhEsgrima,
-                onMudar = { numeroDaApara = it }
+                onMudar = { numeroDaApara = it },
+                onNovoTurno = { numeroDaApara = 1 }
             )
         }
 
@@ -1024,6 +1030,8 @@ fun TabRolagem(viewModel: FichaViewModel) {
     if (showPericiasDialog) {
         RolagemPericiasDialog(
             personagem = p,
+            condicionalDaLuz = com.gurps.ficha.domain.rules.IluminacaoRules
+                .condicionalDaLuz(p, luzDaCena),
             opcoesPericia = opcoesPericia,
             modificadoresPericia = modificadoresPericia,
             isPraCegoVariant = isPraCegoVariant,

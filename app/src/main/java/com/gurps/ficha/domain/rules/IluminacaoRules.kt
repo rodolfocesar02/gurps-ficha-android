@@ -1,5 +1,7 @@
 package com.gurps.ficha.domain.rules
 
+import com.gurps.ficha.domain.rules.traits.BonusCondicional
+import com.gurps.ficha.domain.rules.traits.TraitRuleRegistry
 import com.gurps.ficha.model.Personagem
 
 /**
@@ -140,6 +142,37 @@ object IluminacaoRules {
             partes.joinToString(" + ") + " → ${if (efetiva == 0) "0" else "$efetiva"}"
         }
         return Resultado(luz, cancelado, efetiva, texto)
+    }
+
+    /**
+     * A escuridão como **caixinha** para uma rolagem de perícia (Lote LUZ-2).
+     *
+     * ## Por que caixinha, e não desconto automático
+     *
+     * Achado pelo usuário no T-L5: *"só dá pra saber do redutor na hora que joga
+     * ataque ou defesa, confira se teste de perícias devem entrar esse redutor"*.
+     *
+     * Devem — mas **não em todas**. O livro amarra a escuridão à **visão**: a Visão
+     * Noturna cancela penalidade *"em testes que envolvam a visão ou no combate"*
+     * (MB p.97). Escalar no escuro é mais difícil; lembrar de uma data de
+     * História, não.
+     *
+     * ⚠️ Descontar em **toda** perícia penalizaria Contabilidade, Teologia e
+     * Meditação por causa da luz da sala — número errado em silêncio. Aplicar em
+     * **nenhuma** deixa o jogador subtraindo de cabeça. Quem sabe se aquele teste
+     * depende de ver é o Mestre, e a caixinha é justamente para isso.
+     *
+     * Devolve null quando não há escuridão sobrando — nada a oferecer.
+     */
+    fun condicionalDaLuz(personagem: Personagem, bruta: Int): BonusCondicional? {
+        val r = penalidadeEfetiva(personagem, bruta)
+        if (r.efetiva == 0) return null
+        return BonusCondicional(
+            nomeDoTraco = rotuloDaLuz(r.bruta),
+            alvo = TraitRuleRegistry.CURINGA_PERICIA,
+            valor = r.efetiva,
+            condicao = "se este teste depender de ver (MB p.97)"
+        )
     }
 
     /** Se vale mostrar a linha das vantagens — sem nenhuma delas, não vale. */

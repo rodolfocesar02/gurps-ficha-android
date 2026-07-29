@@ -107,6 +107,42 @@ class IluminacaoEDeslocamentoTest {
         assertFalse("nao pode ter o sinal grafico", texto.contains("-4"))
     }
 
+    // --- a escuridão como caixinha nas perícias (Lote LUZ-2) ---
+
+    @Test
+    fun `⚠️ a escuridao e oferecida como CAIXINHA, nao descontada de toda pericia`() {
+        // Achado do usuario no T-L5. O livro amarra a escuridao a VISAO: escalar
+        // no escuro e mais dificil, lembrar de uma data de Historia nao.
+        // Descontar em TODA pericia penalizaria Contabilidade por causa da luz da
+        // sala -- numero errado em silencio.
+        val p = com(vant(IluminacaoRules.ID_VISAO_NOTURNA, 2))
+        val caixinha = IluminacaoRules.condicionalDaLuz(p, -6)
+        assertTrue(caixinha != null)
+        assertEquals(-4, caixinha!!.valor)
+        assertTrue(caixinha.condicao.contains("depender de ver"))
+    }
+
+    @Test
+    fun `com boa luz nao ha caixinha nenhuma`() {
+        assertEquals(null, IluminacaoRules.condicionalDaLuz(com(), 0))
+    }
+
+    @Test
+    fun `a caixinha da escuridao usa o curinga, para aparecer em qualquer pericia`() {
+        val caixinha = IluminacaoRules.condicionalDaLuz(com(), -3)!!
+        assertEquals(
+            com.gurps.ficha.domain.rules.traits.TraitRuleRegistry.CURINGA_PERICIA,
+            caixinha.alvo
+        )
+    }
+
+    @Test
+    fun `a caixinha ja vem com a Visao no Escuro descontada`() {
+        // Quem enxerga no escuro nao deveria nem ver a caixinha.
+        val p = com(vant(IluminacaoRules.ID_VISAO_NO_ESCURO))
+        assertEquals(null, IluminacaoRules.condicionalDaLuz(p, -10))
+    }
+
     // --- deslocamentos especiais ---
 
     @Test

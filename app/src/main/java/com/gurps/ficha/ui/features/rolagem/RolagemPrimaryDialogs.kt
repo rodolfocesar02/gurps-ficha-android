@@ -137,6 +137,10 @@ fun RolagemPericiasDialog(
     isPraCegoVariant: Boolean,
     // Opcional: quando vem, o card mostra de onde vem o bonus da pericia.
     personagem: com.gurps.ficha.model.Personagem? = null,
+    // Lote LUZ-2: a escuridao da cena, oferecida como caixinha em CADA pericia.
+    // Nao entra sozinha porque o livro amarra a escuridao a VISAO -- quem sabe se
+    // aquele teste depende de ver e o Mestre.
+    condicionalDaLuz: com.gurps.ficha.domain.rules.traits.BonusCondicional? = null,
     onShowDescricao: (RollDescricaoDialog) -> Unit,
     onExecutarRolagem: (contextoLabel: String, alvo: Int, mod: Int) -> Unit,
     onDismiss: () -> Unit
@@ -244,7 +248,8 @@ fun RolagemPericiasDialog(
                                                     nomeDaPericia = pericia.nome
                                                 )
                                                 val condicionais = com.gurps.ficha.domain.rules.traits
-                                                    .TraitRuleRegistry.getBonusCondicionais(p, pericia.nome)
+                                                    .TraitRuleRegistry.getBonusCondicionais(p, pericia.nome) +
+                                                    listOfNotNull(condicionalDaLuz)
                                                 PainelBonusCondicional(
                                                     bonus = condicionais,
                                                     marcados = condicionaisMarcados[pericia.id].orEmpty(),
@@ -295,7 +300,8 @@ fun RolagemPericiasDialog(
                                                     val extraCond = personagem?.let { p ->
                                                         somaDosMarcados(
                                                             com.gurps.ficha.domain.rules.traits.TraitRuleRegistry
-                                                                .getBonusCondicionais(p, pericia.nome),
+                                                                .getBonusCondicionais(p, pericia.nome) +
+                                                                listOfNotNull(condicionalDaLuz),
                                                             condicionaisMarcados[pericia.id].orEmpty()
                                                         )
                                                     } ?: 0

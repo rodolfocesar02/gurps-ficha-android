@@ -1063,3 +1063,139 @@ nelas. Escolhi assim — qualquer uma é uma linha de mudar:
 - **A apara repetida tem quatro degraus, não dois** — eu havia planejado errado.
 - **O Talento Instintivo não dependia do valor predefinido**, como eu havia
   escrito. Bom, porque `preDefinicoes` está vazio nas 281 perícias.
+
+
+---
+---
+
+# PLANO — Botão "Desloc." com todos os deslocamentos (Lote DESL-2)
+
+*Pedido seu no T-L7: "ao invés de colocar apenas quando aparece a vantagem, as
+características derivadas de deslocamento — Desloc., Voando, Escalando, Nadando
+etc. — podemos deixar um botão com nome `Desloc.` sem número algum aparecendo;
+clica nele, aparecem todos os tipos de deslocamento que temos nas regras do
+livro."*
+
+## Por que a sua ideia é melhor que o que eu fiz
+
+O que eu fiz no DESL-1 foi somar **células condicionais** na linha de
+Características Derivadas. No seu print isso já está apertado: *Vel. Básica ·
+Desloc. · BC · Voando · Escalando* — cinco números numa linha, e faltam pelo
+menos três tipos de deslocamento. Cada vantagem nova empurra a linha mais um
+pouco, até quebrar.
+
+Um botão único resolve os dois problemas de uma vez: a linha volta a ter tamanho
+fixo, e **cabe tudo** — inclusive os deslocamentos que hoje ficam de fora porque
+não teriam onde aparecer.
+
+## O que o livro dá (conferido, p.17-19 e p.353)
+
+### Terrestre
+
+- **Deslocamento Básico** = Velocidade Básica **sem a fração** (5,75 → 5).
+- **Por nível de carga** (p.17): Nenhuma = cheio; Leve **×0,8**; Média **×0,6**;
+  Pesada **×0,4**; Muito Pesada **×0,2**. ⚠️ *"Ignore todas as frações. A Carga
+  nunca reduz o Deslocamento ou a Esquiva a um valor inferior a 1."*
+- **Disparada** (p.353): correr em linha reta é um pouco mais rápido.
+
+<<Esta é a parte que mais vale: os cinco níveis de carga de uma vez, com o peso
+que o personagem está carregando **agora** marcando qual linha está valendo. Hoje
+o jogador tem de multiplicar de cabeça no meio da cena.>>
+
+### Aquático
+
+> O Deslocamento aquático normalmente é igual ao **Deslocamento Básico/5**,
+> arredondado para baixo. (…) Personagens **anfíbios** têm um Deslocamento
+> aquático e terrestre **iguais ao Deslocamento Básico**. Personagens
+> **Aquáticos** têm um Deslocamento aquático igual ao Deslocamento Básico e um
+> **Deslocamento terrestre de zero**.
+
+<<🔴 **Achei um buraco aqui.** O app já tem `bonusDeslocamentoAquatico` e mostra a
+linha, mas ele calcula **sempre** como `Básico/5 + bônus`. As vantagens
+**Anfíbio** (p.39) e **Aquático** (p.156) mudam a conta inteira — e a segunda
+zera o deslocamento **terrestre**, que o app continuaria mostrando cheio. Vale
+conferir e consertar junto.>>
+
+### Aéreo
+
+> Sem nenhuma vantagem especial, o Deslocamento aéreo de um personagem é sempre
+> **zero**. Personagens com Voo têm um Deslocamento aéreo igual à **Velocidade
+> Básica × 2 (não Deslocamento Básico × 2)**. (…) Personagens com **Caminhar no
+> Ar** têm um Deslocamento aéreo **igual ao terrestre**.
+
+<<⚠️ O livro **avisa** entre parênteses que é Velocidade Básica e não Deslocamento
+Básico — sinal de que erram muito nisso. O DESL-1 acertou (Velocidade 5,75 → 11,
+como no seu print), mas fica registrado aqui para nunca "simplificar" errado.
+
+E falta o **Caminhar no Ar** (p.46), que iguala o aéreo ao terrestre.>>
+
+### Escalando
+
+- **Deslocamento + Super Escalada** (p.91), valendo também com Aderência.
+
+### Saltando
+
+- Salto em distância e em altura (p.356), dobrados por nível de **Super Salto**.
+
+<<Esta é a única que precisa de **regra nova**: a tabela de Salto não existe no
+app. É o item mais caro do lote — sugiro deixá-la para o fim e entregar o botão
+sem ela primeiro, com as outras cinco.>>
+
+## Como eu faria
+
+### 1. Uma regra só, que devolve a lista
+
+Arquivo `domain/rules/DeslocamentosRules.kt`, substituindo o
+`DeslocamentosEspeciais.kt` do DESL-1 (que fica pequeno demais para o que o botão
+precisa). Uma função:
+
+```
+todosOsDeslocamentos(personagem) -> List<Linha>
+```
+
+Cada `Linha` traz **rótulo, valor, unidade e a conta** — a conta é o que faz o
+número ser conferível, igual às notinhas de origem do NOTA-1:
+
+| Rótulo | Valor | Conta |
+|---|---|---|
+| Terrestre | 5 m/s | Velocidade Básica 5,75 sem fração |
+| — com carga Leve | 4 m/s | 5 × 0,8 |
+| — com carga Média | 3 m/s | 5 × 0,6 |
+| Nadando | 1 m/s | Deslocamento 5 ÷ 5 |
+| Voando | 11 m/s | Velocidade Básica 5,75 × 2 |
+| Escalando | 6 m/s | Deslocamento 5 + Super Escalada 1 |
+
+⚠️ **Todas as linhas aparecem sempre**, inclusive as de valor **zero** — e é aí
+que o botão fica melhor que as células condicionais. Ver "Aéreo: 0 (sem a
+vantagem Voo)" **ensina a regra**; a célula que simplesmente não existe não ensina
+nada, e o jogador fica sem saber se é zero ou se o app esqueceu. É o mesmo motivo
+do aviso de alcance no MIRA-2b: silêncio é resposta ambígua.
+
+### 2. O botão e o diálogo
+
+Na aba Geral, a linha de Características Derivadas fica **fixa**:
+*Vel. Básica · Desloc. · BC · Dano GdP · Dano GeB* — e um botão **"Desloc."** que
+abre a lista. Sem número no botão, como você pediu: o número que interessa muda
+com a cena, então o botão não deveria eleger um.
+
+<<Sugiro que o **nível de carga atual** venha destacado na lista, calculado do
+peso do equipamento que já está na ficha. Aí o botão responde à pergunta que o
+jogador realmente faz — "quanto eu ando agora?" — e não só "quanto eu andaria".>>
+
+### 3. Ordem sugerida
+
+| # | Passo | Por que nesta ordem |
+|---|---|---|
+| 1 | `DeslocamentosRules.kt` com terrestre + os 5 níveis de carga | é o mais usado, e hoje é conta de cabeça |
+| 2 | Aquático, aéreo e escalando, todos com a conta à vista | já existem, só mudam de lugar |
+| 3 | Botão "Desloc." + diálogo; a linha derivada volta a ser fixa | resolve o aperto da linha |
+| 4 | Consertar **Anfíbio** e **Aquático** | é buraco, não melhoria |
+| 5 | **Caminhar no Ar** | uma linha, depois do item 4 |
+| 6 | **Disparada** (p.353) | precisa ler a página |
+| 7 | **Saltando** + Super Salto (p.356) | regra nova, a mais cara |
+
+## Dúvida
+
+O diálogo deve mostrar **todos os cinco níveis de carga** sempre, ou só o nível
+atual com um "ver todos"? Eu prefiro todos — a tabela inteira ensina a regra e é
+curta —, mas se a tela ficar cheia, o "ver todos" resolve.
