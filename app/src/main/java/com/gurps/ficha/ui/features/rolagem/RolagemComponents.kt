@@ -373,7 +373,11 @@ fun AtaqueDanoQuickArea(
     descricaoDaMao: String = "",
     onAlternarMao: () -> Unit = {},
     // Lote MIRA-1: toque longo no NH abre a lista de onde acertar.
-    onAbrirMira: (RollMappedOption) -> Unit = {}
+    onAbrirMira: (RollMappedOption) -> Unit = {},
+    // Lote MIRA-2: "alvo a 20 m (-6)". Nulo quando nao ha distancia posta ou o
+    // ataque e corpo a corpo. Fica VISIVEL porque o toque simples ja a aplica --
+    // um redutor que age sem aparecer e um numero que ninguem consegue conferir.
+    rotuloDistancia: String? = null
 ) {
     if (opcoesAtaque.isEmpty()) {
         Text(
@@ -537,6 +541,15 @@ fun AtaqueDanoQuickArea(
                                 Text(
                                     "mod ${if (modAtaqueAtual >= 0) "+$modAtaqueAtual" else "$modAtaqueAtual"}",
                                     style = compactLabelStyle,
+                                    modifier = Modifier.fillMaxWidth(),
+                                    textAlign = TextAlign.Center
+                                )
+                            }
+                            rotuloDistancia?.let { texto ->
+                                Text(
+                                    texto,
+                                    style = compactLabelStyle,
+                                    color = MaterialTheme.colorScheme.error,
                                     modifier = Modifier.fillMaxWidth(),
                                     textAlign = TextAlign.Center
                                 )

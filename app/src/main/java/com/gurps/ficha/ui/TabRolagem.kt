@@ -88,6 +88,14 @@ fun TabRolagem(viewModel: FichaViewModel) {
     var testesDeMarco by remember { mutableStateOf(emptyList<MarcosDeVidaRules.TesteExigido>()) }
     var showResistenciaDialog by remember { mutableStateOf(false) }
     var miraDoAtaque by remember { mutableStateOf<RollMappedOption?>(null) }
+    // Lote MIRA-2: a distancia do alvo vive AQUI, nao dentro do dialogo.
+    // No dialogo ela sumiria ao fechar, e o toque simples no NH voltaria a
+    // rolar sem ela sem avisar. Como fica na aba, ela vale para os dois
+    // gestos -- e por isso aparece escrita no card.
+    var indiceDistanciaAlvo by remember {
+        mutableIntStateOf(com.gurps.ficha.domain.rules.TabelaVelocidadeDistancia.INDICE_PADRAO)
+    }
+    var indiceVelocidadeAlvo by remember { mutableIntStateOf(-1) }
 
     var pendingRoll by remember { mutableStateOf<PendingRollState?>(null) }
     var pendingResults by remember { mutableStateOf<List<Int>?>(null) }
@@ -162,6 +170,24 @@ fun TabRolagem(viewModel: FichaViewModel) {
     val ataqueAtual = remember(viewModel.ataqueSelecionadoId, opcoesAtaque) {
         opcoesAtaque.find { it.id == viewModel.ataqueSelecionadoId } ?: opcoesAtaque.firstOrNull()
     }
+
+    // A penalidade de distancia do ataque selecionado agora. Zero em corpo a
+    // corpo -- e zero tambem enquanto o alvo estiver a 2 m, que e o padrao.
+    val armaSelecionada = viewModel.fonteDanoSelecionadaId
+        ?.takeIf { it.startsWith("arma_") }?.removePrefix("arma_")
+        ?.let { nome -> armas.find { it.nome == nome } }
+    val ataqueEhADistancia = com.gurps.ficha.domain.rules.AlcanceDoAtaque.ehADistancia(
+        armaSelecionada,
+        ataqueAtual?.id?.takeIf { it.startsWith("pericia_") }?.removePrefix("pericia_")
+    )
+    val metrosAlvo = com.gurps.ficha.domain.rules.TabelaVelocidadeDistancia
+        .degrau(indiceDistanciaAlvo).metros
+    val velocidadeAlvo = if (indiceVelocidadeAlvo < 0) 0 else
+        com.gurps.ficha.domain.rules.TabelaVelocidadeDistancia.degrau(indiceVelocidadeAlvo).metros
+    val penalidadeDistancia = if (ataqueEhADistancia) {
+        com.gurps.ficha.domain.rules.TabelaVelocidadeDistancia
+            .penalidadeCombinada(metrosAlvo, velocidadeAlvo)
+    } else 0
 
     // ST Bracal: ligada, o ST rolado e o Dano ST passam a usar a forca dos
     // bracos (MB p.89). Fica desligada por padrao -- nem toda acao e de braco.
@@ -722,9 +748,11 @@ fun TabRolagem(viewModel: FichaViewModel) {
             onExecutarAtaque = { att, mod ->
                 executarRolagem(
                     tipo = TipoTeste.ATAQUE,
-                    contextoLabel = att.contextLabel,
+                    contextoLabel = if (penalidadeDistancia != 0) {
+                        "${att.contextLabel} a ${metrosAlvo}m"
+                    } else att.contextLabel,
                     alvo = att.target,
-                    mod = mod + penalidadeDaMao
+                    mod = mod + penalidadeDaMao + penalidadeDistancia
                 )
             },
             origensDoDano = origensDoDano,
@@ -733,6 +761,9 @@ fun TabRolagem(viewModel: FichaViewModel) {
             descricaoDaMao = MaoInabilRules.rotuloAcessivel(p),
             onAlternarMao = { usandoMaoInabil = !usandoMaoInabil },
             onAbrirMira = { miraDoAtaque = it },
+            rotuloDistancia = if (penalidadeDistancia != 0) {
+                "alvo a ${metrosAlvo}m ($penalidadeDistancia)"
+            } else null,
             onExecutarDano = { dano ->
                 val perId = if (ataqueAtual?.id?.startsWith("pericia_") == true) {
                     ataqueAtual.id.removePrefix("pericia_")
@@ -955,10 +986,30 @@ fun TabRolagem(viewModel: FichaViewModel) {
     }
 
     miraDoAtaque?.let { ataque ->
+        // Lote MIRA-2: a linha de distância só aparece em ataque à distância.
+        // Decide por DUAS fontes — a arma escolhida manda, a perícia é o
+        // reserva. Ver `AlcanceDoAtaque`.
+        val armaDaMira = viewModel.fonteDanoSelecionadaId
+            ?.takeIf { it.startsWith("arma_") }?.removePrefix("arma_")
+            ?.let { nome -> armas.find { it.nome == nome } }
+        val periciaDaMira = ataque.id.takeIf { it.startsWith("pericia_") }?.removePrefix("pericia_")
+
         DialogoMira(
             rotuloDoAtaque = ataque.contextLabel,
             nhBase = (ataque.target ?: 0) + penalidadeDaMao,
             isPraCegoVariant = isPraCegoVariant,
+            ehADistancia = com.gurps.ficha.domain.rules.AlcanceDoAtaque
+                .ehADistancia(armaDaMira, periciaDaMira),
+            // O alcance do arco é múltiplo da ST de quem empunha — e se a ST
+            // Braçal estiver ligada, é a força dos braços que atira.
+            alcance = com.gurps.ficha.domain.rules.AlcanceDoAtaque
+                .alcanceDe(armaDaMira, p.st + bonusStBracal),
+            indiceDistancia = indiceDistanciaAlvo,
+            indiceVelocidade = indiceVelocidadeAlvo,
+            onIndices = { d, v ->
+                indiceDistanciaAlvo = d
+                indiceVelocidadeAlvo = v
+            },
             onEscolher = { rotulo, nh ->
                 miraDoAtaque = null
                 executarRolagem(tipo = TipoTeste.ATAQUE, contextoLabel = rotulo, alvo = nh, mod = 0)

@@ -997,89 +997,10 @@ data class DefesasAtivas(
     }
 }
 
-// Lista de pericias que sao consideradas "pericias de combate" para Apara/Bloqueio
-val PERICIAS_COMBATE = setOf(
-    // IDs atuais do dataset
-    "adaga_de_esgrima",
-    "armas_de_haste",
-    "bastao",
-    "boxe",
-    "briga",
-    "capa",
-    "carate",
-    "caratê",
-    "chicote",
-    "escudo",
-    "espada_curta",
-    "espada_de_duas_maos",
-    "espada_de_energia",
-    "espada_de_lamina_larga",
-    "faca",
-    "jittesai",
-    "judo",
-    "judô",
-    "kusari",
-    "lanca",
-    "lanca_de_justa",
-    "luta_grecoromana",
-    "luta_greco_romana",
-    "macamachado",
-    "macamachado_de_duas_maos",
-    "mangual",
-    "mangual_de_duas_maos",
-    "sumo",
-    "sumô",
-    "luta_de_sumo",
-    "garrote",
-    "sopro",
-    "lancador_de_lancas",
-    "projetor_de_pressao",
-    // Aliases legados para fichas antigas
-    "adaga",
-    "alabarda",
-    "armas_de_corrente",
-    "armas_de_duas_maos",
-    "cajado",
-    "espada_larga",
-    "kama",
-    "karate",
-    "karatê",
-    "kusarigama",
-    "maca",
-    "machado_de_duas_maos",
-    "machado_ou_machadinha",
-    "nunchaku",
-    "rapieira",
-    "sabre",
-    "sai",
-    "tonfa",
-    "wrestling",
-    // Pericias de Ataque a Distancia
-    "arco",
-    "arcos",
-    "besta",
-    "zarabatana",
-    "funda",
-    "armas_de_fogo_nt",
-    "armas_de_feixe_nt",
-    "artilharia_nt",
-    "artilheiro_nt",
-    "projetor_de_liquidos_nt",
-    "bolas",
-    "laco",
-    "rede",
-    "arma_de_fogo_pistola",
-    "arma_de_fogo_fuzil",
-    "arma_de_fogo_espingarda",
-    "arma_de_fogo_submetralhadora",
-    "arremesso",
-    "facas_de_arremesso",
-    "shuriken",
-    "pericia_de_arma_de_fogo",
-    "pericia_de_arco",
-    "pericia_de_besta",
-    "ataque_inato"
-)
+// A lista PERICIAS_COMBATE mudou de casa: agora vive em
+// `PericiasDeCombate.kt`, dividida em corpo a corpo e a distancia (Lote
+// MIRA-2). O nome e o conteudo continuam identicos -- quem usava, continua
+// usando sem mudar nada.
 // RACIAL SKILLS
 /**
  * GURPS Módulo Básico tem DOIS sistemas distintos de perícia racial:

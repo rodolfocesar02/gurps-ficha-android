@@ -31,6 +31,11 @@ import com.gurps.ficha.ui.FullscreenDialogContainer
 import com.gurps.ficha.ui.UiActionLabels
 import com.gurps.ficha.ui.appCardColors
 import com.gurps.ficha.ui.linhaAlternavel
+import com.gurps.ficha.domain.rules.TabelaVelocidadeDistancia
+import com.gurps.ficha.domain.rules.AlcanceDoAtaque
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.foundation.layout.PaddingValues
 
 /**
  * **Onde acertar** — o diálogo de mira (Lote MIRA-1, MB p.398-400).
@@ -56,10 +61,32 @@ fun DialogoMira(
     nhBase: Int,
     isPraCegoVariant: Boolean,
     onEscolher: (rotulo: String, nh: Int) -> Unit,
-    onDismiss: () -> Unit
+    onDismiss: () -> Unit,
+    // --- Lote MIRA-2: só chegam preenchidos em ataque à distância. ---
+    ehADistancia: Boolean = false,
+    alcance: AlcanceDoAtaque.Alcance = AlcanceDoAtaque.Alcance(null, null),
+    // O seletor anda de DEGRAU da tabela, não de metro em metro: cada toque
+    // vale exatamente −1. Ver `TabelaVelocidadeDistancia`.
+    //
+    // ⚠️ O estado mora na ABA, não aqui. Se morasse aqui, ele sumiria ao fechar
+    // o diálogo e o toque simples no NH voltaria a rolar sem a distância — sem
+    // avisar ninguém. Erro silencioso é o pior tipo.
+    indiceDistancia: Int = TabelaVelocidadeDistancia.INDICE_PADRAO,
+    indiceVelocidade: Int = -1,
+    onIndices: (distancia: Int, velocidade: Int) -> Unit = { _, _ -> }
 ) {
     var desarmar by remember { mutableStateOf(false) }
     val opcoes = MiraRules.opcoes(desarmar)
+
+    val metros = TabelaVelocidadeDistancia.degrau(indiceDistancia).metros
+    val velocidade = if (indiceVelocidade < 0) 0 else
+        TabelaVelocidadeDistancia.degrau(indiceVelocidade).metros
+    val penalidadeDistancia = if (ehADistancia) {
+        TabelaVelocidadeDistancia.penalidadeCombinada(metros, velocidade)
+    } else {
+        0
+    }
+    val nhComDistancia = nhBase + penalidadeDistancia
 
     FullscreenDialogContainer(onDismiss = onDismiss) {
         Column(modifier = Modifier.fillMaxSize()) {
@@ -73,6 +100,31 @@ fun DialogoMira(
                 style = MaterialTheme.typography.labelMedium,
                 color = MaterialTheme.colorScheme.outline
             )
+
+            if (ehADistancia) {
+                LinhaDeDistancia(
+                    metros = metros,
+                    velocidade = velocidade,
+                    velocidadeVisivel = indiceVelocidade >= 0,
+                    penalidade = penalidadeDistancia,
+                    alcance = alcance,
+                    onDistancia = { delta ->
+                        onIndices(
+                            (indiceDistancia + delta)
+                                .coerceIn(0, TabelaVelocidadeDistancia.DEGRAUS.lastIndex),
+                            indiceVelocidade
+                        )
+                    },
+                    onVelocidade = { delta ->
+                        onIndices(
+                            indiceDistancia,
+                            (indiceVelocidade + delta)
+                                .coerceIn(-1, TabelaVelocidadeDistancia.DEGRAUS.lastIndex)
+                        )
+                    },
+                    onMostrarVelocidade = { onIndices(indiceDistancia, 0) }
+                )
+            }
 
             LazyColumn(
                 modifier = Modifier.weight(1f),
@@ -119,11 +171,16 @@ fun DialogoMira(
                     }
 
                     items(doGrupo) { opcao ->
-                        LinhaDeMira(opcao, nhBase, isPraCegoVariant) {
-                            onEscolher(
-                                "$rotuloDoAtaque — ${opcao.rotulo}",
-                                opcao.nhCom(nhBase)
-                            )
+                        LinhaDeMira(opcao, nhComDistancia, isPraCegoVariant) {
+                            // O rótulo leva a distância junto: sem isso o log do
+                            // Discord diria "Crânio 5" e ninguém saberia de onde
+                            // saiu o 5.
+                            val ondeEQuando = if (ehADistancia && penalidadeDistancia != 0) {
+                                "$rotuloDoAtaque — ${opcao.rotulo} a ${metros}m"
+                            } else {
+                                "$rotuloDoAtaque — ${opcao.rotulo}"
+                            }
+                            onEscolher(ondeEQuando, opcao.nhCom(nhComDistancia))
                         }
                     }
                 }
@@ -143,6 +200,167 @@ fun DialogoMira(
                 TextButton(onClick = onDismiss) { Text(UiActionLabels.FECHAR) }
             }
         }
+    }
+}
+
+/**
+ * A linha de **distância do alvo** (Lote MIRA-2, MB p.550-551).
+ *
+ * ## Por que o `−/+` anda de degrau, e não de metro
+ *
+ * A tabela do livro é logarítmica. Se cada toque valesse 1 metro, chegar a 100
+ * metros seriam 98 toques. Andando pela tabela — 2, 3, 5, 7, 10, 15, 20… — são
+ * 10 toques, e **cada toque vale exatamente −1**. O botão deixa de ser um
+ * contador de metros e passa a ser a própria regra.
+ *
+ * ## Por que a velocidade começa escondida
+ *
+ * O livro: *"Na maioria dos combates que envolve combatentes a pé e objetos
+ * inanimados, é preferível ignorar a velocidade"*. Ela aparece só quando o
+ * Mestre disser que o alvo está correndo.
+ *
+ * ⚠️ E quando aparece, ela **soma à distância** antes de consultar a tabela —
+ * não é uma segunda penalidade. Por isso a explicação mostra a conta inteira.
+ */
+@Composable
+private fun LinhaDeDistancia(
+    metros: Int,
+    velocidade: Int,
+    velocidadeVisivel: Boolean,
+    penalidade: Int,
+    alcance: AlcanceDoAtaque.Alcance,
+    onDistancia: (Int) -> Unit,
+    onVelocidade: (Int) -> Unit,
+    onMostrarVelocidade: () -> Unit
+) {
+    Card(
+        modifier = Modifier.fillMaxWidth().padding(top = 6.dp),
+        shape = RoundedCornerShape(12.dp),
+        colors = appCardColors()
+    ) {
+        Column(modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp)) {
+            Passo(
+                rotulo = "Alvo a",
+                valor = TabelaVelocidadeDistancia.degrau(
+                    TabelaVelocidadeDistancia.indiceDoDegrau(metros)
+                ).rotulo,
+                descricaoAcessivel = "Distância do alvo: $metros metros",
+                penalidade = if (velocidadeVisivel) null else penalidade,
+                onPasso = onDistancia
+            )
+
+            if (velocidadeVisivel) {
+                Passo(
+                    rotulo = "Velocidade",
+                    valor = "$velocidade m/s",
+                    descricaoAcessivel = "Velocidade do alvo: $velocidade metros por segundo",
+                    penalidade = penalidade,
+                    onPasso = onVelocidade
+                )
+                // A conta inteira à vista: o jogador precisa poder desconfiar do
+                // número. Mesma razão das notinhas de origem do Lote NOTA-1.
+                Text(
+                    TabelaVelocidadeDistancia.explicacao(metros, velocidade),
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.outline
+                )
+            } else {
+                TextButton(
+                    onClick = onMostrarVelocidade,
+                    contentPadding = PaddingValues(horizontal = 4.dp, vertical = 0.dp)
+                ) {
+                    Text("+ alvo em movimento", style = MaterialTheme.typography.labelSmall)
+                }
+            }
+
+            AvisoDeAlcance(metros, alcance)
+        }
+    }
+}
+
+/** Uma linha `[−] valor [+]` com a penalidade à direita. */
+@Composable
+private fun Passo(
+    rotulo: String,
+    valor: String,
+    descricaoAcessivel: String,
+    penalidade: Int?,
+    onPasso: (Int) -> Unit
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            rotulo,
+            style = MaterialTheme.typography.labelMedium,
+            color = MaterialTheme.colorScheme.outline
+        )
+        TextButton(
+            onClick = { onPasso(-1) },
+            modifier = Modifier.semantics { contentDescription = "Diminuir. $descricaoAcessivel" },
+            contentPadding = PaddingValues(horizontal = 10.dp, vertical = 0.dp)
+        ) { Text("−", style = MaterialTheme.typography.titleMedium) }
+        Text(
+            valor,
+            style = MaterialTheme.typography.bodyMedium,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier.semantics { contentDescription = descricaoAcessivel }
+        )
+        TextButton(
+            onClick = { onPasso(1) },
+            modifier = Modifier.semantics { contentDescription = "Aumentar. $descricaoAcessivel" },
+            contentPadding = PaddingValues(horizontal = 10.dp, vertical = 0.dp)
+        ) { Text("+", style = MaterialTheme.typography.titleMedium) }
+
+        if (penalidade != null) {
+            Text(
+                if (penalidade == 0) "0" else "$penalidade",
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold,
+                color = if (penalidade < 0) {
+                    MaterialTheme.colorScheme.error
+                } else {
+                    MaterialTheme.colorScheme.primary
+                },
+                modifier = Modifier
+                    .weight(1f)
+                    .semantics {
+                        contentDescription = "Modificador de distância: " +
+                            if (penalidade < 0) "menos ${-penalidade}" else "zero"
+                    },
+                textAlign = TextAlign.End
+            )
+        } else {
+            Text("", modifier = Modifier.weight(1f))
+        }
+    }
+}
+
+/**
+ * Os dois avisos que a ficha já podia dar e não dava.
+ *
+ * O **1/2D** é o que mais escapa na mesa, porque não muda o ataque — muda o
+ * **dano**, que sai pela metade. O jogador rola, acerta, e comemora um dano que
+ * na verdade é metade daquilo.
+ */
+@Composable
+private fun AvisoDeAlcance(metros: Int, alcance: AlcanceDoAtaque.Alcance) {
+    val max = alcance.maximo
+    val meio = alcance.meioDano
+
+    when {
+        max != null && metros > max -> Text(
+            "Fora de alcance: o Máx da arma é $max m.",
+            style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.error,
+            fontWeight = FontWeight.Medium
+        )
+        meio != null && metros > meio -> Text(
+            "Além do 1/2D ($meio m): o dano sai pela metade.",
+            style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.error
+        )
     }
 }
 
