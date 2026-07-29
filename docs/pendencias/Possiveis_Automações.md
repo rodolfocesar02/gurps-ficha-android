@@ -838,3 +838,228 @@ olhando a tela.
 
 Junto com o do arredondamento: **17 m tem de dar −6** (arredonda para 20 m), e não
 −5.
+
+---
+---
+
+# PLANO — 29/07/2026 · ✅ **FECHADO no mesmo dia**
+
+## O que está liberado
+
+Lendo o arquivo inteiro, encontrei **uma** marca sua: `(pode fazer)` no **Talento**
+(linha 93). Não há nenhum `<<<...>>>` em lugar nenhum do arquivo, e só existe uma
+cópia dele na árvore — as outras ressalvas não salvaram.
+
+Então o plano abaixo tem duas partes: o **Lote TAL-1**, que está liberado e
+detalhado; e a fila do resto, esperando um "sim" por número.
+
+---
+
+## 🔴 O achado que muda o plano do Talento
+
+Antes de escrever qualquer JSON eu fui conferir **como o app casa o nome da
+perícia** — e é aqui que este lote pode falhar em silêncio.
+
+`PericiaSelecionada.calcularNivel` chama
+`TraitRuleRegistry.getSkillBonus(personagem, nome)`, e lá dentro o valor sai de
+`bonuses[skillName]`: **busca exata por chave de mapa**. O `alvo` do `efeitos`
+tem de ser **idêntico** ao `nome` da perícia no catálogo, acento por acento.
+
+E o catálogo carrega `/NT` em boa parte delas:
+
+| O livro escreve | O catálogo tem |
+|---|---|
+| Engenharia | **Engenharia/NT** |
+| Mecânica | **Mecânica/NT** |
+| Matemática | **Matemática/NT** |
+| Cirurgia | **Cirurgia/NT** |
+| Armeiro, Eletricista, Ferreiro, Maquinista | **…/NT** |
+| Costura, Fotografia, Joalheiro | **…/NT** |
+| Medicina | **Medicina/NT** |
+| Alvenaria, Carpintaria, Contabilidade | *sem `/NT`* |
+| Medicina Alternativa | *sem `/NT`* |
+
+Ou seja: **não é uma regra uniforme** — "Medicina/NT" leva a barra e "Medicina
+Alternativa" não. Escrever a lista do livro direto no JSON faria ~40 dos ~80
+bônus **não fazerem nada, sem erro nenhum no log**. É a mesma família do bug do
+`matematica nt` × `matematica aplicada` que consertamos em 28/07.
+
+<<Analogia: é discar um telefone certo com o DDD errado. A ligação não dá erro de
+"número inválido" — só não chama.>>
+
+---
+
+## Lote TAL-1 — os dez Talentos
+
+### TAL-1a · A rede primeiro (e ela vale para tudo que já existe)
+
+**Um teste que varre os dois catálogos** (`vantagens.v3.json` e
+`desvantagens.v2.json`) e falha se algum `efeitos` de `tipo: "pericia"` tiver um
+`alvo` que **não existe** em `pericias.json`.
+
+⚠️ Este passo vem **antes** de escrever o Talento, e por dois motivos:
+
+1. Sem ele, eu escrevo 80 linhas e não tenho como saber quais pegaram.
+2. Ele confere **de graça os 91 efeitos que já estão no catálogo**. Pode muito
+   bem já haver bônus mudo lá dentro hoje — e se houver, este teste acha.
+
+<<Este é o tipo de teste que a memória chama de "camada certa": não é uma asserção
+pontual sobre um personagem, é um **invariante do catálogo**.>>
+
+### TAL-1b · Preencher os dez
+
+Para cada Talento, uma entrada de `efeitos` por perícia:
+
+```json
+{ "tipo": "pericia", "alvo": "Engenharia/NT", "valor": 1, "porNivel": true }
+```
+
+Mais **uma** entrada de reação, condicional:
+
+```json
+{ "tipo": "reacao", "valor": 1, "porNivel": true,
+  "condicao": "de quem pode ficar impressionado com a aptidão dele" }
+```
+
+O `porNivel: true` já existe e funciona (`valorPara(nivel)`), e as dez vantagens
+já estão no catálogo como `costKind: "perLevel"` — então nível 3 dá +3 sem código
+novo.
+
+O texto da condição muda por Talento, porque a plateia muda: *"qualquer pessoa
+para quem ele trabalha"* no Artífice, *"todos os animais"* no Companheiro Animal,
+*"ex-pacientes e atuais"* no Curandeiro.
+
+⚠️ **Agente Cativante é o único com a condição invertida:** o bônus **some** se
+ele estiver tentando manipular a pessoa. O texto da caixinha tem de dizer isso,
+senão o jogador marca sempre.
+
+### TAL-1c · Talentos que se sobrepõem — têm de SOMAR
+
+Três perícias estão em dois Talentos ao mesmo tempo:
+
+| Perícia | Está em |
+|---|---|
+| Engenharia/NT | Artífice **e** Habilidade Matemática |
+| Veterinária | Companheiro Animal **e** Curandeiro |
+| Naturalista | Dedos Verdes **e** Explorador |
+
+O livro permite: *"talentos que se sobrepõem (e apenas eles) podem conceder bônus
+maiores que +4"*.
+
+O interpretador já soma quando o mesmo alvo aparece duas vezes, e a notinha do
+NOTA-1 já sabe listar origem por origem. **Mas isso precisa de teste**, porque é
+o caso em que um número grande aparece na tela e o jogador precisa poder conferir
+de onde vieram as duas parcelas.
+
+### TAL-1d · O teto de 4 níveis — aviso, não trava
+
+O livro: *"nunca pode ter mais que quatro níveis em um determinado Talento"*.
+
+Primeiro conferir se o campo `max` do catálogo (hoje `null` nas dez) já limita o
+seletor de níveis. Se limitar, é só preencher `4`. Se não, entra como **aviso** no
+mesmo molde do teto de HT do Magro — porque o Mestre pode ter liberado, e travar
+a ficha do jogador por uma regra que entrou depois é o erro que já cometemos com
+o `conhecimento_oculto`.
+
+### TAL-1e · O gate
+
+Build nas 2 variantes, suíte inteira, `PROGRESS.md`, commit. **Sem APK** — só
+quando você pedir.
+
+### Por que este lote vale o esforço
+
+São ~80 perícias que hoje **não recebem nada**. Quem compra Artífice nível 2 e
+gasta 20 pontos não ganha um único ponto de NH. E não precisa de uma linha de
+Kotlin novo: é JSON mais testes.
+
+---
+
+## A fila do resto — esperando seu "sim" por número
+
+| # | Item | O que é | Depende de |
+|---|---|---|---|
+| 2 | **Visão Hiperespectral** | 4 linhas de JSON; hoje a vantagem entrega metade do que custa | nada |
+| 3 | **+5 e +3 em Perseguição** (Visão 360° e Periférica) | 2 linhas de JSON | nada |
+| 4 | **Três caixinhas**: Toque Sensível +4, Venturoso +1, Versátil +1 | mesmo molde do Rosto Sincero, as três de uma vez | nada |
+| 5 | **Sorte** | rolar 3 e ficar com a melhor (ou a pior, se estiver sendo atacado) + relógio de 1 h | decisão sobre o contador |
+| 6 | **Seletor de iluminação + Visão Noturna** | penumbra −1 … escuridão total −10, e a Visão Noturna comendo parte | decisão de alcance |
+| 7 | **Treinado por um Mestre** | Golpe Rápido −3 e apara repetida −2, no diálogo de Mira | nada |
+| 8 | **Linhas de Deslocamento** | "Voando: 12", "Escalando: 5" | nada |
+| 9 | **Visualização** | calculadora fechada: rola IQ, aplica ÷1/÷2/÷3, guarda o bônus | nada |
+| 10 | **Visão Telescópica** | agora é possível: cancela −1 da distância por nível | ✅ MIRA-2 pronto |
+| 11 | **Talento Instintivo** | perícias não conhecidas com o predefinido calculado | contador de sessão |
+| 12 | **Sem Sangue** (Tolerância a Ferimentos) | o teste de sangramento nunca aparece | nada |
+
+**Os itens 2, 3 e 4 dão para fazer no mesmo lote do Talento** — são todos JSON e
+caixinha, e o gate roda uma vez só.
+
+---
+
+## As três decisões que travam itens
+
+1. **Sorte (item 5)** — está na p.90, uma página antes de onde você mandou
+   começar. Faço ou deixo fora?
+2. **Contador por sessão** (Sorte, Super Sorte, Talento Instintivo) — o app não
+   sabe quando a sessão começou. Botão **"zerar usos"** manual, ou não contar nada
+   e só mostrar o texto da regra?
+3. **Seletor de iluminação (item 6)** — ele é maior que a Visão Noturna: passa a
+   valer para **todas** as rolagens de visão e combate. Topa esse alcance, ou
+   prefere que a Visão Noturna fique só como nota informativa?
+
+E sobre a **Voz Melodiosa**: o livro em português lista "Arremesso", que é perícia
+de atirar objetos e nada tem a ver com voz — no original é *Broadcast*
+(transmissão). Confirma que **não** devo adicionar?
+
+
+---
+---
+
+# ✅ FECHAMENTO — 29/07/2026
+
+Você disse "pode fazer todos os lotes em loop". Os **12 itens** do plano estão
+resolvidos: **11 feitos** em 7 lotes, **1 descartado** de propósito.
+
+| # | Item | Lote | Versão |
+|---|---|---|---|
+| 1 | Os dez Talentos | TAL-1 | 3.9 |
+| 2 | Visão Hiperespectral (4 perícias) | TAL-1 | 3.9 |
+| 3 | +5/+3 em Perseguição | TAL-1 | 3.9 |
+| 4 | Toque Sensível, Venturoso, Versátil | TAL-1 | 3.9 |
+| 6 | Seletor de iluminação + Visão Noturna | LUZ-1 | 4.0 |
+| 8 | Deslocamento voando e escalando | DESL-1 | 4.0 |
+| 7 | Treinado por um Mestre | MESTRE-1 | 4.1 |
+| 5 | Sorte | SORTE-1 | 4.2 |
+| 10 | Visão Telescópica + Apontar/Precisão | MIRA-3 | 4.3 |
+| 9 | Visualização | VIS-1 | 4.4 |
+| 11 | Talento Instintivo | TI-1 | 4.5 |
+| 12 | Sem Sangue | ❌ **não feito** — o sangramento vive em `domain/combat/`, que é da Saga | — |
+
+## As decisões que tomei sozinho, e por quê
+
+As três dúvidas do plano estavam bloqueando itens, e o "loop" não podia parar
+nelas. Escolhi assim — qualquer uma é uma linha de mudar:
+
+1. **Sorte (estava uma página antes do ponto de partida):** **fiz.** É a que mais
+   muda o jogo no Discord, e deixá-la fora por uma página seria formalismo.
+2. **Contador por sessão:** **botão de zerar manual.** O app não sabe quando a
+   sessão começou; chutar devolveria usos que você já gastou.
+3. **Seletor de iluminação com alcance amplo:** **fiz amplo** — entra no ataque,
+   nas defesas e no teste de Visão. A Visão Noturna sozinha não justificaria a
+   tela; o seletor sim.
+4. **"Arremesso" na Voz Melodiosa:** **não adicionei.** É perícia de atirar
+   objetos e no original a lista tem *Broadcast* — erro de tradução.
+
+## O que apareceu no caminho e não estava no plano
+
+- 🔴 **A vantagem Agente Cativante não existia no catálogo.** Foi criada.
+- 🔴 **Dois nomes de perícia com acento comido:** `Mendicncia` e `Analise de
+  Mercado`. Nome errado ali é bônus mudo para sempre, porque o casamento é por
+  nome exato. Entrou um teste que varre o catálogo procurando o sinal (3+
+  consoantes seguidas).
+- 🔴 **Carisma não dava as quatro perícias** que o livro nomeia.
+- **Seis nomes meus errados** foram pegos pela conferência contra o catálogo antes
+  de virarem bônus mudo — `Pesca` é `Pescaria`, `Trato-Social` tem hífen,
+  `Conserto de Equipamento Eletrônico/NT (†)` tem adaga.
+- **A apara repetida tem quatro degraus, não dois** — eu havia planejado errado.
+- **O Talento Instintivo não dependia do valor predefinido**, como eu havia
+  escrito. Bom, porque `preDefinicoes` está vazio nas 281 perícias.

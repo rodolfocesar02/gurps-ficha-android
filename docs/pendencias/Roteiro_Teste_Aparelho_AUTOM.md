@@ -323,3 +323,120 @@ Com **PV 10** na ficha.
 9. ✅ Aparece um card `Resistência à Magia 3`, dizendo que o mago sofre −3 e que
    você deve informar ao Mestre.
 10. ✅ E um teste novo no grupo **Sobrenatural**: resistir a elixir mágico.
+
+
+---
+
+# Roteiro — Lotes de 29/07/2026 (versoes 3.9 a 4.5)
+
+## T-T · Os dez Talentos (TAL-1)
+
+- **T-T1** — Compre **Artifice nivel 2** (20 pts). Abra Pericias e confira que
+  **Engenharia/NT, Mecanica/NT, Alvenaria, Carpintaria, Armeiro/NT,
+  Eletricista/NT, Maquinista/NT, Ferreiro/NT e Conserto de Equipamento
+  Eletronico/NT** subiram **+2**. Antes deste lote nao subiam nada.
+- **T-T2** — Toque no NH de Engenharia e confira a **notinha de origem**: tem de
+  dizer "Artifice +2".
+- **T-T3 · a sobreposicao** — Some **Habilidade Matematica nivel 3**. Engenharia
+  tem de ir para **+5**, e a notinha tem de mostrar **as duas linhas**. O livro
+  permite passar de +4 so nesse caso.
+- **T-T4** — No card de **Reacao**, tem de aparecer uma caixinha do Talento, com a
+  plateia certa ("de qualquer pessoa para quem ele trabalha"). Marcada, soma +2.
+- **T-T5** — Compre **Agente Cativante** (ela nao existia antes). A caixinha de
+  reacao dele tem de dizer que o bonus **some** se ele estiver manipulando.
+- **T-T6 · as tres caixinhas novas** — Compre **Toque Sensivel**, **Venturoso** e
+  **Versatil**. Abra **qualquer** pericia: as tres caixinhas tem de aparecer la
+  (+4, +1, +1). Confira em duas pericias bem diferentes, ex. Escalada e Cirurgia.
+- **T-T7 · o que NAO pode acontecer** — Com o Venturoso comprado, abra
+  **Esquiva/Apara/Bloqueio** e o card de **Reacao**: a caixinha dele **nao pode**
+  aparecer em nenhum deles. O livro fala de "testes de habilidade".
+- **T-T8** — Compre **Visao Hiperespectral**: **Observacao, Pericia Forense/NT,
+  Revistar e Rastreamento** tem de subir **+3**. Antes subia nada.
+
+## T-L · Luz da cena e deslocamentos (LUZ-1 / DESL-1)
+
+- **T-L1** — Na Rolagem, o card **"Luz da cena"** comeca em *Boa luz* com **0**.
+- **T-L2 · o exemplo do livro** — Compre **Visao Noturna 4** e leve a luz ate
+  **-7**: o card tem de mostrar **-3** e a conta *"Quase nada de luz -7 + Visao
+  Noturna 4 -> -3"*.
+- **T-L3 · o que NAO pode acontecer** — Leve a luz ate **-10 (Escuridao total)**:
+  tem de mostrar **-10**, e a linha dizer que a Visao Noturna **nao vale aqui**. Se
+  mostrar -6, e bug.
+- **T-L4** — Compre **Visao no Escuro**: em **-10** tem de virar **0**.
+- **T-L5** — Com a luz em -5, role um **ataque** e uma **defesa**: os dois tem de
+  sair com o -5 no log.
+- **T-L6** — Compre **Voo**: na aba Geral aparece **"Voando"** = Velocidade Basica
+  x 2. Com DX 13/HT 10 (Velocidade 5,75) tem de dar **11**, nao 12.
+- **T-L7** — Compre **Super Escalada 3**: aparece **"Escalando"** = Deslocamento
+  + 3.
+
+## T-M · Golpe Rapido e apara repetida (MESTRE-1)
+
+- **T-M1** — Selecione um ataque **corpo a corpo** e segure o NH: a caixinha
+  **"Golpe Rapido"** tem de estar la, dizendo **-6**.
+- **T-M2** — Selecione **Arcos** e segure o NH: a caixinha do Golpe Rapido **nao
+  pode** aparecer.
+- **T-M3** — Compre **Treinado por um Mestre**: o rotulo tem de virar **-3** e
+  citar a vantagem.
+- **T-M4** — O painel **"Apara no do turno"** tem de aparecer (se a ficha tiver
+  Apara) e comecar em **1** com **0**.
+- **T-M5 · os quatro degraus** — Leve para a **4a apara**. Sem vantagem e com arma
+  comum: **-12**. Com Treinado por um Mestre: **-6**. Com rapieira e sem a
+  vantagem: **-6**. Com **rapieira + Treinado por um Mestre**: **-3**.
+- **T-M6** — Com a apara em 4, role a **Esquiva**: ela **nao pode** levar a
+  penalidade. So a Apara leva.
+
+## T-S · Sorte (SORTE-1)
+
+- **T-S1** — Sem a vantagem, o painel da Sorte **nao aparece**.
+- **T-S2** — Compre **Sorte (15 pts)**. Antes de rolar qualquer coisa, o botao diz
+  para rolar algo primeiro.
+- **T-S3 · o sinal certo** — Role uma **pericia** e toque **"Usar Sorte"**. O log
+  tem de mostrar as tres jogadas e ficar com a **MENOR**. Se ficar com a maior, e
+  bug.
+- **T-S4 · o sinal invertido** — Role **Dano** e use a Sorte: ai tem de ficar com
+  a **MAIOR**.
+- **T-S5** — Depois de usar, o botao desabilita e diz **quantos minutos faltam**
+  (60 para a Sorte comum).
+- **T-S6** — Troque para **Sorte Impossivel (60 pts)**: o relogio tem de virar
+  **10 min**.
+
+## T-A · Apontar, Precisao e Telescopica (MIRA-3)
+
+- **T-A1** — Com **Arcos**, segure o NH: a caixinha **"Apontei 1 turno"** tem de
+  aparecer com a Precisao do arco (o Arco Longo tem Prec 3).
+- **T-A2** — Marcada, todos os 13 numeros da lista sobem **+3**.
+- **T-A3** — Compre **Visao Telescopica 2** e ponha o alvo a **100 m (-10)**: sem
+  Apontar ela cancela **2**; com Apontar, **4** — e o rotulo diz *"Precisao +3 e
+  Telescopica +4"*.
+- **T-A4 · sobra nao vira bonus** — Ponha o alvo a **3 m (-1)** com Visao
+  Telescopica 2: ela tem de cancelar **1**, nao 2.
+- **T-A5** — Numa **espada**, a caixinha do Apontar **nao pode** aparecer.
+
+## T-V · Visualizacao (VIS-1)
+
+- **T-V1** — Sem a vantagem, o botao **nao aparece**.
+- **T-V2** — Compre **Visualizacao** e abra: tem de trazer o aviso de que **nao
+  vale em combate**.
+- **T-V3 · os tres arredondamentos** — Role o IQ ate tirar **margem 7**. Os tres
+  botoes tem de mostrar **+7 / +3 / +2**.
+- **T-V4 · o piso que existe** — Com **margem 1**, o botao *Parecido* tem de dar
+  **+1** (a conta daria 0, mas o livro garante o minimo).
+- **T-V5 · o piso que NAO existe** — Com **margem 2**, o botao *Muito diferente*
+  tem de dar **0**, e explicar que aqui nao ha minimo.
+- **T-V6** — Guarde o bonus: ele tem de ficar **a vista** na Rolagem, com a conta,
+  ate voce tocar em **Limpar**.
+
+## T-I · Talento Instintivo (TI-1)
+
+- **T-I1** — Sem a vantagem, o botao **nao aparece**.
+- **T-I2** — Compre **Talento Instintivo nivel 2**: o botao diz **"2 de 2 nesta
+  sessao"**.
+- **T-I3** — Abra: a lista tem de trazer **so pericias que o personagem nao tem**,
+  em ordem alfabetica, com campo de busca.
+- **T-I4** — Cada linha rola o **atributo da pericia**: Arrombamento pela DX,
+  Programacao pela IQ, Natacao pela HT.
+- **T-I5** — Compre **Escalada** na ficha e reabra: **Escalada nao pode** aparecer
+  na lista.
+- **T-I6** — Role duas vezes: o contador chega a **0 de 2** e a lista para de
+  aceitar toque. **"Nova sessao"** devolve os dois usos.
