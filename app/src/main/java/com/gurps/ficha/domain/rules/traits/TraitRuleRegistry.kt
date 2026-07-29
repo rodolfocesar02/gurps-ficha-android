@@ -98,9 +98,42 @@ object TraitRuleRegistry {
         todosOsTracos(personagem).flatMap { selection ->
             getRuleFor(selection)
                 ?.getBonusCondicionais(personagem, selection)
-                ?.filter { it.alvo.equals(alvo, ignoreCase = true) }
+                ?.filter { casaAlvoCondicional(it.alvo, alvo) }
                 .orEmpty()
         }
+
+    /**
+     * Curinga de alvo: **qualquer perícia** (Lote TAL-1).
+     *
+     * Existe porque três vantagens do livro não dão uma lista de perícias — dão
+     * uma **situação**: Toque Sensível vale em *"qualquer tarefa que utiliza o
+     * tato"*, Venturoso em *"qualquer teste"* de risco desnecessário, Versátil em
+     * *"qualquer tarefa que exija criatividade"*.
+     *
+     * Enumerar as 278 perícias do catálogo seria absurdo e ficaria errado no dia
+     * seguinte. Com o curinga, a caixinha aparece em **toda** perícia e quem
+     * decide se vale é o Mestre — que é exatamente o que a caixinha existe para
+     * resolver.
+     */
+    const val CURINGA_PERICIA = "*"
+
+    /**
+     * Alvos que **não** são perícia — o curinga não vale para eles.
+     *
+     * ⚠️ Sem esta lista o `*` do Venturoso apareceria também na Esquiva e no
+     * teste de reação. O livro fala de *"testes de habilidade"*: defesa ativa e
+     * reação não entram, e um +1 indevido na Esquiva é o tipo de erro que passa
+     * despercebido porque parece plausível.
+     */
+    private val ALVOS_QUE_NAO_SAO_PERICIA = setOf(
+        "esquiva", "apara", "aparar", "bloqueio", "bloquear", "reacao", "reação"
+    )
+
+    private fun casaAlvoCondicional(alvoDoEfeito: String, alvoPedido: String): Boolean {
+        if (alvoDoEfeito.equals(alvoPedido, ignoreCase = true)) return true
+        return alvoDoEfeito.trim() == CURINGA_PERICIA &&
+            alvoPedido.trim().lowercase() !in ALVOS_QUE_NAO_SAO_PERICIA
+    }
 
     /** De onde veio um pedaço do bônus: o traço que o concedeu e quanto. */
     data class OrigemDeBonus(val nomeDoTraco: String, val valor: Int)

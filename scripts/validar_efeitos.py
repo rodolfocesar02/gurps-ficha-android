@@ -201,9 +201,13 @@ def main():
                     erros.append(f"{onde}: `valor` precisa ser inteiro, veio {ef.get('valor')!r}")
 
                 if tipo.startswith("per"):
-                    # "reacao" nao e pericia do catalogo: e o alvo reservado
-                    # para modificador de Teste de Reacao (ReacaoRules).
-                    if alvo == "reacao":
+                    # Dois alvos reservados, que NAO sao pericia do catalogo:
+                    #  - "reacao": modificador de Teste de Reacao (ReacaoRules).
+                    #  - "*": curinga "qualquer pericia" (Lote TAL-1), para as
+                    #    tres vantagens em que o livro da uma SITUACAO e nao uma
+                    #    lista (Toque Sensivel, Venturoso, Versatil).
+                    # Em sincronia com EfeitosDeclaradosCatalogoTest.ALVOS_RESERVADOS.
+                    if alvo in ("reacao", "*"):
                         pass
                     elif alvo not in pericias:
                         sugestao = [p for p in pericias if p.lower().startswith(alvo.lower()[:5])][:3]

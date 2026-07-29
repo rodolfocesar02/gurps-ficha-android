@@ -411,11 +411,176 @@
     "perLevel": 10,
     "options": null,
     "min": null,
-    "max": null,
+    "max": 4,
     "rawCost": "10/nível",
     "specialRule": null,
     "tags": [],
-    "descricao": "Talento que concede bônus em perícias de conserto e engenharia. Custa 10 pontos/nível."
+    "descricao": "Talento que concede bônus em perícias de conserto e engenharia. Custa 10 pontos/nível.",
+    "efeitos": [
+      {
+        "tipo": "pericia",
+        "alvo": "Alvenaria",
+        "valor": 1,
+        "porNivel": true
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Armeiro/NT",
+        "valor": 1,
+        "porNivel": true
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Carpintaria",
+        "valor": 1,
+        "porNivel": true
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Conserto de Equipamento Eletrônico/NT (†)",
+        "valor": 1,
+        "porNivel": true
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Eletricista/NT",
+        "valor": 1,
+        "porNivel": true
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Engenharia/NT",
+        "valor": 1,
+        "porNivel": true
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Maquinista/NT",
+        "valor": 1,
+        "porNivel": true
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Mecânica/NT",
+        "valor": 1,
+        "porNivel": true
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Ferreiro/NT",
+        "valor": 1,
+        "porNivel": true
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "reacao",
+        "valor": 1,
+        "porNivel": true,
+        "condicao": "de qualquer pessoa para quem ele trabalha"
+      }
+    ]
+  },
+  {
+    "id": "agente_cativante",
+    "nome": "Agente Cativante",
+    "pagina": 90,
+    "costKind": "perLevel",
+    "fixed": null,
+    "perLevel": 15,
+    "options": null,
+    "min": null,
+    "max": 4,
+    "rawCost": "15/nível",
+    "specialRule": null,
+    "tags": [],
+    "descricao": "Talento que concede bônus nas perícias de interação social: Boemia, Detecção de Mentiras, Diplomacia, Dissimulação, Intimidação, Lábia, Liderança, Manha, Mendicância, Oratória, Política, Sex Appeal e Trato Social. Bônus de reação: enganadores, políticos, vendedores e gente do gênero — mas SÓ se o personagem não estiver tentando manipulá-los. Custa 15 pontos/nível.",
+    "efeitos": [
+      {
+        "tipo": "pericia",
+        "alvo": "Boemia",
+        "valor": 1,
+        "porNivel": true
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Detecção de Mentiras",
+        "valor": 1,
+        "porNivel": true
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Diplomacia",
+        "valor": 1,
+        "porNivel": true
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Dissimulação",
+        "valor": 1,
+        "porNivel": true
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Intimidação",
+        "valor": 1,
+        "porNivel": true
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Lábia",
+        "valor": 1,
+        "porNivel": true
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Liderança",
+        "valor": 1,
+        "porNivel": true
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Manha",
+        "valor": 1,
+        "porNivel": true
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Mendicância",
+        "valor": 1,
+        "porNivel": true
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Oratória",
+        "valor": 1,
+        "porNivel": true
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Política",
+        "valor": 1,
+        "porNivel": true
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Sex Appeal",
+        "valor": 1,
+        "porNivel": true
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Trato-Social",
+        "valor": 1,
+        "porNivel": true
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "reacao",
+        "valor": 1,
+        "porNivel": true,
+        "condicao": "de enganadores, políticos e vendedores — SÓ se ele não estiver tentando manipulá-los"
+      }
+    ]
   },
   {
     "id": "artista_talentoso",
@@ -426,11 +591,50 @@
     "perLevel": 5,
     "options": null,
     "min": null,
-    "max": null,
+    "max": 4,
     "rawCost": "5/nível",
     "specialRule": null,
     "tags": [],
-    "descricao": "Talento para perícias artísticas (Artista, Costura, etc.). Custa 5 pontos/nível."
+    "descricao": "Talento para perícias artísticas (Artista, Costura, etc.). Custa 5 pontos/nível.",
+    "efeitos": [
+      {
+        "tipo": "pericia",
+        "alvo": "Artista",
+        "valor": 1,
+        "porNivel": true
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Costura/NT",
+        "valor": 1,
+        "porNivel": true
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Fotografia/NT",
+        "valor": 1,
+        "porNivel": true
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Joalheiro/NT",
+        "valor": 1,
+        "porNivel": true
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Trabalhos em Couro",
+        "valor": 1,
+        "porNivel": true
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "reacao",
+        "valor": 1,
+        "porNivel": true,
+        "condicao": "de quem adquirir ou apreciar o trabalho dele"
+      }
+    ]
   },
   {
     "id": "ataque_adicional",
@@ -1197,6 +1401,30 @@
         "alvo": "reacao",
         "valor": 1,
         "porNivel": true
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Adivinhação",
+        "valor": 1,
+        "porNivel": true
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Liderança",
+        "valor": 1,
+        "porNivel": true
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Mendicância",
+        "valor": 1,
+        "porNivel": true
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Oratória",
+        "valor": 1,
+        "porNivel": true
       }
     ]
   },
@@ -1247,11 +1475,56 @@
     "perLevel": 5,
     "options": null,
     "min": null,
-    "max": null,
+    "max": 4,
     "rawCost": "5/nível",
     "specialRule": null,
     "tags": [],
-    "descricao": "Talento para perícias relacionadas a animais. Custa 5 pontos/nível."
+    "descricao": "Talento para perícias relacionadas a animais. Custa 5 pontos/nível.",
+    "efeitos": [
+      {
+        "tipo": "pericia",
+        "alvo": "Adestramento de Animais",
+        "valor": 1,
+        "porNivel": true
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Carregamento",
+        "valor": 1,
+        "porNivel": true
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Carroceiro",
+        "valor": 1,
+        "porNivel": true
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Cavalgar",
+        "valor": 1,
+        "porNivel": true
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Falcoaria",
+        "valor": 1,
+        "porNivel": true
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Veterinária/NT",
+        "valor": 1,
+        "porNivel": true
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "reacao",
+        "valor": 1,
+        "porNivel": true,
+        "condicao": "de todos os animais"
+      }
+    ]
   },
   {
     "id": "consumo_reduzido",
@@ -1446,11 +1719,74 @@
     "perLevel": 10,
     "options": null,
     "min": null,
-    "max": null,
+    "max": 4,
     "rawCost": "10/nível",
     "specialRule": null,
     "tags": [],
-    "descricao": "Talento para perícias médicas. Custa 10 pontos/nível."
+    "descricao": "Talento para perícias médicas. Custa 10 pontos/nível.",
+    "efeitos": [
+      {
+        "tipo": "pericia",
+        "alvo": "Cirurgia/NT",
+        "valor": 1,
+        "porNivel": true
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Diagnose/NT",
+        "valor": 1,
+        "porNivel": true
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Farmácia/NT",
+        "valor": 1,
+        "porNivel": true
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Fisiologia/NT",
+        "valor": 1,
+        "porNivel": true
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Medicina/NT",
+        "valor": 1,
+        "porNivel": true
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Medicina Alternativa",
+        "valor": 1,
+        "porNivel": true
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Primeiros Socorros/NT",
+        "valor": 1,
+        "porNivel": true
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Psicologia",
+        "valor": 1,
+        "porNivel": true
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Veterinária/NT",
+        "valor": 1,
+        "porNivel": true
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "reacao",
+        "valor": 1,
+        "porNivel": true,
+        "condicao": "de ex-pacientes e pacientes atuais"
+      }
+    ]
   },
   {
     "id": "dedos_verdes",
@@ -1461,11 +1797,50 @@
     "perLevel": 5,
     "options": null,
     "min": null,
-    "max": null,
+    "max": 4,
     "rawCost": "5/nível",
     "specialRule": null,
     "tags": [],
-    "descricao": "Talento para perícias de botânica e cultivo. Custa 5 pontos/nível."
+    "descricao": "Talento para perícias de botânica e cultivo. Custa 5 pontos/nível.",
+    "efeitos": [
+      {
+        "tipo": "pericia",
+        "alvo": "Biologia/NT",
+        "valor": 1,
+        "porNivel": true
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Conhecimento das Ervas/NT",
+        "valor": 1,
+        "porNivel": true
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Cultivo/NT",
+        "valor": 1,
+        "porNivel": true
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Jardinagem",
+        "valor": 1,
+        "porNivel": true
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Naturalista",
+        "valor": 1,
+        "porNivel": true
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "reacao",
+        "valor": 1,
+        "porNivel": true,
+        "condicao": "de jardineiros e plantas inteligentes"
+      }
+    ]
   },
   {
     "id": "defesas_ampliadas_aparar_ampliado",
@@ -2255,11 +2630,74 @@
     "perLevel": 10,
     "options": null,
     "min": null,
-    "max": null,
+    "max": 4,
     "rawCost": "10/nível",
     "specialRule": null,
     "tags": [],
-    "descricao": "Talento para perícias de sobrevivência e exploração. Custa 10 pontos/nível."
+    "descricao": "Talento para perícias de sobrevivência e exploração. Custa 10 pontos/nível.",
+    "efeitos": [
+      {
+        "tipo": "pericia",
+        "alvo": "Arremedo (Chamado dos Pássaros)",
+        "valor": 1,
+        "porNivel": true
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Arremedo (Sons dos Animais)",
+        "valor": 1,
+        "porNivel": true
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Arremedo (†)",
+        "valor": 1,
+        "porNivel": true
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Camuflagem",
+        "valor": 1,
+        "porNivel": true
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Naturalista",
+        "valor": 1,
+        "porNivel": true
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Navegação/NT",
+        "valor": 1,
+        "porNivel": true
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Pescaria",
+        "valor": 1,
+        "porNivel": true
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Rastreamento",
+        "valor": 1,
+        "porNivel": true
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Sobrevivência",
+        "valor": 1,
+        "porNivel": true
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "reacao",
+        "valor": 1,
+        "porNivel": true,
+        "condicao": "de exploradores e amantes da natureza"
+      }
+    ]
   },
   {
     "id": "facilidade_para_idiomas",
@@ -2580,11 +3018,68 @@
     "perLevel": 10,
     "options": null,
     "min": null,
-    "max": null,
+    "max": 4,
     "rawCost": "10/nível",
     "specialRule": null,
     "tags": [],
-    "descricao": "Talento para perícias matemáticas e científicas. Custa 10 pontos/nível."
+    "descricao": "Talento para perícias matemáticas e científicas. Custa 10 pontos/nível.",
+    "efeitos": [
+      {
+        "tipo": "pericia",
+        "alvo": "Análise de Mercado",
+        "valor": 1,
+        "porNivel": true
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Astronomia/NT",
+        "valor": 1,
+        "porNivel": true
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Contabilidade",
+        "valor": 1,
+        "porNivel": true
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Criptografia/NT",
+        "valor": 1,
+        "porNivel": true
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Engenharia/NT",
+        "valor": 1,
+        "porNivel": true
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Finanças",
+        "valor": 1,
+        "porNivel": true
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Física/NT",
+        "valor": 1,
+        "porNivel": true
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Matemática/NT",
+        "valor": 1,
+        "porNivel": true
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "reacao",
+        "valor": 1,
+        "porNivel": true,
+        "condicao": "de engenheiros e cientistas"
+      }
+    ]
   },
   {
     "id": "habilidade_musical",
@@ -2595,11 +3090,50 @@
     "perLevel": 5,
     "options": null,
     "min": null,
-    "max": null,
+    "max": 4,
     "rawCost": "5/nível",
     "specialRule": null,
     "tags": [],
-    "descricao": "Talento para perícias musicais. Custa 5 pontos/nível."
+    "descricao": "Talento para perícias musicais. Custa 5 pontos/nível.",
+    "efeitos": [
+      {
+        "tipo": "pericia",
+        "alvo": "Canto",
+        "valor": 1,
+        "porNivel": true
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Composição Musical",
+        "valor": 1,
+        "porNivel": true
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Influência Musical",
+        "valor": 1,
+        "porNivel": true
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Instrumentos Musicais (†)",
+        "valor": 1,
+        "porNivel": true
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Performance em Grupo",
+        "valor": 1,
+        "porNivel": true
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "reacao",
+        "valor": 1,
+        "porNivel": true,
+        "condicao": "de quem ouvir ou apreciar o trabalho dele"
+      }
+    ]
   },
   {
     "id": "habilidades_modulares",
@@ -3746,11 +4280,68 @@
     "perLevel": 10,
     "options": null,
     "min": null,
-    "max": null,
+    "max": 4,
     "rawCost": "10/nível",
     "specialRule": null,
     "tags": [],
-    "descricao": "Talento para perícias comerciais. Custa 10 pontos/nível."
+    "descricao": "Talento para perícias comerciais. Custa 10 pontos/nível.",
+    "efeitos": [
+      {
+        "tipo": "pericia",
+        "alvo": "Administração",
+        "valor": 1,
+        "porNivel": true
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Análise de Mercado",
+        "valor": 1,
+        "porNivel": true
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Comércio",
+        "valor": 1,
+        "porNivel": true
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Contabilidade",
+        "valor": 1,
+        "porNivel": true
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Economia",
+        "valor": 1,
+        "porNivel": true
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Finanças",
+        "valor": 1,
+        "porNivel": true
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Jogos de Azar",
+        "valor": 1,
+        "porNivel": true
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Propaganda/NT",
+        "valor": 1,
+        "porNivel": true
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "reacao",
+        "valor": 1,
+        "porNivel": true,
+        "condicao": "de qualquer pessoa com quem ele faz negócios"
+      }
+    ]
   },
   {
     "id": "poderes_legais",
@@ -5055,7 +5646,16 @@
     "rawCost": "10",
     "specialRule": null,
     "tags": [],
-    "descricao": "O personagem possui terminações táteis extremamente desenvolvidas, capazes de perceber detalhes físicos imperceptíveis para a maioria das pessoas.\n\nSuas mãos, dedos ou órgãos equivalentes conseguem detectar pequenas variações de textura, temperatura, pressão e vibração com precisão extraordinária.\n\n## Benefícios\n\nO personagem recebe:\n\n+4 em qualquer tarefa baseada no tato.\n\nEsse bônus é cumulativo com quaisquer bônus provenientes de Tato Apurado.\n\n## Aplicações\n\nTato Sensível pode ser utilizado em diversas situações que dependem da percepção tátil.\n\nExemplos incluem:\n\n- Identificar texturas.\n- Detectar imperfeições em superfícies.\n- Reconhecer materiais pelo toque.\n- Encontrar objetos escondidos.\n- Sentir mecanismos ocultos.\n- Perceber vibrações sutis.\n- Diferenciar tecidos semelhantes.\n- Examinar evidências físicas.\n\n## Exemplos Práticos\n\nO personagem pode:\n\n- Sentir o calor residual deixado por alguém em uma cadeira.\n- Perceber vibrações leves causadas por passos distantes.\n- Identificar pequenas diferenças entre dois pedaços de tecido.\n- Detectar compartimentos secretos através de irregularidades mínimas.\n- Encontrar pequenos objetos escondidos durante uma revista.\n\n## Perícias Beneficiadas\n\nO bônus pode ser aplicado sempre que o tato for relevante para a tarefa.\n\nExemplos comuns:\n\n- Perícia Forense.\n- Revistar.\n- Arrombamento.\n- Cirurgia.\n- Mecânica.\n- Joalheria.\n- Artesanato.\n- Outras perícias que dependam de percepção tátil refinada.\n\n## Interação com Tato Apurado\n\nTato Sensível acumula normalmente com Tato Apurado.\n\nExemplo:\n\nUm personagem com:\n\n- Tato Apurado.\n- Tato Sensível.\n\nReceberá os bônus de ambas as vantagens sempre que utilizar o tato.\n\n## Limitações\n\nTato Sensível não substitui a visão nem outros sentidos.\n\nEle apenas melhora a capacidade de perceber informações através do contato físico ou de vibrações detectáveis pelo tato.\n\nAlém disso, normalmente exige contato direto ou proximidade suficiente para que as vibrações possam ser percebidas.\n\n## Aplicações Comuns\n\nEsta vantagem é frequentemente encontrada em:\n\n- Especialistas forenses.\n- Ladrões experientes.\n- Artífices.\n- Cegos com sentidos compensatórios.\n- Insetos e aracnídeos.\n- Felinos.\n- Supers com sentidos ampliados.\n- Robôs equipados com sensores táteis avançados.\n\n## Resumo\n\nTato Sensível concede um bônus de +4 em tarefas que dependam do sentido do tato.\n\nO personagem consegue perceber detalhes extremamente sutis através do contato físico, incluindo calor residual, vibrações discretas, texturas mínimas e pequenos objetos ocultos.\n\nCusto: 10 pontos."
+    "descricao": "O personagem possui terminações táteis extremamente desenvolvidas, capazes de perceber detalhes físicos imperceptíveis para a maioria das pessoas.\n\nSuas mãos, dedos ou órgãos equivalentes conseguem detectar pequenas variações de textura, temperatura, pressão e vibração com precisão extraordinária.\n\n## Benefícios\n\nO personagem recebe:\n\n+4 em qualquer tarefa baseada no tato.\n\nEsse bônus é cumulativo com quaisquer bônus provenientes de Tato Apurado.\n\n## Aplicações\n\nTato Sensível pode ser utilizado em diversas situações que dependem da percepção tátil.\n\nExemplos incluem:\n\n- Identificar texturas.\n- Detectar imperfeições em superfícies.\n- Reconhecer materiais pelo toque.\n- Encontrar objetos escondidos.\n- Sentir mecanismos ocultos.\n- Perceber vibrações sutis.\n- Diferenciar tecidos semelhantes.\n- Examinar evidências físicas.\n\n## Exemplos Práticos\n\nO personagem pode:\n\n- Sentir o calor residual deixado por alguém em uma cadeira.\n- Perceber vibrações leves causadas por passos distantes.\n- Identificar pequenas diferenças entre dois pedaços de tecido.\n- Detectar compartimentos secretos através de irregularidades mínimas.\n- Encontrar pequenos objetos escondidos durante uma revista.\n\n## Perícias Beneficiadas\n\nO bônus pode ser aplicado sempre que o tato for relevante para a tarefa.\n\nExemplos comuns:\n\n- Perícia Forense.\n- Revistar.\n- Arrombamento.\n- Cirurgia.\n- Mecânica.\n- Joalheria.\n- Artesanato.\n- Outras perícias que dependam de percepção tátil refinada.\n\n## Interação com Tato Apurado\n\nTato Sensível acumula normalmente com Tato Apurado.\n\nExemplo:\n\nUm personagem com:\n\n- Tato Apurado.\n- Tato Sensível.\n\nReceberá os bônus de ambas as vantagens sempre que utilizar o tato.\n\n## Limitações\n\nTato Sensível não substitui a visão nem outros sentidos.\n\nEle apenas melhora a capacidade de perceber informações através do contato físico ou de vibrações detectáveis pelo tato.\n\nAlém disso, normalmente exige contato direto ou proximidade suficiente para que as vibrações possam ser percebidas.\n\n## Aplicações Comuns\n\nEsta vantagem é frequentemente encontrada em:\n\n- Especialistas forenses.\n- Ladrões experientes.\n- Artífices.\n- Cegos com sentidos compensatórios.\n- Insetos e aracnídeos.\n- Felinos.\n- Supers com sentidos ampliados.\n- Robôs equipados com sensores táteis avançados.\n\n## Resumo\n\nTato Sensível concede um bônus de +4 em tarefas que dependam do sentido do tato.\n\nO personagem consegue perceber detalhes extremamente sutis através do contato físico, incluindo calor residual, vibrações discretas, texturas mínimas e pequenos objetos ocultos.\n\nCusto: 10 pontos.",
+    "efeitos": [
+      {
+        "tipo": "pericia",
+        "alvo": "*",
+        "valor": 4,
+        "porNivel": false,
+        "condicao": "se a tarefa for pelo tato (MB p.96)"
+      }
+    ]
   },
   {
     "id": "treinado_por_um_mestre",
@@ -5152,7 +5752,16 @@
     "rawCost": "15",
     "specialRule": null,
     "tags": [],
-    "descricao": "O personagem parece atrair a sorte justamente quando decide fazer algo extremamente arriscado.\n\nQuanto maior o perigo voluntariamente assumido, maiores são as chances de que tudo dê certo.\n\nVenturoso representa heróis cinematográficos, aventureiros destemidos e indivíduos que prosperam quando apostam tudo em uma única ação ousada.\n\n## Funcionamento\n\nSempre que o personagem assumir um risco desnecessário e significativo, ele recebe um bônus em seus testes de habilidade.\n\nA decisão sobre o que constitui um risco desnecessário cabe ao Mestre.\n\nO perigo deve ser real e evitável.\n\nSe existir uma alternativa razoavelmente segura e o personagem optar deliberadamente pela opção mais perigosa, a vantagem pode ser aplicada.\n\n## Benefício\n\nQuando a vantagem é ativada, o personagem recebe:\n\n- +1 em todos os testes de habilidade diretamente relacionados à ação arriscada.\n\nO bônus permanece apenas enquanto o personagem estiver executando aquela ação ousada.\n\n## Falhas Críticas\n\nQuando o personagem estiver realizando uma ação que se qualifica para Venturoso e obtiver uma falha crítica:\n\n- O jogador pode realizar uma nova jogada.\n\nO resultado da segunda jogada substitui a falha crítica original.\n\nEsse benefício só existe quando a situação realmente se enquadra nos requisitos da vantagem.\n\n## Exemplo Positivo\n\nUma gangue armada abre fogo contra o personagem.\n\nO personagem poderia:\n\n- Procurar cobertura.\n- Atirar de forma segura.\n- Esperar reforços.\n\nEm vez disso, ele:\n\n- Salta por cima do muro.\n- Corre diretamente contra os atiradores.\n- Ataca enquanto está completamente exposto.\n\nEssa atitude constitui um risco desnecessário e significativo.\n\nO personagem recebe:\n\n- +1 nos testes relevantes.\n- Direito a repetir uma falha crítica relacionada à ação.\n\n## Exemplo Negativo\n\nA mesma gangue começa a atirar.\n\nO personagem permanece atrás de uma cobertura sólida e responde ao fogo.\n\nEssa é a escolha prudente e esperada.\n\nVenturoso não fornece qualquer benefício.\n\n## Critérios Gerais\n\nNormalmente a vantagem exige:\n\n- Perigo real.\n- Possibilidade de dano grave.\n- Existência de alternativas mais seguras.\n- Escolha voluntária da opção mais arriscada.\n\n## Personagens Comuns\n\nVenturoso é frequentemente encontrado em:\n\n- Heróis de ação.\n- Caçadores de tesouros.\n- Pistoleiros lendários.\n- Piratas.\n- Aventureiros pulp.\n- Pilotos temerários.\n- Protagonistas cinematográficos.\n\n## Interpretação\n\nA vantagem não representa coragem.\n\nEla representa uma estranha afinidade entre ousadia e sorte.\n\nO universo parece recompensar o personagem quando ele escolhe deliberadamente a alternativa mais perigosa.\n\n## Resumo\n\nQuando assume riscos desnecessários e significativos, o personagem recebe:\n\n- +1 nos testes de habilidade relacionados à ação.\n- Direito de repetir uma falha crítica obtida durante essa ação.\n\nA decisão sobre quando a vantagem se aplica pertence ao Mestre.\n\nCusto: 15 pontos."
+    "descricao": "O personagem parece atrair a sorte justamente quando decide fazer algo extremamente arriscado.\n\nQuanto maior o perigo voluntariamente assumido, maiores são as chances de que tudo dê certo.\n\nVenturoso representa heróis cinematográficos, aventureiros destemidos e indivíduos que prosperam quando apostam tudo em uma única ação ousada.\n\n## Funcionamento\n\nSempre que o personagem assumir um risco desnecessário e significativo, ele recebe um bônus em seus testes de habilidade.\n\nA decisão sobre o que constitui um risco desnecessário cabe ao Mestre.\n\nO perigo deve ser real e evitável.\n\nSe existir uma alternativa razoavelmente segura e o personagem optar deliberadamente pela opção mais perigosa, a vantagem pode ser aplicada.\n\n## Benefício\n\nQuando a vantagem é ativada, o personagem recebe:\n\n- +1 em todos os testes de habilidade diretamente relacionados à ação arriscada.\n\nO bônus permanece apenas enquanto o personagem estiver executando aquela ação ousada.\n\n## Falhas Críticas\n\nQuando o personagem estiver realizando uma ação que se qualifica para Venturoso e obtiver uma falha crítica:\n\n- O jogador pode realizar uma nova jogada.\n\nO resultado da segunda jogada substitui a falha crítica original.\n\nEsse benefício só existe quando a situação realmente se enquadra nos requisitos da vantagem.\n\n## Exemplo Positivo\n\nUma gangue armada abre fogo contra o personagem.\n\nO personagem poderia:\n\n- Procurar cobertura.\n- Atirar de forma segura.\n- Esperar reforços.\n\nEm vez disso, ele:\n\n- Salta por cima do muro.\n- Corre diretamente contra os atiradores.\n- Ataca enquanto está completamente exposto.\n\nEssa atitude constitui um risco desnecessário e significativo.\n\nO personagem recebe:\n\n- +1 nos testes relevantes.\n- Direito a repetir uma falha crítica relacionada à ação.\n\n## Exemplo Negativo\n\nA mesma gangue começa a atirar.\n\nO personagem permanece atrás de uma cobertura sólida e responde ao fogo.\n\nEssa é a escolha prudente e esperada.\n\nVenturoso não fornece qualquer benefício.\n\n## Critérios Gerais\n\nNormalmente a vantagem exige:\n\n- Perigo real.\n- Possibilidade de dano grave.\n- Existência de alternativas mais seguras.\n- Escolha voluntária da opção mais arriscada.\n\n## Personagens Comuns\n\nVenturoso é frequentemente encontrado em:\n\n- Heróis de ação.\n- Caçadores de tesouros.\n- Pistoleiros lendários.\n- Piratas.\n- Aventureiros pulp.\n- Pilotos temerários.\n- Protagonistas cinematográficos.\n\n## Interpretação\n\nA vantagem não representa coragem.\n\nEla representa uma estranha afinidade entre ousadia e sorte.\n\nO universo parece recompensar o personagem quando ele escolhe deliberadamente a alternativa mais perigosa.\n\n## Resumo\n\nQuando assume riscos desnecessários e significativos, o personagem recebe:\n\n- +1 nos testes de habilidade relacionados à ação.\n- Direito de repetir uma falha crítica obtida durante essa ação.\n\nA decisão sobre quando a vantagem se aplica pertence ao Mestre.\n\nCusto: 15 pontos.",
+    "efeitos": [
+      {
+        "tipo": "pericia",
+        "alvo": "*",
+        "valor": 1,
+        "porNivel": false,
+        "condicao": "se estiver assumindo um risco desnecessário (MB p.96)"
+      }
+    ]
   },
   {
     "id": "ver_o_invisivel",
@@ -5182,7 +5791,16 @@
     "rawCost": "5",
     "specialRule": null,
     "tags": [],
-    "descricao": "O personagem possui uma mente excepcionalmente criativa e inventiva.\n\nEle encontra soluções originais para problemas, cria ideias inovadoras com facilidade e consegue enxergar possibilidades que passam despercebidas para a maioria das pessoas.\n\nVersátil representa talento natural para improvisação, criação artística, desenvolvimento de projetos e resolução criativa de desafios.\n\n## Benefício\n\nO personagem recebe:\n\n- +1 em qualquer tarefa que exija criatividade, imaginação ou inventividade.\n\nEsse bônus é aplicado sempre que o Mestre considerar que a solução depende mais da capacidade criativa do que da simples execução técnica.\n\n## Aplicações Comuns\n\nA vantagem pode beneficiar atividades como:\n\n- Criação artística.\n- Desenvolvimento de projetos.\n- Resolução criativa de problemas.\n- Improvisação.\n- Planejamento inovador.\n- Design.\n- Composição.\n- Escrita criativa.\n- Desenvolvimento tecnológico.\n\n## Artista\n\nO bônus normalmente se aplica à maioria dos testes realizados com a perícia:\n\n- Artista.\n\nIsso inclui pintura, escultura, desenho e outras formas de expressão criativa.\n\n## Engenharia\n\nO personagem recebe:\n\n- +1 em testes de Engenharia relacionados à criação de novas invenções.\n\nO bônus não se aplica necessariamente à manutenção ou operação rotineira de equipamentos já existentes.\n\nEle é voltado especificamente para inovação e desenvolvimento.\n\n## Desenvolvedor\n\nO personagem recebe:\n\n- +1 em todos os testes de habilidade realizados para utilizar a vantagem Desenvolvedor.\n\nEsse é um dos usos mais comuns da vantagem em campanhas focadas em pesquisa, invenções ou tecnologia avançada.\n\n## Interpretação\n\nVersátil não representa conhecimento adicional.\n\nO personagem não sabe mais coisas do que outras pessoas.\n\nEle simplesmente possui uma capacidade superior de combinar conhecimentos, encontrar soluções incomuns e criar novas abordagens para situações complexas.\n\n## Personagens Comuns\n\nEsta vantagem é frequentemente encontrada em:\n\n- Inventores.\n- Engenheiros.\n- Artistas.\n- Cientistas.\n- Designers.\n- Arquitetos.\n- Pesquisadores.\n- Gênios excêntricos.\n- Aventureiros especialistas em improvisação.\n\n## Limitações\n\nO bônus só se aplica quando a criatividade realmente influencia o resultado.\n\nTarefas puramente mecânicas, repetitivas ou baseadas apenas em conhecimento técnico normalmente não recebem o benefício.\n\nA decisão final cabe ao Mestre.\n\n## Resumo\n\nVersátil representa uma capacidade excepcional de pensar de forma criativa e inovadora.\n\nO personagem recebe +1 em tarefas que dependam de imaginação, inventividade ou criação de soluções originais, incluindo a maioria dos testes de Artista, invenções usando Engenharia e todos os testes relacionados à vantagem Desenvolvedor.\n\nCusto: 5 pontos."
+    "descricao": "O personagem possui uma mente excepcionalmente criativa e inventiva.\n\nEle encontra soluções originais para problemas, cria ideias inovadoras com facilidade e consegue enxergar possibilidades que passam despercebidas para a maioria das pessoas.\n\nVersátil representa talento natural para improvisação, criação artística, desenvolvimento de projetos e resolução criativa de desafios.\n\n## Benefício\n\nO personagem recebe:\n\n- +1 em qualquer tarefa que exija criatividade, imaginação ou inventividade.\n\nEsse bônus é aplicado sempre que o Mestre considerar que a solução depende mais da capacidade criativa do que da simples execução técnica.\n\n## Aplicações Comuns\n\nA vantagem pode beneficiar atividades como:\n\n- Criação artística.\n- Desenvolvimento de projetos.\n- Resolução criativa de problemas.\n- Improvisação.\n- Planejamento inovador.\n- Design.\n- Composição.\n- Escrita criativa.\n- Desenvolvimento tecnológico.\n\n## Artista\n\nO bônus normalmente se aplica à maioria dos testes realizados com a perícia:\n\n- Artista.\n\nIsso inclui pintura, escultura, desenho e outras formas de expressão criativa.\n\n## Engenharia\n\nO personagem recebe:\n\n- +1 em testes de Engenharia relacionados à criação de novas invenções.\n\nO bônus não se aplica necessariamente à manutenção ou operação rotineira de equipamentos já existentes.\n\nEle é voltado especificamente para inovação e desenvolvimento.\n\n## Desenvolvedor\n\nO personagem recebe:\n\n- +1 em todos os testes de habilidade realizados para utilizar a vantagem Desenvolvedor.\n\nEsse é um dos usos mais comuns da vantagem em campanhas focadas em pesquisa, invenções ou tecnologia avançada.\n\n## Interpretação\n\nVersátil não representa conhecimento adicional.\n\nO personagem não sabe mais coisas do que outras pessoas.\n\nEle simplesmente possui uma capacidade superior de combinar conhecimentos, encontrar soluções incomuns e criar novas abordagens para situações complexas.\n\n## Personagens Comuns\n\nEsta vantagem é frequentemente encontrada em:\n\n- Inventores.\n- Engenheiros.\n- Artistas.\n- Cientistas.\n- Designers.\n- Arquitetos.\n- Pesquisadores.\n- Gênios excêntricos.\n- Aventureiros especialistas em improvisação.\n\n## Limitações\n\nO bônus só se aplica quando a criatividade realmente influencia o resultado.\n\nTarefas puramente mecânicas, repetitivas ou baseadas apenas em conhecimento técnico normalmente não recebem o benefício.\n\nA decisão final cabe ao Mestre.\n\n## Resumo\n\nVersátil representa uma capacidade excepcional de pensar de forma criativa e inovadora.\n\nO personagem recebe +1 em tarefas que dependam de imaginação, inventividade ou criação de soluções originais, incluindo a maioria dos testes de Artista, invenções usando Engenharia e todos os testes relacionados à vantagem Desenvolvedor.\n\nCusto: 5 pontos.",
+    "efeitos": [
+      {
+        "tipo": "pericia",
+        "alvo": "*",
+        "valor": 1,
+        "porNivel": false,
+        "condicao": "se a tarefa exigir criatividade ou inventividade (MB p.96)"
+      }
+    ]
   },
   {
     "id": "vida_extra",
@@ -5229,7 +5847,15 @@
     "rawCost": "25",
     "specialRule": null,
     "tags": [],
-    "descricao": "O personagem possui um campo de visão completo ao seu redor, permitindo observar todas as direções simultaneamente.\n\nEssa capacidade pode ser resultado de olhos adicionais, visão composta semelhante à de insetos, sensores distribuídos pelo corpo ou qualquer outra explicação compatível com o conceito do personagem.\n\nIndependentemente da aparência física, os efeitos mecânicos permanecem os mesmos.\n\n## Campo de Visão Total\n\nO personagem possui:\n\n- Campo de visão de 360°.\n\nEle consegue enxergar simultaneamente:\n\n- À frente.\n- Nas laterais.\n- Atrás de si.\n\nSem necessidade de virar a cabeça ou o corpo.\n\n## Defesa Contra Ataques\n\nO personagem não sofre as penalidades normais para se defender de ataques vindos:\n\n- Pelas laterais.\n- Pelas costas.\n\nEle mantém suas defesas normalmente contra ameaças vindas de qualquer direção visível.\n\n## Ataques na Retaguarda\n\nO personagem pode atacar inimigos localizados:\n\n- Nas laterais.\n- Atrás dele.\n\nSem precisar utilizar um Golpe Desenfreado.\n\nEntretanto, esses ataques sofrem:\n\n- Penalidade de -2 para atingir.\n\nEssa penalidade representa a dificuldade de golpear em ângulos pouco naturais.\n\nAlgumas técnicas especiais de combate podem ignorar esse redutor, conforme determinado pelas regras específicas dessas técnicas.\n\n## Perseguição\n\nO personagem recebe:\n\n+5 em testes para detectar tentativas de Perseguição.\n\nA grande cobertura visual dificulta que alguém o siga sem ser notado.\n\n## Ataques Surpresa\n\nO personagem nunca é surpreendido por um ataque vindo pelas costas apenas por falta de visão.\n\nPara atacá-lo sem ser percebido, é necessário ocultar-se de alguma forma.\n\nExemplos:\n\n- Invisibilidade.\n- Camuflagem adequada.\n- Cobertura total.\n- Escuridão.\n- Disfarces especiais.\n- Poderes sobrenaturais.\n\n## Olhos Adicionais\n\nOlhos extras são apenas uma possível explicação visual para a vantagem.\n\nO personagem pode possuir:\n\n- Dois olhos.\n- Quatro olhos.\n- Oito olhos.\n- Centenas de olhos.\n- Sensores artificiais.\n- Estruturas alienígenas equivalentes.\n\nNenhuma dessas opções altera o custo da vantagem.\n\n## Exemplos de Usuários\n\nVisão Periférica é comum entre:\n\n- Insetos gigantes.\n- Aranhas monstruosas.\n- Aberrações alienígenas.\n- Robôs de vigilância.\n- Criaturas com olhos múltiplos.\n- Entidades sobrenaturais.\n- Supers com sentidos ampliados.\n\n## Limitações\n\nA vantagem não concede:\n\n- Visão através de objetos.\n- Visão no escuro.\n- Visão microscópica.\n- Visão telescópica.\n\nEla apenas amplia o campo visual disponível ao personagem.\n\n## Resumo\n\nVisão Periférica concede um campo de visão de 360°, elimina as penalidades defensivas contra ataques laterais e pelas costas, permite atacar nessas direções com penalidade de -2, fornece +5 para detectar perseguições e impede que o personagem seja surpreendido simplesmente por um ataque vindo de trás.\n\nCusto: 15 pontos."
+    "descricao": "O personagem possui um campo de visão completo ao seu redor, permitindo observar todas as direções simultaneamente.\n\nEssa capacidade pode ser resultado de olhos adicionais, visão composta semelhante à de insetos, sensores distribuídos pelo corpo ou qualquer outra explicação compatível com o conceito do personagem.\n\nIndependentemente da aparência física, os efeitos mecânicos permanecem os mesmos.\n\n## Campo de Visão Total\n\nO personagem possui:\n\n- Campo de visão de 360°.\n\nEle consegue enxergar simultaneamente:\n\n- À frente.\n- Nas laterais.\n- Atrás de si.\n\nSem necessidade de virar a cabeça ou o corpo.\n\n## Defesa Contra Ataques\n\nO personagem não sofre as penalidades normais para se defender de ataques vindos:\n\n- Pelas laterais.\n- Pelas costas.\n\nEle mantém suas defesas normalmente contra ameaças vindas de qualquer direção visível.\n\n## Ataques na Retaguarda\n\nO personagem pode atacar inimigos localizados:\n\n- Nas laterais.\n- Atrás dele.\n\nSem precisar utilizar um Golpe Desenfreado.\n\nEntretanto, esses ataques sofrem:\n\n- Penalidade de -2 para atingir.\n\nEssa penalidade representa a dificuldade de golpear em ângulos pouco naturais.\n\nAlgumas técnicas especiais de combate podem ignorar esse redutor, conforme determinado pelas regras específicas dessas técnicas.\n\n## Perseguição\n\nO personagem recebe:\n\n+5 em testes para detectar tentativas de Perseguição.\n\nA grande cobertura visual dificulta que alguém o siga sem ser notado.\n\n## Ataques Surpresa\n\nO personagem nunca é surpreendido por um ataque vindo pelas costas apenas por falta de visão.\n\nPara atacá-lo sem ser percebido, é necessário ocultar-se de alguma forma.\n\nExemplos:\n\n- Invisibilidade.\n- Camuflagem adequada.\n- Cobertura total.\n- Escuridão.\n- Disfarces especiais.\n- Poderes sobrenaturais.\n\n## Olhos Adicionais\n\nOlhos extras são apenas uma possível explicação visual para a vantagem.\n\nO personagem pode possuir:\n\n- Dois olhos.\n- Quatro olhos.\n- Oito olhos.\n- Centenas de olhos.\n- Sensores artificiais.\n- Estruturas alienígenas equivalentes.\n\nNenhuma dessas opções altera o custo da vantagem.\n\n## Exemplos de Usuários\n\nVisão Periférica é comum entre:\n\n- Insetos gigantes.\n- Aranhas monstruosas.\n- Aberrações alienígenas.\n- Robôs de vigilância.\n- Criaturas com olhos múltiplos.\n- Entidades sobrenaturais.\n- Supers com sentidos ampliados.\n\n## Limitações\n\nA vantagem não concede:\n\n- Visão através de objetos.\n- Visão no escuro.\n- Visão microscópica.\n- Visão telescópica.\n\nEla apenas amplia o campo visual disponível ao personagem.\n\n## Resumo\n\nVisão Periférica concede um campo de visão de 360°, elimina as penalidades defensivas contra ataques laterais e pelas costas, permite atacar nessas direções com penalidade de -2, fornece +5 para detectar perseguições e impede que o personagem seja surpreendido simplesmente por um ataque vindo de trás.\n\nCusto: 15 pontos.",
+    "efeitos": [
+      {
+        "tipo": "pericia",
+        "alvo": "Perseguição",
+        "valor": 5,
+        "porNivel": false
+      }
+    ]
   },
   {
     "id": "visao_agucada",
@@ -5259,7 +5885,33 @@
     "rawCost": "25",
     "specialRule": null,
     "tags": [],
-    "descricao": "O personagem possui um sistema visual extremamente avançado capaz de perceber simultaneamente uma ampla faixa do espectro eletromagnético.\n\nSua visão integra informações provenientes do infravermelho, da luz visível e do ultravioleta em uma única imagem coerente.\n\nEssa percepção ampliada permite identificar detalhes, padrões, rastros e contrastes que permanecem invisíveis para indivíduos que possuem apenas visão comum, Infravisão ou Ultravisão.\n\n## Funcionamento\n\nA visão do personagem abrange:\n\n- Infravermelho.\n- Espectro visível.\n- Ultravioleta.\n\nTodas essas informações são processadas simultaneamente, formando uma imagem única e altamente detalhada.\n\n## Visão Noturna\n\nVisão Hiperespectral proporciona uma capacidade de enxergar em condições de pouca iluminação muito superior à visão normal.\n\nEnquanto existir qualquer fonte de luz no ambiente, por menor que seja, o personagem:\n\n- Não sofre penalidades de visão.\n- Não sofre penalidades de combate causadas por iluminação insuficiente.\n\nIsso inclui situações como:\n\n- Noites estreladas.\n- Ambientes fracamente iluminados.\n- Locais com luz indireta.\n- Áreas com iluminação residual.\n\n## Escuridão Total\n\nQuando não existe absolutamente nenhuma fonte de luz disponível, a vantagem funciona da mesma forma que Infravisão.\n\nNessas condições, o personagem continua capaz de perceber fontes de calor e diferenças térmicas do ambiente.\n\n## Bônus de Percepção Visual\n\nO personagem recebe:\n\n+3 em todos os testes de Visão.\n\nEsse bônus também se aplica a atividades que dependam diretamente da observação visual.\n\n## Perícias Beneficiadas\n\nO bônus de +3 aplica-se normalmente a testes realizados para:\n\n- Observação.\n- Perícia Forense.\n- Revistar.\n- Rastreamento.\n\nSempre que a visão puder contribuir para detectar pistas, rastros ou objetos ocultos.\n\n## Aplicações Comuns\n\nVisão Hiperespectral permite perceber com mais facilidade:\n\n- Pegadas antigas.\n- Resíduos biológicos.\n- Objetos escondidos.\n- Alterações de temperatura.\n- Marcas químicas.\n- Vestígios de atividade recente.\n- Contrastes invisíveis ao olho humano.\n- Diferenças entre materiais semelhantes.\n\n## Relação com Infravisão e Ultravisão\n\nVisão Hiperespectral substitui completamente essas vantagens.\n\nUm personagem com Visão Hiperespectral não pode adquirir:\n\n- Infravisão.\n- Ultravisão.\n\nOs benefícios dessas vantagens já estão incluídos em um nível superior dentro da Visão Hiperespectral.\n\n## Natureza da Vantagem\n\nEm campanhas realistas, Visão Hiperespectral representa sensores extremamente avançados de NT7 ou superior.\n\nExemplos:\n\n- Equipamentos militares avançados.\n- Sensores científicos.\n- Sistemas robóticos sofisticados.\n\nEm campanhas supers, o Mestre pode permitir ampliações especiais que expandem ainda mais suas capacidades.\n\n## Usuários Comuns\n\nA vantagem é frequentemente encontrada em:\n\n- Robôs avançados.\n- Androides.\n- Drones militares.\n- Alienígenas.\n- Supers.\n- Mutantes.\n- Entidades artificiais.\n- Criaturas com sentidos sobre-humanos.\n\n## Resumo\n\nVisão Hiperespectral combina Infravisão, visão normal e Ultravisão em uma única percepção integrada.\n\nO personagem nunca sofre penalidades por baixa iluminação quando existe qualquer fonte de luz disponível, funciona como Infravisão na escuridão total e recebe +3 em todos os testes de Visão, Observação, Perícia Forense, Revistar e Rastreamento baseados em percepção visual.\n\nCusto: 25 pontos."
+    "descricao": "O personagem possui um sistema visual extremamente avançado capaz de perceber simultaneamente uma ampla faixa do espectro eletromagnético.\n\nSua visão integra informações provenientes do infravermelho, da luz visível e do ultravioleta em uma única imagem coerente.\n\nEssa percepção ampliada permite identificar detalhes, padrões, rastros e contrastes que permanecem invisíveis para indivíduos que possuem apenas visão comum, Infravisão ou Ultravisão.\n\n## Funcionamento\n\nA visão do personagem abrange:\n\n- Infravermelho.\n- Espectro visível.\n- Ultravioleta.\n\nTodas essas informações são processadas simultaneamente, formando uma imagem única e altamente detalhada.\n\n## Visão Noturna\n\nVisão Hiperespectral proporciona uma capacidade de enxergar em condições de pouca iluminação muito superior à visão normal.\n\nEnquanto existir qualquer fonte de luz no ambiente, por menor que seja, o personagem:\n\n- Não sofre penalidades de visão.\n- Não sofre penalidades de combate causadas por iluminação insuficiente.\n\nIsso inclui situações como:\n\n- Noites estreladas.\n- Ambientes fracamente iluminados.\n- Locais com luz indireta.\n- Áreas com iluminação residual.\n\n## Escuridão Total\n\nQuando não existe absolutamente nenhuma fonte de luz disponível, a vantagem funciona da mesma forma que Infravisão.\n\nNessas condições, o personagem continua capaz de perceber fontes de calor e diferenças térmicas do ambiente.\n\n## Bônus de Percepção Visual\n\nO personagem recebe:\n\n+3 em todos os testes de Visão.\n\nEsse bônus também se aplica a atividades que dependam diretamente da observação visual.\n\n## Perícias Beneficiadas\n\nO bônus de +3 aplica-se normalmente a testes realizados para:\n\n- Observação.\n- Perícia Forense.\n- Revistar.\n- Rastreamento.\n\nSempre que a visão puder contribuir para detectar pistas, rastros ou objetos ocultos.\n\n## Aplicações Comuns\n\nVisão Hiperespectral permite perceber com mais facilidade:\n\n- Pegadas antigas.\n- Resíduos biológicos.\n- Objetos escondidos.\n- Alterações de temperatura.\n- Marcas químicas.\n- Vestígios de atividade recente.\n- Contrastes invisíveis ao olho humano.\n- Diferenças entre materiais semelhantes.\n\n## Relação com Infravisão e Ultravisão\n\nVisão Hiperespectral substitui completamente essas vantagens.\n\nUm personagem com Visão Hiperespectral não pode adquirir:\n\n- Infravisão.\n- Ultravisão.\n\nOs benefícios dessas vantagens já estão incluídos em um nível superior dentro da Visão Hiperespectral.\n\n## Natureza da Vantagem\n\nEm campanhas realistas, Visão Hiperespectral representa sensores extremamente avançados de NT7 ou superior.\n\nExemplos:\n\n- Equipamentos militares avançados.\n- Sensores científicos.\n- Sistemas robóticos sofisticados.\n\nEm campanhas supers, o Mestre pode permitir ampliações especiais que expandem ainda mais suas capacidades.\n\n## Usuários Comuns\n\nA vantagem é frequentemente encontrada em:\n\n- Robôs avançados.\n- Androides.\n- Drones militares.\n- Alienígenas.\n- Supers.\n- Mutantes.\n- Entidades artificiais.\n- Criaturas com sentidos sobre-humanos.\n\n## Resumo\n\nVisão Hiperespectral combina Infravisão, visão normal e Ultravisão em uma única percepção integrada.\n\nO personagem nunca sofre penalidades por baixa iluminação quando existe qualquer fonte de luz disponível, funciona como Infravisão na escuridão total e recebe +3 em todos os testes de Visão, Observação, Perícia Forense, Revistar e Rastreamento baseados em percepção visual.\n\nCusto: 25 pontos.",
+    "efeitos": [
+      {
+        "tipo": "pericia",
+        "alvo": "Observação",
+        "valor": 3,
+        "porNivel": false
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Perícia Forense/NT",
+        "valor": 3,
+        "porNivel": false
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Revistar",
+        "valor": 3,
+        "porNivel": false
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Rastreamento",
+        "valor": 3,
+        "porNivel": false
+      }
+    ]
   },
   {
     "id": "visao_microscopica",
@@ -5334,7 +5986,15 @@
     "rawCost": "15",
     "specialRule": null,
     "tags": [],
-    "descricao": "O personagem possui um campo de visão excepcionalmente amplo, permitindo enxergar muito além dos limites normais da visão humana.\n\nEle consegue observar uma grande área ao seu redor sem precisar virar a cabeça, tornando muito mais difícil ser surpreendido por ameaças vindas dos lados ou por trás.\n\n## Campo de Visão\n\nUm personagem comum possui um campo de visão frontal limitado.\n\nCom Visão Periférica, o personagem passa a enxergar:\n\n- 180° à sua frente.\n- 30° adicionais para cada lado.\n\nIsso resulta em um campo visual total de:\n\n- 240°.\n\nEsse benefício se aplica tanto para observação quanto para ataques à distância.\n\n## Combate Corpo a Corpo\n\nSe estiver utilizando mapas com hexágonos, o personagem pode realizar ataques corpo a corpo contra:\n\n- Hexágonos frontais.\n- Hexágono lateral esquerdo.\n- Hexágono lateral direito.\n\nSem necessidade de realizar um Golpe Desenfreado.\n\n### Ataques Cruzados\n\nSe utilizar apenas uma mão para atacar o lado oposto do corpo:\n\nExemplos:\n\n- Mão direita atacando o lado esquerdo.\n- Mão esquerda atacando o lado direito.\n\nO ataque continua sendo considerado desajeitado e exige um Golpe Desenfreado normalmente.\n\n### Retaguarda\n\nA vantagem não permite atacar diretamente um inimigo posicionado atrás do personagem.\n\nPara isso ainda é necessário utilizar:\n\n- Golpe Desenfreado.\n\n## Defesa\n\nVisão Periférica melhora significativamente a capacidade defensiva do personagem.\n\n### Ataques Laterais\n\nQuando atacado pela direita ou pela esquerda:\n\n- O personagem não sofre penalidades defensivas.\n\nEle percebe o ataque normalmente e pode reagir sem restrições.\n\n### Ataques pelas Costas\n\nQuando atacado por trás:\n\n- A defesa ativa sofre apenas -2.\n\nIsso é uma melhoria significativa em relação à maioria dos personagens.\n\n## Perseguição\n\nO personagem recebe:\n\n- +3 nos testes para detectar tentativas de Perseguição.\n\nA ampla cobertura visual dificulta que alguém o siga sem ser percebido.\n\n## Emboscadas\n\nO personagem recebe:\n\n- +3 nos testes para detectar emboscadas vindas por trás.\n\nAlém disso, sempre que houver algo potencialmente perigoso aproximando-se por suas costas, o Mestre deve realizar um teste de Visão para verificar se o personagem percebe a ameaça.\n\n## Aplicações Comuns\n\nVisão Periférica é frequentemente encontrada em:\n\n- Predadores.\n- Herbívoros com olhos laterais.\n- Alienígenas.\n- Mutantes.\n- Supers.\n- Robôs de vigilância.\n- Criaturas com múltiplos olhos.\n\n## Comparação com Visão 360°\n\nVisão Periférica não é a mesma coisa que Visão 360°.\n\n### Visão Periférica\n\n- Campo visual de 240°.\n- Ainda possui um ponto cego atrás.\n- Defesa pelas costas sofre -2.\n\n### Visão 360°\n\n- Campo visual completo.\n- Nenhum ponto cego.\n- Sem penalidades defensivas por ataques laterais ou traseiros.\n\n## Limitações\n\nA vantagem não concede:\n\n- Visão através de objetos.\n- Visão no escuro.\n- Visão telescópica.\n- Visão microscópica.\n\nEla apenas amplia o campo visual do personagem.\n\n## Resumo\n\nVisão Periférica amplia o campo de visão para 240°, permite atacar normalmente os hexágonos laterais, elimina penalidades defensivas contra ataques vindos dos lados, reduz para -2 as defesas contra ataques pelas costas e concede +3 para detectar perseguições e emboscadas.\n\nCusto: 15 pontos."
+    "descricao": "O personagem possui um campo de visão excepcionalmente amplo, permitindo enxergar muito além dos limites normais da visão humana.\n\nEle consegue observar uma grande área ao seu redor sem precisar virar a cabeça, tornando muito mais difícil ser surpreendido por ameaças vindas dos lados ou por trás.\n\n## Campo de Visão\n\nUm personagem comum possui um campo de visão frontal limitado.\n\nCom Visão Periférica, o personagem passa a enxergar:\n\n- 180° à sua frente.\n- 30° adicionais para cada lado.\n\nIsso resulta em um campo visual total de:\n\n- 240°.\n\nEsse benefício se aplica tanto para observação quanto para ataques à distância.\n\n## Combate Corpo a Corpo\n\nSe estiver utilizando mapas com hexágonos, o personagem pode realizar ataques corpo a corpo contra:\n\n- Hexágonos frontais.\n- Hexágono lateral esquerdo.\n- Hexágono lateral direito.\n\nSem necessidade de realizar um Golpe Desenfreado.\n\n### Ataques Cruzados\n\nSe utilizar apenas uma mão para atacar o lado oposto do corpo:\n\nExemplos:\n\n- Mão direita atacando o lado esquerdo.\n- Mão esquerda atacando o lado direito.\n\nO ataque continua sendo considerado desajeitado e exige um Golpe Desenfreado normalmente.\n\n### Retaguarda\n\nA vantagem não permite atacar diretamente um inimigo posicionado atrás do personagem.\n\nPara isso ainda é necessário utilizar:\n\n- Golpe Desenfreado.\n\n## Defesa\n\nVisão Periférica melhora significativamente a capacidade defensiva do personagem.\n\n### Ataques Laterais\n\nQuando atacado pela direita ou pela esquerda:\n\n- O personagem não sofre penalidades defensivas.\n\nEle percebe o ataque normalmente e pode reagir sem restrições.\n\n### Ataques pelas Costas\n\nQuando atacado por trás:\n\n- A defesa ativa sofre apenas -2.\n\nIsso é uma melhoria significativa em relação à maioria dos personagens.\n\n## Perseguição\n\nO personagem recebe:\n\n- +3 nos testes para detectar tentativas de Perseguição.\n\nA ampla cobertura visual dificulta que alguém o siga sem ser percebido.\n\n## Emboscadas\n\nO personagem recebe:\n\n- +3 nos testes para detectar emboscadas vindas por trás.\n\nAlém disso, sempre que houver algo potencialmente perigoso aproximando-se por suas costas, o Mestre deve realizar um teste de Visão para verificar se o personagem percebe a ameaça.\n\n## Aplicações Comuns\n\nVisão Periférica é frequentemente encontrada em:\n\n- Predadores.\n- Herbívoros com olhos laterais.\n- Alienígenas.\n- Mutantes.\n- Supers.\n- Robôs de vigilância.\n- Criaturas com múltiplos olhos.\n\n## Comparação com Visão 360°\n\nVisão Periférica não é a mesma coisa que Visão 360°.\n\n### Visão Periférica\n\n- Campo visual de 240°.\n- Ainda possui um ponto cego atrás.\n- Defesa pelas costas sofre -2.\n\n### Visão 360°\n\n- Campo visual completo.\n- Nenhum ponto cego.\n- Sem penalidades defensivas por ataques laterais ou traseiros.\n\n## Limitações\n\nA vantagem não concede:\n\n- Visão através de objetos.\n- Visão no escuro.\n- Visão telescópica.\n- Visão microscópica.\n\nEla apenas amplia o campo visual do personagem.\n\n## Resumo\n\nVisão Periférica amplia o campo de visão para 240°, permite atacar normalmente os hexágonos laterais, elimina penalidades defensivas contra ataques vindos dos lados, reduz para -2 as defesas contra ataques pelas costas e concede +3 para detectar perseguições e emboscadas.\n\nCusto: 15 pontos.",
+    "efeitos": [
+      {
+        "tipo": "pericia",
+        "alvo": "Perseguição",
+        "valor": 3,
+        "porNivel": false
+      }
+    ]
   },
   {
     "id": "visao_telescopica",

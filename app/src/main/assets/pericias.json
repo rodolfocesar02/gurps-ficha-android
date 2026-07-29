@@ -95,7 +95,7 @@
   },
   {
     "id": "analise_de_mercado",
-    "nome": "Analise de Mercado",
+    "nome": "Análise de Mercado",
     "atributoBase": "IQ",
     "atributosPossiveis": null,
     "atributoEscolhaObrigatoria": false,
@@ -2079,7 +2079,7 @@
   },
   {
     "id": "mendicancia",
-    "nome": "Mendicncia",
+    "nome": "Mendicância",
     "atributoBase": "IQ",
     "atributosPossiveis": null,
     "atributoEscolhaObrigatoria": false,

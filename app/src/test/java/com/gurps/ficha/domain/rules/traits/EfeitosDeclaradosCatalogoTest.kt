@@ -27,11 +27,23 @@ class EfeitosDeclaradosCatalogoTest {
         /**
          * Alvos que NÃO são perícia do catálogo, mas são válidos de propósito.
          *
-         * `reacao` é o alvo reservado do Teste de Reação (`ReacaoRules`) — reusa
-         * o tipo "pericia" em vez de inventar um tipo novo só para ele.
+         * - `reacao` é o alvo reservado do Teste de Reação (`ReacaoRules`) — reusa
+         *   o tipo "pericia" em vez de inventar um tipo novo só para ele.
+         * - `*` é o **curinga "qualquer perícia"** (Lote TAL-1), para as três
+         *   vantagens em que o livro dá uma **situação** e não uma lista: Toque
+         *   Sensível (*"qualquer tarefa que utiliza o tato"*), Venturoso e
+         *   Versátil. Enumerar as 278 perícias seria absurdo.
+         *
          * Precisa estar em sincronia com `scripts/validar_efeitos.py`.
          */
-        val ALVOS_RESERVADOS = setOf("reacao")
+        val ALVOS_RESERVADOS = setOf("reacao", TraitRuleRegistry.CURINGA_PERICIA)
+
+        /** Os dez Talentos do livro (MB p.91-92), pelos ids do catálogo. */
+        val OS_DEZ_TALENTOS = setOf(
+            "artifice", "artista_talentoso", "companheiro_animal", "curandeiro",
+            "dedos_verdes", "agente_cativante", "explorador",
+            "habilidade_matematica", "habilidade_musical", "perspicacia_comercial"
+        )
     }
 
     private val gson = Gson()
@@ -236,6 +248,98 @@ class EfeitosDeclaradosCatalogoTest {
         // E todos precisam estar declarados de fato.
         val declarados = tracosComEfeitos().map { it.id }.toSet()
         assertEquals(emptySet<String>(), comPublico - declarados)
+    }
+
+    @Test
+    fun `nenhum nome de pericia do catalogo esta com acento comido`() {
+        // Escrevendo os dez Talentos (Lote TAL-1) apareceram DOIS defeitos no
+        // proprio catalogo: "Mendicncia" (sem o â) e "Analise de Mercado" (sem o
+        // á). Os dois foram corrigidos; o segundo saiu de cruzar pericias.json
+        // com pericias_v2_rules_map.json, que tinha a grafia certa.
+        //
+        // O sinal e uma sequencia de 3+ consoantes, que em portugues quase nao
+        // existe fora de alguns encontros conhecidos. Nome errado aqui e bonus
+        // mudo para sempre, porque o casamento e por nome exato.
+        val encontrosValidos = listOf(
+            "str", "scr", "nstr", "ntr", "mpl", "mpr", "ndr", "lstr", "nsp",
+            "xpl", "rtr", "nfl", "nqu", "rqu", "lqu", "sch", "tch", "ngl",
+            "ndl", "rst", "lst", "nst", "sgr", "mbr", "spr"
+        )
+        val suspeitos = nomesDePericia().filter { nome ->
+            Regex("[bcdfghjklmnpqrstvwxz]{3,}").findAll(nome.lowercase()).any { m ->
+                encontrosValidos.none { m.value.startsWith(it) || m.value.contains(it) }
+            }
+        }
+        assertTrue("Nomes suspeitos de acento perdido: $suspeitos", suspeitos.isEmpty())
+    }
+
+    @Test
+    fun `os dez Talentos estao declarados e com teto de quatro niveis`() {
+        // Antes do Lote TAL-1 as dez existiam no catalogo SEM efeito nenhum:
+        // quem comprava Artifice nivel 2 gastava 20 pontos e nao ganhava um
+        // unico ponto de NH. Sao ~80 pericias no total.
+        //
+        // O `max = 4` e a regra do livro: "nunca pode ter mais que quatro niveis
+        // em um determinado Talento".
+        val porId = lerComMax("vantagens.v3.json").associateBy { it.id }
+        val erros = OS_DEZ_TALENTOS.mapNotNull { id ->
+            val t = porId[id]
+            when {
+                t == null -> "$id nao existe em vantagens.v3.json"
+                t.efeitos.isEmpty() -> "$id esta sem efeitos declarados"
+                t.max != 4 -> "$id deveria ter max=4 (MB p.91), tem ${t.max}"
+                else -> null
+            }
+        }
+        assertTrue(erros.joinToString("\n"), erros.isEmpty())
+    }
+
+    @Test
+    fun `todo Talento tem exatamente um bonus de reacao, e ele e condicional`() {
+        // O livro condiciona o bonus de reacao do Talento: so vale "se existir a
+        // chance de ela ficar impressionada com sua aptidao (a critério do
+        // Mestre)". Somar sempre daria bonus contra qualquer um.
+        val porId = tracosComEfeitos().associateBy { it.id }
+        val erros = OS_DEZ_TALENTOS.mapNotNull { id ->
+            val reacoes = porId[id]?.efeitos.orEmpty().filter { it.alvo == "reacao" }
+            when {
+                reacoes.size != 1 -> "$id tem ${reacoes.size} efeitos de reacao, deveria ter 1"
+                !reacoes.first().ehCondicional -> "$id: a reacao do Talento tem de ser condicional"
+                !reacoes.first().porNivel -> "$id: a reacao do Talento e por nivel"
+                else -> null
+            }
+        }
+        assertTrue(erros.joinToString("\n"), erros.isEmpty())
+    }
+
+    @Test
+    fun `as tres vantagens de situacao usam o curinga, e so elas`() {
+        // Toque Sensivel, Venturoso e Versatil sao as unicas do livro que dizem
+        // "qualquer tarefa que...". O curinga e poderoso -- aparece em TODA
+        // pericia -- entao a lista de quem pode usa-lo fica travada aqui.
+        val esperadas = setOf("toque_sensivel", "venturoso", "versatil")
+        val comCuringa = tracosComEfeitos()
+            .filter { t -> t.efeitos.any { it.alvo == TraitRuleRegistry.CURINGA_PERICIA } }
+            .map { it.id }.toSet()
+        assertEquals(esperadas, comCuringa)
+
+        // E todo curinga tem de ser condicional: quem decide se vale e o Mestre.
+        val semCondicao = tracosComEfeitos().flatMap { t ->
+            t.efeitos.filter { it.alvo == TraitRuleRegistry.CURINGA_PERICIA && !it.ehCondicional }
+                .map { "${t.nome} [${t.id}] usa o curinga sem condicao" }
+        }
+        assertTrue(semCondicao.joinToString("\n"), semCondicao.isEmpty())
+    }
+
+    private data class TracoComMax(
+        val id: String = "",
+        val max: Int? = null,
+        val efeitos: List<EfeitoDeclarado> = emptyList()
+    )
+
+    private fun lerComMax(nome: String): List<TracoComMax> {
+        val tipo = object : TypeToken<List<TracoComMax>>() {}.type
+        return lerLista(nome, tipo)
     }
 
     @Test
