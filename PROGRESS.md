@@ -5186,3 +5186,17 @@ Item 9 do plano. Botão "Visualização" na aba Rolagem, só para quem tem a van
 - **O aviso de combate está na tela:** *"Isso a torna inútil durante um combate"* — um minuto de concentração não cabe num turno de um segundo.
 - **Testes:** `VisualizacaoRulesTest`, 9 casos, com os dois pisos travados.
 - **Status:** ✅ Build OK nas 2 variantes · lint OK · gate verde · ⏭️ **PENDENTE: teste no aparelho**.
+
+### Lote TI-1 — Talento Instintivo — 29 de Julho de 2026 (versão 4.5-TI1)
+Item 11, o último da fila do plano de vantagens. Botão na aba Rolagem com os usos restantes no rótulo.
+
+- 🔴 **Eu havia registrado no plano que ela dependia do valor predefinido, e estava errado.** Fui conferir o catálogo: o campo `preDefinicoes` existe em `pericias.json` e está **vazio nas 281 perícias** — não há um dado. Se a vantagem precisasse dele, este lote seria um projeto de extração de dados. Mas ela **não precisa**: a vantagem *substitui* o predefinido pelo atributo cheio. O que ela precisa é da lista de perícias que o personagem **não tem** e do **atributo base** de cada uma, e as duas coisas o catálogo já dá.
+- **O que a vantagem faz, em uma frase:** apaga a penalidade de usar uma perícia que não está na ficha — o teste passa a ser contra o atributo cheio. Não é ficar melhor, é deixar de ser pior.
+- **Diálogo com as ~250 perícias que ele não conhece**, cada uma com o NH do seu atributo (DX para Arrombamento, IQ para Programação, HT para Natação), ordenadas e com **campo de busca** — sem busca, uma lista desse tamanho é inutilizável no meio da mesa.
+- ⚠️ **Só oferece perícia que ele NÃO tem**, porque o livro é explícito (*"não surte efeito nas perícias que o personagem já conhece"*) — oferecê-las seria oferecer um NH pior que o que ele já tem. E o filtro compara **id e nome**, porque perícia racial concedida entra na ficha com o id prefixado (`racial_escalada`) e passaria batido só pelo id.
+- ⚠️ **O contador é honesto:** o app **não sabe** quando a sessão começou e não tem como saber. Então ele soma os usos e tem um botão **"Nova sessão"** para zerar, em vez de chutar meia-noite ou tempo de tela — chutar devolveria usos que o jogador já gastou.
+- **Testes:** `TalentoInstintivoRulesTest`, 10 casos.
+- **Status:** ✅ Build OK nas 2 variantes · lint OK · gate verde · ⏭️ **PENDENTE: teste no aparelho**.
+
+### ✅ Plano de vantagens (MB p.91-101) FECHADO — 29 de Julho de 2026
+Os 12 itens do plano estão resolvidos: **11 feitos** em 7 lotes (TAL-1, LUZ-1, DESL-1, MESTRE-1, SORTE-1, MIRA-3, VIS-1, TI-1) e **1 descartado** de propósito — o "Sem Sangue", que vive em `domain/combat/` e é da Saga.

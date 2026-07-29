@@ -113,6 +113,10 @@ fun TabRolagem(viewModel: FichaViewModel) {
     // esquece, que e o problema que a vantagem tem na mesa hoje.
     var showVisualizacaoDialog by remember { mutableStateOf(false) }
     var bonusVisualizacao by remember { mutableStateOf<Pair<Int, String>?>(null) }
+    // Lote TI-1: o app NAO sabe quando a sessao comecou, entao o contador
+    // soma e tem botao de zerar -- chutar devolveria usos ja gastos.
+    var showTalentoInstintivoDialog by remember { mutableStateOf(false) }
+    var usosTalentoInstintivo by remember { mutableIntStateOf(0) }
 
     var pendingRoll by remember { mutableStateOf<PendingRollState?>(null) }
     var pendingResults by remember { mutableStateOf<List<Int>?>(null) }
@@ -880,6 +884,18 @@ fun TabRolagem(viewModel: FichaViewModel) {
             }
         )
 
+        if (com.gurps.ficha.domain.rules.TalentoInstintivoRules.tem(p)) {
+            OutlinedButton(
+                onClick = { showTalentoInstintivoDialog = true },
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(
+                    com.gurps.ficha.domain.rules.TalentoInstintivoRules
+                        .rotulo(p, usosTalentoInstintivo)
+                )
+            }
+        }
+
         // So aparece para quem tem a vantagem.
         if (com.gurps.ficha.domain.rules.VisualizacaoRules.tem(p)) {
             OutlinedButton(
@@ -1160,6 +1176,33 @@ fun TabRolagem(viewModel: FichaViewModel) {
                 executarRolagem(tipo = TipoTeste.ATAQUE, contextoLabel = rotulo, alvo = nh, mod = 0)
             },
             onDismiss = { miraDoAtaque = null }
+        )
+    }
+
+    if (showTalentoInstintivoDialog) {
+        val opcoesTI = remember(p.periciasTotais, viewModel.dataRepository.pericias) {
+            com.gurps.ficha.domain.rules.TalentoInstintivoRules
+                .opcoesDe(p, viewModel.dataRepository.pericias)
+        }
+        DialogoTalentoInstintivo(
+            opcoes = opcoesTI,
+            rotuloDeUsos = com.gurps.ficha.domain.rules.TalentoInstintivoRules
+                .rotulo(p, usosTalentoInstintivo),
+            temUsoDisponivel = com.gurps.ficha.domain.rules.TalentoInstintivoRules
+                .usosRestantes(p, usosTalentoInstintivo) > 0,
+            isPraCegoVariant = isPraCegoVariant,
+            onRolar = { opcao ->
+                usosTalentoInstintivo += 1
+                showTalentoInstintivoDialog = false
+                executarRolagem(
+                    tipo = TipoTeste.ATRIBUTO,
+                    contextoLabel = "${opcao.nome} (Talento Instintivo, ${opcao.atributo})",
+                    alvo = opcao.nh,
+                    mod = 0
+                )
+            },
+            onZerarUsos = { usosTalentoInstintivo = 0 },
+            onDismiss = { showTalentoInstintivoDialog = false }
         )
     }
 
