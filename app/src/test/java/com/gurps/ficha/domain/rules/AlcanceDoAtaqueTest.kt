@@ -121,6 +121,79 @@ class AlcanceDoAtaqueTest {
         assertTrue(AlcanceDoAtaque.ehADistancia(null, "arcos"))
     }
 
+    // --- QUAL arma está atirando (achado de 29/07) ---
+
+    private fun arco(nome: String = "Arco Longo") =
+        arma(nome = nome, tipoCombate = "distancia", multStRaw = "×15/×20")
+            .also { it.armaGrupo = "ARCO" }
+
+    private fun espada() = arma(nome = "Espada", tipoCombate = "corpo_a_corpo")
+        .also { it.armaGrupo = "ESPADA CURTA" }
+
+    @Test
+    fun `⚠️ acha o arco mesmo com a fonte de dano em Dano ST`() {
+        // O defeito que o usuário achou no T-D8: os avisos de Máx e 1/2D nunca
+        // apareciam. A tela só olhava a fonte de dano, e ela fica em "Dano ST"
+        // na maioria das fichas -- então a arma vinha nula e não havia o que
+        // avisar, mesmo com o arco na ficha e a perícia Arcos selecionada.
+        val arco = arco()
+        val achada = AlcanceDoAtaque.armaDoAtaque(
+            armas = listOf(espada(), arco),
+            armaSelecionada = null,
+            periciaId = "arcos_"
+        )
+        assertEquals(arco, achada)
+    }
+
+    @Test
+    fun `a arma escolhida na fonte de dano vence a busca`() {
+        val outroArco = arco("Arco Curto")
+        val achada = AlcanceDoAtaque.armaDoAtaque(
+            armas = listOf(arco(), outroArco),
+            armaSelecionada = outroArco,
+            periciaId = "arcos_"
+        )
+        assertEquals(outroArco, achada)
+    }
+
+    @Test
+    fun `com uma arma de longe so, nao precisa casar o grupo`() {
+        // Quem tem um arco só não deveria ter de explicar qual arco.
+        val a = arma(nome = "Arco caseiro", tipoCombate = "distancia", maximo = 90)
+        assertEquals(
+            a,
+            AlcanceDoAtaque.armaDoAtaque(listOf(espada(), a), null, "sem_grupo_nenhum")
+        )
+    }
+
+    @Test
+    fun `com duas armas de longe e nenhuma casando, nao chuta`() {
+        // Avisar "fora de alcance" com a arma errada é pior que não avisar.
+        val besta = arma(nome = "Besta", tipoCombate = "distancia", maximo = 100)
+            .also { it.armaGrupo = "BESTA" }
+        val funda = arma(nome = "Funda", tipoCombate = "distancia", maximo = 30)
+            .also { it.armaGrupo = "FUNDA" }
+        assertNull(AlcanceDoAtaque.armaDoAtaque(listOf(besta, funda), null, "zarabatana"))
+    }
+
+    @Test
+    fun `arma de corpo a corpo nunca e escolhida`() {
+        assertNull(AlcanceDoAtaque.armaDoAtaque(listOf(espada()), null, "espada_curta"))
+        assertNull(AlcanceDoAtaque.armaDoAtaque(emptyList(), null, "arcos"))
+    }
+
+    @Test
+    fun `casa grupo com acento e sublinhado`() {
+        val pistola = arma(nome = "Pistola", tipoCombate = "armas_de_fogo", maximo = 150)
+            .also { it.armaGrupo = "Pistola" }
+        assertEquals(
+            pistola,
+            AlcanceDoAtaque.armaDoAtaque(
+                listOf(pistola, arco()), null, "armas_de_fogo_nt_pistola"
+            )
+        )
+    }
+
     // --- o alcance ---
 
     @Test

@@ -749,7 +749,10 @@ fun TabRolagem(viewModel: FichaViewModel) {
                 executarRolagem(
                     tipo = TipoTeste.ATAQUE,
                     contextoLabel = if (penalidadeDistancia != 0) {
-                        "${att.contextLabel} a ${metrosAlvo}m"
+                        val onde = if (velocidadeAlvo > 0) {
+                            "${metrosAlvo}m + ${velocidadeAlvo}m/s"
+                        } else "${metrosAlvo}m"
+                        "${att.contextLabel} a $onde"
                     } else att.contextLabel,
                     alvo = att.target,
                     mod = mod + penalidadeDaMao + penalidadeDistancia
@@ -762,7 +765,14 @@ fun TabRolagem(viewModel: FichaViewModel) {
             onAlternarMao = { usandoMaoInabil = !usandoMaoInabil },
             onAbrirMira = { miraDoAtaque = it },
             rotuloDistancia = if (penalidadeDistancia != 0) {
-                "alvo a ${metrosAlvo}m ($penalidadeDistancia)"
+                // A velocidade PRECISA aparecer: sem ela o rotulo dizia
+                // "alvo a 2m (-2)" -- numero que nao fecha com a tabela e que o
+                // jogador nao tem como conferir. Achado nos prints de 29/07.
+                if (velocidadeAlvo > 0) {
+                    "alvo a ${metrosAlvo}m + ${velocidadeAlvo}m/s ($penalidadeDistancia)"
+                } else {
+                    "alvo a ${metrosAlvo}m ($penalidadeDistancia)"
+                }
             } else null,
             onExecutarDano = { dano ->
                 val perId = if (ataqueAtual?.id?.startsWith("pericia_") == true) {
@@ -989,17 +999,24 @@ fun TabRolagem(viewModel: FichaViewModel) {
         // Lote MIRA-2: a linha de distância só aparece em ataque à distância.
         // Decide por DUAS fontes — a arma escolhida manda, a perícia é o
         // reserva. Ver `AlcanceDoAtaque`.
-        val armaDaMira = viewModel.fonteDanoSelecionadaId
+        val periciaDaMira = ataque.id.takeIf { it.startsWith("pericia_") }?.removePrefix("pericia_")
+        val escolhidaNaFonteDeDano = viewModel.fonteDanoSelecionadaId
             ?.takeIf { it.startsWith("arma_") }?.removePrefix("arma_")
             ?.let { nome -> armas.find { it.nome == nome } }
-        val periciaDaMira = ataque.id.takeIf { it.startsWith("pericia_") }?.removePrefix("pericia_")
+        val miraEhADistancia = com.gurps.ficha.domain.rules.AlcanceDoAtaque
+            .ehADistancia(escolhidaNaFonteDeDano, periciaDaMira)
+        // Sem isto os avisos de Max e 1/2D nunca saiam: a fonte de dano fica em
+        // "Dano ST" na maioria das fichas, e a arma vinha nula.
+        val armaDaMira = if (miraEhADistancia) {
+            com.gurps.ficha.domain.rules.AlcanceDoAtaque
+                .armaDoAtaque(armas, escolhidaNaFonteDeDano, periciaDaMira)
+        } else null
 
         DialogoMira(
             rotuloDoAtaque = ataque.contextLabel,
             nhBase = (ataque.target ?: 0) + penalidadeDaMao,
             isPraCegoVariant = isPraCegoVariant,
-            ehADistancia = com.gurps.ficha.domain.rules.AlcanceDoAtaque
-                .ehADistancia(armaDaMira, periciaDaMira),
+            ehADistancia = miraEhADistancia,
             // O alcance do arco é múltiplo da ST de quem empunha — e se a ST
             // Braçal estiver ligada, é a força dos braços que atira.
             alcance = com.gurps.ficha.domain.rules.AlcanceDoAtaque

@@ -338,7 +338,21 @@ private fun Passo(
 }
 
 /**
- * Os dois avisos que a ficha já podia dar e não dava.
+ * O alcance da arma: os limites sempre à vista, e o aviso quando passa deles.
+ *
+ * ## Por que os limites aparecem mesmo quando está tudo bem
+ *
+ * Achado de 29/07: o usuário testou a 50 metros e não viu aviso nenhum, e
+ * concluiu que a automação não estava pegando. Estava — só que a arqueira tem
+ * **ST 9** e um Arco Longo (`×15/×20`), então o 1/2D dela é **135 m**. Não havia
+ * o que avisar.
+ *
+ * Silêncio é uma resposta ambígua: pode ser "está tudo certo" ou "não
+ * funcionou". Mostrando **1/2D 135 m · Máx 180 m** o tempo todo, o jogador vê o
+ * alvo se aproximando do limite e sabe que o app está olhando.
+ *
+ * ⚠️ E quando a arma não tem alcance cadastrado (ficha anterior ao Lote 371), a
+ * linha **diz isso** em vez de não aparecer. A pior mensagem é nenhuma.
  *
  * O **1/2D** é o que mais escapa na mesa, porque não muda o ataque — muda o
  * **dano**, que sai pela metade. O jogador rola, acerta, e comemora um dano que
@@ -349,17 +363,38 @@ private fun AvisoDeAlcance(metros: Int, alcance: AlcanceDoAtaque.Alcance) {
     val max = alcance.maximo
     val meio = alcance.meioDano
 
+    if (max == null && meio == null) {
+        Text(
+            "Alcance desta arma não cadastrado — sem aviso de 1/2D nem de Máx.",
+            style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.outline
+        )
+        return
+    }
+
     when {
         max != null && metros > max -> Text(
             "Fora de alcance: o Máx da arma é $max m.",
             style = MaterialTheme.typography.labelSmall,
             color = MaterialTheme.colorScheme.error,
-            fontWeight = FontWeight.Medium
+            fontWeight = FontWeight.Bold
         )
         meio != null && metros > meio -> Text(
-            "Além do 1/2D ($meio m): o dano sai pela metade.",
+            "Além do 1/2D ($meio m): o dano sai pela metade." +
+                (max?.let { " Máx $it m." } ?: ""),
             style = MaterialTheme.typography.labelSmall,
-            color = MaterialTheme.colorScheme.error
+            color = MaterialTheme.colorScheme.error,
+            fontWeight = FontWeight.Medium
+        )
+        // Dentro do alcance: os limites ficam à vista mesmo assim, para o
+        // jogador ver de longe que o app está acompanhando.
+        else -> Text(
+            listOfNotNull(
+                meio?.let { "1/2D $it m" },
+                max?.let { "Máx $it m" }
+            ).joinToString(" · "),
+            style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.outline
         )
     }
 }
