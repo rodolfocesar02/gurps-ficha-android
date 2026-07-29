@@ -5175,3 +5175,14 @@ Item 10 do plano, mais o passo 7 que ficou pendente do MIRA-2. As três coisas q
 | 12 | Sem Sangue | ❌ não fazer — é da Saga |
 
 Faltam **9 (Visualização)** e **11 (Talento Instintivo)**. Os dois precisam de tela nova, não só de regra: a Visualização é uma calculadora com resultado que precisa ser **guardado** para a rolagem seguinte, e o Talento Instintivo precisa de uma lista de **perícias não conhecidas** com o valor predefinido calculado, que o app ainda não monta.
+
+### Lote VIS-1 — Visualização — 29 de Julho de 2026 (versão 4.4-VIS1)
+Item 9 do plano. Botão "Visualização" na aba Rolagem, só para quem tem a vantagem.
+
+- **Por que vale automatizar:** são **três regras de arredondamento diferentes**, e duas são exceções. Quase idêntico = margem inteira; parecido (*"o que normalmente acontece"*) = ÷2 **com piso de +1**; muito diferente = ÷3 **sem piso nenhum**. ⚠️ O piso existe num caso e **não** existe no outro — feito de cabeça, com o jogador ansioso pelo bônus, erra para cima. Com margem 7 os três casos dão **7 / 3 / 2**.
+- **O fluxo:** rola IQ, mostra a margem, três botões de semelhança, e o bônus sai com a conta escrita (*"Margem 7 ÷ 3 → +2"*). Divisão de GURPS descarta a fração, então 5 ÷ 2 = 2.
+- **O bônus fica guardado à vista**, com a conta, até o jogador limpar — porque ele vale para uma ação **futura**, e sem estar na tela vira anotação em papel que se perde. Esse era o problema que a vantagem tem na mesa.
+- ⚠️ **Não é aplicado sozinho na próxima rolagem, de propósito.** A Visualização vale para **uma** ação específica; somar num teste que o jogador não pretendia seria um número errado em silêncio — o oposto de tudo que estes lotes vêm consertando.
+- **O aviso de combate está na tela:** *"Isso a torna inútil durante um combate"* — um minuto de concentração não cabe num turno de um segundo.
+- **Testes:** `VisualizacaoRulesTest`, 9 casos, com os dois pisos travados.
+- **Status:** ✅ Build OK nas 2 variantes · lint OK · gate verde · ⏭️ **PENDENTE: teste no aparelho**.

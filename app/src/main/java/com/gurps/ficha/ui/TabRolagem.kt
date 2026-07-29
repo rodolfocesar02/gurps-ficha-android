@@ -108,6 +108,11 @@ fun TabRolagem(viewModel: FichaViewModel) {
     var ultimaPendente by remember { mutableStateOf<PendingRollState?>(null) }
     var ultimosDados by remember { mutableStateOf<List<Int>?>(null) }
     var ultimoUsoDaSorte by remember { mutableStateOf<Long?>(null) }
+    // Lote VIS-1: o bonus da Visualizacao vale para uma acao FUTURA, entao
+    // fica a vista ate o jogador limpar -- senao ele anota num papel e
+    // esquece, que e o problema que a vantagem tem na mesa hoje.
+    var showVisualizacaoDialog by remember { mutableStateOf(false) }
+    var bonusVisualizacao by remember { mutableStateOf<Pair<Int, String>?>(null) }
 
     var pendingRoll by remember { mutableStateOf<PendingRollState?>(null) }
     var pendingResults by remember { mutableStateOf<List<Int>?>(null) }
@@ -875,6 +880,40 @@ fun TabRolagem(viewModel: FichaViewModel) {
             }
         )
 
+        // So aparece para quem tem a vantagem.
+        if (com.gurps.ficha.domain.rules.VisualizacaoRules.tem(p)) {
+            OutlinedButton(
+                onClick = { showVisualizacaoDialog = true },
+                modifier = Modifier.fillMaxWidth()
+            ) { Text("Visualização") }
+        }
+
+        // O bonus guardado fica a vista, com a conta. NAO e aplicado sozinho na
+        // proxima rolagem de proposito: a Visualizacao vale para UMA acao
+        // especifica, e somar num teste que o jogador nao pretendia seria um
+        // numero errado em silencio.
+        bonusVisualizacao?.let { (bonus, explicacao) ->
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(12.dp),
+                colors = appCardColors()
+            ) {
+                Column(modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp)) {
+                    Text(
+                        "Visualização guardada: +$bonus na ação visualizada",
+                        style = MaterialTheme.typography.bodySmall,
+                        fontWeight = FontWeight.Medium
+                    )
+                    Text(
+                        explicacao,
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.outline
+                    )
+                    TextButton(onClick = { bonusVisualizacao = null }) { Text("Limpar") }
+                }
+            }
+        }
+
         MenuBotoesNavegacaoRolagem(
             showTecnicas = opcoesTecnica.isNotEmpty(),
             showMagias = opcoesMagia.isNotEmpty(),
@@ -1121,6 +1160,14 @@ fun TabRolagem(viewModel: FichaViewModel) {
                 executarRolagem(tipo = TipoTeste.ATAQUE, contextoLabel = rotulo, alvo = nh, mod = 0)
             },
             onDismiss = { miraDoAtaque = null }
+        )
+    }
+
+    if (showVisualizacaoDialog) {
+        DialogoVisualizacao(
+            personagem = p,
+            onGuardar = { bonus, explicacao -> bonusVisualizacao = bonus to explicacao },
+            onDismiss = { showVisualizacaoDialog = false }
         )
     }
 
