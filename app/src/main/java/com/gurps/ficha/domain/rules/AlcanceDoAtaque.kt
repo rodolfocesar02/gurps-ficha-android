@@ -140,15 +140,20 @@ object AlcanceDoAtaque {
      * Devolve null nos campos que a ficha não conhece; ficha antiga tem tudo
      * nulo, e nesse caso a tela simplesmente não avisa nada.
      */
-    data class Alcance(val meioDano: Int?, val maximo: Int?)
+    data class Alcance(
+        val meioDano: Int?,
+        val maximo: Int?,
+        /** Prec da arma — o bônus que só vale se o personagem Apontou. */
+        val precisao: Int? = null
+    )
 
     fun alcanceDe(arma: Equipamento?, st: Int): Alcance {
-        if (arma == null) return Alcance(null, null)
+        if (arma == null) return Alcance(null, null, null)
 
         val mult = arma.armaAlcanceMultStRaw?.let { multiplicadores(it) }
         val meio = arma.armaMeioDanoMetros ?: mult?.first?.let { it * st }
         val max = arma.armaMaximoMetros ?: mult?.second?.let { it * st }
-        return Alcance(meio, max)
+        return Alcance(meio, max, arma.armaPrecisao)
     }
 
     /**

@@ -34,6 +34,7 @@ import com.gurps.ficha.ui.appCardColors
 import com.gurps.ficha.ui.linhaAlternavel
 import com.gurps.ficha.domain.rules.TabelaVelocidadeDistancia
 import com.gurps.ficha.domain.rules.AlcanceDoAtaque
+import com.gurps.ficha.domain.rules.ApontarRules
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.foundation.layout.PaddingValues
@@ -80,6 +81,7 @@ fun DialogoMira(
 ) {
     var desarmar by remember { mutableStateOf(false) }
     var golpeRapido by remember { mutableStateOf(false) }
+    var apontou by remember { mutableStateOf(false) }
     val opcoes = MiraRules.opcoes(desarmar)
 
     // Golpe Rapido nao existe em ataque a distancia -- e opcao de corpo a corpo.
@@ -95,7 +97,14 @@ fun DialogoMira(
     } else {
         0
     }
-    val nhComDistancia = nhBase + penalidadeDistancia + penalidadeGolpeRapido
+    // Apontar traz duas coisas de uma vez: a Precisão da arma e o dobro do
+    // desconto da Visão Telescópica. Ver `ApontarRules`.
+    val bonusApontar = if (ehADistancia && personagem != null) {
+        ApontarRules.bonusTotalDoApontar(
+            personagem, alcance.precisao, penalidadeDistancia, apontou
+        )
+    } else 0
+    val nhComDistancia = nhBase + penalidadeDistancia + penalidadeGolpeRapido + bonusApontar
 
     FullscreenDialogContainer(onDismiss = onDismiss) {
         Column(modifier = Modifier.fillMaxSize()) {
@@ -133,6 +142,30 @@ fun DialogoMira(
                     },
                     onMostrarVelocidade = { onIndices(indiceDistancia, 0) }
                 )
+            }
+
+            if (ehADistancia && personagem != null) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .linhaAlternavel(
+                            marcado = apontou,
+                            descricao = ApontarRules.rotuloAcessivelApontar(
+                                personagem, alcance.precisao, penalidadeDistancia
+                            ),
+                            onAlternar = { apontou = !apontou }
+                        )
+                        .padding(top = 2.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Checkbox(checked = apontou, onCheckedChange = null)
+                    Text(
+                        ApontarRules.rotuloApontar(personagem, alcance.precisao, penalidadeDistancia),
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.outline,
+                        modifier = Modifier.padding(start = 2.dp)
+                    )
+                }
             }
 
             LazyColumn(

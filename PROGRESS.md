@@ -5144,3 +5144,34 @@ Item 5 do plano, e a que mais muda o jogo no Discord. Botão **"Usar Sorte"** ac
 - 🔧 **O lint quebrou por motivo de linha, não de código.** O `lint-baseline.xml` deste projeto fixa as violações antigas de `java.time` **por número de linha**; inserir código em `TabRolagem.kt` deslocou tudo e uma violação antiga reapareceu como nova. Regerei o baseline (mesmas 65 entradas, mesmas categorias, só as linhas mudaram) e passei o relógio novo para `System.currentTimeMillis()`, que não precisa de API 26 — assim não somei dívida nova.
 - **Testes:** `SorteRulesTest`, 14 casos.
 - **Status:** ✅ Build OK nas 2 variantes · lint OK · gate verde · ⏭️ **PENDENTE: teste no aparelho** — roteiro T-S1..T-S6.
+
+### Lote MIRA-3 — Apontar, Precisão e Visão Telescópica — 29 de Julho de 2026 (versão 4.3-MIRA3)
+Item 10 do plano, mais o passo 7 que ficou pendente do MIRA-2. As três coisas que melhoram um tiro, e que se somam no mesmo ataque.
+
+- **Caixinha "Apontei 1 turno"** no diálogo de Mira, só em ataque à distância. Ela traz **duas** coisas de uma vez: a **Precisão da arma** — que o livro só concede a quem Apontou (p.373) — e o **dobro** do desconto da Visão Telescópica.
+- **A Visão Telescópica só ficou possível agora.** Ela era a primeira cliente da tabela de distância: antes do MIRA-2 o app não aplicava penalidade por distância nenhuma, e automatizar o **desconto** de uma penalidade que ninguém estava aplicando não mudaria um número na tela.
+- ⚠️ **Ela desconta a DISTÂNCIA, não o ataque** — e a diferença aparece quando o alvo está perto: Visão Telescópica 3 num tiro a 3 metros (penalidade −1) cancela **1**, não 3. Sobra não vira bônus. Tratá-la como bônus fixo daria +3 num tiro à queima-roupa, que o livro não concede. Há teste para o caso perto e para o longe.
+- **O rótulo diz de onde vem cada pedaço:** *"Apontei 1 turno: Precisão +3 e Telescópica +4"*. E quando a arma não tem Prec cadastrado (ficha anterior ao Lote 371), ele **avisa** em vez de somar zero em silêncio — pela mesma razão do aviso de alcance do MIRA-2b: silêncio é resposta ambígua.
+- **Testes:** `ApontarRulesTest`, 9 casos.
+- **Status:** ✅ Build OK nas 2 variantes · lint OK · gate verde · ⏭️ **PENDENTE: teste no aparelho**.
+
+---
+
+## Fila do plano de vantagens — estado em 29/07/2026
+
+| # | Item | Estado |
+|---|---|---|
+| 1 | Os dez Talentos | ✅ TAL-1 |
+| 2 | Visão Hiperespectral (4 perícias) | ✅ TAL-1 |
+| 3 | +5/+3 em Perseguição | ✅ TAL-1 |
+| 4 | Toque Sensível, Venturoso, Versátil (curinga) | ✅ TAL-1 |
+| 5 | Sorte | ✅ SORTE-1 |
+| 6 | Seletor de iluminação + Visão Noturna | ✅ LUZ-1 |
+| 7 | Treinado por um Mestre | ✅ MESTRE-1 |
+| 8 | Deslocamento voando e escalando | ✅ DESL-1 |
+| 9 | **Visualização** | ⏳ falta |
+| 10 | Visão Telescópica | ✅ MIRA-3 |
+| 11 | **Talento Instintivo** | ⏳ falta |
+| 12 | Sem Sangue | ❌ não fazer — é da Saga |
+
+Faltam **9 (Visualização)** e **11 (Talento Instintivo)**. Os dois precisam de tela nova, não só de regra: a Visualização é uma calculadora com resultado que precisa ser **guardado** para a rolagem seguinte, e o Talento Instintivo precisa de uma lista de **perícias não conhecidas** com o valor predefinido calculado, que o app ainda não monta.
