@@ -2,6 +2,13 @@
 <issues format="6" by="lint 8.7.2" type="baseline" client="gradle" dependencies="false" name="AGP (8.7.2)" variant="all" version="8.7.2">
 
     <issue
+        id="ObsoleteLintCustomCheck"
+        message="Library lint checks reference invalid APIs; these checks **will be skipped**!&#xA;&#xA;Lint found an issue registry (`androidx.compose.ui.lint.UiIssueRegistry`)&#xA;which contains some references to invalid API:&#xA;org.jetbrains.kotlin.analysis.api.resolution.KaCompoundAccessCall#getCompoundOperation(): org.jetbrains.kotlin.analysis.api.resolution.KaCompoundOperation&#xA;(Referenced from androidx/compose/ui/lint/SuspiciousModifierThenDetectorKt.class)&#xA;&#xA;Therefore, this lint check library is **not** included&#xA;in analysis. This affects the following lint checks:&#xA;`UnnecessaryComposedModifier`&#xA;`LocalContextConfigurationRead`&#xA;`LocalContextGetResourceValueCall`&#xA;`LocalContextResourcesRead`&#xA;`ConfigurationScreenWidthHeight`&#xA;`ModifierFactoryExtensionFunction`&#xA;`ModifierFactoryReturnType`&#xA;`ModifierFactoryUnreferencedReceiver`&#xA;`ModifierNodeInspectableProperties`&#xA;`ModifierParameter`&#xA;`MultipleAwaitPointerEventScopes`&#xA;`ReturnFromAwaitPointerEventScope`&#xA;`SuspiciousCompositionLocalModifierRead`&#xA;`SuspiciousModifierThen`&#xA;&#xA;To use this lint check, upgrade to a more recent version&#xA;of the library.">
+        <location
+            file="build/intermediates/lint-cache/lintReportVisualDebug/migrated-jars/androidx.compose.ui.lint.UiIssueRegistry-f6c8b77c079812d5..jar"/>
+    </issue>
+
+    <issue
         id="MissingPermission"
         message="Call requires permission which may be rejected by user: code should explicitly check to see if permission is available (with `checkPermission`) or explicitly handle a potential `SecurityException`"
         errorLine1="        audioRecord = AudioRecord("
@@ -19,7 +26,7 @@
         errorLine2="                                         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/java/com/gurps/ficha/domain/MestreIAGraphEngine.kt"
-            line="259"
+            line="261"
             column="42"/>
     </issue>
 
@@ -30,7 +37,7 @@
         errorLine2="                                                                                               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/java/com/gurps/ficha/domain/MestreIAGraphEngine.kt"
-            line="386"
+            line="388"
             column="96"/>
     </issue>
 
@@ -52,7 +59,7 @@
         errorLine2="                                                                                               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/java/com/gurps/ficha/domain/MestreIASemanticEngine.kt"
-            line="127"
+            line="128"
             column="96"/>
     </issue>
 
@@ -63,7 +70,7 @@
         errorLine2="                                                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/java/com/gurps/ficha/domain/MestreIAVectorEngine.kt"
-            line="115"
+            line="116"
             column="53"/>
     </issue>
 
@@ -74,7 +81,7 @@
         errorLine2="                                                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/java/com/gurps/ficha/ui/TabEquipamentos.kt"
-            line="777"
+            line="787"
             column="53"/>
     </issue>
 
@@ -85,7 +92,7 @@
         errorLine2="                                                                                                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/java/com/gurps/ficha/ui/TabEquipamentos.kt"
-            line="777"
+            line="787"
             column="110"/>
     </issue>
 
@@ -96,7 +103,7 @@
         errorLine2="                                                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/java/com/gurps/ficha/ui/TabGeral.kt"
-            line="221"
+            line="274"
             column="54"/>
     </issue>
 
@@ -107,7 +114,7 @@
         errorLine2="                                                                                                                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/java/com/gurps/ficha/ui/TabGeral.kt"
-            line="221"
+            line="274"
             column="119"/>
     </issue>
 
@@ -118,7 +125,7 @@
         errorLine2="                                            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/java/com/gurps/ficha/ui/TabGeral.kt"
-            line="223"
+            line="276"
             column="45"/>
     </issue>
 
@@ -129,7 +136,7 @@
         errorLine2="                                                                                                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/java/com/gurps/ficha/ui/TabGeral.kt"
-            line="223"
+            line="276"
             column="101"/>
     </issue>
 
@@ -151,7 +158,7 @@
         errorLine2="                                 ~~~~~~">
         <location
             file="src/main/java/com/gurps/ficha/ui/TabRolagem.kt"
-            line="289"
+            line="409"
             column="34"/>
     </issue>
 
@@ -162,7 +169,7 @@
         errorLine2="                           ~~~">
         <location
             file="src/main/java/com/gurps/ficha/ui/TabRolagem.kt"
-            line="289"
+            line="409"
             column="28"/>
     </issue>
 
@@ -173,7 +180,7 @@
         errorLine2="                                                          ~~~~~~~~~">
         <location
             file="src/main/java/com/gurps/ficha/ui/TabRolagem.kt"
-            line="289"
+            line="409"
             column="59"/>
     </issue>
 
@@ -184,7 +191,7 @@
         errorLine2="                                        ~~~~~~">
         <location
             file="src/main/java/com/gurps/ficha/ui/TabRolagem.kt"
-            line="312"
+            line="446"
             column="41"/>
     </issue>
 
@@ -195,7 +202,7 @@
         errorLine2="                                  ~~~">
         <location
             file="src/main/java/com/gurps/ficha/ui/TabRolagem.kt"
-            line="312"
+            line="446"
             column="35"/>
     </issue>
 
@@ -206,7 +213,7 @@
         errorLine2="                                                                 ~~~~~~~~~">
         <location
             file="src/main/java/com/gurps/ficha/ui/TabRolagem.kt"
-            line="312"
+            line="446"
             column="66"/>
     </issue>
 
@@ -217,7 +224,7 @@
         errorLine2="                                        ~~~~~~">
         <location
             file="src/main/java/com/gurps/ficha/ui/TabRolagem.kt"
-            line="375"
+            line="522"
             column="41"/>
     </issue>
 
@@ -228,7 +235,7 @@
         errorLine2="                                  ~~~">
         <location
             file="src/main/java/com/gurps/ficha/ui/TabRolagem.kt"
-            line="375"
+            line="522"
             column="35"/>
     </issue>
 
@@ -239,7 +246,7 @@
         errorLine2="                                                                 ~~~~~~~~~">
         <location
             file="src/main/java/com/gurps/ficha/ui/TabRolagem.kt"
-            line="375"
+            line="522"
             column="66"/>
     </issue>
 
@@ -250,7 +257,7 @@
         errorLine2="                                        ~~~~~~">
         <location
             file="src/main/java/com/gurps/ficha/ui/TabRolagem.kt"
-            line="397"
+            line="570"
             column="41"/>
     </issue>
 
@@ -261,7 +268,7 @@
         errorLine2="                                  ~~~">
         <location
             file="src/main/java/com/gurps/ficha/ui/TabRolagem.kt"
-            line="397"
+            line="570"
             column="35"/>
     </issue>
 
@@ -272,14 +279,14 @@
         errorLine2="                                                                 ~~~~~~~~~">
         <location
             file="src/main/java/com/gurps/ficha/ui/TabRolagem.kt"
-            line="397"
+            line="570"
             column="66"/>
     </issue>
 
     <issue
         id="OldTargetApi"
         message="Not targeting the latest versions of Android; compatibility modes apply. Consider testing and updating this version. Consult the `android.os.Build.VERSION_CODES` javadoc for details."
-        errorLine1="        targetSdk = 34"
+        errorLine1="        targetSdk = 35"
         errorLine2="        ~~~~~~~~~~~~~~">
         <location
             file="build.gradle.kts"
@@ -305,7 +312,7 @@
         errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/AndroidManifest.xml"
-            line="33"
+            line="38"
             column="13"/>
     </issue>
 
@@ -327,62 +334,62 @@
         errorLine2="                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="build.gradle.kts"
-            line="223"
+            line="235"
             column="20"/>
     </issue>
 
     <issue
         id="GradleDependency"
-        message="A newer version of androidx.lifecycle:lifecycle-runtime-ktx than 2.6.2 is available: 2.10.0"
+        message="A newer version of androidx.lifecycle:lifecycle-runtime-ktx than 2.6.2 is available: 2.11.0"
         errorLine1="    implementation(&quot;androidx.lifecycle:lifecycle-runtime-ktx:2.6.2&quot;)"
         errorLine2="                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="build.gradle.kts"
-            line="224"
+            line="236"
             column="20"/>
     </issue>
 
     <issue
         id="GradleDependency"
-        message="A newer version of androidx.activity:activity-compose than 1.8.1 is available: 1.13.0"
-        errorLine1="    implementation(&quot;androidx.activity:activity-compose:1.8.1&quot;)"
+        message="A newer version of androidx.activity:activity-compose than 1.9.2 is available: 1.13.0"
+        errorLine1="    implementation(&quot;androidx.activity:activity-compose:1.9.2&quot;)"
         errorLine2="                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="build.gradle.kts"
-            line="225"
+            line="237"
             column="20"/>
     </issue>
 
     <issue
         id="GradleDependency"
-        message="A newer version of androidx.compose:compose-bom than 2023.10.01 is available: 2026.05.01"
-        errorLine1="    implementation(platform(&quot;androidx.compose:compose-bom:2023.10.01&quot;))"
+        message="A newer version of androidx.compose:compose-bom than 2024.09.02 is available: 2026.06.01"
+        errorLine1="    implementation(platform(&quot;androidx.compose:compose-bom:2024.09.02&quot;))"
         errorLine2="                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="build.gradle.kts"
-            line="226"
+            line="238"
             column="20"/>
     </issue>
 
     <issue
         id="GradleDependency"
-        message="A newer version of androidx.compose.material3:material3-window-size-class than 1.2.1 is available: 1.4.0"
-        errorLine1="    implementation(&quot;androidx.compose.material3:material3-window-size-class:1.2.1&quot;)"
-        errorLine2="                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="build.gradle.kts"
-            line="231"
-            column="20"/>
-    </issue>
-
-    <issue
-        id="GradleDependency"
-        message="A newer version of androidx.lifecycle:lifecycle-viewmodel-compose than 2.6.2 is available: 2.10.0"
+        message="A newer version of androidx.lifecycle:lifecycle-viewmodel-compose than 2.6.2 is available: 2.11.0"
         errorLine1="    implementation(&quot;androidx.lifecycle:lifecycle-viewmodel-compose:2.6.2&quot;)"
         errorLine2="                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="build.gradle.kts"
-            line="233"
+            line="245"
+            column="20"/>
+    </issue>
+
+    <issue
+        id="GradleDependency"
+        message="A newer version of com.google.code.gson:gson than 2.10.1 is available: 2.11.0"
+        errorLine1="    implementation(&quot;com.google.code.gson:gson:2.10.1&quot;)"
+        errorLine2="                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="build.gradle.kts"
+            line="246"
             column="20"/>
     </issue>
 
@@ -393,7 +400,7 @@
         errorLine2="                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="build.gradle.kts"
-            line="236"
+            line="248"
             column="20"/>
     </issue>
 
@@ -404,7 +411,7 @@
         errorLine2="                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="build.gradle.kts"
-            line="237"
+            line="249"
             column="20"/>
     </issue>
 
@@ -415,7 +422,7 @@
         errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="build.gradle.kts"
-            line="238"
+            line="250"
             column="9"/>
     </issue>
 
@@ -426,7 +433,7 @@
         errorLine2="                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="build.gradle.kts"
-            line="242"
+            line="254"
             column="20"/>
     </issue>
 
@@ -437,7 +444,7 @@
         errorLine2="                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="build.gradle.kts"
-            line="247"
+            line="259"
             column="31"/>
     </issue>
 
@@ -448,18 +455,18 @@
         errorLine2="                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="build.gradle.kts"
-            line="248"
+            line="260"
             column="31"/>
     </issue>
 
     <issue
         id="GradleDependency"
-        message="A newer version of androidx.compose:compose-bom than 2023.10.01 is available: 2026.05.01"
-        errorLine1="    androidTestImplementation(platform(&quot;androidx.compose:compose-bom:2023.10.01&quot;))"
+        message="A newer version of androidx.compose:compose-bom than 2024.09.02 is available: 2026.06.01"
+        errorLine1="    androidTestImplementation(platform(&quot;androidx.compose:compose-bom:2024.09.02&quot;))"
         errorLine2="                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="build.gradle.kts"
-            line="249"
+            line="261"
             column="31"/>
     </issue>
 
@@ -470,30 +477,8 @@
         errorLine2="                                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/java/com/gurps/ficha/viewmodel/FichaViewModel.kt"
-            line="81"
+            line="95"
             column="36"/>
-    </issue>
-
-    <issue
-        id="SetJavaScriptEnabled"
-        message="Using `setJavaScriptEnabled` can introduce XSS vulnerabilities into your application, review carefully"
-        errorLine1="                            settings.javaScriptEnabled = true"
-        errorLine2="                            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/com/gurps/ficha/ui/TabVtt.kt"
-            line="1318"
-            column="29"/>
-    </issue>
-
-    <issue
-        id="SetJavaScriptEnabled"
-        message="Using `setJavaScriptEnabled` can introduce XSS vulnerabilities into your application, review carefully"
-        errorLine1="                            settings.javaScriptEnabled = true"
-        errorLine2="                            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/com/gurps/ficha/ui/TabVtt.kt"
-            line="1555"
-            column="29"/>
     </issue>
 
     <issue
@@ -514,7 +499,7 @@
         errorLine2="        ^">
         <location
             file="src/main/java/com/gurps/ficha/data/DataRepository.kt"
-            line="876"
+            line="901"
             column="9"/>
     </issue>
 
@@ -525,8 +510,26 @@
         errorLine2="        ^">
         <location
             file="src/main/java/com/gurps/ficha/data/storage/FichaStorageRepository.kt"
-            line="70"
+            line="79"
             column="9"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.raw.dice_roll` appears to be unused">
+        <location
+            file="src/main/res/raw/dice_roll.wav"/>
+    </issue>
+
+    <issue
+        id="UseOfNonLambdaOffsetOverload"
+        message="State backed values should use the lambda overload of Modifier.offset"
+        errorLine1="            .offset(y = bobbingOffset),"
+        errorLine2="             ~~~~~~">
+        <location
+            file="src/main/java/com/gurps/ficha/ui/components/FichaCustomNavigationBar.kt"
+            line="217"
+            column="14"/>
     </issue>
 
     <issue
@@ -562,13 +565,6 @@
         message="Found bitmap drawable `res/drawable/mestre_pintor.png` in densityless folder">
         <location
             file="src/main/res/drawable/mestre_pintor.png"/>
-    </issue>
-
-    <issue
-        id="IconLocation"
-        message="Found bitmap drawable `res/drawable/tab_defesas.png` in densityless folder">
-        <location
-            file="src/main/res/drawable/tab_defesas.png"/>
     </issue>
 
     <issue

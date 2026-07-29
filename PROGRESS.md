@@ -5131,3 +5131,16 @@ Item 7 do plano. Duas contas que o jogador faz de cabeça no meio do combate, e 
 - ⚠️ **O limite honesto, escrito no código:** Mestre de Armas vale só para a **classe de armas dela**, e a ficha não guarda qual classe é; e o livro fecha o parágrafo com *"nenhum desses benefícios se aplica ao uso de valores predefinidos"*. O app não tem como conferir nenhuma das duas coisas — então **oferece** o número reduzido e escreve a condição no rótulo. Quem decide é o jogador, mesma filosofia das caixinhas. Fingir que sabe seria pior que perguntar.
 - **Testes:** `GolpeRapidoEAparaRulesTest`, 11 casos — os quatro degraus da apara, a acumulação, e o caso do esgrimista com mestria.
 - **Status:** ✅ Build OK nas 2 variantes · lint OK · gate verde · ⏭️ **PENDENTE: teste no aparelho** — roteiro T-M1..T-M6.
+
+### Lote SORTE-1 — a Sorte, com relógio — 29 de Julho de 2026 (versão 4.2-SORTE1)
+Item 5 do plano, e a que mais muda o jogo no Discord. Botão **"Usar Sorte"** acima do histórico: refaz a última rolagem duas vezes e fica com a melhor das três.
+
+- 🔴 **"Melhor" MUDA DE SINAL, e essa é a pegadinha da vantagem.** Num teste de habilidade o melhor é o **menor** total; numa **avaliação de dano** — que o livro inclui explicitamente na Sorte — é o **maior**. Programar sempre "maior" faria a Sorte **piorar todos os testes** do personagem, e o jogador levaria sessões para desconfiar: a vantagem "funcionou" (rolou três vezes) e o resultado sai plausível. Dois testes, um para cada sinal.
+- **O relógio está na tela porque o livro exige tempo REAL:** *"o jogador precisa esperar uma hora do tempo real (…). O personagem não pode utilizar Sorte às 11:58 e novamente às 12:01."* Esse exemplo virou teste. Os três graus vêm do custo pago — 15 pts = 60 min, 30 pts = 30 min, 60 pts = 10 min.
+- **O botão diz quantos minutos faltam** em vez de só desabilitar: botão morto sem explicação é bug aos olhos de quem usa.
+- **Custo fora da tabela cai no grau mais baixo, não em nulo.** Ficha antiga com `custoEscolhido = 0` tem a vantagem; devolver null deixaria o jogador com uma vantagem que ele não consegue usar.
+- **A Super Sorte compartilha o painel mas não o botão de refazer** — ela é *ditar* o resultado, não rolar de novo. O que o app faz por ela é o mesmo relógio.
+- **Deixei escrita a metade que a ficha não usa:** quando o personagem está **sendo atacado**, o livro manda ficar com o **pior** do atacante. Quem rola o ataque do inimigo é o Mestre, então isso não tem uso na aba Rolagem hoje — mas está em `piorDoAtacante`, conferido e testado, para o dia em que a Saga precisar.
+- 🔧 **O lint quebrou por motivo de linha, não de código.** O `lint-baseline.xml` deste projeto fixa as violações antigas de `java.time` **por número de linha**; inserir código em `TabRolagem.kt` deslocou tudo e uma violação antiga reapareceu como nova. Regerei o baseline (mesmas 65 entradas, mesmas categorias, só as linhas mudaram) e passei o relógio novo para `System.currentTimeMillis()`, que não precisa de API 26 — assim não somei dívida nova.
+- **Testes:** `SorteRulesTest`, 14 casos.
+- **Status:** ✅ Build OK nas 2 variantes · lint OK · gate verde · ⏭️ **PENDENTE: teste no aparelho** — roteiro T-S1..T-S6.

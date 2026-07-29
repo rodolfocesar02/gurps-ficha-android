@@ -103,6 +103,11 @@ fun TabRolagem(viewModel: FichaViewModel) {
     // Lote MESTRE-1: a apara repetida acumula -4 (ou menos, com mestria e
     // esgrima) e zera no turno seguinte. MB p.377.
     var numeroDaApara by remember { mutableIntStateOf(1) }
+    // Lote SORTE-1: a Sorte age sobre a ULTIMA rolagem, entao a aba guarda
+    // qual foi e com que dados. E o relogio: o livro exige tempo REAL.
+    var ultimaPendente by remember { mutableStateOf<PendingRollState?>(null) }
+    var ultimosDados by remember { mutableStateOf<List<Int>?>(null) }
+    var ultimoUsoDaSorte by remember { mutableStateOf<Long?>(null) }
 
     var pendingRoll by remember { mutableStateOf<PendingRollState?>(null) }
     var pendingResults by remember { mutableStateOf<List<Int>?>(null) }
@@ -430,6 +435,10 @@ fun TabRolagem(viewModel: FichaViewModel) {
     }
 
     fun finalizarRolagem(pending: PendingRollState, rolagens: List<Int>) {
+        // A Sorte precisa saber o que refazer. Guardado ANTES de qualquer coisa
+        // dar errado, para o botao nunca ficar apontando para o nada.
+        ultimaPendente = pending
+        ultimosDados = rolagens
         val soma = rolagens.sum()
         val modEfetivo = pending.mod + (if (isPraCegoVariant) modificadorGlobalPraCego else 0)
         val alvoEfetivo = if (pending.alvo != null) pending.alvo + modEfetivo else null
@@ -503,6 +512,8 @@ fun TabRolagem(viewModel: FichaViewModel) {
     }
 
     fun finalizarRolagemDano(pending: PendingRollState, rolagens: List<Int>) {
+        ultimaPendente = pending
+        ultimosDados = rolagens
         val parsed = parseDamageExpression(pending.danoExpr ?: "") ?: return
         
         val somaDados = rolagens.sum()
@@ -524,6 +535,33 @@ fun TabRolagem(viewModel: FichaViewModel) {
             channelId = viewModel.canalDiscordSelecionadoId
         )
         registrarResultado(textoHist, payload)
+    }
+
+    /**
+     * Refaz a ultima rolagem duas vezes e fica com a melhor das tres (MB p.90).
+     *
+     * ⚠️ "Melhor" MUDA DE SINAL: num teste de habilidade e o MENOR total, num
+     * dano e o MAIOR. Ver `SorteRules.melhorDe` -- programar sempre "maior" faria
+     * a Sorte piorar todos os testes do personagem, e o resultado sairia
+     * plausivel.
+     */
+    fun usarSorte() {
+        val pending = ultimaPendente ?: return
+        val primeira = ultimosDados ?: return
+        val extras = List(2) { List(pending.diceCount) { Random.nextInt(1, 7) } }
+        val todas = listOf(primeira) + extras
+        val totais = todas.map { it.sum() }
+        val melhor = com.gurps.ficha.domain.rules.SorteRules.melhorDe(totais, pending.isDano)
+        val escolhida = todas.first { it.sum() == melhor }
+
+        ultimoUsoDaSorte = System.currentTimeMillis()
+        val label = "${pending.contextoLabel} [Sorte ${totais.joinToString("/")}]"
+        val refeita = pending.copy(contextoLabel = label)
+        if (pending.isDano) {
+            finalizarRolagemDano(refeita, escolhida)
+        } else {
+            finalizarRolagem(refeita, escolhida)
+        }
     }
 
     fun finalizarRolagemPersonalizada(label: String, qtd: Int, faces: Int, mod: Int, rolagens: List<Int>) {
@@ -726,6 +764,15 @@ fun TabRolagem(viewModel: FichaViewModel) {
                 onMudar = { numeroDaApara = it }
             )
         }
+
+        PainelSorte(
+            personagem = p,
+            minutosDesdeUltimoUso = ultimoUsoDaSorte?.let {
+                (System.currentTimeMillis() - it) / 60_000
+            },
+            temRolagemParaRefazer = ultimaPendente != null && ultimosDados != null,
+            onUsar = { usarSorte() }
+        )
 
         PainelIluminacao(
             personagem = p,
