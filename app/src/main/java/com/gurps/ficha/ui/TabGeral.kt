@@ -281,6 +281,25 @@ fun TabGeral(viewModel: FichaViewModel) {
                     val mtLabel = if (p.modificadorTamanho > 0) "+${p.modificadorTamanho}" else "${p.modificadorTamanho}"
                     CaracteristicaDisplay("MT", mtLabel, "Modificador de Tamanho: $mtLabel (bônus para ser acertado em combate)")
                 }
+                // Lote DESL-1: dois numeros que o app ja sabia calcular e o
+                // jogador fazia de cabeca. Irmaos do Deslocamento Aquatico: a
+                // linha so existe para quem tem a vantagem.
+                if (com.gurps.ficha.domain.rules.DeslocamentosEspeciais.podeVoar(p)) {
+                    val voando = com.gurps.ficha.domain.rules.DeslocamentosEspeciais.deslocamentoVoando(p)
+                    CaracteristicaDisplay(
+                        "Voando", "$voando m/s",
+                        "Deslocamento voando: $voando metros por segundo " +
+                            "(Velocidade Básica × 2, sem frações)"
+                    )
+                }
+                if (com.gurps.ficha.domain.rules.DeslocamentosEspeciais.temSuperEscalada(p)) {
+                    val escalando = com.gurps.ficha.domain.rules.DeslocamentosEspeciais.deslocamentoEscalando(p)
+                    CaracteristicaDisplay(
+                        "Escalando", "$escalando m/s",
+                        "Deslocamento escalando: $escalando metros por segundo. " +
+                            com.gurps.ficha.domain.rules.DeslocamentosEspeciais.explicacaoEscalada(p)
+                    )
+                }
             }
             Spacer(modifier = Modifier.height(6.dp))
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {

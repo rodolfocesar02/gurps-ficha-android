@@ -5107,3 +5107,16 @@ Você marcou `(pode fazer)` no Talento. Entrou junto o que era JSON no mesmo mol
 - **Voz Melodiosa: decidi NÃO adicionar "Arremesso".** O livro em português lista essa perícia, que é de **atirar objetos** e nada tem a ver com voz; no original a lista tem *Broadcast* (transmissão). É erro de tradução — adicionar daria bônus errado. Se você discordar, é uma linha.
 - **Total: 100 efeitos novos em 17 vantagens.** O validador `scripts/validar_efeitos.py` passou a conhecer o curinga e continua limpo (61 traços, 191 efeitos).
 - **Status:** ✅ Build OK nas 2 variantes · lint OK · gate verde · ⏭️ **PENDENTE: teste no aparelho** — roteiro T-T1..T-T8.
+
+### Lote LUZ-1 + DESL-1 — a luz da cena e os deslocamentos especiais — 29 de Julho de 2026 (versão 4.0-LUZ1)
+Itens 6 e 8 do plano. A Visão Noturna custa 1 ponto por nível e era **decorativa**: o app não tinha escuridão nenhuma, então o jogador tinha de lembrar do nível dele e subtrair de cabeça a cada rolagem. Resolver a vantagem exigia resolver a cena.
+
+- **Seletor "Luz da cena"** na aba Rolagem, de 0 a −10. Escolhido **uma vez**, entra no **ataque**, nas **defesas** e no teste de **Visão**. A Visão Noturna já vem descontada, com a conta escrita embaixo: *"Escuro −7 + Visão Noturna 4 → −3"* — que é o exemplo do próprio livro (p.97), virado teste.
+- ⚠️ **Faixa, não degraus nomeados.** O livro **não** batiza níveis de escuridão: ele diz *"−1 a −9, a critério do Mestre"* (p.549) e reserva o **−10** para escuridão total (p.395). Inventar quatro botões com valores fixos seria pôr regra na boca do livro. Os rótulos que aparecem ("Penumbra", "Muito escuro") são referência do que o número costuma significar, não tabela. O livro dá **um** valor nomeado, e ele está lá: tocha ou lanterna reduz a escuridão total para **−3**.
+- 🔴 **A regra que separa as duas vantagens, e que era fácil errar:** na **escuridão total (−10) a Visão Noturna não vale nada** — o livro é explícito (*"funciona apenas em situações de escuridão parcial"*). Deixá-la valer ali daria a uma vantagem de **9 pontos** o trabalho da Visão no Escuro, que custa **25**. Há teste travando isso, e outro travando que vantagem sobrando **não vira bônus** (Visão Noturna 9 na penumbra de −1 dá 0, nunca +8).
+- **Ultravisão** entrou onde faltava: ela ignora até −2 de escuridão, **cumulativo** com a Visão Noturna (p.96) — e também não vale no −10.
+- **O card se recolhe quando está claro.** Combate de dia é a maioria dos casos, e um card grande dizendo "sem penalidade" seria ruído permanente.
+- **Dois deslocamentos que o app já sabia calcular** e o jogador fazia de cabeça, agora na aba Geral, no mesmo molde do Deslocamento Aquático (a linha só existe para quem tem a vantagem): **Voando** = Velocidade Básica × 2 e **Escalando** = Deslocamento + Super Escalada. ⚠️ A fração do voo é **cortada**, não arredondada — o livro diz "descarte todas as frações", então Velocidade 5,75 dá 11 e não 12.
+- **Não fiz o "Sem Sangue"** (item 12): o sangramento vive todo em `domain/combat/`, que é da Saga. Pela sua regra, fica fora.
+- **Testes:** `IluminacaoEDeslocamentoTest`, 14 casos.
+- **Status:** ✅ Build OK nas 2 variantes · lint OK · gate verde · ⏭️ **PENDENTE: teste no aparelho** — roteiro T-L1..T-L7.

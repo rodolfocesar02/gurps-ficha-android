@@ -96,6 +96,10 @@ fun TabRolagem(viewModel: FichaViewModel) {
         mutableIntStateOf(com.gurps.ficha.domain.rules.TabelaVelocidadeDistancia.INDICE_PADRAO)
     }
     var indiceVelocidadeAlvo by remember { mutableIntStateOf(-1) }
+    // Lote LUZ-1: a luz da cena, de 0 (boa luz) a -10 (escuridao total).
+    // Escolhida uma vez, entra no ataque e nas defesas -- e a Visao
+    // Noturna do personagem ja vem descontada.
+    var luzDaCena by remember { mutableIntStateOf(0) }
 
     var pendingRoll by remember { mutableStateOf<PendingRollState?>(null) }
     var pendingResults by remember { mutableStateOf<List<Int>?>(null) }
@@ -170,6 +174,10 @@ fun TabRolagem(viewModel: FichaViewModel) {
     val ataqueAtual = remember(viewModel.ataqueSelecionadoId, opcoesAtaque) {
         opcoesAtaque.find { it.id == viewModel.ataqueSelecionadoId } ?: opcoesAtaque.firstOrNull()
     }
+
+    // A escuridao que sobra depois das vantagens do personagem.
+    val penalidadeLuz = com.gurps.ficha.domain.rules.IluminacaoRules
+        .penalidadeEfetiva(p, luzDaCena).efetiva
 
     // A penalidade de distancia do ataque selecionado agora. Zero em corpo a
     // corpo -- e zero tambem enquanto o alvo estiver a 2 m, que e o padrao.
@@ -687,10 +695,19 @@ fun TabRolagem(viewModel: FichaViewModel) {
                 executarRolagem(
                     tipo = TipoTeste.DEFESA,
                     contextoLabel = defesa.name,
+                    // A escuridao atrapalha defender tanto quanto atacar
+                    // (MB p.395). Zero de dia, que e o padrao.
                     alvo = defesa.finalValue,
-                    mod = mod
+                    mod = mod + penalidadeLuz
                 )
             }
+        )
+
+        PainelIluminacao(
+            personagem = p,
+            penalidadeBruta = luzDaCena,
+            isPraCegoVariant = isPraCegoVariant,
+            onMudar = { luzDaCena = it }
         )
 
         // Marcos de PV/PF: testes exigidos pelo ferimento e estado atual.
@@ -755,7 +772,7 @@ fun TabRolagem(viewModel: FichaViewModel) {
                         "${att.contextLabel} a $onde"
                     } else att.contextLabel,
                     alvo = att.target,
-                    mod = mod + penalidadeDaMao + penalidadeDistancia
+                    mod = mod + penalidadeDaMao + penalidadeDistancia + penalidadeLuz
                 )
             },
             origensDoDano = origensDoDano,
@@ -986,7 +1003,7 @@ fun TabRolagem(viewModel: FichaViewModel) {
         com.gurps.ficha.ui.features.rolagem.DialogoSentidos(
             personagem = p,
             isPraCegoVariant = isPraCegoVariant,
-            modSituacional = modificadoresAtributo["PER"] ?: 0,
+            modSituacional = (modificadoresAtributo["PER"] ?: 0) + penalidadeLuz,
             onRolar = { label, alvo, mod ->
                 executarRolagem(tipo = TipoTeste.ATRIBUTO, contextoLabel = label, alvo = alvo, mod = mod)
                 showSentidosDialog = false
