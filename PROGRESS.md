@@ -5210,3 +5210,17 @@ Os 12 itens do plano estão resolvidos: **11 feitos** em 7 lotes (TAL-1, LUZ-1, 
 - **Registrado o plano do Lote DESL-2** (pedido do usuário no T-L7): trocar as células condicionais de deslocamento por **um botão "Desloc." sem número** que abre todos os tipos do livro. No caminho apareceu mais um buraco: o deslocamento aquático é calculado **sempre** como Básico÷5, e as vantagens **Anfíbio** e **Aquático** mudam a conta — a segunda **zera o terrestre**, que o app continuaria mostrando cheio.
 - **Testes:** +4 casos em `IluminacaoEDeslocamentoTest` (18 no total).
 - **Status:** ✅ Build OK nas 2 variantes · lint OK · gate verde · ⏭️ **PENDENTE no aparelho**: T-S (Sorte), T-A (Apontar), T-V (Visualização), T-I (Talento Instintivo), e reconferir T-L5 e T-M4 com os consertos.
+
+### Lote DESL-2 — botão "Desloc." com todos os deslocamentos — 29 de Julho de 2026 (versão 4.7-DESL2)
+Ideia sua no T-L7, e ela é melhor que o que eu tinha feito. O DESL-1 somava **células condicionais** na linha de Características Derivadas; no aparelho já estava com cinco números e faltavam três tipos — cada vantagem nova empurrava a linha até quebrar.
+
+- **A linha voltou a ser fixa** e o `Desloc.` virou botão. O número que ele mostra é o **Deslocamento já descontado pela carga** que o personagem carrega agora — é a pergunta que o jogador faz de verdade ("quanto eu ando?"), e não o valor teórico.
+- **O diálogo é só leitura**, como você pediu: nenhuma linha é selecionável e nada fica "fixado". Um deslocamento escolhido e depois esquecido viraria número errado em silêncio — o mesmo risco da distância do alvo no MIRA-2, que lá foi resolvido deixando o valor visível no card.
+- **Os cinco níveis de carga sempre**, com o atual marcado, o peso-limite e a **Esquiva** de cada um. O jogador vê o que aconteceria se largasse a mochila, que é a outra metade da pergunta.
+- ⚠️ **Todas as linhas aparecem, inclusive as de valor zero.** *"Voando: 0 — sem a vantagem Voo, o aéreo é sempre zero"* **ensina a regra**; a célula que simplesmente não existia deixava o jogador sem saber se era zero ou se o app tinha esquecido. Mesmo motivo do aviso de alcance do MIRA-2b.
+- **Entraram três contas que o app não tinha:** **Disparada** (+20%, com piso de Deslocamento +1 — MB p.395), **Marcha de um dia** (15 × Deslocamento — p.352) e a tabela de carga completa.
+- 🔴 **O buraco do aquático, conforme previsto no plano:** o app calculava **sempre** `Básico ÷ 5` e ignorava o **Anfíbio** (p.39), que iguala o aquático ao terrestre. Corrigido. O **Caminhar no Ar** (p.46) também entrou — iguala o aéreo ao terrestre.
+- ⚠️ **Aquático** (p.156) **não existe no catálogo** de desvantagens. Ele zeraria o deslocamento terrestre; fica anotado para quando a desvantagem for cadastrada.
+- **Dois arredondamentos travados por teste:** a carga **descarta a fração** (7 × 0,8 = 5,6 → 5, não 6) e **nunca desce abaixo de 1** — sem o piso, Deslocamento 4 com carga muito pesada daria **0** e o personagem ficaria imóvel por arredondamento.
+- **Testes:** `DeslocamentosRulesTest`, 16 casos.
+- **Status:** ✅ Build OK nas 2 variantes · lint OK · gate verde · ⏭️ **PENDENTE: teste no aparelho**.

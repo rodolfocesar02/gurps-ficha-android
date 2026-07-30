@@ -6,6 +6,7 @@ import com.gurps.ficha.model.modInteligenciaTotal
 import com.gurps.ficha.model.modVitalidadeTotal
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectVerticalDragGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -85,6 +86,8 @@ fun TabGeral(viewModel: FichaViewModel) {
     var showResumoDialog by remember { mutableStateOf(false) }
     var showBasesDialog by remember { mutableStateOf(false) }
     var showHistoricoDialog by remember { mutableStateOf(false) }
+    // Lote DESL-2: a lista inteira de deslocamentos, so leitura.
+    var showDeslocamentosDialog by remember { mutableStateOf(false) }
     var showConfirmLimparHistorico by remember { mutableStateOf(false) }
 
     val context = LocalContext.current
@@ -272,33 +275,25 @@ fun TabGeral(viewModel: FichaViewModel) {
         SectionCard(title = "Caracteristicas Derivadas") {
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
                 CaracteristicaDisplay("Vel. Basica", String.format("%.2f", p.velocidadeBasica), "Velocidade Básica: ${String.format("%.2f", p.velocidadeBasica)}")
-                CaracteristicaDisplay("Desloc.", "${p.deslocamentoBasico} m/s", "Deslocamento: ${p.deslocamentoBasico} metros por segundo")
-                CaracteristicaDisplay("BC", String.format("%.1f kg", p.baseCarga), "Carga Básica: ${String.format("%.1f", p.baseCarga)} quilos")
-                if (p.bonusDeslocamentoAquatico > 0) {
-                    CaracteristicaDisplay("Desloc. Aq.", "${p.deslocamentoAquatico} m/s", "Deslocamento Aquático: ${p.deslocamentoAquatico} m/s (padrão ${p.deslocamentoBasico / 5} + bônus ${p.bonusDeslocamentoAquatico})")
+                // Lote DESL-2: o numero e o Deslocamento JA DESCONTADO pela carga
+                // que ele carrega agora -- e a pergunta que o jogador faz ("quanto
+                // eu ando?"). Tocar abre a lista inteira, so leitura.
+                val deslocAgora = com.gurps.ficha.domain.rules.DeslocamentosRules.deslocamentoAtual(p)
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier
+                        .clickable { showDeslocamentosDialog = true }
+                        .semantics {
+                            contentDescription = "Deslocamento: $deslocAgora metros por segundo. " +
+                                "Toque para ver todos os tipos de deslocamento."
+                        }
+                ) {
+                    CaracteristicaDisplay("Desloc. ▸", "$deslocAgora m/s", "")
                 }
+                CaracteristicaDisplay("BC", String.format("%.1f kg", p.baseCarga), "Carga Básica: ${String.format("%.1f", p.baseCarga)} quilos")
                 if (p.modificadorTamanho != 0) {
                     val mtLabel = if (p.modificadorTamanho > 0) "+${p.modificadorTamanho}" else "${p.modificadorTamanho}"
                     CaracteristicaDisplay("MT", mtLabel, "Modificador de Tamanho: $mtLabel (bônus para ser acertado em combate)")
-                }
-                // Lote DESL-1: dois numeros que o app ja sabia calcular e o
-                // jogador fazia de cabeca. Irmaos do Deslocamento Aquatico: a
-                // linha so existe para quem tem a vantagem.
-                if (com.gurps.ficha.domain.rules.DeslocamentosEspeciais.podeVoar(p)) {
-                    val voando = com.gurps.ficha.domain.rules.DeslocamentosEspeciais.deslocamentoVoando(p)
-                    CaracteristicaDisplay(
-                        "Voando", "$voando m/s",
-                        "Deslocamento voando: $voando metros por segundo " +
-                            "(Velocidade Básica × 2, sem frações)"
-                    )
-                }
-                if (com.gurps.ficha.domain.rules.DeslocamentosEspeciais.temSuperEscalada(p)) {
-                    val escalando = com.gurps.ficha.domain.rules.DeslocamentosEspeciais.deslocamentoEscalando(p)
-                    CaracteristicaDisplay(
-                        "Escalando", "$escalando m/s",
-                        "Deslocamento escalando: $escalando metros por segundo. " +
-                            com.gurps.ficha.domain.rules.DeslocamentosEspeciais.explicacaoEscalada(p)
-                    )
                 }
             }
             Spacer(modifier = Modifier.height(6.dp))
@@ -323,6 +318,13 @@ fun TabGeral(viewModel: FichaViewModel) {
         }
 
         Spacer(modifier = Modifier.height(12.dp))
+    }
+
+    if (showDeslocamentosDialog) {
+        com.gurps.ficha.ui.features.traits.DialogoDeslocamentos(
+            personagem = p,
+            onDismiss = { showDeslocamentosDialog = false }
+        )
     }
 
     if (showAnotacoesDialog) {
