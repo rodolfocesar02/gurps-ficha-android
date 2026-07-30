@@ -392,36 +392,292 @@ Kotlin, ou fica como caixinha com o texto explicando.>>
 
 ---
 
-# Até onde a leitura chegou
+# Parte 3 — p.141 a p.163
 
-⚠️ **Este arquivo cobre p.124 a p.140** — 17 das 48 páginas, lidas uma a uma.
-**Falta de p.141 a p.167.**
+## ⭐ Fora de Forma / Muito Fora de Forma
+**−5 ou −15 pontos** · p.143
 
-Não escrevi as que não li. A varredura por palavra-chave do
-`Automações_Desvantagens.md` cobriu o resto nominalmente, mas ela é justamente o
-que este arquivo veio substituir: nas 17 páginas lidas apareceram **doze**
-automações que a varredura não tinha pegado, incluindo três que **corrigem coisas
-já implementadas** (Cegueira × luz da cena, Disopia × distância do alvo, Fácil de
-Matar × testes de morte).
+> **−1** (ou **−2**) em todos os testes de HT para permanecer consciente, evitar a
+> morte, resistir aos efeitos de doenças e venenos, etc. **Isso não reduz sua HT
+> nem as perícias baseadas nesse atributo.**
 
-## O que já dá para fazer, em ordem
+<<**O espelho da Boa Forma**, que o `ResistenciaRules` e o `MarcosDeVidaRules` já
+somam. Mesma leitura, sinal trocado, `porOpcao` pelo custo.
 
-| # | Item | Por quê |
+⚠️ E ela contrasta de propósito com o **Fácil de Matar** que acabou de entrar: a
+Fácil de Matar toca **só** os testes de morte; esta toca **todos** os testes de
+resistência. Ter as duas na mesma tela, com essa diferença explícita, é o que
+impede alguém "unificar" as duas por engano mais tarde.>>
+
+## ⭐ Gagueira · Voz Irritante
+**−10 pontos** · p.144 e p.162
+
+> **−2 em todos os testes de reação** quando uma conversa for necessária, assim
+> como nos testes de **Atuação, Canto, Diplomacia, Lábia, Oratória e Sex Appeal**.
+>
+> **Voz Irritante:** os efeitos são **idênticos aos da Gagueira**. É o oposto da
+> Voz Melodiosa e **não é permitido comprar as duas**.
+
+<<**O espelho exato da Voz Melodiosa**, que já está declarada. Duas desvantagens
+pelo preço de uma: a Voz Irritante reusa a mesma lista.
+
+E entra também no `IncompatibilidadeDeTracos` — é o segundo par proibido que o
+livro dá explicitamente.>>
+
+## ⭐ Timidez
+**−5 / −10 / −20 pontos** · p.160
+
+> Todas as perícias que o obrigam a lidar com o público (**Atuação, Boemia,
+> Comércio, Diplomacia, Dissimulação, Intimidação, Lábia, Liderança, Manha,
+> Mendicância, Oratória, Pedagogia, Política, Sex Appeal e Trato Social**) sofrem
+> **−1** (Suave), **−2** (Grave). **Incapacitante:** não pode aprender nenhuma
+> delas, e o predefinido sofre **−4** adicional.
+
+<<Quinze perícias, `porOpcao` pelos três custos. É a maior lista única das 48
+páginas.
+
+⚠️ O nível de −20 **proíbe aprender** — isso é `PreRequisitoChecker`, não
+`efeitos`. Declarar só a penalidade e deixar a proibição de fora seria entregar
+metade.>>
+
+## ⭐ Pouca Empatia
+**−20 pontos** · p.154
+
+> **−3** em todas as perícias que dependem da compreensão da motivação emocional:
+> **Boemia, Comércio, Criminologia, Deslumbrar, Detecção de Mentiras, Diplomacia,
+> Dissimulação, Interrogatório, Lábia, Liderança, Manha, Política, Psicologia,
+> Sex Appeal, Sociologia e Trato Social.**
+>
+> Mutuamente excludente com **Insensível** e **Oblívio**.
+
+<<Dezesseis perícias nomeadas, valor fixo. Mais um par (na verdade, um trio)
+proibido para o `IncompatibilidadeDeTracos`.>>
+
+## Oblívio · Insensível · Ingênuo · Incapaz de Sentir Prazer
+**−5 a −15 pontos** · p.147, p.148, p.152
+
+> **Oblívio:** **−1** para usar **ou resistir** às perícias de Influenciar —
+> Diplomacia, Intimidação, Lábia, Manha, Sex Appeal e Trato Social.
+>
+> **Insensível:** **−3** em Pedagogia e em Psicologia (para ajudar); reação **−1**
+> de ex-vítimas e de quem tem Empatia; **+1** em Interrogatório e Intimidação
+> quando usa ameaça ou tortura.
+>
+> **Ingênuo:** **+4 para resistir a Sex Appeal**; **−4 em Trato Social**; reação
+> **−2**.
+>
+> **Incapaz de Sentir Prazer:** **−3** em Boemia, Connoisseur, Arte Erótica e
+> Jogos de Azar; reação de **−1 a −3** quando fica evidente.
+
+<<Quatro desvantagens, todas JSON direto. ⚠️ Duas delas dão **bônus** em algum
+ponto (o +1 do Insensível na Intimidação, o +4 do Ingênuo para resistir) — vale
+comentário no JSON para ninguém "corrigir" o sinal.>>
+
+## Mau Cheiro · Teimosia · Sadismo · Vozes Fantasmagóricas · Magnetismo Sobrenatural
+**−5 a −15 pontos** · p.151, p.159, p.155, p.162, p.148
+
+<<Todas dão **reação −2 ou −1**, umas fixas e outras condicionais. É o mesmo
+molde já usado dezenas de vezes; entram em bloco.>>
+
+## Megalomania · No Limite · Viciado em Trabalho
+p.151, p.152, p.160
+
+<<As três têm **duas caixinhas de públicos opostos**, como o Excesso de Confiança:
++2 de quem admira, −2 de quem acha loucura. O padrão já está pronto.>>
+
+## Mão Fraca · Maneta · Sem Um Dedo · Zarolho
+**−2 a −20 pontos** · p.151, p.149, p.157, p.163
+
+> **Mão Fraca:** **−2 por nível** (máx. 3) nas tarefas que exigem mão firme —
+> armas de combate corpo a corpo, escalar, pegar objetos no ar.
+>
+> **Maneta (Um Braço):** **−4** nas tarefas que podem ser feitas com um braço mas
+> normalmente exigem dois (Escalada, Luta Greco-Romana). Não pode usar arma de
+> duas mãos, nem arma + escudo.
+>
+> **Sem Um Dedo:** **−1 na DX daquela mão**. **Sem o Polegar:** **−5**.
+>
+> **Zarolho:** **−1 na DX** em combate e coordenação mão-olho; **−3 nos ataques à
+> distância**, *a menos que ele realize uma manobra Apontar antes*.
+
+<<Grupo de "corpo incompleto", e os quatro encaixam em coisas que **acabaram de
+ser construídas**:
+
+- O **Zarolho** entra no diálogo de Mira: o −3 some quando a caixinha **Apontei**
+  está marcada. É a primeira desvantagem a *interagir* com o Apontar do MIRA-3.
+- O **Sem Um Dedo** entra no seletor de **mão hábil/inábil** — a penalidade é de
+  **uma mão só**, e o app já sabe qual mão está sendo usada.
+- **Mão Fraca** e **Maneta** são listas de perícia com `porNivel`/`porOpcao`.>>
+
+## ⭐ Temor
+**−2 pontos/nível** · p.159
+
+> Subtraia o nível de Temor da **Vontade** sempre que fizer uma **Verificação de
+> Pânico** ou resistir a **Intimidação** ou a poder sobrenatural de medo. O
+> personagem **adiciona** seu nível aos testes de Intimidação feitos **contra**
+> ele. Não é permitido reduzir o alvo a menos de **3**. É o oposto de **Destemor**
+> e não pode ter os dois.
+
+<<Espelho do **Destemor**, que o `ResistenciaRules` já soma. Mesmo piso de 3 do
+Fácil de Matar — a terceira regra do livro com esse piso, o que sugere extrair um
+único lugar para ele.>>
+
+## ⭐ Suscetibilidade à Magia · Suscetível
+**Variável** · p.159
+
+> **Suscetibilidade à Magia:** acrescente o nível ao NH de quem lançar mágica
+> contra ele e **subtraia o mesmo valor dos testes para resistir**. Não vale
+> contra Mágicas de Projétil, armas mágicas nem mágicas de informação. Combina com
+> Aptidão Mágica, **mas não com Abascanto**.
+>
+> **Suscetível:** **−1 por nível** nos testes de HT para resistir a doença, veneno
+> etc. Não pode reduzir a HT efetiva a menos de **3**. Não pode ser **Resistente**
+> e Suscetível ao mesmo objeto.
+
+<<**Suscetibilidade à Magia é o espelho exato da Resistência à Magia**, que já
+está no card de Reação e Resistência com o texto das três exceções. Copiar o
+texto e trocar o sinal — e entra no `IncompatibilidadeDeTracos` com o Abascanto,
+que já está lá.>>
+
+## Sem Imaginação
+**−5 pontos** · p.156
+
+> **−2** em qualquer tarefa que exigir criatividade ou imaginação, incluindo a
+> maioria dos testes de Artista, todos os de Engenharia para invenções e todos
+> para usar Desenvolvedor.
+
+<<Palavra por palavra o **espelho do Versátil**, que usa o curinga `*`. Uma linha
+de JSON.>>
+
+## Assassino Relutante (Pacifismo)
+**−5 pontos** · p.153
+
+> Sempre que fizer um ataque letal contra uma pessoa que possa ver, ele sofre
+> **−4** para acertar e **não pode Apontar**. Se não puder ver o rosto do inimigo,
+> a penalidade é de **−2**.
+
+<<Caixinha no diálogo de Mira, e a segunda desvantagem a conversar com o
+**Apontar**: aqui ela **desabilita** a caixinha, em vez de ser cancelada por ela.
+Vale a pena fazer as duas juntas.>>
+
+## Paralisia Frente ao Combate
+**−15 pontos** · p.153
+
+> **−2 em todas as Verificações de Pânico.** É o oposto de **Reflexos em Combate**
+> — não é possível adquirir ambos.
+
+<<Mais um par proibido, e este é o que mais importa: **Reflexos em Combate é uma
+das vantagens mais compradas do jogo**. Sem a trava, dá para comprar as duas e o
+app soma +1 na defesa e −2 no pânico ao mesmo tempo.>>
+
+## Invertebrado
+**−20 pontos** · p.148
+
+> Ele utiliza sua Base de Carga total para **empurrar**, mas apenas **1/4 da BC**
+> para calcular o peso que é capaz de **erguer, carregar ou puxar**.
+
+<<Entra no botão **Desloc.** do DESL-2, que já mostra a tabela de carga: com
+Invertebrado, a coluna de peso-limite vira **1/4**. Sem isso o personagem carrega
+quatro vezes mais do que deveria — e é o tipo de erro que ninguém confere.>>
+
+---
+
+# ✅ LEITURA COMPLETA — p.120 a p.163
+
+As desvantagens acabam na **p.163** (Zarolho); da p.164 em diante são
+**Peculiaridades**, que valem −1 ponto e por definição não têm efeito mecânico
+fixo.
+
+**44 páginas lidas uma a uma.** Achados que a varredura por palavra-chave do
+`Automações_Desvantagens.md` não tinha pegado: **mais de 40**.
+
+## As cinco famílias que a leitura revelou
+
+A leitura completa mudou o desenho, e é exatamente por isso que valeu esperar:
+
+### 1. Interruptor de estado — **10 clientes**, não 3
+
+Um traço que só vale **enquanto o jogador diz que está valendo**, e que mexe em
+atributo, perícia **e** no número de autocontrole:
+
+**Dor Crônica** (−2/−4/−6 em DX, IQ e autocontrole) · **Dorminhoco** ·
+**Enjoo** (−2/−5) · **Flashbacks** (−2/−5/bloqueia) · **Lunático** (−2 Vontade e
+autocontrole na lua cheia) · **Repugnância** (−5 em tudo por 10 min) ·
+**Problemas na Coluna** (−3/−4 em DX e IQ) · **Supersensitivo** (−1 a −4 por
+gente perto) · **Sangue Frio** (−1 DX e Deslocamento por 5 °C) · **Fobias** (a
+penalidade que sobra **mesmo quando ele passa** no teste).
+
+<<Se eu tivesse desenhado essa família com os 3 clientes que conhecia na p.140,
+teria errado: **Lunático e Sangue Frio mexem em Vontade e Deslocamento**, que não
+estavam no meu desenho. Refazer depois de construído seria o caro.>>
+
+### 2. Penalidade pelo número de autocontrole — **6 clientes**
+
+Uma tabela `NA 6 → −4, NA 9 → −3, NA 12 → −2, NA 15 → −1` que se repete
+literalmente igual em: **Covardia** (Verificação de Pânico) · **Gastar
+Compulsivamente** (Comércio) · **Egoísmo** (reação) · **Fobias** (todos os
+testes) · **Solitário** (reação) · **Xenofilia** (bônus na Verificação de Pânico).
+
+<<É uma tabela só, com alvos diferentes. Merece um campo próprio no catálogo —
+algo como `porAutocontrole` — em vez de seis regras Kotlin.>>
+
+### 3. Espelhos de vantagem já implementada — **8 clientes**
+
+Cada um é "copiar a leitura existente e trocar o sinal":
+
+| Desvantagem | Espelho de | Onde já existe |
 |---|---|---|
-| 1 | **Atrapalhado** | a lista de perícias já existe no catálogo (Destreza Manual), é copiar e trocar o sinal |
-| 2 | **Baixa Autoestima** | uma linha de JSON — o curinga `*` foi criado no TAL-1 e serve exatamente para isto |
-| 3 | **Fácil de Matar** | espelho do Duro de Matar, que o app já soma |
-| 4 | **Cegueira Noturna** | encaixa no seletor de Luz da Cena, já pronto |
-| 5 | 🔴 **Cegueira não deve levar penalidade de escuridão** | é erro que o app comete hoje |
-| 6 | 🔴 **Míope dobra a distância do alvo** | uma linha na tabela do MIRA-2 |
-| 7 | **Corcunda, Credulidade, Barulhento, Briguento, Circunspecção, Desdobramento** | reação e perícia, tudo JSON |
-| 8 | **Deficiência Física** | perícia por `porOpcao` + linha no botão Desloc. do DESL-2 |
-| 9 | **Completamente Desastrado** | mexe no `CriticoRules` — é código, e o mais delicado da lista |
-| 10 | **Dor Crônica / Dorminhoco / Enjoo** | interruptor de estado; precisa da família "mexe no NA do autocontrole", que não existe |
+| Atrapalhado | Destreza Manual Elevada | ✅ feito (D-JSON) |
+| Fácil de Matar | Duro de Matar | ✅ feito (D-FIX) |
+| **Fora de Forma** | Boa Forma | `ResistenciaRules` |
+| **Temor** | Destemor | `ResistenciaRules` |
+| **Suscetibilidade à Magia** | Resistência à Magia | `ResistenciaRules` |
+| **Suscetível** | Resistente | — |
+| **Sem Imaginação** | Versátil | curinga `*` |
+| **Voz Irritante / Gagueira** | Voz Melodiosa | catálogo |
 
-## Dúvida
+### 4. 🔴 Pares mutuamente excludentes — **9**, e o app trava **1**
 
-O **interruptor de estado** (Dor Crônica, Enjoo, Dorminhoco) é uma família nova:
-um traço que só vale **enquanto o jogador diz que está valendo**, e que mexe em
-atributo *e* no número de autocontrole. Quer que eu faça essa família junto, ou
-prefere fechar primeiro tudo que é só JSON?
+O `IncompatibilidadeDeTracos` existe desde o Lote RESIST-1 e conhece **um** par
+(Abascanto × Aptidão Mágica). O livro dá pelo menos mais oito, todos com a
+palavra "não é possível adquirir ambos":
+
+- **Paralisia Frente ao Combate × Reflexos em Combate** ← o mais grave, porque
+  Reflexos em Combate é das vantagens mais compradas
+- Voz Irritante × Voz Melodiosa
+- Temor × Destemor
+- Atrapalhado × Destreza Manual Elevada
+- Cegueira Noturna × Visão Noturna **e** × Visão no Escuro
+- Mão Fraca × Manuseadores Precários
+- Sem Noção de Profundidade × Zarolho
+- Pouca Empatia × Insensível **e** × Oblívio
+- Suscetível × Resistente (no mesmo objeto)
+
+<<Isto é **baratíssimo** — é uma lista de pares num arquivo que já existe — e é o
+que mais protege a ficha de ficar incoerente.>>
+
+### 5. Conversam com o que acabou de ser construído — **4**
+
+- **Zarolho** e **Assassino Relutante** ↔ a caixinha **Apontar** do MIRA-3 (um é
+  cancelado por ela, o outro a desabilita)
+- **Sem Um Dedo** ↔ o seletor de **mão hábil/inábil**
+- **Invertebrado** ↔ a tabela de carga do **DESL-2** (peso-limite vira 1/4)
+
+## Ordem que eu proponho
+
+| # | Lote | O que | Por quê |
+|---|---|---|---|
+| 1 | **D-PAR** | Os 8 pares proibidos no `IncompatibilidadeDeTracos` | mais barato de todos, e é o que protege a ficha de ficar incoerente |
+| 2 | **D-ESPELHO** | Fora de Forma, Temor, Suscetibilidade à Magia, Suscetível, Sem Imaginação, Gagueira, Voz Irritante | cada um é copiar leitura existente e trocar o sinal |
+| 3 | **D-LISTA** | Timidez, Pouca Empatia, Oblívio, Insensível, Ingênuo, Incapaz de Sentir Prazer, Mau Cheiro, Teimosia, Mão Fraca, Maneta + o bloco de reação | JSON puro, ~90 efeitos |
+| 4 | **D-NA** | O campo `porAutocontrole` + os 6 clientes | mecanismo novo, mas pequeno e com clientes conhecidos |
+| 5 | **D-ESTADO** | O interruptor de estado + os 10 clientes | o maior; agora dá para desenhar sabendo que precisa cobrir Vontade e Deslocamento |
+| 6 | **D-MIRA** | Zarolho, Assassino Relutante, Sem Um Dedo, Invertebrado | encaixam em telas prontas |
+| 7 | **D-CRIT** | Completamente Desastrado no `CriticoRules` | o mais delicado: muda o desfecho da rolagem, não o número |
+
+## Duas dúvidas
+
+1. O **`porAutocontrole`** (item 4) é a mesma tabela em seis lugares. Faço como
+   campo do catálogo, ou prefere seis regras Kotlin?
+2. O **piso de 3** aparece em três regras diferentes (Fácil de Matar, Temor,
+   Suscetível). Extraio para um lugar único, ou deixo repetido em cada uma?
