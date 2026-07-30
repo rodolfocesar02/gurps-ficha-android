@@ -471,7 +471,7 @@
   },
   {
     "id": "auto_hipnose",
-    "nome": "Auto Hipnose",
+    "nome": "Auto-Hipnose",
     "atributoBase": "VON",
     "atributosPossiveis": null,
     "atributoEscolhaObrigatoria": false,
@@ -1797,7 +1797,7 @@
   },
   {
     "id": "leitura_dinamica",
-    "nome": "Leitura Dinmica",
+    "nome": "Leitura Dinâmica",
     "atributoBase": "IQ",
     "atributosPossiveis": null,
     "atributoEscolhaObrigatoria": false,

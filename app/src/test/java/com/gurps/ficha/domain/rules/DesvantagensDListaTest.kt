@@ -163,8 +163,23 @@ class DesvantagensDListaTest {
             "Manha", "Política", "Psicologia", "Sex Appeal", "Sociologia", "Trato-Social"
         )
         val mods = modificadoresDe("pouca_empatia")
-        assertEquals(esperado, mods.keys)
+        // ⚠️ Era `assertEquals(esperado, mods.keys)`, e o Lote P-CRUZ o derrubou
+        // de propósito: as quatro especializações de Deslumbrar entraram depois,
+        // e o casamento por nome exato exige linha para cada uma. Agora o teste
+        // afirma que as dezesseis do livro estão TODAS lá, sem travar o total.
+        assertTrue("faltou: ${esperado - mods.keys}", mods.keys.containsAll(esperado))
         esperado.forEach { assertEquals("faltou -3 em $it", -3, mods[it]) }
+    }
+
+    @Test
+    fun `Pouca Empatia alcanca as quatro especializacoes de Deslumbrar`() {
+        // Lote P-CRUZ: "Deslumbrar" não alcança "Deslumbrar (Persuadir)". Quem
+        // comprou a especializada não levava o −3, e ninguém veria.
+        val mods = modificadoresDe("pouca_empatia")
+        listOf(
+            "Deslumbrar (Cativar)", "Deslumbrar (Despertar Emoção)",
+            "Deslumbrar (Persuadir)", "Deslumbrar (Sugerir)"
+        ).forEach { assertEquals("faltou -3 em $it", -3, mods[it]) }
     }
 
     @Test

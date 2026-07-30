@@ -3869,6 +3869,26 @@
         "tipo": "pericia",
         "alvo": "Trato-Social",
         "valor": -3
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Deslumbrar (Cativar)",
+        "valor": -3
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Deslumbrar (Despertar Emoção)",
+        "valor": -3
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Deslumbrar (Persuadir)",
+        "valor": -3
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Deslumbrar (Sugerir)",
+        "valor": -3
       }
     ]
   },

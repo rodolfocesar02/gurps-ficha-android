@@ -1425,6 +1425,42 @@
         "alvo": "Oratória",
         "valor": 1,
         "porNivel": true
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Diplomacia",
+        "valor": 1,
+        "porNivel": true
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Intimidação",
+        "valor": 1,
+        "porNivel": true
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Lábia",
+        "valor": 1,
+        "porNivel": true
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Manha",
+        "valor": 1,
+        "porNivel": true
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Sex Appeal",
+        "valor": 1,
+        "porNivel": true
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Trato-Social",
+        "valor": 1,
+        "porNivel": true
       }
     ]
   },
@@ -2478,6 +2514,11 @@
         "tipo": "pericia",
         "alvo": "Pilotagem/NT",
         "valor": 1
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Postura Imóvel",
+        "valor": 4
       }
     ]
   },
@@ -2524,7 +2565,16 @@
     "rawCost": "2/nível",
     "specialRule": null,
     "tags": [],
-    "descricao": "O personagem é difícil de segurar.\n\nEle pode ser viscoso, ter moléculas muito lisas ou estar cercado por um campo de força que evita fricção.\n\nCada nível nesta característica, até no máximo cinco, concede um bônus de +1 nos testes de ST, DX e Fuga feitos pelo personagem para se libertar de amarras, se desvencilhar em um combate corporal ou se espremer por aberturas estreitas."
+    "descricao": "O personagem é difícil de segurar.\n\nEle pode ser viscoso, ter moléculas muito lisas ou estar cercado por um campo de força que evita fricção.\n\nCada nível nesta característica, até no máximo cinco, concede um bônus de +1 nos testes de ST, DX e Fuga feitos pelo personagem para se libertar de amarras, se desvencilhar em um combate corporal ou se espremer por aberturas estreitas.",
+    "efeitos": [
+      {
+        "tipo": "pericia",
+        "alvo": "Fuga",
+        "valor": 1,
+        "porNivel": true,
+        "condicao": "para se soltar de amarras, escapar de agarrão ou passar por abertura estreita (MB p.59)"
+      }
+    ]
   },
   {
     "id": "escudo_mental",
@@ -3590,6 +3640,11 @@
         "alvo": "reacao",
         "valor": 3,
         "condicao": "de quem o considera fraco ou desamparado"
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Mendicância",
+        "valor": 3
       }
     ]
   },
@@ -3702,7 +3757,14 @@
     "tags": [
       "mental"
     ],
-    "descricao": "O personagem tem uma memória excepcionalmente boa.\n\nQualquer pessoa pode fazer um teste de IQ para tentar relembrar eventos passados.\n\nQuanto melhor o resultado do teste, mais verdadeira será a lembrança, mas os detalhes sempre ficam incompletos.\n\nCom esse talento, o personagem é automaticamente bem-sucedido nesses “testes de memória” e se lembra de detalhes precisos.\n\nEsta característica pode ser comprada em dois níveis.\n\n## Memória Eidética\n\nO personagem sempre consegue se lembrar de tudo no que focalizar sua atenção e consegue relembrar detalhes específicos com um sucesso num teste de IQ.\n\nÉ possível “aprender” essa vantagem durante o jogo.\n\nTrovadores e escaldos costumam adquiri-la para decorar poemas e canções.\n\nCusto: 5 pontos.\n\nEsta característica afeta a memória, não a compreensão.\n\nPortanto, ela não acarreta benefícios para perícias.\n\nNo entanto, ela concede bônus sempre que o Mestre pedir um teste de IQ para o aprendizado de um assunto.\n\n| Tipo | Bônus |\n|---|---|\n| Memória Eidética | +5 |"
+    "descricao": "O personagem tem uma memória excepcionalmente boa.\n\nQualquer pessoa pode fazer um teste de IQ para tentar relembrar eventos passados.\n\nQuanto melhor o resultado do teste, mais verdadeira será a lembrança, mas os detalhes sempre ficam incompletos.\n\nCom esse talento, o personagem é automaticamente bem-sucedido nesses “testes de memória” e se lembra de detalhes precisos.\n\nEsta característica pode ser comprada em dois níveis.\n\n## Memória Eidética\n\nO personagem sempre consegue se lembrar de tudo no que focalizar sua atenção e consegue relembrar detalhes específicos com um sucesso num teste de IQ.\n\nÉ possível “aprender” essa vantagem durante o jogo.\n\nTrovadores e escaldos costumam adquiri-la para decorar poemas e canções.\n\nCusto: 5 pontos.\n\nEsta característica afeta a memória, não a compreensão.\n\nPortanto, ela não acarreta benefícios para perícias.\n\nNo entanto, ela concede bônus sempre que o Mestre pedir um teste de IQ para o aprendizado de um assunto.\n\n| Tipo | Bônus |\n|---|---|\n| Memória Eidética | +5 |",
+    "efeitos": [
+      {
+        "tipo": "pericia",
+        "alvo": "Leitura Dinâmica",
+        "valor": 5
+      }
+    ]
   },
   {
     "id": "memoria_fotografica",
@@ -3719,7 +3781,14 @@
     "tags": [
       "mental"
     ],
-    "descricao": "O personagem tem uma memória excepcionalmente boa.\n\nQualquer pessoa pode fazer um teste de IQ para tentar relembrar eventos passados.\n\nQuanto melhor o resultado do teste, mais verdadeira será a lembrança, mas os detalhes sempre ficam incompletos.\n\nCom esse talento, o personagem é automaticamente bem-sucedido nesses “testes de memória” e se lembra de detalhes precisos.\n\nO personagem sempre consegue se lembrar de tudo no que focalizar sua atenção e consegue relembrar detalhes específicos com um sucesso num teste de IQ.\n\nÉ possível “aprender” essa vantagem durante o jogo.\n\nTrovadores e escaldos costumam adquiri-la para decorar poemas e canções.\n\nO personagem também se lembra automaticamente de detalhes específicos.\n\nToda vez que o jogador esquecer qualquer detalhe que seu personagem viu ou ouviu, o Mestre ou os outros jogadores devem lembrá-lo de forma honesta.\n\nCusto: 10 pontos.\n\nEsta característica afeta a memória, não a compreensão.\n\nPortanto, ela não acarreta benefícios para perícias.\n\nNo entanto, ela concede bônus sempre que o Mestre pedir um teste de IQ para o aprendizado de um assunto.\n\n| Tipo | Bônus |\n|---|---|\n| Memória Eidética | +5 |\n| Memória Fotográfica | +10 |"
+    "descricao": "O personagem tem uma memória excepcionalmente boa.\n\nQualquer pessoa pode fazer um teste de IQ para tentar relembrar eventos passados.\n\nQuanto melhor o resultado do teste, mais verdadeira será a lembrança, mas os detalhes sempre ficam incompletos.\n\nCom esse talento, o personagem é automaticamente bem-sucedido nesses “testes de memória” e se lembra de detalhes precisos.\n\nO personagem sempre consegue se lembrar de tudo no que focalizar sua atenção e consegue relembrar detalhes específicos com um sucesso num teste de IQ.\n\nÉ possível “aprender” essa vantagem durante o jogo.\n\nTrovadores e escaldos costumam adquiri-la para decorar poemas e canções.\n\nO personagem também se lembra automaticamente de detalhes específicos.\n\nToda vez que o jogador esquecer qualquer detalhe que seu personagem viu ou ouviu, o Mestre ou os outros jogadores devem lembrá-lo de forma honesta.\n\nCusto: 10 pontos.\n\nEsta característica afeta a memória, não a compreensão.\n\nPortanto, ela não acarreta benefícios para perícias.\n\nNo entanto, ela concede bônus sempre que o Mestre pedir um teste de IQ para o aprendizado de um assunto.\n\n| Tipo | Bônus |\n|---|---|\n| Memória Eidética | +5 |\n| Memória Fotográfica | +10 |",
+    "efeitos": [
+      {
+        "tipo": "pericia",
+        "alvo": "Leitura Dinâmica",
+        "valor": 10
+      }
+    ]
   },
   {
     "id": "memoria_racial",
@@ -4043,6 +4112,21 @@
         "tipo": "pericia",
         "alvo": "Queda Livre",
         "valor": 2
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Percepção do Corpo",
+        "valor": 3
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Navegação/NT",
+        "valor": 3
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Acrobacia Aérea",
+        "valor": 2
       }
     ]
   },
@@ -4209,7 +4293,14 @@
     "rawCost": "20",
     "specialRule": null,
     "tags": [],
-    "descricao": "O personagem é capaz de alterar sua pele e feições, mas não as vestimentas ou maquiagem, para imitar outros membros de sua própria raça ou de outra raça muito semelhante.\n\nO processo leva 10 segundos e exige um teste de Disfarce se o personagem estiver tentando copiar um indivíduo em particular.\n\nSão necessários três segundos para retornar à forma original.\n\nEsta habilidade concede um bônus de +4 em todos os testes de Disfarce.\n\nCusto: 20 pontos."
+    "descricao": "O personagem é capaz de alterar sua pele e feições, mas não as vestimentas ou maquiagem, para imitar outros membros de sua própria raça ou de outra raça muito semelhante.\n\nO processo leva 10 segundos e exige um teste de Disfarce se o personagem estiver tentando copiar um indivíduo em particular.\n\nSão necessários três segundos para retornar à forma original.\n\nEsta habilidade concede um bônus de +4 em todos os testes de Disfarce.\n\nCusto: 20 pontos.",
+    "efeitos": [
+      {
+        "tipo": "pericia",
+        "alvo": "Disfarce/NT",
+        "valor": 4
+      }
+    ]
   },
   {
     "id": "pendulear",
@@ -5019,7 +5110,25 @@
     "rawCost": "5",
     "specialRule": null,
     "tags": [],
-    "descricao": "Ver Empatia."
+    "descricao": "Ver Empatia.",
+    "efeitos": [
+      {
+        "tipo": "pericia",
+        "alvo": "Detecção de Mentiras",
+        "valor": 1
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Adivinhação",
+        "valor": 1
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Psicologia",
+        "valor": 1,
+        "condicao": "ao analisar alguém com quem dá para conversar (MB p.58)"
+      }
+    ]
   },
   {
     "id": "senso_de_direcao",

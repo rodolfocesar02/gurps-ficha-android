@@ -5331,3 +5331,44 @@ O novo `DesvantagensSimulacaoTest` não afirma valores: afirma **invariantes** e
 
 **Testes:** `DesvantagensDNaTest` (20), `EstadosTemporariosTest` (26), `DesvantagensDMiraECritTest` (28), `DesvantagensSimulacaoTest` (19) — **93 casos novos**, gate total em **1618** nas duas variantes.
 - **Status:** ✅ Build OK nas 2 variantes · lint OK · `validar_efeitos.py` OK · gate verde · ⏭️ **PENDENTE: teste no aparelho**.
+
+### Lote P-CRUZ — a conferência cruzada com as perícias — 30 de Julho de 2026 (versão 5.1-PCRUZ)
+Primeira frente das **perícias**, e ela não começou com automação nova: começou consertando o que já estava na tela errado.
+
+**O achado que mudou a conversa.**
+O `pericias_v2_rules_map.json` já traz, para cada perícia, o rodapé **`Modificadores:`** do livro — **157 perícias, 299 modificadores numéricos** — extraído há tempos e **nunca lido pelo app**. A nota do próprio arquivo diz: *"Modificadores vazios: não automatizar nesta etapa"*.
+
+Diferente das vantagens, aqui **a leitura já estava feita e guardada**. E como toda regra de bônus em perícia está escrita **duas vezes** no livro — na página da vantagem e no rodapé da perícia —, dava para cruzar os dois lados. É conferir a nota fiscal contra o extrato: nenhum prova nada sozinho, juntos qualquer diferença aparece.
+
+**🔴 Seis furos, todos números errados na tela hoje:**
+- 🔴 **Noção Tridimensional do Espaço perdia metade da vantagem.** MB p.88, literal: *"Ele recebe **os bônus do Senso de Direção**, além de +1 em Pilotagem e +2 em Acrobacia, Queda Livre e Navegação"*. O app tinha só a segunda metade da frase — quem pagava **10 pontos** ficava sem os **+3 em Percepção do Corpo e Navegação** que o traço de **5 pontos** dá.
+- 🔴 **A especialização não herda o bônus da base.** O casamento é por nome exato: *"Deslumbrar"* não alcança *"Deslumbrar (Persuadir)"*, e *"Acrobacia"* não alcança *"Acrobacia Aérea"*. Pouca Empatia ganhou as quatro especializações de Deslumbrar; Noção Tridimensional ganhou Acrobacia Aérea.
+- **Carisma não alcançava as perícias de Influenciar.** p.48: *"+1 nos testes de **Influência** (p.359) **e** +1 em Adivinhação, Liderança, Mendicância e Oratória"* — a segunda metade estava declarada, a primeira não. Entraram as seis.
+- **Sensível estava zerada.** É o nível de 5 pontos da Empatia (p.58), e mexe nas **mesmas três perícias** que a irmã de 15 pontos — que já estava feita. O irmão pobre não fazia nada.
+- **Equilíbrio Perfeito não dava o +4 em Postura Imóvel**, e **Lamentável não dava o +3 em Mendicância**. No caso do Lamentável as duas páginas dizem coisas diferentes e **as duas valem**: a da vantagem (p.22) fala de reação, a da perícia (p.212) fala de Mendicância.
+- **Pele Elástica** (+4 Disfarce), **Memória Eidética** (+5) e **Memória Fotográfica** (+10 em Leitura Dinâmica) e **Escorregadio** (+1/nível em Fuga, condicional) estavam sem efeito nenhum.
+
+**🔴 Dois nomes de perícia com defeito, e o guarda antigo não pegava nenhum.**
+- **`Leitura Dinmica`** — sem o **â**. O guarda de acento comido procura **3+ consoantes seguidas**, e aqui são só duas (`nm`): passava batido. O casamento dos efeitos é por nome exato, então o bônus ficaria mudo para sempre.
+- **`Auto Hipnose`** — o livro escreve **Auto-Hipnose**, com hífen.
+
+Os dois foram achados pelo guarda **novo**, que é muito melhor que a regex: **comparar os dois catálogos de perícia um contra o outro**. Dos 269 ids em comum, só esses dois divergiam de verdade — as outras 9 diferenças são o obelisco `(†)` que só um dos arquivos carrega.
+
+**⚠️ Dois falsos positivos meus, e os dois foram pegos por ferramenta, não por leitura.**
+- **Flexibilidade** *parecia* estar sem efeitos, e estava mesmo — no JSON. Mas existe `FlexibilidadeRule` em **Kotlin**, com os +3 corretos. Declarar no JSON seria **ignorado em silêncio** (Kotlin vence). Quem pegou foi o `validar_efeitos.py`, não eu.
+- **Ultraflexibilidade** já estava declarada com os +5 de um lote anterior; a busca falhava porque o id é `ultraflexibilidade_das_juntas`. Faltava só o nível barato — e era invisível **porque a irmã rica funcionava**.
+
+**O teste que fica de guarda.**
+`ConferenciaCruzadaPericiasTest` é a parte que sobrevive ao lote: ele lê os dois catálogos a cada build e acusa toda promessa do rodapé que o campo `efeitos` não entrega. Nasceu com uma lista de exceções escrita, porque três classes de diferença são legítimas:
+1. **Regra geral disfarçada de traço** — *"Modificadores de Idioma"* e *"de Familiaridade Cultural"* citam regras do livro (p.23), não vantagens. Perseguir as variações de escrita não fecha (a Oratória diz *"Familiaridade Cultural/Idioma"*, a Poesia diz *"tempo, Familiaridade Cultural e Idioma"*), então os dois ids são excluídos **pelo id**, com o motivo escrito.
+2. **Modificador que age no ALVO** — *"subtrai Destemor do alvo"*, *"+4 se o alvo for Fácil de Decifrar"*. O app não tem a ficha do alvo; é a mesma classe do +4 do Ingênuo contra Sex Appeal.
+3. **Automação que vive em Kotlin** — foi o que quase fez o lote duplicar a Flexibilidade.
+
+**O que sobrou mapeado para os próximos lotes das perícias:**
+- **53 perícias com modificador de situação** (*"−5 para animal selvagem"*, *"−2 para arco não familiar"*) → viram caixinha na rolagem. O mecanismo existe, mas hoje o campo `efeitos` mora no **traço**, não na **perícia** — precisa de lugar novo no catálogo.
+- **20 de equipamento** e as **regras transversais** (Familiaridade Cultural p.23, Modificadores de Idioma).
+- **Sentidos Apurados** (Tato, Visão, Paladar/Olfato) → Revistar, Armadilhas, Venefício: a página deles é uma entrada só com variantes, e o vínculo perícia a perícia ainda não foi lido.
+- **Exorcismo** é o inverso de tudo: o livro dá **−4 a quem NÃO tem** Abençoado, Fé Verdadeira ou Investidura de Poder. Penalidade **por ausência** não cabe no campo `efeitos`, que parte do traço que a ficha **tem**.
+
+**Testes:** `ConferenciaCruzadaPericiasTest` (10 casos, sendo 2 varreduras de catálogo inteiro) + 1 caso novo no `DesvantagensDListaTest`. Gate total em **1629** nas duas variantes.
+- **Status:** ✅ Build OK nas 2 variantes · lint OK · `validar_efeitos.py` OK · gate verde · ⏭️ **PENDENTE: teste no aparelho**.
