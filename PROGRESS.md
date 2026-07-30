@@ -5243,3 +5243,12 @@ Primeiro passo da ordem combinada: o que **não exige mecanismo novo**, mais as 
 - **Cegueira Noturna** encaixou no seletor de Luz da Cena. ⚠️ As duas armadilhas da mesma frase, testadas: com luz **−1** vale **−3** (o dobro seria −2, mas −3 é pior), e de **−5** em diante o salto é para **−10** — não é o dobro, é a regra "age como se fosse cego".
 - **Testes:** `DesvantagensDJsonTest`, 13 casos.
 - **Status:** ✅ Build OK nas 2 variantes · lint OK · gate verde · ⏭️ **PENDENTE: teste no aparelho**.
+
+### ✅ VALIDADO — T-S, T-A, T-V e T-I no aparelho — 29 de Julho de 2026
+**Os 22 itens restantes do roteiro passaram**, com prints. Com isso o **plano de vantagens (MB p.91-101) está validado de ponta a ponta**: 43 checagens, 7 lotes.
+
+- **T-S · Sorte** — o sinal certo confirmado no log: *"Esquiva [Sorte 6/15/14] (NH 10): 6"* e *"Furtividade [Sorte 15/11/12]: 11"* — ficou com o **menor** dos três nas duas. O relógio funcionou nos dois graus (60 min na comum, 10 min na Impossível) e o botão avisa quanto falta. **T-S4** (Sorte no dano, que fica com o **maior**) não deu para conferir dentro dos 60 minutos de espera, mas o usuário confirmou que o botão operou; fica para a próxima sessão.
+- **T-A · Apontar e Telescópica** — o print prova a regra que mais me preocupava: a **100 m** o rótulo diz *"Precisão +2 e Telescópica +4"*, e a **3 m** diz *"Precisão +2 e Telescópica +1"*. **Sobra não virou bônus** — com Visão Telescópica 2 e penalidade de apenas −1, ela cancelou 1, não 4.
+- **T-V · Visualização** — os três arredondamentos conferidos, e o bônus ficou guardado à vista: *"Visualização guardada: +10 na ação visualizada · Margem 10 → +10"*.
+- **T-I · Talento Instintivo** — a lista traz só o que ele não tem (Acrobacia sumiu depois de comprada), cada linha rola o atributo certo (Acrobacia Aquática pela **DX 13**, Alquimia/NT pela **IQ 17**), e o contador andou **2 → 1 → 0** com "Nova sessão" devolvendo os usos.
+- **Nenhum defeito encontrado nestes quatro blocos.**
