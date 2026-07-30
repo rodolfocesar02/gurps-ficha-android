@@ -440,3 +440,170 @@ Com **PV 10** na ficha.
   na lista.
 - **T-I6** — Role duas vezes: o contador chega a **0 de 2** e a lista para de
   aceitar toque. **"Nova sessao"** devolve os dois usos.
+
+---
+
+# Roteiro — Desvantagens, versoes 4.8 a 5.0 (30/07/2026)
+
+Cobre os **sete lotes** do plano de desvantagens. Nada disso foi validado no
+aparelho ainda.
+
+> **Ficha de teste sugerida.** Quase tudo aqui depende de comprar a desvantagem.
+> Vale montar **uma ficha descartavel** com DX 10, IQ 10, HT 10 e ir comprando o
+> que cada bloco pede, em vez de sujar a ficha de jogo.
+
+## T-P · Pares proibidos (D-PAR)
+
+- **T-P1 · o mais grave** — Compre **Paralisia Frente ao Combate**. Agora tente
+  comprar **Reflexos em Combate**: tem de **recusar**, citando a **p.153**.
+- **T-P2 · a volta** — Numa ficha nova, compre **Reflexos em Combate** primeiro e
+  tente a **Paralisia**. Tem de recusar igual — a ordem nao pode importar.
+- **T-P3 · os dois lados desvantagem** — Compre **Oblivio** e tente **Pouca
+  Empatia**. Tem de recusar (e o primeiro par em que as DUAS sao desvantagem).
+- **T-P4 · o que o livro PERMITE** — Compre **Suscetibilidade a Magia** e depois
+  **Aptidao Magica**. Tem de **deixar** — o livro autoriza as duas na mesma frase.
+  Ja o **Abascanto** tem de ser recusado.
+- **T-P5 · ficha antiga** — Se voce tiver alguma ficha salva com um par proibido,
+  abra ela. Tem de **abrir normalmente**, sem perder traco nenhum. A trava vale
+  para ADICIONAR, nunca para ficha ja salva.
+
+## T-E · Espelhos (D-ESPELHO)
+
+Todos no botao **Reacao e Resistencia**.
+
+- **T-E1 · Fora de Forma** — Compre **Fora de Forma (-5)**: **todos** os testes de
+  Corpo caem **1**. Troque para **-15**: caem **2**. Os de Mente **nao mudam**.
+- **T-E2 · o contraste** — Compre **Facil de Matar 3**. So **"Evitar a morte"**
+  pode cair (para 7). Veneno, doenca, esforco e consciencia ficam em **10**.
+- **T-E3 · Suscetivel** — Compre **Suscetivel nivel 2**. So **doenca e veneno**
+  caem para 8, e a linha tem de trazer o aviso *"Confirme com o Mestre"*.
+- **T-E4 · Temor** — Compre **Temor 3** com IQ 12. **Verificacao de Panico** e
+  **Resistir a Intimidacao** caem para **9**. Veneno continua 10.
+- **T-E5 · o piso de 3** — Compre **Temor 20**. Os dois testes de mente tem de
+  parar em **3**, nunca abaixo. *(Este era o bug: "Resistir a Intimidacao"
+  descia para numero negativo.)*
+- **T-E6 · o card que mentia** — Compre **Suscetibilidade a Magia 3**. O card tem
+  de sair em **vermelho**, dizendo *"O mago ganha +3 (...) e voce sofre -3"* — e
+  NAO a frase da Resistencia.
+- **T-E7** — Troque para **Abascanto 4**: o card volta ao texto normal,
+  *"O mago sofre -4"*, sem vermelho.
+
+## T-LI · Listas de pericia e reacao (D-LISTA)
+
+- **T-LI1 · Timidez** — Compre **Timidez (-5)**: Labia, Diplomacia, Atuacao e as
+  outras 12 caem **1**. Troque para **-10** (caem 2) e **-20** (caem **4**).
+- **T-LI2 · Gagueira** — Compre: **Atuacao, Canto, Diplomacia, Labia, Oratoria e
+  Sex Appeal** caem 2. ⚠️ **Politica NAO pode cair** — o livro nao poe Politica
+  do lado da desvantagem, so do lado da Voz Melodiosa.
+- **T-LI3 · Pouca Empatia** — Compre: 16 pericias caem 3, entre elas
+  **Criminologia/NT** (confira essa, e a que quase ficou muda).
+- **T-LI4 · Insensivel** — Pedagogia cai **3 direto**. E no diálogo de pericias
+  tem de aparecer **caixinha** de *+1 Interrogatorio* e *+1 Intimidacao* "com
+  ameaca ou tortura" — bonus dentro de uma desvantagem.
+- **T-LI5 · Mao Fraca nivel 2** — **Todas** as pericias de arma de **corpo a
+  corpo** caem **4**, mais Escalada e Acrobacia. ⚠️ **Arco e Besta NAO podem
+  cair**.
+- **T-LI6 · o teto** — Ponha Mao Fraca no nivel **5**: a penalidade tem de parar
+  em **-6** (o livro trava em 3 niveis).
+- **T-LI7 · reacao** — Compre **Mau Cheiro**: -2 fixo no Teste de Reacao. Compre
+  **Megalomania**: tem de virar **duas caixinhas**, +2 e -2, e nao somar sozinho.
+
+## T-NA · Numero de Autocontrole (D-NA)
+
+- **T-NA1 · Covardia** — Compre **Covardia com NA 9**. Em *Reacao e Resistencia*,
+  a **Verificacao de Panico** continua no valor normal, e aparece uma
+  **caixinha** *"Covardia -3 — quando houver risco de dano fisico"*. Marque: o
+  numero cai 3. Desmarque: volta.
+- **T-NA2 · o NA manda** — Troque o NA para **6**: a caixinha vira **-4**. Para
+  **15**: vira **-1**. *(NA baixo e PIOR — e o contrario do resto do GURPS.)*
+- **T-NA3 · Xenofilia** — Compre **Xenofilia NA 12**: caixinha de **+2** no
+  Panico. E a unica tabela do livro que sobe.
+- **T-NA4 · as duas juntas** — Com Covardia e Xenofilia na mesma ficha: **duas
+  caixinhas separadas**, e o alvo base sem mexer. Elas nao podem se anular.
+- **T-NA5 · Fobias** — Compre **Fobias NA 9**. No diálogo de pericias tem de
+  aparecer caixinha de **-3 em qualquer pericia**, "enquanto a causa do medo
+  persistir".
+- **T-NA6 · sem NA** — Se der para cadastrar a Covardia **sem** numero de
+  autocontrole, a caixinha tem de sumir (nao pode chutar -4).
+
+## T-ES · Interruptor de estado (D-ESTADO)
+
+O painel novo fica **logo abaixo do ST/DX Bracal**, na aba Rolagem.
+
+- **T-ES1 · so aparece com a desvantagem** — Ficha sem nenhuma das nove: o painel
+  **nao existe**. Compre **Dor Cronica**: aparece uma linha.
+- **T-ES2 · o ciclo** — Toque na linha da Dor Cronica **quatro vezes**. Tem de
+  passar por **Suave (-2) → Grave (-4) → Excruciante (-6) → desligado**, e o
+  rotulo dizer o grau e o numero em cada parada.
+- **T-ES3 · DX e IQ caem juntos** — Com a Dor Cronica em **Grave**, os numeros de
+  **DX e IQ** no painel de atributos tem de estar **4 mais baixos**.
+- **T-ES4 · o terceiro alvo** — Ainda em Grave, abra **Reacao e Resistencia**: o
+  **Autocontrole** de qualquer outra desvantagem tem de estar **-4**.
+- **T-ES5 · Lunatico** — Compre e ligue: so a **Vontade** cai 2. ⚠️ **IQ NAO pode
+  cair** (e Percepcao tambem nao).
+- **T-ES6 · Sangue Frio** — Ligue no grau 3: **DX -3**, e a linha de resumo tem de
+  dizer **"Desloc. -3"**. *(⚠️ O botao `Desloc.` da aba Geral ainda NAO desconta
+  isso — esta anotado como pendencia.)*
+- **T-ES7 · Enjoo e as pericias** — Ligue **Enjoo / Vomitando**: role qualquer
+  pericia. O NH tem de sair **5 mais baixo**.
+- **T-ES8 · dois ao mesmo tempo** — Ligue **Dor Cronica Suave** e
+  **Supersensitivo grau 2**: a DX tem de cair **4** (2 + 2), e o resumo nomear
+  os **dois**.
+- **T-ES9 · a notinha** — Com qualquer coisa ligada, a linha de resumo em vermelho
+  tem de nomear o traco, o grau e o total. Sem nada ligado, ela **some**.
+- **T-ES10 · TalkBack** — Passe o leitor pelas linhas: cada uma tem de anunciar o
+  grau atual, **o que o proximo toque faz** e **quando** o estado vale.
+
+## T-MI · Mira e mao (D-MIRA)
+
+- **T-MI1 · Zarolho a distancia** — Compre **Zarolho**, segure o NH de um **arco**
+  para abrir a Mira. Tem de aparecer, em vermelho, *"Zarolho -3 a distancia —
+  Apontar cancela"*, e o NH cair 3.
+- **T-MI2 · Apontar cancela** — Marque **Apontei**: a linha vira *"Zarolho -1 —
+  Apontar cancelou o -3"*. ⚠️ O **-1 continua** — nao pode zerar.
+- **T-MI3 · corpo a corpo** — Abra a Mira de uma **espada**: tem de dizer
+  *"Zarolho -1 em combate e coordenacao mao-olho"*, e nunca -4.
+- **T-MI4 · Assassino Relutante** — Compre **Pacifismo** na opcao de **-5 pontos**.
+  Na Mira aparece a caixinha *"Ataque letal contra uma pessoa que eu consigo
+  ver"*. Marque: NH cai **4**, e aparece a segunda caixinha do rosto.
+- **T-MI5 · sem ver o rosto** — Desmarque *"Consigo ver o rosto"*: a penalidade
+  tem de virar **-2**.
+- **T-MI6 · o Apontar bloqueado** — Com o ataque letal marcado, a caixinha
+  **Apontei** tem de ficar **apagada e nao clicavel**, dizendo que o Assassino
+  Relutante nao pode Apontar.
+- **T-MI7 · 🔴 a combinacao** — Ficha com **Zarolho E Assassino Relutante**,
+  arco, ataque letal marcado: o **-3 do Zarolho fica inteiro** (porque ele nao
+  pode Apontar) **e** o -4 do Pacifismo entra por cima. NH total **-7**.
+- **T-MI8 · outras variantes do Pacifismo** — Troque para **-10, -15 ou -30**: a
+  caixinha do ataque letal **nao pode aparecer**.
+- **T-MI9 · Sem Um Dedo** — Compre na opcao de **-2**: no bloco de Ataque aparece
+  uma segunda caixinha *"E esta a mao sem um dedo (-1)"*. Marque: NH cai 1.
+- **T-MI10 · o polegar** — Troque para a opcao de **-5**: a caixinha tem de dizer
+  *"a mao sem o polegar (-5)"* e descontar **5**.
+- **T-MI11 · soma com a mao inabil** — Marque **mao inabil** E **a mao sem o
+  polegar**: -4 e -5 tem de **somar**, dando **-9**.
+- **T-MI12 · Invertebrado** — Compre e abra o botao **Desloc.**: os pesos-limite
+  da tabela de carga tem de cair para **1/4**, e o cabecalho avisar que a BC de
+  **empurrar** continua inteira.
+
+## T-CR · Completamente Desastrado (D-CRIT)
+
+- **T-CR1** — Compre **Completamente Desastrado**. Role uma pericia de **DX**
+  (Espada Curta, Furtividade) ate **falhar por pouco**. O resultado tem de sair
+  **"Falha Critica!"**, com a frase *"Completamente Desastrado: todo fracasso em
+  DX e critico (MB p.133)"* colada.
+- **T-CR2 · vai para o Discord** — Confira que a mesma frase aparece na mensagem
+  enviada ao canal — e o lembrete para o Mestre.
+- **T-CR3 · ⚠️ so DX** — Role uma pericia de **IQ** (Teologia, Alquimia) e falhe:
+  tem de sair **"Falha"** comum, sem aviso nenhum.
+- **T-CR4 · ⚠️ sucesso nao muda** — Role e **passe**: tem de sair "Sucesso"
+  normal. E um **3 ou 4** tem de continuar "Sucesso Critico".
+- **T-CR5 · sem ruido** — Falhe com um **18**: tem de sair "Falha Critica!"
+  **sem** a frase do Desastrado — nesse caso o numero ja explica sozinho.
+- **T-CR6 · o nivel barato** — Troque para **Desastrado** (-5 pontos): **nada**
+  pode mudar. So o de -15 tem numero.
+- **T-CR7 · o atributo** — Role o **DX** direto no painel de atributos e falhe:
+  tem de virar falha critica tambem.
+- **T-CR8 · pericia com especializacao** — Se tiver **Faca (Arremesso)** ou
+  parecida, role e falhe: tem de pegar igual. *(Era a armadilha do lote — o
+  rotulo com parenteses.)*
