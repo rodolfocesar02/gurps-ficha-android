@@ -85,7 +85,7 @@ object MarcosDeVidaRules {
             val facil = ResistenciaRules.penalidadeFacilDeMatar(personagem)
             testes += TesteExigido(
                 rotulo = "Evitar a morte (−${multiplo}× PV)",
-                alvo = (ht + bonus + facil).coerceAtLeast(3),
+                alvo = PisoDeTeste.aplicar(ht + bonus + facil),
                 explicacao = "PV passou de −${multiplo * maximo}. Falha: morre.",
                 origens = origens +
                     if (facil != 0) listOf("Fácil de Matar $facil") else emptyList()

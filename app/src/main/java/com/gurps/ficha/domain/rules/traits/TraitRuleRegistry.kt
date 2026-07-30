@@ -29,6 +29,9 @@ object TraitRuleRegistry {
         // lista tem ~70 pericias -- declarar uma linha para cada ficaria
         // errado no dia em que o catalogo ganhar a proxima.
         register(CegueiraRule())
+        // Mesmo motivo da Cegueira: o livro manda penalizar "armas de combate
+        // corpo a corpo", que sao ~50 pericias. Ver `MaoFracaRule.kt`.
+        register(MaoFracaRule())
     }
 
     /**

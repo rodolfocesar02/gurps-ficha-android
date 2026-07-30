@@ -73,8 +73,77 @@ object ResistenciaRules {
      */
     private const val ID_FACIL_DE_MATAR = "facil_de_matar"
 
-    /** O menor alvo que um teste de morte pode ter (MB p.140). */
-    private const val PISO_TESTE_DE_MORTE = 3
+    /**
+     * **Fora de Forma** (MB p.143) — o espelho da Boa Forma.
+     *
+     * > **-1** (Fora de Forma) ou **-2** (Muito Fora de Forma) em todos os testes
+     * > de HT para permanecer consciente, evitar a morte, resistir aos efeitos de
+     * > doenças e venenos, etc.
+     *
+     * ⚠️ **Contraste de propósito com o Fácil de Matar**, que está logo acima: a
+     * Fácil de Matar toca **só** os testes de morte; esta toca **todos** os de
+     * resistência do corpo. Ter as duas lado a lado, com a diferença escrita,
+     * é o que impede alguém "unificar" as duas por engano mais tarde.
+     *
+     * O livro também é explícito no que ela **não** faz: *"Isso não reduz sua HT
+     * nem as perícias baseadas nesse atributo"*.
+     */
+    private const val ID_FORA_DE_FORMA = "fora_de_forma"
+
+    /**
+     * **Temor** (MB p.159) — o espelho do Destemor.
+     *
+     * > Subtraia o nível de Temor da Vontade sempre que fizer uma **Verificação
+     * > de Pânico** ou tiver que **resistir à perícia Intimidação** ou a um poder
+     * > sobrenatural que cause medo.
+     */
+    private const val ID_TEMOR = "temor"
+
+    /**
+     * **Suscetibilidade à Magia** (MB p.159) — o espelho da Resistência à Magia.
+     *
+     * > Acrescente o nível ao NH de quem estiver fazendo uma mágica contra ele e
+     * > **subtraia o mesmo valor dos testes para resistir**.
+     *
+     * ⚠️ O id do catálogo grafa "susceptibilidade" (com **p**); o livro escreve
+     * "Suscetibilidade". O id fica como está para não quebrar ficha salva.
+     */
+    private const val ID_SUSCETIBILIDADE_MAGIA = "susceptibilidade_a_magia"
+
+    /** **Suscetível** (MB p.159) — o espelho do Resistente. */
+    private const val ID_SUSCETIVEL = "suscetivel"
+
+    /**
+     * Penalidade de uma DESVANTAGEM por nível — devolvida negativa.
+     *
+     * Irmã de `nivelDe`, que lê o lado das vantagens. Separadas porque o sinal é
+     * decidido aqui: quem chama soma, sempre.
+     */
+    private fun penalidadeDe(personagem: Personagem, id: String): Int =
+        -personagem.desvantagensTotais.filter { it.definicaoId == id }
+            .sumOf { it.nivel.coerceAtLeast(1) }
+
+    /** A origem, para a notinha poder nomear a desvantagem. */
+    private fun origemDaDesvantagem(personagem: Personagem, id: String): List<String> =
+        personagem.desvantagensTotais.filter { it.definicaoId == id }
+            .map { "${it.nome} -${it.nivel.coerceAtLeast(1)}" }
+
+    /**
+     * **Fora de Forma**: -1 ou -2, escolhido pelo custo pago (MB p.143).
+     *
+     * ⚠️ Lê o `custoEscolhido`, não o nível: o catálogo guarda esta desvantagem
+     * como escolha de custo (-5 ou -15), igual à Boa Forma do outro lado.
+     */
+    private fun penalidadeForaDeForma(personagem: Personagem): Pair<Int, List<String>> {
+        var total = 0
+        val origens = mutableListOf<String>()
+        personagem.desvantagensTotais.filter { it.definicaoId == ID_FORA_DE_FORMA }.forEach { d ->
+            val p = if (d.custoEscolhido <= -15) -2 else -1
+            total += p
+            origens += "${d.nome} $p"
+        }
+        return total to origens
+    }
 
     /** Níveis de Fácil de Matar — devolvidos como número NEGATIVO. */
     internal fun penalidadeFacilDeMatar(personagem: Personagem): Int =
@@ -95,7 +164,12 @@ object ResistenciaRules {
         val vontade = personagem.vontade
         val lista = mutableListOf<TesteDeResistencia>()
 
-        val (bonusHt, origensHt) = bonusBoaForma(personagem)
+        val (bonusBoa, origensBoa) = bonusBoaForma(personagem)
+        // Fora de Forma acompanha a Boa Forma em TODOS os testes de corpo -- e é
+        // por isso que ela entra aqui, e não só no teste de morte.
+        val (penalFora, origensFora) = penalidadeForaDeForma(personagem)
+        val bonusHt = bonusBoa + penalFora
+        val origensHt = origensBoa + origensFora
 
         // --- Corpo: tudo sai do HT (MB p.419-443) ---
         lista += TesteDeResistencia(
@@ -110,21 +184,27 @@ object ResistenciaRules {
         lista += TesteDeResistencia(
             "Evitar a morte",
             (ht + bonusHt + nivelDe(personagem, ID_DURO_DE_MATAR) + facil)
-                .coerceAtLeast(PISO_TESTE_DE_MORTE),
+                .let { PisoDeTeste.aplicar(it) },
             "Ao passar de cada múltiplo negativo do PV máximo. Falha: morre.",
             Familia.CORPO,
             origensHt + origemDe(personagem, ID_DURO_DE_MATAR) +
                 if (facil != 0) listOf("Fácil de Matar $facil") else emptyList()
         )
+        // Suscetível entra SÓ nestes dois: são os exemplos que o livro dá, e o
+        // app não guarda a qual objeto o personagem é suscetível.
+        val suscetivel = penalidadeSuscetivel(personagem)
+        val origemSuscetivel = origemDaDesvantagem(personagem, ID_SUSCETIVEL)
         lista += TesteDeResistencia(
-            "Resistir a doença", ht + bonusHt,
-            "Contra infecção e contágio. O modificador vem da doença.",
-            Familia.CORPO, origensHt
+            "Resistir a doença", PisoDeTeste.aplicar(ht + bonusHt + suscetivel),
+            "Contra infecção e contágio. O modificador vem da doença." +
+                if (suscetivel != 0) " Confirme com o Mestre se a sua Suscetibilidade vale aqui." else "",
+            Familia.CORPO, origensHt + origemSuscetivel
         )
         lista += TesteDeResistencia(
-            "Resistir a veneno", ht + bonusHt,
-            "O modificador vem do veneno.",
-            Familia.CORPO, origensHt
+            "Resistir a veneno", PisoDeTeste.aplicar(ht + bonusHt + suscetivel),
+            "O modificador vem do veneno." +
+                if (suscetivel != 0) " Confirme com o Mestre se a sua Suscetibilidade vale aqui." else "",
+            Familia.CORPO, origensHt + origemSuscetivel
         )
         lista += TesteDeResistencia(
             "Aguentar o esforço", ht + bonusHt,
@@ -133,10 +213,13 @@ object ResistenciaRules {
         )
 
         // --- Mente ---
-        val destemor = nivelDe(personagem, ID_DESTEMOR)
-        val origemDestemor = origemDe(personagem, ID_DESTEMOR)
+        // Temor é o espelho do Destemor: um soma na Vontade contra o medo, o
+        // outro subtrai. Os dois no mesmo número, com o piso de 3 no fim.
+        val destemor = nivelDe(personagem, ID_DESTEMOR) + penalidadeDe(personagem, ID_TEMOR)
+        val origemDestemor = origemDe(personagem, ID_DESTEMOR) +
+            origemDaDesvantagem(personagem, ID_TEMOR)
         lista += TesteDeResistencia(
-            "Verificação de Pânico", vontade + destemor,
+            "Verificação de Pânico", PisoDeTeste.aplicar(vontade + destemor),
             "Diante de horror ou do sobrenatural. NÃO é disparada por dano.",
             Familia.MENTE, origemDestemor
         )
@@ -169,7 +252,33 @@ object ResistenciaRules {
      * Zero quando não há a vantagem.
      */
     fun resistenciaAMagia(personagem: Personagem): Int =
-        nivelDe(personagem, ID_RESISTENCIA_MAGIA)
+        nivelDe(personagem, ID_RESISTENCIA_MAGIA) +
+            penalidadeDe(personagem, ID_SUSCETIBILIDADE_MAGIA)
+
+    /**
+     * Se o número acima é **negativo** — ou seja, a ficha tem Suscetibilidade à
+     * Magia e a tela precisa dizer o contrário do texto habitual.
+     *
+     * ⚠️ Sem isto o card exibiria *"o mago sofre −3 ao conjurar em você"* para
+     * quem, na verdade, **facilita** o feitiço. Número certo, frase invertida —
+     * pior que não mostrar nada.
+     */
+    fun ehSuscetivelAMagia(personagem: Personagem): Boolean =
+        resistenciaAMagia(personagem) < 0
+
+    /**
+     * **Suscetível** (MB p.159) — o espelho do Resistente.
+     *
+     * > **-1 por nível** nos testes de HT para resistir aos efeitos negativos de
+     * > uma classe de objetos ou substâncias (doença, veneno, etc.).
+     *
+     * ⚠️ O app **não guarda a qual objeto** o personagem é suscetível — o
+     * catálogo tem uma entrada só. Então a penalidade entra em **doença e
+     * veneno**, que são os dois exemplos que o livro dá, e o texto do card avisa
+     * que o Mestre decide se vale naquele caso.
+     */
+    private fun penalidadeSuscetivel(personagem: Personagem): Int =
+        penalidadeDe(personagem, ID_SUSCETIVEL)
 
     /** Se a ficha tem Aptidão Mágica — usado pela trava do Abascanto. */
     fun temAptidaoMagica(personagem: Personagem): Boolean =

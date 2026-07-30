@@ -236,7 +236,14 @@ class EfeitosDeclaradosCatalogoTest {
         // alcanca. Estes PRECISAM ter condicao para virar caixinha na tela.
         val comPublico = setOf(
             "camaleao_social", "clericato", "iluminado",
-            "por_dentro_da_moda", "reivindicar_hospitalidade", "destruidor_da_vida"
+            "por_dentro_da_moda", "reivindicar_hospitalidade", "destruidor_da_vida",
+            // Lote D-LISTA: as desvantagens em que o livro tambem nomeia o
+            // publico. Megalomania, No Limite e Viciado em Trabalho tem DOIS
+            // publicos opostos na mesma desvantagem -- somar os dois de uma vez
+            // daria +2 e -2 juntos, ou seja, zero, e a desvantagem sumiria.
+            "insensivel", "magnetismo_sobrenatural", "sadismo",
+            "incapaz_de_sentir_prazer", "megalomania", "no_limite",
+            "viciado_em_trabalho", "gagueira", "voz_irritante"
         )
         val erros = tracosComEfeitos()
             .filter { it.id in comPublico }
@@ -324,9 +331,13 @@ class EfeitosDeclaradosCatalogoTest {
         //  - Baixa Autoestima (-3 quando acha que nao tem chance) e Credulidade
         //    (-3 quando a credulidade pode ser explorada) -- Lote D-JSON,
         //    MB p.125 e p.130. As duas primeiras DESVANTAGENS a usar o curinga.
+        //  - Sem Imaginacao (-2 em "QUALQUER tarefa que exigir criatividade ou
+        //    imaginacao") -- Lote D-LISTA, MB p.156. O livro cita Artista,
+        //    Engenharia e Desenvolvedor como EXEMPLOS ("incluindo"), nao como a
+        //    lista fechada: por isso curinga, e nao tres linhas.
         val esperadas = setOf(
             "toque_sensivel", "venturoso", "versatil",
-            "baixa_autoestima", "credulidade"
+            "baixa_autoestima", "credulidade", "sem_imaginacao"
         )
         val comCuringa = tracosComEfeitos()
             .filter { t -> t.efeitos.any { it.alvo == TraitRuleRegistry.CURINGA_PERICIA } }

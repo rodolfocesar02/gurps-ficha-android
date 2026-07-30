@@ -665,19 +665,33 @@ que mais protege a ficha de ficar incoerente.>>
 
 ## Ordem que eu proponho
 
-| # | Lote | O que | Por quê |
-|---|---|---|---|
-| 1 | **D-PAR** | Os 8 pares proibidos no `IncompatibilidadeDeTracos` | mais barato de todos, e é o que protege a ficha de ficar incoerente |
-| 2 | **D-ESPELHO** | Fora de Forma, Temor, Suscetibilidade à Magia, Suscetível, Sem Imaginação, Gagueira, Voz Irritante | cada um é copiar leitura existente e trocar o sinal |
-| 3 | **D-LISTA** | Timidez, Pouca Empatia, Oblívio, Insensível, Ingênuo, Incapaz de Sentir Prazer, Mau Cheiro, Teimosia, Mão Fraca, Maneta + o bloco de reação | JSON puro, ~90 efeitos |
-| 4 | **D-NA** | O campo `porAutocontrole` + os 6 clientes | mecanismo novo, mas pequeno e com clientes conhecidos |
-| 5 | **D-ESTADO** | O interruptor de estado + os 10 clientes | o maior; agora dá para desenhar sabendo que precisa cobrir Vontade e Deslocamento |
-| 6 | **D-MIRA** | Zarolho, Assassino Relutante, Sem Um Dedo, Invertebrado | encaixam em telas prontas |
-| 7 | **D-CRIT** | Completamente Desastrado no `CriticoRules` | o mais delicado: muda o desfecho da rolagem, não o número |
+| # | Lote | O que | Por quê | Status |
+|---|---|---|---|---|
+| 1 | **D-PAR** | Os pares proibidos no `IncompatibilidadeDeTracos` | mais barato de todos, e é o que protege a ficha de ficar incoerente | ✅ **feito** (4.9) — foram **13**, não 8 |
+| 2 | **D-ESPELHO** | Fora de Forma, Temor, Suscetibilidade à Magia, Suscetível, Sem Imaginação, Gagueira, Voz Irritante | cada um é copiar leitura existente e trocar o sinal | ✅ **feito** (4.9) |
+| 3 | **D-LISTA** | Timidez, Pouca Empatia, Oblívio, Insensível, Ingênuo, Incapaz de Sentir Prazer, Mau Cheiro, Teimosia, Mão Fraca, Maneta + o bloco de reação | JSON puro, ~90 efeitos | ✅ **feito** (4.9) — 18 traços, **78** efeitos |
+| 4 | **D-NA** | O campo `porAutocontrole` + os 6 clientes | mecanismo novo, mas pequeno e com clientes conhecidos | ⏭️ próximo |
+| 5 | **D-ESTADO** | O interruptor de estado + os 10 clientes | o maior; agora dá para desenhar sabendo que precisa cobrir Vontade e Deslocamento | ⏭️ |
+| 6 | **D-MIRA** | Zarolho, Assassino Relutante, Sem Um Dedo, Invertebrado | encaixam em telas prontas | ⏭️ |
+| 7 | **D-CRIT** | Completamente Desastrado no `CriticoRules` | o mais delicado: muda o desfecho da rolagem, não o número | ⏭️ |
 
-## Duas dúvidas
+### O que mudou de plano ao executar os três primeiros
+
+- **D-PAR virou 13 pares, não 8.** Terminar a leitura antes de projetar foi o que
+  revelou os outros cinco — entre eles o mais grave de todos, **Paralisia Frente
+  ao Combate × Reflexos em Combate**.
+- **Mão Fraca saiu do D-LISTA para o Kotlin.** Eu a tinha classificado como "JSON
+  puro"; o livro (p.151) manda penalizar *"utilizar armas de combate corpo a
+  corpo"* — ~50 perícias. Mesmo caso da Cegueira.
+- **Sem Imaginação virou curinga**, não três linhas: o livro dá uma **situação**
+  (*"qualquer tarefa que exigir criatividade"*) e cita Artista/Engenharia/
+  Desenvolvedor como **exemplos**.
+
+## Duas dúvidas — ✅ **respondidas pelo usuário em 30/07, opção A nas duas**
 
 1. O **`porAutocontrole`** (item 4) é a mesma tabela em seis lugares. Faço como
    campo do catálogo, ou prefere seis regras Kotlin?
+   → **campo do catálogo.** Pendente: é o lote D-NA.
 2. O **piso de 3** aparece em três regras diferentes (Fácil de Matar, Temor,
    Suscetível). Extraio para um lugar único, ou deixo repetido em cada uma?
+   → **um lugar único.** Feito: `domain/rules/PisoDeTeste.kt`.

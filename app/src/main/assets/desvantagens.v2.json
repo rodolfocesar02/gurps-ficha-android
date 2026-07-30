@@ -2323,7 +2323,45 @@
     "tags": [
       "fisica"
     ],
-    "descricao": "O personagem sofre de gagueira ou al gum outro problema de fala. Ele sofre uma penalidade de -2 em todos os testes de re ação quando uma conversa for necessária, assim como nos testes de Atuação, Canto, Diplomacia, Lábia, Oratória e Sex Appeal. Além disso, algumas ocupações (como in térprete, noticiarista, etc. ) estarão sempre fora dos limites do personagem."
+    "descricao": "O personagem sofre de gagueira ou al gum outro problema de fala. Ele sofre uma penalidade de -2 em todos os testes de re ação quando uma conversa for necessária, assim como nos testes de Atuação, Canto, Diplomacia, Lábia, Oratória e Sex Appeal. Além disso, algumas ocupações (como in térprete, noticiarista, etc. ) estarão sempre fora dos limites do personagem.",
+    "efeitos": [
+      {
+        "tipo": "pericia",
+        "alvo": "Atuação",
+        "valor": -2
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Canto",
+        "valor": -2
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Diplomacia",
+        "valor": -2
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Lábia",
+        "valor": -2
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Oratória",
+        "valor": -2
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Sex Appeal",
+        "valor": -2
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "reacao",
+        "valor": -2,
+        "condicao": "quando a conversa for necessária (MB p.144)"
+      }
+    ]
   },
   {
     "id": "gigantismo",
@@ -2631,7 +2669,35 @@
     "tags": [
       "fisica"
     ],
-    "descricao": "O personagem não é capaz de sentir prazer físico ou emocional em atividades normais. Ele sofre penalidades em perícias sociais ligadas a prazer e interação emocional."
+    "descricao": "O personagem não é capaz de sentir prazer físico ou emocional em atividades normais. Ele sofre penalidades em perícias sociais ligadas a prazer e interação emocional.",
+    "efeitos": [
+      {
+        "tipo": "pericia",
+        "alvo": "Boemia",
+        "valor": -3
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Connoisseur",
+        "valor": -3
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Arte Erótica",
+        "valor": -3
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Jogos de Azar",
+        "valor": -3
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "reacao",
+        "valor": -2,
+        "condicao": "quando a falta de prazer fica evidente — o livro dá de −1 a −3, a critério do Mestre (MB p.146)"
+      }
+    ]
   },
   {
     "id": "incompetente",
@@ -2731,7 +2797,19 @@
     "tags": [
       "mental"
     ],
-    "descricao": "O personagem não compreende ne nhum tipo de comentário inteligente ou tentativas de seduzi-lo (bônus de +4 para resistir a Sex Appeal). Ele também não entende o significado de coloquia lismos nem tem qualquer noção de boas maneiras, o que impõe uma pena lidade de -4 sobre a perícia Trato Social. O personagem tem certos hábitos que incomodam os outros (ex. : deixar a seta do carro acesa enquanto dirige de São Paulo a Santos) e pode adquirir um ou dois desses hábitos como peculiarida des. A reação da maioria das pessoas diante dele sofre uma penalidade de -2. Ao contrário daqueles que sofrem de Circunspecção (pág. 126), o persona gem consegue fazer piadas — embora elas não tenham graça nenhuma — e é capaz de apreciar o humor “pastelão” e escrito. No entanto, ele raramente en tende o humor verbal, principalmente se ele for o alvo (teste de IQ-4 para ver se ele percebe que é o motivo da piada). Ao contrário de Credulidade (pág. 129), o personagem costuma perceber quando alguém está querendo tirar vantagem dele, exceto em público. Um indivíduo com esta desvantagem não é mais sus cetível à Lábia do que o normal, a não ser quando alguém está tentando con vencê-lo que um membro atraente do sexo oposto está interessado nele… Esta desvantagem é mais apropriada para os gênios desligados, marcianos, etc. Inimigos 4 Variável Um “Inimigo” é um PdM, grupo de PdMs ou organização que atua ativa mente contra o personagem em todas as aventuras. Alguns querem matá-lo… outros têm objetivos mais cruéis. Estabeleça a natureza do Inimigo quando criar seu personagem e explique"
+    "descricao": "O personagem não compreende ne nhum tipo de comentário inteligente ou tentativas de seduzi-lo (bônus de +4 para resistir a Sex Appeal). Ele também não entende o significado de coloquia lismos nem tem qualquer noção de boas maneiras, o que impõe uma pena lidade de -4 sobre a perícia Trato Social. O personagem tem certos hábitos que incomodam os outros (ex. : deixar a seta do carro acesa enquanto dirige de São Paulo a Santos) e pode adquirir um ou dois desses hábitos como peculiarida des. A reação da maioria das pessoas diante dele sofre uma penalidade de -2. Ao contrário daqueles que sofrem de Circunspecção (pág. 126), o persona gem consegue fazer piadas — embora elas não tenham graça nenhuma — e é capaz de apreciar o humor “pastelão” e escrito. No entanto, ele raramente en tende o humor verbal, principalmente se ele for o alvo (teste de IQ-4 para ver se ele percebe que é o motivo da piada). Ao contrário de Credulidade (pág. 129), o personagem costuma perceber quando alguém está querendo tirar vantagem dele, exceto em público. Um indivíduo com esta desvantagem não é mais sus cetível à Lábia do que o normal, a não ser quando alguém está tentando con vencê-lo que um membro atraente do sexo oposto está interessado nele… Esta desvantagem é mais apropriada para os gênios desligados, marcianos, etc. Inimigos 4 Variável Um “Inimigo” é um PdM, grupo de PdMs ou organização que atua ativa mente contra o personagem em todas as aventuras. Alguns querem matá-lo… outros têm objetivos mais cruéis. Estabeleça a natureza do Inimigo quando criar seu personagem e explique",
+    "efeitos": [
+      {
+        "tipo": "pericia",
+        "alvo": "Trato-Social",
+        "valor": -4
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "reacao",
+        "valor": -2
+      }
+    ]
   },
   {
     "id": "inimigos",
@@ -2765,7 +2843,38 @@
     "tags": [
       "mental"
     ],
-    "descricao": "O personagem é insensível às emoções alheias, o que dificulta sua interação social e empatia."
+    "descricao": "O personagem é insensível às emoções alheias, o que dificulta sua interação social e empatia.",
+    "efeitos": [
+      {
+        "tipo": "pericia",
+        "alvo": "Pedagogia",
+        "valor": -3
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Psicologia",
+        "valor": -3,
+        "condicao": "quando o teste for para AJUDAR alguém, e não para achar fraquezas ou pesquisar (MB p.148)"
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "reacao",
+        "valor": -1,
+        "condicao": "de ex-vítimas dele e de quem tem Empatia (MB p.148)"
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Interrogatório",
+        "valor": 1,
+        "condicao": "quando usa ameaça ou tortura (MB p.148)"
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Intimidação",
+        "valor": 1,
+        "condicao": "quando usa ameaça ou tortura (MB p.148)"
+      }
+    ]
   },
   {
     "id": "insonia",
@@ -2948,7 +3057,15 @@
     "tags": [
       "magica"
     ],
-    "descricao": "Coisas estranhas e bizarras acontecem com o personagem com frequência alarmante. Ele atrai o sobrenatural de forma involuntária."
+    "descricao": "Coisas estranhas e bizarras acontecem com o personagem com frequência alarmante. Ele atrai o sobrenatural de forma involuntária.",
+    "efeitos": [
+      {
+        "tipo": "pericia",
+        "alvo": "reacao",
+        "valor": -2,
+        "condicao": "de quem sabe o que é Magnetismo Sobrenatural e sabe que você tem (MB p.149)"
+      }
+    ]
   },
   {
     "id": "magro",
@@ -3026,7 +3143,19 @@
     "tags": [
       "fisica"
     ],
-    "descricao": "O personagem tem apenas um braço. Sofre penalidades em tarefas que exigem ambos os braços e não pode usar armas de duas mãos."
+    "descricao": "O personagem tem apenas um braço. Sofre penalidades em tarefas que exigem ambos os braços e não pode usar armas de duas mãos.",
+    "efeitos": [
+      {
+        "tipo": "pericia",
+        "alvo": "Escalada",
+        "valor": -4
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Luta Greco-Romana",
+        "valor": -4
+      }
+    ]
   },
   {
     "id": "maneta_uma_mao",
@@ -3043,7 +3172,19 @@
     "tags": [
       "fisica"
     ],
-    "descricao": "O personagem possui apenas uma das mãos. Sofre penalidades em tarefas manuais complexas."
+    "descricao": "O personagem possui apenas uma das mãos. Sofre penalidades em tarefas manuais complexas.",
+    "efeitos": [
+      {
+        "tipo": "pericia",
+        "alvo": "Escalada",
+        "valor": -4
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Luta Greco-Romana",
+        "valor": -4
+      }
+    ]
   },
   {
     "id": "maniaco_depressivo",
@@ -3101,7 +3242,7 @@
     "perLevel": -5,
     "options": null,
     "min": null,
-    "max": null,
+    "max": 3,
     "rawCost": "-5/nível",
     "specialRule": null,
     "tags": [
@@ -3142,7 +3283,14 @@
     "rawCost": "-10",
     "specialRule": null,
     "tags": [],
-    "descricao": "O personagem exala um odor desagradável persistente que causa péssimas reações em outros indivíduos."
+    "descricao": "O personagem exala um odor desagradável persistente que causa péssimas reações em outros indivíduos.",
+    "efeitos": [
+      {
+        "tipo": "pericia",
+        "alvo": "reacao",
+        "valor": -2
+      }
+    ]
   },
   {
     "id": "megalomania",
@@ -3159,7 +3307,21 @@
     "tags": [
       "mental"
     ],
-    "descricao": "O personagem acredita ser um gênio ou escolhido para um destino grandioso, agindo com arrogância e imprudência."
+    "descricao": "O personagem acredita ser um gênio ou escolhido para um destino grandioso, agindo com arrogância e imprudência.",
+    "efeitos": [
+      {
+        "tipo": "pericia",
+        "alvo": "reacao",
+        "valor": 2,
+        "condicao": "de gente jovem, ingênua ou de Fanáticos em busca de causa (MB p.151)"
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "reacao",
+        "valor": -2,
+        "condicao": "de todas as outras pessoas (MB p.151)"
+      }
+    ]
   },
   {
     "id": "mentalidade_de_escravo",
@@ -3327,7 +3489,21 @@
     "tags": [
       "mental"
     ],
-    "descricao": "O personagem assume riscos irracionais e perigosos. Exige teste de autocontrole para evitar situações suicidas."
+    "descricao": "O personagem assume riscos irracionais e perigosos. Exige teste de autocontrole para evitar situações suicidas.",
+    "efeitos": [
+      {
+        "tipo": "pericia",
+        "alvo": "reacao",
+        "valor": -2,
+        "condicao": "de quem acha que você é maluco (MB p.152)"
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "reacao",
+        "valor": 2,
+        "condicao": "de quem valoriza coragem acima de autopreservação (MB p.152)"
+      }
+    ]
   },
   {
     "id": "noturno",
@@ -3376,7 +3552,39 @@
     "tags": [
       "mental"
     ],
-    "descricao": "O personagem compreende as emoções das pessoas, mas não suas motivações, agindo como um \"nerd\" socialmente desajeitado."
+    "descricao": "O personagem compreende as emoções das pessoas, mas não suas motivações, agindo como um \"nerd\" socialmente desajeitado.",
+    "efeitos": [
+      {
+        "tipo": "pericia",
+        "alvo": "Diplomacia",
+        "valor": -1
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Intimidação",
+        "valor": -1
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Lábia",
+        "valor": -1
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Manha",
+        "valor": -1
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Sex Appeal",
+        "valor": -1
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Trato-Social",
+        "valor": -1
+      }
+    ]
   },
   {
     "id": "obsessao",
@@ -3543,7 +3751,89 @@
     "tags": [
       "mental"
     ],
-    "descricao": "O personagem não é capaz de entender nenhum tipo de emoção.\n\nIsso não o impede de ter e demonstrar sentimentos, a menos que possua alguma característica adicional que interfira nisso.\n\nSeu problema é não conseguir compreender verdadeiramente as emoções das outras pessoas.\n\nPor causa dessa limitação, ele tem dificuldade para interagir socialmente.\n\nO personagem não pode adquirir a vantagem Empatia.\n\nAlém disso, sofre uma penalidade de -3 em todas as perícias que dependem, total ou parcialmente, da compreensão das motivações emocionais de outras pessoas.\n\nEntre essas perícias estão:\n\n• Boemia\n• Comércio\n• Criminologia\n• Deslumbrar\n• Detecção de Mentiras\n• Diplomacia\n• Dissimulação\n• Interrogatório\n• Lábia\n• Liderança\n• Manha\n• Política\n• Psicologia\n• Sex Appeal\n• Sociologia\n• Trato Social\n\nO personagem ainda pode possuir essas perícias, mas nunca será tão eficiente nelas quanto alguém sem esta desvantagem.\n\nEsta característica é comum entre androides, demônios, golens, mortos-vivos e alguns alienígenas.\n\nEla também pode ser apropriada para certos humanos.\n\nPouca Empatia é mutuamente excludente com Insensível (pág. 147) e Oblívio (pág. 151).\n\nEssas desvantagens pressupõem algum grau de compreensão emocional, ainda que distorcida ou inadequada.\n\nPouca Empatia vale -20 pontos."
+    "descricao": "O personagem não é capaz de entender nenhum tipo de emoção.\n\nIsso não o impede de ter e demonstrar sentimentos, a menos que possua alguma característica adicional que interfira nisso.\n\nSeu problema é não conseguir compreender verdadeiramente as emoções das outras pessoas.\n\nPor causa dessa limitação, ele tem dificuldade para interagir socialmente.\n\nO personagem não pode adquirir a vantagem Empatia.\n\nAlém disso, sofre uma penalidade de -3 em todas as perícias que dependem, total ou parcialmente, da compreensão das motivações emocionais de outras pessoas.\n\nEntre essas perícias estão:\n\n• Boemia\n• Comércio\n• Criminologia\n• Deslumbrar\n• Detecção de Mentiras\n• Diplomacia\n• Dissimulação\n• Interrogatório\n• Lábia\n• Liderança\n• Manha\n• Política\n• Psicologia\n• Sex Appeal\n• Sociologia\n• Trato Social\n\nO personagem ainda pode possuir essas perícias, mas nunca será tão eficiente nelas quanto alguém sem esta desvantagem.\n\nEsta característica é comum entre androides, demônios, golens, mortos-vivos e alguns alienígenas.\n\nEla também pode ser apropriada para certos humanos.\n\nPouca Empatia é mutuamente excludente com Insensível (pág. 147) e Oblívio (pág. 151).\n\nEssas desvantagens pressupõem algum grau de compreensão emocional, ainda que distorcida ou inadequada.\n\nPouca Empatia vale -20 pontos.",
+    "efeitos": [
+      {
+        "tipo": "pericia",
+        "alvo": "Boemia",
+        "valor": -3
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Comércio",
+        "valor": -3
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Criminologia/NT",
+        "valor": -3
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Deslumbrar",
+        "valor": -3
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Detecção de Mentiras",
+        "valor": -3
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Diplomacia",
+        "valor": -3
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Dissimulação",
+        "valor": -3
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Interrogatório",
+        "valor": -3
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Lábia",
+        "valor": -3
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Liderança",
+        "valor": -3
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Manha",
+        "valor": -3
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Política",
+        "valor": -3
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Psicologia",
+        "valor": -3
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Sex Appeal",
+        "valor": -3
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Sociologia",
+        "valor": -3
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Trato-Social",
+        "valor": -3
+      }
+    ]
   },
   {
     "id": "preguica",
@@ -3707,7 +3997,15 @@
     "rawCost": "-15*",
     "specialRule": null,
     "tags": [],
-    "descricao": "O personagem aprecia a crueldade mental, física ou ambas.\n\nEle deve fazer um teste de autocontrole sempre que tiver uma oportunidade de satisfazer esses impulsos, mesmo sabendo que não deveria fazê-lo.\n\nExemplo: quando um prisioneiro precisa ser libertado sem sofrer qualquer dano.\n\nNo caso de um fracasso, o personagem não consegue resistir aos seus impulsos sádicos.\n\nA reação das pessoas que descobrem essa característica sofre uma penalidade de -3.\n\nEssa penalidade não se aplica em culturas que desprezam a vida ou consideram a crueldade aceitável.\n\nSadismo é uma característica particularmente maligna.\n\nEla costuma ser mais apropriada para PdMs cruéis do que para personagens jogadores heroicos.\n\nO Mestre pode proibir esta desvantagem caso não deseje que ela seja interpretada na campanha.\n\nSadismo vale -15 pontos."
+    "descricao": "O personagem aprecia a crueldade mental, física ou ambas.\n\nEle deve fazer um teste de autocontrole sempre que tiver uma oportunidade de satisfazer esses impulsos, mesmo sabendo que não deveria fazê-lo.\n\nExemplo: quando um prisioneiro precisa ser libertado sem sofrer qualquer dano.\n\nNo caso de um fracasso, o personagem não consegue resistir aos seus impulsos sádicos.\n\nA reação das pessoas que descobrem essa característica sofre uma penalidade de -3.\n\nEssa penalidade não se aplica em culturas que desprezam a vida ou consideram a crueldade aceitável.\n\nSadismo é uma característica particularmente maligna.\n\nEla costuma ser mais apropriada para PdMs cruéis do que para personagens jogadores heroicos.\n\nO Mestre pode proibir esta desvantagem caso não deseje que ela seja interpretada na campanha.\n\nSadismo vale -15 pontos.",
+    "efeitos": [
+      {
+        "tipo": "pericia",
+        "alvo": "reacao",
+        "valor": -3,
+        "condicao": "de quem fica sabendo da crueldade — não vale em cultura que menospreza a vida (MB p.155)"
+      }
+    ]
   },
   {
     "id": "sangue_frio",
@@ -3784,7 +4082,15 @@
     "tags": [
       "mental"
     ],
-    "descricao": "O personagem tem dificuldade para pensar em algo original.\n\nEle sofre uma penalidade de -2 em qualquer tarefa que exija criatividade, inovação ou imaginação.\n\nEssa penalidade se aplica a atividades que dependam da criação de novas ideias, conceitos, projetos ou soluções originais.\n\nEntre os exemplos mais comuns estão:\n\n• A maioria dos testes da perícia Artista.\n\n• Todos os testes de Engenharia destinados à criação de invenções.\n\n• Todos os testes de habilidade relacionados ao uso da vantagem Desenvolvedor.\n\nO personagem ainda pode reproduzir técnicas conhecidas, seguir procedimentos estabelecidos e aplicar conhecimentos existentes normalmente.\n\nSua limitação afeta apenas situações que exijam pensamento criativo ou a elaboração de algo novo.\n\nSem Imaginação vale -5 pontos."
+    "descricao": "O personagem tem dificuldade para pensar em algo original.\n\nEle sofre uma penalidade de -2 em qualquer tarefa que exija criatividade, inovação ou imaginação.\n\nEssa penalidade se aplica a atividades que dependam da criação de novas ideias, conceitos, projetos ou soluções originais.\n\nEntre os exemplos mais comuns estão:\n\n• A maioria dos testes da perícia Artista.\n\n• Todos os testes de Engenharia destinados à criação de invenções.\n\n• Todos os testes de habilidade relacionados ao uso da vantagem Desenvolvedor.\n\nO personagem ainda pode reproduzir técnicas conhecidas, seguir procedimentos estabelecidos e aplicar conhecimentos existentes normalmente.\n\nSua limitação afeta apenas situações que exijam pensamento criativo ou a elaboração de algo novo.\n\nSem Imaginação vale -5 pontos.",
+    "efeitos": [
+      {
+        "tipo": "pericia",
+        "alvo": "*",
+        "valor": -2,
+        "condicao": "se a tarefa exigir criatividade ou imaginação — Artista, Engenharia para inventar, usar Desenvolvedor (MB p.156)"
+      }
+    ]
   },
   {
     "id": "sem_manuseadores",
@@ -4103,7 +4409,7 @@
     "perLevel": -3,
     "options": null,
     "min": null,
-    "max": null,
+    "max": 5,
     "rawCost": "-3/nível",
     "specialRule": null,
     "tags": [
@@ -4148,7 +4454,14 @@
     "tags": [
       "mental"
     ],
-    "descricao": "O personagem sempre quer fazer as coisas do seu modo e é uma pessoa difícil de conviver.\n\nInterprete!\n\nSeus amigos podem ter que fazer um bocado de testes de Lábia para conseguir que ele concorde com planos perfeitamente razoáveis.\n\nA reação das pessoas diante do personagem recebe uma penalidade de -1."
+    "descricao": "O personagem sempre quer fazer as coisas do seu modo e é uma pessoa difícil de conviver.\n\nInterprete!\n\nSeus amigos podem ter que fazer um bocado de testes de Lábia para conseguir que ele concorde com planos perfeitamente razoáveis.\n\nA reação das pessoas diante do personagem recebe uma penalidade de -1.",
+    "efeitos": [
+      {
+        "tipo": "pericia",
+        "alvo": "reacao",
+        "valor": -1
+      }
+    ]
   },
   {
     "id": "temor",
@@ -4203,7 +4516,144 @@
     "tags": [
       "mental"
     ],
-    "descricao": "O personagem se sente desconfortável quando há pessoas estranhas por perto.\n\nInterprete!\n\nEsta desvantagem é apresentada em três níveis e pode ser recomprada um nível por vez.\n\nSuave:\n\nO personagem fica um tanto desconfortável na presença de pessoas estranhas, especialmente se elas forem agressivas ou atraentes.\n\nTodas as perícias que o obrigam a lidar com o público (incluindo Atuação, Boemia, Comércio, Diplomacia, Dissimulação, Intimidação, Lábia, Liderança, Manha, Mendicância, Oratória, Pedagogia, Política, Sex Appeal e Trato Social) sofrem uma penalidade de -1.\n\n-5 pontos.\n\nGrave:\n\nO personagem se sente muito desconfortável na presença de estranhos e tende a permanecer calado, mesmo entre amigos.\n\nTodas as perícias listadas acima sofrem uma penalidade de -2.\n\n-10 pontos.\n\nIncapacitante:\n\nO personagem evita pessoas estranhas sempre que possível.\n\nEle não pode aprender nenhuma das perícias acima e o valor predefinido em seus testes com essas perícias sofre uma penalidade adicional de -4.\n\n-20 pontos."
+    "descricao": "O personagem se sente desconfortável quando há pessoas estranhas por perto.\n\nInterprete!\n\nEsta desvantagem é apresentada em três níveis e pode ser recomprada um nível por vez.\n\nSuave:\n\nO personagem fica um tanto desconfortável na presença de pessoas estranhas, especialmente se elas forem agressivas ou atraentes.\n\nTodas as perícias que o obrigam a lidar com o público (incluindo Atuação, Boemia, Comércio, Diplomacia, Dissimulação, Intimidação, Lábia, Liderança, Manha, Mendicância, Oratória, Pedagogia, Política, Sex Appeal e Trato Social) sofrem uma penalidade de -1.\n\n-5 pontos.\n\nGrave:\n\nO personagem se sente muito desconfortável na presença de estranhos e tende a permanecer calado, mesmo entre amigos.\n\nTodas as perícias listadas acima sofrem uma penalidade de -2.\n\n-10 pontos.\n\nIncapacitante:\n\nO personagem evita pessoas estranhas sempre que possível.\n\nEle não pode aprender nenhuma das perícias acima e o valor predefinido em seus testes com essas perícias sofre uma penalidade adicional de -4.\n\n-20 pontos.",
+    "efeitos": [
+      {
+        "tipo": "pericia",
+        "alvo": "Atuação",
+        "porOpcao": {
+          "-5": -1,
+          "-10": -2,
+          "-20": -4
+        }
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Boemia",
+        "porOpcao": {
+          "-5": -1,
+          "-10": -2,
+          "-20": -4
+        }
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Comércio",
+        "porOpcao": {
+          "-5": -1,
+          "-10": -2,
+          "-20": -4
+        }
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Diplomacia",
+        "porOpcao": {
+          "-5": -1,
+          "-10": -2,
+          "-20": -4
+        }
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Dissimulação",
+        "porOpcao": {
+          "-5": -1,
+          "-10": -2,
+          "-20": -4
+        }
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Intimidação",
+        "porOpcao": {
+          "-5": -1,
+          "-10": -2,
+          "-20": -4
+        }
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Lábia",
+        "porOpcao": {
+          "-5": -1,
+          "-10": -2,
+          "-20": -4
+        }
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Liderança",
+        "porOpcao": {
+          "-5": -1,
+          "-10": -2,
+          "-20": -4
+        }
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Manha",
+        "porOpcao": {
+          "-5": -1,
+          "-10": -2,
+          "-20": -4
+        }
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Mendicância",
+        "porOpcao": {
+          "-5": -1,
+          "-10": -2,
+          "-20": -4
+        }
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Oratória",
+        "porOpcao": {
+          "-5": -1,
+          "-10": -2,
+          "-20": -4
+        }
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Pedagogia",
+        "porOpcao": {
+          "-5": -1,
+          "-10": -2,
+          "-20": -4
+        }
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Política",
+        "porOpcao": {
+          "-5": -1,
+          "-10": -2,
+          "-20": -4
+        }
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Sex Appeal",
+        "porOpcao": {
+          "-5": -1,
+          "-10": -2,
+          "-20": -4
+        }
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Trato-Social",
+        "porOpcao": {
+          "-5": -1,
+          "-10": -2,
+          "-20": -4
+        }
+      }
+    ]
   },
   {
     "id": "trapaceiro",
@@ -4279,7 +4729,21 @@
     "tags": [
       "mental"
     ],
-    "descricao": "O personagem muitas vezes passa dos limites e tem dificuldade para relaxar e se desligar do trabalho.\n\nEle sempre trabalha no mínimo o dobro do expediente normal, o que costuma resultar em sono perdido (v. Sono Perdido, pág. 426).\n\nNo início, a maioria das pessoas o trata com respeito (bônus de +1 nos testes de reação), mas depois de algum tempo, ele acaba sofrendo uma penalidade de -1 ou -2, principalmente por parte dos amigos e entes queridos, que raramente conseguem passar algum tempo ao seu lado."
+    "descricao": "O personagem muitas vezes passa dos limites e tem dificuldade para relaxar e se desligar do trabalho.\n\nEle sempre trabalha no mínimo o dobro do expediente normal, o que costuma resultar em sono perdido (v. Sono Perdido, pág. 426).\n\nNo início, a maioria das pessoas o trata com respeito (bônus de +1 nos testes de reação), mas depois de algum tempo, ele acaba sofrendo uma penalidade de -1 ou -2, principalmente por parte dos amigos e entes queridos, que raramente conseguem passar algum tempo ao seu lado.",
+    "efeitos": [
+      {
+        "tipo": "pericia",
+        "alvo": "reacao",
+        "valor": 1,
+        "condicao": "no começo, de quem trata a dedicação com respeito (MB p.160)"
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "reacao",
+        "valor": -1,
+        "condicao": "depois de um tempo, de amigos e entes queridos — pode chegar a −2 (MB p.160)"
+      }
+    ]
   },
   {
     "id": "vicio",
@@ -4385,7 +4849,45 @@
     "tags": [
       "fisica"
     ],
-    "descricao": "A voz do personagem é naturalmente irritante ou claramente artificial.\n\nOs detalhes variam.\n\nEle pode ser um robô ou utilizar um recurso tecnológico para abrandar a desvantagem Mudez.\n\nSua voz pode ser áspera, baixa ou estridente e sua fala pode assumir um tom monótono ou não ter qualquer tipo de modulação.\n\nOs efeitos causados no jogo, em todos os casos, são idênticos aos relacionados à Gagueira (pág. 143), embora ele não sofra, necessariamente, desse problema.\n\nEsta característica é o oposto da vantagem Voz Melodiosa (pág. 100) e um jogador não pode comprar as duas características para seu personagem."
+    "descricao": "A voz do personagem é naturalmente irritante ou claramente artificial.\n\nOs detalhes variam.\n\nEle pode ser um robô ou utilizar um recurso tecnológico para abrandar a desvantagem Mudez.\n\nSua voz pode ser áspera, baixa ou estridente e sua fala pode assumir um tom monótono ou não ter qualquer tipo de modulação.\n\nOs efeitos causados no jogo, em todos os casos, são idênticos aos relacionados à Gagueira (pág. 143), embora ele não sofra, necessariamente, desse problema.\n\nEsta característica é o oposto da vantagem Voz Melodiosa (pág. 100) e um jogador não pode comprar as duas características para seu personagem.",
+    "efeitos": [
+      {
+        "tipo": "pericia",
+        "alvo": "Atuação",
+        "valor": -2
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Canto",
+        "valor": -2
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Diplomacia",
+        "valor": -2
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Lábia",
+        "valor": -2
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Oratória",
+        "valor": -2
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Sex Appeal",
+        "valor": -2
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "reacao",
+        "valor": -2,
+        "condicao": "quando a conversa for necessária (MB p.162)"
+      }
+    ]
   },
   {
     "id": "vozes_fantasmagoricas",

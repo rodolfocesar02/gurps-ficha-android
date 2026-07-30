@@ -5252,3 +5252,39 @@ Primeiro passo da ordem combinada: o que **não exige mecanismo novo**, mais as 
 - **T-V · Visualização** — os três arredondamentos conferidos, e o bônus ficou guardado à vista: *"Visualização guardada: +10 na ação visualizada · Margem 10 → +10"*.
 - **T-I · Talento Instintivo** — a lista traz só o que ele não tem (Acrobacia sumiu depois de comprada), cada linha rola o atributo certo (Acrobacia Aquática pela **DX 13**, Alquimia/NT pela **IQ 17**), e o contador andou **2 → 1 → 0** com "Nova sessão" devolvendo os usos.
 - **Nenhum defeito encontrado nestes quatro blocos.**
+
+### Lote D-PAR + D-ESPELHO + D-LISTA — as desvantagens da leitura p.141-167 — 30 de Julho de 2026 (versão 4.9-DLISTA)
+Segundo passo da ordem combinada. Aqui entram as três famílias que **não precisam de mecanismo novo**: os pares proibidos, os espelhos de vantagem já automatizada e as listas de perícia/reação. As estruturais (interruptor de estado, `CriticoRules`, Zarolho) continuam para depois.
+
+**D-PAR — a trava saiu de 1 par para 13.**
+Até aqui o app travava **um** par (Abascanto × Aptidão Mágica). A leitura das desvantagens revelou mais doze com a frase *"não é possível adquirir ambos"* — ou equivalente — no próprio texto do livro.
+- 🔴 **O mais grave: Paralisia Frente ao Combate × Reflexos em Combate** (p.153). Reflexos em Combate é das vantagens mais compradas do jogo. Sem a trava dava para ter as duas, e o app somava **+1 nas defesas e −2 no pânico ao mesmo tempo**, com a ficha achando que estava tudo certo.
+- ⚠️ **Pouca Empatia × Insensível × Oblívio** é o primeiro par em que os **dois lados são desvantagem**. Se a trava só varresse `vantagensTotais`, ele nunca dispararia — tem teste para isso.
+- ⚠️ **Suscetibilidade à Magia bloqueia o Abascanto, mas NÃO a Aptidão Mágica.** O livro autoriza as duas na mesma frase (p.159); travar junto seria proibir o que ele permite.
+- ⚠️ **Suscetível × Resistente** entrou com ressalva escrita na própria mensagem: o livro só proíbe quando é o **mesmo objeto**, e o app não guarda o objeto. Suscetível a Veneno com Resistente a Doença é legítimo — então a mensagem avisa e a decisão fica com o Mestre.
+- **A invariante que os testes guardam:** todo par é **simétrico** (tanto faz qual foi comprada primeiro), todo motivo **cita a página**, nenhum está declarado duas vezes — e a trava **não impede abrir ficha antiga** que já tem as duas.
+
+**D-ESPELHO — cinco desvantagens que são o reflexo de uma vantagem já pronta.**
+É a família mais perigosa do catálogo porque o erro **não aparece**: o número sai bonito na tela, só com o sinal trocado ou aplicado no teste errado.
+- **O piso de 3 virou um lugar só** (`PisoDeTeste`). O livro repete a mesma frase em três regras diferentes — Fácil de Matar (p.140), Temor e Suscetível (p.159). Espalhado, o `3` viveria em **cinco** pontos do código, e o risco não era esquecer de escrevê-lo: era alguém digitar `4` num deles, e cada trecho pareceria certo sozinho. É o salário mínimo escrito em cinco contratos.
+- ⚠️ **Piso na rolagem, aviso na compra.** O livro diz a mesma coisa de duas formas (piso do alvo e teto de níveis). O app aplica na rolagem, seguindo a decisão do teto de HT do Magro: **avisar, não impedir** — bloquear a compra invalidaria ficha antiga que já passou do limite.
+- ⚠️ **Fora de Forma × Fácil de Matar é o par que engana.** As duas são "−N no HT" na leitura preguiçosa: a **Fácil de Matar toca SÓ o teste de morte**, a **Fora de Forma toca todos** os de corpo. Os dois estão lado a lado no código, com a diferença escrita, e cada um tem teste afirmando o que o outro **não** faz.
+- **Fora de Forma lê o CUSTO, não o nível** (−5 = −1, −15 = −2), igual à Boa Forma do outro lado. Ler o nível daria −1 sempre.
+- **Suscetível entra só em doença e veneno** — os dois exemplos do livro. O app não guarda a **qual** objeto o personagem é suscetível, então espalhar seria inventar regra; o card avisa que o Mestre confirma.
+- ⚠️ **Suscetível usa o NÍVEL, e o catálogo tem `options` [−4, −2, −1]** — que são **preços por nível** (raridade do objeto), não a penalidade. Ler o custo daria −4 para quem comprou um único nível.
+- 🔴 **Suscetibilidade à Magia inverte o texto do card.** Ela usa o **mesmo campo** da Resistência à Magia, com o sinal ao contrário. Sem o texto invertido, o card diria *"o mago sofre −3 ao conjurar em você"* para quem, na verdade, **facilita** o feitiço — número certo, frase mentindo, pior que não mostrar nada. Agora aparece em vermelho: *"o mago ganha +3 e você sofre −3"*. Também ganhou o teto de **5 níveis** do livro.
+
+**D-LISTA — 18 desvantagens, 78 efeitos novos no catálogo.**
+O modo de falhar desta família é silencioso: um nome de perícia com uma letra fora do lugar existe no JSON, passa pelo interpretador inteiro sem erro e **nunca aplica**. Por isso os testes leem o **catálogo real** e conferem a **lista inteira** de cada uma contra a página, não uma perícia de amostra.
+- **Timidez** (15 perícias, `porOpcao` −1/−2/−4), **Pouca Empatia** (16), **Oblívio** (as 6 de Influenciar), **Gagueira** e **Voz Irritante** (6 cada).
+- ⚠️ **Gagueira tem SEIS perícias; Voz Melodiosa, a vantagem oposta, tem SETE.** O livro não põe Política do lado da desvantagem. É assimétrico de propósito, e há um teste dizendo isso para que ninguém "conserte" depois sem ler a página.
+- 🔴 **"Criminologia" no livro é `Criminologia/NT` no catálogo.** Sem o sufixo o efeito existiria no JSON e nunca casaria com a perícia da ficha — exatamente a falha invisível que o guarda de nomes existe para pegar.
+- ⚠️ **Insensível dá BÔNUS dentro de uma desvantagem**, e o livro é explícito: *"a crueldade também tem suas vantagens"* — **+1** em Interrogatório e Intimidação **com ameaça ou tortura**. Como é condicional, não entra no NH base: vira caixinha na rolagem.
+- **Megalomania, No Limite e Viciado em Trabalho** têm **dois públicos opostos** cada. Se os dois fossem fixos somariam zero e a desvantagem sumiria da tela.
+- **O critério das reações, com o porquê:** quando o livro **nomeia o público** ("de quem fica sabendo"), o modificador é **condicional**; quando diz "a maioria das pessoas", é fixo. Somar sempre daria o número contra quem o traço nem alcança.
+- **Sem Imaginação** virou o **sexto** traço a usar o curinga `*`: o livro dá uma **situação** (*"qualquer tarefa que exigir criatividade"*), e cita Artista/Engenharia/Desenvolvedor como exemplos, não como lista fechada. A lista de quem pode usar o curinga foi atualizada de propósito.
+- 🔴 **Mão Fraca saiu do JSON e virou regra Kotlin.** Eu tinha montado uma lista de perícias "delicadas" de cabeça; o livro (p.151) manda penalizar **"utilizar armas de combate corpo a corpo"**, que são ~50 perícias. Mesmo caso da Cegueira. ⚠️ E **só corpo a corpo** — a Cegueira usa a lista união porque lá o livro fala de *todas*; usar a união aqui penalizaria o arqueiro que o livro não penaliza. Entrou com o teto de **3 níveis** do livro.
+- **Fora, documentado, não inventado:** o **+4 do Ingênuo para resistir a Sex Appeal** — é defesa contra a perícia de **outra** pessoa, canal que o app ainda não tem.
+
+**Testes:** `IncompatibilidadeDeTracosTest` (17), `DesvantagensEspelhoTest` (19), `DesvantagensDListaTest` (27) — **63 casos**, gate total em **1523** nas duas variantes.
+- **Status:** ✅ Build OK nas 2 variantes · lint OK · gate verde · ⏭️ **PENDENTE: teste no aparelho**.

@@ -39,6 +39,81 @@ object IncompatibilidadeDeTracos {
             ID_ABASCANTO, ID_APTIDAO_MAGICA,
             "Abascanto não combina com Aptidão Mágica (MB p.85): quem resiste à " +
                 "magia não consegue lançá-la. Remova uma para adicionar a outra."
+        ),
+
+        // --- Lote D-PAR: os oito pares que a leitura das desvantagens revelou.
+        // Todos com a frase "não é possível adquirir ambos" (ou equivalente) no
+        // texto do livro. Até aqui o app travava UM par; o livro dá nove.
+
+        // 🔴 O mais grave da lista: Reflexos em Combate é das vantagens mais
+        // compradas do jogo. Sem esta trava dava para ter as duas, e o app somava
+        // +1 nas defesas e -2 no pânico ao mesmo tempo — com a ficha achando que
+        // estava tudo certo.
+        Par(
+            "paralisia_frente_ao_combate", "reflexos_em_combate",
+            "Paralisia Frente ao Combate é o oposto de Reflexos em Combate " +
+                "(MB p.153) — quem paralisa não tem reflexos apurados."
+        ),
+        Par(
+            "voz_irritante", "voz_melodiosa",
+            "Voz Irritante é o oposto de Voz Melodiosa (MB p.162). A mesma voz " +
+                "não pode atrair e afastar ao mesmo tempo."
+        ),
+        Par(
+            "temor", "destemor",
+            "Temor é o oposto de Destemor (MB p.159): um soma na Vontade contra " +
+                "o medo, o outro subtrai."
+        ),
+        Par(
+            "atrapalhado", "destreza_manual_elevada",
+            "Atrapalhado é o oposto de Destreza Manual Elevada (MB p.124) — as " +
+                "duas mexem na mesma lista de trabalhos delicados."
+        ),
+        Par(
+            "cegueira_noturna", "visao_noturna",
+            "Cegueira Noturna não combina com Visão Noturna (MB p.127): uma " +
+                "dobra a penalidade de escuridão, a outra cancela."
+        ),
+        Par(
+            "cegueira_noturna", "visao_no_escuro",
+            "Cegueira Noturna não combina com Visão no Escuro (MB p.127)."
+        ),
+        Par(
+            "mao_fraca", "manuseadores_precarios",
+            "Mão Fraca e Manuseadores Precários são mutuamente excludentes " +
+                "(MB p.151): quem não tem mãos não pode ter a mão trêmula."
+        ),
+        Par(
+            "mao_fraca", "sem_manuseadores",
+            "Mão Fraca e Sem Manuseadores são mutuamente excludentes (MB p.151)."
+        ),
+        Par(
+            "sem_nocao_de_profundidade", "zarolho",
+            "Sem Noção de Profundidade tem efeitos idênticos aos de Zarolho " +
+                "(MB p.156) — comprar as duas seria receber pontos duas vezes " +
+                "pela mesma coisa."
+        ),
+        Par(
+            "pouca_empatia", "insensivel",
+            "Pouca Empatia não combina com Insensível (MB p.154): Insensível " +
+                "ENTENDE as emoções e não se importa; Pouca Empatia não entende."
+        ),
+        Par(
+            "pouca_empatia", "oblivio",
+            "Pouca Empatia não combina com Oblívio (MB p.154): Oblívio entende " +
+                "as emoções e não as motivações; Pouca Empatia não entende nada."
+        ),
+        Par(
+            "suscetivel", "resistente",
+            "Suscetível e Resistente ao mesmo objeto se anulam (MB p.159). " +
+                "⚠️ O livro proíbe só quando é o MESMO objeto — Suscetível a " +
+                "Veneno com Resistente a Doença é legítimo. O app não guarda o " +
+                "objeto, então avisa; a decisão é do Mestre."
+        ),
+        Par(
+            "susceptibilidade_a_magia", ID_ABASCANTO,
+            "Suscetibilidade à Magia não combina com Abascanto (MB p.159): uma " +
+                "facilita ser enfeitiçado, a outra dificulta."
         )
     )
 

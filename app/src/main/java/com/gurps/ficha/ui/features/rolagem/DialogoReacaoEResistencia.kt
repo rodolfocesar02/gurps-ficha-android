@@ -85,7 +85,13 @@ fun DialogoReacaoEResistencia(
 
                 // O número que o MESTRE aplica do outro lado. Fica visível para
                 // o jogador informar no Discord — o app não tem a ficha do mago.
-                if (resistenciaAMagia > 0) {
+                // ⚠️ O número pode ser NEGATIVO: a Suscetibilidade à Magia é o
+                // espelho da Resistência (MB p.159) e usa o mesmo campo. Sem o
+                // texto invertido, o card diria "o mago sofre −3" para quem, na
+                // verdade, facilita o feitiço — número certo, frase mentindo.
+                if (resistenciaAMagia != 0) {
+                    val suscetivel = ResistenciaRules.ehSuscetivelAMagia(personagem)
+                    val modulo = kotlin.math.abs(resistenciaAMagia)
                     item {
                         Card(
                             modifier = Modifier.fillMaxWidth(),
@@ -94,14 +100,27 @@ fun DialogoReacaoEResistencia(
                         ) {
                             Column(modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp)) {
                                 Text(
-                                    "Resistência à Magia $resistenciaAMagia",
+                                    if (suscetivel) "Suscetibilidade à Magia $modulo"
+                                    else "Resistência à Magia $modulo",
                                     style = MaterialTheme.typography.titleSmall,
-                                    fontWeight = FontWeight.SemiBold
+                                    fontWeight = FontWeight.SemiBold,
+                                    color = if (suscetivel) {
+                                        MaterialTheme.colorScheme.error
+                                    } else {
+                                        MaterialTheme.colorScheme.onSurface
+                                    }
                                 )
                                 Text(
-                                    "O mago sofre −$resistenciaAMagia no NH ao conjurar em você " +
-                                        "(MB p.85). Informe ao Mestre — não vale contra projétil " +
-                                        "mágico, arma mágica nem adivinhação.",
+                                    if (suscetivel) {
+                                        "O mago ganha +$modulo no NH ao conjurar em você, e você " +
+                                            "sofre −$modulo para resistir (MB p.159). Informe ao " +
+                                            "Mestre — não vale contra projétil mágico, arma mágica " +
+                                            "nem adivinhação."
+                                    } else {
+                                        "O mago sofre −$modulo no NH ao conjurar em você " +
+                                            "(MB p.85). Informe ao Mestre — não vale contra projétil " +
+                                            "mágico, arma mágica nem adivinhação."
+                                    },
                                     style = MaterialTheme.typography.labelSmall,
                                     color = MaterialTheme.colorScheme.outline
                                 )
