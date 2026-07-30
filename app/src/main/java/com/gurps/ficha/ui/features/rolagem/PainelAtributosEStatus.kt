@@ -22,6 +22,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.gurps.ficha.domain.rules.DxBracalRules
+import com.gurps.ficha.domain.rules.EstadosTemporarios
 import com.gurps.ficha.domain.rules.StBracalRules
 import com.gurps.ficha.domain.rules.StEspecializadaRules
 import com.gurps.ficha.model.Personagem
@@ -60,6 +61,10 @@ fun PainelAtributosEStatus(
     onAlternarDxBracal: () -> Unit,
     stLevantamentoAtivo: Boolean,
     onAlternarStLevantamento: () -> Unit,
+    // Lote D-ESTADO: `id do estado -> grau ligado`. Vazio na esmagadora maioria
+    // das fichas, e aí o painel nem aparece.
+    grausDeEstado: Map<String, Int> = emptyMap(),
+    onAlternarEstado: (id: String, novoGrau: Int) -> Unit = { _, _ -> },
     onRolarAtributo: (atributo: String, valor: Int, mod: Int) -> Unit,
     onEditPv: () -> Unit,
     onEditPf: () -> Unit,
@@ -97,6 +102,7 @@ fun PainelAtributosEStatus(
                 bonusStLevantamento = if (stLevantamentoAtivo) {
                     StEspecializadaRules.bonusDeLevantamento(personagem)
                 } else 0,
+                penalidadesDeEstado = EstadosTemporarios.totalDe(grausDeEstado).atributos,
                 onExecutarRolagem = onRolarAtributo
             )
 
@@ -117,6 +123,14 @@ fun PainelAtributosEStatus(
                 personagem = personagem,
                 ativo = stLevantamentoAtivo,
                 onAlternar = onAlternarStLevantamento
+            )
+
+            // Os estados temporários entram aqui a pedido do usuário: mesmo
+            // lugar das Braçais, porque o gesto é o mesmo — ligar uma condição.
+            PainelEstadosTemporarios(
+                personagem = personagem,
+                graus = grausDeEstado,
+                onAlternar = onAlternarEstado
             )
 
             // ST de Golpe: sem caixinha, porque vale para TODO dano, sempre.

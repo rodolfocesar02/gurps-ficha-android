@@ -1,5 +1,7 @@
 package com.gurps.ficha.domain.rules
 
+import com.gurps.ficha.domain.rules.traits.BonusCondicional
+import com.gurps.ficha.domain.rules.traits.TraitRuleRegistry
 import com.gurps.ficha.model.Personagem
 
 /**
@@ -38,12 +40,33 @@ object ResistenciaRules {
         val alvo: Int,
         val explicacao: String,
         val familia: Familia,
-        val origens: List<String> = emptyList()
+        val origens: List<String> = emptyList(),
+        /**
+         * Modificadores que só valem em certa situação — viram caixinha na tela
+         * (Lote D-NA).
+         *
+         * ⚠️ **Não estão somados no [alvo].** A Covardia dá −3 na Verificação de
+         * Pânico *"sempre que houver risco de dano físico"*, e a Xenofilia dá
+         * **+2** *"quando encontra criaturas estranhas"*. Somar sempre daria o
+         * número em situação onde o livro não o prevê; quem sabe se a situação
+         * vale é o jogador, na hora do teste.
+         */
+        val condicionais: List<BonusCondicional> = emptyList()
     ) {
         val descricaoAcessivel: String
             get() = "$rotulo. Alvo $alvo. $explicacao" +
                 if (origens.isEmpty()) "" else " Inclui ${origens.joinToString(", ")}."
     }
+
+    /**
+     * Alvo reservado no campo `efeitos` para a **Verificação de Pânico**.
+     *
+     * Mesma ideia do `reacao` do [ReacaoRules]: reusa o tipo `pericia` em vez de
+     * inventar um tipo novo. Antes disto, Destemor e Temor eram os únicos traços
+     * que a Verificação de Pânico conhecia, e eram lidos por id no código — o
+     * que obrigava uma edição em Kotlin para cada traço novo.
+     */
+    const val ALVO_PANICO = "panico"
 
     private const val ID_BOA_FORMA = "boa_forma"
     private const val ID_DESTEMOR = "destemor"
@@ -218,13 +241,27 @@ object ResistenciaRules {
         val destemor = nivelDe(personagem, ID_DESTEMOR) + penalidadeDe(personagem, ID_TEMOR)
         val origemDestemor = origemDe(personagem, ID_DESTEMOR) +
             origemDaDesvantagem(personagem, ID_TEMOR)
+        // Traços declarados no catálogo com alvo `panico` (Lote D-NA). O fixo
+        // entra no alvo; o condicional vira caixinha e NÃO é somado aqui.
+        val panicoFixo = TraitRuleRegistry.getSkillBonus(personagem, ALVO_PANICO)
+        val panicoOrigens = TraitRuleRegistry.getSkillBonusOrigens(personagem, ALVO_PANICO)
+            .map { "${it.nomeDoTraco} ${if (it.valor >= 0) "+${it.valor}" else "${it.valor}"}" }
         lista += TesteDeResistencia(
-            "Verificação de Pânico", PisoDeTeste.aplicar(vontade + destemor),
+            "Verificação de Pânico", PisoDeTeste.aplicar(vontade + destemor + panicoFixo),
             "Diante de horror ou do sobrenatural. NÃO é disparada por dano.",
-            Familia.MENTE, origemDestemor
+            Familia.MENTE, origemDestemor + panicoOrigens,
+            TraitRuleRegistry.getBonusCondicionais(personagem, ALVO_PANICO)
         )
+        // 🔴 O piso também vale aqui, e estava faltando. O livro amarra a regra
+        // ao TESTE DE VONTADE, não à Verificação de Pânico: *"não é permitido
+        // reduzir o número alvo do teste de Vontade a um valor menor que 3"*
+        // (MB p.159) — e o Temor age nos dois. Sem o piso, Temor 12 numa
+        // Vontade 8 dava alvo −4: fracasso automático permanente.
+        //
+        // Achado pela simulação exaustiva, não por um caso: o teste pontual
+        // usava níveis realistas, e com nível realista o piso nunca é atingido.
         lista += TesteDeResistencia(
-            "Resistir a Intimidação", vontade + destemor,
+            "Resistir a Intimidação", PisoDeTeste.aplicar(vontade + destemor),
             "Contra a perícia Intimidação de outro personagem.",
             Familia.MENTE, origemDestemor
         )

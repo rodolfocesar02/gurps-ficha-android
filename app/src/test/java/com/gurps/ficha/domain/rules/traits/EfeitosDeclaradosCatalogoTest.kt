@@ -36,7 +36,14 @@ class EfeitosDeclaradosCatalogoTest {
          *
          * Precisa estar em sincronia com `scripts/validar_efeitos.py`.
          */
-        val ALVOS_RESERVADOS = setOf("reacao", TraitRuleRegistry.CURINGA_PERICIA)
+        val ALVOS_RESERVADOS = setOf(
+            "reacao",
+            // `panico` e o alvo reservado da Verificacao de Panico
+            // (`ResistenciaRules`), criado no Lote D-NA pelo mesmo motivo do
+            // `reacao`: reusar o tipo "pericia" em vez de inventar um tipo novo.
+            "panico",
+            TraitRuleRegistry.CURINGA_PERICIA
+        )
 
         /** Os dez Talentos do livro (MB p.91-92), pelos ids do catálogo. */
         val OS_DEZ_TALENTOS = setOf(
@@ -133,9 +140,37 @@ class EfeitosDeclaradosCatalogoTest {
         // deveria estar declarado. Quem usa `porOpcao` fica de fora: la o
         // `valor` nao e usado, a tabela e que manda.
         val erros = tracosComEfeitos().flatMap { traco ->
-            traco.efeitos.filter { !it.ehPorOpcao && it.valor == 0 }
+            traco.efeitos.filter { !it.ehPorOpcao && !it.ehPorAutocontrole && it.valor == 0 }
                 .map { "${traco.nome} [${traco.id}] -> '${it.alvo}' com valor 0" }
         }
+        assertTrue(erros.joinToString("\n"), erros.isEmpty())
+    }
+
+    @Test
+    fun `toda tabela porAutocontrole tem os QUATRO NAs do GURPS`() {
+        // Os NAs sao 6, 9, 12 e 15 -- nao existe outro. Uma tabela faltando o 15
+        // devolveria 0 para quem comprou a desvantagem no NA mais brando: o
+        // efeito existiria no JSON e nao aconteceria na ficha, que e o modo de
+        // falhar silencioso de sempre.
+        val esperado = setOf("6", "9", "12", "15")
+        val erros = tracosComEfeitos().flatMap { traco ->
+            traco.efeitos.filter { it.ehPorAutocontrole }.mapNotNull {
+                val chaves = it.porAutocontrole.orEmpty().keys
+                if (chaves == esperado) null
+                else "${traco.nome} [${traco.id}] -> porAutocontrole com chaves $chaves"
+            }
+        }
+        assertTrue(erros.joinToString("\n"), erros.isEmpty())
+    }
+
+    @Test
+    fun `so desvantagem com NA pode usar porAutocontrole`() {
+        // ⚠️ Uma VANTAGEM nunca tem Numero de Autocontrole: o `autocontrole` de
+        // `VantagemSelecionada` e sempre null, e a tabela devolveria 0 sempre.
+        // Declarar la seria automacao que nunca acontece.
+        val erros = lerCru("vantagens.v3.json")
+            .filter { t -> t.efeitos.any { it.ehPorAutocontrole } }
+            .map { "${it.nome} [${it.id}] usa porAutocontrole, mas vantagem nao tem NA" }
         assertTrue(erros.joinToString("\n"), erros.isEmpty())
     }
 
@@ -335,9 +370,12 @@ class EfeitosDeclaradosCatalogoTest {
         //    imaginacao") -- Lote D-LISTA, MB p.156. O livro cita Artista,
         //    Engenharia e Desenvolvedor como EXEMPLOS ("incluindo"), nao como a
         //    lista fechada: por isso curinga, e nao tres linhas.
+        //  - Fobias (a penalidade que SOBRA quando ele PASSA no autocontrole,
+        //    "em todos os testes de habilidade, DX e IQ enquanto a causa do medo
+        //    persistir") -- Lote D-NA, MB p.141.
         val esperadas = setOf(
             "toque_sensivel", "venturoso", "versatil",
-            "baixa_autoestima", "credulidade", "sem_imaginacao"
+            "baixa_autoestima", "credulidade", "sem_imaginacao", "fobias"
         )
         val comCuringa = tracosComEfeitos()
             .filter { t -> t.efeitos.any { it.alvo == TraitRuleRegistry.CURINGA_PERICIA } }

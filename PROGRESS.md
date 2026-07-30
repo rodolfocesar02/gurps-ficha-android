@@ -5288,3 +5288,46 @@ O modo de falhar desta família é silencioso: um nome de perícia com uma letra
 
 **Testes:** `IncompatibilidadeDeTracosTest` (17), `DesvantagensEspelhoTest` (19), `DesvantagensDListaTest` (27) — **63 casos**, gate total em **1523** nas duas variantes.
 - **Status:** ✅ Build OK nas 2 variantes · lint OK · gate verde · ⏭️ **PENDENTE: teste no aparelho**.
+
+### Lote D-NA + D-ESTADO + D-MIRA + D-CRIT — o plano de desvantagens fechado — 30 de Julho de 2026 (versão 5.0-DESTADO)
+Os quatro lotes estruturais que faltavam. Com isso o **plano de desvantagens (MB p.120-163) está completo**: 7 lotes, 3 versões.
+
+**D-NA — o campo `porAutocontrole`, a terceira forma de um efeito variar.**
+Depois de `porNivel` (preço por quilo) e `porOpcao` (tabela de tamanhos), esta é o **desconto por faixa de renda**: o número não vem do que você comprou, vem do Número de Autocontrole que a desvantagem tem.
+- 🔴 **A tabela NÃO é a mesma em todo lugar** — eu tinha escrito no plano que ela *"se repete literalmente igual"* nos seis clientes, e está errado. **Egoísmo** (p.137) usa −5/−4/−3/−2, **um degrau pior**, e **Xenofilia** (p.162) usa **+4/+3/+2/+1**, que é **bônus**. É exatamente por isso que a tabela virou **dado do catálogo** e não constante no código.
+- 🔴 **Três dos seis clientes que eu tinha planejado não são do jogador.** As tabelas de **Solitário** (p.158) e **Egoísmo** (p.137) descrevem *"a reação de PdMs Solitários diante outras pessoas"* e *"PdMs egoístas reagem diante de desfeitos"* — é o modificador de quem **tem** a desvantagem reagindo aos outros, que é rolagem do Mestre para PdM. O painel de Reação do app rola o contrário: quanto os outros gostam de **você**. Declarar lá inverteria a direção. E **Gastar Compulsivamente** (p.128) é uma das ~15 variantes da entrada única `compulsao`, que não guarda qual foi escolhida — declarar −4 em Comércio penalizaria também quem tem Compulsão (Limpeza). Os três ficaram **documentados, não inventados**; o Egoísmo mantém o −3 do D-JSON, que é do lado certo.
+- **Sobraram três, e são reais:** **Covardia** (−4 a −1 na Verificação de Pânico com risco físico, mais o mesmo na reação de soldados que descobrem), **Fobias** (a penalidade que **sobra quando ele PASSA** no autocontrole, em todos os testes — o sétimo traço a usar o curinga) e **Xenofilia** (o bônus).
+- **Alvo reservado novo: `panico`.** Mesma ideia do `reacao` — reusa o tipo `pericia` em vez de inventar um tipo. Antes disso a Verificação de Pânico só conhecia Destemor e Temor, lidos por id no código, e cada traço novo exigia uma edição em Kotlin.
+- ⚠️ **Nenhum dos três entra no alvo: viram caixinha.** O livro amarra os três a situações ("risco de dano físico", "ao encontrar criaturas estranhas"), e Verificação de Pânico também acontece diante de horror sem risco nenhum. O diálogo de Resistência ganhou as caixinhas, reusando o mesmo `PainelBonusCondicional` da Reação.
+
+**D-ESTADO — o interruptor, 9 clientes.**
+A família que só vale **enquanto o jogador diz que está valendo**. É o botão da luz de emergência: não muda o carro, liga uma condição. Fica no mesmo lugar das Braçais, como você pediu.
+- ⚠️ **Esperar a leitura terminar foi o que salvou o desenho.** Na p.140 eu conhecia **três** clientes e ia cobrir DX, IQ e perícia. **Lunático** mexe em **Vontade** e **Sangue Frio** em **Deslocamento** — duas dimensões que não estavam no plano. Refazer depois de construído seria o caro.
+- **A caixinha tem GRAU.** Dor Crônica é Suave/Grave/Excruciante, e o grau **não está na ficha** (a compra guarda custo, não o que aconteceu na mesa). O toque **cicla**: desligado → 1 → 2 → … → desligado, e o rótulo diz em que grau está e quanto custa.
+- **Os nove, com os números da página de cada um:** Dor Crônica (−2/−4/−6 em DX, IQ **e autocontrole**), Dorminhoco (IQ −1, autocontrole −2 — números **diferentes**), Enjoo (−2 enjoado / −5 vomitando), Flashbacks (−2 / −5 / **bloqueia toda perícia**), Lunático (Vontade −2), Problemas na Coluna (−3 / −4), Repugnância (tocou −5 / **ingeriu −10 nas perícias mas ainda −5 nos atributos**), Sangue Frio (−1 DX e −1 Desloc. **por 5 °C**), Supersensitivo (−1 a −4).
+- ⚠️ **Penalidade de IQ NÃO desce para Vontade e Percepção.** Pareceria natural propagar. O próprio livro prova que não: o **Lunático** dá *"−2 em todos os testes de Vontade"* e não fala em IQ — se IQ arrastasse Vontade, a frase seria redundante.
+- **Fica de fora, documentado:** a IQ −3 de **um segundo** dos Problemas na Coluna (um interruptor que o jogador tem de lembrar de desligar no turno seguinte erra mais do que acerta) e o **colapso** do Supersensitivo (desfecho de cena, não modificador).
+- ⚠️ **O Deslocamento do Sangue Frio aparece no resumo do painel, mas não desce até o botão `Desloc.`** — o botão vive na aba Geral e o interruptor na Rolagem. Fica anotado; a Rolagem é a prioridade.
+
+**D-MIRA — as quatro que conversam com telas prontas.**
+A pergunta que une o lote: **o que o app pode afirmar sozinho, e o que ele tem de perguntar?**
+- **Zarolho** (p.163) o app afirma: −3 no tiro, −1 no corpo a corpo. ⚠️ **As duas NÃO se somam** — são categorias de situação, e um tiro é −3, não −4. E ⚠️ **Apontar cancela só o −3**: a ressalva do livro está grudada nele, não na frase inteira; quem Aponta continua zarolho.
+- **Assassino Relutante** (p.153) o app **pergunta**: o livro dá quatro isenções — veículo, coisa que ele não acredita ser pessoa, alvo que não vê, combate corporal — e **nenhuma está na ficha**. Aplicar −4 em todo ataque viraria penalidade permanente que o livro não dá. Duas caixinhas: "ataque letal contra pessoa que eu vejo" e "consigo ver o rosto" (−4 com rosto, −2 sem).
+- 🔴 **E ele BLOQUEIA o Apontar**, não penaliza — o livro diz *"não pode Apontar"*. A caixinha fica desabilitada com o motivo escrito. **A interação que só existiu porque os dois foram feitos juntos:** um personagem zarolho **e** assassino relutante, num ataque letal à distância, fica com o **−3 inteiro**, porque não pode Apontar para cancelá-lo. Em arquivos separados, o app leria a caixinha marcada de antes e daria o desconto.
+- **Sem Um Dedo** (p.157) o app **pergunta**: *"−1 na DX da mão em questão (somente)"*, e a ficha não guarda **qual** mão. Segunda caixinha no seletor de mão. Assumir que é sempre a inábil daria de graça a versão barata para quem comprou a cara. ⚠️ Lê o **custo** (−2 → −1, −5 → −5): ler o nível daria −1 para o polegar.
+- 🔴 **Invertebrado** (p.148): a tabela de carga passa a usar **1/4 da BC**. Sem isso o personagem carregava **quatro vezes** mais do que deveria — e é o tipo de erro que ninguém confere, porque o número parece normal. O resumo avisa que a BC de **empurrar** continua inteira.
+
+**D-CRIT — Completamente Desastrado, a que muda o DESFECHO.**
+Toda automação anterior muda **um número**. Esta não muda número nenhum: muda **o que o resultado significa**. A rolagem que daria "Falha por 2" passa a mandar rolar na Tabela de Erro Crítico.
+- **Mora em `DesastradoRules`, fora do `CriticoRules`.** A classificação de crítico é regra do sistema, igual para todo mundo; isto é caso particular de **uma ficha**. Misturar faria toda rolagem do app consultar a ficha para saber o que é um 17.
+- **As três cercas do livro, cada uma com teste:** só **DX** (um fracasso em Teologia continua comum), só **fracasso** (o Sucesso Decisivo continua decisivo) e só o nível de **−15 pontos** (o `desastrado` de −5 *"não tem número"* — é o Mestre inventando trapalhadas).
+- ✅ **O aviso no log do Discord que você pediu.** Sai junto do resultado: *"Falha Crítica! (por 1) · Completamente Desastrado: todo fracasso em DX é crítico (MB p.133)"*. E ele **só aparece quando o número sozinho não explicaria** — num 18, que já é falha crítica para qualquer um, avisar seria ruído e o Mestre pararia de ler.
+- 🔴 **A armadilha do rótulo:** os nomes que a regra alcança saem da **mesma função** que monta o rótulo do diálogo de perícias. Montado à parte, "Faca (Arremesso)" nunca casaria com "Faca" e a regra falharia calada para toda perícia especializada.
+
+**🔴 Um bug real que a SIMULAÇÃO achou — e o teste pontual não acharia.**
+O novo `DesvantagensSimulacaoTest` não afirma valores: afirma **invariantes** e varre o espaço inteiro (todos os graus de todos os estados, as 256 combinações de soma × alvo, os 16 pares de Zarolho × Pacifismo).
+- **"Resistir a Intimidação" não tinha o piso de 3.** O livro amarra a regra ao **teste de Vontade** (*"não é permitido reduzir o número alvo do teste de Vontade a um valor menor que 3"*, p.159), e o Temor age nos **dois** testes de mente — mas só a Verificação de Pânico tinha o piso. Com Temor 12 numa Vontade 8, o alvo ia para **−4**: fracasso automático permanente. O teste pontual usava níveis realistas, e com nível realista o piso nunca é atingido.
+- **E um erro meu no próprio teste:** eu afirmava *"sucesso nunca pode ser falha crítica"*. Um **18 contra alvo 18** é sucesso por margem 0 **e** falha crítica pela regra do sistema. A afirmação certa é "o Desastrado não **muda** o que já era sucesso".
+
+**Testes:** `DesvantagensDNaTest` (20), `EstadosTemporariosTest` (26), `DesvantagensDMiraECritTest` (28), `DesvantagensSimulacaoTest` (19) — **93 casos novos**, gate total em **1618** nas duas variantes.
+- **Status:** ✅ Build OK nas 2 variantes · lint OK · `validar_efeitos.py` OK · gate verde · ⏭️ **PENDENTE: teste no aparelho**.

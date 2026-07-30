@@ -36,6 +36,8 @@ import com.gurps.ficha.domain.rules.TabelaVelocidadeDistancia
 import com.gurps.ficha.domain.rules.AlcanceDoAtaque
 import com.gurps.ficha.domain.rules.DisopiaRules
 import com.gurps.ficha.domain.rules.ApontarRules
+import com.gurps.ficha.domain.rules.PacifismoRules
+import com.gurps.ficha.domain.rules.ZarolhoRules
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.foundation.layout.PaddingValues
@@ -84,6 +86,10 @@ fun DialogoMira(
     var golpeRapido by remember { mutableStateOf(false) }
     var apontou by remember { mutableStateOf(false) }
     var miope by remember { mutableStateOf(false) }
+    // Lote D-MIRA: o app não sabe se o alvo é uma pessoa nem se o rosto está à
+    // mostra — nenhuma das quatro isenções do livro está na ficha. Pergunta.
+    var ataqueLetal by remember { mutableStateOf(false) }
+    var veORosto by remember { mutableStateOf(true) }
     val opcoes = MiraRules.opcoes(desarmar)
 
     // Golpe Rapido nao existe em ataque a distancia -- e opcao de corpo a corpo.
@@ -99,14 +105,30 @@ fun DialogoMira(
     } else {
         0
     }
+    // O Assassino Relutante NÃO PODE Apontar (MB p.153). A trava vem antes do
+    // bônus: deixar a caixinha marcada e ignorar o efeito faria o número mudar
+    // e não mudar, que é pior que esconder.
+    val apontarBloqueado = personagem != null &&
+        PacifismoRules.bloqueiaApontar(personagem, ataqueLetal)
+    val apontouValendo = apontou && !apontarBloqueado
+
     // Apontar traz duas coisas de uma vez: a Precisão da arma e o dobro do
     // desconto da Visão Telescópica. Ver `ApontarRules`.
     val bonusApontar = if (ehADistancia && personagem != null) {
         ApontarRules.bonusTotalDoApontar(
-            personagem, alcance.precisao, penalidadeDistancia, apontou
+            personagem, alcance.precisao, penalidadeDistancia, apontouValendo
         )
     } else 0
-    val nhComDistancia = nhBase + penalidadeDistancia + penalidadeGolpeRapido + bonusApontar
+    // ⚠️ O Zarolho lê `apontouValendo`, não `apontou`: quem não pode Apontar
+    // também não pode usar o Apontar para cancelar o −3.
+    val penalidadeZarolho = if (personagem != null) {
+        ZarolhoRules.penalidadeNoAtaque(personagem, ehADistancia, apontouValendo)
+    } else 0
+    val penalidadePacifismo = if (personagem != null) {
+        PacifismoRules.penalidade(personagem, ataqueLetal, veORosto)
+    } else 0
+    val nhComDistancia = nhBase + penalidadeDistancia + penalidadeGolpeRapido +
+        bonusApontar + penalidadeZarolho + penalidadePacifismo
 
     FullscreenDialogContainer(onDismiss = onDismiss) {
         Column(modifier = Modifier.fillMaxSize()) {
@@ -170,28 +192,106 @@ fun DialogoMira(
                 }
             }
 
+            // Assassino Relutante (MB p.153). Aparece em ataque de qualquer
+            // alcance: o livro fala de "ataque letal", não de arma de fogo.
+            if (personagem != null && PacifismoRules.ehAssassinoRelutante(personagem)) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .linhaAlternavel(
+                            marcado = ataqueLetal,
+                            descricao = PacifismoRules.ROTULO_ACESSIVEL_LETAL,
+                            onAlternar = { ataqueLetal = !ataqueLetal }
+                        )
+                        .padding(top = 2.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Checkbox(checked = ataqueLetal, onCheckedChange = null)
+                    Text(
+                        PacifismoRules.rotulo(personagem, ataqueLetal, veORosto),
+                        style = MaterialTheme.typography.labelSmall,
+                        color = if (ataqueLetal) {
+                            MaterialTheme.colorScheme.error
+                        } else {
+                            MaterialTheme.colorScheme.outline
+                        },
+                        modifier = Modifier.padding(start = 2.dp)
+                    )
+                }
+                // A segunda pergunta só faz sentido depois da primeira: é ela
+                // que decide entre −4 e −2.
+                if (ataqueLetal) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .linhaAlternavel(
+                                marcado = veORosto,
+                                descricao = PacifismoRules.ROTULO_ACESSIVEL_ROSTO,
+                                onAlternar = { veORosto = !veORosto }
+                            )
+                            .padding(start = 16.dp, top = 2.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Checkbox(checked = veORosto, onCheckedChange = null)
+                        Text(
+                            PacifismoRules.ROTULO_VE_O_ROSTO,
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.outline,
+                            modifier = Modifier.padding(start = 2.dp)
+                        )
+                    }
+                }
+            }
+
             if (ehADistancia && personagem != null) {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
                         .linhaAlternavel(
-                            marcado = apontou,
-                            descricao = ApontarRules.rotuloAcessivelApontar(
-                                personagem, alcance.precisao, penalidadeDistancia
-                            ),
-                            onAlternar = { apontou = !apontou }
+                            marcado = apontouValendo,
+                            descricao = if (apontarBloqueado) {
+                                "Apontar indisponível: o Assassino Relutante não " +
+                                    "pode Apontar num ataque letal."
+                            } else {
+                                ApontarRules.rotuloAcessivelApontar(
+                                    personagem, alcance.precisao, penalidadeDistancia
+                                )
+                            },
+                            onAlternar = { if (!apontarBloqueado) apontou = !apontou }
                         )
                         .padding(top = 2.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Checkbox(checked = apontou, onCheckedChange = null)
+                    Checkbox(
+                        checked = apontouValendo,
+                        onCheckedChange = null,
+                        enabled = !apontarBloqueado
+                    )
                     Text(
-                        ApontarRules.rotuloApontar(personagem, alcance.precisao, penalidadeDistancia),
+                        if (apontarBloqueado) {
+                            "Apontar bloqueado — o Assassino Relutante não pode " +
+                                "Apontar num ataque letal (MB p.153)"
+                        } else {
+                            ApontarRules.rotuloApontar(
+                                personagem, alcance.precisao, penalidadeDistancia
+                            )
+                        },
                         style = MaterialTheme.typography.labelSmall,
                         color = MaterialTheme.colorScheme.outline,
                         modifier = Modifier.padding(start = 2.dp)
                     )
                 }
+            }
+
+            // Zarolho (MB p.163). Não tem caixinha: a penalidade não depende de
+            // escolha nenhuma do jogador — só de já ter marcado o Apontar.
+            if (personagem != null && ZarolhoRules.tem(personagem)) {
+                Text(
+                    ZarolhoRules.rotulo(personagem, ehADistancia, apontouValendo),
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.error,
+                    modifier = Modifier.padding(top = 2.dp)
+                )
             }
 
             LazyColumn(

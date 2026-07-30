@@ -1092,7 +1092,31 @@
     "tags": [
       "mental"
     ],
-    "descricao": "-10 pontos* O personagem é extremamente cui dadoso com relação ao seu bem-estar físico. Sempre que surgir a necessidade de se arriscar fisicamente, ele deve fa zer um teste de autocontrole. Se houver risco de vida, o teste sofre uma penali dade de -5. No caso de um fracasso, ele deve recusar se arriscar, a menos que seja ameaçado com um perigo maior. Covardia impõe uma penalidade nas Verificações de Pânico sempre que hou ver risco de dano físico: Número de AutocontrolePenalidade na Verificação de Pânico 6 -4 9 -3 12 -2 15 -1 Em algumas épocas e lugares, solda dos, policiais, etc. , reagem com a mes ma penalidade quando descobrem que um indivíduo é covarde."
+    "descricao": "-10 pontos* O personagem é extremamente cui dadoso com relação ao seu bem-estar físico. Sempre que surgir a necessidade de se arriscar fisicamente, ele deve fa zer um teste de autocontrole. Se houver risco de vida, o teste sofre uma penali dade de -5. No caso de um fracasso, ele deve recusar se arriscar, a menos que seja ameaçado com um perigo maior. Covardia impõe uma penalidade nas Verificações de Pânico sempre que hou ver risco de dano físico: Número de AutocontrolePenalidade na Verificação de Pânico 6 -4 9 -3 12 -2 15 -1 Em algumas épocas e lugares, solda dos, policiais, etc. , reagem com a mes ma penalidade quando descobrem que um indivíduo é covarde.",
+    "efeitos": [
+      {
+        "tipo": "pericia",
+        "alvo": "panico",
+        "porAutocontrole": {
+          "6": -4,
+          "9": -3,
+          "12": -2,
+          "15": -1
+        },
+        "condicao": "quando houver risco de dano físico (MB p.130)"
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "reacao",
+        "porAutocontrole": {
+          "6": -4,
+          "9": -3,
+          "12": -2,
+          "15": -1
+        },
+        "condicao": "de soldados e policiais que descobrirem a covardia (MB p.130)"
+      }
+    ]
   },
   {
     "id": "credulidade",
@@ -2199,7 +2223,20 @@
     "tags": [
       "mental"
     ],
-    "descricao": "Custos: -5, -10, -15, ou -20 (dependendo da raridade). Multiplique por 2 se CR 6, 1.5 se CR 9, 1 se CR 12, 0.5 se CR 15."
+    "descricao": "Custos: -5, -10, -15, ou -20 (dependendo da raridade). Multiplique por 2 se CR 6, 1.5 se CR 9, 1 se CR 12, 0.5 se CR 15.",
+    "efeitos": [
+      {
+        "tipo": "pericia",
+        "alvo": "*",
+        "porAutocontrole": {
+          "6": -4,
+          "9": -3,
+          "12": -2,
+          "15": -1
+        },
+        "condicao": "enquanto a causa do medo persistir, mesmo tendo passado no autocontrole (MB p.141)"
+      }
+    ]
   },
   {
     "id": "fora_de_forma",
@@ -4953,7 +4990,20 @@
     "tags": [
       "mental"
     ],
-    "descricao": "O personagem se sente instintivamente atraído e fascinado pelo estranho e por alienígenas, independente de quão perigosos ou assustadores eles pareçam ser.\n\nEle deve fazer um teste de autocontrole quando encontrar alguém (ou alguma coisa) desse tipo.\n\nUm fracasso indica que ele assume que essa pessoa está interessada em interagir socialmente com ele.\n\nUm xenófilo tem o hábito de oferecer bebidas a soldados evidentemente estrangeiros, passar cantadas em vampiras bonitinhas e trocar cumprimentos com Coisas Que o Homem Não Deveria Saber Que Existem, enquanto seus companheiros estão apontando armas ou fugindo na direção oposta…\n\nPara compensar tudo isso, o personagem recebe um bônus nas Verificações de Pânico quando encontra criaturas estranhas.\n\nNúmero de Autocontrole / Bônus\n\n6: +4.\n\n9: +3.\n\n12: +2.\n\n15: +1.\n\nPdMs com esta característica reagem diante PdJs exótico com os mesmos bônus."
+    "descricao": "O personagem se sente instintivamente atraído e fascinado pelo estranho e por alienígenas, independente de quão perigosos ou assustadores eles pareçam ser.\n\nEle deve fazer um teste de autocontrole quando encontrar alguém (ou alguma coisa) desse tipo.\n\nUm fracasso indica que ele assume que essa pessoa está interessada em interagir socialmente com ele.\n\nUm xenófilo tem o hábito de oferecer bebidas a soldados evidentemente estrangeiros, passar cantadas em vampiras bonitinhas e trocar cumprimentos com Coisas Que o Homem Não Deveria Saber Que Existem, enquanto seus companheiros estão apontando armas ou fugindo na direção oposta…\n\nPara compensar tudo isso, o personagem recebe um bônus nas Verificações de Pânico quando encontra criaturas estranhas.\n\nNúmero de Autocontrole / Bônus\n\n6: +4.\n\n9: +3.\n\n12: +2.\n\n15: +1.\n\nPdMs com esta característica reagem diante PdJs exótico com os mesmos bônus.",
+    "efeitos": [
+      {
+        "tipo": "pericia",
+        "alvo": "panico",
+        "porAutocontrole": {
+          "6": 4,
+          "9": 3,
+          "12": 2,
+          "15": 1
+        },
+        "condicao": "ao encontrar criaturas estranhas ou alienígenas (MB p.162)"
+      }
+    ]
   },
   {
     "id": "zarolho",

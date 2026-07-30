@@ -518,7 +518,9 @@ data class DesvantagemSelecionada(
     override var nivel: Int = 1,
     override var custoEscolhido: Int = 0,
     var descricao: String = "",
-    var autocontrole: Int? = null,
+    // `override` desde o Lote D-NA: o interpretador precisa do NA para resolver
+    // as tabelas `porAutocontrole` do catálogo. O campo já existia com este nome.
+    override var autocontrole: Int? = null,
     val tipoCusto: TipoCusto = TipoCusto.FIXO,
     val pagina: Int = 0,
     val specialRule: String? = null,

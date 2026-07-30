@@ -77,17 +77,23 @@ fun AtributosQuickRollPanel(
     bonusStBracal: Int = 0,
     bonusDxBracal: Int = 0,
     bonusStLevantamento: Int = 0,
+    // Lote D-ESTADO: o desconto dos estados ligados, por codigo de atributo.
+    // Vazio quando nada esta ligado, que e o caso normal.
+    penalidadesDeEstado: Map<String, Int> = emptyMap(),
     onExecutarRolagem: (String, Int, Int) -> Unit
 ) {
     // Braçais ligadas: o atributo rolado passa a ser o dos braços. Cada uma
     // mexe SÓ no seu (MB p.89 e p.56) -- a ST Braçal nunca toca a DX e vice-versa.
+    //
+    // ⚠️ O estado temporario entra DEPOIS e SOMA: quem tem ST Bracal e esta com
+    // Dor Cronica tem as duas coisas ao mesmo tempo. Nao e "um ou outro".
     fun valorDe(attr: String): Int = personagem.getAtributo(attr) + when (attr) {
         // ST Bracal e ST de Levantamento SOMAM: sao vantagens diferentes, e
         // erguer com os bracos usa as duas.
         "ST" -> bonusStBracal + bonusStLevantamento
         "DX" -> bonusDxBracal
         else -> 0
-    }
+    } + (penalidadesDeEstado[attr] ?: 0)
 
     if (isPraCegoVariant) {
         Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
@@ -372,6 +378,12 @@ fun AtaqueDanoQuickArea(
     rotuloDaMao: String = "",
     descricaoDaMao: String = "",
     onAlternarMao: () -> Unit = {},
+    // Lote D-MIRA: a segunda pergunta da mao -- "esta e a que perdeu o dedo?".
+    // Vazio quando a ficha nao tem Sem Um Dedo, e ai a linha nem aparece.
+    ehAMaoSemDedo: Boolean = false,
+    rotuloDoDedo: String = "",
+    descricaoDoDedo: String = "",
+    onAlternarMaoSemDedo: () -> Unit = {},
     // Lote MIRA-1: toque longo no NH abre a lista de onde acertar.
     onAbrirMira: (RollMappedOption) -> Unit = {},
     // Lote MIRA-2: "alvo a 20 m (-6)". Nulo quando nao ha distancia posta ou o
@@ -438,6 +450,29 @@ fun AtaqueDanoQuickArea(
                     rotuloDaMao,
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.outline,
+                    modifier = Modifier.padding(start = 2.dp)
+                )
+            }
+        }
+
+        // Lote D-MIRA: Sem Um Dedo vale para UMA mão, e a ficha não guarda qual.
+        // Segunda caixinha em vez de chute — quem responde é o jogador.
+        if (rotuloDoDedo.isNotBlank()) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .linhaAlternavel(
+                        marcado = ehAMaoSemDedo,
+                        descricao = descricaoDoDedo,
+                        onAlternar = onAlternarMaoSemDedo
+                    ),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Checkbox(checked = ehAMaoSemDedo, onCheckedChange = null)
+                Text(
+                    rotuloDoDedo,
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.error,
                     modifier = Modifier.padding(start = 2.dp)
                 )
             }

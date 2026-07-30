@@ -15,12 +15,17 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.gurps.ficha.domain.rules.PisoDeTeste
 import com.gurps.ficha.domain.rules.ResistenciaRules
 import com.gurps.ficha.model.Personagem
 import com.gurps.ficha.ui.FullscreenDialogContainer
@@ -161,46 +166,61 @@ private fun LinhaDeResistencia(
     isPraCegoVariant: Boolean,
     onRolar: (String, Int?, Int) -> Unit
 ) {
+    // As caixinhas do Lote D-NA. O estado é por linha e some junto com ela.
+    var marcados by remember(teste.rotulo, teste.condicionais) { mutableStateOf(emptySet<Int>()) }
+    val extra = teste.condicionais.filterIndexed { i, _ -> i in marcados }.sumOf { it.valor }
+    val alvoFinal = PisoDeTeste.aplicar(teste.alvo + extra)
+
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(12.dp),
         colors = appCardColors()
     ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .clickable { onRolar(teste.rotulo, teste.alvo, 0) }
-                .semantics { contentDescription = teste.descricaoAcessivel }
-                .padding(horizontal = 10.dp, vertical = 6.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Column(modifier = Modifier.weight(1f).padding(end = 8.dp)) {
-                Text(
-                    teste.rotulo,
-                    style = MaterialTheme.typography.bodyMedium,
-                    fontWeight = FontWeight.Medium
-                )
-                Text(
-                    teste.explicacao,
-                    style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.outline
-                )
-                if (teste.origens.isNotEmpty()) {
+        Column(modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp)) {
+            // Só o cabeçalho rola — marcar uma condição dentro do clicável
+            // dispararia a rolagem junto. Mesmo desenho do PainelReacao.
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { onRolar(teste.rotulo, alvoFinal, 0) }
+                    .semantics { contentDescription = teste.descricaoAcessivel }
+                    .padding(vertical = 2.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Column(modifier = Modifier.weight(1f).padding(end = 8.dp)) {
                     Text(
-                        teste.origens.joinToString(", "),
+                        teste.rotulo,
+                        style = MaterialTheme.typography.bodyMedium,
+                        fontWeight = FontWeight.Medium
+                    )
+                    Text(
+                        teste.explicacao,
                         style = MaterialTheme.typography.labelSmall,
                         color = MaterialTheme.colorScheme.outline
                     )
+                    if (teste.origens.isNotEmpty()) {
+                        Text(
+                            teste.origens.joinToString(", "),
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.outline
+                        )
+                    }
                 }
+                Text(
+                    if (isPraCegoVariant) "Rolar ($alvoFinal)" else "$alvoFinal",
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.primary,
+                    maxLines = 1,
+                    softWrap = false
+                )
             }
-            Text(
-                if (isPraCegoVariant) "Rolar (${teste.alvo})" else "${teste.alvo}",
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.primary,
-                maxLines = 1,
-                softWrap = false
+
+            PainelBonusCondicional(
+                bonus = teste.condicionais,
+                marcados = marcados,
+                onAlternar = { i -> marcados = if (i in marcados) marcados - i else marcados + i }
             )
         }
     }

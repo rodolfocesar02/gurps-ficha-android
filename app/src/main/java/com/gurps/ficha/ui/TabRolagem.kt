@@ -28,9 +28,12 @@ import com.gurps.ficha.data.network.DiscordRollPayload
 import com.gurps.ficha.data.network.DiscordVoiceChannel
 
 import com.gurps.ficha.domain.roll.CriticoRules
+import com.gurps.ficha.domain.rules.DesastradoRules
+import com.gurps.ficha.domain.rules.EstadosTemporarios
 import com.gurps.ficha.domain.rules.MagiaEnergiaRules
 import com.gurps.ficha.domain.rules.DxBracalRules
 import com.gurps.ficha.domain.rules.MaoInabilRules
+import com.gurps.ficha.domain.rules.SemUmDedoRules
 import com.gurps.ficha.domain.rules.MarcosDeVidaRules
 import com.gurps.ficha.domain.rules.StBracalRules
 import com.gurps.ficha.model.PericiaSelecionada
@@ -303,7 +306,16 @@ fun TabRolagem(viewModel: FichaViewModel) {
     // Mao inabil: -4 (MB p.14), zerado pela Ambidestria. O seletor continua
     // valendo com a vantagem -- so o numero some.
     var usandoMaoInabil by remember { mutableStateOf(false) }
-    val penalidadeDaMao = MaoInabilRules.penalidadeDe(p, usandoMaoInabil)
+    // Lote D-MIRA: o Sem Um Dedo vale para UMA mão, e a ficha não guarda qual.
+    var ehAMaoSemDedo by remember { mutableStateOf(false) }
+    // Lote D-ESTADO: `id do estado -> grau ligado`. Mora na ABA, não no painel,
+    // porque o estado vale para tudo — atributo, perícia, autocontrole e
+    // Deslocamento. Se morasse no painel, a Dor Crônica sumiria ao abrir o
+    // diálogo de perícias, que é justo onde ela precisa valer.
+    var grausDeEstado by remember { mutableStateOf(emptyMap<String, Int>()) }
+    val modsDeEstado = EstadosTemporarios.totalDe(grausDeEstado)
+    val penalidadeDaMao = MaoInabilRules.penalidadeDe(p, usandoMaoInabil) +
+        SemUmDedoRules.penalidadeDe(p, ehAMaoSemDedo)
 
 
     val opcoesPericia = p.periciasTotais.filter { per ->
@@ -319,6 +331,13 @@ fun TabRolagem(viewModel: FichaViewModel) {
             target = per.calcularNivel(p),
             descricao = viewModel.dataRepository.regraPericiaV2(per.definicaoId)?.descricao.orEmpty()
         )
+    }
+
+    // Os rótulos que o Completamente Desastrado alcança (Lote D-CRIT). Sai da
+    // MESMA função que monta o rótulo do diálogo, senão "Faca (Arremesso)"
+    // nunca casaria com "Faca" e a regra falharia calada.
+    val rotulosBaseDX = remember(p.periciasTotais) {
+        DesastradoRules.rotulosDeBaseDX(p.periciasTotais, ::periciaLabel)
     }
 
     val aptMagica = p.getVantagemNivel("aptidao_magica")
@@ -457,13 +476,30 @@ fun TabRolagem(viewModel: FichaViewModel) {
         val labelComMod = if (modStr.isEmpty()) pending.contextoLabel else "${pending.contextoLabel} ($modStr)"
 
         // Classificação de crítico pela regra COMPLETA (considera o NH efetivo).
-        val critico = CriticoRules.classificar(soma, alvoEfetivo)
+        // Depois vem o Completamente Desastrado, que pode transformar um
+        // fracasso comum de DX em falha crítica (Lote D-CRIT, MB p.133).
+        val ehBaseDX = pending.contextoLabel in rotulosBaseDX ||
+            (pending.tipo == TipoTeste.ATRIBUTO &&
+                pending.contextoLabel == DesastradoRules.ROTULO_ATRIBUTO_DX)
+        val critico = DesastradoRules.reclassificar(
+            personagem = p,
+            ehBaseDX = ehBaseDX,
+            original = CriticoRules.classificar(soma, alvoEfetivo),
+            soma = soma,
+            alvoEfetivo = alvoEfetivo
+        )
+        // O aviso só sai quando o NÚMERO sozinho não explicaria o resultado —
+        // um 18 já é falha crítica para qualquer um, e avisar ali seria ruído.
+        val avisoDesastrado = if (
+            DesastradoRules.explicaOResultado(p, ehBaseDX, soma, alvoEfetivo)
+        ) " · ${DesastradoRules.MOTIVO}" else ""
+
         val statusText = if (alvoEfetivo != null) {
             val dist = alvoEfetivo - soma
             val marginPart = "(por ${abs(dist)})"
             when (critico) {
                 CriticoRules.ResultadoCritico.DECISIVO -> "Sucesso Crítico! $marginPart"
-                CriticoRules.ResultadoCritico.FALHA_CRITICA -> "Falha Crítica! $marginPart"
+                CriticoRules.ResultadoCritico.FALHA_CRITICA -> "Falha Crítica! $marginPart$avisoDesastrado"
                 else -> if (dist >= 0) "Sucesso $marginPart" else "Falha $marginPart"
             }
         } else ""
@@ -473,7 +509,10 @@ fun TabRolagem(viewModel: FichaViewModel) {
             val marginPart = " (por ${abs(dist)})"
             when (critico) {
                 CriticoRules.ResultadoCritico.DECISIVO -> "crítico$marginPart"
-                CriticoRules.ResultadoCritico.FALHA_CRITICA -> "falha_crítica$marginPart"
+                // O aviso vai junto para o Discord: sem ele o Mestre vê uma
+                // falha crítica num 12 e acha que o app errou a conta.
+                CriticoRules.ResultadoCritico.FALHA_CRITICA ->
+                    "falha_crítica$marginPart$avisoDesastrado"
                 else -> if (dist >= 0) "sucesso$marginPart" else "falha$marginPart"
             }
         } else "sucesso"
@@ -723,6 +762,14 @@ fun TabRolagem(viewModel: FichaViewModel) {
             onAlternarDxBracal = { dxBracalAtivo = !dxBracalAtivo },
             stLevantamentoAtivo = stLevantamentoAtivo,
             onAlternarStLevantamento = { stLevantamentoAtivo = !stLevantamentoAtivo },
+            grausDeEstado = grausDeEstado,
+            onAlternarEstado = { id, novoGrau ->
+                grausDeEstado = if (novoGrau == 0) {
+                    grausDeEstado - id
+                } else {
+                    grausDeEstado + (id to novoGrau)
+                }
+            },
             onRolarAtributo = { attr, valor, modAttr ->
                 if (attr == "PER") {
                     // Lote 372: PER abre o diálogo de Testes de Sentidos.
@@ -866,6 +913,10 @@ fun TabRolagem(viewModel: FichaViewModel) {
             rotuloDaMao = MaoInabilRules.rotuloDe(p, usandoMaoInabil),
             descricaoDaMao = MaoInabilRules.rotuloAcessivel(p),
             onAlternarMao = { usandoMaoInabil = !usandoMaoInabil },
+            ehAMaoSemDedo = ehAMaoSemDedo,
+            rotuloDoDedo = if (SemUmDedoRules.tem(p)) SemUmDedoRules.rotuloDe(p) else "",
+            descricaoDoDedo = SemUmDedoRules.ROTULO_ACESSIVEL,
+            onAlternarMaoSemDedo = { ehAMaoSemDedo = !ehAMaoSemDedo },
             onAbrirMira = { miraDoAtaque = it },
             rotuloDistancia = if (penalidadeDistancia != 0) {
                 // A velocidade PRECISA aparecer: sem ela o rotulo dizia
@@ -1036,7 +1087,12 @@ fun TabRolagem(viewModel: FichaViewModel) {
             modificadoresPericia = modificadoresPericia,
             isPraCegoVariant = isPraCegoVariant,
             onShowDescricao = { descricaoDialog = it },
-            onExecutarRolagem = { contexto, alvo, mod -> executarRolagem(TipoTeste.PERICIA, contexto, alvo, mod) },
+            // O estado temporário entra em TODA perícia (Lote D-ESTADO): o livro
+            // escreve "todos os testes de habilidade" em Enjoo, Flashbacks e
+            // Repugnância.
+            onExecutarRolagem = { contexto, alvo, mod ->
+                executarRolagem(TipoTeste.PERICIA, contexto, alvo, mod + modsDeEstado.pericias)
+            },
             onDismiss = { showPericiasDialog = false }
         )
     }
@@ -1226,7 +1282,11 @@ fun TabRolagem(viewModel: FichaViewModel) {
         DialogoReacaoEResistencia(
             personagem = p,
             isPraCegoVariant = isPraCegoVariant,
-            modSituacional = if (isPraCegoVariant) modificadorGlobalPraCego else 0,
+            // O autocontrole das OUTRAS desvantagens cai junto (Lote D-ESTADO):
+            // "reduza os testes de autocontrole pelo mesmo valor — uma pessoa
+            // com dor tem mais chances de perder a calma" (MB p.137).
+            modSituacional = (if (isPraCegoVariant) modificadorGlobalPraCego else 0) +
+                modsDeEstado.autocontrole,
             onRolar = { label, alvo, mod ->
                 executarRolagem(tipo = TipoTeste.ATRIBUTO, contextoLabel = label, alvo = alvo, mod = mod)
             },

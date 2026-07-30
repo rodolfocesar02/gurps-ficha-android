@@ -49,6 +49,31 @@ object DeslocamentosRules {
     const val ID_CAMINHAR_NO_AR = "caminhar_no_ar"
     const val ID_DESLOCAMENTO_AQUATICO = "deslocamento_aquatico"
 
+    /**
+     * **Invertebrado** (MB p.148) — Lote D-MIRA.
+     *
+     * > Ele utiliza sua Base de Carga total para **empurrar** coisas, mas apenas
+     * > **1/4 da BC** para calcular o peso de objetos que o personagem é capaz
+     * > de **erguer, carregar ou puxar**.
+     *
+     * ⚠️ Sem isto o personagem carregava **quatro vezes** mais do que deveria —
+     * e é o tipo de erro que ninguém confere, porque o número parece normal.
+     */
+    const val ID_INVERTEBRADO = "invertebrado"
+
+    /** Se a ficha tem Invertebrado: sem coluna, sem força para carregar. */
+    fun ehInvertebrado(personagem: Personagem): Boolean =
+        personagem.desvantagensTotais.any { it.definicaoId == ID_INVERTEBRADO }
+
+    /**
+     * A Base de Carga que vale para **erguer, carregar e puxar**.
+     *
+     * ⚠️ **Não** é a BC de empurrar, que continua inteira. O app só mostra a de
+     * carregar — é a que decide o nível de carga e, por tabela, o Deslocamento.
+     */
+    fun baseDeCargaEfetiva(personagem: Personagem): Float =
+        if (ehInvertebrado(personagem)) personagem.baseCarga / 4f else personagem.baseCarga
+
     /** Uma linha da lista, pronta para a tela. */
     data class Linha(
         val rotulo: String,
@@ -207,7 +232,8 @@ object DeslocamentosRules {
      */
     fun tabelaDeCarga(personagem: Personagem): List<Linha> {
         val basico = personagem.deslocamentoBasico
-        val bc = personagem.baseCarga
+        // A BC de CARREGAR — o Invertebrado usa 1/4 dela (MB p.148).
+        val bc = baseDeCargaEfetiva(personagem)
         val atual = personagem.nivelCarga
         val tetos = mapOf(0 to 1f, 1 to 2f, 2 to 3f, 3 to 6f, 4 to 10f)
 
@@ -225,7 +251,14 @@ object DeslocamentosRules {
     /** O rótulo do peso atual, para o cabeçalho da tabela. */
     fun resumoDaCarga(personagem: Personagem): String {
         val n = NivelCarga.de(personagem.nivelCarga)
+        val bc = baseDeCargaEfetiva(personagem)
+        // A nota do Invertebrado é obrigatória: sem ela o jogador vê uma BC que
+        // não bate com a ST dele e acha que o app errou a conta.
+        val nota = if (ehInvertebrado(personagem)) {
+            " (Invertebrado: 1/4 da BC para carregar — a de empurrar continua " +
+                "${"%.1f".format(personagem.baseCarga)} kg, MB p.148)"
+        } else ""
         return "Carregando ${"%.1f".format(personagem.pesoTotalEquipamentos)} kg " +
-            "de ${"%.1f".format(personagem.baseCarga)} kg de Base de Carga — carga ${n.rotulo}"
+            "de ${"%.1f".format(bc)} kg de Base de Carga — carga ${n.rotulo}$nota"
     }
 }

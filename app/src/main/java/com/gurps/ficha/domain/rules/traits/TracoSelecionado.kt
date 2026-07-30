@@ -46,6 +46,22 @@ interface TracoSelecionado {
     val custoEscolhido: Int
 
     /**
+     * O **Número de Autocontrole** (6, 9, 12 ou 15), quando o traço tem um.
+     *
+     * Entrou no Lote D-NA. Várias desvantagens do livro trazem uma tabela em que
+     * a penalidade **sai do NA**, e não do nível nem do custo: quanto mais baixo
+     * o NA (mais difícil resistir), pior o modificador. Covardia dá −4 na
+     * Verificação de Pânico com NA 6 e só −1 com NA 15.
+     *
+     * Analogia: `porNivel` é preço por quilo, `porOpcao` é tabela de tamanhos, e
+     * este é **desconto por faixa de renda** — o número não vem do que você
+     * comprou, vem de quem você é.
+     *
+     * Null em vantagem e em desvantagem sem NA, que é a maioria.
+     */
+    val autocontrole: Int? get() = null
+
+    /**
      * De qual catálogo este traço veio.
      *
      * Parece redundante — e era, até 28/07/2026. **Seis ids existem nos DOIS

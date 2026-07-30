@@ -135,7 +135,22 @@ data class EfeitoDeclarado(
     val condicao: String? = null,
     val escopo: String? = null,
     @SerializedName(value = "porOpcao", alternate = ["por_opcao"])
-    val porOpcao: Map<String, Int>? = null
+    val porOpcao: Map<String, Int>? = null,
+    /**
+     * Tabela indexada pelo **Número de Autocontrole** (Lote D-NA).
+     *
+     * ```json
+     * "porAutocontrole": { "6": -4, "9": -3, "12": -2, "15": -1 }
+     * ```
+     *
+     * As chaves são os quatro NAs do GURPS. ⚠️ **A tabela NÃO é a mesma em todo
+     * lugar** — eu tinha anotado no plano que "se repete literalmente igual", e
+     * está errado: o Egoísmo (MB p.137) usa −5/−4/−3/−2, um degrau pior, e a
+     * Xenofilia (p.162) usa **+4/+3/+2/+1**, que é bônus. Por isso a tabela é
+     * dado do catálogo, e não uma constante única no código.
+     */
+    @SerializedName(value = "porAutocontrole", alternate = ["por_autocontrole"])
+    val porAutocontrole: Map<String, Int>? = null
 ) {
     val tipoResolvido: TipoEfeito? get() = TipoEfeito.de(tipo)
     val escopoResolvido: EscopoEfeito get() = EscopoEfeito.de(escopo)
@@ -162,12 +177,22 @@ data class EfeitoDeclarado(
      * o bônus a dar o bônus errado é a mesma regra do resto do interpretador.
      */
     fun valorPara(selecao: TracoSelecionado): Int {
+        // A ORDEM importa: um efeito declara uma tabela só. `porAutocontrole`
+        // vem primeiro porque é o mais específico — quem tem NA não usa nível
+        // nem degrau de custo para decidir a penalidade.
+        porAutocontrole?.let { tabela ->
+            val na = selecao.autocontrole ?: return 0
+            return tabela[na.toString()] ?: 0
+        }
         val tabela = porOpcao ?: return valorPara(selecao.nivel)
         return tabela[selecao.custoEscolhido.toString()] ?: 0
     }
 
     /** Se o efeito depende da faixa de custo escolhida pelo jogador. */
     val ehPorOpcao: Boolean get() = !porOpcao.isNullOrEmpty()
+
+    /** Se o efeito depende do Número de Autocontrole da desvantagem. */
+    val ehPorAutocontrole: Boolean get() = !porAutocontrole.isNullOrEmpty()
 
     /**
      * Uma linha legível do efeito, para o contexto enviado à IA:

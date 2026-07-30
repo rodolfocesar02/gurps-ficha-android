@@ -167,8 +167,26 @@ def main():
                 # `porOpcao` substitui `valor` nos tracos que tem DEGRAUS de
                 # custo em vez de niveis (Aparencia: 4/12/16/20 pts ->
                 # +1/+2/+2/+2 de reacao). Um dos dois precisa existir.
+                # `porAutocontrole` e a terceira forma (Lote D-NA): a penalidade
+                # sai do Numero de Autocontrole, nao do nivel nem do custo.
+                por_na = ef.get("porAutocontrole")
+                if por_na is not None:
+                    if set(map(str, por_na)) != {"6", "9", "12", "15"}:
+                        erros.append(
+                            f"{onde}: `porAutocontrole` precisa ter os quatro NAs "
+                            f"(6, 9, 12, 15), veio {sorted(por_na)}"
+                        )
+                    for chave, valor in por_na.items():
+                        if not isinstance(valor, int) or valor == 0:
+                            erros.append(
+                                f"{onde}: `porAutocontrole[{chave}]` precisa ser "
+                                f"inteiro nao-zero, veio {valor!r}"
+                            )
+
                 por_opcao = ef.get("porOpcao")
-                if por_opcao is not None:
+                if por_na is not None:
+                    pass
+                elif por_opcao is not None:
                     if not isinstance(por_opcao, dict) or not por_opcao:
                         erros.append(f"{onde}: `porOpcao` precisa ser um objeto nao vazio")
                     else:
@@ -201,13 +219,14 @@ def main():
                     erros.append(f"{onde}: `valor` precisa ser inteiro, veio {ef.get('valor')!r}")
 
                 if tipo.startswith("per"):
-                    # Dois alvos reservados, que NAO sao pericia do catalogo:
+                    # Tres alvos reservados, que NAO sao pericia do catalogo:
                     #  - "reacao": modificador de Teste de Reacao (ReacaoRules).
-                    #  - "*": curinga "qualquer pericia" (Lote TAL-1), para as
-                    #    tres vantagens em que o livro da uma SITUACAO e nao uma
-                    #    lista (Toque Sensivel, Venturoso, Versatil).
+                    #  - "panico": Verificacao de Panico (ResistenciaRules),
+                    #    criado no Lote D-NA para Covardia e Xenofilia.
+                    #  - "*": curinga "qualquer pericia" (Lote TAL-1), para os
+                    #    tracos em que o livro da uma SITUACAO e nao uma lista.
                     # Em sincronia com EfeitosDeclaradosCatalogoTest.ALVOS_RESERVADOS.
-                    if alvo in ("reacao", "*"):
+                    if alvo in ("reacao", "panico", "*"):
                         pass
                     elif alvo not in pericias:
                         sugestao = [p for p in pericias if p.lower().startswith(alvo.lower()[:5])][:3]

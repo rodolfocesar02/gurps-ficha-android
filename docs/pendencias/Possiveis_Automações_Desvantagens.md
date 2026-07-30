@@ -670,10 +670,32 @@ que mais protege a ficha de ficar incoerente.>>
 | 1 | **D-PAR** | Os pares proibidos no `IncompatibilidadeDeTracos` | mais barato de todos, e é o que protege a ficha de ficar incoerente | ✅ **feito** (4.9) — foram **13**, não 8 |
 | 2 | **D-ESPELHO** | Fora de Forma, Temor, Suscetibilidade à Magia, Suscetível, Sem Imaginação, Gagueira, Voz Irritante | cada um é copiar leitura existente e trocar o sinal | ✅ **feito** (4.9) |
 | 3 | **D-LISTA** | Timidez, Pouca Empatia, Oblívio, Insensível, Ingênuo, Incapaz de Sentir Prazer, Mau Cheiro, Teimosia, Mão Fraca, Maneta + o bloco de reação | JSON puro, ~90 efeitos | ✅ **feito** (4.9) — 18 traços, **78** efeitos |
-| 4 | **D-NA** | O campo `porAutocontrole` + os 6 clientes | mecanismo novo, mas pequeno e com clientes conhecidos | ⏭️ próximo |
-| 5 | **D-ESTADO** | O interruptor de estado + os 10 clientes | o maior; agora dá para desenhar sabendo que precisa cobrir Vontade e Deslocamento | ⏭️ |
-| 6 | **D-MIRA** | Zarolho, Assassino Relutante, Sem Um Dedo, Invertebrado | encaixam em telas prontas | ⏭️ |
-| 7 | **D-CRIT** | Completamente Desastrado no `CriticoRules` | o mais delicado: muda o desfecho da rolagem, não o número | ⏭️ |
+| 4 | **D-NA** | O campo `porAutocontrole` + os 6 clientes | mecanismo novo, mas pequeno e com clientes conhecidos | ✅ **feito** (5.0) — só **3** clientes eram do jogador |
+| 5 | **D-ESTADO** | O interruptor de estado + os 10 clientes | o maior; agora dá para desenhar sabendo que precisa cobrir Vontade e Deslocamento | ✅ **feito** (5.0) — **9** clientes; Fobias foi pelo D-NA |
+| 6 | **D-MIRA** | Zarolho, Assassino Relutante, Sem Um Dedo, Invertebrado | encaixam em telas prontas | ✅ **feito** (5.0) |
+| 7 | **D-CRIT** | Completamente Desastrado no `CriticoRules` | o mais delicado: muda o desfecho da rolagem, não o número | ✅ **feito** (5.0) — em `DesastradoRules`, fora do `CriticoRules` |
+
+# ✅ PLANO DE DESVANTAGENS COMPLETO — 30 de Julho de 2026
+
+Os sete lotes fechados em três versões (4.8, 4.9, 5.0). O que a **execução**
+corrigiu do plano, e que só apareceu ao ler cada página de novo na hora de
+escrever o código:
+
+- 🔴 **A tabela de autocontrole NÃO é a mesma em todo lugar.** O plano dizia que
+  ela *"se repete literalmente igual"* nos seis clientes. **Egoísmo** (p.137) usa
+  −5/−4/−3/−2, um degrau pior, e **Xenofilia** (p.162) usa **+4/+3/+2/+1**, que é
+  **bônus**. Por isso a tabela virou dado do catálogo, e não constante no código.
+- 🔴 **Três dos seis clientes do D-NA não são do jogador.** As tabelas de
+  **Solitário** e **Egoísmo** descrevem *"a reação de PdMs Solitários **diante**
+  outras pessoas"* — é o modificador de quem **tem** a desvantagem reagindo aos
+  outros, rolagem do Mestre para PdM. O painel do app rola o contrário. E
+  **Gastar Compulsivamente** é uma das ~15 variantes da entrada única `compulsao`,
+  que não guarda qual foi escolhida.
+- **Mão Fraca saiu do D-LISTA para Kotlin** (armas de corpo a corpo são ~50
+  perícias) e **Sem Imaginação virou curinga**.
+- **D-PAR cresceu de 8 para 13 pares.**
+- 🔴 **O piso de 3 faltava em "Resistir a Intimidação"** — achado pela simulação
+  exaustiva, não por caso pontual. Ver o `PROGRESS.md` da 5.0.
 
 ### O que mudou de plano ao executar os três primeiros
 
