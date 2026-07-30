@@ -80,11 +80,15 @@ object MarcosDeVidaRules {
         //    -1×, -2×, -3×, -4× exigem teste; -5× é morte automática.
         marcosDeMorteCruzados(maximo, pvAntes, pvDepois).forEach { multiplo ->
             val (bonus, origens) = bonusDe(personagem, ID_DURO_DE_MATAR)
+            // ⚠️ Fácil de Matar (MB p.140) entra SÓ nos testes de morte, e o
+            // alvo nunca desce abaixo de 3. Ver `ResistenciaRules`.
+            val facil = ResistenciaRules.penalidadeFacilDeMatar(personagem)
             testes += TesteExigido(
                 rotulo = "Evitar a morte (−${multiplo}× PV)",
-                alvo = ht + bonus,
+                alvo = (ht + bonus + facil).coerceAtLeast(3),
                 explicacao = "PV passou de −${multiplo * maximo}. Falha: morre.",
-                origens = origens
+                origens = origens +
+                    if (facil != 0) listOf("Fácil de Matar $facil") else emptyList()
             )
         }
 

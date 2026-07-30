@@ -33,7 +33,7 @@ que o `SentidoRules` já trata.
 
 # Parte 1 — p.124 a p.131
 
-## ⭐ Atrapalhado
+## ⭐ Atrapalhado(pode fazer)
 **−5 ou −10 pontos** · p.124
 
 > O personagem sofre uma penalidade em qualquer teste baseado em DX para realizar
@@ -60,7 +60,7 @@ todas as perícias de combate do personagem.
 O −1 por nível em Influência/reação "em locais onde é importante ter boas
 maneiras" é **condicional** — vira caixinha.>>
 
-## ⭐ Baixa Autoestima
+## ⭐ Baixa Autoestima(pode fazer)
 **−10 pontos** · p.125
 
 > Ele sofre uma penalidade de **−3 em todos os testes de habilidade** sempre que
@@ -73,7 +73,7 @@ uma **situação**, não uma lista, e quem decide se ela vale é o Mestre.
 
 Sai de graça agora que o curinga existe. Uma linha de JSON.>>
 
-## Barulhento
+## Barulhento(pode fazer)
 **−2 pontos/nível** · p.125
 
 > Cada nível concede um bônus de **+2 nos testes de Sentidos para ouvir o
@@ -87,7 +87,7 @@ Sai de graça agora que o curinga existe. Uma linha de JSON.>>
 O +2 para os **outros** ouvirem não tem onde entrar — a ficha é do personagem,
 não de quem procura por ele.>>
 
-## Briguento
+## Briguento(pode fazer)
 **−10 pontos\*** · p.126
 
 > Como ninguém gosta de um fanfarrão, seus testes de reação sofrem uma penalidade
@@ -96,7 +96,7 @@ não de quem procura por ele.>>
 <<Reação **−2 fixa**, não condicional: o livro não põe "quando". O autocontrole
 já está feito; falta só o −2.>>
 
-## Características Sobrenaturais
+## Características Sobrenaturais(pode fazer)
 **−5 a −10 pontos** · p.126
 
 > **Sem Reflexo / Sem Sombra / Palidez:** a reação de quem perceber sofre **−2**;
@@ -110,7 +110,7 @@ variante com o seu texto ("de quem perceber que você não tem reflexo").
 O bônus nos testes de terceiros para descobrir o segredo fica de fora pelo mesmo
 motivo do Barulhento: quem rola é o outro.>>
 
-## ⭐ Cegueira
+## ⭐ Cegueira(pode fazer)
 **−50 pontos** · p.127 · *parcialmente automatizada*
 
 > Todas as **perícias de combate** de um personagem cego sofrem uma penalidade de
@@ -130,7 +130,7 @@ delas é um erro que o app comete hoje:
 3. **O diálogo de Mira deveria avisar** que ele não pode mirar em ponto de
    impacto. Não sumir com a lista (a informação é útil), mas dizer.>>
 
-## ⭐ Cegueira Noturna
+## ⭐ Cegueira Noturna(pode fazer)
 **−10 pontos** · p.127
 
 > Se a penalidade sobre a visão ou o combate devido à má iluminação estiver entre
@@ -150,7 +150,7 @@ exato da Visão Noturna, e o painel já sabe explicar a conta.
 O livro ainda diz que ela é **mutuamente excludente** com Visão Noturna e Visão
 no Escuro — vai para o `IncompatibilidadeDeTracos`, que já existe.>>
 
-## Circunspecção
+## Circunspecção(pode fazer)
 **−10 pontos** · p.127
 
 > A reação das outras pessoas sofre uma penalidade de **−2** em qualquer situação
@@ -159,7 +159,7 @@ no Escuro — vai para o `IncompatibilidadeDeTracos`, que já existe.>>
 <<Reação −2 **condicional** ("quando a falta de humor aparecer"). O "em qualquer
 situação onde fique evidente" é literalmente a definição de caixinha.>>
 
-## Corcunda
+## Corcunda(pode fazer)
 **−10 pontos** · p.130
 
 > As roupas e armaduras comuns não servem bem nele, impondo uma penalidade de
@@ -172,9 +172,9 @@ situação onde fique evidente" é literalmente a definição de caixinha.>>
 
 ⚠️ O −1 de DX é **evitável**: o livro diz que basta pagar **10% a mais** por
 equipamento sob medida. Isso é decisão de ficha, não de rolagem — sugiro declarar
-o −1 e explicar a saída no texto, em vez de tentar rastrear o equipamento.>>
+o −1 e explicar a saída no texto, em vez de tentar rastrear o equipamento.<< <ressalva, quando o personagem tiver colocar aarmadura, um nota em vermelho no top do dialogo dos equipamentos, dizendo que precisa pagar 10% a mais pelo equipament ouredutor de-1 na DX .>>
 
-## Credulidade
+## Credulidade(pode fazer)
 **−10 pontos\*** · p.130
 
 > Além disso, um personagem crédulo também sofre uma penalidade de **−3 em
@@ -189,7 +189,7 @@ desvantagem, um fixo e um oferecido.
 A proibição de aprender Detecção de Mentiras é caso para o
 `PreRequisitoChecker`, não para `efeitos`.>>
 
-## Deficiência Física
+## Deficiência Física(pode fazer)
 **−10 a −30 pontos** · p.131
 
 > **Perna Incapacitada:** **−3** em todos os testes de habilidade que exigem uso
@@ -224,7 +224,7 @@ pode** cobrar de novo por um Deslocamento baixo que veio daqui.>>
 
 # Parte 2 — p.132 a p.140
 
-## ⭐ Desastrado / Completamente Desastrado
+## ⭐ Desastrado / Completamente Desastrado(pode fazer)
 **−5 ou −15 pontos** · p.133
 
 > **Completamente Desastrado:** qualquer **fracasso** em um teste de DX ou em uma
@@ -239,9 +239,11 @@ Precisa valer **só para DX e perícias de DX** — um fracasso em Teologia (IQ)
 continua sendo fracasso comum.
 
 O nível de −5 pontos não tem número: é o Mestre inventando trapalhadas. Fica de
-fora.>>
+fora.
 
-## Desdobramento de Personalidade
+<<ressalva- é possivel colocar pra aparecer o erro na jogada no discord, pra lembrar o mestre da desvantagem? uma mensagem no log do discord de erro!>>
+
+## Desdobramento de Personalidade(pode fazer)
 **−15 pontos\*** · p.133
 
 > Todas as personalidades são de alguma forma superficiais e fingidas, o que impõe
@@ -252,8 +254,9 @@ fora.>>
 <<Dois efeitos de reação na mesma desvantagem: **−1 fixo** e **−3 condicional**
 ("de quem viu você trocar de personalidade"). O padrão já existe.>>
 
-## ⭐ Dor Crônica
+## ⭐ Dor Crônica(pode fazer)
 **−5 a −15 pontos** · p.137
+<<coloque a caixa no mesmo lugar onde fica o ST e DX braçal>>
 
 > Enquanto o personagem estiver sentindo dor, **reduza a DX e a IQ** em: **−2**
 > (Suave), **−4** (Grave), **−6** (Excruciante). **Reduza os testes de autocontrole
@@ -266,8 +269,9 @@ Ligado, desconta de DX, IQ **e do número de autocontrole**.
 ⚠️ O terceiro alvo é o que a varredura por palavra-chave nunca acharia: mexer no
 **NA do autocontrole** é uma família de efeito que o catálogo ainda não tem.>>
 
-## Dorminhoco
+## Dorminhoco(pode fazer)
 **−5 pontos** · p.137
+<<coloque a caixa no mesmo lugar onde fica o ST e DX braçal>>
 
 > Até uma hora depois de despertar (…), ele sofre **−2 em todos os testes de
 > autocontrole** e **−1 em IQ** ou nas perícias baseadas em IQ.
@@ -275,15 +279,16 @@ Ligado, desconta de DX, IQ **e do número de autocontrole**.
 <<Mesmo interruptor da Dor Crônica, com valores menores. Se um for feito, o outro
 sai junto.>>
 
-## Egoísmo
+## Egoísmo(pode fazer)
 **−5 pontos\*** · p.137
+
 
 > (…) provavelmente provocando uma reação negativa (**penalidade de −3** na reação
 > do alvo).
 
 <<Reação −3 **condicional** — só depois de ele ofender alguém.>>
 
-## Enjoo
+## Enjoo(pode fazer)
 **−10 pontos** · p.138
 
 > Um fracasso indica que o personagem vomita e sofre **−5 em todos os testes de
@@ -293,7 +298,7 @@ sai junto.>>
 <<Interruptor de três posições (bem / enjoado −2 / vomitando −5), da mesma família
 da Dor Crônica. "Todos os testes de habilidade" é o curinga `*`.>>
 
-## Entorpecido
+## Entorpecido(pode fazer)
 **−20 pontos** · p.138
 
 > Quando estiver realizando uma tarefa que exige que seus olhos e mãos estejam
@@ -304,7 +309,7 @@ da Dor Crônica. "Todos os testes de habilidade" é o curinga `*`.>>
 Manual Elevada. Três traços, uma lista só: vale a pena fazer o Atrapalhado
 primeiro e este vem quase de graça.>>
 
-## ⭐ Disopia
+## ⭐ Disopia(pode fazer)
 **−25 pontos** · p.135 · *parcialmente automatizada*
 
 > **Hipermetrope:** **−6** nos testes de Visão para enxergar a menos de um metro
@@ -319,14 +324,14 @@ primeiro e este vem quase de graça.>>
 delas encaixa exatamente no que acabou de ser feito:
 
 🔴 **"dobre a distância até o alvo"** entra na `TabelaVelocidadeDistancia` do Lote
-MIRA-2. Um míope a 20 metros conta como **40** → **−7** em vez de −6. É uma linha
+MIRA-2. Um míope a 20 metros conta como **40**, que arredonda para o degrau de 50 → **−8** em vez de −6. É uma linha
 de código, e sem ela o míope atira como quem enxerga.
 
 ⚠️ E as duas variantes são **opostas**: o hipermetrope é penalizado **de perto**,
 o míope **de longe**. Um `porOpcao` não resolve, porque as duas custam −25 — vai
 precisar do campo de descrição ou de duas entradas no catálogo.>>
 
-## ⭐ Fácil de Matar
+## ⭐ Fácil de Matar(pode fazer)
 **−2 pontos/nível** · p.140
 
 > Cada nível impõe uma penalidade de **−1 nos testes de HT feitos para verificar a
@@ -346,12 +351,12 @@ viram erro silencioso:
 - **Piso de 3.** O alvo nunca desce abaixo disso — um HT 10 está limitado a Fácil
   de Matar 7.>>
 
-## Estigma Social · Fantasias
+## Estigma Social · Fantasias(pode fazer)
 *Já declaradas no catálogo. A p.139 traz a tabela completa das variantes
 (Cidadão de Segunda Categoria −1, Excomungado −3, Minoria −2, Monstro −3…) —
 vale conferir se o `porOpcao` atual cobre todas.*
 
-## Excesso de Confiança
+## Excesso de Confiança(pode fazer)
 **−5 pontos\*** · p.140
 
 > Impõe um **bônus de +2** aos testes de reação de pessoas **jovens ou ingênuas**
@@ -361,7 +366,7 @@ vale conferir se o `porOpcao` atual cobre todas.*
 por que a reação virou caixinha em vez de soma: aplicar as duas sempre daria zero,
 e o certo é o Mestre dizer com quem ele está falando.>>
 
-## Fanatismo
+## Fanatismo(pode fazer)
 **−15 pontos** · p.140
 
 > **Fanatismo Extremista:** recebe um **bônus de +3 nos testes de Vontade** para
@@ -372,7 +377,7 @@ e o certo é o Mestre dizer com quem ele está falando.>>
 catálogo suporta (o valor é só um número), mas vale um comentário no JSON para
 ninguém "corrigir" o sinal depois.>>
 
-## Fácil de Decifrar
+## Fácil de Decifrar(pode fazer)
 **−10 pontos** · p.140
 
 > (…) se ele também tiver **Veracidade**, sua **Lábia sofre uma penalidade de

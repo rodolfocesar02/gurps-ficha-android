@@ -34,6 +34,7 @@ import com.gurps.ficha.ui.appCardColors
 import com.gurps.ficha.ui.linhaAlternavel
 import com.gurps.ficha.domain.rules.TabelaVelocidadeDistancia
 import com.gurps.ficha.domain.rules.AlcanceDoAtaque
+import com.gurps.ficha.domain.rules.DisopiaRules
 import com.gurps.ficha.domain.rules.ApontarRules
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.runtime.mutableIntStateOf
@@ -82,6 +83,7 @@ fun DialogoMira(
     var desarmar by remember { mutableStateOf(false) }
     var golpeRapido by remember { mutableStateOf(false) }
     var apontou by remember { mutableStateOf(false) }
+    var miope by remember { mutableStateOf(false) }
     val opcoes = MiraRules.opcoes(desarmar)
 
     // Golpe Rapido nao existe em ataque a distancia -- e opcao de corpo a corpo.
@@ -93,7 +95,7 @@ fun DialogoMira(
     val velocidade = if (indiceVelocidade < 0) 0 else
         TabelaVelocidadeDistancia.degrau(indiceVelocidade).metros
     val penalidadeDistancia = if (ehADistancia) {
-        TabelaVelocidadeDistancia.penalidadeCombinada(metros, velocidade)
+        TabelaVelocidadeDistancia.penalidadeCombinada(metros, velocidade, miope)
     } else {
         0
     }
@@ -142,6 +144,30 @@ fun DialogoMira(
                     },
                     onMostrarVelocidade = { onIndices(indiceDistancia, 0) }
                 )
+            }
+
+            // Disopia tem DUAS variantes pelo mesmo custo, e a ficha nao guarda
+            // qual delas e -- entao o app oferece em vez de adivinhar.
+            if (ehADistancia && personagem != null && DisopiaRules.tem(personagem)) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .linhaAlternavel(
+                            marcado = miope,
+                            descricao = DisopiaRules.ROTULO_ACESSIVEL_MIOPE,
+                            onAlternar = { miope = !miope }
+                        )
+                        .padding(top = 2.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Checkbox(checked = miope, onCheckedChange = null)
+                    Text(
+                        DisopiaRules.ROTULO_MIOPE,
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.error,
+                        modifier = Modifier.padding(start = 2.dp)
+                    )
+                }
             }
 
             if (ehADistancia && personagem != null) {

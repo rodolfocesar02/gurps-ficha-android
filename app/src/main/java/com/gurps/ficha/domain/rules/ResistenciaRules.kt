@@ -60,6 +60,30 @@ object ResistenciaRules {
     private const val ID_DURO_DE_MATAR = "duro_de_matar"
 
     /**
+     * **Fácil de Matar** (MB p.140) — o espelho do Duro de Matar.
+     *
+     * > Cada nível impõe **-1 nos testes de HT feitos para verificar a
+     * > sobrevivência** (…). **Isso não afeta a maioria dos testes normais de HT**
+     * > — apenas aqueles que servem para evitar a morte. Os testes de HT **não
+     * > podem ser reduzidos abaixo de 3**.
+     *
+     * ⚠️ Duas ressalvas que o livro faz questão de deixar claras, e que sem código
+     * viram erro silencioso: ela **não** toca resistir a veneno, doença nem
+     * esforço, e o alvo **nunca desce abaixo de 3**.
+     */
+    private const val ID_FACIL_DE_MATAR = "facil_de_matar"
+
+    /** O menor alvo que um teste de morte pode ter (MB p.140). */
+    private const val PISO_TESTE_DE_MORTE = 3
+
+    /** Níveis de Fácil de Matar — devolvidos como número NEGATIVO. */
+    internal fun penalidadeFacilDeMatar(personagem: Personagem): Int =
+        -personagem.vantagensTotais.filter { it.definicaoId == ID_FACIL_DE_MATAR }
+            .sumOf { it.nivel.coerceAtLeast(1) } -
+            personagem.desvantagensTotais.filter { it.definicaoId == ID_FACIL_DE_MATAR }
+                .sumOf { it.nivel.coerceAtLeast(1) }
+
+    /**
      * Todos os testes que esta ficha pode rolar.
      *
      * Os de HT existem sempre — qualquer personagem pode precisar resistir a
@@ -80,11 +104,17 @@ object ResistenciaRules {
             Familia.CORPO,
             origensHt + origemDe(personagem, ID_DIFICIL_DE_SUBJUGAR)
         )
+        // ⚠️ Fácil de Matar entra SÓ aqui: o livro diz que ela não afeta os
+        // testes normais de HT, apenas os que evitam a morte.
+        val facil = penalidadeFacilDeMatar(personagem)
         lista += TesteDeResistencia(
-            "Evitar a morte", ht + bonusHt + nivelDe(personagem, ID_DURO_DE_MATAR),
+            "Evitar a morte",
+            (ht + bonusHt + nivelDe(personagem, ID_DURO_DE_MATAR) + facil)
+                .coerceAtLeast(PISO_TESTE_DE_MORTE),
             "Ao passar de cada múltiplo negativo do PV máximo. Falha: morre.",
             Familia.CORPO,
-            origensHt + origemDe(personagem, ID_DURO_DE_MATAR)
+            origensHt + origemDe(personagem, ID_DURO_DE_MATAR) +
+                if (facil != 0) listOf("Fácil de Matar $facil") else emptyList()
         )
         lista += TesteDeResistencia(
             "Resistir a doença", ht + bonusHt,

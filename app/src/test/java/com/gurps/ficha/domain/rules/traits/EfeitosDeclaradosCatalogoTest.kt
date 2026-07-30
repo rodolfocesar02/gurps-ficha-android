@@ -313,11 +313,21 @@ class EfeitosDeclaradosCatalogoTest {
     }
 
     @Test
-    fun `as tres vantagens de situacao usam o curinga, e so elas`() {
-        // Toque Sensivel, Venturoso e Versatil sao as unicas do livro que dizem
-        // "qualquer tarefa que...". O curinga e poderoso -- aparece em TODA
-        // pericia -- entao a lista de quem pode usa-lo fica travada aqui.
-        val esperadas = setOf("toque_sensivel", "venturoso", "versatil")
+    fun `so os tracos aprovados usam o curinga`() {
+        // O curinga e poderoso: aparece em TODA pericia. Entao a lista de quem
+        // pode usa-lo fica travada aqui, e crescer nela e uma decisao consciente.
+        //
+        // Todos dizem "qualquer tarefa que..." ou "qualquer teste" -- o livro da
+        // uma SITUACAO, nao uma lista de pericias:
+        //  - Toque Sensivel (+4 pelo tato), Venturoso (+1 em risco), Versatil
+        //    (+1 em criatividade) -- Lote TAL-1, MB p.96.
+        //  - Baixa Autoestima (-3 quando acha que nao tem chance) e Credulidade
+        //    (-3 quando a credulidade pode ser explorada) -- Lote D-JSON,
+        //    MB p.125 e p.130. As duas primeiras DESVANTAGENS a usar o curinga.
+        val esperadas = setOf(
+            "toque_sensivel", "venturoso", "versatil",
+            "baixa_autoestima", "credulidade"
+        )
         val comCuringa = tracosComEfeitos()
             .filter { t -> t.efeitos.any { it.alvo == TraitRuleRegistry.CURINGA_PERICIA } }
             .map { it.id }.toSet()

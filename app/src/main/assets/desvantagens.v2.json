@@ -360,7 +360,133 @@
     "tags": [
       "fisica"
     ],
-    "descricao": "O personagem é desajeitado. Ele sofre uma penalidade em qualquer tarefa que envolva coordenação motora fina ou agilidade."
+    "descricao": "O personagem é desajeitado. Ele sofre uma penalidade em qualquer tarefa que envolva coordenação motora fina ou agilidade.",
+    "efeitos": [
+      {
+        "tipo": "pericia",
+        "alvo": "Costura/NT",
+        "valor": 0,
+        "porOpcao": {
+          "-5": -3,
+          "-10": -6
+        }
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Habilidade com Nós",
+        "valor": 0,
+        "porOpcao": {
+          "-5": -3,
+          "-10": -6
+        }
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Prestidigitação",
+        "valor": 0,
+        "porOpcao": {
+          "-5": -3,
+          "-10": -6
+        }
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Punga",
+        "valor": 0,
+        "porOpcao": {
+          "-5": -3,
+          "-10": -6
+        }
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Trabalhos em Couro",
+        "valor": 0,
+        "porOpcao": {
+          "-5": -3,
+          "-10": -6
+        }
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Sacar Rápido",
+        "valor": 0,
+        "porOpcao": {
+          "-5": -3,
+          "-10": -6
+        }
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Arrombamento/NT",
+        "valor": 0,
+        "porOpcao": {
+          "-5": -3,
+          "-10": -6
+        },
+        "condicao": "se o Mestre pedir teste baseado em DX (trabalho delicado)"
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Artista",
+        "valor": 0,
+        "porOpcao": {
+          "-5": -3,
+          "-10": -6
+        },
+        "condicao": "se o Mestre pedir teste baseado em DX (trabalho delicado)"
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Cirurgia/NT",
+        "valor": 0,
+        "porOpcao": {
+          "-5": -3,
+          "-10": -6
+        },
+        "condicao": "se o Mestre pedir teste baseado em DX (trabalho delicado)"
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Joalheiro/NT",
+        "valor": 0,
+        "porOpcao": {
+          "-5": -3,
+          "-10": -6
+        },
+        "condicao": "se o Mestre pedir teste baseado em DX (trabalho delicado)"
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Maquinista/NT",
+        "valor": 0,
+        "porOpcao": {
+          "-5": -3,
+          "-10": -6
+        },
+        "condicao": "se o Mestre pedir teste baseado em DX (trabalho delicado)"
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Mecânica/NT",
+        "valor": 0,
+        "porOpcao": {
+          "-5": -3,
+          "-10": -6
+        },
+        "condicao": "se o Mestre pedir teste baseado em DX (trabalho delicado)"
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "reacao",
+        "valor": 0,
+        "porOpcao": {
+          "-5": -1,
+          "-10": -2
+        },
+        "condicao": "em lugar onde boas maneiras importam (MB p.124)"
+      }
+    ]
   },
   {
     "id": "autodestruicao",
@@ -467,7 +593,16 @@
     "tags": [
       "mental"
     ],
-    "descricao": "O personagem não tem autoconfiança e subestima suas habilidades a tal ponto que isso interfere em suas atividades. Ele sofre uma penalidade de -3 em todos os testes de habilidade sempre que acreditar que não tem qualquer chance de obter sucesso."
+    "descricao": "O personagem não tem autoconfiança e subestima suas habilidades a tal ponto que isso interfere em suas atividades. Ele sofre uma penalidade de -3 em todos os testes de habilidade sempre que acreditar que não tem qualquer chance de obter sucesso.",
+    "efeitos": [
+      {
+        "tipo": "pericia",
+        "alvo": "*",
+        "valor": -3,
+        "porNivel": false,
+        "condicao": "se ele achar que não tem chance ou que esperam que fracasse (MB p.125)"
+      }
+    ]
   },
   {
     "id": "barulhento",
@@ -484,7 +619,22 @@
     "tags": [
       "fisica"
     ],
-    "descricao": "O personagem faz muito barulho! Talvez ele seja um fantasma arrastando correntes, um ciborgue barulhento ou uma máquina com um motor barulhento. Ele emite sons constantemente mesmo quando está parado."
+    "descricao": "O personagem faz muito barulho! Talvez ele seja um fantasma arrastando correntes, um ciborgue barulhento ou uma máquina com um motor barulhento. Ele emite sons constantemente mesmo quando está parado.",
+    "efeitos": [
+      {
+        "tipo": "pericia",
+        "alvo": "Furtividade",
+        "valor": -2,
+        "porNivel": true
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "reacao",
+        "valor": -1,
+        "porNivel": true,
+        "condicao": "em lugar onde o barulho incomoda (MB p.125)"
+      }
+    ]
   },
   {
     "id": "bestial",
@@ -523,7 +673,7 @@
   },
   {
     "id": "briquento",
-    "nome": "Briquento",
+    "nome": "Briguento",
     "pagina": 125,
     "costKind": "fixed",
     "fixed": -10,
@@ -536,7 +686,15 @@
     "tags": [
       "mental"
     ],
-    "descricao": "O personagem gosta de intimidar as pessoas sempre que for possível fazê-lo impunemente. Ele deve fazer um teste de autocontrole para não realizar uma bravata grosseira."
+    "descricao": "O personagem gosta de intimidar as pessoas sempre que for possível fazê-lo impunemente. Ele deve fazer um teste de autocontrole para não realizar uma bravata grosseira.",
+    "efeitos": [
+      {
+        "tipo": "pericia",
+        "alvo": "reacao",
+        "valor": -2,
+        "porNivel": false
+      }
+    ]
   },
   {
     "id": "caracteristicas_distintas",
@@ -586,7 +744,19 @@
       "fisica",
       "magica"
     ],
-    "descricao": "O personagem tem características perturbadoras que o qualificam como um demônio, vampiro ou ser sobrenatural. Exemplos incluem olhos brilhantes, dentes proeminentes ou falta de pulso."
+    "descricao": "O personagem tem características perturbadoras que o qualificam como um demônio, vampiro ou ser sobrenatural. Exemplos incluem olhos brilhantes, dentes proeminentes ou falta de pulso.",
+    "efeitos": [
+      {
+        "tipo": "pericia",
+        "alvo": "reacao",
+        "valor": 0,
+        "porOpcao": {
+          "-10": -2,
+          "-5": -1
+        },
+        "condicao": "de quem perceber a característica sobrenatural (MB p.126)"
+      }
+    ]
   },
   {
     "id": "castrado",
@@ -671,7 +841,16 @@
     "tags": [
       "mental"
     ],
-    "descricao": "O personagem nunca entende uma piada e acha que todo mundo está levando tudo a sério o tempo todo. Portanto, ele nunca faz piadas e é extremamente sério."
+    "descricao": "O personagem nunca entende uma piada e acha que todo mundo está levando tudo a sério o tempo todo. Portanto, ele nunca faz piadas e é extremamente sério.",
+    "efeitos": [
+      {
+        "tipo": "pericia",
+        "alvo": "reacao",
+        "valor": -2,
+        "porNivel": false,
+        "condicao": "em situação onde a falta de humor fica evidente (MB p.127)"
+      }
+    ]
   },
   {
     "id": "cleptomania",
@@ -870,7 +1049,33 @@
     "tags": [
       "fisica"
     ],
-    "descricao": "O personagem tem uma deficiência na coluna que o obriga a assumir uma postu ra inclinada ou curvada — o que normal mente resulta em uma corcunda ou pro tuberância sobre um dos ombros, ou os dois. Isso reduz a altura do personagem em 15 cm sem alterar seu peso ou estrutu ra física. As roupas e armaduras comuns não servem bem nele, impondo uma pe nalidade de -1 sobre a DX; para evitar esse problema, é necessário pagar mais 10% por equipamentos feitos sob medida. A maioria das pessoas se sente incomo dada com a presença do personagem e re age a ele com uma penalidade de -1. Essa penalidade é cumulativa com os modifica dores habituais de aparência (v"
+    "descricao": "O personagem tem uma deficiência na coluna que o obriga a assumir uma postu ra inclinada ou curvada — o que normal mente resulta em uma corcunda ou pro tuberância sobre um dos ombros, ou os dois. Isso reduz a altura do personagem em 15 cm sem alterar seu peso ou estrutu ra física. As roupas e armaduras comuns não servem bem nele, impondo uma pe nalidade de -1 sobre a DX; para evitar esse problema, é necessário pagar mais 10% por equipamentos feitos sob medida. A maioria das pessoas se sente incomo dada com a presença do personagem e re age a ele com uma penalidade de -1. Essa penalidade é cumulativa com os modifica dores habituais de aparência (v",
+    "efeitos": [
+      {
+        "tipo": "atributo",
+        "alvo": "DX",
+        "valor": -1,
+        "porNivel": false
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "reacao",
+        "valor": -1,
+        "porNivel": false
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Disfarce/NT",
+        "valor": -3,
+        "porNivel": false
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Perseguição",
+        "valor": -3,
+        "porNivel": false
+      }
+    ]
   },
   {
     "id": "covardia",
@@ -904,7 +1109,22 @@
     "tags": [
       "mental"
     ],
-    "descricao": "-10 pontos* Nasce um tolo a cada minuto — e seu personagem é um deles. Ele acredi ta em tudo o que ouve. Engolirá a his tória mais absurda se for contada com convicção. Para não acreditar em uma mentira ou em uma verdade imprová vel, ele deve fazer um teste de autocon trole modificado pela plausibilidade da história. No caso de um fracasso, ele acredita em tudo o que lhe disserem. Uma mentira bem contada ou que envolva algum aspecto com o qual o per sonagem não esteja familiarizado (“Meu pai é o chefe de polícia desta cidade e não vai tolerar isso”) impõe uma penalidade de -6 no teste de autocontrole. Uma men tira envolvendo um tópico com o qual o personagem crédulo está familiarizado (“Você não sabia que eles criam patos em sua vila, Torg? ”) acarreta em uma pena lidade de -3 — mas até mesmo a história mais bizarra (“É claro que os esquimós descendem dos conquistadores espa nhóis, todo mundo sabe disso”) será en golida se a vítima fracassar em um teste de autocontrole não-modificado. Além disso, um personagem crédulo também sofre uma penalidade de -3 em qualquer teste de Comércio ou em qual quer situação em que sua credulidade possa ser explorada. Um crédulo nunca pode aprender a perícia Detecção de Mentiras."
+    "descricao": "-10 pontos* Nasce um tolo a cada minuto — e seu personagem é um deles. Ele acredi ta em tudo o que ouve. Engolirá a his tória mais absurda se for contada com convicção. Para não acreditar em uma mentira ou em uma verdade imprová vel, ele deve fazer um teste de autocon trole modificado pela plausibilidade da história. No caso de um fracasso, ele acredita em tudo o que lhe disserem. Uma mentira bem contada ou que envolva algum aspecto com o qual o per sonagem não esteja familiarizado (“Meu pai é o chefe de polícia desta cidade e não vai tolerar isso”) impõe uma penalidade de -6 no teste de autocontrole. Uma men tira envolvendo um tópico com o qual o personagem crédulo está familiarizado (“Você não sabia que eles criam patos em sua vila, Torg? ”) acarreta em uma pena lidade de -3 — mas até mesmo a história mais bizarra (“É claro que os esquimós descendem dos conquistadores espa nhóis, todo mundo sabe disso”) será en golida se a vítima fracassar em um teste de autocontrole não-modificado. Além disso, um personagem crédulo também sofre uma penalidade de -3 em qualquer teste de Comércio ou em qual quer situação em que sua credulidade possa ser explorada. Um crédulo nunca pode aprender a perícia Detecção de Mentiras.",
+    "efeitos": [
+      {
+        "tipo": "pericia",
+        "alvo": "Comércio",
+        "valor": -3,
+        "porNivel": false
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "*",
+        "valor": -3,
+        "porNivel": false,
+        "condicao": "se a credulidade puder ser explorada no teste (MB p.130)"
+      }
+    ]
   },
   {
     "id": "criativo",
@@ -1135,7 +1355,22 @@
     "tags": [
       "mental"
     ],
-    "descricao": "O personagem tem duas ou mais personalidades distintas, cada uma com seu próprio padrão de comportamento e memórias."
+    "descricao": "O personagem tem duas ou mais personalidades distintas, cada uma com seu próprio padrão de comportamento e memórias.",
+    "efeitos": [
+      {
+        "tipo": "pericia",
+        "alvo": "reacao",
+        "valor": -1,
+        "porNivel": false
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "reacao",
+        "valor": -3,
+        "porNivel": false,
+        "condicao": "de quem viu você trocar de personalidade (MB p.133)"
+      }
+    ]
   },
   {
     "id": "despretensioso",
@@ -1554,7 +1789,16 @@
     "tags": [
       "mental"
     ],
-    "descricao": "O personagem se acha muito importante e tem uma necessidade constante de reconhecimento e status social."
+    "descricao": "O personagem se acha muito importante e tem uma necessidade constante de reconhecimento e status social.",
+    "efeitos": [
+      {
+        "tipo": "pericia",
+        "alvo": "reacao",
+        "valor": -3,
+        "porNivel": false,
+        "condicao": "depois de ele ofender quem o esnobou (MB p.137)"
+      }
+    ]
   },
   {
     "id": "eletrico",
@@ -1773,7 +2017,23 @@
     "tags": [
       "mental"
     ],
-    "descricao": "O personagem acha que é muito mais poderoso, inteligente e/ou competente do que realmente é. Ele deve fazer um teste de autocontrole para não agir com imprudência."
+    "descricao": "O personagem acha que é muito mais poderoso, inteligente e/ou competente do que realmente é. Ele deve fazer um teste de autocontrole para não agir com imprudência.",
+    "efeitos": [
+      {
+        "tipo": "pericia",
+        "alvo": "reacao",
+        "valor": 2,
+        "porNivel": false,
+        "condicao": "de gente jovem ou ingênua, que acredita nele (MB p.140)"
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "reacao",
+        "valor": -2,
+        "porNivel": false,
+        "condicao": "de PdMs experientes (MB p.140)"
+      }
+    ]
   },
   {
     "id": "expectativa_de_vida_reduzida",

@@ -25,6 +25,10 @@ object TraitRuleRegistry {
         // Custo = preço-por-braço × níveis. Ver `BracalCustoRules.kt`.
         register(StBracalRule())
         register(DxBracalRule())
+        // Desvantagem: -6 em toda pericia de combate. E Kotlin porque a
+        // lista tem ~70 pericias -- declarar uma linha para cada ficaria
+        // errado no dia em que o catalogo ganhar a proxima.
+        register(CegueiraRule())
     }
 
     /**

@@ -52,6 +52,33 @@ object IluminacaoRules {
     const val ID_VISAO_NO_ESCURO = "visao_no_escuro"
     const val ID_ULTRAVISAO = "ultravisao"
 
+    /**
+     * **Cegueira** (MB p.127) — quem já não enxerga não piora no escuro.
+     *
+     * > Seja qual for o caso, o personagem **não sofre nenhuma outra penalidade
+     * > por atuar no escuro**.
+     *
+     * 🔴 O Lote LUZ-1 aplicava a escuridão a todo mundo. O cego **já pagou** essa
+     * conta nos −6 das perícias de combate; somar a luz por cima é cobrar duas
+     * vezes pela mesma cegueira.
+     */
+    const val ID_CEGUEIRA = "cegueira"
+
+    /**
+     * **Cegueira Noturna** (MB p.127) — o espelho da Visão Noturna.
+     *
+     * > Se a penalidade (…) estiver entre **-1 e -4**, então a dele será o **dobro
+     * > ou -3, o que for pior**. Se a penalidade for de **-5 ou pior**, então ele
+     * > deve agir como se fosse **completamente cego**.
+     *
+     * ⚠️ Duas armadilhas na mesma frase:
+     * - Com luz **-1**, o dobro é -2, mas **-3 é pior** → vale **-3**. Só de -2 em
+     *   diante o dobro passa a mandar.
+     * - De **-5** em diante o salto é para **-10** (cego), não para o dobro. É
+     *   abrupto de propósito.
+     */
+    const val ID_CEGUEIRA_NOTURNA = "cegueira_noturna"
+
     /** A penalidade de escuridão total (MB p.395). */
     const val ESCURIDAO_TOTAL = -10
 
@@ -92,6 +119,26 @@ object IluminacaoRules {
     fun temUltravisao(personagem: Personagem): Boolean =
         personagem.vantagensTotais.any { it.definicaoId == ID_ULTRAVISAO }
 
+    /** Se a ficha tem Cegueira — a desvantagem, não a vantagem. */
+    fun ehCego(personagem: Personagem): Boolean =
+        personagem.desvantagensTotais.any { it.definicaoId == ID_CEGUEIRA }
+
+    /** Se a ficha tem Cegueira Noturna (MB p.127). */
+    fun temCegueiraNoturna(personagem: Personagem): Boolean =
+        personagem.desvantagensTotais.any { it.definicaoId == ID_CEGUEIRA_NOTURNA }
+
+    /**
+     * A luz da cena vista por quem tem **Cegueira Noturna**.
+     *
+     * Devolve a penalidade BRUTA já agravada, para o resto da conta seguir igual.
+     */
+    internal fun agravadaPorCegueiraNoturna(bruta: Int): Int = when {
+        bruta >= 0 -> 0
+        bruta <= -5 -> ESCURIDAO_TOTAL
+        // "o dobro ou -3, o que for pior" -- pior = mais negativo.
+        else -> minOf(bruta * 2, -3)
+    }
+
     /** O resultado, pronto para a tela: o número final e de onde ele veio. */
     data class Resultado(
         val bruta: Int,
@@ -106,7 +153,24 @@ object IluminacaoRules {
      * [bruta] é a luz da cena, de 0 a -10, escolhida pelo jogador.
      */
     fun penalidadeEfetiva(personagem: Personagem, bruta: Int): Resultado {
-        val luz = bruta.coerceIn(ESCURIDAO_TOTAL, 0)
+        val escolhida = bruta.coerceIn(ESCURIDAO_TOTAL, 0)
+
+        // 🔴 Cego não sofre NADA por escuro: ele já pagou essa conta (MB p.127).
+        // Somar a luz por cima seria cobrar duas vezes pela mesma cegueira.
+        if (ehCego(personagem)) {
+            return Resultado(
+                escolhida, -escolhida, 0,
+                "Cego — a escuridão não muda nada para ele (MB p.127)."
+            )
+        }
+
+        // Cegueira Noturna agrava a luz ANTES de tudo: a partir daí a conta é a
+        // mesma de todo mundo.
+        val luz = if (temCegueiraNoturna(personagem)) {
+            agravadaPorCegueiraNoturna(escolhida)
+        } else {
+            escolhida
+        }
         if (luz == 0) return Resultado(0, 0, 0, "Boa luz — sem penalidade.")
 
         // Visão no Escuro ignora tudo, inclusive a escuridão total.

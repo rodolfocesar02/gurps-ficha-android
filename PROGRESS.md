@@ -5224,3 +5224,22 @@ Ideia sua no T-L7, e ela é melhor que o que eu tinha feito. O DESL-1 somava **c
 - **Dois arredondamentos travados por teste:** a carga **descarta a fração** (7 × 0,8 = 5,6 → 5, não 6) e **nunca desce abaixo de 1** — sem o piso, Deslocamento 4 com carga muito pesada daria **0** e o personagem ficaria imóvel por arredondamento.
 - **Testes:** `DeslocamentosRulesTest`, 16 casos.
 - **Status:** ✅ Build OK nas 2 variantes · lint OK · gate verde · ⏭️ **PENDENTE: teste no aparelho**.
+
+### Lote D-JSON + D-FIX — as desvantagens da leitura p.124-140 — 29 de Julho de 2026 (versão 4.8-DJSON)
+Primeiro passo da ordem combinada: o que **não exige mecanismo novo**, mais as correções. As estruturais (interruptor de estado, `CriticoRules`) ficam para depois da leitura terminar.
+
+**11 desvantagens declaradas, 30 efeitos novos:**
+- **Atrapalhado** — o espelho negativo da Destreza Manual Elevada: mesma lista de perícias, sinal trocado, `porOpcao` (−5 pts = −3, −10 pts = −6). ⚠️ O livro delimita com precisão rara — **não vale em IQ nem em combate**, só Sacar Rápido —, e sem essa ressalva ela roubaria NH de todas as perícias de combate.
+- **Baixa Autoestima** e **Credulidade** — as duas primeiras **desvantagens** a usar o curinga `*` criado no TAL-1. O teste que trava quem pode usá-lo foi atualizado de propósito: crescer nessa lista é decisão consciente, não acidente.
+- **Barulhento, Briguento, Características Sobrenaturais, Circunspecção, Corcunda, Desdobramento de Personalidade, Egoísmo, Excesso de Confiança** — reação e perícia, tudo JSON.
+- ⚠️ **Excesso de Confiança** é o caso que justifica a caixinha existir: **+2** de gente ingênua e **−2** de PdMs experientes. Somar as duas sempre daria zero; quem sabe com quem ele está falando é o Mestre.
+- 🔴 **Mais um acento comido no catálogo:** `Briquento` com **q**. O livro escreve **Briguento** (de briga). Corrigi só o **nome**; o id fica como está, senão fichas antigas perderiam o traço.
+
+**As quatro correções — três consertam código que já estava rodando:**
+- 🔴 **Cego não deve sofrer penalidade de escuridão.** O livro: *"não sofre nenhuma outra penalidade por atuar no escuro"*. O Lote LUZ-1 aplicava a todo mundo — somar a luz por cima do −6 era **cobrar duas vezes pela mesma cegueira**. Agora a luz devolve 0 para ele, e a caixinha de escuridão nem aparece nas perícias.
+- 🔴 **Míope dobra a distância até o alvo** (MB p.135). ⚠️ E a diferença é **maior do que eu tinha escrito**: 20 m viram 40, que arredonda para o degrau de 50 → **−8**, não −7. O dobro atravessa **dois** degraus da tabela. Como a Disopia é uma entrada só com as duas variantes pelo mesmo custo, virou **caixinha** no diálogo de Mira — o app oferece em vez de adivinhar.
+- 🔴 **Fácil de Matar** entrou nos testes de morte, espelho do Duro de Matar. Com as duas ressalvas do livro travadas por teste: **não toca veneno, doença nem esforço**, e o alvo **nunca desce abaixo de 3**.
+- **Cegueira −6 em toda perícia de combate** — virou **regra Kotlin**, não JSON: são ~70 perícias, e declarar uma linha para cada ficaria errado no dia em que o catálogo ganhar a próxima. A regra consulta a lista na hora, a partir do que a ficha realmente tem.
+- **Cegueira Noturna** encaixou no seletor de Luz da Cena. ⚠️ As duas armadilhas da mesma frase, testadas: com luz **−1** vale **−3** (o dobro seria −2, mas −3 é pior), e de **−5** em diante o salto é para **−10** — não é o dobro, é a regra "age como se fosse cego".
+- **Testes:** `DesvantagensDJsonTest`, 13 casos.
+- **Status:** ✅ Build OK nas 2 variantes · lint OK · gate verde · ⏭️ **PENDENTE: teste no aparelho**.

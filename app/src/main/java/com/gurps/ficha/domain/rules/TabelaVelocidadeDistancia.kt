@@ -120,6 +120,21 @@ object TabelaVelocidadeDistancia {
         penalidadePara(metros.coerceAtLeast(0) + velocidadeMs.coerceAtLeast(0))
 
     /**
+     * A mesma conta, para quem é **míope** (Disopia, MB p.135).
+     *
+     * > Para ataque à distância, **dobre a distância até o alvo** quando estiver
+     * > calculando o modificador de distância.
+     *
+     * ⚠️ Dobra **só a distância**, não a velocidade: o livro fala de "distância
+     * até o alvo". Um míope a 20 metros conta como 40, que arredonda para o
+     * degrau de 50 → **-8** em vez de -6: o dobro atravessa dois degraus.
+     */
+    fun penalidadeCombinada(metros: Int, velocidadeMs: Int, miope: Boolean): Int {
+        val d = metros.coerceAtLeast(0).let { if (miope) it * 2 else it }
+        return penalidadePara(d + velocidadeMs.coerceAtLeast(0))
+    }
+
+    /**
      * O índice do degrau onde uma distância cai — para o botão `-/+` da tela.
      *
      * O seletor anda **de degrau em degrau**, não de metro em metro: assim cada
