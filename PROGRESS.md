@@ -5372,3 +5372,35 @@ Os dois foram achados pelo guarda **novo**, que é muito melhor que a regex: **c
 
 **Testes:** `ConferenciaCruzadaPericiasTest` (10 casos, sendo 2 varreduras de catálogo inteiro) + 1 caso novo no `DesvantagensDListaTest`. Gate total em **1629** nas duas variantes.
 - **Status:** ✅ Build OK nas 2 variantes · lint OK · `validar_efeitos.py` OK · gate verde · ⏭️ **PENDENTE: teste no aparelho**.
+
+### Lotes P-EQUIP + P-CULT + P-SIT — o modificador que nasce na PERÍCIA — 30 de Julho de 2026 (versão 5.2-PSIT)
+Até aqui, todo modificador automatizado nascia num **traço**: a Timidez sabe que penaliza Lábia. Estes três nascem na **perícia**: Arrombamento sabe que depende de ferramenta, Punga sabe que a vítima pode estar dormindo. É a primeira vez que o app lê a página da perícia, e não a da vantagem.
+
+**P-EQUIP — trinta e duas perícias, UMA tabela.**
+Trinta e duas trazem no rodapé *"Todos de equipamento"*. Parece trinta e duas regras; é uma remissão à mesma tabela (MB p.346). Então o app não ganhou trinta e duas caixinhas: ganhou **um seletor** no topo do diálogo de perícias, que gira entre cinco degraus e vale para todas.
+- ⚠️ **A pegadinha é a coluna dupla.** Sem equipamento, perícia **tecnológica** perde **−10** e comum perde **−5** — o dobro. Uma coluna só daria ao cirurgião de mãos vazias a mesma chance do pedreiro sem colher de pedreiro. O app decide pelo sufixo `/NT`, e isso está escrito no arquivo como **atalho**, não como regra do livro: Alvenaria, Carpintaria, Artista, Camuflagem, Pescaria, Contrabando, Ciclismo, Sobrevivência e Trabalhos em Couro caem na coluna comum, e é onde o livro as põe.
+- ⚠️ **O sexto degrau ficou de fora:** *"melhores equipamentos possíveis para o seu NT: +NT/2"*. A ficha **não guarda o NT da campanha**, e chutar um bônus que depende de um número inexistente é pior que não oferecê-lo.
+- 🔴 **Duas perícias da lista carregam o obelisco `(†)` em `pericias.json` e não no mapa de regras** — Conserto de Equipamento Eletrônico e Operação de Aparelhos Eletrônicos. Sem ele o modificador ficaria mudo justo nas duas mais tecnológicas.
+- **O número aparece NA perícia**, não só no seletor lá em cima: é a diferença entre o jogador conferir a conta e ter de confiar nela.
+
+**P-CULT — a vantagem que APAGA uma penalidade.**
+O livro (p.24) é explícito: *"o personagem está familiarizado com culturas diferentes da sua e **não fica sujeito à penalidade de −3**"*.
+- ⚠️ **O −3 é de todo mundo** que está fora da própria cultura, e o app nunca aplicou. Declarar `+3` no traço seria o **oposto** do livro: daria bônus a quem comprou, em vez de tirar a penalidade de quem já a tinha. É exatamente o desenho da **Ambidestria**: *"primeiro a penalidade tem que existir na tela, depois a vantagem a apaga"*.
+- **Quem tem a vantagem vê o mesmo número, com outro texto.** Zerar por conta própria assumiria que a vantagem cobre *aquela* cultura — e o catálogo tem uma entrada só, sem guardar quais. O app avisa em vez de decidir.
+- ⚠️ **Só as oito perícias que o livro nomeia.** Lábia e Diplomacia parecem candidatas e **não** estão na lista; alargar seria inventar regra.
+
+**P-SIT — as situações da própria perícia, em famílias.**
+Quarenta e cinco perícias ganharam caixinha. Não são 45 regras: *"−10 se instantâneo"* é a mesma frase em **quatro** perícias de chi; *"aparar chutes −2, aparar armas −3"* em **quatro** de luta; *"tipo não familiar −2, más condições −4"* em **nove** de veículo e arma pesada. O arquivo está agrupado por família, e mexer numa mexe em todas.
+- **Exemplos do que entrou:** Punga (+5 vítima distraída, **+10** dormindo ou bêbada), Passos Leves (**−8** em papel de arroz), Furtividade (−5 sem esconderijo, −5 movendo acima de Desl. 1), Adestramento de Animais (−5 / −5 / **−10** para animal que ataca humanos), Lutar às Cegas (−7 se surdo), Literatura (−5 se analfabeto).
+- ⚠️ **Faixas do tipo "−1 a −5" não entram.** O livro deixa o número a critério do Mestre, e oferecer o meio da faixa como se fosse regra seria inventar precisão que o livro não dá.
+
+**🔴 Um risco que virou conserto antes de virar bug.**
+A lista de caixinhas era montada **duas vezes** dentro do diálogo — uma para desenhar, outra para somar o que estava marcado — e as duas casavam **por índice**. Bastava uma ganhar fonte nova e a outra não para o índice marcado apontar para a caixinha errada, e o número sair errado **sem erro nenhum**. Com o lote trazendo **duas** fontes novas de uma vez, o risco deixou de ser teórico: as duas viraram uma função só, `condicionaisDaPericia`, e a ordem das fontes é o contrato.
+
+**🔴 Duas coisas que a SIMULAÇÃO achou, e o teste pontual não acharia.**
+O `PericiasSimulacaoTest` varre **as 302 perícias × os 5 degraus** e afirma invariantes, não valores.
+- **`pericias.json` tem TRÊS nomes repetidos** — `arco`/`arcos`, `luta_grecoromana`/`luta_greco_romana`, `mimicapantomima`/`mimica_pantomima`. São apelidos legados, dois ids para o mesmo nome, mantidos para ficha antiga não perder a perícia. A varredura contava duas vezes e acusou um furo que não existia; o teste ficou com `distinct()` e ganhou um irmão que documenta os três.
+- **Mergulho aparecia nas duas listas** e parecia dobra. Não é: o seletor mede a **qualidade** do aparelho (p.346) e a situação mede o mergulhador **nunca ter usado aquele modelo**. Somam, e devem somar. O texto foi reescrito para *"aparelho que ele nunca usou antes"*, e a cerca do teste passou a procurar as palavras de **qualidade**, não a palavra "equipamento".
+
+**Testes:** `PericiasEquipCultSitTest` (19) e `PericiasSimulacaoTest` (14) — **33 casos novos**, dos quais 14 de simulação por invariante. Gate total em **1662** nas duas variantes.
+- **Status:** ✅ Build OK nas 2 variantes · lint OK · gate verde · ⏭️ **PENDENTE: teste no aparelho**.

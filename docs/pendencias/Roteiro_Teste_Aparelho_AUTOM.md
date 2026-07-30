@@ -607,3 +607,115 @@ O painel novo fica **logo abaixo do ST/DX Bracal**, na aba Rolagem.
 - **T-CR8 · pericia com especializacao** — Se tiver **Faca (Arremesso)** ou
   parecida, role e falhe: tem de pegar igual. *(Era a armadilha do lote — o
   rotulo com parenteses.)*
+
+---
+
+# Roteiro — Perícias, versões 5.1 e 5.2 (30/07/2026)
+
+Cobre o **P-CRUZ** (furos da conferência cruzada), o **P-EQUIP** (seletor de
+equipamento), o **P-CULT** (cultura estrangeira) e o **P-SIT** (situações da
+perícia). Nada foi validado no aparelho.
+
+> **Ficha de teste sugerida.** Uma ficha descartável com DX/IQ/HT 10 e as
+> perícias que cada bloco pede — quase tudo aqui aparece no **diálogo de
+> Perícias** da aba Rolagem.
+
+## T-PC · Os furos que o P-CRUZ fechou
+
+- **T-PC1 · o maior** — Compre **Noção Tridimensional do Espaço** e tenha
+  **Percepção do Corpo** e **Navegação/NT** na ficha. As duas tem de mostrar
+  **+3**. *(Antes ficavam em zero: quem pagava 10 pontos perdia os bônus que o
+  traço de 5 pontos da.)*
+- **T-PC2 · especializacao** — Com a mesma vantagem, **Acrobacia Aérea** tem de
+  mostrar **+2**. Confira que **Acrobacia** (a base) continua **+2** também.
+- **T-PC3 · Deslumbrar** — Compre **Pouca Empatia** e adicione
+  **Deslumbrar (Persuadir)**: tem de aparecer **−3**. *(Antes só a base
+  "Deslumbrar" pegava.)*
+- **T-PC4 · Carisma** — Compre **Carisma 2**: **Diplomacia, Intimidação, Lábia,
+  Manha, Sex Appeal e Trato-Social** tem de subir **+2** cada. E as quatro
+  antigas (Adivinhação, Liderança, Mendicância, Oratória) continuam **+2**.
+- **T-PC5 · Sensível** — Compre **Sensível** (o de 5 pontos, não a Empatia):
+  **Detecção de Mentiras** e **Adivinhação** tem de mostrar **+1**, e
+  **Psicologia** vira **caixinha** ("ao analisar alguém com quem dá para
+  conversar").
+- **T-PC6** — **Lamentável**: **+3** em Mendicância, e o **+3 de reação**
+  continua no diálogo de Reação.
+- **T-PC7** — **Equilíbrio Perfeito**: **+4** em Postura Imóvel, e os **+1** de
+  Acrobacia, Escalada e Pilotagem continuam.
+- **T-PC8** — **Pele Elástica** dá **+4** em Disfarce; **Memória Eidética** dá
+  **+5** e **Memória Fotográfica** dá **+10** em **Leitura Dinâmica**.
+- **T-PC9 · o acento** — Confira que a perícia aparece escrita **"Leitura
+  Dinâmica"** (com o **â**) e **"Auto-Hipnose"** (com hífen). ⚠️ Se você tiver
+  ficha antiga com essas duas, **confira se o bônus aparece** — o nome mudou, e
+  ficha salva guarda o nome antigo.
+- **T-PC10** — **Escorregadio 3**: em **Fuga** tem de aparecer **caixinha** de
+  **+3** ("para se soltar de amarras, escapar de agarrão ou passar por abertura
+  estreita"), e **não** um bônus fixo.
+
+## T-EQ · Seletor de equipamento (P-EQUIP)
+
+- **T-EQ1 · só aparece se precisar** — Ficha sem nenhuma das 32 perícias de
+  equipamento: o seletor **não existe** no topo do diálogo. Adicione
+  **Arrombamento/NT**: ele aparece.
+- **T-EQ2 · o padrão não mexe em nada** — Ele começa em **"Básico"**, e nenhuma
+  perícia pode ter número de equipamento nenhum.
+- **T-EQ3 · o giro** — Toque cinco vezes: **Sem equipamento → Improvisado →
+  Básico → Boa qualidade → Qualidade superior** e volta.
+- **T-EQ4 · 🔴 a coluna dupla** — Ponha em **"Sem equipamento"** com
+  **Cirurgia/NT** e **Alvenaria** na ficha. Cirurgia tem de mostrar **−10** e
+  Alvenaria **−5**. *(É o dobro, e é a pegadinha da tabela.)*
+- **T-EQ5 · o bônus é igual para as duas** — Ponha em **"Qualidade superior"**:
+  as duas tem de mostrar **+2**.
+- **T-EQ6 · ⚠️ não vaza** — Com o seletor em **"Sem equipamento"**, role
+  **Lábia** ou **Escalada**: o NH **não pode** mudar. Lábia não piora por o
+  personagem estar de mãos vazias.
+- **T-EQ7 · a conta chega na rolagem** — Com "Improvisado", role
+  **Arrombamento/NT** e confira no log que o modificador **−5** entrou.
+- **T-EQ8 · TalkBack** — O seletor tem de anunciar o degrau atual **e o que o
+  próximo toque faz**.
+
+## T-CU · Cultura estrangeira (P-CULT)
+
+- **T-CU1 · vale para todo mundo** — Ficha **sem** Familiaridade Cultural: em
+  **Trato-Social** tem de aparecer a caixinha *"cultura estrangeira **−3**"*.
+  ⚠️ Se ela só aparecer para quem tem a vantagem, está invertido.
+- **T-CU2 · a vantagem muda o TEXTO, não o número** — Compre **Familiaridade
+  Cultural**: a caixinha continua **−3**, e o texto passa a dizer *"você tem
+  Familiaridade Cultural, confirme com o Mestre se ela cobre esta"*.
+- **T-CU3 · as oito** — A caixinha tem de aparecer em **Trato-Social, Dança,
+  Heráldica, Poesia, Oratória, Connoisseur, Mímica/Pantomima e Jogos de
+  Entretenimento** — e em mais nenhuma.
+- **T-CU4 · ⚠️ não são as sociais** — Em **Lábia** e **Diplomacia** a caixinha
+  **não pode** aparecer. O livro não as inclui.
+
+## T-SI · Situações da perícia (P-SIT)
+
+- **T-SI1 · Punga** — Adicione **Punga**: duas caixinhas, **+5** ("a vítima está
+  distraída") e **+10** ("dormindo ou bêbada"). Marque a de +10 e role: o log
+  tem de mostrar o **+10**.
+- **T-SI2 · as quatro de chi** — **Golpe Poderoso, Pontaria Zen, Salto Voador e
+  Arqueiro Zen** tem de mostrar a **mesma** caixinha: **−10**, "usado
+  instantaneamente, sem Concentrar".
+- **T-SI3 · aparar** — **Boxe** e **Sumô** tem **duas** caixinhas (−2 chute, −3
+  arma); **Briga** e **Luta Greco-Romana** tem **só uma** (−3 arma).
+- **T-SI4 · Furtividade** — Duas caixinhas de **−5**: "sem esconderijo" e
+  "movendo acima de Deslocamento 1".
+- **T-SI5 · Adestramento de Animais** — Três caixinhas: **−5**, **−5** e
+  **−10** ("animal que ataca seres humanos").
+- **T-SI6 · Passos Leves** — Uma caixinha de **−8** (papel de arroz).
+- **T-SI7 · ⚠️ a maioria não tem nada** — Abra **Escalada, Teologia, Natação,
+  Diplomacia**: **nenhuma caixinha de situação**. Se o diálogo virar um paredão
+  de caixas, alguma coisa vazou.
+- **T-SI8 · 🔴 o índice das caixinhas** — Numa perícia com **várias** fontes ao
+  mesmo tempo — o melhor caso é **Trato-Social** com **Timidez** na ficha, a
+  **cultura estrangeira** e a **luz da cena** baixa — marque **só a do meio** e
+  role. O número somado tem de ser **o daquela caixinha**, não o de outra.
+  *(Era o risco real do lote: as caixinhas casam por posição.)*
+- **T-SI9 · Mergulho soma as duas** — Com **Mergulho/NT**, ponha o seletor em
+  **"Improvisado"** (−5) **e** marque a caixinha "aparelho que ele nunca usou"
+  (−2). O total tem de ser **−7**. As duas medem coisas diferentes: qualidade e
+  familiaridade.
+- **T-SI10 · a caixinha não gruda** — Marque uma caixinha, **feche** o diálogo e
+  abra de novo: ela tem de voltar **desmarcada**. A condição vale para aquela
+  rolagem, não para sempre. ⚠️ O **seletor de equipamento**, ao contrário,
+  **continua** no degrau que você deixou — ele é da sessão.

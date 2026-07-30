@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.gurps.ficha.ui.appCardColors
+import com.gurps.ficha.ui.linhaAlternavel
 import kotlin.math.abs
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -130,6 +131,33 @@ fun RolagemConfigurarDanoDialog(
     )
 }
 
+/**
+ * **A lista completa de caixinhas de uma perícia** — uma fonte só (Lote P-SIT).
+ *
+ * ⚠️ Existe porque a lista era montada **duas vezes** dentro do diálogo: uma
+ * para desenhar as caixinhas e outra para somar o que estava marcado. As duas
+ * casavam por **índice**. Bastava uma ganhar uma fonte nova e a outra não para
+ * o índice marcado apontar para a caixinha errada — e o número sairia errado
+ * **sem erro nenhum**. Com o lote trazendo duas fontes novas de uma vez, o risco
+ * deixou de ser teórico.
+ *
+ * A ORDEM aqui é o contrato: traços da ficha, depois a situação da perícia,
+ * depois a cultura, e a luz da cena por último.
+ */
+private fun condicionaisDaPericia(
+    personagem: com.gurps.ficha.model.Personagem,
+    nomeDaPericia: String,
+    condicionalDaLuz: com.gurps.ficha.domain.rules.traits.BonusCondicional?
+): List<com.gurps.ficha.domain.rules.traits.BonusCondicional> =
+    com.gurps.ficha.domain.rules.traits.TraitRuleRegistry
+        .getBonusCondicionais(personagem, nomeDaPericia) +
+        com.gurps.ficha.domain.rules.ModificadoresSituacionais.condicionaisDe(nomeDaPericia) +
+        listOfNotNull(
+            com.gurps.ficha.domain.rules.FamiliaridadeCulturalRules
+                .condicionalDe(personagem, nomeDaPericia),
+            condicionalDaLuz
+        )
+
 @Composable
 fun RolagemPericiasDialog(
     opcoesPericia: List<PericiaRollOption>,
@@ -141,6 +169,11 @@ fun RolagemPericiasDialog(
     // Nao entra sozinha porque o livro amarra a escuridao a VISAO -- quem sabe se
     // aquele teste depende de ver e o Mestre.
     condicionalDaLuz: com.gurps.ficha.domain.rules.traits.BonusCondicional? = null,
+    // Lote P-EQUIP: a qualidade do equipamento vale para as 32 pericias que
+    // dependem dele. Mora na ABA, nao aqui, para nao sumir ao fechar o dialogo.
+    nivelEquipamento: com.gurps.ficha.domain.rules.QualidadeDoEquipamento.Nivel =
+        com.gurps.ficha.domain.rules.QualidadeDoEquipamento.PADRAO,
+    onAlternarEquipamento: () -> Unit = {},
     onShowDescricao: (RollDescricaoDialog) -> Unit,
     onExecutarRolagem: (contextoLabel: String, alvo: Int, mod: Int) -> Unit,
     onDismiss: () -> Unit
@@ -172,6 +205,49 @@ fun RolagemPericiasDialog(
                     style = MaterialTheme.typography.headlineMedium,
                     modifier = Modifier.padding(horizontal = 4.dp, vertical = 2.dp)
                 )
+
+                // Lote P-EQUIP: um seletor só para as 32 perícias que dependem
+                // de equipamento (MB p.346). Só aparece se a ficha tiver alguma
+                // delas — senão seria ruído para quem não usa ferramenta.
+                val temPericiaDeEquipamento = opcoesPericia.any {
+                    com.gurps.ficha.domain.rules.QualidadeDoEquipamento
+                        .dependeDeEquipamento(it.nome)
+                }
+                if (temPericiaDeEquipamento) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .linhaAlternavel(
+                                marcado = nivelEquipamento !=
+                                    com.gurps.ficha.domain.rules.QualidadeDoEquipamento.PADRAO,
+                                descricao = com.gurps.ficha.domain.rules.QualidadeDoEquipamento
+                                    .rotuloAcessivel(nivelEquipamento),
+                                onAlternar = onAlternarEquipamento
+                            )
+                            .padding(horizontal = 4.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Checkbox(
+                            checked = nivelEquipamento !=
+                                com.gurps.ficha.domain.rules.QualidadeDoEquipamento.PADRAO,
+                            onCheckedChange = null
+                        )
+                        Text(
+                            com.gurps.ficha.domain.rules.QualidadeDoEquipamento
+                                .rotuloDoSeletor(nivelEquipamento),
+                            style = MaterialTheme.typography.labelSmall,
+                            color = if (nivelEquipamento ==
+                                com.gurps.ficha.domain.rules.QualidadeDoEquipamento.PADRAO
+                            ) {
+                                MaterialTheme.colorScheme.outline
+                            } else {
+                                MaterialTheme.colorScheme.error
+                            },
+                            modifier = Modifier.padding(start = 2.dp)
+                        )
+                    }
+                }
+
                 if (opcoesPericia.isEmpty()) {
                     Text(
                         "Sem perícias disponíveis. Verifique no catálogo ou na aba de Perícias se todos os pré-requisitos foram atendidos.",
@@ -241,15 +317,26 @@ fun RolagemPericiasDialog(
                                                     overflow = TextOverflow.Ellipsis
                                                 )
                                             }
+                                            // O número do equipamento aparece NA PERÍCIA, não só no
+                                            // seletor lá em cima: é a diferença entre o jogador
+                                            // conferir a conta e ter de confiar nela.
+                                            com.gurps.ficha.domain.rules.QualidadeDoEquipamento
+                                                .rotuloNaPericia(pericia.nome, nivelEquipamento)
+                                                .takeIf { it.isNotBlank() }?.let { linha ->
+                                                    Text(
+                                                        linha,
+                                                        style = MaterialTheme.typography.labelSmall,
+                                                        color = MaterialTheme.colorScheme.error
+                                                    )
+                                                }
                                             // De onde vem o bônus — mesmo componente da aba Perícias.
                                             personagem?.let { p ->
                                                 com.gurps.ficha.ui.features.traits.OrigemDoBonusPericia(
                                                     personagem = p,
                                                     nomeDaPericia = pericia.nome
                                                 )
-                                                val condicionais = com.gurps.ficha.domain.rules.traits
-                                                    .TraitRuleRegistry.getBonusCondicionais(p, pericia.nome) +
-                                                    listOfNotNull(condicionalDaLuz)
+                                                val condicionais =
+                                                    condicionaisDaPericia(p, pericia.nome, condicionalDaLuz)
                                                 PainelBonusCondicional(
                                                     bonus = condicionais,
                                                     marcados = condicionaisMarcados[pericia.id].orEmpty(),
@@ -297,15 +384,26 @@ fun RolagemPericiasDialog(
                                                 .clickable {
                                                     // Os condicionais MARCADOS entram como modificador
                                                     // desta rolagem -- nunca no NH da ficha.
+                                                    //
+                                                    // ⚠️ A lista sai da MESMA funcao que desenhou as
+                                                    // caixinhas. Montada duas vezes, uma podia ganhar
+                                                    // uma fonte nova e a outra nao -- e ai o indice
+                                                    // marcado apontaria para outra caixinha, somando o
+                                                    // numero errado sem erro nenhum.
                                                     val extraCond = personagem?.let { p ->
                                                         somaDosMarcados(
-                                                            com.gurps.ficha.domain.rules.traits.TraitRuleRegistry
-                                                                .getBonusCondicionais(p, pericia.nome) +
-                                                                listOfNotNull(condicionalDaLuz),
+                                                            condicionaisDaPericia(p, pericia.nome, condicionalDaLuz),
                                                             condicionaisMarcados[pericia.id].orEmpty()
                                                         )
                                                     } ?: 0
-                                                    onExecutarRolagem(pericia.contextLabel, pericia.target, modPericia + extraCond)
+                                                    val modEquip = com.gurps.ficha.domain.rules
+                                                        .QualidadeDoEquipamento
+                                                        .modificador(pericia.nome, nivelEquipamento)
+                                                    onExecutarRolagem(
+                                                        pericia.contextLabel,
+                                                        pericia.target,
+                                                        modPericia + extraCond + modEquip
+                                                    )
                                                     onDismiss()
                                                 },
                                             style = defenseNumberStyle,

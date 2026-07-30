@@ -33,6 +33,7 @@ import com.gurps.ficha.domain.rules.EstadosTemporarios
 import com.gurps.ficha.domain.rules.MagiaEnergiaRules
 import com.gurps.ficha.domain.rules.DxBracalRules
 import com.gurps.ficha.domain.rules.MaoInabilRules
+import com.gurps.ficha.domain.rules.QualidadeDoEquipamento
 import com.gurps.ficha.domain.rules.SemUmDedoRules
 import com.gurps.ficha.domain.rules.MarcosDeVidaRules
 import com.gurps.ficha.domain.rules.StBracalRules
@@ -314,6 +315,9 @@ fun TabRolagem(viewModel: FichaViewModel) {
     // diálogo de perícias, que é justo onde ela precisa valer.
     var grausDeEstado by remember { mutableStateOf(emptyMap<String, Int>()) }
     val modsDeEstado = EstadosTemporarios.totalDe(grausDeEstado)
+    // Lote P-EQUIP: a qualidade do equipamento vale para a sessão inteira, não
+    // para uma abertura do diálogo. Mesma razão do interruptor de estado.
+    var nivelEquipamento by remember { mutableStateOf(QualidadeDoEquipamento.PADRAO) }
     val penalidadeDaMao = MaoInabilRules.penalidadeDe(p, usandoMaoInabil) +
         SemUmDedoRules.penalidadeDe(p, ehAMaoSemDedo)
 
@@ -1090,6 +1094,8 @@ fun TabRolagem(viewModel: FichaViewModel) {
             // O estado temporário entra em TODA perícia (Lote D-ESTADO): o livro
             // escreve "todos os testes de habilidade" em Enjoo, Flashbacks e
             // Repugnância.
+            nivelEquipamento = nivelEquipamento,
+            onAlternarEquipamento = { nivelEquipamento = nivelEquipamento.proximo() },
             onExecutarRolagem = { contexto, alvo, mod ->
                 executarRolagem(TipoTeste.PERICIA, contexto, alvo, mod + modsDeEstado.pericias)
             },
