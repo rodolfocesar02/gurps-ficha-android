@@ -8,6 +8,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -56,6 +57,19 @@ fun FichaCustomNavigationBar(
     Box(
         modifier = Modifier
             .fillMaxWidth()
+            // 🔴 Sem isto a barra do Android fica POR CIMA das abas (achado em
+            // aparelho físico com Android 15, 31/07).
+            //
+            // A causa é o `targetSdk = 35`: a partir do **Android 15** o sistema
+            // **força** o modo edge-to-edge, e o app passa a desenhar embaixo da
+            // barra de navegação. Quem tem de reservar o espaço é o app. O
+            // `Scaffold` do Material 3 faz isso sozinho para uma `NavigationBar`
+            // dele — mas esta barra é um `Box` nosso, e ninguém reservava nada.
+            //
+            // ⚠️ `navigationBarsPadding()` usa o inset **ainda não consumido**:
+            // se um pai já tiver reservado o espaço, ele aplica zero. Por isso
+            // não há risco de padding dobrado.
+            .navigationBarsPadding()
             .padding(bottom = 1.dp, top = 4.dp),
         contentAlignment = Alignment.BottomCenter
     ) {

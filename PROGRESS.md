@@ -5459,3 +5459,24 @@ Ideia sua: *"o botão Reação e Resistência deveria ter todos os testes, mesmo
 
 **Testes:** `ResistenciaLesaoTest`, 14 casos. Gate total em **1680** nas duas variantes.
 - **Status:** ✅ Build OK nas 2 variantes · lint OK · gate verde · ⏭️ **PENDENTE: teste no aparelho**.
+
+### 🔴 Lote EDGE-1 — a barra do Android por cima das abas — 31 de Julho de 2026 (versão 5.5-EDGE)
+Achado por você em **aparelho físico com Android 15**. Não tem relação com nenhuma implementação recente: é um bug que estava lá desde que o `targetSdk` subiu para 35.
+
+**A causa.** A partir do **Android 15**, o sistema **força o modo edge-to-edge** para todo app com `targetSdk = 35` — e o app passa a desenhar **embaixo** da barra de navegação. Quem tem de reservar o espaço é o app, consumindo os *window insets*. O `Scaffold` do Material 3 faz isso sozinho para uma `NavigationBar` **dele**; a nossa barra de abas é um `Box` próprio, e ninguém reservava nada.
+
+⚠️ **Não é "o Android 15 quebrou o app"**: o comportamento antigo é que era o excepcional. O sistema desenhava uma faixa opaca e o app ignorava o assunto. Agora a tela é do app inteira, e a conta de onde a barra do sistema começa passou a ser dele.
+
+**Dois lugares, o mesmo defeito:**
+- **`FichaCustomNavigationBar`** — a barra de abas, que é o que você viu na foto.
+- **`FullscreenDialogContainer`** — todo diálogo de tela cheia (Perícias, Reação e Resistência, Mira, Deslocamentos…). O botão **Fechar** fica no rodapé, exatamente onde a barra do sistema passa. Estava com o mesmo problema e ninguém tinha reparado.
+
+**A correção** é uma linha em cada: `.navigationBarsPadding()`.
+
+⚠️ **Por que não há risco de espaço dobrado:** o modificador usa o inset **ainda não consumido**. Se um pai já reservou aquele espaço, ele aplica **zero**. Por isso dá para acrescentar sem auditar toda a árvore de composição acima.
+
+⚠️ **Só o inset de baixo.** No diálogo, o topo o próprio `Dialog` já resolve; somar `statusBarsPadding` empurraria o título para baixo sem necessidade.
+
+**O que NÃO foi feito, de propósito:** não acrescentei `enableEdgeToEdge()` na `MainActivity` nem mexi no tema. Os dois mudariam a aparência das barras do sistema (cor, escurecimento) em **todas** as telas, e o defeito relatado é de espaço, não de cor. Correção de bug se resolve com o mínimo.
+
+- **Status:** ✅ Build OK nas 2 variantes · lint OK · gate verde (1680) · ⏭️ **PENDENTE: conferir no aparelho físico, que é onde o defeito aparece**.

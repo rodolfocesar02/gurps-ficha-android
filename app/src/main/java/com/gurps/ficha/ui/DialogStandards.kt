@@ -1,5 +1,6 @@
 package com.gurps.ficha.ui
 
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.fillMaxSize
@@ -28,6 +29,16 @@ fun FullscreenDialogContainer(
             Column(
                 modifier = Modifier
                     .fillMaxSize()
+                    // Mesmo problema da barra de abas (Android 15 força
+                    // edge-to-edge com `targetSdk = 35`): o diálogo ocupa a tela
+                    // inteira, e o botão **Fechar** ficava debaixo da barra de
+                    // navegação do sistema.
+                    //
+                    // ⚠️ Só o de baixo. O topo o `Dialog` já resolve, e somar
+                    // `statusBarsPadding` aqui empurraria o título para baixo
+                    // sem necessidade — o inset já consumido devolve zero, mas o
+                    // que **não** foi consumido dobraria o espaço.
+                    .navigationBarsPadding()
                     .padding(horizontal = 12.dp, vertical = 8.dp),
                 content = content
             )
