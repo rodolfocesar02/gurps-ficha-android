@@ -109,6 +109,20 @@ class FichaTraitDelegate(private val dataRepository: DataRepository) {
             return Result.failure(Exception("Você já possui esta Desvantagem com esta descrição."))
         }
 
+        // 🔴 Esta checagem FALTAVA. Ela existia só em `adicionarVantagem`, e o
+        // resultado é que a trava de pares só pegava metade dos casos: dava para
+        // ter Reflexos em Combate e depois adicionar Paralisia Frente ao
+        // Combate, mas não o contrário. Pior ainda nos pares em que os DOIS
+        // lados são desvantagem (Pouca Empatia × Oblívio): aí ela nunca era
+        // consultada.
+        //
+        // ⚠️ A regra `IncompatibilidadeDeTracos` sempre esteve certa e simétrica,
+        // com 17 testes. O buraco era a CHAMADA — e nenhum teste olhava para
+        // este arquivo. Ver `TravaDeParesNoDelegateTest`, que agora cobre a
+        // fiação em vez da regra.
+        IncompatibilidadeDeTracos.motivoParaRecusar(personagem, definicao.id)
+            ?.let { return Result.failure(Exception(it)) }
+
         val autocontroleNormalizado = if (definicao.usaAutocontroleMental()) autocontrole else null
         val desvantagem = dataRepository.criarDesvantagemSelecionada(
             definicao,

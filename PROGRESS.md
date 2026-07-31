@@ -5404,3 +5404,30 @@ O `PericiasSimulacaoTest` varre **as 302 perícias × os 5 degraus** e afirma in
 
 **Testes:** `PericiasEquipCultSitTest` (19) e `PericiasSimulacaoTest` (14) — **33 casos novos**, dos quais 14 de simulação por invariante. Gate total em **1662** nas duas variantes.
 - **Status:** ✅ Build OK nas 2 variantes · lint OK · gate verde · ⏭️ **PENDENTE: teste no aparelho**.
+
+### 🔴 Lote PAR-FIX — a trava de pares estava ligada em metade dos casos — 31 de Julho de 2026 (versão 5.3-PARFIX)
+Achado por você no aparelho, testando o T-P do roteiro. **Não era feature nova: era um bug de fiação num lote que eu tinha dado como pronto.**
+
+**O que acontecia.**
+- Com **Reflexos em Combate** na ficha, dava para adicionar **Paralisia Frente ao Combate**. Ao contrário, bloqueava certo.
+- **Oblívio** e **Pouca Empatia** entravam juntos, sem reclamar.
+
+**A causa, e ela é curta.** `FichaTraitDelegate.adicionarVantagem` consultava a trava; **`adicionarDesvantagem` não consultava**. Ou seja: o app só checava quando o traço adicionado era **vantagem**. Nos pares em que os **dois lados são desvantagem** — Pouca Empatia × Oblívio, Pouca Empatia × Insensível, Cegueira Noturna × nada — a regra nunca era chamada.
+
+**⚠️ E o mais importante: o `IncompatibilidadeDeTracos` estava CERTO o tempo todo.** Simétrico, 13 pares, **17 testes verdes**, incluindo uma varredura que provava que todo par recusa nos dois sentidos e nos dois catálogos. O defeito não estava na regra: estava na **tomada**.
+
+**Por que 17 testes não pegaram, e o que mudou por causa disso.**
+Todos os 17 exercitavam a **regra pura**. Nenhum olhava para o `FichaTraitDelegate`. Provar que o alarme toca não prova que ele está ligado na parede — e era exatamente disso que se tratava.
+
+O novo `TravaDeParesNoDelegateTest` cobre a **fiação**, e não a regra:
+- todo método que adiciona traço **consulta** a trava;
+- a consulta vem **antes** de o traço ser criado (checar depois seria pior que não checar);
+- o motivo da recusa vira **`return Result.failure`**, e não um valor ignorado;
+- e — a cerca contra o próximo esquecimento — **nenhum `adicionarX` fica fora da cobertura**: ou entra na lista dos que checam, ou entra na lista dos **isentos com o motivo escrito**.
+
+Essa última já trabalhou na primeira execução: acusou **`adicionarQualidade`, `adicionarPeculiaridade` e `adicionarPoder`**. Os três são legitimamente isentos, e agora está escrito por quê — Qualidade e Peculiaridade recebem **texto livre, sem id de catálogo**, e Poder é **recipiente, não traço** (as vantagens dele passam por `adicionarVantagem`, que checa).
+
+**⚠️ O que este teste NÃO prova.** Ele lê o **código-fonte** do delegate, porque instanciá-lo exigiria `DataRepository` → `Context` do Android, e o projeto não tem mockito nem robolectric. Ele garante que a chamada existe e está na ordem certa; **não** garante que a mensagem chega na tela. Isso continua sendo teste de aparelho.
+
+**Testes:** `TravaDeParesNoDelegateTest`, 4 casos. Gate total em **1666** nas duas variantes.
+- **Status:** ✅ Build OK nas 2 variantes · lint OK · gate verde · ⏭️ **PENDENTE: refazer T-P1, T-P2 e T-P3 no aparelho**.
