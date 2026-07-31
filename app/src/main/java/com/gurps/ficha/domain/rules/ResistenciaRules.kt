@@ -235,6 +235,64 @@ object ResistenciaRules {
             Familia.CORPO, origensHt
         )
 
+        // --- Lote RESIST-3: os testes de lesão que faltavam ---------------
+        //
+        // ⚠️ **Difícil de Subjugar NÃO entra aqui.** A vantagem dá +1 "nos testes
+        // de HT feitos para verificar se o personagem evita a INCONSCIÊNCIA"
+        // (MB p.54), e este é um teste de ficar atordoado e cair. O desmaio só
+        // acontece se ele fracassar por 5 ou mais — é consequência, não o
+        // assunto do teste. Somar a vantagem aqui daria de graça uma proteção
+        // contra o atordoamento que o livro não concede.
+        //
+        // ⚠️ **Fácil de Matar e Duro de Matar também não:** os dois falam de
+        // testes onde o fracasso MATA, e aqui o fracasso derruba.
+        lista += TesteDeResistencia(
+            "Evitar atordoamento e queda", ht + bonusHt,
+            "Ao sofrer um ferimento grave. Falha: atordoado e caído. " +
+                "Falha por 5 ou mais: desmaia (MB p.420).",
+            Familia.CORPO, origensHt
+        )
+        lista += TesteDeResistencia(
+            "Recuperar-se do atordoamento", ht + bonusHt,
+            "A cada turno de Fazer Nada, enquanto atordoado. Defesas a −4 até lá (MB p.365).",
+            Familia.CORPO, origensHt
+        )
+        // ⚠️ O único teste desta tela que NÃO sai de HT nem de Vontade. O livro
+        // separa as duas metades na mesma frase: "um teste de HT para se
+        // recuperar do atordoamento físico, ou um teste de IQ para se recuperar
+        // do atordoamento mental". Por isso não leva `bonusHt`: Boa Forma e
+        // Fora de Forma são do corpo, e este teste é da cabeça.
+        lista += TesteDeResistencia(
+            "Recuperar-se do atordoamento MENTAL", personagem.iq,
+            "A cada turno de Fazer Nada. Este sai da IQ, não da HT (MB p.365).",
+            // ⚠️ Família MENTE, e não CORPO. Eu o pus em CORPO primeiro e dois
+            // testes ANTIGOS caíram na hora: eles varrem a família inteira
+            // afirmando que Boa Forma e Fora de Forma tocam **todos** os testes
+            // de corpo — e este não é de corpo, é de cabeça. A família não é
+            // rótulo de tela: é o contrato de quem sofre o bônus de HT.
+            Familia.MENTE
+        )
+        // ⚠️ **Difícil de Subjugar não entra**, de novo: ela evita a
+        // inconsciência, e aqui o personagem já está inconsciente — o teste é
+        // para SAIR dela.
+        lista += TesteDeResistencia(
+            "Acordar", ht + bonusHt,
+            "A cada hora inconsciente. Abaixo de −1×PV, um único teste depois " +
+                "de 12 horas (MB p.424).",
+            Familia.CORPO, origensHt
+        )
+        // Este SIM é teste de morte: "em qualquer fracasso, ele morre". Leva o
+        // mesmo trio do "Evitar a morte", com o mesmo piso de 3.
+        lista += TesteDeResistencia(
+            "Resistir ao ferimento fatal",
+            PisoDeTeste.aplicar(ht + bonusHt + nivelDe(personagem, ID_DURO_DE_MATAR) + facil),
+            "A cada meia hora, depois de falhar a morte por 1 ou 2. " +
+                "Falha: morre (MB p.424).",
+            Familia.CORPO,
+            origensHt + origemDe(personagem, ID_DURO_DE_MATAR) +
+                if (facil != 0) listOf("Fácil de Matar $facil") else emptyList()
+        )
+
         // --- Mente ---
         // Temor é o espelho do Destemor: um soma na Vontade contra o medo, o
         // outro subtrai. Os dois no mesmo número, com o piso de 3 no fim.
@@ -265,6 +323,16 @@ object ResistenciaRules {
             "Contra a perícia Intimidação de outro personagem.",
             Familia.MENTE, origemDestemor
         )
+        // ⚠️ **Destemor e Temor NÃO entram.** Os dois falam de MEDO — Verificação
+        // de Pânico, Intimidação, poderes que causam medo (MB p.55 e p.159). Não
+        // perder a pontaria é concentração, não coragem. Somar aqui seria
+        // esticar a vantagem para além do que a página dela diz.
+        lista += TesteDeResistencia(
+            "Não perder a pontaria", vontade,
+            "Ao ser ferido enquanto está Apontando. Falha: perde a mira e o " +
+                "bônus acumulado (MB p.365).",
+            Familia.MENTE
+        )
 
         // --- Sobrenatural: só com a vantagem ---
         val rm = nivelDe(personagem, ID_RESISTENCIA_MAGIA)
@@ -277,7 +345,19 @@ object ResistenciaRules {
             )
         }
 
-        return lista
+        // 🔴 **O piso vale para a tela inteira, e não valia.** Achado pela
+        // varredura do Lote RESIST-3: com HT 3 e Fora de Forma −2, o alvo de
+        // "Manter a consciência" saía **1** — fracasso automático e permanente.
+        // O piso estava só onde o livro o escreve com todas as letras (Fácil de
+        // Matar p.140, Temor e Suscetível p.159), e faltava em "Manter a
+        // consciência" e "Aguentar o esforço", que ninguém tinha pensado em
+        // empurrar tão para baixo.
+        //
+        // Aplicar aqui, no fim, é o que garante que **nenhum** teste da tela
+        // escape — inclusive os que forem acrescentados depois. As chamadas
+        // individuais lá em cima continuam onde estão: elas marcam os pontos em
+        // que o livro cita a regra, e `aplicar` é idempotente (há teste disso).
+        return lista.map { it.copy(alvo = PisoDeTeste.aplicar(it.alvo)) }
     }
 
     /**

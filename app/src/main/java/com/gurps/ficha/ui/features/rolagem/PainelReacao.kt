@@ -38,8 +38,23 @@ import com.gurps.ficha.ui.appCardColors
  *    caixinha para o jogador marcar — igual ao bônus condicional de perícia.
  *    Somar sempre daria bônus contra surdos e contra máquinas.
  *
- * **Não renderiza nada** quando o personagem não tem nenhum traço que mexa em
- * reação — mesma regra do painel de autocontrole e da aba Magia.
+ * ## ⚠️ Este painel aparece SEMPRE — e é exceção de propósito
+ *
+ * Ele já foi condicional, como o de Autocontrole. Pedido do usuário em 31/07:
+ * *"é um teste que não depende de nenhuma habilidade ou perícia, zero, mas
+ * sempre pode ocorrer do Mestre pedir — pode deixar no topo"*.
+ *
+ * E a diferença entre os dois painéis é real, não gosto:
+ *
+ * - **Reação** existe para **qualquer** personagem. Sem nenhum traço social, o
+ *   modificador é **+0** — e +0 é um número, não uma ausência. O Mestre pede o
+ *   teste do mesmo jeito.
+ * - **Autocontrole** só existe se a ficha tiver desvantagem com NA. Sem ela não
+ *   há **nada** para rolar, e a tela continua escondendo o painel.
+ *
+ * É a mesma decisão das linhas de valor zero do DESL-2: *"Voando: 0"* ensina a
+ * regra, enquanto a linha que simplesmente não existe deixa o jogador sem saber
+ * se é zero ou se o app esqueceu.
  */
 @Composable
 fun PainelReacao(
@@ -50,7 +65,8 @@ fun PainelReacao(
     val chave = personagem.vantagensTotais to personagem.desvantagensTotais
     val fixos = remember(chave) { ReacaoRules.modificadoresDe(personagem) }
     val condicionais = remember(chave) { ReacaoRules.condicionaisDe(personagem) }
-    if (fixos.isEmpty() && condicionais.isEmpty()) return
+    // Sem `return` aqui: ver o ⚠️ no topo do arquivo. O painel vale para toda
+    // ficha, com +0 quando não há traço social nenhum.
 
     var marcados by remember(chave) { mutableStateOf(emptySet<Int>()) }
 
@@ -103,17 +119,21 @@ fun PainelReacao(
                 )
             }
 
-            // A "notinha": de onde vem cada ponto do modificador fixo.
-            if (fixos.isNotEmpty()) {
-                Text(
+            // A "notinha": de onde vem cada ponto do modificador fixo. Com a
+            // ficha sem traço social, ela explica o ZERO — senão o jogador olha
+            // um "+0" solto e não sabe se o app calculou ou desistiu.
+            Text(
+                if (fixos.isEmpty()) {
+                    "Sem modificador de traço. Role 3d6 e consulte a tabela (MB p.494)."
+                } else {
                     fixos.joinToString(", ") {
                         "${it.nomeDoTraco} ${if (it.valor >= 0) "+${it.valor}" else "${it.valor}"}"
-                    },
-                    style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.outline,
-                    maxLines = 1
-                )
-            }
+                    }
+                },
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.outline,
+                maxLines = 1
+            )
 
             PainelBonusCondicional(
                 bonus = condicionais,

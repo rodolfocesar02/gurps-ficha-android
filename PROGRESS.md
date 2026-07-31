@@ -5431,3 +5431,31 @@ Essa última já trabalhou na primeira execução: acusou **`adicionarQualidade`
 
 **Testes:** `TravaDeParesNoDelegateTest`, 4 casos. Gate total em **1666** nas duas variantes.
 - **Status:** ✅ Build OK nas 2 variantes · lint OK · gate verde · ⏭️ **PENDENTE: refazer T-P1, T-P2 e T-P3 no aparelho**.
+
+### Lote RESIST-3 — os testes de lesão que faltavam, e o Teste de Reação fixo — 31 de Julho de 2026 (versão 5.4-RESIST3)
+Ideia sua: *"o botão Reação e Resistência deveria ter todos os testes, mesmo sem as vantagens presentes"*. Fui varrer o livro atrás de *"teste de HT/Vontade para evitar/resistir"* — **46 trechos** — e o buraco não era cosmético.
+
+**🔴 Faltava o teste de HT mais rolado numa sessão de combate.**
+> Uma vez que uma lesão incapacitante também constitui um ferimento grave, Friedrick deve fazer um **teste de HT para não ficar atordoado e cair**. Se ele fracassar por uma margem de 5 ou mais, ele pode até desmaiar! — MB p.420
+
+**Seis linhas novas, 8 → 13 testes:** Evitar atordoamento e queda (p.420), Recuperar-se do atordoamento (p.365), **Recuperar-se do atordoamento MENTAL** (p.365), Acordar (p.424), Resistir ao ferimento fatal (p.424) e Não perder a pontaria (p.365).
+
+**⚠️ O modo de falhar deste lote era o EXCESSO**, não o número errado: somar uma vantagem onde o livro não soma. Três tentações, cada uma com teste dizendo **não**:
+- **Difícil de Subjugar** parece caber no atordoamento — mas ela dá +1 *"nos testes para verificar se o personagem evita a **inconsciência**"* (p.54). Cair atordoado não é desmaiar, e **acordar** é sair da inconsciência, não evitá-la. Fica de fora dos dois.
+- **Duro e Fácil de Matar** parecem caber em tudo que é grave — mas os dois falam de testes onde o fracasso **mata**. Entram **só** no ferimento fatal, onde *"em qualquer fracasso, ele morre"*.
+- **Destemor e Temor** parecem caber em "não perder a pontaria" — mas os dois falam de **medo** (p.55 e p.159), e perder a mira é concentração.
+
+**⚠️ O atordoamento MENTAL sai da IQ** — o único teste da tela que não é HT nem Vontade. O livro separa as duas metades na mesma frase: *"um teste de HT para se recuperar do atordoamento físico, ou um teste de IQ para o atordoamento mental"*.
+
+**🔴 Dois erros de desenho que os TESTES pegaram, não eu.**
+- **Pus o atordoamento mental na família CORPO**, e **dois testes antigos caíram na hora**: eles varrem a família inteira afirmando que Boa Forma e Fora de Forma tocam **todos** os testes de corpo — e este é da cabeça. A família não é rótulo de tela: é o contrato de quem sofre o bônus de HT. Foi para MENTE.
+- 🔴 **O piso de 3 não valia para a tela inteira.** A varredura da ficha mais fraca possível achou *"Manter a consciência caiu para **1**"* — com HT 3 e Fora de Forma −2. O piso estava só onde o livro o escreve com todas as letras (Fácil de Matar p.140, Temor e Suscetível p.159), e faltava em "Manter a consciência" e "Aguentar o esforço", que ninguém tinha pensado em empurrar tão para baixo. Agora ele é aplicado **no fim, sobre a lista toda** — o que garante que nenhum teste futuro escape.
+
+**E um erro meu no próprio teste:** usei `contains("Recuperar-se do atordoamento ")`, com espaço no fim, para excluir o MENTAL. Casou **só** com o MENTAL, porque é ele que tem espaço depois da palavra — o teste do físico media o mental e vice-versa. Rótulo parecido pede comparação **exata**.
+
+**O Teste de Reação virou fixo** (pedido seu no meio do lote): *"é um teste que não depende de nenhuma habilidade ou perícia, zero, mas sempre pode ocorrer do Mestre pedir"*. Ele já foi condicional como o de Autocontrole, e a diferença entre os dois é real: **Reação existe para qualquer personagem** (sem traço social o modificador é **+0**, e +0 é um número, não uma ausência); **Autocontrole só existe se houver desvantagem com NA** — sem ela não há nada para rolar, e esse painel continua escondido. Com a ficha limpa, a notinha explica o zero: *"Sem modificador de traço. Role 3d6 e consulte a tabela (MB p.494)"*.
+
+**E o vermelho da Suscetibilidade à Magia** agora pega o texto inteiro, não só o título — no aparelho o aviso passou despercebido, e ele **inverte o sentido do número**.
+
+**Testes:** `ResistenciaLesaoTest`, 14 casos. Gate total em **1680** nas duas variantes.
+- **Status:** ✅ Build OK nas 2 variantes · lint OK · gate verde · ⏭️ **PENDENTE: teste no aparelho**.

@@ -127,7 +127,17 @@ fun DialogoReacaoEResistencia(
                                             "mágico, arma mágica nem adivinhação."
                                     },
                                     style = MaterialTheme.typography.labelSmall,
-                                    color = MaterialTheme.colorScheme.outline
+                                    // ⚠️ O corpo do texto acompanha o título na cor.
+                                    // Antes só o título ficava vermelho, e no
+                                    // aparelho (31/07) o aviso passou despercebido:
+                                    // uma linha curta em vermelho no meio de um card
+                                    // cinza não chama atenção o bastante para algo
+                                    // que INVERTE o sentido do número.
+                                    color = if (suscetivel) {
+                                        MaterialTheme.colorScheme.error
+                                    } else {
+                                        MaterialTheme.colorScheme.outline
+                                    }
                                 )
                             }
                         }
