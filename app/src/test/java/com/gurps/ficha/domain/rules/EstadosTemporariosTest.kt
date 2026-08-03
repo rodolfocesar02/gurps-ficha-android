@@ -100,12 +100,45 @@ class EstadosTemporariosTest {
     }
 
     @Test
+    fun `🔴 toda sigla de atributo e uma que o getAtributo RECONHECE`() {
+        // O bug que este teste existe para nunca mais deixar passar: eu escrevi
+        // `VONT` e a aba Rolagem usa `VON`. O casamento é por TEXTO, então a
+        // chave errada não dá erro — o desconto simplesmente some no caminho.
+        // No aparelho, o Lunático ficava ligado, o resumo dizia "VONT −2" e a
+        // Vontade na tela não mudava.
+        //
+        // `getAtributo` devolve **10** para sigla desconhecida; uma sigla válida
+        // num personagem com atributos diferentes de 10 devolve o valor real.
+        val cobaia = Personagem(
+            nome = "T", forca = 11, destreza = 12, inteligencia = 13, vitalidade = 14
+        )
+        val siglas = EstadosTemporarios.CATALOGO
+            .flatMap { it.graus }
+            .flatMap { it.mods.atributos.keys }
+            .distinct()
+        assertTrue("nenhum estado mexe em atributo?", siglas.isNotEmpty())
+        siglas.forEach { sigla ->
+            assertTrue(
+                "sigla '$sigla' nao e reconhecida pelo getAtributo da ficha",
+                sigla in setOf("ST", "DX", "IQ", "HT", "VON", "PER")
+            )
+            // E o valor tem de sair do atributo, não do fallback.
+            if (sigla in setOf("ST", "DX", "IQ", "HT")) {
+                assertTrue(
+                    "getAtributo('$sigla') caiu no fallback de 10",
+                    cobaia.getAtributo(sigla) != 10
+                )
+            }
+        }
+    }
+
+    @Test
     fun `⚠️ Lunatico mexe em VONTADE, nao em IQ`() {
         // A dimensão que não estava no meu desenho de três clientes. E é esta
         // frase do livro que prova que IQ NÃO arrasta Vontade junto: se
         // arrastasse, "-2 em todos os testes de Vontade" seria redundante.
         val m = EstadosTemporarios.totalDe(mapOf("lunatico" to 1))
-        assertEquals(-2, m.atributos["VONT"])
+        assertEquals(-2, m.atributos["VON"])
         assertEquals(-2, m.autocontrole)
         assertNull("Lunatico NAO toca IQ", m.atributos["IQ"])
         assertNull("Lunatico NAO toca DX", m.atributos["DX"])
@@ -193,7 +226,7 @@ class EstadosTemporariosTest {
         // errado. Cada estado penaliza exatamente o que a página dele nomeia.
         val m = EstadosTemporarios.totalDe(mapOf("dor_cronica" to 3))
         assertEquals(-6, m.atributos["IQ"])
-        assertNull("Vontade nao pode cair junto", m.atributos["VONT"])
+        assertNull("Vontade nao pode cair junto", m.atributos["VON"])
         assertNull("Percepcao nao pode cair junto", m.atributos["PER"])
     }
 

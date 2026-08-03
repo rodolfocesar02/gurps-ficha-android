@@ -1,5 +1,6 @@
 package com.gurps.ficha.ui.features.traits
 
+import com.gurps.ficha.domain.rules.TetoDeNivelDoTraco
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -184,7 +185,14 @@ fun ConfigurarDesvantagemDialog(definicao: DesvantagemDefinicao, onDismiss: () -
                         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
                             TextButton(onClick = { if (nivel > 1) nivel-- }) { Text("-") }
                             Text("$nivel", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
-                            TextButton(onClick = { if (nivel < 20) nivel++ }) { Text("+") }
+                            TextButton(onClick = {
+                                // Teto do catalogo (MB): Mao Fraca para em 3.
+                                // Antes eram 20 fixos no codigo, e o jogador
+                                // pagava por niveis que nao faziam nada.
+                                nivel = TetoDeNivelDoTraco.ajustar(
+                                    nivel + 1, definicao.id, definicao.max
+                                )
+                            }) { Text("+") }
                         }
                         HorizontalDivider()
                     }
@@ -358,6 +366,10 @@ fun EditarDesvantagemDialog(
     desvantagem: DesvantagemSelecionada,
     permiteAutocontrole: Boolean = false,
     descricaoCatalogo: String = "",
+    // Teto de niveis do catalogo. Vem de fora porque o traco SELECIONADO nao
+    // carrega o `max` -- quem tem o catalogo em maos e a tela que abre o
+    // dialogo. Null = sem teto no livro, e vale o limite geral de tela.
+    maxDoCatalogo: Int? = null,
     poderesDisponiveis: List<com.gurps.ficha.model.Poder> = emptyList(),
     onDismiss: () -> Unit,
     onSave: (DesvantagemSelecionada) -> Unit
@@ -492,7 +504,11 @@ fun EditarDesvantagemDialog(
                         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
                             TextButton(onClick = { if (nivel > 1) nivel-- }) { Text("-") }
                             Text("$nivel", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
-                            TextButton(onClick = { if (nivel < 20) nivel++ }) { Text("+") }
+                            TextButton(onClick = {
+                                nivel = TetoDeNivelDoTraco.ajustar(
+                                    nivel + 1, desvantagem.definicaoId, maxDoCatalogo
+                                )
+                            }) { Text("+") }
                         }
                     }
                     TipoCusto.ESCOLHA -> {

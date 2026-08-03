@@ -203,8 +203,19 @@ fun DorCronicaConfig(
     onChanged: (Int, Float) -> Unit
 ) {
     Column {
-        Text("Intensidade da Dor:", style = MaterialTheme.typography.labelMedium)
-        listOf(-5 to "Leve (-5 pts)", -10 to "Moderada (-10 pts)", -15 to "Grave (-15 pts)", -20 to "Agonizante (-20 pts)").forEach { (pts, label) ->
+        Text("Gravidade:", style = MaterialTheme.typography.labelMedium)
+        // 🔴 Eram QUATRO opções inventadas ("Leve/Moderada/Grave/Agonizante",
+        // -5/-10/-15/-20). O livro (MB p.135) dá TRÊS, com nome e penalidade
+        // próprios -- e a penalidade é o que a automação usa:
+        //   Suave       -2 em DX, IQ e autocontrole ... -5 pontos
+        //   Grave       -4 ...................... -10 pontos
+        //   Excruciante -6 ...................... -15 pontos
+        // O "-20" nem existe. Achado por você no aparelho em 31/07 (T-ES2).
+        listOf(
+            -5 to "Suave (−2 em DX, IQ e autocontrole) — −5 pts",
+            -10 to "Grave (−4 em DX, IQ e autocontrole) — −10 pts",
+            -15 to "Excruciante (−6 em DX, IQ e autocontrole) — −15 pts"
+        ).forEach { (pts, label) ->
             Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth().clickable { onChanged(pts, frequency) }) {
                 RadioButton(selected = intensity == pts, onClick = { onChanged(pts, frequency) })
                 Text(label)

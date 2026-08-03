@@ -1,5 +1,6 @@
 package com.gurps.ficha.ui.features.traits
 
+import com.gurps.ficha.domain.rules.TetoDeNivelDoTraco
 import androidx.compose.foundation.*
 import androidx.compose.foundation.gestures.detectVerticalDragGestures
 import androidx.compose.foundation.layout.*
@@ -280,7 +281,10 @@ fun EditarVantagemDialog(
                 if (vantagem.tipoCusto == TipoCusto.POR_NIVEL) {
                     Text("Nível:")
                     val nivelMinimo = 1
-                    val nivelMaximo = if (vantagemEhAptidaoMagica(vantagem.definicaoId)) 11 else 20
+                    // Na EDICAO so temos o traco selecionado, que nao carrega o
+                    // `max` do catalogo -- o teto vem do id, e o catalogo
+                    // entra na hora de ADICIONAR.
+                    val nivelMaximo = TetoDeNivelDoTraco.de(vantagem.definicaoId, null)
                     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
                         TextButton(onClick = { if (nivel > nivelMinimo) nivel-- }) { Text("-") }
                         Text("${nivelExibicaoVantagem(vantagem.definicaoId, nivel)}", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)

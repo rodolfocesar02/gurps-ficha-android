@@ -221,34 +221,6 @@
       }
     },
     {
-      "id": "acrobacia_aquática",
-      "nome": "Acrobacia Aquática",
-      "tipo": {
-        "attributeMode": "fixed",
-        "attributeOptions": [
-          "DX"
-        ],
-        "difficultyMode": "fixed",
-        "difficulty": "D"
-      },
-      "preRequisito": {
-        "raw": "Natação ou Anfíbio ou Aquático",
-        "allowWithoutPrerequisite": true,
-        "logic": {
-          "and": []
-        }
-      },
-      "preDefinido": {
-        "raw": "Acrobacia-4",
-        "onZeroPoints": "-",
-        "parsed": []
-      },
-      "descricao": "Acrobacia Aquática: A habilidade de realizar acrobacias sob a água. Pré-requisitos: Natação ou a vantagem Anfíbio (pág. 38) ou a desvantagem Aquático (pág. 156).\n\nAs perícias Acrobacia, Acrobacia Aérea e Acrobacia Aquática têm um valor predefinido igual ao NH em qualquer uma das outras -4. Adicione um bônus de +1 a essas três perícias se o PdJ tiver Equilíbrio Perfeito (pág. 58).",
-      "modificadores": {
-        "raw": "-"
-      }
-    },
-    {
       "row": 5,
       "id": "adestramento_de_animais",
       "nome": "Adestramento de Animais (†)",
@@ -678,80 +650,6 @@
         "emptyPrerequisite": "allow_without_block",
         "emptyPredefinido": "on_zero_points_use_default_pré-definido",
         "emptyModifiers": "do_not_automate"
-      }
-    },
-    {
-      "row": 14,
-      "id": "Arco",
-      "nome": "Arco",
-      "paginaRaw": "176",
-      "tipo": {
-        "valid": true,
-        "attributeMode": "fixed",
-        "attributeOptions": [
-          "DX"
-        ],
-        "difficultyMode": "fixed",
-        "difficulty": "M",
-        "raw": "DX/Média"
-      },
-      "preRequisito": {
-        "raw": "-",
-        "kind": "none",
-        "allowWithoutPrerequisite": true,
-        "logic": null,
-        "tokens": []
-      },
-      "preDefinido": {
-        "raw": "DX-5",
-        "kind": "parsed",
-        "onZeroPoints": "use_parsed_pré-definido",
-        "parsed": [
-          {
-            "raw": "DX-5",
-            "type": "attribute",
-            "base": "DX",
-            "modifier": -5
-          }
-        ]
-      },
-      "descricao": "DX/Média\n\nEsta é a perícia no uso de arcos longos, arcos curtos e todos os arcos similares. Ela cobre também os arcos compostos, embora uma pessoa que nunca tenha visto um antes sofra uma penalidade de -2 pela falta de familiaridade com o objeto.",
-      "modificadores": {
-        "raw": "-2 para arcos composto não familiar.",
-        "automation": "manual_text"
-      },
-      "policy": {
-        "emptyPrerequisite": "allow_without_block",
-        "emptyPredefinido": "on_zero_points_use_default_pré-definido",
-        "emptyModifiers": "do_not_automate"
-      }
-    },
-    {
-      "id": "Arco",
-      "nome": "Arco",
-      "tipo": {
-        "attributeMode": "fixed",
-        "attributeOptions": [
-          "DX"
-        ],
-        "difficultyMode": "fixed",
-        "difficulty": "M"
-      },
-      "preRequisito": {
-        "raw": "-",
-        "allowWithoutPrerequisite": true,
-        "logic": {
-          "and": []
-        }
-      },
-      "preDefinido": {
-        "raw": "DX-5",
-        "onZeroPoints": "-",
-        "parsed": []
-      },
-      "descricao": "DX/Média\n\nEsta é a perícia no uso de arcos longos, arcos curtos e todos os arcos similares. Ela cobre também os arcos compostos, embora uma pessoa que nunca tenha visto um antes sofra uma penalidade de -2 pela falta de familiaridade com o objeto.",
-      "modificadores": {
-        "raw": "-2 para arcos composto não familiar."
       }
     },
     {
@@ -13514,34 +13412,6 @@
       }
     },
     {
-      "id": "trato_social",
-      "nome": "Trato-Social (†)",
-      "tipo": {
-        "attributeMode": "fixed",
-        "attributeOptions": [
-          "IQ"
-        ],
-        "difficultyMode": "fixed",
-        "difficulty": "F"
-      },
-      "preRequisito": {
-        "raw": "-",
-        "allowWithoutPrerequisite": true,
-        "logic": {
-          "and": []
-        }
-      },
-      "preDefinido": {
-        "raw": "IQ-4 (e outros entre especializações)",
-        "onZeroPoints": "-",
-        "parsed": []
-      },
-      "descricao": "IQ/Média\n\nPredefinido: IQ-4, entre outras.\n\nEsta é a perícia das \"boas maneiras\" em uma subcultura que tem um código de conduta preestabelecido (ex.: a alta sociedade ou o exército). Quando o personagem estiver lidando com esse grupo social, um sucesso no teste de habilidade permite interagir com as pessoas sem passar vergonha, detectar pessoas que fingem ter uma boa posição na sociedade e assim por diante. É possível realizar um teste de Influência usando o NH em Trato Social no lugar de qualquer teste de reação necessário em uma situação social envolvendo essa subcultura (v. Testes de Influência, pág. 359). Faça um teste por encontro.\n\nÉ obrigatório ter uma especialização. As mais comuns são:\n\nAlta Sociedade: Os modos das pessoas que têm um bom berço e boa posição social. O Status determina a posição social relativa. Faça um teste de Trato Social toda vez que quiser personificar alguém que esteja mais de 3 níveis de Status de distância do seu. Além disso, se o seu nível social for negativo e estiver tentando se fazer passar por alguém de nível 1+, ou vice-versa, o teste de Trato Social sofre uma penalidade de -2.\n\nDojo: Como cumprimentar mestres, carregar armas e lançar desafios em um dojo de caratê, no kwoon de kung fu e na salle de esgrima. O NH reconhecido determina uma posição social relativa. Em certos lugares e épocas, zombar da tradição é arriscar-se a receber uma retaliação violenta. Para as artes marciais de competição (apenas), o valor predefinido dessa especialização é igual a NH em qualquer perícia de Jogos de Entretenimento relevante -3.\n\nExército: Os costumes, tradições e regulamentos do serviço militar. Isso abrange também o conhecimento das regras que não se encontram nos manuais: o que é aceitável, mesmo que não se classifique como um regulamento e o que é proibido, embora não haja nada escrito contra isso. A Hierarquia Militar determina uma posição relativa.\n\nMáfia: Uma conduta adequada dentro de uma organização criminosa formal. Isso inclui coisas como códigos de silêncio e demonstrar respeito apropriado aos \"poderosos chefões\". Os protocolos da Máfia imitam as regras típicas da alta sociedade... Mas o castigo por sair da linha é muito mais severo. Predefinido: Manha-3.\n\nPolícia: Como Trato Social (Exército), mas para o serviço policial. Isso significa o conhecimento dos protocolos sociais dos policiais; utilize Jurisprudência (Polícia) se o assunto for os protocolos legais. Hierarquia Policial determina uma posição relativa.\n\nServo: Conhecimento de como servir às classes superiores. Certos procedimentos existem porque sim (o garfo de salada fica à direita do garfo do prato principal, o duque deve ser anunciado antes do conde, etc.) e certas atitudes são inaceitáveis em um servo.\n\nTrato Social (Alta Sociedade) é a especialização mais comum e ela pode ser anotada simplesmente como \"Trato Social\" na planilha de personagem. O valor predefinido de Trato Social (Alta Sociedade) e Trato Social (Servo) é igual ao NH da outra -2. Não existe valor predefinido entre os outros tipos de Trato Social.\n\nModificadores: Todos os de Familiaridade Cultural (pág. 23); +2 se o PdJ tiver uma posição social mais alta do que o PdM que esteja tentando impressionar; -2 se sua posição social for menor (\"posição\" pode significar Hierarquia, status social, nível de habilidade ou alguma outra coisa); +2 se parecer que ele tem amigos importantes; -4 se for Ingênuo (pág. 146); -3 para Pouca Empatia (pág. 153); -1 para Oblívio (pág. 151); -1 a -4 para Timidez (pág. 159).",
-      "modificadores": {
-        "raw": "Modificadores de Familiaridade Cultural; +/-2 por diferença de posição social; -4 p/ Ingênuo; -3 p/ Pouca Empatia; -1 p/ Oblívio; -1 a -4 p/ Timidez."
-      }
-    },
-    {
       "row": 242,
       "id": "utilizacao_de_traje_especial_nt",
       "nome": "Utilização de Traje Especial/NT (†)",
@@ -13850,7 +13720,508 @@
         "emptyPredefinido": "on_zero_points_use_default_pré-definido",
         "emptyModifiers": "do_not_automate"
       }
+    },
+    {
+      "id": "arremedo",
+      "nome": "Arremedo (†)",
+      "tipo": {
+        "attributeMode": "fixed",
+        "attributeOptions": [
+          "IQ"
+        ],
+        "difficultyMode": "fixed",
+        "difficulty": "D"
+      },
+      "preRequisito": {
+        "raw": "-",
+        "allowWithoutPrerequisite": true,
+        "logic": {
+          "and": []
+        }
+      },
+      "preDefinido": {
+        "raw": "IQ-6, Dissimulação-6, Linguística-4, Naturalista-6",
+        "onZeroPoints": "-",
+        "parsed": []
+      },
+      "descricao": "IQ/Fácil\n\nPredefinido: IQ-4.\n\nEssa é a habilidade de imitar sons. Cada especialização é uma perícia separada. As especializações incluem:\n\nChamados dos Pássaros: Permite reproduzir os assobios, trinados e outros sons emitidos pelos pássaros. De resto, essa especialização funciona da mesma maneira que Sons de Animais (abaixo). Predefinido: Naturalista-6.\n\nFala: Permite imitar sons vocálicos. Isso não possibilita uma conversação em um idioma estrangeiro. No entanto, se o PdJ já o tiver ouvido, será capaz de reproduzir um som semelhante. Se estiver tentando imitar uma pessoa específica, realize um teste com uma penalidade de -3. Trate esse teste como uma Disputa Rápida contra a IQ de qualquer um que conheça muito bem a pessoa imitada. Predefinido: Dissimulação-6 ou Linguística-4.\n\nSons de Animais: Permite emular o rugido de um leão, o uivo de um lobo, o coaxar de um sapo, etc. O personagem consegue imitar os animais que emitem sons característicos. Faça um teste de habilidade para atrair animais do tipo imitado ou os predadores que normalmente os caçam se houver algum por perto. Para enganar pessoas, o personagem tem de vencer uma Disputa Rápida entre Arremedo e Naturalista-3 ou Percepção-6 do ouvinte. Predefinido: Naturalista-6.\n\nSons de Animais e Chamados dos Pássaros têm um valor predefinido igual ao NH uma da outra -6. Não há um valor predefinido entre essas especializações e a Fala.\n\nObserve que não haverá necessidade de aprender esta perícia se o personagem tiver a vantagem Arremedo (pág. 41).",
+      "modificadores": {
+        "raw": "-3 para imitar pessoa específica (Disputa vs. IQ do conhecido)."
+      },
+      "herdadoDe": "arremedo_chamado_dos_passaros"
+    },
+    {
+      "row": 33,
+      "id": "assuntos_atuaisnt_alta_cultura",
+      "nome": "Assuntos Atuais/NT (Alta Cultura)",
+      "paginaRaw": "182",
+      "tipo": {
+        "valid": true,
+        "attributeMode": "fixed",
+        "attributeOptions": [
+          "IQ"
+        ],
+        "difficultyMode": "fixed",
+        "difficulty": "F",
+        "raw": "IQ/Fácil"
+      },
+      "preRequisito": {
+        "raw": "-",
+        "kind": "none",
+        "allowWithoutPrerequisite": true,
+        "logic": null,
+        "tokens": []
+      },
+      "preDefinido": {
+        "raw": "IQ-4 ou Pesquisa-4",
+        "kind": "parsed",
+        "onZeroPoints": "use_parsed_pré-definido",
+        "parsed": [
+          {
+            "raw": "IQ-4",
+            "type": "attribute",
+            "base": "IQ",
+            "modifier": -4
+          },
+          {
+            "raw": "Pesquisa-4",
+            "type": "skill_or_rule",
+            "base": "Pesquisa",
+            "modifier": -4
+          }
+        ]
+      },
+      "descricao": "IQ/Fácil\n\nPredefinido: IQ-4 ou Pesquisa-4.\n\nEssa é a habilidade de assimilar rapidamente tudo o que se qualificar como \"notícia\" em seu mundo e para relembrar essas informações quando necessário.\n\nÉ obrigatório se especializar em uma das seguintes áreas:\n\nAlta Cultura: Informações sobre galerias de arte, óperas, sinfonias e assim por diante.\n\nCiência & Tecnologia: Novas descobertas e invenções.\n\nCultura Popular: Paradas musicais, o que está na moda, os produtos mais vendidos, entre outras coisas.\n\nEsportes: Os resultados de jogos recentes, os nomes dos atletas, etc.\n\nManchetes: Normalmente notícias ruins, como assassinatos, epidemias e guerras.\n\nNegócios: Taxas de câmbio, performance de investimento, etc.\n\nPessoas: Fofocas sobre celebridades, chefes de estado e outras pessoas influentes.\n\nPolítica: Os resultados das eleições, tratados internacionais, etc.\n\nRegional: Notícias de todos os tipos sobre uma região específica (a sua escolha). Esse é o típico \"folhetim de cidade pequena\" em NTs baixos.\n\nViagem: Os locais mais frequentados do ano e os preços desses roteiros.\n\nNo caso de um sucesso num teste de Assuntos Atuais, o Mestre informa ao PdJ todas as notícias relevantes à sua especialização e que estejam relacionadas com o desenrolar da aventura (possivelmente incluindo pistas, se o teste tiver um bom resultado) ou concede um pequeno bônus em um teste de habilidade (ex.: um sucesso em Assuntos Atuais (Esportes) poderia resultar em um bônus de +1 na perícia Jogos de Azar quando se estiver fazendo uma aposta sobre uma luta de boxe).\n\nModificadores: -1 por dia em que não for possível ter acesso às notícias atuais; -3 se o PdJ tiver apenas uma fonte de informação; +1 ou mais para acesso \"interno\" a notícias (inscrever-se em um serviço on-line comum vale +1, enquanto que um emprego em uma agência, como a CIA por exemplo, concede um bônus de +3 ou mais).",
+      "modificadores": {
+        "raw": "-1 por dia sem acesso a notícias; +1 a +3 para acesso interno.",
+        "automation": "manual_text"
+      },
+      "policy": {
+        "emptyPrerequisite": "allow_without_block",
+        "emptyPredefinido": "on_zero_points_use_default_pré-definido",
+        "emptyModifiers": "do_not_automate"
+      },
+      "herdadoDe": "assuntos_atuais_nt"
+    },
+    {
+      "row": 33,
+      "id": "assuntos_atuaisnt_cultura_popular",
+      "nome": "Assuntos Atuais/NT (Cultura Popular)",
+      "paginaRaw": "182",
+      "tipo": {
+        "valid": true,
+        "attributeMode": "fixed",
+        "attributeOptions": [
+          "IQ"
+        ],
+        "difficultyMode": "fixed",
+        "difficulty": "F",
+        "raw": "IQ/Fácil"
+      },
+      "preRequisito": {
+        "raw": "-",
+        "kind": "none",
+        "allowWithoutPrerequisite": true,
+        "logic": null,
+        "tokens": []
+      },
+      "preDefinido": {
+        "raw": "IQ-4 ou Pesquisa-4",
+        "kind": "parsed",
+        "onZeroPoints": "use_parsed_pré-definido",
+        "parsed": [
+          {
+            "raw": "IQ-4",
+            "type": "attribute",
+            "base": "IQ",
+            "modifier": -4
+          },
+          {
+            "raw": "Pesquisa-4",
+            "type": "skill_or_rule",
+            "base": "Pesquisa",
+            "modifier": -4
+          }
+        ]
+      },
+      "descricao": "IQ/Fácil\n\nPredefinido: IQ-4 ou Pesquisa-4.\n\nEssa é a habilidade de assimilar rapidamente tudo o que se qualificar como \"notícia\" em seu mundo e para relembrar essas informações quando necessário.\n\nÉ obrigatório se especializar em uma das seguintes áreas:\n\nAlta Cultura: Informações sobre galerias de arte, óperas, sinfonias e assim por diante.\n\nCiência & Tecnologia: Novas descobertas e invenções.\n\nCultura Popular: Paradas musicais, o que está na moda, os produtos mais vendidos, entre outras coisas.\n\nEsportes: Os resultados de jogos recentes, os nomes dos atletas, etc.\n\nManchetes: Normalmente notícias ruins, como assassinatos, epidemias e guerras.\n\nNegócios: Taxas de câmbio, performance de investimento, etc.\n\nPessoas: Fofocas sobre celebridades, chefes de estado e outras pessoas influentes.\n\nPolítica: Os resultados das eleições, tratados internacionais, etc.\n\nRegional: Notícias de todos os tipos sobre uma região específica (a sua escolha). Esse é o típico \"folhetim de cidade pequena\" em NTs baixos.\n\nViagem: Os locais mais frequentados do ano e os preços desses roteiros.\n\nNo caso de um sucesso num teste de Assuntos Atuais, o Mestre informa ao PdJ todas as notícias relevantes à sua especialização e que estejam relacionadas com o desenrolar da aventura (possivelmente incluindo pistas, se o teste tiver um bom resultado) ou concede um pequeno bônus em um teste de habilidade (ex.: um sucesso em Assuntos Atuais (Esportes) poderia resultar em um bônus de +1 na perícia Jogos de Azar quando se estiver fazendo uma aposta sobre uma luta de boxe).\n\nModificadores: -1 por dia em que não for possível ter acesso às notícias atuais; -3 se o PdJ tiver apenas uma fonte de informação; +1 ou mais para acesso \"interno\" a notícias (inscrever-se em um serviço on-line comum vale +1, enquanto que um emprego em uma agência, como a CIA por exemplo, concede um bônus de +3 ou mais).",
+      "modificadores": {
+        "raw": "-1 por dia sem acesso a notícias; +1 a +3 para acesso interno.",
+        "automation": "manual_text"
+      },
+      "policy": {
+        "emptyPrerequisite": "allow_without_block",
+        "emptyPredefinido": "on_zero_points_use_default_pré-definido",
+        "emptyModifiers": "do_not_automate"
+      },
+      "herdadoDe": "assuntos_atuais_nt"
+    },
+    {
+      "row": 33,
+      "id": "assuntos_atuaisnt_negocios",
+      "nome": "Assuntos Atuais/NT (Negócios)",
+      "paginaRaw": "182",
+      "tipo": {
+        "valid": true,
+        "attributeMode": "fixed",
+        "attributeOptions": [
+          "IQ"
+        ],
+        "difficultyMode": "fixed",
+        "difficulty": "F",
+        "raw": "IQ/Fácil"
+      },
+      "preRequisito": {
+        "raw": "-",
+        "kind": "none",
+        "allowWithoutPrerequisite": true,
+        "logic": null,
+        "tokens": []
+      },
+      "preDefinido": {
+        "raw": "IQ-4 ou Pesquisa-4",
+        "kind": "parsed",
+        "onZeroPoints": "use_parsed_pré-definido",
+        "parsed": [
+          {
+            "raw": "IQ-4",
+            "type": "attribute",
+            "base": "IQ",
+            "modifier": -4
+          },
+          {
+            "raw": "Pesquisa-4",
+            "type": "skill_or_rule",
+            "base": "Pesquisa",
+            "modifier": -4
+          }
+        ]
+      },
+      "descricao": "IQ/Fácil\n\nPredefinido: IQ-4 ou Pesquisa-4.\n\nEssa é a habilidade de assimilar rapidamente tudo o que se qualificar como \"notícia\" em seu mundo e para relembrar essas informações quando necessário.\n\nÉ obrigatório se especializar em uma das seguintes áreas:\n\nAlta Cultura: Informações sobre galerias de arte, óperas, sinfonias e assim por diante.\n\nCiência & Tecnologia: Novas descobertas e invenções.\n\nCultura Popular: Paradas musicais, o que está na moda, os produtos mais vendidos, entre outras coisas.\n\nEsportes: Os resultados de jogos recentes, os nomes dos atletas, etc.\n\nManchetes: Normalmente notícias ruins, como assassinatos, epidemias e guerras.\n\nNegócios: Taxas de câmbio, performance de investimento, etc.\n\nPessoas: Fofocas sobre celebridades, chefes de estado e outras pessoas influentes.\n\nPolítica: Os resultados das eleições, tratados internacionais, etc.\n\nRegional: Notícias de todos os tipos sobre uma região específica (a sua escolha). Esse é o típico \"folhetim de cidade pequena\" em NTs baixos.\n\nViagem: Os locais mais frequentados do ano e os preços desses roteiros.\n\nNo caso de um sucesso num teste de Assuntos Atuais, o Mestre informa ao PdJ todas as notícias relevantes à sua especialização e que estejam relacionadas com o desenrolar da aventura (possivelmente incluindo pistas, se o teste tiver um bom resultado) ou concede um pequeno bônus em um teste de habilidade (ex.: um sucesso em Assuntos Atuais (Esportes) poderia resultar em um bônus de +1 na perícia Jogos de Azar quando se estiver fazendo uma aposta sobre uma luta de boxe).\n\nModificadores: -1 por dia em que não for possível ter acesso às notícias atuais; -3 se o PdJ tiver apenas uma fonte de informação; +1 ou mais para acesso \"interno\" a notícias (inscrever-se em um serviço on-line comum vale +1, enquanto que um emprego em uma agência, como a CIA por exemplo, concede um bônus de +3 ou mais).",
+      "modificadores": {
+        "raw": "-1 por dia sem acesso a notícias; +1 a +3 para acesso interno.",
+        "automation": "manual_text"
+      },
+      "policy": {
+        "emptyPrerequisite": "allow_without_block",
+        "emptyPredefinido": "on_zero_points_use_default_pré-definido",
+        "emptyModifiers": "do_not_automate"
+      },
+      "herdadoDe": "assuntos_atuais_nt"
+    },
+    {
+      "row": 65,
+      "id": "conhecimento_oculto_conhecimento_demoniaco",
+      "nome": "Conhecimento Oculto (Conhecimento Demoníaco)",
+      "paginaRaw": "191",
+      "tipo": {
+        "valid": true,
+        "attributeMode": "fixed",
+        "attributeOptions": [
+          "IQ"
+        ],
+        "difficultyMode": "variable",
+        "difficulty": null,
+        "raw": "IQ/Variável"
+      },
+      "preDefinido": {
+        "raw": "-",
+        "kind": "empty",
+        "onZeroPoints": "use_default_pré-definido",
+        "parsed": []
+      },
+      "descricao": "IQ/Variável\n\nEsta perícia representa o conhecimento perdido, deliberadamente oculto ou simplesmente negligenciado. Seja qual for o motivo, a sociedade desconhece essa informação. Ela está disponível apenas àqueles que a estudaram.\n\nO personagem deve se especializar em uma determinada área de conhecimento oculto. Se desejar iniciar o jogo já com as perícias de Conhecimento Oculto, ele tem de justificar esse conhecimento específico na história de seu personagem. Pode ser até mesmo que o Mestre exija que o personagem compre Antecedentes Incomuns antes de aprender Conhecimento Oculto. É claro que o Mestre também tem liberdade para proibir esta perícia aos personagens no momento de sua criação, ou aos PdJs em geral.\n\nPara adquirir Conhecimento Oculto durante o jogo, o PdJ tem de encontrar uma fonte confiável de informação relevante. O Mestre pode decidir ligar os aumentos de Conhecimento Oculto com atos específicos como ler tomos bolorentos em vez de permitir que os pontos sejam gastos à vontade. Por exemplo, um manuscrito antigo pode levar o personagem a gastar 8 pontos (e não mais) em uma perícia específica de Conhecimento Oculto.\n\nLembre que a maior parte do Conhecimento Oculto é mantida em segredo porque alguém muito poderoso assim o quer. Portanto, discutir ou revelar seu conhecimento pode ser extremamente perigoso.\n\nEntre as possíveis especializações desta perícia se incluem:\n\nConhecimento Demoníaco: O personagem conhece os segredos do Inferno, os planos dos demônios para o mundo mortal e talvez até mesmo os nomes de demônios específicos.\n\nConhecimento Espiritual: O personagem conhece fantasmas e outras entidades sobrenaturais, bem como seus nomes, motivações, etc.\n\nConhecimento Feérico: O personagem tem um conhecimento detalhado das fadas e seus reinos secretos.\n\nConspirações: O personagem conhece detalhes das conspirações que sustentam cada aspecto da sociedade. Isso consiste em conhecimento factual (ex.: verdades sobre os Illuminati) e não na habilidade para analisar conspirações. Somente disponível em cenários onde realmente existem vastas conspirações.",
+      "modificadores": {
+        "raw": "-",
+        "automation": "disabled_if_empty"
+      },
+      "policy": {
+        "emptyPrerequisite": "allow_without_block",
+        "emptyPredefinido": "on_zero_points_use_default_pré-definido",
+        "emptyModifiers": "do_not_automate"
+      },
+      "herdadoDe": "conhecimento_oculto"
+    },
+    {
+      "row": 65,
+      "id": "conhecimento_oculto_conhecimento_espiritual",
+      "nome": "Conhecimento Oculto (Conhecimento Espiritual)",
+      "paginaRaw": "191",
+      "tipo": {
+        "valid": true,
+        "attributeMode": "fixed",
+        "attributeOptions": [
+          "IQ"
+        ],
+        "difficultyMode": "variable",
+        "difficulty": null,
+        "raw": "IQ/Variável"
+      },
+      "preDefinido": {
+        "raw": "-",
+        "kind": "empty",
+        "onZeroPoints": "use_default_pré-definido",
+        "parsed": []
+      },
+      "descricao": "IQ/Variável\n\nEsta perícia representa o conhecimento perdido, deliberadamente oculto ou simplesmente negligenciado. Seja qual for o motivo, a sociedade desconhece essa informação. Ela está disponível apenas àqueles que a estudaram.\n\nO personagem deve se especializar em uma determinada área de conhecimento oculto. Se desejar iniciar o jogo já com as perícias de Conhecimento Oculto, ele tem de justificar esse conhecimento específico na história de seu personagem. Pode ser até mesmo que o Mestre exija que o personagem compre Antecedentes Incomuns antes de aprender Conhecimento Oculto. É claro que o Mestre também tem liberdade para proibir esta perícia aos personagens no momento de sua criação, ou aos PdJs em geral.\n\nPara adquirir Conhecimento Oculto durante o jogo, o PdJ tem de encontrar uma fonte confiável de informação relevante. O Mestre pode decidir ligar os aumentos de Conhecimento Oculto com atos específicos como ler tomos bolorentos em vez de permitir que os pontos sejam gastos à vontade. Por exemplo, um manuscrito antigo pode levar o personagem a gastar 8 pontos (e não mais) em uma perícia específica de Conhecimento Oculto.\n\nLembre que a maior parte do Conhecimento Oculto é mantida em segredo porque alguém muito poderoso assim o quer. Portanto, discutir ou revelar seu conhecimento pode ser extremamente perigoso.\n\nEntre as possíveis especializações desta perícia se incluem:\n\nConhecimento Demoníaco: O personagem conhece os segredos do Inferno, os planos dos demônios para o mundo mortal e talvez até mesmo os nomes de demônios específicos.\n\nConhecimento Espiritual: O personagem conhece fantasmas e outras entidades sobrenaturais, bem como seus nomes, motivações, etc.\n\nConhecimento Feérico: O personagem tem um conhecimento detalhado das fadas e seus reinos secretos.\n\nConspirações: O personagem conhece detalhes das conspirações que sustentam cada aspecto da sociedade. Isso consiste em conhecimento factual (ex.: verdades sobre os Illuminati) e não na habilidade para analisar conspirações. Somente disponível em cenários onde realmente existem vastas conspirações.",
+      "modificadores": {
+        "raw": "-",
+        "automation": "disabled_if_empty"
+      },
+      "policy": {
+        "emptyPrerequisite": "allow_without_block",
+        "emptyPredefinido": "on_zero_points_use_default_pré-definido",
+        "emptyModifiers": "do_not_automate"
+      },
+      "herdadoDe": "conhecimento_oculto"
+    },
+    {
+      "row": 65,
+      "id": "conhecimento_oculto_conhecimento_feerico",
+      "nome": "Conhecimento Oculto (Conhecimento Feérico)",
+      "paginaRaw": "191",
+      "tipo": {
+        "valid": true,
+        "attributeMode": "fixed",
+        "attributeOptions": [
+          "IQ"
+        ],
+        "difficultyMode": "variable",
+        "difficulty": null,
+        "raw": "IQ/Variável"
+      },
+      "preDefinido": {
+        "raw": "-",
+        "kind": "empty",
+        "onZeroPoints": "use_default_pré-definido",
+        "parsed": []
+      },
+      "descricao": "IQ/Variável\n\nEsta perícia representa o conhecimento perdido, deliberadamente oculto ou simplesmente negligenciado. Seja qual for o motivo, a sociedade desconhece essa informação. Ela está disponível apenas àqueles que a estudaram.\n\nO personagem deve se especializar em uma determinada área de conhecimento oculto. Se desejar iniciar o jogo já com as perícias de Conhecimento Oculto, ele tem de justificar esse conhecimento específico na história de seu personagem. Pode ser até mesmo que o Mestre exija que o personagem compre Antecedentes Incomuns antes de aprender Conhecimento Oculto. É claro que o Mestre também tem liberdade para proibir esta perícia aos personagens no momento de sua criação, ou aos PdJs em geral.\n\nPara adquirir Conhecimento Oculto durante o jogo, o PdJ tem de encontrar uma fonte confiável de informação relevante. O Mestre pode decidir ligar os aumentos de Conhecimento Oculto com atos específicos como ler tomos bolorentos em vez de permitir que os pontos sejam gastos à vontade. Por exemplo, um manuscrito antigo pode levar o personagem a gastar 8 pontos (e não mais) em uma perícia específica de Conhecimento Oculto.\n\nLembre que a maior parte do Conhecimento Oculto é mantida em segredo porque alguém muito poderoso assim o quer. Portanto, discutir ou revelar seu conhecimento pode ser extremamente perigoso.\n\nEntre as possíveis especializações desta perícia se incluem:\n\nConhecimento Demoníaco: O personagem conhece os segredos do Inferno, os planos dos demônios para o mundo mortal e talvez até mesmo os nomes de demônios específicos.\n\nConhecimento Espiritual: O personagem conhece fantasmas e outras entidades sobrenaturais, bem como seus nomes, motivações, etc.\n\nConhecimento Feérico: O personagem tem um conhecimento detalhado das fadas e seus reinos secretos.\n\nConspirações: O personagem conhece detalhes das conspirações que sustentam cada aspecto da sociedade. Isso consiste em conhecimento factual (ex.: verdades sobre os Illuminati) e não na habilidade para analisar conspirações. Somente disponível em cenários onde realmente existem vastas conspirações.",
+      "modificadores": {
+        "raw": "-",
+        "automation": "disabled_if_empty"
+      },
+      "policy": {
+        "emptyPrerequisite": "allow_without_block",
+        "emptyPredefinido": "on_zero_points_use_default_pré-definido",
+        "emptyModifiers": "do_not_automate"
+      },
+      "herdadoDe": "conhecimento_oculto"
+    },
+    {
+      "row": 172,
+      "id": "mergulho",
+      "nome": "Mergulho/NT",
+      "paginaRaw": "212",
+      "tipo": {
+        "valid": true,
+        "attributeMode": "fixed",
+        "attributeOptions": [
+          "IQ"
+        ],
+        "difficultyMode": "fixed",
+        "difficulty": "M",
+        "raw": "IQ/Média"
+      },
+      "preRequisito": {
+        "raw": "Natação",
+        "kind": "structured",
+        "allowWithoutPrerequisite": false,
+        "logic": {
+          "and": [
+            {
+              "or": [
+                {
+                  "raw": "Natação",
+                  "normalized": "natacao",
+                  "type": "text",
+                  "value": "Natação"
+                }
+              ]
+            }
+          ]
+        },
+        "tokens": [
+          {
+            "raw": "Natação",
+            "normalized": "natacao",
+            "type": "text",
+            "value": "Natação"
+          }
+        ]
+      },
+      "preDefinido": {
+        "raw": "IQ-5 ou Traje de Mergulho-2",
+        "kind": "parsed",
+        "onZeroPoints": "use_parsed_pré-definido",
+        "parsed": [
+          {
+            "raw": "IQ-5",
+            "type": "attribute",
+            "base": "IQ",
+            "modifier": -5
+          },
+          {
+            "raw": "Traje de Mergulho-2",
+            "type": "skill_or_rule",
+            "base": "Traje de Mergulho",
+            "modifier": -2
+          }
+        ]
+      },
+      "descricao": "IQ/Média\n\nPredefinido: Nenhum.\n\nPré-requisitos: Natação.\n\nEssa é a habilidade de usar equipamentos para respirar debaixo d'água. Para evitar a ingestão de água (o que acarreta risco de afogamento, veja Sufocamento, pág. 437), é necessário ter êxito no teste feito logo que o personagem entra na água e nos subsequentes, feitos a cada 30 minutos. Se o personagem tem um NH maior do que o valor predefinido, um sucesso num teste de habilidade permite notar problemas com o equipamento, antes de vesti-lo.\n\nModificadores: -2 a -4 no caso de equipamentos de mergulho com os quais o personagem não está familiarizado (ex.: equipamento de circuito fechado quando se está acostumado com circuito aberto).",
+      "modificadores": {
+        "raw": "-2 a -4 para equipamento não familiar.",
+        "automation": "manual_text"
+      },
+      "policy": {
+        "emptyPrerequisite": "allow_without_block",
+        "emptyPredefinido": "on_zero_points_use_default_pré-definido",
+        "emptyModifiers": "do_not_automate"
+      },
+      "herdadoDe": "mergulho_nt"
+    },
+    {
+      "row": 185,
+      "id": "operacao_de_computadores",
+      "nome": "Operação de Computadores/NT",
+      "paginaRaw": "214",
+      "tipo": {
+        "valid": true,
+        "attributeMode": "fixed",
+        "attributeOptions": [
+          "IQ"
+        ],
+        "difficultyMode": "fixed",
+        "difficulty": "F",
+        "raw": "IQ/Fácil"
+      },
+      "preRequisito": {
+        "raw": "-",
+        "kind": "none",
+        "allowWithoutPrerequisite": true,
+        "logic": null,
+        "tokens": []
+      },
+      "preDefinido": {
+        "raw": "IQ-4",
+        "kind": "parsed",
+        "onZeroPoints": "use_parsed_pré-definido",
+        "parsed": [
+          {
+            "raw": "IQ-4",
+            "type": "attribute",
+            "base": "IQ",
+            "modifier": -4
+          }
+        ]
+      },
+      "descricao": "IQ/Fácil\n\nPredefinido: IQ-4.\n\nEssa é a habilidade de operar um computador, extrair dados, executar programas, jogar vídeo games, etc. É a única habilidade de computação necessária para a maioria dos usuários. Aprenda Programação de Computadores (pág. 219) para criar programas e Conserto de Equipamento Eletrônico (Computadores) (pág. 192) para localizar problemas de hardware.\n\nEsta perícia existe somente em campanhas com computadores. Os personagens originários de cenários sem computadores não podem utilizá-los com um valor predefinido enquanto não tiverem se familiarizado com esse equipamento. Em cenários onde é possível unir seu cérebro a um computador, esta perícia também inclui a habilidade de utilizar uma interface neurológica. No entanto, os novos usuários estarão inicialmente sujeitos a uma penalidade de -4 por causa da falta de familiaridade com o equipamento (v. Familiaridade, pág. 169).\n\nModificadores: -2 ou pior no caso de um computador, sistema operacional ou programa com o qual o PdJ não esteja familiarizado.",
+      "modificadores": {
+        "raw": "-2 para sistema/programa não familiar.",
+        "automation": "manual_text"
+      },
+      "policy": {
+        "emptyPrerequisite": "allow_without_block",
+        "emptyPredefinido": "on_zero_points_use_default_pré-definido",
+        "emptyModifiers": "do_not_automate"
+      },
+      "herdadoDe": "operacao_de_computadores_nt"
+    },
+    {
+      "row": 14,
+      "id": "arco",
+      "nome": "Arcos",
+      "paginaRaw": "176",
+      "tipo": {
+        "valid": true,
+        "attributeMode": "fixed",
+        "attributeOptions": [
+          "DX"
+        ],
+        "difficultyMode": "fixed",
+        "difficulty": "M",
+        "raw": "DX/Média"
+      },
+      "preRequisito": {
+        "raw": "-",
+        "kind": "none",
+        "allowWithoutPrerequisite": true,
+        "logic": null,
+        "tokens": []
+      },
+      "preDefinido": {
+        "raw": "DX-5",
+        "kind": "parsed",
+        "onZeroPoints": "use_parsed_pré-definido",
+        "parsed": [
+          {
+            "raw": "DX-5",
+            "type": "attribute",
+            "base": "DX",
+            "modifier": -5
+          }
+        ]
+      },
+      "descricao": "DX/Média\n\nEsta é a perícia no uso de arcos longos, arcos curtos e todos os arcos similares. Ela cobre também os arcos compostos, embora uma pessoa que nunca tenha visto um antes sofra uma penalidade de -2 pela falta de familiaridade com o objeto.",
+      "modificadores": {
+        "raw": "-2 para arcos composto não familiar.",
+        "automation": "manual_text"
+      },
+      "policy": {
+        "emptyPrerequisite": "allow_without_block",
+        "emptyPredefinido": "on_zero_points_use_default_pré-definido",
+        "emptyModifiers": "do_not_automate"
+      },
+      "herdadoDe": "Arco"
+    },
+    {
+      "row": 14,
+      "id": "arcos",
+      "nome": "Arcos",
+      "paginaRaw": "176",
+      "tipo": {
+        "valid": true,
+        "attributeMode": "fixed",
+        "attributeOptions": [
+          "DX"
+        ],
+        "difficultyMode": "fixed",
+        "difficulty": "M",
+        "raw": "DX/Média"
+      },
+      "preRequisito": {
+        "raw": "-",
+        "kind": "none",
+        "allowWithoutPrerequisite": true,
+        "logic": null,
+        "tokens": []
+      },
+      "preDefinido": {
+        "raw": "DX-5",
+        "kind": "parsed",
+        "onZeroPoints": "use_parsed_pré-definido",
+        "parsed": [
+          {
+            "raw": "DX-5",
+            "type": "attribute",
+            "base": "DX",
+            "modifier": -5
+          }
+        ]
+      },
+      "descricao": "DX/Média\n\nEsta é a perícia no uso de arcos longos, arcos curtos e todos os arcos similares. Ela cobre também os arcos compostos, embora uma pessoa que nunca tenha visto um antes sofra uma penalidade de -2 pela falta de familiaridade com o objeto.",
+      "modificadores": {
+        "raw": "-2 para arcos composto não familiar.",
+        "automation": "manual_text"
+      },
+      "policy": {
+        "emptyPrerequisite": "allow_without_block",
+        "emptyPredefinido": "on_zero_points_use_default_pré-definido",
+        "emptyModifiers": "do_not_automate"
+      },
+      "herdadoDe": "Arco"
     }
   ],
-  "totalItems": 331
+  "totalItems": 283
 }

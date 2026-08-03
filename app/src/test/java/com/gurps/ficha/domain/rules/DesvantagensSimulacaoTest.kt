@@ -57,7 +57,7 @@ class DesvantagensSimulacaoTest {
         // A invariante central da família: o interruptor só piora. Varre cada
         // estado ligado por cima de cada outro estado já ligado — 45 pares no
         // catálogo de hoje, e cresce sozinho quando o catálogo crescer.
-        val dimensoes = listOf("ST", "DX", "IQ", "HT", "VONT", "PER")
+        val dimensoes = listOf("ST", "DX", "IQ", "HT", "VON", "PER")
         EstadosTemporarios.CATALOGO.forEach { base ->
             (1..base.graus.size).forEach { grauBase ->
                 val antes = EstadosTemporarios.totalDe(mapOf(base.id to grauBase))

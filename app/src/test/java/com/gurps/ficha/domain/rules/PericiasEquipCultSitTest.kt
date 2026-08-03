@@ -37,13 +37,20 @@ private typealias N = QualidadeDoEquipamento.Nivel
  */
 class PericiasEquipCultSitTest {
 
-    private fun nomesDoCatalogo(): Set<String> {
-        val direto = File("src/main/assets/pericias.json")
-        val arquivo = if (direto.exists()) direto else File("app/src/main/assets/pericias.json")
-        val tipo = object : TypeToken<List<Map<String, Any?>>>() {}.type
-        return Gson().fromJson<List<Map<String, Any?>>>(arquivo.readText(Charsets.UTF_8), tipo)
-            .mapNotNull { it["nome"] as? String }
-            .toSet()
+    private data class CatalogoV3(val items: List<Map<String, Any?>> = emptyList())
+
+    /**
+     * ⚠️ Lê o **`pericias.v3.json`**, que é o que o app carrega desde o Passo 3.
+     * Apontar para o `pericias.json` antigo faria o teste validar um arquivo que
+     * ninguém mais lê — verde mentiroso.
+     */
+    private fun nomesDoCatalogo(): Set<String> = catalogoV3().toSet()
+
+    private fun catalogoV3(): List<String> {
+        val direto = java.io.File("src/main/assets/pericias.v3.json")
+        val arquivo = if (direto.exists()) direto else java.io.File("app/src/main/assets/pericias.v3.json")
+        return Gson().fromJson(arquivo.readText(Charsets.UTF_8), CatalogoV3::class.java)
+            .items.mapNotNull { it["nome"] as? String }
     }
 
     // ==================================================================

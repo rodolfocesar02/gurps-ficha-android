@@ -1,5 +1,6 @@
 package com.gurps.ficha.ui.features.traits
 
+import com.gurps.ficha.domain.rules.TetoDeNivelDoTraco
 import androidx.compose.foundation.*
 import androidx.compose.foundation.gestures.detectVerticalDragGestures
 import androidx.compose.foundation.layout.*
@@ -394,7 +395,9 @@ fun ConfigurarVantagemDialog(
                     TipoCusto.POR_NIVEL -> {
                         Text("Nível:")
                         val nivelMinimo = 1
-                        val nivelMaximo = if (vantagemEhAptidaoMagica(definicao.id)) 11 else 20
+                        // O teto sai do catalogo (Talentos = 4, MB p.91); a Aptidao
+                        // Magica e o fallback de 20 ficam em `TetoDeNivelDoTraco`.
+                        val nivelMaximo = TetoDeNivelDoTraco.de(definicao.id, definicao.max)
                         if (isPraCegoVariant) {
                             Row(
                                 modifier = Modifier.fillMaxWidth(),

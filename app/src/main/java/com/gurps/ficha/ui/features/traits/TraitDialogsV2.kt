@@ -691,7 +691,9 @@ fun ModeloRacialDialog(
         EditarDesvantagemDialog(
             desvantagem = desvantagem, 
             permiteAutocontrole = permiteAutocontrole,
-            descricaoCatalogo = descricaoCatalogo, 
+            descricaoCatalogo = descricaoCatalogo,
+            maxDoCatalogo = viewModel.dataRepository.desvantagens
+                .firstOrNull { it.id == desvantagem.definicaoId }?.max, 
             onDismiss = { editingDesvantagemIndex = null }, 
             onSave = { n -> 
                 desvantagensRacais = desvantagensRacais.toList().mapIndexed { idx, d -> if (idx == i) n else d }

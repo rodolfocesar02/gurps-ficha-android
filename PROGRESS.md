@@ -5480,3 +5480,32 @@ Achado por você em **aparelho físico com Android 15**. Não tem relação com 
 **O que NÃO foi feito, de propósito:** não acrescentei `enableEdgeToEdge()` na `MainActivity` nem mexi no tema. Os dois mudariam a aparência das barras do sistema (cor, escurecimento) em **todas** as telas, e o defeito relatado é de espaço, não de cor. Correção de bug se resolve com o mínimo.
 
 - **Status:** ✅ Build OK nas 2 variantes · lint OK · gate verde (1680) · ⏭️ **PENDENTE: conferir no aparelho físico, que é onde o defeito aparece**.
+
+### Lote TETO-1 + PERUNI — o teto de níveis e a unificação dos catálogos de perícia — 31 de Julho de 2026 (versão 5.7-PERUNI)
+
+**Parte 1 — o teto de níveis (achado por você no T-LI6).**
+A Mão Fraca trava em 3 níveis (MB p.151) e a perícia obedecia — parava em −6 —, mas o **seletor deixava subir sem limite**: comprava-se o nível 6, pagava −30 pontos e recebia os mesmos −6.
+- 🔴 **A causa era muito maior.** O campo `max` existe nos dois catálogos, é lido do JSON pelo loader e era **descartado** na conversão. Os quatro seletores da tela usavam **20 fixo, escrito no código**. Ou seja: os **dez Talentos** (`max: 4`, e havia teste afirmando isso porque o livro diz *"nunca pode ter mais que quatro níveis"*) e a **Suscetibilidade à Magia** (`max: 5`) estavam no mesmo barco. A placa estava pregada na estrada e o radar não lia nenhuma.
+- Nasceu o `TetoDeNivelDoTraco`, com a ordem: **`max` do catálogo** → Aptidão Mágica (11) → teto geral de tela (20). ⚠️ O teto vale para a **compra**; ficha antiga acima do limite continua abrindo, e o `MaoFracaRule` já limita o efeito.
+
+**Parte 2 — os três bugs do dia no aparelho.**
+- 🔴 **Lunático não derrubava a Vontade (T-ES5).** Eu escrevi a sigla **`VONT`** e a aba Rolagem usa **`VON`**. O casamento é por texto, então a chave errada não dá erro — o desconto sumia no caminho. Agora há teste confrontando **todas** as siglas dos estados com as que o `getAtributo` reconhece.
+- 🔴 **Fobias sem seletor de autocontrole (T-NA5).** O `*` no custo é o que marca "usa NA", e o loader — apesar de um comentário prometendo preservá-lo — só fazia isso no ramo `fixed`. A Fobias é `choice`, chegava sem asterisco, e o seletor não aparecia.
+- 🔴 **Dor Crônica tinha 4 níveis inventados** (`Leve/Moderada/Grave/Agonizante`). O livro (p.135) dá **três**: Suave (−2), Grave (−4), Excruciante (−6). O −20 não existe.
+- **Caixinha `+0` (T-NA6):** condicional que vale zero não é mais oferecida.
+
+**Parte 3 — a unificação dos catálogos de perícia, em três passos.**
+Você perguntou se os dois arquivos precisavam existir. Não eram duplicatas: `pericias.json` era a **base** (281 entradas) e `pericias_v2_rules_map.json` a **camada** (descrição, pré-requisito, e os **modificadores** que renderam o P-SIT e o P-EQUIP inteiros). O loader casava os dois por id.
+
+🔴 **E o casamento estava furado dos DOIS lados:** **11 perícias sem camada** (perdendo descrição e modificadores em silêncio) e **4 camadas órfãs** que nunca chegavam a lugar nenhum — `Arco` (id com maiúscula, e **repetido**), `acrobacia_aquática` (acento no id, cópia de uma que já existia certa), `mergulho_nt` e `sacar_rapido`. Havia ainda um `trato_social` duplicado que só apareceu quando o teste foi escrito.
+
+- **Passo 1** — a camada passou a alcançar **as 281**: entradas podres removidas, e as 11 sem cobertura herdaram a camada da perícia-mãe (as 3 de Assuntos Atuais, as 3 de Conhecimento Oculto) ou da equivalente (`mergulho`, `operacao_de_computadores`).
+- **Passo 2** — a base absorveu tudo o que o merge fazia, e o `aplicarRegraPericiaV2` foi **deletado**. Ele corrigia a dificuldade de **seis** perícias e o atributo de **nenhuma** — 697 KB de arquivo para seis correções, num caminho que ninguém lembrava que existia.
+- **Passo 3** — nasceu o **`pericias.v3.json`**: cada perícia carrega a própria regra. Com um arquivo só, *"id que não casa"* deixou de existir como categoria.
+
+**⚠️ A regra de ouro da migração, e por que nada quebrou.** Os ids da base são os que estão gravados nas **fichas salvas** (`PericiaSelecionada.definicaoId`). Um id que mude faz o jogador **perder a perícia** ao abrir a ficha. Por isso a camada foi ajustada à base, e **nenhum id mudou** em nenhum dos três passos.
+
+**🔴 Três regressões que o teste de referência pegou — todas minhas, no passo 2.** Gerei um fixture com o resultado que o app montava **antes** de mexer, e exigi que continuasse idêntico. Ele acusou que o merge fazia, calado, três coisas que eu não tinha visto: **dificuldade nula virava "M"**, **`atributoEscolhaObrigatoria` era recalculado** a cada carga (corrigindo a base sem ninguém saber) e **`atributoBase` vazio era preenchido** com o primeiro dos possíveis. Sem o fixture, as três teriam passado.
+
+**Testes:** `TetoDeNivelDoTracoTest` (12) e `PericiasCatalogoUnificadoTest` (8). Gate total em **1703** nas duas variantes.
+- **Status:** ✅ Build OK nas 2 variantes · lint OK · gate verde · ⏭️ **PENDENTE: teste no aparelho** — e este lote mexe no carregamento do catálogo, então vale abrir a aba Perícias antes de qualquer outra coisa.

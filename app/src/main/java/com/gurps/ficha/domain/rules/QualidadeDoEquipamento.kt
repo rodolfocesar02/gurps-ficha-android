@@ -102,7 +102,11 @@ object QualidadeDoEquipamento {
         "Meteorologia/NT",
         "Navegação/NT",
         "Observador Avançado/NT",
-        "Operação de Aparelhos Eletrônicos/NT (†)",
+        // ⚠️ **Sem espaço** antes do parêntese. O catálogo foi normalizado em
+        // 31/07 (`…/NT (†)` → `…/NT(†)`) e o casamento é por nome EXATO: o
+        // modificador ficou mudo até este nome ser acertado. Foi o teste
+        // `toda pericia da lista existe com o nome EXATO do catalogo` que pegou.
+        "Operação de Aparelhos Eletrônicos/NT(†)",
         "Paleontologia/NT",
         "Pescaria",
         "Primeiros Socorros/NT",

@@ -387,6 +387,11 @@ data class VantagemDefinicao(
     val tags: List<String> = emptyList(),
     val descricao: String? = "",
     val specialRule: String? = null,
+    // Teto de niveis vindo do catalogo (MB): Talentos 4, Mao Fraca 3,
+    // Suscetibilidade a Magia 5. Era lido do JSON e DESCARTADO no loader --
+    // ver `TetoDeNivelDoTraco`. Null quando o livro nao poe limite.
+    @SerializedName(value = "max", alternate = ["nivelMaximo"])
+    val max: Int? = null,
     @SerializedName(value = "modificadoresEspecificos", alternate = ["modificadores_especificos"])
     val modificadoresEspecificos: List<ModificadorDefinicao> = emptyList(),
     // Efeitos mecanicos declarados no catalogo (bonus simples lidos pelo
@@ -466,6 +471,11 @@ data class DesvantagemDefinicao(
     val tags: List<String> = emptyList(),
     val descricao: String? = "",
     val specialRule: String? = null,
+    // Teto de niveis vindo do catalogo (MB): Talentos 4, Mao Fraca 3,
+    // Suscetibilidade a Magia 5. Era lido do JSON e DESCARTADO no loader --
+    // ver `TetoDeNivelDoTraco`. Null quando o livro nao poe limite.
+    @SerializedName(value = "max", alternate = ["nivelMaximo"])
+    val max: Int? = null,
     @SerializedName(value = "modificadoresEspecificos", alternate = ["modificadores_especificos"])
     val modificadoresEspecificos: List<ModificadorDefinicao> = emptyList(),
     // Efeitos mecanicos declarados no catalogo (bonus simples lidos pelo

@@ -108,6 +108,15 @@ object TraitRuleRegistry {
                 ?.filter { casaAlvoCondicional(it.alvo, alvo) }
                 .orEmpty()
         }
+            // ⚠️ Caixinha que vale **zero** não é oferecida.
+            //
+            // Acontecia com as tabelas `porAutocontrole` numa ficha em que a
+            // desvantagem foi cadastrada **sem NA**: a tabela devolve 0 (de
+            // propósito — preferir não aplicar a chutar) e a tela mostrava
+            // "Covardia +0". Marcar não fazia nada, e o jogador ficava sem
+            // saber se era regra ou defeito. Relatado no aparelho em 31/07
+            // (T-NA6).
+            .filter { it.valor != 0 }
 
     /**
      * Curinga de alvo: **qualquer perícia** (Lote TAL-1).

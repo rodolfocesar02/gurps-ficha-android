@@ -129,11 +129,26 @@ class CatalogLoaders(private val context: Context) {
 
     fun carregarPericias(): List<PericiaDefinicao> {
         return try {
-            val json = context.assets.open("pericias.json").bufferedReader().use { it.readText() }
+            // Passo 3 (31/07): base e camada viraram UM arquivo. Antes eram
+            // `pericias.json` + `pericias_v2_rules_map.json`, casados por id —
+            // e o casamento estava furado dos dois lados (11 perícias sem
+            // camada, 4 camadas órfãs). Com um arquivo só, id que não casa
+            // deixa de ser possível.
+            val json = context.assets.open("pericias.v3.json").bufferedReader().use { it.readText() }
+            val raiz = JsonParser.parseString(json)
+            val itens = if (raiz.isJsonObject) raiz.asJsonObject.array("items") else raiz.asJsonArray
             val type = object : TypeToken<List<PericiaDefinicao>>() {}.type
-            val parsed = (gson.fromJson<List<PericiaDefinicao>>(json, type) ?: emptyList())
+            val parsed = (gson.fromJson<List<PericiaDefinicao>>(itens, type) ?: emptyList())
                 .map { it.normalizada() }
-                .map { DataRepository.getInstance(context).aplicarRegraPericiaV2(it, DataRepository.getInstance(context).regraPericiaV2(it.id)) }
+                // ⚠️ O `aplicarRegraPericiaV2` foi APOSENTADO no Passo 2 (31/07).
+                // Ele lia a camada e sobrescrevia atributo e dificuldade — e,
+                // medido contra o catálogo, corrigia a dificuldade de SEIS
+                // perícias e o atributo de NENHUMA. Essas seis foram para
+                // dentro do `pericias.json`, e a base passou a valer sozinha.
+                //
+                // A camada continua sendo lida por `regraPericiaV2(id)` para o
+                // que ela realmente carrega: descrição, modificadores e
+                // pré-requisitos.
             
             android.util.Log.d("CatalogLoaders", "Pericias carregadas: ${parsed.size}")
             clearLoadError("pericias")
@@ -148,7 +163,9 @@ class CatalogLoaders(private val context: Context) {
 
     fun carregarPericiasV2Rules(): Map<String, PericiaV2RuleMapItem> {
         return try {
-            val json = context.assets.open("pericias_v2_rules_map.json")
+            // Mesmo arquivo da lista (Passo 3): cada perícia carrega a
+            // própria camada, e não há mais dois catálogos para sincronizar.
+            val json = context.assets.open("pericias.v3.json")
                 .bufferedReader()
                 .use { it.readText() }
             android.util.Log.d("CatalogLoaders", "Rules map JSON size: ${json.length}")
@@ -648,6 +665,9 @@ private data class VantagemV3(
             pagina = pagina ?: 0,
             tags = tags.orEmpty(),
             descricao = descricao,
+            // O teto do livro (Talentos = 4, MB p.91) era lido do JSON e
+            // descartado aqui. Ver `TetoDeNivelDoTraco`.
+            max = max,
             modificadoresEspecificos = modificadores_especificos.orEmpty(),
             efeitos = efeitos.orEmpty()
         )
@@ -705,6 +725,15 @@ private data class DesvantagemV2(
             }
             else -> rawCost ?: fixed?.toString() ?: "0"
         }
+            // 🔴 O `*` marca "usa Número de Autocontrole", e só o ramo "fixed"
+            // o preservava — apesar do comentário logo acima prometer que sim.
+            // Resultado: a **Fobias** (`choice`, rawCost "-5, -10, -15 ou -20*")
+            // chegava à tela sem asterisco, `usaAutocontroleMental()` devolvia
+            // false e o seletor de NA **não aparecia**. Achado por você no
+            // aparelho em 31/07 (T-NA5) — e a automação do D-NA dependia dele.
+            .let { legado ->
+                if (rawCost?.contains('*') == true && !legado.contains('*')) "$legado*" else legado
+            }
 
         return DesvantagemDefinicao(
             id = id.orEmpty(),
@@ -715,6 +744,7 @@ private data class DesvantagemV2(
             tags = tags.orEmpty(),
             descricao = descricao,
             specialRule = specialRule,
+            max = max,
             modificadoresEspecificos = modificadores_especificos.orEmpty(),
             efeitos = efeitos.orEmpty()
         )

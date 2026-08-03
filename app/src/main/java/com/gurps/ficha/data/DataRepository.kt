@@ -724,43 +724,6 @@ open class DataRepository(internal val context: Context) {
         return relativoAteBase.takeIf { it > 0 } ?: 0
     }
 
-    fun aplicarRegraPericiaV2(
-        definicao: PericiaDefinicao,
-        regra: PericiaV2RuleMapItem?
-    ): PericiaDefinicao {
-        if (regra == null) return definicao
-
-        val atributoMode = regra.tipo.attributeMode.lowercase()
-        val dificuldadeMode = regra.tipo.difficultyMode.lowercase()
-
-        val atributosAjustados = when {
-            atributoMode == "choice" && regra.tipo.attributeOptions.isNotEmpty() -> regra.tipo.attributeOptions
-            definicao.atributosPossiveis != null && definicao.atributosPossiveis.isNotEmpty() -> definicao.atributosPossiveis
-            else -> listOf(definicao.atributoBase)
-        }.map { it.sanitized(default = "IQ") }
-            .filter { it.isNotBlank() }
-            .distinct()
-
-        val atributoBaseAjustado = when {
-            definicao.atributoBase.isNotBlank() -> definicao.atributoBase
-            atributosAjustados.isNotEmpty() -> atributosAjustados.first()
-            else -> "IQ"
-        }
-
-        val dificuldadeAjustada = when {
-            dificuldadeMode == "fixed" && !regra.tipo.difficulty.isNullOrBlank() -> regra.tipo.difficulty
-            else -> definicao.dificuldadeFixa
-        }?.sanitized(default = "M")
-
-        return definicao.copy(
-            atributoBase = atributoBaseAjustado.sanitized(default = "IQ"),
-            atributosPossiveis = atributosAjustados.takeIf { it.size > 1 },
-            atributoEscolhaObrigatoria = atributosAjustados.size > 1,
-            dificuldadeFixa = dificuldadeAjustada,
-            dificuldadeVariavel = dificuldadeMode == "variable"
-        )
-    }
-
     private fun atendeCondicaoPreReqPericia(
         condicao: PericiaV2CondicaoPreRequisito,
         personagem: Personagem

@@ -100,7 +100,19 @@ object EstadosTemporarios {
     const val DX = "DX"
     const val IQ = "IQ"
     const val HT = "HT"
-    const val VONT = "VONT"
+    /**
+     * 🔴 É **`VON`**, não `VONT`.
+     *
+     * Achado no aparelho em 31/07 (T-ES5): o Lunático estava ligado, o resumo
+     * dizia "VONT −2" e a **Vontade na tela não caía**. A aba Rolagem usa
+     * `listOf("ST", "DX", "IQ", "HT", "VON", "PER")` e o `getAtributo` só
+     * conhece `VON` — a minha chave nunca casava, e o desconto sumia no
+     * caminho sem erro nenhum.
+     *
+     * ⚠️ O casamento é por **texto**, então errar a sigla é falha silenciosa.
+     * Há teste cruzando estas constantes com o que o `getAtributo` aceita.
+     */
+    const val VONT = "VON"
     const val PER = "PER"
 
     /** Um degrau do estado — quase sempre a "gravidade" que o livro tabela. */

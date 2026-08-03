@@ -7,16 +7,17 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "D",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "acrobacia_aquatica",
     "nome": "Acrobacia Aquática",
     "atributoBase": "DX",
-    "dificuldadeFixa": "D",
     "atributosPossiveis": null,
-    "atributoEscolhaObrigatoria": false
+    "atributoEscolhaObrigatoria": false,
+    "dificuldadeFixa": "D",
+    "dificuldadeVariavel": false,
+    "exigeEspecializacao": null
   },
   {
     "id": "acrobacia_aerea",
@@ -26,8 +27,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "D",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "adaga_de_esgrima",
@@ -37,8 +37,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "M",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "adestramento_de_animais",
@@ -48,8 +47,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "M",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "adivinhacao",
@@ -59,8 +57,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "M",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": true,
-    "preDefinicoes": []
+    "exigeEspecializacao": true
   },
   {
     "id": "administracao",
@@ -70,8 +67,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "M",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "alquimia_nt",
@@ -81,8 +77,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "MD",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "alvenaria",
@@ -92,8 +87,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "F",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "analise_de_mercado",
@@ -103,8 +97,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "D",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "antropologia",
@@ -114,8 +107,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "D",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": true,
-    "preDefinicoes": []
+    "exigeEspecializacao": true
   },
   {
     "id": "analise_da_informacao_nt",
@@ -125,8 +117,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "D",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "aparar_armas_de_projetil",
@@ -136,8 +127,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "D",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "arco",
@@ -147,16 +137,17 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "M",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "arcos",
     "nome": "Arcos",
     "atributoBase": "DX",
-    "dificuldadeFixa": "M",
     "atributosPossiveis": null,
-    "atributoEscolhaObrigatoria": false
+    "atributoEscolhaObrigatoria": false,
+    "dificuldadeFixa": "M",
+    "dificuldadeVariavel": false,
+    "exigeEspecializacao": null
   },
   {
     "id": "arma_de_arremesso",
@@ -166,8 +157,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "F",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "armadilhas_nt",
@@ -177,17 +167,17 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "M",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "armas_de_combate_corpo_a_corpo",
     "nome": "Armas de Combate Corpo a Corpo",
     "atributoBase": "DX",
+    "atributosPossiveis": null,
+    "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "M",
     "dificuldadeVariavel": true,
-    "atributosPossiveis": null,
-    "atributoEscolhaObrigatoria": false
+    "exigeEspecializacao": null
   },
   {
     "id": "armas_de_feixe_nt",
@@ -197,8 +187,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "F",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": true,
-    "preDefinicoes": []
+    "exigeEspecializacao": true
   },
   {
     "id": "armas_de_fogo_nt",
@@ -208,8 +197,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "F",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": true,
-    "preDefinicoes": []
+    "exigeEspecializacao": true
   },
   {
     "id": "armas_de_haste",
@@ -219,8 +207,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "M",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "armeiro_nt",
@@ -230,8 +217,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "M",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": true,
-    "preDefinicoes": []
+    "exigeEspecializacao": true
   },
   {
     "id": "arqueiro_zen",
@@ -241,8 +227,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "MD",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "arqueologia",
@@ -252,8 +237,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "D",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "arquitetura_nt",
@@ -263,8 +247,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "M",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "arremedo_chamado_dos_passaros",
@@ -274,8 +257,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "D",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "arremedo_sons_dos_animais",
@@ -285,16 +267,17 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "D",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "arremedo",
     "nome": "Arremedo (†)",
     "atributoBase": "IQ",
-    "dificuldadeFixa": "D",
     "atributosPossiveis": null,
-    "atributoEscolhaObrigatoria": false
+    "atributoEscolhaObrigatoria": false,
+    "dificuldadeFixa": "D",
+    "dificuldadeVariavel": false,
+    "exigeEspecializacao": null
   },
   {
     "id": "arremessador_de_lanca",
@@ -304,8 +287,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "M",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "arremesso",
@@ -315,8 +297,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "M",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "arrombamento_nt",
@@ -326,8 +307,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "M",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "arte_da_invisibilidade",
@@ -337,8 +317,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "MD",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "arte_de_combate",
@@ -348,8 +327,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "M",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": true,
-    "preDefinicoes": []
+    "exigeEspecializacao": true
   },
   {
     "id": "arte_do_arremesso",
@@ -359,8 +337,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "D",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "arte_erotica",
@@ -370,17 +347,17 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "M",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "arte_ou_esporte_de_combate",
     "nome": "Arte ou Esporte de Combate (†)",
     "atributoBase": "DX",
+    "atributosPossiveis": null,
+    "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "M",
     "dificuldadeVariavel": true,
-    "atributosPossiveis": null,
-    "atributoEscolhaObrigatoria": false
+    "exigeEspecializacao": null
   },
   {
     "id": "artilharia_nt",
@@ -390,8 +367,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "M",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "artista",
@@ -401,8 +377,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "D",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "assuntos_atuais_nt",
@@ -412,8 +387,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "F",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": true,
-    "preDefinicoes": []
+    "exigeEspecializacao": true
   },
   {
     "id": "assuntos_atuaisnt_alta_cultura",
@@ -423,8 +397,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "F",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "assuntos_atuaisnt_cultura_popular",
@@ -434,8 +407,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "F",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "assuntos_atuaisnt_negocios",
@@ -445,8 +417,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "F",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "astronomia_nt",
@@ -456,8 +427,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "D",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "ataque_inato",
@@ -467,8 +437,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "F",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": true,
-    "preDefinicoes": []
+    "exigeEspecializacao": true
   },
   {
     "id": "atuacao",
@@ -478,8 +447,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "M",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "auto_hipnose",
@@ -489,8 +457,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "D",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "bastao",
@@ -500,8 +467,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "M",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "besta",
@@ -511,8 +477,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "F",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "bioengenharia_nt",
@@ -522,8 +487,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "D",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": true,
-    "preDefinicoes": []
+    "exigeEspecializacao": true
   },
   {
     "id": "biologia_nt",
@@ -533,8 +497,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "MD",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": true,
-    "preDefinicoes": []
+    "exigeEspecializacao": true
   },
   {
     "id": "bloqueio_mental",
@@ -544,8 +507,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "M",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "boemia",
@@ -555,8 +517,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "F",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "boleadeira",
@@ -566,8 +527,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "M",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "boxe",
@@ -577,8 +537,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "M",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "briga",
@@ -588,8 +547,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "F",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "caminhada",
@@ -599,8 +557,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "M",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "camuflagem",
@@ -610,8 +567,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "F",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "canhoneiro_nt",
@@ -621,8 +577,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "F",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "canto",
@@ -632,8 +587,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "F",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "capa",
@@ -643,16 +597,17 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "M",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "captacao",
     "nome": "Captação",
     "atributoBase": "PER",
-    "dificuldadeFixa": "F",
     "atributosPossiveis": null,
-    "atributoEscolhaObrigatoria": false
+    "atributoEscolhaObrigatoria": false,
+    "dificuldadeFixa": "F",
+    "dificuldadeVariavel": false,
+    "exigeEspecializacao": null
   },
   {
     "id": "caratê",
@@ -662,16 +617,17 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "D",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "carpintaria",
     "nome": "Carpintaria",
     "atributoBase": "IQ",
-    "dificuldadeFixa": "F",
     "atributosPossiveis": null,
-    "atributoEscolhaObrigatoria": false
+    "atributoEscolhaObrigatoria": false,
+    "dificuldadeFixa": "F",
+    "dificuldadeVariavel": false,
+    "exigeEspecializacao": null
   },
   {
     "id": "carregamento",
@@ -681,8 +637,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "M",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "carroceiro",
@@ -692,8 +647,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "M",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "cartografia_nt",
@@ -703,8 +657,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "M",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "cavalgar",
@@ -714,8 +667,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "M",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": true,
-    "preDefinicoes": []
+    "exigeEspecializacao": true
   },
   {
     "id": "chicote",
@@ -725,8 +677,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "M",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "chicote_de_energia",
@@ -736,8 +687,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "M",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "chicote_monofio",
@@ -747,8 +697,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "D",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "ciclismo",
@@ -758,8 +707,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "M",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "cirurgia_nt",
@@ -769,8 +717,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "MD",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "ciencia_estranha",
@@ -780,8 +727,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "MD",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "composicao_musical",
@@ -791,8 +737,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "D",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "comercio",
@@ -802,8 +747,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "M",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "conducao_nt",
@@ -813,8 +757,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "M",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": true,
-    "preDefinicoes": []
+    "exigeEspecializacao": true
   },
   {
     "id": "conhecimento_das_ervas_nt",
@@ -824,8 +767,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "MD",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "conhecimento_do_terreno",
@@ -835,8 +777,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "F",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": true,
-    "preDefinicoes": []
+    "exigeEspecializacao": true
   },
   {
     "id": "conhecimento_oculto",
@@ -846,8 +787,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "M",
     "dificuldadeVariavel": true,
-    "exigeEspecializacao": true,
-    "preDefinicoes": []
+    "exigeEspecializacao": true
   },
   {
     "id": "conhecimento_oculto_conhecimento_demoniaco",
@@ -857,8 +797,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "M",
     "dificuldadeVariavel": true,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "conhecimento_oculto_conhecimento_espiritual",
@@ -868,8 +807,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "M",
     "dificuldadeVariavel": true,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "conhecimento_oculto_conhecimento_feerico",
@@ -879,8 +817,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "M",
     "dificuldadeVariavel": true,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "connoisseur",
@@ -890,16 +827,17 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "M",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": true,
-    "preDefinicoes": []
+    "exigeEspecializacao": true
   },
   {
     "id": "conserto_de_equipamento_eletronico_nt",
     "nome": "Conserto de Equipamento Eletrônico/NT (†)",
     "atributoBase": "IQ",
-    "dificuldadeFixa": "M",
     "atributosPossiveis": null,
-    "atributoEscolhaObrigatoria": false
+    "atributoEscolhaObrigatoria": false,
+    "dificuldadeFixa": "M",
+    "dificuldadeVariavel": false,
+    "exigeEspecializacao": null
   },
   {
     "id": "contabilidade",
@@ -909,8 +847,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "D",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "contrabando",
@@ -920,8 +857,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "M",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "controle_da_respiracao",
@@ -931,8 +867,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "D",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "controle_das_funcoes_involuntarias",
@@ -942,8 +877,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "MD",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "controle_de_carregamento_nt",
@@ -953,8 +887,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "M",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "corrida",
@@ -964,8 +897,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "M",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "costura_nt",
@@ -975,8 +907,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "F",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "criminologia_nt",
@@ -986,8 +917,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "M",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "criptografia_nt",
@@ -997,8 +927,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "D",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "cuidados_com_a_casa",
@@ -1008,8 +937,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "F",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "culinaria",
@@ -1019,8 +947,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "M",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "cultivo_nt",
@@ -1030,8 +957,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "M",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "danca",
@@ -1041,8 +967,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "M",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "desenho_de_simbolos",
@@ -1052,8 +977,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "D",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": true,
-    "preDefinicoes": []
+    "exigeEspecializacao": true
   },
   {
     "id": "deslumbrar",
@@ -1063,40 +987,47 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "D",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": true,
-    "preDefinicoes": []
+    "exigeEspecializacao": true
   },
   {
     "id": "deslumbrar_cativar",
     "nome": "Deslumbrar (Cativar)",
     "atributoBase": "VON",
-    "dificuldadeFixa": "D",
     "atributosPossiveis": null,
-    "atributoEscolhaObrigatoria": false
+    "atributoEscolhaObrigatoria": false,
+    "dificuldadeFixa": "D",
+    "dificuldadeVariavel": false,
+    "exigeEspecializacao": null
   },
   {
     "id": "deslumbrar_despertar_emocao",
     "nome": "Deslumbrar (Despertar Emoção)",
     "atributoBase": "VON",
-    "dificuldadeFixa": "D",
     "atributosPossiveis": null,
-    "atributoEscolhaObrigatoria": false
+    "atributoEscolhaObrigatoria": false,
+    "dificuldadeFixa": "D",
+    "dificuldadeVariavel": false,
+    "exigeEspecializacao": null
   },
   {
     "id": "deslumbrar_persuadir",
     "nome": "Deslumbrar (Persuadir)",
     "atributoBase": "VON",
-    "dificuldadeFixa": "D",
     "atributosPossiveis": null,
-    "atributoEscolhaObrigatoria": false
+    "atributoEscolhaObrigatoria": false,
+    "dificuldadeFixa": "D",
+    "dificuldadeVariavel": false,
+    "exigeEspecializacao": null
   },
   {
     "id": "deslumbrar_sugerir",
     "nome": "Deslumbrar (Sugerir)",
     "atributoBase": "VON",
-    "dificuldadeFixa": "D",
     "atributosPossiveis": null,
-    "atributoEscolhaObrigatoria": false
+    "atributoEscolhaObrigatoria": false,
+    "dificuldadeFixa": "D",
+    "dificuldadeVariavel": false,
+    "exigeEspecializacao": null
   },
   {
     "id": "desviar",
@@ -1106,8 +1037,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "D",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "deteccao_de_mentiras",
@@ -1117,8 +1047,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "D",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "diagnose_nt",
@@ -1128,8 +1057,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "D",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "digitacao",
@@ -1139,8 +1067,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "F",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "diplomacia",
@@ -1150,8 +1077,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "D",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "disfarce_nt",
@@ -1161,16 +1087,17 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "M",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": true,
-    "preDefinicoes": []
+    "exigeEspecializacao": true
   },
   {
     "id": "dissimulacao",
     "nome": "Dissimulação",
     "atributoBase": "IQ",
-    "dificuldadeFixa": "M",
     "atributosPossiveis": null,
-    "atributoEscolhaObrigatoria": false
+    "atributoEscolhaObrigatoria": false,
+    "dificuldadeFixa": "M",
+    "dificuldadeVariavel": false,
+    "exigeEspecializacao": null
   },
   {
     "id": "economia",
@@ -1180,8 +1107,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "D",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "eletricista_nt",
@@ -1191,8 +1117,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "M",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "encenacao_de_combate",
@@ -1202,8 +1127,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "M",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "engenharia_nt",
@@ -1213,8 +1137,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "D",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": true,
-    "preDefinicoes": []
+    "exigeEspecializacao": true
   },
   {
     "id": "engolidor_de_fogo",
@@ -1224,8 +1147,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "M",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "entrada_forcada",
@@ -1235,8 +1157,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "F",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "escalada",
@@ -1246,8 +1167,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "M",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "escrita",
@@ -1257,8 +1177,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "M",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "escudo",
@@ -1268,8 +1187,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "F",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": true,
-    "preDefinicoes": []
+    "exigeEspecializacao": true
   },
   {
     "id": "espada_de_duas_maos",
@@ -1279,8 +1197,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "M",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "espada_de_energia",
@@ -1290,8 +1207,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "M",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "espada_curta",
@@ -1301,8 +1217,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "M",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "espada_de_lamina_larga",
@@ -1312,8 +1227,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "M",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "esporte_de_combate_nt",
@@ -1323,8 +1237,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "M",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": true,
-    "preDefinicoes": []
+    "exigeEspecializacao": true
   },
   {
     "id": "esportes",
@@ -1334,8 +1247,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "M",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": true,
-    "preDefinicoes": []
+    "exigeEspecializacao": true
   },
   {
     "id": "esqui",
@@ -1345,8 +1257,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "D",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "estrategia",
@@ -1356,8 +1267,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "D",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "exorcismo",
@@ -1367,8 +1277,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "D",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "explosivos_nt",
@@ -1378,8 +1287,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "M",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": true,
-    "preDefinicoes": []
+    "exigeEspecializacao": true
   },
   {
     "id": "faca",
@@ -1389,8 +1297,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "F",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "falcoaria",
@@ -1400,16 +1307,17 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "M",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "falsificacao_de_dinheiro_nt",
     "nome": "Falsificação de Dinheiro/NT",
     "atributoBase": "IQ",
-    "dificuldadeFixa": "D",
     "atributosPossiveis": null,
-    "atributoEscolhaObrigatoria": false
+    "atributoEscolhaObrigatoria": false,
+    "dificuldadeFixa": "D",
+    "dificuldadeVariavel": false,
+    "exigeEspecializacao": null
   },
   {
     "id": "falsificacao_nt",
@@ -1419,8 +1327,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "D",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "farmacia_nt",
@@ -1430,8 +1337,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "D",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": true,
-    "preDefinicoes": []
+    "exigeEspecializacao": true
   },
   {
     "id": "ferreiro_nt",
@@ -1441,8 +1347,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "M",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": true,
-    "preDefinicoes": []
+    "exigeEspecializacao": true
   },
   {
     "id": "filosofia",
@@ -1452,8 +1357,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "D",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": true,
-    "preDefinicoes": []
+    "exigeEspecializacao": true
   },
   {
     "id": "financas",
@@ -1463,8 +1367,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "D",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "fisiologia_nt",
@@ -1474,16 +1377,17 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "D",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "forca_mental",
     "nome": "Força Mental",
     "atributoBase": "VON",
-    "dificuldadeFixa": "F",
     "atributosPossiveis": null,
-    "atributoEscolhaObrigatoria": false
+    "atributoEscolhaObrigatoria": false,
+    "dificuldadeFixa": "F",
+    "dificuldadeVariavel": false,
+    "exigeEspecializacao": null
   },
   {
     "id": "fotografia_nt",
@@ -1493,8 +1397,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "M",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "fuga",
@@ -1504,8 +1407,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "D",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "funda",
@@ -1515,8 +1417,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "D",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "furtividade",
@@ -1526,8 +1427,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "M",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "fisica_nt",
@@ -1537,8 +1437,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "MD",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "garrote",
@@ -1548,8 +1447,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "F",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "geografia_nt",
@@ -1559,8 +1457,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "D",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": true,
-    "preDefinicoes": []
+    "exigeEspecializacao": true
   },
   {
     "id": "geologia_nt",
@@ -1570,8 +1467,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "D",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": true,
-    "preDefinicoes": []
+    "exigeEspecializacao": true
   },
   {
     "id": "golpe_debilitante",
@@ -1581,8 +1477,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "D",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "golpe_poderoso",
@@ -1592,8 +1487,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "D",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "habilidade_com_nos",
@@ -1603,8 +1497,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "F",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "hacking_de_computador_nt",
@@ -1614,8 +1507,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "MD",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "heraldica",
@@ -1625,8 +1517,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "M",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "hipnotismo",
@@ -1636,8 +1527,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "D",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "historia",
@@ -1647,8 +1537,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "D",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": true,
-    "preDefinicoes": []
+    "exigeEspecializacao": true
   },
   {
     "id": "influencia_musical",
@@ -1658,16 +1547,17 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "MD",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "instrumentos_musicais",
     "nome": "Instrumentos Musicais (†)",
     "atributoBase": "IQ",
-    "dificuldadeFixa": "D",
     "atributosPossiveis": null,
-    "atributoEscolhaObrigatoria": false
+    "atributoEscolhaObrigatoria": false,
+    "dificuldadeFixa": "D",
+    "dificuldadeVariavel": false,
+    "exigeEspecializacao": null
   },
   {
     "id": "interrogatorio",
@@ -1677,8 +1567,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "M",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "intimidacao",
@@ -1688,8 +1577,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "M",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "jardinagem",
@@ -1699,8 +1587,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "F",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "jittesai",
@@ -1710,16 +1597,17 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "M",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "joalheiro_nt",
     "nome": "Joalheiro/NT",
     "atributoBase": "IQ",
-    "dificuldadeFixa": "D",
     "atributosPossiveis": null,
-    "atributoEscolhaObrigatoria": false
+    "atributoEscolhaObrigatoria": false,
+    "dificuldadeFixa": "D",
+    "dificuldadeVariavel": false,
+    "exigeEspecializacao": null
   },
   {
     "id": "jogos_de_azar",
@@ -1729,8 +1617,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "M",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "jogos_de_entretenimento",
@@ -1740,8 +1627,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "F",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": true,
-    "preDefinicoes": []
+    "exigeEspecializacao": true
   },
   {
     "id": "judô",
@@ -1751,8 +1637,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "D",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "jurisprudencia",
@@ -1762,8 +1647,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "D",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": true,
-    "preDefinicoes": []
+    "exigeEspecializacao": true
   },
   {
     "id": "kiai",
@@ -1773,8 +1657,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "D",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "kusari",
@@ -1784,8 +1667,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "D",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "lanca",
@@ -1795,8 +1677,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "M",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "lanca_de_justa",
@@ -1806,8 +1687,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "M",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "lavagem_cerebral_nt",
@@ -1817,8 +1697,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "D",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "laco",
@@ -1828,8 +1707,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "M",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "leitura_dinamica",
@@ -1839,16 +1717,17 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "M",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "leitura_labial",
     "nome": "Leitura Labial",
     "atributoBase": "PER",
-    "dificuldadeFixa": "M",
     "atributosPossiveis": null,
-    "atributoEscolhaObrigatoria": false
+    "atributoEscolhaObrigatoria": false,
+    "dificuldadeFixa": "M",
+    "dificuldadeVariavel": false,
+    "exigeEspecializacao": null
   },
   {
     "id": "levantamento",
@@ -1858,8 +1737,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "M",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "lideranca",
@@ -1869,8 +1747,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "M",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "linguagem_corporal",
@@ -1880,8 +1757,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "M",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "linguistica",
@@ -1891,8 +1767,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "D",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "literatura",
@@ -1902,8 +1777,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "D",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "luta_grecoromana",
@@ -1913,16 +1787,17 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "M",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "luta_greco_romana",
     "nome": "Luta Greco-Romana",
     "atributoBase": "DX",
-    "dificuldadeFixa": "M",
     "atributosPossiveis": null,
-    "atributoEscolhaObrigatoria": false
+    "atributoEscolhaObrigatoria": false,
+    "dificuldadeFixa": "M",
+    "dificuldadeVariavel": false,
+    "exigeEspecializacao": null
   },
   {
     "id": "lutar_as_cegas",
@@ -1932,8 +1807,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "MD",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "labia",
@@ -1943,8 +1817,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "M",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "magia_ritualistica",
@@ -1954,8 +1827,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "MD",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": true,
-    "preDefinicoes": []
+    "exigeEspecializacao": true
   },
   {
     "id": "manejo_de_barcos_nt",
@@ -1965,8 +1837,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "D",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": true,
-    "preDefinicoes": []
+    "exigeEspecializacao": true
   },
   {
     "id": "mangual",
@@ -1976,8 +1847,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "D",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "mangual_de_duas_maos",
@@ -1987,8 +1857,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "M",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "manha",
@@ -1998,8 +1867,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "M",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "maquiagem_nt",
@@ -2009,8 +1877,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "F",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "maquinista_nt",
@@ -2020,16 +1887,17 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "M",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "marinhagem_nt",
     "nome": "Marinhagem/NT (†)",
     "atributoBase": "IQ",
-    "dificuldadeFixa": "F",
     "atributosPossiveis": null,
-    "atributoEscolhaObrigatoria": false
+    "atributoEscolhaObrigatoria": false,
+    "dificuldadeFixa": "F",
+    "dificuldadeVariavel": false,
+    "exigeEspecializacao": null
   },
   {
     "id": "matematica_nt",
@@ -2039,8 +1907,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "D",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": true,
-    "preDefinicoes": []
+    "exigeEspecializacao": true
   },
   {
     "id": "materiais_perigosos_nt",
@@ -2050,8 +1917,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "M",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": true,
-    "preDefinicoes": []
+    "exigeEspecializacao": true
   },
   {
     "id": "macamachado",
@@ -2061,8 +1927,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "M",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "macamachado_de_duas_maos",
@@ -2072,8 +1937,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "M",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "mecanica_nt",
@@ -2083,8 +1947,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "M",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": true,
-    "preDefinicoes": []
+    "exigeEspecializacao": true
   },
   {
     "id": "medicina_alternativa",
@@ -2094,8 +1957,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "D",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "medicina_nt",
@@ -2105,8 +1967,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "D",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "meditacao",
@@ -2116,8 +1977,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "D",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "mendicancia",
@@ -2127,8 +1987,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "F",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "mergulho",
@@ -2138,8 +1997,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "M",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "metalurgia_nt",
@@ -2149,8 +2007,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "D",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "meteorologia_nt",
@@ -2160,8 +2017,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "M",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": true,
-    "preDefinicoes": []
+    "exigeEspecializacao": true
   },
   {
     "id": "montaria",
@@ -2171,8 +2027,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "M",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "mimicapantomima",
@@ -2182,16 +2037,17 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "F",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "mimica_pantomima",
     "nome": "Mímica/Pantomima",
     "atributoBase": "IQ",
-    "dificuldadeFixa": "F",
     "atributosPossiveis": null,
-    "atributoEscolhaObrigatoria": false
+    "atributoEscolhaObrigatoria": false,
+    "dificuldadeFixa": "F",
+    "dificuldadeVariavel": false,
+    "exigeEspecializacao": null
   },
   {
     "id": "natacao",
@@ -2201,8 +2057,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "F",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "naturalista",
@@ -2212,8 +2067,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "D",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "navegacao_nt",
@@ -2223,8 +2077,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "M",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": true,
-    "preDefinicoes": []
+    "exigeEspecializacao": true
   },
   {
     "id": "observador_avancado_nt",
@@ -2234,8 +2087,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "M",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "observacao",
@@ -2245,8 +2097,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "M",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "ocultamento",
@@ -2256,8 +2107,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "M",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "ocultismo",
@@ -2267,16 +2117,17 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "M",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "operacao_de_aparelhos_eletronicos_nt",
     "nome": "Operação de Aparelhos Eletrônicos/NT(†)",
     "atributoBase": "IQ",
-    "dificuldadeFixa": "M",
     "atributosPossiveis": null,
-    "atributoEscolhaObrigatoria": false
+    "atributoEscolhaObrigatoria": false,
+    "dificuldadeFixa": "M",
+    "dificuldadeVariavel": false,
+    "exigeEspecializacao": null
   },
   {
     "id": "operacao_de_computadores",
@@ -2286,16 +2137,17 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "F",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "operacao_de_computadores_nt",
     "nome": "Operação de Computadores/NT",
     "atributoBase": "IQ",
-    "dificuldadeFixa": "F",
     "atributosPossiveis": null,
-    "atributoEscolhaObrigatoria": false
+    "atributoEscolhaObrigatoria": false,
+    "dificuldadeFixa": "F",
+    "dificuldadeVariavel": false,
+    "exigeEspecializacao": null
   },
   {
     "id": "oratoria",
@@ -2305,8 +2157,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "M",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "paleontologia_nt",
@@ -2316,8 +2167,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "D",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": true,
-    "preDefinicoes": []
+    "exigeEspecializacao": true
   },
   {
     "id": "paraquedismo_nt",
@@ -2327,8 +2177,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "F",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "passos_leves",
@@ -2338,8 +2187,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "D",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "patinacao",
@@ -2349,8 +2197,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "D",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "pedagogia",
@@ -2360,8 +2207,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "M",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "percepcao_do_corpo",
@@ -2371,8 +2217,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "D",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "performance_em_grupo",
@@ -2382,8 +2227,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "M",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "perseguicao",
@@ -2393,8 +2237,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "M",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "perícia_abrangente",
@@ -2404,8 +2247,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "D",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": true,
-    "preDefinicoes": []
+    "exigeEspecializacao": true
   },
   {
     "id": "perícia_forense_nt",
@@ -2415,8 +2257,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "D",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "perícia_profissional",
@@ -2429,8 +2270,7 @@
     "atributoEscolhaObrigatoria": true,
     "dificuldadeFixa": "M",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": true,
-    "preDefinicoes": []
+    "exigeEspecializacao": true
   },
   {
     "id": "perícias_de_passatempo",
@@ -2443,8 +2283,7 @@
     "atributoEscolhaObrigatoria": true,
     "dificuldadeFixa": "F",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": true,
-    "preDefinicoes": []
+    "exigeEspecializacao": true
   },
   {
     "id": "pescaria",
@@ -2454,8 +2293,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "F",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "pesquisa_nt",
@@ -2465,8 +2303,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "M",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "pilotagem_nt",
@@ -2476,8 +2313,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "M",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": true,
-    "preDefinicoes": []
+    "exigeEspecializacao": true
   },
   {
     "id": "poesia",
@@ -2487,8 +2323,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "M",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "politica",
@@ -2498,8 +2333,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "M",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "pontaria_zen",
@@ -2509,8 +2343,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "MD",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "pontos_de_pressao",
@@ -2520,8 +2353,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "D",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "pontos_secretos",
@@ -2531,8 +2363,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "MD",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "postura_imovel",
@@ -2542,8 +2373,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "D",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "prestidigitacao",
@@ -2553,8 +2383,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "D",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "primeiros_socorros_nt",
@@ -2564,8 +2393,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "F",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "programacao_de_computadores_nt",
@@ -2575,8 +2403,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "D",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "projetor_de_liquidos_nt",
@@ -2586,8 +2413,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "F",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "propaganda_nt",
@@ -2597,8 +2423,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "M",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "prospeccao_nt",
@@ -2608,8 +2433,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "M",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "psicologia",
@@ -2619,16 +2443,17 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "D",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "punga",
     "nome": "Punga",
     "atributoBase": "DX",
-    "dificuldadeFixa": "D",
     "atributosPossiveis": null,
-    "atributoEscolhaObrigatoria": false
+    "atributoEscolhaObrigatoria": false,
+    "dificuldadeFixa": "D",
+    "dificuldadeVariavel": false,
+    "exigeEspecializacao": null
   },
   {
     "id": "queda_livre",
@@ -2638,16 +2463,17 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "M",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "quimica_nt",
     "nome": "Química/NT",
     "atributoBase": "IQ",
-    "dificuldadeFixa": "D",
     "atributosPossiveis": null,
-    "atributoEscolhaObrigatoria": false
+    "atributoEscolhaObrigatoria": false,
+    "dificuldadeFixa": "D",
+    "dificuldadeVariavel": false,
+    "exigeEspecializacao": null
   },
   {
     "id": "rapieira",
@@ -2657,8 +2483,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "M",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "rastreamento",
@@ -2668,8 +2493,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "M",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "rede",
@@ -2679,8 +2503,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "D",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "removela_nt",
@@ -2690,16 +2513,17 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "M",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": true,
-    "preDefinicoes": []
+    "exigeEspecializacao": true
   },
   {
     "id": "remo_vela_nt",
     "nome": "Remo/Vela/NT (†)",
     "atributoBase": "DX",
-    "dificuldadeFixa": "M",
     "atributosPossiveis": null,
-    "atributoEscolhaObrigatoria": false
+    "atributoEscolhaObrigatoria": false,
+    "dificuldadeFixa": "M",
+    "dificuldadeVariavel": false,
+    "exigeEspecializacao": null
   },
   {
     "id": "revistar",
@@ -2709,8 +2533,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "M",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "ritual_religioso",
@@ -2720,8 +2543,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "D",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": true,
-    "preDefinicoes": []
+    "exigeEspecializacao": true
   },
   {
     "id": "sabre",
@@ -2731,8 +2553,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "M",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "sacarrapido",
@@ -2742,8 +2563,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "F",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": true,
-    "preDefinicoes": []
+    "exigeEspecializacao": true
   },
   {
     "id": "salto",
@@ -2753,8 +2573,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "M",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "salto_voador",
@@ -2764,8 +2583,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "D",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "sex_appeal",
@@ -2775,8 +2593,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "M",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "sobrevivencia",
@@ -2786,8 +2603,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "M",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": true,
-    "preDefinicoes": []
+    "exigeEspecializacao": true
   },
   {
     "id": "sobrevivencia_urbana",
@@ -2797,8 +2613,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "M",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "sociologia",
@@ -2808,8 +2623,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "D",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "soldado_nt",
@@ -2819,8 +2633,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "M",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "soltar",
@@ -2830,8 +2643,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "M",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "sonhos",
@@ -2841,8 +2653,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "D",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "submarino_nt",
@@ -2852,8 +2663,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "M",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": true,
-    "preDefinicoes": []
+    "exigeEspecializacao": true
   },
   {
     "id": "sumo",
@@ -2863,8 +2673,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "M",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "surrupiar",
@@ -2874,8 +2683,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "M",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "taumatologia",
@@ -2885,8 +2693,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "MD",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "teologia",
@@ -2896,8 +2703,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "D",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": true,
-    "preDefinicoes": []
+    "exigeEspecializacao": true
   },
   {
     "id": "tercado",
@@ -2907,8 +2713,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "M",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "tonfa",
@@ -2918,16 +2723,17 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "M",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "trabalhos_em_couro",
     "nome": "Trabalhos em Couro",
     "atributoBase": "DX",
-    "dificuldadeFixa": "F",
     "atributosPossiveis": null,
-    "atributoEscolhaObrigatoria": false
+    "atributoEscolhaObrigatoria": false,
+    "dificuldadeFixa": "F",
+    "dificuldadeVariavel": false,
+    "exigeEspecializacao": null
   },
   {
     "id": "trato_social",
@@ -2937,8 +2743,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "F",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": true,
-    "preDefinicoes": []
+    "exigeEspecializacao": true
   },
   {
     "id": "tatica",
@@ -2948,16 +2753,17 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "D",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "utilizacao_de_traje_especial_nt",
     "nome": "Utilização de Traje Especial/NT (†)",
     "atributoBase": "DX",
-    "dificuldadeFixa": "M",
     "atributosPossiveis": null,
-    "atributoEscolhaObrigatoria": false
+    "atributoEscolhaObrigatoria": false,
+    "dificuldadeFixa": "M",
+    "dificuldadeVariavel": false,
+    "exigeEspecializacao": null
   },
   {
     "id": "veneficio_nt",
@@ -2967,8 +2773,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "D",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "ventriloquismo",
@@ -2978,8 +2783,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "D",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "veterinaria_nt",
@@ -2989,8 +2793,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "D",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "voo",
@@ -3000,8 +2803,7 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "M",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   },
   {
     "id": "zarabatana",
@@ -3011,7 +2813,6 @@
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "D",
     "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "exigeEspecializacao": false
   }
 ]

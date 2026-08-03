@@ -48,6 +48,7 @@
   },
   {
     "id": "adaptabilidade_cultural",
+    "nome": "Adaptabilidade Cultural",
     "pagina": 35,
     "costKind": "fixed",
     "fixed": 10,

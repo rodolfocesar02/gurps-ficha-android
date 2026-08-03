@@ -276,6 +276,8 @@ fun TabTracos(viewModel: FichaViewModel) {
             desvantagem = desvantagem,
             permiteAutocontrole = permiteAutocontrole,
             descricaoCatalogo = descricaoCatalogo,
+            maxDoCatalogo = viewModel.dataRepository.desvantagens
+                .firstOrNull { it.id == desvantagem.definicaoId }?.max,
             poderesDisponiveis = p.poderes,
             onDismiss = { editingDesvantagemIndex = null },
             onSave = { novaDesvantagem ->
