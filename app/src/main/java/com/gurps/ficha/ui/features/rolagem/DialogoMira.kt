@@ -80,7 +80,10 @@ fun DialogoMira(
     // avisar ninguém. Erro silencioso é o pior tipo.
     indiceDistancia: Int = TabelaVelocidadeDistancia.INDICE_PADRAO,
     indiceVelocidade: Int = -1,
-    onIndices: (distancia: Int, velocidade: Int) -> Unit = { _, _ -> }
+    onIndices: (distancia: Int, velocidade: Int) -> Unit = { _, _ -> },
+    // Lote ARMA-5: a frase de divergência entre a perícia do ataque e a arma
+    // escolhida na fonte de dano. Nula quando estão coerentes, que é o normal.
+    conflitoArmaPericia: String? = null
 ) {
     var desarmar by remember { mutableStateOf(false) }
     var golpeRapido by remember { mutableStateOf(false) }
@@ -88,6 +91,9 @@ fun DialogoMira(
     // deixa acumular segundos: +1 com dois, +2 com tres ou mais.
     var turnosApontando by remember { mutableIntStateOf(0) }
     var armaFirmada by remember { mutableStateOf(false) }
+    // Lote ARMA-5: a mira embutida da arma ("Prec 6+1"). Começa MARCADA porque
+    // quem tem luneta no rifle está usando a luneta — desmarcar é a exceção.
+    var usandoMiraAcoplada by remember { mutableStateOf(true) }
     var miope by remember { mutableStateOf(false) }
     // Lote D-MIRA: o app não sabe se o alvo é uma pessoa nem se o rosto está à
     // mostra — nenhuma das quatro isenções do livro está na ficha. Pergunta.
@@ -118,12 +124,15 @@ fun DialogoMira(
     val turnosValendo = if (apontarBloqueado) 0 else turnosApontando
     val apontouValendo = turnosValendo > 0
 
+    // O bônus da mira só existe se a arma tiver mira E o jogador estiver usando.
+    val bonusDaMira = if (usandoMiraAcoplada) (alcance.precisaoAcessorio ?: 0) else 0
+
     // Apontar traz duas coisas de uma vez: a Precisão da arma e o dobro do
     // desconto da Visão Telescópica. Ver `ApontarRules`.
     val bonusApontar = if (ehADistancia && personagem != null) {
         ApontarRules.bonusTotalDoApontar(
             personagem, alcance.precisao, penalidadeDistancia,
-            turnosValendo, armaFirmada
+            turnosValendo, armaFirmada, bonusDaMira
         )
     } else 0
     // ⚠️ O Zarolho lê `apontouValendo`, não `apontou`: quem não pode Apontar
@@ -288,7 +297,7 @@ fun DialogoMira(
                         } else {
                             ApontarRules.rotuloApontar(
                                 personagem, alcance.precisao, penalidadeDistancia,
-                                turnosValendo, armaFirmada
+                                turnosValendo, armaFirmada, bonusDaMira
                             )
                         },
                         style = MaterialTheme.typography.labelSmall,
@@ -321,6 +330,48 @@ fun DialogoMira(
                         )
                     }
                 }
+
+                // 🔴 Lote ARMA-5: a mira acoplada. Só aparece quando ESTA arma
+                // tem mira embutida no catálogo ("Prec 6+1") — as 12 armas de
+                // fogo cujo "+N" o app descartava. Como o bônus é "adicional na
+                // Prec" (MB p.270), a caixinha segue a mesma regra da arma
+                // firmada: só faz sentido depois de começar a apontar.
+                val bonusDisponivel = alcance.precisaoAcessorio ?: 0
+                if (apontouValendo && bonusDisponivel > 0) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .linhaAlternavel(
+                                marcado = usandoMiraAcoplada,
+                                descricao = ApontarRules.rotuloAcessivelMiraAcoplada(bonusDisponivel),
+                                onAlternar = { usandoMiraAcoplada = !usandoMiraAcoplada }
+                            )
+                            .padding(start = 16.dp, top = 2.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Checkbox(checked = usandoMiraAcoplada, onCheckedChange = null)
+                        Text(
+                            ApontarRules.rotuloMiraAcoplada(bonusDisponivel),
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.outline,
+                            modifier = Modifier.padding(start = 2.dp)
+                        )
+                    }
+                }
+            }
+
+            // 🔴 Lote ARMA-5: perícia e arma discordando. O app segue a perícia
+            // — que é o ataque que o jogador tocou — mas DIZ que seguiu. Antes
+            // ele escolhia calado e o jogador perdia distância, 1/2D, Máx e o
+            // Apontar inteiro sem nenhum aviso.
+            conflitoArmaPericia?.let { aviso ->
+                Text(
+                    aviso,
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.error,
+                    fontWeight = FontWeight.Medium,
+                    modifier = Modifier.padding(top = 4.dp)
+                )
             }
 
             // Zarolho (MB p.163). Não tem caixinha: a penalidade não depende de

@@ -5534,3 +5534,65 @@ O KDoc antigo do `ApontarRules` dizia, com todas as letras, que o teto *"hoje é
 
 **Testes:** `ApontarAcumuladoTest`, 17 casos — incluindo duas varreduras (o Apontar nunca piora o ataque; mais segundos nunca dão menos). Gate total em **1720** nas duas variantes.
 - **Status:** ✅ Build OK nas 2 variantes · lint OK · gate verde · ⏭️ **PENDENTE: teste no aparelho**.
+
+---
+
+### Lotes ARMA-1 a ARMA-5 — a ficha técnica das armas — 03 de Agosto de 2026 (versão 5.9-ARMAS)
+
+Pedido seu: *"no json da arma tem todas as informações, mas quase nada está no card"*. Era verdade, e mais do que parecia — o catálogo tem **13 blocos de dados** por arma de fogo e a tela mostrava **4**. Ao abrir o carregador para arrumar isso, apareceram **quatro furos** que não eram de vitrine.
+
+#### 🔴 1. A mira acoplada, que sumia — e mexia na Rolagem
+
+O catálogo escreve a Precisão como `"6+3"`, e o livro explica por quê:
+
+> Se a arma tiver uma mira embutida, o bônus devido a isto aparecerá como um modificador separado ao lado da Prec básica da arma; ex.: "7+2". — MB p.270
+
+O loader lia só o campo `valor` (o 6) e descartava o resto. **12 armas de fogo** perdiam o bônus; o **Rifle de Atirador .338** perdia **3 pontos inteiros**. Não é enfeite: essa Precisão alimenta o Apontar, então o atirador vinha apontando com menos do que o livro dá — e o teto do dobro da Prec (p.373) saía errado por tabela.
+
+Virou campo próprio (`precisaoAcessorio`) e **caixinha na tela**, aninhada sob o Apontar. Fica separada do Prec de propósito: usar a mira é escolha do jogador. E entra como *"demais bônus de pontaria"*, **não** dentro do Prec — somá-la antes de dobrar afrouxaria o teto justamente nas armas mais precisas.
+
+#### 🔴 2. O segundo modo de ataque, que nunca existiu
+
+O loader lia `modos.first()` e parava. **29 das 60 armas corpo a corpo** perdiam um ataque inteiro: a Katana cortava (`GeB+1 corte`) e **nunca podia estocar** (`GdP+1 perf`), a Alabarda tinha três modos e mostrava um.
+
+⚠️ E as duas listas do JSON **não são simétricas**: o *Arreador Conjunto* tem 2 danos e 1 linha de alcance; uma *Espada Bastarda* tem 1 dano e 2 linhas. Assumir simetria perderia justamente as exceções — o laço vai até o maior dos dois.
+
+⚠️ Numa linha a **barra separadora sumiu na digitação** (`"GeB+2 corteGdP+3 perf"`) e os dois ataques vieram colados. Sem desgrudar, essa arma perderia a estocada em silêncio — exatamente o defeito que o lote existe para acabar.
+
+#### 🔴 3. O alcance de quatro dígitos
+
+`"2.900".toIntOrNull()` devolve **null** — o ponto é milhar. **57 dos 124** valores de alcance caíam nesse buraco, praticamente todo `Máx` de arma de fogo. O efeito era invisível e ruim: o aviso *"Fora de alcance"* do diálogo de mira **nunca podia disparar** para pistola nenhuma.
+
+#### 🔴 4. A ST que não aparecia
+
+*Glaive* e *Alabarda* vêm com `stMinimo.valor` **nulo** porque o livro dá `"13‡ / 12"` — uma ST por modo. A tela mostrava um travessão e a arma ficava sem ST. Agora cai para o texto cru do livro.
+
+#### O que foi feito
+
+- **ARMA-1** — `ArmasCatalogLoader.kt`, arquivo novo. Saiu do `CatalogLoaders.kt` (1134 → **1065** linhas, ainda acima do teto mas 69 menor) por dois motivos: tamanho e **teste**. Aqui a entrada é uma `String`, não um `Context` — e é isso que permite o teste rodar sobre o asset **real**, 150 armas, campo por campo. `ArmaCatalogoItem` ganhou `nt`, `cl`, `municaoKg`, `precisaoAcessorio`, os `raw` do livro, `stFlags`, `stRaw` e `modos`.
+- **ARMA-2** — `FichaTecnicaDaArma.kt`: função pura que devolve as linhas prontas, com a **tradução do jargão**. `Tiros 80(3)` vira *"80 tiros, 3 turnos para recarregar"*; `Mag −3` vira a regra do Avançar e Atacar; o `×15/×20` do arco vira **165/220 m** com a ST da ficha. Campo ausente sai **—**, nunca **0**.
+- **ARMA-3** — `ui/features/equipamento/CardDetalheArma.kt`. ⚠️ **O gesto mudou**: o toque na lista abre a ficha, e o botão de adicionar mora dentro dela. Dois toques em vez de um — e é o certo, porque hoje dava para comprar uma arma sem descobrir que ela pesa 7,3 kg.
+- **ARMA-4** — o mesmo card abre a partir do inventário, só leitura. Arma que não casa com o catálogo mostra o que a ficha guarda e **diz por que** o resto falta.
+- **ARMA-5** — a caixinha da mira acoplada, e o conflito arma × perícia (abaixo).
+
+#### 🔴 O diálogo que abria em corpo a corpo (achado seu, print de 03/08)
+
+Cabeçalho dizendo `Ataque Armas de Fogo/NT (pistola)` e o diálogo abrindo com **Golpe Rápido**, sem distância e sem Apontar. A causa estava em `AlcanceDoAtaque`, na regra *"arma na mão manda"*:
+
+```
+if (!arma.armaTipoCombate.isNullOrBlank()) return false   // corpo a corpo cala a perícia
+```
+
+Foi escrita para o caso **oposto** — a faca de arremesso empunhada com a perícia Faca — e nunca previu a combinação incoerente. Com a fonte de dano numa arma branca, o ataque de pistola perdia distância, 1/2D, Máx e o Apontar inteiro **sem nenhum aviso**.
+
+Agora **qualquer um dos dois lados** que diga "longe" basta, o app segue a **perícia** (que é o ataque que você tocou) e **escreve a divergência na tela**. E `armaDoAtaque` deixou de aceitar uma arma branca como "a arma do tiro": ele procura a de longe que casa com a perícia.
+
+⚠️ **A lição, de novo:** os 17 testes de `AlcanceDoAtaqueTest` estavam verdes com o defeito em pé porque **todos usavam pares coerentes** — arco com Arcos, faca com Faca. Um deles até afirmava o comportamento errado, com o comentário *"quem está na mão é a espada"*. A matriz dos **quatro** cruzamentos é o que faltava.
+
+#### Testes
+
+`ArmasCatalogoTest` (26, sobre o asset real), `FichaTecnicaDaArmaTest` (22), `MiraAcopladaEConflitoTest` (15), mais a correção do `AlcanceDoAtaqueTest`. Gate total em **1783** nas duas variantes.
+
+Um erro meu que o teste pegou: escrevi **"CL 2 · militar"** no primeiro rascunho. A p.508 diz que **CL 1 é militar e CL 2 é restrito**. A escala inteira virou asserção.
+
+- **Status:** ✅ Build OK nas 2 variantes · lint OK · gate verde · ⏭️ **PENDENTE: teste no aparelho** (T-AR, T-AF, T-AD, T-AC, T-AI, T-MI, T-CF, T-AA no roteiro).

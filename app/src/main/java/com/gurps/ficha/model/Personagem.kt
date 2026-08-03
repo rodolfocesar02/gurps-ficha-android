@@ -813,6 +813,10 @@ data class Equipamento(
     var armaAlcanceCorpoACorpo: String? = null, // "C" | "1" | "1,2"
     var armaDuasMaos: Boolean = false,
     var armaPrecisao: Int? = null,              // Acc (Apontar)
+    // Lote ARMA-1: o "+N" da mira acoplada, que o catálogo escreve como "6+1" e
+    // o app descartava. Fica SEPARADO do armaPrecisao porque usar a mira é
+    // escolha do jogador na hora do tiro — somar aqui daria o bônus de graça.
+    var armaPrecisaoAcessorio: Int? = null,     // Acc do acessório (luneta, red dot)
     var armaMeioDanoMetros: Int? = null,        // 1/2D
     var armaMaximoMetros: Int? = null,          // Máx
     var armaAlcanceMultStRaw: String? = null,   // arcos/arremesso: "×10/×15"

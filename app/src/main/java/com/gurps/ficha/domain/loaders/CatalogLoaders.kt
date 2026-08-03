@@ -367,54 +367,20 @@ class CatalogLoaders(private val context: Context) {
         return (cc + dist).sortedBy { it.nome.lowercase() }
     }
 
-    fun carregarArmasCorpoACorpoNormalizadas(): List<ArmaCatalogoItem> {
-        return try {
-            val json = context.assets.open("armas_corpo_a_corpo.v1.normalized.json")
-                .bufferedReader()
-                .use { it.readText() }
-            val root = JsonParser.parseString(json)
-            if (!root.isJsonObject) return emptyList()
-            val items = root.asJsonObject.array("items") ?: return emptyList()
-            val parsed = items.mapNotNull { el ->
-                if (!el.isJsonObject) return@mapNotNull null
-                val obj = el.asJsonObject
-                val stObj = obj.obj("stMinimo")
-                val danoObj = obj.obj("dano")
-                val modos = obj.array("modos")
-                val modo1 = modos?.firstOrNull()?.takeIf { it.isJsonObject }?.asJsonObject
-                val custoObj = modo1?.obj("custo")
-                val pesoObj = modo1?.obj("peso")
-                val aparar = modo1?.string("aparar")?.sanitized()
-                val stRaw = stObj?.string("raw").orEmpty()
-                ArmaCatalogoItem(
-                    id = "cc_" + obj.string("id").orEmpty(),
-                    nome = obj.string("nome").orEmpty().sanitized(),
-                    tipoCombate = "corpo_a_corpo",
-                    categoria = obj.string("categoria").orEmpty().sanitized(),
-                    grupo = obj.string("grupo").orEmpty().sanitized(),
-                    stMinimo = stObj?.int("valor"),
-                    danoRaw = danoObj?.string("raw").orEmpty().sanitized(),
-                    custoBase = custoObj?.float("valor"),
-                    pesoBaseKg = pesoObj?.float("kg"),
-                    aparar = aparar,
-                    observacoes = obj.string("observacoes").orEmpty().sanitized(),
-                    alcanceCorpoACorpo = modo1?.string("alcanceCorpo")?.sanitized(),
-                    duasMaos = stRaw.contains("†") || stRaw.contains("‡")
-                )
-            }.filter { it.id.isNotBlank() && it.nome.isNotBlank() }
-            clearLoadError("armas_corpo_a_corpo")
-            parsed
-        } catch (e: Exception) {
-            registerLoadError("armas_corpo_a_corpo", e)
-            e.printStackTrace()
-            emptyList()
+    // ⚠️ Lote ARMA-1: a leitura das armas mudou de casa para
+    // `ArmasCatalogLoader`. Aqui sobrou só abrir o arquivo e anotar o erro — o
+    // parser não conhece Android, e por isso o teste consegue rodar sobre o
+    // asset real, arma por arma. Este arquivo também estava acima do teto de
+    // 1000 linhas, e a mudança tirou ~110 dele.
+    fun carregarArmasCorpoACorpoNormalizadas(): List<ArmaCatalogoItem> =
+        lerArmas(ArmasCatalogLoader.ARQUIVO_CORPO_A_CORPO, "armas_corpo_a_corpo") { json ->
+            ArmasCatalogLoader.corpoACorpo(json)
         }
-    }
 
     fun carregarArmasDistanciaNormalizadas(): List<ArmaCatalogoItem> {
         val arquivos = listOf(
-            "armas_distancia.v1.normalized.json" to "distancia",
-            "armas_fogo.v1.normalized.json" to "armas_de_fogo"
+            ArmasCatalogLoader.ARQUIVO_DISTANCIA to ArmasCatalogLoader.TIPO_DISTANCIA,
+            ArmasCatalogLoader.ARQUIVO_FOGO to ArmasCatalogLoader.TIPO_FOGO
         )
         return arquivos.flatMap { (arquivo, tipo) -> carregarArmasDistanciaDeArquivo(arquivo, tipo) }
     }
@@ -422,58 +388,23 @@ class CatalogLoaders(private val context: Context) {
     fun carregarArmasDistanciaDeArquivo(
         nomeArquivo: String,
         tipoCombate: String
+    ): List<ArmaCatalogoItem> = lerArmas(nomeArquivo, nomeArquivo) { json ->
+        ArmasCatalogLoader.distancia(json, tipoCombate)
+    }
+
+    private fun lerArmas(
+        nomeArquivo: String,
+        chaveDoErro: String,
+        parsear: (String) -> List<ArmaCatalogoItem>
     ): List<ArmaCatalogoItem> {
         return try {
             val json = context.assets.open(nomeArquivo).bufferedReader().use { it.readText() }
-            val root = JsonParser.parseString(json)
-            if (!root.isJsonObject) return emptyList()
-            val items = root.asJsonObject.array("items") ?: return emptyList()
-            val parsed = items.mapNotNull { el ->
-                if (!el.isJsonObject) return@mapNotNull null
-                val obj = el.asJsonObject
-                val stObj = obj.obj("stMinimo")
-                val danoObj = obj.obj("dano")
-                val custoObj = obj.obj("custo")
-                val pesoObj = obj.obj("peso")
-                val alcObj = obj.obj("alcanceDistancia")
-                val meioRaw = alcObj?.string("metadeDano")
-                val maxRaw = alcObj?.string("maximo")
-                // Alcance pode ser metros fixos ("75") ou múltiplo de ST ("×4", "×10/×15", p/ arcos/arremesso).
-                val usaMultST = (meioRaw?.startsWith("×") == true) || (maxRaw?.startsWith("×") == true)
-                val stRaw = stObj?.string("raw").orEmpty()
-                ArmaCatalogoItem(
-                    id = "dist_" + obj.string("id").orEmpty(),
-                    nome = obj.string("nome").orEmpty().sanitized(),
-                    tipoCombate = tipoCombate,
-                    categoria = obj.string("categoria").orEmpty().sanitized(),
-                    grupo = obj.string("grupo").orEmpty().sanitized(),
-                    stMinimo = stObj?.int("valor"),
-                    danoRaw = danoObj?.string("raw").orEmpty().sanitized(),
-                    custoBase = custoObj?.float("valor"),
-                    pesoBaseKg = pesoObj?.float("armaKg"),
-                    aparar = null,
-                    observacoes = if (tipoCombate == "distancia" || tipoCombate == "armas_de_fogo") {
-                        obj.string("observacoes").orEmpty().sanitized()
-                    } else {
-                        ""
-                    },
-                    precisao = obj.obj("precisao")?.int("valor"),
-                    meioDanoMetros = if (usaMultST) null else meioRaw?.toIntOrNull(),
-                    maximoMetros = if (usaMultST) null else maxRaw?.toIntOrNull(),
-                    alcanceMultStRaw = if (usaMultST) alcObj?.string("raw")?.sanitized() else null,
-                    cadenciaTiro = obj.obj("cdt")?.int("valor"),
-                    tirosRaw = obj.obj("tiros")?.string("raw")?.sanitized(),
-                    magnitude = obj.obj("magnitude")?.int("valor"),
-                    recuo = obj.obj("recuo")?.int("valor"),
-                    // Duas mãos: † / ‡ na ST OU determinado pelo grupo (fogo: só pistola é 1 mão; arco/besta = 2). Lote 380.
-                    duasMaos = stRaw.contains("†") || stRaw.contains("‡") ||
-                        ArmaCatalogoItem.duasMaosPorGrupo(tipoCombate, obj.string("grupo").orEmpty().sanitized())
-                )
-            }.filter { it.id.isNotBlank() && it.nome.isNotBlank() }
-            clearLoadError(nomeArquivo)
+            val parsed = parsear(json)
+            clearLoadError(chaveDoErro)
             parsed
         } catch (e: Exception) {
-            registerLoadError(nomeArquivo, e)
+            registerLoadError(chaveDoErro, e)
+            e.printStackTrace()
             emptyList()
         }
     }

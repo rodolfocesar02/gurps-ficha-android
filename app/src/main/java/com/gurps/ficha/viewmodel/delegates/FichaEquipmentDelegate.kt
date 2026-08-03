@@ -62,6 +62,7 @@ class FichaEquipmentDelegate(private val dataRepository: DataRepository) {
             armaAlcanceCorpoACorpo = arma.alcanceCorpoACorpo,
             armaDuasMaos = arma.duasMaos,
             armaPrecisao = arma.precisao,
+            armaPrecisaoAcessorio = arma.precisaoAcessorio,
             armaMeioDanoMetros = arma.meioDanoMetros,
             armaMaximoMetros = arma.maximoMetros,
             armaAlcanceMultStRaw = arma.alcanceMultStRaw,
@@ -259,16 +260,32 @@ class FichaEquipmentDelegate(private val dataRepository: DataRepository) {
     }
 
     fun observacoesArmaPorEquipamento(equipamento: Equipamento): String {
+        val doCatalogo = armaDoCatalogoPara(equipamento) ?: return ""
+        return observacoesArmaFormatadas(doCatalogo)
+    }
+
+    /**
+     * **De volta ao catálogo, a partir da arma já equipada** (Lote ARMA-4).
+     *
+     * A escada era interna ao `observacoesArmaPorEquipamento`; virou pública
+     * porque o card de detalhe do inventário precisa do MESMO item — e duplicar
+     * a busca daria duas respostas diferentes para a mesma arma com o tempo.
+     *
+     * Ordem: id gravado na ficha (o mais confiável) → nome + tipo + dano →
+     * nome só. Devolve null quando nada casa, e aí a tela mostra o que a ficha
+     * guarda em vez de não mostrar nada.
+     */
+    fun armaDoCatalogoPara(equipamento: Equipamento): ArmaCatalogoItem? {
         val porId = equipamento.armaCatalogoId
             ?.takeIf { it.isNotBlank() }
             ?.let { id -> dataRepository.armasCatalogo.firstOrNull { it.id == id } }
-        if (porId != null) return observacoesArmaFormatadas(porId)
+        if (porId != null) return porId
 
         val nomeBase = equipamento.nome.substringBefore(" (").trim()
-        if (nomeBase.isBlank()) return ""
+        if (nomeBase.isBlank()) return null
         val nomeBaseNorm = normalizarChaveTexto(nomeBase)
 
-        val porNome = dataRepository.armasCatalogo.firstOrNull { arma ->
+        return dataRepository.armasCatalogo.firstOrNull { arma ->
             val tipoOk = equipamento.armaTipoCombate.isNullOrBlank() ||
                 arma.tipoCombate.equals(equipamento.armaTipoCombate, ignoreCase = true)
             val danoOk = equipamento.armaDanoRaw.isNullOrBlank() ||
@@ -278,8 +295,6 @@ class FichaEquipmentDelegate(private val dataRepository: DataRepository) {
         } ?: dataRepository.armasCatalogo.firstOrNull { arma ->
             normalizarChaveTexto(arma.nome) == nomeBaseNorm
         }
-
-        return if (porNome != null) observacoesArmaFormatadas(porNome) else ""
     }
 
     private fun normalizarChaveTexto(valor: String): String {

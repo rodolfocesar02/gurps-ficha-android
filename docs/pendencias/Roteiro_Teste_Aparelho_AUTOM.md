@@ -719,3 +719,159 @@ perícia). Nada foi validado no aparelho.
   abra de novo: ela tem de voltar **desmarcada**. A condição vale para aquela
   rolagem, não para sempre. ⚠️ O **seletor de equipamento**, ao contrário,
   **continua** no degrau que você deixou — ele é da sessão.
+
+---
+
+# Lotes ARMA-1 a ARMA-5 — a ficha técnica das armas
+
+> Gate: **1.783 testes**, 0 falhas nas duas variantes (`visual` e `pracego`),
+> lint limpo. Cobre ARMA-1 (catálogo alargado), ARMA-2 (ficha técnica),
+> ARMA-3 (card na seleção), ARMA-4 (card no inventário) e ARMA-5 (mira acoplada
+> e o conflito arma × perícia).
+>
+> ⚠️ **O gesto de adicionar arma mudou.** Antes, tocar na arma da lista já a
+> jogava no inventário. Agora o toque **abre a ficha técnica**, e o botão
+> *Adicionar ao inventário* fica dentro dela. São dois toques em vez de um.
+
+## Preparo
+
+Uma ficha com **ST 11** e estas armas no inventário (aba Equipamentos →
+Adicionar Arma):
+
+| Arma | Onde achar | Serve para testar |
+|---|---|---|
+| **Rifle de Atirador, .338** | Armas de Fogo → Rifles | mira acoplada (Prec 6+3) |
+| **Revólver, .36** | Armas de Fogo → Pistolas | o Máx de milhar |
+| **Arco Longo** | Distancia | alcance por múltiplo de ST |
+| **Katana** | Corpo a corpo | os dois modos de ataque |
+| **Adaga** | Corpo a corpo | o conflito arma × perícia |
+
+E na aba Perícias: **Armas de Fogo/NT (Pistola)** e **Arcos**.
+
+---
+
+## T-AR · O card de detalhe na seleção (ARMA-3)
+
+- **T-AR1 · o toque abre, não adiciona** — Equipamentos → **Adicionar Arma** →
+  toque na **Katana**. ✅ Abre um card com a ficha técnica. ✅ A Katana **não**
+  entrou no inventário ainda.
+- **T-AR2 · o botão adiciona e fecha tudo** — No card, toque em **Adicionar ao
+  inventário**. ✅ A Katana aparece na lista de Armas e os dois diálogos fecham.
+- **T-AR3 · Fechar não adiciona** — Abra outra arma e toque em **Fechar**.
+  ✅ Ela **não** entra no inventário.
+- **T-AR4 · o card da lista não mudou** — A lista continua com nome, ST, tipo,
+  dano, custo e peso. Nada de novo ali.
+
+## T-AF · A ficha de uma arma de fogo
+
+Abra o **Rifle de Atirador, .338**.
+
+- **T-AF1 · 🔴 a mira acoplada aparece** — Na linha **Precisão**: ✅ o valor é
+  **6 +3** e a explicação diz *"6 da arma e +3 da mira acoplada — só valem se
+  você Apontar"*. *(Este +3 o app jogava fora desde sempre.)*
+- **T-AF2 · o selo de CL** — No alto à direita: ✅ aparece o **CL** da arma com
+  o nome certo. ⚠️ **CL 1 é militar, CL 2 é restrito** — se aparecer "CL 2 ·
+  militar", está errado.
+- **T-AF3 · Tiros vira frase** — ✅ A linha **Tiros** mostra o valor cru e
+  embaixo *"N tiros, M turnos para recarregar"*.
+- **T-AF4 · Recuo e Magnitude explicados** — ✅ **Recuo** diz a regra do tiro
+  múltiplo; ✅ **Magnitude** diz que penaliza Avançar e Atacar e ocultar a arma.
+- **T-AF5 · o peso da munição** — ✅ A linha **Peso** mostra **dois** números
+  (`2,3 kg + 0,5 kg`) e diz que o segundo é a munição.
+- **T-AF6 · 🔴 o Máx de milhar** — Abra o **Revólver, .36**: ✅ o alcance mostra
+  **1300 m** de máximo. *(Antes o app não sabia o Máx de nenhuma pistola: o
+  ponto de milhar quebrava a leitura, e o aviso "fora de alcance" nunca podia
+  disparar.)*
+
+## T-AD · A ficha de uma arma à distância
+
+Abra o **Arco Longo** (com a ficha de **ST 11**).
+
+- **T-AD1 · a conta feita** — ✅ Alcance mostra **×15/×20** e embaixo *"com a
+  sua ST 11 → 165 / 220 m"*.
+- **T-AD2 · muda com a ST** — Suba a ST para **14** na aba Geral e abra de novo:
+  ✅ agora diz **210 / 280 m**.
+- **T-AD3 · sem Recuo é travessão** — ✅ A linha **Recuo** mostra **—**, não
+  **0**. Zero diria "esta arma não coiceia"; o livro simplesmente não cadastrou.
+- **T-AD4 · duas mãos** — ✅ A linha **ST mínima** mostra **11 †** e explica
+  *"usa as duas mãos"*.
+
+## T-AC · A ficha de uma arma corpo a corpo
+
+Abra a **Katana**.
+
+- **T-AC1 · 🔴 os DOIS ataques** — ✅ Aparece a seção **Modos de ataque** com
+  **GeB+1 corte** e **GdP+1 perf**. *(A estocada da Katana nunca existiu no app:
+  o carregador lia só o primeiro modo e parava.)*
+- **T-AC2 · o alcance de cada modo** — ✅ O corte diz **Alcance 1, 2**; a
+  estocada diz **Alcance 1**.
+- **T-AC3 · ⚠️ mesma arma, não custa de novo** — ✅ O 2º modo traz a linha
+  *"mesma arma — não custa nem pesa de novo"*, e o **Custo** do item continua
+  **$650** (um só).
+- **T-AC4 · três modos** — Abra a **Alabarda**: ✅ **três** modos de ataque.
+- **T-AC5 · 🔴 a ST que faltava** — Ainda na Alabarda: ✅ a linha **ST mínima**
+  mostra **13‡ / 12** e explica que o livro dá uma ST por modo. *(Antes ficava
+  só um travessão — a alabarda não tinha ST nenhuma na tela.)*
+- **T-AC6 · o ‡ não é o †** — ✅ A explicação da Alabarda fala em ficar
+  **despreparada** depois de atacar. Só o † não diz isso.
+- **T-AC7 · arma de um modo só** — Abra o **Machado**: ✅ **não** aparece uma
+  seção "Modos de ataque" com um item só.
+
+## T-AI · O card a partir do inventário (ARMA-4)
+
+- **T-AI1 · o toque no nome abre** — Na aba Equipamentos, em **Armas**, toque no
+  **nome** da Katana: ✅ abre a mesma ficha técnica.
+- **T-AI2 · só leitura** — ✅ **Não** existe botão de adicionar. A arma já está
+  na ficha.
+- **T-AI3 · o lápis continua editando** — ✅ Tocar no **lápis** ainda abre
+  *Editar Equipamento*, como antes.
+- **T-AI4 · arma fora do catálogo** — Crie uma arma à mão (Adicionar Itens, com
+  dano preenchido) e abra: ✅ o card diz **"Arma fora do catálogo"** e explica
+  que só mostra o que está gravado na ficha. Não pode abrir vazio nem travar.
+
+## T-MI · A mira acoplada na Rolagem (ARMA-5)
+
+- **T-MI1 · a caixinha aparece** — Aba Rolagem → ataque **Armas de Fogo/NT
+  (Pistola)** → fonte de dano no **Rifle de Atirador** → **segure** o NH para
+  abrir *Onde acertar* → toque no **Apontar**. ✅ Embaixo do Apontar aparecem
+  **duas** caixinhas: *arma firmada* e *usando a mira acoplada: +3*.
+- **T-MI2 · a mira já vem marcada** — ✅ Quem tem luneta está usando a luneta;
+  desmarcar é a exceção.
+- **T-MI3 · o número muda ao desmarcar** — ✅ Desmarcando a mira, todos os NH da
+  lista caem **3 pontos**.
+- **T-MI4 · ⚠️ some sem apontar** — Volte o Apontar para **nenhum turno**:
+  ✅ as duas caixinhas **somem**. A Prec só existe apontando.
+- **T-MI5 · arma sem mira não mostra a caixinha** — Troque a fonte de dano para
+  o **Revólver, .36**: ✅ a caixinha de mira **não** aparece (só a de firmada).
+- **T-MI6 · o teto do livro ainda vale** — Com o rifle, **3 turnos** + firmada +
+  mira: ✅ o rótulo mostra as parcelas e, se cortar, diz **"teto de 12 (dobro da
+  Prec, MB p.373)"**.
+
+## T-CF · 🔴 O conflito arma × perícia (ARMA-5)
+
+Este é o bug do print de 03/08.
+
+- **T-CF1 · 🔴 o diálogo abre em modo à distância** — Ataque **Armas de Fogo/NT
+  (Pistola)**, fonte de dano na **Adaga**, segure o NH. ✅ Aparecem a **linha de
+  distância** e o **Apontar**. ✅ **Não** aparece o *Golpe Rápido* (que é opção
+  de corpo a corpo). *(Antes abria exatamente ao contrário.)*
+- **T-CF2 · o aviso está escrito** — ✅ Aparece em vermelho: *"O ataque é à
+  distância, mas a fonte de dano é Adaga, que é de corpo a corpo — confira a
+  arma."*
+- **T-CF3 · a arma certa é encontrada** — Ainda com a Adaga na fonte de dano:
+  ✅ o alcance mostrado é o **da pistola**, não "alcance não cadastrado".
+- **T-CF4 · par coerente não avisa nada** — Ponha a fonte de dano no **Revólver**
+  com a mesma perícia: ✅ **nenhum** aviso vermelho.
+- **T-CF5 · corpo a corpo continua corpo a corpo** — Ataque de **Faca** com a
+  Adaga: ✅ aparece o **Golpe Rápido**, ✅ **não** aparece linha de distância,
+  ✅ nenhum aviso.
+
+## T-AA · Acessibilidade (variante `pracego`)
+
+- **T-AA1** — No card de detalhe, cada linha é lida **inteira** pelo TalkBack:
+  rótulo, valor e explicação de uma vez. Não pode ler "Precisão", pausa,
+  "6 mais 3".
+- **T-AA2** — No inventário, o nome da arma anuncia *"toque para ver a ficha
+  técnica completa"*.
+- **T-AA3** — A caixinha da mira anuncia quanto ela soma e o que significa
+  desmarcar.

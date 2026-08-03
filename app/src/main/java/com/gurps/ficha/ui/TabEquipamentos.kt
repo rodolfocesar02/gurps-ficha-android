@@ -37,6 +37,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.gurps.ficha.model.ArmaduraCatalogoItem
@@ -73,6 +75,10 @@ fun TabEquipamentos(viewModel: FichaViewModel) {
     var showArmaduraDialog by remember { mutableStateOf(false) }
     var armaduraPendenteConfiguracao by remember { mutableStateOf<ArmaduraCatalogoItem?>(null) }
     var editingEquipamento by remember { mutableStateOf<Pair<Int, Equipamento>?>(null) }
+    // Lote ARMA-3: a arma cuja ficha técnica está aberta (vinda do catálogo).
+    var armaDetalhada by remember { mutableStateOf<ArmaCatalogoItem?>(null) }
+    // Lote ARMA-4: a mesma ficha, aberta a partir do inventário.
+    var armaDoInventarioDetalhada by remember { mutableStateOf<Equipamento?>(null) }
 
     val p = viewModel.personagem
     val errosCarga = viewModel.errosCargaCatalogos
@@ -131,6 +137,7 @@ fun TabEquipamentos(viewModel: FichaViewModel) {
                         equipamento = entry.value,
                         onEdit = { editingEquipamento = entry.index to entry.value },
                         onDelete = { viewModel.removerEquipamento(entry.index) },
+                        onDetalhes = { armaDoInventarioDetalhada = entry.value },
                         viewModel = viewModel
                     )
                 }
@@ -212,11 +219,45 @@ fun TabEquipamentos(viewModel: FichaViewModel) {
         SelecionarArmaEquipamentoDialog(
             viewModel = viewModel,
             onDismiss = { showArmaDialog = false },
-            onSelect = {
-                viewModel.adicionarEquipamentoArma(it)
-                showArmaDialog = false
-            }
+            // ⚠️ Lote ARMA-3: o toque na lista NÃO adiciona mais direto. Ele
+            // abre a ficha técnica, e o botão de adicionar mora lá dentro.
+            // Dois toques em vez de um, para ninguém comprar uma arma sem saber
+            // que ela pesa 7,3 kg e exige as duas mãos.
+            onSelect = { armaDetalhada = it }
         )
+    }
+
+    // Lote ARMA-3/4: o mesmo card serve os dois lados. Na seleção ele adiciona;
+    // no inventário ele é só leitura, porque a arma já está na ficha.
+    armaDetalhada?.let { arma ->
+        com.gurps.ficha.ui.features.equipamento.CardDetalheArma(
+            ficha = viewModel.fichaTecnicaDaArma(arma),
+            rotuloAcao = "Adicionar ao inventário",
+            onAcao = {
+                viewModel.adicionarEquipamentoArma(arma)
+                armaDetalhada = null
+                showArmaDialog = false
+            },
+            onDismiss = { armaDetalhada = null }
+        )
+    }
+
+    armaDoInventarioDetalhada?.let { equipamento ->
+        val doCatalogo = viewModel.armaDoCatalogoPara(equipamento)
+        if (doCatalogo != null) {
+            com.gurps.ficha.ui.features.equipamento.CardDetalheArma(
+                ficha = viewModel.fichaTecnicaDaArma(doCatalogo),
+                rotuloAcao = null,
+                onDismiss = { armaDoInventarioDetalhada = null }
+            )
+        } else {
+            // Arma que não casa com o catálogo (criada à mão, ou de uma versão
+            // anterior). Dizer isso é melhor que abrir um card vazio.
+            com.gurps.ficha.ui.features.equipamento.CardArmaForaDoCatalogo(
+                equipamento = equipamento,
+                onDismiss = { armaDoInventarioDetalhada = null }
+            )
+        }
     }
 
     if (showEscudoDialog) {
@@ -323,13 +364,27 @@ private fun ResumoEquipamentosFooter(viewModel: FichaViewModel) {
 }
 
 @Composable
-fun EquipamentoArmaItem(equipamento: Equipamento, onEdit: () -> Unit, onDelete: () -> Unit, viewModel: FichaViewModel) {
+fun EquipamentoArmaItem(
+    equipamento: Equipamento,
+    onEdit: () -> Unit,
+    onDelete: () -> Unit,
+    viewModel: FichaViewModel,
+    // Lote ARMA-4: abre a ficha técnica completa desta arma.
+    onDetalhes: () -> Unit = {}
+) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Column(modifier = Modifier.weight(1f)) {
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .clickable(onClick = onDetalhes)
+                .semantics {
+                    contentDescription = "${equipamento.nome}. Toque para ver a ficha técnica completa."
+                }
+        ) {
             Text(equipamento.nome, style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Medium)
             // Saga: arma tirada pela narrativa (Narrador). Continua na ficha, mas não aparece no combate.
             if (equipamento.confiscado) Text(

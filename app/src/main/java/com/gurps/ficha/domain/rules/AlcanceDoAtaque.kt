@@ -55,17 +55,59 @@ object AlcanceDoAtaque {
      * [arma] é a fonte de dano escolhida (null quando é "Dano ST"), [periciaId] é
      * o ataque selecionado.
      */
+    /**
+     * A pergunta que a tela faz.
+     *
+     * ## 🔴 Por que a arma deixou de "mandar" (Lote ARMA-5)
+     *
+     * A versão anterior dizia *"arma na mão manda"* e, se a arma fosse de corpo
+     * a corpo, **calava a perícia**:
+     *
+     * ```
+     * if (!arma.armaTipoCombate.isNullOrBlank()) return false
+     * ```
+     *
+     * Isso foi escrito para o caso *oposto* — a faca de arremesso empunhada com
+     * a perícia Faca — e nunca previu a combinação incoerente. Achado por você
+     * em 03/08 com um print: o cabeçalho dizia `Ataque Armas de Fogo/NT
+     * (pistola)` e o diálogo abria com **Golpe Rápido**, sem linha de distância
+     * e sem Apontar, porque a fonte de dano estava numa arma de corpo a corpo.
+     *
+     * Perder a distância, o 1/2D, o Máx e o Apontar inteiro **sem nenhum aviso**
+     * é o pior tipo de erro. Agora **qualquer um dos dois lados** que diga
+     * "longe" basta, e a divergência vira texto na tela ([conflito]).
+     */
     fun ehADistancia(arma: Equipamento?, periciaId: String?): Boolean {
         if (arma != null) {
-            // Arma na mão manda: se ela é de corpo a corpo, é corpo a corpo,
-            // mesmo que a perícia selecionada seja de arco.
             if (tipoEhADistancia(arma.armaTipoCombate)) return true
-            if (!arma.armaTipoCombate.isNullOrBlank()) return false
             // Ficha antiga sem o campo: cai no alcance máximo, que só arma de
             // longe tem.
-            if (arma.armaMaximoMetros != null) return true
+            if (arma.armaTipoCombate.isNullOrBlank() && arma.armaMaximoMetros != null) return true
         }
         return periciaEhADistancia(periciaId)
+    }
+
+    /**
+     * **A perícia e a arma discordam?** — e, se sim, o que dizer.
+     *
+     * Devolve null quando estão coerentes (o normal). Quando não estão, devolve
+     * a frase que a tela mostra: o app segue a perícia, que é o ataque que o
+     * jogador tocou, mas **diz que seguiu** em vez de escolher calado.
+     */
+    fun conflito(arma: Equipamento?, periciaId: String?): String? {
+        val nome = arma?.nome?.takeIf { it.isNotBlank() } ?: return null
+        val tipo = arma.armaTipoCombate
+        if (tipo.isNullOrBlank()) return null
+        val armaDeLonge = tipoEhADistancia(tipo)
+        val periciaDeLonge = periciaEhADistancia(periciaId)
+        if (armaDeLonge == periciaDeLonge) return null
+        return if (periciaDeLonge) {
+            "O ataque é à distância, mas a fonte de dano é $nome, " +
+                "que é de corpo a corpo — confira a arma."
+        } else {
+            "O ataque é de corpo a corpo, mas a fonte de dano é $nome, " +
+                "que é de longe — confira a arma."
+        }
     }
 
     /**
@@ -100,7 +142,18 @@ object AlcanceDoAtaque {
         armaSelecionada: Equipamento?,
         periciaId: String?
     ): Equipamento? {
-        if (armaSelecionada != null) return armaSelecionada
+        // ⚠️ Lote ARMA-5: só vale a escolhida se ela for mesmo de longe. Antes,
+        // uma adaga selecionada na fonte de dano virava "a arma do tiro" e
+        // levava Precisão nula e alcance vazio para o diálogo — com a pistola
+        // ali do lado na mesma ficha.
+        if (armaSelecionada != null && tipoEhADistancia(armaSelecionada.armaTipoCombate)) {
+            return armaSelecionada
+        }
+        if (armaSelecionada != null && armaSelecionada.armaTipoCombate.isNullOrBlank() &&
+            armaSelecionada.armaMaximoMetros != null
+        ) {
+            return armaSelecionada
+        }
 
         val deLonge = armas.filter { tipoEhADistancia(it.armaTipoCombate) || it.armaMaximoMetros != null }
         if (deLonge.isEmpty()) return null
@@ -144,7 +197,12 @@ object AlcanceDoAtaque {
         val meioDano: Int?,
         val maximo: Int?,
         /** Prec da arma — o bônus que só vale se o personagem Apontou. */
-        val precisao: Int? = null
+        val precisao: Int? = null,
+        /**
+         * O `+N` da **mira acoplada** (Lote ARMA-5). Nulo quando a arma não tem
+         * mira embutida — e é o nulo que decide se a caixinha aparece na tela.
+         */
+        val precisaoAcessorio: Int? = null
     )
 
     fun alcanceDe(arma: Equipamento?, st: Int): Alcance {
@@ -153,7 +211,7 @@ object AlcanceDoAtaque {
         val mult = arma.armaAlcanceMultStRaw?.let { multiplicadores(it) }
         val meio = arma.armaMeioDanoMetros ?: mult?.first?.let { it * st }
         val max = arma.armaMaximoMetros ?: mult?.second?.let { it * st }
-        return Alcance(meio, max, arma.armaPrecisao)
+        return Alcance(meio, max, arma.armaPrecisao, arma.armaPrecisaoAcessorio?.takeIf { it > 0 })
     }
 
     /**

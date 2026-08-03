@@ -7,6 +7,7 @@ import com.gurps.ficha.model.PERICIAS_COMBATE_DISTANCIA
 import com.gurps.ficha.model.TipoEquipamento
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
@@ -86,19 +87,35 @@ class AlcanceDoAtaqueTest {
         assertFalse(AlcanceDoAtaque.periciaEhADistancia(""))
     }
 
-    // --- pela arma, que manda ---
+    // --- pela arma ---
 
     @Test
-    fun `a arma escolhida vence a pericia`() {
-        // O caso perverso: perícia de Arco selecionada, mas a fonte de dano é uma
-        // espada. Quem está na mão é a espada.
-        assertFalse(
+    fun `🔴 a arma NAO cala mais a pericia (Lote ARMA-5)`() {
+        // Este teste dizia o contrário até 03/08, com o comentário "quem está na
+        // mão é a espada". A afirmação era razoável e estava errada: o print do
+        // usuário mostrou o ataque `Armas de Fogo/NT (pistola)` abrindo o
+        // diálogo de CORPO A CORPO, sem distância, sem 1/2D e sem Apontar,
+        // porque a fonte de dano tinha ficado numa arma branca.
+        //
+        // Agora qualquer um dos dois lados que diga "longe" basta, e a
+        // divergência vira aviso na tela em vez de decisão silenciosa.
+        assertTrue(
             AlcanceDoAtaque.ehADistancia(arma(tipoCombate = "corpo_a_corpo"), "arcos")
         )
-        // E o contrário: perícia Faca com uma faca de ARREMESSO na mão.
+        assertNotNull(
+            AlcanceDoAtaque.conflito(arma(tipoCombate = "corpo_a_corpo"), "arcos")
+        )
+        // O caso que a regra antiga existia para resolver continua valendo:
+        // perícia Faca com uma faca de ARREMESSO na mão.
         assertTrue(
             AlcanceDoAtaque.ehADistancia(arma(tipoCombate = "distancia"), "faca")
         )
+    }
+
+    @Test
+    fun `arma e pericia coerentes nao geram aviso nenhum`() {
+        assertNull(AlcanceDoAtaque.conflito(arma(tipoCombate = "corpo_a_corpo"), "faca"))
+        assertNull(AlcanceDoAtaque.conflito(arma(tipoCombate = "armas_de_fogo"), "armas_de_fogo_nt"))
     }
 
     @Test

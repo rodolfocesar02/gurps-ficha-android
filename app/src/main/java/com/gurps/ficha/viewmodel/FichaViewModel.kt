@@ -986,6 +986,20 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
     val custoTotalEquipamentos get() = personagem.custoTotalEquipamentos
     fun observacoesArmaPorEquipamento(e: Equipamento) = equipmentDelegate.observacoesArmaPorEquipamento(e)
 
+    // ── Lote ARMA-2/3/4: a ficha técnica da arma, pronta para a tela. ──
+    // A conta do dano e as observações do rodapé vêm de quem já sabe fazê-las;
+    // a montagem das linhas é regra pura e mora em `FichaTecnicaDaArma`.
+    fun fichaTecnicaDaArma(arma: ArmaCatalogoItem) = com.gurps.ficha.domain.rules.FichaTecnicaDaArma.de(
+        arma = arma,
+        st = personagem.forca,
+        resolverDano = { calcularDanoArmaComSt(it) },
+        observacoes = equipmentDelegate.observacoesArmaFormatadas(arma)
+            .lineSequence().map { it.trim() }.filter { it.isNotBlank() }.toList()
+    )
+
+    /** O item do catálogo por trás de uma arma já equipada. Null = não casou. */
+    fun armaDoCatalogoPara(e: Equipamento) = equipmentDelegate.armaDoCatalogoPara(e)
+
     fun confirmarLimpezaMagiasAoPerderAptidao() { personagem = personagemPendenteLimpezaMagias?.copy(magias = emptyList()) ?: personagem; personagemPendenteLimpezaMagias = null; mostrarConfirmacaoLimpezaMagias = false }
     fun cancelarLimpezaMagiasAoPerderAptidao() { personagemPendenteLimpezaMagias = null; mostrarConfirmacaoLimpezaMagias = false }
     private fun atualizarVantagensComConfirmacao(novas: List<VantagemSelecionada>) {

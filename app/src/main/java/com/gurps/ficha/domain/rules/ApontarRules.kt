@@ -116,10 +116,31 @@ object ApontarRules {
      * avisa que a arma está sem Precisão. Inventar um teto seria pior que não
      * ter: tiraria bônus que o jogador tem direito.
      */
-    fun bonusDePontaria(precisaoDaArma: Int?, turnos: Int, armaFirmada: Boolean): Int {
+    fun bonusDePontaria(
+        precisaoDaArma: Int?,
+        turnos: Int,
+        armaFirmada: Boolean,
+        /**
+         * 🔴 O `+N` da **mira acoplada** (Lote ARMA-5).
+         *
+         * O catálogo escreve a Precisão como `"6+1"`, e o livro (MB p.270) diz
+         * que *"se a arma tiver uma mira embutida, o bônus devido a isto
+         * aparecerá como um modificador separado ao lado da Prec básica"*. O app
+         * lia só o primeiro número: **12 armas de fogo** perdiam esse bônus, e o
+         * Rifle de Atirador .338 perdia **3 pontos** inteiros.
+         *
+         * ⚠️ Entra como *"demais bônus de pontaria"*, e **não** como parte do
+         * Prec: o teto do dobro continua sendo o dobro do **parâmetro Prec da
+         * arma**, que é o que a p.373 diz. Somar a mira ao Prec antes de dobrar
+         * afrouxaria o teto justamente nas armas mais precisas.
+         */
+        miraAcoplada: Int = 0
+    ): Int {
         if (turnos <= 0) return 0
         val prec = (precisaoDaArma ?: 0).coerceAtLeast(0)
-        val extras = bonusPorTurnos(turnos) + if (armaFirmada) BONUS_ARMA_FIRMADA else 0
+        val extras = bonusPorTurnos(turnos) +
+            (if (armaFirmada) BONUS_ARMA_FIRMADA else 0) +
+            miraAcoplada.coerceAtLeast(0)
         val bruto = prec + extras
         if (precisaoDaArma == null || prec <= 0) return bruto
         return bruto.coerceAtMost(prec * 2)
@@ -160,9 +181,10 @@ object ApontarRules {
         precisaoDaArma: Int?,
         penalidadeDistancia: Int,
         turnos: Int,
-        armaFirmada: Boolean
+        armaFirmada: Boolean,
+        miraAcoplada: Int = 0
     ): Int =
-        bonusDePontaria(precisaoDaArma, turnos, armaFirmada) +
+        bonusDePontaria(precisaoDaArma, turnos, armaFirmada, miraAcoplada) +
             cancelaDaDistancia(personagem, penalidadeDistancia, apontou = turnos > 0)
 
     /** O rótulo da caixinha, já com os números desta arma e deste personagem. */
@@ -183,7 +205,8 @@ object ApontarRules {
         precisaoDaArma: Int?,
         penalidadeDistancia: Int,
         turnos: Int,
-        armaFirmada: Boolean
+        armaFirmada: Boolean,
+        miraAcoplada: Int = 0
     ): String {
         if (turnos <= 0) {
             return "Apontar (nenhum turno) — toque para acumular segundos"
@@ -193,13 +216,15 @@ object ApontarRules {
         val prec = (precisaoDaArma ?: 0).coerceAtLeast(0)
         val extraTurnos = bonusPorTurnos(turnos)
         val extraFirmada = if (armaFirmada) BONUS_ARMA_FIRMADA else 0
-        val pontaria = bonusDePontaria(precisaoDaArma, turnos, armaFirmada)
+        val extraMira = miraAcoplada.coerceAtLeast(0)
+        val pontaria = bonusDePontaria(precisaoDaArma, turnos, armaFirmada, extraMira)
         val telescopica = cancelaDaDistancia(personagem, penalidadeDistancia, apontou = true)
 
         val partes = buildList {
             if (prec > 0) add("Precisão +$prec")
             if (extraTurnos > 0) add("segundos +$extraTurnos")
             if (extraFirmada > 0) add("firmada +$extraFirmada")
+            if (extraMira > 0) add("mira +$extraMira")
             if (telescopica > 0) add("Telescópica +$telescopica")
         }
         // ⚠️ O aviso de Prec ausente vale mesmo quando há OUTRAS parcelas.
@@ -215,7 +240,7 @@ object ApontarRules {
             return "Apontei $segundos (sem bônus: a Precisão desta arma é $prec)"
         }
         // O teto do livro só é mencionado quando ele de fato cortou algo.
-        val bruto = prec + extraTurnos + extraFirmada
+        val bruto = prec + extraTurnos + extraFirmada + extraMira
         val cortou = prec > 0 && bruto > pontaria
         val aviso = if (cortou) " · teto de ${prec * 2} (dobro da Prec, MB p.373)" else ""
         return "Apontei $segundos: ${partes.joinToString(", ")}$aviso"
@@ -264,4 +289,12 @@ object ApontarRules {
         "Marcar que a arma está firmada — apoiada em saco de areia, mureta ou " +
             "carro, pistola empunhada com as duas mãos, ou rifle com bipé. " +
             "Vale para arma de fogo e besta, e soma mais um."
+
+    /** O rótulo da mira acoplada, com o bônus desta arma (Lote ARMA-5). */
+    fun rotuloMiraAcoplada(bonus: Int): String =
+        "Usando a mira acoplada da arma: +$bonus"
+
+    fun rotuloAcessivelMiraAcoplada(bonus: Int): String =
+        "Marcar que está usando a mira embutida da arma, que soma mais $bonus " +
+            "na Precisão. Desmarque se estiver atirando pela alça de mira comum."
 }

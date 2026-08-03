@@ -1237,6 +1237,10 @@ fun TabRolagem(viewModel: FichaViewModel) {
                 .alcanceDe(armaDaMira, p.st + bonusStBracal),
             indiceDistancia = indiceDistanciaAlvo,
             indiceVelocidade = indiceVelocidadeAlvo,
+            // Lote ARMA-5: a divergência entre o ataque tocado e a arma da
+            // fonte de dano vira texto, em vez de escolha silenciosa.
+            conflitoArmaPericia = com.gurps.ficha.domain.rules.AlcanceDoAtaque
+                .conflito(escolhidaNaFonteDeDano, periciaDaMira),
             onIndices = { d, v ->
                 indiceDistanciaAlvo = d
                 indiceVelocidadeAlvo = v
