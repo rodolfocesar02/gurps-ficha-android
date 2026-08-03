@@ -5509,3 +5509,28 @@ Você perguntou se os dois arquivos precisavam existir. Não eram duplicatas: `p
 
 **Testes:** `TetoDeNivelDoTracoTest` (12) e `PericiasCatalogoUnificadoTest` (8). Gate total em **1703** nas duas variantes.
 - **Status:** ✅ Build OK nas 2 variantes · lint OK · gate verde · ⏭️ **PENDENTE: teste no aparelho** — e este lote mexe no carregamento do catálogo, então vale abrir a aba Perícias antes de qualquer outra coisa.
+
+### Lote MIRA-4 — Apontar acumula segundos — 31 de Julho de 2026 (versão 5.8-MIRA4)
+Achado por você lendo a p.364: o Apontar funcionava, mas era **liga/desliga**. O livro deixa acumular, e faltavam duas coisas.
+
+> Se Apontar por mais de um segundo o personagem recebe um bônus adicional: **+1**, se Apontar por dois segundos, ou **+2** se Apontar por três ou mais segundos.
+
+> Se **firmar** uma arma de fogo ou besta o personagem recebe um bônus adicional de **+1** na Prec.
+
+**A caixinha virou contador.** O toque cicla **0 → 1 → 2 → 3 → 0**, e o rótulo mostra as parcelas separadas: *"Apontei 2 turnos: Precisão +3, segundos +1, firmada +1"*. O primeiro turno não dá extra — ele é o que **libera** a Precisão; dar +1 nele contaria o mesmo segundo duas vezes.
+
+**A arma firmada** ganhou caixinha própria, e só aparece depois de começar a apontar: o livro diz *"bônus adicional **na Prec**"*, e a Prec só existe apontando.
+
+**🔴 E com isso o teto do livro passou a existir de verdade.**
+> A soma do bônus de Precisão com os demais bônus de pontaria nunca podem exceder o **dobro** do parâmetro Prec. — MB p.373
+
+O KDoc antigo do `ApontarRules` dizia, com todas as letras, que o teto *"hoje é o Prec de um turno, sempre abaixo do dobro"*. Era verdade — **enquanto só existia um turno**. Agora Prec 2 com três segundos e arma firmada daria 2+2+1 = **5**, e o livro trava em **4**. O rótulo avisa quando cortou, porque bônus que para de subir sem explicação parece defeito.
+
+**⚠️ A Visão Telescópica continua fora desse teto**, e é decisão consciente: ela não soma no NH — **cancela penalidade de distância** (MB p.99). Cortá-la pelo teto de pontaria misturaria duas contas que o livro mantém separadas.
+
+**⚠️ Sem Prec cadastrado não há teto a aplicar** — dobro de um número que não se conhece não existe. Os extras entram sem corte, e o rótulo avisa.
+
+**Um defeito que o teste pegou no rótulo:** o aviso de *"esta arma não tem Precisão cadastrada"* só aparecia quando a linha ficava **vazia**. Com dois segundos, o rótulo dizia "segundos +1" e calava a ausência — justo quando o jogador mais precisa saber, porque é aí que o teto **não** está sendo aplicado.
+
+**Testes:** `ApontarAcumuladoTest`, 17 casos — incluindo duas varreduras (o Apontar nunca piora o ataque; mais segundos nunca dão menos). Gate total em **1720** nas duas variantes.
+- **Status:** ✅ Build OK nas 2 variantes · lint OK · gate verde · ⏭️ **PENDENTE: teste no aparelho**.

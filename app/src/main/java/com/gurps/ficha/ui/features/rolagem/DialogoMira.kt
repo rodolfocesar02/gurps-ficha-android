@@ -84,7 +84,10 @@ fun DialogoMira(
 ) {
     var desarmar by remember { mutableStateOf(false) }
     var golpeRapido by remember { mutableStateOf(false) }
-    var apontou by remember { mutableStateOf(false) }
+    // Lote MIRA-4: o Apontar deixou de ser liga/desliga. O livro (MB p.364)
+    // deixa acumular segundos: +1 com dois, +2 com tres ou mais.
+    var turnosApontando by remember { mutableIntStateOf(0) }
+    var armaFirmada by remember { mutableStateOf(false) }
     var miope by remember { mutableStateOf(false) }
     // Lote D-MIRA: o app não sabe se o alvo é uma pessoa nem se o rosto está à
     // mostra — nenhuma das quatro isenções do livro está na ficha. Pergunta.
@@ -110,13 +113,17 @@ fun DialogoMira(
     // e não mudar, que é pior que esconder.
     val apontarBloqueado = personagem != null &&
         PacifismoRules.bloqueiaApontar(personagem, ataqueLetal)
-    val apontouValendo = apontou && !apontarBloqueado
+    // Bloqueado zera os turnos para efeito de conta -- o Assassino Relutante
+    // nao pode Apontar, entao segundo acumulado nao vale nada.
+    val turnosValendo = if (apontarBloqueado) 0 else turnosApontando
+    val apontouValendo = turnosValendo > 0
 
     // Apontar traz duas coisas de uma vez: a Precisão da arma e o dobro do
     // desconto da Visão Telescópica. Ver `ApontarRules`.
     val bonusApontar = if (ehADistancia && personagem != null) {
         ApontarRules.bonusTotalDoApontar(
-            personagem, alcance.precisao, penalidadeDistancia, apontouValendo
+            personagem, alcance.precisao, penalidadeDistancia,
+            turnosValendo, armaFirmada
         )
     } else 0
     // ⚠️ O Zarolho lê `apontouValendo`, não `apontou`: quem não pode Apontar
@@ -254,10 +261,17 @@ fun DialogoMira(
                                     "pode Apontar num ataque letal."
                             } else {
                                 ApontarRules.rotuloAcessivelApontar(
-                                    personagem, alcance.precisao, penalidadeDistancia
+                                    personagem, alcance.precisao, penalidadeDistancia,
+                                    turnosValendo
                                 )
                             },
-                            onAlternar = { if (!apontarBloqueado) apontou = !apontou }
+                            // ⚠️ Não é mais liga/desliga: o toque ACUMULA segundos
+                            // e cicla 0 → 1 → 2 → 3 → 0 (MB p.364).
+                            onAlternar = {
+                                if (!apontarBloqueado) {
+                                    turnosApontando = ApontarRules.proximoTurno(turnosApontando)
+                                }
+                            }
                         )
                         .padding(top = 2.dp),
                     verticalAlignment = Alignment.CenterVertically
@@ -273,13 +287,39 @@ fun DialogoMira(
                                 "Apontar num ataque letal (MB p.153)"
                         } else {
                             ApontarRules.rotuloApontar(
-                                personagem, alcance.precisao, penalidadeDistancia
+                                personagem, alcance.precisao, penalidadeDistancia,
+                                turnosValendo, armaFirmada
                             )
                         },
                         style = MaterialTheme.typography.labelSmall,
                         color = MaterialTheme.colorScheme.outline,
                         modifier = Modifier.padding(start = 2.dp)
                     )
+                }
+
+                // A arma firmada só faz sentido depois de começar a apontar —
+                // o +1 do livro é "adicional na Prec", e a Prec só vale
+                // apontando.
+                if (apontouValendo) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .linhaAlternavel(
+                                marcado = armaFirmada,
+                                descricao = ApontarRules.ROTULO_ACESSIVEL_FIRMADA,
+                                onAlternar = { armaFirmada = !armaFirmada }
+                            )
+                            .padding(start = 16.dp, top = 2.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Checkbox(checked = armaFirmada, onCheckedChange = null)
+                        Text(
+                            ApontarRules.ROTULO_ARMA_FIRMADA,
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.outline,
+                            modifier = Modifier.padding(start = 2.dp)
+                        )
+                    }
                 }
             }
 

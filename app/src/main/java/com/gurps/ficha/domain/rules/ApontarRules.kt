@@ -68,6 +68,63 @@ object ApontarRules {
     fun bonusDePrecisao(precisaoDaArma: Int?, apontou: Boolean): Int =
         if (apontou) (precisaoDaArma ?: 0).coerceAtLeast(0) else 0
 
+    // ==================================================================
+    // Lote MIRA-4 — Apontar por MAIS DE UM SEGUNDO
+    // ==================================================================
+    //
+    // 🔴 Achado por você em 31/07: o Apontar era **liga/desliga**, e o livro
+    // deixa acumular. Faltavam duas coisas na p.364:
+    //
+    // > Se Apontar por mais de um segundo o personagem recebe um bônus
+    // > adicional: **+1**, se Apontar por dois segundos, ou **+2** se Apontar
+    // > por três ou mais segundos.
+    //
+    // > Se **firmar** uma arma de fogo ou besta o personagem recebe um bônus
+    // > adicional de **+1** na Prec.
+
+    /** O máximo que o app oferece: do terceiro segundo em diante nada muda. */
+    const val TURNOS_MAXIMO = 3
+
+    /** Arma apoiada em saco de areia, mureta, carro… (MB p.364). */
+    const val BONUS_ARMA_FIRMADA = 1
+
+    /**
+     * O extra por passar do primeiro segundo: **+1** com dois, **+2** com três
+     * ou mais. O primeiro turno não dá extra — ele é o que libera a Precisão.
+     */
+    fun bonusPorTurnos(turnos: Int): Int = when {
+        turnos <= 1 -> 0
+        turnos == 2 -> 1
+        else -> 2
+    }
+
+    /**
+     * O bônus de **pontaria** — Precisão, segundos extras e arma firmada —
+     * já com o teto do livro.
+     *
+     * > A soma do bônus de Precisão com os demais bônus de pontaria nunca podem
+     * > exceder o **dobro** do parâmetro Prec da arma. — MB p.373
+     *
+     * ⚠️ **Esse teto nunca tinha valido**, e o KDoc antigo dizia isso com todas
+     * as letras: *"hoje é o Prec de um turno, sempre abaixo do dobro"*. Era
+     * verdade enquanto só existia um turno. Com os segundos acumulando e a arma
+     * firmada, ele passa a morder de verdade: Prec 2, três segundos e firmada
+     * daria 2+2+1 = **5**, e o livro trava em **4**.
+     *
+     * ⚠️ **Sem Prec cadastrado, não há teto a aplicar.** Dobro de um número que
+     * não se conhece não existe — então os extras entram sem corte, e o rótulo
+     * avisa que a arma está sem Precisão. Inventar um teto seria pior que não
+     * ter: tiraria bônus que o jogador tem direito.
+     */
+    fun bonusDePontaria(precisaoDaArma: Int?, turnos: Int, armaFirmada: Boolean): Int {
+        if (turnos <= 0) return 0
+        val prec = (precisaoDaArma ?: 0).coerceAtLeast(0)
+        val extras = bonusPorTurnos(turnos) + if (armaFirmada) BONUS_ARMA_FIRMADA else 0
+        val bruto = prec + extras
+        if (precisaoDaArma == null || prec <= 0) return bruto
+        return bruto.coerceAtMost(prec * 2)
+    }
+
     /**
      * O total que o Apontar traz: Precisão da arma + o que a Telescópica cancela.
      *
@@ -81,39 +138,130 @@ object ApontarRules {
         precisaoDaArma: Int?,
         penalidadeDistancia: Int,
         apontou: Boolean
+    ): Int = bonusTotalDoApontar(
+        personagem, precisaoDaArma, penalidadeDistancia,
+        turnos = if (apontou) 1 else 0, armaFirmada = false
+    )
+
+    /**
+     * O total do Apontar com os segundos e a arma firmada (Lote MIRA-4).
+     *
+     * ⚠️ As duas parcelas são **eixos diferentes**, e por isso o teto do livro
+     * não vale para a segunda:
+     *
+     * - **pontaria** (Precisão + segundos + firmada) soma no NH, e é o que o
+     *   dobro do Prec limita;
+     * - **Visão Telescópica** não soma no NH: ela *cancela* penalidade de
+     *   distância (MB p.99). Cortá-la pelo teto de pontaria misturaria duas
+     *   contas que o livro mantém separadas.
+     */
+    fun bonusTotalDoApontar(
+        personagem: Personagem,
+        precisaoDaArma: Int?,
+        penalidadeDistancia: Int,
+        turnos: Int,
+        armaFirmada: Boolean
     ): Int =
-        bonusDePrecisao(precisaoDaArma, apontou) +
-            cancelaDaDistancia(personagem, penalidadeDistancia, apontou)
+        bonusDePontaria(precisaoDaArma, turnos, armaFirmada) +
+            cancelaDaDistancia(personagem, penalidadeDistancia, apontou = turnos > 0)
 
     /** O rótulo da caixinha, já com os números desta arma e deste personagem. */
     fun rotuloApontar(
         personagem: Personagem,
         precisaoDaArma: Int?,
         penalidadeDistancia: Int
+    ): String = rotuloApontar(personagem, precisaoDaArma, penalidadeDistancia, 1, false)
+
+    /**
+     * O rótulo com os segundos e a arma firmada (Lote MIRA-4).
+     *
+     * Mostra **de onde vem cada ponto** e, quando o teto do livro corta, diz
+     * que cortou. Um bônus que para de subir sem explicação parece defeito.
+     */
+    fun rotuloApontar(
+        personagem: Personagem,
+        precisaoDaArma: Int?,
+        penalidadeDistancia: Int,
+        turnos: Int,
+        armaFirmada: Boolean
     ): String {
-        val prec = precisaoDaArma ?: 0
+        if (turnos <= 0) {
+            return "Apontar (nenhum turno) — toque para acumular segundos"
+        }
+        val segundos = if (turnos >= TURNOS_MAXIMO) "3+ turnos" else "$turnos turno" +
+            if (turnos > 1) "s" else ""
+        val prec = (precisaoDaArma ?: 0).coerceAtLeast(0)
+        val extraTurnos = bonusPorTurnos(turnos)
+        val extraFirmada = if (armaFirmada) BONUS_ARMA_FIRMADA else 0
+        val pontaria = bonusDePontaria(precisaoDaArma, turnos, armaFirmada)
         val telescopica = cancelaDaDistancia(personagem, penalidadeDistancia, apontou = true)
+
         val partes = buildList {
             if (prec > 0) add("Precisão +$prec")
+            if (extraTurnos > 0) add("segundos +$extraTurnos")
+            if (extraFirmada > 0) add("firmada +$extraFirmada")
             if (telescopica > 0) add("Telescópica +$telescopica")
         }
-        return if (partes.isEmpty()) {
-            "Apontei 1 turno (esta arma não tem Precisão cadastrada)"
-        } else {
-            "Apontei 1 turno: ${partes.joinToString(" e ")}"
+        // ⚠️ O aviso de Prec ausente vale mesmo quando há OUTRAS parcelas.
+        // A primeira versão só avisava se a linha ficasse vazia — e aí, com dois
+        // segundos, o rótulo dizia "segundos +1" e calava que a arma está sem
+        // Precisão. É justamente aí que o jogador precisa saber, porque **o teto
+        // do dobro não está sendo aplicado**.
+        if (precisaoDaArma == null) {
+            val extras = if (partes.isEmpty()) "" else ": ${partes.joinToString(", ")}"
+            return "Apontei $segundos$extras (esta arma não tem Precisão cadastrada)"
         }
+        if (partes.isEmpty()) {
+            return "Apontei $segundos (sem bônus: a Precisão desta arma é $prec)"
+        }
+        // O teto do livro só é mencionado quando ele de fato cortou algo.
+        val bruto = prec + extraTurnos + extraFirmada
+        val cortou = prec > 0 && bruto > pontaria
+        val aviso = if (cortou) " · teto de ${prec * 2} (dobro da Prec, MB p.373)" else ""
+        return "Apontei $segundos: ${partes.joinToString(", ")}$aviso"
     }
 
-    /** O mesmo, para o TalkBack — sem dizer se está marcado. */
+    /**
+     * O mesmo, para o TalkBack.
+     *
+     * ⚠️ Anuncia **o que o próximo toque faz**, porque o Apontar deixou de ser
+     * liga/desliga e virou um contador que cicla. "Marcado" sozinho não diria
+     * que ainda há segundos a acumular.
+     */
     fun rotuloAcessivelApontar(
         personagem: Personagem,
         precisaoDaArma: Int?,
-        penalidadeDistancia: Int
+        penalidadeDistancia: Int,
+        turnos: Int = 1
     ): String {
-        val total = bonusTotalDoApontar(personagem, precisaoDaArma, penalidadeDistancia, apontou = true)
-        return "Apontar por um turno. Soma mais $total ao ataque." +
+        val total = bonusTotalDoApontar(
+            personagem, precisaoDaArma, penalidadeDistancia, turnos, armaFirmada = false
+        )
+        val atual = if (turnos <= 0) {
+            "Sem apontar."
+        } else {
+            "Apontando por ${if (turnos >= TURNOS_MAXIMO) "três ou mais" else "$turnos"} " +
+                "${if (turnos == 1) "turno" else "turnos"}. Soma mais $total ao ataque."
+        }
+        val proximo = if (turnos >= TURNOS_MAXIMO) {
+            "Tocar volta a nenhum turno."
+        } else {
+            "Tocar acumula mais um segundo de pontaria."
+        }
+        return "$atual $proximo" +
             if (temTelescopica(personagem)) {
                 " Com Visão Telescópica, Apontar dobra o desconto da distância."
             } else ""
     }
+
+    /** O próximo estado do contador: 0 → 1 → 2 → 3 → 0. */
+    fun proximoTurno(turnos: Int): Int = if (turnos >= TURNOS_MAXIMO) 0 else turnos + 1
+
+    const val ROTULO_ARMA_FIRMADA =
+        "Arma firmada (apoiada, ou pistola com as duas mãos): +1"
+
+    const val ROTULO_ACESSIVEL_FIRMADA =
+        "Marcar que a arma está firmada — apoiada em saco de areia, mureta ou " +
+            "carro, pistola empunhada com as duas mãos, ou rifle com bipé. " +
+            "Vale para arma de fogo e besta, e soma mais um."
 }
