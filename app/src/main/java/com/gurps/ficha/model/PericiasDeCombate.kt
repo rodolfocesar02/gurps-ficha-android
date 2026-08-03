@@ -54,6 +54,14 @@ val PERICIAS_COMBATE_CORPO_A_CORPO = setOf(
     "sumô",
     "luta_de_sumo",
     "garrote",
+    // Lote ARMA-6: perícias que existem no catálogo e que a lista não tinha —
+    // achadas varrendo os GRUPOS do catálogo de armas contra `pericias.v3.json`.
+    // Sem elas, um espadachim de Terçado não recebia a penalidade de Cegueira
+    // nem a de Mão Fraca, e o ataque dele nunca era reconhecido como de perto.
+    "tercado",
+    "chicote_monofio",
+    "chicote_de_energia",
+    "tonfa",
     // Aliases legados para fichas antigas
     "adaga",
     "alabarda",
@@ -97,11 +105,24 @@ val PERICIAS_COMBATE_DISTANCIA = setOf(
     "armas_de_fogo_nt",
     "armas_de_feixe_nt",
     "artilharia_nt",
+    // 🔴 Lote ARMA-6. `artilheiro_nt` logo abaixo **não existe em catálogo
+    // nenhum** — o id real da perícia é `canhoneiro_nt` (MB p.187, DX/Fácil,
+    // predefinido DX-4), e ele nunca esteve aqui. Quem atacava com o canhão de
+    // um tanque abria o diálogo em **corpo a corpo**: sem distância, sem 1/2D,
+    // sem Máx, sem Apontar, e com Golpe Rápido oferecido.
+    //
+    // ⚠️ Dói duas vezes: Canhoneiro é uma das quatro perícias que a vantagem
+    // **Atirador** cobre (MB p.43), então a automação dela nasceria capenga.
+    "canhoneiro_nt",
     "artilheiro_nt",
     "projetor_de_liquidos_nt",
     "bolas",
+    "boleadeira",
     "laco",
     "rede",
+    "arma_de_arremesso",
+    "arremessador_de_lanca",
+    "arte_do_arremesso",
     "arma_de_fogo_pistola",
     "arma_de_fogo_fuzil",
     "arma_de_fogo_espingarda",

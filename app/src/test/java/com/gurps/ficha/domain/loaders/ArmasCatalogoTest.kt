@@ -295,19 +295,26 @@ class ArmasCatalogoTest {
 
     @Test
     fun `⚠️ CL so existe onde o livro cadastrou`() {
-        // 42 armas de fogo têm CL. Corpo a corpo não tem coluna nenhuma — e
+        // 45 armas de fogo têm CL. Corpo a corpo não tem coluna nenhuma — e
         // inventar CL 0 ali diria "arma proibida" para uma faca de cozinha.
-        assertEquals(42, todas().count { it.cl != null })
+        //
+        // ⚠️ Eram 42 até o **Lote ARMA-7**: o Rifle de Atirador .338, a ACI 6,8 mm
+        // e o Rifle de Gauss tinham a linha deslocada uma coluna e perdiam a CL
+        // no fim dela. O conserto devolveu as três (CL 3, 1 e 2).
+        assertEquals(45, todas().count { it.cl != null })
         assertTrue(corpoACorpo().all { it.cl == null })
     }
 
     @Test
     fun `as flags da coluna ST sobrevivem`() {
         val comFlag = todas().filter { it.stFlags.isNotEmpty() }
-        // 43 armas carregam 45 flags: a Glaive e a Alabarda têm as DUAS. Guardar
+        // 46 armas carregam 48 flags: a Glaive e a Alabarda têm as DUAS. Guardar
         // só a primeira perderia metade da informação delas.
-        assertEquals(43, comFlag.size)
-        assertEquals(45, comFlag.sumOf { it.stFlags.size })
+        //
+        // ⚠️ Eram 43/45 até o **Lote ARMA-7**: as três armas de linha deslocada
+        // tinham perdido o † junto com a ST (uma delas chegou a marcar ST 41).
+        assertEquals(46, comFlag.size)
+        assertEquals(48, comFlag.sumOf { it.stFlags.size })
         assertEquals(
             listOf("dagger", "double_dagger"),
             porNome(corpoACorpo(), "Alabarda").stFlags

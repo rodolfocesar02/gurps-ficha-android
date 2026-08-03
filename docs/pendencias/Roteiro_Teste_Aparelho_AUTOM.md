@@ -875,3 +875,105 @@ Este é o bug do print de 03/08.
   técnica completa"*.
 - **T-AA3** — A caixinha da mira anuncia quanto ela soma e o que significa
   desmarcar.
+
+---
+
+# Lotes ARMA-6 a ARMA-9 — perícias de tiro, Magnitude e as vantagens de Atirador
+
+> Gate: **1.822 testes**, 0 falhas nas duas variantes, lint limpo.
+> ARMA-6 (perícias), ARMA-7 (Avançar e Atacar + conserto do catálogo),
+> ARMA-8 (Atirador), ARMA-9 (Arqueiro Heroico).
+
+## Preparo
+
+Duas fichas, porque as vantagens são exclusivas por perícia:
+
+- **Ficha A — "Pistoleiro"**: ST 11, vantagem **Atirador** (25 pts), perícias
+  **Armas de Fogo/NT (Pistola)** e **Canhoneiro/NT (Canhão)**. No inventário:
+  **Pistola Auto., 9 mm**, **Rifle de Atirador, .338** e uma **Adaga**.
+- **Ficha B — "Arqueira"**: ST 11, vantagem **Atirador (Arqueiro Heroico)**
+  (20 pts), perícia **Arcos**, com um **Arco Longo**.
+
+---
+
+## T-CN · 🔴 Canhoneiro deixou de abrir em corpo a corpo (ARMA-6)
+
+- **T-CN1** — Ficha A, ataque **Canhoneiro/NT (Canhão)**, segure o NH.
+  ✅ Aparece a **linha de distância** e o **Apontar**. ✅ **Não** aparece o
+  *Golpe Rápido*. *(Antes abria como arma branca: sem distância, sem 1/2D, sem
+  Máx, sem Apontar.)*
+- **T-CN2** — Ainda em Canhoneiro: ✅ o card do ataque mostra o rótulo
+  `alvo a Xm (−N)` quando você afasta o alvo.
+
+## T-MG · A Magnitude no Avançar e Atacar (ARMA-7)
+
+- **T-MG1 · a caixinha existe** — Ficha A, ataque de **Pistola**, segure o NH.
+  ✅ Abaixo do Apontar há **Avançar e Atacar**, com o número já calculado.
+- **T-MG2 · o rótulo diz de onde veio** — Com a **Pistola Auto., 9 mm**
+  (Magnitude −2): ✅ o texto diz **−2** e explica que é o **padrão**.
+- **T-MG3 · a arma pior manda** — Troque a fonte de dano para o **Rifle de
+  Atirador, .338** (Magnitude −6): ✅ o texto passa a **−6** e diz
+  *"Magnitude da arma, pior que o −2 básico"*.
+- **T-MG4 · ⚠️ as duas caixinhas se excluem** — Marque **Apontar** (2 turnos) e
+  depois **Avançar e Atacar**: ✅ o bônus do Apontar **some do total** e aparece
+  o aviso *"Apontar desligado: não dá para acumular segundos de pontaria
+  correndo"*.
+- **T-MG5 · ⚠️ corpo a corpo tem TETO** — Numa perícia de arma branca com **NH
+  alto (16+)**, marque *Avançar e Atacar*: ✅ o NH do torso cai para **9**, e o
+  rótulo diz *"teto de 9 no corpo a corpo"*. Não é só −4.
+
+## T-DC · 🔴 O catálogo consertado (ARMA-7)
+
+- **T-DC1 · o rifle voltou a existir** — Ficha A (**ST 11**), Adicionar Arma →
+  Armas de Fogo → busque **"Rifle de Atirador"**. ✅ Ele **aparece na lista**.
+  *(Estava cadastrado com **ST 41** e era invisível para qualquer ficha normal —
+  a linha da planilha tinha escorregado uma coluna inteira.)*
+- **T-DC2 · a ficha técnica bate com o livro** — Abra o detalhe dele:
+  ✅ **CdT 1**, ✅ **Tiros 4+1(3)**, ✅ **ST 11 †**, ✅ **Magnitude −6**,
+  ✅ **Recuo 4**, ✅ selo **CL 3 · licenciado**.
+- **T-DC3 · a mira continua lá** — ✅ **Precisão 6 +3** (o conserto mexeu só da
+  CdT para a direita; a Prec não podia mudar).
+- **T-DC4 · as outras duas** — Mesma conferência na **ACI, 6,8 mm** (CdT 15,
+  Mag −5, CL 1) e no **Rifle de Gauss, 4 mm** (CdT 12, Mag −4, CL 2).
+
+## T-AT · 🔴 A vantagem Atirador (ARMA-8)
+
+- **T-AT1 · a Precisão sem apontar** — Ficha A, **Pistola** (Prec 2, uma mão,
+  CdT 3), segure o NH **sem** marcar nada. ✅ Aparece a linha *"Atirador: +2 de
+  Precisão sem precisar Apontar"* e o NH já vem **+2**.
+- **T-AT2 · ⚠️ metade com duas mãos** — Troque para o **Rifle de Atirador**
+  (Prec 6, duas mãos): ✅ o bônus é **+3** e o texto diz *"metade de 6, arma de
+  duas mãos"*. **Arredondado para cima** — Prec 5 daria 3, não 2.
+- **T-AT3 · metade também na automática** — Com uma arma de **CdT acima de 3**
+  de uma mão só: ✅ ainda é metade, com o texto *"arma automática"*.
+- **T-AT4 · apontando vale o cheio** — Marque o **Apontar**: ✅ a linha muda para
+  *"apontando, vale o bônus cheio de Precisão"* e o número **não dobra**.
+- **T-AT5 · 🔴 a troca do Avançar e Atacar** — Marque **Avançar e Atacar**:
+  ✅ a penalidade da manobra **some** (o NH não cai) **e** o *+2 de Precisão
+  também some*. O texto explica a troca. *(O livro diz "em vez de", não "além
+  de" — se os dois valessem juntos, seria vantagem dobrada.)*
+- **T-AT6 · ⚠️ não vale para arco** — Numa ficha com Atirador **e** um arco,
+  ataque com **Arcos**: ✅ **nenhuma** linha de Atirador aparece. O livro exclui
+  armas motoras de projétil.
+- **T-AT7 · sem a vantagem nada muda** — Numa ficha **sem** Atirador: ✅ o
+  diálogo é exatamente o de antes.
+
+## T-AH · 🔴 Arqueiro Heroico (ARMA-9)
+
+- **T-AH1 · Precisão inteira, mesmo com o arco de duas mãos** — Ficha B, ataque
+  **Arcos** com o **Arco Longo** (Prec 3): ✅ *"Arqueiro Heroico: +3 de Precisão
+  sem precisar Apontar"* — **+3**, não +2. Ele não leva a metade.
+- **T-AH2 · 🔴 os segundos vêm um turno mais cedo** — Marque o **Apontar** com
+  **1 turno**: ✅ o total soma **+1 a mais** do que a mesma arma somaria numa
+  ficha sem a vantagem. Com **2 turnos**, **+2 a mais**.
+  *(Regra geral: +1 só com 2 segundos. Arqueiro Heroico: +1 já com 1.)*
+- **T-AH3 · não vale para besta nem funda** — ✅ Atacando com **Besta**,
+  nenhuma linha de Arqueiro Heroico.
+- **T-AH4 · não vale para arma de fogo** — ✅ Idem com **Armas de Fogo**.
+
+## T-AA2 · Acessibilidade (variante `pracego`)
+
+- **T-AA4** — A caixinha *Avançar e Atacar* anuncia quanto custa e, no corpo a
+  corpo, avisa do teto de nove.
+- **T-AA5** — A linha do Atirador é lida inteira, dizendo o bônus e o motivo da
+  metade quando houver.

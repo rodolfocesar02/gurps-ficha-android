@@ -36,6 +36,8 @@ import com.gurps.ficha.domain.rules.TabelaVelocidadeDistancia
 import com.gurps.ficha.domain.rules.AlcanceDoAtaque
 import com.gurps.ficha.domain.rules.DisopiaRules
 import com.gurps.ficha.domain.rules.ApontarRules
+import com.gurps.ficha.domain.rules.AvancarEAtacarRules
+import com.gurps.ficha.domain.rules.AtiradorRules
 import com.gurps.ficha.domain.rules.PacifismoRules
 import com.gurps.ficha.domain.rules.ZarolhoRules
 import androidx.compose.ui.text.style.TextAlign
@@ -83,7 +85,11 @@ fun DialogoMira(
     onIndices: (distancia: Int, velocidade: Int) -> Unit = { _, _ -> },
     // Lote ARMA-5: a frase de divergência entre a perícia do ataque e a arma
     // escolhida na fonte de dano. Nula quando estão coerentes, que é o normal.
-    conflitoArmaPericia: String? = null
+    conflitoArmaPericia: String? = null,
+    // Lote ARMA-8/9: a perícia do ataque decide se Atirador ou Arqueiro Heroico
+    // valem aqui — é assim que o livro escreve ("qualquer arma que utilize as
+    // perícias…"), e não pelo tipo da arma.
+    periciaDoAtaque: String? = null
 ) {
     var desarmar by remember { mutableStateOf(false) }
     var golpeRapido by remember { mutableStateOf(false) }
@@ -94,6 +100,8 @@ fun DialogoMira(
     // Lote ARMA-5: a mira embutida da arma ("Prec 6+1"). Começa MARCADA porque
     // quem tem luneta no rifle está usando a luneta — desmarcar é a exceção.
     var usandoMiraAcoplada by remember { mutableStateOf(true) }
+    // Lote ARMA-7: atacar em movimento (MB p.366).
+    var avancarEAtacar by remember { mutableStateOf(false) }
     var miope by remember { mutableStateOf(false) }
     // Lote D-MIRA: o app não sabe se o alvo é uma pessoa nem se o rosto está à
     // mostra — nenhuma das quatro isenções do livro está na ficha. Pergunta.
@@ -121,8 +129,26 @@ fun DialogoMira(
         PacifismoRules.bloqueiaApontar(personagem, ataqueLetal)
     // Bloqueado zera os turnos para efeito de conta -- o Assassino Relutante
     // nao pode Apontar, entao segundo acumulado nao vale nada.
-    val turnosValendo = if (apontarBloqueado) 0 else turnosApontando
+    // ⚠️ Lote ARMA-7: Apontar e Avançar e Atacar se EXCLUEM. Não existe acumular
+    // segundos de pontaria enquanto se corre — deixar os dois marcados somaria um
+    // bônus que a regra não dá.
+    val turnosValendo = if (apontarBloqueado || avancarEAtacar) 0 else turnosApontando
     val apontouValendo = turnosValendo > 0
+
+    // Lote ARMA-8/9: qual vantagem cinematográfica vale NESTE ataque.
+    val estiloDeTiro = AtiradorRules.estiloDe(personagem, periciaDoAtaque)
+
+    val penalidadeAvancar = if (!avancarEAtacar) {
+        0
+    } else if (AtiradorRules.ignoraAvancarEAtacar(estiloDeTiro)) {
+        // MB p.43/45: a vantagem apaga a penalidade da manobra — em troca da
+        // Precisão de graça, que o `bonusNoAtaque` zera logo abaixo.
+        0
+    } else if (ehADistancia) {
+        AvancarEAtacarRules.penalidadeADistancia(alcance.magnitude)
+    } else {
+        AvancarEAtacarRules.penalidadeCorpoACorpo(nhBase)
+    }
 
     // O bônus da mira só existe se a arma tiver mira E o jogador estiver usando.
     val bonusDaMira = if (usandoMiraAcoplada) (alcance.precisaoAcessorio ?: 0) else 0
@@ -135,6 +161,24 @@ fun DialogoMira(
             turnosValendo, armaFirmada, bonusDaMira
         )
     } else 0
+
+    // 🔴 Lote ARMA-8/9: a Precisão que entra SEM Apontar. Zera sozinha quando o
+    // jogador está apontando (senão a Prec contaria duas vezes) e quando ele
+    // marca Avançar e Atacar (o livro troca uma coisa pela outra).
+    val bonusDoAtirador = AtiradorRules.bonusNoAtaque(
+        estilo = estiloDeTiro,
+        precisao = alcance.precisao,
+        duasMaos = alcance.duasMaos,
+        cadenciaTiro = alcance.cadenciaTiro,
+        avancarEAtacar = avancarEAtacar,
+        apontou = apontouValendo
+    )
+    // 🔴 O Arqueiro Heroico acumula os segundos UM TURNO MAIS CEDO (MB p.45).
+    // A diferença entra como acréscimo sobre o que o `ApontarRules` já somou.
+    val extraDoArqueiro = if (apontouValendo) {
+        AtiradorRules.bonusPorTurnos(estiloDeTiro, turnosValendo) -
+            ApontarRules.bonusPorTurnos(turnosValendo)
+    } else 0
     // ⚠️ O Zarolho lê `apontouValendo`, não `apontou`: quem não pode Apontar
     // também não pode usar o Apontar para cancelar o −3.
     val penalidadeZarolho = if (personagem != null) {
@@ -144,7 +188,8 @@ fun DialogoMira(
         PacifismoRules.penalidade(personagem, ataqueLetal, veORosto)
     } else 0
     val nhComDistancia = nhBase + penalidadeDistancia + penalidadeGolpeRapido +
-        bonusApontar + penalidadeZarolho + penalidadePacifismo
+        bonusApontar + penalidadeZarolho + penalidadePacifismo + penalidadeAvancar +
+        bonusDoAtirador + extraDoArqueiro
 
     FullscreenDialogContainer(onDismiss = onDismiss) {
         Column(modifier = Modifier.fillMaxSize()) {
@@ -357,6 +402,61 @@ fun DialogoMira(
                             modifier = Modifier.padding(start = 2.dp)
                         )
                     }
+                }
+            }
+
+            // Lote ARMA-8/9: a vantagem cinematográfica em ação. Não tem
+            // caixinha — não há o que escolher: ou o personagem tem, ou não tem.
+            AtiradorRules.rotulo(
+                estiloDeTiro, alcance.precisao, alcance.duasMaos, alcance.cadenciaTiro,
+                avancarEAtacar, apontouValendo
+            )?.let { texto ->
+                Text(
+                    texto,
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.tertiary,
+                    fontWeight = FontWeight.Medium,
+                    modifier = Modifier.padding(top = 2.dp)
+                )
+            }
+
+            // Lote ARMA-7: atacar em movimento. Fica **abaixo** do Apontar porque
+            // é a alternativa a ele — e marcá-la desliga o Apontar, que é o que a
+            // regra manda.
+            if (personagem != null) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .linhaAlternavel(
+                            marcado = avancarEAtacar,
+                            descricao = AvancarEAtacarRules.rotuloAcessivel(
+                                ehADistancia, alcance.magnitude, nhBase
+                            ),
+                            onAlternar = { avancarEAtacar = !avancarEAtacar }
+                        )
+                        .padding(top = 2.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Checkbox(checked = avancarEAtacar, onCheckedChange = null)
+                    Text(
+                        AvancarEAtacarRules.rotulo(ehADistancia, alcance.magnitude, nhBase),
+                        style = MaterialTheme.typography.labelSmall,
+                        color = if (avancarEAtacar) {
+                            MaterialTheme.colorScheme.error
+                        } else {
+                            MaterialTheme.colorScheme.outline
+                        },
+                        modifier = Modifier.padding(start = 2.dp)
+                    )
+                }
+                // O jogador precisa saber POR QUE o Apontar sumiu do total.
+                if (avancarEAtacar && turnosApontando > 0) {
+                    Text(
+                        AvancarEAtacarRules.AVISO_EXCLUSIVO,
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.error,
+                        modifier = Modifier.padding(start = 16.dp)
+                    )
                 }
             }
 

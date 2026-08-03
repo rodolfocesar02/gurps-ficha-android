@@ -5596,3 +5596,72 @@ Agora **qualquer um dos dois lados** que diga "longe" basta, o app segue a **per
 Um erro meu que o teste pegou: escrevi **"CL 2 · militar"** no primeiro rascunho. A p.508 diz que **CL 1 é militar e CL 2 é restrito**. A escala inteira virou asserção.
 
 - **Status:** ✅ Build OK nas 2 variantes · lint OK · gate verde · ⏭️ **PENDENTE: teste no aparelho** (T-AR, T-AF, T-AD, T-AC, T-AI, T-MI, T-CF, T-AA no roteiro).
+
+---
+
+### Lotes ARMA-6 a ARMA-9 — Atirador, Magnitude e as perícias de tiro — 03 de Agosto de 2026 (versão 6.0-ATIRADOR)
+
+Saiu da sua pergunta *"confere se a vantagem Atirador foi automatizada"*. Não tinha sido — e conferir as quatro perícias que ela cobre abriu três buracos maiores que a própria vantagem.
+
+#### 🔴 ARMA-6 — Canhoneiro/NT abria o diálogo em corpo a corpo
+
+A lista `PERICIAS_COMBATE_DISTANCIA` tinha `artilheiro_nt`, **id que não existe em catálogo nenhum**, e não tinha `canhoneiro_nt`, que é o id real (MB p.187). Quem atacava com o canhão de um tanque perdia distância, 1/2D, Máx e Apontar — e ganhava *Golpe Rápido*, que é opção de arma branca.
+
+⚠️ Você pediu para extrair a perícia do livro e pôr no JSON. **Não precisou**: `Canhoneiro/NT` já estava no catálogo, completa e certa (DX/Fácil, predefinido DX-4, descrição integral). O erro era uma linha de Kotlin. Reescrever o JSON só arriscaria mudar o id, que é o que as fichas salvas guardam.
+
+Entraram junto `boleadeira`, `arma_de_arremesso`, `arremessador_de_lanca`, `arte_do_arremesso`, e do lado do corpo a corpo `tercado`, `chicote_monofio`, `chicote_de_energia` e `tonfa` — todas existiam no catálogo e nenhuma lista pegava.
+
+⚠️ **Os 14 ids "mortos" ficaram.** Conferi um a um: nenhum existe no catálogo e nenhum pega perícia por prefixo, mas são nomes que **fichas antigas podem ter gravado**. Apagar faria a ficha antiga perder o ataque em silêncio, que é pior que carregar um id a mais. O teste **conta** em vez de proibir.
+
+**Por que nada pegou isso antes:** havia teste da lista e teste do catálogo. **Não havia teste comparando os dois.** O novo varre os GRUPOS dos três arquivos de arma e exige que a perícia de cada uma esteja na lista certa.
+
+#### 🔴 ARMA-7 — a Magnitude, e a linha torta que ela revelou
+
+A Magnitude existe em `Equipamento` desde o Lote 371 e era usada **só** pelo combate da Saga. Agora virou caixinha no diálogo de mira, abaixo do Apontar (MB p.366):
+
+> Se estiver realizando um Ataque à distância, a penalidade é de **-2 ou igual à Magnitude da arma, o que for pior**. Se estiver realizando um Ataque corpo a corpo, a penalidade é de **-4** e o nível ajustado **não pode ser maior que 9**.
+
+⚠️ **Apontar e Avançar e Atacar se excluem** — não existe acumular segundos de pontaria correndo. Marcar um desliga o outro, e a tela diz por quê.
+
+⚠️ **No corpo a corpo são duas coisas, não uma:** o −4 e o **teto de 9**. Um espadachim NH 20 vai a 9, não a 16.
+
+**🔴 E o dado estava pior do que "Magnitude positiva".** Três armas tinham `magnitude: 10` com a CdT vazia — a linha da planilha de origem **escorregou uma coluna inteira** a partir da CdT:
+
+| Campo | Estava | Era, na verdade |
+|---|---|---|
+| `cdt` | vazio | a CdT foi para `tiros` |
+| `tiros` | a CdT | os Tiros foram para `stMinimo` |
+| `stMinimo` | os Tiros | **ST 41** no Rifle de Atirador |
+| `magnitude` | a ST (`"10↑"`) | **+10**, que o livro não admite |
+| `recuo` | a Magnitude | — |
+| `cl` | vazio | CL e Recuo perdidos no fim da linha |
+
+O efeito mais grave não era o bônus: **a lista de armas filtra por ST**, então o **Rifle de Atirador .338 era impossível de adicionar a qualquer ficha**. Não era "difícil de comprar" — era invisível.
+
+As três foram corrigidas com a linha do livro (p.280), conferida campo a campo contra o `chunks.jsonl`, e o **Escorpião** teve o campo Tiros desmastigado (`"-130"` → `"1(30)"`).
+
+⚠️ **A Carabina de Assalto 5,56 mm também parece deslocada e NÃO foi corrigida**: os campos dela (alcance 45/145, custo $1.200) não batem com nenhuma linha do livro, e consertar seria inventar. Levou `reviewFlag` e segue como está — a guarda da Magnitude protege a conta.
+
+A guarda fica de qualquer jeito: **Magnitude positiva nunca vira bônus**, e o rótulo denuncia o dado em vez de calar.
+
+#### ARMA-8 e ARMA-9 — as duas vantagens, que não faziam nada
+
+`atirador` (25 pts) e `atirador_arqueiro_heroico` (20 pts) estavam no catálogo com a descrição inteira e **zero automação**. O primeiro benefício só pôde ser automatizado agora: ele depende de saber se a arma é de **uma ou duas mãos** e qual a **CdT**, campos que chegaram no Lote ARMA-1.
+
+**Atirador** — Prec sem Apontar: inteira com arma de uma mão e CdT 1–3; **metade arredondada para cima** com duas mãos ou automática. Ignora a penalidade de Avançar e Atacar.
+
+**Arqueiro Heroico** — ⚠️ **não é a mesma vantagem**: recebe a Prec **inteira** mesmo com o arco de duas mãos, e 🔴 **acumula os segundos de Apontar um turno mais cedo** (+1 com 1 segundo, +2 com 2). Reaproveitar o `bonusPorTurnos` sem olhar daria a ele o ritmo de todo mundo.
+
+⚠️ **A troca que é fácil errar:** o livro diz duas vezes *"em vez de receber o bônus da Prec"*. Marcar Avançar e Atacar apaga a penalidade **e** apaga a Precisão de graça. Somar os dois seria dar duas vantagens por um preço. E quem está apontando também não recebe o bônus por aqui — a Prec já entrou pelo `ApontarRules`, e contar de novo dobraria em silêncio.
+
+⚠️ **Não vale para arma motora de projétil** (MB p.43) — arco, besta, funda e zarabatana ficam fora do Atirador. É o erro mais provável de quem lê rápido: *"é à distância, logo vale"*.
+
+**Ficou de fora, com o motivo escrito:** Magnitude em combate corporal, atirar montado, metade das penalidades de técnicas de tiro rápido e de Sacar Rápido (Munição) — nenhum desses modificadores existe na aba Rolagem.
+
+#### Testes
+
+`PericiasDeCombateCatalogoTest` (7, varrendo os grupos de arma contra o catálogo), `AvancarEAtacarTest` (14), `AtiradorRulesTest` (16). Gate total em **1822** nas duas variantes.
+
+Dois testes do ARMA-1 tiveram os números atualizados — 42→45 armas com CL e 43→46 com o símbolo † — porque o conserto do catálogo devolveu campos que as três linhas tortas tinham perdido.
+
+- **Status:** ✅ Build OK nas 2 variantes · lint OK · gate verde · ⏭️ **PENDENTE: teste no aparelho** (T-CN, T-MG, T-DC, T-AT, T-AH no roteiro).

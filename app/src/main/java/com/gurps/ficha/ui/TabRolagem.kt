@@ -1241,6 +1241,8 @@ fun TabRolagem(viewModel: FichaViewModel) {
             // fonte de dano vira texto, em vez de escolha silenciosa.
             conflitoArmaPericia = com.gurps.ficha.domain.rules.AlcanceDoAtaque
                 .conflito(escolhidaNaFonteDeDano, periciaDaMira),
+            // Lote ARMA-8/9: Atirador e Arqueiro Heroico valem POR PERÍCIA.
+            periciaDoAtaque = periciaDaMira,
             onIndices = { d, v ->
                 indiceDistanciaAlvo = d
                 indiceVelocidadeAlvo = v

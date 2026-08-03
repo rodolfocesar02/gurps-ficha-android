@@ -202,7 +202,16 @@ object AlcanceDoAtaque {
          * O `+N` da **mira acoplada** (Lote ARMA-5). Nulo quando a arma não tem
          * mira embutida — e é o nulo que decide se a caixinha aparece na tela.
          */
-        val precisaoAcessorio: Int? = null
+        val precisaoAcessorio: Int? = null,
+        /**
+         * Magnitude da arma (Lote ARMA-7) — a penalidade do Avançar e Atacar.
+         * MB p.271. Nula quando o catálogo não cadastrou, e aí vale o −2 básico.
+         */
+        val magnitude: Int? = null,
+        /** Arma de duas mãos — entra na conta do Atirador (Lote ARMA-8). */
+        val duasMaos: Boolean = false,
+        /** CdT da arma — decide "um tiro por vez" contra "automática" (ARMA-8). */
+        val cadenciaTiro: Int? = null
     )
 
     fun alcanceDe(arma: Equipamento?, st: Int): Alcance {
@@ -211,7 +220,15 @@ object AlcanceDoAtaque {
         val mult = arma.armaAlcanceMultStRaw?.let { multiplicadores(it) }
         val meio = arma.armaMeioDanoMetros ?: mult?.first?.let { it * st }
         val max = arma.armaMaximoMetros ?: mult?.second?.let { it * st }
-        return Alcance(meio, max, arma.armaPrecisao, arma.armaPrecisaoAcessorio?.takeIf { it > 0 })
+        return Alcance(
+            meioDano = meio,
+            maximo = max,
+            precisao = arma.armaPrecisao,
+            precisaoAcessorio = arma.armaPrecisaoAcessorio?.takeIf { it > 0 },
+            magnitude = arma.armaMagnitude,
+            duasMaos = arma.armaDuasMaos,
+            cadenciaTiro = arma.armaCadenciaTiro
+        )
     }
 
     /**
