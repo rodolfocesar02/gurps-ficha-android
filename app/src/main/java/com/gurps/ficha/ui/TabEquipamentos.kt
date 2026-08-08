@@ -207,6 +207,11 @@ fun TabEquipamentos(viewModel: FichaViewModel) {
     editingEquipamento?.let { (index, equipamento) ->
         EquipamentoDialog(
             initialEquipamento = equipamento,
+            // Lote LAYOUT-7: o editor mostra a MESMA ficha do card do seletor,
+            // só leitura, acima dos campos. Nula quando o item foi criado à mão
+            // e não casa com nada do catálogo.
+            fichaTecnica = viewModel.armaDoCatalogoPara(equipamento)
+                ?.let { viewModel.fichaTecnicaDaArma(it) },
             onDismiss = { editingEquipamento = null },
             onSave = {
                 viewModel.atualizarEquipamento(index, it)

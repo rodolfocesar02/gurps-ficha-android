@@ -5790,3 +5790,23 @@ Fecha a migração que o plano tinha deixado explicitamente de fora. Agora **tod
 Sobraram `TabRolagem`, `TabGeral`, as abas que só listam o que já está na ficha e a tela do combate tático. Nenhuma delas é lista de seleção de catálogo — são outra família de tela, e entram quando for a vez delas.
 
 - **Status:** ✅ Build OK nas 2 variantes · lint OK · gate verde (1830) · ⏭️ **PENDENTE: teste no aparelho** (T-PE, T-TE, T-EQ2 no roteiro).
+
+---
+
+### Lote LAYOUT-7 — o editor de equipamento no formato do seletor — 03 de Agosto de 2026 (versão 6.4-EDITOR)
+
+Achado seu com dois prints lado a lado: o **card do seletor** da Adaga é de tela cheia, com seções e a ficha do livro; o **editor** da mesma Adaga era um `AlertDialog` estreito com sete campos emoldurados empilhados. A mesma arma tinha duas caras.
+
+**Agora os dois usam a mesma moldura:** tela cheia, cabeçalho com nome e subtítulo (`Corpo a corpo · Faca · NT 1`), seções com título e o rodapé padrão de botões (Cancelar contornado, Salvar preenchido, com o espaço e a margem do padrão).
+
+⚠️ **A ficha do livro entra em cima, só leitura.** Quem abre o lápis quer ver a arma **e** mexer nela — mas repetir ST mínima, Alcance e Aparar como campo editável seria convidar a estragar o que veio do catálogo. Editável continua sendo só o que é seu: nome, peso, custo, quantidade, notas e a automação de combate.
+
+Item criado à mão não casa com o catálogo e simplesmente **não mostra** a seção da ficha — em vez de mostrar uma seção vazia.
+
+#### 🔴 E um defeito meu no card, visível no mesmo print
+
+A linha de alcance da Adaga dizia **"C m"**. O `C` do livro é **combate corporal** — agarrado ao alvo, distância zero — e eu estava colando " m" em todo alcance corpo a corpo. `C m` não é distância nenhuma.
+
+Agora o `m` só entra quando há número. ⚠️ E **`"C, 1"` continua com metro**, porque ali existe a opção de 1 metro: a checagem é do `C` sozinho, não de conter `C`.
+
+- **Status:** ✅ Build OK nas 2 variantes · lint OK · gate verde (1830) · ⏭️ **PENDENTE: teste no aparelho** (T-ED4 no roteiro).

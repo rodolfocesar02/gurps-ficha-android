@@ -237,7 +237,15 @@ object FichaTecnicaDaArma {
         )
         if (!arma.ehADistancia) {
             arma.alcanceCorpoACorpo?.let {
-                linhas += Linha("Alcance", "$it m", explicarAlcanceCorpoACorpo(it))
+                // ⚠️ "C" NÃO leva metro. C é combate corporal — agarrado ao
+                // alvo, distância zero. A tela dizia "C m", que não é distância
+                // nenhuma. Achado nos prints de 08/08.
+                val soCorporal = it.trim().equals("C", ignoreCase = true)
+                linhas += Linha(
+                    "Alcance",
+                    if (soCorporal) it else "$it m",
+                    explicarAlcanceCorpoACorpo(it)
+                )
             }
             arma.aparar?.let { linhas += Linha("Aparar", it, explicarAparar(it)) }
         } else {

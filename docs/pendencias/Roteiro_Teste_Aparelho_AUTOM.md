@@ -1102,3 +1102,26 @@ Este é o defeito dos seus prints de 03/08. Use o **Abafador de Mana**.
   contagem.
 - **T-EQ2d · lado a lado** — Abra *Adicionar Arma*, feche, abra *Adicionar
   Perícia*: ✅ as duas telas parecem a mesma tela com conteúdo diferente.
+
+---
+
+# Lote LAYOUT-7 — o editor de equipamento
+
+- **T-ED4a · mesma cara** — Equipamentos → Armas → toque no **lápis** de uma
+  arma do catálogo: ✅ o editor abre em **tela cheia**, com o nome no alto e o
+  subtítulo (`Corpo a corpo · Faca · NT 1`), igual ao card do seletor.
+- **T-ED4b · a ficha do livro está lá** — ✅ Aparece a seção **"Ficha do livro"**
+  com ST mínima, Alcance, Aparar, Peso, Custo e NT — **só leitura**, sem caixa
+  de digitar.
+- **T-ED4c · o que é seu continua editável** — ✅ Nome, peso, custo, quantidade,
+  notas, e a seção **"Automação de combate (opcional)"** com Dano e ST Mín.
+- **T-ED4d · salvar funciona** — Mude a **quantidade** para 3 e salve: ✅ o
+  inventário mostra a mudança.
+- **T-ED4e · item criado à mão** — *Adicionar Itens* → crie um item qualquer e
+  edite: ✅ **não** aparece a seção "Ficha do livro" (ele não casa com o
+  catálogo), e os campos funcionam normalmente.
+- **T-ED4f · 🔴 o "C m" sumiu** — Abra a ficha técnica da **Adaga**: ✅ a linha
+  de alcance diz **"C"**, não **"C m"**. ✅ Numa **Lança** (alcance `1, 2`)
+  continua dizendo **"1, 2 m"**.
+- **T-ED4g · botões** — ✅ *Cancelar* é contornado, *Salvar* é preenchido, com o
+  mesmo espaço entre eles e a mesma distância da borda dos outros diálogos.

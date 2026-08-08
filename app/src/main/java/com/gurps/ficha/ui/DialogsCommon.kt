@@ -6,6 +6,11 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -184,8 +189,32 @@ fun CarregarDialog(
 }
 
 
+/**
+ * **Editar / adicionar um item do inventário** (Lote LAYOUT-7).
+ *
+ * ## O que mudou, e por quê
+ *
+ * Era um `AlertDialog` estreito com sete campos emoldurados empilhados. O card
+ * do seletor, do outro lado, é de tela cheia, com seções e a ficha do livro. A
+ * mesma arma tinha duas caras — achado seu nos prints de 08/08.
+ *
+ * Agora os dois usam a **mesma moldura**: tela cheia, cabeçalho com nome e
+ * subtítulo, seções com título, e o rodapé padrão de botões.
+ *
+ * ⚠️ **A ficha técnica entra em cima, só leitura.** É o mesmo conteúdo do card
+ * do seletor — quem abre o lápis quer ver a arma *e* mexer nela. Repetir os
+ * números do livro como campo editável seria convidar a estragá-los.
+ *
+ * @param fichaTecnica a ficha do catálogo, quando o item casa com uma arma.
+ *   Nula para item criado à mão, e aí só aparecem os campos.
+ */
 @Composable
-fun EquipamentoDialog(initialEquipamento: Equipamento? = null, onDismiss: () -> Unit, onSave: (Equipamento) -> Unit) {
+fun EquipamentoDialog(
+    initialEquipamento: Equipamento? = null,
+    fichaTecnica: com.gurps.ficha.domain.rules.FichaTecnicaDaArma.Ficha? = null,
+    onDismiss: () -> Unit,
+    onSave: (Equipamento) -> Unit
+) {
     var nome by remember { mutableStateOf(initialEquipamento?.nome ?: "") }
     var peso by remember { mutableStateOf(initialEquipamento?.peso?.toString() ?: "0") }
     var custo by remember { mutableStateOf(initialEquipamento?.custo?.toString() ?: "0") }
@@ -194,69 +223,149 @@ fun EquipamentoDialog(initialEquipamento: Equipamento? = null, onDismiss: () -> 
     var dano by remember { mutableStateOf(initialEquipamento?.armaDanoRaw ?: "") }
     var stMin by remember { mutableStateOf(initialEquipamento?.armaStMinimo?.toString() ?: "") }
 
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        title = { Text(if (initialEquipamento != null) "Editar Equipamento" else "Adicionar Equipamento") },
-        text = {
-            Column(verticalArrangement = Arrangement.spacedBy(UiTokens.DialogContentSpacing)) {
-                OutlinedTextField(value = nome, onValueChange = { nome = it }, label = { Text("Nome") }, singleLine = true, modifier = Modifier.fillMaxWidth())
-                Row(horizontalArrangement = Arrangement.spacedBy(UiTokens.DialogContentSpacing)) {
-                    OutlinedTextField(value = peso, onValueChange = { peso = it }, label = { Text("Peso (kg)") },
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal), singleLine = true, modifier = Modifier.weight(1f))
-                    OutlinedTextField(value = custo, onValueChange = { custo = it }, label = { Text("Custo (\$)") },
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal), singleLine = true, modifier = Modifier.weight(1f))
-                }
-                OutlinedTextField(value = quantidade, onValueChange = { quantidade = it }, label = { Text("Quantidade") },
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number), singleLine = true, modifier = Modifier.fillMaxWidth())
-                OutlinedTextField(value = notas, onValueChange = { notas = it }, label = { Text("Notas") }, modifier = Modifier.fillMaxWidth())
+    val editando = initialEquipamento != null
 
-                // Novos campos para armas customizadas
-                Text("Opcional: Automação de Combate", style = androidx.compose.material3.MaterialTheme.typography.labelMedium, color = androidx.compose.material3.MaterialTheme.colorScheme.primary)
+    FullscreenDialogContainer(onDismiss = onDismiss) {
+        Column(modifier = Modifier.fillMaxSize()) {
+            Text(
+                if (editando) nome.ifBlank { "Editar Equipamento" } else "Adicionar Equipamento",
+                style = UiEstilos.tituloDialogo,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.primary
+            )
+            fichaTecnica?.let {
+                Text(it.subtitulo, style = UiEstilos.subtituloDialogo, color = MaterialTheme.colorScheme.outline)
+            }
+
+            Column(
+                modifier = Modifier.weight(1f).verticalScroll(rememberScrollState()),
+                verticalArrangement = Arrangement.spacedBy(UiTokens.DialogContentSpacing)
+            ) {
+                fichaTecnica?.let { ficha ->
+                    SecaoDoEditor("Ficha do livro")
+                    (ficha.destaques + ficha.detalhes).forEach { linha ->
+                        LinhaSoLeitura(linha)
+                    }
+                    if (ficha.observacoes.isNotEmpty()) {
+                        ficha.observacoes.forEach { texto ->
+                            Text(
+                                texto,
+                                style = UiEstilos.detalheDoItem,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
+                    }
+                }
+
+                SecaoDoEditor(if (fichaTecnica != null) "Seus dados" else "Item")
+                OutlinedTextField(
+                    value = nome, onValueChange = { nome = it },
+                    label = { Text("Nome") }, singleLine = true,
+                    modifier = Modifier.fillMaxWidth()
+                )
                 Row(horizontalArrangement = Arrangement.spacedBy(UiTokens.DialogContentSpacing)) {
                     OutlinedTextField(
-                        value = dano, 
-                        onValueChange = { dano = it }, 
-                        label = { Text("Dano (ex: GeB+1)") }, 
-                        singleLine = true, 
+                        value = peso, onValueChange = { peso = it }, label = { Text("Peso (kg)") },
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
+                        singleLine = true, modifier = Modifier.weight(1f)
+                    )
+                    OutlinedTextField(
+                        value = custo, onValueChange = { custo = it }, label = { Text("Custo (\$)") },
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
+                        singleLine = true, modifier = Modifier.weight(1f)
+                    )
+                }
+                OutlinedTextField(
+                    value = quantidade, onValueChange = { quantidade = it }, label = { Text("Quantidade") },
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                    singleLine = true, modifier = Modifier.fillMaxWidth()
+                )
+                OutlinedTextField(
+                    value = notas, onValueChange = { notas = it },
+                    label = { Text("Notas") }, modifier = Modifier.fillMaxWidth()
+                )
+
+                SecaoDoEditor("Automação de combate (opcional)")
+                Row(horizontalArrangement = Arrangement.spacedBy(UiTokens.DialogContentSpacing)) {
+                    OutlinedTextField(
+                        value = dano, onValueChange = { dano = it },
+                        label = { Text("Dano (ex: GeB+1)") }, singleLine = true,
                         modifier = Modifier.weight(1f)
                     )
                     OutlinedTextField(
-                        value = stMin,
-                        onValueChange = { stMin = it },
-                        label = { Text("ST Mín") },
+                        value = stMin, onValueChange = { stMin = it }, label = { Text("ST Mín") },
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                        singleLine = true,
-                        modifier = Modifier.weight(0.6f)
+                        singleLine = true, modifier = Modifier.weight(0.6f)
                     )
                 }
             }
-        },
-        confirmButton = {
-            TextButton(onClick = {
-                if (nome.isNotBlank()) {
-                    val danoFinal = dano.ifBlank { null }
-                    val tipoFinal = when {
-                        danoFinal != null -> TipoEquipamento.ARMA
-                        initialEquipamento != null -> initialEquipamento.tipo
-                        else -> TipoEquipamento.GERAL
-                    }
-                    val novo = (initialEquipamento ?: Equipamento()).copy(
-                        nome = nome,
-                        peso = peso.toFloatOrNull() ?: 0f,
-                        custo = custo.toFloatOrNull() ?: 0f,
-                        quantidade = quantidade.toIntOrNull()?.coerceAtLeast(1) ?: 1,
-                        notas = notas,
-                        tipo = tipoFinal,
-                        armaDanoRaw = danoFinal,
-                        armaStMinimo = stMin.toIntOrNull()
-                    )
-                    onSave(novo)
-                }
-            }) { Text(UiActionLabels.SALVAR) }
-        },
-        dismissButton = { TextButton(onClick = onDismiss) { Text(UiActionLabels.CANCELAR) } }
-    )
 
+            AppFileiraDeBotoes {
+                AppBotaoSecundario(texto = UiActionLabels.CANCELAR, onClick = onDismiss)
+                AppBotaoPrincipal(
+                    texto = UiActionLabels.SALVAR,
+                    enabled = nome.isNotBlank(),
+                    onClick = {
+                        val danoFinal = dano.ifBlank { null }
+                        val tipoFinal = when {
+                            danoFinal != null -> TipoEquipamento.ARMA
+                            initialEquipamento != null -> initialEquipamento.tipo
+                            else -> TipoEquipamento.GERAL
+                        }
+                        onSave(
+                            (initialEquipamento ?: Equipamento()).copy(
+                                nome = nome,
+                                peso = peso.toFloatOrNull() ?: 0f,
+                                custo = custo.toFloatOrNull() ?: 0f,
+                                quantidade = quantidade.toIntOrNull()?.coerceAtLeast(1) ?: 1,
+                                notas = notas,
+                                tipo = tipoFinal,
+                                armaDanoRaw = danoFinal,
+                                armaStMinimo = stMin.toIntOrNull()
+                            )
+                        )
+                    }
+                )
+            }
+        }
+    }
+}
+
+/** O título de uma seção do editor — o mesmo do card de detalhe. */
+@Composable
+private fun SecaoDoEditor(texto: String) {
+    Text(
+        texto,
+        style = UiEstilos.subtituloDialogo,
+        fontWeight = FontWeight.SemiBold,
+        color = MaterialTheme.colorScheme.outline,
+        modifier = Modifier.padding(top = 6.dp)
+    )
+}
+
+/** Uma linha da ficha do livro, no editor: mesma cara do card, sem editar. */
+@Composable
+private fun LinhaSoLeitura(linha: com.gurps.ficha.domain.rules.FichaTecnicaDaArma.Linha) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .semantics { contentDescription = linha.descricaoAcessivel },
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = androidx.compose.ui.Alignment.CenterVertically
+    ) {
+        Column(modifier = Modifier.weight(1f).padding(end = 8.dp)) {
+            Text(linha.rotulo, style = UiEstilos.detalheDoItem)
+            linha.explicacao?.let {
+                Text(it, style = UiEstilos.detalheDoItem, color = MaterialTheme.colorScheme.outline)
+            }
+        }
+        Text(
+            linha.valor,
+            style = UiEstilos.detalheDoItem,
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.primary
+        )
+    }
 }
 
 
