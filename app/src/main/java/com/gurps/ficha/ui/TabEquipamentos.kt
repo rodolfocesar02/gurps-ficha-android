@@ -497,46 +497,33 @@ fun SelecionarArmaEquipamentoDialog(
     val armas = viewModel.armasEquipamentosFiltradas
     val mostrarObsArmaFogo = viewModel.equipmentSearch.type == "armas_de_fogo"
 
-    FullscreenDialogContainer(onDismiss = onDismiss) {
-        Text("Selecionar Arma", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)
-        Text("ST do personagem: $stAtual", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-        Spacer(Modifier.height(8.dp))
-        OutlinedTextField(
-            value = viewModel.equipmentSearch.query,
-            onValueChange = { viewModel.atualizarBuscaArmaEquipamento(it) },
-            label = { Text("Buscar por nome") },
-            singleLine = true,
-            modifier = Modifier.fillMaxWidth()
-        )
-        Spacer(Modifier.height(4.dp))
-        Row(modifier = Modifier.horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
-            TipoArmaFiltroChip("Todas", viewModel.equipmentSearch.type == null) { viewModel.atualizarFiltroTipoArmaEquipamento(null) }
-            TipoArmaFiltroChip("Corpo a corpo", viewModel.equipmentSearch.type == "corpo_a_corpo") { viewModel.atualizarFiltroTipoArmaEquipamento("corpo_a_corpo") }
-            TipoArmaFiltroChip("Distancia", viewModel.equipmentSearch.type == "distancia") { viewModel.atualizarFiltroTipoArmaEquipamento("distancia") }
-            TipoArmaFiltroChip("Armas de Fogo", viewModel.equipmentSearch.type == "armas_de_fogo") { viewModel.atualizarFiltroTipoArmaEquipamento("armas_de_fogo") }
-        }
-        if (viewModel.equipmentSearch.type == "armas_de_fogo") {
-            Row(modifier = Modifier.horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
-                TipoArmaFiltroChip("Todas Fogo", viewModel.equipmentSearch.fireArmCategory == null) { viewModel.atualizarFiltroCategoriaArmaFogoEquipamento(null) }
-                TipoArmaFiltroChip("Pistolas e MM", viewModel.equipmentSearch.fireArmCategory == "pistolas_mm") { viewModel.atualizarFiltroCategoriaArmaFogoEquipamento("pistolas_mm") }
-                TipoArmaFiltroChip("Rifles e Espingardas", viewModel.equipmentSearch.fireArmCategory == "rifles_espingardas") { viewModel.atualizarFiltroCategoriaArmaFogoEquipamento("rifles_espingardas") }
-                TipoArmaFiltroChip("Ultra-Tech", viewModel.equipmentSearch.fireArmCategory == "ultratech") { viewModel.atualizarFiltroCategoriaArmaFogoEquipamento("ultratech") }
-                TipoArmaFiltroChip("Armas Pesadas", viewModel.equipmentSearch.fireArmCategory == "pesadas") { viewModel.atualizarFiltroCategoriaArmaFogoEquipamento("pesadas") }
-            }
-        }
-        Spacer(Modifier.height(4.dp))
-        if (armas.isEmpty()) {
-            Text("Nenhuma arma disponivel para o ST atual e filtros aplicados.", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-        } else {
-            LazyColumn(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
-                items(armas, key = { it.id }) { arma ->
-                    ArmaItemSelecao(arma = arma, danoCalculado = viewModel.calcularDanoArmaComSt(arma.danoRaw), mostrarObsArmaFogo = mostrarObsArmaFogo, onClick = { onSelect(arma) })
-                }
-            }
-        }
-        Spacer(Modifier.height(8.dp))
-        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
-            TextButton(onClick = onDismiss) { Text("Fechar") }
+    // Lote LAYOUT-6. Os filtros viram chips de verdade (eram texto solto, e por
+    // isso não pareciam clicáveis) e a linha usa o bloco `extra`, porque a arma
+    // tem mais de duas linhas de informação.
+    AppSelectionDialog(
+        titulo = "Selecionar Arma",
+        subtitulo = "ST do personagem: $stAtual",
+        busca = viewModel.equipmentSearch.query,
+        onBusca = { viewModel.atualizarBuscaArmaEquipamento(it) },
+        rotuloDaBusca = "Buscar por nome",
+        contador = contadorDe(armas.size, "arma", "armas"),
+        filtros = {
+            AppFiltroChip("Todas", viewModel.equipmentSearch.type == null) { viewModel.atualizarFiltroTipoArmaEquipamento(null) }
+            AppFiltroChip("Corpo a corpo", viewModel.equipmentSearch.type == "corpo_a_corpo") { viewModel.atualizarFiltroTipoArmaEquipamento("corpo_a_corpo") }
+            AppFiltroChip("Distância", viewModel.equipmentSearch.type == "distancia") { viewModel.atualizarFiltroTipoArmaEquipamento("distancia") }
+            AppFiltroChip("Armas de Fogo", viewModel.equipmentSearch.type == "armas_de_fogo") { viewModel.atualizarFiltroTipoArmaEquipamento("armas_de_fogo") }
+        },
+        filtrosSecundarios = if (viewModel.equipmentSearch.type != "armas_de_fogo") null else ({
+            AppFiltroChip("Todas Fogo", viewModel.equipmentSearch.fireArmCategory == null) { viewModel.atualizarFiltroCategoriaArmaFogoEquipamento(null) }
+            AppFiltroChip("Pistolas e MM", viewModel.equipmentSearch.fireArmCategory == "pistolas_mm") { viewModel.atualizarFiltroCategoriaArmaFogoEquipamento("pistolas_mm") }
+            AppFiltroChip("Rifles e Espingardas", viewModel.equipmentSearch.fireArmCategory == "rifles_espingardas") { viewModel.atualizarFiltroCategoriaArmaFogoEquipamento("rifles_espingardas") }
+            AppFiltroChip("Ultra-Tech", viewModel.equipmentSearch.fireArmCategory == "ultratech") { viewModel.atualizarFiltroCategoriaArmaFogoEquipamento("ultratech") }
+            AppFiltroChip("Armas Pesadas", viewModel.equipmentSearch.fireArmCategory == "pesadas") { viewModel.atualizarFiltroCategoriaArmaFogoEquipamento("pesadas") }
+        }),
+        onDismiss = onDismiss
+    ) {
+        items(armas, key = { it.id }) { arma ->
+            ArmaItemSelecao(arma = arma, danoCalculado = viewModel.calcularDanoArmaComSt(arma.danoRaw), mostrarObsArmaFogo = mostrarObsArmaFogo, onClick = { onSelect(arma) })
         }
     }
 }
@@ -596,48 +583,42 @@ private fun ArmaItemSelecao(
         else -> "Distancia"
     }
 
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable(onClick = onClick),
-        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
-    ) {
-        Column(
-            modifier = Modifier.padding(horizontal = 8.dp, vertical = 6.dp),
-            verticalArrangement = Arrangement.spacedBy(2.dp)
-        ) {
-            Text(arma.nome, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Medium)
+    // Lote LAYOUT-6: a arma tem até quatro linhas, e é para isso que serve o
+    // bloco `extra`. As cores `tertiary` e `primary` saem — na lista, o realce
+    // era só decoração, e fazia esta lista parecer de outro app.
+    val podeMostrarObs = when (arma.tipoCombate) {
+        "armas_de_fogo" -> mostrarObsArmaFogo
+        "corpo_a_corpo", "distancia" -> true
+        else -> false
+    }
+    AppSelectionRow(
+        nome = arma.nome,
+        detalhe = "ST ${arma.stMinimo ?: "—"} | $tipoLabel",
+        onClick = onClick,
+        descricaoAcessivel = "${arma.nome}. ST ${arma.stMinimo ?: "não cadastrada"}, $tipoLabel. " +
+            "Dano $danoCalculado. Toque para ver a ficha técnica.",
+        extra = {
             Text(
-                "ST ${arma.stMinimo ?: "-"} | $tipoLabel",
-                style = MaterialTheme.typography.bodySmall,
+                "Dano: ${arma.danoRaw} → $danoCalculado | Custo: $${arma.custoBase ?: 0f} | Peso: ${arma.pesoBaseKg ?: 0f} kg",
+                style = UiEstilos.detalheDoItem,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-            Text(
-                "Dano: ${arma.danoRaw} -> $danoCalculado | Custo: $${arma.custoBase ?: 0f} | Peso: ${arma.pesoBaseKg ?: 0f} kg",
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.tertiary
             )
             if (!arma.aparar.isNullOrBlank()) {
                 Text(
                     "Aparar: ${arma.aparar}",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.primary
+                    style = UiEstilos.detalheDoItem,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
-            }
-            val podeMostrarObs = when (arma.tipoCombate) {
-                "armas_de_fogo" -> mostrarObsArmaFogo
-                "corpo_a_corpo", "distancia" -> true
-                else -> false
             }
             if (podeMostrarObs && arma.observacoes.isNotBlank()) {
                 Text(
                     "Obs: ${arma.observacoes}",
-                    style = MaterialTheme.typography.bodySmall,
+                    style = UiEstilos.detalheDoItem,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
         }
-    }
+    )
 }
 
 @Composable
@@ -648,35 +629,22 @@ private fun SelecionarEscudoEquipamentoDialog(
 ) {
     val escudos = viewModel.escudosEquipamentosFiltrados
     val stAtual = viewModel.personagem.forca
-    FullscreenDialogContainer(onDismiss = onDismiss) {
-        Text("Selecionar Escudo", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)
-        Text("ST do personagem: $stAtual", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-        Spacer(Modifier.height(8.dp))
-        OutlinedTextField(
-            value = viewModel.equipmentSearch.query,
-            onValueChange = { viewModel.atualizarBuscaEscudoEquipamento(it) },
-            label = { Text("Buscar escudo") },
-            singleLine = true,
-            modifier = Modifier.fillMaxWidth()
-        )
-        Spacer(Modifier.height(4.dp))
-        if (escudos.isEmpty()) {
-            Text("Nenhum escudo disponivel para o ST atual.", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-        } else {
-            LazyColumn(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
-                items(escudos, key = { it.id }) { escudo ->
-                    Card(modifier = Modifier.fillMaxWidth().clickable { onSelect(escudo) }, elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)) {
-                        Column(modifier = Modifier.padding(horizontal = 8.dp, vertical = 6.dp), verticalArrangement = Arrangement.spacedBy(2.dp)) {
-                            Text(escudo.nome, style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.Medium)
-                            Text("DB ${escudo.db} | Custo: $${escudo.custo ?: 0f} | Peso: ${escudo.pesoKg ?: 0f} kg", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                        }
-                    }
-                }
-            }
-        }
-        Spacer(Modifier.height(8.dp))
-        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
-            TextButton(onClick = onDismiss) { Text("Fechar") }
+    // Lote LAYOUT-6.
+    AppSelectionDialog(
+        titulo = "Selecionar Escudo",
+        subtitulo = "ST do personagem: $stAtual",
+        busca = viewModel.equipmentSearch.query,
+        onBusca = { viewModel.atualizarBuscaEscudoEquipamento(it) },
+        rotuloDaBusca = "Buscar escudo",
+        contador = contadorDe(escudos.size, "escudo", "escudos"),
+        onDismiss = onDismiss
+    ) {
+        items(escudos, key = { it.id }) { escudo ->
+            AppSelectionRow(
+                nome = escudo.nome,
+                detalhe = "DB ${escudo.db} | Custo: $${escudo.custo ?: 0f} | Peso: ${escudo.pesoKg ?: 0f} kg",
+                onClick = { onSelect(escudo) }
+            )
         }
     }
 }
@@ -705,58 +673,57 @@ private fun SelecionarArmaduraEquipamentoDialog(
     val filtrosAtivos = viewModel.equipmentSearch.query.isNotBlank() ||
         viewModel.equipmentSearch.armorerLocation != null ||
         viewModel.equipmentSearch.armorerNt != null
-    FullscreenDialogContainer(onDismiss = onDismiss) {
-        Text("Selecionar Armadura", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)
-        Text("Use Local e NT para refinar mais rapido.", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-        Spacer(Modifier.height(8.dp))
-        OutlinedTextField(
-            value = viewModel.equipmentSearch.query,
-            onValueChange = { viewModel.atualizarBuscaArmaduraEquipamento(it) },
-            label = { Text("Buscar armadura") },
-            singleLine = true,
-            modifier = Modifier.fillMaxWidth()
-        )
-        Spacer(Modifier.height(4.dp))
-        Row(modifier = Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
-            TipoArmaFiltroChip("Local: Todos", viewModel.equipmentSearch.armorerLocation == null) { viewModel.atualizarFiltroLocalArmaduraEquipamento(null) }
+    // Lote LAYOUT-6. O "Resultados: N" vira o contador padrão, e o "Limpar
+    // filtros" entra no cabeçalho livre — ele é uma ação, não um filtro.
+    AppSelectionDialog(
+        titulo = "Selecionar Armadura",
+        subtitulo = "Use Local e NT para refinar mais rápido.",
+        busca = viewModel.equipmentSearch.query,
+        onBusca = { viewModel.atualizarBuscaArmaduraEquipamento(it) },
+        rotuloDaBusca = "Buscar armadura",
+        contador = contadorDe(armaduras.size, "armadura", "armaduras"),
+        filtros = {
+            AppFiltroChip("Local: Todos", viewModel.equipmentSearch.armorerLocation == null) { viewModel.atualizarFiltroLocalArmaduraEquipamento(null) }
             LOCAIS_ARMADURA.forEach { (id, label) ->
-                TipoArmaFiltroChip(label, viewModel.equipmentSearch.armorerLocation == id) { viewModel.atualizarFiltroLocalArmaduraEquipamento(id) }
+                AppFiltroChip(label, viewModel.equipmentSearch.armorerLocation == id) { viewModel.atualizarFiltroLocalArmaduraEquipamento(id) }
             }
-        }
-        Row(modifier = Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
-            TipoArmaFiltroChip("NT: Todas", viewModel.equipmentSearch.armorerNt == null) { viewModel.atualizarFiltroNtArmaduraEquipamento(null) }
+        },
+        filtrosSecundarios = {
+            AppFiltroChip("NT: Todas", viewModel.equipmentSearch.armorerNt == null) { viewModel.atualizarFiltroNtArmaduraEquipamento(null) }
             for (nt in 0..10) {
-                TipoArmaFiltroChip("NT $nt", viewModel.equipmentSearch.armorerNt == nt) { viewModel.atualizarFiltroNtArmaduraEquipamento(nt) }
+                AppFiltroChip("NT $nt", viewModel.equipmentSearch.armorerNt == nt) { viewModel.atualizarFiltroNtArmaduraEquipamento(nt) }
             }
-        }
-        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
-            Text("Resultados: ${armaduras.size}", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-            if (filtrosAtivos) {
-                TextButton(onClick = { viewModel.limparFiltrosArmaduraEquipamento() }) { Text("Limpar filtros") }
+        },
+        cabecalhoExtra = if (!filtrosAtivos) null else ({
+            AppFileiraDeBotoes(alinhamento = Arrangement.Start) {
+                AppBotaoDiscreto(texto = "Limpar filtros", onClick = { viewModel.limparFiltrosArmaduraEquipamento() })
             }
-        }
-        if (armaduras.isEmpty()) {
-            Text("Nenhuma armadura encontrada para o filtro aplicado.", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-        } else {
-            LazyColumn(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
-                items(armaduras, key = { it.id }) { armadura ->
-                    Card(modifier = Modifier.fillMaxWidth().clickable { onSelect(armadura) }, elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)) {
-                        Column(modifier = Modifier.padding(horizontal = 8.dp, vertical = 6.dp), verticalArrangement = Arrangement.spacedBy(2.dp)) {
-                            Text(corrigirTextoQuebrado(armadura.nome), style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.Medium)
-                            Text("NT ${armadura.nt ?: "-"} | RD ${armadura.rd} | Peso ${armadura.pesoBaseKg ?: 0f} kg | Custo $${armadura.custoBase ?: 0f}", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.primary)
-                            Text("Local: ${corrigirTextoQuebrado(armadura.local)}", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                            val observacoes = observacoesFormatadas(armadura)
-                            if (observacoes.isNotEmpty()) {
-                                observacoes.forEach { linha -> Text(linha, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.tertiary) }
-                            }
-                        }
+        }),
+        onDismiss = onDismiss
+    ) {
+        items(armaduras, key = { it.id }) { armadura ->
+            val observacoes = observacoesFormatadas(armadura)
+            AppSelectionRow(
+                nome = corrigirTextoQuebrado(armadura.nome),
+                detalhe = "NT ${armadura.nt ?: "—"} | RD ${armadura.rd} | Peso ${armadura.pesoBaseKg ?: 0f} kg | Custo $${armadura.custoBase ?: 0f}",
+                onClick = { onSelect(armadura) },
+                descricaoAcessivel = "${corrigirTextoQuebrado(armadura.nome)}. NT ${armadura.nt ?: "não cadastrado"}, " +
+                    "RD ${armadura.rd}. Local: ${corrigirTextoQuebrado(armadura.local)}.",
+                extra = {
+                    Text(
+                        "Local: ${corrigirTextoQuebrado(armadura.local)}",
+                        style = UiEstilos.detalheDoItem,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    observacoes.forEach { linha ->
+                        Text(
+                            linha,
+                            style = UiEstilos.detalheDoItem,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
                     }
                 }
-            }
-        }
-        Spacer(Modifier.height(8.dp))
-        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
-            TextButton(onClick = onDismiss) { Text("Fechar") }
+            )
         }
     }
 }

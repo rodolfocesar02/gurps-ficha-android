@@ -73,75 +73,27 @@ fun SelecionarTecnicaDialog(
         matchBusca && matchFonte
     }.sortedBy { com.gurps.ficha.domain.filters.CatalogFilters.normalizarBusca(it.nome) }
 
-    FullscreenDialogContainer(onDismiss = onDismiss) {
-        Column(modifier = Modifier.fillMaxSize()) {
-            Text("Selecionar Técnica", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
-            Spacer(modifier = Modifier.height(6.dp))
-            OutlinedTextField(
-                value = busca,
-                onValueChange = { busca = it },
-                label = { Text("Buscar técnica...") },
-                modifier = Modifier.fillMaxWidth(),
-                singleLine = true,
-                leadingIcon = { Icon(Icons.Default.Search, null) }
+    // Lote LAYOUT-6.
+    AppSelectionDialog(
+        titulo = "Selecionar Técnica",
+        busca = busca,
+        onBusca = { busca = it },
+        rotuloDaBusca = "Buscar técnica...",
+        contador = contadorDe(tecnicas.size, "técnica", "técnicas"),
+        filtros = {
+            AppFiltroChip("Todas", filtroFonte == null) { filtroFonte = null }
+            fontes.forEach { fonte ->
+                AppFiltroChip(fonte, filtroFonte == fonte) { filtroFonte = fonte }
+            }
+        },
+        onDismiss = onDismiss
+    ) {
+        items(tecnicas) { tecnica ->
+            AppSelectionRow(
+                nome = tecnica.nome,
+                detalheADireita = "${tecnica.sourceBook} | ${tecnica.dificuldadeRaw}",
+                onClick = { tecnicaSelecionada = tecnica }
             )
-            Spacer(modifier = Modifier.height(6.dp))
-            Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                FilterChip(
-                    selected = filtroFonte == null,
-                    onClick = { filtroFonte = null },
-                    label = { Text("Todas") }
-                )
-                fontes.forEach { fonte ->
-                    FilterChip(
-                        selected = filtroFonte == fonte,
-                        onClick = { filtroFonte = fonte },
-                        label = { Text(fonte) }
-                    )
-                }
-            }
-            Spacer(modifier = Modifier.height(4.dp))
-            Text("${tecnicas.size} técnicas encontradas", style = MaterialTheme.typography.bodySmall)
-            Spacer(modifier = Modifier.height(4.dp))
-
-            LazyColumn(
-                modifier = Modifier.weight(1f),
-                verticalArrangement = Arrangement.spacedBy(2.dp)
-            ) {
-                items(tecnicas) { tecnica ->
-                    Card(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clickable { tecnicaSelecionada = tecnica },
-                        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
-                    ) {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 8.dp, vertical = 6.dp),
-                            horizontalArrangement = Arrangement.spacedBy(UiTokens.DialogContentSpacing)
-                        ) {
-                            Text(
-                                tecnica.nome,
-                                modifier = Modifier.weight(1f),
-                                style = MaterialTheme.typography.titleMedium,
-                                fontWeight = FontWeight.Medium,
-                                maxLines = 1,
-                                overflow = TextOverflow.Ellipsis
-                            )
-                            Text(
-                                "${tecnica.sourceBook} | ${tecnica.dificuldadeRaw}",
-                                style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                maxLines = 1
-                            )
-                        }
-                    }
-                }
-            }
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
-                TextButton(onClick = onDismiss) { Text(UiActionLabels.FECHAR) }
-            }
         }
     }
 
@@ -652,7 +604,7 @@ fun PericiasSuplementaresDialog(
                 leadingIcon = { Icon(Icons.Default.Search, null) }
             )
             Spacer(modifier = Modifier.height(4.dp))
-            Text("${itens.size} perícias encontradas", style = MaterialTheme.typography.bodySmall)
+            Text(contadorDe(itens.size, "perícia", "perícias"), style = UiEstilos.detalheDoItem)
             Spacer(modifier = Modifier.height(4.dp))
             LazyColumn(
                 modifier = Modifier.weight(1f),
@@ -684,30 +636,16 @@ private fun PericiaSuplementarCard(
     item: PericiaSuplementarItem,
     onOpenDetails: () -> Unit
 ) {
-    Card(modifier = Modifier.fillMaxWidth(), elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)) {
-        Column(modifier = Modifier.padding(horizontal = 8.dp, vertical = 6.dp), verticalArrangement = Arrangement.spacedBy(2.dp)) {
-            Text(
-                item.nome,
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Medium,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
-            Text(
-                "${item.sourceBook} | ${item.dificuldadeRaw}",
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-            TextButton(
-                onClick = onOpenDetails,
-                modifier = Modifier.semantics {
-                    contentDescription = "Abrir detalhes da perícia ${item.nome}"
-                }
-            ) {
-                Text("Detalhes")
-            }
-        }
-    }
+    // Lote LAYOUT-6: o botão "Detalhes" some — o toque na linha inteira já faz
+    // isso, e é o gesto das outras listas. Um botão para a única ação da linha
+    // era um alvo pequeno dentro de um alvo grande.
+    AppSelectionRow(
+        nome = item.nome,
+        detalheADireita = "${item.sourceBook} | ${item.dificuldadeRaw}",
+        onClick = onOpenDetails,
+        descricaoAcessivel = "${item.nome}. ${item.sourceBook}, ${item.dificuldadeRaw}. " +
+            "Toque para abrir os detalhes."
+    )
 }
 
 @Composable

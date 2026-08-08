@@ -100,83 +100,38 @@ fun SelecionarPericiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
 
     val listaFiltrada = viewModel.dataRepository.filtrarPericias(busca, filtroAtributo, null)
 
-    FullscreenDialogContainer(onDismiss = onDismiss) {
-            Column(modifier = Modifier.fillMaxSize()) {
-                Text("Selecionar Perícia", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
-                Spacer(modifier = Modifier.height(6.dp))
-
-                OutlinedTextField(value = busca, onValueChange = { busca = it }, label = { Text("Buscar...") },
-                    modifier = Modifier.fillMaxWidth(), singleLine = true, leadingIcon = { Icon(Icons.Default.Search, null) })
-
-                Spacer(modifier = Modifier.height(6.dp))
-                Row(
-                    modifier = Modifier.horizontalScroll(rememberScrollState()),
-                    horizontalArrangement = Arrangement.spacedBy(UiTokens.DialogContentSpacing),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    PericiaFiltroChip(
-                        label = "Todos",
-                        selected = filtroAtributo == null,
-                        onClick = { filtroAtributo = null }
-                    )
-                    listOf("DX", "IQ", "HT", "PER", "VON").forEach { attr ->
-                        PericiaFiltroChip(
-                            label = attr,
-                            selected = filtroAtributo == attr,
-                            onClick = { filtroAtributo = attr }
-                        )
-                    }
-                }
-
-                Text("${listaFiltrada.size} perícias encontradas", style = MaterialTheme.typography.bodySmall)
-
-                LazyColumn(
-                    modifier = Modifier.weight(1f),
-                    verticalArrangement = Arrangement.spacedBy(2.dp)
-                ) {
-                    items(listaFiltrada) { definicao ->
-                        val jaAdicionada = viewModel.periciaJaAdicionada(definicao.id)
-                        val atributos = definicao.atributosPossiveis?.joinToString("/") ?: definicao.atributoBase
-                        val dificuldade = if (definicao.dificuldadeVariavel) "F/M/D/MD" else definicao.dificuldadeFixa ?: "M"
-                        val atributoBaseTexto = "$atributos/$dificuldade"
-                        Card(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .clickable(enabled = !jaAdicionada || definicao.exigeEspecializacao) { periciaSelecionada = definicao },
-                            elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
-                        ) {
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(horizontal = 8.dp, vertical = 6.dp),
-                                horizontalArrangement = Arrangement.spacedBy(UiTokens.DialogContentSpacing),
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Text(
-                                    text = definicao.nome + if (definicao.exigeEspecializacao) " *" else "",
-                                    modifier = Modifier.weight(1f),
-                                    maxLines = 1,
-                                    overflow = TextOverflow.Ellipsis,
-                                    style = MaterialTheme.typography.titleMedium
-                                )
-                                Text(
-                                    text = atributoBaseTexto,
-                                    style = MaterialTheme.typography.bodyMedium,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                    maxLines = 1
-                                )
-                                if (jaAdicionada) {
-                                    Text("Adicionada", color = MaterialTheme.colorScheme.outline, style = MaterialTheme.typography.labelSmall)
-                                }
-                            }
-                        }
-                    }
-                }
-
-                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
-                    TextButton(onClick = onDismiss) { Text(UiActionLabels.FECHAR) }
-                }
+    // Lote LAYOUT-6. O `detalheADireita` existe justamente para este caso: o
+    // "DX/D" fica encostado na borda, como sempre esteve, mas agora com o mesmo
+    // respiro e a mesma cor de card das outras listas.
+    AppSelectionDialog(
+        titulo = "Selecionar Perícia",
+        busca = busca,
+        onBusca = { busca = it },
+        contador = contadorDe(listaFiltrada.size, "perícia", "perícias"),
+        filtros = {
+            AppFiltroChip("Todos", filtroAtributo == null) { filtroAtributo = null }
+            listOf("DX", "IQ", "HT", "PER", "VON").forEach { attr ->
+                AppFiltroChip(attr, filtroAtributo == attr) { filtroAtributo = attr }
             }
+        },
+        onDismiss = onDismiss
+    ) {
+        items(listaFiltrada) { definicao ->
+            val jaAdicionada = viewModel.periciaJaAdicionada(definicao.id)
+            val atributos = definicao.atributosPossiveis?.joinToString("/") ?: definicao.atributoBase
+            val dificuldade = if (definicao.dificuldadeVariavel) "F/M/D/MD" else definicao.dificuldadeFixa ?: "M"
+            AppSelectionRow(
+                nome = definicao.nome + if (definicao.exigeEspecializacao) " *" else "",
+                detalheADireita = "$atributos/$dificuldade",
+                detalhe = if (jaAdicionada) "Já está na ficha" else null,
+                // ⚠️ Perícia com especialização continua clicável mesmo já
+                // adicionada — dá para ter Armas de Fogo (Pistola) e (Rifle).
+                habilitado = !jaAdicionada || definicao.exigeEspecializacao,
+                descricaoAcessivel = "${definicao.nome}. $atributos barra $dificuldade." +
+                    if (definicao.exigeEspecializacao) " Exige especialização." else "",
+                onClick = { periciaSelecionada = definicao }
+            )
+        }
     }
 
     periciaSelecionada?.let { definicao ->

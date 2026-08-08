@@ -1078,3 +1078,27 @@ Este é o defeito dos seus prints de 03/08. Use o **Abafador de Mana**.
   **Limpar** continua funcionando.
 - **T-MA8 · o rodapé** — ✅ O **Fechar** está na mesma posição e distância da
   borda que nos outros diálogos.
+
+---
+
+# Lote LAYOUT-6 — perícias, técnicas e equipamentos no padrão
+
+- **T-PE1 · perícia** — Abra *Adicionar Perícia* e depois *Adicionar Vantagem*:
+  ✅ os cards têm a **mesma altura** e a **mesma cor de fundo**. ✅ O `DX/D`
+  continua encostado na direita.
+- **T-PE2 · especialização** — Uma perícia com `*` (ex.: **Armas de Fogo/NT**)
+  que **já está na ficha**: ✅ continua **clicável** (dá para ter Pistola e
+  Rifle), e mostra *"Já está na ficha"*.
+- **T-TE1 · técnica** — *Adicionar Técnica*: ✅ mesmo card, e o
+  `Gun Fu | Difícil` à direita.
+- **T-TE2 · perícias suplementares** — ⚠️ O botão **"Detalhes"** não existe mais:
+  ✅ tocar na **linha inteira** abre os detalhes.
+- **T-EQ2a · os filtros de arma viraram botões** — *Adicionar Arma*: ✅ *Todas /
+  Corpo a corpo / Distância / Armas de Fogo* agora são **chips**, com a marcação
+  de qual está ativo. *(Eram texto solto e não pareciam clicáveis.)*
+- **T-EQ2b · escudo** — ✅ Aparece **"N escudos encontrados"**, que não existia.
+- **T-EQ2c · armadura** — ✅ O contador diz **"N armaduras encontradas"** (era
+  *"Resultados: N"*), e o **Limpar filtros** está acima da lista, separado da
+  contagem.
+- **T-EQ2d · lado a lado** — Abra *Adicionar Arma*, feche, abra *Adicionar
+  Perícia*: ✅ as duas telas parecem a mesma tela com conteúdo diferente.

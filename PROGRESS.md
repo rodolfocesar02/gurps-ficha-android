@@ -5766,3 +5766,27 @@ O `bodyLarge` no nome era o motivo de o card parecer maior que o de vantagem ao 
 **⚠️ E um erro meu que valeu a pena registrar:** migrei a tela e o teste continuou verde **sem olhar para ela** — `features/magic/` ainda estava na exclusão da varredura. Migrar sem trazer o arquivo para dentro do teste é migrar sem rede. A exclusão agora lista, uma a uma, as pastas que já entraram.
 
 - **Status:** ✅ Build OK nas 2 variantes · lint OK · gate verde (1830) · ⏭️ **PENDENTE: teste no aparelho** (T-MA no roteiro).
+
+---
+
+### Lote LAYOUT-6 — perícias, técnicas e equipamentos no padrão — 03 de Agosto de 2026 (versão 6.3-PADRAO-FIM)
+
+Fecha a migração que o plano tinha deixado explicitamente de fora. Agora **todas as sete listas de seleção** usam a mesma moldura: vantagem, desvantagem, poder, mágica, perícia, técnica, arma, escudo e armadura.
+
+#### O que mudou em cada uma
+
+**Perícias** — `padding 8/6` → `12/8`, e o card passa a usar a cor do tema em vez do fundo padrão do Material. O `DX/D` continua à direita: é para isso que o `detalheADireita` existe.
+
+**Técnicas** — mesma coisa, mais o contador no formato único. ⚠️ Na lista de **perícias suplementares** o botão *"Detalhes"* sumiu: o toque na linha inteira já faz isso, e é o gesto de todas as outras listas. Um botão para a única ação da linha era um alvo pequeno dentro de um alvo grande.
+
+**Armas** — os filtros (*Todas / Corpo a corpo / Distância / Armas de Fogo*) eram **texto solto**, e por isso não pareciam clicáveis. Viraram chips de verdade. As cores `tertiary` e `primary` das linhas de dano e de aparar saíram — na lista aquilo era decoração, e fazia esta tela parecer de outro app.
+
+**Escudos** — ganhou contador, que não tinha, e o nome saiu de `bodyLarge` para `titleMedium`, o tamanho das outras listas.
+
+**Armaduras** — o *"Resultados: 72"* vira **"72 armaduras encontradas"**, no formato de todas. O *"Limpar filtros"* saiu da linha do contador e virou botão no cabeçalho: ele é uma **ação**, não um filtro, e estava misturado com a contagem.
+
+#### A dívida caiu de 14 para 11
+
+Sobraram `TabRolagem`, `TabGeral`, as abas que só listam o que já está na ficha e a tela do combate tático. Nenhuma delas é lista de seleção de catálogo — são outra família de tela, e entram quando for a vez delas.
+
+- **Status:** ✅ Build OK nas 2 variantes · lint OK · gate verde (1830) · ⏭️ **PENDENTE: teste no aparelho** (T-PE, T-TE, T-EQ2 no roteiro).

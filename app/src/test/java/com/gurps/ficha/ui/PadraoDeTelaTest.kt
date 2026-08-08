@@ -52,9 +52,6 @@ class PadraoDeTelaTest {
      * Data de entrada: **03/08/2026**.
      */
     private val DIVIDA_ATE_MIGRAR = setOf(
-        "DialogsPericias.kt",
-        "DialogsTecnicas.kt",
-        "TabEquipamentos.kt",
         "TabRolagem.kt",
         "TabGeral.kt",
         "TabTracos.kt",
