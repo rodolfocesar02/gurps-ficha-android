@@ -1,6 +1,24 @@
 # Mapa Detalhado: Arquivos e Funções do Projeto GURPS
 
 Mapa de engenharia completo do projeto. Use para localizar lógicas específicas sem varrer o código.
+
+> ➕ **2026-08-03 — Varredura de completude.** O mapa estava com **80 arquivos de código, 113 testes
+> e 5 assets** fora dele — quase todos das frentes de **automação de regras** (jul/ago) e do **padrão
+> de tela** (ago). Todos entraram nas seções abaixo, com a descrição saindo do KDoc de cada arquivo,
+> não de memória. As frentes novas cobertas:
+> - **§5 Domain — Rules** cresceu de 5 para 41 arquivos e ganhou subdivisões (atributos e tetos;
+>   testes de resistir; combate/mira; rodapé das perícias; deslocamento e estados; texto).
+> - **§6 Trait Rules** ganhou a **arquitetura híbrida** (`TraitEffectModels` + `EfeitoInterpretador`):
+>   bônus simples viram DADO no JSON, casos complexos continuam classe Kotlin, e **a classe vence**.
+> - **§20 Features** ganhou os ~18 painéis/diálogos da aba Rolagem, quase todos extraídos da
+>   `TabRolagem` quando ela bateu no teto de 1.000 linhas.
+> - **§21 UI** ganhou o **padrão de tela** (`AppSelectionUi`, `AppButtons`) — ver a skill
+>   `.claude/skills/padrao-de-tela/`.
+> - **§28 Testes** foi reescrita por frente: a suíte passou de ~1.200 para **1.830**.
+>
+> ⚠️ Ainda **fora do mapa de propósito**: os arquivos de `ui/saga/` (combate tático) e a suíte
+> `nexus/arcano/`, que já têm documento próprio.
+
 Atualizado em: 2026-07-22 (**§32.9 nova**: PILAR MAGIA no combate; motor executa 98 das 879 magias).
 Rede de invariantes SIM-1 e build paralelo BUILD-1 (gate 7-8min → 1m36s). **§32.4 revista** após a
 refatoração REFACTOR-0..3: a DECISÃO e a TRADUÇÃO saíram do `SagaCombatController` (2243→2099) para
@@ -79,6 +97,9 @@ Base anterior: 2026-06-08 (fidelidade linha-a-linha) | 2026-05-30 (Mestre IA pó
 
 - **`delegates/FichaTraitDelegate.kt`** — Adiciona, remove e edita vantagens e desvantagens. Valida duplicatas (permite múltiplas instâncias de `ataque_inato`, `golpeadores`, `resistencia_a_dano`). Normaliza o nível de vantagens acumulativas. Delega custo para `DataRepository.criarVantagemSelecionada`.
 
+
+- **`delegates/FichaHistoryDelegate.kt`** — `diffAndLog(antigo, novo)` compara duas versões do `Personagem` campo a campo (nome, jogador, pontos, XP, os quatro atributos primários, os modificadores secundários, listas de traços/perícias/magias/equipamento) e devolve a ficha com um `RegistroLog` por mudança. É o que alimenta o histórico de alterações da ficha.
+
 ---
 
 ## 4. Domain — Engines
@@ -102,6 +123,60 @@ Base anterior: 2026-06-08 (fidelidade linha-a-linha) | 2026-05-30 (Mestre IA pó
 - **`domain/rules/MagiaEnergiaRules.kt`** — Redução de custo de energia por NH alto (NH≥15 → -1, NH≥20 → -2+). Parse de string de custo de energia ("2 pontos" → 2). Usado por `MagicEngine` e pelos diálogos de magia.
 
 - **`domain/rules/SentidoRules.kt`** — **[+ 2026-06-14, Lote 372]** Testes de Sentidos (MB p.358): `enum Sentido` (Percepção/Visão/Audição/Olfato-Paladar/Tato); `avaliar(p, sentido)` rola vs Percepção somando o "Sentido Aguçado" e descontando limitações, com COMPONENTES NOMEADOS (a "notinha"). Mapeia ids do catálogo (visao_agucada, audicao_agucada, paladar_olfato_apurado, *_discriminatorio, visao_hiperespectral, tato_apurado; redutores duro_de_ouvido/disopia; bloqueios cegueira/surdez/disosmia). Cobre traços pessoais E raciais. Puro/testável (`SentidoRulesTest`). Consumido por `DialogoSentidos` (§20).
+
+
+### Atributos, custo e tetos
+
+- **`domain/rules/AtributoBonusRules.kt`** — Soma os bônus de atributo vindos de vantagens/desvantagens (GANCHO-A). Mora fora do `Personagem` por causa do teto de 1.000 linhas: lá só cabe a chamada de uma linha por propriedade.
+- **`domain/rules/TetoDeAtributoRules.kt`** — Desvantagens que impõem **teto** a um atributo (Lote TETO-HT): `Magro` limita HT a 14, `Muito Gordo` a 13 (MB p.19). Não é bônus nem penalidade — é limite de criação, e por isso não cabe no campo `efeitos`.
+- **`domain/rules/TetoDeNivelDoTraco.kt`** — Quantos níveis um traço pode ter (Lote TETO-1). Catálogo → Aptidão Mágica 11 → geral 20. Achado no T-LI6: a Mão Fraca travava em 3 na perícia mas o seletor deixava subir sem limite.
+- **`domain/rules/StBracalRules.kt`** / **`DxBracalRules.kt`** — O **efeito** da ST e da DX Braçal (MB p.89 e p.56); o custo mora em `traits/BracalCustoRules.kt`. ⚠️ A DX Braçal **não** melhora perícia de combate — o livro proíbe, e o espelho ingênuo da ST erraria isso.
+- **`domain/rules/StEspecializadaRules.kt`** — **ST de Golpe** (MB p.88) e **ST de Levantamento** (MB p.65): duas metades da força, cada uma servindo só à sua metade.
+
+### Testes que não são perícia nem atributo puro
+
+- **`domain/rules/ReacaoRules.kt`** — Teste de Reação (MB p.494): 3d6 contra a tabela, com os modificadores sociais (Aparência, Carisma, Voz Melodiosa, Reputação) já somados e a origem de cada ponto.
+- **`domain/rules/AutocontroleRules.kt`** — Testes de autocontrole (MB p.120). O app já **guardava** o NA (6/9/12/15) para o multiplicador de custo e nunca rolava nada.
+- **`domain/rules/ResistenciaRules.kt`** — Os testes de **resistir** que a ficha monta sozinha (Lote RESIST-1): consciência, morte, doença, veneno, medo, pânico. Aplica o [PisoDeTeste] no alvo final.
+- **`domain/rules/MarcosDeVidaRules.kt`** — Os marcos de PV/PF e os testes que eles exigem (MB p.419-423). O GURPS não pede teste "ao tomar dano" — pede quando o dano **cruza um marco**.
+- **`domain/rules/PisoDeTeste.kt`** — O alvo de um teste **nunca desce abaixo de 3** (Lote D-ESPELHO). Em 3d6 um alvo 2 seria fracasso automático, e o livro não quer que desvantagem torne o teste impossível.
+- **`domain/rules/SorteRules.kt`** — **Sorte** (MB p.90): refazer duas vezes e ficar com o melhor dos três, uma vez por hora de jogo.
+- **`domain/rules/TalentoInstintivoRules.kt`** — **Talento Instintivo** (MB p.92): rolar uma perícia que o personagem **não tem**, com o atributo cheio.
+- **`domain/rules/VisualizacaoRules.kt`** — **Visualização** (MB p.99): um minuto de concentração, teste de IQ, e o bônus sai da margem de sucesso — com três arredondamentos diferentes, dois deles exceção.
+
+### Combate: mira, distância e manobra
+
+- **`domain/rules/LocaisDeAtaque.kt`** — `enum LocalAtaque` (torso, crânio, olho, vitais…) com a penalidade de cada um, e `MiraRules`, que monta a lista de alvos **com o NH já reduzido**. ⚠️ Nasceu em `domain/combat/` e mudou de pacote no MIRA-1: é tabela do livro, não depende de sessão de combate.
+- **`domain/rules/ApontarRules.kt`** — **Apontar, Precisão e Visão Telescópica** (MB p.364/373 e p.99). O Apontar acumula segundos (+1 com dois, +2 com três), soma a arma firmada e a **mira acoplada**, e respeita o teto do **dobro da Prec**. ⚠️ A Telescópica fica fora desse teto: ela cancela distância, não soma no NH.
+- **`domain/rules/AlcanceDoAtaque.kt`** — Responde "este ataque é à distância?" e "até onde ele chega". Decide por **perícia** e por **arma**; quando as duas discordam, `conflito()` devolve o aviso em vez de escolher calado.
+- **`domain/rules/TabelaVelocidadeDistancia.kt`** — Tabela de Tamanho e Velocidade/Distância (MB p.550-551). O seletor anda de **degrau** da tabela, não de metro: cada toque vale exatamente −1.
+- **`domain/rules/AvancarEAtacarRules.kt`** — **Avançar e Atacar** (MB p.366): −2 **ou a Magnitude, o que for pior** à distância; −4 **e teto de NH 9** no corpo a corpo. ⚠️ Magnitude positiva é dado torto e nunca vira bônus.
+- **`domain/rules/AtiradorRules.kt`** — As vantagens **Atirador** (25 pts) e **Arqueiro Heroico** (20 pts). Prec sem Apontar (metade com arma de duas mãos ou automática), a troca *"em vez de"* com o Avançar e Atacar, e o arqueiro acumulando os segundos **um turno mais cedo**.
+- **`domain/rules/GolpeRapidoEAparaRules.kt`** — **Golpe Rápido** (MB p.371) e **apara repetida** no mesmo turno (MB p.377). Os dois mudam com Treinado por um Mestre / Mestre de Armas.
+- **`domain/rules/MaoInabilRules.kt`** — A penalidade de **mão inábil** (MB p.14) e quem a anula (Ambidestria). Inclui `SemUmDedoRules`.
+- **`domain/rules/MiraImpedimentosRules.kt`** — **Zarolho** e **Assassino Relutante** (Lote D-MIRA): as duas conversam com a mesma caixinha do Apontar, em direções opostas — uma é cancelada por ela, a outra a proíbe.
+- **`domain/rules/DisopiaRules.kt`** — A parte de **combate** da Disopia (MB p.135); o −6 do teste de Visão fica no `SentidoRules`. Duas variantes pelo mesmo custo, e a ficha não guarda qual — o app pergunta.
+- **`domain/rules/DesastradoRules.kt`** — **Completamente Desastrado** (MB p.133): qualquer fracasso em teste de DX ou perícia baseada em DX vira **falha crítica**.
+- **`domain/rules/IluminacaoRules.kt`** — A luz da cena (MB p.395/549) e as vantagens que enxergam no escuro. Sem isto a Visão Noturna era decorativa: não havia escuridão para cancelar.
+
+### Perícias: o rodapé "Modificadores:"
+
+- **`domain/rules/ModificadoresSituacionais.kt`** — Os modificadores de **situação** de 45 perícias (Lote P-SIT). O app guardava esse texto e nunca o lia.
+- **`domain/rules/QualidadeDoEquipamento.kt`** — A tabela de **Modificadores de Equipamentos** (MB p.346), citada por 32 perícias. Cinco níveis, coluna dupla (técnico −10 / comum −5).
+- **`domain/rules/FamiliaridadeCulturalRules.kt`** — O **−3** que todo mundo paga fora da própria cultura (MB p.24); a vantagem **apaga** a penalidade em vez de somar bônus.
+
+### Deslocamento e estados
+
+- **`domain/rules/DeslocamentosRules.kt`** — Todos os deslocamentos do personagem (Lote DESL-2, MB p.17-19 e p.395), consumido pelo `DialogoDeslocamentos`.
+- **`domain/rules/DeslocamentosEspeciais.kt`** — Voo (Velocidade Básica × 2, MB p.99) e escalada — dois números que o app tinha tudo para calcular e deixava para o jogador.
+- **`domain/rules/EstadosTemporarios.kt`** — As nove desvantagens que só valem **enquanto o jogador diz que valem** (Lote D-ESTADO), com graus (Dor Crônica Suave/Grave/Excruciante). ⚠️ A chave de Vontade é **`VON`**, não `VONT` — o `getAtributo` só conhece `VON`, e a chave errada sumia sem erro.
+- **`domain/rules/IncompatibilidadeDeTracos.kt`** — Pares que o livro **proíbe** na mesma ficha. Hoje só **Abascanto × Aptidão Mágica** (MB p.85). ⚠️ Só o que o livro proíbe — "a critério do Mestre" não entra.
+
+### Texto e explicação
+
+- **`domain/rules/OrigemDosNumeros.kt`** — De onde vem cada pedaço dos números de **defesa** e de **item** (Lote NOTA-2) — o irmão do NOTA-1, que explicava as perícias.
+- **`domain/rules/MensagensDefesa.kt`** — Explica **por que** uma defesa ativa não está disponível. Separado do `CombatRules` de propósito: lá é fórmula pura, aqui é texto para o usuário.
+- **`domain/rules/FichaTecnicaDaArma.kt`** — A ficha técnica da arma **em português** (Lote ARMA-2): `Tiros 80(3)` vira *"80 tiros, 3 turnos para recarregar"*, `CL 2` vira *"restrito"*, e o `×15/×20` do arco vira metros com a ST da ficha. Campo ausente sai **—**, nunca **0**.
 
 ---
 
@@ -137,6 +212,14 @@ Base anterior: 2026-06-08 (fidelidade linha-a-linha) | 2026-05-30 (Mestre IA pó
 
 > **Nota:** as 11 regras acima são registradas em `TraitRuleRegistry.init` (AtaqueInato, Golpeadores, Dentes, Flexibilidade, Garras, ApararAmpliado, BloqueioAmpliado, EsquivaAmpliada, MestreDeArmas, Telecomunicacao, Idioma).
 
+
+- **`traits/TraitEffectModels.kt`** — Os modelos do campo `efeitos` (`EfeitoDeclarado`, `TipoEfeito`, `EscopoEfeito`, `BonusCondicional`) declarado em `vantagens.v3.json` / `desvantagens.v2.json`. Base da **arquitetura híbrida**: bônus simples viram DADO no JSON; casos complexos continuam classe Kotlin. Resolução por `porAutocontrole` → `porOpcao` → `porNivel`.
+- **`traits/EfeitoInterpretador.kt`** — Transforma o campo `efeitos` numa `TraitRule` sem escrever uma classe por vantagem. ⚠️ Quando existem os dois, **a classe Kotlin vence** o JSON — validado por `scripts/validar_efeitos.py`.
+- **`traits/TracoSelecionado.kt`** — A interface que uma `TraitRule` enxerga, seja o traço vantagem ou desvantagem. Existe por um buraco silencioso (Lote D-0): os agregadores varriam só `personagem.vantagens`, então regra registrada com id de DESVANTAGEM nunca era chamada — sem erro nenhum.
+- **`traits/BracalCustoRules.kt`** — O **custo** de ST/DX Braçal (MB p.89 e p.56). O app tratava como escolha de três valores fixos; no livro são o preço de **cada +1**, e o que muda é **quantos braços**.
+- **`traits/CegueiraRule.kt`** — Os **−6** da Cegueira em todas as perícias de combate (MB p.127). É classe Kotlin, e não `efeitos`, porque declarar ~70 alvos por nome seria um paredão de JSON que sai de sincronia no primeiro catálogo novo.
+- **`traits/MaoFracaRule.kt`** — **Mão Fraca** (MB p.151): −2 por nível, até 3, nas perícias de **arma de combate corpo a corpo**. ⚠️ Migrada do JSON para Kotlin porque a lista escrita de memória ("perícias delicadas") não era a do livro.
+
 ---
 
 ## 7. Domain — Loaders
@@ -150,6 +233,9 @@ Base anterior: 2026-06-08 (fidelidade linha-a-linha) | 2026-05-30 (Mestre IA pó
 - **`domain/loaders/RacaCatalogo.kt`** — Carrega `racas.v1.json` (catálogo de raças jogáveis). Resolve `RacaDefinicao` → `ModeloRacial` casando IDs contra os catálogos de vantagens/desvantagens/perícias via `DataRepository`. Custo recalculado pelo `CharacterRules` — imune a custo salvo errado. É também o schema de raças para o Forjador IA.
 
 - **`domain/loaders/ForjadorTemplateCatalogo.kt`** — **[+ 2026-06-09]** Carrega `forjador_templates.json` (60 templates/arquétipos de personagem prontos). `escolher(prompt, templates)` faz match por palavra-chave (id/nome/descrição/tags) e retorna o template mais próximo do pedido — é **o SISTEMA (código) que escolhe, não a IA**. `formatarParaPrompt(t)` serializa o template como bloco de texto injetado no prompt do Forjador (na 1ª iteração) como "ponto de partida". `pontosBase` é só REFERÊNCIA — o budget real é o do pedido do usuário. Data classes: `ForjadorTemplate` (+ Pericia/Vantagem/Desvantagem). ⚠️ Todos os IDs dos templates são validados contra o catálogo (ver `project_forjador_pendencias`).
+
+
+- **`domain/loaders/ArmasCatalogLoader.kt`** **[+ Lote ARMA-1]** — O leitor dos **três** catálogos de arma, separado do `CatalogLoaders` por dois motivos: tamanho (aquele arquivo passava de 1.100 linhas) e **teste** — aqui a entrada é uma `String`, não um `Context`, então a suíte roda sobre o asset real. Lê `nt`, `cl`, `municaoKg`, `precisaoAcessorio` (o `+N` da mira embutida), os `raw` do livro, as flags † / ‡ e a lista de **modos de ataque**.
 
 ---
 
@@ -247,6 +333,8 @@ Base anterior: 2026-06-08 (fidelidade linha-a-linha) | 2026-05-30 (Mestre IA pó
 
 ## 15. Data — Storage (Room / Persistência)
 
+- **`data/storage/RostoDetector.kt`** — Acha o rosto (ou, na falta dele, o assunto) para enquadrar retratos. Compartilhado pelo `ImagemPersonagemStore` (cabeçalho da ficha) e pelo `TokenImageStore` (tokens do VTT) — antes cada um tinha a sua cópia. É uma **cascata**, não uma chamada só: o ML Kit Face Detection é treinado em rosto humano e falha em criatura, e aí entra a Subject Segmentation e depois o recorte por saliência.
+
 - **`data/storage/FichaDatabase.kt`** — Configuração Room **v26** (Lote 259 adicionou `vec_chunks`; Lote 356 subiu p/ v26 com as tabelas da Saga — ver §32.2, migrações 24→25→26 explícitas). Entidades: `FichaEntity`, `ManualChunkEntity`, `GraphNodeEntity` (legado), `ChatSessionEntity`, `ChatMessageEntity`, `VecChunkEntity`. DAOs expostos: `fichaDao`, `manualChunkDao`, `graphNodeDao` (legado), `chatHistoryDao`, `vecChunkDao`. `fallbackToDestructiveMigration`. Método `prePopulateManual` (importa `chunks.jsonl` → `manual_chunks` FTS4 + embeddings → `vec_chunks`; reimporta só embeddings se chunks existem mas vec está vazio). `graphNodeDao` declarado mas GraphNode está descontinuado.
 
 - **`data/storage/FichaDao.kt`** — DAO Room para fichas: `upsert`, `getJson`, `deleteByName`, `listNames` (ordenado por `updatedAt` DESC).
@@ -302,6 +390,12 @@ Base anterior: 2026-06-08 (fidelidade linha-a-linha) | 2026-05-30 (Mestre IA pó
 - **`model/EscudoCatalogoItem.kt`** — Data class de escudo: nome, BD, peso, custo, habilidade de bloqueio.
 
 - **`model/MestreIAChunk.kt`** — Data class de chunk do Códex: `chunk_id`, `text`, `source_title`, `source_id`, `page_number`. Usado pelo RAG.
+
+
+- **`model/PericiasDeCombate.kt`** — `PERICIAS_COMBATE_CORPO_A_CORPO` e `PERICIAS_COMBATE_DISTANCIA` (e a união, `PERICIAS_COMBATE`). A separação existe porque o MIRA-2 precisa perguntar "este ataque é à distância?" — antes era um `setOf` único com um comentário no meio, que separava para humano ler. ⚠️ Guarda **aliases legados** de ids que fichas antigas podem ter gravado; ver `PericiasDeCombateCatalogoTest`.
+- **`model/ModeloRacialTotais.kt`** — O conteúdo **real** de um modelo racial: o dele mais o das metacaracterísticas embutidas (MB p.262), resolvido recursivamente com profundidade limitada.
+- **`model/Poder.kt`** — `Poder` (o poder na ficha) e `PoderDefinicao` (a entrada do catálogo `poderes.v1.json`).
+- **`model/RegistroLog.kt`** — Uma linha do histórico de alterações da ficha. Preenchido pelo `FichaHistoryDelegate`.
 
 ---
 
@@ -403,6 +497,52 @@ Base anterior: 2026-06-08 (fidelidade linha-a-linha) | 2026-05-30 (Mestre IA pó
 
 - **`ui/features/virtualtabletop/MesaVirtualViewModel.kt`** — ViewModel da Mesa Virtual. `MesaVirtualState` com discordId, token, campaignId, isConnected, activePlayers. `conectar()` apenas atualiza o estado local (integração Railway planejada).
 
+
+### `ui/features/rolagem/` — os painéis e diálogos da aba Rolagem
+
+*A `TabRolagem` bateu no teto de 1.000 linhas várias vezes; quase todo arquivo aqui saiu dela.*
+
+- **`RolagemModels.kt`** — Os tipos da aba: `TipoTeste`, `HistoricoRolagemItem`, `RollMappedOption`, `DamageSourceOption`, `StDamageMode` (GdP/GeB), `PericiaRollOption`, `MagiaRollOption`.
+- **`RolagemComponents.kt`** — Os cartões da aba: cabeçalho, atributos, PV/PF, área de ataque e dano, defesas ativas, histórico e a navegação.
+- **`RolagemPrimaryDialogs.kt`** — Configurar ataque, configurar dano, e as listas de perícia/técnica/magia. ⚠️ Contém `condicionaisDaPericia`, **fonte única** das caixinhas: a lista era montada duas vezes e as duas casavam por índice — bastava uma ganhar uma fonte nova para o marcado somar o valor errado.
+- **`RolagemSecondaryDialogs.kt`** — Rolagem personalizada, magia da alma, energia manual, editar PV/PF, editar canal do Discord, bônus de defesa.
+- **`DialogosDeDefesaRolagem.kt`** — Os três diálogos de configuração de defesa + os de PV/PF, extraídos quando o MARCOS-1 levou a aba a 1.046 linhas.
+- **`OverlayDados3D.kt`** — A camada que cobre a tela enquanto os dados 3D rolam e mostra o resultado (`textoDoResultado`, `anuncioDoResultado`).
+- **`DialogoMira.kt`** — **Onde acertar** (MIRA-1): a lista de locais com o NH **já reduzido**, mais a linha de distância, o Apontar (contador de segundos), arma firmada, mira acoplada, Avançar e Atacar, Zarolho, Pacifismo e Disopia. É onde quase toda regra de tiro se encontra.
+- **`DialogoReacaoEResistencia.kt`** — Junta num lugar só o Teste de Reação, o Autocontrole e os testes de resistir (Lote RESIST-1).
+- **`DialogoSentidos.kt`** — Testes de Sentidos (abre ao tocar em "PER"), com a notinha do motivo de cada bônus.
+- **`DialogoTalentoInstintivo.kt`** — Lista **só** as perícias que o personagem **não** tem, cada uma com o NH do atributo base.
+- **`DialogoVisualizacao.kt`** — A calculadora do bônus de Visualização — a conta que mais erra para cima quando feita de cabeça.
+- **`PainelAtributosEStatus.kt`** — O cartão de atributos + PV/PF do topo, com os painéis de ST/DX Braçal e ST de Levantamento.
+- **`PainelMarcosDeVida.kt`** — Os testes exigidos pela queda de PV e o estado atual (Cambaleante, Cansado…).
+- **`PainelBonusCondicional.kt`** — As caixinhas dos bônus que valem **nesta** rolagem (Rosto Sincero, Camaleão…).
+- **`PainelEstadosTemporarios.kt`** — O interruptor das nove desvantagens temporárias, no mesmo lugar das Braçais.
+- **`PainelIluminacao.kt`** — O seletor de luz da cena, com a Visão Noturna já descontada e a conta escrita.
+- **`PainelAutocontrole.kt`** — A seção de autocontrole; **não renderiza nada** se a ficha não tem desvantagem com NA.
+- **`PainelReacao.kt`** — O Teste de Reação com os modificadores somados. Renderiza **sempre**, mesmo com +0 (decisão do usuário: o Mestre pode pedir a qualquer momento).
+- **`PainelSorte.kt`** — Usar Sorte na **última** rolagem; aparece só depois de rolar.
+- **`PainelAparaRepetida.kt`** — Qual apara do turno é esta (−4, −8, −12), zerando no turno seguinte.
+- **`PainelModificadorGlobal.kt`** — Degraus de modificador em botões rotulados. **Só na variante `pracego`** — quem enxerga ajusta deslizando o dedo, gesto que não funciona com TalkBack.
+- **`CampoNotaBonus.kt`** — Onde o jogador anota **de onde vem** um bônus digitado à mão.
+- **`ComposicaoDaDefesa.kt`** — De onde vem cada ponto de uma defesa, dentro do diálogo (não no card: quebraria a largura em três linhas).
+
+### `ui/features/traits/` — complementos dos diálogos de traço
+
+- **`VantagemEditarDialog.kt`** — O diálogo de **edição** de vantagem, separado do de adicionar em 28/07 por causa do teto de 1.000 linhas. ⚠️ Foi essa separação que deixou os dois divergirem em quatro pontos (Lote LAYOUT-3).
+- **`TracoFormComuns.kt`** **[+ Lote LAYOUT-3]** — O miolo compartilhado entre configurar e editar: `NivelDoTraco` (com `−`/`+` visíveis nas **duas** variantes e o teto à vista), `CampoDeDescricaoDoTraco`, `RodapeDoTraco` e `rotuloDoTipoDeCusto` — o que tirou `por_nivel` da tela do jogador.
+- **`BracalConfig.kt`** — A configuração de ST/DX Braçal: **braços × níveis**, no lugar dos três botões de valor fixo que cobravam o preço uma vez só.
+- **`DialogsPoderes.kt`** — Lista dos poderes na ficha (com lápis e lixeira na linha), o editor de poder e o seletor do catálogo.
+- **`DialogoDeslocamentos.kt`** — Todos os deslocamentos, **só leitura**, atrás do botão "Desloc." (decisão do usuário: não é seletor).
+- **`OrigemDoBonus.kt`** — A linha discreta que explica de onde vem o bônus de uma perícia. Sem ela a automação vira caixa preta.
+
+### `ui/features/equipamento/`
+
+- **`CardDetalheArma.kt`** **[+ Lote ARMA-3]** — O card de detalhe da arma, aberto pelo toque na lista (o botão de adicionar mora dentro dele) e também pelo inventário. Inclui `CardArmaForaDoCatalogo`, para a arma criada à mão que não casa com nada — ele **diz** por que os campos faltam, em vez de abrir vazio.
+
+### `ui/features/magic/`
+
+- **`DialogoDescricaoMagia.kt`** — O pop-up **único** de descrição de mágica, com barra de rolagem. Existia um igual embutido no diálogo de edição, que não dava para reusar e **não rolava** — descrição longa ficava cortada.
+
 ---
 
 ## 21. UI — Componentes Utilitários
@@ -424,6 +564,11 @@ Base anterior: 2026-06-08 (fidelidade linha-a-linha) | 2026-05-30 (Mestre IA pó
 - **`ui/UiA11y.kt`** — Helpers de acessibilidade: `semantics` para TalkBack, labels descritivos. Usado pela variante Pracego.
 
 - **`ui/UiActionLabels.kt`** — Strings de labels de ação para acessibilidade (variante Pracego): "adicionar vantagem", "remover perícia", etc.
+
+
+- **`ui/AppSelectionUi.kt`** **[+ Lote LAYOUT-1]** — A moldura dos diálogos de seleção: `AppSelectionDialog` (título, subtítulo, busca, chips, contador, lista e Fechar), `AppSelectionRow` (com `detalhe`, `detalheADireita`, `extra` e `acoes`), `AppFiltroChip` e `contadorDe`. ⚠️ Existe porque **seis** diálogos escreviam à mão o mesmo `Card + Row` com padding `8/6`, enquanto o `UiTokens` dizia `12/10`.
+- **`ui/AppButtons.kt`** **[+ Lote LAYOUT-1b]** — Quatro papéis no lugar de sete tipos: `AppBotaoPrincipal`, `AppBotaoSecundario`, `AppBotaoDiscreto`, `AppBotaoIcone`, mais `AppBotaoDestrutivo` (a única exceção de cor) e `AppBotaoPasso` (o `−`/`+`). `AppFileiraDeBotoes` resolve espaço e margem. ⚠️ `UiTokens.TouchMinHeight = 48.dp` existia com **zero** usos enquanto havia botões de 32 e 36 dp.
+- **`ui/UiScrollbar.kt`** — Barra de rolagem visível para `Modifier.verticalScroll`. O Compose não desenha barra nesse caso (só listas preguiçosas têm), e o resultado era um diálogo que parecia truncado.
 
 ---
 
@@ -473,7 +618,10 @@ Base anterior: 2026-06-08 (fidelidade linha-a-linha) | 2026-05-30 (Mestre IA pó
 | `vantagens.v3.json` | Vantagens oficiais GURPS 4ª Ed. (formato v3 com modificadores estruturados) | `CatalogLoaders` |
 | `vantagens_artes_marciais.v1.json` | Vantagens exclusivas do suplemento Artes Marciais | `CatalogLoaders` |
 | `desvantagens.v2.json` | Desvantagens oficiais (formato v2 com specialRule) | `CatalogLoaders` |
-| `pericias.json` | Perícias do Módulo Básico | `CatalogLoaders` |
+| `pericias.v3.json` **[+ Lote PERUNI]** | **O catálogo de perícia em uso.** 281 perícias, unificação de `pericias.json` (base) + `pericias_v2_rules_map.json` (camada). Traz id, nome, atributo, dificuldade, descrição, pré-requisito, predefinido e o rodapé `Modificadores:`. | `CatalogLoaders` |
+| `pericias.json` | ⚠️ **LEGADO** — a base antiga (só id/nome/atributo/dificuldade). Continua no disco até a validação no aparelho fechar. | (não carregado) |
+| `poderes.v1.json` | 44 poderes (GURPS Poderes): fontes possíveis, foco e descrição. | `CatalogLoaders` |
+| `modificadores_poderes.v1.json` | 31 modificadores específicos de poderes, separados do catálogo global. | `CatalogLoaders` |
 | `pericias_artes_marciais.v1.json` | Perícias suplementares (Artes Marciais) | `CatalogLoaders` |
 | `pericias_v2_rules_map.json` | Mapa de regras de perícias v2 (tipo, pré-requisito, predefinido) | `CatalogLoaders` |
 | `magias2versao.json` | Magias com pré-requisitos raw | `CatalogLoaders` |
@@ -494,9 +642,14 @@ Base anterior: 2026-06-08 (fidelidade linha-a-linha) | 2026-05-30 (Mestre IA pó
 | `chunks.jsonl.bak` | Idêntico SEM embeddings (6.5MB, 1196 linhas). Candidato a substituir o .jsonl quando confirmado que Auditor não precisa de embedding. | (não carregado — backup) |
 | `topic_index.json` | ⚠️ Páginas garantidas — lido só por `MestreIATopicIndex.carregar()`, que existe mas **NINGUÉM chama** (MORTO desde Lote 272). Asset órfão na prática. | `MestreIATopicIndex` (nunca invocado) |
 
-> **Nota:** há vários assets de apoio/backup não consumidos em runtime (`*.schema.json`,
-> `topic_index_backup_manual.json`, `topic_index_gerado.json`, `pericias_v2_rules_map copy.json`).
-> Não são catálogos ativos.
+> **Nota:** há vários assets de apoio/backup não consumidos em runtime.
+> Não são catálogos ativos, mas dois deles são **contrato** e valem ser lidos antes de mexer
+> nos catálogos de traço:
+> - `vantagens.v3.schema.json` / `desvantagens.v2.schema.json` — o JSON Schema de cada catálogo,
+>   incluindo o formato do campo `efeitos` (ver §6). É o que diz quais chaves existem e o que
+>   cada uma aceita.
+> - `topic_index_backup_manual.json`, `topic_index_gerado.json`, `pericias_v2_rules_map copy.json`
+>   — backups sem consumo.
 
 ---
 
@@ -553,6 +706,26 @@ Base anterior: 2026-06-08 (fidelidade linha-a-linha) | 2026-05-30 (Mestre IA pó
 - **`vtt/VttBridgeCodecStressTest.kt`** — Teste de robustez do codec VTT.
 - **[+ 2026-06-14] Combate da Saga** (`domain/combat/`): `CombatEncounterTest`, `CombatActionsTest` (inclui Mover e Atacar correto), `HitLocationRulesTest`, `InjuryRulesTest`, `NpcCombatBrainTest`, `CombatResolverTest`, `CombatSessionTest` (sessão ponta a ponta: arma/tipo de dano/distância, narração, avaliar, postura, mover dirigido, rajada, **dual-wield: 2 golpes + mão inábil −4/Ambidestria, sem defesa após Ataque Total**).
 - **[+ 2026-06-14] Narrador/Saga** (`domain/saga/`): `NarradorToolsTest` (contrato das 19 tools — `assertEquals(19, TODAS.size)` após MA-4 `lancar_magia`), `NarradorOutputValidatorTest`, `NarradorToolExecutorCombatTest` (roteamento das 6 tools de combate via `CombatBridge` falsa). Instrumentado: `SagaFoundationTest` (FTS4 real).
+
+### Suítes por frente *(a suíte passou de ~1.200 para 1.830 testes entre jul e ago/2026)*
+
+*O padrão destes testes não é "um caso que eu imaginei": é **varredura** sobre o catálogo real
+e **invariante** ("isto nunca pode acontecer"). Foi assim que apareceram os furos que a asserção
+pontual não pegava.*
+
+- **Traços — regras e catálogo** (`domain/rules/`): `DesvantagensEspelhoTest`, `DesvantagensDListaTest`, `DesvantagensDNaTest`, `DesvantagensDMiraECritTest`, `DesvantagensDJsonTest`, `DesvantagensSimulacaoTest` (simulação, não asserção pontual), `EstadosTemporariosTest`, `IncompatibilidadeDeTracosTest`, `TravaDeParesNoDelegateTest` (⚠️ teste de **fiação**: 17 testes de regra ficaram verdes enquanto o delegate não consultava a trava), `TetoDeAtributoRulesTest`, `TetoDeNivelDoTracoTest`, `AutocontroleRulesTest`, `CustoAutocontroleTest`, `IdsDeVantagemNoCatalogoTest`, `VantagemRacialContaTest`, `TalentoECuringaTest`.
+- **Efeitos declarados** (`domain/rules/traits/`): `EfeitoInterpretadorTest`, `EfeitoPontaAPontaTest`, `EfeitoPorOpcaoTest`, `EfeitosDeclaradosCatalogoTest`, `EfeitosNoLoaderTest`, `RegistryDesvantagensTest`, `BonusCondicionalTest`, `MestreDeArmasDanoTest`.
+- **Perícias** (`domain/rules/`): `PericiasCatalogoUnificadoTest` (⚠️ a rede do PERUNI — compara o catálogo unificado com um fixture gerado **antes** da mudança; pegou 3 regressões), `PericiasEquipCultSitTest`, `PericiasSimulacaoTest`, `ConferenciaCruzadaPericiasTest`, `PericiasDeCombateCatalogoTest` (⚠️ compara as listas de perícia de combate com o catálogo — a comparação que **não existia**, e por isso `canhoneiro_nt` ficou anos de fora).
+- **Rolagem e combate na ficha** (`domain/rules/`): `MiraRulesTest`, `ApontarRulesTest`, `ApontarAcumuladoTest`, `MiraAcopladaEConflitoTest`, `AvancarEAtacarTest`, `AtiradorRulesTest`, `AlcanceDoAtaqueTest`, `TabelaVelocidadeDistanciaTest`, `GolpeRapidoEAparaRulesTest`, `MaoInabilRulesTest`, `MarcosDeVidaRulesTest`, `ResistenciaRulesTest`, `ResistenciaLesaoTest`, `ReacaoRulesTest`, `SorteRulesTest`, `TalentoInstintivoRulesTest`, `VisualizacaoRulesTest`, `IluminacaoEDeslocamentoTest`, `DeslocamentosRulesTest`, `SentidoRulesTest`, `MensagensDefesaTest`, `OrigemDosNumerosTest`, `RotulosAcessiveisTest`, `StBracalRulesTest`, `DxBracalRulesTest`, `StEspecializadaRulesTest`, `AtributoBonusRulesTest`.
+- **Catálogo de armas** (`domain/loaders/`): `ArmasCatalogoTest` **[+ Lote ARMA-1]** — varre as **150 armas do asset real**. Achou o `+N` da mira acoplada (12 armas), o 2º modo de ataque (29 corpo a corpo), o `"2.900".toIntOrNull() == null` (57 de 124 alcances) e a linha deslocada uma coluna em 3 armas de fogo. `FichaTecnicaDaArmaTest` cobre a tradução do jargão.
+- **Magia** (`domain/magic/`): `MagicCoreTest`, `MagicCastingTest`, `MagicMechanicsTest`, `MagicTimeTest`, `MagicClassParserTest`, `RitualEAreaTest`, `MagicCatalogRealityCheckTest` (⚠️ confere o motor contra o catálogo **real** das 879 magias), `MagicEngineAptidaoTest`, `MagMecanizacaoTest`, `MagicCombatTest`.
+- **Combate tático hexagonal** (`domain/combat/hex/`): `HexGridTest`, `HexCombatStateTest`, `HexCombatSyncTest`, `HexSetupTest`, `HexRegrasFacingTest`, `HexRegrasPosicionaisTest`, `HexTaticaNpcTest`, `HexTaticoStateTest`, `HexTaticoDemoTest`, `HexPortabilidadeTest`, `HexRender3DTest`.
+- **Subsistemas do combate** (`domain/combat/subsistemas/`): `AtaqueMagicoResolverTest`, `DanoMagicoResolverTest`, `EfeitosMagicosDelegateTest`, `ZonaDelegateTest` — os delegates que existem para o `CombatSession` **não** crescer.
+- **Imagem e VTT** (`data/storage/`, `ui/saga/`): `RostoDetectorSalienciaTest`, `TokenImageStoreRecorteTest`, `CenarioImageStoreTest`, `FaxinaRetratosOrfaosTest`, `TokenRecursoTest`, `CameraHexTest`, `MenuTaticoTest`, `VfxMapperTest`, `DefesaPorTimingRegrasTest`.
+- **UI** (`ui/`): `PadraoDeTelaTest` **[+ Lote LAYOUT-2]** — ⚠️ **lê o código-fonte de `ui/`** e reprova `Card` cru em `LazyColumn`, o padding `8/6` à mão, botão abaixo de 48 dp, cor de botão fora do tema e `enum.name` num `Text`. Existe porque `UiTokens` e `AppListItemCard` estavam no projeto e **nenhum** dos seis diálogos os usava: componente que ninguém é obrigado a usar não é padrão, é sugestão. Carrega uma **dívida datada** de arquivos ainda não migrados, com limite que não cresce calado. Mais: `TextoDoResultadoTest`, `ClassificarModificadorTest`, `ModificadorDonoTest`, `OrigemDoBonusTest`.
+- **ViewModel** (`viewmodel/delegates/`): `NotaBonusManualTest`, `PvPfNegativoTest`.
+- **IA** (`data/network/`, `domain/`): `MestreIAToolsTest`, `ContextoEfeitosParaIATest`.
+- **Pré-requisitos**: `PreRequisitoPericiaComEspecializacaoTest`.
 
 ---
 
@@ -617,6 +790,9 @@ Cada variante tem seu próprio **source set** com um ponto de entrada de UI:
 ---
 
 ## 32. SAGA / NARRADOR / MOTOR DE COMBATE  [+ 2026-06-14, Lotes 349-370]
+
+- **`domain/combat/CombatSessionTipos.kt`** **[+ Lote MOTOR-5]** — Os **tipos de fronteira** do `CombatSession`: `HeroiPerfilCombate`, `AtaqueHeroi`, `DefesaHeroi`, `ResultadoCombate`, `ApararTipo`. Puro dado, sem lógica — separados do motor para ele parar de crescer.
+- **`domain/combat/SagaLog.kt`** **[+ Lote LOG-1]** — Espelha o log narrativo da luta no Logcat. **Como usar:** filtre por `tag:Saga_Combate` no Android Studio; toda linha que o motor escreve (NH, rolagem, dano, RD, condição, recusa por alcance) sai lá na ordem em que aconteceu.
 
 *Modo solo-RPG narrado por IA (3º modo de IA = `saga`). Fluxo de IA detalhado em `ARQUITETURA_MESTRE_IA.md §10`.
 Tudo em `domain/combat/` é Kotlin PURO (sem Android, determinístico por seed) e coberto por testes (§28).*
