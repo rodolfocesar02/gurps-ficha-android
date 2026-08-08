@@ -1125,3 +1125,61 @@ Este é o defeito dos seus prints de 03/08. Use o **Abafador de Mana**.
   continua dizendo **"1, 2 m"**.
 - **T-ED4g · botões** — ✅ *Cancelar* é contornado, *Salvar* é preenchido, com o
   mesmo espaço entre eles e a mesma distância da borda dos outros diálogos.
+
+---
+
+# Lotes MB-13, MB-2 e MB-8 — carga, rajada e enguiço
+
+> Gate: 1.846 testes, 0 falhas nas duas variantes.
+
+## Preparo
+
+Uma ficha com uma **arma automática** no inventário — serve a **ACI, 6,8 mm**
+(CdT 15, Recuo 2, NT 9) ou o **Rifle de Gauss, 4 mm** (CdT 12, Recuo 2, NT 10) —
+e a perícia **Armas de Fogo/NT**. E uma mochila pesada para testar a carga.
+
+## T-CG · 🔴 A carga aparece na Esquiva (MB-13)
+
+- **T-CG1 · ficha leve não mostra nada** — Com pouco equipamento: ✅ a notinha da
+  **Esquiva** **não** menciona carga. *(Carga zero não vira linha.)*
+- **T-CG2 · 🔴 carregue peso** — Adicione equipamento até a aba Equipamentos
+  acusar **Carga leve** (ou mais). Abra a notinha da **Esquiva**: ✅ aparece
+  **"Carga leve −1"**, com o nome do livro.
+- **T-CG3 · o número bate** — ✅ A Esquiva mostrada é a base **menos** o nível de
+  carga. Antes o app já descontava; a diferença é que agora **diz** que descontou.
+- **T-CG4 · ⚠️ só na Esquiva** — ✅ As notinhas de **Apara** e **Bloqueio** **não**
+  mencionam carga. Elas saem do NH da perícia, que a carga não toca.
+
+## T-RJ · Fogo contínuo (MB-2)
+
+- **T-RJ1 · rajada com acerto** — Ataque com a **ACI** (CdT 15, Recuo 2) e acerte
+  com folga. ✅ Abaixo do "Sucesso" aparece **"N tiros acertaram"** com a conta:
+  *"margem X ÷ Recuo 2 = … , + 1 do acerto"*.
+- **T-RJ2 · a conta confere** — Acertando **por 7** com Recuo 2: ✅ o texto diz
+  **4 tiros**.
+- **T-RJ3 · errou, nada acerta** — ✅ Numa falha, **não** aparece linha de tiros.
+- **T-RJ4 · ⚠️ arma de tiro único não vira rajada** — Ataque com uma **pistola de
+  CdT 1** ou com uma **espada**: ✅ **nenhuma** linha de rajada aparece.
+- **T-RJ5 · o teto dos tiros disparados** — Numa arma de **CdT 3** com margem
+  alta: ✅ o resultado para em **3**, e o texto diz *"limitado pelos 3 tiros
+  disparados"*.
+
+## T-MF · 🔴 Mau funcionamento (MB-8)
+
+⚠️ **É regra opcional e nasce DESLIGADA.** Se não houver interruptor visível
+ainda, este bloco fica para quando ele existir — anote e me avise.
+
+- **T-MF1 · desligado, nada muda** — Com a regra desligada: ✅ nenhuma rolagem de
+  ataque mostra enguiço, nem com 17 ou 18.
+- **T-MF2 · 🔴 ligado, o 17 enguiça** — Com a regra ligada e uma arma de **NT 6+**
+  (Mauf 17): role até sair **17 ou 18**. ✅ Aparece *"A arma enguiçou (saiu 17, o
+  Mauf desta arma é 17)"* mais o resultado da tabela.
+- **T-MF3 · ⚠️ enguiça mesmo tendo acertado** — Com **NH 20** e a regra ligada, um
+  **17** deve enguiçar do mesmo jeito. ✅ É o dado **cru** que manda, não o NH.
+- **T-MF4 · ⚠️ e a rajada some quando enguiça** — Nesse caso: ✅ **não** aparece
+  linha de "N tiros acertaram". Arma travada não cospe tiro.
+- **T-MF5 · arma antiga enguiça muito mais** — Com uma **Pistola de Pederneira**
+  (NT 4 → Mauf 14): ✅ um **14** já enguiça. *(É para ser assim: pólvora primitiva
+  falha o tempo todo.)*
+- **T-MF6 · corpo a corpo nunca enguiça** — Ataque com **espada**: ✅ nenhuma
+  linha de enguiço, em nenhum resultado.
