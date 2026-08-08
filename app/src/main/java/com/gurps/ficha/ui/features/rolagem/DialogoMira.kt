@@ -38,6 +38,7 @@ import com.gurps.ficha.domain.rules.DisopiaRules
 import com.gurps.ficha.domain.rules.ApontarRules
 import com.gurps.ficha.domain.rules.AvancarEAtacarRules
 import com.gurps.ficha.domain.rules.AtiradorRules
+import com.gurps.ficha.domain.rules.TamanhoDoAlvoRules
 import com.gurps.ficha.domain.rules.PacifismoRules
 import com.gurps.ficha.domain.rules.ZarolhoRules
 import androidx.compose.ui.text.style.TextAlign
@@ -102,6 +103,9 @@ fun DialogoMira(
     var usandoMiraAcoplada by remember { mutableStateOf(true) }
     // Lote ARMA-7: atacar em movimento (MB p.366).
     var avancarEAtacar by remember { mutableStateOf(false) }
+    // Lote MB-3: o Modificador de Tamanho do ALVO — o passo 2 do livro (p.549),
+    // que o app pulava. Começa no humano.
+    var indiceTamanhoAlvo by remember { mutableIntStateOf(TamanhoDoAlvoRules.INDICE_PADRAO) }
     var miope by remember { mutableStateOf(false) }
     // Lote D-MIRA: o app não sabe se o alvo é uma pessoa nem se o rosto está à
     // mostra — nenhuma das quatro isenções do livro está na ficha. Pergunta.
@@ -187,9 +191,16 @@ fun DialogoMira(
     val penalidadePacifismo = if (personagem != null) {
         PacifismoRules.penalidade(personagem, ataqueLetal, veORosto)
     } else 0
+    // Lote MB-3: o MT do alvo só existe em ataque à distância — o passo 2 do
+    // livro está na lista do tiro, não na do corpo a corpo.
+    val degrauTamanho = TamanhoDoAlvoRules.degrau(indiceTamanhoAlvo)
+    val modificadorTamanho = if (ehADistancia) {
+        TamanhoDoAlvoRules.modificadorNoAtaque(degrauTamanho.mt)
+    } else 0
+
     val nhComDistancia = nhBase + penalidadeDistancia + penalidadeGolpeRapido +
         bonusApontar + penalidadeZarolho + penalidadePacifismo + penalidadeAvancar +
-        bonusDoAtirador + extraDoArqueiro
+        bonusDoAtirador + extraDoArqueiro + modificadorTamanho
 
     FullscreenDialogContainer(onDismiss = onDismiss) {
         Column(modifier = Modifier.fillMaxSize()) {
@@ -226,6 +237,17 @@ fun DialogoMira(
                         )
                     },
                     onMostrarVelocidade = { onIndices(indiceDistancia, 0) }
+                )
+
+                // Lote MB-3: o tamanho do alvo, logo abaixo da distância — é a
+                // ordem do livro (passo 2 antes do passo 3) e a ordem em que o
+                // jogador pensa: "atirei no quê, a que distância".
+                LinhaDeTamanhoDoAlvo(
+                    degrau = degrauTamanho,
+                    onPasso = { delta ->
+                        indiceTamanhoAlvo = (indiceTamanhoAlvo + delta)
+                            .coerceIn(0, TamanhoDoAlvoRules.DEGRAUS.lastIndex)
+                    }
                 )
             }
 
@@ -661,6 +683,40 @@ private fun LinhaDeDistancia(
             }
 
             AvisoDeAlcance(metros, alcance)
+        }
+    }
+}
+
+/**
+ * **O tamanho do alvo** (Lote MB-3, MB p.549).
+ *
+ * ⚠️ Mostra o **exemplo** junto do número, e não só o MT. "MT −2" não diz nada a
+ * quem não decorou a tabela; "criança, cachorro médio" diz na hora — e é assim
+ * que o Mestre descreve o alvo na mesa.
+ */
+@Composable
+private fun LinhaDeTamanhoDoAlvo(
+    degrau: TamanhoDoAlvoRules.Degrau,
+    onPasso: (Int) -> Unit
+) {
+    Card(
+        modifier = Modifier.fillMaxWidth().padding(top = 4.dp),
+        shape = RoundedCornerShape(12.dp),
+        colors = appCardColors()
+    ) {
+        Column(modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp)) {
+            Passo(
+                rotulo = "Alvo",
+                valor = degrau.exemplo,
+                descricaoAcessivel = TamanhoDoAlvoRules.rotuloAcessivel(degrau.mt, degrau.exemplo),
+                penalidade = degrau.mt.takeIf { it != 0 },
+                onPasso = onPasso
+            )
+            Text(
+                TamanhoDoAlvoRules.rotulo(degrau.mt, degrau.exemplo),
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.outline
+            )
         }
     }
 }

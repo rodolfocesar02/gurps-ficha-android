@@ -1183,3 +1183,39 @@ ainda, este bloco fica para quando ele existir — anote e me avise.
   falha o tempo todo.)*
 - **T-MF6 · corpo a corpo nunca enguiça** — Ataque com **espada**: ✅ nenhuma
   linha de enguiço, em nenhum resultado.
+
+---
+
+# Lotes MB-3 e MB-5 — tamanho do alvo e prender o fôlego
+
+> Gate: 1.860 testes, 0 falhas nas duas variantes.
+
+## T-MT · 🔴 Modificador de Tamanho do alvo (MB-3)
+
+- **T-MT1 · a linha existe** — Aba Rolagem → ataque **à distância** → segure o NH.
+  ✅ Abaixo da linha de distância aparece **"Alvo"**, com `−` e `+` e o exemplo
+  ("humano adulto").
+- **T-MT2 · 🔴 alvo grande é mais FÁCIL** — Toque no `+` até chegar em **carro**
+  (MT +2): ✅ todos os NH da lista **sobem 2**, e o texto diz *"mais fácil de
+  acertar"*.
+- **T-MT3 · alvo pequeno é mais difícil** — Vá para **gato** (MT −4): ✅ os NH
+  **caem 4**, e o texto diz *"mais difícil"*.
+- **T-MT4 · o humano não modifica** — De volta a **humano adulto**: ✅ o NH volta
+  ao original e o texto diz *"sem modificador"*.
+- **T-MT5 · ⚠️ não aparece no corpo a corpo** — Ataque com **espada**: ✅ a linha
+  de Alvo **não** existe. É passo da lista do tiro, não da arma branca.
+- **T-MT6 · soma com o resto** — Com o alvo em **carro (+2)** e a distância em
+  **20 m (−6)**: ✅ o NH final reflete os dois.
+
+## T-FO · Prender o fôlego (MB-5)
+
+⚠️ **Este lote entregou só a regra**, sem tela — ela vai entrar no botão **PF**
+do MB-6. Se ainda não houver onde ver na tela, este bloco espera esse lote.
+
+- **T-FO1** — Com **HT 12** parado: ✅ **120 segundos (2 min)**.
+- **T-FO2 · 🔴 a diferença é de dez vezes** — Mesma HT 12 **lutando**: ✅ apenas
+  **12 segundos**. *(É a razão de a regra existir na tela: quem decora "HT×10"
+  acha que tem dois minutos.)*
+- **T-FO3** — Hiperventilando, parado, HT 12: ✅ **180 segundos**.
+- **T-FO4** — O tempo curto aparece também em **turnos**: ✅ *"12 segundos
+  (= 12 turnos)"*.

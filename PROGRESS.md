@@ -5848,3 +5848,37 @@ No plano eu escrevi que faltava o campo `Mauf` nas 62 armas e que seria preciso 
 **Testes:** `TiroContinuoRulesTest`, 16 casos, incluindo a varredura das 62 armas e a invariante "mais margem nunca acerta menos tiros". Gate **1846** nas duas variantes.
 
 - **Status:** ✅ Build OK nas 2 variantes · lint OK · gate verde · ⏭️ **PENDENTE: teste no aparelho**.
+
+---
+
+### Lotes MB-3 e MB-5 — tamanho do alvo e prender o fôlego — 03 de Agosto de 2026 (versão 6.6-MB2)
+
+#### 🔴 MB-3 — o passo 2 que o app pulava
+
+O livro numera o ataque à distância (MB p.549): 1. NH básico · **2. Modificador de Tamanho do alvo** · 3. distância e velocidade · 4. modificadores condicionais.
+
+O app fazia o 1, o 3 e parte do 4. **O 2 não existia** — um alvo do tamanho de um cavalo era tão difícil de acertar quanto um rato.
+
+Agora há um seletor no diálogo de mira, logo abaixo da distância — a ordem do livro e a ordem em que o jogador pensa ("atirei no quê, a que distância").
+
+⚠️ **O sinal é a única coisa que dá para errar aqui, e é contraintuitivo:** MT **positivo** é alvo **grande**, e alvo grande é **mais fácil** de acertar — então soma no NH. Em quase todo o resto do GURPS um número negativo é penalidade *sua*; aqui ele descreve *o alvo*. O rótulo diz isso com todas as letras.
+
+⚠️ **Mostra o exemplo, não só o número.** "MT −2" não diz nada a quem não decorou a tabela; *"criança, cachorro médio"* diz na hora — e é assim que o Mestre descreve o alvo na mesa.
+
+E só aparece em ataque à distância: o passo 2 está na lista do tiro, não na do corpo a corpo.
+
+#### MB-5 — prender o fôlego (MB p.356)
+
+> | Sem esforço | HT×10 s | Esforço moderado | HT×4 s | Esforço pesado | HT s |
+>
+> Multiplique por 1,5 hiperventilando, ou por 2,5 com oxigênio puro.
+
+⚠️ **A diferença entre parado e lutando é de dez vezes.** Uma HT 12 aguenta **120 segundos** parada e **12 segundos** lutando. Quem decora só "HT vezes dez" morre achando que tinha dois minutos — e é por isso que a regra vale uma tela.
+
+O tempo curto aparece também em **turnos**, porque é essa a leitura que importa quando alguém está sendo estrangulado. E arredonda **para baixo**: meio segundo generoso numa conta de fôlego mata alguém.
+
+⚠️ **A regra ficou pronta e ainda não tem tela** — ela entra no botão **PF** do MB-6, que é o lote seguinte. O teste já a cobre.
+
+**Testes:** `FolegoETamanhoTest`, 14 casos. Gate **1860** nas duas variantes.
+
+- **Status:** ✅ Build OK nas 2 variantes · lint OK · gate verde · ⏭️ **PENDENTE: teste no aparelho** (T-MT; o T-FO espera o MB-6).
