@@ -1,5 +1,8 @@
 package com.gurps.ficha.domain.combat
 
+import com.gurps.ficha.domain.rules.DanoTipo
+import com.gurps.ficha.domain.rules.ToleranciaFerimentos
+
 import com.gurps.ficha.domain.rules.LocalAtaque
 
 import com.gurps.ficha.domain.roll.CriticoRules

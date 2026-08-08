@@ -453,6 +453,12 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
     fun atualizarModDeslocamentoBasico(v: Int) { personagem = attributeDelegate.atualizarModDeslocamentoBasico(personagem, v) }
     fun atualizarPontosVidaRolagemAtual(v: Int?) { personagem = attributeDelegate.atualizarPontosVidaRolagemAtual(personagem, v) }
     fun atualizarPontosFadigaRolagemAtual(v: Int?) { personagem = attributeDelegate.atualizarPontosFadigaRolagemAtual(personagem, v) }
+    fun aplicarPainelDeFadiga(quantidades: Map<String, Int>, pfNovo: Int, pvPerdidos: Int) {
+        personagem = attributeDelegate.aplicarPainelDeFadiga(personagem, quantidades, pfNovo, pvPerdidos); salvarFicha()
+    }
+    fun aplicarFerimentoPorLocal(pvNovo: Int, guardadas: Set<String>) {
+        personagem = attributeDelegate.aplicarFerimentoPorLocal(personagem, pvNovo, guardadas); salvarFicha()
+    }
     fun atualizarModeloRacial(novo: ModeloRacial) { personagem = attributeDelegate.atualizarModeloRacial(personagem, novo); salvarFicha() }
 
     fun injetarEventoMestreIA(texto: String) = iaDelegate.injetarEvento(texto)

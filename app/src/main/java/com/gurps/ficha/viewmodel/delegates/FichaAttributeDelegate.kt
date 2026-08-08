@@ -76,7 +76,49 @@ class FichaAttributeDelegate {
         val pfMax = personagem.pontosFadiga.coerceAtLeast(1)
         return personagem.copy(pontosFadigaRolagemAtual = valor?.coerceIn(-pfMax, pfMax * 5))
     }
-        
+
+    /**
+     * Lote MB-6: salva o painel do botão PF de uma vez — a origem do cansaço, o
+     * PF resultante e o PV que a sede severa levou junto.
+     *
+     * ⚠️ Vai tudo numa chamada só de propósito. Em dois `copy()` separados o
+     * segundo leria o personagem de antes do primeiro e desfaria a metade da
+     * alteração — é o mesmo tropeço de gravar duas vezes o mesmo formulário.
+     */
+    fun aplicarPainelDeFadiga(
+        personagem: Personagem,
+        quantidades: Map<String, Int>,
+        pfNovo: Int,
+        pvPerdidos: Int
+    ): Personagem {
+        val pfMax = personagem.pontosFadiga.coerceAtLeast(1)
+        val pvMax = personagem.pontosVida.coerceAtLeast(1)
+        val pvAtual = personagem.pontosVidaRolagemAtual ?: personagem.pontosVida
+        return personagem.copy(
+            fadigaPorFonte = quantidades.filterValues { it > 0 },
+            pontosFadigaRolagemAtual = pfNovo.coerceIn(-pfMax, pfMax * 5),
+            pontosVidaRolagemAtual = if (pvPerdidos > 0) {
+                (pvAtual - pvPerdidos).coerceIn(-pvMax * 10, pvMax * 5)
+            } else {
+                personagem.pontosVidaRolagemAtual
+            }
+        )
+    }
+
+    /** Lote MB-7: o PV depois do ferimento + quais peças ficaram na mochila. */
+    fun aplicarFerimentoPorLocal(
+        personagem: Personagem,
+        pvNovo: Int,
+        guardadas: Set<String>
+    ): Personagem {
+        val pvMax = personagem.pontosVida.coerceAtLeast(1)
+        return personagem.copy(
+            pontosVidaRolagemAtual = pvNovo.coerceIn(-pvMax * 10, pvMax * 5),
+            armadurasGuardadas = guardadas.toList().sorted()
+        )
+    }
+
+
     fun atualizarModeloRacial(personagem: Personagem, novoModelo: ModeloRacial): Personagem {
         val novaAparencia = if (novoModelo.descricao.isNotBlank() && personagem.aparencia.isBlank()) {
             novoModelo.descricao

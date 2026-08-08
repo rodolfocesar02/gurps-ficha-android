@@ -1,5 +1,8 @@
 package com.gurps.ficha.viewmodel.delegates
 
+import com.gurps.ficha.domain.rules.DanoTipo
+import com.gurps.ficha.domain.rules.ToleranciaFerimentos
+
 import com.gurps.ficha.domain.rules.LocalAtaque
 
 import android.content.Context

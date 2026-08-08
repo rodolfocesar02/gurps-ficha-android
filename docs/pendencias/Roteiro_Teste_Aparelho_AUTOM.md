@@ -1298,3 +1298,88 @@ esperando, como o T-FO do MB-5.
 - **T-QD6 · o aviso da Acrobacia aparece** — ✅ *"Um teste de Acrobacia
   bem-sucedido reduz o dano como se a queda fosse 5 m mais curta"*. Não é
   automático de propósito: depende do chão e do Mestre.
+
+---
+
+# Lotes MB-6 e MB-7 — os botões PF e PV
+
+> Gate: 1.960 testes, 0 falhas nas duas variantes.
+
+> ⚠️ **Este lote mexe no que a ficha GUARDA**, não só no que ela calcula. São dois
+> campos novos no personagem. Antes de testar, abra uma ficha antiga e confira que
+> ela abre normalmente — é a conferência mais importante do lote.
+
+## T-PF · O botão PF (fadiga)
+
+- **T-PF0 · a ficha antiga abre** — ✅ Abra uma ficha salva antes deste lote:
+  nenhum erro, PF igual ao que era.
+- **T-PF1 · a palavra virou botão** — Na aba Rolagem, toque em **PF**: ✅ abre o
+  painel *Pontos de Fadiga*. *(Na variante PraCego, é o botão **Fadiga**.)*
+- **T-PF2 · o deslize continua funcionando** — ✅ Arrastar o dedo no **número**
+  ainda muda 1 PF por vez, sem abrir diálogo. Quem quer tirar 1 PF não passa por
+  painel.
+- **T-PF3 · marcar desce o PF** — Marque **Refeições perdidas** e ponha **3** →
+  ✅ o topo mostra *"PF ficará em X"*, 3 abaixo do máximo. Salve: ✅ a ficha
+  mostra o número novo.
+- **T-PF4 · desmarcar devolve** — Reabra, desmarque, salve: ✅ o PF volta.
+- **T-PF5 · 🔴 a origem muda a recuperação** — Com fome marcada, o rodapé diz
+  *"⚠️ SÓ com um dia de descanso… com três refeições completas"*. Marque também
+  **Esforço**: ✅ aparecem **duas linhas separadas**, não um total só. *(É a razão
+  de o painel existir: descansar não cura fome.)*
+- **T-PF6 · 🔴 o PF gasto fora do painel NÃO volta de graça** — A conferência mais
+  importante. Com PF cheio, **lance uma magia** que custe 3 PF (ou baixe 3 no
+  deslize). Agora abra o painel: ✅ a linha **Perda anotada à mão** já vem com
+  **3**. Salve sem mexer em nada: ✅ o PF continua o mesmo. *(Se ele subir, o
+  painel apagou a magia.)*
+- **T-PF7 · sede severa tira PV junto** — Marque **⚠️ Menos de 1 litro no dia**
+  com **2**: ✅ aparece o aviso de **2 PV a menos** e, ao salvar, o **PV** também
+  cai.
+- **T-PF8 · os avisos do livro** — Deixe o PF previsto em **0**: ✅ aparece o
+  aviso de que cada PF a mais também custa 1 PV e exige teste de Vontade.
+- **T-PF9 · o aviso de sono** — Marque **Sono perdido** com metade do PF máximo:
+  ✅ aparece o teste de Vontade a cada 2 h. Com uma ficha que tenha **Dorminhoco**:
+  ✅ a penalidade é **-3** em vez de -2.
+- **T-PF10 · mostrar as regras** — Toque em **Mostrar as regras**: ✅ cada linha
+  ganha a explicação com a página do livro.
+
+## T-FE · O botão PV (ferimento por local)
+
+- **T-FE1 · abre pela palavra** — Toque em **PV**: ✅ abre o painel *Ferimento*.
+  *(PraCego: botão **Ferimento**.)*
+- **T-FE2 · a conta aparece escrita** — Local **Torso**, tipo **Corte**, dano
+  **10**, sem armadura: ✅ mostra **−15 PV** e a conta *"10 − RD 0 = 10 × 1.5 =
+  15"*.
+- **T-FE3 · 🔴 a RD entra ANTES do multiplicador** — Vista uma armadura de **RD
+  4** no torso e repita: ✅ dá **9**, não 11. *(11 seria multiplicar antes de tirar
+  a RD — o erro mais comum desta conta.)*
+- **T-FE4 · 🔴 comprar não é vestir** — Desmarque a armadura na lista: ✅ a RD cai
+  para 0 e o dano volta a 15. **Feche o app e abra de novo**: ✅ ela continua
+  desmarcada.
+- **T-FE5 · a peça certa para o local certo** — Troque o local para **Crânio**:
+  ✅ a armadura de torso **some** da lista e aparece *"Nenhuma peça da ficha
+  cobre Crânio"* (a não ser que haja elmo).
+- **T-FE6 · ⚠️ os vitais são cobertos pela armadura do torso** — Local
+  **Vitais**: ✅ a peça de torso **aparece** e a RD conta.
+- **T-FE7 · 🔴 o crânio tem RD 2 de graça** — Local **Crânio**, dano **2**,
+  perfurante, sem elmo: ✅ **0 PV**. O mesmo golpe no **Olho**: ✅ passa. *(O olho
+  não herda a RD do crânio.)*
+- **T-FE8 · 🔴 o membro tem teto — e o resto é desperdiçado** — Personagem de
+  **PV 10**, local **Braço**, **9** de contusão: ✅ perde **6 PV** (não 9) e
+  aparece o aviso dos pontos desperdiçados + *braço incapacitado*. *(É o exemplo
+  do livro, MB p.421.)*
+- **T-FE9 · ⚠️ com PV par confira o número** — Personagem de **PV 14**, braço,
+  **11** de contusão: ✅ perde **8**, não 7. *(Este é o ponto onde arredondar "para
+  cima" erra.)*
+- **T-FE10 · decepamento** — Mesmo PV 10, braço, **20** de contusão: ✅ aparece
+  **MEMBRO DESTRUÍDO**, e o PV perdido **continua 6**.
+- **T-FE11 · atravessar um braço não mata** — Braço, **10** de **Perfuração**:
+  ✅ o multiplicador usado é **×1**, não ×2. No **Torso**, o mesmo golpe: ✅ ×2.
+- **T-FE12 · a virilha e o choque dobrado** — Local **Virilha**, **Contusão**:
+  ✅ aparece a caixinha *Humanoide macho*. Marcada: ✅ o choque pode chegar a
+  **−8**. Desmarcada: ✅ para em **−4**.
+- **T-FE13 · o teste de nocaute com o modificador certo** — Golpe grave no
+  **Crânio**: ✅ *"Teste de HT (-10)"*. No **Rosto**: ✅ **(-5)**.
+- **T-FE14 · aplicar grava** — Toque em **Aplicar**: ✅ o PV da ficha cai. Feche e
+  reabra o app: ✅ continua caído.
+- **T-FE15 · os marcos de PV baixo** — Leve o PV abaixo de 1/3: ✅ aparece o aviso
+  de Deslocamento e Esquiva pela metade. Abaixo de 0: ✅ o teste de HT por turno.

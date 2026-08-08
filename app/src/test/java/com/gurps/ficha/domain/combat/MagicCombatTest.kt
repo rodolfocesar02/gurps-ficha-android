@@ -1,5 +1,8 @@
 package com.gurps.ficha.domain.combat
 
+import com.gurps.ficha.domain.rules.DanoTipo
+import com.gurps.ficha.domain.rules.ToleranciaFerimentos
+
 import com.gurps.ficha.domain.magic.ContextoConjuracao
 import com.gurps.ficha.domain.magic.CondicaoBanda
 import com.gurps.ficha.domain.magic.MagiaMecanica

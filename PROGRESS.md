@@ -5962,3 +5962,118 @@ monotonicidade (cair de mais alto nunca é mais lento nem dói menos).
 Sem tela neste lote: a queda entra no botão **PV** (MB-7).
 
 - **Status:** ✅ Build OK nas 2 variantes · lint OK · gate **1894** · ⏭️ **PENDENTE: teste no aparelho** (T-QD, depende do MB-7).
+
+---
+
+## 6.9-MB5 — Lotes MB-6 e MB-7: os botões PF e PV
+
+As duas palavras do cartão de status viraram botão. São os **únicos lotes da
+lista que mexem no que a ficha guarda**, e não só no que ela calcula — por isso
+foram feitos como um par, no mesmo lote.
+
+### MB-6 — o botão PF (MB p.426-428)
+
+#### 🔴 PF perdido não é tudo igual
+
+É o achado do lote, e ele contraria o instinto de quem só olha o número. **Dez PF
+podem ser dez coisas diferentes:**
+
+> Um personagem só pode se recuperar da perda de fadiga provocada por **sono
+> perdido** ao **dormir**. (…) Um personagem também precisa de **comida ou água**
+> para recuperar PF perdido por fome ou desidratação.
+
+Descansar dez minutos recupera 1 PF de esforço e **zero** PF de fome. Um herói
+faminto pode sentar a tarde inteira e não subir um ponto — e sem esta tela ele
+descobre isso na pior hora possível. Por isso o painel guarda a **origem** de
+cada ponto, e o rodapé diz, para cada grupo, o que é preciso para recuperar.
+
+#### 🔴 A reconciliação: o painel não devolve PF de graça
+
+O PF também cai por fora — magia, combate, o deslize no cartão. Se o painel
+simplesmente escrevesse `PF máximo − a soma da lista`, todo PF gasto fora dele
+**voltaria** na primeira vez que o jogador abrisse a tela para marcar uma refeição
+perdida.
+
+Então, ao abrir, o que falta e a lista **não explica** cai numa linha visível
+chamada *Perda anotada à mão*. Nada some, e nada aparece de graça. Há um teste que
+varre todos os PF possíveis de uma ficha e exige que abrir e fechar o painel sem
+mexer em nada **não mude o número**.
+
+### MB-7 — o botão PV (MB p.399-400 e 419-422)
+
+#### 🔴 O teto do membro é `PV/2 + 1`, não `PV/2`
+
+O livro dá o **mínimo necessário para incapacitar**, e ele é o menor inteiro
+**acima** da fração. Está no exemplo trabalhado da própria página:
+
+> No caso de Friedrick, PV/2 é 7. **Dano maior que PV/2 é 8 PV**, então ele perde
+> apenas 8 PV.
+
+Não 7 — **8**. E de novo na p.421: *"se um homem com 10 PV sofrer 9 pontos de dano
+no braço direito, ele só perde 6 PV"*.
+
+⚠️ Arredondar "para cima" **acerta com PV ímpar e erra 1 ponto com PV par** — ou
+seja, em metade dos personagens, silenciosamente. A conta aqui é
+`floor(PV × fração) + 1`, com os dois exemplos do livro como teste.
+
+**Isto revelou um bug no motor de combate da Saga:** o `HitLocationRules` usa
+`ceil(pv × 0,5)` e desconta 1 PV a menos do que o livro manda ao incapacitar um
+membro — e o teste dele grava o número errado (`assertEquals(5, …)` onde o livro
+diz 6). Não foi corrigido aqui porque é escopo da Saga e mexe nas expectativas dos
+testes de combate; ficou registrado como tarefa própria.
+
+#### ⚠️ A ordem da conta, que não é óbvia
+
+```
+dano bruto − RD (armadura + a natural do crânio)
+           → × multiplicador (do tipo E do local)
+           → teto do membro (o excesso é DESPERDIÇADO)
+```
+
+Quem multiplica antes de tirar a RD infla o ferimento; quem aplica o teto antes de
+multiplicar **nunca consegue decepar nada**, porque o gatilho do decepamento é o
+dobro do teto. Há teste para as duas inversões.
+
+#### 🔴 A RD vem das armaduras que ele está VESTINDO
+
+A ficha sabia quais peças o personagem comprou e o que cada uma cobre. O que ela
+não sabia é se ele está **usando** — e comprar não é vestir. Cada peça que cobre o
+local escolhido aparece com a sua caixinha, e a marca fica salva.
+
+⚠️ O campo guarda o que está **guardado**, não o que está vestido. É de propósito:
+lista vazia = vestindo tudo, que mantém **toda ficha existente com a RD que já
+tinha**. Guardar o inverso deixaria todo personagem nu de repente. Há teste
+travando essa inversão.
+
+#### ⚠️ O tradutor de "onde a armadura cobre"
+
+O catálogo tem `locaisNorm` normalizado, mas o que sobra dentro do `Equipamento` é
+o texto livre: *"corpo, membros"*, *"traje completo"* e — literalmente —
+**`"crnio"`** e **`"pescoo"`**, porque a extração do livro comeu o `â` e o `ç` em 9
+itens.
+
+O teste que importa não é o das dez asserções bonitas: é a **varredura dos 72
+itens reais**, exigindo que o tradutor devolva exatamente o `locaisNorm` que o
+próprio catálogo publica. Confirmei com uma sonda que a varredura realmente lê o
+arquivo — teste que não acha o asset passa em silêncio.
+
+E uma linha que não é óbvia: **quem protege o tronco protege os vitais**. O livro
+não vende peitoral "para os órgãos vitais". Sem ela, um personagem de cota de malha
+levaria o triplo de dano perfurante nos vitais como se estivesse nu.
+
+### ⚠️ A fiação, que nenhum teste de regra pega
+
+A ligação passa por quatro arquivos e os dois callbacks têm valor padrão `{}` — um
+`= {}` esquecido no meio compila, roda e **não faz nada**. `BotoesPvPfLigadosTest`
+lê o código-fonte e confere: a palavra clicável, o repasse no painel do meio, a
+chamada dos diálogos, o `salvarFicha()` no ViewModel e o botão da variante PraCego.
+
+Os dois diálogos novos entraram na varredura do `PadraoDeTelaTest` por um conjunto
+`JA_NASCEM_NO_PADRAO` — a pasta `features/` inteira está isenta, e tela nova não
+pode entrar de carona nessa isenção. É a correção do tropeço do LAYOUT-5.
+
+**Testes:** `FadigaRulesTest`, `FerimentoPorLocalRulesTest`,
+`CoberturaDaArmaduraTest`, `BotoesPvPfLigadosTest`. Gate **1960** nas duas
+variantes (eram 1894).
+
+- **Status:** ✅ Build OK nas 2 variantes · lint OK · gate **1960** · ⏭️ **PENDENTE: teste no aparelho** (T-PF e T-FE) — ⚠️ **lote que mexe na persistência: confira primeiro que uma ficha antiga abre normalmente.**

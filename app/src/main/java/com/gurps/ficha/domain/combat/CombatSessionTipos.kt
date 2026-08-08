@@ -1,5 +1,7 @@
 package com.gurps.ficha.domain.combat
 
+import com.gurps.ficha.domain.rules.DanoTipo
+
 /**
  * Lote MOTOR-5: os TIPOS de fronteira do `CombatSession` (o que o controller passa para dentro e o
  * que sai como resultado), separados do motor. São puro dado — sem lógica — e o `CombatSession`

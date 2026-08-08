@@ -69,7 +69,10 @@ fun PainelAtributosEStatus(
     onEditPv: () -> Unit,
     onEditPf: () -> Unit,
     onAjustarPv: (Boolean) -> Unit,
-    onAjustarPf: (Boolean) -> Unit
+    onAjustarPf: (Boolean) -> Unit,
+    // Lotes MB-6 e MB-7: os painéis que abrem ao tocar nas palavras PV e PF.
+    onAbrirPainelPv: () -> Unit = {},
+    onAbrirPainelPf: () -> Unit = {}
 ) {
     Card(
         modifier = Modifier.fillMaxWidth(),
@@ -156,7 +159,9 @@ fun PainelAtributosEStatus(
                 onEditPv = onEditPv,
                 onEditPf = onEditPf,
                 onAjustarPv = onAjustarPv,
-                onAjustarPf = onAjustarPf
+                onAjustarPf = onAjustarPf,
+                onAbrirPainelPv = onAbrirPainelPv,
+                onAbrirPainelPf = onAbrirPainelPf
             )
         }
     }

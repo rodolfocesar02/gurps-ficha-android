@@ -65,8 +65,25 @@ class PadraoDeTelaTest {
         "DialogsMestreIA.kt"
     )
 
+    /**
+     * ⚠️ **Arquivos de dentro de `features/` que JÁ nascem no padrão.**
+     *
+     * A pasta inteira está fora da varredura porque a maior parte dela ainda não
+     * foi migrada — mas telas **novas** não podem entrar de carona nessa isenção.
+     * Este conjunto as puxa de volta para dentro da rede.
+     *
+     * É a correção do tropeço do LAYOUT-5: a tela de mágicas foi migrada e a
+     * exclusão continuou de pé, então o teste ficou verde sem nunca olhar para
+     * ela. **Migrar sem trazer o arquivo para a varredura é migrar sem rede.**
+     */
+    private val JA_NASCEM_NO_PADRAO = setOf(
+        "DialogoFadiga.kt",     // Lote MB-6
+        "DialogoFerimento.kt"   // Lote MB-7
+    )
+
     private fun relevantes() = arquivos().filterNot { f ->
         val caminho = f.path.replace('\\', '/')
+        if (f.name in JA_NASCEM_NO_PADRAO) return@filterNot false
         f.name in DO_PROPRIO_PADRAO || f.name in DIVIDA_ATE_MIGRAR ||
             // A tela do combate tático da Saga é outro projeto de UI (grade de
             // hexágonos, tokens, câmera) e não compartilha nada com os diálogos

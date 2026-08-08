@@ -73,6 +73,15 @@ data class Personagem(
     // Rolagem (estado de sessao salvo por ficha)
     var pontosVidaRolagemAtual: Int? = null,
     var pontosFadigaRolagemAtual: Int? = null,
+    // Lote MB-6: DE ONDE veio o cansaco (`id da fonte -> quantas unidades`). O
+    // total ja esta no pontosFadigaRolagemAtual; isto guarda a ORIGEM, porque PF
+    // de fome nao volta com descanso e PF de sono nao volta com comida.
+    // Aditivo -> ficha antiga desserializa vazio e o painel se reconcilia sozinho.
+    var fadigaPorFonte: Map<String, Int> = emptyMap(),
+    // Lote MB-7: as armaduras que estao GUARDADAS (compradas, mas nao vestidas).
+    // Guarda o inverso de proposito: lista vazia = vestindo tudo, que e o caso
+    // comum E o que mantem toda ficha existente com a RD que ja tinha.
+    var armadurasGuardadas: List<String> = emptyList(),
     // Saga (Lote 423): sangramento ATIVO persistido entre cenas/combates (MB p.420). O combate restaura ao
     // iniciar; o passar_tempo do Narrador processa os testes fora de combate. Aditivo — ficha antiga = false/null.
     var sagaSangrando: Boolean = false,

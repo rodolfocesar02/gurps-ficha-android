@@ -140,6 +140,10 @@ fun TabRolagem(viewModel: FichaViewModel) {
     val modificadoresTecnica = remember { mutableStateMapOf<String, Int>() }
     var modificadorGlobalPraCego by remember { mutableIntStateOf(0) }
 
+    // Lotes MB-6 e MB-7: os dois painéis novos das palavras PV e PF.
+    var showFadigaDialog by remember { mutableStateOf(false) }
+    var showFerimentoDialog by remember { mutableStateOf(false) }
+
     val pvFixoRolagem = p.pontosVida
     val pvAtualRolagem = p.pontosVidaRolagemAtual ?: p.pontosVida
     val pfAtualRolagem = p.pontosFadigaRolagemAtual ?: p.pontosFadiga
@@ -785,7 +789,9 @@ fun TabRolagem(viewModel: FichaViewModel) {
             onEditPv = { showEditarPvRolagemDialog = true },
             onEditPf = { showEditarPfRolagemDialog = true },
             onAjustarPv = { inc -> ajustarPvRolagemPorSwipe(incrementar = inc) },
-            onAjustarPf = { inc -> ajustarPfRolagemPorSwipe(incrementar = inc) }
+            onAjustarPf = { inc -> ajustarPfRolagemPorSwipe(incrementar = inc) },
+            onAbrirPainelPv = { showFerimentoDialog = true },
+            onAbrirPainelPf = { showFadigaDialog = true }
         )
 
         DefesasAtivasQuickRollPanel(
@@ -1321,6 +1327,37 @@ fun TabRolagem(viewModel: FichaViewModel) {
         onFecharPv = { pvAtualInput = pvAtualRolagem.toString(); showEditarPvRolagemDialog = false },
         onFecharPf = { pfAtualInput = pfAtualRolagem.toString(); showEditarPfRolagemDialog = false }
     )
+
+    // Lote MB-6: o botão PF. A ORIGEM do cansaço, não só o total — PF de fome
+    // não volta com descanso e PF de sono não volta com comida (MB p.428).
+    if (showFadigaDialog) {
+        DialogoFadiga(
+            pfMax = pfFixoRolagem,
+            pfAtual = pfAtualRolagem,
+            quantidadesSalvas = p.fadigaPorFonte,
+            dorminhoco = p.desvantagensTotais.any { it.definicaoId == "dorminhoco" },
+            onSalvar = { quantidades, pfNovo, pvPerdidos ->
+                viewModel.aplicarPainelDeFadiga(quantidades, pfNovo, pvPerdidos)
+                showFadigaDialog = false
+            },
+            onFechar = { showFadigaDialog = false }
+        )
+    }
+
+    // Lote MB-7: o botão PV. Local do corpo + RD das peças vestidas.
+    if (showFerimentoDialog) {
+        DialogoFerimento(
+            pvInicial = pvFixoRolagem,
+            pvAtual = pvAtualRolagem,
+            equipamentos = p.equipamentos,
+            guardadas = p.armadurasGuardadas.toSet(),
+            onSalvar = { pvNovo, guardadas, _ ->
+                viewModel.aplicarFerimentoPorLocal(pvNovo, guardadas)
+                showFerimentoDialog = false
+            },
+            onFechar = { showFerimentoDialog = false }
+        )
+    }
 
     descricaoDialog?.let { dialog ->
         RolagemDescricaoDialogModal(

@@ -1,10 +1,11 @@
 package com.gurps.ficha.model
 
+import com.gurps.ficha.domain.rules.ToleranciaFerimentos
+
 import com.google.gson.Gson
 import com.gurps.ficha.domain.combat.Combatente
 import com.gurps.ficha.domain.combat.NpcMagia
 import com.gurps.ficha.domain.combat.NpcStats
-import com.gurps.ficha.domain.combat.ToleranciaFerimentos
 
 /**
  * Lote 363 (Saga B6): catálogo de criaturas (bestiário) carregado de assets/bestiario.v1.json.

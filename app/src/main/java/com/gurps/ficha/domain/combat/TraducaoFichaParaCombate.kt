@@ -1,5 +1,7 @@
 package com.gurps.ficha.domain.combat
 
+import com.gurps.ficha.domain.rules.DanoTipo
+
 import com.gurps.ficha.domain.filters.CatalogFilters
 import com.gurps.ficha.model.ArmaCatalogoItem
 import com.gurps.ficha.model.Equipamento

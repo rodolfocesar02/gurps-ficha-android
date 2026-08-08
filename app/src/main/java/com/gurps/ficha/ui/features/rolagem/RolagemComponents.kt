@@ -16,6 +16,7 @@ import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -225,7 +226,11 @@ fun PvPfQuickRollPanel(
     onEditPv: () -> Unit,
     onEditPf: () -> Unit,
     onAjustarPv: (Boolean) -> Unit,
-    onAjustarPf: (Boolean) -> Unit
+    onAjustarPf: (Boolean) -> Unit,
+    // Lotes MB-6 e MB-7: as palavras "PV" e "PF" viraram botao. O numero continua
+    // sendo o deslize de sempre -- quem so quer tirar 1 PV nao passa por dialogo.
+    onAbrirPainelPv: () -> Unit = {},
+    onAbrirPainelPf: () -> Unit = {}
 ) {
     if (isPraCegoVariant) {
         Row(
@@ -247,6 +252,14 @@ fun PvPfQuickRollPanel(
                     ) {
                         Text("Editar PV")
                     }
+                    TextButton(
+                        onClick = onAbrirPainelPv,
+                        modifier = Modifier.semantics {
+                            contentDescription = "Registrar ferimento por local do corpo"
+                        }
+                    ) {
+                        Text("Ferimento")
+                    }
                 }
             }
             Card(
@@ -263,6 +276,14 @@ fun PvPfQuickRollPanel(
                         modifier = Modifier.semantics { contentDescription = "Editar pontos de fadiga da rolagem" }
                     ) {
                         Text("Editar PF")
+                    }
+                    TextButton(
+                        onClick = onAbrirPainelPf,
+                        modifier = Modifier.semantics {
+                            contentDescription = "Abrir as origens da fadiga: fome, sede, sono e esforco"
+                        }
+                    ) {
+                        Text("Fadiga")
                     }
                 }
             }
@@ -298,7 +319,16 @@ fun PvPfQuickRollPanel(
                     horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text("PV", style = cardTitleStyle, fontWeight = FontWeight.SemiBold)
+                    Text(
+                        "PV",
+                        style = cardTitleStyle,
+                        fontWeight = FontWeight.SemiBold,
+                        textDecoration = TextDecoration.Underline,
+                        color = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier
+                            .semantics { contentDescription = "Registrar ferimento por local do corpo" }
+                            .clickable { onAbrirPainelPv() }
+                    )
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
                         "$pvFixo/$pvAtual",
@@ -332,7 +362,16 @@ fun PvPfQuickRollPanel(
                     horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text("PF", style = cardTitleStyle, fontWeight = FontWeight.SemiBold)
+                    Text(
+                        "PF",
+                        style = cardTitleStyle,
+                        fontWeight = FontWeight.SemiBold,
+                        textDecoration = TextDecoration.Underline,
+                        color = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier
+                            .semantics { contentDescription = "Abrir as origens da fadiga" }
+                            .clickable { onAbrirPainelPf() }
+                    )
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
                         "$pfFixo/$pfAtual",

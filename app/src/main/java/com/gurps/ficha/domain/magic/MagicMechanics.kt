@@ -1,5 +1,7 @@
 package com.gurps.ficha.domain.magic
 
+import com.gurps.ficha.domain.rules.DanoTipo
+
 /**
  * Lote AR-1 (mecânica estruturada das magias): a `descricao` de cada feitiço no catálogo é FIEL ao
  * livro, mas é PROSA — o motor não a executa. Este é o campo `mecanica` legível pela máquina, ao lado

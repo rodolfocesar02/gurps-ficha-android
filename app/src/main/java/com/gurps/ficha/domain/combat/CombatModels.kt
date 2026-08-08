@@ -1,5 +1,7 @@
 package com.gurps.ficha.domain.combat
 
+import com.gurps.ficha.domain.rules.ToleranciaFerimentos
+
 /**
  * Lote 359 (Saga B1): modelos do combate GURPS 4ª ed. Kotlin PURO — nenhuma dependência
  * de Android nem da ficha; o herói é convertido para Combatente em lote posterior.

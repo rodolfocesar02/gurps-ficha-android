@@ -1,6 +1,8 @@
 package com.gurps.ficha.domain.combat
 
+import com.gurps.ficha.domain.rules.DanoTipo
 import com.gurps.ficha.domain.rules.LocalAtaque
+import com.gurps.ficha.domain.rules.ToleranciaFerimentos
 
 import kotlin.math.ceil
 import kotlin.math.floor
@@ -13,26 +15,6 @@ import kotlin.math.floor
  * Ordem de cálculo (igual ao JS): RD do local → dano penetrante → multiplicador (com
  * overrides de crânio/vitais) → limite de membro → PV a subtrair.
  */
-
-/** Tipos de dano (chaves do DAMAGE_RULES da Mesa Virtual). Multiplicador BASE em ferimento. */
-enum class DanoTipo(val rotulo: String, val multBase: Double) {
-    CONT("cont", 1.0),        // contusão
-    CORT("corte", 1.5),       // corte — MB p.379
-    PI_MENOS("pi-", 0.5),     // perfurante pequeno
-    PI("pi", 1.0),            // perfurante
-    PI_MAIS("pi+", 1.5),
-    PI_MAIS_MAIS("pi++", 2.0),
-    PERF("perf", 2.0);        // perfuração (impaling)
-
-    /** Perfurante/perfuração ganham ×3 nos vitais (Mesa Virtual: startsWith('pi') || 'perf'). */
-    val perfuranteOuPerf: Boolean get() = this != CONT && this != CORT
-}
-
-/**
- * Lote 385: Tolerância a Ferimentos (MB p.380/381). Reduz o multiplicador de ferimento de pi/perf
- * (mortos-vivos, máquinas, objetos, enxames). NORMAL = ser vivo comum.
- */
-enum class ToleranciaFerimentos { NORMAL, NAO_VIVO, HOMOGENEO, DIFUSO }
 
 object HitLocationRules {
 
