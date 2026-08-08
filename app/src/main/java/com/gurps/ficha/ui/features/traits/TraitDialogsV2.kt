@@ -670,6 +670,8 @@ fun ModeloRacialDialog(
         EditarVantagemDialog(
             vantagem = vantagem,
             descricaoCatalogo = descricaoCatalogo,
+            maxDoCatalogo = viewModel.dataRepository.vantagens
+                .firstOrNull { it.id == vantagem.definicaoId }?.max,
             weaponSuggestions = emptyList(),
             onDismiss = { editingVantagemIndex = null },
             onSave = { n -> 

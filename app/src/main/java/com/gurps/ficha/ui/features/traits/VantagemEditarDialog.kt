@@ -51,6 +51,21 @@ fun EditarVantagemDialog(
     descricaoCatalogo: String = "",
     weaponSuggestions: List<String> = emptyList(),
     poderesDisponiveis: List<com.gurps.ficha.model.Poder> = emptyList(),
+    /**
+     * 🔴 Lote LAYOUT-3: o teto do nível vindo do **catálogo**.
+     *
+     * Até aqui a edição passava `null` a `TetoDeNivelDoTraco.de(...)`, com o
+     * comentário *"na edição só temos o traço selecionado, que não carrega o max
+     * do catálogo"*. Só que **16 vantagens têm teto no catálogo** — Artífice,
+     * Curandeiro, Explorador e os outros Talentos param em **4**; Espinhos em 3.
+     * Com `null`, a edição caía no teto geral de **20**.
+     *
+     * ⚠️ Era o T-LI6 pela metade: o usuário validou o teto no seletor de
+     * adicionar, e quem já tinha o traço na ficha continuava levando ao 20 pelo
+     * lápis. Os dois pontos de chamada já buscavam a definição no catálogo para
+     * pegar a descrição — passar o `max` junto foi uma linha em cada um.
+     */
+    maxDoCatalogo: Int? = null,
     onDismiss: () -> Unit,
     onSave: (VantagemSelecionada) -> Unit
 ) {
@@ -242,7 +257,7 @@ fun EditarVantagemDialog(
                     Text("Custo: $custoCalculado pts", modifier = Modifier.padding(12.dp), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
                 }
 
-                Text("Tipo: ${vantagem.tipoCusto.name} | Custo base: ${def?.custo ?: vantagem.custoBase} | Pag. ${def?.pagina ?: vantagem.pagina}", style = MaterialTheme.typography.bodySmall)
+                Text("Tipo: ${rotuloDoTipoDeCusto(vantagem.tipoCusto)} | Custo base: ${def?.custo ?: vantagem.custoBase} | Pag. ${def?.pagina ?: vantagem.pagina}", style = MaterialTheme.typography.bodySmall)
                 
                 // Vinculação de Poderes
                 if (poderesDisponiveis.isNotEmpty()) {
@@ -279,17 +294,15 @@ fun EditarVantagemDialog(
                 }
 
                 if (vantagem.tipoCusto == TipoCusto.POR_NIVEL) {
-                    Text("Nível:")
-                    val nivelMinimo = 1
-                    // Na EDICAO so temos o traco selecionado, que nao carrega o
-                    // `max` do catalogo -- o teto vem do id, e o catalogo
-                    // entra na hora de ADICIONAR.
-                    val nivelMaximo = TetoDeNivelDoTraco.de(vantagem.definicaoId, null)
-                    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
-                        TextButton(onClick = { if (nivel > nivelMinimo) nivel-- }) { Text("-") }
-                        Text("${nivelExibicaoVantagem(vantagem.definicaoId, nivel)}", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
-                        TextButton(onClick = { if (nivel < nivelMaximo) nivel++ }) { Text("+") }
-                    }
+                    // 🔴 O `maxDoCatalogo` no lugar do `null` de antes: é o que
+                    // devolve o teto do livro à edição.
+                    val nivelMaximo = TetoDeNivelDoTraco.de(vantagem.definicaoId, maxDoCatalogo)
+                    NivelDoTraco(
+                        nivel = nivel,
+                        nivelMaximo = nivelMaximo,
+                        onNivel = { nivel = it },
+                        exibicao = "${nivelExibicaoVantagem(vantagem.definicaoId, nivel)}"
+                    )
                 } else if (regraBracal != null) {
                     BracalConfig(
                         regra = regraBracal,
@@ -331,7 +344,7 @@ fun EditarVantagemDialog(
                     "habilidades_modulares" -> HabilidadesModularesConfig(selecoes = selecoesHabMod, onChanged = { selecoesHabMod = it })
                 }
 
-                OutlinedTextField(value = descricao, onValueChange = { descricao = it }, label = { Text("Descrição") }, modifier = Modifier.fillMaxWidth())
+                OutlinedTextField(value = descricao, onValueChange = { descricao = it }, label = { Text(ROTULO_DESCRICAO_TRACO) }, modifier = Modifier.fillMaxWidth())
 
 
                 HorizontalDivider()

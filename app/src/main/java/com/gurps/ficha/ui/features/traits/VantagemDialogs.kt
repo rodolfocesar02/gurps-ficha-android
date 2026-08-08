@@ -26,6 +26,10 @@ import com.gurps.ficha.model.*
 import com.gurps.ficha.ui.FullscreenDialogContainer
 import com.gurps.ficha.ui.UiActionLabels
 import com.gurps.ficha.ui.UiTokens
+import com.gurps.ficha.ui.AppSelectionDialog
+import com.gurps.ficha.ui.AppSelectionRow
+import com.gurps.ficha.ui.AppFiltroChip
+import com.gurps.ficha.ui.contadorDe
 import com.gurps.ficha.viewmodel.FichaViewModel
 import com.gurps.ficha.domain.rules.CharacterRules
 import com.gurps.ficha.domain.rules.traits.BracalRuleBase
@@ -68,88 +72,31 @@ fun SelecionarVantagemDialog(
     val tagsDisponiveis = listOf("combate", "social", "fisica", "mental", "magica")
     val listaFiltrada = viewModel.dataRepository.filtrarVantagens(busca, filtroTipo, filtroTag)
 
-    FullscreenDialogContainer(onDismiss = onDismiss) {
-        Column(modifier = Modifier.fillMaxSize()) {
-            Text("Selecionar Vantagem", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
-            Spacer(modifier = Modifier.height(8.dp))
-
-            OutlinedTextField(
-                value = busca,
-                onValueChange = { busca = it },
-                label = { Text("Buscar...") },
-                modifier = Modifier.fillMaxWidth(),
-                singleLine = true,
-                leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) }
+    // Lote LAYOUT-4: a moldura inteira vem do padrão. O `Card + Row` escrito à
+    // mão que morava aqui era uma das seis cópias que fizeram os diálogos
+    // divergirem de tamanho.
+    AppSelectionDialog(
+        titulo = "Selecionar Vantagem",
+        busca = busca,
+        onBusca = { busca = it },
+        contador = contadorDe(listaFiltrada.size, "vantagem", "vantagens"),
+        filtros = {
+            AppFiltroChip("Todas", filtroTag == null) { filtroTag = null }
+            tagsDisponiveis.forEach { tag ->
+                AppFiltroChip(tag, filtroTag == tag) { filtroTag = tag }
+            }
+        },
+        onDismiss = onDismiss
+    ) {
+        items(listaFiltrada) { definicao ->
+            val jaAdicionada = viewModel.vantagemJaAdicionada(definicao.id)
+            AppSelectionRow(
+                nome = definicao.nome,
+                detalhe = "${definicao.custo} pts | ${rotuloDoTipoDeCusto(definicao.tipoCusto)} | pag. ${definicao.pagina}",
+                detalheADireita = if (jaAdicionada) "Adicionada" else null,
+                habilitado = !jaAdicionada,
+                onClick = { vantagemSelecionada = definicao }
             )
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .horizontalScroll(rememberScrollState()),
-                horizontalArrangement = Arrangement.spacedBy(UiTokens.DialogContentSpacing)
-            ) {
-                FilterChip(
-                    selected = filtroTag == null,
-                    onClick = { filtroTag = null },
-                    label = { Text("Todas") }
-                )
-                tagsDisponiveis.forEach { tag ->
-                    FilterChip(
-                        selected = filtroTag == tag,
-                        onClick = { filtroTag = tag },
-                        label = { Text(tag) }
-                    )
-                }
-            }
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            Text("${listaFiltrada.size} vantagens encontradas", style = MaterialTheme.typography.bodySmall)
-
-            LazyColumn(
-                modifier = Modifier.weight(1f),
-                verticalArrangement = Arrangement.spacedBy(2.dp)
-            ) {
-                items(listaFiltrada) { definicao ->
-                    val jaAdicionada = viewModel.vantagemJaAdicionada(definicao.id)
-                    Card(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clickable(enabled = !jaAdicionada) { vantagemSelecionada = definicao },
-                        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
-                    ) {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 8.dp, vertical = 6.dp),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(UiTokens.DialogContentSpacing)
-                        ) {
-                            Column(modifier = Modifier.weight(1f)) {
-                                Text(
-                                    definicao.nome,
-                                    style = MaterialTheme.typography.titleMedium,
-                                    fontWeight = if (jaAdicionada) FontWeight.Normal else FontWeight.Medium
-                                )
-                                Text(
-                                    "${definicao.custo} pts | ${definicao.tipoCusto.name.lowercase()} | pag. ${definicao.pagina}",
-                                    style = MaterialTheme.typography.bodySmall,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                                )
-                            }
-                            if (jaAdicionada) {
-                                Text("Adicionada", color = MaterialTheme.colorScheme.outline, style = MaterialTheme.typography.labelSmall)
-                            }
-                        }
-                    }
-                }
-            }
-
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
-                TextButton(onClick = onDismiss) { Text(UiActionLabels.FECHAR) }
-            }
         }
     }
 
@@ -389,7 +336,7 @@ fun ConfigurarVantagemDialog(
                     )
                 }
 
-                Text("Tipo: ${definicao.tipoCusto.name} | Custo base: ${definicao.custo} | Pag. ${definicao.pagina}", style = MaterialTheme.typography.bodySmall)
+                Text("Tipo: ${rotuloDoTipoDeCusto(definicao.tipoCusto)} | Custo base: ${definicao.custo} | Pag. ${definicao.pagina}", style = MaterialTheme.typography.bodySmall)
 
                 when (definicao.tipoCusto) {
                     TipoCusto.POR_NIVEL -> {
@@ -398,22 +345,22 @@ fun ConfigurarVantagemDialog(
                         // O teto sai do catalogo (Talentos = 4, MB p.91); a Aptidao
                         // Magica e o fallback de 20 ficam em `TetoDeNivelDoTraco`.
                         val nivelMaximo = TetoDeNivelDoTraco.de(definicao.id, definicao.max)
-                        if (isPraCegoVariant) {
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.Center,
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                TextButton(onClick = { if (nivel > nivelMinimo) nivel-- }) { Text("-") }
-                                Text("${nivelExibicaoVantagem(definicao.id, nivel)}", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
-                                TextButton(onClick = { if (nivel < nivelMaximo) nivel++ }) { Text("+") }
-                            }
-                        } else {
+                        // ⚠️ Lote LAYOUT-3: os botões passam a existir nas DUAS
+                        // variantes. Antes, na `visual`, o nível só mudava
+                        // arrastando o dedo — gesto que ninguém tinha como
+                        // descobrir. O arrastar continua logo abaixo, como
+                        // atalho de quem já sabe.
+                        NivelDoTraco(
+                            nivel = nivel,
+                            nivelMaximo = nivelMaximo,
+                            nivelMinimo = nivelMinimo,
+                            onNivel = { nivel = it },
+                            exibicao = "${nivelExibicaoVantagem(definicao.id, nivel)}"
+                        )
+                        if (!isPraCegoVariant) {
                             Text(
-                                "${nivelExibicaoVantagem(definicao.id, nivel)}",
-                                style = MaterialTheme.typography.titleLarge,
-                                fontWeight = FontWeight.Bold,
-                                modifier = Modifier.width(56.dp).pointerInput(nivel) {
+                                "",
+                                modifier = Modifier.fillMaxWidth().pointerInput(nivel) {
                                     var dragAcumulado = 0f
                                     val passoPx = 24f
                                     detectVerticalDragGestures(onVerticalDrag = { change, dragAmount ->
@@ -428,7 +375,7 @@ fun ConfigurarVantagemDialog(
                                 textAlign = TextAlign.Center
                             )
                         }
-                        
+
                         if (definicao.id == "atribulacao") {
                             AtribulacaoConfig(
                                 modifiers = mods,
@@ -437,7 +384,7 @@ fun ConfigurarVantagemDialog(
                                     OutlinedTextField(
                                         value = descricao,
                                         onValueChange = { descricao = it },
-                                        label = { Text("Descrição/Especializações") },
+                                        label = { Text(ROTULO_DESCRICAO_TRACO) },
                                         modifier = Modifier.fillMaxWidth()
                                     )
                                 }
@@ -450,7 +397,7 @@ fun ConfigurarVantagemDialog(
                                     OutlinedTextField(
                                         value = descricao,
                                         onValueChange = { descricao = it },
-                                        label = { Text("Descrição/Especializações") },
+                                        label = { Text(ROTULO_DESCRICAO_TRACO) },
                                         modifier = Modifier.fillMaxWidth()
                                     )
                                 }
@@ -459,7 +406,7 @@ fun ConfigurarVantagemDialog(
                             OutlinedTextField(
                                 value = descricao,
                                 onValueChange = { descricao = it },
-                                label = { Text("Descrição/Especializações") },
+                                label = { Text(ROTULO_DESCRICAO_TRACO) },
                                 modifier = Modifier.fillMaxWidth()
                             )
                         }
@@ -510,7 +457,7 @@ fun ConfigurarVantagemDialog(
                                 }
                             }
                         }
-                        OutlinedTextField(value = descricao, onValueChange = { descricao = it }, label = { Text("Descrição/Especializações") }, modifier = Modifier.fillMaxWidth())
+                        OutlinedTextField(value = descricao, onValueChange = { descricao = it }, label = { Text(ROTULO_DESCRICAO_TRACO) }, modifier = Modifier.fillMaxWidth())
                     }
                     TipoCusto.VARIAVEL -> {
                         when (definicao.id) {
@@ -638,10 +585,10 @@ fun ConfigurarVantagemDialog(
                                 }
                             }
                         }
-                        OutlinedTextField(value = descricao, onValueChange = { descricao = it }, label = { Text("Descrição/Especialização") }, modifier = Modifier.fillMaxWidth())
+                        OutlinedTextField(value = descricao, onValueChange = { descricao = it }, label = { Text(ROTULO_DESCRICAO_TRACO) }, modifier = Modifier.fillMaxWidth())
                     }
                     TipoCusto.FIXO -> {
-                        OutlinedTextField(value = descricao, onValueChange = { descricao = it }, label = { Text("Descrição/Especialização") }, modifier = Modifier.fillMaxWidth())
+                        OutlinedTextField(value = descricao, onValueChange = { descricao = it }, label = { Text(ROTULO_DESCRICAO_TRACO) }, modifier = Modifier.fillMaxWidth())
                     }
                 }
 

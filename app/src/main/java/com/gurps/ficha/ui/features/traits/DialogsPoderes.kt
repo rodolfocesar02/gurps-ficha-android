@@ -45,29 +45,29 @@ fun DialogsPoderes(
 
                 LazyColumn(modifier = Modifier.weight(1f, fill = false)) {
                     itemsIndexed(personagem.poderes) { index, poder ->
-                        Card(
-                            modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
-                            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
-                        ) {
-                            Row(
-                                modifier = Modifier.padding(16.dp).fillMaxWidth(),
-                                horizontalArrangement = Arrangement.SpaceBetween,
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Column {
-                                    Text(poder.nome, fontWeight = FontWeight.Bold)
-                                    Text("${poder.fonte} - Mod: ${poder.modificadorDePoder}%")
-                                }
-                                Row {
-                                    IconButton(onClick = { showEditDialog = poder }) {
-                                        Icon(Icons.Default.Edit, contentDescription = "Editar Poder")
-                                    }
-                                    IconButton(onClick = { viewModel.removerPoder(index) }) {
-                                        Icon(Icons.Default.Delete, contentDescription = "Apagar Poder")
-                                    }
-                                }
+                        // Lote LAYOUT-4: linha com AÇÕES. O toque no corpo abre
+                        // a edição; o lápis e a lixeira ficam no bloco `acoes`,
+                        // com a altura de toque de 48 que o `AppBotaoIcone` dá.
+                        com.gurps.ficha.ui.AppSelectionRow(
+                            nome = poder.nome,
+                            detalhe = "${poder.fonte} — Mod: ${poder.modificadorDePoder}%",
+                            onClick = { showEditDialog = poder },
+                            descricaoAcessivel = "${poder.nome}. ${poder.fonte}, " +
+                                "modificador de poder ${poder.modificadorDePoder} por cento. " +
+                                "Toque para editar.",
+                            acoes = {
+                                com.gurps.ficha.ui.AppBotaoIcone(
+                                    icone = Icons.Default.Edit,
+                                    descricao = "Editar o poder ${poder.nome}",
+                                    onClick = { showEditDialog = poder }
+                                )
+                                com.gurps.ficha.ui.AppBotaoIcone(
+                                    icone = Icons.Default.Delete,
+                                    descricao = "Apagar o poder ${poder.nome}",
+                                    onClick = { viewModel.removerPoder(index) }
+                                )
                             }
-                        }
+                        )
                     }
                 }
 
@@ -255,20 +255,24 @@ fun SelecionarPoderDialog(
                 verticalArrangement = Arrangement.spacedBy(2.dp)
             ) {
                 items(listaPoderes) { definicao ->
-                    Card(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clickable { onSelect(definicao) },
-                        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
-                    ) {
-                        Column(modifier = Modifier.padding(12.dp)) {
-                            Text(definicao.nome, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-                            Text("Fontes: ${definicao.fontesPossiveis}", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.secondary)
-                            Text("Foco: ${definicao.foco}", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.secondary)
-                            Spacer(modifier = Modifier.height(4.dp))
-                            Text(definicao.descricao, style = MaterialTheme.typography.bodySmall)
+                    // Lote LAYOUT-4: o poder tem quatro linhas e por isso usa o
+                    // bloco `extra` — o padrão acomoda a exceção em vez de
+                    // proibir, que era a única forma de ele não virar a sétima
+                    // cópia do `Card + Column` à mão.
+                    com.gurps.ficha.ui.AppSelectionRow(
+                        nome = definicao.nome,
+                        detalhe = "Fontes: ${definicao.fontesPossiveis}",
+                        onClick = { onSelect(definicao) },
+                        descricaoAcessivel = "${definicao.nome}. Foco: ${definicao.foco}. ${definicao.descricao}",
+                        extra = {
+                            Text(
+                                "Foco: ${definicao.foco}",
+                                style = com.gurps.ficha.ui.UiEstilos.detalheDoItem,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                            Text(definicao.descricao, style = com.gurps.ficha.ui.UiEstilos.detalheDoItem)
                         }
-                    }
+                    )
                 }
             }
 

@@ -5665,3 +5665,76 @@ A guarda fica de qualquer jeito: **Magnitude positiva nunca vira bônus**, e o r
 Dois testes do ARMA-1 tiveram os números atualizados — 42→45 armas com CL e 43→46 com o símbolo † — porque o conserto do catálogo devolveu campos que as três linhas tortas tinham perdido.
 
 - **Status:** ✅ Build OK nas 2 variantes · lint OK · gate verde · ⏭️ **PENDENTE: teste no aparelho** (T-CN, T-MG, T-DC, T-AT, T-AH no roteiro).
+
+---
+
+### Lotes LAYOUT-1 a LAYOUT-4 — um padrão de tela — 03 de Agosto de 2026 (versão 6.1-PADRAO)
+
+Pedido seu, com prints: *"os diálogos seguirem padrões… o mesmo tamanho de cards… podemos criar um padrão de formatos, fontes, tamanho de textos? e quando for criar ou modificar, você já ver o padrão?"*.
+
+#### O padrão já existia — e quase ninguém usava
+
+`UiStandards.kt` tinha `UiTokens` e `AppListItemCard` desde sempre. **Nenhum dos seis diálogos de seleção usava.** Todos escreviam à mão o mesmo bloco:
+
+```kotlin
+Card(modifier = …, elevation = CardDefaults.cardElevation(1.dp)) {
+    Row(modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp, vertical = 6.dp), …)
+```
+
+Seis cópias, cada uma ajustada uma vez e nunca as outras. E o padding escrito à mão era **8/6** enquanto o `UiTokens` dizia **12/10** — o padrão estava no arquivo e a tela estava fora dele.
+
+#### 🔴 Os botões, medidos
+
+| | |
+|---|---|
+| `TextButton` | 216 |
+| `Button` puro | 72 |
+| `IconButton` | 62 |
+| `OutlinedButton` | 32 |
+| **`PrimaryActionButton`** (o padrão do projeto) | **15** |
+
+Sete tipos convivendo, e o componente feito para padronizar era o menos usado. Junto: **seis** alturas à mão (32, 36, 42, 48, 50, 56), **dez** combinações de `contentPadding`, **seis** estilos de texto dentro de botão (incluindo `displaySmall` e `headlineMedium`), **nenhum** `spacedBy` numa fileira de botões e **nove** lugares forçando cor fora do tema.
+
+🔴 E `UiTokens.TouchMinHeight = 48.dp` estava declarado com **zero** usos, enquanto havia botões de 32 e 36 dp — abaixo do mínimo de toque, num app com variante para quem não enxerga a tela.
+
+#### 🔴 O Abafador de Mana: adicionar × editar
+
+Eram **dois arquivos** nascidos de uma cópia — `VantagemDialogs.kt` e `VantagemEditarDialog.kt` — e divergiram em quatro pontos:
+
+1. **O `−` e o `+` do nível só existiam no ramo `isPraCegoVariant`.** Na variante **visual**, ao adicionar, o nível mudava **arrastando o dedo** — gesto sem nenhuma dica na tela. Ao editar, os botões estavam lá. Era exatamente o que os seus dois prints mostravam.
+2. Três grafias para o rótulo do campo: `"Descrição/Especializações"`, `"Descrição/Especialização"`, `"Descrição"`.
+3. *"Nenhum modificador aplicado."* só ao adicionar.
+4. 🔴 **O teto do catálogo se perdia na edição.**
+
+#### 🔴 O bug de regra escondido na mesma tela
+
+```kotlin
+TetoDeNivelDoTraco.de(definicao.id, definicao.max)   // adicionar
+TetoDeNivelDoTraco.de(vantagem.definicaoId, null)    // editar
+```
+
+**16 vantagens têm teto no catálogo** — Artífice, Curandeiro, Explorador e os outros Talentos param em **4**; Espinhos em 3; Experiência-G em 10. Com `null`, a edição caía no teto geral de **20**.
+
+⚠️ Era o **T-LI6 pela metade**: você validou o teto no seletor de adicionar, e quem já tinha o traço na ficha continuava levando ao 20 pelo lápis. Os dois pontos de chamada já buscavam a definição no catálogo para pegar a descrição — passar o `max` junto foi uma linha em cada.
+
+#### O que foi feito
+
+- **LAYOUT-1** — `UiTokens` ganhou os números da lista e `UiEstilos` nasceu com os quatro estilos de texto. `ui/AppSelectionUi.kt` (novo): `AppSelectionDialog`, `AppSelectionRow`, `AppFiltroChip`, `contadorDe`.
+- **LAYOUT-1b** — `ui/AppButtons.kt` (novo): quatro papéis (**principal**, **secundário**, **discreto**, **ícone**) mais `AppBotaoDestrutivo` e `AppBotaoPasso`, e o `AppFileiraDeBotoes` que resolve espaço e margem de uma vez. Altura **48**, espaço **8**, padding **16/8**, margem **12**, texto `labelLarge`.
+- **LAYOUT-2** — a **skill** `.claude/skills/padrao-de-tela/SKILL.md`, que dispara sozinha quando o trabalho toca `ui/`. **E um teste**, porque skill é instrução e instrução se esquece: o `PadraoDeTelaTest` lê o código-fonte e reprova `Card` cru em `LazyColumn`, o padding `8/6`, botão abaixo de 48, cor de botão na mão e `enum.name` num `Text`.
+- **LAYOUT-3** — `TracoFormComuns.kt` (novo) com o miolo compartilhado: `NivelDoTraco` (botões nas duas variantes, teto à vista), `CampoDeDescricaoDoTraco`, `RodapeDoTraco` e `rotuloDoTipoDeCusto`.
+- **LAYOUT-4** — as duas listas na moldura padrão. Junto vieram o contador que faltava na desvantagem e o *"Atual: N pts"* como subtítulo.
+
+#### ⚠️ Duas coisas que o próprio teste me obrigou a corrigir
+
+**A regex estourou a pilha.** A primeira versão da checagem "`Card` dentro de `LazyColumn`" era uma expressão regular aninhada e deu `StackOverflowError` num arquivo de 900 linhas — retrocesso catastrófico. Virou um contador de chaves, que é chato e funciona.
+
+**O teste acusou o próprio comentário que explica a regra.** O filtro só pulava `//` e não `*` de KDoc — o texto que diz *"não faça `tipoCusto.name`"* contém o `tipoCusto.name`.
+
+E uma terceira, do padrão: a lista de **poderes já na ficha** tem lápis e lixeira na linha, e não cabia no `AppSelectionRow`. Em vez de deixá-la fora, o componente ganhou o bloco `acoes` — padrão que não acomoda a exceção vira gambiarra na primeira exceção, e esta apareceu no mesmo dia.
+
+#### A dívida, com data
+
+`DialogsPericias`, `DialogsTecnicas`, `TabEquipamentos`, `TabRolagem` e mais dez arquivos ainda não passaram pelo padrão. Estão numa lista de exceção **datada em 03/08/2026** dentro do próprio teste, com um limite que não pode crescer sem aparecer na revisão. Dívida visível em vez de esquecida.
+
+- **Status:** ✅ Build OK nas 2 variantes · lint OK · gate verde (1830) · ⏭️ **PENDENTE: teste no aparelho** (T-PD, T-DL, T-TC, T-BT, T-PO, T-AA3 no roteiro).

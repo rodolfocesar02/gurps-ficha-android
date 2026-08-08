@@ -252,6 +252,9 @@ fun TabTracos(viewModel: FichaViewModel) {
         EditarVantagemDialog(
             vantagem = vantagem,
             descricaoCatalogo = descricaoCatalogo,
+            // 🔴 Lote LAYOUT-3: sem isto a edicao perdia o teto do livro.
+            maxDoCatalogo = viewModel.dataRepository.vantagens
+                .firstOrNull { it.id == vantagem.definicaoId }?.max,
             weaponSuggestions = weaponSuggestions,
             poderesDisponiveis = p.poderes,
             onDismiss = { editingVantagemIndex = null },

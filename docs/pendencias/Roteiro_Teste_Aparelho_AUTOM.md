@@ -977,3 +977,82 @@ Duas fichas, porque as vantagens são exclusivas por perícia:
   corpo, avisa do teto de nove.
 - **T-AA5** — A linha do Atirador é lida inteira, dizendo o bônus e o motivo da
   metade quando houver.
+
+---
+
+# Lotes LAYOUT-1 a LAYOUT-4 — o padrão de tela (vantagens e desvantagens)
+
+> Gate: **1.830 testes**, 0 falhas nas duas variantes, lint limpo.
+> LAYOUT-1 (tokens e componentes), LAYOUT-1b (botões), LAYOUT-2 (skill + teste de
+> padrão), LAYOUT-3 (diálogo de configurar × editar), LAYOUT-4 (as duas listas).
+
+## T-PD · O card das duas listas
+
+- **T-PD1 · mesmo tamanho** — Abra *Adicionar Vantagem* e depois *Adicionar
+  Desvantagem*: ✅ os cards têm a **mesma altura e o mesmo respiro**. O padding
+  passou de `8/6` escrito à mão para o token `12/8`.
+- **T-PD2 · o contador que faltava** — Em *Adicionar Desvantagem*: ✅ aparece
+  **"N desvantagens encontradas"**. *(Era a única lista sem contador.)*
+- **T-PD3 · 🔴 o `por_nivel` sumiu** — Em qualquer vantagem por nível (ex.:
+  **Abafador de Mana**): ✅ o card diz **"por nível"**, não `por_nivel`.
+  ✅ Confira também **"custo fixo"** (Ambidestria) e **"custo à escolha"**
+  (Adaptação ao Terreno).
+- **T-PD4 · o "Atual: N pts"** — Na desvantagem, ✅ ele aparece como subtítulo
+  logo abaixo do título, no mesmo lugar do "ST do personagem" da tela de armas.
+- **T-PD5 · já adicionada** — Uma vantagem que a ficha já tem: ✅ mostra
+  **"Adicionada"** à direita e **não** abre ao tocar.
+
+## T-DL · 🔴 Configurar × Editar — o caso do Abafador de Mana
+
+Este é o defeito dos seus prints de 03/08. Use o **Abafador de Mana**.
+
+- **T-DL1 · 🔴 o `−` e o `+` existem ao ADICIONAR** — Traços → Adicionar Vantagem
+  → Abafador de Mana. ✅ O nível aparece como **`− 1 +`**, com botões visíveis.
+  *(Antes, na variante visual, o nível só mudava **arrastando o dedo** — gesto que
+  não tinha como ser descoberto.)*
+- **T-DL2 · os botões funcionam** — ✅ Tocar no `+` sobe o nível e o custo
+  acompanha; o `−` desce e trava em 1.
+- **T-DL3 · o rótulo é o mesmo nos dois** — ✅ O campo de texto diz
+  **"Descrição / Especialização"** ao adicionar **e** ao editar.
+  *(Eram três grafias diferentes.)*
+- **T-DL4 · a linha de modificadores existe nos dois** — ✅ Com nenhuma ampliação
+  ou limitação, os dois diálogos mostram *"Nenhum modificador aplicado."*
+- **T-DL5 · só o botão muda** — ✅ Ao adicionar o botão diz **Adicionar**; ao
+  editar diz **Salvar**. É a única diferença que deve sobrar.
+
+## T-TC · 🔴 O teto do catálogo na edição
+
+- **T-TC1 · 🔴 o Artífice para em 4** — Adicione **Artífice** (Talento, máximo 4
+  no livro). Suba até 4 e **salve**. Agora toque no **lápis** para editar:
+  ✅ o `+` fica **desligado no 4** e aparece *"Máximo do livro para este traço: 4"*.
+  *(Antes a edição perdia o teto do catálogo e deixava subir até **20**.)*
+- **T-TC2 · outros dois** — Repita com **Curandeiro** (4) e **Espinhos** (3).
+- **T-TC3 · Aptidão Mágica continua com o teto dela** — ✅ Para em **11**.
+- **T-TC4 · vantagem sem teto no livro** — Uma vantagem por nível qualquer sem
+  `max`: ✅ vai até **20**, como antes.
+
+## T-BT · Os botões
+
+- **T-BT1 · dá para acertar com o dedo** — Nos diálogos de vantagem e
+  desvantagem: ✅ nenhum botão fica pequeno demais para tocar. O `−`/`+` do nível
+  tem a área de toque cheia.
+- **T-BT2 · espaço entre eles** — ✅ *Cancelar* e *Salvar* têm um espaço visível e
+  **igual** entre si, e a mesma distância da borda do diálogo.
+- **T-BT3 · tamanho do texto** — ✅ O texto dentro dos botões tem o mesmo tamanho
+  em todos eles.
+- **T-BT4 · cor** — ✅ *Salvar/Adicionar* é o botão preenchido; *Cancelar* é
+  contornado; *Fechar* é só texto. Nenhum com cor fora do tema.
+
+## T-PO · A lista de poderes
+
+- **T-PO1** — Traços → Poderes: ✅ as linhas ficam no mesmo formato das outras, e
+  o **lápis** e a **lixeira** continuam funcionando.
+- **T-PO2** — ✅ Tocar no **corpo da linha** abre a edição do poder.
+
+## T-AA3 · Acessibilidade (variante `pracego`)
+
+- **T-AA6** — O `−` e o `+` anunciam *"Diminuir/Aumentar o nível"* e o nível
+  atual. No máximo, o `+` avisa que já está no teto do livro.
+- **T-AA7** — Cada linha das listas é lida inteira: nome, custo, tipo e página.
+- **T-AA8** — O lápis e a lixeira dos poderes anunciam **o nome do poder**, não
+  só "editar".

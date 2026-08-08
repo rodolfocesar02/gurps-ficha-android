@@ -21,6 +21,10 @@ import com.gurps.ficha.model.*
 import com.gurps.ficha.ui.FullscreenDialogContainer
 import com.gurps.ficha.ui.UiActionLabels
 import com.gurps.ficha.ui.UiTokens
+import com.gurps.ficha.ui.AppSelectionDialog
+import com.gurps.ficha.ui.AppSelectionRow
+import com.gurps.ficha.ui.AppFiltroChip
+import com.gurps.ficha.ui.contadorDe
 import com.gurps.ficha.viewmodel.FichaViewModel
 import com.gurps.ficha.domain.rules.CharacterRules
 
@@ -40,32 +44,32 @@ fun SelecionarDesvantagemDialog(
     val tagsDisponiveis = listOf("combate", "social", "fisica", "mental", "magica")
     val listaFiltrada = viewModel.dataRepository.filtrarDesvantagens(busca, filtroTipo, filtroTag)
 
-    FullscreenDialogContainer(onDismiss = onDismiss) {
-        Column(modifier = Modifier.fillMaxSize()) {
-            Text("Selecionar Desvantagem", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
-            Text("Atual: ${viewModel.pontosDesvantagens} pts", style = MaterialTheme.typography.bodySmall)
-            Spacer(modifier = Modifier.height(8.dp))
-            OutlinedTextField(value = busca, onValueChange = { busca = it }, label = { Text("Buscar...") }, modifier = Modifier.fillMaxWidth(), singleLine = true, leadingIcon = { Icon(Icons.Default.Search, null) })
-            Spacer(modifier = Modifier.height(8.dp))
-            Row(modifier = Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(UiTokens.DialogContentSpacing)) {
-                FilterChip(selected = filtroTag == null, onClick = { filtroTag = null }, label = { Text("Todas") })
-                tagsDisponiveis.forEach { tag -> FilterChip(selected = filtroTag == tag, onClick = { filtroTag = tag }, label = { Text(tag) }) }
+    // Lote LAYOUT-4. Junto com a moldura padrão vem o **contador**, que esta
+    // lista era a única a não ter — e o "Atual: N pts" vira o subtítulo padrão,
+    // no lugar de um `bodySmall` solto embaixo do título.
+    AppSelectionDialog(
+        titulo = "Selecionar Desvantagem",
+        subtitulo = "Atual: ${viewModel.pontosDesvantagens} pts",
+        busca = busca,
+        onBusca = { busca = it },
+        contador = contadorDe(listaFiltrada.size, "desvantagem", "desvantagens"),
+        filtros = {
+            AppFiltroChip("Todas", filtroTag == null) { filtroTag = null }
+            tagsDisponiveis.forEach { tag ->
+                AppFiltroChip(tag, filtroTag == tag) { filtroTag = tag }
             }
-            Spacer(modifier = Modifier.height(8.dp))
-            LazyColumn(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
-                items(listaFiltrada) { definicao ->
-                    val jaAdicionada = viewModel.desvantagemJaAdicionada(definicao.id)
-                    Card(modifier = Modifier.fillMaxWidth().clickable(enabled = !jaAdicionada) { desvantagemSelecionada = definicao }, elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)) {
-                        Row(modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp, vertical = 6.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(UiTokens.DialogContentSpacing)) {
-                            Column(modifier = Modifier.weight(1f)) {
-                                Text(definicao.nome, style = MaterialTheme.typography.titleMedium, fontWeight = if (jaAdicionada) FontWeight.Normal else FontWeight.Medium)
-                                Text("${definicao.custo} pts | ${definicao.tipoCusto.name.lowercase()} | pag. ${definicao.pagina}", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                            }
-                        }
-                    }
-                }
-            }
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) { TextButton(onClick = onDismiss) { Text(UiActionLabels.FECHAR) } }
+        },
+        onDismiss = onDismiss
+    ) {
+        items(listaFiltrada) { definicao ->
+            val jaAdicionada = viewModel.desvantagemJaAdicionada(definicao.id)
+            AppSelectionRow(
+                nome = definicao.nome,
+                detalhe = "${definicao.custo} pts | ${rotuloDoTipoDeCusto(definicao.tipoCusto)} | pag. ${definicao.pagina}",
+                detalheADireita = if (jaAdicionada) "Adicionada" else null,
+                habilitado = !jaAdicionada,
+                onClick = { desvantagemSelecionada = definicao }
+            )
         }
     }
 
@@ -175,7 +179,7 @@ fun ConfigurarDesvantagemDialog(definicao: DesvantagemDefinicao, onDismiss: () -
                 Card(modifier = Modifier.fillMaxWidth(), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer)) {
                     Text("Custo: $custoCalculado pts", modifier = Modifier.padding(12.dp).fillMaxWidth(), textAlign = TextAlign.Center, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
                 }
-                Text("Tipo: ${definicao.tipoCusto.name} | Custo base: ${definicao.custo} | Pag. ${definicao.pagina}", style = MaterialTheme.typography.bodySmall)
+                Text("Tipo: ${rotuloDoTipoDeCusto(definicao.tipoCusto)} | Custo base: ${definicao.custo} | Pag. ${definicao.pagina}", style = MaterialTheme.typography.bodySmall)
                 HorizontalDivider()
 
                 // Blocos Genéricos por Tipo de Custo
@@ -315,7 +319,7 @@ fun ConfigurarDesvantagemDialog(definicao: DesvantagemDefinicao, onDismiss: () -
                     HorizontalDivider()
                 }
 
-                OutlinedTextField(value = descricao, onValueChange = { descricao = it }, label = { Text("Descrição") }, modifier = Modifier.fillMaxWidth())
+                OutlinedTextField(value = descricao, onValueChange = { descricao = it }, label = { Text(ROTULO_DESCRICAO_TRACO) }, modifier = Modifier.fillMaxWidth())
 
                 if (permiteAutocontrole) {
                     HorizontalDivider()
@@ -462,7 +466,7 @@ fun EditarDesvantagemDialog(
                     Text("Custo Final: $custoCalculado pts", modifier = Modifier.padding(12.dp).fillMaxWidth(), textAlign = TextAlign.Center, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
                 }
                 
-                Text("Tipo: ${desvantagem.tipoCusto.name} | Custo base: ${def?.custo ?: desvantagem.custoBase} | Pag. ${def?.pagina ?: desvantagem.pagina}", style = MaterialTheme.typography.bodySmall)
+                Text("Tipo: ${rotuloDoTipoDeCusto(desvantagem.tipoCusto)} | Custo base: ${def?.custo ?: desvantagem.custoBase} | Pag. ${def?.pagina ?: desvantagem.pagina}", style = MaterialTheme.typography.bodySmall)
                 
                 // Vinculação de Poderes
                 if (poderesDisponiveis.isNotEmpty()) {
