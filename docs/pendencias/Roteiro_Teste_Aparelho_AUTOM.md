@@ -1268,3 +1268,33 @@ Esta é a conferência mais importante do lote.
   *pontos de impacto*, *escuridão*, *distância* nem *tamanho do alvo* — todos já
   têm o seu próprio lugar no diálogo. **Se algum aparecer duas vezes, o redutor
   está sendo aplicado em dobro** e o jogador não tem como perceber.
+
+---
+
+# Lote MB-9 — dano por queda e colisão
+
+> Gate: 1.894 testes, 0 falhas nas duas variantes.
+
+⚠️ **Este lote entregou só a regra**, sem tela. A queda vai aparecer dentro do
+botão **PV** (MB-7). Até lá não há o que tocar no aparelho — este bloco fica
+esperando, como o T-FO do MB-5.
+
+## T-QD · O que conferir quando a tela existir
+
+- **T-QD1 · 🔴 a tabela ganha da fórmula** — Personagem com **PV 12** caindo de
+  **30 m**: ✅ a velocidade mostrada é **26 m/s**, não 25. *(O livro traz as duas
+  coisas e elas discordam em 3 dos 15 pontos conferidos. Vale a página impressa —
+  é o que o jogador confere no livro aberto na mesa.)*
+- **T-QD2 · queda pequena não sai de graça** — **PV 10** caindo **1 m**: ✅
+  **1d-2**, não "sem dano". *(Arredondar normalmente daria zero.)*
+- **T-QD3 · quem cai mais alto se machuca mais** — Suba a altura degrau a degrau:
+  ✅ o dano nunca diminui.
+- **T-QD4 · ⚠️ o PV que conta é o de quem cai** — Dois personagens da mesma
+  altura, um com **PV 8** e outro com **PV 20**: ✅ o de PV 20 leva **mais**
+  dano. *(Contraintuitivo, mas é a regra: o PV mede massa e resistência
+  estrutural.)*
+- **T-QD5 · objeto pontudo** — Marque *caiu sobre objeto pontudo*: ✅ metade dos
+  dados **e** o tipo muda para perfuração/corte.
+- **T-QD6 · o aviso da Acrobacia aparece** — ✅ *"Um teste de Acrobacia
+  bem-sucedido reduz o dano como se a queda fosse 5 m mais curta"*. Não é
+  automático de propósito: depende do chão e do Mestre.

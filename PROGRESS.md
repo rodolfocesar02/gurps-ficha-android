@@ -5917,3 +5917,48 @@ Quase "consertei" o código para casar com a minha expectativa — que é **exat
 A tela mora em `PainelModificadoresDeCombate.kt` — arquivo próprio, porque o `DialogoMira` já está em 945 linhas e é onde **sete** fontes de modificador se encontram.
 
 - **Status:** ✅ Build OK nas 2 variantes · lint OK · gate verde · ⏭️ **PENDENTE: teste no aparelho** (T-MC).
+
+---
+
+## 6.8-MB4 — Lote MB-9: dano por queda e colisão (MB p.430-432)
+
+A conta tem três passos, e o segundo é o que ninguém decora: a altura vira
+**velocidade**, a velocidade vira **dados** (`(PV × velocidade) ÷ 100`), e as
+**frações abaixo de 1d têm regra própria**.
+
+#### 🔴 O livro dá duas respostas diferentes para a mesma pergunta
+
+A página traz **a tabela** e **a fórmula** `√(21,4 × g × altura)` — e elas
+discordam. Conferi ponto a ponto: em **3 das 15 alturas testadas** a fórmula
+devolve **1 a menos** que a página impressa. 30 m dá 25 pela fórmula e **26** na
+tabela; 40 m dá 29 contra **30**; 100 m dá 46 contra **47**.
+
+Não é erro do livro: as linhas são **faixas** ("30–32 metros") e o valor
+publicado é o do topo. Mas o app precisava escolher **uma**, e escolheu a
+**tabela** — é o que o jogador confere no livro aberto na mesa, e um app que diz
+25 onde a página diz 26 perde a confiança dele mesmo estando certo na conta.
+
+A fórmula continua servindo para o que a tabela não cobre: **gravidade diferente
+da Terra** e quedas **acima de 112 m**.
+
+#### ⚠️ As frações abaixo de 1d não são arredondamento
+
+São **três faixas fixas**: até 0,25 → `1d-3`; até 0,5 → `1d-2`; acima → `1d-1`.
+Arredondar "normalmente" daria **zero** numa queda de 1 metro, e o livro nunca
+deixa uma queda sair de graça.
+
+#### ⚠️ O PV da conta é o de QUEM CAI
+
+É a parte mais contraintuitiva da regra. O livro explica: *doeria mais chocar-se
+contra uma locomotiva do que contra um travesseiro de mesma massa* — o PV mede
+massa **e** resistência estrutural. Numa queda quem cai bate no chão, então
+**mais PV significa mais dano**. Há teste para isso, porque é o tipo de coisa que
+alguém "conserta" achando que está invertido.
+
+**Testes:** `QuedaRulesTest`, 17 casos — inclui a divergência tabela×fórmula, as
+três faixas de fração, a metade do objeto pontudo e duas invariantes de
+monotonicidade (cair de mais alto nunca é mais lento nem dói menos).
+
+Sem tela neste lote: a queda entra no botão **PV** (MB-7).
+
+- **Status:** ✅ Build OK nas 2 variantes · lint OK · gate **1894** · ⏭️ **PENDENTE: teste no aparelho** (T-QD, depende do MB-7).
