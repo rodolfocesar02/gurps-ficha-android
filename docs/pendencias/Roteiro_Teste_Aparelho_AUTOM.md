@@ -1219,3 +1219,52 @@ do MB-6. Se ainda não houver onde ver na tela, este bloco espera esse lote.
 - **T-FO3** — Hiperventilando, parado, HT 12: ✅ **180 segundos**.
 - **T-FO4** — O tempo curto aparece também em **turnos**: ✅ *"12 segundos
   (= 12 turnos)"*.
+
+---
+
+# Lotes MB-1 e MB-4 — os modificadores condicionais de combate
+
+> Gate: 1.877 testes, 0 falhas nas duas variantes.
+
+## T-MC · A lista aparece e soma
+
+- **T-MC1 · corpo a corpo** — Ataque com **espada** → segure o NH. ✅ Aparecem os
+  grupos **Manobra / Posição / Situação** com as caixinhas.
+- **T-MC2 · à distância é outra lista** — Ataque com **arma de fogo**: ✅ os
+  grupos são **Manobra / Situação do alvo**, com *alvo parcialmente exposto*,
+  *cobertura leve*, *pessoa no caminho* e *alvo abaixado*.
+- **T-MC3 · marcar muda o número** — Marque **Agachado (−2)**: ✅ todos os NH da
+  lista caem 2.
+- **T-MC4 · ⚠️ Ataque Total vale diferente nos dois** — ✅ No corpo a corpo é
+  **+4**; à distância é **+1**. *(São números diferentes no livro — se os dois
+  mostrarem o mesmo, é erro de transcrição.)*
+
+## T-MC5 · 🔴 O teto de 9 do asterisco
+
+- **T-MC5a** — Com um personagem de **NH alto (16+)**, marque **Golpe
+  Desenfreado**, que tem `*`: ✅ o NH do torso cai para **9**, e aparece o aviso
+  *"Teto de 9: um modificador com asterisco foi aplicado"*.
+- **T-MC5b · ⚠️ o teto não SOBE ninguém** — Com um personagem de **NH 10**, o
+  mesmo Golpe Desenfreado: ✅ o NH vira **5**, não 9. É teto, não piso.
+- **T-MC5c · sem asterisco, sem aviso** — Marque só **Agarrado (−4)**: ✅ nenhum
+  aviso de teto aparece.
+
+## T-MC6 · Os que se repetem
+
+- **T-MC6a · Avaliar** — Marque **Avaliar** e toque no `+` até 3: ✅ o bônus vai a
+  **+3**. No quarto toque: ✅ continua **+3** (o livro trava aí).
+- **T-MC6b · Choque** — Marque **Choque** e suba até 6: ✅ o redutor para em
+  **−4**.
+- **T-MC6c · pessoa no caminho** — À distância, marque **pessoa no caminho** e
+  ponha **3**: ✅ o redutor é **−12** (sem teto no livro).
+- **T-MC6d · o contador só aparece marcado** — ✅ Com a caixinha desmarcada, não
+  há `−`/`+` na linha.
+
+## T-MC7 · ⚠️ Nada está duplicado
+
+Esta é a conferência mais importante do lote.
+
+- ✅ A lista **não** traz *Avançar e Atacar*, *Golpe Rápido*, *mão inábil*,
+  *pontos de impacto*, *escuridão*, *distância* nem *tamanho do alvo* — todos já
+  têm o seu próprio lugar no diálogo. **Se algum aparecer duas vezes, o redutor
+  está sendo aplicado em dobro** e o jogador não tem como perceber.

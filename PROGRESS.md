@@ -5882,3 +5882,38 @@ O tempo curto aparece também em **turnos**, porque é essa a leitura que import
 **Testes:** `FolegoETamanhoTest`, 14 casos. Gate **1860** nas duas variantes.
 
 - **Status:** ✅ Build OK nas 2 variantes · lint OK · gate verde · ⏭️ **PENDENTE: teste no aparelho** (T-MT; o T-FO espera o MB-6).
+
+---
+
+### Lotes MB-1 e MB-4 — os modificadores condicionais de combate — 03 de Agosto de 2026 (versão 6.7-MB3)
+
+As duas listagens que fecham o capítulo de combate no livro (MB p.547-549) — a página que fica aberta na mesa — viraram caixinhas no diálogo *Onde acertar*.
+
+#### 🔴 As duas travas que somem numa conta de cabeça
+
+> Os modificadores são cumulativos, mas as **penalidades combinadas de visibilidade não podem exceder −10** (−6 se estiver acostumado à cegueira).
+
+> Se qualquer modificador marcado com **asterisco** for aplicado, o **NH efetivo depois de todos os modificadores não pode exceder 9**.
+
+⚠️ A segunda é **teto, não penalidade** — a mesma armadilha do Avançar e Atacar. Um espadachim NH 20 que dá um Golpe Desenfreado vai a **9**, não a 15. E a ordem importa: soma tudo, **depois** trava a visibilidade, **depois** aplica o teto.
+
+#### ⚠️ A lista mostra só o que ainda NÃO era automático
+
+Metade da tabela do livro já é calculada em outro arquivo: Apontar, distância, tamanho do alvo, mão inábil, Avançar e Atacar, Golpe Rápido, luz da cena. **Oferecer de novo faria o jogador aplicar duas vezes o mesmo redutor** — e ele não teria como perceber, porque os dois apareceriam certos.
+
+Há um teste que trava isso: nenhum id do catálogo novo pode conter `avancar`, `golpe_rapido`, `mao_inabil`, `ponto_impacto`, `escuridao`, `distancia`, `tamanho_alvo` ou `desarmar`.
+
+#### ⚠️ Uma armadilha de transcrição, com teste próprio
+
+**Ataque Total (Determinado) vale +4 no corpo a corpo e +1 à distância.** São números diferentes no livro (p.548 e p.549), e copiar a tabela trocando os dois é o erro mais fácil deste lote.
+
+#### 🔴 E um erro meu que quase virou bug
+
+Escrevi um teste esperando que `NH 16` com quatro modificadores (soma −9) e um asterisco desse **9**. Ele reprovou: dá **7**, porque o teto é um **máximo** e 7 já está abaixo.
+
+Quase "consertei" o código para casar com a minha expectativa — que é **exatamente** como um teto vira piso sem ninguém perceber. O teste ficou no arquivo com o erro documentado, e ganhou um irmão (NH 22) que exercita o corte de verdade.
+
+**Testes:** `ModificadoresDeCombateTest`, 17 casos. Gate **1877** nas duas variantes.
+A tela mora em `PainelModificadoresDeCombate.kt` — arquivo próprio, porque o `DialogoMira` já está em 945 linhas e é onde **sete** fontes de modificador se encontram.
+
+- **Status:** ✅ Build OK nas 2 variantes · lint OK · gate verde · ⏭️ **PENDENTE: teste no aparelho** (T-MC).

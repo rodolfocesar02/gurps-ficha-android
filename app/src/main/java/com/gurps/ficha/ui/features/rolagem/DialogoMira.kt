@@ -39,6 +39,7 @@ import com.gurps.ficha.domain.rules.ApontarRules
 import com.gurps.ficha.domain.rules.AvancarEAtacarRules
 import com.gurps.ficha.domain.rules.AtiradorRules
 import com.gurps.ficha.domain.rules.TamanhoDoAlvoRules
+import com.gurps.ficha.domain.rules.ModificadoresDeCombate
 import com.gurps.ficha.domain.rules.PacifismoRules
 import com.gurps.ficha.domain.rules.ZarolhoRules
 import androidx.compose.ui.text.style.TextAlign
@@ -106,6 +107,9 @@ fun DialogoMira(
     // Lote MB-3: o Modificador de Tamanho do ALVO — o passo 2 do livro (p.549),
     // que o app pulava. Começa no humano.
     var indiceTamanhoAlvo by remember { mutableIntStateOf(TamanhoDoAlvoRules.INDICE_PADRAO) }
+    // Lotes MB-1 e MB-4: os modificadores condicionais do livro (p.547-549).
+    // Mapa id -> quantidade; zero (ou ausente) quer dizer desmarcado.
+    var modsDeCombate by remember { mutableStateOf(mapOf<String, Int>()) }
     var miope by remember { mutableStateOf(false) }
     // Lote D-MIRA: o app não sabe se o alvo é uma pessoa nem se o rosto está à
     // mostra — nenhuma das quatro isenções do livro está na ficha. Pergunta.
@@ -198,9 +202,27 @@ fun DialogoMira(
         TamanhoDoAlvoRules.modificadorNoAtaque(degrauTamanho.mt)
     } else 0
 
-    val nhComDistancia = nhBase + penalidadeDistancia + penalidadeGolpeRapido +
+    // Lotes MB-1 e MB-4. ⚠️ A ordem importa e é a do livro: soma tudo, DEPOIS
+    // trava a visibilidade, DEPOIS aplica o teto de 9 do asterisco. A penalidade
+    // de luz já aplicada entra na conta do limite de −10 — senão o app
+    // permitiria −10 de escuridão MAIS −10 de fumaça.
+    val listaDeMods = (
+        if (ehADistancia) ModificadoresDeCombate.A_DISTANCIA
+        else ModificadoresDeCombate.CORPO_A_CORPO
+        ).mapNotNull { m ->
+        modsDeCombate[m.id]?.takeIf { it > 0 }?.let { ModificadoresDeCombate.Escolha(m, it) }
+    }
+
+    val nhAntesDosMods = nhBase + penalidadeDistancia + penalidadeGolpeRapido +
         bonusApontar + penalidadeZarolho + penalidadePacifismo + penalidadeAvancar +
         bonusDoAtirador + extraDoArqueiro + modificadorTamanho
+
+    val resultadoDosMods = ModificadoresDeCombate.aplicar(
+        nhBase = nhAntesDosMods,
+        escolhas = listaDeMods,
+        penalidadeDeVisibilidadeJaAplicada = 0
+    )
+    val nhComDistancia = resultadoDosMods.nhFinal
 
     FullscreenDialogContainer(onDismiss = onDismiss) {
         Column(modifier = Modifier.fillMaxSize()) {
@@ -480,6 +502,32 @@ fun DialogoMira(
                         modifier = Modifier.padding(start = 16.dp)
                     )
                 }
+            }
+
+            // Lotes MB-1 e MB-4: os modificadores condicionais.
+            PainelModificadoresDeCombate(
+                ehADistancia = ehADistancia,
+                escolhas = modsDeCombate,
+                onAlternar = { m ->
+                    modsDeCombate = modsDeCombate.toMutableMap().apply {
+                        if ((this[m.id] ?: 0) > 0) remove(m.id) else put(m.id, 1)
+                    }
+                },
+                onQuantidade = { m, q ->
+                    modsDeCombate = modsDeCombate.toMutableMap().apply { put(m.id, q) }
+                }
+            )
+
+            // ⚠️ O teto de 9 avisa quando corta. Um NH que para de cair sem
+            // explicação parece defeito — foi a mesma decisão do Apontar.
+            ModificadoresDeCombate.avisoDoTeto(resultadoDosMods)?.let { aviso ->
+                Text(
+                    aviso,
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.error,
+                    fontWeight = FontWeight.Medium,
+                    modifier = Modifier.padding(top = 4.dp)
+                )
             }
 
             // 🔴 Lote ARMA-5: perícia e arma discordando. O app segue a perícia
