@@ -159,59 +159,157 @@ número que ninguém decora.
 
 # ONDA 2 — alto valor, precisa de dado novo ou decisão sua
 
-## MB-6 · 🔴 Fadiga: estafa, fome, sede e sono (p.426-428)
+## MB-6 · 🔴 Fadiga — o botão "PF" (desenho do usuário, 03/08)
 
-O capítulo inteiro de custo e recuperação de PF. Hoje o app **guarda** os PF e
-avisa nos marcos, mas não sabe **por que** eles caem nem quando voltam.
+**A ideia, na sua palavra:** *"transformar a palavra PF na aba de Rolagem num
+botão, e dentro dele colocar tudo isso, com as caixinhas de seleção de cada um,
+o tempo e os cálculos ali. Ele escolhe, salva; quando fechar, os devidos redutores
+vêm à tona na ficha. Depois pode entrar de novo no PF e tirar as seleções."*
 
-Entra aqui: custo de correr/nadar/lutar, **estafa**, fome, desidratação, sono
-perdido, e a recuperação.
+⚠️ **Isso resolve a pergunta que eu ia te fazer.** Eu tinha listado o MB-6 como
+bloqueado por "o app não sabe que horas são na campanha". O seu desenho **contorna
+o problema**: quem informa o tempo é o jogador, dentro do painel. O app não precisa
+de relógio — precisa de um formulário.
 
-⚠️ **Precisa de uma decisão sua**: isso exige o app saber que **tempo passou** —
-"faz 12 horas que ele não come". Hoje a ficha não tem relógio de campanha. Ou o
-jogador informa, ou não dá para automatizar sozinho.
+**O que entra no painel** (MB p.426-428):
 
-**Ganho.** Alto em campanha de exploração/sobrevivência. Baixo em campanha de
-masmorra curta.
+| Fonte | O que o app calcula |
+|---|---|
+| Esforço em combate / corrida / natação | custo em PF por período |
+| **Estafa** | o teste, e o efeito de falhar |
+| **Fome** | perda por refeição perdida |
+| **Desidratação** | perda por período sem água (bem mais rápida que a fome) |
+| **Sono perdido** | perda por noite, e o acúmulo |
+| **Recuperação** | quanto volta com descanso, sono e comida |
 
-## MB-7 · Membros incapacitados (p.422)
+**Como funciona, seguindo o molde que já existe.** É o mesmo padrão do
+`PainelEstadosTemporarios` (as nove desvantagens temporárias) e do
+`PainelIluminacao`: caixinhas que o jogador liga, o app soma, e a origem de cada
+ponto fica escrita. A diferença é que aqui o estado **persiste na ficha** em vez de
+valer só para a rolagem — é uma condição do personagem, não da jogada.
 
-> **Incapacitando membros** · **Desmembramento** · **Efeitos de lesões
-> incapacitantes**
+**Custo.** Médio-alto. É o maior painel da aba, e mexe no que a ficha **guarda**.
+Mas o molde existe e o risco é baixo.
 
-Braço inutilizado tira o ataque daquela mão; perna derruba e muda o Deslocamento.
-O app já sabe de PV e dos marcos — o que falta é **que parte** do corpo levou.
+**Ganho.** Alto, e não só em exploração: a **estafa** aparece em qualquer combate
+longo, e hoje ninguém acompanha.
 
-⚠️ **Depende do ponto de impacto.** O `LocaisDeAtaque` já diz onde o ataque mirou,
-mas a ficha **não guarda** o ferimento por local. Precisaria de campo novo no
-personagem.
+---
 
-**Ganho.** Alto — muda o que o personagem consegue fazer, não só o número de PV.
+## MB-7 · 🔴 Ferimento por local — o botão "PV" (desenho do usuário, 03/08)
 
-## MB-8 · Mau funcionamento de arma de fogo (p.408)
+**A ideia, na sua palavra:** *"dentro do PV tem todas as partes do corpo que podem
+ser atingidas (semelhante ao usado no ataque). O jogador coloca o dano que levou na
+parte que o Mestre indicou, e o app já faz o trabalho — vê se incapacita, se
+decepa. E como temos RD das armaduras e as partes que cada uma cobre, podemos usar
+isso a nosso favor, com uma caixinha para selecionar o RD ou não: às vezes o
+jogador não está vestindo a armadura, mas ela está comprada na aba de
+Equipamentos."*
 
-> Uma arma irá enguiçar em vez de disparar em qualquer jogada de ataque com
-> resultado **não-modificado maior ou igual ao seu Mauf**.
->
-> | 3–4 | Problema mecânico ou elétrico |
-> | 5–8 | Disparo falho |
-> | 9–11 | Emperramento |
-> | 12–14 | Disparo falho |
-> | 15–18 | Problema mecânico e possível explosão |
+🔴 **A parte da armadura é a melhor ideia deste documento**, e eu fui conferir se o
+dado aguenta. Aguenta:
 
-🔴 **Bloqueio de dado.** Conferi as chaves do catálogo de armas de fogo:
+O catálogo `armaduras.v2.json` (72 peças) tem **`locaisNorm`** — os locais já
+normalizados — e eles **casam com os locais de acerto** do `LocaisDeAtaque`:
 
-```
-alcanceDistancia, categoria, cdt, cl, custo, dano, grupo, id, magnitude,
-nome, nt, ntRaw, observacoes, peso, precisao, recuo, reviewFlags, source,
-stMinimo, tipo, tiros
-```
+| Local na armadura | Quantas peças cobrem |
+|---|---|
+| tronco | 29 |
+| virilha | 23 |
+| pernas | 18 |
+| braços | 17 |
+| crânio | 13 |
+| pés | 13 |
+| mãos | 12 |
+| pescoço | 11 |
+| rosto | 7 |
+| olhos | 1 |
 
-**Não existe campo `mauf`.** Ele teria de ser extraído do livro e acrescentado nas
-62 armas — é o mesmo tipo de trabalho do ARMA-1, e vale conferir se a tabela do
-livro traz essa coluna ou se ela vem só em suplemento.
+E o campo `rd` não é só um número — traz `principal`, `secundario`, `flexivel`,
+`frontalSomente` e `dividida`. Mais: **9 armaduras têm componentes por local**
+(o traje que cobre várias partes com RD diferente em cada).
 
-**Ganho.** Médio, e muito temático em campanha de pólvora negra ou NT baixo.
+**O fluxo, então:**
+
+1. O Mestre diz *"você levou 8 no braço direito"*.
+2. O jogador abre o **PV**, escolhe **braço**, digita **8**.
+3. O app procura, no inventário, que armadura cobre `bracos` — e mostra a RD dela
+   **com a caixinha de "estou vestindo"**, marcada por padrão.
+4. Desconta a RD, aplica o multiplicador do tipo de dano (corte ×1,5, perfuração
+   ×1,5, contusão ×1…), e diz o que aconteceu: ferimento normal, **membro
+   incapacitado** ou **decepado**.
+5. Os PV caem, e o efeito fica registrado no local — o braço incapacitado tira o
+   ataque daquela mão.
+
+⚠️ **A caixinha "estou vestindo" é a parte que faz isso funcionar de verdade.**
+Sem ela, o app assumiria que tudo que está comprado está no corpo — e o jogador que
+carrega uma armadura de reserva na mochila ganharia RD de graça. É a mesma distinção
+que o `confiscado` já faz na Saga: estar **na ficha** não é estar **em uso**.
+
+**⚠️ O que isso muda na estrutura.** A ficha passa a guardar **ferimento por
+local**, não só o total de PV. É campo novo no `Personagem` — a mesma classe de
+mudança do `armaPrecisaoAcessorio`, mas maior.
+
+**Custo.** Alto — é o maior lote da lista. **Ganho.** O maior também: muda o que o
+personagem **consegue fazer**, não só um número.
+
+---
+
+## MB-8 · 🔴 Mau funcionamento — o bloqueio NÃO existe (corrigido em 03/08)
+
+⚠️ **Eu estava errado neste item.** Escrevi que faltava o campo `Mauf` nas 62
+armas e que seria preciso extrair do livro uma por uma. Você mandou o quadro da
+regra, e ele desfaz o problema:
+
+> O número de mau funcionamento é uma **função do nível tecnológico**: ele é
+> **12 em NT3, 14 em NT4, 16 em NT5 e 17 em NT6+**.
+
+Não é dado por arma — é **fórmula sobre o NT**. E o NT de toda arma já chegou ao
+modelo no **Lote ARMA-1**. Conferido no catálogo:
+
+| NT | Armas | Mauf |
+|---|---|---|
+| 2–3 | 2 | **12** |
+| 4 | 5 | **14** |
+| 5 | 6 | **16** |
+| 6 a 11 | 49 | **17** |
+
+Ou seja: **as 62 armas de fogo já têm Mauf hoje**, sem tocar em nenhum JSON.
+
+**Como dispara** (seu desenho): igual às tabelas de crítico — sozinho, quando o
+gatilho acontece.
+
+> A arma emperra, erra o alvo ou falha de alguma outra maneira, se o resultado de
+> **qualquer jogada de ataque** for **maior ou igual ao seu Mauf**.
+
+⚠️ **"Qualquer jogada de ataque", e o resultado é NÃO-MODIFICADO.** É o dado cru,
+não o NH efetivo — a mesma lógica do crítico. E não depende de ter errado: um 17
+enguiça mesmo que o atirador tivesse NH 20.
+
+Depois vem a tabela, com 3d:
+
+| 3d | Resultado |
+|---|---|
+| 3–4 | Problema mecânico ou elétrico |
+| 5–8 | Disparo falho |
+| 9–11 | Emperramento |
+| 12–14 | Disparo falho |
+| 15–18 | Problema mecânico e **possível explosão** |
+
+**O molde já existe e é exato.** O `domain/roll/CriticoRules.kt` + o asset
+`tabelas_criticas.json` fazem isto hoje para Golpe Fulminante e Erro Crítico:
+`ehTesteDeCombate(tipo)` decide se a tabela vale, `classificar(soma, nh)` decide se
+disparou, e a tabela sai na tela. O mau funcionamento é uma **quarta tabela** no
+mesmo arquivo, com um gatilho diferente.
+
+⚠️ **Uma coisa que o livro deixa claro e o app precisa respeitar:** é **regra
+opcional**. Precisa de um interruptor de campanha — ligado por quem quer pólvora
+que falha, desligado por quem não quer.
+
+**Custo.** Baixo-médio, agora que o dado existe. **Ganho.** Alto e muito temático em
+NT baixo: em NT3 um **12** já enguiça, e isso acontece o tempo todo.
+
+---
 
 ## MB-9 · Dano por queda e colisão (p.431-432)
 
@@ -223,16 +321,23 @@ que já existe.
 
 **Ganho.** Médio. Aparece pouco, mas quando aparece ninguém lembra a conta.
 
-## MB-10 · Combate montado (p.397-399)
+## MB-10 · ⏸️ Combate montado — ADIADO por decisão sua (03/08)
 
-Movimento, ataques da montaria, armas de cavalaria, defesa montada, perda de
-controle, diferença de altura.
+*"Vamos pensar nisso num futuro, deixe um lembrete sobre isso."* — anotado.
 
-⚠️ Depende do app saber que o personagem **está montado**, e a ficha não tem esse
-estado. É um interruptor novo, no estilo dos Estados Temporários.
+**O lembrete, para quando voltar:**
 
-**Ganho.** Alto **se** a sua campanha usa montaria; zero se não usa. **Pergunta
-para você**, não para mim.
+- **O que é:** movimento montado, ataques da montaria, armas de cavalaria, defesa
+  montada, perda de controle e diferença de altura (MB p.397-399).
+- **O que já ajuda:** o `LocaisDeAtaque` e o `TabelaVelocidadeDistancia` funcionam
+  igual montado; e a regra *"usar o NH da arma em vez do menor entre ela e
+  Cavalgar"* já está escrita no `AtiradorRules` como benefício **não** automatizado
+  — quando o MB-10 sair, aquele item sai junto de graça.
+- **O que falta:** a ficha **não guarda** que o personagem está montado. É um
+  interruptor novo, no molde do `PainelEstadosTemporarios`.
+- **⚠️ O aviso:** `armas_corpo_a_corpo` já traz a observação *"[9] Dano maior
+  quando usada montado"* em algumas armas, e ela hoje é só texto. Quando o MB-10
+  sair, essa nota vira conta.
 
 ---
 
@@ -269,38 +374,46 @@ arqueira que "não via o aviso de alcance").
 
 ---
 
-# A ordem que eu recomendo
+# A ordem que eu recomendo — revista com os seus desenhos (03/08)
 
-| Ordem | Lote | Por quê primeiro |
+| Ordem | Lote | Situação |
 |---|---|---|
-| 1 | **MB-13** (explicar a Carga) | Meia hora, e conserta uma desconfiança |
-| 2 | **MB-2** (Recuo / fogo contínuo) | O dado já está na ficha desde o Lote 371 |
-| 3 | **MB-5** (prender o fôlego) | Regra pura sobre a HT, sem dependência |
-| 4 | **MB-3** (Modificador de Tamanho) | Um passo **obrigatório** do tiro que o app pula |
-| 5 | 🔴 **MB-1** (Modificadores de Combate) | O maior ganho, e o teto de 9 é a regra que mais escapa |
-| 6 | **MB-4** (cobertura) | Encaixa no mesmo diálogo do MB-1 |
-| 7 | **MB-9** (queda) | Tabela pura, molde já existe |
-| 8 | **MB-7** (membros incapacitados) | Precisa de campo novo na ficha — decisão sua |
-| 9 | **MB-6** (fadiga) | Precisa de tempo de campanha — decisão sua |
-| 10 | **MB-8** (mau funcionamento) | Precisa extrair o `Mauf` para 62 armas |
-| 11 | **MB-10** (montaria) | Só se a sua campanha usa |
-| 12 | **MB-11** (truques sujos etc.) | Fatiável, um por lote, sem pressa |
+| 1 | **MB-13** (explicar a Carga) | Meia hora, conserta uma desconfiança |
+| 2 | **MB-2** (Recuo / fogo contínuo) | Dado na ficha desde o Lote 371 |
+| 3 | **MB-8** (mau funcionamento) | ⬆️ **Subiu**: o Mauf sai do NT, que já existe |
+| 4 | **MB-5** (prender o fôlego) | Regra pura sobre a HT |
+| 5 | **MB-3** (Modificador de Tamanho) | Passo obrigatório do tiro que o app pula |
+| 6 | 🔴 **MB-1** (Modificadores de Combate) | Maior ganho; traz o teto de 9 |
+| 7 | **MB-4** (cobertura) | Mesmo diálogo do MB-1 |
+| 8 | **MB-9** (queda) | Tabela pura, molde existe |
+| 9 | 🔴 **MB-6** (botão "PF" — fadiga) | ⬆️ **Destravado**: o seu desenho dispensa o relógio de campanha |
+| 10 | 🔴 **MB-7** (botão "PV" — ferimento por local) | O maior lote, e o de maior ganho |
+| 11 | ⏸️ **MB-10** (montaria) | Adiado por você |
+| 12 | **MB-11** (truques sujos etc.) | Fatiável, um por lote |
 
----
+⚠️ **MB-6 e MB-7 são irmãos** — os dois transformam um número do topo da aba
+(**PF** e **PV**) num botão que abre um painel de estado. Fazer os dois seguidos
+compartilha o desenho e o molde; fazer separados por meses faria o segundo
+divergir do primeiro, que foi exatamente o que aconteceu com os diálogos de
+configurar × editar vantagem.
 
-# Três perguntas que eu preciso que você responda
+# As perguntas — respondidas por você em 03/08
 
-Não dá para decidir por você, e cada resposta muda o plano:
+| Pergunta | Sua resposta | O que mudou |
+|---|---|---|
+| A campanha usa montaria? | *"Pensar num futuro"* | MB-10 vira lembrete, sai da fila |
+| A ficha deve saber que horas são? | **Não precisa** — o jogador informa no painel do PF | 🔴 Destravou o MB-6 |
+| Ferimento guardado por local? | **Sim**, e com a RD da armadura por local | 🔴 Destravou o MB-7, e ele ficou maior e melhor |
 
-1. **A sua campanha usa montaria?** Se não, o MB-10 sai da lista e ninguém perde
-   nada.
-2. **Você quer que a ficha saiba que horas são na campanha?** É o que destrava o
-   MB-6 (fome, sede, sono). Se a resposta for não, a fadiga fica só no custo de
-   ação, sem o resto.
-3. **O ferimento deve ficar guardado por local do corpo?** É o que destrava o
-   MB-7. Muda a estrutura da ficha, então é decisão de arquitetura, não de tela.
+**Sobra uma decisão nova**, que o seu desenho do MB-7 criou:
 
----
+> ❓ **Quando o jogador marca "estou vestindo" numa armadura, isso deve ficar
+> salvo na ficha, ou é escolha de cada ferimento?**
+>
+> Salvo é mais cômodo (marca uma vez e esquece) e mais arriscado (a armadura que
+> ele tirou para dormir continua dando RD). Por ferimento é chato e sempre certo.
+> Meu palpite é **salvo na ficha, com a caixinha aparecendo em cada ferimento já
+> marcada** — mas é sua chamada.
 
 # ⚠️ Uma nota sobre método
 
