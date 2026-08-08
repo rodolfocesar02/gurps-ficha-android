@@ -24,6 +24,11 @@ import com.gurps.ficha.model.MagiaDefinicao
 import com.gurps.ficha.ui.FullscreenDialogContainer
 import com.gurps.ficha.ui.UiActionLabels
 import com.gurps.ficha.ui.UiTokens
+import com.gurps.ficha.ui.AppSelectionDialog
+import com.gurps.ficha.ui.AppSelectionRow
+import com.gurps.ficha.ui.AppBotaoDiscreto
+import com.gurps.ficha.ui.UiEstilos
+import com.gurps.ficha.ui.contadorDe
 import com.gurps.ficha.ui.appCardColors
 import com.gurps.ficha.viewmodel.FichaViewModel
 import java.text.Normalizer
@@ -126,116 +131,104 @@ fun SelecionarMagiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
         }
     }
 
-    FullscreenDialogContainer(onDismiss = onDismiss) {
-        // Título
-        Text(
-            "Mágicas Disponíveis",
-            style = MaterialTheme.typography.titleLarge,
-            color = MaterialTheme.colorScheme.primary,
-            fontWeight = FontWeight.Bold
-        )
-        Spacer(Modifier.height(8.dp))
+    // Lote LAYOUT-5: a tela de mágicas entra no padrão. Era a última lista de
+    // seleção que ainda montava título, card e rodapé à mão — e a única com o
+    // título em `primary` e o nome do item em `bodyLarge`, o que fazia o card
+    // parecer maior que o de vantagem ao lado.
+    var escolaExpandida by remember { mutableStateOf(false) }
 
-        // Busca
-        OutlinedTextField(
-            value = viewModel.magicSearch.query,
-            onValueChange = { viewModel.atualizarBuscaMagia(it) },
-            label = { Text("Buscar mágica...") },
-            leadingIcon = { Icon(Icons.Default.Search, null) },
-            singleLine = true,
-            modifier = Modifier.fillMaxWidth()
-        )
-        Spacer(Modifier.height(4.dp))
-
-        // Filtro escola
-        var escolaExpandida by remember { mutableStateOf(false) }
-        ExposedDropdownMenuBox(
-            expanded = escolaExpandida,
-            onExpandedChange = { escolaExpandida = !escolaExpandida },
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            OutlinedTextField(
-                value = viewModel.magicSearch.school ?: "Todas Escolas",
-                onValueChange = {},
-                readOnly = true,
-                trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = escolaExpandida) },
-                modifier = Modifier.menuAnchor().fillMaxWidth()
+    AppSelectionDialog(
+        titulo = "Mágicas Disponíveis",
+        busca = viewModel.magicSearch.query,
+        onBusca = { viewModel.atualizarBuscaMagia(it) },
+        rotuloDaBusca = "Buscar mágica...",
+        contador = contadorDe(listaExibicao.size, "mágica", "mágicas"),
+        // O seletor de escola e o Modo Alvo não cabem numa fileira de chips —
+        // são dezenas de escolas e um interruptor. Vão no cabeçalho livre.
+        cabecalhoExtra = {
+            ExposedDropdownMenuBox(
+                expanded = escolaExpandida,
+                onExpandedChange = { escolaExpandida = !escolaExpandida },
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                OutlinedTextField(
+                    value = viewModel.magicSearch.school ?: "Todas Escolas",
+                    onValueChange = {},
+                    readOnly = true,
+                    trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = escolaExpandida) },
+                    modifier = Modifier.menuAnchor().fillMaxWidth()
+                )
+                ExposedDropdownMenu(expanded = escolaExpandida, onDismissRequest = { escolaExpandida = false }) {
+                    DropdownMenuItem(text = { Text("Todas Escolas") }, onClick = { viewModel.atualizarFiltroEscolaMagia(null); escolaExpandida = false })
+                    escolas.forEach { escola ->
+                        DropdownMenuItem(text = { Text(escola) }, onClick = { viewModel.atualizarFiltroEscolaMagia(escola); escolaExpandida = false })
+                    }
+                }
+            }
+            if (modoAlvoHabilitado) {
+                Spacer(Modifier.height(UiTokens.ItemSpacing))
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Switch(checked = modoAlvoAtivo, onCheckedChange = { modoAlvoAtivo = it })
+                    Spacer(Modifier.width(UiTokens.BotaoEspacamento))
+                    Text("Modo Alvo (Nexus)", style = UiEstilos.detalheDoItem)
+                }
+                if (modoAlvoAtivo && !magiaAlvoId.isNullOrBlank()) {
+                    Card(colors = appCardColors()) {
+                        Row(
+                            modifier = Modifier.padding(
+                                horizontal = UiTokens.LinhaDeListaPaddingH,
+                                vertical = UiTokens.LinhaDeListaPaddingV
+                            ),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text("Alvo: ", fontWeight = FontWeight.Bold, style = UiEstilos.detalheDoItem)
+                            Text(catalogoPorId[magiaAlvoId]?.nome ?: magiaAlvoId!!, style = UiEstilos.detalheDoItem)
+                            Spacer(Modifier.weight(1f))
+                            AppBotaoDiscreto(texto = "Limpar", onClick = { magiaAlvoId = null })
+                        }
+                    }
+                }
+            }
+        },
+        onDismiss = onDismiss
+    ) {
+        items(listaExibicao) { magia ->
+            val falha = viewModel.prereqFailureForMagia(magia)
+            val atende = falha.isNullOrBlank()
+            AppSelectionRow(
+                nome = magia.nome,
+                detalhe = magia.escola?.joinToString(", ").orEmpty().ifBlank { null },
+                onClick = { magiaSelecionada = magia },
+                descricaoAcessivel = "${magia.nome}. ${magia.escola?.joinToString(", ").orEmpty()}. " +
+                    if (atende) "Requisitos atendidos." else "Falta: $falha",
+                extra = {
+                    if (atende) {
+                        Text(
+                            "✓ Requisitos Atendidos",
+                            style = UiEstilos.detalheDoItem,
+                            // ⚠️ Era `Color(0xFF2E7D32)` cravado no código: verde
+                            // escuro sobre fundo escuro no modo noturno. O tema
+                            // sabe escolher; o número na mão, não.
+                            color = MaterialTheme.colorScheme.tertiary,
+                            fontWeight = FontWeight.Medium
+                        )
+                    } else {
+                        Text(
+                            "Falta: $falha",
+                            style = UiEstilos.detalheDoItem,
+                            color = MaterialTheme.colorScheme.error
+                        )
+                    }
+                },
+                acoes = {
+                    if (modoAlvoAtivo) {
+                        AppBotaoDiscreto(
+                            texto = if (magiaAlvoId == magia.id) "ALVO" else "OBJETIVO",
+                            onClick = { magiaAlvoId = magia.id; viewModel.atualizarBuscaMagia("") }
+                        )
+                    }
+                }
             )
-            ExposedDropdownMenu(expanded = escolaExpandida, onDismissRequest = { escolaExpandida = false }) {
-                DropdownMenuItem(text = { Text("Todas Escolas") }, onClick = { viewModel.atualizarFiltroEscolaMagia(null); escolaExpandida = false })
-                escolas.forEach { escola ->
-                    DropdownMenuItem(text = { Text(escola) }, onClick = { viewModel.atualizarFiltroEscolaMagia(escola); escolaExpandida = false })
-                }
-            }
-        }
-
-        // Modo Alvo Toggle
-        if (modoAlvoHabilitado) {
-            Spacer(Modifier.height(4.dp))
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Switch(checked = modoAlvoAtivo, onCheckedChange = { modoAlvoAtivo = it })
-                Spacer(Modifier.width(8.dp))
-                Text("Modo Alvo (Nexus)")
-            }
-            if (modoAlvoAtivo && !magiaAlvoId.isNullOrBlank()) {
-                Card(colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.5f))) {
-                    Row(modifier = Modifier.padding(8.dp), verticalAlignment = Alignment.CenterVertically) {
-                        Text("Alvo: ", fontWeight = FontWeight.Bold, style = MaterialTheme.typography.bodySmall)
-                        Text(catalogoPorId[magiaAlvoId]?.nome ?: magiaAlvoId!!, style = MaterialTheme.typography.bodySmall)
-                        Spacer(Modifier.weight(1f))
-                        TextButton(onClick = { magiaAlvoId = null }, contentPadding = PaddingValues(0.dp)) {
-                            Text("Limpar", style = MaterialTheme.typography.labelSmall)
-                        }
-                    }
-                }
-            }
-        }
-
-        Spacer(Modifier.height(4.dp))
-
-        // Lista
-        LazyColumn(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)) {
-            items(listaExibicao) { magia ->
-                Card(
-                    modifier = Modifier.fillMaxWidth().clickable { magiaSelecionada = magia },
-                    colors = appCardColors()
-                ) {
-                    Row(
-                        modifier = Modifier.padding(horizontal = UiTokens.CardPaddingHorizontal, vertical = UiTokens.CardPaddingVertical),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Column(modifier = Modifier.weight(1f)) {
-                            Text(magia.nome, style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.Medium)
-                            Text(
-                                magia.escola?.joinToString(", ") ?: "",
-                                style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
-                            val falha = viewModel.prereqFailureForMagia(magia)
-                            if (!falha.isNullOrBlank()) {
-                                Text("Falta: $falha", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.error)
-                            } else {
-                                Text("✓ Requisitos Atendidos", style = MaterialTheme.typography.bodySmall, color = Color(0xFF2E7D32), fontWeight = FontWeight.Medium)
-                            }
-                        }
-                        if (modoAlvoAtivo) {
-                            TextButton(onClick = { magiaAlvoId = magia.id; viewModel.atualizarBuscaMagia("") }) {
-                                Text(
-                                    if (magiaAlvoId == magia.id) "ALVO" else "OBJETIVO",
-                                    style = MaterialTheme.typography.labelSmall,
-                                    color = if (magiaAlvoId == magia.id) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.secondary
-                                )
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        // Rodapé
-        Spacer(Modifier.height(8.dp))
-        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
-            TextButton(onClick = onDismiss) { Text(UiActionLabels.FECHAR) }
         }
     }
 

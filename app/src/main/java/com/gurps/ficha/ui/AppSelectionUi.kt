@@ -81,6 +81,15 @@ fun AppSelectionDialog(
     contador: String? = null,
     filtros: (@Composable RowScope.() -> Unit)? = null,
     filtrosSecundarios: (@Composable RowScope.() -> Unit)? = null,
+    /**
+     * Controles de largura inteira entre a busca e a lista.
+     *
+     * ⚠️ Existe pela tela de **mágicas**: ela tem um seletor de escola (lista
+     * suspensa, porque são dezenas) e o interruptor do *Modo Alvo*. Nenhum dos
+     * outros diálogos tem isso, e nenhum dos dois cabe numa fileira de chips —
+     * forçá-los a virar chip seria empobrecer a tela para caber no molde.
+     */
+    cabecalhoExtra: (@Composable ColumnScope.() -> Unit)? = null,
     conteudo: LazyListScope.() -> Unit
 ) {
     FullscreenDialogContainer(onDismiss = onDismiss) {
@@ -123,6 +132,11 @@ fun AppSelectionDialog(
                     verticalAlignment = Alignment.CenterVertically,
                     content = conteudoDosFiltros
                 )
+            }
+
+            cabecalhoExtra?.let {
+                Spacer(Modifier.height(UiTokens.ItemSpacing))
+                it()
             }
 
             contador?.let {

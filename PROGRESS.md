@@ -5738,3 +5738,31 @@ E uma terceira, do padrão: a lista de **poderes já na ficha** tem lápis e lix
 `DialogsPericias`, `DialogsTecnicas`, `TabEquipamentos`, `TabRolagem` e mais dez arquivos ainda não passaram pelo padrão. Estão numa lista de exceção **datada em 03/08/2026** dentro do próprio teste, com um limite que não pode crescer sem aparecer na revisão. Dívida visível em vez de esquecida.
 
 - **Status:** ✅ Build OK nas 2 variantes · lint OK · gate verde (1830) · ⏭️ **PENDENTE: teste no aparelho** (T-PD, T-DL, T-TC, T-BT, T-PO, T-AA3 no roteiro).
+
+---
+
+### Lote LAYOUT-5 — a tela de mágicas no padrão — 03 de Agosto de 2026 (versão 6.2-PADRAO-MAGIA)
+
+Achado seu, no mesmo dia: *"onde seleciona as magias, estão diferentes dos outros cards de seleção"*. Estava — e o LAYOUT-4 não a tinha alcançado porque mágicas não fazia parte do escopo de vantagens/desvantagens.
+
+**O que estava diferente**, medido no `SelectingMagicDialog.kt`:
+
+| | Mágicas | O padrão |
+|---|---|---|
+| Título | `titleLarge` **em `primary`** | `titleLarge`, cor do texto |
+| Nome do item | **`bodyLarge`** | `titleMedium` |
+| Contador | **nenhum** | "N mágicas encontradas" |
+| Rodapé | `Row` + `TextButton` à mão | `AppFileiraDeBotoes` |
+| "✓ Requisitos Atendidos" | **`Color(0xFF2E7D32)` cravado** | cor do tema |
+
+O `bodyLarge` no nome era o motivo de o card parecer maior que o de vantagem ao lado — a mesma informação em dois tamanhos.
+
+⚠️ **O verde cravado quebrava o modo escuro.** `0xFF2E7D32` é um verde escuro: sobre o fundo noturno ele quase some. Passou a ser `tertiary`, que o tema sabe adaptar. Ainda há **31** cores cravadas em `ui/` — entram nos lotes seguintes.
+
+**O padrão precisou crescer de novo, e de propósito.** A tela de mágicas tem um **seletor de escola** (lista suspensa, são dezenas) e o interruptor do **Modo Alvo**. Nenhum dos dois cabe numa fileira de chips, e forçá-los a virar chip seria empobrecer a tela para caber no molde. O `AppSelectionDialog` ganhou o slot `cabecalhoExtra`.
+
+É a terceira exceção acomodada em vez de proibida — poderes (`acoes`), armas (`extra`) e agora mágicas (`cabecalhoExtra`).
+
+**⚠️ E um erro meu que valeu a pena registrar:** migrei a tela e o teste continuou verde **sem olhar para ela** — `features/magic/` ainda estava na exclusão da varredura. Migrar sem trazer o arquivo para dentro do teste é migrar sem rede. A exclusão agora lista, uma a uma, as pastas que já entraram.
+
+- **Status:** ✅ Build OK nas 2 variantes · lint OK · gate verde (1830) · ⏭️ **PENDENTE: teste no aparelho** (T-MA no roteiro).

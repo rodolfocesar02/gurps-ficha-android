@@ -75,9 +75,15 @@ class PadraoDeTelaTest {
             // hexágonos, tokens, câmera) e não compartilha nada com os diálogos
             // de catálogo. Entra quando a Saga for migrada.
             caminho.contains("/ui/saga/") ||
-            // `features/` inteiro sai por enquanto, MENOS traits, que é o
-            // escopo migrado neste lote.
-            (caminho.contains("/features/") && !caminho.contains("/features/traits/"))
+            // `features/` inteiro sai por enquanto, MENOS o que já foi migrado:
+            // traits (LAYOUT-3/4) e magic (LAYOUT-5).
+            //
+            // ⚠️ A tela de mágicas foi migrada e a exclusão continuou de pé por
+            // um momento — o teste ficou verde sem olhar para ela. Migrar sem
+            // trazer o arquivo para dentro da varredura é migrar sem rede.
+            (caminho.contains("/features/") &&
+                !caminho.contains("/features/traits/") &&
+                !caminho.contains("/features/magic/"))
     }
 
     /**

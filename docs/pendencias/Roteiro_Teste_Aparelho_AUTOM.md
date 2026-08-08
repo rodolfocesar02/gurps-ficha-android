@@ -1056,3 +1056,25 @@ Este é o defeito dos seus prints de 03/08. Use o **Abafador de Mana**.
 - **T-AA7** — Cada linha das listas é lida inteira: nome, custo, tipo e página.
 - **T-AA8** — O lápis e a lixeira dos poderes anunciam **o nome do poder**, não
   só "editar".
+
+---
+
+# Lote LAYOUT-5 — a tela de mágicas no padrão
+
+- **T-MA1 · mesmo tamanho** — Abra *Adicionar Mágica* e depois *Adicionar
+  Vantagem*: ✅ os cards têm a **mesma altura** e o nome do item o **mesmo
+  tamanho de letra**. *(O nome da mágica era `bodyLarge`, maior que o das outras
+  listas.)*
+- **T-MA2 · contador** — ✅ Aparece **"N mágicas encontradas"**, que não existia.
+- **T-MA3 · título** — ✅ O título tem a mesma cor dos outros diálogos, não mais
+  o azul de destaque.
+- **T-MA4 · 🔴 o verde no modo escuro** — Com o aparelho no **tema escuro**, ache
+  uma mágica com **"✓ Requisitos Atendidos"**: ✅ o texto está **legível**.
+  *(Era um verde escuro cravado no código, que sumia no fundo noturno.)*
+- **T-MA5 · o "Falta:" continua vermelho** — ✅ E legível nos dois temas.
+- **T-MA6 · o seletor de escola** — ✅ Continua funcionando e filtra a lista.
+- **T-MA7 · Modo Alvo** — ✅ O interruptor aparece, e com ele ligado cada linha
+  ganha o botão **OBJETIVO/ALVO** à direita. ✅ O card "Alvo: X" com o botão
+  **Limpar** continua funcionando.
+- **T-MA8 · o rodapé** — ✅ O **Fechar** está na mesma posição e distância da
+  borda que nos outros diálogos.
