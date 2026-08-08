@@ -29,13 +29,25 @@ object OrigemDosNumeros {
      * Componentes que o app somou à defesa **além da base**.
      *
      * Fora da lista de propósito: a base (Velocidade Básica + 3, ou metade do
-     * NH) e a penalidade de carga. Aquilo é a regra do GURPS, não bônus —
-     * listar tudo transformaria a notinha num parágrafo e esconderia o que
-     * realmente veio da ficha do personagem.
+     * NH). Aquilo é a regra do GURPS, não bônus — listar tudo transformaria a
+     * notinha num parágrafo e esconderia o que realmente veio da ficha.
+     *
+     * ⚠️ **A carga saiu dessa exceção no Lote MB-13.** O texto acima também a
+     * excluía, com o mesmo argumento. Estava errado por um motivo simples: ela é
+     * **zero na maioria das fichas**, então não engorda nota nenhuma — e quando
+     * NÃO é zero, é justamente o número que o jogador não tem como adivinhar. A
+     * Esquiva aparece 8 e ele não sabe que seria 10 sem a mochila.
      */
     fun daDefesa(personagem: Personagem, tipo: DefenseType): List<OrigemDeBonus> {
         val d = personagem.defesasAtivas
         val origens = mutableListOf<OrigemDeBonus>()
+
+        // 0. 🔴 A carga (MB p.17). Só entra na Esquiva — Apara e Bloqueio saem do
+        //    NH da perícia, que a carga não toca. E só aparece quando pesa: numa
+        //    ficha sem carga a linha nem existe.
+        if (tipo == DefenseType.ESQUIVA && personagem.nivelCarga > 0) {
+            origens += OrigemDeBonus(rotuloDaCarga(personagem.nivelCarga), -personagem.nivelCarga)
+        }
 
         // 1. Escudo — o único "item" que entra numa defesa (MB p.375). Só conta
         //    quando o jogador declarou que está usando, na defesa de Bloqueio.
@@ -63,6 +75,20 @@ object OrigemDosNumeros {
         }
 
         return origens
+    }
+
+    /**
+     * O nome do nível de carga, do jeito que o livro chama (MB p.17).
+     *
+     * O número sozinho ("−2") não diz nada; "Carga média" o jogador reconhece,
+     * porque é o que ele lê na aba de Equipamentos.
+     */
+    fun rotuloDaCarga(nivel: Int): String = when (nivel) {
+        1 -> "Carga leve"
+        2 -> "Carga média"
+        3 -> "Carga pesada"
+        4 -> "Carga muito pesada"
+        else -> "Carga"
     }
 
     /**

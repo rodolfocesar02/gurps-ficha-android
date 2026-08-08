@@ -5810,3 +5810,41 @@ A linha de alcance da Adaga dizia **"C m"**. O `C` do livro é **combate corpora
 Agora o `m` só entra quando há número. ⚠️ E **`"C, 1"` continua com metro**, porque ali existe a opção de 1 metro: a checagem é do `C` sozinho, não de conter `C`.
 
 - **Status:** ✅ Build OK nas 2 variantes · lint OK · gate verde (1830) · ⏭️ **PENDENTE: teste no aparelho** (T-ED4 no roteiro).
+
+---
+
+### Lotes MB-13, MB-2 e MB-8 — carga explicada, rajada e enguiço — 03 de Agosto de 2026 (versão 6.5-MB1)
+
+Primeira leva do plano de automações do Módulo Básico. Três regras que **não precisaram de dado novo** — o número já estava na ficha ou saía de fórmula.
+
+#### MB-13 — a Carga que já existia e ninguém via
+
+A `nivelCarga` desconta da Esquiva desde sempre, mas o jogador via **8** onde seria **10** e não tinha como saber por quê. Agora ela entra na notinha do `OrigemDosNumeros`, com o nome do livro (*Carga leve / média / pesada / muito pesada*).
+
+⚠️ **O KDoc antigo excluía a carga de propósito**, com o argumento de que listar tudo viraria um parágrafo. Estava errado por um motivo simples: ela é **zero na maioria das fichas**, então não engorda nota nenhuma — e quando não é zero, é justamente o número impossível de adivinhar. Só entra na **Esquiva**: Apara e Bloqueio saem do NH da perícia, que a carga não toca.
+
+#### MB-2 — fogo contínuo (MB p.549)
+
+> Num ataque em fogo contínuo, o ataque atinge um disparo adicional para cada **múltiplo inteiro do Recuo na margem de sucesso**.
+
+O `Recuo` e a `CdT` já estavam na ficha desde o Lote 371. Faltava a conta, que é a mais chata da mesa. Agora sai escrita: *"4 tiros acertaram (margem 7 ÷ Recuo 2 = 3 extras, + 1 do acerto)"*.
+
+⚠️ **Recuo 1 é a arma mais perigosa numa rajada, não a mais fraca** — cada ponto de margem vira um acerto. E o total é limitado pelos tiros efetivamente disparados: margem 12 com CdT 3 dá **3**, não 13.
+
+#### 🔴 MB-8 — mau funcionamento, e um bloqueio que eu inventei
+
+No plano eu escrevi que faltava o campo `Mauf` nas 62 armas e que seria preciso extrair do livro uma por uma. O usuário mandou o quadro da regra:
+
+> O número de mau funcionamento é uma **função do nível tecnológico**: 12 em NT3, 14 em NT4, 16 em NT5 e 17 em NT6+.
+
+**Não é dado por arma — é fórmula sobre o NT**, e o NT chegou ao modelo no Lote ARMA-1. As 62 armas já tinham Mauf; faltava a fórmula. O teste varre o catálogo e prova: 2 armas com Mauf 12, 5 com 14, 6 com 16, **49 com 17**.
+
+⚠️ **Duas coisas fáceis de implementar errado**, e as duas têm teste:
+1. **O resultado é o dado CRU.** Um 17 enguiça mesmo num atirador NH 20.
+2. **Não depende de errar.** A arma pode enguiçar num resultado que teria acertado — e por isso o enguiço é anunciado **antes** da rajada: contar os tiros de uma arma que travou seria mentir sobre o turno.
+
+⚠️ É **regra opcional** no livro, então nasce atrás de um interruptor (`mauFuncionamentoLigado`), desligado por padrão.
+
+**Testes:** `TiroContinuoRulesTest`, 16 casos, incluindo a varredura das 62 armas e a invariante "mais margem nunca acerta menos tiros". Gate **1846** nas duas variantes.
+
+- **Status:** ✅ Build OK nas 2 variantes · lint OK · gate verde · ⏭️ **PENDENTE: teste no aparelho**.

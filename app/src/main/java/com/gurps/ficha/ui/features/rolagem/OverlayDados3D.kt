@@ -20,6 +20,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.gurps.ficha.domain.roll.CriticoRules
+import com.gurps.ficha.domain.rules.TiroContinuoRules
+import com.gurps.ficha.domain.rules.MauFuncionamentoRules
 import com.gurps.ficha.ui.PendingRollState
 import com.gurps.ficha.ui.features.dice3d.Dice3DScene
 
@@ -125,7 +127,18 @@ internal fun textoDoResultado(
     pr: PendingRollState,
     soma: Int,
     isPraCegoVariant: Boolean,
-    modificadorGlobalPraCego: Int
+    modificadorGlobalPraCego: Int,
+    // ── Lotes MB-2 e MB-8: só chegam preenchidos num ataque com arma de fogo. ──
+    /** Rcl da arma; nulo em quem não atira. */
+    recuoDaArma: Int? = null,
+    /** CdT usada neste ataque. Acima de 1 vira rajada (MB p.549). */
+    tirosDisparados: Int? = null,
+    /** NT da arma — é dele que sai o Mauf (MB p.407). Nulo desliga a regra. */
+    ntDaArma: Int? = null,
+    /** A regra de mau funcionamento é OPCIONAL no livro; o Mestre decide. */
+    mauFuncionamentoLigado: Boolean = false,
+    /** 3d6 já rolados para a tabela de falha, quando ela dispara. */
+    somaDaTabelaDeFalha: Int = 10
 ): String = when {
     pr.isDano -> "Dano: ${(soma + pr.mod).coerceAtLeast(1)}"
     pr.isPersonalizada -> "Resultado: ${soma + pr.mod}"
@@ -136,13 +149,46 @@ internal fun textoDoResultado(
         } else {
             val dist = alvoEfetivo - soma
             val margem = kotlin.math.abs(dist)
-            when (CriticoRules.classificar(soma, alvoEfetivo)) {
+            val base = when (CriticoRules.classificar(soma, alvoEfetivo)) {
                 CriticoRules.ResultadoCritico.DECISIVO -> "Sucesso Crítico!\n(por $margem)"
                 CriticoRules.ResultadoCritico.FALHA_CRITICA -> "Falha Crítica!\n(por $margem)"
                 else -> if (dist >= 0) "Sucesso\n(por $margem)" else "Falha\n(por $margem)"
             }
+            base + extrasDoTiro(
+                soma, dist, recuoDaArma, tirosDisparados,
+                ntDaArma, mauFuncionamentoLigado, somaDaTabelaDeFalha
+            )
         }
     }
+}
+
+/**
+ * O que a arma de fogo acrescenta ao resultado: rajada e enguiço.
+ *
+ * ⚠️ **O enguiço vem primeiro, e por um motivo de regra.** Ele depende do dado
+ * **cru**, não de ter acertado — a arma pode enguiçar num resultado que teria
+ * acertado (MB p.407). Contar os tiros de uma arma que travou seria mentir sobre
+ * o que aconteceu no turno.
+ */
+private fun extrasDoTiro(
+    soma: Int,
+    dist: Int,
+    recuo: Int?,
+    tiros: Int?,
+    nt: Int?,
+    mauFuncionamentoLigado: Boolean,
+    somaDaTabela: Int
+): String {
+    if (mauFuncionamentoLigado) {
+        val mauf = MauFuncionamentoRules.maufPorNt(nt)
+        if (MauFuncionamentoRules.enguicou(soma, mauf)) {
+            return "\n" + MauFuncionamentoRules.explicacao(soma, mauf, somaDaTabela)
+        }
+    }
+    if (dist >= 0 && TiroContinuoRules.ehRajada(tiros)) {
+        return "\n" + TiroContinuoRules.explicacao(dist, recuo, tiros)
+    }
+    return ""
 }
 
 /**

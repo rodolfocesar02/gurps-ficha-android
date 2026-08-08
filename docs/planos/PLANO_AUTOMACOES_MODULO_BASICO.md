@@ -321,43 +321,55 @@ que já existe.
 
 **Ganho.** Médio. Aparece pouco, mas quando aparece ninguém lembra a conta.
 
-## MB-10 · ⏸️ Combate montado — ADIADO por decisão sua (03/08)
+# ⏸️ ADIADOS — o lembrete (decisão sua, 03/08)
 
-*"Vamos pensar nisso num futuro, deixe um lembrete sobre isso."* — anotado.
+*Três frentes que ficam registradas para quando fizer sentido. Nada aqui está
+descartado; está **fora da fila atual**.*
 
-**O lembrete, para quando voltar:**
+## MB-10 · Combate montado (MB p.397-399)
 
 - **O que é:** movimento montado, ataques da montaria, armas de cavalaria, defesa
-  montada, perda de controle e diferença de altura (MB p.397-399).
-- **O que já ajuda:** o `LocaisDeAtaque` e o `TabelaVelocidadeDistancia` funcionam
-  igual montado; e a regra *"usar o NH da arma em vez do menor entre ela e
-  Cavalgar"* já está escrita no `AtiradorRules` como benefício **não** automatizado
-  — quando o MB-10 sair, aquele item sai junto de graça.
+  montada, perda de controle e diferença de altura.
+- **O que já ajuda quando voltar:** o `LocaisDeAtaque` e a
+  `TabelaVelocidadeDistancia` funcionam igual montado; e a regra *"usar o NH da
+  arma em vez do menor entre ela e Cavalgar"* já está escrita no `AtiradorRules`
+  como benefício **não** automatizado — quando o MB-10 sair, aquele item sai junto
+  de graça.
 - **O que falta:** a ficha **não guarda** que o personagem está montado. É um
   interruptor novo, no molde do `PainelEstadosTemporarios`.
-- **⚠️ O aviso:** `armas_corpo_a_corpo` já traz a observação *"[9] Dano maior
-  quando usada montado"* em algumas armas, e ela hoje é só texto. Quando o MB-10
+- **⚠️ O gancho já existe:** o catálogo de armas corpo a corpo traz a observação
+  *"[9] Dano maior quando usada montado"*, e ela hoje é só texto. Quando o MB-10
   sair, essa nota vira conta.
 
+## MB-11 · Regras especiais por arma (MB p.405-407)
+
+Truques sujos, capas, chicotes, garrote, manguais, picaretas, escudos, líquidos no
+rosto — cerca de **oito blocos pequenos e independentes**.
+
+- **Por que fica de fora agora:** cada um serve a **uma** arma específica, e o
+  retorno por regra implementada é o menor da lista inteira.
+- **A vantagem quando voltar:** é a frente mais **fácil de fatiar** — um bloco por
+  lote, sem risco de um quebrar o outro.
+- **⚠️ Metade já está meio pronta:** as observações `[n]` do catálogo de armas já
+  trazem o texto dessas regras (*"[6] Aparar manguais sofre −4…"*, *"[8] Corda
+  para estrangular; veja Garrote"*). Hoje o app **mostra** o texto; o que falta é
+  transformá-lo em número.
+
+## MB-12 · Perigos de ambiente (MB p.428-437)
+
+Ácido, calor, frio, chamas, eletricidade, radiação, pressão, gravidade, atmosferas
+perigosas, enjoo.
+
+- **Por que fica de fora:** são muitas tabelas, e quase todas dependem do Mestre
+  narrar a situação antes.
+- **⚠️ E há um argumento melhor que "custa caro":** o app é a **ficha do jogador**.
+  Estas são tabelas do **Mestre**, e ele já tem o Auditor para consultá-las no
+  livro. Automatizar aqui seria mover trabalho para o lado errado da mesa.
+- **A exceção que eu abriria:** se alguma delas virar rotina na sua campanha —
+  frio numa campanha ártica, radiação numa pós-apocalíptica —, aí ela sozinha vale
+  um lote.
+
 ---
-
-# ONDA 3 — vale menos, ou é do Mestre e não do jogador
-
-## MB-11 · Truques sujos, capas, chicotes, garrote (p.405-407)
-
-Regras especiais por tipo de arma. São ~8 blocos pequenos e independentes.
-
-**Por que fica para depois.** Cada um serve a uma arma específica, e o retorno por
-regra implementada é o menor da lista. Mas é a onda mais **fácil de fatiar**: dá
-para fazer um por lote, sem risco.
-
-## MB-12 · Calor, frio, ácido, radiação, pressão (p.428-437)
-
-Perigos de ambiente. São muitas tabelas e quase todas dependem do Mestre narrar a
-situação.
-
-**Minha recomendação:** ficar de fora por enquanto. O app é a **ficha do jogador**
-— estas são tabelas do Mestre, e ele já tem o Auditor para consultá-las.
 
 ## MB-13 · ⚠️ Explicar a Carga que já existe
 
@@ -388,8 +400,7 @@ arqueira que "não via o aviso de alcance").
 | 8 | **MB-9** (queda) | Tabela pura, molde existe |
 | 9 | 🔴 **MB-6** (botão "PF" — fadiga) | ⬆️ **Destravado**: o seu desenho dispensa o relógio de campanha |
 | 10 | 🔴 **MB-7** (botão "PV" — ferimento por local) | O maior lote, e o de maior ganho |
-| 11 | ⏸️ **MB-10** (montaria) | Adiado por você |
-| 12 | **MB-11** (truques sujos etc.) | Fatiável, um por lote |
+| — | ⏸️ **MB-10, MB-11, MB-12** | Adiados por você — ver o lembrete |
 
 ⚠️ **MB-6 e MB-7 são irmãos** — os dois transformam um número do topo da aba
 (**PF** e **PV**) num botão que abre um painel de estado. Fazer os dois seguidos
