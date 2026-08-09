@@ -6076,4 +6076,60 @@ pode entrar de carona nessa isenção. É a correção do tropeço do LAYOUT-5.
 `CoberturaDaArmaduraTest`, `BotoesPvPfLigadosTest`. Gate **1960** nas duas
 variantes (eram 1894).
 
-- **Status:** ✅ Build OK nas 2 variantes · lint OK · gate **1960** · ⏭️ **PENDENTE: teste no aparelho** (T-PF e T-FE) — ⚠️ **lote que mexe na persistência: confira primeiro que uma ficha antiga abre normalmente.**
+- **Status:** ✅ Build OK nas 2 variantes · lint OK · gate **1960** · ⏭️ **PENDENTE: teste no aparelho** (T-PF e T-FE).
+
+---
+
+## 7.0-MB7b — O off-by-one do teto de membro no combate tático
+
+Correção do bug que o MB-7 encontrou de lado, feita a pedido do usuário na mesma
+sessão.
+
+#### 🔴 O teste gravava o erro
+
+O `HitLocationRules` nasceu como **porte fiel** da calculadora da Mesa Virtual, e
+o teste dele conferia paridade com o JS — número por número. O JS calculava o teto
+do membro como `ceil(PV × 0,5)`, e isso **erra 1 ponto para baixo**. O livro diz
+duas vezes, com exemplo trabalhado:
+
+> No caso de Friedrick [PV 14], PV/2 é 7. **Dano maior que PV/2 é 8 PV**, então ele
+> perde apenas 8 PV. (MB p.419)
+
+> Se um homem com **10 PV** sofrer 9 pontos de dano no braço direito, ele só perde
+> **6 PV**. (MB p.421)
+
+O `ceil` devolvia 7 e 5. E o teste exigia 5 — ou seja, **o gabarito era o JS, não
+o livro**. Um teste que copia a implementação que está conferindo não confere
+nada; ele só congela o defeito.
+
+⚠️ **Com PV ímpar as duas contas coincidem.** `floor(5,5)+1 = 6` e `ceil(5,5) = 6`.
+É por isso que o erro sobreviveu: ele só aparece em metade das fichas, e nunca nas
+que alguém escolheu para testar à mão.
+
+Havia um segundo erro junto: as extremidades usavam `0,33` em vez de `1/3`, o que
+errava para **todo PV múltiplo de 3** (PV 3: `ceil(0,99)` = 1, quando o mínimo é 2).
+
+#### A correção é apagar a segunda cópia
+
+Duas cópias da mesma regra foi o que permitiu uma delas ficar errada em silêncio.
+O `HitLocationRules` agora **delega** para
+`FerimentoPorLocalRules.minimoQueIncapacita`, que tem os dois exemplos do livro
+como teste. O teto local foi deletado, não corrigido.
+
+#### ⚠️ O que NÃO entrou
+
+A regra única também sabe **cegar o olho** (dano acima de PV/10), e o motor de
+combate nunca tratou o olho como membro. Ensinar isso a ele agora seria **mudança
+de comportamento**, não correção de conta — e o escopo pedido era o off-by-one.
+O olho ficou explicitamente de fora, com teste travando isso. A cegueira já
+funciona no botão PV da ficha.
+
+**Impacto real:** um único consumidor em todo o app (`CombatSession` linha 2840,
+que só escreve *"O membro fica inutilizado!"* no log). Nenhum teste de combate
+dependia do número antigo além do próprio `HitLocationRulesTest`.
+
+**Testes:** `HitLocationRulesTest` ganhou os dois exemplos do livro, o caso do PV
+ímpar que explica a sobrevivência do bug, o caso do `0,33`, a trava do olho e uma
+varredura de PV 1..40 × todo tipo × dano 1..60 exigindo que nada passe do teto.
+
+- **Status:** ✅ Build OK nas 2 variantes · lint OK · gate **1966** · ⏭️ **PENDENTE: teste no aparelho** (T-7B).

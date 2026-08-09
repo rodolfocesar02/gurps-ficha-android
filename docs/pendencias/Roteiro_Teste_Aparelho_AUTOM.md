@@ -1305,14 +1305,12 @@ esperando, como o T-FO do MB-5.
 
 > Gate: 1.960 testes, 0 falhas nas duas variantes.
 
-> ⚠️ **Este lote mexe no que a ficha GUARDA**, não só no que ela calcula. São dois
-> campos novos no personagem. Antes de testar, abra uma ficha antiga e confira que
-> ela abre normalmente — é a conferência mais importante do lote.
+> Este lote mexe no que a ficha **guarda**, não só no que ela calcula: são dois
+> campos novos no personagem. Os campos são aditivos e a ficha antiga
+> desserializa vazia — decisão do usuário: se alguma não abrir, é só fazer outra.
 
 ## T-PF · O botão PF (fadiga)
 
-- **T-PF0 · a ficha antiga abre** — ✅ Abra uma ficha salva antes deste lote:
-  nenhum erro, PF igual ao que era.
 - **T-PF1 · a palavra virou botão** — Na aba Rolagem, toque em **PF**: ✅ abre o
   painel *Pontos de Fadiga*. *(Na variante PraCego, é o botão **Fadiga**.)*
 - **T-PF2 · o deslize continua funcionando** — ✅ Arrastar o dedo no **número**
@@ -1383,3 +1381,24 @@ esperando, como o T-FO do MB-5.
   reabra o app: ✅ continua caído.
 - **T-FE15 · os marcos de PV baixo** — Leve o PV abaixo de 1/3: ✅ aparece o aviso
   de Deslocamento e Esquiva pela metade. Abaixo de 0: ✅ o teste de HT por turno.
+
+---
+
+# Lote MB-7b — o off-by-one do combate tático
+
+> Gate: 1.966 testes, 0 falhas nas duas variantes.
+
+⚠️ **Este lote muda um número do combate da Saga**, não da aba Rolagem. Um golpe
+que incapacita braço ou perna passa a tirar **1 PV a mais** do que tirava — o que
+o livro sempre mandou.
+
+- **T-7B1 · 🔴 o membro incapacitado com PV par** — Num combate, ataque o **braço**
+  de um alvo com **PV 10** e cause dano suficiente para incapacitar: ✅ o log diz
+  **6 PV**, não 5, e *"O membro fica inutilizado!"*.
+- **T-7B2 · com PV ímpar nada muda** — Mesmo golpe num alvo de **PV 11**: ✅
+  continua **6 PV**, igual a antes. *(É por isso que o erro passou despercebido:
+  ele só aparece com PV par.)*
+- **T-7B3 · extremidade** — Golpe na **mão** de um alvo pequeno (**PV 3**): ✅
+  incapacita com **2 PV**, não 1.
+- **T-7B4 · o resto do combate não mudou** — ✅ Torso, crânio e vitais continuam
+  com os mesmos números de sempre. Só o teto de **braço, perna, mão e pé** mudou.

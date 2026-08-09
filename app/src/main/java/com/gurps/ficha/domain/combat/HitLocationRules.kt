@@ -1,19 +1,42 @@
 package com.gurps.ficha.domain.combat
 
 import com.gurps.ficha.domain.rules.DanoTipo
+import com.gurps.ficha.domain.rules.FerimentoPorLocalRules
 import com.gurps.ficha.domain.rules.LocalAtaque
 import com.gurps.ficha.domain.rules.ToleranciaFerimentos
 
-import kotlin.math.ceil
 import kotlin.math.floor
 
 /**
- * Lote 361 (Saga B3): dano localizado — PORTE FIEL da calculadora da "Mesa Virtual"
- * (Mesa Virtual/index.html: DAMAGE_RULES + applySmartDmg). Paridade 100% com aquele JS.
+ * Lote 361 (Saga B3): dano localizado — nasceu como PORTE FIEL da calculadora da
+ * "Mesa Virtual" (Mesa Virtual/index.html: DAMAGE_RULES + applySmartDmg).
  * Kotlin puro. Referências // MB nos comentários.
  *
- * Ordem de cálculo (igual ao JS): RD do local → dano penetrante → multiplicador (com
- * overrides de crânio/vitais) → limite de membro → PV a subtrair.
+ * Ordem de cálculo: RD do local → dano penetrante → multiplicador (com overrides
+ * de crânio/vitais) → limite de membro → PV a subtrair.
+ *
+ * ## 🔴 Onde a paridade com o JS foi ABANDONADA de propósito (Lote MB-7b)
+ *
+ * O teto do membro era `ceil(PV × 0,5)`, herdado da Mesa Virtual — e ele **erra
+ * 1 ponto para baixo com PV par**. O livro dá o *mínimo necessário para
+ * incapacitar* como o menor inteiro **estritamente acima** da fração, e diz isso
+ * em dois exemplos trabalhados:
+ *
+ * > No caso de Friedrick [PV 14], PV/2 é 7. **Dano maior que PV/2 é 8 PV**, então
+ * > ele perde apenas 8 PV. (MB p.419)
+ *
+ * > Se um homem com **10 PV** sofrer 9 pontos de dano no braço direito, ele só
+ * > perde **6 PV**. (MB p.421)
+ *
+ * `ceil` devolvia 7 e 5. Com PV **ímpar** as duas contas coincidem — por isso o
+ * erro sobreviveu a dois anos de testes: ele só aparece em metade das fichas.
+ *
+ * ⚠️ E as extremidades usavam `0,33` em vez de `1/3`, o que errava para todo PV
+ * múltiplo de 3 (PV 3: `ceil(0,99)` = 1, quando o mínimo é 2).
+ *
+ * A conta certa mora em [FerimentoPorLocalRules.minimoQueIncapacita], com os dois
+ * exemplos do livro como teste, e este arquivo agora **delega** para lá. Duas
+ * cópias da mesma regra foi o que permitiu uma delas ficar errada em silêncio.
  */
 
 object HitLocationRules {
@@ -21,12 +44,6 @@ object HitLocationRules {
     /** RD extra natural do local (Mesa Virtual: só crânio = +2). MB p.399. */
     private fun rdExtra(local: LocalAtaque): Int = if (local == LocalAtaque.CRANIO) 2 else 0
 
-    /** Fração do PV que incapacita o membro, ou null se o local não tem limite. */
-    private fun limiteMembro(local: LocalAtaque): Double? = when (local) {
-        LocalAtaque.BRACO, LocalAtaque.PERNA -> 0.5    // > PV/2 incapacita
-        LocalAtaque.MAO, LocalAtaque.PE -> 0.33        // > PV/3 (Mesa Virtual usa 0.33)
-        else -> null
-    }
 
     /**
      * Multiplicador final tipo×local. NORMAL: crânio ×4; vitais ×3 p/ perf.; senão o base.
@@ -77,14 +94,25 @@ object HitLocationRules {
         val mult = multiplicador(tipo, local, tolerancia)
         var final = floor(penetrante * mult).toInt()
 
+        // O teto do membro vem da regra única (MB p.421). Incapacita quando a
+        // lesão ALCANÇA o mínimo — que já é o primeiro valor acima da fração —,
+        // e o excesso é desperdiçado.
+        //
+        // ⚠️ O OLHO fica de fora, de propósito. A regra única também sabe cegar
+        // (dano acima de PV/10), mas o motor de combate nunca tratou o olho como
+        // membro e ensinar isso a ele agora é mudança de comportamento, não
+        // correção de conta. Fica para um lote que possa testar o efeito no
+        // combate; aqui o escopo é o off-by-one. A cegueira já funciona no botão
+        // PV da ficha.
         var incapacitou = false
-        val limite = limiteMembro(local)
-        if (limite != null) {
-            val max = ceil(pvMax * limite).toInt()
-            if (final > max) {
-                final = max
-                incapacitou = true
-            }
+        val minimo = if (local == LocalAtaque.OLHO) {
+            null
+        } else {
+            FerimentoPorLocalRules.minimoQueIncapacita(local, pvMax)
+        }
+        if (minimo != null && final >= minimo) {
+            incapacitou = true
+            final = minimo
         }
 
         // Difuso (MB p.381): pi/perf nunca passam de 1 PV; os demais tipos, de 2 PV.

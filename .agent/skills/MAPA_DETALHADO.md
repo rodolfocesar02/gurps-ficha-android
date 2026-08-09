@@ -840,7 +840,7 @@ Tudo em `domain/combat/` é Kotlin PURO (sem Android, determinístico por seed) 
 - **`CombatEncounter.kt`** — Iniciativa (Vel.Básica→DX→seed), `proximoTurno`, `manobrasLegais`, `estadoResumo`, distância MUTÁVEL (`moverEmRelacaoAoHeroi`/`definirDistancia`).
 - **`CombatActions.kt`** — `calcularNH` (manobra/postura/local/visibilidade/`modsExtra`/`magnitudeArma`) + `resolverAtaque` (3d6) + `avaliarRolagem`. **Mover e Atacar: CaC −4+teto 9; à distância −2 OU a Magnitude/Bulk, o pior** (MB p.366/271, Lote 375).
 - **`ModificadoresCombate.kt`** — `LocalAtaque` (penalidades p/ acertar, MB p.398), `Visibilidade`, `AtaqueTotalModo`.
-- **`HitLocationRules.kt`** — Dano localizado (paridade Mesa Virtual: crânio×4, vitais×3 perf, limites de membro).
+- **`HitLocationRules.kt`** — Dano localizado (crânio ×4, vitais ×3 perf, teto de membro). 🔴 **Deixou de ser porte fiel da Mesa Virtual no MB-7b:** o JS calculava o teto como `ceil(PV × 0,5)` e errava 1 ponto com PV **par** (o livro manda 6 onde ele dava 5), e usava `0,33` em vez de `1/3` nas extremidades. O teto agora **delega** para `FerimentoPorLocalRules.minimoQueIncapacita` — a segunda cópia da regra foi deletada, que é o que tinha permitido uma delas ficar errada em silêncio. ⚠️ O **olho** ficou fora deste motor de propósito.
 - **`InjuryRules.kt`** — Choque, ferimento grave, cheques de morte, KO, recuperação de atordoamento, `ferir(Combatente)`.
 - **`NpcCombatBrain.kt`** — Intenção tática do NPC (fuga por moral, arqueiro mantém distância, bruto avança).
 - **`CombatResolver.kt`** — Modificadores de defesa (recuo/Defesa Total/apara extra/bloqueio 1×; **esgrima → apara extra −2**, param `esgrima`, Lote 375) + `resolverTroca` (ataque→defesa→dano→ferimento; crítico anula defesa).
