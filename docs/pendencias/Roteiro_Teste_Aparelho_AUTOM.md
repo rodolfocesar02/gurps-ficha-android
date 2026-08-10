@@ -1431,3 +1431,30 @@ lote, como o T-FO do MB-5 esperou.
   **órgãos vitais** fica sobre o tórax, não sobre a barriga.
 - **T-SI7 · a lista continua na variante pracego** — ✅ Na `pracego`, os
   quadradinhos de local continuam lá. Silhueta não se tateia.
+
+---
+
+# Lote PV-1b — a silhueta na tela
+
+> Gate: 1.983 testes, 0 falhas nas duas variantes.
+
+⚠️ **Só na variante visual.** Na `pracego` os quadradinhos continuam como eram —
+confira que eles não sumiram (T-SI7).
+
+Os itens **T-SI1 a T-SI7** do bloco do PV-1a valem agora. Além deles:
+
+- **T-SI8 · o zoom não pisca** — Toque na cabeça: ✅ a imagem **cresce
+  continuamente** até a cabeça preencher a tela. Não pode haver troca de imagem
+  nem salto — é a mesma arte, só a janela se movendo.
+- **T-SI9 · voltar** — Com o zoom aberto: ✅ o botão **Ver o corpo inteiro**
+  desce de volta com a mesma animação.
+- **T-SI10 · o realce cobre a parte certa** — Selecione o **braço esquerdo**:
+  ✅ o vermelho pinta **só o braço**, seguindo o contorno do desenho — não um
+  retângulo, e não invade o tronco.
+- **T-SI11 · 🔴 realce e registro concordam** — Com o braço realçado, digite um
+  dano e aplique: ✅ o texto do resultado diz **braço esquerdo**. *(Se pintar um
+  e escrever outro, é o defeito mais grave possível aqui.)*
+- **T-SI12 · o ombro na tela da cabeça não seleciona** — No zoom da cabeça, toque
+  no cantinho do ombro que aparece embaixo: ✅ nada é selecionado.
+- **T-SI13 · sem engasgo ao tocar** — Toque em várias partes seguidas: ✅ o
+  realce acompanha sem travar.

@@ -31,6 +31,7 @@ import com.gurps.ficha.domain.rules.CoberturaDaArmadura
 import com.gurps.ficha.domain.rules.DanoTipo
 import com.gurps.ficha.domain.rules.FerimentoPorLocalRules
 import com.gurps.ficha.domain.rules.LocalAtaque
+import com.gurps.ficha.domain.rules.MapaDaSilhueta
 import com.gurps.ficha.model.Equipamento
 import com.gurps.ficha.model.TipoEquipamento
 import com.gurps.ficha.ui.AppBotaoPrincipal
@@ -67,9 +68,13 @@ fun DialogoFerimento(
     pvAtual: Int,
     equipamentos: List<Equipamento>,
     guardadas: Set<String>,
+    isPraCegoVariant: Boolean,
     onSalvar: (pvNovo: Int, guardadas: Set<String>, resumo: String) -> Unit,
     onFechar: () -> Unit
 ) {
+    // Lote PV-1b: a silhueta guarda a REGIÃO (que tem lado); a variante pracego
+    // guarda só o local. As duas alimentam o mesmo `local` da conta.
+    var regiao by remember { mutableStateOf(MapaDaSilhueta.de("TRONCO")) }
     var local by remember { mutableStateOf(LocalAtaque.TORSO) }
     var tipo by remember { mutableStateOf(DanoTipo.CORT) }
     var danoTexto by remember { mutableStateOf("") }
@@ -118,11 +123,36 @@ fun DialogoFerimento(
             ) {
                 Text("PV atual: $pvAtual de $pvInicial", style = UiEstilos.subtituloDialogo)
 
-                Text("Onde acertou", style = UiEstilos.subtituloDialogo, fontWeight = FontWeight.SemiBold)
-                FlowRow(horizontalArrangement = Arrangement.spacedBy(UiTokens.ItemSpacing)) {
-                    LOCAIS_NA_TELA.forEach { l ->
-                        AppFiltroChip(rotuloDoLocal(l), l == local) { local = l }
+                // ⚠️ Uma silhueta não se tateia. Na variante pracego continua a
+                // lista de quadradinhos — ela não foi substituída, coexiste.
+                if (isPraCegoVariant) {
+                    Text(
+                        "Onde acertou",
+                        style = UiEstilos.subtituloDialogo,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                    FlowRow(horizontalArrangement = Arrangement.spacedBy(UiTokens.ItemSpacing)) {
+                        LOCAIS_NA_TELA.forEach { l ->
+                            AppFiltroChip(rotuloDoLocal(l), l == local) {
+                                local = l
+                                regiao = null
+                            }
+                        }
                     }
+                } else {
+                    SilhuetaDoCorpo(
+                        selecionada = regiao,
+                        onSelecionar = {
+                            regiao = it
+                            local = it.local
+                        }
+                    )
+                    Text(
+                        regiao?.nomeCompleto ?: "Nenhuma parte escolhida",
+                        style = UiEstilos.nomeDoItem,
+                        fontWeight = FontWeight.SemiBold,
+                        color = MaterialTheme.colorScheme.primary
+                    )
                 }
 
                 Text("Tipo de dano", style = UiEstilos.subtituloDialogo, fontWeight = FontWeight.SemiBold)
@@ -220,7 +250,7 @@ fun DialogoFerimento(
                         onSalvar(
                             pvNovo,
                             naMochila.toSet(),
-                            if (r == null) "" else "${rotuloDoLocal(local)}: ${r.conta}"
+                            if (r == null) "" else "${regiao?.nomeCompleto ?: rotuloDoLocal(local)}: ${r.conta}"
                         )
                     },
                     enabled = resultado != null

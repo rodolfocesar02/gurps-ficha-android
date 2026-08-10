@@ -6237,3 +6237,54 @@ anatômica de cima para baixo, os pares esquerdo/direito com áreas equivalentes
 nenhum alvo abaixo de 48 dp, nenhuma faixa morta no índice, e o hash da arte.
 
 - **Status:** ✅ Build OK nas 2 variantes · lint OK · gate **1982** · ⏭️ **sem tela ainda** — a silhueta desenhada e o zoom entram no PV-1b.
+
+---
+
+## 7.2-PV1b — A silhueta na tela (Lote PV-1b)
+
+O botão PV virou corpo. O jogador toca a cabeça, a tela dá zoom nela, e aí ele
+escolhe entre crânio, rosto, olho e pescoço — em vez de procurar o nome numa
+lista de onze itens.
+
+**Só na variante visual.** A `pracego` continua com os quadradinhos de sempre,
+intactos: uma silhueta não se tateia. A lista **não foi substituída**, ela
+coexiste — e vai ser refeita de outro jeito num lote próprio, a pedido do
+usuário.
+
+#### 🔴 O realce sai do mesmo lugar que o toque
+
+Foi a decisão que mais mudou o desenho da solução. O destaque **não** é um
+polígono desenhado à parte: ele é montado com `faixasDaRegiao`, que por dentro
+chama o **mesmo `idEm`** que decide o toque.
+
+Com duas fontes — um polígono para pintar, uma regra para tocar — bastaria alguém
+mexer numa para as duas divergirem em silêncio: o app pinta o braço e registra o
+tronco, e **as duas telas continuam parecendo certas**. Com uma fonte só isso não
+tem como acontecer.
+
+Há teste somando as faixas de todas as 16 regiões e exigindo que dê exatamente a
+máscara do corpo — sem sobra e sem buraco.
+
+#### ⚠️ O zoom é a mesma imagem, não outra
+
+As três telas são recorte 1:1 do corpo inteiro, então o zoom não troca de
+arquivo: ele **move a janela** sobre a mesma imagem. Não existe salto nem
+desalinhamento possível, e o app carrega um asset só.
+
+A conta que leva coordenada da arte para coordenada da tela mora numa classe só
+(`Janela`), usada tanto para desenhar quanto para o toque. Duas contas parecidas
+escritas em lugares diferentes é exatamente como o toque acaba a alguns pixels do
+desenho — e só se percebe quando um alvo pequeno fica impossível de acertar.
+
+#### ⚠️ Detalhes que só aparecem montando
+
+- **Um recorte pega um naco do vizinho:** o ombro aparece na tela da cabeça.
+  Tocar ali **não seleciona nada**, em vez de escolher uma parte que o jogador
+  não está vendo direito.
+- **O realce só varre as linhas da tela dele.** Percorrer as 1.555 linhas da arte
+  a cada toque daria uma engasgada visível, e o resto nem apareceria.
+
+O `SilhuetaDoCorpo.kt` entrou na varredura do `PadraoDeTelaTest` junto com os
+diálogos do MB-6/MB-7 — tela nova não entra de carona na isenção de `features/`.
+
+- **Status:** ✅ Build OK nas 2 variantes · lint OK · gate **1983** · ⏭️ **PENDENTE: teste no aparelho** (T-SI).

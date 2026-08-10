@@ -45,51 +45,19 @@ class MapaDaSilhuetaTest {
     )
 
     /**
-     * A máscara do corpo, lida do arquivo que a ferramenta gerou.
+     * A máscara do corpo, lida pelo **código de produção**.
      *
-     * ## ⚠️ Por que não abrir o PNG aqui
+     * ⚠️ O teste roda no ambiente do Android, que não tem AWT — ele não abre um
+     * PNG. Sem este arquivo, os testes que mais valem (o lado esquerdo/direito,
+     * a ordem anatômica) não existiriam.
      *
-     * O teste roda no ambiente do Android, e o `android.jar` **não tem AWT** —
-     * `ImageIO` simplesmente não existe. Sem um arquivo pré-calculado, os testes
-     * que mais valem (o lado esquerdo/direito, a ordem anatômica) não poderiam
-     * existir, e sobraria só conferir aritmética contra ela mesma.
-     *
-     * 🔴 O preço disso é que o arquivo pode **envelhecer** em silêncio: trocam a
-     * arte, esquecem de rodar a ferramenta, e o teste segue verde conferindo um
-     * corpo que não existe mais. Por isso o cabeçalho carrega o **sha256 da
-     * arte** e `a mascara foi gerada DESTA arte` compara com o PNG de verdade.
+     * O leitor é o mesmo `MapaDaSilhueta.lerMascara` que o app usa, de
+     * propósito: um leitor só, em vez de dois que podem divergir.
      */
-    private class Mascara(val largura: Int, val altura: Int, val sha: String) {
-        val linhas = HashMap<Int, List<IntRange>>()
-        fun dentro(x: Int, y: Int) = linhas[y]?.any { x in it } == true
-    }
-
-    private fun mascara(): Mascara? {
+    private fun mascara(): MapaDaSilhueta.Mascara? {
         val arq = arquivoDaMascara()
         assertNotNull("não encontrei a máscara — rode docs/arte/silhueta/mapa_silhueta.py", arq)
-        var largura = 0
-        var altura = 0
-        var sha = ""
-        val faixas = HashMap<Int, List<IntRange>>()
-        arq!!.forEachLine { linha ->
-            when {
-                linha.startsWith("#") || linha.isBlank() -> Unit
-                linha.startsWith("largura=") -> largura = linha.substringAfter("=").trim().toInt()
-                linha.startsWith("altura=") -> altura = linha.substringAfter("=").trim().toInt()
-                linha.startsWith("sha256=") -> sha = linha.substringAfter("=").trim()
-                linha.startsWith("arte=") -> Unit
-                else -> {
-                    val y = linha.substringBefore(":").toInt()
-                    faixas[y] = linha.substringAfter(":").split(",").map {
-                        val (a, b) = it.split("-")
-                        a.toInt()..b.toInt()
-                    }
-                }
-            }
-        }
-        val m = Mascara(largura, altura, sha)
-        m.linhas.putAll(faixas)
-        return m
+        return MapaDaSilhueta.lerMascara(arq!!.readLines().asSequence())
     }
 
     private class Caixa {
@@ -334,6 +302,26 @@ class MapaDaSilhuetaTest {
             )
             assertEquals("${r.id}: lado", precisaDeLado, r.lado != null)
         }
+    }
+
+    @Test
+    fun `🔴 o realce cobre exatamente o corpo, sem sobra nem buraco`() {
+        // A tela monta o destaque com `faixasDaRegiao`, e o toque usa `idEm`.
+        // Se a divisão em faixas tiver um erro de um pixel, o jogador vê o
+        // realce numa parte e o app registra outra — e as duas telas parecem
+        // certas. Aqui a soma das faixas de TODAS as regiões tem que dar
+        // exatamente a máscara do corpo.
+        val m = mascara() ?: return
+        var doCorpo = 0L
+        var dasRegioes = 0L
+        for (y in 0 until m.altura) {
+            doCorpo += m.faixasDe(y).sumOf { it.last - it.first + 1 }.toLong()
+            dasRegioes += MapaDaSilhueta.REGIOES.sumOf { r ->
+                m.faixasDaRegiao(r.id, y).sumOf { it.last - it.first + 1 }
+            }.toLong()
+        }
+        assertTrue("o corpo sumiu da máscara", doCorpo > 100_000)
+        assertEquals("realce e corpo discordam", doCorpo, dasRegioes)
     }
 
     @Test

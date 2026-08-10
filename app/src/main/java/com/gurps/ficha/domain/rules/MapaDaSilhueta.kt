@@ -240,6 +240,95 @@ object MapaDaSilhueta {
 
     private val PORid: Map<String, Regiao> = REGIOES.associateBy { it.id }
 
+    // ==================================================================
+    // A máscara do corpo
+    // ==================================================================
+
+    /**
+     * Onde o corpo está desenhado, linha por linha.
+     *
+     * ## Por que existe um arquivo em vez de olhar o PNG
+     *
+     * A arte é **desenho de contorno**: o fundo é transparente e o **interior do
+     * corpo também**. Então não dá para perguntar "esse pixel é opaco?" — só o
+     * traço é. Descobrir o interior exige inundar a imagem a partir das bordas,
+     * o que é caro para fazer no celular a cada abertura e impossível no teste,
+     * que roda sem AWT.
+     *
+     * A ferramenta `docs/arte/silhueta/mapa_silhueta.py` faz isso uma vez e grava
+     * as faixas em `assets/silhueta_corpo_mascara.txt` (32 KB).
+     *
+     * ⚠️ O cabeçalho carrega o **sha256 da arte**. Um arquivo derivado pode
+     * envelhecer em silêncio — trocam o desenho, esquecem de rodar a ferramenta,
+     * e tudo continua verde medindo um corpo que não existe mais. O hash é a
+     * única amarra entre os dois.
+     */
+    class Mascara(
+        val largura: Int,
+        val altura: Int,
+        val sha: String,
+        private val faixas: Map<Int, List<IntRange>>
+    ) {
+        fun dentro(x: Int, y: Int): Boolean = faixas[y]?.any { x in it } == true
+
+        fun faixasDe(y: Int): List<IntRange> = faixas[y].orEmpty()
+
+        /**
+         * As faixas horizontais de **uma região** naquela linha — é com isso que
+         * a tela monta o destaque, sem precisar de polígono nenhum.
+         *
+         * Exato por construção: o mesmo [idEm] que decide o toque decide o
+         * desenho, então realce e toque não têm como discordar.
+         */
+        fun faixasDaRegiao(id: String, y: Int): List<IntRange> {
+            val saida = mutableListOf<IntRange>()
+            faixasDe(y).forEach { faixa ->
+                var ini = -1
+                for (x in faixa) {
+                    if (idEm(x, y) == id) {
+                        if (ini < 0) ini = x
+                    } else if (ini >= 0) {
+                        saida += ini until x
+                        ini = -1
+                    }
+                }
+                if (ini >= 0) saida += ini..faixa.last
+            }
+            return saida
+        }
+    }
+
+    /**
+     * Lê o arquivo da máscara. Recebe as linhas de fora para servir tanto ao app
+     * (que lê de `assets`) quanto ao teste (que lê do disco) — uma leitura só,
+     * em vez de duas que podem divergir.
+     */
+    fun lerMascara(linhas: Sequence<String>): Mascara {
+        var largura = 0
+        var altura = 0
+        var sha = ""
+        val faixas = HashMap<Int, List<IntRange>>()
+        linhas.forEach { linha ->
+            when {
+                linha.isBlank() || linha.startsWith("#") || linha.startsWith("arte=") -> Unit
+                linha.startsWith("largura=") -> largura = linha.substringAfter("=").trim().toInt()
+                linha.startsWith("altura=") -> altura = linha.substringAfter("=").trim().toInt()
+                linha.startsWith("sha256=") -> sha = linha.substringAfter("=").trim()
+                else -> {
+                    val y = linha.substringBefore(":").toInt()
+                    faixas[y] = linha.substringAfter(":").split(",").map {
+                        val a = it.substringBefore("-").toInt()
+                        val b = it.substringAfter("-").toInt()
+                        a..b
+                    }
+                }
+            }
+        }
+        return Mascara(largura, altura, sha, faixas)
+    }
+
+    const val ARQUIVO_DA_MASCARA = "silhueta_corpo_mascara.txt"
+
     /**
      * ⚠️ Os locais do livro que **não** entram na silhueta, e por quê.
      *

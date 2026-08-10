@@ -1351,6 +1351,7 @@ fun TabRolagem(viewModel: FichaViewModel) {
             pvAtual = pvAtualRolagem,
             equipamentos = p.equipamentos,
             guardadas = p.armadurasGuardadas.toSet(),
+            isPraCegoVariant = isPraCegoVariant,
             onSalvar = { pvNovo, guardadas, _ ->
                 viewModel.aplicarFerimentoPorLocal(pvNovo, guardadas)
                 showFerimentoDialog = false
