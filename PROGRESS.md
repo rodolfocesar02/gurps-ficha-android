@@ -6341,3 +6341,43 @@ coisa que se via — e lê como bug. Agora abre **sem nada escolhido**, e o
 tronco, e o jogador aplicaria no lugar errado sem perceber.
 
 - **Status:** ✅ Build OK nas 2 variantes · lint OK · gate **1983** · ⏭️ **PENDENTE: teste no aparelho** (T-SI + T-TC).
+
+---
+
+## 7.4-PV1d — A ordem da mesa e o resultado que ninguém via
+
+Correções da segunda rodada de fotos. O mapa saiu certo em todas as regiões
+(crânio, os dois olhos com o lado do personagem, rosto sem os olhos, tronco sem
+os vitais, virilha, braço, mão, perna, pé) — o que sobrou foi ordem de tela.
+
+#### 🔴 "O cálculo final não aparece"
+
+Ele aparecia. No **fim da rolagem**, depois do painel de armadura. O jogador
+digitava o dano e o número nascia fora da tela.
+
+Agora o resultado é **rodapé fixo**, acima dos botões: sempre visível e mudando ao
+vivo. Trocar o tipo de dano ou desmarcar a armadura mexe no número na frente dos
+olhos, em vez de exigir uma rolagem para conferir.
+
+⚠️ Só o **número e a conta** ficam fixos. Choque, teste de nocaute, membro
+incapacitado e os marcos de PV continuam no corpo da tela — são leitura, não
+conferência, e no rodapé empurrariam os botões para fora.
+
+#### A ordem virou a da mesa
+
+**Dano → onde acertou → tipo de dano → RD da armadura.** É a ordem em que a coisa
+acontece: o Mestre canta o número primeiro. Antes o campo de dano ficava depois da
+silhueta e do tipo, então ele era a última coisa preenchida — justamente a que
+faz o resultado existir.
+
+#### ⚠️ O painel de armadura assumia o torso em silêncio
+
+Nas fotos, com **"Nenhuma parte escolhida"** no alto, o painel logo abaixo
+anunciava *"RD 2 em Torso"*. O `local` tinha torso como valor inicial e ninguém
+tinha escolhido nada.
+
+Agora, sem parte escolhida não há local: o painel pede para escolher, a lista de
+peças fica vazia e **a conta não é feita**. Um número certo para a pergunta errada
+é pior que número nenhum — ele parece resposta.
+
+- **Status:** ✅ Build OK nas 2 variantes · lint OK · gate **1983** · ⏭️ **PENDENTE: teste no aparelho** (T-OR).

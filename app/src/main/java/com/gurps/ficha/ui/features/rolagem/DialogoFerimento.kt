@@ -95,7 +95,12 @@ fun DialogoFerimento(
     val armaduras = remember(equipamentos) {
         equipamentos.filter { it.tipo == TipoEquipamento.ARMADURA && !it.confiscado }
     }
-    val noLocal = armaduras.filter { CoberturaDaArmadura.cobre(it.armaduraLocal, local) }
+    // ⚠️ Sem parte escolhida não há local: assumir o torso em silêncio fazia o
+    // painel anunciar "RD 2 em Torso" logo abaixo de "Nenhuma parte escolhida".
+    val escolheu = isPraCegoVariant || regiao != null
+    val noLocal = if (!escolheu) emptyList() else {
+        armaduras.filter { CoberturaDaArmadura.cobre(it.armaduraLocal, local) }
+    }
     val pecasVestidas = noLocal
         .filter { it.nome !in naMochila }
         .mapNotNull { eq ->
@@ -104,8 +109,8 @@ fun DialogoFerimento(
     val rd = if (usarRd) CoberturaDaArmadura.rdTotal(pecasVestidas) else 0
 
     val dano = danoTexto.toIntOrNull() ?: 0
-    val resultado = remember(dano, tipo, local, rd, pvInicial, masculino) {
-        if (dano <= 0) null else FerimentoPorLocalRules.aplicar(
+    val resultado = remember(dano, tipo, local, rd, pvInicial, masculino, escolheu) {
+        if (dano <= 0 || !escolheu) null else FerimentoPorLocalRules.aplicar(
             pvInicial = pvInicial,
             danoBruto = dano,
             tipo = tipo,
@@ -135,6 +140,17 @@ fun DialogoFerimento(
             modifier = Modifier.weight(1f).verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(UiTokens.ItemSpacing)
         ) {
+                // A ordem é a da mesa: o Mestre canta o número primeiro. Antes o
+                // campo ficava depois da silhueta e do tipo, e o jogador digitava
+                // por último — com o resultado já fora da tela.
+                OutlinedTextField(
+                    value = danoTexto,
+                    onValueChange = { novo -> danoTexto = novo.filter { it.isDigit() }.take(4) },
+                    label = { Text("Dano rolado (antes da RD)") },
+                    singleLine = true,
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                    modifier = Modifier.fillMaxWidth()
+                )
 
                 // ⚠️ Uma silhueta não se tateia. Na variante pracego continua a
                 // lista de quadradinhos — ela não foi substituída, coexiste.
@@ -170,15 +186,6 @@ fun DialogoFerimento(
                     tipo = it
                 }
 
-                OutlinedTextField(
-                    value = danoTexto,
-                    onValueChange = { novo -> danoTexto = novo.filter { it.isDigit() }.take(4) },
-                    label = { Text("Dano rolado (antes da RD)") },
-                    singleLine = true,
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                    modifier = Modifier.fillMaxWidth()
-                )
-
                 if (local == LocalAtaque.INGLE) {
                     Row(
                         modifier = Modifier
@@ -206,6 +213,7 @@ fun DialogoFerimento(
                 HorizontalDivider(modifier = Modifier.padding(vertical = UiTokens.ItemSpacing))
                 PainelDaArmadura(
                     local = local,
+                    escolheu = escolheu,
                     noLocal = noLocal,
                     naMochila = naMochila,
                     usarRd = usarRd,
@@ -214,17 +222,9 @@ fun DialogoFerimento(
                     onVestir = { nome -> if (nome in naMochila) naMochila.remove(nome) else naMochila.add(nome) }
                 )
 
+                // Os detalhes ficam aqui embaixo; o NÚMERO fica fixo no rodapé.
                 resultado?.let { r ->
                     HorizontalDivider(modifier = Modifier.padding(vertical = UiTokens.ItemSpacing))
-                    Text(
-                        "−${r.pvPerdidos} PV   →   $pvNovo de $pvInicial",
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.error
-                    )
-                    // A conta escrita: o jogador precisa poder conferir de onde
-                    // saiu o número, senão o app vira caixa-preta na mesa.
-                    Text(r.conta, style = UiEstilos.detalheDoItem, color = MaterialTheme.colorScheme.outline)
                     if (r.choque != 0) {
                         Text(
                             "Choque de ${r.choque} em DX e IQ só no próximo turno (não afeta defesas).",
@@ -246,6 +246,25 @@ fun DialogoFerimento(
                         Text(it, style = UiEstilos.detalheDoItem, color = MaterialTheme.colorScheme.error)
                     }
                 }
+        }
+
+        // 🔴 O resultado fica FIXO acima dos botões.
+        //
+        // Antes ele nascia no fim da rolagem, depois do painel de armadura: o
+        // jogador digitava o dano e o número aparecia fora da tela. Aqui ele está
+        // sempre visível e muda ao vivo — trocar o tipo de dano ou desmarcar a
+        // armadura mexe no número na frente dos olhos.
+        resultado?.let { r ->
+            HorizontalDivider(modifier = Modifier.padding(top = UiTokens.ItemSpacing))
+            Text(
+                "−${r.pvPerdidos} PV   →   $pvNovo de $pvInicial",
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.error
+            )
+            // A conta escrita: o jogador precisa poder conferir de onde saiu o
+            // número, senão o app vira caixa-preta na mesa.
+            Text(r.conta, style = UiEstilos.detalheDoItem, color = MaterialTheme.colorScheme.outline)
         }
 
         AppFileiraDeBotoes {
@@ -309,6 +328,7 @@ private fun <T> GradeDeEscolhas(
 @Composable
 private fun PainelDaArmadura(
     local: LocalAtaque,
+    escolheu: Boolean,
     noLocal: List<Equipamento>,
     naMochila: List<String>,
     usarRd: Boolean,
@@ -332,7 +352,8 @@ private fun PainelDaArmadura(
     ) {
         Checkbox(checked = usarRd, onCheckedChange = null)
         Text(
-            "Descontar RD da armadura — RD $rd em ${rotuloDoLocal(local)}",
+            if (escolheu) "Descontar RD da armadura — RD $rd em ${rotuloDoLocal(local)}"
+            else "Descontar RD da armadura",
             style = UiEstilos.nomeDoItem,
             modifier = Modifier.padding(start = 2.dp)
         )
@@ -340,7 +361,11 @@ private fun PainelDaArmadura(
 
     if (noLocal.isEmpty()) {
         Text(
-            "Nenhuma peça da ficha cobre ${rotuloDoLocal(local)}.",
+            if (!escolheu) {
+                "Escolha uma parte do corpo para ver a RD que protege ela."
+            } else {
+                "Nenhuma peça da ficha cobre ${rotuloDoLocal(local)}."
+            },
             style = UiEstilos.detalheDoItem,
             color = MaterialTheme.colorScheme.outline
         )

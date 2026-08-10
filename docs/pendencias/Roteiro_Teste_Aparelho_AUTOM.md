@@ -1481,3 +1481,22 @@ Os itens **T-SI1 a T-SI7** do bloco do PV-1a valem agora. Além deles:
 - **T-TC6 · ⚠️ o vazio no peito é regra, não defeito** — Selecione **Tronco**:
   ✅ há um vazio no meio do peito. É a região dos **órgãos vitais**, que é outro
   local. Toque nele: ✅ o rótulo passa a dizer *Órgãos vitais*.
+
+---
+
+# Lote PV-1d — ordem da tela e resultado fixo
+
+> Gate: 1.983 testes, 0 falhas nas duas variantes.
+
+- **T-OR1 · 🔴 o número aparece sem rolar** — Escolha uma parte, digite **10** de
+  dano: ✅ o resultado aparece **logo acima dos botões**, sem precisar rolar nada.
+- **T-OR2 · ele muda ao vivo** — Sem sair do lugar, troque o **tipo de dano**:
+  ✅ o número muda na hora. Desmarque **Descontar RD**: ✅ muda de novo.
+- **T-OR3 · a ordem** — ✅ De cima para baixo: **dano rolado**, silhueta, tipo de
+  dano, RD da armadura.
+- **T-OR4 · ⚠️ sem parte escolhida não há conta** — Abra o diálogo e digite um
+  dano **sem tocar no corpo**: ✅ nenhum resultado aparece, o painel de armadura
+  diz *"Escolha uma parte do corpo…"* e o **Aplicar** continua apagado.
+  *(Antes ele calculava para o torso calado.)*
+- **T-OR5 · os detalhes continuam** — Com um golpe forte no braço: ✅ role para
+  baixo e encontre o choque, o teste de HT e o aviso do membro incapacitado.
