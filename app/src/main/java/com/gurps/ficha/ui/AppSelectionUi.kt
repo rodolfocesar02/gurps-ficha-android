@@ -27,6 +27,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
@@ -242,11 +243,28 @@ fun AppSelectionRow(
 
 /** Um chip de filtro no padrão. Existe para nenhuma tela voltar ao texto solto. */
 @Composable
-fun AppFiltroChip(rotulo: String, selecionado: Boolean, onClick: () -> Unit) {
+fun AppFiltroChip(
+    rotulo: String,
+    selecionado: Boolean,
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit
+) {
     FilterChip(
         selected = selecionado,
         onClick = onClick,
-        label = { Text(rotulo, style = UiEstilos.textoDeBotao) }
+        modifier = modifier,
+        // ⚠️ Uma linha só, e o rótulo centralizado. Sem isto o chip encolhe até o
+        // tamanho do texto: numa grade, "Pé" ficava com um terço da largura de
+        // "Extrem. perf. ×2" e a tela virava um mosaico torto.
+        label = {
+            Text(
+                rotulo,
+                style = UiEstilos.textoDeBotao,
+                maxLines = 1,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth()
+            )
+        }
     )
 }
 

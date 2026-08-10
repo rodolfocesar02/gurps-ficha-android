@@ -6288,3 +6288,56 @@ O `SilhuetaDoCorpo.kt` entrou na varredura do `PadraoDeTelaTest` junto com os
 diálogos do MB-6/MB-7 — tela nova não entra de carona na isenção de `features/`.
 
 - **Status:** ✅ Build OK nas 2 variantes · lint OK · gate **1983** · ⏭️ **PENDENTE: teste no aparelho** (T-SI).
+
+---
+
+## 7.3-PV1c — Tela cheia, botões simétricos e o recorte que faltava
+
+Correções pedidas depois do primeiro teste no aparelho, mais um bug que as fotos
+revelaram.
+
+#### 🔴 O bug: o Compose não recorta o `Canvas` sozinho
+
+Nas fotos, o desenho **vazava para fora da área dele** — no zoom do tronco as
+pernas passavam por cima dos botões, e no das pernas as mãos apareciam em cima do
+título. Parecia problema de espaço; não era.
+
+O `drawImage` desenha a imagem inteira escalada, e o `Canvas` do Compose **não
+recorta o que sobra**. Faltava `clipToBounds()`. Uma linha.
+
+⚠️ Vale guardar o formato do erro: o sintoma era de layout ("está tudo
+espremido"), a causa era de desenho. Aumentar o espaço teria escondido o defeito
+sem corrigi-lo — em tela grande o vazamento continuaria, só demoraria mais para
+aparecer.
+
+#### O diálogo virou tela cheia
+
+Passou a usar o `FullscreenDialogContainer` que o editor de equipamento já usava.
+A silhueta recebe **42% da altura da tela**, limitada entre 260 e 520 dp: num
+celular pequeno ela encolhe junto em vez de empurrar o resto para fora.
+
+#### ⚠️ Os botões de tipo de dano viraram grade
+
+Eram `FlowRow` de chips, e no fluxo livre cada botão encolhe até o tamanho do
+próprio texto: *"Pé"* ficava com um terço da largura de *"Extrem. perf. ×2"*, as
+fileiras quebravam em lugares diferentes e a tela virava um mosaico torto.
+
+Agora é uma grade de **duas colunas de largura igual**, mesma altura e mesmo
+tamanho de letra. Lista ímpar ganha um vazio do lado do último, para ele manter a
+largura dos outros em vez de esticar pela fileira inteira.
+
+O `AppFiltroChip` ganhou `modifier` e rótulo centralizado de uma linha — está no
+arquivo do padrão, então vale para as outras telas quando forem migradas.
+
+#### ⚠️ O buraco no meio do tronco não é defeito
+
+Com **Tronco** realçado aparece um vazio no meio do peito: são os **órgãos
+vitais**, que são um local separado no livro (×3 para perfurante) e por isso não
+entram no mesmo realce.
+
+Só que o diálogo abria já com o tronco marcado, então esse buraco era a primeira
+coisa que se via — e lê como bug. Agora abre **sem nada escolhido**, e o
+**Aplicar** exige uma parte selecionada: sem isso o padrão silencioso seria o
+tronco, e o jogador aplicaria no lugar errado sem perceber.
+
+- **Status:** ✅ Build OK nas 2 variantes · lint OK · gate **1983** · ⏭️ **PENDENTE: teste no aparelho** (T-SI + T-TC).

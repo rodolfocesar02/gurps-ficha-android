@@ -2,14 +2,12 @@ package com.gurps.ficha.ui.features.rolagem
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.FlowRow
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
@@ -26,6 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
 import com.gurps.ficha.domain.rules.CoberturaDaArmadura
 import com.gurps.ficha.domain.rules.DanoTipo
@@ -38,6 +37,7 @@ import com.gurps.ficha.ui.AppBotaoPrincipal
 import com.gurps.ficha.ui.AppBotaoSecundario
 import com.gurps.ficha.ui.AppFileiraDeBotoes
 import com.gurps.ficha.ui.AppFiltroChip
+import com.gurps.ficha.ui.FullscreenDialogContainer
 import com.gurps.ficha.ui.UiEstilos
 import com.gurps.ficha.ui.UiTokens
 import com.gurps.ficha.ui.linhaAlternavel
@@ -61,7 +61,6 @@ import com.gurps.ficha.ui.linhaAlternavel
  * ⚠️ **Somar camadas é decisão do Mestre.** O app soma e **mostra as peças** —
  * esconder a conta seria pior que somar errado.
  */
-@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun DialogoFerimento(
     pvInicial: Int,
@@ -74,7 +73,11 @@ fun DialogoFerimento(
 ) {
     // Lote PV-1b: a silhueta guarda a REGIÃO (que tem lado); a variante pracego
     // guarda só o local. As duas alimentam o mesmo `local` da conta.
-    var regiao by remember { mutableStateOf(MapaDaSilhueta.de("TRONCO")) }
+    // ⚠️ Abre sem nada escolhido, de propósito. Começando com o TRONCO marcado, a
+    // primeira coisa que o jogador via era o vazio dos órgãos vitais no meio do
+    // realce — que está certo (vitais é outro local, com regra própria) mas lê
+    // como defeito. Escolhendo ele mesmo, o buraco vira informação.
+    var regiao by remember { mutableStateOf<MapaDaSilhueta.Regiao?>(null) }
     var local by remember { mutableStateOf(LocalAtaque.TORSO) }
     var tipo by remember { mutableStateOf(DanoTipo.CORT) }
     var danoTexto by remember { mutableStateOf("") }
@@ -113,15 +116,25 @@ fun DialogoFerimento(
     }
     val pvNovo = pvAtual - (resultado?.pvPerdidos ?: 0)
 
-    AlertDialog(
-        onDismissRequest = onFechar,
-        title = { Text("Ferimento", style = UiEstilos.tituloDialogo) },
-        text = {
-            Column(
-                modifier = Modifier.verticalScroll(rememberScrollState()),
-                verticalArrangement = Arrangement.spacedBy(UiTokens.ItemSpacing)
-            ) {
-                Text("PV atual: $pvAtual de $pvInicial", style = UiEstilos.subtituloDialogo)
+    // A silhueta é o conteúdo principal, então ela ganha uma fatia proporcional
+    // da tela — num celular pequeno encolhe junto, em vez de empurrar o resto
+    // para fora.
+    val alturaDaTela = LocalConfiguration.current.screenHeightDp
+    val alturaDaSilhueta = (alturaDaTela * 0.42f).dp.coerceIn(260.dp, 520.dp)
+
+    FullscreenDialogContainer(onDismiss = onFechar) {
+        Text(
+            "Ferimento",
+            style = UiEstilos.tituloDialogo,
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.primary
+        )
+        Text("PV atual: $pvAtual de $pvInicial", style = UiEstilos.subtituloDialogo)
+
+        Column(
+            modifier = Modifier.weight(1f).verticalScroll(rememberScrollState()),
+            verticalArrangement = Arrangement.spacedBy(UiTokens.ItemSpacing)
+        ) {
 
                 // ⚠️ Uma silhueta não se tateia. Na variante pracego continua a
                 // lista de quadradinhos — ela não foi substituída, coexiste.
@@ -131,13 +144,9 @@ fun DialogoFerimento(
                         style = UiEstilos.subtituloDialogo,
                         fontWeight = FontWeight.SemiBold
                     )
-                    FlowRow(horizontalArrangement = Arrangement.spacedBy(UiTokens.ItemSpacing)) {
-                        LOCAIS_NA_TELA.forEach { l ->
-                            AppFiltroChip(rotuloDoLocal(l), l == local) {
-                                local = l
-                                regiao = null
-                            }
-                        }
+                    GradeDeEscolhas(LOCAIS_NA_TELA, rotulo = { rotuloDoLocal(it) }, escolhido = { it == local }) {
+                        local = it
+                        regiao = null
                     }
                 } else {
                     SilhuetaDoCorpo(
@@ -145,7 +154,8 @@ fun DialogoFerimento(
                         onSelecionar = {
                             regiao = it
                             local = it.local
-                        }
+                        },
+                        altura = alturaDaSilhueta
                     )
                     Text(
                         regiao?.nomeCompleto ?: "Nenhuma parte escolhida",
@@ -156,10 +166,8 @@ fun DialogoFerimento(
                 }
 
                 Text("Tipo de dano", style = UiEstilos.subtituloDialogo, fontWeight = FontWeight.SemiBold)
-                FlowRow(horizontalArrangement = Arrangement.spacedBy(UiTokens.ItemSpacing)) {
-                    DanoTipo.entries.forEach { t ->
-                        AppFiltroChip(rotuloDoTipo(t), t == tipo) { tipo = t }
-                    }
+                GradeDeEscolhas(DanoTipo.entries, rotulo = { rotuloDoTipo(it) }, escolhido = { it == tipo }) {
+                    tipo = it
                 }
 
                 OutlinedTextField(
@@ -238,26 +246,64 @@ fun DialogoFerimento(
                         Text(it, style = UiEstilos.detalheDoItem, color = MaterialTheme.colorScheme.error)
                     }
                 }
-            }
-        },
-        confirmButton = {
-            AppFileiraDeBotoes {
-                AppBotaoSecundario("Cancelar", onFechar)
-                AppBotaoPrincipal(
-                    texto = "Aplicar",
-                    onClick = {
-                        val r = resultado
-                        onSalvar(
-                            pvNovo,
-                            naMochila.toSet(),
-                            if (r == null) "" else "${regiao?.nomeCompleto ?: rotuloDoLocal(local)}: ${r.conta}"
-                        )
-                    },
-                    enabled = resultado != null
-                )
+        }
+
+        AppFileiraDeBotoes {
+            AppBotaoSecundario("Cancelar", onFechar)
+            AppBotaoPrincipal(
+                texto = "Aplicar",
+                onClick = {
+                    val r = resultado
+                    onSalvar(
+                        pvNovo,
+                        naMochila.toSet(),
+                        if (r == null) "" else "${regiao?.nomeCompleto ?: rotuloDoLocal(local)}: ${r.conta}"
+                    )
+                },
+                // Na silhueta não basta ter dano digitado: sem parte escolhida
+                // não há o que aplicar — e o padrão silencioso seria o tronco.
+                enabled = resultado != null && (isPraCegoVariant || regiao != null)
+            )
+        }
+    }
+}
+
+/**
+ * Uma grade de escolhas em **duas colunas de largura igual**.
+ *
+ * ⚠️ Substitui o `FlowRow` de chips. Com o fluxo livre cada botão encolhia até o
+ * tamanho do próprio texto: *"Pé"* ficava com um terço da largura de
+ * *"Extrem. perf. ×2"*, as fileiras quebravam em lugares diferentes e a tela
+ * virava um mosaico torto. Aqui todo botão tem a mesma largura, a mesma altura e
+ * o mesmo tamanho de letra.
+ *
+ * Quando a lista é ímpar, o último ganha um vazio do lado — assim ele mantém a
+ * largura dos outros em vez de esticar para a fileira inteira.
+ */
+@Composable
+private fun <T> GradeDeEscolhas(
+    itens: List<T>,
+    rotulo: (T) -> String,
+    escolhido: (T) -> Boolean,
+    onEscolher: (T) -> Unit
+) {
+    Column(verticalArrangement = Arrangement.spacedBy(UiTokens.ItemSpacing)) {
+        itens.chunked(2).forEach { par ->
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(UiTokens.ItemSpacing)
+            ) {
+                par.forEach { item ->
+                    AppFiltroChip(
+                        rotulo = rotulo(item),
+                        selecionado = escolhido(item),
+                        modifier = Modifier.weight(1f)
+                    ) { onEscolher(item) }
+                }
+                if (par.size == 1) Spacer(modifier = Modifier.weight(1f))
             }
         }
-    )
+    }
 }
 
 @Composable

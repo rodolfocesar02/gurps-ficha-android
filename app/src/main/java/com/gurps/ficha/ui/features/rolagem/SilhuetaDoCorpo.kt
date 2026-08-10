@@ -16,6 +16,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.DrawScope
@@ -132,6 +133,11 @@ fun SilhuetaDoCorpo(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(altura)
+                // 🔴 O Canvas do Compose NÃO recorta sozinho. Sem isto a imagem
+                // inteira é desenhada escalada e vaza para fora da área dela: no
+                // zoom do tronco as pernas passavam por cima dos botões, e no das
+                // pernas as mãos apareciam em cima do título.
+                .clipToBounds()
                 .semantics { contentDescription = descricao }
                 .pointerInput(telaAberta) {
                     detectTapGestures { toque ->

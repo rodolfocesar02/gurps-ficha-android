@@ -1458,3 +1458,26 @@ Os itens **T-SI1 a T-SI7** do bloco do PV-1a valem agora. Além deles:
   no cantinho do ombro que aparece embaixo: ✅ nada é selecionado.
 - **T-SI13 · sem engasgo ao tocar** — Toque em várias partes seguidas: ✅ o
   realce acompanha sem travar.
+
+---
+
+# Lote PV-1c — tela cheia e grade simétrica
+
+> Gate: 1.983 testes, 0 falhas nas duas variantes.
+
+- **T-TC1 · 🔴 nada vaza** — Abra o PV e dê zoom no **tronco**: ✅ o desenho fica
+  **dentro** da área dele. Nenhuma perna por cima dos botões, nenhuma mão por
+  cima do título. Repita no zoom das **pernas**.
+- **T-TC2 · tela cheia** — ✅ O diálogo ocupa a tela inteira, e o botão **Aplicar**
+  não fica debaixo da barra de navegação do sistema.
+- **T-TC3 · botões do mesmo tamanho** — ✅ Os sete tipos de dano têm **a mesma
+  largura, a mesma altura e a mesma letra**. O último (*Perfuração ×2*) fica com
+  a largura dos outros, não esticado pela fileira.
+- **T-TC4 · celular pequeno** — Se tiver um aparelho de tela menor: ✅ a silhueta
+  encolhe junto e o resto continua alcançável rolando.
+- **T-TC5 · abre sem nada escolhido** — ✅ Ao abrir, nenhuma parte está realçada e
+  o texto diz *"Nenhuma parte escolhida"*. O **Aplicar** fica apagado mesmo com
+  dano digitado, até você tocar numa parte.
+- **T-TC6 · ⚠️ o vazio no peito é regra, não defeito** — Selecione **Tronco**:
+  ✅ há um vazio no meio do peito. É a região dos **órgãos vitais**, que é outro
+  local. Toque nele: ✅ o rótulo passa a dizer *Órgãos vitais*.
