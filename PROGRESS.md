@@ -6133,3 +6133,107 @@ dependia do número antigo além do próprio `HitLocationRulesTest`.
 varredura de PV 1..40 × todo tipo × dano 1..60 exigindo que nada passe do teto.
 
 - **Status:** ✅ Build OK nas 2 variantes · lint OK · gate **1966** · ⏭️ **PENDENTE: teste no aparelho** (T-7B).
+
+---
+
+## 7.1-PV1a — O mapa de toque da silhueta (Lote PV-1a)
+
+Primeira metade do botão PV virar corpo em vez de lista. **Nada muda na tela
+ainda** — este lote entrega só o mapa e a prova de que ele está certo.
+
+#### 🔴 Por que o mapa vem antes do desenho
+
+Um mapa de toque errado é o pior defeito que este app pode ter, porque **não
+parece um defeito**: a tela continua bonita, o toque responde, o número aparece.
+Só está no membro errado. O jogador descobre três sessões depois, com o braço
+errado incapacitado na ficha, e não tem como reconstruir de onde veio.
+
+#### O mapa foi MEDIDO, não desenhado no olho
+
+A arte veio do usuário em PNG. Em vez de traçar polígonos por cima no olhômetro,
+a ferramenta `docs/arte/silhueta/mapa_silhueta.py` **mede a imagem**: inunda o
+fundo transparente para achar a máscara do corpo, acha o pescoço pela largura
+mínima, a axila pela primeira linha em que o braço se separa do tronco, a virilha
+pela linha em que a silhueta se parte em duas — e acha **os olhos** varrendo a
+tinta interna da cabeça (que devolveu também sobrancelhas, orelhas, nariz e boca,
+usados para conferir o resto).
+
+O mapa inteiro são **12 números** — as linhas de corte — mais duas retas para a
+fronteira braço×tronco. Não é uma lista de polígonos.
+
+#### 🔴 O ciclo medir → pintar → OLHAR → corrigir pegou três erros
+
+A ferramenta pinta o mapa por cima da arte e salva a imagem. Olhando:
+
+1. **A boca estava dentro do pescoço.** Eu tinha cortado o queixo no ponto mais
+   estreito da cabeça (y 176) — mas neste desenho o maxilar tem quase a largura
+   do pescoço, então "o ponto mais estreito" é um péssimo detector de queixo.
+2. **O pescoço engolia a clavícula**, pintando o peito inteiro.
+3. **Os órgãos vitais eram um retângulo** saindo para fora do tórax.
+
+Nenhum dos três apareceria em teste numérico. Os três apareceram em dois segundos
+de olhada.
+
+#### ⚠️ Tocar e pintar são coisas diferentes
+
+O destaque visual segue a máscara do corpo, senão o realce vira um retângulo em
+volta do braço. Mas o **toque** cobre o retângulo inteiro da tela, sem exigir
+acerto no traço: a mão tem só **44 dp** de largura desenhada, e exigir precisão
+deixaria o alvo abaixo do mínimo de 48 dp que o app já cobra de qualquer botão.
+Um toque logo ao lado da mão ainda seleciona a mão, e não rouba de ninguém porque
+as regiões particionam a tela sem sobra.
+
+O pescoço ainda ficava em 44,7 dp, então duas linhas de corte foram ajustadas de
+propósito — está anotado no código por quê.
+
+#### ⚠️ "Esquerdo" é o lado DELE
+
+Decisão do usuário: a figura está de frente para quem olha, então o braço
+esquerdo **dele** aparece à **direita** da imagem. Trocar isso é uma linha de
+código, não quebra nada e não aparece em lugar nenhum — exceto na ficha de quem
+perdeu o braço. Há teste comparando o centro de massa dos dois lados, e a sonda
+confirmou: invertendo de propósito, ele reprova.
+
+#### ⚠️ O teste não consegue abrir o PNG — e a saída tem preço
+
+O `android.jar` não tem AWT, então `ImageIO` não existe no ambiente de teste. Sem
+um arquivo pré-calculado, os testes que mais valem (lado, ordem anatômica) não
+existiriam. A ferramenta exporta a máscara como texto (32 KB) e o teste lê dali.
+
+🔴 O preço é que esse arquivo pode **envelhecer em silêncio**. Por isso o
+cabeçalho carrega o **sha256 da arte**, e um teste compara com o PNG que o app
+mostra: trocar o desenho sem rodar a ferramenta reprova dizendo exatamente isso.
+
+#### Os três recortes eram exatos
+
+As três imagens de detalhe que o usuário mandou casaram com o corpo inteiro em
+**100% do traço** — recorte 1:1, sem redimensionar. Por isso o app guarda **um**
+arquivo só, e o zoom é mover a janela sobre a mesma imagem: sem troca de asset e
+sem desalinhamento possível.
+
+| tela | recorte |
+|---|---|
+| cabeça | x 156–435, y 0–258 |
+| tronco | x 0–591, y 269–911 |
+| pernas | x 40–551, y 908–1555 |
+
+⚠️ Os recortes têm um vão de 11 px entre a cabeça e o tronco. Na tela índice isso
+seria uma faixa morta na base do pescoço, então o índice usa **faixas contíguas**,
+não os recortes — com teste varrendo as 1.555 linhas.
+
+#### ⚠️ O que ficou de fora, e por quê
+
+*Braço com escudo* (−4), *mão com escudo* (−8) e *arma do oponente* são
+penalidades de **acertar** — o escudo atrapalha quem ataca. Depois que o golpe
+entrou, o dano num braço com escudo segue a regra de braço comum. Oferecê-los
+aqui seria dar ao jogador uma escolha que não muda nada no ferimento.
+
+E **boca não existe** como local no Módulo Básico: a p.399 diz que o rosto
+*"inclui o maxilar, as bochechas, o nariz e as orelhas"*. Criar um botão "boca"
+seria inventar penalidade e multiplicador que o livro não dá.
+
+**Testes:** `MapaDaSilhuetaTest`, 16 casos — as 16 regiões alcançáveis, a ordem
+anatômica de cima para baixo, os pares esquerdo/direito com áreas equivalentes,
+nenhum alvo abaixo de 48 dp, nenhuma faixa morta no índice, e o hash da arte.
+
+- **Status:** ✅ Build OK nas 2 variantes · lint OK · gate **1982** · ⏭️ **sem tela ainda** — a silhueta desenhada e o zoom entram no PV-1b.

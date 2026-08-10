@@ -1402,3 +1402,32 @@ o livro sempre mandou.
   incapacita com **2 PV**, não 1.
 - **T-7B4 · o resto do combate não mudou** — ✅ Torso, crânio e vitais continuam
   com os mesmos números de sempre. Só o teto de **braço, perna, mão e pé** mudou.
+
+---
+
+# Lote PV-1a — o mapa de toque da silhueta
+
+> Gate: 1.982 testes, 0 falhas nas duas variantes.
+
+⚠️ **Este lote não tem tela.** Ele entrega o mapa e a prova de que ele está
+certo; a silhueta desenhada e o zoom entram no **PV-1b**. Este bloco espera esse
+lote, como o T-FO do MB-5 esperou.
+
+## T-SI · O que conferir quando a silhueta existir
+
+- **T-SI1 · 🔴 o lado é o DELE** — Toque no braço que aparece à **direita** da
+  tela: ✅ a ficha registra **braço esquerdo**. *(A figura está de frente para
+  você. É o erro que não aparece em lugar nenhum até alguém perder o braço.)*
+- **T-SI2 · a mão é fácil de acertar** — Toque **um pouco ao lado** da mão
+  desenhada: ✅ ainda seleciona a mão. *(O toque não exige acerto no traço.)*
+- **T-SI3 · nenhuma faixa morta** — Passe o dedo pela base do pescoço, entre a
+  cabeça e o peito: ✅ sempre abre alguma tela, nunca fica sem resposta.
+- **T-SI4 · a cabeça abre em quatro** — Toque na cabeça: ✅ o zoom mostra
+  **crânio, rosto, olho esquerdo, olho direito e pescoço** — e nada chamado
+  "boca", que não existe no livro.
+- **T-SI5 · o queixo é rosto** — No zoom da cabeça, toque no **queixo** e na
+  **boca**: ✅ os dois selecionam **rosto**, não pescoço.
+- **T-SI6 · os vitais estão no peito** — No zoom do tronco: ✅ a região de
+  **órgãos vitais** fica sobre o tórax, não sobre a barriga.
+- **T-SI7 · a lista continua na variante pracego** — ✅ Na `pracego`, os
+  quadradinhos de local continuam lá. Silhueta não se tateia.
