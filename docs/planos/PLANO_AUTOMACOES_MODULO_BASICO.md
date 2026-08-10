@@ -161,6 +161,8 @@ número que ninguém decora.
 
 ## MB-6 · 🔴 Fadiga — o botão "PF" (desenho do usuário, 03/08)
 
+> ✅ **FEITO** — versão 6.9-MB5 (10/08). ⏭️ Falta validar no aparelho (roteiro **T-PF**).
+
 **A ideia, na sua palavra:** *"transformar a palavra PF na aba de Rolagem num
 botão, e dentro dele colocar tudo isso, com as caixinhas de seleção de cada um,
 o tempo e os cálculos ali. Ele escolhe, salva; quando fechar, os devidos redutores
@@ -197,6 +199,11 @@ longo, e hoje ninguém acompanha.
 ---
 
 ## MB-7 · 🔴 Ferimento por local — o botão "PV" (desenho do usuário, 03/08)
+
+> ✅ **FEITO E VALIDADO NO APARELHO** (10/08). Entregue em 6.9-MB5 e depois
+> refeito como silhueta tocável nos lotes **PV-1a..1d** (7.1 a 7.4), a pedido do
+> usuário. Rendeu de brinde a correção do off-by-one do teto de membro no motor
+> de combate da Saga (**MB-7b**, 7.0).
 
 **A ideia, na sua palavra:** *"dentro do PV tem todas as partes do corpo que podem
 ser atingidas (semelhante ao usado no ataque). O jogador coloca o dano que levou na
@@ -312,6 +319,9 @@ NT baixo: em NT3 um **12** já enguiça, e isso acontece o tempo todo.
 ---
 
 ## MB-9 · Dano por queda e colisão (p.431-432)
+
+> ✅ **FEITO** — versão 6.8-MB4 (10/08). Regra pronta e testada; **sem tela** —
+> a queda entra no botão PV num lote futuro (roteiro **T-QD** esperando).
 
 A tabela de velocidade de queda está inteira no arquivo (1 m = velocidade 5, até
 100+ m = 47), e o dano sai dela mais o peso.
@@ -438,3 +448,25 @@ planejado sem conferir, o lote quebraria no meio.
 **Regra que precisa de estado novo não é "só uma caixinha".** MB-6, MB-7 e MB-10
 mexem no que a ficha **guarda**, não no que ela **calcula**. Isso é outro tipo de
 trabalho — e é por isso que estão na Onda 2 e 3, mesmo tendo ganho alto.
+
+
+---
+
+# Onde o plano parou (10/08/2026)
+
+**Onda 1 e 2 fechadas.** MB-1, MB-2, MB-4, MB-5, MB-8, MB-9, MB-13 e os dois
+grandes — MB-6 e MB-7 — estão no repositório com gate verde.
+
+O **MB-7 cresceu além do planejado**: virou uma silhueta tocável do corpo, com
+zoom em três telas e o mapa medido na própria arte (lotes PV-1a a PV-1d). O que o
+plano previa como uma lista de locais virou o desenho, e o teste no aparelho
+aprovou.
+
+**Continuam adiados a pedido do usuário:** MB-10 (montaria), MB-11 (regras
+especiais por arma) e MB-12 (perigos de ambiente).
+
+⚠️ **Pendências reais que sobraram:**
+- **T-PF** — o painel de fadiga (MB-6) ainda não foi tocado no aparelho.
+- **T-QD** e **T-FO** — queda e fôlego têm a regra pronta e **nenhuma tela**.
+- **T-7B** — a correção do teto de membro mudou um número do **combate da Saga**
+  e precisa ser vista lá dentro.

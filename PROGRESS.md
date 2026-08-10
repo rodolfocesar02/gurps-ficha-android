@@ -6381,3 +6381,31 @@ peças fica vazia e **a conta não é feita**. Um número certo para a pergunta 
 é pior que número nenhum — ele parece resposta.
 
 - **Status:** ✅ Build OK nas 2 variantes · lint OK · gate **1983** · ⏭️ **PENDENTE: teste no aparelho** (T-OR).
+
+---
+
+## ✅ Validação no aparelho — o botão PV (10/08/2026)
+
+Registro de teste, não de código. **PROGRESS é append-only**, então os blocos
+acima continuam dizendo "PENDENTE" — é aqui que fica o que passou.
+
+O usuário testou o **botão PV** no aparelho, parte por parte do corpo, com danos
+variados. A foto do último teste fecha a conta: **Órgãos vitais, corte, 10 de dano
+bruto, RD 2** → `10 − RD 2 = 8 × 1.5 = 12` → **−12 PV, de 9 para −3**. Bate com o
+livro (a RD entra antes do multiplicador; corte é ×1,5; vitais só multiplica
+perfurante, então aqui não entra o ×3).
+
+**Validado:** os roteiros **T-FE** (ferimento por local), **T-SI** (a silhueta e o
+mapa), **T-TC** (tela cheia e grade simétrica) e **T-OR** (ordem da tela e
+resultado fixo).
+
+⚠️ **Não validado, e continua na fila:**
+
+| bloco | o que é | por quê ainda não |
+|---|---|---|
+| **T-PF** | o painel de fadiga (MB-6) | é o outro botão; não foi aberto no teste |
+| **T-FE4 / T-FE14** | a armadura guardada e o PV sobreviverem ao **fechar o app** | o teste foi de conta, não de persistência |
+| **T-QD** · **T-FO** | queda e fôlego | regra pronta, **sem tela** — esperam um lote |
+| **T-7B** | o off-by-one do teto de membro | mudou um número do **combate da Saga**, e precisa ser visto lá |
+
+Nenhum código mudou neste registro.

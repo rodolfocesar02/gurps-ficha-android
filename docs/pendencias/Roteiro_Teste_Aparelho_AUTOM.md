@@ -1303,6 +1303,11 @@ esperando, como o T-FO do MB-5.
 
 # Lotes MB-6 e MB-7 — os botões PF e PV
 
+> ⚠️ **Meio validado (10/08/2026).** O bloco **T-FE** (botão PV) passou no
+> aparelho. O bloco **T-PF** (botão PF, fadiga) **continua pendente** — não foi
+> aberto no teste. Dentro do T-FE, os itens de **persistência** (T-FE4 e T-FE14,
+> fechar e reabrir o app) também ficaram de fora.
+
 > Gate: 1.960 testes, 0 falhas nas duas variantes.
 
 > Este lote mexe no que a ficha **guarda**, não só no que ela calcula: são dois
@@ -1407,6 +1412,10 @@ o livro sempre mandou.
 
 # Lote PV-1a — o mapa de toque da silhueta
 
+> ✅ **VALIDADO NO APARELHO em 10/08/2026** — testado parte por parte do corpo,
+> com danos variados.
+
+
 > Gate: 1.982 testes, 0 falhas nas duas variantes.
 
 ⚠️ **Este lote não tem tela.** Ele entrega o mapa e a prova de que ele está
@@ -1436,6 +1445,10 @@ lote, como o T-FO do MB-5 esperou.
 
 # Lote PV-1b — a silhueta na tela
 
+> ✅ **VALIDADO NO APARELHO em 10/08/2026** — testado parte por parte do corpo,
+> com danos variados.
+
+
 > Gate: 1.983 testes, 0 falhas nas duas variantes.
 
 ⚠️ **Só na variante visual.** Na `pracego` os quadradinhos continuam como eram —
@@ -1463,6 +1476,10 @@ Os itens **T-SI1 a T-SI7** do bloco do PV-1a valem agora. Além deles:
 
 # Lote PV-1c — tela cheia e grade simétrica
 
+> ✅ **VALIDADO NO APARELHO em 10/08/2026** — testado parte por parte do corpo,
+> com danos variados.
+
+
 > Gate: 1.983 testes, 0 falhas nas duas variantes.
 
 - **T-TC1 · 🔴 nada vaza** — Abra o PV e dê zoom no **tronco**: ✅ o desenho fica
@@ -1485,6 +1502,10 @@ Os itens **T-SI1 a T-SI7** do bloco do PV-1a valem agora. Além deles:
 ---
 
 # Lote PV-1d — ordem da tela e resultado fixo
+
+> ✅ **VALIDADO NO APARELHO em 10/08/2026** — testado parte por parte do corpo,
+> com danos variados.
+
 
 > Gate: 1.983 testes, 0 falhas nas duas variantes.
 
