@@ -321,7 +321,10 @@ fun PvPfQuickRollPanel(
                 ) {
                     Text(
                         "PV",
-                        style = cardTitleStyle,
+                        // Mesmo tamanho do número que ele rotula: com o
+                        // `cardTitleStyle` a palavra ficava visivelmente menor
+                        // que o "9/9" ao lado, e as duas são a mesma informação.
+                        style = defenseNumberStyle,
                         fontWeight = FontWeight.SemiBold,
                         textDecoration = TextDecoration.Underline,
                         color = MaterialTheme.colorScheme.primary,
@@ -364,7 +367,10 @@ fun PvPfQuickRollPanel(
                 ) {
                     Text(
                         "PF",
-                        style = cardTitleStyle,
+                        // Mesmo tamanho do número que ele rotula: com o
+                        // `cardTitleStyle` a palavra ficava visivelmente menor
+                        // que o "9/9" ao lado, e as duas são a mesma informação.
+                        style = defenseNumberStyle,
                         fontWeight = FontWeight.SemiBold,
                         textDecoration = TextDecoration.Underline,
                         color = MaterialTheme.colorScheme.primary,

@@ -798,8 +798,6 @@ fun TabRolagem(viewModel: FichaViewModel) {
     val innerCardPadding = if (isSmallScreen) 4.dp else 8.dp
     val rowSpacing = if (isTinyScreen) 4.dp else 8.dp
 
-    var showTestDado3d by remember { mutableStateOf(false) }
-
     // --- UI Layout ---
     Box(modifier = Modifier.fillMaxSize()) {
         Column(
@@ -816,23 +814,6 @@ fun TabRolagem(viewModel: FichaViewModel) {
                 compactLabelStyle = compactLabelStyle,
                 onEditCanal = { showEditarCanalDialog = true }
             )
-
-            Button(
-                onClick = { showTestDado3d = true },
-                modifier = Modifier.fillMaxWidth().height(48.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.surfaceVariant,
-                    contentColor = MaterialTheme.colorScheme.onSurfaceVariant
-                ),
-                shape = RoundedCornerShape(8.dp),
-                contentPadding = PaddingValues(horizontal = 8.dp, vertical = 2.dp)
-            ) {
-                Text(
-                    text = "Testar Física 3D e Som (Lote 2 e 3)",
-                    fontWeight = FontWeight.Bold,
-                    fontSize = if (isSmallScreen) 14.sp else 16.sp
-                )
-            }
 
             if (isPraCegoVariant) SectionHeaderPraCego("Atributos e Status")
         PainelAtributosEStatus(

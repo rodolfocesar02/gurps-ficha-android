@@ -6688,3 +6688,21 @@ se ela voltar a existir, e exige que a lista da pracego leia
 ficar para trás em silêncio.
 
 - **Status:** ✅ Build OK nas 2 variantes · lint OK · gate **2009** · ⏭️ **PENDENTE: teste no aparelho** (T-PC).
+
+---
+
+## 8.0-ROL1 — Limpeza da aba Rolagem
+
+Pedido do usuário, sem teste novo (build verde nas duas variantes).
+
+- **Saiu o botão "Testar Física 3D e Som (Lote 2 e 3)"** — ⚠️ ele **já não fazia
+  nada**: o `showTestDado3d` que ele ligava não era lido em lugar nenhum do
+  arquivo. Era um botão de teste de um lote antigo que ficou na tela do jogador
+  ocupando 48 dp de altura e prometendo uma ação inexistente. O estado órfão foi
+  junto.
+- **"PV" e "PF" no tamanho dos números** — as palavras usavam `cardTitleStyle` e
+  os números `defenseNumberStyle`, então o rótulo ficava visivelmente menor que o
+  "9/9" ao lado. São a mesma informação; agora têm o mesmo corpo. *(Continuam
+  sublinhadas e clicáveis — são os botões do MB-6 e MB-7.)*
+
+- **Status:** ✅ Compila nas 2 variantes · ⏭️ conferir na tela.
