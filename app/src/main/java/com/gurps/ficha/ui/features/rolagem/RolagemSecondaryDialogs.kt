@@ -394,6 +394,19 @@ fun RolagemEnergiaManualDialog(
                     style = MaterialTheme.typography.bodyMedium,
                     fontWeight = FontWeight.SemiBold
                 )
+                // Lote MAGIA-E1: a faixa lida do catálogo, em português. Antes
+                // aparecia só o texto cru ("1 a 3") e o campo já vinha com 1 —
+                // não dava para saber que 2 e 3 eram escolhas legítimas.
+                val custoDoCatalogo = com.gurps.ficha.domain.rules.MagiaEnergiaRules
+                    .parseCusto(magiaEnergia.energia)
+                if (custoDoCatalogo.precisaEscolher) {
+                    Text(
+                        "Você escolhe quanto gastar: ${custoDoCatalogo.comoTexto}. " +
+                            "Os dados só rolam depois desta escolha.",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                }
                 magiaEnergia.energia?.takeIf { it.isNotBlank() }?.let { energia ->
                     Text(
                         "Energia da ficha: $energia",

@@ -6409,3 +6409,72 @@ resultado fixo).
 | **T-7B** | o off-by-one do teto de membro | mudou um número do **combate da Saga**, e precisa ser visto lá |
 
 Nenhum código mudou neste registro.
+
+---
+
+## 7.5-MAGE1 — O custo em energia das mágicas (Lote MAGIA-E1)
+
+Reportado pelo usuário: *"rolei Cura Superficial, 1 a 3 de fadiga, era pra ter
+opção de quanto ia gastar, antes da rolagem dos dados — isso não aconteceu"*.
+
+Ele estava certo, e a função tinha **dez linhas com quatro defeitos**. Nenhum
+aparecia como erro: a magia rolava, o número saía, e a ficha descontava menos do
+que devia — ou nada.
+
+#### 🔴 1. A faixa era jogada fora
+
+`parseCusto("1 a 3")` fazia `split(' ')[0]` e devolvia **1**. São **31 mágicas**
+com custo em faixa no catálogo (1a3, 1a4, 1a5, 2a6, 10a30, 10a50). Em todas elas
+o jogador ficava preso ao mínimo — e na *Cura Superficial* o que se gasta é o que
+se cura, então ela **nunca curava mais que 1 PV**.
+
+#### 🔴 2. `"Varia"` não cobrava nada
+
+São **130 mágicas** com energia `"Varia"`, mais 10 de `"Especial"`. O parse
+devolvia **nulo**, quem chamava escrevia `?: return`, e a magia saía de graça —
+sem diálogo, sem aviso, sem desconto.
+
+⚠️ A correção não foi tratar melhor o nulo: foi **acabar com ele**. `parseCusto`
+agora sempre devolve um `Custo`, e o desconhecido é um estado declarado
+(`precisaEscolher`). Um tipo que não consegue dizer *"não sei"* obriga quem chama
+a decidir sozinho — e a decisão fácil é não fazer nada.
+
+#### 🔴 3. A pergunta vinha depois dos dados
+
+A função se chamava, literalmente, `tratarCustoEnergiaAposRolagemMagia`. Para
+custo variável isso é tarde: **quanto gastar é decisão, não consequência**. Agora
+a rolagem fica guardada, o diálogo abre, e os dados só caem depois da escolha.
+
+⚠️ Desistir do gasto desiste da magia. Sem isso a rolagem guardada cairia na
+próxima vez que o jogador gastasse energia de outra mágica qualquer.
+
+#### 🔴 4. O resultado da rolagem não mexia no gasto — regra pronta, fiação no E2
+
+O livro é explícito (MB p.236):
+
+> Não há gasto de energia quando o personagem obtém um **sucesso decisivo**. (…)
+> O **fracasso** (…) o operador perderá **um ponto** de energia. (…) Uma **falha
+> crítica** indica que o custo em energia total da mágica foi gasto.
+
+O app cobra o **custo cheio nos quatro casos**. Quem tira sucesso decisivo paga o
+que devia ser de graça; quem falha paga cinco onde o livro cobra **um**. É um erro
+que favorece e prejudica em momentos diferentes, então nunca vira reclamação — só
+vira ficha errada.
+
+`energiaGasta()` já está escrita e testada, incluindo a exceção das **mágicas de
+informação** (pagam tudo mesmo fracassando, MB p.241). Falta só a fiação: o
+resultado da rolagem volta pelo overlay dos dados, num caminho separado, e mexer
+nele junto seria mexer no `TabRolagem` sem rede. **Fica para o MAGIA-E2.**
+
+#### Uma leitura de regra que vale registrar
+
+⚠️ O Módulo Básico **não** dá piso de 1 ponto para o desconto por NH alto — o
+custo pode chegar a zero. Sabemos disso porque a mágica *Drenar Energia* precisa
+dizer, no texto dela, que é **exceção**: *"nunca é reduzido por NH elevado; um
+mínimo de 1 PF sempre é gasto"*. Exceção escrita implica regra geral diferente.
+
+**Testes:** `MagiaEnergiaRulesTest`, 18 casos — incluindo a **varredura das 879
+mágicas reais**, exigindo que nenhuma passe como custo zero sem estar declarada
+como desconhecida, e que nenhuma faixa saia invertida.
+
+- **Status:** ✅ Build OK nas 2 variantes · lint OK · gate **2001** · ⏭️ **PENDENTE: teste no aparelho** (T-EN).

@@ -415,6 +415,10 @@ fun TabRolagem(viewModel: FichaViewModel) {
 
     var magiaPendenteEnergia by remember { mutableStateOf<MagiaRollOption?>(null) }
     var showEnergiaManualDialog by remember { mutableStateOf(false) }
+    // Lote MAGIA-E1: quando o custo é faixa ("1 a 3") ou desconhecido ("Varia"),
+    // a pergunta vem ANTES dos dados — quanto gastar é decisão, não consequência.
+    // A rolagem fica guardada aqui esperando a escolha.
+    var rolagemDeMagiaEsperando by remember { mutableStateOf<Pair<MagiaRollOption, Int>?>(null) }
     var energiaManualInput by remember { mutableStateOf("") }
     var talismaMagiaVinculada by remember { mutableStateOf<String?>(null) }
     val repertorioParaTalisma = p.equipamentos
@@ -661,20 +665,56 @@ fun TabRolagem(viewModel: FichaViewModel) {
         }
     }
 
+    fun nhEfetivoDaMagia(magia: MagiaRollOption): Int =
+        magia.target + (modificadoresMagia[magia.id] ?: 0) +
+            (if (isPraCegoVariant) modificadorGlobalPraCego else 0)
+
+    fun rolarMagiaAgora(magia: MagiaRollOption, modMagia: Int) {
+        executarRolagem(
+            tipo = TipoTeste.MAGIA,
+            contextoLabel = magia.contextLabel,
+            alvo = magia.target,
+            mod = modMagia
+        )
+    }
+
     fun consumirEnergiaMagia(custo: Int) {
         viewModel.atualizarPontosFadigaRolagemAtual(pfAtualRolagem - custo)
         showEnergiaManualDialog = false
         magiaPendenteEnergia = null
         energiaManualInput = ""
         talismaMagiaVinculada = null
+        // 🔴 Se a rolagem estava esperando a escolha, ela acontece AGORA — depois
+        // de o jogador dizer quanto compromete. Era isto que faltava: a Cura
+        // Superficial ("1 a 3") rolava primeiro e cobrava 1 calado, então nunca
+        // dava para curar 2 ou 3 PV.
+        rolagemDeMagiaEsperando?.let { (magia, mod) ->
+            rolagemDeMagiaEsperando = null
+            rolarMagiaAgora(magia, mod)
+        }
     }
 
+    /**
+     * Decide se a mágica precisa perguntar antes de rolar, e prepara o diálogo.
+     * Devolve `true` quando a rolagem deve ESPERAR a escolha.
+     */
+    fun pedirEnergiaAntesDeRolar(magia: MagiaRollOption, modMagia: Int): Boolean {
+        val custo = MagiaEnergiaRules.parseCusto(magia.energia)
+        if (!custo.precisaEscolher) return false
+        val reducao = MagiaEnergiaRules.reducaoPorNh(nhEfetivoDaMagia(magia))
+        magiaPendenteEnergia = magia
+        rolagemDeMagiaEsperando = magia to modMagia
+        energiaManualInput = (custo.minimo - reducao).coerceAtLeast(0).toString()
+        showEnergiaManualDialog = true
+        return true
+    }
+
+    /** Custo fixo: confirma depois da rolagem, como sempre foi. */
     fun tratarCustoEnergiaAposRolagemMagia(magia: MagiaRollOption) {
-        val custoBase = MagiaEnergiaRules.parseCusto(magia.energia) ?: return
-        val nhEfetivo = (magia.target + (modificadoresMagia[magia.id] ?: 0) + (if (isPraCegoVariant) modificadorGlobalPraCego else 0))
-        val reducao = MagiaEnergiaRules.reducaoPorNh(nhEfetivo)
-        val custoReduzido = (custoBase - reducao).coerceAtLeast(0)
-        
+        val custo = MagiaEnergiaRules.parseCusto(magia.energia)
+        val fixo = custo.fixo ?: return
+        val reducao = MagiaEnergiaRules.reducaoPorNh(nhEfetivoDaMagia(magia))
+        val custoReduzido = (fixo - reducao).coerceAtLeast(0)
         if (custoReduzido > 0) {
             magiaPendenteEnergia = magia
             energiaManualInput = custoReduzido.toString()
@@ -1116,13 +1156,12 @@ fun TabRolagem(viewModel: FichaViewModel) {
             isPraCegoVariant = isPraCegoVariant,
             onShowDescricao = { descricaoDialog = it },
             onExecutarRolagem = { magia, modMagia ->
-                executarRolagem(
-                    tipo = TipoTeste.MAGIA,
-                    contextoLabel = magia.contextLabel,
-                    alvo = magia.target,
-                    mod = modMagia
-                )
-                tratarCustoEnergiaAposRolagemMagia(magia)
+                // ⚠️ Custo em faixa ou desconhecido PARA a rolagem e pergunta
+                // primeiro; os dados só caem depois da escolha.
+                if (!pedirEnergiaAntesDeRolar(magia, modMagia)) {
+                    rolarMagiaAgora(magia, modMagia)
+                    tratarCustoEnergiaAposRolagemMagia(magia)
+                }
             },
             onDismiss = { showMagiasDialog = false }
         )
@@ -1197,6 +1236,10 @@ fun TabRolagem(viewModel: FichaViewModel) {
                 magiaPendenteEnergia = null
                 energiaManualInput = ""
                 talismaMagiaVinculada = null
+                // ⚠️ Desistir do gasto desiste da MAGIA. Sem isto a rolagem
+                // ficaria guardada e cairia na próxima vez que o jogador
+                // gastasse energia de outra mágica qualquer.
+                rolagemDeMagiaEsperando = null
             }
         )
     }

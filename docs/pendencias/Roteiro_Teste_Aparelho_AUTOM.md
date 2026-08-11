@@ -1521,3 +1521,29 @@ Os itens **T-SI1 a T-SI7** do bloco do PV-1a valem agora. Além deles:
   *(Antes ele calculava para o torso calado.)*
 - **T-OR5 · os detalhes continuam** — Com um golpe forte no braço: ✅ role para
   baixo e encontre o choque, o teste de HT e o aviso do membro incapacitado.
+
+---
+
+# Lote MAGIA-E1 — o custo em energia das mágicas
+
+> Gate: 2.001 testes, 0 falhas nas duas variantes.
+
+- **T-EN1 · 🔴 a faixa pergunta antes** — Role **Cura Superficial** (custo 1 a 3):
+  ✅ o diálogo de energia abre **antes dos dados**, dizendo *"Você escolhe quanto
+  gastar: de 1 a 3. Os dados só rolam depois desta escolha."*
+- **T-EN2 · dá para escolher 3** — Ponha **3** e confirme: ✅ os dados rolam e o
+  PF cai **3**. *(Antes travava em 1, e como o que se gasta é o que se cura, a
+  magia nunca curava mais que 1 PV.)*
+- **T-EN3 · 🔴 desistir desiste da magia** — Abra a Cura Superficial e **cancele**
+  o diálogo: ✅ nenhum dado rola e nenhum PF é descontado. Agora role **outra**
+  mágica qualquer de custo fixo: ✅ ela rola normalmente, sem a rolagem antiga
+  aparecer junto.
+- **T-EN4 · ⚠️ "Varia" agora pergunta** — Role uma mágica com energia **Varia**
+  (são 130 no catálogo): ✅ o diálogo abre pedindo o número, em vez de a magia
+  sair de graça calada.
+- **T-EN5 · custo fixo não mudou** — Role uma mágica de custo fixo (ex.: energia
+  **4**): ✅ os dados rolam primeiro e o diálogo confirma depois, como sempre foi.
+- **T-EN6 · o desconto por NH** — Com a mágica em **NH 15+**: ✅ o valor sugerido
+  já vem 1 ponto menor.
+- **T-EN7 · operar × manter** — Role uma mágica com energia no formato **"04/02"**:
+  ✅ o valor sugerido é **4** (operar), não 2 (manter).
