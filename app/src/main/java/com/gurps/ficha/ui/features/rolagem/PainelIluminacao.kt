@@ -59,25 +59,58 @@ fun PainelIluminacao(
         shape = RoundedCornerShape(16.dp),
         colors = appCardColors()
     ) {
-        Column(modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp)) {
+        Column(
+            modifier = Modifier
+                .padding(horizontal = 10.dp, vertical = 6.dp)
+                .semantics {
+                    contentDescription =
+                        IluminacaoRules.descricaoAcessivel(personagem, penalidadeBruta)
+                },
+            verticalArrangement = Arrangement.spacedBy(2.dp)
+        ) {
+            // DUAS linhas, nao uma. Com o cartao em meia largura (Lote ROL-3) os
+            // cinco elementos numa fileira so nao cabiam: o rotulo do meio tem
+            // `weight(1f)` e era espremido a ZERO -- o "Boa luz" sumia da tela --
+            // e o numero quebrava em duas linhas ("-" em cima, "1" embaixo).
+            //
+            // A estrutura aqui e IDENTICA a do PainelAparaRepetida, de proposito:
+            // os dois ficam lado a lado, e qualquer diferenca de altura ou de
+            // alinhamento entre eles salta aos olhos.
             Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .semantics {
-                        contentDescription =
-                            IluminacaoRules.descricaoAcessivel(personagem, penalidadeBruta)
-                    },
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
                     "Luz da cena",
                     style = MaterialTheme.typography.labelMedium,
-                    color = MaterialTheme.colorScheme.outline
+                    color = MaterialTheme.colorScheme.outline,
+                    maxLines = 1,
+                    modifier = Modifier.weight(1f)
                 )
+                Text(
+                    if (r.efetiva == 0) "0" else "${r.efetiva}",
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    maxLines = 1,
+                    softWrap = false,
+                    color = if (r.efetiva < 0) {
+                        MaterialTheme.colorScheme.error
+                    } else {
+                        MaterialTheme.colorScheme.primary
+                    }
+                )
+            }
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
                 TextButton(
                     onClick = { onMudar((penalidadeBruta - 1).coerceAtLeast(IluminacaoRules.ESCURIDAO_TOTAL)) },
                     modifier = Modifier.semantics { contentDescription = "Escurecer a cena" },
-                    contentPadding = PaddingValues(horizontal = 10.dp, vertical = 0.dp)
+                    contentPadding = PaddingValues(horizontal = 8.dp, vertical = 0.dp)
                 ) { Text("−", style = MaterialTheme.typography.titleMedium) }
 
                 Text(
@@ -92,19 +125,8 @@ fun PainelIluminacao(
                 TextButton(
                     onClick = { onMudar((penalidadeBruta + 1).coerceAtMost(0)) },
                     modifier = Modifier.semantics { contentDescription = "Clarear a cena" },
-                    contentPadding = PaddingValues(horizontal = 10.dp, vertical = 0.dp)
+                    contentPadding = PaddingValues(horizontal = 8.dp, vertical = 0.dp)
                 ) { Text("+", style = MaterialTheme.typography.titleMedium) }
-
-                Text(
-                    if (r.efetiva == 0) "0" else "${r.efetiva}",
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold,
-                    color = if (r.efetiva < 0) {
-                        MaterialTheme.colorScheme.error
-                    } else {
-                        MaterialTheme.colorScheme.primary
-                    }
-                )
             }
 
             // A conta à vista sempre que houver algo a explicar: sem isso o

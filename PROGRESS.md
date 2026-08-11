@@ -6758,3 +6758,46 @@ A caixinha do **Sem Um Dedo** foi junto — as duas são a mesma pergunta.
 Sem teste novo, a pedido. Compila nas 2 variantes.
 
 - **Status:** ✅ Compila nas 2 variantes · ⏭️ conferir na tela.
+
+---
+
+## 8.3-ROL4 — A diagramação das duas faixas de meia largura
+
+O ROL-3 pôs Luz da cena e Apara do turno lado a lado, e no aparelho os dois
+**quebraram**. As fotos mostram o quê:
+
+- **O rótulo do meio sumiu.** *"Boa luz"* simplesmente não aparecia na primeira
+  foto. Ele tem `Modifier.weight(1f)` e, com os outros quatro elementos na mesma
+  fileira em metade da largura, sobrou **zero** para ele.
+- **O número quebrou em duas linhas.** O `-1` virava `-` em cima e `1` embaixo; o
+  `-4` da Apara, idem.
+- **Os dois cartões não batiam** entre si — alturas e espaçamentos diferentes,
+  lado a lado.
+
+#### A causa: cinco coisas numa fileira só
+
+Os dois painéis foram desenhados para **largura inteira**: rótulo, `−`, valor,
+`+` e total, tudo numa linha. Em metade da largura isso não cabe, e o Compose
+resolve encolhendo o que tem `weight` — que era justamente a informação
+(*"Boa luz"*, *"Penumbra"*).
+
+⚠️ **Não foi o lado a lado que quebrou; foi ele que revelou.** O layout já era
+apertado; a mudança só tirou a folga que escondia isso.
+
+#### A correção: duas linhas, e a MESMA estrutura nos dois
+
+```
+rótulo ......................... total
+        −     valor     +
+        (a explicação, quando há)
+```
+
+A primeira linha é `SpaceBetween` (o nome à esquerda, o número à direita, sem
+quebra); a segunda é centralizada. O total ganhou `softWrap = false` — é ele que
+não pode quebrar de jeito nenhum.
+
+⚠️ Os dois arquivos têm agora **a mesma estrutura de propósito**, e o comentário
+diz isso em ambos: eles ficam lado a lado, então qualquer diferença de altura ou
+de alinhamento entre os dois salta aos olhos.
+
+- **Status:** ✅ Compila nas 2 variantes · ⏭️ conferir na tela.

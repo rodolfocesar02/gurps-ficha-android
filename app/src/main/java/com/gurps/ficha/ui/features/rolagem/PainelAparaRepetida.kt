@@ -17,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.gurps.ficha.domain.rules.GolpeRapidoEAparaRules
 import com.gurps.ficha.model.Personagem
@@ -67,31 +68,67 @@ fun PainelAparaRepetida(
         shape = RoundedCornerShape(12.dp),
         colors = appCardColors()
     ) {
-        Column(modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp)) {
+        Column(
+            modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp),
+            verticalArrangement = Arrangement.spacedBy(2.dp)
+        ) {
+            // Mesma estrutura do PainelIluminacao -- ver o comentario la. Os dois
+            // ficam lado a lado em meia largura, e qualquer diferenca de
+            // alinhamento entre eles salta aos olhos.
             Row(
                 modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
                     "Apara nº do turno",
                     style = MaterialTheme.typography.labelMedium,
-                    color = MaterialTheme.colorScheme.outline
+                    color = MaterialTheme.colorScheme.outline,
+                    maxLines = 1,
+                    modifier = Modifier.weight(1f)
                 )
+                Text(
+                    if (total == 0) "0" else "$total",
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    maxLines = 1,
+                    softWrap = false,
+                    color = if (total < 0) {
+                        MaterialTheme.colorScheme.error
+                    } else {
+                        MaterialTheme.colorScheme.primary
+                    },
+                    modifier = Modifier.semantics {
+                        contentDescription = "Penalidade na Apara: " +
+                            if (total < 0) "menos ${-total}" else "nenhuma"
+                    }
+                )
+            }
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
                 TextButton(
                     onClick = { onMudar((numeroDaApara - 1).coerceAtLeast(1)) },
                     modifier = Modifier.semantics {
                         contentDescription = "Voltar uma apara. Agora é a ${numeroDaApara}ª do turno."
                     },
-                    contentPadding = PaddingValues(horizontal = 10.dp, vertical = 0.dp)
+                    contentPadding = PaddingValues(horizontal = 8.dp, vertical = 0.dp)
                 ) { Text("−", style = MaterialTheme.typography.titleMedium) }
 
                 Text(
                     "$numeroDaApara",
-                    style = MaterialTheme.typography.bodyMedium,
+                    style = MaterialTheme.typography.bodySmall,
                     fontWeight = FontWeight.Bold,
-                    modifier = Modifier.semantics {
-                        contentDescription = "${numeroDaApara}ª apara deste turno"
-                    }
+                    modifier = Modifier
+                        .weight(1f)
+                        .semantics {
+                            contentDescription = "${numeroDaApara}ª apara deste turno"
+                        },
+                    textAlign = TextAlign.Center,
+                    maxLines = 1
                 )
 
                 TextButton(
@@ -99,25 +136,8 @@ fun PainelAparaRepetida(
                     modifier = Modifier.semantics {
                         contentDescription = "Contar mais uma apara neste turno."
                     },
-                    contentPadding = PaddingValues(horizontal = 10.dp, vertical = 0.dp)
+                    contentPadding = PaddingValues(horizontal = 8.dp, vertical = 0.dp)
                 ) { Text("+", style = MaterialTheme.typography.titleMedium) }
-
-                Text(
-                    if (total == 0) "0" else "$total",
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold,
-                    color = if (total < 0) {
-                        MaterialTheme.colorScheme.error
-                    } else {
-                        MaterialTheme.colorScheme.primary
-                    },
-                    modifier = Modifier
-                        .weight(1f)
-                        .semantics {
-                            contentDescription = "Penalidade na Apara: " +
-                                if (total < 0) "menos ${-total}" else "nenhuma"
-                        }
-                )
             }
 
             // A conta só aparece quando há conta: em 1 não há nada a explicar.
