@@ -87,7 +87,8 @@ class FichaEquipmentDelegate(private val dataRepository: DataRepository) {
             // `NotasDoEscudo` (MB p.288).
             notas = com.gurps.ficha.domain.rules.NotasDoEscudo.paraAsNotas(escudo.observacoes),
             tipo = TipoEquipamento.ESCUDO,
-            bonusDefesa = escudo.db
+            bonusDefesa = escudo.db,
+            escudoCatalogoId = escudo.id
         )
         return adicionarEquipamento(personagem, equipamento)
     }
@@ -116,7 +117,8 @@ class FichaEquipmentDelegate(private val dataRepository: DataRepository) {
             notas = notas,
             tipo = TipoEquipamento.ARMADURA,
             armaduraLocal = armadura.local,
-            armaduraRd = armadura.rd
+            armaduraRd = armadura.rd,
+            armaduraCatalogoId = armadura.id
         )
         return adicionarEquipamento(personagem, equipamento)
     }
@@ -160,7 +162,8 @@ class FichaEquipmentDelegate(private val dataRepository: DataRepository) {
                 notas = notas,
                 tipo = TipoEquipamento.ARMADURA,
                 armaduraLocal = localSel,
-                armaduraRd = rdLocal
+                armaduraRd = rdLocal,
+                armaduraCatalogoId = armadura.id
             )
             novaLista.add(equipamentoItem)
         }
@@ -298,6 +301,45 @@ class FichaEquipmentDelegate(private val dataRepository: DataRepository) {
             tipoOk && danoOk && nomeOk
         } ?: dataRepository.armasCatalogo.firstOrNull { arma ->
             normalizarChaveTexto(arma.nome) == nomeBaseNorm
+        }
+    }
+
+    /**
+     * De volta ao catálogo, a partir da **armadura já vestida** (Lote EQP-7).
+     *
+     * Mesma escada do [armaDoCatalogoPara]: o id primeiro, o nome depois.
+     *
+     * ⚠️ O `substringBefore(" (")` não é enfeite — a armadura entra na ficha como
+     * *"Botas (pés)"*, com o local no nome, e o catálogo só conhece *"Botas"*.
+     * Sem isso, **nenhuma** armadura casaria, e o editor abriria sem ficha
+     * exatamente como abria antes deste lote.
+     */
+    fun armaduraDoCatalogoPara(equipamento: Equipamento): ArmaduraCatalogoItem? {
+        val porId = equipamento.armaduraCatalogoId
+            ?.takeIf { it.isNotBlank() }
+            ?.let { id -> dataRepository.armadurasCatalogo.firstOrNull { it.id == id } }
+        if (porId != null) return porId
+
+        val nomeBase = equipamento.nome.substringBefore(" (").trim()
+        if (nomeBase.isBlank()) return null
+        val chave = normalizarChaveTexto(nomeBase)
+        return dataRepository.armadurasCatalogo.firstOrNull {
+            normalizarChaveTexto(it.nome) == chave
+        }
+    }
+
+    /** O mesmo, para o escudo. */
+    fun escudoDoCatalogoPara(equipamento: Equipamento): EscudoCatalogoItem? {
+        val porId = equipamento.escudoCatalogoId
+            ?.takeIf { it.isNotBlank() }
+            ?.let { id -> dataRepository.escudosCatalogo.firstOrNull { it.id == id } }
+        if (porId != null) return porId
+
+        val nomeBase = equipamento.nome.substringBefore(" (").trim()
+        if (nomeBase.isBlank()) return null
+        val chave = normalizarChaveTexto(nomeBase)
+        return dataRepository.escudosCatalogo.firstOrNull {
+            normalizarChaveTexto(it.nome) == chave
         }
     }
 

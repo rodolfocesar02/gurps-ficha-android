@@ -2,12 +2,13 @@ package com.gurps.ficha.ui.features.equipamento
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
@@ -87,38 +88,14 @@ fun CardDetalheDoItem(
                 }
             }
 
-            LazyColumn(
-                modifier = Modifier.weight(1f).padding(top = 8.dp),
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(top = 8.dp)
+                    .verticalScroll(rememberScrollState()),
                 verticalArrangement = Arrangement.spacedBy(4.dp)
             ) {
-                if (ficha.destaques.isNotEmpty()) {
-                    item { Cabecalho("No meio da jogada") }
-                    items(ficha.destaques) { LinhaDaFicha(it) }
-                }
-
-                if (ficha.modos.isNotEmpty()) {
-                    item {
-                        Cabecalho(
-                            if (ficha.modos.size > 1) "Modos de ataque" else "Ataque"
-                        )
-                    }
-                    items(ficha.modos) { ModoDeAtaque(it) }
-                }
-
-                item { Cabecalho("Na hora de comprar") }
-                items(ficha.detalhes) { LinhaDaFicha(it) }
-
-                if (ficha.observacoes.isNotEmpty()) {
-                    item { Cabecalho("Observações do livro") }
-                    items(ficha.observacoes) { texto ->
-                        Text(
-                            texto,
-                            style = MaterialTheme.typography.labelSmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            modifier = Modifier.padding(horizontal = 4.dp, vertical = 2.dp)
-                        )
-                    }
-                }
+                BlocosDaFicha(ficha)
             }
 
             if (rotuloAcao != null) {
@@ -178,6 +155,52 @@ fun CardArmaForaDoCatalogo(
         rotuloAcao = null,
         onDismiss = onDismiss
     )
+}
+
+/**
+ * **Os blocos da ficha** — os mesmos no card de seleção e dentro do editor.
+ *
+ * 🔴 **Lote EQP-7.** O editor tinha o seu próprio desenho da ficha: uma lista
+ * chapada de `rótulo → valor`, sem os cartões e sem os títulos de bloco. A mesma
+ * *Túnica* aparecia de duas formas — completa ao escolher, crua ao editar —, que
+ * é exatamente o defeito que o LAYOUT-7 tinha consertado para a arma.
+ *
+ * ⚠️ Voltou porque o conserto de lá foi feito **para a arma**, não para "um item
+ * do catálogo". Agora há **um** desenho, e a única forma de divergirem de novo é
+ * alguém escrever um terceiro.
+ *
+ * ⚠️ Emite conteúdo de `Column`, não `LazyColumn`, porque o editor já vive dentro
+ * de um `verticalScroll` — lista preguiçosa dentro de coluna rolável estoura a
+ * altura. As fichas têm menos de dez linhas; a preguiça não comprava nada.
+ */
+@Composable
+fun ColumnScope.BlocosDaFicha(ficha: FichaDeEquipamento.Ficha) {
+    if (ficha.destaques.isNotEmpty()) {
+        Cabecalho("No meio da jogada")
+        ficha.destaques.forEach { LinhaDaFicha(it) }
+    }
+
+    if (ficha.modos.isNotEmpty()) {
+        Cabecalho(if (ficha.modos.size > 1) "Modos de ataque" else "Ataque")
+        ficha.modos.forEach { ModoDeAtaque(it) }
+    }
+
+    if (ficha.detalhes.isNotEmpty()) {
+        Cabecalho("Na hora de comprar")
+        ficha.detalhes.forEach { LinhaDaFicha(it) }
+    }
+
+    if (ficha.observacoes.isNotEmpty()) {
+        Cabecalho("Observações do livro")
+        ficha.observacoes.forEach { texto ->
+            Text(
+                texto,
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.padding(horizontal = 4.dp, vertical = 2.dp)
+            )
+        }
+    }
 }
 
 @Composable

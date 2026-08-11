@@ -818,6 +818,13 @@ data class Equipamento(
     var armaStMinimo: Int? = null,
     var armaduraLocal: String? = null,
     var armaduraRd: String? = null,
+    // Lote EQP-7: os ids de catalogo que faltavam. A arma tinha o dela desde
+    // sempre (`armaCatalogoId`) e por isso a ficha tecnica sabia voltar ao
+    // catalogo na hora de editar; armadura e escudo nao tinham, e o editor
+    // abria sem ficha nenhuma. Aditivos/anulaveis -> ficha antiga desserializa
+    // como null e cai no casamento por nome.
+    var armaduraCatalogoId: String? = null,
+    var escudoCatalogoId: String? = null,
     // ── Stats de combate da arma (Lote 371) — anuláveis: ficha antiga carrega como null (= desconhecido). ──
     var armaAlcanceCorpoACorpo: String? = null, // "C" | "1" | "1,2"
     var armaDuasMaos: Boolean = false,

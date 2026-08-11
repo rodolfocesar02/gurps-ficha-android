@@ -1017,6 +1017,32 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
     fun fichaTecnicaDoEscudo(escudo: EscudoCatalogoItem) =
         com.gurps.ficha.domain.rules.FichaTecnicaDoEscudo.de(escudo, personagem.forca)
 
+    /**
+     * 🔴 **A ficha de um item que já está na ficha** (Lote EQP-7).
+     *
+     * Este é o **único** ponto de entrada do editor. Ele existe porque o
+     * `EquipamentoDialog` perguntava só pela arma
+     * (`armaDoCatalogoPara(...)?.let { fichaTecnicaDaArma(it) }`) e devolvia
+     * `null` para armadura e escudo — então, depois do EQP-6, a mesma peça tinha
+     * **duas caras**: ficha completa ao escolher, formulário pelado ao editar.
+     *
+     * ⚠️ É o mesmo defeito que o LAYOUT-7 já tinha consertado para a arma. Ele
+     * voltou porque o conserto de lá foi feito **para a arma**, e não para "um
+     * item do catálogo". Deixar o `when` aqui, num lugar só, é o que impede a
+     * terceira vez.
+     *
+     * `null` = item criado à mão, ou de uma ficha cujo item não casa com nada.
+     */
+    fun fichaTecnicaDoItem(e: Equipamento): com.gurps.ficha.domain.rules.FichaDeEquipamento.Ficha? =
+        when (e.tipo) {
+            TipoEquipamento.ARMADURA ->
+                equipmentDelegate.armaduraDoCatalogoPara(e)?.let { fichaTecnicaDaArmadura(it) }
+            TipoEquipamento.ESCUDO ->
+                equipmentDelegate.escudoDoCatalogoPara(e)?.let { fichaTecnicaDoEscudo(it) }
+            else ->
+                equipmentDelegate.armaDoCatalogoPara(e)?.let { fichaTecnicaDaArma(it) }
+        }
+
     // ── Lote ARMA-2/3/4: a ficha técnica da arma, pronta para a tela. ──
     // A conta do dano e as observações do rodapé vêm de quem já sabe fazê-las;
     // a montagem das linhas é regra pura e mora em `FichaTecnicaDaArma`.

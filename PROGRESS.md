@@ -7177,3 +7177,55 @@ de uma peça sem ter visto a RD dela era decidir no escuro.
   (Bônus de Defesa, p.288). Corrigido também no seletor de escudo da aba Rolagem.
 
 - **Status:** ✅ Build OK nas 2 variantes · lint OK · gate **2060** (+17) · ⏭️ **PENDENTE: teste no aparelho** (T-EQ23 a T-EQ28).
+
+---
+
+### Lote EQP-7 — a mesma peça tinha duas caras (9.1-EQP7)
+
+Achado do usuário: *"o diálogo de seleção está diferente do diálogo de edição"*.
+
+#### 🔴 Duas causas somadas
+
+1. **O editor perguntava a ficha só para a arma.** A linha era
+   `armaDoCatalogoPara(equipamento)?.let { fichaTecnicaDaArma(it) }` — armadura e
+   escudo caíam em `null` e o editor abria sem ficha nenhuma.
+2. **Mesmo com a ficha, ele a desenhava do seu jeito**: lista chapada de
+   `rótulo → valor`, sem os cartões e sem os títulos de bloco.
+
+#### ⭐ O formato do defeito, pela terceira vez
+
+Este é o **mesmo** defeito do LAYOUT-7 (a arma tinha duas caras) e do EQP-2 (o
+cartão de armadura ficou de fora do padrão). Ele volta sempre pela mesma porta:
+
+> **o conserto anterior foi feito para *um tipo de item*, não para *"um item"*.**
+
+O LAYOUT-7 ligou a ficha ao editor **da arma**. Quando a armadura ganhou ficha no
+EQP-6, ela não herdou nada — porque não havia nada a herdar, havia um caso
+particular.
+
+Agora há dois pontos únicos: `fichaTecnicaDoItem(equipamento)` no ViewModel (o
+`when` por tipo, num lugar só) e `BlocosDaFicha(ficha)` na `ui/` (o desenho, num
+lugar só). A única forma de divergirem de novo é alguém escrever um terceiro.
+
+#### Os ids que faltavam
+
+A arma tinha `armaCatalogoId` desde sempre — era por isso que **ela** sabia voltar
+ao catálogo. Armadura e escudo não tinham. Entraram como
+`armaduraCatalogoId`/`escudoCatalogoId`, aditivos e anuláveis: ficha antiga
+desserializa como `null` e cai no casamento por nome.
+
+⚠️ O casamento por nome precisa do `substringBefore(" (")`: a armadura entra na
+ficha como *"Botas (pés)"*, com o local no nome, e o catálogo só conhece
+*"Botas"*. Sem isso **nenhuma** armadura antiga casaria.
+
+#### E o cabeçalho no campo editável
+
+O campo *Notas* das *Botas* mostrava `Local: pés; RD: 2*` — o cabeçalho que o
+próprio app escreveu, agora repetido pela ficha logo acima. Num campo **editável**
+isso é convite a corrigir ali o que só muda no campo de verdade.
+
+⚠️ Só se esconde quando os campos estruturados existem. Numa ficha antiga sem
+`armaduraRd`, aquela frase **é** o RD — e o editor grava o que mostra, então
+escondê-la apagaria o dado.
+
+- **Status:** ✅ Build OK nas 2 variantes · lint OK · gate **2067** (+7) · ⏭️ **PENDENTE: teste no aparelho** (T-EQ29 a T-EQ33).

@@ -198,8 +198,12 @@ fun TabEquipamentos(viewModel: FichaViewModel) {
             // Lote LAYOUT-7: o editor mostra a MESMA ficha do card do seletor,
             // só leitura, acima dos campos. Nula quando o item foi criado à mão
             // e não casa com nada do catálogo.
-            fichaTecnica = viewModel.armaDoCatalogoPara(equipamento)
-                ?.let { viewModel.fichaTecnicaDaArma(it) },
+            //
+            // ⚠️ Lote EQP-7: aqui se perguntava só pela ARMA, e armadura e escudo
+            // caíam em `null` — a mesma peça tinha ficha completa ao escolher e
+            // formulário pelado ao editar. O `when` mora no ViewModel, num lugar
+            // só, para não haver uma terceira vez.
+            fichaTecnica = viewModel.fichaTecnicaDoItem(equipamento),
             onDismiss = { editingEquipamento = null },
             onSave = {
                 viewModel.atualizarEquipamento(index, it)

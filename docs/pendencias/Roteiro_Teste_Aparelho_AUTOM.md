@@ -1793,3 +1793,25 @@ muda — é esse o problema desses defeitos.
   RD.
 - **T-EQ28 · BD, não DB** — na lista de escudos ✅ diz `BD +3`. Vá à aba Rolagem,
   seletor de escudo: ✅ também diz `BD`.
+
+---
+
+# Lote EQP-7 — a ficha igual nos dois lados
+
+> Gate: 2.067 testes, 0 falhas nas duas variantes.
+
+- **T-EQ29 · 🔴 editar mostra a mesma ficha de escolher** — Toque no **lápis** das
+  *Botas (pés)*: ✅ acima dos campos aparecem os mesmos blocos do card de seleção
+  — *No meio da jogada* com RD e Local, *Na hora de comprar*, *Observações do
+  livro* —, com os mesmos cartões.
+- **T-EQ30 · vale para o escudo também** — lápis do *Escudo Grande*: ✅ mesma
+  ficha, com **BD** e a linha `RD / PV do escudo`.
+- **T-EQ31 · a arma não regrediu** — lápis do *Cajado Encantado*: ✅ a ficha
+  continua lá, agora no mesmo desenho.
+- **T-EQ32 · o cabeçalho sumiu do campo Notas** — nas *Botas*: ✅ o campo *Notas*
+  **não** começa mais com `Local: pés; RD: 2*`; começa direto na nota do livro.
+  Salve e reabra: ✅ continua assim, e o cartão na lista segue mostrando
+  `Local: pes · RD: 2*`.
+- **T-EQ33 · ⚠️ ficha antiga não perde o RD** — se você tiver alguma armadura de
+  ficha antiga (adicionada antes destes lotes): ✅ o campo *Notas* dela **ainda**
+  mostra o `Local: …; RD: …`, e o cartão continua com o RD certo.

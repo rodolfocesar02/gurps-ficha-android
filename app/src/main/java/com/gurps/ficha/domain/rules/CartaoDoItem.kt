@@ -123,12 +123,29 @@ object CartaoDoItem {
     private val CABECALHO_ARMADURA =
         Regex("""^\s*Local:\s*[^;\n]*;\s*RD:\s*[^\n]*$""", setOf(RegexOption.IGNORE_CASE, RegexOption.MULTILINE))
 
-    fun notaSemCabecalho(notas: String): String =
+    private fun linhasSemCabecalho(notas: String): List<String> =
         notas.lineSequence()
             .filterNot { CABECALHO_ARMADURA.matches(it) }
             .map { it.trim() }
             .filter { it.isNotBlank() }
-            .joinToString(" · ")
+            .toList()
+
+    fun notaSemCabecalho(notas: String): String =
+        linhasSemCabecalho(notas).joinToString(" · ")
+
+    /**
+     * As notas como o **editor** deve mostrá-las: sem o cabeçalho automático,
+     * mas com as quebras de linha preservadas (Lote EQP-7).
+     *
+     * ⚠️ Só se tira o cabeçalho quando os campos estruturados existem. Numa ficha
+     * antiga sem `armaduraRd`, aquela frase **é** o RD — e o editor grava o que
+     * mostra, então escondê-la ali apagaria o dado de verdade.
+     */
+    fun notasParaEditar(eq: Equipamento): String {
+        val temOsCampos = !eq.armaduraRd.isNullOrBlank() && !eq.armaduraLocal.isNullOrBlank()
+        if (!temOsCampos) return eq.notas
+        return linhasSemCabecalho(eq.notas).joinToString("\n")
+    }
 
     /** O local da armadura: o campo de verdade, e a frase antiga como reserva. */
     fun localDaArmadura(eq: Equipamento): String? {

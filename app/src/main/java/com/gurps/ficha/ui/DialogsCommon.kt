@@ -35,6 +35,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.gurps.ficha.model.Equipamento
+import com.gurps.ficha.ui.features.equipamento.BlocosDaFicha
 import com.gurps.ficha.viewmodel.FichaViewModel
 
 @Composable
@@ -219,7 +220,14 @@ fun EquipamentoDialog(
     var peso by remember { mutableStateOf(initialEquipamento?.peso?.toString() ?: "0") }
     var custo by remember { mutableStateOf(initialEquipamento?.custo?.toString() ?: "0") }
     var quantidade by remember { mutableStateOf(initialEquipamento?.quantidade?.toString() ?: "1") }
-    var notas by remember { mutableStateOf(initialEquipamento?.notas ?: "") }
+    // Lote EQP-7: sem o cabecalho "Local: X; RD: Y" que o app mesmo escreveu --
+    // a ficha logo acima ja diz as duas coisas, e repetir num campo EDITAVEL
+    // convida a corrigir ali o que so muda no campo de verdade.
+    var notas by remember {
+        mutableStateOf(
+            initialEquipamento?.let { com.gurps.ficha.domain.rules.CartaoDoItem.notasParaEditar(it) } ?: ""
+        )
+    }
     var dano by remember { mutableStateOf(initialEquipamento?.armaDanoRaw ?: "") }
     var stMin by remember { mutableStateOf(initialEquipamento?.armaStMinimo?.toString() ?: "") }
 
@@ -241,20 +249,12 @@ fun EquipamentoDialog(
                 modifier = Modifier.weight(1f).verticalScroll(rememberScrollState()),
                 verticalArrangement = Arrangement.spacedBy(UiTokens.DialogContentSpacing)
             ) {
+                // 🔴 Lote EQP-7: era um desenho PROPRIO da ficha -- lista chapada
+                // de rotulo/valor, sem os cartoes e sem os titulos de bloco. A
+                // mesma Tunica aparecia completa ao escolher e crua ao editar.
+                // Agora os dois chamam o mesmo `BlocosDaFicha`.
                 fichaTecnica?.let { ficha ->
-                    SecaoDoEditor("Ficha do livro")
-                    (ficha.destaques + ficha.detalhes).forEach { linha ->
-                        LinhaSoLeitura(linha)
-                    }
-                    if (ficha.observacoes.isNotEmpty()) {
-                        ficha.observacoes.forEach { texto ->
-                            Text(
-                                texto,
-                                style = UiEstilos.detalheDoItem,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
-                        }
-                    }
+                    BlocosDaFicha(ficha)
                 }
 
                 SecaoDoEditor(if (fichaTecnica != null) "Seus dados" else "Item")
@@ -349,29 +349,5 @@ private fun SecaoDoEditor(texto: String) {
     )
 }
 
-/** Uma linha da ficha do livro, no editor: mesma cara do card, sem editar. */
-@Composable
-private fun LinhaSoLeitura(linha: com.gurps.ficha.domain.rules.FichaDeEquipamento.Linha) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .semantics { contentDescription = linha.descricaoAcessivel },
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = androidx.compose.ui.Alignment.CenterVertically
-    ) {
-        Column(modifier = Modifier.weight(1f).padding(end = 8.dp)) {
-            Text(linha.rotulo, style = UiEstilos.detalheDoItem)
-            linha.explicacao?.let {
-                Text(it, style = UiEstilos.detalheDoItem, color = MaterialTheme.colorScheme.outline)
-            }
-        }
-        Text(
-            linha.valor,
-            style = UiEstilos.detalheDoItem,
-            fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.primary
-        )
-    }
-}
 
 
