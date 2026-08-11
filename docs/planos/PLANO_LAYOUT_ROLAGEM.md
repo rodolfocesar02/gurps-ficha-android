@@ -143,3 +143,92 @@ silêncio.
    que o botão faz.
 2. **As duas colunas de ataque podem ter alturas diferentes?** Na mockup o cartão
    do Dano desce mais que o do Ataque. Hoje elas são forçadas à mesma altura.
+
+---
+
+# Revisão de 11/08 — o que eu tinha lido errado, e as respostas do usuário
+
+## 🔴 Diferença 4 · O cartão de atributos encolhe (eu tinha dito que não mudava)
+
+Eu listei o cartão de atributos como "idêntico". **Estava errado** — comparei o
+*conteúdo* (ST, DX, IQ, HT, VON, PER, PV, PF: os mesmos) e não o **respiro**.
+
+Comparando os dois recortes lado a lado:
+
+- O **espaço abaixo do PV/PF** é bem maior hoje do que na mockup. Na mockup a
+  linha do PV/PF quase encosta na borda de baixo do cartão.
+- O **espaço entre os números dos atributos e a linha do PV/PF** também encolheu.
+- No total, o cartão fica visivelmente **mais baixo**.
+
+⚠️ Vale registrar o formato do meu erro: **"o conteúdo é o mesmo" não é "a tela é
+a mesma"**. Diagramação é justamente o que sobra depois que o conteúdo é igual, e
+foi exatamente isso que o usuário estava pedindo para olhar.
+
+### Onde mexer
+
+Três números empilhados, todos em `TabRolagem` e `PainelAtributosEStatus`:
+
+| onde | hoje | efeito |
+|---|---|---|
+| `outerCardVerticalPadding` | 8 dp (tela pequena) / **12 dp** | o respiro de cima e de baixo do cartão |
+| `Arrangement.spacedBy(6.dp)` no `Column` do painel | **6 dp** | o vão entre a linha dos atributos e o PV/PF |
+| `innerCardVerticalPadding` | 4 / **6 dp** | o respiro dentro de cada coluna de atributo |
+
+⚠️ **Os dois primeiros são compartilhados com outros painéis** da mesma tela
+(defesas, iluminação, ataque). Mudar o valor global encolhe tudo junto — pode até
+ser desejável, mas é uma mudança bem maior que a pedida. O caminho conservador é
+o painel de atributos passar a receber os seus próprios valores.
+
+---
+
+## Resposta 1 · O texto do botão do canal se adapta ao tamanho
+
+Decisão do usuário: **"EDITAR" sai**, e o texto **se adapta ao botão** — cresceu,
+a fonte diminui; encurtou, a fonte volta a crescer.
+
+### ⚠️ O detalhe técnico que isso esbarra
+
+O projeto está no **Compose BOM 2024.09.02**. O `autoSize` nativo do `BasicText`
+(`TextAutoSize.StepBased`) só chegou depois disso — **não está disponível aqui**.
+
+Então "a fonte se adapta" precisa ser feito à mão, e há duas formas:
+
+1. **Medir e reduzir** (`onTextLayout` + `didOverflowWidth` → baixa 1 sp e
+   recompõe até caber). Funciona em qualquer versão, mas recompõe algumas vezes
+   até assentar e precisa de um piso, senão o texto pode virar ilegível num canal
+   de nome muito longo.
+2. **Subir o Compose BOM** para uma versão com `autoSize`. Resolve de vez e serve
+   para as outras telas, mas é uma atualização de dependência no meio de um lote
+   de layout — merece lote próprio, com o gate completo.
+
+**Proposta:** fazer o (1) agora, com piso de fonte definido, e anotar o (2) como
+melhoria futura. Não vou subir o BOM dentro de um lote de diagramação.
+
+⚠️ E a fala continua: o texto visível pode virar só `CANAL`, mas a descrição
+acessível **precisa** continuar dizendo que o botão **edita** o canal — senão,
+para quem usa leitor de tela, ele deixa de anunciar o que faz.
+
+---
+
+## Resposta 2 · Simetria só na parte de cima
+
+Decisão do usuário: as duas colunas de ataque são **simétricas em cima**
+(os botões `Ataque` e `Dano` com a mesma altura e alinhados) e **assimétricas
+embaixo**, porque a coluna da esquerda ganha o quadrado da **mão inábil**.
+
+Isso resolve a dúvida do `fillMaxHeight`:
+
+- **Os botões** ficam iguais e alinhados no topo — é o que dá a leitura de
+  "duas colunas".
+- **Os cartões** deixam de ser forçados à mesma altura. Cada um fica com a altura
+  do próprio conteúdo, e a caixinha da mão entra embaixo do da esquerda.
+
+---
+
+## Ordem revisada
+
+| lote | o quê | risco |
+|---|---|---|
+| **ROL-5** | Diferenças **2 e 3** — as colunas de ataque (botão como cabeçalho, mão inábil na coluna esquerda, simetria só em cima) | médio — é o do gesto de arraste |
+| **ROL-6** | Diferença **4** — o respiro do cartão de atributos | baixo |
+| **ROL-7** | Diferença **1** — o cabeçalho do canal, com fonte que se adapta | baixo/médio — a fonte adaptativa é feita à mão nesta versão do Compose |
