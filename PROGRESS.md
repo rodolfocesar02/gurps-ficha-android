@@ -6903,3 +6903,65 @@ N"* das três seções e a nota *"Seleção por NT e Local (regra do livro)."* �
 lista logo abaixo já responde as duas coisas.
 
 - **Status:** ✅ Build OK nas 2 variantes · lint OK · gate **2009** · ⏭️ **PENDENTE: teste no aparelho** (T-EQ).
+
+---
+
+### Lote EQP-2 — os dois defeitos do cartão de armadura (8.6-EQP2)
+
+Achados pelo usuário nas fotos de 11/08, depois do EQP-1.
+
+#### 🔴 Defeito 1 · o cartão de armadura nunca passou pelo EQP-1
+
+Eu disse que havia **dois** composables de cartão. Havia **três**. O terceiro é
+`ArmaduraSelecionadaItem`, tem outro nome e mora 200 linhas acima dos outros —
+procurei por "cartão de item" e ele não respondeu.
+
+Ficou com o nome em `bodyLarge` (quatro pontos maior, não um), sem `maxLines` e
+sem orçamento: na foto, *"Perneiras de Couro Reforçado (pernas)"* quebrava em
+duas linhas e o cartão inteiro ia a **cinco**.
+
+⚠️ E o roteiro do EQP-1 já tinha um item **T-EQ6** justamente sobre a armadura em
+4 linhas. Ele teria falhado no aparelho.
+
+#### 🔴 Defeito 2 · a armadura mostrava dois RD, e só um valia
+
+A Túnica dizia `RD: 1*` numa linha e `Local: tronco; RD: 2*` na seguinte.
+
+- O `1*` vem do campo `armaduraRd` — é o que `TraducaoFichaParaCombate` e o
+  `DialogoFerimento` leem. É o RD de verdade.
+- O `2*` é texto escrito **dentro das notas** por `FichaEquipmentDelegate` no dia
+  em que a armadura saiu do catálogo. Editar o RD muda o campo e **não** muda a
+  frase.
+
+É o preço na etiqueta da prateleira contra o preço no caixa. O risco não é
+cosmético: o jogador lê 2 no cartão e o app calcula com 1.
+
+⚠️ O cabeçalho é escondido **só da exibição**, nunca apagado do disco — numa
+ficha antiga sem o campo, `rdArmaduraExibicao()` volta a ler o RD justamente
+dessa frase.
+
+#### O que os dois defeitos têm em comum
+
+**Duas rotas para a mesma coisa** — o mesmo padrão de PV-1b, MAGIA-E2, MAGIA-E3 e
+ACESS-2. Cada rota, lida sozinha, estava certa. O conserto é apagar a segunda,
+não corrigi-la: agora os **três** cartões chamam `NomeDoItemPadrao` e
+`CorpoDoItemPadrao`, e não têm mais como divergir.
+
+#### ⭐ E a causa de fundo: a conta morava no @Composable
+
+O orçamento de 4 linhas nasceu **dentro** de um `@Composable` no EQP-1.
+Funcionava, e era intestável — o gate fechou com **2.009 testes verdes** e o
+cartão de armadura em cinco linhas, porque nenhum teste conseguia sequer fazer a
+pergunta.
+
+Agora a conta é `domain/rules/CartaoDoItem.kt`, Kotlin puro, e o Compose só
+pinta. `CartaoDoItemTest` mede o **invariante** ("nenhum cartão passa de 4
+linhas", varrendo de 0 a 12 entradas), não um caso.
+
+⚠️ Sonda feita: removendo o filtro do cabeçalho, **2 testes ficam vermelhos**.
+
+Saiu junto `domain/rules/TextoDoCatalogo.kt` — o conserto de acento do catálogo,
+que estava escrito à mão em `ui/` onde nenhum teste alcançava. Comportamento
+idêntico, só mudou de lugar.
+
+- **Status:** ✅ Build OK nas 2 variantes · lint OK · gate **2023** (+14) · ⏭️ **PENDENTE: teste no aparelho** (T-EQ7 a T-EQ10).

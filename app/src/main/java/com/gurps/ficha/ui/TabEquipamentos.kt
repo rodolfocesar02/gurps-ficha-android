@@ -44,13 +44,14 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.gurps.ficha.domain.rules.CartaoDoItem
+import com.gurps.ficha.domain.rules.TextoDoCatalogo
 import com.gurps.ficha.model.ArmaduraCatalogoItem
 import com.gurps.ficha.model.ArmaCatalogoItem
 import com.gurps.ficha.model.Equipamento
 import com.gurps.ficha.model.EscudoCatalogoItem
 import com.gurps.ficha.model.TipoEquipamento
 import com.gurps.ficha.viewmodel.FichaViewModel
-import java.text.Normalizer
 
 private fun limparRuidoGrupoArma(texto: String): String {
     if (texto.isBlank()) return texto
@@ -282,55 +283,39 @@ fun TabEquipamentos(viewModel: FichaViewModel) {
     }
 }
 
-private fun corrigirTextoQuebrado(texto: String): String {
-    if (texto.isBlank()) return texto
-    val reparado = texto
-        .replace("cr?nio", "cranio", ignoreCase = true)
-        .replace("cr�nio", "cranio", ignoreCase = true)
-        .replace("crânio", "cranio", ignoreCase = true)
-        .replace("pesco?o", "pescoco", ignoreCase = true)
-        .replace("pesco�o", "pescoco", ignoreCase = true)
-        .replace("bra?os", "bracos", ignoreCase = true)
-        .replace("bra�os", "bracos", ignoreCase = true)
-        .replace("m?os", "maos", ignoreCase = true)
-        .replace("m�os", "maos", ignoreCase = true)
-        .replace("p?s", "pes", ignoreCase = true)
-        .replace("p�s", "pes", ignoreCase = true)
-    return Normalizer.normalize(reparado, Normalizer.Form.NFC)
-}
-
+/**
+ * O cartão de uma armadura já vestida.
+ *
+ * 🔴 **Lote EQP-2 — os dois defeitos que este cartão tinha.**
+ *
+ * 1. Ele não passou pelo EQP-1. Eu procurei "cartão de item", achei dois, e este
+ *    tem outro nome e mora 200 linhas acima. Ficou com o nome em `bodyLarge`
+ *    (quatro pontos maior, não um), sem `maxLines` e sem orçamento — na foto do
+ *    usuário, *"Perneiras de Couro Reforçado (pernas)"* quebrava em duas linhas
+ *    e o cartão inteiro ia a cinco.
+ *
+ * 2. Ele mostrava **dois RD diferentes para a mesma armadura**: `RD: 1*` numa
+ *    linha e `Local: tronco; RD: 2*` na seguinte. Ver
+ *    [CartaoDoItem.notaSemCabecalho] — o segundo é texto congelado, e só o
+ *    primeiro alimenta o combate.
+ *
+ * ⚠️ O padrão que os dois defeitos têm em comum é o de sempre: **duas rotas para
+ * a mesma coisa**. Cada uma, lida sozinha, estava certa.
+ */
 @Composable
 private fun ArmaduraSelecionadaItem(
     equipamento: Equipamento,
     onEdit: () -> Unit,
     onDelete: () -> Unit
 ) {
-    val rd = equipamento.rdArmaduraExibicao().orEmpty()
-
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
         Column(modifier = Modifier.weight(1f)) {
-            Text(corrigirTextoQuebrado(equipamento.nome), style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.Medium)
-            // Saga: item tirado pela narrativa (Narrador). Continua na ficha, mas não conta no combate.
-            if (equipamento.confiscado) Text(
-                "⛓️ confiscado na história — não dá RD no combate",
-                style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.error
-            )
-            Text(
-                if (rd.isNotBlank()) "RD: $rd" else "RD: -",
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.primary
-            )
-            if (equipamento.notas.isNotBlank()) {
-                Text(
-                    corrigirTextoQuebrado(equipamento.notas),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            }
+            NomeDoItemPadrao(TextoDoCatalogo.corrigir(equipamento.nome))
+            CorpoDoItemPadrao(CartaoDoItem.linhasDaArmadura(equipamento))
         }
         IconButton(onClick = onEdit) { Icon(Icons.Default.Edit, contentDescription = "Editar armadura ${equipamento.nome}") }
         IconButton(onClick = onDelete) { Icon(Icons.Default.Delete, contentDescription = "Remover armadura ${equipamento.nome}") }
@@ -353,63 +338,48 @@ private fun ResumoEquipamentosFooter(viewModel: FichaViewModel) {
 
 
 // ======================================================================
-// O cartao padrao de um item -- Lote EQP-1
+// O cartao padrao de um item -- Lotes EQP-1 e EQP-2
+//
+// Os TRES cartoes da aba (equipamento manual, arma, armadura) passam por aqui.
+// Eram tres desenhos separados ate o EQP-2, e o da armadura tinha divergido
+// sozinho: nome em `bodyLarge`, sem `maxLines`, sem orcamento nenhum.
 // ======================================================================
 
 /**
- * Quantas linhas um cartao de item pode ocupar, **contando o nome**.
- *
- * Decisao do usuario (11/08): quatro. O que nao couber vira reticencias, e quem
- * quiser ler tudo abre o lapis.
- *
- * 🔴 O motivo e concreto: a *Mascara "olhos da noite"* tem uma nota de dez
- * linhas e sozinha ocupava mais tela que os quatro itens acima dela juntos. Uma
- * lista em que um item empurra os outros para fora nao e uma lista -- e um
- * texto com titulos.
- */
-private const val LINHAS_DO_CARTAO = 4
-
-/** Uma linha do corpo do cartao: o texto e a cor que ele usa. */
-data class LinhaDoItem(val texto: String, val cor: Color)
-
-/**
  * O corpo de um cartao de item, com **orcamento de linhas**.
- *
- * ## ⚠️ Por que orcamento, e nao `maxLines` em cada Text
- *
- * `maxLines` por linha nao limita o cartao: cinco `Text` de uma linha dao cinco
- * linhas. O corte tem que ser do conjunto.
- *
- * A regra aqui: cada entrada ganha **uma** linha, e a **ultima visivel** fica
- * com o que sobrar do orcamento. Se houver mais entradas que linhas, o excedente
- * e **juntado** na ultima em vez de sumir — um item nunca perde a nota inteira
- * em silencio; ele a mostra cortada, que e o que o usuario pediu.
  */
 @Composable
-fun CorpoDoItemPadrao(linhas: List<LinhaDoItem>) {
-    val disponiveis = LINHAS_DO_CARTAO - 1  // o nome sempre gasta uma
-    val uteis = linhas.filter { it.texto.isNotBlank() }
-    if (uteis.isEmpty()) return
-
-    val visiveis = if (uteis.size <= disponiveis) {
-        uteis
-    } else {
-        // Junta o excedente na ultima, para nada desaparecer calado.
-        val cabeca = uteis.take(disponiveis - 1)
-        val cauda = uteis.drop(disponiveis - 1)
-        cabeca + LinhaDoItem(cauda.joinToString(" · ") { it.texto }, cauda.first().cor)
-    }
-
+fun CorpoDoItemPadrao(linhas: List<CartaoDoItem.Linha>) {
+    // A conta mora em `domain/rules/CartaoDoItem.kt` (Lote EQP-2). Aqui só se
+    // pinta: enquanto o orçamento vivia dentro deste @Composable, nenhum teste
+    // conseguia perguntar quantas linhas o cartão mostra — e foi assim que o
+    // cartão de armadura passou o gate inteiro com cinco.
+    val visiveis = CartaoDoItem.cortar(linhas)
     visiveis.forEachIndexed { i, linha ->
-        val ultima = i == visiveis.lastIndex
         Text(
             linha.texto,
             style = MaterialTheme.typography.bodySmall,
-            color = linha.cor,
-            maxLines = if (ultima) disponiveis - i else 1,
+            color = corDoPapel(linha.papel),
+            maxLines = CartaoDoItem.alturaDe(i, visiveis.size),
             overflow = TextOverflow.Ellipsis
         )
     }
+}
+
+/**
+ * O papel da linha vira cor **aqui**, e não em `domain/`.
+ *
+ * ⚠️ `MaterialTheme.colorScheme` só existe dentro de um `@Composable`, e é ele
+ * que sabe se o tema está claro ou escuro. Escolher a cor lá atrás seria decidir
+ * por um tema que aquele arquivo não enxerga.
+ */
+@Composable
+private fun corDoPapel(papel: CartaoDoItem.Papel): Color = when (papel) {
+    CartaoDoItem.Papel.NEUTRO -> MaterialTheme.colorScheme.onSurfaceVariant
+    CartaoDoItem.Papel.DANO -> MaterialTheme.colorScheme.tertiary
+    CartaoDoItem.Papel.CUSTO -> MaterialTheme.colorScheme.primary
+    CartaoDoItem.Papel.PROTECAO -> MaterialTheme.colorScheme.primary
+    CartaoDoItem.Papel.ALERTA -> MaterialTheme.colorScheme.error
 }
 
 /**
@@ -470,17 +440,15 @@ fun EquipamentoArmaItem(
                     // Saga: arma tirada pela narrativa. Continua na ficha, mas
                     // fora do combate — e a primeira coisa que precisa ser vista.
                     if (equipamento.confiscado) {
-                        add(LinhaDoItem(
-                            "⛓️ confiscado na história — fora do combate",
-                            MaterialTheme.colorScheme.error
-                        ))
+                        add(CartaoDoItem.Linha(
+                            "⛓️ confiscado na história — fora do combate", CartaoDoItem.Papel.ALERTA))
                     }
                     val danoRaw = equipamento.armaDanoRaw
-                    add(LinhaDoItem(
+                    add(CartaoDoItem.Linha(
                         if (danoRaw.isNullOrBlank()) "Dano: -"
                         else "Dano: ${viewModel.calcularDanoArmaComSt(danoRaw)}",
-                        if (danoRaw.isNullOrBlank()) MaterialTheme.colorScheme.onSurfaceVariant
-                        else MaterialTheme.colorScheme.tertiary
+                        if (danoRaw.isNullOrBlank()) CartaoDoItem.Papel.NEUTRO
+                        else CartaoDoItem.Papel.DANO
                     ))
                     val notasLimpas = if (equipamento.armaCatalogoId != null) {
                         limparRuidoGrupoArma(equipamento.notas)
@@ -488,16 +456,12 @@ fun EquipamentoArmaItem(
                         equipamento.notas
                     }
                     if (notasLimpas.isNotBlank()) {
-                        add(LinhaDoItem(
-                            notasLimpas.replace("\n", " · "),
-                            MaterialTheme.colorScheme.onSurfaceVariant
-                        ))
+                        add(CartaoDoItem.Linha(
+                            notasLimpas.replace("\n", " · "), CartaoDoItem.Papel.NEUTRO))
                     }
                     if (observacoesFaltantes.isNotEmpty()) {
-                        add(LinhaDoItem(
-                            observacoesFaltantes.joinToString(" · "),
-                            MaterialTheme.colorScheme.tertiary
-                        ))
+                        add(CartaoDoItem.Linha(
+                            observacoesFaltantes.joinToString(" · "), CartaoDoItem.Papel.DANO))
                     }
                 }
             )
@@ -518,28 +482,20 @@ fun EquipamentoItem(equipamento: Equipamento, onEdit: () -> Unit, onDelete: () -
             NomeDoItemPadrao(equipamento.nome)
             CorpoDoItemPadrao(
                 buildList {
-                    add(LinhaDoItem(
+                    add(CartaoDoItem.Linha(
                         "${equipamento.quantidade}x | ${equipamento.peso}kg cada | " +
-                            "Total: ${equipamento.peso * equipamento.quantidade}kg",
-                        MaterialTheme.colorScheme.onSurfaceVariant
-                    ))
+                            "Total: ${equipamento.peso * equipamento.quantidade}kg", CartaoDoItem.Papel.NEUTRO))
                     equipamento.armaDanoRaw?.takeIf { it.isNotBlank() }?.let { raw ->
-                        add(LinhaDoItem(
-                            "Dano: $raw -> ${viewModel.calcularDanoArmaComSt(raw)}",
-                            MaterialTheme.colorScheme.tertiary
-                        ))
+                        add(CartaoDoItem.Linha(
+                            "Dano: $raw -> ${viewModel.calcularDanoArmaComSt(raw)}", CartaoDoItem.Papel.DANO))
                     }
                     if (equipamento.custo > 0) {
-                        add(LinhaDoItem(
-                            "Custo: $${equipamento.custo * equipamento.quantidade}",
-                            MaterialTheme.colorScheme.primary
-                        ))
+                        add(CartaoDoItem.Linha(
+                            "Custo: $${equipamento.custo * equipamento.quantidade}", CartaoDoItem.Papel.CUSTO))
                     }
                     if (equipamento.notas.isNotBlank()) {
-                        add(LinhaDoItem(
-                            equipamento.notas.replace("\n", " · "),
-                            MaterialTheme.colorScheme.onSurfaceVariant
-                        ))
+                        add(CartaoDoItem.Linha(
+                            equipamento.notas.replace("\n", " · "), CartaoDoItem.Papel.NEUTRO))
                     }
                 }
             )
@@ -766,14 +722,14 @@ private fun SelecionarArmaduraEquipamentoDialog(
         items(armaduras, key = { it.id }) { armadura ->
             val observacoes = observacoesFormatadas(armadura)
             AppSelectionRow(
-                nome = corrigirTextoQuebrado(armadura.nome),
+                nome = TextoDoCatalogo.corrigir(armadura.nome),
                 detalhe = "NT ${armadura.nt ?: "—"} | RD ${armadura.rd} | Peso ${armadura.pesoBaseKg ?: 0f} kg | Custo $${armadura.custoBase ?: 0f}",
                 onClick = { onSelect(armadura) },
-                descricaoAcessivel = "${corrigirTextoQuebrado(armadura.nome)}. NT ${armadura.nt ?: "não cadastrado"}, " +
-                    "RD ${armadura.rd}. Local: ${corrigirTextoQuebrado(armadura.local)}.",
+                descricaoAcessivel = "${TextoDoCatalogo.corrigir(armadura.nome)}. NT ${armadura.nt ?: "não cadastrado"}, " +
+                    "RD ${armadura.rd}. Local: ${TextoDoCatalogo.corrigir(armadura.local)}.",
                 extra = {
                     Text(
-                        "Local: ${corrigirTextoQuebrado(armadura.local)}",
+                        "Local: ${TextoDoCatalogo.corrigir(armadura.local)}",
                         style = UiEstilos.detalheDoItem,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )

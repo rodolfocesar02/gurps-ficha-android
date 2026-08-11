@@ -1693,3 +1693,25 @@ muda — é esse o problema desses defeitos.
   *"Itens selecionados: N"* nem *"Seleção por NT e Local (regra do livro)."*.
 - **T-EQ6 · armadura com nota longa** — As *Botas (pés)* têm observação do
   catálogo: ✅ o cartão continua com 4 linhas.
+
+---
+
+# Lote EQP-2 — o cartão de armadura
+
+> Gate: 2.023 testes, 0 falhas nas duas variantes.
+
+- **T-EQ7 · 🔴 um RD só na armadura** — Aba Equipamentos, *Túnica (tronco)*: ✅ o
+  cartão mostra **uma** linha `Local: tronco · RD: …` e **não** repete um segundo
+  RD diferente logo abaixo.
+- **T-EQ8 · o RD do cartão é o que o combate usa** — Anote o RD do cartão. Vá à
+  aba Rolagem, toque no **PV**, escolha *tronco* e marque para usar a RD: ✅ o
+  número que o diálogo desconta é o **mesmo** do cartão.
+- **T-EQ9 · a armadura cabe em 4 linhas** — *Perneiras de Couro Reforçado
+  (pernas)*: ✅ o nome ocupa **uma** linha só (cortado com reticências se
+  precisar) e o cartão tem no máximo 4.
+- **T-EQ10 · armadura lê igual aos outros** — Compare uma armadura com uma arma:
+  ✅ mesmo tamanho de nome, mesmo negrito, mesma hierarquia.
+- **T-EQ11 · a nota do jogador não sumiu** — A Túnica tem *"Boa Qualidade, +1 RD
+  Encantamento…"*: ✅ esse texto continua no cartão. Toque no **lápis**: ✅ nas
+  notas o texto está **inteiro**, cabeçalho incluído (ele não foi apagado, só
+  escondido).
