@@ -20,6 +20,7 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.gurps.ficha.domain.rules.FichaDeEquipamento
 import com.gurps.ficha.domain.rules.FichaTecnicaDaArma
 import com.gurps.ficha.ui.FullscreenDialogContainer
 import com.gurps.ficha.ui.PrimaryActionButton
@@ -27,7 +28,11 @@ import com.gurps.ficha.ui.UiActionLabels
 import com.gurps.ficha.ui.appCardColors
 
 /**
- * **O card de detalhe da arma** (Lote ARMA-3).
+ * **O card de detalhe de um item do catálogo** (Lote ARMA-3; generalizado no EQP-6).
+ *
+ * Serve arma, armadura e escudo. Ele não sabe qual é: recebe uma
+ * [FichaDeEquipamento.Ficha] pronta e desenha os blocos que vierem preenchidos —
+ * o de **modos de ataque** simplesmente não aparece para quem não ataca.
  *
  * ## O que muda no gesto
  *
@@ -46,8 +51,8 @@ import com.gurps.ficha.ui.appCardColors
  * e o teto do projeto é 1000.
  */
 @Composable
-fun CardDetalheArma(
-    ficha: FichaTecnicaDaArma.Ficha,
+fun CardDetalheDoItem(
+    ficha: FichaDeEquipamento.Ficha,
     /** Texto do botão principal. Nulo esconde o botão (modo só-leitura, ARMA-4). */
     rotuloAcao: String? = UiActionLabels.ADICIONAR,
     onAcao: () -> Unit = {},
@@ -140,23 +145,23 @@ fun CardArmaForaDoCatalogo(
 ) {
     val linhas = listOfNotNull(
         equipamento.armaDanoRaw?.takeIf { it.isNotBlank() }
-            ?.let { FichaTecnicaDaArma.Linha("Dano", it) },
-        equipamento.armaStMinimo?.let { FichaTecnicaDaArma.Linha("ST mínima", "$it") },
-        equipamento.armaPrecisao?.let { FichaTecnicaDaArma.Linha("Precisão", "$it") },
+            ?.let { FichaDeEquipamento.Linha("Dano", it) },
+        equipamento.armaStMinimo?.let { FichaDeEquipamento.Linha("ST mínima", "$it") },
+        equipamento.armaPrecisao?.let { FichaDeEquipamento.Linha("Precisão", "$it") },
         equipamento.armaAlcanceCorpoACorpo?.takeIf { it.isNotBlank() }
-            ?.let { FichaTecnicaDaArma.Linha("Alcance", "$it m") },
+            ?.let { FichaDeEquipamento.Linha("Alcance", "$it m") },
         equipamento.armaTirosRaw?.takeIf { it.isNotBlank() }?.let {
-            FichaTecnicaDaArma.Linha("Tiros", it, FichaTecnicaDaArma.explicarTiros(it))
+            FichaDeEquipamento.Linha("Tiros", it, FichaTecnicaDaArma.explicarTiros(it))
         },
         equipamento.armaRecuo?.let {
-            FichaTecnicaDaArma.Linha("Recuo", "$it", FichaTecnicaDaArma.explicarRecuo(it))
+            FichaDeEquipamento.Linha("Recuo", "$it", FichaTecnicaDaArma.explicarRecuo(it))
         },
-        FichaTecnicaDaArma.Linha("Peso", "${FichaTecnicaDaArma.formatarKg(equipamento.peso)} kg"),
-        FichaTecnicaDaArma.Linha("Custo", FichaTecnicaDaArma.formatarDinheiro(equipamento.custo))
+        FichaDeEquipamento.Linha("Peso", "${FichaDeEquipamento.formatarKg(equipamento.peso)} kg"),
+        FichaDeEquipamento.Linha("Custo", FichaDeEquipamento.formatarDinheiro(equipamento.custo))
     )
 
-    CardDetalheArma(
-        ficha = FichaTecnicaDaArma.Ficha(
+    CardDetalheDoItem(
+        ficha = FichaDeEquipamento.Ficha(
             nome = equipamento.nome,
             subtitulo = "Arma fora do catálogo",
             selo = null,
@@ -194,7 +199,7 @@ private fun Cabecalho(texto: String) {
  * é preciso ouvir rótulo, valor e explicação de uma vez.
  */
 @Composable
-private fun LinhaDaFicha(linha: FichaTecnicaDaArma.Linha) {
+private fun LinhaDaFicha(linha: FichaDeEquipamento.Linha) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -225,7 +230,7 @@ private fun LinhaDaFicha(linha: FichaTecnicaDaArma.Linha) {
                 linha.valor,
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
-                color = if (linha.valor == FichaTecnicaDaArma.AUSENTE) {
+                color = if (linha.valor == FichaDeEquipamento.AUSENTE) {
                     MaterialTheme.colorScheme.outline
                 } else {
                     MaterialTheme.colorScheme.primary
@@ -236,7 +241,7 @@ private fun LinhaDaFicha(linha: FichaTecnicaDaArma.Linha) {
 }
 
 @Composable
-private fun ModoDeAtaque(modo: FichaTecnicaDaArma.ModoNaTela) {
+private fun ModoDeAtaque(modo: FichaDeEquipamento.ModoNaTela) {
     val acessivel = buildString {
         append("Modo ${modo.ordem}: ${modo.dano}")
         modo.danoComSt?.let { append(", que com a sua força é $it") }

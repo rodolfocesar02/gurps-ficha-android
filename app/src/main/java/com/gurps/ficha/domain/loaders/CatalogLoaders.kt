@@ -427,7 +427,12 @@ class CatalogLoaders(private val context: Context) {
                     custo = obj.float("custo"),
                     pesoKg = obj.float("pesoKg"),
                     stMinimo = obj.int("stMinimo"),
-                    observacoes = obj.string("observacoes").orEmpty().sanitized()
+                    observacoes = obj.string("observacoes").orEmpty().sanitized(),
+                    // Lote EQP-6: o JSON trazia os tres desde sempre e o app os
+                    // jogava fora -- mesmo caso do `locaisNorm` da armadura.
+                    rdDoEscudo = obj.int("rd"),
+                    pv = obj.int("pv"),
+                    cl = obj.int("cl")
                 )
             }.filter { it.id.isNotBlank() && it.nome.isNotBlank() }
                 .sortedBy { it.nome.lowercase() }

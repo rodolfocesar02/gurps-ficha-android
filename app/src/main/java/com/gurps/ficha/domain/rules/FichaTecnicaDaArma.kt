@@ -2,6 +2,14 @@ package com.gurps.ficha.domain.rules
 
 import com.gurps.ficha.model.ArmaCatalogoItem
 
+// O corpo deste arquivo continua escrevendo `Linha`, `ModoNaTela` e `Ficha` sem
+// prefixo. Os apelidos sao privados ao arquivo: quem chama de fora usa os nomes
+// de verdade, em `FichaDeEquipamento`.
+private typealias Linha = FichaDeEquipamento.Linha
+private typealias ModoNaTela = FichaDeEquipamento.ModoNaTela
+private typealias Ficha = FichaDeEquipamento.Ficha
+private const val AUSENTE = FichaDeEquipamento.AUSENTE
+
 /**
  * **A ficha técnica da arma** — tudo que o catálogo sabe, em português (Lote ARMA-2).
  *
@@ -25,46 +33,9 @@ import com.gurps.ficha.model.ArmaCatalogoItem
  */
 object FichaTecnicaDaArma {
 
-    /**
-     * Uma linha da ficha.
-     *
-     * [explicacao] é o que transforma a sigla em regra: sem ela a tela fica
-     * bonita e continua ilegível para quem não decorou a p.271.
-     */
-    data class Linha(
-        val rotulo: String,
-        val valor: String,
-        val explicacao: String? = null
-    ) {
-        /** Como o TalkBack lê a linha inteira, de uma vez. */
-        val descricaoAcessivel: String
-            get() = listOfNotNull(
-                "$rotulo: $valor".takeIf { valor.isNotBlank() },
-                explicacao
-            ).joinToString(". ")
-    }
-
-    /** Um modo de ataque já traduzido para a tela. */
-    data class ModoNaTela(
-        val ordem: Int,
-        val dano: String,
-        val danoComSt: String?,
-        val detalhe: String?,
-        /** `true` do 2º modo em diante: mesma arma, não se paga nem se carrega de novo. */
-        val mesmaArma: Boolean
-    )
-
-    data class Ficha(
-        val nome: String,
-        val subtitulo: String,
-        val selo: String?,
-        val destaques: List<Linha>,
-        val modos: List<ModoNaTela>,
-        val detalhes: List<Linha>,
-        val observacoes: List<String>
-    )
-
-    const val AUSENTE = "—"
+    // As estruturas (Linha, ModoNaTela, Ficha) e o AUSENTE moraram aqui ate o
+    // Lote EQP-6. Sairam para `FichaDeEquipamento` quando a armadura e o escudo
+    // passaram a ter ficha tambem: a FORMA e a mesma, so os montadores diferem.
 
     // ==================================================================
     // A montagem
@@ -260,7 +231,7 @@ object FichaTecnicaDaArma {
         linhas += Linha("Peso", pesoNaTela(arma), arma.municaoKg?.let { "o segundo número é a munição" })
         linhas += Linha(
             "Custo",
-            arma.custoBase?.let { formatarDinheiro(it) } ?: (arma.custoRaw ?: AUSENTE),
+            arma.custoBase?.let { FichaDeEquipamento.formatarDinheiro(it) } ?: (arma.custoRaw ?: AUSENTE),
             null
         )
         arma.nt?.let { linhas += Linha("NT", "$it", null) }
@@ -271,9 +242,9 @@ object FichaTecnicaDaArma {
         val arm = arma.pesoBaseKg ?: return arma.pesoRaw ?: AUSENTE
         val mun = arma.municaoKg
         return if (mun != null && mun > 0f) {
-            "${formatarKg(arm)} kg + ${formatarKg(mun)} kg"
+            "${FichaDeEquipamento.formatarKg(arm)} kg + ${FichaDeEquipamento.formatarKg(mun)} kg"
         } else {
-            "${formatarKg(arm)} kg"
+            "${FichaDeEquipamento.formatarKg(arm)} kg"
         }
     }
 
@@ -387,16 +358,4 @@ object FichaTecnicaDaArma {
         }
     }
 
-    // ==================================================================
-    // Formatação
-    // ==================================================================
-
-    fun formatarKg(v: Float): String =
-        if (v == v.toLong().toFloat()) v.toLong().toString() else v.toString().replace('.', ',')
-
-    fun formatarDinheiro(v: Float): String {
-        val inteiro = v.toLong()
-        val comPonto = inteiro.toString().reversed().chunked(3).joinToString(".").reversed()
-        return "$$comPonto"
-    }
 }

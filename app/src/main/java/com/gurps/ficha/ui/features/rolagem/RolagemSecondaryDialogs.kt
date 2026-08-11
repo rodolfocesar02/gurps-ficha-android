@@ -941,7 +941,7 @@ fun EditarBloqueioDialog(
                     onExpandedChange = { expandedEscudo = !expandedEscudo }
                 ) {
                     OutlinedTextField(
-                        value = escudoAtual?.let { "${it.nome} (DB ${it.bonusDefesa ?: 0})" } ?: "Nenhum",
+                        value = escudoAtual?.let { "${it.nome} (BD ${it.bonusDefesa ?: 0})" } ?: "Nenhum",
                         onValueChange = {},
                         readOnly = true,
                         label = { Text("Escudo") },
@@ -961,7 +961,7 @@ fun EditarBloqueioDialog(
                         )
                         escudos.forEach { escudo ->
                             DropdownMenuItem(
-                                text = { Text("${escudo.nome} (DB ${escudo.bonusDefesa ?: 0})") },
+                                text = { Text("${escudo.nome} (BD ${escudo.bonusDefesa ?: 0})") },
                                 onClick = {
                                     selectedEscudoNome = escudo.nome
                                     expandedEscudo = false

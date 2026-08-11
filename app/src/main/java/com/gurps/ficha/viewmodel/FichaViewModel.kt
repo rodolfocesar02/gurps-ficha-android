@@ -1005,6 +1005,18 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
         equipmentDelegate.observacoesArmaFormatadas(arma)
             .lineSequence().map { it.trim() }.filter { it.isNotBlank() }.toList()
 
+    // ── Lote EQP-6: a armadura e o escudo ganham a mesma ficha da arma. ──
+    // A montagem é regra pura; aqui só se entrega o que vem de fora dela (as
+    // observações do catálogo e a ST de quem vai vestir).
+    fun fichaTecnicaDaArmadura(armadura: ArmaduraCatalogoItem) =
+        com.gurps.ficha.domain.rules.FichaTecnicaDaArmadura.de(
+            armadura = armadura,
+            observacoes = equipmentDelegate.observacoesArmaduraFormatadas(armadura)
+        )
+
+    fun fichaTecnicaDoEscudo(escudo: EscudoCatalogoItem) =
+        com.gurps.ficha.domain.rules.FichaTecnicaDoEscudo.de(escudo, personagem.forca)
+
     // ── Lote ARMA-2/3/4: a ficha técnica da arma, pronta para a tela. ──
     // A conta do dano e as observações do rodapé vêm de quem já sabe fazê-las;
     // a montagem das linhas é regra pura e mora em `FichaTecnicaDaArma`.

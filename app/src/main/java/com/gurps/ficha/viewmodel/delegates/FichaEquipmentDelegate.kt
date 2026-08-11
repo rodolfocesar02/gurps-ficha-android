@@ -311,6 +311,17 @@ class FichaEquipmentDelegate(private val dataRepository: DataRepository) {
             .trim()
     }
 
+    /**
+     * As notas de rodapé da armadura, já casadas com o texto do livro (EQP-6).
+     *
+     * ⚠️ O montador já existia e era **privado** — quem precisava do texto era
+     * só o campo `notas` do equipamento. A ficha técnica precisa do mesmo, e
+     * escrever um segundo casador seria começar a divergência de novo.
+     */
+    fun observacoesArmaduraFormatadas(armadura: ArmaduraCatalogoItem): List<String> =
+        montarObservacoesArmadura(armadura)
+            .lineSequence().map { it.trim() }.filter { it.isNotBlank() }.toList()
+
     private fun montarObservacoesArmadura(armadura: ArmaduraCatalogoItem): String {
         val refs = Regex("\\[(\\d+)]")
             .findAll(armadura.observacoes)

@@ -7115,3 +7115,65 @@ travas de fiação: o delegate não pode voltar a gravar `escudo.observacoes` cr
 os locais do Configurar Armadura têm de passar pelo conserto de acento.
 
 - **Status:** ✅ Build OK nas 2 variantes · lint OK · gate **2043** (+8) · ⏭️ **PENDENTE: teste no aparelho** (T-EQ20 a T-EQ22).
+
+---
+
+### Lote EQP-6 — a ficha técnica da armadura e do escudo (9.0-EQP6)
+
+Pedido do usuário: *"deixar no mesmo padrão de como ficou as armas"*.
+
+#### O que é "o padrão da arma"
+
+Não é o desenho — é a **divisão**:
+
+| bloco | o que entra |
+|---|---|
+| **No meio da jogada** | o que se consulta com o dado na mão |
+| **Na hora de comprar** | o que se olha uma vez |
+| **Observações do livro** | as notas de rodapé por extenso |
+
+Para a armadura, o primeiro bloco é RD e local. Para o escudo, BD e a mão
+ocupada.
+
+#### A forma saiu de dentro da arma
+
+`FichaTecnicaDaArma` guardava as três estruturas (`Linha`, `ModoNaTela`, `Ficha`)
+dentro de si, porque só a arma tinha ficha. Havia dois caminhos: dar a cada item
+a **sua** estrutura — e aí o card precisaria de três versões ou de um `when` — ou
+ter **uma** forma e três montadores.
+
+⚠️ O (2), e não por elegância: o card é o mesmo, com o mesmo cabeçalho e o mesmo
+botão. Se a forma fosse diferente, a diferença apareceria na tela — o oposto do
+que foi pedido. A forma agora é `FichaDeEquipamento`; as regras ficam nos três
+montadores, cada um com o seu teste.
+
+O bloco de **modos de ataque** continua existindo na forma. Armadura e escudo não
+atacam, então ele vem vazio e some da tela sozinho.
+
+#### 🔴 A linha mais perigosa da ficha do escudo
+
+O catálogo traz `RD/PV 9/60` para o Escudo Grande. Essa RD **não protege o
+personagem** — protege o escudo, e só vale com a regra opcional *Dano a Escudos*
+(p.484). Quem protege o personagem é o BD.
+
+`RD 9` mostrado ao lado de uma armadura de RD 2 convida a somar 9 na defesa. Por
+isso ela entra em *"na hora de comprar"*, com a explicação colada, e não nos
+destaques.
+
+#### O gesto mudou nos dois
+
+Tocar num escudo da lista **já o punha no inventário**. Agora abre a ficha, e o
+botão de adicionar mora lá dentro — dava para comprar um Escudo Grande sem
+descobrir que ele pesa 12,5 kg, ocupa a mão e dá -2 nos ataques corpo a corpo.
+
+Na armadura a ficha entra **antes** do *Configurar Armadura*: escolher os locais
+de uma peça sem ter visto a RD dela era decidir no escuro.
+
+#### Dois achados de passagem
+
+- **`RD/PV` e `CL` do escudo existiam no JSON e o app os jogava fora.** Mesmo
+  caso do `locaisNorm` da armadura: o catálogo publica, o loader ignora.
+- **`DB` era o rótulo em inglês.** O Módulo Básico em português escreve **BD**
+  (Bônus de Defesa, p.288). Corrigido também no seletor de escudo da aba Rolagem.
+
+- **Status:** ✅ Build OK nas 2 variantes · lint OK · gate **2060** (+17) · ⏭️ **PENDENTE: teste no aparelho** (T-EQ23 a T-EQ28).

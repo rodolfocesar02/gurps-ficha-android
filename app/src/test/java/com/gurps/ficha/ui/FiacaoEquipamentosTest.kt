@@ -87,6 +87,41 @@ class FiacaoEquipamentosTest {
     }
 
     @Test
+    fun `escudo e armadura abrem a ficha antes de entrar na ficha do personagem`() {
+        // Lote EQP-6. Antes, tocar num escudo da lista JA o punha no inventario:
+        // dava para comprar um Escudo Grande sem descobrir que pesa 12,5 kg,
+        // ocupa a mao e da -2 nos ataques corpo a corpo.
+        assertFalse(
+            "o toque no escudo voltou a adicionar direto",
+            tab.contains("onSelect = {\n                viewModel.adicionarEquipamentoEscudo(it)")
+        )
+        assertTrue("o escudo nao abre a ficha tecnica", tab.contains("escudoDetalhado = it"))
+        assertTrue("a armadura nao abre a ficha tecnica", tab.contains("armaduraDetalhada = it"))
+        assertTrue(tab.contains("fichaTecnicaDoEscudo("))
+        assertTrue(tab.contains("fichaTecnicaDaArmadura("))
+    }
+
+    @Test
+    fun `os tres itens usam o mesmo card de detalhe`() {
+        // Arma, armadura e escudo passam pelo mesmo composable. Se um ganhar o
+        // seu, e o comeco da divergencia -- foi assim que o cartao de armadura
+        // ficou fora do EQP-1.
+        val usos = Regex("CardDetalheDoItem\\(").findAll(tab).count()
+        assertTrue("so $usos usos do card de detalhe", usos >= 4)
+        assertFalse(
+            "sobrou o nome antigo, que so falava de arma",
+            tab.contains("CardDetalheArma(")
+        )
+    }
+
+    @Test
+    fun `o bonus do escudo e chamado de BD, como no livro em portugues`() {
+        // MB p.288 escreve BD (Bonus de Defesa). "DB" e o Defense Bonus do
+        // original em ingles, e nao existe em nenhuma pagina que o jogador le.
+        assertFalse("voltou o 'DB' em ingles", tab.contains("\"DB "))
+    }
+
+    @Test
     fun `os tres cartoes usam o mesmo desenho`() {
         // 🔴 A armadura tinha o seu proprio, e divergiu sozinha (Lote EQP-2).
         val nomes = Regex("NomeDoItemPadrao\\(").findAll(tab).count()

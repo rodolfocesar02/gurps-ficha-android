@@ -211,7 +211,7 @@ fun CarregarDialog(
 @Composable
 fun EquipamentoDialog(
     initialEquipamento: Equipamento? = null,
-    fichaTecnica: com.gurps.ficha.domain.rules.FichaTecnicaDaArma.Ficha? = null,
+    fichaTecnica: com.gurps.ficha.domain.rules.FichaDeEquipamento.Ficha? = null,
     onDismiss: () -> Unit,
     onSave: (Equipamento) -> Unit
 ) {
@@ -351,7 +351,7 @@ private fun SecaoDoEditor(texto: String) {
 
 /** Uma linha da ficha do livro, no editor: mesma cara do card, sem editar. */
 @Composable
-private fun LinhaSoLeitura(linha: com.gurps.ficha.domain.rules.FichaTecnicaDaArma.Linha) {
+private fun LinhaSoLeitura(linha: com.gurps.ficha.domain.rules.FichaDeEquipamento.Linha) {
     Row(
         modifier = Modifier
             .fillMaxWidth()

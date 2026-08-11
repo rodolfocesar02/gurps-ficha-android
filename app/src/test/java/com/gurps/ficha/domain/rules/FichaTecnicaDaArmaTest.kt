@@ -46,10 +46,10 @@ class FichaTecnicaDaArmaTest {
         return a!!
     }
 
-    private fun destaque(f: FichaTecnicaDaArma.Ficha, rotulo: String) =
+    private fun destaque(f: FichaDeEquipamento.Ficha, rotulo: String) =
         f.destaques.first { it.rotulo == rotulo }
 
-    private fun detalhe(f: FichaTecnicaDaArma.Ficha, rotulo: String) =
+    private fun detalhe(f: FichaDeEquipamento.Ficha, rotulo: String) =
         f.detalhes.first { it.rotulo == rotulo }
 
     // ==================================================================
@@ -260,8 +260,8 @@ class FichaTecnicaDaArmaTest {
 
     @Test
     fun `o custo sai com separador de milhar`() {
-        assertEquals("$3.600", FichaTecnicaDaArma.formatarDinheiro(3600f))
-        assertEquals("$50", FichaTecnicaDaArma.formatarDinheiro(50f))
+        assertEquals("$3.600", FichaDeEquipamento.formatarDinheiro(3600f))
+        assertEquals("$50", FichaDeEquipamento.formatarDinheiro(50f))
     }
 
     // ==================================================================
@@ -288,7 +288,7 @@ class FichaTecnicaDaArmaTest {
         todas.forEach { a ->
             val f = FichaTecnicaDaArma.de(a, st = 10)
             (f.destaques + f.detalhes).forEach { linha ->
-                if (linha.valor == FichaTecnicaDaArma.AUSENTE) return@forEach
+                if (linha.valor == FichaDeEquipamento.AUSENTE) return@forEach
                 assertTrue(
                     "${a.nome} / ${linha.rotulo}: valor vazio na tela",
                     linha.valor.isNotBlank()
@@ -297,13 +297,13 @@ class FichaTecnicaDaArmaTest {
         }
         // E a arma sem Recuo cadastrado (arco) mostra travessão de verdade.
         val arco = FichaTecnicaDaArma.de(arma(distancia, "Arco Longo"), st = 11)
-        assertEquals(FichaTecnicaDaArma.AUSENTE, destaque(arco, "Recuo").valor)
+        assertEquals(FichaDeEquipamento.AUSENTE, destaque(arco, "Recuo").valor)
     }
 
     @Test
     fun `a linha acessivel junta rotulo, valor e explicacao`() {
         // TalkBack lendo "Precisão", pausa, "6 +3", pausa, é inútil.
-        val linha = FichaTecnicaDaArma.Linha("Precisão", "6 +3", "só vale se você Apontar")
+        val linha = FichaDeEquipamento.Linha("Precisão", "6 +3", "só vale se você Apontar")
         assertEquals("Precisão: 6 +3. só vale se você Apontar", linha.descricaoAcessivel)
     }
 }

@@ -1770,3 +1770,26 @@ muda — é esse o problema desses defeitos.
 - **T-EQ22 · o local gravado casa com o ferimento** — com esse barrete vestido,
   vá à aba Rolagem, toque no **PV** e escolha **crânio**: ✅ a RD do barrete é
   oferecida no desconto.
+
+---
+
+# Lote EQP-6 — a ficha técnica da armadura e do escudo
+
+> Gate: 2.060 testes, 0 falhas nas duas variantes.
+
+- **T-EQ23 · a ficha do escudo abre** — *Adicionar Escudo* → toque em *Escudo
+  Grande*: ✅ abre uma tela igual à da *Adaga*, com **BD +3** no alto, e **não**
+  adiciona direto. *Fechar* volta para a lista sem ter comprado nada.
+- **T-EQ24 · 🔴 a RD do escudo diz que não é sua** — na mesma ficha, bloco *na
+  hora de comprar*: ✅ a linha `RD / PV do escudo` traz `9 / 60` e a explicação
+  *"não protege você"*.
+- **T-EQ25 · adicionar pela ficha funciona** — toque em *Adicionar ao
+  inventário*: ✅ o escudo entra na lista e o diálogo fecha.
+- **T-EQ26 · a ficha da armadura abre antes de escolher o local** — *Adicionar
+  Armadura* → *Armadura de Couro*: ✅ abre a ficha com **RD** e **Local**; o botão
+  diz *Escolher os locais*; ao tocar, aparece o *Configurar Armadura* de sempre.
+- **T-EQ27 · a peça composta mostra cada parte** — procure uma armadura com
+  componentes (ex.: um conjunto com `+` no nome): ✅ cada parte aparece com a sua
+  RD.
+- **T-EQ28 · BD, não DB** — na lista de escudos ✅ diz `BD +3`. Vá à aba Rolagem,
+  seletor de escudo: ✅ também diz `BD`.

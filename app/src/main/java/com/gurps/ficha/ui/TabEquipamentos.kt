@@ -84,6 +84,9 @@ fun TabEquipamentos(viewModel: FichaViewModel) {
     var armaDetalhada by remember { mutableStateOf<ArmaCatalogoItem?>(null) }
     // Lote ARMA-4: a mesma ficha, aberta a partir do inventário.
     var armaDoInventarioDetalhada by remember { mutableStateOf<Equipamento?>(null) }
+    // Lote EQP-6: a ficha técnica do escudo e da armadura, antes de adicionar.
+    var escudoDetalhado by remember { mutableStateOf<EscudoCatalogoItem?>(null) }
+    var armaduraDetalhada by remember { mutableStateOf<ArmaduraCatalogoItem?>(null) }
 
     val p = viewModel.personagem
     val errosCarga = viewModel.errosCargaCatalogos
@@ -220,7 +223,7 @@ fun TabEquipamentos(viewModel: FichaViewModel) {
     // Lote ARMA-3/4: o mesmo card serve os dois lados. Na seleção ele adiciona;
     // no inventário ele é só leitura, porque a arma já está na ficha.
     armaDetalhada?.let { arma ->
-        com.gurps.ficha.ui.features.equipamento.CardDetalheArma(
+        com.gurps.ficha.ui.features.equipamento.CardDetalheDoItem(
             ficha = viewModel.fichaTecnicaDaArma(arma),
             rotuloAcao = "Adicionar ao inventário",
             onAcao = {
@@ -235,7 +238,7 @@ fun TabEquipamentos(viewModel: FichaViewModel) {
     armaDoInventarioDetalhada?.let { equipamento ->
         val doCatalogo = viewModel.armaDoCatalogoPara(equipamento)
         if (doCatalogo != null) {
-            com.gurps.ficha.ui.features.equipamento.CardDetalheArma(
+            com.gurps.ficha.ui.features.equipamento.CardDetalheDoItem(
                 ficha = viewModel.fichaTecnicaDaArma(doCatalogo),
                 rotuloAcao = null,
                 onDismiss = { armaDoInventarioDetalhada = null }
@@ -254,10 +257,38 @@ fun TabEquipamentos(viewModel: FichaViewModel) {
         SelecionarEscudoEquipamentoDialog(
             viewModel = viewModel,
             onDismiss = { showEscudoDialog = false },
-            onSelect = {
-                viewModel.adicionarEquipamentoEscudo(it)
+            // Lote EQP-6: mesmo gesto da arma. O toque abre a ficha; o botão de
+            // adicionar mora lá dentro. Antes, tocar num escudo já o punha na
+            // ficha — dava para comprar um Escudo Grande sem descobrir que ele
+            // pesa 12,5 kg, ocupa a mão e dá -2 nos ataques corpo a corpo.
+            onSelect = { escudoDetalhado = it }
+        )
+    }
+
+    escudoDetalhado?.let { escudo ->
+        com.gurps.ficha.ui.features.equipamento.CardDetalheDoItem(
+            ficha = viewModel.fichaTecnicaDoEscudo(escudo),
+            rotuloAcao = "Adicionar ao inventário",
+            onAcao = {
+                viewModel.adicionarEquipamentoEscudo(escudo)
+                escudoDetalhado = null
                 showEscudoDialog = false
-            }
+            },
+            onDismiss = { escudoDetalhado = null }
+        )
+    }
+
+    // A armadura tem um passo a mais: depois da ficha vem o Configurar Armadura,
+    // porque uma peça de tronco+virilha pode entrar só num dos dois locais.
+    armaduraDetalhada?.let { armadura ->
+        com.gurps.ficha.ui.features.equipamento.CardDetalheDoItem(
+            ficha = viewModel.fichaTecnicaDaArmadura(armadura),
+            rotuloAcao = "Escolher os locais",
+            onAcao = {
+                armaduraDetalhada = null
+                armaduraPendenteConfiguracao = armadura
+            },
+            onDismiss = { armaduraDetalhada = null }
         )
     }
 
@@ -265,8 +296,10 @@ fun TabEquipamentos(viewModel: FichaViewModel) {
         SelecionarArmaduraEquipamentoDialog(
             viewModel = viewModel,
             onDismiss = { showArmaduraDialog = false },
+            // Lote EQP-6: a ficha entra ANTES do Configurar Armadura. Escolher
+            // os locais de uma peça sem ter visto a RD dela era decidir no escuro.
             onSelect = {
-                armaduraPendenteConfiguracao = it
+                armaduraDetalhada = it
                 showArmaduraDialog = false
             }
         )
@@ -699,7 +732,7 @@ private fun SelecionarEscudoEquipamentoDialog(
         items(escudos, key = { it.id }) { escudo ->
             AppSelectionRow(
                 nome = escudo.nome,
-                detalhe = "DB ${escudo.db} | Custo: $${escudo.custo ?: 0f} | Peso: ${escudo.pesoKg ?: 0f} kg",
+                detalhe = "BD +${escudo.db} | Custo: $${escudo.custo ?: 0f} | Peso: ${escudo.pesoKg ?: 0f} kg",
                 onClick = { onSelect(escudo) }
             )
         }
