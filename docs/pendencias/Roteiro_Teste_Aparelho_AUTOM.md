@@ -1815,3 +1815,24 @@ muda — é esse o problema desses defeitos.
 - **T-EQ33 · ⚠️ ficha antiga não perde o RD** — se você tiver alguma armadura de
   ficha antiga (adicionada antes destes lotes): ✅ o campo *Notas* dela **ainda**
   mostra o `Local: …; RD: …`, e o cartão continua com o RD certo.
+
+---
+
+# Lote EQP-8 — a ficha fala da peça, e o RD vira campo
+
+> Gate: 2.080 testes, 0 falhas nas duas variantes.
+
+- **T-EQ34 · 🔴 a ficha bate com os campos** — Lápis da *Túnica (virilha)*: ✅ o
+  subtítulo diz **virilha** (não *tronco, virilha*), e **não** existe mais linha
+  de Peso/Custo/RD na ficha — esses três agora são campos.
+- **T-EQ35 · 🔴 o RD é editável** — no mesmo item, campo **RD**: mude `1*` para
+  `2*` e **Salve**. ✅ o cartão na lista passa a mostrar `RD: 2*`.
+- **T-EQ36 · 🔴 e o combate obedece** — aba Rolagem → **PV** → local *virilha* →
+  usar a RD: ✅ o desconto usa **2**, o número novo.
+- **T-EQ37 · armadura não tem Dano/ST Mín** — no editor de qualquer armadura: ✅ a
+  seção *Automação de combate* **não aparece**. Numa arma e num escudo: ✅ aparece.
+- **T-EQ38 · o escudo tem BD** — lápis do *Escudo Grande*, campo **BD**: mude 3
+  para 4 e salve. ✅ a aba Rolagem passa a somar 4 na defesa.
+- **T-EQ39 · a lista de escolha não mudou** — *Adicionar Armadura* → *Túnica*: ✅
+  ali a ficha **continua** mostrando Peso 3 kg, Custo $30 e `tronco, virilha`, que
+  é a peça inteira do livro — porque ainda não existe peça sua.

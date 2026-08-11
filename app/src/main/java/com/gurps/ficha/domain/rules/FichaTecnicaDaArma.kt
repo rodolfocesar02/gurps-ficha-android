@@ -1,6 +1,7 @@
 package com.gurps.ficha.domain.rules
 
 import com.gurps.ficha.model.ArmaCatalogoItem
+import com.gurps.ficha.model.Equipamento
 
 // O corpo deste arquivo continua escrevendo `Linha`, `ModoNaTela` e `Ficha` sem
 // prefixo. Os apelidos sao privados ao arquivo: quem chama de fora usa os nomes
@@ -52,14 +53,16 @@ object FichaTecnicaDaArma {
         arma: ArmaCatalogoItem,
         st: Int,
         resolverDano: (String) -> String? = { null },
-        observacoes: List<String> = emptyList()
+        observacoes: List<String> = emptyList(),
+        /** A arma que o jogador tem; ver [FichaTecnicaDaArmadura.de]. */
+        peca: Equipamento? = null
     ): Ficha = Ficha(
         nome = arma.nome,
         subtitulo = subtitulo(arma),
         selo = arma.cl?.let { "CL $it · ${nomeDaCl(it)}" },
         destaques = if (arma.ehADistancia) destaquesDeDistancia(arma, st) else emptyList(),
         modos = modos(arma, resolverDano),
-        detalhes = detalhes(arma),
+        detalhes = detalhes(arma, peca),
         observacoes = observacoes
     )
 
@@ -193,7 +196,7 @@ object FichaTecnicaDaArma {
     // O que se olha uma vez, na hora de comprar
     // ==================================================================
 
-    private fun detalhes(arma: ArmaCatalogoItem): List<Linha> {
+    private fun detalhes(arma: ArmaCatalogoItem, peca: Equipamento? = null): List<Linha> {
         val linhas = mutableListOf<Linha>()
 
         linhas += Linha(
@@ -228,11 +231,19 @@ object FichaTecnicaDaArma {
                 }
             )
         }
-        linhas += Linha("Peso", pesoNaTela(arma), arma.municaoKg?.let { "o segundo número é a munição" })
+        linhas += Linha(
+            "Peso",
+            peca?.let { "${FichaDeEquipamento.formatarKg(it.peso)} kg" } ?: pesoNaTela(arma),
+            arma.municaoKg?.takeIf { peca == null }?.let { "o segundo número é a munição" },
+            editavel = true
+        )
         linhas += Linha(
             "Custo",
-            arma.custoBase?.let { FichaDeEquipamento.formatarDinheiro(it) } ?: (arma.custoRaw ?: AUSENTE),
-            null
+            peca?.let { FichaDeEquipamento.formatarDinheiro(it.custo) }
+                ?: arma.custoBase?.let { FichaDeEquipamento.formatarDinheiro(it) }
+                ?: (arma.custoRaw ?: AUSENTE),
+            null,
+            editavel = true
         )
         arma.nt?.let { linhas += Linha("NT", "$it", null) }
         return linhas

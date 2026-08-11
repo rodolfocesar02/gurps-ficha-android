@@ -1036,11 +1036,30 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
     fun fichaTecnicaDoItem(e: Equipamento): com.gurps.ficha.domain.rules.FichaDeEquipamento.Ficha? =
         when (e.tipo) {
             TipoEquipamento.ARMADURA ->
-                equipmentDelegate.armaduraDoCatalogoPara(e)?.let { fichaTecnicaDaArmadura(it) }
+                equipmentDelegate.armaduraDoCatalogoPara(e)?.let { catalogo ->
+                    com.gurps.ficha.domain.rules.FichaTecnicaDaArmadura.de(
+                        armadura = catalogo,
+                        // 🔴 Lote EQP-8: a PEÇA, não a entrada do catálogo. A
+                        // Túnica do livro é `tronco, virilha`, 3 kg e $30; a
+                        // metade que o jogador tem é `virilha`, 1,5 kg e $15.
+                        peca = e,
+                        observacoes = equipmentDelegate.observacoesArmaduraFormatadas(catalogo)
+                    )
+                }
             TipoEquipamento.ESCUDO ->
-                equipmentDelegate.escudoDoCatalogoPara(e)?.let { fichaTecnicaDoEscudo(it) }
+                equipmentDelegate.escudoDoCatalogoPara(e)?.let { catalogo ->
+                    com.gurps.ficha.domain.rules.FichaTecnicaDoEscudo.de(catalogo, personagem.forca, e)
+                }
             else ->
-                equipmentDelegate.armaDoCatalogoPara(e)?.let { fichaTecnicaDaArma(it) }
+                equipmentDelegate.armaDoCatalogoPara(e)?.let { catalogo ->
+                    com.gurps.ficha.domain.rules.FichaTecnicaDaArma.de(
+                        arma = catalogo,
+                        st = personagem.forca,
+                        resolverDano = { calcularDanoArmaComSt(it) },
+                        observacoes = observacoesArmaDoCatalogo(catalogo),
+                        peca = e
+                    )
+                }
         }
 
     // ── Lote ARMA-2/3/4: a ficha técnica da arma, pronta para a tela. ──

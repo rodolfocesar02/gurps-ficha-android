@@ -174,10 +174,23 @@ fun CardArmaForaDoCatalogo(
  * altura. As fichas têm menos de dez linhas; a preguiça não comprava nada.
  */
 @Composable
-fun ColumnScope.BlocosDaFicha(ficha: FichaDeEquipamento.Ficha) {
-    if (ficha.destaques.isNotEmpty()) {
+fun ColumnScope.BlocosDaFicha(
+    ficha: FichaDeEquipamento.Ficha,
+    /**
+     * `false` no editor: as linhas que tem campo logo abaixo somem daqui,
+     * para o mesmo numero nao aparecer duas vezes na mesma tela (EQP-8).
+     */
+    mostrarEditaveis: Boolean = true
+) {
+    fun visiveis(linhas: List<FichaDeEquipamento.Linha>) =
+        if (mostrarEditaveis) linhas else linhas.filterNot { it.editavel }
+
+    val destaques = visiveis(ficha.destaques)
+    val detalhes = visiveis(ficha.detalhes)
+
+    if (destaques.isNotEmpty()) {
         Cabecalho("No meio da jogada")
-        ficha.destaques.forEach { LinhaDaFicha(it) }
+        destaques.forEach { LinhaDaFicha(it) }
     }
 
     if (ficha.modos.isNotEmpty()) {
@@ -185,9 +198,9 @@ fun ColumnScope.BlocosDaFicha(ficha: FichaDeEquipamento.Ficha) {
         ficha.modos.forEach { ModoDeAtaque(it) }
     }
 
-    if (ficha.detalhes.isNotEmpty()) {
+    if (detalhes.isNotEmpty()) {
         Cabecalho("Na hora de comprar")
-        ficha.detalhes.forEach { LinhaDaFicha(it) }
+        detalhes.forEach { LinhaDaFicha(it) }
     }
 
     if (ficha.observacoes.isNotEmpty()) {

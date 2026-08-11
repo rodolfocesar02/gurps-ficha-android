@@ -1,5 +1,6 @@
 package com.gurps.ficha.domain.rules
 
+import com.gurps.ficha.model.Equipamento
 import com.gurps.ficha.model.EscudoCatalogoItem
 
 /**
@@ -20,14 +21,19 @@ import com.gurps.ficha.model.EscudoCatalogoItem
  */
 object FichaTecnicaDoEscudo {
 
-    fun de(escudo: EscudoCatalogoItem, stDoPersonagem: Int): FichaDeEquipamento.Ficha =
+    /** [peca] = o escudo que o jogador tem; ver o porquê em [FichaTecnicaDaArmadura.de]. */
+    fun de(
+        escudo: EscudoCatalogoItem,
+        stDoPersonagem: Int,
+        peca: Equipamento? = null
+    ): FichaDeEquipamento.Ficha =
         FichaDeEquipamento.Ficha(
-            nome = escudo.nome,
+            nome = peca?.nome?.takeIf { it.isNotBlank() } ?: escudo.nome,
             subtitulo = listOfNotNull("Escudo", escudo.nt?.let { "NT $it" }).joinToString(" · "),
             selo = escudo.cl?.let { "CL $it" },
-            destaques = defesa(escudo, stDoPersonagem),
+            destaques = defesa(escudo, stDoPersonagem, peca),
             modos = emptyList(),
-            detalhes = compra(escudo),
+            detalhes = compra(escudo, peca),
             observacoes = NotasDoEscudo.explicar(escudo.observacoes)
         )
 
@@ -35,13 +41,21 @@ object FichaTecnicaDoEscudo {
     // No meio da jogada
     // ──────────────────────────────────────────────────────────────────
 
-    private fun defesa(escudo: EscudoCatalogoItem, st: Int): List<FichaDeEquipamento.Linha> {
+    private fun defesa(
+        escudo: EscudoCatalogoItem,
+        st: Int,
+        peca: Equipamento?
+    ): List<FichaDeEquipamento.Linha> {
         val linhas = mutableListOf<FichaDeEquipamento.Linha>()
 
+        val bd = peca?.bonusDefesa ?: escudo.db
         linhas += FichaDeEquipamento.Linha(
             "BD",
-            "+${escudo.db}",
-            "soma em Bloqueio, Esquiva e Aparar contra ataques pela frente e pelos lados"
+            "+$bd",
+            "soma em Bloqueio, Esquiva e Aparar contra ataques pela frente e pelos lados",
+            // Campo no editor desde o EQP-8: escudo encantado de +1 BD nao
+            // tinha onde ser registrado.
+            editavel = true
         )
         // O escudo ocupa a mão mesmo sem ser usado para bloquear — é a
         // consequência que mais muda a jogada e não estava em lugar nenhum.
@@ -65,17 +79,19 @@ object FichaTecnicaDoEscudo {
     // Na hora de comprar
     // ──────────────────────────────────────────────────────────────────
 
-    private fun compra(escudo: EscudoCatalogoItem): List<FichaDeEquipamento.Linha> = listOf(
+    private fun compra(escudo: EscudoCatalogoItem, peca: Equipamento?): List<FichaDeEquipamento.Linha> = listOf(
         FichaDeEquipamento.Linha(
             "Peso",
-            escudo.pesoKg?.let { "${FichaDeEquipamento.formatarKg(it)} kg" }
+            (peca?.peso ?: escudo.pesoKg)?.let { "${FichaDeEquipamento.formatarKg(it)} kg" }
                 ?: FichaDeEquipamento.AUSENTE,
-            "entra na carga — um Escudo Grande sozinho já pesa mais que uma espada"
+            "entra na carga — um Escudo Grande sozinho já pesa mais que uma espada",
+            editavel = true
         ),
         FichaDeEquipamento.Linha(
             "Custo",
-            escudo.custo?.let { FichaDeEquipamento.formatarDinheiro(it) }
-                ?: FichaDeEquipamento.AUSENTE
+            (peca?.custo ?: escudo.custo)?.let { FichaDeEquipamento.formatarDinheiro(it) }
+                ?: FichaDeEquipamento.AUSENTE,
+            editavel = true
         ),
         FichaDeEquipamento.Linha(
             "NT",

@@ -7229,3 +7229,67 @@ isso é convite a corrigir ali o que só muda no campo de verdade.
 escondê-la apagaria o dado.
 
 - **Status:** ✅ Build OK nas 2 variantes · lint OK · gate **2067** (+7) · ⏭️ **PENDENTE: teste no aparelho** (T-EQ29 a T-EQ33).
+
+---
+
+### Lote EQP-8 — a ficha falava de uma peça que o jogador não tem (9.2-EQP8)
+
+Fotos do usuário de 12/08, editando a *Túnica (virilha)*.
+
+#### 🔴 Três linhas mentindo, com os campos certos logo abaixo
+
+A *Túnica* do catálogo é **uma** peça, `tronco, virilha`, 3 kg, $30. Ao escolher
+os dois locais, o app a parte em duas metades de 1,5 kg e $15. A ficha continuava
+montada **do catálogo**:
+
+| a ficha dizia | o campo logo abaixo |
+|---|---|
+| Local: **tronco, virilha** | é a peça da **virilha** |
+| Peso: **3 kg** | `1.5` |
+| Custo: **$30** | `15.0` |
+
+⚠️ Para arma isso nunca apareceu porque uma espada não se parte em duas — mas a
+brecha era a mesma: peso e custo editados à mão também divergiriam. Os três
+montadores agora recebem a **peça**; o catálogo continua dono do que só ele sabe
+(NT, observações, componentes).
+
+#### ⭐ O teste que faltou
+
+No EQP-7 eu cobri *"o editor mostra uma ficha"*. Não cobri *"a ficha descreve
+**este** item"* — e o gate fechou verde com os três números errados na tela.
+`FichaNaoContradizOItemTest` cobra a invariante direto: cada número da ficha tem
+de bater com o campo correspondente do item.
+
+#### 🔴 O RD não tinha campo
+
+Pedido do usuário: *"se eu quiser colocar uma nota que é uma armadura mágica com
+bônus de +1 em RD?"*.
+
+Era o **único** número da armadura que o jogador não conseguia mexer. A única
+saída era escrever na nota — e o combate não lê nota, lê o campo. Uma peça
+encantada ficava com o RD do livro para sempre.
+
+Agora há campo de **RD** (armadura) e de **BD** (escudo). O RD é campo de
+**texto**, não numérico: o livro escreve `2*`, `4/2` e `5D`, e o
+`CoberturaDaArmadura` sabe ler os três — teclado numérico jogaria fora metade da
+tabela.
+
+⚠️ Correção de uma afirmação minha do EQP-2: eu escrevi que *"você editou o RD e a
+nota manteve o texto antigo"*. **Não existia campo de RD** — a contradição na tela
+era real, a explicação era chute.
+
+#### O peso aparecia duas vezes
+
+Consequência do primeiro item: mesmo com os números certos, ficha e campo
+mostrariam o mesmo dado duas vezes. `Linha` ganhou o marcador `editavel`, e o
+editor esconde essas linhas — o card de seleção continua mostrando tudo, porque
+lá não há campo nenhum.
+
+#### O bloco de combate na armadura
+
+*"Dano / ST Mín"* aparecia para **todos** os itens. Numa armadura não era só
+inútil: preencher o Dano trocava o `tipo` para `ARMA` e a peça **sumia da seção de
+armaduras** sem aviso. O bloco agora só existe para arma e escudo — o escudo
+mantém porque se dá golpe com ele (MB p.288, nota [2]).
+
+- **Status:** ✅ Build OK nas 2 variantes · lint OK · gate **2080** (+13) · ⏭️ **PENDENTE: teste no aparelho** (T-EQ34 a T-EQ39).

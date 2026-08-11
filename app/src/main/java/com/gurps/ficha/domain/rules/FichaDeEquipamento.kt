@@ -44,7 +44,20 @@ object FichaDeEquipamento {
     data class Linha(
         val rotulo: String,
         val valor: String,
-        val explicacao: String? = null
+        val explicacao: String? = null,
+        /**
+         * 🔴 **Esta linha tem um campo no editor** (Lote EQP-8).
+         *
+         * O card de seleção mostra tudo — lá não há campo nenhum. O **editor**
+         * esconde estas, porque logo abaixo há a caixa de texto com o mesmo
+         * número.
+         *
+         * ⚠️ Sem isto, o peso aparecia **duas vezes na mesma tela** e com valores
+         * diferentes: `3 kg` na ficha (a Túnica inteira, do catálogo) e `1.5` no
+         * campo (a metade que o jogador tem). Dois números para a mesma coisa é
+         * o defeito que já apareceu quatro vezes neste ciclo.
+         */
+        val editavel: Boolean = false
     ) {
         /**
          * Como o leitor de tela lê a linha inteira, de uma vez.

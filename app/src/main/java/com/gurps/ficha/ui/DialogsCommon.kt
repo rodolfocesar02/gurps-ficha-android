@@ -228,10 +228,26 @@ fun EquipamentoDialog(
             initialEquipamento?.let { com.gurps.ficha.domain.rules.CartaoDoItem.notasParaEditar(it) } ?: ""
         )
     }
+    // Lote EQP-8: o RD e o BD ganharam campo. Eram os unicos numeros que o
+    // jogador nao conseguia mexer -- uma armadura encantada de +1 RD nao tinha
+    // onde ser registrada, e a unica saida era escrever na nota, que o combate
+    // nao le.
+    var rdArmadura by remember { mutableStateOf(initialEquipamento?.armaduraRd ?: "") }
+    var bdEscudo by remember {
+        mutableStateOf(initialEquipamento?.bonusDefesa?.takeIf { it != 0 }?.toString() ?: "")
+    }
     var dano by remember { mutableStateOf(initialEquipamento?.armaDanoRaw ?: "") }
     var stMin by remember { mutableStateOf(initialEquipamento?.armaStMinimo?.toString() ?: "") }
 
     val editando = initialEquipamento != null
+    val tipo = initialEquipamento?.tipo ?: TipoEquipamento.GERAL
+    val ehArmadura = tipo == TipoEquipamento.ARMADURA
+    val ehEscudo = tipo == TipoEquipamento.ESCUDO
+    // ⚠️ Armadura nao ataca. O bloco de Dano/ST Min existia para TODOS os
+    // itens, e num item de armadura ele nao so era inutil: preencher o Dano
+    // virava o tipo para ARMA (v. `tipoFinal`), e a peca sumia da secao de
+    // armaduras sem aviso.
+    val temAutomacaoDeCombate = !ehArmadura
 
     FullscreenDialogContainer(onDismiss = onDismiss) {
         Column(modifier = Modifier.fillMaxSize()) {
@@ -254,7 +270,7 @@ fun EquipamentoDialog(
                 // mesma Tunica aparecia completa ao escolher e crua ao editar.
                 // Agora os dois chamam o mesmo `BlocosDaFicha`.
                 fichaTecnica?.let { ficha ->
-                    BlocosDaFicha(ficha)
+                    BlocosDaFicha(ficha, mostrarEditaveis = false)
                 }
 
                 SecaoDoEditor(if (fichaTecnica != null) "Seus dados" else "Item")
@@ -280,6 +296,38 @@ fun EquipamentoDialog(
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                     singleLine = true, modifier = Modifier.fillMaxWidth()
                 )
+                if (ehArmadura) {
+                    OutlinedTextField(
+                        value = rdArmadura, onValueChange = { rdArmadura = it },
+                        label = { Text("RD") },
+                        // Texto, nao numero: o livro escreve "2*", "4/2" e "5D",
+                        // e o `CoberturaDaArmadura` sabe ler os tres. Forcar um
+                        // teclado numerico aqui jogaria fora metade da tabela.
+                        singleLine = true,
+                        supportingText = {
+                            Text(
+                                "Como no livro: 2, 2*, 4/2. Encantamento de +1 RD entra somando aqui.",
+                                style = UiEstilos.detalheDoItem
+                            )
+                        },
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
+                if (ehEscudo) {
+                    OutlinedTextField(
+                        value = bdEscudo, onValueChange = { bdEscudo = it },
+                        label = { Text("BD") },
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                        singleLine = true,
+                        supportingText = {
+                            Text(
+                                "Bonus de Defesa. Escudo encantado entra somando aqui.",
+                                style = UiEstilos.detalheDoItem
+                            )
+                        },
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
                 OutlinedTextField(
                     value = notas, onValueChange = { notas = it },
                     label = { Text("Notas") },
@@ -291,6 +339,7 @@ fun EquipamentoDialog(
                     modifier = Modifier.fillMaxWidth()
                 )
 
+                if (temAutomacaoDeCombate) {
                 SecaoDoEditor("Automação de combate (opcional)")
                 Row(horizontalArrangement = Arrangement.spacedBy(UiTokens.DialogContentSpacing)) {
                     OutlinedTextField(
@@ -304,6 +353,7 @@ fun EquipamentoDialog(
                         singleLine = true, modifier = Modifier.weight(0.6f)
                     )
                 }
+                }
             }
 
             AppFileiraDeBotoes {
@@ -314,6 +364,9 @@ fun EquipamentoDialog(
                     onClick = {
                         val danoFinal = dano.ifBlank { null }
                         val tipoFinal = when {
+                            // ⚠️ `ehArmadura` primeiro: sem isto, uma armadura com
+                            // Dano preenchido virava ARMA e sumia da secao dela.
+                            ehArmadura -> TipoEquipamento.ARMADURA
                             danoFinal != null -> TipoEquipamento.ARMA
                             initialEquipamento != null -> initialEquipamento.tipo
                             else -> TipoEquipamento.GERAL
@@ -327,7 +380,13 @@ fun EquipamentoDialog(
                                 notas = notas,
                                 tipo = tipoFinal,
                                 armaDanoRaw = danoFinal,
-                                armaStMinimo = stMin.toIntOrNull()
+                                armaStMinimo = stMin.toIntOrNull(),
+                                armaduraRd = if (ehArmadura) rdArmadura.trim().ifBlank { null } else initialEquipamento?.armaduraRd,
+                                bonusDefesa = if (ehEscudo) {
+                                    bdEscudo.trim().toIntOrNull() ?: 0
+                                } else {
+                                    initialEquipamento?.bonusDefesa ?: 0
+                                }
                             )
                         )
                     }

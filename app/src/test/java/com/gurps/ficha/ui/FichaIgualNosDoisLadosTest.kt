@@ -63,11 +63,61 @@ class FichaIgualNosDoisLadosTest {
     @Test
     fun `card e editor desenham a ficha com o mesmo composable`() {
         assertTrue("o card nao usa o desenho compartilhado", card.contains("fun ColumnScope.BlocosDaFicha("))
-        assertTrue("o card nao chama o desenho compartilhado", card.contains("BlocosDaFicha(ficha)"))
-        assertTrue("o editor nao chama o desenho compartilhado", editor.contains("BlocosDaFicha(ficha)"))
+        // Sem casar a chamada inteira: o editor passa `mostrarEditaveis = false`
+        // desde o EQP-8, e o que importa aqui e que os dois usem O MESMO desenho.
+        assertTrue("o card nao chama o desenho compartilhado", card.contains("BlocosDaFicha(ficha"))
+        assertTrue("o editor nao chama o desenho compartilhado", editor.contains("BlocosDaFicha(ficha"))
         assertFalse(
             "o editor voltou a ter desenho proprio da ficha",
             editor.contains("(ficha.destaques + ficha.detalhes)")
+        )
+    }
+
+    // ── Lote EQP-8: os campos que faltavam, e o bloco que sobrava ──────
+
+    @Test
+    fun `a armadura tem campo de RD`() {
+        // 🔴 Era o unico numero da armadura que o jogador nao conseguia mexer.
+        // Uma peca encantada de +1 RD so podia ser anotada na NOTA -- e o
+        // combate nao le nota, le o campo.
+        assertTrue("nao ha campo de RD", editor.contains("value = rdArmadura"))
+        assertTrue("o RD nao e gravado no salvar", editor.contains("armaduraRd = if (ehArmadura)"))
+    }
+
+    @Test
+    fun `o escudo tem campo de BD`() {
+        assertTrue("nao ha campo de BD", editor.contains("value = bdEscudo"))
+        assertTrue("o BD nao e gravado no salvar", editor.contains("bonusDefesa = if (ehEscudo)"))
+    }
+
+    @Test
+    fun `armadura nao mostra automacao de combate`() {
+        // Armadura nao ataca. E pior que inutil: preencher o Dano virava o tipo
+        // para ARMA e a peca sumia da secao de armaduras sem aviso.
+        assertTrue(editor.contains("val temAutomacaoDeCombate = !ehArmadura"))
+        assertTrue(editor.contains("if (temAutomacaoDeCombate) {"))
+    }
+
+    @Test
+    fun `armadura nunca vira arma ao salvar`() {
+        val i = editor.indexOf("val tipoFinal = when {")
+        val trecho = editor.substring(i, i + 400)
+        val posArmadura = trecho.indexOf("ehArmadura ->")
+        val posDano = trecho.indexOf("danoFinal != null ->")
+        assertTrue("a armadura nao e verificada antes do dano", posArmadura in 0 until posDano)
+    }
+
+    @Test
+    fun `o editor esconde da ficha o que tem campo`() {
+        // Sem isto o peso aparece duas vezes na mesma tela, com valores
+        // diferentes -- o defeito que o usuario fotografou em 12/08.
+        assertTrue(
+            "o editor nao esta escondendo as linhas editaveis",
+            editor.contains("BlocosDaFicha(ficha, mostrarEditaveis = false)")
+        )
+        assertTrue(
+            "o card de selecao deixou de mostrar tudo",
+            card.contains("mostrarEditaveis: Boolean = true")
         )
     }
 
