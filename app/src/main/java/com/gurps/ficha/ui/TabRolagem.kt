@@ -917,16 +917,55 @@ fun TabRolagem(viewModel: FichaViewModel) {
             }
         )
 
-        // So aparece quando existe Apara na ficha -- sem arma nem mao livre,
-        // nao ha o que contar.
-        if (defesasAtivas.any { it.type == DefenseType.APARA }) {
-            PainelAparaRepetida(
+        // Lote ROL-3: Luz da cena e Apara do turno viram MEIA FILEIRA cada, lado
+        // a lado (mockup do usuário, 11/08). São os dois ajustes de cena — ficam
+        // juntos, e devolvem uma fileira inteira de altura à tela.
+        //
+        // ⚠️ Só na variante visual. Na `pracego` continuam empilhados e de
+        // largura inteira: meia largura encolhe o alvo de toque dos `−`/`+` e
+        // dobra o texto, que é justamente o que aquela variante não pode ter.
+        val temApara = defesasAtivas.any { it.type == DefenseType.APARA }
+        if (isPraCegoVariant) {
+            PainelIluminacao(
                 personagem = p,
-                numeroDaApara = numeroDaApara,
-                armaDeEsgrima = aparaEhEsgrima,
-                onMudar = { numeroDaApara = it },
-                onNovoTurno = { numeroDaApara = 1 }
+                penalidadeBruta = luzDaCena,
+                isPraCegoVariant = true,
+                onMudar = { luzDaCena = it }
             )
+            if (temApara) {
+                PainelAparaRepetida(
+                    personagem = p,
+                    numeroDaApara = numeroDaApara,
+                    armaDeEsgrima = aparaEhEsgrima,
+                    onMudar = { numeroDaApara = it },
+                    onNovoTurno = { numeroDaApara = 1 }
+                )
+            }
+        } else {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(4.dp)
+            ) {
+                PainelIluminacao(
+                    personagem = p,
+                    penalidadeBruta = luzDaCena,
+                    isPraCegoVariant = false,
+                    onMudar = { luzDaCena = it },
+                    modifier = Modifier.weight(1f)
+                )
+                // Sem Apara na ficha, a Luz ocupa a fileira inteira — em vez de
+                // metade da largura com um vazio do lado.
+                if (temApara) {
+                    PainelAparaRepetida(
+                        personagem = p,
+                        numeroDaApara = numeroDaApara,
+                        armaDeEsgrima = aparaEhEsgrima,
+                        onMudar = { numeroDaApara = it },
+                        onNovoTurno = { numeroDaApara = 1 },
+                        modifier = Modifier.weight(1f)
+                    )
+                }
+            }
         }
 
         PainelSorte(
@@ -936,13 +975,6 @@ fun TabRolagem(viewModel: FichaViewModel) {
             },
             temRolagemParaRefazer = ultimaPendente != null && ultimosDados != null,
             onUsar = { usarSorte() }
-        )
-
-        PainelIluminacao(
-            personagem = p,
-            penalidadeBruta = luzDaCena,
-            isPraCegoVariant = isPraCegoVariant,
-            onMudar = { luzDaCena = it }
         )
 
 

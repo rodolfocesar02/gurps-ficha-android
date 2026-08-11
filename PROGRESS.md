@@ -6724,3 +6724,37 @@ explica a defesa (que está abaixo).
 Nenhuma regra mudou; só a ordem de dois blocos.
 
 - **Status:** ✅ Compila nas 2 variantes · ⏭️ conferir na tela.
+
+---
+
+## 8.2-ROL3 — A aba Rolagem conforme a mockup do usuário
+
+O usuário editou uma captura no Photoshop mostrando como quer a tela. Comparando
+com o estado atual, eram **duas** mudanças.
+
+#### A. Luz da cena e Apara do turno viraram meia fileira cada
+
+Eram duas faixas de largura inteira, empilhadas. Agora dividem uma fileira —
+**Luz à esquerda, Apara à direita**. São os dois ajustes de *cena* (o que está
+valendo agora, não o que o personagem é), então ficam juntos, e a tela recupera
+uma fileira inteira de altura.
+
+⚠️ **Só na variante visual.** Na `pracego` continuam empilhados e de largura
+inteira: meia largura encolhe o alvo de toque dos `−`/`+` e dobra o texto em duas
+linhas — exatamente o que aquela variante não pode ter.
+
+⚠️ E quando **não há Apara na ficha** (sem arma nem mão livre), a Luz ocupa a
+fileira inteira, em vez de metade da largura com um vazio do lado.
+
+#### B. "Mão hábil" desceu para depois dos cartões
+
+Ela ficava entre os botões *Ataque/Dano* e o cartão do NH. A posição nova é
+melhor pelo mesmo motivo do cartão de estado no ROL-2: **a caixinha explica o
+número que está logo acima dela**. Antes ela separava a pergunta ("com que
+mão?") do valor que a resposta muda.
+
+A caixinha do **Sem Um Dedo** foi junto — as duas são a mesma pergunta.
+
+Sem teste novo, a pedido. Compila nas 2 variantes.
+
+- **Status:** ✅ Compila nas 2 variantes · ⏭️ conferir na tela.

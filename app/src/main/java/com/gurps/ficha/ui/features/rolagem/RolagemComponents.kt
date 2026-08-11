@@ -476,53 +476,6 @@ fun AtaqueDanoQuickArea(
             }
         }
 
-        // Seletor de mao: a penalidade e da SITUACAO, e a Ambidestria a zera.
-        // Por isso o quadrado continua funcionando mesmo com a vantagem -- so o
-        // numero some.
-        if (rotuloDaMao.isNotBlank()) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .linhaAlternavel(
-                        marcado = usandoMaoInabil,
-                        descricao = descricaoDaMao,
-                        onAlternar = onAlternarMao
-                    ),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Checkbox(checked = usandoMaoInabil, onCheckedChange = null)
-                Text(
-                    rotuloDaMao,
-                    style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.outline,
-                    modifier = Modifier.padding(start = 2.dp)
-                )
-            }
-        }
-
-        // Lote D-MIRA: Sem Um Dedo vale para UMA mão, e a ficha não guarda qual.
-        // Segunda caixinha em vez de chute — quem responde é o jogador.
-        if (rotuloDoDedo.isNotBlank()) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .linhaAlternavel(
-                        marcado = ehAMaoSemDedo,
-                        descricao = descricaoDoDedo,
-                        onAlternar = onAlternarMaoSemDedo
-                    ),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Checkbox(checked = ehAMaoSemDedo, onCheckedChange = null)
-                Text(
-                    rotuloDoDedo,
-                    style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.error,
-                    modifier = Modifier.padding(start = 2.dp)
-                )
-            }
-        }
-
         Spacer(modifier = Modifier.height(3.dp))
 
         val modAtaqueAtual = if (isPraCegoVariant) 0 else modificadorAtaque
@@ -728,6 +681,57 @@ fun AtaqueDanoQuickArea(
                 }
             }
         }
+        // ⚠️ Estas caixinhas ficam DEPOIS dos cartões, a pedido do usuário
+        // (mockup de 11/08). A posição faz sentido: elas explicam o NH que
+        // está logo acima, e antes ficavam entre os botões e o número —
+        // separando a pergunta ("com que mão?") do valor que ela muda.
+        // Seletor de mao: a penalidade e da SITUACAO, e a Ambidestria a zera.
+        // Por isso o quadrado continua funcionando mesmo com a vantagem -- so o
+        // numero some.
+        if (rotuloDaMao.isNotBlank()) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .linhaAlternavel(
+                        marcado = usandoMaoInabil,
+                        descricao = descricaoDaMao,
+                        onAlternar = onAlternarMao
+                    ),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Checkbox(checked = usandoMaoInabil, onCheckedChange = null)
+                Text(
+                    rotuloDaMao,
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.outline,
+                    modifier = Modifier.padding(start = 2.dp)
+                )
+            }
+        }
+
+        // Lote D-MIRA: Sem Um Dedo vale para UMA mão, e a ficha não guarda qual.
+        // Segunda caixinha em vez de chute — quem responde é o jogador.
+        if (rotuloDoDedo.isNotBlank()) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .linhaAlternavel(
+                        marcado = ehAMaoSemDedo,
+                        descricao = descricaoDoDedo,
+                        onAlternar = onAlternarMaoSemDedo
+                    ),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Checkbox(checked = ehAMaoSemDedo, onCheckedChange = null)
+                Text(
+                    rotuloDoDedo,
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.error,
+                    modifier = Modifier.padding(start = 2.dp)
+                )
+            }
+        }
+
     }
 }
 

@@ -54,13 +54,16 @@ fun PainelAparaRepetida(
     numeroDaApara: Int,
     armaDeEsgrima: Boolean,
     onMudar: (Int) -> Unit,
-    onNovoTurno: () -> Unit = {}
+    onNovoTurno: () -> Unit = {},
+    // Lote ROL-3: o chamador decide a largura — os dois viraram meia
+    // fileira na aba Rolagem, lado a lado.
+    modifier: Modifier = Modifier
 ) {
     val degrau = GolpeRapidoEAparaRules.penalidadePorAparaExtra(personagem, armaDeEsgrima)
     val total = GolpeRapidoEAparaRules.penalidadeAcumulada(personagem, numeroDaApara, armaDeEsgrima)
 
     Card(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth(),
         shape = RoundedCornerShape(12.dp),
         colors = appCardColors()
     ) {

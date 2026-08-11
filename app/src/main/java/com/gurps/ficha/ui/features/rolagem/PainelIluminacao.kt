@@ -47,12 +47,15 @@ fun PainelIluminacao(
     personagem: Personagem,
     penalidadeBruta: Int,
     isPraCegoVariant: Boolean,
-    onMudar: (Int) -> Unit
+    onMudar: (Int) -> Unit,
+    // Lote ROL-3: o chamador decide a largura — os dois viraram meia
+    // fileira na aba Rolagem, lado a lado.
+    modifier: Modifier = Modifier
 ) {
     val r = IluminacaoRules.penalidadeEfetiva(personagem, penalidadeBruta)
 
     Card(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),
         colors = appCardColors()
     ) {
