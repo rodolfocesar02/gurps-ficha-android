@@ -204,6 +204,35 @@ class MagiaEnergiaRulesTest {
     }
 
     // ==================================================================
+    // 5b. 🔴 A exceção da mágica de informação
+    // ==================================================================
+
+    @Test
+    fun `🔴 a classe do catalogo identifica a magia de informacao`() {
+        // São 59 no catálogo, e a classe vem escrita — não precisa de lista à
+        // mão. Casa por prefixo porque existe "Informação/R-Vont".
+        assertTrue(MagiaEnergiaRules.ehMagiaDeInformacao("Informação"))
+        assertTrue(MagiaEnergiaRules.ehMagiaDeInformacao("Informação/R-Vont"))
+        assertFalse(MagiaEnergiaRules.ehMagiaDeInformacao("Comum"))
+        assertFalse(MagiaEnergiaRules.ehMagiaDeInformacao(null))
+    }
+
+    @Test
+    fun `⚠️ o catalogo tem magias de informacao de verdade`() {
+        // Se a classe mudar de nome no JSON, a exceção do fracasso some em
+        // silêncio e essas 59 mágicas passam a pagar 1 onde deviam pagar tudo.
+        val arq = listOf("src/main/assets/magias2versao.json", "app/src/main/assets/magias2versao.json")
+            .map { File(it) }.firstOrNull { it.exists() } ?: return
+        val raiz = JsonParser.parseString(arq.readText())
+        val itens = if (raiz.isJsonArray) raiz.asJsonArray else raiz.asJsonObject.entrySet()
+            .firstNotNullOf { if (it.value.isJsonArray) it.value.asJsonArray else null }
+        val info = itens.count {
+            MagiaEnergiaRules.ehMagiaDeInformacao(it.asJsonObject.get("classe")?.asString)
+        }
+        assertTrue("nenhuma mágica de informação encontrada: a classe mudou?", info >= 40)
+    }
+
+    // ==================================================================
     // 6. O desconto por NH
     // ==================================================================
 

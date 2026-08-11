@@ -1547,3 +1547,34 @@ Os itens **T-SI1 a T-SI7** do bloco do PV-1a valem agora. Além deles:
   já vem 1 ponto menor.
 - **T-EN7 · operar × manter** — Role uma mágica com energia no formato **"04/02"**:
   ✅ o valor sugerido é **4** (operar), não 2 (manter).
+
+---
+
+# Lote MAGIA-E2 — o gasto conforme o resultado
+
+> Gate: 2.001 testes, 0 falhas nas duas variantes.
+
+⚠️ Os itens do **T-EN** continuam valendo, com uma mudança: agora **toda** mágica
+com custo pergunta **antes** de rolar, inclusive as de custo fixo (o T-EN5 mudou).
+
+- **T-E21 · 🔴 sucesso decisivo é de graça** — Role uma mágica até tirar um
+  **sucesso decisivo**: ✅ o PF **não cai**, e o log diz *"energia: 0 PF de N
+  comprometido(s) — Sucesso decisivo: nenhuma energia é gasta"*.
+- **T-E22 · 🔴 fracasso custa 1, não o cheio** — Comprometa **3** ou mais e falhe:
+  ✅ o PF cai **1**, e o log explica. *(Antes caía o valor cheio.)*
+- **T-E23 · falha crítica custa tudo** — Numa falha crítica: ✅ o PF cai o valor
+  comprometido inteiro.
+- **T-E24 · sucesso comum paga o combinado** — ✅ cai exatamente o que você
+  comprometeu.
+- **T-E25 · ⚠️ mágica de informação paga mesmo falhando** — Role uma mágica de
+  classe **Informação** (ex.: *Aura*, *Analisar Mágica*) e **falhe**: ✅ o PF cai
+  o valor cheio, não 1.
+- **T-E26 · 🔴 custo fixo não sai de graça** — Role uma mágica de custo **fixo**
+  (ex.: energia 4) e tenha sucesso: ✅ o PF cai 4. *(Este é o defeito que eu criei
+  ao mover a cobrança: os dois caminhos compilavam e a mágica de custo fixo
+  passou a não cobrar nada.)*
+- **T-E27 · custo zero rola direto** — Mágica sem custo, ou com NH alto que zerou
+  o desconto: ✅ os dados caem sem abrir diálogo nenhum.
+- **T-E28 · cancelar não deixa resíduo** — Abra uma mágica, **cancele** o
+  diálogo, e role **outra** mágica em seguida: ✅ a segunda cobra o que é dela, e
+  nada da primeira aparece junto.

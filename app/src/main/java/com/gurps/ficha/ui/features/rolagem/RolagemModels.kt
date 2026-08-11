@@ -61,6 +61,9 @@ data class MagiaRollOption(
     val energia: String?,
     val tempoOperacao: String?,
     val encantamentoAlvo: String?,
+    // Lote MAGIA-E2: a classe decide a exceção do fracasso — mágica de
+    // informação paga o custo total mesmo falhando (MB p.241).
+    val classe: String?,
     val descricao: String
 )
 

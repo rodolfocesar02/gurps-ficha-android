@@ -363,6 +363,7 @@ fun TabRolagem(viewModel: FichaViewModel) {
             energia = mag.energia,
             tempoOperacao = mag.tempoOperacao,
             encantamentoAlvo = mag.encantamentoAlvo,
+            classe = mag.classe,
             descricao = mag.texto.orEmpty()
         )
     }
@@ -419,6 +420,10 @@ fun TabRolagem(viewModel: FichaViewModel) {
     // a pergunta vem ANTES dos dados — quanto gastar é decisão, não consequência.
     // A rolagem fica guardada aqui esperando a escolha.
     var rolagemDeMagiaEsperando by remember { mutableStateOf<Pair<MagiaRollOption, Int>?>(null) }
+    // Lote MAGIA-E2: o que o operador COMPROMETEU. O que sai da ficha depende do
+    // que os dados fizerem (MB p.236), então a cobrança espera a rolagem.
+    var energiaComprometida by remember { mutableStateOf<Int?>(null) }
+    var magiaDaEnergiaComprometida by remember { mutableStateOf<MagiaRollOption?>(null) }
     var energiaManualInput by remember { mutableStateOf("") }
     var talismaMagiaVinculada by remember { mutableStateOf<String?>(null) }
     val repertorioParaTalisma = p.equipamentos
@@ -530,10 +535,41 @@ fun TabRolagem(viewModel: FichaViewModel) {
         } else "sucesso"
         val margin = if (alvoEfetivo != null) alvoEfetivo - soma else null
 
+        // 🔴 Lote MAGIA-E2: a energia sai da ficha AGORA, e o quanto depende do
+        // que os dados fizeram (MB p.236). Antes o app cobrava o custo cheio nos
+        // quatro casos — quem tirava sucesso decisivo pagava o que devia ser de
+        // graça, e quem falhava pagava cinco onde o livro cobra um.
+        val notaDeEnergia = if (pending.tipo == TipoTeste.MAGIA && energiaComprometida != null) {
+            val comprometido = energiaComprometida!!
+            val comoFoi = when {
+                critico == CriticoRules.ResultadoCritico.DECISIVO ->
+                    MagiaEnergiaRules.Resultado.SUCESSO_DECISIVO
+                critico == CriticoRules.ResultadoCritico.FALHA_CRITICA ->
+                    MagiaEnergiaRules.Resultado.FALHA_CRITICA
+                alvoEfetivo != null && soma <= alvoEfetivo -> MagiaEnergiaRules.Resultado.SUCESSO
+                else -> MagiaEnergiaRules.Resultado.FRACASSO
+            }
+            val ehInformacao = MagiaEnergiaRules.ehMagiaDeInformacao(
+                magiaDaEnergiaComprometida?.classe
+            )
+            val gasto = MagiaEnergiaRules.energiaGasta(comprometido, comoFoi, ehInformacao)
+            if (gasto > 0) {
+                viewModel.atualizarPontosFadigaRolagemAtual(pfAtualRolagem - gasto)
+            }
+            energiaComprometida = null
+            magiaDaEnergiaComprometida = null
+            // A linha explica de onde saiu o número: sem ela, "comprometi 3 e
+            // gastei 1" parece o app tendo perdido a conta.
+            " · energia: $gasto PF de $comprometido comprometido(s)" +
+                if (gasto != comprometido) {
+                    " — ${MagiaEnergiaRules.explicarGasto(comprometido, comoFoi, ehInformacao)}"
+                } else ""
+        } else ""
+
         val textoHist = if (alvoEfetivo != null) {
-            "[$timestamp] $labelComMod (NH $alvoEfetivo): $soma $statusText"
+            "[$timestamp] $labelComMod (NH $alvoEfetivo): $soma $statusText$notaDeEnergia"
         } else {
-            "[$timestamp] $labelComMod: $soma $statusText"
+            "[$timestamp] $labelComMod: $soma $statusText$notaDeEnergia"
         }
         val payload = DiscordRollPayload(
             character = p.nome,
@@ -678,8 +714,12 @@ fun TabRolagem(viewModel: FichaViewModel) {
         )
     }
 
-    fun consumirEnergiaMagia(custo: Int) {
-        viewModel.atualizarPontosFadigaRolagemAtual(pfAtualRolagem - custo)
+    fun comprometerEnergiaMagia(custo: Int) {
+        // 🔴 NÃO desconta aqui. O livro cobra conforme o resultado: sucesso
+        // decisivo não gasta nada, fracasso perde 1 ponto, falha crítica gasta
+        // tudo (MB p.236). Quem desconta é a `finalizarRolagem`.
+        energiaComprometida = custo
+        magiaDaEnergiaComprometida = magiaPendenteEnergia
         showEnergiaManualDialog = false
         magiaPendenteEnergia = null
         energiaManualInput = ""
@@ -695,31 +735,34 @@ fun TabRolagem(viewModel: FichaViewModel) {
     }
 
     /**
-     * Decide se a mágica precisa perguntar antes de rolar, e prepara o diálogo.
-     * Devolve `true` quando a rolagem deve ESPERAR a escolha.
+     * Prepara o gasto de energia e diz se a rolagem deve **esperar**.
+     *
+     * ## 🔴 Agora TODA mágica com custo pergunta antes
+     *
+     * No MAGIA-E1 só a faixa e o desconhecido paravam para perguntar; o custo
+     * fixo rolava primeiro e confirmava depois. Isso deixou de funcionar quando a
+     * cobrança passou a acontecer **dentro** da rolagem (MAGIA-E2): o caminho do
+     * custo fixo comprometia energia depois de a conta já ter sido feita, e a
+     * mágica saía de graça.
+     *
+     * ⚠️ Foi um defeito que eu criei ao mover a cobrança e que o compilador não
+     * pegaria — os dois caminhos compilam. Unificar é o conserto: quem tem custo
+     * compromete antes, sem exceção.
+     *
+     * Custo efetivo zero (mágica sem custo, ou NH alto que zerou o desconto)
+     * rola direto, sem diálogo para nada.
      */
     fun pedirEnergiaAntesDeRolar(magia: MagiaRollOption, modMagia: Int): Boolean {
         val custo = MagiaEnergiaRules.parseCusto(magia.energia)
-        if (!custo.precisaEscolher) return false
         val reducao = MagiaEnergiaRules.reducaoPorNh(nhEfetivoDaMagia(magia))
+        val sugerido = (custo.minimo - reducao).coerceAtLeast(0)
+        if (!custo.precisaEscolher && sugerido == 0) return false
+
         magiaPendenteEnergia = magia
         rolagemDeMagiaEsperando = magia to modMagia
-        energiaManualInput = (custo.minimo - reducao).coerceAtLeast(0).toString()
+        energiaManualInput = sugerido.toString()
         showEnergiaManualDialog = true
         return true
-    }
-
-    /** Custo fixo: confirma depois da rolagem, como sempre foi. */
-    fun tratarCustoEnergiaAposRolagemMagia(magia: MagiaRollOption) {
-        val custo = MagiaEnergiaRules.parseCusto(magia.energia)
-        val fixo = custo.fixo ?: return
-        val reducao = MagiaEnergiaRules.reducaoPorNh(nhEfetivoDaMagia(magia))
-        val custoReduzido = (fixo - reducao).coerceAtLeast(0)
-        if (custoReduzido > 0) {
-            magiaPendenteEnergia = magia
-            energiaManualInput = custoReduzido.toString()
-            showEnergiaManualDialog = true
-        }
     }
 
     // Lote MARCOS-1: baixar o PV na ficha E o evento de dano. Toda mudanca passa
@@ -1160,7 +1203,6 @@ fun TabRolagem(viewModel: FichaViewModel) {
                 // primeiro; os dados só caem depois da escolha.
                 if (!pedirEnergiaAntesDeRolar(magia, modMagia)) {
                     rolarMagiaAgora(magia, modMagia)
-                    tratarCustoEnergiaAposRolagemMagia(magia)
                 }
             },
             onDismiss = { showMagiasDialog = false }
@@ -1230,7 +1272,7 @@ fun TabRolagem(viewModel: FichaViewModel) {
             isPraCegoVariant = isPraCegoVariant,
             onInputMudou = { raw -> energiaManualInput = raw.filter { it.isDigit() }.take(4) },
             onTalismaVinculadoMudou = { talismaMagiaVinculada = it },
-            onAplicar = { custoFinal -> consumirEnergiaMagia(custoFinal) },
+            onAplicar = { custoFinal -> comprometerEnergiaMagia(custoFinal) },
             onDismiss = {
                 showEnergiaManualDialog = false
                 magiaPendenteEnergia = null
@@ -1240,6 +1282,8 @@ fun TabRolagem(viewModel: FichaViewModel) {
                 // ficaria guardada e cairia na próxima vez que o jogador
                 // gastasse energia de outra mágica qualquer.
                 rolagemDeMagiaEsperando = null
+                energiaComprometida = null
+                magiaDaEnergiaComprometida = null
             }
         )
     }

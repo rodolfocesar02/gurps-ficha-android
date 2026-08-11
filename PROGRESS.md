@@ -6478,3 +6478,51 @@ mágicas reais**, exigindo que nenhuma passe como custo zero sem estar declarada
 como desconhecida, e que nenhuma faixa saia invertida.
 
 - **Status:** ✅ Build OK nas 2 variantes · lint OK · gate **1999** · ⏭️ **PENDENTE: teste no aparelho** (T-EN).
+
+---
+
+## 7.6-MAGE2 — O gasto conforme o resultado dos dados (Lote MAGIA-E2)
+
+Fecha o quarto defeito que o MAGIA-E1 tinha deixado documentado e por ligar. O
+livro é explícito (MB p.236) e o app cobrava o **custo cheio nos quatro casos**:
+
+| o que os dados fizeram | o livro cobra | o app cobrava |
+|---|---|---|
+| **Sucesso decisivo** | **nada** | tudo |
+| Sucesso | o custo | tudo |
+| **Fracasso** | **1 ponto** | tudo |
+| Falha crítica | tudo | tudo |
+
+Mais a exceção da p.241: **mágica de informação paga tudo mesmo fracassando**.
+São **59** no catálogo, e a classe delas vem escrita no JSON — não precisou de
+lista à mão.
+
+#### A energia virou "comprometida", não "gasta"
+
+O jogador **compromete** um valor antes de rolar; o que sai da ficha é decidido
+depois, dentro da `finalizarRolagem`, que é onde o resultado dos dados existe. A
+linha do log conta a diferença — *"energia: 1 PF de 3 comprometido(s) — Fracasso:
+perde 1 ponto de energia, não o custo cheio"* — porque sem ela "comprometi 3 e
+gastei 1" parece o app ter perdido a conta.
+
+#### 🔴 Um defeito que eu criei no meio do caminho
+
+Ao mover a cobrança para dentro da rolagem, **o custo fixo parou de ser cobrado**.
+Ele seguia o caminho antigo — rolar primeiro, confirmar depois — e agora
+comprometia energia num momento em que a conta já tinha sido feita. A mágica saía
+de graça.
+
+⚠️ **Os dois caminhos compilavam.** Nenhum teste pegaria, porque a regra pura
+continuava certa; o que estava errado era a ordem de duas chamadas em arquivos
+diferentes. O conserto foi **unificar**: toda mágica com custo compromete antes de
+rolar, sem exceção. Custo efetivo zero rola direto, sem diálogo para nada.
+
+É o mesmo formato do que apareceu no PV-1b: quando existem dois caminhos para a
+mesma coisa, o defeito mora na diferença entre eles, e ele não parece defeito.
+
+**Testes:** `MagiaEnergiaRulesTest` cresceu para 20 casos — os quatro resultados,
+a exceção da mágica de informação, e uma varredura exigindo que o catálogo ainda
+tenha mágicas com classe `Informação` (se o campo mudar de nome, a exceção sumiria
+em silêncio e 59 mágicas passariam a pagar 1 onde deviam pagar tudo).
+
+- **Status:** ✅ Build OK nas 2 variantes · lint OK · gate **2001** · ⏭️ **PENDENTE: teste no aparelho** (T-EN + T-E2).

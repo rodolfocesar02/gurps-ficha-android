@@ -131,6 +131,17 @@ object MagiaEnergiaRules {
     enum class Resultado { SUCESSO_DECISIVO, SUCESSO, FRACASSO, FALHA_CRITICA }
 
     /**
+     * A exceção do fracasso (MB p.241): **mágica de informação paga tudo mesmo
+     * fracassando**. São 59 no catálogo, e a classe delas vem escrita — não
+     * precisa de lista à mão.
+     *
+     * ⚠️ Casa por prefixo porque o campo traz variantes como
+     * `"Informação/R-Vont"`.
+     */
+    fun ehMagiaDeInformacao(classe: String?): Boolean =
+        classe?.trim()?.startsWith("Informa", ignoreCase = true) == true
+
+    /**
      * Quanta energia sai da ficha, dado o que os dados fizeram (MB p.236).
      *
      * > Em todo caso, **não há gasto de energia** quando o personagem obtém um
