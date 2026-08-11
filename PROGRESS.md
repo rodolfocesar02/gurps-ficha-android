@@ -6801,3 +6801,62 @@ diz isso em ambos: eles ficam lado a lado, então qualquer diferença de altura 
 de alinhamento entre os dois salta aos olhos.
 
 - **Status:** ✅ Compila nas 2 variantes · ⏭️ conferir na tela.
+
+---
+
+## 8.4-ROL5a7 — A aba Rolagem conforme a mockup (ROL-5, ROL-6 e ROL-7)
+
+Os três lotes do `docs/planos/PLANO_LAYOUT_ROLAGEM.md`, em sequência.
+
+### ROL-5 · As colunas de ataque
+
+Os botões **Ataque** e **Dano** viraram o topo dos próprios cartões, e as
+caixinhas de **mão inábil** / **sem um dedo** entraram na coluna da esquerda.
+
+#### 🔴 A escolha de execução: eu NÃO movi os botões para dentro das colunas
+
+O plano dizia que o risco estava aqui, e ele se confirmou ao olhar o código. A
+`Column` que envolve os cartões carrega um `pointerInput` com
+`detectVerticalDragGestures` — é ele que muda o `mod` do ataque quando o jogador
+arrasta o dedo. Com um `Button` lá dentro, o botão **consome o toque** e o
+arraste pode nem começar: sumiria um gesto, e a tela continuaria bonita.
+
+A saída foi **tirar o respiro** entre a fileira dos botões e a dos cartões. As
+duas já usam o mesmo `rowSpacing` e `weight(1f)`, então cada botão fica
+exatamente sobre o seu cartão e os dois leem como um bloco só. **O resultado
+visual é o mesmo; o risco, não.**
+
+⚠️ Saiu o `fillMaxHeight` das colunas — decisão do usuário: simetria **só em
+cima** (os botões, do mesmo tamanho e alinhados), livres embaixo, porque a
+esquerda ganha a caixinha e fica mais alta.
+
+### ROL-6 · O respiro do cartão de atributos
+
+O usuário mediu na mockup: o PV/PF quase encosta na borda de baixo e o cartão
+fica mais raso. Eu tinha listado esse cartão como "idêntico" — **estava errado**,
+comparei o conteúdo e não o respiro.
+
+⚠️ O cartão passou a ter respiro **próprio** (metade do global) em vez de eu
+mexer no `outerCardVerticalPadding`, que é compartilhado com defesas, luz e
+ataque. Mudar o valor global encolheria a tela inteira — bem mais do que foi
+pedido.
+
+### ROL-7 · O cabeçalho do canal
+
+`EDITAR CANAL` em duas linhas virou **`CANAL` + o nome ao lado**, numa linha só,
+com o botão caindo de 50 para 42 dp.
+
+#### ⚠️ A fonte que se adapta é feita à mão, e tem piso
+
+O usuário pediu que o texto se adapte ao botão. O `autoSize` nativo do
+`BasicText` **não existe** nesta versão do Compose (BOM 2024.09.02; chegou
+depois), então é a versão à mão: desenha, mede, e se transbordou baixa 1 sp.
+
+🔴 **Com piso de 11 sp.** Sem mínimo, um canal de nome muito comprido reduziria a
+fonte até virar ilegível — que é pior do que cortar com reticências.
+
+⚠️ **"EDITAR" saiu do texto, não da fala.** Era a palavra que dizia que o botão
+*faz* alguma coisa. Para quem usa leitor de tela, `CANAL Ilmenitia` sem ela é um
+rótulo, não um botão — a `contentDescription` continua dizendo que ele edita.
+
+- **Status:** ✅ Build OK nas 2 variantes · lint OK · gate **2009** · ⏭️ **PENDENTE: teste no aparelho** (T-RL).

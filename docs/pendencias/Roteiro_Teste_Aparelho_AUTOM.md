@@ -1645,3 +1645,30 @@ muda — é esse o problema desses defeitos.
   ✅ o **Aplicar** fica apagado. *(Antes a pracego assumia o torso calada.)*
 - **T-PC6 · o que foi escolhido é dito** — Volte para a lista de grupos: ✅
   aparece *"Escolhido: braço esquerdo"*.
+
+---
+
+# Lotes ROL-5, ROL-6 e ROL-7 — a aba Rolagem conforme a mockup
+
+> Gate: 2.009 testes, 0 falhas nas duas variantes.
+
+- **T-RL1 · 🔴 o arraste do modificador do ataque continua vivo** — Arraste o
+  dedo para cima e para baixo **em cima do cartão do NH**: ✅ o `mod` muda. *(É o
+  gesto que eu tinha medo de perder; por isso os botões não entraram dentro das
+  colunas.)*
+- **T-RL2 · botão colado no cartão** — ✅ **Ataque** encosta no cartão do NH e
+  **Dano** no cartão do Dano ST, sem respiro, formando dois blocos.
+- **T-RL3 · simetria só em cima** — ✅ Os dois botões têm a mesma altura e estão
+  alinhados; os cartões abaixo podem ter alturas diferentes.
+- **T-RL4 · a mão inábil na coluna esquerda** — ✅ A caixinha fica **abaixo do
+  cartão do NH**, na coluna da esquerda, e o cartão do Dano desce mais que ela.
+- **T-RL5 · o cartão de atributos encolheu** — ✅ O PV/PF fica mais perto da borda
+  de baixo e o cartão inteiro é mais raso. Os outros cartões da tela **não**
+  mudaram de tamanho.
+- **T-RL6 · o cabeçalho do canal** — ✅ Uma linha só: **CANAL** e o nome ao lado,
+  botão mais baixo.
+- **T-RL7 · ⚠️ a fonte se adapta** — Troque para um canal de **nome bem
+  comprido**: ✅ a fonte diminui para caber. Se ficar muito longo, ✅ o nome corta
+  com reticências em vez de virar ilegível (o piso é 11 sp).
+- **T-RL8 · a fala do botão** — Com TalkBack: ✅ ele diz *"editar canal de voz"*,
+  mesmo com a palavra "editar" fora da tela.

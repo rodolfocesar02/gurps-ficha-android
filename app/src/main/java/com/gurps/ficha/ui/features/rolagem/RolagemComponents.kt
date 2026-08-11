@@ -26,6 +26,31 @@ import com.gurps.ficha.ui.SectionCard
 import com.gurps.ficha.ui.linhaAlternavel
 import kotlin.math.abs
 
+/**
+ * O cabeçalho do canal de voz — Lote ROL-7 (mockup do usuário, 11/08).
+ *
+ * Uma linha só: **CANAL** em negrito e o nome do canal ao lado.
+ *
+ * ## ⚠️ A fonte se adapta ao espaço, e ela é feita à mão
+ *
+ * Decisão do usuário: *"o texto se adapta ao tamanho do botão — se for
+ * aumentando diminui a fonte e vice-versa"*.
+ *
+ * O `autoSize` nativo do `BasicText` **não existe** no Compose deste projeto
+ * (BOM 2024.09.02; ele chegou depois). Então a adaptação é a versão à mão:
+ * desenha, mede, e se transbordou baixa 1 sp — repetindo até caber.
+ *
+ * 🔴 **Com piso.** Sem um mínimo, um canal de nome muito comprido reduziria a
+ * fonte até virar ilegível, o que é pior que cortar com reticências. Aqui o piso
+ * é 11 sp; abaixo disso o nome corta.
+ *
+ * ## ⚠️ "EDITAR" saiu do texto, não da fala
+ *
+ * A palavra que dizia que o botão **faz** alguma coisa sumiu da tela a pedido do
+ * usuário. Para quem usa leitor de tela ela não podia sumir junto: sem ela,
+ * "CANAL Ilmenitia" é um rótulo, não um botão. A `contentDescription` continua
+ * dizendo que ele edita.
+ */
 @Composable
 fun RolagemHeader(
     canalSelecionadoNome: String?,
@@ -34,32 +59,50 @@ fun RolagemHeader(
     compactLabelStyle: androidx.compose.ui.text.TextStyle,
     onEditCanal: () -> Unit
 ) {
+    val nome = canalSelecionadoNome ?: "Selecionar canal de voz"
+    val tamanhoInicial = if (isVerySmallScreen) 15.sp else 17.sp
+    var tamanho by remember(nome, isVerySmallScreen) { mutableStateOf(tamanhoInicial) }
+    val PISO = 11.sp
+
     Button(
         onClick = onEditCanal,
         modifier = Modifier
             .fillMaxWidth()
-            .height(50.dp),
-        contentPadding = PaddingValues(horizontal = 8.dp, vertical = 2.dp),
+            .height(42.dp)
+            .semantics {
+                contentDescription = "Editar canal de voz. Canal atual: $nome."
+            },
+        contentPadding = PaddingValues(horizontal = 10.dp, vertical = 2.dp),
         colors = ButtonDefaults.buttonColors(
             containerColor = if (backendOnline) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.error
         )
     ) {
-        Column(
+        Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = "EDITAR CANAL",
-                fontSize = if (isVerySmallScreen) 16.sp else 18.sp,
+                text = "CANAL",
+                fontSize = tamanho,
                 fontWeight = FontWeight.Bold,
-                textAlign = TextAlign.Center
-            )
-            Text(
-                text = canalSelecionadoNome ?: "Selecionar canal de voz",
-                style = compactLabelStyle,
-                textAlign = TextAlign.Center,
                 maxLines = 1,
-                overflow = TextOverflow.Ellipsis
+                softWrap = false
+            )
+            Spacer(modifier = Modifier.width(6.dp))
+            Text(
+                text = nome,
+                fontSize = tamanho * 0.8f,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                textAlign = TextAlign.Start,
+                // Mede depois de desenhar: transbordou, encolhe 1 sp e a
+                // recomposição tenta de novo. Para no piso.
+                onTextLayout = { r ->
+                    if (r.hasVisualOverflow && tamanho > PISO) {
+                        tamanho = (tamanho.value - 1f).sp
+                    }
+                }
             )
         }
     }
@@ -476,7 +519,16 @@ fun AtaqueDanoQuickArea(
             }
         }
 
-        Spacer(modifier = Modifier.height(3.dp))
+        // Sem respiro entre os botoes e os cartoes: as duas fileiras usam o
+        // mesmo `rowSpacing` e `weight(1f)`, entao cada botao fica exatamente
+        // sobre o seu cartao e os dois leem como um bloco so (mockup 11/08).
+        //
+        // ⚠️ Os botoes NAO foram movidos para DENTRO das colunas, de
+        // proposito. A Column dos cartoes carrega um `pointerInput` com
+        // `detectVerticalDragGestures` -- e ele que muda o `mod` do ataque
+        // arrastando o dedo. Com o Button la dentro, ele consome o toque e o
+        // arraste pode nem comecar: sumiria um gesto, e a tela continuaria
+        // bonita. O resultado visual e o mesmo; o risco, nao.
 
         val modAtaqueAtual = if (isPraCegoVariant) 0 else modificadorAtaque
         Column(
@@ -516,15 +568,15 @@ fun AtaqueDanoQuickArea(
                 verticalAlignment = Alignment.Top
             ) {
                 Column(
-                    modifier = Modifier
-                        .weight(1f)
-                        .fillMaxHeight(),
+                    // Sem `fillMaxHeight`: decisao do usuario (11/08) -- as duas
+                    // colunas sao simetricas EM CIMA (os botoes, do mesmo tamanho
+                    // e alinhados) e livres embaixo, porque a da esquerda ganha a
+                    // caixinha da mao inabil e fica mais alta que a da direita.
+                    modifier = Modifier.weight(1f),
                     verticalArrangement = Arrangement.spacedBy(2.dp)
                 ) {
                     Card(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .fillMaxHeight(),
+                        modifier = Modifier.fillMaxWidth(),
                         colors = appCardColors()
                     ) {
                         Column(
@@ -589,6 +641,60 @@ fun AtaqueDanoQuickArea(
                             }
                         }
                     }
+                    // ⚠️ As caixinhas da mao vivem NESTA coluna (mockup 11/08).
+                    // Elas explicam o NH logo acima, e sao o motivo de as duas
+                    // colunas terem alturas diferentes: a simetria e so em cima.
+                    // ⚠️ Estas caixinhas ficam DEPOIS dos cartões, a pedido do usuário
+                    // (mockup de 11/08). A posição faz sentido: elas explicam o NH que
+                    // está logo acima, e antes ficavam entre os botões e o número —
+                    // separando a pergunta ("com que mão?") do valor que ela muda.
+                    // Seletor de mao: a penalidade e da SITUACAO, e a Ambidestria a zera.
+                    // Por isso o quadrado continua funcionando mesmo com a vantagem -- so o
+                    // numero some.
+                    if (rotuloDaMao.isNotBlank()) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .linhaAlternavel(
+                                    marcado = usandoMaoInabil,
+                                    descricao = descricaoDaMao,
+                                    onAlternar = onAlternarMao
+                                ),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Checkbox(checked = usandoMaoInabil, onCheckedChange = null)
+                            Text(
+                                rotuloDaMao,
+                                style = MaterialTheme.typography.labelSmall,
+                                color = MaterialTheme.colorScheme.outline,
+                                modifier = Modifier.padding(start = 2.dp)
+                            )
+                        }
+                    }
+
+                    // Lote D-MIRA: Sem Um Dedo vale para UMA mão, e a ficha não guarda qual.
+                    // Segunda caixinha em vez de chute — quem responde é o jogador.
+                    if (rotuloDoDedo.isNotBlank()) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .linhaAlternavel(
+                                    marcado = ehAMaoSemDedo,
+                                    descricao = descricaoDoDedo,
+                                    onAlternar = onAlternarMaoSemDedo
+                                ),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Checkbox(checked = ehAMaoSemDedo, onCheckedChange = null)
+                            Text(
+                                rotuloDoDedo,
+                                style = MaterialTheme.typography.labelSmall,
+                                color = MaterialTheme.colorScheme.error,
+                                modifier = Modifier.padding(start = 2.dp)
+                            )
+                        }
+                    }
+
                 }
 
                 Column(
@@ -681,57 +787,6 @@ fun AtaqueDanoQuickArea(
                 }
             }
         }
-        // ⚠️ Estas caixinhas ficam DEPOIS dos cartões, a pedido do usuário
-        // (mockup de 11/08). A posição faz sentido: elas explicam o NH que
-        // está logo acima, e antes ficavam entre os botões e o número —
-        // separando a pergunta ("com que mão?") do valor que ela muda.
-        // Seletor de mao: a penalidade e da SITUACAO, e a Ambidestria a zera.
-        // Por isso o quadrado continua funcionando mesmo com a vantagem -- so o
-        // numero some.
-        if (rotuloDaMao.isNotBlank()) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .linhaAlternavel(
-                        marcado = usandoMaoInabil,
-                        descricao = descricaoDaMao,
-                        onAlternar = onAlternarMao
-                    ),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Checkbox(checked = usandoMaoInabil, onCheckedChange = null)
-                Text(
-                    rotuloDaMao,
-                    style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.outline,
-                    modifier = Modifier.padding(start = 2.dp)
-                )
-            }
-        }
-
-        // Lote D-MIRA: Sem Um Dedo vale para UMA mão, e a ficha não guarda qual.
-        // Segunda caixinha em vez de chute — quem responde é o jogador.
-        if (rotuloDoDedo.isNotBlank()) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .linhaAlternavel(
-                        marcado = ehAMaoSemDedo,
-                        descricao = descricaoDoDedo,
-                        onAlternar = onAlternarMaoSemDedo
-                    ),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Checkbox(checked = ehAMaoSemDedo, onCheckedChange = null)
-                Text(
-                    rotuloDoDedo,
-                    style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.error,
-                    modifier = Modifier.padding(start = 2.dp)
-                )
-            }
-        }
-
     }
 }
 

@@ -80,8 +80,18 @@ fun PainelAtributosEStatus(
         colors = appCardColors()
     ) {
         Column(
-            modifier = Modifier.padding(horizontal = 10.dp, vertical = outerCardVerticalPadding),
-            verticalArrangement = Arrangement.spacedBy(6.dp)
+            // ⚠️ Lote ROL-6: este cartão tem respiro PRÓPRIO, menor que o dos
+            // outros da tela. O usuário mediu na mockup: o PV/PF quase encosta
+            // na borda de baixo, e o cartão inteiro fica mais raso.
+            //
+            // Os valores globais (`outerCardVerticalPadding`, 12 dp) são
+            // compartilhados com defesas, luz e ataque — mexer neles encolheria
+            // a tela inteira, que é bem mais do que foi pedido.
+            modifier = Modifier.padding(
+                horizontal = 10.dp,
+                vertical = (outerCardVerticalPadding.value * 0.5f).dp
+            ),
+            verticalArrangement = Arrangement.spacedBy(2.dp)
         ) {
             if (!isPraCegoVariant) {
                 Text(
@@ -99,7 +109,9 @@ fun PainelAtributosEStatus(
                 cardTitleStyle = cardTitleStyle,
                 statsNumberStyle = statsNumberStyle,
                 compactLabelStyle = compactLabelStyle,
-                innerCardVerticalPadding = innerCardVerticalPadding,
+                // Metade do respiro de dentro: é ele que separa a linha dos
+                // atributos da linha do PV/PF.
+                innerCardVerticalPadding = (innerCardVerticalPadding.value * 0.5f).dp,
                 bonusStBracal = if (stBracalAtivo) StBracalRules.bonusDe(personagem) else 0,
                 bonusDxBracal = if (dxBracalAtivo) DxBracalRules.bonusDe(personagem) else 0,
                 bonusStLevantamento = if (stLevantamentoAtivo) {
