@@ -6860,3 +6860,46 @@ fonte até virar ilegível — que é pior do que cortar com reticências.
 rótulo, não um botão — a `contentDescription` continua dizendo que ele edita.
 
 - **Status:** ✅ Build OK nas 2 variantes · lint OK · gate **2009** · ⏭️ **PENDENTE: teste no aparelho** (T-RL).
+
+---
+
+## 8.5-EQP1 — Os cartões de item da aba Equipamentos
+
+Pedido do usuário: **padronizados e simétricos** — nome um ponto maior e em
+negrito, o resto sem negrito, e **no máximo 4 linhas por cartão**; o que passar
+vira reticências, e quem quiser ler tudo abre o lápis.
+
+#### O achado: eram só DOIS composables, não quatro
+
+Equipamentos manuais, escudos e armaduras já dividiam o mesmo `EquipamentoItem`;
+só as armas tinham o seu (`EquipamentoArmaItem`). Padronizar foi menor do que
+parecia — e como os dois agora chamam o mesmo corpo, eles não têm mais como
+divergir.
+
+#### 🔴 O corte precisa ser do CONJUNTO, não de cada linha
+
+`maxLines` em cada `Text` **não limita o cartão**: cinco `Text` de uma linha dão
+cinco linhas. Foi por isso que a *Máscara "olhos da noite"* sozinha ocupava mais
+tela que os quatro itens acima dela juntos.
+
+`CorpoDoItemPadrao` trabalha com **orçamento**: cada entrada ganha uma linha, e a
+**última visível** fica com o que sobrar das quatro.
+
+⚠️ E se houver mais entradas que linhas, o excedente é **juntado** na última em
+vez de sumir. Um item nunca perde a nota inteira em silêncio — ele a mostra
+cortada, que é o que foi pedido. Descartar seria mais fácil de escrever e faria o
+jogador achar que a nota não existe.
+
+#### ⚠️ "Um ponto maior" é um ponto, não quatro
+
+O nome era `bodyLarge` (16 sp) contra `bodySmall` (12) do corpo — **quatro**
+pontos de diferença, e o cartão lia como título com legenda. Agora é o corpo
+mais 1 sp: o nome se destaca pelo **negrito**, não pelo tamanho.
+
+#### E os textos que saíram
+
+A pedido, sumiram os contadores *"Itens equipados: N"* / *"Itens selecionados:
+N"* das três seções e a nota *"Seleção por NT e Local (regra do livro)."* — a
+lista logo abaixo já responde as duas coisas.
+
+- **Status:** ✅ Build OK nas 2 variantes · lint OK · gate **2009** · ⏭️ **PENDENTE: teste no aparelho** (T-EQ).

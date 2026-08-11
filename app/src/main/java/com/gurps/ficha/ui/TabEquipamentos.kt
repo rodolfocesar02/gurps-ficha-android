@@ -37,6 +37,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.sp
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
@@ -126,11 +129,6 @@ fun TabEquipamentos(viewModel: FichaViewModel) {
 
         if (armasEquipadas.isNotEmpty()) {
             Text("Armas", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-            Text(
-                "Itens equipados: ${armasEquipadas.size}",
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
             armasEquipadas.forEach { entry ->
                 AppListItemCard {
                     EquipamentoArmaItem(
@@ -148,11 +146,6 @@ fun TabEquipamentos(viewModel: FichaViewModel) {
 
         if (escudosEquipados.isNotEmpty()) {
             Text("Escudos", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-            Text(
-                "Itens equipados: ${escudosEquipados.size}",
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
             escudosEquipados.forEach { entry ->
                 AppListItemCard {
                     EquipamentoItem(
@@ -169,16 +162,6 @@ fun TabEquipamentos(viewModel: FichaViewModel) {
 
         if (armadurasEquipadas.isNotEmpty()) {
             Text("Armaduras", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-            Text(
-                "Itens selecionados: ${armadurasEquipadas.size}",
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-            Text(
-                "Selecao por NT e Local (regra do livro).",
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
             armadurasEquipadas.forEach { entry ->
                 AppListItemCard {
                     ArmaduraSelecionadaItem(
@@ -368,6 +351,90 @@ private fun ResumoEquipamentosFooter(viewModel: FichaViewModel) {
     }
 }
 
+
+// ======================================================================
+// O cartao padrao de um item -- Lote EQP-1
+// ======================================================================
+
+/**
+ * Quantas linhas um cartao de item pode ocupar, **contando o nome**.
+ *
+ * Decisao do usuario (11/08): quatro. O que nao couber vira reticencias, e quem
+ * quiser ler tudo abre o lapis.
+ *
+ * 🔴 O motivo e concreto: a *Mascara "olhos da noite"* tem uma nota de dez
+ * linhas e sozinha ocupava mais tela que os quatro itens acima dela juntos. Uma
+ * lista em que um item empurra os outros para fora nao e uma lista -- e um
+ * texto com titulos.
+ */
+private const val LINHAS_DO_CARTAO = 4
+
+/** Uma linha do corpo do cartao: o texto e a cor que ele usa. */
+data class LinhaDoItem(val texto: String, val cor: Color)
+
+/**
+ * O corpo de um cartao de item, com **orcamento de linhas**.
+ *
+ * ## ⚠️ Por que orcamento, e nao `maxLines` em cada Text
+ *
+ * `maxLines` por linha nao limita o cartao: cinco `Text` de uma linha dao cinco
+ * linhas. O corte tem que ser do conjunto.
+ *
+ * A regra aqui: cada entrada ganha **uma** linha, e a **ultima visivel** fica
+ * com o que sobrar do orcamento. Se houver mais entradas que linhas, o excedente
+ * e **juntado** na ultima em vez de sumir — um item nunca perde a nota inteira
+ * em silencio; ele a mostra cortada, que e o que o usuario pediu.
+ */
+@Composable
+fun CorpoDoItemPadrao(linhas: List<LinhaDoItem>) {
+    val disponiveis = LINHAS_DO_CARTAO - 1  // o nome sempre gasta uma
+    val uteis = linhas.filter { it.texto.isNotBlank() }
+    if (uteis.isEmpty()) return
+
+    val visiveis = if (uteis.size <= disponiveis) {
+        uteis
+    } else {
+        // Junta o excedente na ultima, para nada desaparecer calado.
+        val cabeca = uteis.take(disponiveis - 1)
+        val cauda = uteis.drop(disponiveis - 1)
+        cabeca + LinhaDoItem(cauda.joinToString(" · ") { it.texto }, cauda.first().cor)
+    }
+
+    visiveis.forEachIndexed { i, linha ->
+        val ultima = i == visiveis.lastIndex
+        Text(
+            linha.texto,
+            style = MaterialTheme.typography.bodySmall,
+            color = linha.cor,
+            maxLines = if (ultima) disponiveis - i else 1,
+            overflow = TextOverflow.Ellipsis
+        )
+    }
+}
+
+/**
+ * O nome do item: **um ponto maior** que o corpo, e o unico em negrito.
+ *
+ * ⚠️ Um ponto, nao quatro. Antes o nome era `bodyLarge` (16 sp) contra
+ * `bodySmall` (12) do corpo — quatro pontos de diferenca, e o cartao lia como
+ * titulo com legenda. O pedido do usuario foi de **hierarquia discreta**: o nome
+ * se destaca pelo negrito, nao pelo tamanho.
+ */
+@Composable
+fun NomeDoItemPadrao(nome: String) {
+    Text(
+        nome,
+        style = MaterialTheme.typography.bodySmall,
+        // "Um ponto maior", literalmente: o corpo do cartão é `bodySmall`, e o
+        // nome é ele mais 1 sp. `TextUnit` não soma com `+`, então a conta é
+        // feita no valor.
+        fontSize = (MaterialTheme.typography.bodySmall.fontSize.value + 1f).sp,
+        fontWeight = FontWeight.Bold,
+        maxLines = 1,
+        overflow = TextOverflow.Ellipsis
+    )
+}
+
 @Composable
 fun EquipamentoArmaItem(
     equipamento: Equipamento,
@@ -390,59 +457,50 @@ fun EquipamentoArmaItem(
                     contentDescription = "${equipamento.nome}. Toque para ver a ficha técnica completa."
                 }
         ) {
-            Text(equipamento.nome, style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Medium)
-            // Saga: arma tirada pela narrativa (Narrador). Continua na ficha, mas não aparece no combate.
-            if (equipamento.confiscado) Text(
-                "⛓️ confiscado na história — fora do combate",
-                style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.error
-            )
-            val danoRaw = equipamento.armaDanoRaw
-            if (!danoRaw.isNullOrBlank()) {
-                val danoCalc = viewModel.calcularDanoArmaComSt(danoRaw)
-                Text(
-                    "Dano: $danoCalc",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.tertiary
-                )
-            } else {
-                Text(
-                    "Dano: -",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            }
-            if (equipamento.notas.isNotBlank()) {
-                val notasLimpas = if (equipamento.armaCatalogoId != null) {
-                    limparRuidoGrupoArma(equipamento.notas)
-                } else {
-                    equipamento.notas
-                }
-                if (notasLimpas.isNotBlank()) {
-                Text(
-                    notasLimpas,
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-                }
-            }
+            NomeDoItemPadrao(equipamento.nome)
             val observacoesCatalogo = viewModel.observacoesArmaPorEquipamento(equipamento).trim()
-            val observacoesFaltantes = if (observacoesCatalogo.isBlank()) {
-                emptyList()
-            } else {
-                observacoesCatalogo
-                    .lineSequence()
-                    .map { it.trim() }
+            val observacoesFaltantes = if (observacoesCatalogo.isBlank()) emptyList() else {
+                observacoesCatalogo.lineSequence().map { it.trim() }
                     .filter { it.isNotBlank() }
                     .filterNot { linha -> equipamento.notas.contains(linha) }
                     .toList()
             }
-            if (observacoesFaltantes.isNotEmpty()) {
-                Text(
-                    observacoesFaltantes.joinToString("\n"),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.tertiary
-                )
-            }
+            CorpoDoItemPadrao(
+                buildList {
+                    // Saga: arma tirada pela narrativa. Continua na ficha, mas
+                    // fora do combate — e a primeira coisa que precisa ser vista.
+                    if (equipamento.confiscado) {
+                        add(LinhaDoItem(
+                            "⛓️ confiscado na história — fora do combate",
+                            MaterialTheme.colorScheme.error
+                        ))
+                    }
+                    val danoRaw = equipamento.armaDanoRaw
+                    add(LinhaDoItem(
+                        if (danoRaw.isNullOrBlank()) "Dano: -"
+                        else "Dano: ${viewModel.calcularDanoArmaComSt(danoRaw)}",
+                        if (danoRaw.isNullOrBlank()) MaterialTheme.colorScheme.onSurfaceVariant
+                        else MaterialTheme.colorScheme.tertiary
+                    ))
+                    val notasLimpas = if (equipamento.armaCatalogoId != null) {
+                        limparRuidoGrupoArma(equipamento.notas)
+                    } else {
+                        equipamento.notas
+                    }
+                    if (notasLimpas.isNotBlank()) {
+                        add(LinhaDoItem(
+                            notasLimpas.replace("\n", " · "),
+                            MaterialTheme.colorScheme.onSurfaceVariant
+                        ))
+                    }
+                    if (observacoesFaltantes.isNotEmpty()) {
+                        add(LinhaDoItem(
+                            observacoesFaltantes.joinToString(" · "),
+                            MaterialTheme.colorScheme.tertiary
+                        ))
+                    }
+                }
+            )
         }
         IconButton(onClick = onEdit) { Icon(Icons.Default.Edit, contentDescription = "Editar arma ${equipamento.nome}") }
         IconButton(onClick = onDelete) { Icon(Icons.Default.Delete, contentDescription = "Remover arma ${equipamento.nome}") }
@@ -457,35 +515,34 @@ fun EquipamentoItem(equipamento: Equipamento, onEdit: () -> Unit, onDelete: () -
         verticalAlignment = Alignment.CenterVertically
     ) {
         Column(modifier = Modifier.weight(1f)) {
-            Text(equipamento.nome, style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.Medium)
-            Text(
-                "${equipamento.quantidade}x | ${equipamento.peso}kg cada | Total: ${equipamento.peso * equipamento.quantidade}kg",
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+            NomeDoItemPadrao(equipamento.nome)
+            CorpoDoItemPadrao(
+                buildList {
+                    add(LinhaDoItem(
+                        "${equipamento.quantidade}x | ${equipamento.peso}kg cada | " +
+                            "Total: ${equipamento.peso * equipamento.quantidade}kg",
+                        MaterialTheme.colorScheme.onSurfaceVariant
+                    ))
+                    equipamento.armaDanoRaw?.takeIf { it.isNotBlank() }?.let { raw ->
+                        add(LinhaDoItem(
+                            "Dano: $raw -> ${viewModel.calcularDanoArmaComSt(raw)}",
+                            MaterialTheme.colorScheme.tertiary
+                        ))
+                    }
+                    if (equipamento.custo > 0) {
+                        add(LinhaDoItem(
+                            "Custo: $${equipamento.custo * equipamento.quantidade}",
+                            MaterialTheme.colorScheme.primary
+                        ))
+                    }
+                    if (equipamento.notas.isNotBlank()) {
+                        add(LinhaDoItem(
+                            equipamento.notas.replace("\n", " · "),
+                            MaterialTheme.colorScheme.onSurfaceVariant
+                        ))
+                    }
+                }
             )
-            if (equipamento.custo > 0) {
-                Text(
-                    "Custo: $${equipamento.custo * equipamento.quantidade}",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.primary
-                )
-            }
-            if (equipamento.notas.isNotBlank()) {
-                Text(
-                    equipamento.notas,
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            }
-            val danoRaw = equipamento.armaDanoRaw
-            if (!danoRaw.isNullOrBlank()) {
-                val danoCalc = viewModel.calcularDanoArmaComSt(danoRaw)
-                Text(
-                    "Dano: $danoRaw -> $danoCalc",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.tertiary
-                )
-            }
         }
         IconButton(onClick = onEdit) { Icon(Icons.Default.Edit, contentDescription = "Editar equipamento ${equipamento.nome}") }
         IconButton(onClick = onDelete) { Icon(Icons.Default.Delete, contentDescription = "Remover equipamento ${equipamento.nome}") }

@@ -1672,3 +1672,24 @@ muda — é esse o problema desses defeitos.
   com reticências em vez de virar ilegível (o piso é 11 sp).
 - **T-RL8 · a fala do botão** — Com TalkBack: ✅ ele diz *"editar canal de voz"*,
   mesmo com a palavra "editar" fora da tela.
+
+---
+
+# Lote EQP-1 — os cartões de item da aba Equipamentos
+
+> Gate: 2.009 testes, 0 falhas nas duas variantes.
+
+- **T-EQ1 · 🔴 nenhum cartão passa de 4 linhas** — Olhe a *Máscara "olhos da
+  noite"*, que tem a nota mais longa: ✅ o cartão tem **4 linhas** e a nota
+  termina em reticências.
+- **T-EQ2 · a nota não sumiu, foi cortada** — ✅ dá para ver o começo do texto da
+  máscara. Toque no **lápis**: ✅ o texto inteiro está lá.
+- **T-EQ3 · o nome é 1 ponto maior e negrito** — ✅ Em todos os cartões (manuais,
+  armas, escudos, armaduras) o nome é **negrito** e só um pouco maior que o
+  resto. O resto **não** é negrito.
+- **T-EQ4 · os quatro tipos leem igual** — ✅ Compare um equipamento manual, uma
+  arma, um escudo e uma armadura: mesma hierarquia, mesmo tamanho de letra.
+- **T-EQ5 · os textos que saíram** — ✅ Não aparece mais *"Itens equipados: N"*,
+  *"Itens selecionados: N"* nem *"Seleção por NT e Local (regra do livro)."*.
+- **T-EQ6 · armadura com nota longa** — As *Botas (pés)* têm observação do
+  catálogo: ✅ o cartão continua com 4 linhas.
