@@ -755,12 +755,15 @@ fun TabRolagem(viewModel: FichaViewModel) {
     fun pedirEnergiaAntesDeRolar(magia: MagiaRollOption, modMagia: Int): Boolean {
         val custo = MagiaEnergiaRules.parseCusto(magia.energia)
         val reducao = MagiaEnergiaRules.reducaoPorNh(nhEfetivoDaMagia(magia))
-        val sugerido = (custo.minimo - reducao).coerceAtLeast(0)
-        if (!custo.precisaEscolher && sugerido == 0) return false
+        // ⚠️ O campo do diálogo é o **custo base**: ele mostra "Redução por NH"
+        // e aplica o desconto sozinho. Sugerir o valor já descontado descontava
+        // duas vezes — um custo 4 com NH 18 virava 2 em vez de 3.
+        val efetivo = (custo.minimo - reducao).coerceAtLeast(0)
+        if (!custo.precisaEscolher && efetivo == 0) return false
 
         magiaPendenteEnergia = magia
         rolagemDeMagiaEsperando = magia to modMagia
-        energiaManualInput = sugerido.toString()
+        energiaManualInput = custo.minimo.toString()
         showEnergiaManualDialog = true
         return true
     }

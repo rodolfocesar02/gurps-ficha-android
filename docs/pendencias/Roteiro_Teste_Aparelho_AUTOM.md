@@ -1578,3 +1578,23 @@ com custo pergunta **antes** de rolar, inclusive as de custo fixo (o T-EN5 mudou
 - **T-E28 · cancelar não deixa resíduo** — Abra uma mágica, **cancele** o
   diálogo, e role **outra** mágica em seguida: ✅ a segunda cobra o que é dela, e
   nada da primeira aparece junto.
+
+
+---
+
+# Lote MAGIA-E3 — o PF que não baixava
+
+> Gate: 2.007 testes, 0 falhas nas duas variantes.
+
+⚠️ **Refaça o bloco T-E2 inteiro.** O defeito era que o botão **Aplicar** apagava
+o compromisso logo depois de criá-lo, então **nenhum** dos casos do T-E2 podia
+passar — o PF nunca baixava.
+
+- **T-E31 · 🔴 o PF baixa** — Cura Superficial, comprometa **3**, tenha sucesso:
+  ✅ o PF cai. *(Com NH 15+ cai o valor já descontado.)*
+- **T-E32 · ⚠️ o desconto é aplicado UMA vez** — Mágica de custo **4** com
+  **NH 18**: ✅ o diálogo mostra *"custo final: 3"* e o PF cai **3**, não 2.
+  *(Eu preenchia o campo com o valor já descontado e o diálogo descontava de
+  novo.)*
+- **T-E33 · Ignorar continua desistindo** — Abra, toque em **Ignorar**: ✅ nenhum
+  dado rola e nenhum PF é descontado.

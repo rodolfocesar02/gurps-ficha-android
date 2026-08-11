@@ -6526,3 +6526,55 @@ tenha mágicas com classe `Informação` (se o campo mudar de nome, a exceção 
 em silêncio e 59 mágicas passariam a pagar 1 onde deviam pagar tudo).
 
 - **Status:** ✅ Build OK nas 2 variantes · lint OK · gate **2001** · ⏭️ **PENDENTE: teste no aparelho** (T-EN + T-E2).
+
+---
+
+## 7.7-MAGE3 — O PF que não baixava (correção do meu próprio E2)
+
+Reportado no aparelho: comprometi **3** na Cura Superficial (NH 18, custo final 2),
+tirei **Sucesso por 7**, e o **PF ficou em 15/15**.
+
+#### 🔴 O botão Aplicar desfazia o próprio trabalho
+
+```kotlin
+onClick = {
+    energiaManualInput.toIntOrNull()?.let { ... onAplicar(custoFinal) }
+    onDismiss()          // <- roda SEMPRE, logo depois
+}
+```
+
+No E2 eu transformei o `onDismiss` em *"desisti da magia"* — ele limpa a energia
+comprometida e a rolagem guardada, para desistir do gasto não deixar resíduo. Só
+que **o Aplicar também chama o `onDismiss`**.
+
+A sequência era: comprometo 2 → disparo a rolagem → o próprio botão apaga o
+compromisso. Quando os dados caíam, não havia mais nada para cobrar.
+
+⚠️ **Enquanto o cancelar não fazia nada, chamar os dois era inofensivo.** Virou
+defeito no dia em que ele passou a fazer — e o código do botão não mudou. É a
+forma mais desagradável de regressão: o erro aparece num arquivo que ninguém
+tocou, por causa de uma mudança em outro.
+
+#### 🔴 E um desconto duplo
+
+O campo do diálogo se chama *"Custo base da magia agora"*, e o próprio diálogo
+mostra *"Redução por NH 18: -1 | custo final: 2"* — ele aplica o desconto sozinho.
+Eu preenchia o campo com o valor **já descontado**. Um custo 4 com NH 18 viraria
+**2** em vez de 3.
+
+#### O teste que faltava
+
+`MagiaEnergiaRulesTest` estava **todo verde** enquanto o PF não baixava. Ele
+confere a regra, e a regra estava certa; o errado era a ordem de duas chamadas em
+arquivos diferentes.
+
+`FiacaoEnergiaMagiaTest` lê o código-fonte e trava: Aplicar e Ignorar são caminhos
+**exclusivos**; comprometer **não** desconta PF; a rolagem cobra usando o
+resultado; o campo recebe o custo **base**; e não pode voltar a existir um caminho
+que role antes de perguntar. Conferido com sonda — devolvendo o bug, ele reprova.
+
+⚠️ **É o terceiro defeito desta forma nesta frente** (os outros dois no PV-1b e no
+E2): quando existem dois caminhos para a mesma coisa, o erro mora na diferença
+entre eles, os dois compilam, e cada um lido sozinho está certo.
+
+- **Status:** ✅ Build OK nas 2 variantes · lint OK · gate **2007** · ⏭️ **PENDENTE: teste no aparelho** (T-E2 refeito + T-E3).

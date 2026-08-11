@@ -483,11 +483,24 @@ fun RolagemEnergiaManualDialog(
         confirmButton = {
             TextButton(
                 onClick = {
-                    energiaManualInput.toIntOrNull()?.let { custoBase ->
-                        val custoFinal = MagiaEnergiaRules.custoAjustadoPorNh(custoBase, magiaEnergia.target)
-                        onAplicar(custoFinal)
+                    // 🔴 Aplicar NÃO chama o onDismiss.
+                    //
+                    // Chamava, e no Lote MAGIA-E2 isso virou defeito: o
+                    // `onDismiss` passou a ser o "desisti da magia" e limpa a
+                    // energia comprometida. Aplicar comprometia 2, disparava a
+                    // rolagem, e no instante seguinte o próprio botão apagava o
+                    // compromisso — quando os dados caíam não havia mais nada
+                    // para cobrar, e o PF não baixava.
+                    //
+                    // ⚠️ O `onAplicar` já fecha o diálogo. Chamar os dois era
+                    // inofensivo enquanto o cancelar não fazia nada; virou bug
+                    // no dia em que ele passou a fazer.
+                    val custoBase = energiaManualInput.toIntOrNull()
+                    if (custoBase != null) {
+                        onAplicar(MagiaEnergiaRules.custoAjustadoPorNh(custoBase, magiaEnergia.target))
+                    } else {
+                        onDismiss()
                     }
-                    onDismiss()
                 },
                 enabled = energiaManualInput.toIntOrNull() != null &&
                     (!exigeVinculoTalisma || !talismaMagiaVinculada.isNullOrBlank())
