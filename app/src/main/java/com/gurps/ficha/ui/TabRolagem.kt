@@ -861,6 +861,31 @@ fun TabRolagem(viewModel: FichaViewModel) {
             onAbrirPainelPf = { showFadigaDialog = true }
         )
 
+        // Marcos de PV/PF: testes exigidos pelo ferimento e estado atual.
+        //
+        // Fica logo abaixo do cartão de PV/PF e ACIMA das defesas, a pedido do
+        // usuário — e a posição é a certa: "Cambaleante — Deslocamento e Esquiva
+        // pela metade" é a explicação do número que aparece logo abaixo dele.
+        // Solto no meio da tela era um aviso órfão; aqui vira legenda da Esquiva.
+        PainelMarcosDeVida(
+            // Persistentes vem do ESTADO (repetem a cada turno); pendentes vem
+            // do EVENTO (somem depois de rolados).
+            testesPendentes = remember(testesDeMarco, pvAtualRolagem, p.pontosVida, p.vantagensTotais) {
+                MarcosDeVidaRules.testesPersistentes(p, pvAtualRolagem) + testesDeMarco
+            },
+            estados = remember(pvAtualRolagem, pfAtualRolagem, p.pontosVida, p.pontosFadiga) {
+                MarcosDeVidaRules.estadosDe(p, pvAtualRolagem, pfAtualRolagem)
+            },
+            isPraCegoVariant = isPraCegoVariant,
+            onRolar = { teste ->
+                // Persistente nao sai da lista: ele volta na proxima composicao
+                // porque e derivado do PV atual.
+                testesDeMarco = testesDeMarco - teste
+                executarRolagem(TipoTeste.ATRIBUTO, teste.rotulo, teste.alvo, 0)
+            },
+            onDispensar = { testesDeMarco = emptyList() }
+        )
+
         DefesasAtivasQuickRollPanel(
             defesasAtivas = defesasAtivas,
             modificadoresDefesa = modificadoresDefesa,
@@ -920,25 +945,6 @@ fun TabRolagem(viewModel: FichaViewModel) {
             onMudar = { luzDaCena = it }
         )
 
-        // Marcos de PV/PF: testes exigidos pelo ferimento e estado atual.
-        PainelMarcosDeVida(
-            // Persistentes vem do ESTADO (repetem a cada turno); pendentes vem
-            // do EVENTO (somem depois de rolados).
-            testesPendentes = remember(testesDeMarco, pvAtualRolagem, p.pontosVida, p.vantagensTotais) {
-                MarcosDeVidaRules.testesPersistentes(p, pvAtualRolagem) + testesDeMarco
-            },
-            estados = remember(pvAtualRolagem, pfAtualRolagem, p.pontosVida, p.pontosFadiga) {
-                MarcosDeVidaRules.estadosDe(p, pvAtualRolagem, pfAtualRolagem)
-            },
-            isPraCegoVariant = isPraCegoVariant,
-            onRolar = { teste ->
-                // Persistente nao sai da lista: ele volta na proxima composicao
-                // porque e derivado do PV atual.
-                testesDeMarco = testesDeMarco - teste
-                executarRolagem(TipoTeste.ATRIBUTO, teste.rotulo, teste.alvo, 0)
-            },
-            onDispensar = { testesDeMarco = emptyList() }
-        )
 
         if (isPraCegoVariant) {
             SectionHeaderPraCego("Modificador Global")

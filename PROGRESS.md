@@ -6706,3 +6706,21 @@ Pedido do usuário, sem teste novo (build verde nas duas variantes).
   sublinhadas e clicáveis — são os botões do MB-6 e MB-7.)*
 
 - **Status:** ✅ Compila nas 2 variantes · ⏭️ conferir na tela.
+
+---
+
+## 8.1-ROL2 — O cartão de estado subiu para junto do PV/PF
+
+Pedido do usuário: o cartão *"Cambaleante — Deslocamento e Esquiva pela metade"*
+saiu de baixo da Luz da cena e foi para **logo abaixo do PV/PF, acima das
+defesas**.
+
+A posição nova é a certa por um motivo além do gosto: aquele aviso é a
+**explicação do número que aparece logo abaixo dele**. Solto no meio da tela era
+um aviso órfão — o jogador lia "Esquiva pela metade" três cartões depois de ver a
+Esquiva. Agora ele funciona como legenda: o estado vem do PV (que está acima) e
+explica a defesa (que está abaixo).
+
+Nenhuma regra mudou; só a ordem de dois blocos.
+
+- **Status:** ✅ Compila nas 2 variantes · ⏭️ conferir na tela.
