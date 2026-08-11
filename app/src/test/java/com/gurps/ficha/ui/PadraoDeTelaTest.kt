@@ -79,7 +79,8 @@ class PadraoDeTelaTest {
     private val JA_NASCEM_NO_PADRAO = setOf(
         "DialogoFadiga.kt",     // Lote MB-6
         "DialogoFerimento.kt",  // Lote MB-7
-        "SilhuetaDoCorpo.kt"    // Lote PV-1b
+        "SilhuetaDoCorpo.kt",   // Lote PV-1b
+        "ListaDeLocaisPraCego.kt" // Lote ACESS-2
     )
 
     private fun relevantes() = arquivos().filterNot { f ->

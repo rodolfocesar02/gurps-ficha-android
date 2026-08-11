@@ -6636,3 +6636,55 @@ antigos ficaram como estão (os textos deles estão em teste); o novo código us
 helper, e é ele que o teste exercita.
 
 - **Status:** ✅ Build OK nas 2 variantes · lint OK · gate **2007** · ⏭️ **PENDENTE: teste no aparelho** (T-AC, só com TalkBack ligado).
+
+---
+
+## 7.9-ACESS2 — O seletor de local da variante pracego (Lote ACESS-2)
+
+O usuário disse que a lista da pracego seria refeita "de outro jeito". Conferindo
+para planejar, achei que o problema não era de layout nem de rótulo — era
+**informação faltando**.
+
+#### 🔴 A pracego não conseguia registrar LADO
+
+A silhueta da variante visual tem **16 regiões**: braço esquerdo e direito, mão
+esquerda e direita, os dois olhos. A lista da pracego tinha **11 locais sem
+lado**.
+
+Quem não enxerga **não conseguia anotar qual braço foi decepado**. E é pior que
+uma limitação de tela: as duas variantes gravavam coisas diferentes na mesma
+ficha, então o dado dependia de quem tinha aberto o diálogo.
+
+⚠️ Isso passou despercebido no MB-7 porque eu tratei "preservar a lista da
+pracego" como *não mexer nela* — e não mexer significou deixá-la para trás
+enquanto a outra variante ganhava lado.
+
+#### Mesma fonte, mesma estrutura, entrada diferente
+
+`ListaDeLocaisPraCego` lê `MapaDaSilhueta.REGIOES` — **a mesma fonte da
+silhueta** — e agrupa pelas mesmas três telas. Tocar num grupo abre as partes
+dele: é o zoom, sem imagem.
+
+Dois níveis, e não uma lista de 16, por causa de quem navega **explorando a tela
+com o dedo**: dezesseis paradas em fila viram um corredor; três grupos de quatro
+ou cinco se acham por eliminação, que é como se navega de ouvido.
+
+⚠️ Usa `RadioButton`, não `Checkbox`: só **uma** parte pode estar escolhida, e o
+leitor anuncia os dois papéis de formas diferentes — "caixa de seleção" sugere
+que dá para marcar várias.
+
+#### E a exceção que sobrava
+
+Enquanto a pracego assumia o torso por omissão, `escolheu` era
+`isPraCegoVariant || regiao != null` — ou seja, ela podia aplicar dano **sem
+escolher nada**, e o número saía certo para a pergunta errada. Agora as duas
+variantes exigem a mesma coisa, e a exceção sumiu junto com a lista velha.
+
+#### A trava
+
+A segunda lista foi **deletada**, não corrigida. `BotoesPvPfLigadosTest` reprova
+se ela voltar a existir, e exige que a lista da pracego leia
+`MapaDaSilhueta.REGIOES`. Duas listas para a mesma coisa foi o que permitiu uma
+ficar para trás em silêncio.
+
+- **Status:** ✅ Build OK nas 2 variantes · lint OK · gate **2009** · ⏭️ **PENDENTE: teste no aparelho** (T-PC).

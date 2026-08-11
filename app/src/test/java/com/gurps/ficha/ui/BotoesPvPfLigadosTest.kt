@@ -96,6 +96,45 @@ class BotoesPvPfLigadosTest {
     }
 
     @Test
+    fun `🔴 as duas variantes oferecem os MESMOS locais do corpo`() {
+        // Lote ACESS-2. Antes a pracego tinha a sua própria lista de 11 locais
+        // SEM LADO, e a silhueta tinha 16 COM lado: quem não enxerga não
+        // conseguia registrar qual braço foi decepado, e as duas variantes
+        // gravavam coisas diferentes na mesma ficha.
+        //
+        // ⚠️ A trava é estrutural: se voltar a existir uma segunda lista aqui,
+        // ela volta a poder divergir sem ninguém perceber.
+        val t = fonte("$rolagem/DialogoFerimento.kt")
+        assertTrue(
+            "voltou a existir uma lista de locais só para a pracego",
+            !t.contains("LOCAIS_NA_TELA = listOf")
+        )
+        assertTrue("a pracego não usa a lista nova", t.contains("ListaDeLocaisPraCego("))
+        assertTrue("a variante visual não usa a silhueta", t.contains("SilhuetaDoCorpo("))
+
+        val lista = fonte("$rolagem/ListaDeLocaisPraCego.kt")
+        assertTrue(
+            "a lista da pracego não lê a mesma fonte da silhueta",
+            lista.contains("MapaDaSilhueta.REGIOES")
+        )
+        assertTrue(
+            "a lista da pracego não agrupa pelas mesmas telas",
+            lista.contains("MapaDaSilhueta.Tela.entries")
+        )
+    }
+
+    @Test
+    fun `⚠️ escolher uma parte e obrigatorio nas DUAS variantes`() {
+        // Enquanto a pracego assumia o torso por omissão, era possível aplicar
+        // dano sem escolher nada — e o número saía certo para a pergunta errada.
+        val t = fonte("$rolagem/DialogoFerimento.kt")
+        assertTrue(
+            "a pracego ainda tem passe livre para aplicar sem escolher",
+            !t.contains("isPraCegoVariant || regiao != null")
+        )
+    }
+
+    @Test
     fun `🔴 os campos novos existem na ficha — sem eles nada sobrevive ao fechar o app`() {
         val p = fonte("com/gurps/ficha/model/Personagem.kt")
         assertTrue("falta fadigaPorFonte", p.contains("var fadigaPorFonte: Map<String, Int> = emptyMap()"))

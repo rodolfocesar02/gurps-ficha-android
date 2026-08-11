@@ -1621,3 +1621,27 @@ muda — é esse o problema desses defeitos.
   rótulo, quanto custa e **como se recupera**, sem repetir o estado da caixinha.
 - **T-AC6 · a energia da magia** — No diálogo de gasto: ✅ a linha da redução é
   falada como *"redução por nível de habilidade dezoito: **menos** um"*.
+
+---
+
+# Lote ACESS-2 — o seletor de local da pracego
+
+> Gate: 2.009 testes, 0 falhas nas duas variantes.
+
+⚠️ **Só na variante `pracego`.** Na visual nada mudou.
+
+- **T-PC1 · 🔴 agora dá para escolher o lado** — Abra o botão PV, toque em
+  **Tronco, braços e virilha**: ✅ aparecem **braço esquerdo** e **braço
+  direito**, **mão esquerda** e **mão direita** — separados. *(Antes havia só
+  "Braço", sem lado, e não dava para registrar qual foi decepado.)*
+- **T-PC2 · os mesmos 16 da silhueta** — Some os três grupos: ✅ cabeça e pescoço
+  **5**, tronco/braços/virilha **7**, pernas e pés **4**. O número aparece ao
+  lado do nome do grupo.
+- **T-PC3 · dois níveis, com volta** — Entre num grupo e toque em **Voltar para
+  os grupos**: ✅ volta à lista de três.
+- **T-PC4 · escolha única** — Escolha um local e depois outro: ✅ só o último
+  fica marcado. O leitor anuncia como **botão de opção**, não caixa de seleção.
+- **T-PC5 · ⚠️ aplicar exige escolher** — Digite um dano **sem escolher parte**:
+  ✅ o **Aplicar** fica apagado. *(Antes a pracego assumia o torso calada.)*
+- **T-PC6 · o que foi escolhido é dito** — Volte para a lista de grupos: ✅
+  aparece *"Escolhido: braço esquerdo"*.

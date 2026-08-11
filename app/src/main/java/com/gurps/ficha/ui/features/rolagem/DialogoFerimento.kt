@@ -99,7 +99,9 @@ fun DialogoFerimento(
     }
     // ⚠️ Sem parte escolhida não há local: assumir o torso em silêncio fazia o
     // painel anunciar "RD 2 em Torso" logo abaixo de "Nenhuma parte escolhida".
-    val escolheu = isPraCegoVariant || regiao != null
+    // ⚠️ Depois do ACESS-2 as duas variantes escolhem uma REGIÃO — some a
+    // exceção que a pracego tinha, e com ela a chance de as duas divergirem.
+    val escolheu = regiao != null
     val noLocal = if (!escolheu) emptyList() else {
         armaduras.filter { CoberturaDaArmadura.cobre(it.armaduraLocal, local) }
     }
@@ -157,15 +159,20 @@ fun DialogoFerimento(
                 // ⚠️ Uma silhueta não se tateia. Na variante pracego continua a
                 // lista de quadradinhos — ela não foi substituída, coexiste.
                 if (isPraCegoVariant) {
-                    Text(
-                        "Onde acertou",
-                        style = UiEstilos.subtituloDialogo,
-                        fontWeight = FontWeight.SemiBold
+                    // 🔴 Lote ACESS-2: a lista velha tinha 11 locais SEM LADO, e a
+                    // silhueta tem 16 COM lado. Quem não enxerga não conseguia
+                    // registrar qual braço foi decepado — as duas variantes
+                    // gravavam coisas diferentes na mesma ficha.
+                    //
+                    // Agora as duas leem a MESMA fonte (`MapaDaSilhueta.REGIOES`)
+                    // e têm a mesma estrutura de dois níveis. Só a entrada muda.
+                    ListaDeLocaisPraCego(
+                        selecionada = regiao,
+                        onSelecionar = {
+                            regiao = it
+                            local = it.local
+                        }
                     )
-                    GradeDeEscolhas(LOCAIS_NA_TELA, rotulo = { rotuloDoLocal(it) }, escolhido = { it == local }) {
-                        local = it
-                        regiao = null
-                    }
                 } else {
                     SilhuetaDoCorpo(
                         selecionada = regiao,
@@ -288,7 +295,7 @@ fun DialogoFerimento(
                 },
                 // Na silhueta não basta ter dano digitado: sem parte escolhida
                 // não há o que aplicar — e o padrão silencioso seria o tronco.
-                enabled = resultado != null && (isPraCegoVariant || regiao != null)
+                enabled = resultado != null && regiao != null
             )
         }
     }
@@ -423,12 +430,9 @@ private fun PainelDaArmadura(
  * A ordem da tela é a do corpo, não a da penalidade — quem apanhou já sabe onde
  * doeu e não quer procurar numa lista ordenada por dificuldade de acerto.
  */
-private val LOCAIS_NA_TELA = listOf(
-    LocalAtaque.TORSO, LocalAtaque.VITAIS, LocalAtaque.INGLE,
-    LocalAtaque.BRACO, LocalAtaque.MAO, LocalAtaque.PERNA, LocalAtaque.PE,
-    LocalAtaque.PESCOCO, LocalAtaque.ROSTO, LocalAtaque.CRANIO, LocalAtaque.OLHO
-)
-
+// ⚠️ A lista fixa de locais foi embora no ACESS-2: as duas variantes agora leem
+// `MapaDaSilhueta.REGIOES`. Manter uma segunda lista aqui era o que permitia a
+// pracego ficar com 11 locais sem lado enquanto a silhueta tinha 16 com lado.
 private fun rotuloDoLocal(l: LocalAtaque): String = when (l) {
     LocalAtaque.TORSO -> "Torso"
     LocalAtaque.VITAIS -> "Vitais"
