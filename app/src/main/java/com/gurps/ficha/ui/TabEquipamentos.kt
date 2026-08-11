@@ -45,6 +45,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.gurps.ficha.domain.rules.CartaoDoItem
+import com.gurps.ficha.domain.rules.StMinimaDaArma
 import com.gurps.ficha.domain.rules.TextoDoCatalogo
 import com.gurps.ficha.model.ArmaduraCatalogoItem
 import com.gurps.ficha.model.ArmaCatalogoItem
@@ -551,6 +552,7 @@ fun SelecionarArmaEquipamentoDialog(
                 } else {
                     emptyList()
                 },
+                stDoPersonagem = stAtual,
                 onClick = { onSelect(arma) }
             )
         }
@@ -619,6 +621,7 @@ private fun ArmaItemSelecao(
     arma: ArmaCatalogoItem,
     danoCalculado: String,
     observacoes: List<String>,
+    stDoPersonagem: Int,
     onClick: () -> Unit
 ) {
     val tipoLabel = when (arma.tipoCombate) {
@@ -626,14 +629,27 @@ private fun ArmaItemSelecao(
         "armas_de_fogo" -> "Armas de Fogo"
         else -> "Distancia"
     }
+    // Lote EQP-4: os dois números já estavam na tela — "ST 11" aqui e "ST do
+    // personagem: 9" no alto. Faltava a conta entre eles, e a consequência.
+    val falta = StMinimaDaArma.avaliar(stDoPersonagem, arma.stMinimo)
 
     AppSelectionRow(
         nome = arma.nome,
         detalhe = "ST ${arma.stMinimo ?: "—"} | $tipoLabel",
         onClick = onClick,
         descricaoAcessivel = "${arma.nome}. ST ${arma.stMinimo ?: "não cadastrada"}, $tipoLabel. " +
-            "Dano $danoCalculado. Toque para ver a ficha técnica.",
+            "Dano $danoCalculado. " +
+            (falta?.let { StMinimaDaArma.descricaoAcessivel(it) + " " } ?: "") +
+            "Toque para ver a ficha técnica.",
         extra = {
+            falta?.let {
+                Text(
+                    StMinimaDaArma.aviso(it),
+                    style = UiEstilos.detalheDoItem,
+                    color = MaterialTheme.colorScheme.error,
+                    fontWeight = FontWeight.Medium
+                )
+            }
             Text(
                 "Dano: ${arma.danoRaw} → $danoCalculado | Custo: $${arma.custoBase ?: 0f} | Peso: ${arma.pesoBaseKg ?: 0f} kg",
                 style = UiEstilos.detalheDoItem,

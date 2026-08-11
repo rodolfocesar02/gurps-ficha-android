@@ -1734,3 +1734,22 @@ muda — é esse o problema desses defeitos.
 - **T-EQ15 · nomes de local inteiros** — *Adicionar Armadura* → role até
   *Barrete de Couro*: ✅ diz `Local: cranio`, e **não** `crnio`. Procure uma peça
   de pescoço: ✅ `pescoco`, e não `pescoo`.
+
+---
+
+# Lote EQP-4 — os diálogos
+
+> Gate: 2.035 testes, 0 falhas nas duas variantes.
+
+- **T-EQ16 · 🔴 arma pesada demais avisa** — Personagem com ST 9. *Adicionar
+  Arma* → procure *Machado* (ST 11): ✅ linha vermelha *"Falta ST 2: -2 no ataque
+  e 1 PF a mais"*. Procure *Adaga* (ST 5): ✅ **nenhum** aviso.
+- **T-EQ17 · o aviso é falado direito** — com TalkBack ligado, toque na linha do
+  Machado: ✅ ele fala **"menos 2"**, e não "dois" nem "traço dois".
+- **T-EQ18 · a franja dos filtros** — *Adicionar Armadura*: ✅ há um degradê no
+  fim da fileira de *Local*, indicando que há mais chips. Deslize até o fim: ✅ a
+  franja **some**. Em *Adicionar Escudo* (sem filtros): ✅ não há franja nenhuma.
+- **T-EQ18b · a franja não rouba o toque** — toque num chip que fique **debaixo**
+  da franja: ✅ ele seleciona normalmente.
+- **T-EQ19 · o campo de notas** — *Adicionar Itens*: ✅ o campo *Notas* é alto (≈5
+  linhas) e dá para escrever um texto longo vendo o que se escreveu.

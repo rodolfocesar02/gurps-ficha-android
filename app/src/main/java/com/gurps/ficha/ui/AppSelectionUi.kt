@@ -1,8 +1,10 @@
 package com.gurps.ficha.ui
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
@@ -27,7 +29,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
@@ -119,20 +124,10 @@ fun AppSelectionDialog(
 
             filtros?.let { conteudoDosFiltros ->
                 Spacer(Modifier.height(UiTokens.SectionSpacing))
-                Row(
-                    modifier = Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()),
-                    horizontalArrangement = Arrangement.spacedBy(UiTokens.BotaoEspacamento),
-                    verticalAlignment = Alignment.CenterVertically,
-                    content = conteudoDosFiltros
-                )
+                FileiraDeFiltros(conteudoDosFiltros)
             }
             filtrosSecundarios?.let { conteudoDosFiltros ->
-                Row(
-                    modifier = Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()),
-                    horizontalArrangement = Arrangement.spacedBy(UiTokens.BotaoEspacamento),
-                    verticalAlignment = Alignment.CenterVertically,
-                    content = conteudoDosFiltros
-                )
+                FileiraDeFiltros(conteudoDosFiltros)
             }
 
             cabecalhoExtra?.let {
@@ -154,6 +149,50 @@ fun AppSelectionDialog(
             AppFileiraDeBotoes {
                 AppBotaoDiscreto(texto = UiActionLabels.FECHAR, onClick = onDismiss)
             }
+        }
+    }
+}
+
+/**
+ * Uma fileira de chips que **rola para o lado** — com a franja que avisa disso.
+ *
+ * 🔴 **Lote EQP-4.** A fileira sempre rolou; nada dizia. Na foto do usuário
+ * (11/08) o último chip aparecia cortado como *"Armas de F"*, e a leitura
+ * natural é que o texto não coube — não que existem mais filtros à direita. Na
+ * lista de armaduras são **onze** locais e **doze** NTs; quem parasse no
+ * quarto nunca saberia dos outros.
+ *
+ * ⚠️ É a violação nº 7 do padrão de tela — *"gesto sem affordance"* — a mesma que
+ * escondeu o arraste do nível da vantagem. A regra nasceu de um gesto invisível
+ * e continuava valendo aqui, num componente que o próprio padrão publica.
+ *
+ * A franja aparece **só quando há o que rolar** (`canScrollForward`): num
+ * diálogo em que todos os chips cabem, ela não existe, e assim ela significa
+ * alguma coisa.
+ */
+@Composable
+private fun FileiraDeFiltros(conteudo: @Composable RowScope.() -> Unit) {
+    val rolagem = rememberScrollState()
+    Box(modifier = Modifier.fillMaxWidth()) {
+        Row(
+            modifier = Modifier.fillMaxWidth().horizontalScroll(rolagem),
+            horizontalArrangement = Arrangement.spacedBy(UiTokens.BotaoEspacamento),
+            verticalAlignment = Alignment.CenterVertically,
+            content = conteudo
+        )
+        if (rolagem.canScrollForward) {
+            val cor = MaterialTheme.colorScheme.surface
+            Box(
+                modifier = Modifier
+                    .matchParentSize()
+                    .background(Brush.horizontalGradient(0.85f to Color.Transparent, 1f to cor))
+                    // ⚠️ Invisível para o leitor de tela, de propósito. A franja
+                    // resolve um problema **de olho**: o TalkBack já percorre os
+                    // chips um a um e rola a fileira sozinho. Um nó cobrindo a
+                    // fileira inteira só atrapalharia quem navega por ele — e
+                    // este app tem variante para quem não enxerga.
+                    .clearAndSetSemantics { }
+            )
         }
     }
 }

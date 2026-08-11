@@ -282,7 +282,13 @@ fun EquipamentoDialog(
                 )
                 OutlinedTextField(
                     value = notas, onValueChange = { notas = it },
-                    label = { Text("Notas") }, modifier = Modifier.fillMaxWidth()
+                    label = { Text("Notas") },
+                    // Lote EQP-4: o campo que mais recebe texto era o **menor**
+                    // de todos — uma linha, do mesmo tamanho de "Quantidade",
+                    // num diálogo com meia tela vazia embaixo. A nota da Máscara
+                    // tem dez linhas e era escrita por uma fresta.
+                    minLines = 5,
+                    modifier = Modifier.fillMaxWidth()
                 )
 
                 SecaoDoEditor("Automação de combate (opcional)")

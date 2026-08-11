@@ -7017,3 +7017,59 @@ certa nos três; a tela é que não perguntava.
 ⚠️ Sondas feitas nas duas: desligando o conserto, 2 testes ficam vermelhos.
 
 - **Status:** ✅ Build OK nas 2 variantes · lint OK · gate **2028** (+5) · ⏭️ **PENDENTE: teste no aparelho** (T-EQ12 a T-EQ15).
+
+---
+
+### Lote EQP-4 — os diálogos da aba Equipamentos (8.8-EQP4)
+
+#### 4 · 🔴 A ST mínima estava na tela; a conta, não
+
+A lista de armas mostrava `ST 11` em cada linha e *"ST do personagem: 9"* no
+alto. **Os dois números estavam lá e a subtração ficava com o jogador** — e a
+consequência não aparecia em lugar nenhum.
+
+MB p.271: *"Se tentar usar uma arma que exige mais ST do que possui, o personagem
+sofre uma penalidade de -1 na perícia com a arma para cada ponto de ST que falta
+e perde um PF a mais no final de qualquer combate que dure o suficiente para
+fatigá-lo."*
+
+Agora a linha aparece em vermelho: *"Falta ST 3: -3 no ataque e 1 PF a mais"*.
+
+⚠️ A outra metade da regra da p.271 — o **teto** de dano em 3× a ST mínima —
+ficou de fora de propósito: mexe no cálculo do dano, não na escolha da arma.
+
+⚠️ O texto falado nasce em `StMinimaDaArma`, não no `@Composable`. Dentro do
+Compose ele ficaria fora da varredura do `RotulosAcessiveisTest`, e `-3` lido em
+voz alta vira *"três"* — um redutor virando bônus. Foi o erro do ACESS-1, e desta
+vez a regra já nasceu do lado certo.
+
+#### 5 · A fileira de filtros rolava, e nada dizia
+
+Na foto, o último chip aparecia cortado como *"Armas de F"* — e a leitura natural
+é que o texto não coube, não que existem mais filtros à direita. Na lista de
+armaduras são **onze** locais e **doze** NTs.
+
+É a violação **nº 7** do padrão de tela (*gesto sem affordance*), a mesma que
+escondeu o arraste do nível da vantagem — desta vez dentro do componente que o
+próprio padrão publica. Agora há uma franja no fim da fileira, e **só quando há o
+que rolar**: se todos os chips cabem, ela não existe, e assim ela significa algo.
+
+⚠️ A franja é `clearAndSetSemantics {}` — invisível ao leitor de tela de
+propósito. Ela resolve um problema **de olho**; o TalkBack já percorre os chips e
+rola a fileira sozinho, e um nó cobrindo a fileira inteira só atrapalharia quem
+navega por ele.
+
+#### 6 · O campo que mais recebe texto era o menor
+
+No *Adicionar Equipamento*, `Notas` tinha uma linha — do tamanho de
+*"Quantidade"* — num diálogo com meia tela vazia embaixo. A nota da Máscara tem
+dez linhas e era escrita por uma fresta. Agora são cinco linhas.
+
+⚠️ **Uma observação minha que estava errada.** Eu havia dito que o diálogo
+misturava dois estilos de campo (`Nome` e `Notas` sem moldura, `Peso`/`Custo`
+com). Não é: **todos** são `OutlinedTextField` com rótulo. O rótulo sobe para a
+moldura quando o campo tem valor e fica dentro quando está vazio — `Peso` e
+`Quantidade` já vêm com `0` e `1`. É o comportamento normal do Material, não uma
+inconsistência.
+
+- **Status:** ✅ Build OK nas 2 variantes · lint OK · gate **2035** (+7) · ⏭️ **PENDENTE: teste no aparelho** (T-EQ16 a T-EQ19).
