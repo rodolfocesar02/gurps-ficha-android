@@ -6477,4 +6477,4 @@ mínimo de 1 PF sempre é gasto"*. Exceção escrita implica regra geral diferen
 mágicas reais**, exigindo que nenhuma passe como custo zero sem estar declarada
 como desconhecida, e que nenhuma faixa saia invertida.
 
-- **Status:** ✅ Build OK nas 2 variantes · lint OK · gate **2001** · ⏭️ **PENDENTE: teste no aparelho** (T-EN).
+- **Status:** ✅ Build OK nas 2 variantes · lint OK · gate **1999** · ⏭️ **PENDENTE: teste no aparelho** (T-EN).

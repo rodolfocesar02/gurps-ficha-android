@@ -1526,7 +1526,7 @@ Os itens **T-SI1 a T-SI7** do bloco do PV-1a valem agora. Além deles:
 
 # Lote MAGIA-E1 — o custo em energia das mágicas
 
-> Gate: 2.001 testes, 0 falhas nas duas variantes.
+> Gate: 1.999 testes, 0 falhas nas duas variantes.
 
 - **T-EN1 · 🔴 a faixa pergunta antes** — Role **Cura Superficial** (custo 1 a 3):
   ✅ o diálogo de energia abre **antes dos dados**, dizendo *"Você escolhe quanto
