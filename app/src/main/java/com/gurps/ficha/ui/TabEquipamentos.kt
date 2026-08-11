@@ -483,8 +483,9 @@ fun EquipamentoItem(equipamento: Equipamento, onEdit: () -> Unit, onDelete: () -
             CorpoDoItemPadrao(
                 buildList {
                     add(CartaoDoItem.Linha(
-                        "${equipamento.quantidade}x | ${equipamento.peso}kg cada | " +
-                            "Total: ${equipamento.peso * equipamento.quantidade}kg", CartaoDoItem.Papel.NEUTRO))
+                        CartaoDoItem.pesoEQuantidade(equipamento.quantidade, equipamento.peso),
+                        CartaoDoItem.Papel.NEUTRO
+                    ))
                     equipamento.armaDanoRaw?.takeIf { it.isNotBlank() }?.let { raw ->
                         add(CartaoDoItem.Linha(
                             "Dano: $raw -> ${viewModel.calcularDanoArmaComSt(raw)}", CartaoDoItem.Papel.DANO))
@@ -541,7 +542,17 @@ fun SelecionarArmaEquipamentoDialog(
         onDismiss = onDismiss
     ) {
         items(armas, key = { it.id }) { arma ->
-            ArmaItemSelecao(arma = arma, danoCalculado = viewModel.calcularDanoArmaComSt(arma.danoRaw), mostrarObsArmaFogo = mostrarObsArmaFogo, onClick = { onSelect(arma) })
+            ArmaItemSelecao(
+                arma = arma,
+                danoCalculado = viewModel.calcularDanoArmaComSt(arma.danoRaw),
+                // Lote EQP-3: o TEXTO da nota, não o número dela.
+                observacoes = if (mostrarObsArmaFogo || arma.tipoCombate != "armas_de_fogo") {
+                    viewModel.observacoesArmaDoCatalogo(arma)
+                } else {
+                    emptyList()
+                },
+                onClick = { onSelect(arma) }
+            )
         }
     }
 }
@@ -588,11 +599,26 @@ private fun observacoesFormatadas(armadura: ArmaduraCatalogoItem): List<String> 
     return saida
 }
 
+/**
+ * Uma arma na lista de escolha.
+ *
+ * 🔴 **Lote EQP-3 — `Obs: [1]` não dizia nada.** A linha imprimia
+ * `arma.observacoes` **cru**, e o catálogo guarda ali só o número do rodapé. O
+ * jogador via uma referência sem a referência.
+ *
+ * ⚠️ O texto do livro já existia — `FichaEquipmentDelegate` casa `[1]` com a
+ * nota certa, e a ficha técnica e o cartão da arma equipada já o usavam. Só esta
+ * lista tinha caminho próprio. **Terceira vez** que o defeito estava na
+ * diferença entre duas rotas para a mesma coisa.
+ *
+ * @param observacoes as notas **já casadas com o texto**. Vazia = nada a mostrar,
+ *   e aí a linha some em vez de exibir um número solto.
+ */
 @Composable
 private fun ArmaItemSelecao(
     arma: ArmaCatalogoItem,
     danoCalculado: String,
-    mostrarObsArmaFogo: Boolean,
+    observacoes: List<String>,
     onClick: () -> Unit
 ) {
     val tipoLabel = when (arma.tipoCombate) {
@@ -601,14 +627,6 @@ private fun ArmaItemSelecao(
         else -> "Distancia"
     }
 
-    // Lote LAYOUT-6: a arma tem até quatro linhas, e é para isso que serve o
-    // bloco `extra`. As cores `tertiary` e `primary` saem — na lista, o realce
-    // era só decoração, e fazia esta lista parecer de outro app.
-    val podeMostrarObs = when (arma.tipoCombate) {
-        "armas_de_fogo" -> mostrarObsArmaFogo
-        "corpo_a_corpo", "distancia" -> true
-        else -> false
-    }
     AppSelectionRow(
         nome = arma.nome,
         detalhe = "ST ${arma.stMinimo ?: "—"} | $tipoLabel",
@@ -628,11 +646,16 @@ private fun ArmaItemSelecao(
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
-            if (podeMostrarObs && arma.observacoes.isNotBlank()) {
+            observacoes.forEach { nota ->
                 Text(
-                    "Obs: ${arma.observacoes}",
+                    nota,
                     style = UiEstilos.detalheDoItem,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    // Duas linhas: a nota do livro pode ter 300 caracteres, e
+                    // numa lista de 70 armas isso vira parede. O texto inteiro
+                    // está a um toque, na ficha técnica.
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis
                 )
             }
         }

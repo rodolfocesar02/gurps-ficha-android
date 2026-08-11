@@ -992,6 +992,19 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
     val custoTotalEquipamentos get() = personagem.custoTotalEquipamentos
     fun observacoesArmaPorEquipamento(e: Equipamento) = equipmentDelegate.observacoesArmaPorEquipamento(e)
 
+    /**
+     * As notas de rodapé da arma **já casadas com o texto do livro** (Lote EQP-3).
+     *
+     * ⚠️ Existia, e a lista de seleção não chamava: ela imprimia o
+     * `arma.observacoes` cru, e o jogador via `Obs: [1]` — um número de rodapé
+     * sem o rodapé. O resolvedor já estava pronto em `FichaEquipmentDelegate`,
+     * usado pela ficha técnica e pelo cartão da arma equipada; só a lista tinha
+     * caminho próprio.
+     */
+    fun observacoesArmaDoCatalogo(arma: ArmaCatalogoItem): List<String> =
+        equipmentDelegate.observacoesArmaFormatadas(arma)
+            .lineSequence().map { it.trim() }.filter { it.isNotBlank() }.toList()
+
     // ── Lote ARMA-2/3/4: a ficha técnica da arma, pronta para a tela. ──
     // A conta do dano e as observações do rodapé vêm de quem já sabe fazê-las;
     // a montagem das linhas é regra pura e mora em `FichaTecnicaDaArma`.

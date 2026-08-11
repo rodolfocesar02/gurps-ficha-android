@@ -6965,3 +6965,55 @@ que estava escrito à mão em `ui/` onde nenhum teste alcançava. Comportamento
 idêntico, só mudou de lugar.
 
 - **Status:** ✅ Build OK nas 2 variantes · lint OK · gate **2023** (+14) · ⏭️ **PENDENTE: teste no aparelho** (T-EQ7 a T-EQ10).
+
+---
+
+### Lote EQP-3 — os três itens de texto da aba Equipamentos (8.7-EQP3)
+
+#### 1 · A linha de peso dizia o mesmo número três vezes
+
+`1x | 0.2kg cada | Total: 0.2kg`. Com um item só, os três números são o mesmo — e
+a linha queimava um terço do corpo do cartão, justamente o que faltava para a
+nota da Máscara. Agora, com quantidade 1, o peso é o peso.
+
+#### 2 · 🔴 `Obs: [1]` era um número de rodapé sem o rodapé
+
+A lista de escolha de armas imprimia `arma.observacoes` **cru**, e o catálogo
+guarda ali só a referência.
+
+⚠️ **O texto do livro já existia no código.** `FichaEquipmentDelegate` casa `[1]`
+com a nota certa (`OBS_ARMA_CORPO_A_CORPO`, `OBS_ARMA_DISTANCIA`, e os quatro
+mapas de arma de fogo). A ficha técnica usava, o cartão da arma equipada usava —
+só a lista de seleção tinha caminho próprio.
+
+**Terceira vez neste ciclo** que o defeito mora na diferença entre duas rotas para
+a mesma coisa (EQP-2 teve as outras duas).
+
+Na lista a nota vai com `maxLines = 2`: a do livro chega a 300 caracteres, e numa
+lista de 70 armas isso viraria parede. O texto inteiro está a um toque, na ficha
+técnica.
+
+#### 3 · `crnio` e `pescoo` vazavam na lista de armaduras
+
+O conserto de acento cobria `cr?nio` e `cr<marca>nio` — o caso em que a letra
+**virou uma marca**. Não cobria `crnio`, em que a letra **sumiu**: a regra
+procurava um sinal que naquele texto nunca esteve.
+
+Varredura do catálogo: `crnio` e `pescoo` são as **únicas** duas formas assim.
+Trocadas com `` (palavra inteira).
+
+#### ⭐ As duas camadas de teste que faltavam
+
+Os três itens têm em comum que **um teste de regra ficaria verde**. A regra estava
+certa nos três; a tela é que não perguntava.
+
+- `CatalogoSemTextoQuebradoTest` varre o `armaduras.v2.json` de verdade e usa como
+  gabarito o **próprio catálogo** (o campo `locaisNorm`, que ele já publica
+  normalizado). Se amanhã entrar um `virlha`, fica vermelho sozinho — a trava não
+  depende do meu vocabulário.
+- `FiacaoEquipamentosTest` lê o código-fonte da `ui/` e pergunta *"esta tela chama
+  o resolvedor?"*. É a mesma técnica de `BotoesPvPfLigadosTest`.
+
+⚠️ Sondas feitas nas duas: desligando o conserto, 2 testes ficam vermelhos.
+
+- **Status:** ✅ Build OK nas 2 variantes · lint OK · gate **2028** (+5) · ⏭️ **PENDENTE: teste no aparelho** (T-EQ12 a T-EQ15).

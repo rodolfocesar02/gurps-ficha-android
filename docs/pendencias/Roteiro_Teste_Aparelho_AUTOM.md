@@ -1715,3 +1715,22 @@ muda — é esse o problema desses defeitos.
   Encantamento…"*: ✅ esse texto continua no cartão. Toque no **lápis**: ✅ nas
   notas o texto está **inteiro**, cabeçalho incluído (ele não foi apagado, só
   escondido).
+
+---
+
+# Lote EQP-3 — texto dos cartões e das listas
+
+> Gate: 2.028 testes, 0 falhas nas duas variantes.
+
+- **T-EQ12 · o peso não se repete** — *Mapa de Muskovia* (quantidade 1): ✅ o
+  cartão diz `0.2 kg`, e **não** `1x | 0.2kg cada | Total: 0.2kg`.
+- **T-EQ13 · com dois, o total aparece** — *Gemas de Energia* (quantidade 2): ✅
+  continua mostrando o `2x`, o peso de cada e o total.
+- **T-EQ14 · 🔴 a nota da arma tem texto** — *Adicionar Arma* → *Adaga*: ✅ a
+  última linha traz o **texto** da nota (algo como *"Pode ser de arremesso…"*) e
+  **não** `Obs: [1]`. Em *Alavanca de Besta*: ✅ idem para a nota [5].
+- **T-EQ14b · arma de fogo não mostra número solto** — filtre *Armas de Fogo*: ✅
+  ou aparece o texto da nota, ou não aparece linha nenhuma — nunca um `[1]` sozinho.
+- **T-EQ15 · nomes de local inteiros** — *Adicionar Armadura* → role até
+  *Barrete de Couro*: ✅ diz `Local: cranio`, e **não** `crnio`. Procure uma peça
+  de pescoço: ✅ `pescoco`, e não `pescoo`.

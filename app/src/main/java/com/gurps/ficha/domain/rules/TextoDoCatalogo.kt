@@ -16,12 +16,30 @@ import java.text.Normalizer
  * saísse `crânio`, todo o resto do app teria de acertar o acento para o
  * casamento funcionar.
  *
- * ⚠️ Isto trata só o estrago em que a letra **virou uma marca**. O caso em que
- * ela **sumiu** (`crnio`, `pescoo`) não tem marca para procurar, e por isso não
- * se resolve aqui — resolve-se na fonte, lendo o campo que o próprio catálogo
- * já publica normalizado (Lote EQP-3).
+ * ## 🔴 O estrago tem duas formas, e só uma tinha conserto
+ *
+ * 1. **A letra virou uma marca** — `cr?nio`, `bra<?>os`. Sobrou um sinal no
+ *    lugar dela, e dá para procurar por ele.
+ * 2. **A letra sumiu** — `crnio`, `pescoo`. Não sobrou nada.
+ *
+ * Só a forma (1) era tratada. Por isso `crnio` e `pescoo` continuavam aparecendo
+ * na lista de armaduras (foto do usuário, 11/08): a regra procurava uma marca
+ * que naquele texto nunca esteve.
+ *
+ * ⚠️ **Palavra inteira, sempre** (Lote EQP-3). Trocar `crnio` como pedaço de
+ * texto é inofensivo, mas a regra é ancorada com `\b` de propósito: a lista de
+ * palavras saiu de uma varredura do catálogo de verdade — `crnio` e `pescoo` são
+ * as **únicas** formas em que a letra sumiu —, e sem a âncora a próxima entrada
+ * da lista poderia acertar o meio de uma palavra legítima. `CatalogoSemTextoQuebradoTest`
+ * varre os assets e reprova se aparecer uma terceira.
  */
 object TextoDoCatalogo {
+
+    /** Onde a letra sumiu: só `\b`palavra inteira`\b`. */
+    private val LETRA_SUMIDA = listOf(
+        Regex("""\bcrnio\b""", RegexOption.IGNORE_CASE) to "cranio",
+        Regex("""\bpescoo\b""", RegexOption.IGNORE_CASE) to "pescoco"
+    )
 
     private val REGRAS = listOf(
         "cr?nio" to "cranio",
@@ -45,6 +63,7 @@ object TextoDoCatalogo {
         if (texto.isBlank()) return texto
         var reparado = texto
         REGRAS.forEach { (errado, certo) -> reparado = reparado.replace(errado, certo, ignoreCase = true) }
+        LETRA_SUMIDA.forEach { (regex, certo) -> reparado = regex.replace(reparado, certo) }
         return Normalizer.normalize(reparado, Normalizer.Form.NFC)
     }
 }
