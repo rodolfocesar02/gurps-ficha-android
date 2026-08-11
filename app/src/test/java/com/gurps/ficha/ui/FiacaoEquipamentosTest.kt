@@ -33,6 +33,34 @@ class FiacaoEquipamentosTest {
     }
 
     private val tab by lazy { fonte("com/gurps/ficha/ui/TabEquipamentos.kt") }
+    private val delegate by lazy { fonte("com/gurps/ficha/viewmodel/delegates/FichaEquipmentDelegate.kt") }
+
+    @Test
+    fun `o escudo guarda a nota por extenso, nao a referencia`() {
+        // 🔴 Lote EQP-5: era `notas = escudo.observacoes`, e a ficha do jogador
+        // ficava com "[2, 4, 6]" no campo de notas.
+        assertFalse(
+            "o escudo voltou a guardar a referencia crua no campo de notas",
+            delegate.contains("notas = escudo.observacoes")
+        )
+        assertTrue(
+            "o escudo nao esta passando pela legenda do livro",
+            delegate.contains("NotasDoEscudo.paraAsNotas(")
+        )
+    }
+
+    @Test
+    fun `o Configurar Armadura conserta o nome do local`() {
+        // O EQP-3 arrumou a lista de escolha e esqueceu esta tela: o `crnio`
+        // reapareceu na caixinha. E o local escolhido aqui vira o `armaduraLocal`
+        // gravado, que e o campo que CoberturaDaArmadura usa no ferimento.
+        val trecho = tab.substringAfter("val locais = remember(").substringBefore("val conjuntoObrigatorio")
+        assertTrue(
+            "os locais do Configurar Armadura nao passam pelo conserto de acento",
+            trecho.contains("TextoDoCatalogo.corrigir(armadura.local)") &&
+                trecho.contains("TextoDoCatalogo.corrigir(c.local)")
+        )
+    }
 
     @Test
     fun `a lista de armas mostra o texto da nota, nao o numero dela`() {

@@ -7073,3 +7073,45 @@ moldura quando o campo tem valor e fica dentro quando está vazio — `Peso` e
 inconsistência.
 
 - **Status:** ✅ Build OK nas 2 variantes · lint OK · gate **2035** (+7) · ⏭️ **PENDENTE: teste no aparelho** (T-EQ16 a T-EQ19).
+
+---
+
+### Lote EQP-5 — a nota do escudo e o `crnio` que sobrou (8.9-EQP5)
+
+Dois achados do usuário nas fotos das 8h33.
+
+#### 🔴 O escudo guardava a referência, não a nota
+
+Adicionar o *Escudo Grande* deixava o campo *Notas* com **`[2, 4, 6]`**. Não é
+texto cortado — é a referência sem a referência, e na tela de edição parece dado
+corrompido.
+
+⚠️ **O escudo era o único item sem ninguém.** A arma tem os mapas de rodapé em
+`FichaEquipmentDelegate`; a armadura traz o texto pronto do catálogo
+(`observacoesDetalhadas`). O `escudos.v1.json` guarda **só a referência**, e a
+legenda da Tabela de Escudos (MB p.288) não existia em lugar nenhum do projeto.
+
+Agora existe: `domain/rules/NotasDoEscudo.kt`, transcrição das seis notas do
+livro. Referência que a legenda não tem é descartada em silêncio — melhor faltar
+uma linha do que a ficha ganhar um `[9]` solto, que é o defeito que se está
+consertando.
+
+#### 🔴 O `crnio` reapareceu no Configurar Armadura
+
+O EQP-3 arrumou a **lista de escolha** e esqueceu a **caixinha de seleção de
+local**. Mesma falha de sempre: dois caminhos lendo o mesmo campo, e eu corrigi
+um.
+
+⚠️ E este era o pior dos dois lugares: o local marcado na caixinha vira o
+`armaduraLocal` **gravado no equipamento**, que é o campo que
+`CoberturaDaArmadura` usa para casar a armadura com o local do ferimento. O
+outro só desenhava; este grava.
+
+#### A camada de teste
+
+`NotasDoEscudoTest` varre o `escudos.v1.json` de verdade e cobra que **toda**
+linha tenha texto depois do colchete. `FiacaoEquipamentosTest` ganhou duas
+travas de fiação: o delegate não pode voltar a gravar `escudo.observacoes` cru, e
+os locais do Configurar Armadura têm de passar pelo conserto de acento.
+
+- **Status:** ✅ Build OK nas 2 variantes · lint OK · gate **2043** (+8) · ⏭️ **PENDENTE: teste no aparelho** (T-EQ20 a T-EQ22).

@@ -1753,3 +1753,20 @@ muda — é esse o problema desses defeitos.
   da franja: ✅ ele seleciona normalmente.
 - **T-EQ19 · o campo de notas** — *Adicionar Itens*: ✅ o campo *Notas* é alto (≈5
   linhas) e dá para escrever um texto longo vendo o que se escreveu.
+
+---
+
+# Lote EQP-5 — a nota do escudo e o local da armadura
+
+> Gate: 2.043 testes, 0 falhas nas duas variantes.
+
+- **T-EQ20 · 🔴 a nota do escudo tem texto** — *Adicionar Escudo* → *Escudo
+  Grande* → toque no **lápis**: ✅ o campo *Notas* traz as três notas por extenso
+  (golpe com o escudo, escudos de ferro, e a penalidade de -2 nos ataques), e
+  **não** `[2, 4, 6]`.
+- **T-EQ21 · 🔴 o local sai por extenso** — *Adicionar Armadura* → *Barrete de
+  Tecido*: ✅ a caixinha diz **cranio**, e não `crnio`. Marque e adicione: ✅ o
+  cartão da armadura também diz `Local: cranio`.
+- **T-EQ22 · o local gravado casa com o ferimento** — com esse barrete vestido,
+  vá à aba Rolagem, toque no **PV** e escolha **crânio**: ✅ a RD do barrete é
+  oferecida no desconto.

@@ -791,13 +791,21 @@ private fun ConfigurarArmaduraDialog(
     onDismiss: () -> Unit,
     onConfirm: (List<String>) -> Unit
 ) {
+    // ⚠️ Lote EQP-5: o conserto de acento entra AQUI, na origem da lista.
+    // O EQP-3 arrumou a lista de escolha e esqueceu esta — e o `crnio` reapareceu
+    // na caixinha do Configurar Armadura (foto do usuário, 8h33). Mesma falha de
+    // sempre: dois caminhos lendo o mesmo campo, e eu corrigi um.
+    //
+    // Corrigir aqui também alinha o que é **guardado**: o local escolhido vira o
+    // `armaduraLocal` do equipamento, que é o campo que `CoberturaDaArmadura` usa
+    // para casar a armadura com o local do ferimento.
     val locais = remember(armadura.id, armadura.local, armadura.componentes) {
-        val locaisBase = armadura.local
+        val locaisBase = TextoDoCatalogo.corrigir(armadura.local)
             .split(Regex("[,;/|]"))
             .map { it.trim() }
             .filter { it.isNotBlank() }
         val viaComponentes = armadura.componentes.flatMap { c ->
-            c.local
+            TextoDoCatalogo.corrigir(c.local)
                 .split(Regex("[,;/|]"))
                 .map { it.trim() }
                 .filter { it.isNotBlank() }

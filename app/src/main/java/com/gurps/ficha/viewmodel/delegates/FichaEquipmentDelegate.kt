@@ -81,7 +81,11 @@ class FichaEquipmentDelegate(private val dataRepository: DataRepository) {
             peso = escudo.pesoKg ?: 0f,
             custo = escudo.custo ?: 0f,
             quantidade = 1,
-            notas = escudo.observacoes,
+            // 🔴 Lote EQP-5: era `escudo.observacoes` cru, e a ficha do jogador
+            // ficava com `[2, 4, 6]` no campo de notas. O catálogo de escudos
+            // guarda a referência, não o texto — a legenda mora agora em
+            // `NotasDoEscudo` (MB p.288).
+            notas = com.gurps.ficha.domain.rules.NotasDoEscudo.paraAsNotas(escudo.observacoes),
             tipo = TipoEquipamento.ESCUDO,
             bonusDefesa = escudo.db
         )
