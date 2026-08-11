@@ -184,7 +184,7 @@ private fun LinhaDeFadiga(
             .fillMaxWidth()
             .linhaAlternavel(
                 marcado = marcado,
-                descricao = descricaoAcessivelDaFadiga(fonte, quantidade),
+                descricao = fonte.descricaoAcessivel(quantidade),
                 onAlternar = onAlternar
             )
             .padding(
@@ -239,14 +239,3 @@ private fun LinhaDeFadiga(
         }
     }
 }
-
-private fun descricaoAcessivelDaFadiga(fonte: FadigaRules.Fonte, quantidade: Int): String =
-    buildString {
-        append("${fonte.rotulo}. ")
-        if (quantidade > 0) {
-            append("$quantidade ${fonte.unidade}, menos ${fonte.pfDe(quantidade)} PF. ")
-        } else {
-            append("1 PF por ${fonte.unidade}. ")
-        }
-        append("Recupera assim: ${fonte.recuperacao.comoVolta}")
-    }

@@ -83,6 +83,18 @@ object MapaDaSilhueta {
     ) {
         /** O nome que o Mestre ouve: "braço esquerdo", "olho direito", "tronco". */
         val nomeCompleto: String get() = rotulo
+
+        /**
+         * O que o leitor de tela fala.
+         *
+         * ⚠️ **Não repete o estado da caixinha.** Quem monta a lista usa
+         * `linhaAlternavel`, que já anuncia "marcada"/"não marcada" sozinho —
+         * escrever "selecionado" aqui faria o TalkBack dizer as duas coisas, e
+         * uma delas podia estar desatualizada.
+         */
+        val descricaoAcessivel: String
+            get() = "$rotulo. Penalidade de ataque " +
+                "${RotuloAcessivel.modificador(local.penalidadeAtaque)}."
     }
 
     // ── As linhas de corte, todas medidas na arte ────────────────────────

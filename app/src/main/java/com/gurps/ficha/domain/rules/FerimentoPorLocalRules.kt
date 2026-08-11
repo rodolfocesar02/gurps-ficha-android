@@ -210,6 +210,34 @@ object FerimentoPorLocalRules {
         val conta: String
             get() = "$danoBruto − RD $rdEfetiva = $penetrante × $multiplicador = " +
                 "$lesaoAntesDoTeto" + if (desperdicado > 0) " → $pvPerdidos (o resto é desperdiçado)" else ""
+
+        /**
+         * O resultado falado.
+         *
+         * ⚠️ O texto **visível** mantém os sinais (`−12 PV`, `choque -4`) porque
+         * é assim que se lê na mesa. Este é o outro destino: aqui o sinal vira
+         * palavra, senão o leitor de tela pula o hífen e um redutor de quatro
+         * vira um bônus de quatro.
+         */
+        fun descricaoAcessivel(pvNovo: Int, pvInicial: Int): String = buildString {
+            append("Perde $pvPerdidos pontos de vida. ")
+            append("Fica com ${RotuloAcessivel.valor(pvNovo)} de $pvInicial. ")
+            if (choque != 0) {
+                append("Choque de ${RotuloAcessivel.modificador(choque)} em destreza e ")
+                append("inteligência, só no próximo turno. ")
+            }
+            testeDeNocaute?.let {
+                append("Exige teste de vitalidade")
+                if (it.modificador != 0) append(" com ${RotuloAcessivel.modificador(it.modificador)}")
+                append(" para não ficar atordoado nem cair. ")
+            }
+            when (efeito) {
+                EfeitoNoLocal.INCAPACITADO -> append("O membro ficou incapacitado. ")
+                EfeitoNoLocal.DECEPADO -> append("O membro foi destruído. ")
+                EfeitoNoLocal.CEGOU -> append("O olho ficou cego. ")
+                EfeitoNoLocal.NENHUM -> Unit
+            }
+        }
     }
 
     /**

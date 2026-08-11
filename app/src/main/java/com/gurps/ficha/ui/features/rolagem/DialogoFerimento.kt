@@ -21,6 +21,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.foundation.text.KeyboardOptions
@@ -256,11 +258,16 @@ fun DialogoFerimento(
         // armadura mexe no número na frente dos olhos.
         resultado?.let { r ->
             HorizontalDivider(modifier = Modifier.padding(top = UiTokens.ItemSpacing))
+            // ⚠️ O visível mantém os sinais ("−12 PV"); o falado soletra, porque
+            // o leitor de tela pula o hífen e um redutor vira bônus.
             Text(
                 "−${r.pvPerdidos} PV   →   $pvNovo de $pvInicial",
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.error
+                color = MaterialTheme.colorScheme.error,
+                modifier = Modifier.semantics {
+                    contentDescription = r.descricaoAcessivel(pvNovo, pvInicial)
+                }
             )
             // A conta escrita: o jogador precisa poder conferir de onde saiu o
             // número, senão o app vira caixa-preta na mesa.
@@ -381,8 +388,11 @@ private fun PainelDaArmadura(
                 .fillMaxWidth()
                 .linhaAlternavel(
                     marcado = marcada,
-                    descricao = "${eq.nome}, RD ${rdPeca?.principal ?: "desconhecida"}. " +
-                        if (marcada) "Vestindo." else "Guardada.",
+                    // ⚠️ NÃO diz "vestindo/guardada": o `linhaAlternavel` já
+                    // anuncia marcada/não marcada, e escrever de novo faz o
+                    // TalkBack repetir — com risco de uma das duas desatualizar.
+                    descricao = "${eq.nome}. Resistência a dano " +
+                        "${rdPeca?.principal ?: "desconhecida"}.",
                     onAlternar = { onVestir(eq.nome) }
                 )
                 .padding(

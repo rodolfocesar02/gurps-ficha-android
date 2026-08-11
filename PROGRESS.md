@@ -6578,3 +6578,61 @@ E2): quando existem dois caminhos para a mesma coisa, o erro mora na diferença
 entre eles, os dois compilam, e cada um lido sozinho está certo.
 
 - **Status:** ✅ Build OK nas 2 variantes · lint OK · gate **2007** · ⏭️ **PENDENTE: teste no aparelho** (T-E2 refeito + T-E3).
+
+---
+
+## 7.8-ACESS1 — Os rótulos falados das telas novas (Lote ACESS-1)
+
+Perguntado pelo usuário: *"você rotulou tudo isso pra versão pracego?"*. A
+resposta honesta era **em parte** — e conferindo, achei que eu tinha violado as
+duas regras que o próprio projeto escreveu numa auditoria de julho.
+
+#### 🔴 1. Eu repeti o estado da caixinha
+
+```kotlin
+descricao = "${eq.nome}, RD ${...}. " + if (marcada) "Vestindo." else "Guardada."
+```
+
+O `linhaAlternavel` já anuncia *"marcada"/"não marcada"* sozinho. Com o eco, o
+TalkBack diz as duas coisas seguidas — e uma delas pode desatualizar. É
+exatamente o defeito que a auditoria de 28/07 removeu do resto do app, e que eu
+reintroduzi nas telas novas.
+
+#### 🔴 2. Sinal cru em quatro textos falados
+
+Quem ouve **não vê o sinal**: o leitor pula o hífen e *"menos quatro"* vira
+*"quatro"* — um redutor lido como bônus.
+
+- `"Choque de -4 em DX e IQ"`
+- `"Teste de HT (-10)"`
+- `"−12 PV"` — e este usa o **menos tipográfico** (U+2212), que alguns leitores
+  ignoram por completo
+- `"Redução por NH 18: -1"` (esse é anterior ao meu trabalho)
+
+⚠️ **Texto visível e descrição falada são destinos diferentes**, e o app já
+usava esse padrão em `PainelModificadoresDeCombate`: o `Text` mostra `-4`, a
+`contentDescription` fala *"menos quatro"*. Eu tinha escrito só um dos dois.
+
+#### 🔴 3. A causa real: rótulo dentro de `@Composable` é rótulo sem rede
+
+O `RotulosAcessiveisTest` existe desde julho e cobria **três** rótulos. As telas
+do MB-6, MB-7 e PV-1b ficaram de fora — por isso os dois defeitos acima passaram.
+
+Os rótulos foram movidos para as regras puras (`Regiao.descricaoAcessivel`,
+`Fonte.descricaoAcessivel`, `Resultado.descricaoAcessivel`) **não por elegância,
+mas para caberem na varredura**. Agora são 16 regiões + 16 estados de fadiga + 3
+resultados de ferimento, todos conferidos.
+
+E funcionou na primeira rodada: o teste reprovou apontando um vazamento que eu
+não tinha visto — o texto *"uma refeição decente dá **+1 PF**"* entrava dentro da
+descrição falada da linha.
+
+#### O `comoLer` copiado em cinco lugares
+
+`RotuloAcessivel` recolhe a mesma linha que estava duplicada em
+`AvancarEAtacarRules`, `IluminacaoRules`, `LocaisDeAtaque` e `TamanhoDoAlvoRules`
+— **com três comportamentos diferentes** para o zero e para o positivo. Os
+antigos ficaram como estão (os textos deles estão em teste); o novo código usa o
+helper, e é ele que o teste exercita.
+
+- **Status:** ✅ Build OK nas 2 variantes · lint OK · gate **2007** · ⏭️ **PENDENTE: teste no aparelho** (T-AC, só com TalkBack ligado).

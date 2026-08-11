@@ -43,11 +43,36 @@ class RotulosAcessiveisTest {
         )
     )
 
+    /**
+     * ⚠️ **Lote ACESS-1: as telas novas entraram aqui.**
+     *
+     * Até 11/08 esta lista tinha três rótulos, e as telas do MB-6, MB-7 e PV-1b
+     * ficaram de fora — então elas nasceram com dois defeitos que esta mesma
+     * classe existe para impedir: o eco de *"vestindo/guardada"* por cima do
+     * estado da caixinha, e sinal cru em três textos.
+     *
+     * **Rótulo escrito dentro de `@Composable` é rótulo sem rede.** Por isso eles
+     * foram movidos para as regras puras — não por elegância, mas para caberem
+     * nesta varredura.
+     */
     private fun todosOsRotulos(): List<String> = listOf(
         StBracalRules.rotuloAcessivel(comBracais),
         DxBracalRules.rotuloAcessivel(comBracais),
         MaoInabilRules.rotuloAcessivel(comBracais)
-    )
+    ) +
+        // Lote MB-7 e PV-1a: as 16 regiões do corpo.
+        MapaDaSilhueta.REGIOES.map { it.descricaoAcessivel } +
+        // Lote MB-6: as fontes de fadiga, marcadas e desmarcadas.
+        FadigaRules.FONTES.flatMap { listOf(it.descricaoAcessivel(0), it.descricaoAcessivel(3)) } +
+        // Lote MB-7: o resultado do ferimento, nos casos que produzem sinal.
+        listOf(
+            FerimentoPorLocalRules.aplicar(10, 9, DanoTipo.CONT, LocalAtaque.BRACO)
+                .descricaoAcessivel(pvNovo = 4, pvInicial = 10),
+            FerimentoPorLocalRules.aplicar(10, 8, DanoTipo.CONT, LocalAtaque.CRANIO)
+                .descricaoAcessivel(pvNovo = -22, pvInicial = 10),
+            FerimentoPorLocalRules.aplicar(10, 5, DanoTipo.CONT, LocalAtaque.INGLE)
+                .descricaoAcessivel(pvNovo = 5, pvInicial = 10)
+        )
 
     @Test
     fun `nenhum rotulo acessivel vaza sinal cru`() {
@@ -62,6 +87,12 @@ class RotulosAcessiveisTest {
             assertTrue("'$r' repete o estado", !r.contains("Ativado"))
             assertTrue("'$r' repete o estado", !r.contains("Desativado"))
             assertTrue("'$r' repete o estado", !r.lowercase().contains("marcad"))
+            // 🔴 O eco que o Lote MB-7 trouxe de volta: a linha da armadura
+            // dizia "Vestindo."/"Guardada." por cima do estado que o
+            // `linhaAlternavel` já anuncia.
+            assertTrue("'$r' repete o estado", !r.lowercase().contains("vestindo"))
+            assertTrue("'$r' repete o estado", !r.lowercase().contains("guardada"))
+            assertTrue("'$r' repete o estado", !r.lowercase().contains("selecionad"))
         }
     }
 

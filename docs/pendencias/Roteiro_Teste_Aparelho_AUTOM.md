@@ -1598,3 +1598,26 @@ passar — o PF nunca baixava.
   novo.)*
 - **T-E33 · Ignorar continua desistindo** — Abra, toque em **Ignorar**: ✅ nenhum
   dado rola e nenhum PF é descontado.
+
+---
+
+# Lote ACESS-1 — os rótulos falados
+
+> Gate: 2.007 testes, 0 falhas nas duas variantes.
+
+⚠️ **Este bloco só se testa com o TalkBack LIGADO.** Na variante visual nada
+muda — é esse o problema desses defeitos.
+
+- **T-AC1 · 🔴 sem eco na armadura** — No botão PV, TalkBack ligado, navegue até
+  uma peça de armadura: ✅ ele diz o nome, a RD e *"marcada"* (ou *"não
+  marcada"*) — **uma vez só**. Não pode dizer "vestindo" nem "guardada" junto.
+- **T-AC2 · 🔴 o sinal é falado** — Aplique um ferimento que gere choque: ✅ o
+  leitor diz *"choque de **menos** quatro"*, não "choque de quatro".
+- **T-AC3 · o teste de nocaute** — Golpe grave no crânio: ✅ *"exige teste de
+  vitalidade com **menos** dez"*.
+- **T-AC4 · PV negativo** — Leve o PV abaixo de zero: ✅ *"fica com **menos**
+  vinte e dois de nove"*.
+- **T-AC5 · a fadiga** — No botão PF, navegue pelas linhas: ✅ cada uma diz o
+  rótulo, quanto custa e **como se recupera**, sem repetir o estado da caixinha.
+- **T-AC6 · a energia da magia** — No diálogo de gasto: ✅ a linha da redução é
+  falada como *"redução por nível de habilidade dezoito: **menos** um"*.

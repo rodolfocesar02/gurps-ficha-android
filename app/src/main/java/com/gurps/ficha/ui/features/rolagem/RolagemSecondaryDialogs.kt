@@ -22,6 +22,7 @@ import androidx.compose.ui.window.DialogProperties
 import com.gurps.ficha.ui.appCardColors
 import com.gurps.ficha.data.network.DiscordVoiceChannel
 import com.gurps.ficha.domain.rules.MagiaEnergiaRules
+import com.gurps.ficha.domain.rules.RotuloAcessivel
 import com.gurps.ficha.model.*
 import com.gurps.ficha.viewmodel.DefenseType
 import kotlin.math.abs
@@ -473,7 +474,13 @@ fun RolagemEnergiaManualDialog(
                     val reducao = MagiaEnergiaRules.reducaoPorNh(magiaEnergia.target)
                     val custoFinal = MagiaEnergiaRules.custoAjustadoPorNh(custoBase, magiaEnergia.target)
                     Text(
-                        "Reducao por NH ${magiaEnergia.target}: -$reducao | custo final: $custoFinal",
+                        "Redução por NH ${magiaEnergia.target}: -$reducao | custo final: $custoFinal",
+                        modifier = Modifier.semantics {
+                            // ⚠️ O visível mostra "-1"; o falado diz "menos 1".
+                            contentDescription = "Redução por nível de habilidade " +
+                                "${magiaEnergia.target}: ${RotuloAcessivel.modificador(-reducao)}. " +
+                                "Custo final $custoFinal."
+                        },
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )

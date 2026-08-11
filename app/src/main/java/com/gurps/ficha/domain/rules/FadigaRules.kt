@@ -47,7 +47,9 @@ object FadigaRules {
         DESCANSO(
             "Descanso",
             "1 PF a cada 10 minutos de descanso calmo. Ler, falar e pensar valem; " +
-                "andar por aí, não. Uma refeição decente durante o descanso dá +1 PF."
+                // ⚠️ "mais 1 PF" e não "+1 PF": este texto é falado pelo leitor
+                // de tela dentro da descrição da linha, e o hífen/mais cru some.
+                "andar por aí, não. Uma refeição decente durante o descanso dá mais 1 PF."
         ),
         SONO(
             "Dormir",
@@ -84,6 +86,24 @@ object FadigaRules {
     ) {
         fun pfDe(quantidade: Int): Int = pfPorUnidade * quantidade.coerceAtLeast(0)
         fun pvDe(quantidade: Int): Int = pvPorUnidade * quantidade.coerceAtLeast(0)
+
+        /**
+         * O que o leitor de tela fala nesta linha.
+         *
+         * ⚠️ Mora aqui, e não no composable, para o teste poder varrer. Rótulo
+         * escrito dentro de `@Composable` é rótulo sem rede: só um aparelho com
+         * TalkBack ligado descobriria que ele fala um sinal cru.
+         */
+        fun descricaoAcessivel(quantidade: Int): String = buildString {
+            append("$rotulo. ")
+            if (quantidade > 0) {
+                append("$quantidade $unidade, ")
+                append("${RotuloAcessivel.modificador(-pfDe(quantidade))} de fadiga. ")
+            } else {
+                append("Um ponto de fadiga por $unidade. ")
+            }
+            append("Recupera assim: ${recuperacao.comoVolta}")
+        }
     }
 
     /** Id da linha que guarda o que o jogador baixou na mão, fora do painel. */
