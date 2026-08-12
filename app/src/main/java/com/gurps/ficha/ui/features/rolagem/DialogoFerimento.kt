@@ -507,4 +507,5 @@ private fun rotuloDoTipo(t: DanoTipo): String = when (t) {
     DanoTipo.PI -> "Perfurante ×1"
     DanoTipo.PI_MAIS -> "Muito perf. ×1,5"
     DanoTipo.PI_MAIS_MAIS -> "Extrem. perf. ×2"
+    DanoTipo.QMD -> "Queimadura ×1"
 }

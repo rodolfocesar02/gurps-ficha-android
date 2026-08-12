@@ -1891,3 +1891,16 @@ exemplo o *Traje Pressurizado* (RD 6\*) ou a *Cota de Malha Longa Dupla*.
   dano continua igual. Na *Espada Larga*: ✅ sobe **2**.
 - **T-EQ50 · desmarcar volta ao padrão** — toque de novo no chip já marcado: ✅ ele
   desmarca e o dano volta ao do livro.
+
+---
+
+# Lote EQP-12 — queimadura
+
+> Gate: 2.130 testes, 0 falhas nas duas variantes.
+
+- **T-EQ51 · o botão existe** — aba Rolagem → **PV** → escolha um local: ✅ há um
+  botão **Queimadura ×1** entre os tipos de dano.
+- **T-EQ52 · 🔴 fogo não triplica nos vitais nem gera trauma** — escolha
+  **Vitais**, tipo **Queimadura**, dano **10**, sem armadura: ✅ o resultado é
+  **−10 PV** (×1), e **não** −30. Depois vista uma armadura flexível de RD 10+ e
+  bata com 10 de queimadura: ✅ **−0 PV**, **sem** linha de trauma por impacto.

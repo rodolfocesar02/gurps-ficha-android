@@ -58,6 +58,9 @@ object TraumaPorImpacto {
     ): Int {
         if (penetrante > 0) return 0
         if (rdFlexivel <= 0 || danoBruto <= 0) return 0
+        // ⚠️ Lote EQP-12: nem todo tipo causa trauma. O livro lista contusão,
+        // corte, perfuração e perfurante — queimadura fica de fora.
+        if (!tipo.causaTraumaPorImpacto) return 0
         return barradoPelaCamadaFlexivel(danoBruto, rdFlexivel, rdRigida) / divisorDe(tipo)
     }
 

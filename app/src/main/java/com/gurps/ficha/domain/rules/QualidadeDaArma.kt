@@ -139,6 +139,9 @@ object TipoDeDanoNoTexto {
             t.contains("corte") -> DanoTipo.CORT
             t.contains("perf") -> DanoTipo.PERF
             t.contains("cont") -> DanoTipo.CONT
+            // Lote EQP-12: as 11 armas de energia do catálogo (laser, feixe
+            // iônico, lança-chamas, espada de energia).
+            t.contains("qmd") -> DanoTipo.QMD
             else -> null
         }
     }

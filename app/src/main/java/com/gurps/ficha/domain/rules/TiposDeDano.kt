@@ -27,10 +27,44 @@ enum class DanoTipo(val rotulo: String, val multBase: Double) {
     PI("pi", 1.0),            // perfurante
     PI_MAIS("pi+", 1.5),
     PI_MAIS_MAIS("pi++", 2.0),
-    PERF("perf", 2.0);        // perfuração (impaling)
+    PERF("perf", 2.0),        // perfuração (impaling)
 
-    /** Perfurante/perfuração ganham ×3 nos vitais (Mesa Virtual: startsWith('pi') || 'perf'). */
-    val perfuranteOuPerf: Boolean get() = this != CONT && this != CORT
+    // ── Lote EQP-12: os tipos que faltavam da tabela da p.380 ──
+    /**
+     * **Queimadura (qmd)** — MB p.44: *"chamas, um feixe de energia ou
+     * queimaduras elétricas localizadas. É possível começar incêndios!"*
+     *
+     * Onze armas do catálogo causam este dano — laser, feixe iônico,
+     * lança-chamas e a espada de energia — e até o Lote EQP-12 **nenhuma delas
+     * tinha botão** no diálogo de ferimento.
+     */
+    QMD("qmd", 1.0);
+
+    /**
+     * Ganha **×3 nos vitais** (MB p.399).
+     *
+     * 🔴 Era escrito ao contrário — `this != CONT && this != CORT` — e por isso
+     * **qualquer tipo novo entrava valendo ×3 nos vitais sozinho**. A queimadura
+     * teria triplicado no peito no dia em que o enum crescesse, sem nenhum teste
+     * quebrar: todos os `when` do projeto têm `else`, então o compilador também
+     * ficaria calado.
+     *
+     * Lista positiva: só entra quem o livro nomeia.
+     */
+    val perfuranteOuPerf: Boolean
+        get() = this in setOf(PI_MENOS, PI, PI_MAIS, PI_MAIS_MAIS, PERF)
+
+    /**
+     * Pode virar **trauma por impacto** através de armadura flexível (MB p.380).
+     *
+     * > *"Um ataque que provoca dano por **contusão, corte, perfuração ou
+     * > perfurante** pode provocar trauma por impacto."*
+     *
+     * ⚠️ A queimadura **não** está na lista: fogo que não passa da armadura não
+     * machuca por impacto.
+     */
+    val causaTraumaPorImpacto: Boolean
+        get() = this in setOf(CONT, CORT, PERF, PI_MENOS, PI, PI_MAIS, PI_MAIS_MAIS)
 }
 
 /**

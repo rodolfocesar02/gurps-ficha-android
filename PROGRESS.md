@@ -7450,3 +7450,40 @@ Fica como possibilidade a **apresentar** ao usuário, não como defeito escondid
 teste tranca o que interessa: nenhuma arma de corte ou perfuração escapa.
 
 - **Status:** ✅ Build OK nas 2 variantes · lint OK · gate **2122** (+15) · ⏭️ **PENDENTE: teste no aparelho** (T-EQ47 a T-EQ50).
+
+---
+
+### Lote EQP-12 (A) — Queimadura (9.6-EQP12)
+
+MB p.44 e p.380. Onze armas do catálogo causam este dano — laser, feixe iônico,
+lança-chamas, espada de energia — e **nenhuma tinha botão** no diálogo de
+ferimento.
+
+#### 🔴 A armadilha que estava armada há meses
+
+`DanoTipo.perfuranteOuPerf` — o que dá **×3 nos vitais** (MB p.399) — estava
+escrito **ao contrário**:
+
+```kotlin
+val perfuranteOuPerf get() = this != CONT && this != CORT
+```
+
+Definido pela negativa, **todo tipo novo entrava valendo ×3 nos vitais sozinho**.
+A queimadura teria triplicado no peito no dia em que o enum crescesse.
+
+⚠️ E nada teria acusado: **todos** os `when` sobre `DanoTipo` no projeto têm
+`else`, então o compilador fica calado; e não havia teste sobre a propriedade.
+Um enum que cresce é o caso em que a definição negativa cobra a conta.
+
+Agora é lista positiva, e o teste varre **todos** os tipos cobrando de que lado
+cada um está — não confere um caso, confere a fronteira inteira.
+
+#### Trauma por impacto não vale para fogo
+
+> *"Um ataque que provoca dano por **contusão, corte, perfuração ou perfurante**
+> pode provocar trauma por impacto"* (p.380).
+
+Queimadura não está na lista. Sem a trava, 20 de fogo barrados por uma cota
+flexível dariam 4 PV que o livro não dá.
+
+- **Status:** ✅ Build OK nas 2 variantes · lint OK · gate **2130** (+8) · ⏭️ **PENDENTE: teste no aparelho** (T-EQ51/T-EQ52).

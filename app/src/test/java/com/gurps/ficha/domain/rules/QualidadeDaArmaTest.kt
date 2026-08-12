@@ -154,7 +154,7 @@ class QualidadeDaArmaTest {
         // Para a REGRA DESTE LOTE isso não muda nada: nenhuma das duas é lâmina,
         // então o bônus de qualidade seria zero de qualquer jeito. Fica anotado
         // como possibilidade a apresentar, não como defeito escondido.
-        val naoModelados = listOf("qmd", "at", "espec", "—", "--")
+        val naoModelados = listOf("at", "espec", "—", "--")
         val inesperadas = semTipo.filterNot { linha -> naoModelados.any { linha.contains(it) } }
         assertTrue("danos sem tipo legível:\n" + inesperadas.joinToString("\n"), inesperadas.isEmpty())
 
