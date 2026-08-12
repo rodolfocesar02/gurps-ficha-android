@@ -118,7 +118,9 @@ class FichaEquipmentDelegate(private val dataRepository: DataRepository) {
             tipo = TipoEquipamento.ARMADURA,
             armaduraLocal = armadura.local,
             armaduraRd = armadura.rd,
-            armaduraCatalogoId = armadura.id
+            armaduraCatalogoId = armadura.id,
+            armaduraOcultavel = com.gurps.ficha.domain.rules.CamadasDeArmadura
+                .ehOcultavel(armadura.observacoesDetalhadas)
         )
         return adicionarEquipamento(personagem, equipamento)
     }
@@ -163,7 +165,9 @@ class FichaEquipmentDelegate(private val dataRepository: DataRepository) {
                 tipo = TipoEquipamento.ARMADURA,
                 armaduraLocal = localSel,
                 armaduraRd = rdLocal,
-                armaduraCatalogoId = armadura.id
+                armaduraCatalogoId = armadura.id,
+                armaduraOcultavel = com.gurps.ficha.domain.rules.CamadasDeArmadura
+                    .ehOcultavel(armadura.observacoesDetalhadas)
             )
             novaLista.add(equipamentoItem)
         }

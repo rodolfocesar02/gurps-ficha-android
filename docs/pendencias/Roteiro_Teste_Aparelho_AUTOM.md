@@ -1858,3 +1858,20 @@ exemplo o *Traje Pressurizado* (RD 6\*) ou a *Cota de Malha Longa Dupla*.
   *Armadura de Placas*) e bata com dano igual à RD: ✅ **−0 PV**, sem trauma.
 - **T-EQ43 · a fala** — com TalkBack ligado, no caso do T-EQ40: ✅ ele diz
   *"trauma por impacto"* e o número **por extenso**, sem hífen solto.
+
+---
+
+# Lote EQP-10 — sobrepor armaduras
+
+> Gate: 2.107 testes, 0 falhas nas duas variantes.
+
+- **T-EQ44 · 🔴 pilha ilegal avisa** — vista **duas** peças rígidas no mesmo
+  local (ex.: *Armadura de Couro* + *Armadura de Placas*, ambas no tronco). Aba
+  Rolagem → **PV** → tronco: ✅ aparece o aviso vermelho de que o livro não permite
+  sobrepor, **e a soma das RD continua na tela**.
+- **T-EQ45 · pilha legal não avisa** — troque a de baixo por uma flexível e
+  ocultável (*Cota de Malha*, *Colete Balístico*): ✅ o aviso vermelho **some**,
+  e a RD continua somada.
+- **T-EQ46 · o preço da camada** — em qualquer pilha no tronco/pernas/braços: ✅
+  aparece a linha *"Camada extra de armadura: -1 na DX…"*. Faça a mesma pilha só
+  no **crânio**: ✅ essa linha **não** aparece.

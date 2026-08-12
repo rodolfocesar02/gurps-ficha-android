@@ -28,6 +28,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
+import com.gurps.ficha.domain.rules.CamadasDeArmadura
 import com.gurps.ficha.domain.rules.CoberturaDaArmadura
 import com.gurps.ficha.domain.rules.DanoTipo
 import com.gurps.ficha.domain.rules.FerimentoPorLocalRules
@@ -390,6 +391,25 @@ private fun PainelDaArmadura(
         return
     }
 
+    // 🔴 Lote EQP-10: a pilha é legal? (MB p.287) Só é possível sobrepor se a
+    // camada de baixo for flexível E ocultável — e o app somava qualquer coisa
+    // com qualquer coisa.
+    val vestidasAqui = noLocal.filter { it.nome !in naMochila }
+    val situacao = CamadasDeArmadura.avaliar(
+        local,
+        vestidasAqui.mapNotNull { eq ->
+            CoberturaDaArmadura.rdDe(eq.rdArmaduraExibicao())?.let { rdPeca ->
+                CamadasDeArmadura.Peca(
+                    nome = eq.nome,
+                    rd = rdPeca.principal,
+                    flexivel = rdPeca.flexivel,
+                    ocultavel = eq.armaduraOcultavel
+                )
+            }
+        }
+    )
+    val penalidadeDx = CamadasDeArmadura.penalidadeDeDx(listOf(situacao))
+
     // ⚠️ Comprar não é vestir. A caixinha fica salva na ficha.
     noLocal.forEach { eq ->
         val marcada = eq.nome !in naMochila
@@ -427,6 +447,30 @@ private fun PainelDaArmadura(
                 )
             }
         }
+    }
+
+    // O aviso vem DEPOIS das peças, para o jogador já ter visto quais são.
+    situacao.aviso?.let { texto ->
+        Text(
+            "⚠️ $texto",
+            style = UiEstilos.detalheDoItem,
+            color = MaterialTheme.colorScheme.error,
+            modifier = Modifier
+                .padding(horizontal = UiTokens.LinhaDeListaPaddingH, vertical = 4.dp)
+                .semantics { contentDescription = texto }
+        )
+    }
+    CamadasDeArmadura.avisoDeDx(penalidadeDx)?.let { texto ->
+        Text(
+            texto,
+            style = UiEstilos.detalheDoItem,
+            color = MaterialTheme.colorScheme.tertiary,
+            modifier = Modifier
+                .padding(horizontal = UiTokens.LinhaDeListaPaddingH, vertical = 4.dp)
+                .semantics {
+                    contentDescription = CamadasDeArmadura.avisoDeDxAcessivel(penalidadeDx).orEmpty()
+                }
+        )
     }
 }
 

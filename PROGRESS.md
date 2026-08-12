@@ -7348,3 +7348,49 @@ PV perdidos um), e o aviso do teto de membro dispararia num golpe que nem
 penetrou. Ganhou piso em zero.
 
 - **Status:** ✅ Build OK nas 2 variantes · lint OK · gate **2096** (+16) · ⏭️ **PENDENTE: teste no aparelho** (T-EQ40 a T-EQ43).
+
+---
+
+### Lote EQP-10 — Combinando e Sobrepondo Armaduras (9.4-EQP10)
+
+MB p.287. Segunda regra sob a combinação nova (apresentar, o usuário escolhe).
+
+> *"Só é possível sobrepor uma armadura se a **camada interna for flexível e
+> ocultável**. Some a RD das duas camadas. A utilização de uma camada adicional
+> em qualquer lugar que não seja a cabeça impõe uma penalidade de **-1 sobre a DX
+> e as perícias baseadas em DX**."*
+
+#### 🔴 O app somava qualquer coisa com qualquer coisa
+
+E havia um comentário meu em `CoberturaDaArmadura.rdTotal` dizendo que *"somar
+camadas é decisão do Mestre"*. O livro **tem** a regra; eu é que não a tinha lido.
+
+Das **72** armaduras do catálogo, só **11** são flexíveis *e* ocultáveis — as
+únicas que podem ser a camada de baixo. O app deixava empilhar as 72.
+
+#### ⚠️ Isto confirma a suposição do EQP-9
+
+Lá eu assumi *"rígido por fora, flexível por dentro"* para o trauma por impacto e
+registrei como suposição. Esta página **exige** que a camada interna seja
+flexível. Não era palpite — era a regra, três páginas adiante.
+
+#### Avisar, não bloquear
+
+A soma continua na tela mesmo quando a pilha é ilegal. A ficha é do jogador e o
+Mestre libera o que quiser; transformar a regra em cerca seria pior que o
+problema. O que muda é que agora **está escrito** que o livro não permite.
+
+#### O que a ficha não guardava
+
+A "ocultabilidade" não é campo do catálogo — vive no **texto** da nota de rodapé
+([1] da p.285, [2] da p.286). Virou `armaduraOcultavel` no `Equipamento`, lido na
+hora de adicionar. Ficha antiga desserializa como `false`, e o efeito é só um
+aviso a mais numa pilha que já existia.
+
+#### A leitura do "-1 na DX"
+
+⚠️ **Um -1, não um por local.** O livro chama de cumulativos os redutores de
+**reação**, no parágrafo logo abaixo, com todas as letras — e não diz isso deste.
+Onde ele é explícito num e silencioso no outro, o silêncio conta.
+
+- **Status:** ✅ Build OK nas 2 variantes · lint OK · gate **2107** (+11) · ⏭️ **PENDENTE: teste no aparelho** (T-EQ44 a T-EQ46).

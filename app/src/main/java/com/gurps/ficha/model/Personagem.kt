@@ -824,6 +824,12 @@ data class Equipamento(
     // abria sem ficha nenhuma. Aditivos/anulaveis -> ficha antiga desserializa
     // como null e cai no casamento por nome.
     var armaduraCatalogoId: String? = null,
+    // Lote EQP-10: se a peça pode ser escondida sob a roupa. É metade do
+    // requisito para ser camada de baixo (MB p.287) -- a outra metade é o
+    // `*` de flexível, que já vive no `armaduraRd`. A informação existe só
+    // no TEXTO da nota do catálogo, então é lida na hora de adicionar e
+    // guardada aqui. Ficha antiga desserializa como false.
+    var armaduraOcultavel: Boolean = false,
     var escudoCatalogoId: String? = null,
     // ── Stats de combate da arma (Lote 371) — anuláveis: ficha antiga carrega como null (= desconhecido). ──
     var armaAlcanceCorpoACorpo: String? = null, // "C" | "1" | "1,2"
