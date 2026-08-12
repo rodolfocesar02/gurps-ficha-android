@@ -1931,3 +1931,20 @@ exemplo o *Traje Pressurizado* (RD 6\*) ou a *Cota de Malha Longa Dupla*.
   muda nem PV nem PF.
 - **T-EQ57 · toxina é dano comum** — **Toxina ×1**, dano 10 sem armadura: ✅ **−10
   PV**, como qualquer ×1.
+
+---
+
+# Lote GER-1 — XP e NT
+
+> Gate: 2.157 testes, 0 falhas nas duas variantes.
+
+- **T-GE1 · 🔴 o XP soma no total** — Aba Geral: ponha **Pontos 150** e **XP 164**.
+  ✅ O cabeçalho passa a dizer `Pontos: 314 (150 + 164 XP)` e o **Restantes** não
+  muda em relação a ter 314 nos Pontos.
+- **T-GE2 · o campo define, não acumula** — toque no campo de XP, saia, toque de
+  novo, saia: ✅ o número **não** cresce sozinho.
+- **T-GE3 · apagar o XP zera** — apague o conteúdo do campo e saia: ✅ vira 0 e o
+  cabeçalho volta a `Pontos Iniciais: 150`.
+- **T-GE4 · o NT guarda** — ponha **NT 4**, troque de aba e volte: ✅ continua 4.
+  Apague o campo e saia: ✅ volta ao valor anterior (não vira 0 — NT 0 é a Idade
+  da Pedra, e ninguém apaga querendo isso).

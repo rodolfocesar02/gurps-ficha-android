@@ -802,7 +802,7 @@ private fun CabecalhoComImagem(
                     .semantics {
                         if (isPraCegoVariant) {
                             contentDescription =
-                                "Resumo de pontos. Iniciais ${p.pontosIniciais}. Gastos ${p.pontosGastos}. Restantes $restantes."
+                                "Resumo de pontos. ${p.rotuloDePontosAcessivel}. Gastos ${p.pontosGastos}. Restantes $restantes."
                         }
                     },
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -810,7 +810,7 @@ private fun CabecalhoComImagem(
             ) {
                 Column {
                     Text(
-                        "Pontos Iniciais: ${p.pontosIniciais}",
+                        p.rotuloDePontos,
                         style = MaterialTheme.typography.bodySmall,
                         color = Color.White
                     )
@@ -972,7 +972,7 @@ fun PontosBar(viewModel: FichaViewModel) {
                 .fillMaxWidth()
                 .semantics {
                     contentDescription =
-                        "Resumo de pontos. Iniciais ${p.pontosIniciais}. Gastos ${p.pontosGastos}. Restantes $restantes."
+                        "Resumo de pontos. ${p.rotuloDePontosAcessivel}. Gastos ${p.pontosGastos}. Restantes $restantes."
                 }
         } else {
             Modifier.fillMaxWidth()
@@ -986,7 +986,7 @@ fun PontosBar(viewModel: FichaViewModel) {
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically) {
                 Column {
-                    Text("Pontos Iniciais: ${p.pontosIniciais}", style = MaterialTheme.typography.bodySmall)
+                    Text(p.rotuloDePontos, style = MaterialTheme.typography.bodySmall)
                     Text("Gastos: ${p.pontosGastos}", style = MaterialTheme.typography.bodySmall)
                 }
                 Text(

@@ -265,6 +265,22 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
     fun sagaCombateDesvencilhar() = sagaDelegate.combate.heroiDesvencilhar() // Lote 422: herói preso se solta
 
     // Efeitos da Saga na ficha do herói (Lote 366 / B8) — mutam e SALVAM a ficha carregada.
+    /**
+     * O XP que o Mestre deu, digitado pelo jogador (Lote GER-1).
+     *
+     * ⚠️ **Define**, nao soma — ao contrario do `sagaConcederXp`, que e o Narrador
+     * premiando e por isso acumula. Aqui o jogador esta corrigindo um numero na
+     * ficha, e somar faria o campo crescer sozinho a cada toque.
+     */
+    fun atualizarXpGanhos(valor: Int) {
+        personagem = personagem.copy(xpGanhos = valor.coerceAtLeast(0)); salvarFicha()
+    }
+
+    /** O NT da campanha (MB p.29). Lote GER-1. */
+    fun atualizarNivelTecnologico(valor: Int) {
+        personagem = personagem.copy(nivelTecnologico = valor.coerceIn(0, 12)); salvarFicha()
+    }
+
     fun sagaConcederXp(pts: Int): Int {
         personagem = personagem.copy(xpGanhos = (personagem.xpGanhos + pts).coerceAtLeast(0)); salvarFicha(); return personagem.xpGanhos
     }

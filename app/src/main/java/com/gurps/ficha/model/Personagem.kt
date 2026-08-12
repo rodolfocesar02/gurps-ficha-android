@@ -20,6 +20,23 @@ data class Personagem(
     var campanha: String = "",
     var pontosIniciais: Int = 150,
     var xpGanhos: Int = 0, // Pontos ganhos durante a campanha
+    /**
+     * **O NT da campanha** — Lote GER-1 (MB p.29).
+     *
+     * Nao muda nenhuma conta hoje. Existe porque varias regras do livro dependem
+     * dele e ficaram de fora justamente por falta deste numero:
+     *
+     * - o multiplicador de **preco** por qualidade de arma (p.275-276) muda em
+     *   NT6 ou menos contra NT7+;
+     * - o degrau *"melhores equipamentos possiveis para o seu NT: +NT/2"* do
+     *   modificador de pericia (p.346);
+     * - a **composicao da lamina** (p.276): pedra em NT0, bronze em NT1, ferro em
+     *   NT2, aco em NT3+.
+     *
+     * ⚠️ Padrao **3**: e o NT medieval, o da maior parte do catalogo de armas e
+     * armaduras do Modulo Basico. Ficha antiga desserializa neste valor.
+     */
+    var nivelTecnologico: Int = 3,
     var limiteDesvantagens: Int = -75, // Limite padrao GURPS 4Ed
 
     // Atributos Primarios (valor 10 = media humana, gratuito)
@@ -242,6 +259,32 @@ data class Personagem(
 
     val pontosTotaisDisponiveis: Int get() = pontosIniciais + xpGanhos
     val pontosRestantes: Int get() = pontosTotaisDisponiveis - pontosGastos
+
+    /**
+     * O que o cabecalho escreve sobre os pontos — Lote GER-1.
+     *
+     * 🔴 Sem XP, "Pontos Iniciais: 314" e a verdade inteira. Com XP, ela vira
+     * **meia verdade**: o personagem tem 317 para gastar, e o numero grande da
+     * tela continuaria dizendo 314. Quem olhasse o cabecalho concluiria que o
+     * XP nao entrou — quando ele ja entrava em `pontosRestantes` desde sempre.
+     *
+     * Por isso a linha mostra o total **com a conta**, no mesmo espirito do resto
+     * do app: o numero e de onde ele veio.
+     */
+    val rotuloDePontos: String
+        get() = if (xpGanhos > 0) {
+            "Pontos: $pontosTotaisDisponiveis ($pontosIniciais + $xpGanhos XP)"
+        } else {
+            "Pontos Iniciais: $pontosIniciais"
+        }
+
+    /** O mesmo, falado — sem sinal cru nem parenteses soltos. */
+    val rotuloDePontosAcessivel: String
+        get() = if (xpGanhos > 0) {
+            "$pontosTotaisDisponiveis pontos no total: $pontosIniciais iniciais mais $xpGanhos de experiencia"
+        } else {
+            "$pontosIniciais pontos iniciais"
+        }
     val desvantagensExcedemLimite: Boolean get() = pontosDesvantagens < limiteDesvantagens
 
     fun getAtributo(sigla: String): Int {

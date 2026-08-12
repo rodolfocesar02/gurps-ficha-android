@@ -12,6 +12,7 @@ class FichaHistoryDelegate {
         if (antigo.jogador != novo.jogador) mudancas.add("Alterou Nome do Jogador de '${antigo.jogador}' para '${novo.jogador}'")
         if (antigo.pontosIniciais != novo.pontosIniciais) mudancas.add("Alterou Pontos Iniciais de ${antigo.pontosIniciais} para ${novo.pontosIniciais}")
         if (antigo.xpGanhos != novo.xpGanhos) mudancas.add("Alterou XP Ganhos de ${antigo.xpGanhos} para ${novo.xpGanhos}")
+        if (antigo.nivelTecnologico != novo.nivelTecnologico) mudancas.add("Alterou o NT da campanha de ${antigo.nivelTecnologico} para ${novo.nivelTecnologico}")
         
         // Atributos Primários
         if (antigo.forca != novo.forca) mudancas.add("Alterou ST de ${antigo.forca} para ${novo.forca}")

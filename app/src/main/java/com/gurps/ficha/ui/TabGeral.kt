@@ -82,6 +82,11 @@ fun TabGeral(viewModel: FichaViewModel) {
     var pontosInput by rememberSaveable { mutableStateOf(p.pontosIniciais.toString()) }
     var ultimoPontosValidos by rememberSaveable { mutableStateOf(p.pontosIniciais.toString()) }
     var pontosEmFoco by remember { mutableStateOf(false) }
+    // Lote GER-1: o XP que o Mestre deu e o NT da campanha.
+    var xpInput by rememberSaveable { mutableStateOf(p.xpGanhos.toString()) }
+    var xpEmFoco by remember { mutableStateOf(false) }
+    var ntInput by rememberSaveable { mutableStateOf(p.nivelTecnologico.toString()) }
+    var ntEmFoco by remember { mutableStateOf(false) }
     var showAnotacoesDialog by remember { mutableStateOf(false) }
     var showResumoDialog by remember { mutableStateOf(false) }
     var showBasesDialog by remember { mutableStateOf(false) }
@@ -114,6 +119,17 @@ fun TabGeral(viewModel: FichaViewModel) {
         if (!jogadorEmFoco) jogadorInput = p.jogador
     }
 
+    // ⚠️ O XP tambem muda por FORA desta tela: o Narrador da Saga premia o heroi
+    // (`sagaConcederXp`). Sem este efeito, o campo mostraria o valor velho ate
+    // alguem trocar de aba.
+    LaunchedEffect(p.xpGanhos) {
+        if (!xpEmFoco) xpInput = p.xpGanhos.toString()
+    }
+
+    LaunchedEffect(p.nivelTecnologico) {
+        if (!ntEmFoco) ntInput = p.nivelTecnologico.toString()
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -138,25 +154,31 @@ fun TabGeral(viewModel: FichaViewModel) {
                 singleLine = true
             )
             Spacer(modifier = Modifier.height(4.dp))
+            OutlinedTextField(
+                value = jogadorInput,
+                onValueChange = { jogadorInput = it },
+                label = { Text("Jogador") },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .onFocusChanged { focusState ->
+                        val perdeuFoco = jogadorEmFoco && !focusState.isFocused
+                        jogadorEmFoco = focusState.isFocused
+                        if (perdeuFoco) {
+                            viewModel.atualizarJogador(jogadorInput)
+                        }
+                    },
+                singleLine = true
+            )
+            Spacer(modifier = Modifier.height(4.dp))
+            // Lote GER-1: os tres numeros da campanha na mesma linha.
+            //
+            // ⚠️ Os tres tem larguras IGUAIS (`weight(1f)`) de proposito. Antes o
+            // "Pontos" tinha 100.dp fixos, e com tres campos a largura fixa
+            // deixaria o ultimo espremido em tela pequena.
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(rowSpacing)
             ) {
-                OutlinedTextField(
-                    value = jogadorInput,
-                    onValueChange = { jogadorInput = it },
-                    label = { Text("Jogador") },
-                    modifier = Modifier
-                        .weight(1f)
-                        .onFocusChanged { focusState ->
-                            val perdeuFoco = jogadorEmFoco && !focusState.isFocused
-                            jogadorEmFoco = focusState.isFocused
-                            if (perdeuFoco) {
-                                viewModel.atualizarJogador(jogadorInput)
-                            }
-                        },
-                    singleLine = true
-                )
                 OutlinedTextField(
                     value = pontosInput,
                     onValueChange = {
@@ -168,7 +190,7 @@ fun TabGeral(viewModel: FichaViewModel) {
                     },
                     label = { Text("Pontos") },
                     modifier = Modifier
-                        .width(100.dp)
+                        .weight(1f)
                         .onFocusChanged { focusState ->
                             val perdeuFoco = pontosEmFoco && !focusState.isFocused
                             pontosEmFoco = focusState.isFocused
@@ -179,6 +201,45 @@ fun TabGeral(viewModel: FichaViewModel) {
                                 } else {
                                     pontosInput = ultimoPontosValidos
                                 }
+                            }
+                        },
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                    singleLine = true
+                )
+                OutlinedTextField(
+                    value = xpInput,
+                    onValueChange = { xpInput = it.filter(Char::isDigit).take(4) },
+                    label = { Text("XP") },
+                    modifier = Modifier
+                        .weight(1f)
+                        .onFocusChanged { focusState ->
+                            val perdeuFoco = xpEmFoco && !focusState.isFocused
+                            xpEmFoco = focusState.isFocused
+                            if (perdeuFoco) {
+                                // Campo vazio vale ZERO, e nao "nao mexer": apagar o
+                                // XP tem de zerar o XP, senao o jogador nao consegue
+                                // desfazer um numero digitado errado.
+                                viewModel.atualizarXpGanhos(xpInput.toIntOrNull() ?: 0)
+                            }
+                        },
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                    singleLine = true
+                )
+                OutlinedTextField(
+                    value = ntInput,
+                    onValueChange = { ntInput = it.filter(Char::isDigit).take(2) },
+                    label = { Text("NT") },
+                    modifier = Modifier
+                        .weight(1f)
+                        .onFocusChanged { focusState ->
+                            val perdeuFoco = ntEmFoco && !focusState.isFocused
+                            ntEmFoco = focusState.isFocused
+                            if (perdeuFoco) {
+                                // Vazio volta ao padrao do livro, nao a zero: NT 0 e a
+                                // Idade da Pedra, e ninguem apaga o campo querendo isso.
+                                viewModel.atualizarNivelTecnologico(
+                                    ntInput.toIntOrNull() ?: p.nivelTecnologico
+                                )
                             }
                         },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),

@@ -7567,3 +7567,59 @@ nenhum tipo esteja fora dela. Quem adicionar o décimo terceiro não consegue
 esquecer nenhuma das quatro.
 
 - **Status:** ✅ Build OK nas 2 variantes · lint OK · gate **2145** (+8) · ⏭️ **PENDENTE: teste no aparelho** (T-EQ55 a T-EQ57).
+
+---
+
+### Lote GER-1 — XP e NT na aba Geral (9.9-GER1)
+
+Pedido do usuário: dois campos na linha do cabeçalho da ficha.
+
+#### 🔴 O XP já existia no motor — faltava a tela
+
+`xpGanhos` **já somava** em `pontosTotaisDisponiveis`, já tinha linha no
+histórico e já era escrito pelo Narrador da Saga (`sagaConcederXp`). O que nunca
+existiu foi **campo para o jogador digitar**.
+
+É o mesmo formato do `Obs: [1]` e do RD da armadura: a regra pronta, e a tela sem
+perguntar. Terceira vez neste ciclo.
+
+#### ⚠️ Definir, não somar
+
+`sagaConcederXp` **acumula** — é o Narrador premiando. O campo da ficha
+**define**: o jogador está corrigindo um número, e somar faria o valor crescer
+sozinho a cada toque fora do campo. São dois verbos diferentes para o mesmo dado,
+e o teste tranca essa diferença.
+
+#### O cabeçalho passou a mentir, e foi corrigido junto
+
+Com XP, *"Pontos Iniciais: 314"* vira meia verdade. O personagem do usuário foi
+feito com **150** e tem **164 de XP** — o cabeçalho diria 150 enquanto ele tem
+314 para gastar, e a conclusão natural seria que o XP não entrou (quando ele já
+entrava em `pontosRestantes` desde sempre).
+
+Agora a linha mostra `Pontos: 314 (150 + 164 XP)` — o número **e de onde veio**,
+como o resto do app. Sem XP, ela continua exatamente como era.
+
+⚠️ E o caso real vira teste: **o XP pode ser maior que os pontos iniciais**. Numa
+campanha longa, 164 contra 150. Qualquer trava que assumisse "XP é um número
+pequeno" quebraria ali.
+
+#### O NT da campanha
+
+`nivelTecnologico`, padrão **3** (medieval, o NT da maior parte do catálogo).
+**Não muda nenhuma conta hoje**, e há teste cobrando exatamente isso — se alguém
+o ligar a um cálculo sem avisar, o gate acusa.
+
+Ele existe porque três regras já mapeadas dependem dele e ficaram de fora por
+falta desse número:
+
+- o multiplicador de **preço** por qualidade de arma (p.275-276), que muda entre
+  NT6− e NT7+;
+- o degrau *"melhores equipamentos possíveis para o seu NT: +NT/2"* do
+  modificador de perícia (p.346);
+- a **composição da lâmina** (p.276): pedra em NT0, bronze em NT1, ferro em NT2,
+  aço em NT3+.
+
+Nenhuma delas foi implementada — ficam para apresentar.
+
+- **Status:** ✅ Build OK nas 2 variantes · lint OK · gate **2157** (+12) · ⏭️ **PENDENTE: teste no aparelho** (T-GE1 a T-GE4).
