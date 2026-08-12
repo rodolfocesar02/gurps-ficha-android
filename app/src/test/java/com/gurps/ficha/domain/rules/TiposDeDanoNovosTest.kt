@@ -2,6 +2,7 @@ package com.gurps.ficha.domain.rules
 
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
@@ -122,5 +123,90 @@ class TiposDeDanoNovosTest {
         val rotulos = DanoTipo.entries.map { it.rotulo }
         assertEquals("há rótulos repetidos: $rotulos", rotulos.size, rotulos.toSet().size)
         assertTrue(rotulos.all { it.isNotBlank() })
+    }
+}
+
+/**
+ * **Corrosão e Lesão** — MB p.380. Lote EQP-13.
+ */
+class CorrosaoNaArmaduraTest {
+
+    @Test
+    fun `cinco pontos penetrantes comem um de RD`() {
+        assertEquals(0, CorrosaoNaArmadura.rdDestruida(DanoTipo.COR, 4))
+        assertEquals(1, CorrosaoNaArmadura.rdDestruida(DanoTipo.COR, 5))
+        assertEquals(1, CorrosaoNaArmadura.rdDestruida(DanoTipo.COR, 9))
+        assertEquals(2, CorrosaoNaArmadura.rdDestruida(DanoTipo.COR, 10))
+        assertEquals(4, CorrosaoNaArmadura.rdDestruida(DanoTipo.COR, 23))
+    }
+
+    @Test
+    fun `so a corrosao come armadura`() {
+        DanoTipo.entries.filter { it != DanoTipo.COR }.forEach { tipo ->
+            assertEquals(
+                "'${tipo.rotulo}' corroeu a armadura",
+                0,
+                CorrosaoNaArmadura.rdDestruida(tipo, 20)
+            )
+        }
+    }
+
+    @Test
+    fun `acido barrado pela armadura nao a corroi`() {
+        // ⚠️ A base é o dano PENETRANTE, não o rolado. O que a armadura segura
+        // inteiro escorre; é o que passa que a come por dentro.
+        assertEquals(0, CorrosaoNaArmadura.rdDestruida(DanoTipo.COR, penetrante = 0))
+        val r = FerimentoPorLocalRules.aplicar(
+            pvInicial = 10, danoBruto = 20, tipo = DanoTipo.COR,
+            local = LocalAtaque.TORSO, rdArmadura = 20
+        )
+        assertEquals(0, r.penetrante)
+        assertEquals(0, r.rdDestruidaPorCorrosao)
+    }
+
+    @Test
+    fun `o ferimento devolve a RD destruida e avisa`() {
+        val r = FerimentoPorLocalRules.aplicar(
+            pvInicial = 20, danoBruto = 16, tipo = DanoTipo.COR,
+            local = LocalAtaque.TORSO, rdArmadura = 6
+        )
+        assertEquals(10, r.penetrante)
+        assertEquals(2, r.rdDestruidaPorCorrosao)
+        // O dano continua ×1 — a corrosão come armadura, não multiplica ferimento.
+        assertEquals(10, r.pvPerdidos)
+        assertTrue(
+            "o aviso não apareceu: ${r.avisos}",
+            r.avisos.any { it.contains("Corrosão") && it.contains("RD") }
+        )
+    }
+
+    @Test
+    fun `sem corrosao nao ha aviso nenhum`() {
+        val r = FerimentoPorLocalRules.aplicar(
+            pvInicial = 20, danoBruto = 16, tipo = DanoTipo.CONT,
+            local = LocalAtaque.TORSO, rdArmadura = 6
+        )
+        assertEquals(0, r.rdDestruidaPorCorrosao)
+        assertTrue(r.avisos.none { it.contains("Corrosão") })
+        assertNull(CorrosaoNaArmadura.conta(10, 0))
+        assertNull(CorrosaoNaArmadura.contaAcessivel(10, 0))
+    }
+
+    @Test
+    fun `corrosao nao triplica nos vitais nem da trauma`() {
+        assertFalse(DanoTipo.COR.perfuranteOuPerf)
+        assertFalse(DanoTipo.COR.causaTraumaPorImpacto)
+        assertEquals(
+            1.0,
+            FerimentoPorLocalRules.multiplicador(DanoTipo.COR, LocalAtaque.VITAIS),
+            0.0
+        )
+    }
+
+    @Test
+    fun `a fala da corrosao nao tem sinal cru`() {
+        val falado = CorrosaoNaArmadura.contaAcessivel(10, 2)!!
+        assertFalse(falado, RotuloAcessivel.temSinalCru(falado))
+        assertTrue(falado, falado.contains("não se recupera"))
     }
 }

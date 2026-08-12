@@ -209,7 +209,9 @@ object FerimentoPorLocalRules {
         /** PV perdidos por **trauma por impacto** (MB p.380). Ver [TraumaPorImpacto]. */
         val traumaPorImpacto: Int = 0,
         /** A conta do trauma, pronta para a tela. Null quando não houve. */
-        val contaDoTrauma: String? = null
+        val contaDoTrauma: String? = null,
+        /** Pontos de RD que o ácido destruiu na armadura (MB p.380). */
+        val rdDestruidaPorCorrosao: Int = 0
     ) {
         val conta: String
             get() = if (traumaPorImpacto > 0 && contaDoTrauma != null) {
@@ -292,6 +294,10 @@ object FerimentoPorLocalRules {
         // por dentro de qualquer peça. Ver `TraumaPorImpacto`.
         val flexivel = rdFlexivel.coerceIn(0, rdArmadura.coerceAtLeast(0))
         val rigida = rdArmadura.coerceAtLeast(0) - flexivel + rdExtraNatural(local)
+        // 🔴 Lote EQP-13: o ácido come a armadura, e é a única consequência que
+        // sobrevive ao golpe. Ver `CorrosaoNaArmadura`.
+        val rdDestruida = CorrosaoNaArmadura.rdDestruida(tipo, penetrante)
+
         val trauma = TraumaPorImpacto.calcular(
             danoBruto = danoBruto,
             tipo = tipo,
@@ -347,6 +353,7 @@ object FerimentoPorLocalRules {
         }
 
         avisos += avisosDe(local, tipo, efeito, desperdicado, pvInicial)
+        CorrosaoNaArmadura.conta(penetrante, rdDestruida)?.let { avisos += it }
 
         return Resultado(
             danoBruto = danoBruto,
@@ -362,7 +369,8 @@ object FerimentoPorLocalRules {
             testeDeNocaute = teste,
             avisos = avisos,
             traumaPorImpacto = trauma,
-            contaDoTrauma = TraumaPorImpacto.conta(danoBruto, tipo, flexivel, rigida, trauma)
+            contaDoTrauma = TraumaPorImpacto.conta(danoBruto, tipo, flexivel, rigida, trauma),
+            rdDestruidaPorCorrosao = rdDestruida
         )
     }
 

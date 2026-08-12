@@ -38,7 +38,21 @@ enum class DanoTipo(val rotulo: String, val multBase: Double) {
      * lança-chamas e a espada de energia — e até o Lote EQP-12 **nenhuma delas
      * tinha botão** no diálogo de ferimento.
      */
-    QMD("qmd", 1.0);
+    QMD("qmd", 1.0),
+
+    /**
+     * **Corrosão (cor)** — MB p.43 e p.380: *"ácido, desintegração ou algo
+     * semelhante. Para cada 5 pontos de dano básico causado, a RD do alvo é
+     * reduzida em 1 ponto, além do dano regular (seres vivos recuperam a RD
+     * natural na mesma velocidade que os PV)."*
+     *
+     * 🔴 É o **único** tipo que muda a ficha DEPOIS do golpe: a armadura se gasta.
+     * Ver [CorrosaoNaArmadura].
+     *
+     * ⚠️ Nenhuma arma do catálogo causa corrosão — ela entra pelo dano digitado à
+     * mão pelo Mestre, que é como ácido e sopro de dragão chegam à mesa.
+     */
+    COR("cor", 1.0);
 
     /**
      * Ganha **×3 nos vitais** (MB p.399).

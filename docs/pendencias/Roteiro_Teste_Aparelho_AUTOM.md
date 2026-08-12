@@ -1904,3 +1904,15 @@ exemplo o *Traje Pressurizado* (RD 6\*) ou a *Cota de Malha Longa Dupla*.
   **Vitais**, tipo **Queimadura**, dano **10**, sem armadura: ✅ o resultado é
   **−10 PV** (×1), e **não** −30. Depois vista uma armadura flexível de RD 10+ e
   bata com 10 de queimadura: ✅ **−0 PV**, **sem** linha de trauma por impacto.
+
+---
+
+# Lote EQP-13 — corrosão
+
+> Gate: 2.137 testes, 0 falhas nas duas variantes.
+
+- **T-EQ53 · 🔴 o ácido come a armadura** — vista uma armadura de RD 6 no tronco.
+  Aba Rolagem → **PV** → tronco → **Corrosão ×1** → dano **16**: ✅ perde **10 PV**
+  e aparece o aviso *"Corrosão: 10 penetrante ÷ 5 = 2 ponto(s) de RD destruídos"*.
+- **T-EQ54 · ácido barrado não corrói** — mesma armadura, dano **6**: ✅ **−0 PV** e
+  **nenhum** aviso de corrosão (nada penetrou).

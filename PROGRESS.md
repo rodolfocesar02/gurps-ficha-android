@@ -7487,3 +7487,43 @@ Queimadura não está na lista. Sem a trava, 20 de fogo barrados por uma cota
 flexível dariam 4 PV que o livro não dá.
 
 - **Status:** ✅ Build OK nas 2 variantes · lint OK · gate **2130** (+8) · ⏭️ **PENDENTE: teste no aparelho** (T-EQ51/T-EQ52).
+
+---
+
+### Lote EQP-13 (B) — Corrosão (9.7-EQP13)
+
+MB p.43 e p.380.
+
+> *"Um ataque que causa dano por corrosão (cor) — ácidos, feixes de desintegração,
+> etc. — destrói **um ponto da RD do alvo a cada 5 pontos** de dano considerado
+> 'dano penetrante'."*
+
+#### 🔴 O único tipo que muda a ficha depois do golpe
+
+Todos os outros terminam quando o PV é descontado. A corrosão deixa marca: a
+armadura fica **permanentemente** mais fraca, e o próximo golpe no mesmo lugar
+encontra menos proteção.
+
+⚠️ A base é o dano **penetrante**, não o rolado. Ácido que a armadura segurou
+inteiro escorre; é o que passa que a come por dentro.
+
+#### ⚠️ Por que o app calcula e NÃO aplica
+
+Aplicar significaria reescrever o `armaduraRd` da peça — e pode haver várias no
+mesmo local, sem o app saber **qual** o ácido atingiu. Um desconto automático na
+peça errada é pior que nenhum: some RD de onde não devia, em silêncio, e o jogador
+só descobre no golpe seguinte.
+
+O número aparece no aviso, e quem edita é o jogador — no campo de RD que o EQP-8
+criou.
+
+⚠️ E o livro diz que *"seres vivos recuperam a RD natural na mesma velocidade que
+os PV"* — isso vale para a RD **do corpo**. Armadura corroída não sara, e o aviso
+diz isso.
+
+#### Nenhuma arma do catálogo causa corrosão
+
+Ela entra pelo dano digitado à mão — que é como ácido e sopro de dragão chegam à
+mesa. É a razão de a regra viver no diálogo de ferimento e não no cartão da arma.
+
+- **Status:** ✅ Build OK nas 2 variantes · lint OK · gate **2137** (+7) · ⏭️ **PENDENTE: teste no aparelho** (T-EQ53/T-EQ54).

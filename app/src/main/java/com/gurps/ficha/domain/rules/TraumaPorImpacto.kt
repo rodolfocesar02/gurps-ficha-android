@@ -98,3 +98,64 @@ object TraumaPorImpacto {
             if (trauma == 1) "ponto de vida." else "pontos de vida."
     }
 }
+
+/**
+ * **Corrosão e Lesão** — MB p.380. Lote EQP-13.
+ *
+ * > *"Um ataque que causa dano por corrosão (cor) — ácidos, feixes de
+ * > desintegração, etc. — destrói **um ponto da RD do alvo a cada 5 pontos de
+ * > dano considerado "dano penetrante"**."*
+ *
+ * ## 🔴 O único tipo que muda a ficha depois do golpe
+ *
+ * Todos os outros terminam quando o PV é descontado. A corrosão deixa marca: a
+ * armadura fica **permanentemente** mais fraca, e o próximo golpe no mesmo lugar
+ * encontra menos proteção.
+ *
+ * ## ⚠️ Por que o app calcula e NÃO aplica sozinho
+ *
+ * Aplicar significaria reescrever o campo `armaduraRd` da peça — e a peça pode
+ * ser uma só de várias no local, sem o app saber **qual** o ácido atingiu. Um
+ * desconto automático na peça errada é pior que nenhum: some RD de onde não
+ * devia, em silêncio, e o jogador só descobre no golpe seguinte.
+ *
+ * Então: o número aparece na tela, e quem edita o RD é o jogador — no campo que
+ * o Lote EQP-8 criou justamente para isso.
+ *
+ * ⚠️ *"Seres vivos recuperam a RD natural na mesma velocidade que os PV"* — vale
+ * para a RD **do corpo**, não para a armadura. Armadura corroída não sara.
+ */
+object CorrosaoNaArmadura {
+
+    /** Cinco pontos de dano penetrante por ponto de RD destruído (p.380). */
+    const val POR_PONTO_DE_RD = 5
+
+    /**
+     * Quantos pontos de RD o ácido destruiu.
+     *
+     * ⚠️ A base é o **dano penetrante**, não o rolado. Um ácido que a armadura
+     * barrou inteiro não a corrói — é o que passa que a come por dentro.
+     */
+    fun rdDestruida(tipo: DanoTipo, penetrante: Int): Int {
+        if (tipo != DanoTipo.COR) return 0
+        if (penetrante <= 0) return 0
+        return penetrante / POR_PONTO_DE_RD
+    }
+
+    /** A conta pronta para a tela. Null quando não houve corrosão. */
+    fun conta(penetrante: Int, destruida: Int): String? {
+        if (destruida <= 0) return null
+        return "Corrosão: $penetrante penetrante ÷ $POR_PONTO_DE_RD = " +
+            "$destruida ponto(s) de RD destruídos. Ajuste o RD da peça no lápis — " +
+            "armadura corroída não se recupera."
+    }
+
+    /** O mesmo, sem sinal cru, para quem ouve a tela. */
+    fun contaAcessivel(penetrante: Int, destruida: Int): String? {
+        if (destruida <= 0) return null
+        return "O ácido destruiu ${RotuloAcessivel.valor(destruida)} " +
+            (if (destruida == 1) "ponto" else "pontos") +
+            " de resistência a dano da armadura. Ajuste o campo de RD da peça na aba " +
+            "Equipamentos: armadura corroída não se recupera sozinha."
+    }
+}
