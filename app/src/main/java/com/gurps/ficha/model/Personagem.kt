@@ -846,6 +846,10 @@ data class Equipamento(
     var armaTirosRaw: String? = null,           // "6(3)"
     var armaMagnitude: Int? = null,             // Bulk
     var armaRecuo: Int? = null,                 // Rcl
+    // Lote EQP-11: a qualidade da arma (MB p.275-276), guardada pelo NOME do
+    // enum para nao prender o Gson a uma ordem. Null = a qualidade padrao
+    // do livro (boa), que e como o catalogo publica os precos.
+    var armaQualidade: String? = null,
     var armaAparar: String? = null,             // coluna Aparar: "0", "-1", "0D" (desbal.), "0E"/"F" (esgrima), "Não"
     // Saga (item 1 do teste de batalha): item TIRADO do herói pela narrativa (desarmado/capturado). Continua
     // na ficha (recuperável) mas indisponível: o combate ignora arma confiscada (some dos ataques) e armadura
@@ -880,8 +884,36 @@ data class Equipamento(
         // determinar seu potencial ofensivo" (MB p.88), entao entra aqui junto
         // com o stExtra da ST Bracal -- sao vantagens diferentes e somam.
         val stGolpe = com.gurps.ficha.domain.rules.StEspecializadaRules.bonusDeGolpe(personagem)
-        return CharacterRules.resolverDanoPorSt(raw, personagem.forca + stExtra + stGolpe, bonusPorDado)
+        val resolvido = CharacterRules.resolverDanoPorSt(
+            raw, personagem.forca + stExtra + stGolpe, bonusPorDado
+        ) ?: return null
+
+        // 🔴 Lote EQP-11. A qualidade da arma (MB p.275-276) some ao dano, e so
+        // em LAMINA: uma maca superior ganha o -1 na quebra e nenhum dano. Antes
+        // disto o jogador anotava "+1 Dano" na NOTA, que o combate nao le.
+        return com.gurps.ficha.domain.rules.QualidadeDaArma.aplicarAoDano(
+            resolvido,
+            bonusDeQualidade()
+        )
     }
+
+    /** O bônus de dano da qualidade desta arma, já filtrado pelo tipo (EQP-11). */
+    fun bonusDeQualidade(): Int {
+        val nivel = qualidadeDaArma() ?: return 0
+        val tipo = com.gurps.ficha.domain.rules.TipoDeDanoNoTexto.ler(armaDanoRaw) ?: return 0
+        return com.gurps.ficha.domain.rules.QualidadeDaArma.bonusDeDano(
+            nivel = nivel,
+            tipo = tipo,
+            ehEspadaOuEsgrima = com.gurps.ficha.domain.rules.QualidadeDaArma
+                .ehEspadaOuEsgrima(armaGrupo ?: nome)
+        )
+    }
+
+    /** A qualidade guardada, ou null quando é a padrão do livro. */
+    fun qualidadeDaArma(): com.gurps.ficha.domain.rules.QualidadeDaArma.Nivel? =
+        armaQualidade?.let { nome ->
+            com.gurps.ficha.domain.rules.QualidadeDaArma.Nivel.entries.firstOrNull { it.name == nome }
+        }
 
     fun rdArmaduraExibicao(): String? {
         val estruturado = armaduraRd?.trim().orEmpty()

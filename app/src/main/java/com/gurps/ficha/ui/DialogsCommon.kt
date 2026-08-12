@@ -1,6 +1,7 @@
 package com.gurps.ficha.ui
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
 import com.gurps.ficha.model.TipoEquipamento
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -236,6 +237,10 @@ fun EquipamentoDialog(
     var bdEscudo by remember {
         mutableStateOf(initialEquipamento?.bonusDefesa?.takeIf { it != 0 }?.toString() ?: "")
     }
+    // Lote EQP-11: a qualidade da arma (MB p.275-276). Null = a padrao do livro.
+    var qualidade by remember {
+        mutableStateOf(initialEquipamento?.qualidadeDaArma())
+    }
     var dano by remember { mutableStateOf(initialEquipamento?.armaDanoRaw ?: "") }
     var stMin by remember { mutableStateOf(initialEquipamento?.armaStMinimo?.toString() ?: "") }
 
@@ -341,6 +346,33 @@ fun EquipamentoDialog(
 
                 if (temAutomacaoDeCombate) {
                 SecaoDoEditor("Automação de combate (opcional)")
+                // ⚠️ Qualidade fica AQUI, e não em "Seus dados", porque ela não é
+                // um dado do item: é um modificador que entra na conta do dano.
+                Text(
+                    "Qualidade da arma (MB p.275)",
+                    style = UiEstilos.detalheDoItem,
+                    color = MaterialTheme.colorScheme.outline
+                )
+                Row(
+                    modifier = Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()),
+                    horizontalArrangement = Arrangement.spacedBy(UiTokens.BotaoEspacamento),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    com.gurps.ficha.domain.rules.QualidadeDaArma.Nivel.entries.forEach { nivel ->
+                        AppFiltroChip(nivel.rotulo, qualidade == nivel) {
+                            // Tocar no que já está marcado desmarca: voltar para a
+                            // qualidade padrão do livro é uma escolha, não um vazio.
+                            qualidade = if (qualidade == nivel) null else nivel
+                        }
+                    }
+                }
+                (qualidade ?: com.gurps.ficha.domain.rules.QualidadeDaArma.PADRAO).let { n ->
+                    Text(
+                        n.explicacao,
+                        style = UiEstilos.detalheDoItem,
+                        color = MaterialTheme.colorScheme.outline
+                    )
+                }
                 Row(horizontalArrangement = Arrangement.spacedBy(UiTokens.DialogContentSpacing)) {
                     OutlinedTextField(
                         value = dano, onValueChange = { dano = it },
@@ -381,6 +413,7 @@ fun EquipamentoDialog(
                                 tipo = tipoFinal,
                                 armaDanoRaw = danoFinal,
                                 armaStMinimo = stMin.toIntOrNull(),
+                                armaQualidade = qualidade?.name,
                                 armaduraRd = if (ehArmadura) rdArmadura.trim().ifBlank { null } else initialEquipamento?.armaduraRd,
                                 bonusDefesa = if (ehEscudo) {
                                     bdEscudo.trim().toIntOrNull() ?: 0

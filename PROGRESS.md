@@ -7394,3 +7394,59 @@ aviso a mais numa pilha que já existia.
 Onde ele é explícito num e silencioso no outro, o silêncio conta.
 
 - **Status:** ✅ Build OK nas 2 variantes · lint OK · gate **2107** (+11) · ⏭️ **PENDENTE: teste no aparelho** (T-EQ44 a T-EQ46).
+
+---
+
+### Lote EQP-11 — Qualidade das Armas (9.5-EQP11)
+
+MB p.275-276.
+
+| grau | dano | quebra |
+|---|---|---|
+| Barata | — | +2 |
+| Boa (padrão) | — | 0 |
+| Superior | **+1** corte/perfuração | −1 |
+| Altíssima (só espada e esgrima) | **+2** corte/perfuração | −2 |
+
+#### 🔴 O dano saía do catálogo sem qualidade nenhuma
+
+Uma espada de qualidade superior era idêntica a uma comum, e quem a comprasse
+anotava *"+1 Dano"* **na nota** — que o combate não lê. É o mesmo problema que o
+RD tinha antes do EQP-8: dado que importa guardado num campo que ninguém
+consulta.
+
+#### ⚠️ O bônus só vale para LÂMINA
+
+> *"Uma **lâmina** (arma de corte ou perfuração) que se classifica como tal também
+> recebe um bônus de +1 nos danos causados por corte e perfuração."*
+
+Uma maça de qualidade superior **não** ganha dano — ganha só o −1 na quebra. Ela
+não tem lâmina para ser bem-feita. Dar o +1 a tudo daria a um porrete caro o mesmo
+ganho de uma katana.
+
+E o bônus soma no **acréscimo**, nunca nos dados: `1d+2` vira `1d+3`, não `2d`.
+Trocar dados mudaria a curva inteira da rolagem.
+
+#### O que ficou de fora, e por quê
+
+Os **multiplicadores de preço** (40%, 3×, 10×, 20×…) dependem do **NT da
+campanha**, e a ficha não guarda esse número. É a mesma decisão do
+`QualidadeDoEquipamento`, que deixou de fora o degrau *"+NT/2"* pelo mesmo motivo:
+chutar um valor que depende de um dado inexistente é pior que não oferecer.
+
+#### ⭐ O que a varredura do catálogo achou
+
+`TipoDeDanoNoTexto` lê o tipo do texto do catálogo (`"GeB+2 corte"`), e a
+varredura das 150 armas reprovou **12** — e a reprovação estava certa:
+
+- **`qmd` (queimadura)** — laser, feixe iônico, lança-chamas, espada de energia.
+  É um tipo de dano de verdade (MB p.43, modificador ×1) e o `DanoTipo` do app
+  **não o modela**; o diálogo de ferimento não o oferece.
+- **`at` (atribulação)** — pistola paralisante, eletrolaser. Não causa PV, exige
+  teste de HT.
+
+Para **esta** regra não muda nada (nenhuma das duas é lâmina, o bônus seria zero).
+Fica como possibilidade a **apresentar** ao usuário, não como defeito escondido. O
+teste tranca o que interessa: nenhuma arma de corte ou perfuração escapa.
+
+- **Status:** ✅ Build OK nas 2 variantes · lint OK · gate **2122** (+15) · ⏭️ **PENDENTE: teste no aparelho** (T-EQ47 a T-EQ50).

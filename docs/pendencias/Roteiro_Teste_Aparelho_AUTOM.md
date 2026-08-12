@@ -1875,3 +1875,19 @@ exemplo o *Traje Pressurizado* (RD 6\*) ou a *Cota de Malha Longa Dupla*.
 - **T-EQ46 · o preço da camada** — em qualquer pilha no tronco/pernas/braços: ✅
   aparece a linha *"Camada extra de armadura: -1 na DX…"*. Faça a mesma pilha só
   no **crânio**: ✅ essa linha **não** aparece.
+
+---
+
+# Lote EQP-11 — qualidade da arma
+
+> Gate: 2.122 testes, 0 falhas nas duas variantes.
+
+- **T-EQ47 · 🔴 a espada superior bate mais** — adicione uma *Espada Larga*, toque
+  no **lápis**, seção *Automação de combate* → chip **Superior** → Salve. ✅ o
+  dano no cartão da arma sobe **1** (ex.: `1d+1` vira `1d+2`).
+- **T-EQ48 · e a maça não** — mesma coisa num *Machado* ou *Maça*: ✅ escolher
+  **Superior** **não** muda o dano (o texto do chip explica: o bônus é de lâmina).
+- **T-EQ49 · altíssima só em espada** — num *Machado*, chip **Altíssima**: ✅ o
+  dano continua igual. Na *Espada Larga*: ✅ sobe **2**.
+- **T-EQ50 · desmarcar volta ao padrão** — toque de novo no chip já marcado: ✅ ele
+  desmarca e o dano volta ao do livro.
