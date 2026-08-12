@@ -1916,3 +1916,18 @@ exemplo o *Traje Pressurizado* (RD 6\*) ou a *Cota de Malha Longa Dupla*.
   e aparece o aviso *"Corrosão: 10 penetrante ÷ 5 = 2 ponto(s) de RD destruídos"*.
 - **T-EQ54 · ácido barrado não corrói** — mesma armadura, dano **6**: ✅ **−0 PV** e
   **nenhum** aviso de corrosão (nada penetrou).
+
+---
+
+# Lote EQP-14 — fadiga, toxina e atribulação
+
+> Gate: 2.145 testes, 0 falhas nas duas variantes.
+
+- **T-EQ55 · 🔴 fadiga desconta PF, não PV** — aba Rolagem → **PV** → tronco →
+  **Fadiga (PF)** → dano **6** → **Aplicar**: ✅ o resultado diz **−6 PF** (não PV),
+  e ao fechar o **PF** do painel baixou 6 e o **PV** ficou intacto.
+- **T-EQ56 · atribulação não tira nada** — mesmo local, **Atribulação (HT)**, dano
+  **20**: ✅ o resultado diz *"Sem PV perdidos → teste de HT"*, e aplicar **não**
+  muda nem PV nem PF.
+- **T-EQ57 · toxina é dano comum** — **Toxina ×1**, dano 10 sem armadura: ✅ **−10
+  PV**, como qualquer ×1.

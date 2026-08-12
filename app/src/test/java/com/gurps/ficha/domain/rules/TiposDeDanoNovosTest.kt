@@ -210,3 +210,111 @@ class CorrosaoNaArmaduraTest {
         assertTrue(falado, falado.contains("não se recupera"))
     }
 }
+
+/**
+ * **Fadiga, toxina e atribulação** — MB p.43-44. Lote EQP-14.
+ */
+class FadigaToxinaAtribulacaoTest {
+
+    private fun golpe(tipo: DanoTipo, dano: Int = 10, rd: Int = 0) =
+        FerimentoPorLocalRules.aplicar(
+            pvInicial = 10, danoBruto = dano, tipo = tipo,
+            local = LocalAtaque.TORSO, rdArmadura = rd
+        )
+
+    // ── Fadiga vai para o outro medidor ────────────────────────────────
+
+    @Test
+    fun `so a fadiga desconta PF`() {
+        // "Ele reduz o número de PF, não de PV" (p.43).
+        DanoTipo.entries.forEach { tipo ->
+            assertEquals("'${tipo.rotulo}'", tipo == DanoTipo.FAD, tipo.atingePf)
+        }
+        assertTrue(golpe(DanoTipo.FAD).atingePf)
+        assertFalse(golpe(DanoTipo.CONT).atingePf)
+    }
+
+    @Test
+    fun `a conta da fadiga e a mesma, so muda o destino`() {
+        // 🔴 O ponto: a regra NÃO muda a aritmética. Um choque de 10 contra RD 4
+        // dá 6, exatamente como uma contusão daria — mas em PF.
+        val fadiga = golpe(DanoTipo.FAD, dano = 10, rd = 4)
+        val contusao = golpe(DanoTipo.CONT, dano = 10, rd = 4)
+        assertEquals(contusao.pvPerdidos, fadiga.pvPerdidos)
+        assertTrue(fadiga.atingePf)
+        assertFalse(contusao.atingePf)
+    }
+
+    @Test
+    fun `fadiga nao triplica nos vitais nem da trauma`() {
+        assertFalse(DanoTipo.FAD.perfuranteOuPerf)
+        assertFalse(DanoTipo.FAD.causaTraumaPorImpacto)
+        assertEquals(1.0, FerimentoPorLocalRules.multiplicador(DanoTipo.FAD, LocalAtaque.VITAIS), 0.0)
+    }
+
+    // ── Toxina é dano comum ────────────────────────────────────────────
+
+    @Test
+    fun `toxina desconta PV normalmente`() {
+        val r = golpe(DanoTipo.TOX, dano = 10, rd = 4)
+        assertFalse(r.atingePf)
+        assertFalse(r.ehAtribulacao)
+        assertEquals(6, r.pvPerdidos)
+    }
+
+    // ── Atribulação não é dano ─────────────────────────────────────────
+
+    @Test
+    fun `atribulacao nao tira ponto nenhum`() {
+        // ⚠️ Não é dano: o que penetra vira teste de HT.
+        val r = golpe(DanoTipo.AT, dano = 20)
+        assertTrue(r.ehAtribulacao)
+        assertEquals(0, r.pvPerdidos)
+        assertFalse(r.atingePf)
+    }
+
+    @Test
+    fun `so a atribulacao deixa de tirar pontos`() {
+        DanoTipo.entries.forEach { tipo ->
+            assertEquals("'${tipo.rotulo}'", tipo != DanoTipo.AT, tipo.causaPerdaDePontos)
+        }
+    }
+
+    @Test
+    fun `atribulacao com armadura continua sem tirar ponto`() {
+        assertEquals(0, golpe(DanoTipo.AT, dano = 20, rd = 30).pvPerdidos)
+        assertEquals(0, golpe(DanoTipo.AT, dano = 1, rd = 0).pvPerdidos)
+    }
+
+    // ── A fronteira inteira, de uma vez ────────────────────────────────
+
+    @Test
+    fun `cada tipo novo esta do lado certo de todas as fronteiras`() {
+        // Uma tabela só, para o próximo tipo que entrar não escorregar em
+        // nenhuma das quatro propriedades sem alguém perceber.
+        data class Esperado(
+            val vitais3x: Boolean, val trauma: Boolean, val pf: Boolean, val tiraPontos: Boolean
+        )
+        val tabela = mapOf(
+            DanoTipo.CONT to Esperado(false, true, false, true),
+            DanoTipo.CORT to Esperado(false, true, false, true),
+            DanoTipo.PERF to Esperado(true, true, false, true),
+            DanoTipo.PI_MENOS to Esperado(true, true, false, true),
+            DanoTipo.PI to Esperado(true, true, false, true),
+            DanoTipo.PI_MAIS to Esperado(true, true, false, true),
+            DanoTipo.PI_MAIS_MAIS to Esperado(true, true, false, true),
+            DanoTipo.QMD to Esperado(false, false, false, true),
+            DanoTipo.COR to Esperado(false, false, false, true),
+            DanoTipo.FAD to Esperado(false, false, true, true),
+            DanoTipo.TOX to Esperado(false, false, false, true),
+            DanoTipo.AT to Esperado(false, false, false, false)
+        )
+        assertEquals("há tipo fora da tabela", DanoTipo.entries.size, tabela.size)
+        tabela.forEach { (tipo, e) ->
+            assertEquals("${tipo.rotulo}: ×3 nos vitais", e.vitais3x, tipo.perfuranteOuPerf)
+            assertEquals("${tipo.rotulo}: trauma", e.trauma, tipo.causaTraumaPorImpacto)
+            assertEquals("${tipo.rotulo}: PF", e.pf, tipo.atingePf)
+            assertEquals("${tipo.rotulo}: tira pontos", e.tiraPontos, tipo.causaPerdaDePontos)
+        }
+    }
+}

@@ -68,10 +68,14 @@ import com.gurps.ficha.ui.linhaAlternavel
 fun DialogoFerimento(
     pvInicial: Int,
     pvAtual: Int,
+    // Lote EQP-14: a fadiga desconta no OUTRO medidor (MB p.43), então o diálogo
+    // precisa saber onde o PF está para poder devolvê-lo.
+    pfInicial: Int,
+    pfAtual: Int,
     equipamentos: List<Equipamento>,
     guardadas: Set<String>,
     isPraCegoVariant: Boolean,
-    onSalvar: (pvNovo: Int, guardadas: Set<String>, resumo: String) -> Unit,
+    onSalvar: (pvNovo: Int, pfNovo: Int, guardadas: Set<String>, resumo: String) -> Unit,
     onFechar: () -> Unit
 ) {
     // Lote PV-1b: a silhueta guarda a REGIÃO (que tem lado); a variante pracego
@@ -128,7 +132,12 @@ fun DialogoFerimento(
             rdFlexivel = rdFlexivel
         )
     }
-    val pvNovo = pvAtual - (resultado?.pvPerdidos ?: 0)
+    // 🔴 Lote EQP-14. O mesmo número, dois destinos: fadiga vai para o PF, todo o
+    // resto para o PV. Mandar os dois para o PV faria um choque elétrico matar.
+    val perdidos = resultado?.pvPerdidos ?: 0
+    val vaiParaPf = resultado?.atingePf == true
+    val pvNovo = if (vaiParaPf) pvAtual else pvAtual - perdidos
+    val pfNovo = if (vaiParaPf) pfAtual - perdidos else pfAtual
 
     // A silhueta é o conteúdo principal, então ela ganha uma fatia proporcional
     // da tela — num celular pequeno encolhe junto, em vez de empurrar o resto
@@ -273,7 +282,14 @@ fun DialogoFerimento(
             // ⚠️ O visível mantém os sinais ("−12 PV"); o falado soletra, porque
             // o leitor de tela pula o hífen e um redutor vira bônus.
             Text(
-                "−${r.pvPerdidos} PV   →   $pvNovo de $pvInicial",
+                when {
+                    r.ehAtribulacao ->
+                        "Sem PV perdidos   →   teste de HT"
+                    r.atingePf ->
+                        "−${r.pvPerdidos} PF   →   $pfNovo de $pfInicial"
+                    else ->
+                        "−${r.pvPerdidos} PV   →   $pvNovo de $pvInicial"
+                },
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.error,
@@ -294,6 +310,7 @@ fun DialogoFerimento(
                     val r = resultado
                     onSalvar(
                         pvNovo,
+                        pfNovo,
                         naMochila.toSet(),
                         if (r == null) "" else "${regiao?.nomeCompleto ?: rotuloDoLocal(local)}: ${r.conta}"
                     )
@@ -509,4 +526,10 @@ private fun rotuloDoTipo(t: DanoTipo): String = when (t) {
     DanoTipo.PI_MAIS_MAIS -> "Extrem. perf. ×2"
     DanoTipo.QMD -> "Queimadura ×1"
     DanoTipo.COR -> "Corrosão ×1"
+    // ⚠️ Estes três não seguem o padrão "×N" de propósito: fadiga vai
+    // para OUTRO medidor e atribulação não tira ponto nenhum. Escrever
+    // "Fadiga ×1" faria os dois lerem como dano comum.
+    DanoTipo.FAD -> "Fadiga (PF)"
+    DanoTipo.TOX -> "Toxina ×1"
+    DanoTipo.AT -> "Atribulação (HT)"
 }

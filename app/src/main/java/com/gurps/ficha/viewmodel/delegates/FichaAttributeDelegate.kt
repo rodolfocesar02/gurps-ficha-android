@@ -109,11 +109,15 @@ class FichaAttributeDelegate {
     fun aplicarFerimentoPorLocal(
         personagem: Personagem,
         pvNovo: Int,
+        // Lote EQP-14: a fadiga desconta aqui, não no PV (MB p.43).
+        pfNovo: Int,
         guardadas: Set<String>
     ): Personagem {
         val pvMax = personagem.pontosVida.coerceAtLeast(1)
+        val pfMax = personagem.pontosFadiga.coerceAtLeast(1)
         return personagem.copy(
             pontosVidaRolagemAtual = pvNovo.coerceIn(-pvMax * 10, pvMax * 5),
+            pontosFadigaRolagemAtual = pfNovo.coerceIn(-pfMax * 10, pfMax * 5),
             armadurasGuardadas = guardadas.toList().sorted()
         )
     }

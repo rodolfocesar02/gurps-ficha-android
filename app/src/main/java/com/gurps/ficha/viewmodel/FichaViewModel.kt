@@ -456,8 +456,8 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
     fun aplicarPainelDeFadiga(quantidades: Map<String, Int>, pfNovo: Int, pvPerdidos: Int) {
         personagem = attributeDelegate.aplicarPainelDeFadiga(personagem, quantidades, pfNovo, pvPerdidos); salvarFicha()
     }
-    fun aplicarFerimentoPorLocal(pvNovo: Int, guardadas: Set<String>) {
-        personagem = attributeDelegate.aplicarFerimentoPorLocal(personagem, pvNovo, guardadas); salvarFicha()
+    fun aplicarFerimentoPorLocal(pvNovo: Int, pfNovo: Int, guardadas: Set<String>) {
+        personagem = attributeDelegate.aplicarFerimentoPorLocal(personagem, pvNovo, pfNovo, guardadas); salvarFicha()
     }
     fun atualizarModeloRacial(novo: ModeloRacial) { personagem = attributeDelegate.atualizarModeloRacial(personagem, novo); salvarFicha() }
 

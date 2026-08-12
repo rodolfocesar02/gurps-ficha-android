@@ -52,7 +52,35 @@ enum class DanoTipo(val rotulo: String, val multBase: Double) {
      * ⚠️ Nenhuma arma do catálogo causa corrosão — ela entra pelo dano digitado à
      * mão pelo Mestre, que é como ácido e sopro de dragão chegam à mesa.
      */
-    COR("cor", 1.0);
+    COR("cor", 1.0),
+
+    /**
+     * **Fadiga (fad)** — MB p.43: *"O ataque não é letal. (…) Ele reduz o número
+     * de **PF**, não de PV, e não afeta máquinas."*
+     *
+     * 🔴 É o único tipo que **não desconta PV**. Choque elétrico de baixa
+     * amperagem, explosão mental, hipotermia, inanição.
+     */
+    FAD("fad", 1.0),
+
+    /**
+     * **Toxina (tox)** — MB p.44: *"dano celular na forma de doenças,
+     * envenenamento ou radiação. Normalmente não afeta máquinas."*
+     */
+    TOX("tox", 1.0),
+
+    /**
+     * **Atribulação (at)** — ⚠️ **não é dano.**
+     *
+     * Quatro armas do catálogo a usam (pistola paralisante, arreador,
+     * eletrolasers) e ela não tira PV nem PF: exige um **teste de HT**, e o
+     * fracasso traz o efeito da arma.
+     *
+     * Está no enum porque é o que o jogador escolhe na tela — mas
+     * [causaPerdaDePontos] responde `false`, e é isso que impede a conta de
+     * ferimento de rodar sobre ela.
+     */
+    AT("at", 0.0);
 
     /**
      * Ganha **×3 nos vitais** (MB p.399).
@@ -79,6 +107,22 @@ enum class DanoTipo(val rotulo: String, val multBase: Double) {
      */
     val causaTraumaPorImpacto: Boolean
         get() = this in setOf(CONT, CORT, PERF, PI_MENOS, PI, PI_MAIS, PI_MAIS_MAIS)
+
+    /**
+     * Desconta **PF** em vez de PV (MB p.43) — Lote EQP-14.
+     *
+     * ⚠️ Só a fadiga. A conta do ferimento é a mesma até o fim; o que muda é
+     * **onde** o número é debitado. Tratar isso como um tipo comum faria um
+     * choque elétrico matar alguém.
+     */
+    val atingePf: Boolean get() = this == FAD
+
+    /**
+     * Se o ataque tira pontos de algum lugar.
+     *
+     * `false` só na **atribulação**, que não é dano: é teste de HT.
+     */
+    val causaPerdaDePontos: Boolean get() = this != AT
 }
 
 /**

@@ -1458,11 +1458,14 @@ fun TabRolagem(viewModel: FichaViewModel) {
         DialogoFerimento(
             pvInicial = pvFixoRolagem,
             pvAtual = pvAtualRolagem,
+            // Lote EQP-14: a fadiga (MB p.43) desconta no PF, não no PV.
+            pfInicial = pfFixoRolagem,
+            pfAtual = pfAtualRolagem,
             equipamentos = p.equipamentos,
             guardadas = p.armadurasGuardadas.toSet(),
             isPraCegoVariant = isPraCegoVariant,
-            onSalvar = { pvNovo, guardadas, _ ->
-                viewModel.aplicarFerimentoPorLocal(pvNovo, guardadas)
+            onSalvar = { pvNovo, pfNovo, guardadas, _ ->
+                viewModel.aplicarFerimentoPorLocal(pvNovo, pfNovo, guardadas)
                 showFerimentoDialog = false
             },
             onFechar = { showFerimentoDialog = false }

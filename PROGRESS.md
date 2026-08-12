@@ -7527,3 +7527,43 @@ Ela entra pelo dano digitado à mão — que é como ácido e sopro de dragão c
 mesa. É a razão de a regra viver no diálogo de ferimento e não no cartão da arma.
 
 - **Status:** ✅ Build OK nas 2 variantes · lint OK · gate **2137** (+7) · ⏭️ **PENDENTE: teste no aparelho** (T-EQ53/T-EQ54).
+
+---
+
+### Lote EQP-14 (C) — Fadiga, Toxina e Atribulação (9.8-EQP14)
+
+MB p.43-44. Fecha a tabela de tipos de dano da p.380: o `DanoTipo` tinha **7**
+entradas e agora tem **12**.
+
+#### 🔴 A fadiga desconta no OUTRO medidor
+
+> *"O ataque não é letal. (…) Ele reduz o número de **PF**, não de PV."* (p.43)
+
+A conta é **idêntica** até o fim — um choque de 10 contra RD 4 dá 6, exatamente
+como uma contusão daria. O que muda é **onde** o número é debitado. Tratá-lo como
+tipo comum faria um choque elétrico de baixa amperagem **matar**.
+
+Isso obrigou o diálogo a receber o PF e a devolver os dois valores. A assinatura
+do `onSalvar` cresceu, e é o preço certo: o botão existe para não fazer conta na
+mão, e mandar o jogador transferir o número para o painel de PF seria devolver o
+trabalho.
+
+#### ⚠️ A atribulação não é dano
+
+Quatro armas do catálogo a usam (pistola paralisante, arreador, eletrolasers) e
+ela **não tira ponto nenhum**: exige teste de HT. Está no enum porque é o que o
+jogador escolhe na tela, mas `causaPerdaDePontos` responde `false` e a conta de
+ferimento não roda sobre ela. O resultado na tela diz *"Sem PV perdidos → teste de
+HT"*.
+
+#### ⭐ A tabela que fecha a fronteira
+
+Cada tipo agora responde **quatro** perguntas: triplica nos vitais? causa trauma
+por impacto? vai para o PF? tira pontos? São quatro `false` fáceis de errar num
+tipo novo — e a armadilha do EQP-12 mostrou que errar é silencioso.
+
+O teste monta a tabela **inteira**, os 12 tipos × 4 propriedades, e cobra que
+nenhum tipo esteja fora dela. Quem adicionar o décimo terceiro não consegue
+esquecer nenhuma das quatro.
+
+- **Status:** ✅ Build OK nas 2 variantes · lint OK · gate **2145** (+8) · ⏭️ **PENDENTE: teste no aparelho** (T-EQ55 a T-EQ57).

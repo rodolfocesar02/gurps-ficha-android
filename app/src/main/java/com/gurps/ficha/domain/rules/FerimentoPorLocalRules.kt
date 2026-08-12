@@ -211,7 +211,19 @@ object FerimentoPorLocalRules {
         /** A conta do trauma, pronta para a tela. Null quando não houve. */
         val contaDoTrauma: String? = null,
         /** Pontos de RD que o ácido destruiu na armadura (MB p.380). */
-        val rdDestruidaPorCorrosao: Int = 0
+        val rdDestruidaPorCorrosao: Int = 0,
+        /**
+         * 🔴 Lote EQP-14: os pontos saem do **PF**, não do PV.
+         *
+         * A conta é idêntica até o fim — o que muda é **onde** o número é
+         * debitado. Só a fadiga (MB p.43).
+         */
+        val atingePf: Boolean = false,
+        /**
+         * A atribulação **não tira ponto nenhum**: é teste de HT. Quando isto é
+         * `true`, [pvPerdidos] vale zero de propósito.
+         */
+        val ehAtribulacao: Boolean = false
     ) {
         val conta: String
             get() = if (traumaPorImpacto > 0 && contaDoTrauma != null) {
@@ -311,7 +323,9 @@ object FerimentoPorLocalRules {
         // ⚠️ Trauma e lesão normal são MUTUAMENTE EXCLUSIVOS: o trauma só existe
         // quando nada penetrou, e nada penetrado significa lesão zero. É por isso
         // que esta soma não precisa de nenhuma ressalva — nunca há os dois.
-        var pvPerdidos = lesao + trauma
+        // ⚠️ Atribulação não tira ponto: o que penetra vira teste de HT, e a
+        // conta de ferimento simplesmente não se aplica.
+        var pvPerdidos = if (tipo.causaPerdaDePontos) lesao + trauma else 0
         var efeito = EfeitoNoLocal.NENHUM
         val avisos = mutableListOf<String>()
 
@@ -370,7 +384,9 @@ object FerimentoPorLocalRules {
             avisos = avisos,
             traumaPorImpacto = trauma,
             contaDoTrauma = TraumaPorImpacto.conta(danoBruto, tipo, flexivel, rigida, trauma),
-            rdDestruidaPorCorrosao = rdDestruida
+            rdDestruidaPorCorrosao = rdDestruida,
+            atingePf = tipo.atingePf,
+            ehAtribulacao = !tipo.causaPerdaDePontos
         )
     }
 
