@@ -6,109 +6,143 @@
 <title>Ficha GURPS 4e — o que o app faz</title>
 <style>
   :root{
-    --bg:#12121a; --bg2:#1a1a26; --card:#20202e; --linha:#2e2e40;
-    --tinta:#e8e6f0; --fraco:#9d9ab5; --fraquinho:#6f6c88;
-    --roxo:#8b7fd4; --roxo-claro:#b0a6ea; --ambar:#e0a854; --vermelho:#d9636a; --verde:#5fb98a;
+    /* preto quente, osso e dois metais — sem pastel, sem gradiente de enfeite */
+    --breu:#0b0a09; --breu2:#100e0c; --painel:#16130f; --painel2:#1c1813;
+    --fio:#2a251d; --fio-forte:#3b3327;
+    --osso:#e9e3d6; --osso-fraco:#a79c88; --osso-tenue:#6d6455;
+    --sangue:#8d1f22; --sangue-vivo:#b53b3b;
+    --ouro:#c39a3a; --ouro-claro:#e0bd63;
+    --aco:#7c8794; --verdete:#5d8570;
+    --serifa:Georgia,"Palatino Linotype","Book Antiqua",Palatino,"Times New Roman",serif;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
     --max:1180px;
   }
   *{box-sizing:border-box}
-  html{scroll-behavior:smooth; scroll-padding-top:74px}
-  body{margin:0;background:var(--bg);color:var(--tinta);
-       font:16px/1.65 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
-  .wrap{max-width:var(--max);margin:0 auto;padding:0 20px}
+  html{scroll-behavior:smooth;scroll-padding-top:70px}
+  body{margin:0;background:var(--breu);color:var(--osso);font:16px/1.68 var(--sans)}
+  /* grão de papel, quase imperceptível */
+  body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:1;opacity:.5;
+    background:repeating-linear-gradient(0deg,rgba(255,255,255,.012) 0 1px,transparent 1px 3px)}
+  .wrap{max-width:var(--max);margin:0 auto;padding:0 22px;position:relative;z-index:2}
 
-  /* ── topo ── */
-  header.hero{padding:64px 0 44px;border-bottom:1px solid var(--linha);
-    background:radial-gradient(1000px 400px at 50% -120px,rgba(139,127,212,.22),transparent 70%)}
-  .selo{display:inline-block;font-size:12px;letter-spacing:.16em;text-transform:uppercase;
-    color:var(--roxo-claro);border:1px solid var(--roxo);border-radius:99px;padding:5px 14px;margin-bottom:18px}
-  h1{font-size:clamp(30px,5.4vw,52px);line-height:1.1;margin:0 0 16px;letter-spacing:-.02em}
-  h1 em{font-style:normal;color:var(--roxo-claro)}
-  .sub{font-size:clamp(17px,2.4vw,21px);color:var(--fraco);max-width:60ch;margin:0}
-  .numeros{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:12px;margin-top:36px}
-  .num{background:var(--card);border:1px solid var(--linha);border-radius:12px;padding:16px 12px;text-align:center}
-  .num b{display:block;font-size:26px;color:var(--roxo-claro);letter-spacing:-.02em}
-  .num span{font-size:12px;color:var(--fraquinho);text-transform:uppercase;letter-spacing:.08em}
+  h1,h2,h3,h4,.disp{font-family:var(--serifa);font-weight:700}
+
+  /* ── abertura ── */
+  header.hero{position:relative;padding:78px 0 52px;
+    border-bottom:1px solid var(--fio-forte);
+    background:
+      radial-gradient(120% 90% at 50% 0%,rgba(141,31,34,.16),transparent 62%),
+      linear-gradient(180deg,#100d0b,var(--breu))}
+  header.hero::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:2px;
+    background:linear-gradient(90deg,transparent,var(--ouro),transparent);opacity:.5}
+  .selo{display:inline-block;font:600 11.5px/1 var(--sans);letter-spacing:.28em;text-transform:uppercase;
+    color:var(--ouro-claro);border-top:1px solid var(--ouro);border-bottom:1px solid var(--ouro);
+    padding:8px 2px;margin-bottom:24px}
+  h1{font-size:clamp(32px,5.6vw,58px);line-height:1.06;margin:0 0 18px;letter-spacing:.01em}
+  h1 em{font-style:italic;color:var(--ouro-claro)}
+  .sub{font-size:clamp(16.5px,2.2vw,20px);color:var(--osso-fraco);max-width:58ch;margin:0}
+
+  /* 8 selos: 4x2 no desktop, 2x4 no telefone — auto-fit deixava um orfao sozinho */
+  .numeros{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;margin-top:42px;
+    background:var(--fio);border:1px solid var(--fio)}
+  @media(max-width:620px){.numeros{grid-template-columns:repeat(2,1fr)}}
+  .num{background:var(--painel);padding:18px 10px;text-align:center}
+  .num b{display:block;font-family:var(--serifa);font-size:27px;color:var(--ouro-claro);line-height:1.1}
+  .num span{display:block;margin-top:5px;font-size:10.5px;color:var(--osso-tenue);
+    text-transform:uppercase;letter-spacing:.14em}
 
   /* ── navegação ── */
-  nav{position:sticky;top:0;z-index:40;background:rgba(18,18,26,.94);
-      backdrop-filter:blur(10px);border-bottom:1px solid var(--linha)}
-  nav ul{display:flex;gap:4px;list-style:none;margin:0;padding:10px 20px;max-width:var(--max);
-         margin-inline:auto;overflow-x:auto;scrollbar-width:none}
+  nav{position:sticky;top:0;z-index:40;background:rgba(11,10,9,.96);
+      border-bottom:1px solid var(--fio-forte)}
+  nav ul{display:flex;gap:0;list-style:none;margin:0 auto;padding:0 22px;max-width:var(--max);
+         overflow-x:auto;scrollbar-width:none}
   nav ul::-webkit-scrollbar{display:none}
-  nav a{color:var(--fraco);text-decoration:none;font-size:14px;padding:7px 13px;border-radius:8px;white-space:nowrap}
-  nav a:hover{color:var(--tinta);background:var(--card)}
+  nav a{display:block;color:var(--osso-fraco);text-decoration:none;font-size:12.5px;
+    letter-spacing:.1em;text-transform:uppercase;padding:15px 16px;white-space:nowrap;
+    border-bottom:2px solid transparent}
+  nav a:hover{color:var(--ouro-claro);border-bottom-color:var(--ouro)}
 
   /* ── seções ── */
-  section{padding:60px 0;border-bottom:1px solid var(--linha)}
-  h2{font-size:clamp(24px,3.6vw,34px);margin:0 0 6px;letter-spacing:-.02em}
-  h2 .n{color:var(--roxo);font-variant-numeric:tabular-nums;margin-right:10px}
-  .lede{color:var(--fraco);max-width:66ch;margin:0 0 30px;font-size:17px}
+  section{padding:66px 0;border-bottom:1px solid var(--fio)}
+  .cab{margin-bottom:30px}
+  h2{font-size:clamp(25px,3.6vw,36px);margin:0;letter-spacing:.01em;line-height:1.2}
+  h2 .n{font-family:var(--sans);font-size:12px;font-weight:700;letter-spacing:.24em;
+    color:var(--sangue-vivo);display:block;margin-bottom:9px}
+  .cab::after{content:"";display:block;width:70px;height:2px;margin-top:16px;
+    background:linear-gradient(90deg,var(--ouro),transparent)}
+  .lede{color:var(--osso-fraco);max-width:64ch;margin:18px 0 0;font-size:16.5px}
 
   /* ── par tela + notas ── */
-  .par{display:grid;grid-template-columns:minmax(0,300px) 1fr;gap:34px;align-items:start}
-  @media(max-width:860px){.par{grid-template-columns:1fr}}
+  .par{display:grid;grid-template-columns:minmax(0,290px) 1fr;gap:38px;align-items:start;margin-top:32px}
+  @media(max-width:880px){.par{grid-template-columns:1fr}}
 
-  .fone{position:relative;border-radius:26px;overflow:hidden;border:1px solid var(--linha);
-        background:#000;box-shadow:0 20px 50px rgba(0,0,0,.55);line-height:0}
+  .fone{position:relative;border:1px solid var(--fio-forte);background:#000;line-height:0;
+        box-shadow:0 0 0 1px rgba(195,154,58,.14),0 26px 60px rgba(0,0,0,.7)}
   .fone img{width:100%;height:auto;display:block}
 
-  .pino{position:absolute;transform:translate(-50%,-50%);width:26px;height:26px;border-radius:50%;
-    border:2px solid #fff;color:#fff;font:700 13px/22px sans-serif;text-align:center;cursor:pointer;
-    padding:0;box-shadow:0 0 0 3px rgba(0,0,0,.45),0 2px 8px rgba(0,0,0,.6);transition:transform .12s}
-  .pino:hover,.pino:focus-visible{transform:translate(-50%,-50%) scale(1.22);outline:none}
-  .pino[data-t="botao"]{background:var(--roxo)}
-  .pino[data-t="escondido"]{background:var(--ambar);color:#2a1c04}
-  .pino[data-t="gesto"]{background:var(--vermelho)}
-  .pino[data-t="auto"]{background:var(--verde);color:#06281a}
-  .pino.on{transform:translate(-50%,-50%) scale(1.3);box-shadow:0 0 0 4px rgba(255,255,255,.35),0 0 0 8px rgba(0,0,0,.5)}
+  .pino{position:absolute;transform:translate(-50%,-50%);width:25px;height:25px;border-radius:50%;
+    border:1px solid rgba(255,255,255,.85);color:#0b0a09;font:700 12.5px/23px var(--sans);
+    text-align:center;cursor:pointer;padding:0;
+    box-shadow:0 0 0 2px rgba(0,0,0,.7),0 2px 10px rgba(0,0,0,.75);transition:transform .12s}
+  .pino:hover,.pino:focus-visible{transform:translate(-50%,-50%) scale(1.24);outline:none}
+  .pino[data-t="botao"]{background:var(--aco)}
+  .pino[data-t="escondido"]{background:var(--ouro)}
+  .pino[data-t="gesto"]{background:var(--sangue-vivo);color:#fff}
+  .pino[data-t="auto"]{background:var(--verdete)}
+  .pino.on{transform:translate(-50%,-50%) scale(1.32);
+    box-shadow:0 0 0 3px rgba(233,227,214,.5),0 0 0 7px rgba(0,0,0,.75)}
 
-  .notas{display:flex;flex-direction:column;gap:10px}
-  .nota{background:var(--card);border:1px solid var(--linha);border-left:3px solid var(--roxo);
-    border-radius:10px;padding:14px 16px;cursor:pointer;transition:border-color .15s,background .15s}
-  .nota:hover{background:#262636}
-  .nota.on{background:#2a2740;border-color:var(--roxo-claro);border-left-color:var(--roxo-claro)}
-  .nota[data-t="escondido"]{border-left-color:var(--ambar)}
-  .nota[data-t="gesto"]{border-left-color:var(--vermelho)}
-  .nota[data-t="auto"]{border-left-color:var(--verde)}
-  .nota h4{margin:0 0 4px;font-size:15px;display:flex;align-items:center;gap:9px}
-  .nota h4 .b{flex:none;width:21px;height:21px;border-radius:50%;font:700 12px/21px sans-serif;
-    text-align:center;color:#fff;background:var(--roxo)}
-  .nota[data-t="escondido"] h4 .b{background:var(--ambar);color:#2a1c04}
-  .nota[data-t="gesto"] h4 .b{background:var(--vermelho)}
-  .nota[data-t="auto"] h4 .b{background:var(--verde);color:#06281a}
-  .nota p{margin:0;font-size:14.5px;color:var(--fraco)}
-  .nota .pag{display:inline-block;margin-top:7px;font-size:11.5px;letter-spacing:.06em;
-    text-transform:uppercase;color:var(--fraquinho);border:1px solid var(--linha);border-radius:5px;padding:2px 7px}
+  .notas{display:flex;flex-direction:column;gap:1px;background:var(--fio);border:1px solid var(--fio)}
+  .nota{background:var(--painel);border-left:3px solid var(--aco);padding:15px 17px;cursor:pointer;
+    transition:background .15s}
+  .nota:hover{background:var(--painel2)}
+  .nota.on{background:#221c14}
+  .nota[data-t="escondido"]{border-left-color:var(--ouro)}
+  .nota[data-t="gesto"]{border-left-color:var(--sangue-vivo)}
+  .nota[data-t="auto"]{border-left-color:var(--verdete)}
+  .nota h4{margin:0 0 5px;font-size:16px;display:flex;align-items:baseline;gap:10px;color:var(--osso)}
+  .nota h4 .b{flex:none;width:20px;height:20px;border-radius:50%;font:700 11.5px/20px var(--sans);
+    text-align:center;color:#0b0a09;background:var(--aco);align-self:center}
+  .nota[data-t="escondido"] h4 .b{background:var(--ouro)}
+  .nota[data-t="gesto"] h4 .b{background:var(--sangue-vivo);color:#fff}
+  .nota[data-t="auto"] h4 .b{background:var(--verdete)}
+  .nota p{margin:0;font-size:14.5px;color:var(--osso-fraco)}
+  .nota .pag{display:inline-block;margin-top:9px;font:600 10.5px/1 var(--sans);letter-spacing:.13em;
+    text-transform:uppercase;color:var(--ouro);border:1px solid rgba(195,154,58,.4);padding:4px 8px}
 
   /* ── legenda ── */
-  .legenda{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 26px}
-  .lg{display:inline-flex;align-items:center;gap:7px;font-size:13px;color:var(--fraco);
-      background:var(--card);border:1px solid var(--linha);border-radius:99px;padding:5px 13px}
-  .lg i{width:11px;height:11px;border-radius:50%;display:inline-block}
+  .legenda{display:flex;flex-wrap:wrap;gap:0;margin:26px 0 0;border:1px solid var(--fio);background:var(--fio)}
+  .lg{flex:1 1 180px;display:flex;align-items:center;gap:9px;font-size:13px;color:var(--osso-fraco);
+      background:var(--painel);padding:12px 15px}
+  .lg i{width:10px;height:10px;border-radius:50%;display:inline-block;flex:none}
+  .lg b{color:var(--osso);font-weight:600;font-family:var(--sans)}
 
   /* ── tabelas e blocos ── */
-  table{width:100%;border-collapse:collapse;font-size:14.5px;margin-top:14px}
-  th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--linha);vertical-align:top}
-  th{color:var(--fraquinho);font-size:11.5px;text-transform:uppercase;letter-spacing:.08em;font-weight:600}
-  td code{font:13px ui-monospace,Consolas,monospace;color:var(--roxo-claro)}
-  .rolar{overflow-x:auto;-webkit-overflow-scrolling:touch}
+  table{width:100%;border-collapse:collapse;font-size:14.5px;margin-top:18px}
+  th,td{text-align:left;padding:11px 14px;border-bottom:1px solid var(--fio);vertical-align:top}
+  thead th{background:var(--painel);color:var(--ouro);font:700 10.5px/1.4 var(--sans);
+    text-transform:uppercase;letter-spacing:.14em;border-bottom:1px solid var(--fio-forte)}
+  tbody tr:hover{background:var(--painel)}
+  td code{font:13px ui-monospace,Consolas,monospace;color:var(--osso-fraco)}
+  td:last-child{color:var(--ouro-claro);white-space:nowrap;font-size:13.5px}
+  .rolar{overflow-x:auto;-webkit-overflow-scrolling:touch;border:1px solid var(--fio)}
 
-  .aviso{background:linear-gradient(180deg,rgba(224,168,84,.09),transparent);
-    border:1px solid rgba(224,168,84,.32);border-radius:12px;padding:18px 20px;margin:24px 0}
-  .aviso b{color:var(--ambar)}
+  .aviso{border-left:3px solid var(--sangue);background:var(--painel);padding:20px 22px;margin:30px 0}
+  .aviso b{color:var(--sangue-vivo);font-family:var(--serifa)}
 
-  .grade{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;margin-top:22px}
-  .bloco{background:var(--card);border:1px solid var(--linha);border-radius:12px;padding:18px}
-  .bloco h4{margin:0 0 7px;font-size:15px;color:var(--roxo-claro)}
-  .bloco p{margin:0;font-size:14px;color:var(--fraco)}
+  .grade{display:grid;grid-template-columns:repeat(auto-fit,minmax(228px,1fr));gap:1px;margin-top:26px;
+    background:var(--fio);border:1px solid var(--fio)}
+  .bloco{background:var(--painel);padding:20px}
+  .bloco h4{margin:0 0 8px;font-size:16px;color:var(--ouro-claro)}
+  .bloco p{margin:0;font-size:14px;color:var(--osso-fraco)}
 
-  .tira{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;margin-top:22px}
+  .tira{display:grid;grid-template-columns:repeat(auto-fit,minmax(148px,1fr));gap:18px;margin-top:28px}
   .tira figure{margin:0}
-  .tira img{width:100%;border-radius:12px;border:1px solid var(--linha);display:block}
-  .tira figcaption{font-size:12.5px;color:var(--fraquinho);margin-top:7px;text-align:center}
+  .tira img{width:100%;border:1px solid var(--fio-forte);display:block}
+  .tira figcaption{font-size:12.5px;color:var(--osso-tenue);margin-top:9px;text-align:center;line-height:1.45}
 
-  footer{padding:44px 0 70px;color:var(--fraquinho);font-size:13.5px}
+  footer{padding:48px 0 78px;color:var(--osso-tenue);font-size:13px;max-width:78ch}
+  footer b{color:var(--osso-fraco)}
 </style>
 </head>
 <body>
@@ -125,8 +159,9 @@
       <div class="num"><b>272</b><span>vantagens</span></div>
       <div class="num"><b>218</b><span>desvantagens</span></div>
       <div class="num"><b>150</b><span>armas</span></div>
+      <div class="num"><b>118</b><span>técnicas</span></div>
       <div class="num"><b>72</b><span>armaduras</span></div>
-      <div class="num"><b>2.145</b><span>testes automáticos</span></div>
+      <div class="num"><b>2.145</b><span>testes</span></div>
     </div>
   </div>
 </header>
@@ -136,10 +171,11 @@
     <li><a href="#rolagem">Rolagem</a></li>
     <li><a href="#ferimento">Ferimento</a></li>
     <li><a href="#equip">Equipamento</a></li>
+    <li><a href="#tecnicas">Técnicas</a></li>
     <li><a href="#geral">Geral</a></li>
-    <li><a href="#tracos">Traços e perícias</a></li>
+    <li><a href="#tracos">Traços</a></li>
     <li><a href="#magia">Magia</a></li>
-    <li><a href="#mestre">Mestre IA</a></li>
+    <li><a href="#mestre">Mestre de Regras</a></li>
     <li><a href="#regras">Índice de regras</a></li>
     <li><a href="#naofaz">O que não faz</a></li>
   </ul>
@@ -148,15 +184,17 @@
 <div class="wrap">
 
 <section id="rolagem">
-  <h2><span class="n">01</span>A aba Rolagem</h2>
-  <p class="lede">A tela que fica aberta durante o jogo. Quase tudo aqui é clicável — e boa parte
-     não parece. Toque nos pontos coloridos.</p>
+  <div class="cab">
+    <h2><span class="n">Capítulo I</span>A aba Rolagem</h2>
+    <p class="lede">A tela que fica aberta durante o jogo. Quase tudo aqui é clicável — e boa parte
+       não parece. Toque nos pontos.</p>
+  </div>
 
   <div class="legenda">
-    <span class="lg"><i style="background:#8b7fd4"></i> botão evidente</span>
-    <span class="lg"><i style="background:#e0a854"></i> clicável, mas não parece</span>
-    <span class="lg"><i style="background:#d9636a"></i> gesto invisível</span>
-    <span class="lg"><i style="background:#5fb98a"></i> calculado sozinho</span>
+    <span class="lg"><i style="background:#7c8794"></i><span><b>Botão</b> — parece o que é</span></span>
+    <span class="lg"><i style="background:#c39a3a"></i><span><b>Clicável</b>, e não parece</span></span>
+    <span class="lg"><i style="background:#b53b3b"></i><span><b>Gesto</b> invisível</span></span>
+    <span class="lg"><i style="background:#5d8570"></i><span><b>Calculado</b> sozinho</span></span>
   </div>
 
   <div class="par" data-cena>
@@ -237,9 +275,11 @@
 </section>
 
 <section id="ferimento">
-  <h2><span class="n">02</span>O botão PV — o ferimento inteiro</h2>
-  <p class="lede">O Mestre diz <i>“12 de corte no peito”</i>. Isto é o que ninguém faz de cabeça
-     no meio da mesa — e o app faz em dois toques.</p>
+  <div class="cab">
+    <h2><span class="n">Capítulo II</span>O botão PV — o ferimento inteiro</h2>
+    <p class="lede">O Mestre diz <i>“12 de corte no peito”</i>. Isto é o que ninguém faz de cabeça
+       no meio da mesa — e o app faz em dois toques.</p>
+  </div>
 
   <div class="par" data-cena>
     <div class="fone">
@@ -265,7 +305,7 @@
     </div>
   </div>
 
-  <div class="par" data-cena style="margin-top:34px">
+  <div class="par" data-cena>
     <div class="fone">
       <img src="img/10b-pv-resultado.png" alt="Resultado do ferimento com a conta inteira">
     </div>
@@ -316,9 +356,11 @@
 </section>
 
 <section id="equip">
-  <h2><span class="n">03</span>Equipamento — o catálogo do livro por dentro</h2>
-  <p class="lede">150 armas, 72 armaduras e 7 escudos, com todas as estatísticas.
-     Tocar num item do catálogo <b>não o compra</b>: abre a ficha técnica.</p>
+  <div class="cab">
+    <h2><span class="n">Capítulo III</span>Equipamento</h2>
+    <p class="lede">150 armas, 72 armaduras e 7 escudos, com todas as estatísticas.
+       Tocar num item do catálogo <b>não o compra</b>: abre a ficha técnica.</p>
+  </div>
 
   <div class="par" data-cena>
     <div class="fone">
@@ -355,7 +397,7 @@
     </div>
   </div>
 
-  <div class="par" data-cena style="margin-top:34px">
+  <div class="par" data-cena>
     <div class="fone">
       <img src="img/06-equip.png" alt="Lista de equipamentos do personagem">
     </div>
@@ -393,12 +435,108 @@
 
   <div class="tira">
     <figure><img src="img/15-catalogo-armas.png" alt="Catalogo de armas">
-      <figcaption>O catálogo, com filtro e busca</figcaption></figure>
+      <figcaption>O catálogo, com busca e filtro por tipo</figcaption></figure>
+  </div>
+</section>
+
+<section id="tecnicas">
+  <div class="cab">
+    <h2><span class="n">Capítulo IV</span>Técnicas — e os outros livros</h2>
+    <p class="lede">118 técnicas de <b>Artes Marciais</b> e <b>Gun Fu</b>, não só do Módulo Básico.
+       É onde fica mais claro que o app não só guarda: ele confere.</p>
+  </div>
+
+  <div class="par" data-cena>
+    <div class="fone">
+      <img src="img/17-tecnicas-catalogo.png" alt="Catalogo de tecnicas">
+    </div>
+    <div class="notas">
+      <div class="nota" data-t="botao" data-x="36.6" data-y="20.8">
+        <h4><span class="b"></span>Três livros, um filtro</h4>
+        <p><b>Artes Marciais</b> e <b>Gun Fu</b> entram junto com o Básico. O chip separa a origem,
+           porque a mesma técnica pode existir nos dois com regras diferentes.</p>
+      </div>
+      <div class="nota" data-t="auto" data-x="82.8" data-y="27.9">
+        <h4><span class="b"></span>Fonte e dificuldade na linha</h4>
+        <p><code>Gun Fu | Difícil</code> — de onde veio e quanto custa aprender, sem abrir nada.</p>
+      </div>
+      <div class="nota" data-t="auto" data-x="49.7" data-y="71.4">
+        <h4><span class="b"></span>Nome repetido não é erro</h4>
+        <p><i>Ataque com Duas Armas</i> aparece <b>duas vezes</b>: a versão de Artes Marciais e a de
+           Gun Fu são técnicas diferentes, com pré-requisitos diferentes. Fundi-las seria perder uma.</p>
+      </div>
+      <div class="nota" data-t="botao" data-x="49.7" data-y="14.2">
+        <h4><span class="b"></span>Busca por nome</h4>
+        <p>118 técnicas é lista demais para rolar. A busca filtra enquanto você digita.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="par" data-cena>
+    <div class="fone">
+      <img src="img/18-tecnica-detalhe.png" alt="Dialogo de uma tecnica">
+    </div>
+    <div class="notas">
+      <div class="nota" data-t="auto" data-x="50" data-y="35.9">
+        <h4><span class="b"></span>O pré-requisito, com as palavras do livro</h4>
+        <p><i>“Qualquer perícia de combate desarmado ou Arma de Combate Corpo a Corpo com uma mão;
+           não pode exceder a perícia pré-requisito.”</i> Não é um resumo — é a regra.</p>
+      </div>
+      <div class="nota" data-t="auto" data-x="41.7" data-y="41.8">
+        <h4><span class="b"></span>O predefinido</h4>
+        <p><code>Perícia pré-requisito−4</code>. É de onde a técnica parte antes de qualquer ponto
+           gasto nela.</p>
+      </div>
+      <div class="nota" data-t="escondido" data-x="36.7" data-y="49.3">
+        <h4><span class="b"></span>A perícia base é escolha sua</h4>
+        <p>O app <b>varre a ficha</b> e oferece só as perícias que atendem ao pré-requisito —
+           aqui, <i>Ataque Inato (Feixe)</i> e <i>Bastão</i>. A mesma técnica dá NH diferente
+           conforme a base escolhida.</p>
+      </div>
+      <div class="nota" data-t="botao" data-x="23.6" data-y="63">
+        <h4><span class="b"></span>Quanto acima do predefinido</h4>
+        <p>Você sobe o nível e o app cobra os pontos. O <b>limite máximo</b> logo abaixo é o teto
+           que aquela técnica tem no livro — passar dali não é permitido.</p>
+      </div>
+      <div class="nota" data-t="auto" data-x="40.6" data-y="68.9">
+        <h4><span class="b"></span>Custo automático</h4>
+        <p>Difícil e Média custam diferente por nível. O app calcula enquanto você mexe.</p>
+      </div>
+      <div class="nota" data-t="auto" data-x="45.3" data-y="72.2">
+        <h4><span class="b"></span>E o NH final, antes de confirmar</h4>
+        <p><b>NH 10</b> — o número com que você vai rolar na mesa, já visível antes de gastar
+           o ponto.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="par" data-cena>
+    <div class="fone">
+      <img src="img/19-tecnica-bloqueada.png" alt="Tecnica bloqueada por falta de pre-requisito">
+    </div>
+    <div class="notas">
+      <div class="nota" data-t="auto" data-x="50" data-y="49">
+        <h4><span class="b"></span>Quando a ficha não permite, ele diz</h4>
+        <p><i>Arranhar os Olhos</i> exige Briga ou Caratê. Este personagem não tem nenhuma das duas —
+           e em vez de deixar comprar e quebrar a regra, o app <b>explica o que falta</b>.</p>
+      </div>
+      <div class="nota" data-t="auto" data-x="46.9" data-y="46.1">
+        <h4><span class="b"></span>O predefinido mostra por quê</h4>
+        <p><code>Briga−5 ou Caratê−5</code>: sem uma dessas perícias não existe de onde partir.</p>
+      </div>
+      <div class="nota" data-t="botao" data-x="72.5" data-y="68.4">
+        <h4><span class="b"></span>“Adicionar” fica desligado</h4>
+        <p>Não é aviso que dá para ignorar clicando assim mesmo. O botão só acende quando a ficha
+           atende ao livro.</p>
+      </div>
+    </div>
   </div>
 </section>
 
 <section id="geral">
-  <h2><span class="n">04</span>Geral — o personagem</h2>
+  <div class="cab">
+    <h2><span class="n">Capítulo V</span>Geral — o personagem</h2>
+  </div>
   <div class="par" data-cena>
     <div class="fone">
       <img src="img/01-geral.png" alt="Aba Geral">
@@ -433,16 +571,18 @@
 </section>
 
 <section id="tracos">
-  <h2><span class="n">05</span>Traços, perícias e técnicas</h2>
-  <p class="lede">272 vantagens, 218 desvantagens, 281 perícias e 118 técnicas — com o custo
-     calculado e os modificadores aplicados.</p>
+  <div class="cab">
+    <h2><span class="n">Capítulo VI</span>Traços e perícias</h2>
+    <p class="lede">272 vantagens, 218 desvantagens e 281 perícias — com o custo calculado e os
+       modificadores aplicados.</p>
+  </div>
   <div class="tira">
     <figure><img src="img/02-tracos.png" alt="Aba Tracos">
       <figcaption>Vantagens e desvantagens, com o custo por nível</figcaption></figure>
     <figure><img src="img/03-pericias.png" alt="Aba Pericias">
       <figcaption>Perícias com o NH pronto e o atributo/dificuldade à mostra</figcaption></figure>
     <figure><img src="img/04-tecnicas.png" alt="Aba Tecnicas">
-      <figcaption>Técnicas, com o teto de cada uma</figcaption></figure>
+      <figcaption>A aba de técnicas, ainda vazia, explicando o que falta</figcaption></figure>
   </div>
   <div class="grade">
     <div class="bloco"><h4>Elas não ficam só na lista</h4>
@@ -458,7 +598,9 @@
 </section>
 
 <section id="magia">
-  <h2><span class="n">06</span>Magia</h2>
+  <div class="cab">
+    <h2><span class="n">Capítulo VII</span>Magia</h2>
+  </div>
   <div class="par" data-cena>
     <div class="fone">
       <img src="img/05-magia.png" alt="Aba Magia">
@@ -493,9 +635,11 @@
 </section>
 
 <section id="mestre">
-  <h2><span class="n">07</span>O Mestre de Regras e a Saga</h2>
-  <p class="lede">O Módulo Básico inteiro em texto dentro do app — e uma IA que responde
-     citando a página.</p>
+  <div class="cab">
+    <h2><span class="n">Capítulo VIII</span>O Mestre de Regras e a Saga</h2>
+    <p class="lede">O Módulo Básico inteiro em texto dentro do app — e uma IA que responde
+       citando a página.</p>
+  </div>
   <div class="par" data-cena>
     <div class="fone">
       <img src="img/09-mestre-ia.png" alt="Mestre IA">
@@ -527,58 +671,60 @@
 </section>
 
 <section id="regras">
-  <h2><span class="n">08</span>O que está automatizado, regra por regra</h2>
-  <p class="lede">Sessenta regras do livro implementadas como código puro e testável, cada uma
-     com a sua página. Esta é a lista que existe para nada ser reimplementado por engano.</p>
+  <div class="cab">
+    <h2><span class="n">Apêndice A</span>O que está automatizado, regra por regra</h2>
+    <p class="lede">Sessenta regras do livro implementadas como código puro e testável, cada uma
+       com a sua página.</p>
+  </div>
   <div class="rolar">
   <table>
-    <thead><tr><th>Regra</th><th>Onde mora</th><th>Módulo Básico</th></tr></thead>
+    <thead><tr><th>Regra</th><th>Onde mora</th><th>Livro</th></tr></thead>
     <tbody>
-      <tr><td>Ferimento por local do corpo</td><td><code>FerimentoPorLocalRules</code></td><td>p.399-400, 419-422</td></tr>
-      <tr><td>Tipos de dano (12)</td><td><code>TiposDeDano</code></td><td>p.43-44, 379-380</td></tr>
-      <tr><td>Trauma por impacto</td><td><code>TraumaPorImpacto</code></td><td>p.380</td></tr>
-      <tr><td>Corrosão na armadura</td><td><code>CorrosaoNaArmadura</code></td><td>p.380</td></tr>
-      <tr><td>Cobertura da armadura</td><td><code>CoberturaDaArmadura</code></td><td>p.379</td></tr>
-      <tr><td>Sobrepor armaduras</td><td><code>CamadasDeArmadura</code></td><td>p.287</td></tr>
-      <tr><td>Qualidade da arma</td><td><code>QualidadeDaArma</code></td><td>p.275-276</td></tr>
-      <tr><td>ST mínima da arma</td><td><code>StMinimaDaArma</code></td><td>p.271</td></tr>
-      <tr><td>Ficha técnica da arma</td><td><code>FichaTecnicaDaArma</code></td><td>p.270-272, 508</td></tr>
-      <tr><td>Ficha técnica da armadura</td><td><code>FichaTecnicaDaArmadura</code></td><td>p.283-286</td></tr>
-      <tr><td>Ficha técnica do escudo</td><td><code>FichaTecnicaDoEscudo</code></td><td>p.288, 484</td></tr>
-      <tr><td>Notas da tabela de escudos</td><td><code>NotasDoEscudo</code></td><td>p.288</td></tr>
-      <tr><td>Locais de ataque</td><td><code>LocaisDeAtaque</code></td><td>p.398-400</td></tr>
-      <tr><td>Modificadores de combate</td><td><code>ModificadoresDeCombate</code></td><td>p.547-549</td></tr>
-      <tr><td>Golpe rápido e apara repetida</td><td><code>GolpeRapidoEAparaRules</code></td><td>p.371, 377</td></tr>
-      <tr><td>Avançar e atacar</td><td><code>AvancarEAtacarRules</code></td><td>p.366</td></tr>
-      <tr><td>Apontar</td><td><code>ApontarRules</code></td><td>p.270, 364, 373</td></tr>
-      <tr><td>Tiro contínuo</td><td><code>TiroContinuoRules</code></td><td>p.407-409</td></tr>
-      <tr><td>Tamanho do alvo</td><td><code>TamanhoDoAlvoRules</code></td><td>p.549-550</td></tr>
-      <tr><td>Velocidade e distância</td><td><code>TabelaVelocidadeDistancia</code></td><td>p.550-551</td></tr>
-      <tr><td>Alcance do ataque</td><td><code>AlcanceDoAtaque</code></td><td>p.271</td></tr>
-      <tr><td>Iluminação da cena</td><td><code>IluminacaoRules</code></td><td>p.394, 549</td></tr>
-      <tr><td>Fadiga e recuperação</td><td><code>FadigaRules</code></td><td>p.426-427</td></tr>
-      <tr><td>Marcos de PV e PF</td><td><code>MarcosDeVidaRules</code></td><td>p.419</td></tr>
-      <tr><td>Queda</td><td><code>QuedaRules</code></td><td>p.430-432</td></tr>
-      <tr><td>Fôlego</td><td><code>FolegoRules</code></td><td>p.356</td></tr>
-      <tr><td>Reação</td><td><code>ReacaoRules</code></td><td>p.494</td></tr>
-      <tr><td>Resistência</td><td><code>ResistenciaRules</code></td><td>p.365, 419-424</td></tr>
-      <tr><td>Sentidos</td><td><code>SentidoRules</code></td><td>p.358</td></tr>
-      <tr><td>Sorte</td><td><code>SorteRules</code></td><td>p.90-91</td></tr>
-      <tr><td>Talento instintivo</td><td><code>TalentoInstintivoRules</code></td><td>p.92</td></tr>
-      <tr><td>Visualização</td><td><code>VisualizacaoRules</code></td><td>p.99</td></tr>
-      <tr><td>Autocontrole</td><td><code>AutocontroleRules</code></td><td>p.120</td></tr>
-      <tr><td>Estados temporários</td><td><code>EstadosTemporarios</code></td><td>p.137-158</td></tr>
-      <tr><td>Incompatibilidade de traços</td><td><code>IncompatibilidadeDeTracos</code></td><td>p.124-162</td></tr>
-      <tr><td>Teto de atributo</td><td><code>TetoDeAtributoRules</code></td><td>p.19</td></tr>
-      <tr><td>Teto de nível do traço</td><td><code>TetoDeNivelDoTraco</code></td><td>p.91, 151, 159</td></tr>
-      <tr><td>Deslocamentos</td><td><code>DeslocamentosRules</code></td><td>p.17, 19, 39, 91</td></tr>
-      <tr><td>ST e DX braçais</td><td><code>StBracalRules</code>, <code>DxBracalRules</code></td><td>p.56, 89</td></tr>
-      <tr><td>ST especializada</td><td><code>StEspecializadaRules</code></td><td>p.65, 88</td></tr>
-      <tr><td>Mão inábil</td><td><code>MaoInabilRules</code></td><td>p.14, 157</td></tr>
+      <tr><td>Ferimento por local do corpo</td><td><code>FerimentoPorLocalRules</code></td><td>MB p.399-400, 419-422</td></tr>
+      <tr><td>Tipos de dano (12)</td><td><code>TiposDeDano</code></td><td>MB p.43-44, 379-380</td></tr>
+      <tr><td>Trauma por impacto</td><td><code>TraumaPorImpacto</code></td><td>MB p.380</td></tr>
+      <tr><td>Corrosão na armadura</td><td><code>CorrosaoNaArmadura</code></td><td>MB p.380</td></tr>
+      <tr><td>Cobertura da armadura</td><td><code>CoberturaDaArmadura</code></td><td>MB p.379</td></tr>
+      <tr><td>Sobrepor armaduras</td><td><code>CamadasDeArmadura</code></td><td>MB p.287</td></tr>
+      <tr><td>Qualidade da arma</td><td><code>QualidadeDaArma</code></td><td>MB p.275-276</td></tr>
+      <tr><td>ST mínima da arma</td><td><code>StMinimaDaArma</code></td><td>MB p.271</td></tr>
+      <tr><td>Ficha técnica da arma</td><td><code>FichaTecnicaDaArma</code></td><td>MB p.270-272, 508</td></tr>
+      <tr><td>Ficha técnica da armadura</td><td><code>FichaTecnicaDaArmadura</code></td><td>MB p.283-286</td></tr>
+      <tr><td>Ficha técnica do escudo</td><td><code>FichaTecnicaDoEscudo</code></td><td>MB p.288, 484</td></tr>
+      <tr><td>Notas da tabela de escudos</td><td><code>NotasDoEscudo</code></td><td>MB p.288</td></tr>
+      <tr><td>Locais de ataque</td><td><code>LocaisDeAtaque</code></td><td>MB p.398-400</td></tr>
+      <tr><td>Modificadores de combate</td><td><code>ModificadoresDeCombate</code></td><td>MB p.547-549</td></tr>
+      <tr><td>Golpe rápido e apara repetida</td><td><code>GolpeRapidoEAparaRules</code></td><td>MB p.371, 377</td></tr>
+      <tr><td>Avançar e atacar</td><td><code>AvancarEAtacarRules</code></td><td>MB p.366</td></tr>
+      <tr><td>Apontar</td><td><code>ApontarRules</code></td><td>MB p.270, 364, 373</td></tr>
+      <tr><td>Tiro contínuo</td><td><code>TiroContinuoRules</code></td><td>MB p.407-409</td></tr>
+      <tr><td>Tamanho do alvo</td><td><code>TamanhoDoAlvoRules</code></td><td>MB p.549-550</td></tr>
+      <tr><td>Velocidade e distância</td><td><code>TabelaVelocidadeDistancia</code></td><td>MB p.550-551</td></tr>
+      <tr><td>Alcance do ataque</td><td><code>AlcanceDoAtaque</code></td><td>MB p.271</td></tr>
+      <tr><td>Iluminação da cena</td><td><code>IluminacaoRules</code></td><td>MB p.394, 549</td></tr>
+      <tr><td>Fadiga e recuperação</td><td><code>FadigaRules</code></td><td>MB p.426-427</td></tr>
+      <tr><td>Marcos de PV e PF</td><td><code>MarcosDeVidaRules</code></td><td>MB p.419</td></tr>
+      <tr><td>Queda</td><td><code>QuedaRules</code></td><td>MB p.430-432</td></tr>
+      <tr><td>Fôlego</td><td><code>FolegoRules</code></td><td>MB p.356</td></tr>
+      <tr><td>Reação</td><td><code>ReacaoRules</code></td><td>MB p.494</td></tr>
+      <tr><td>Resistência</td><td><code>ResistenciaRules</code></td><td>MB p.365, 419-424</td></tr>
+      <tr><td>Sentidos</td><td><code>SentidoRules</code></td><td>MB p.358</td></tr>
+      <tr><td>Sorte</td><td><code>SorteRules</code></td><td>MB p.90-91</td></tr>
+      <tr><td>Talento instintivo</td><td><code>TalentoInstintivoRules</code></td><td>MB p.92</td></tr>
+      <tr><td>Visualização</td><td><code>VisualizacaoRules</code></td><td>MB p.99</td></tr>
+      <tr><td>Autocontrole</td><td><code>AutocontroleRules</code></td><td>MB p.120</td></tr>
+      <tr><td>Estados temporários</td><td><code>EstadosTemporarios</code></td><td>MB p.137-158</td></tr>
+      <tr><td>Incompatibilidade de traços</td><td><code>IncompatibilidadeDeTracos</code></td><td>MB p.124-162</td></tr>
+      <tr><td>Teto de atributo</td><td><code>TetoDeAtributoRules</code></td><td>MB p.19</td></tr>
+      <tr><td>Teto de nível do traço</td><td><code>TetoDeNivelDoTraco</code></td><td>MB p.91, 151, 159</td></tr>
+      <tr><td>Deslocamentos</td><td><code>DeslocamentosRules</code></td><td>MB p.17, 19, 39, 91</td></tr>
+      <tr><td>ST e DX braçais</td><td><code>StBracalRules</code>, <code>DxBracalRules</code></td><td>MB p.56, 89</td></tr>
+      <tr><td>ST especializada</td><td><code>StEspecializadaRules</code></td><td>MB p.65, 88</td></tr>
+      <tr><td>Mão inábil</td><td><code>MaoInabilRules</code></td><td>MB p.14, 157</td></tr>
       <tr><td>Energia das magias</td><td><code>MagiaEnergiaRules</code></td><td>Magia p.236-241</td></tr>
-      <tr><td>Modificador de equipamento</td><td><code>QualidadeDoEquipamento</code></td><td>p.346</td></tr>
-      <tr><td>Familiaridade cultural</td><td><code>FamiliaridadeCulturalRules</code></td><td>p.24</td></tr>
-      <tr><td>Origem de cada número</td><td><code>OrigemDosNumeros</code></td><td>p.17, 375</td></tr>
+      <tr><td>Modificador de equipamento</td><td><code>QualidadeDoEquipamento</code></td><td>MB p.346</td></tr>
+      <tr><td>Familiaridade cultural</td><td><code>FamiliaridadeCulturalRules</code></td><td>MB p.24</td></tr>
+      <tr><td>Origem de cada número</td><td><code>OrigemDosNumeros</code></td><td>MB p.17, 375</td></tr>
     </tbody>
   </table>
   </div>
@@ -591,9 +737,11 @@
 </section>
 
 <section id="naofaz">
-  <h2><span class="n">09</span>O que o app não faz</h2>
-  <p class="lede">Registrado de propósito — tanto para não prometer o que não existe quanto para
-     não procurarmos o que não está lá.</p>
+  <div class="cab">
+    <h2><span class="n">Apêndice B</span>O que o app não faz</h2>
+    <p class="lede">Registrado de propósito — tanto para não prometer o que não existe quanto para
+       não procurarmos o que não está lá.</p>
+  </div>
   <div class="rolar">
   <table>
     <thead><tr><th>Não automatizado</th><th>Por quê</th></tr></thead>
@@ -612,9 +760,13 @@
 </section>
 
 <footer>
+  <div class="wrap" style="padding:0">
   <p>Ficha GURPS 4ª edição · aplicativo Android, com variante para leitor de tela.
-     Telas capturadas da versão 9.8. GURPS é marca da Steve Jackson Games; este é um
-     aplicativo de uso pessoal e as regras citadas remetem ao Módulo Básico pela página.</p>
+     Telas capturadas da versão 9.8.</p>
+  <p><b>GURPS é marca registrada da Steve Jackson Games.</b> Este é um aplicativo de uso pessoal,
+     não oficial e sem fins comerciais. As regras citadas remetem ao Módulo Básico, a Artes Marciais
+     e a Gun Fu pela página, e nenhum trecho dos livros é reproduzido aqui.</p>
+  </div>
 </footer>
 
 </div>
@@ -644,14 +796,13 @@
         pino.classList.add('on');
         nota.classList.add('on');
       }
-      function focarNota(){
+      pino.addEventListener('click', function(){
         marcar();
         nota.scrollIntoView({block:'nearest', behavior:'smooth'});
-      }
-      pino.addEventListener('click', focarNota);
+      });
       nota.addEventListener('click', function(){
         marcar();
-        if (window.matchMedia('(max-width: 860px)').matches) {
+        if (window.matchMedia('(max-width: 880px)').matches) {
           fone.scrollIntoView({block:'center', behavior:'smooth'});
         }
       });

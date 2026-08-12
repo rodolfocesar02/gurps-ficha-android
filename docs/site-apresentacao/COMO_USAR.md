@@ -21,12 +21,12 @@ tipo de coisa:
 
 | cor | significa |
 |---|---|
-| roxo | botão evidente |
-| âmbar | **é clicável, mas não parece** |
-| vermelho | **gesto invisível** (arrastar o dedo) |
-| verde | calculado sozinho pelo app |
+| aço | botão evidente |
+| ouro | **é clicável, mas não parece** |
+| sangue | **gesto invisível** (arrastar o dedo) |
+| verdete | calculado sozinho pelo app |
 
-O âmbar e o vermelho são o motivo de a página existir: são as coisas que um
+O ouro e o sangue são o motivo de a página existir: são as coisas que um
 jogador novo não descobre sozinho.
 
 ## Para atualizar as capturas
