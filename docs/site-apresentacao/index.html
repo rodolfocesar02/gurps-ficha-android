@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ficha GURPS 4e — o que o app faz</title>
+<style>
+  :root{
+    --bg:#12121a; --bg2:#1a1a26; --card:#20202e; --linha:#2e2e40;
+    --tinta:#e8e6f0; --fraco:#9d9ab5; --fraquinho:#6f6c88;
+    --roxo:#8b7fd4; --roxo-claro:#b0a6ea; --ambar:#e0a854; --vermelho:#d9636a; --verde:#5fb98a;
+    --max:1180px;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth; scroll-padding-top:74px}
+  body{margin:0;background:var(--bg);color:var(--tinta);
+       font:16px/1.65 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
+  .wrap{max-width:var(--max);margin:0 auto;padding:0 20px}
+
+  /* ── topo ── */
+  header.hero{padding:64px 0 44px;border-bottom:1px solid var(--linha);
+    background:radial-gradient(1000px 400px at 50% -120px,rgba(139,127,212,.22),transparent 70%)}
+  .selo{display:inline-block;font-size:12px;letter-spacing:.16em;text-transform:uppercase;
+    color:var(--roxo-claro);border:1px solid var(--roxo);border-radius:99px;padding:5px 14px;margin-bottom:18px}
+  h1{font-size:clamp(30px,5.4vw,52px);line-height:1.1;margin:0 0 16px;letter-spacing:-.02em}
+  h1 em{font-style:normal;color:var(--roxo-claro)}
+  .sub{font-size:clamp(17px,2.4vw,21px);color:var(--fraco);max-width:60ch;margin:0}
+  .numeros{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:12px;margin-top:36px}
+  .num{background:var(--card);border:1px solid var(--linha);border-radius:12px;padding:16px 12px;text-align:center}
+  .num b{display:block;font-size:26px;color:var(--roxo-claro);letter-spacing:-.02em}
+  .num span{font-size:12px;color:var(--fraquinho);text-transform:uppercase;letter-spacing:.08em}
+
+  /* ── navegação ── */
+  nav{position:sticky;top:0;z-index:40;background:rgba(18,18,26,.94);
+      backdrop-filter:blur(10px);border-bottom:1px solid var(--linha)}
+  nav ul{display:flex;gap:4px;list-style:none;margin:0;padding:10px 20px;max-width:var(--max);
+         margin-inline:auto;overflow-x:auto;scrollbar-width:none}
+  nav ul::-webkit-scrollbar{display:none}
+  nav a{color:var(--fraco);text-decoration:none;font-size:14px;padding:7px 13px;border-radius:8px;white-space:nowrap}
+  nav a:hover{color:var(--tinta);background:var(--card)}
+
+  /* ── seções ── */
+  section{padding:60px 0;border-bottom:1px solid var(--linha)}
+  h2{font-size:clamp(24px,3.6vw,34px);margin:0 0 6px;letter-spacing:-.02em}
+  h2 .n{color:var(--roxo);font-variant-numeric:tabular-nums;margin-right:10px}
+  .lede{color:var(--fraco);max-width:66ch;margin:0 0 30px;font-size:17px}
+
+  /* ── par tela + notas ── */
+  .par{display:grid;grid-template-columns:minmax(0,300px) 1fr;gap:34px;align-items:start}
+  @media(max-width:860px){.par{grid-template-columns:1fr}}
+
+  .fone{position:relative;border-radius:26px;overflow:hidden;border:1px solid var(--linha);
+        background:#000;box-shadow:0 20px 50px rgba(0,0,0,.55);line-height:0}
+  .fone img{width:100%;height:auto;display:block}
+
+  .pino{position:absolute;transform:translate(-50%,-50%);width:26px;height:26px;border-radius:50%;
+    border:2px solid #fff;color:#fff;font:700 13px/22px sans-serif;text-align:center;cursor:pointer;
+    padding:0;box-shadow:0 0 0 3px rgba(0,0,0,.45),0 2px 8px rgba(0,0,0,.6);transition:transform .12s}
+  .pino:hover,.pino:focus-visible{transform:translate(-50%,-50%) scale(1.22);outline:none}
+  .pino[data-t="botao"]{background:var(--roxo)}
+  .pino[data-t="escondido"]{background:var(--ambar);color:#2a1c04}
+  .pino[data-t="gesto"]{background:var(--vermelho)}
+  .pino[data-t="auto"]{background:var(--verde);color:#06281a}
+  .pino.on{transform:translate(-50%,-50%) scale(1.3);box-shadow:0 0 0 4px rgba(255,255,255,.35),0 0 0 8px rgba(0,0,0,.5)}
+
+  .notas{display:flex;flex-direction:column;gap:10px}
+  .nota{background:var(--card);border:1px solid var(--linha);border-left:3px solid var(--roxo);
+    border-radius:10px;padding:14px 16px;cursor:pointer;transition:border-color .15s,background .15s}
+  .nota:hover{background:#262636}
+  .nota.on{background:#2a2740;border-color:var(--roxo-claro);border-left-color:var(--roxo-claro)}
+  .nota[data-t="escondido"]{border-left-color:var(--ambar)}
+  .nota[data-t="gesto"]{border-left-color:var(--vermelho)}
+  .nota[data-t="auto"]{border-left-color:var(--verde)}
+  .nota h4{margin:0 0 4px;font-size:15px;display:flex;align-items:center;gap:9px}
+  .nota h4 .b{flex:none;width:21px;height:21px;border-radius:50%;font:700 12px/21px sans-serif;
+    text-align:center;color:#fff;background:var(--roxo)}
+  .nota[data-t="escondido"] h4 .b{background:var(--ambar);color:#2a1c04}
+  .nota[data-t="gesto"] h4 .b{background:var(--vermelho)}
+  .nota[data-t="auto"] h4 .b{background:var(--verde);color:#06281a}
+  .nota p{margin:0;font-size:14.5px;color:var(--fraco)}
+  .nota .pag{display:inline-block;margin-top:7px;font-size:11.5px;letter-spacing:.06em;
+    text-transform:uppercase;color:var(--fraquinho);border:1px solid var(--linha);border-radius:5px;padding:2px 7px}
+
+  /* ── legenda ── */
+  .legenda{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 26px}
+  .lg{display:inline-flex;align-items:center;gap:7px;font-size:13px;color:var(--fraco);
+      background:var(--card);border:1px solid var(--linha);border-radius:99px;padding:5px 13px}
+  .lg i{width:11px;height:11px;border-radius:50%;display:inline-block}
+
+  /* ── tabelas e blocos ── */
+  table{width:100%;border-collapse:collapse;font-size:14.5px;margin-top:14px}
+  th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--linha);vertical-align:top}
+  th{color:var(--fraquinho);font-size:11.5px;text-transform:uppercase;letter-spacing:.08em;font-weight:600}
+  td code{font:13px ui-monospace,Consolas,monospace;color:var(--roxo-claro)}
+  .rolar{overflow-x:auto;-webkit-overflow-scrolling:touch}
+
+  .aviso{background:linear-gradient(180deg,rgba(224,168,84,.09),transparent);
+    border:1px solid rgba(224,168,84,.32);border-radius:12px;padding:18px 20px;margin:24px 0}
+  .aviso b{color:var(--ambar)}
+
+  .grade{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;margin-top:22px}
+  .bloco{background:var(--card);border:1px solid var(--linha);border-radius:12px;padding:18px}
+  .bloco h4{margin:0 0 7px;font-size:15px;color:var(--roxo-claro)}
+  .bloco p{margin:0;font-size:14px;color:var(--fraco)}
+
+  .tira{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;margin-top:22px}
+  .tira figure{margin:0}
+  .tira img{width:100%;border-radius:12px;border:1px solid var(--linha);display:block}
+  .tira figcaption{font-size:12.5px;color:var(--fraquinho);margin-top:7px;text-align:center}
+
+  footer{padding:44px 0 70px;color:var(--fraquinho);font-size:13.5px}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <span class="selo">GURPS 4ª edição · Android</span>
+    <h1>Uma ficha que <em>faz as contas do livro</em>.</h1>
+    <p class="sub">Não é um bloco de notas com campos. Você diz o que aconteceu na mesa;
+       o app aplica a regra, mostra a conta e cita a página do Módulo Básico.</p>
+    <div class="numeros">
+      <div class="num"><b>879</b><span>magias</span></div>
+      <div class="num"><b>281</b><span>perícias</span></div>
+      <div class="num"><b>272</b><span>vantagens</span></div>
+      <div class="num"><b>218</b><span>desvantagens</span></div>
+      <div class="num"><b>150</b><span>armas</span></div>
+      <div class="num"><b>72</b><span>armaduras</span></div>
+      <div class="num"><b>2.145</b><span>testes automáticos</span></div>
+    </div>
+  </div>
+</header>
+
+<nav>
+  <ul>
+    <li><a href="#rolagem">Rolagem</a></li>
+    <li><a href="#ferimento">Ferimento</a></li>
+    <li><a href="#equip">Equipamento</a></li>
+    <li><a href="#geral">Geral</a></li>
+    <li><a href="#tracos">Traços e perícias</a></li>
+    <li><a href="#magia">Magia</a></li>
+    <li><a href="#mestre">Mestre IA</a></li>
+    <li><a href="#regras">Índice de regras</a></li>
+    <li><a href="#naofaz">O que não faz</a></li>
+  </ul>
+</nav>
+
+<div class="wrap">
+
+<section id="rolagem">
+  <h2><span class="n">01</span>A aba Rolagem</h2>
+  <p class="lede">A tela que fica aberta durante o jogo. Quase tudo aqui é clicável — e boa parte
+     não parece. Toque nos pontos coloridos.</p>
+
+  <div class="legenda">
+    <span class="lg"><i style="background:#8b7fd4"></i> botão evidente</span>
+    <span class="lg"><i style="background:#e0a854"></i> clicável, mas não parece</span>
+    <span class="lg"><i style="background:#d9636a"></i> gesto invisível</span>
+    <span class="lg"><i style="background:#5fb98a"></i> calculado sozinho</span>
+  </div>
+
+  <div class="par" data-cena>
+    <div class="fone">
+      <img src="img/07-rolagem-topo.png" alt="Aba Rolagem do app">
+    </div>
+    <div class="notas">
+      <div class="nota" data-t="botao" data-x="49.8" data-y="18.1">
+        <h4><span class="b"></span>O canal da mesa</h4>
+        <p>Cada rolagem pode ser publicada num canal de Discord, para o Mestre ver o resultado
+           sem ninguém precisar cantar o número.</p>
+      </div>
+      <div class="nota" data-t="gesto" data-x="12" data-y="27.8">
+        <h4><span class="b"></span>Arraste o dedo sobre o atributo</h4>
+        <p>Tocar rola contra o atributo. <b>Deslizar para cima ou para baixo</b> muda o modificador
+           da próxima rolagem — sem abrir nada. É o gesto que mais gente não descobre sozinha.
+           Na variante para quem não enxerga há botões no lugar do gesto.</p>
+      </div>
+      <div class="nota" data-t="escondido" data-x="22" data-y="32.6">
+        <h4><span class="b"></span>PV é um botão</h4>
+        <p>Abre o diálogo de ferimento: silhueta do corpo, tipo de dano, RD das armaduras vestidas,
+           e a conta inteira. Está sublinhado justamente por isso.</p>
+        <span class="pag">MB p.399-400, 419-422</span>
+      </div>
+      <div class="nota" data-t="escondido" data-x="64.6" data-y="32.6">
+        <h4><span class="b"></span>PF também</h4>
+        <p>Marque de onde veio o cansaço — esforço, magia, calor, sede, sono — e o PF desce sozinho.
+           Desmarcando, sobe de volta.</p>
+        <span class="pag">MB p.426-428</span>
+      </div>
+      <div class="nota" data-t="auto" data-x="26.1" data-y="38.3">
+        <h4><span class="b"></span>Esquiva e Apara prontas</h4>
+        <p>Já vêm com escudo, carga, Reflexos em Combate e o que mais existir na ficha.
+           Tocando, você vê <b>de onde saiu cada ponto</b>.</p>
+      </div>
+      <div class="nota" data-t="botao" data-x="26.1" data-y="50">
+        <h4><span class="b"></span>Luz da cena</h4>
+        <p>Escolha a iluminação uma vez; o redutor entra em toda rolagem de visão e de combate —
+           já descontando a Visão Noturna do personagem.</p>
+        <span class="pag">MB p.394, 549</span>
+      </div>
+      <div class="nota" data-t="botao" data-x="73.3" data-y="50">
+        <h4><span class="b"></span>Qual apara do turno</h4>
+        <p>A 2ª apara do turno custa −4, a 3ª −8, a 4ª −12, e tudo zera no turno seguinte.
+           O app conta.</p>
+        <span class="pag">MB p.377</span>
+      </div>
+      <div class="nota" data-t="escondido" data-x="25.9" data-y="62.8">
+        <h4><span class="b"></span>O NH rola o ataque</h4>
+        <p>Tocar no número rola 3d6 com dados 3D e diz o resultado — sucesso, falha,
+           crítico e por quanto.</p>
+      </div>
+      <div class="nota" data-t="auto" data-x="80.9" data-y="63.7">
+        <h4><span class="b"></span>GdP e GeB pela ST</h4>
+        <p>A tabela de dano por Força já resolvida, com o botão para alternar entre gume e ponta.</p>
+      </div>
+      <div class="nota" data-t="botao" data-x="49.8" data-y="72.4">
+        <h4><span class="b"></span>Perícias, Magias, Técnicas</h4>
+        <p>Tudo o que está na ficha, rolável com um toque. A magia já cobra a energia.</p>
+      </div>
+      <div class="nota" data-t="botao" data-x="49.8" data-y="77.5">
+        <h4><span class="b"></span>Reação e Resistência</h4>
+        <p>O teste de reação com os modificadores sociais somados, e os testes de resistência
+           num lugar só.</p>
+        <span class="pag">MB p.494</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="tira">
+    <figure><img src="img/07b-gesto-modificador.png" alt="Modificador em mais 1 depois do arraste">
+      <figcaption>Depois do arraste: <b>mod +1</b> aparece no ataque e no dano</figcaption></figure>
+    <figure><img src="img/13-dados3d.png" alt="Dados 3D rolando">
+      <figcaption>Os dados são 3D e caem na tela</figcaption></figure>
+    <figure><img src="img/14-resultado.png" alt="Sucesso critico por 10">
+      <figcaption>O resultado já interpretado</figcaption></figure>
+  </div>
+</section>
+
+<section id="ferimento">
+  <h2><span class="n">02</span>O botão PV — o ferimento inteiro</h2>
+  <p class="lede">O Mestre diz <i>“12 de corte no peito”</i>. Isto é o que ninguém faz de cabeça
+     no meio da mesa — e o app faz em dois toques.</p>
+
+  <div class="par" data-cena>
+    <div class="fone">
+      <img src="img/10-pv-silhueta.png" alt="Silhueta do corpo com os orgaos vitais marcados">
+    </div>
+    <div class="notas">
+      <div class="nota" data-t="botao" data-x="49.4" data-y="27.5">
+        <h4><span class="b"></span>Toque onde o golpe acertou</h4>
+        <p>A silhueta tem <b>16 regiões, com lado</b> — braço esquerdo e direito são coisas
+           diferentes quando um deles é decepado. O primeiro toque dá zoom; o segundo escolhe.</p>
+      </div>
+      <div class="nota" data-t="auto" data-x="13.6" data-y="69.8">
+        <h4><span class="b"></span>Os órgãos vitais são um lugar à parte</h4>
+        <p>O buraco no meio do tronco não é falha de desenho: vitais têm regra própria — ×3 para
+           perfurante e perfuração, e −5 no teste de queda.</p>
+        <span class="pag">MB p.399</span>
+      </div>
+      <div class="nota" data-t="botao" data-x="49.9" data-y="65.9">
+        <h4><span class="b"></span>Voltar ao corpo inteiro</h4>
+        <p>O zoom navega entre quatro recortes: corpo todo, rosto, tronco com braços e virilha,
+           e a parte de baixo.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="par" data-cena style="margin-top:34px">
+    <div class="fone">
+      <img src="img/10b-pv-resultado.png" alt="Resultado do ferimento com a conta inteira">
+    </div>
+    <div class="notas">
+      <div class="nota" data-t="auto" data-x="49.4" data-y="46.2">
+        <h4><span class="b"></span>Doze tipos de dano</h4>
+        <p>A tabela completa da p.380: contusão, corte, perfuração, as quatro subclasses de
+           perfurante, queimadura, corrosão, toxina, fadiga e atribulação.
+           <b>Fadiga desconta PF</b>, não PV. <b>Atribulação não tira ponto nenhum</b> — vira teste de HT.</p>
+        <span class="pag">MB p.380</span>
+      </div>
+      <div class="nota" data-t="auto" data-x="49.4" data-y="67.5">
+        <h4><span class="b"></span>A RD sai das armaduras que ele está vestindo</h4>
+        <p>A ficha sabe o que ele comprou e o que cada peça cobre — e <b>comprar não é vestir</b>.
+           Cada peça tem a sua caixinha, e a marca fica salva.</p>
+      </div>
+      <div class="nota" data-t="auto" data-x="49.4" data-y="72.1">
+        <h4><span class="b"></span>Armadura flexível avisa</h4>
+        <p>O asterisco do livro quer dizer que o golpe barrado ainda machuca por impacto.
+           O app calcula esse trauma quando a peça segura o golpe inteiro.</p>
+        <span class="pag">MB p.380</span>
+      </div>
+      <div class="nota" data-t="auto" data-x="49.4" data-y="78.4">
+        <h4><span class="b"></span>Choque do próximo turno</h4>
+        <p>Igual aos PV perdidos, com teto de −4 — e o app já diz que <b>não afeta as defesas</b>,
+           que é a metade da regra que todo mundo esquece.</p>
+        <span class="pag">MB p.419-421</span>
+      </div>
+      <div class="nota" data-t="auto" data-x="49.4" data-y="82">
+        <h4><span class="b"></span>Teste de HT contra queda</h4>
+        <p>Ferimento grave é lesão acima de metade do PV inicial num golpe só. O app percebe,
+           avisa e aplica o modificador do local — −5 no rosto e vitais, −10 no crânio.</p>
+        <span class="pag">MB p.420-421</span>
+      </div>
+      <div class="nota" data-t="auto" data-x="24.7" data-y="89.4">
+        <h4><span class="b"></span>A conta aparece escrita</h4>
+        <p><code>12 − RD 1 = 11 × 1.5 = 16</code>. Automação que não se explica é caixa preta —
+           e num jogo de regras, quem não confere não confia.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="aviso">
+    <b>A ordem importa, e não é óbvia.</b> Tira-se a RD <i>primeiro</i>, e só depois se multiplica
+    pelo tipo. Quem multiplica antes infla o ferimento; quem aplica o teto do membro antes de
+    multiplicar o encolhe. As duas trocas dão números plausíveis — e errados.
+  </div>
+</section>
+
+<section id="equip">
+  <h2><span class="n">03</span>Equipamento — o catálogo do livro por dentro</h2>
+  <p class="lede">150 armas, 72 armaduras e 7 escudos, com todas as estatísticas.
+     Tocar num item do catálogo <b>não o compra</b>: abre a ficha técnica.</p>
+
+  <div class="par" data-cena>
+    <div class="fone">
+      <img src="img/16-ficha-arma.png" alt="Ficha tecnica da Alabarda">
+    </div>
+    <div class="notas">
+      <div class="nota" data-t="auto" data-x="49.4" data-y="22.6">
+        <h4><span class="b"></span>Todos os modos de ataque</h4>
+        <p>A Alabarda tem três, e o dano de cada um já vem <b>resolvido com a Força do personagem</b>:
+           <code>GeB+5 corte</code> vira <code>1d+4 corte</code>. E avisa que o segundo modo é a
+           mesma arma — não custa nem pesa de novo.</p>
+      </div>
+      <div class="nota" data-t="auto" data-x="49.4" data-y="41.3">
+        <h4><span class="b"></span>A sigla vem traduzida</h4>
+        <p><code>13‡ / 12</code> não diz nada sozinho. Aqui vem escrito: usa as duas mãos, fica
+           despreparada depois de atacar, a não ser que a sua ST seja 1,5× a exigida.</p>
+        <span class="pag">MB p.271</span>
+      </div>
+      <div class="nota" data-t="auto" data-x="49.4" data-y="50">
+        <h4><span class="b"></span>Cada número explicado</h4>
+        <p>O asterisco do alcance exige uma manobra Preparar. <code>0D</code> no Aparar quer dizer
+           arma desbalanceada: aparou, não ataca no mesmo turno.</p>
+      </div>
+      <div class="nota" data-t="auto" data-x="49.4" data-y="75">
+        <h4><span class="b"></span>A nota de rodapé por extenso</h4>
+        <p>O catálogo guarda só <code>[2]</code>. O app mostra o texto: <i>“pode ficar presa;
+           veja Picaretas”</i>. Número de rodapé sem o rodapé não informa nada.</p>
+      </div>
+      <div class="nota" data-t="botao" data-x="49.9" data-y="88.8">
+        <h4><span class="b"></span>Só então entra na ficha</h4>
+        <p>Dois toques em vez de um — para ninguém comprar uma arma sem descobrir que ela pesa
+           6 kg e exige ST 13.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="par" data-cena style="margin-top:34px">
+    <div class="fone">
+      <img src="img/06-equip.png" alt="Lista de equipamentos do personagem">
+    </div>
+    <div class="notas">
+      <div class="nota" data-t="auto" data-x="49.4" data-y="28">
+        <h4><span class="b"></span>Peso somado quando há mais de um</h4>
+        <p><code>2x · 0.25 kg cada · total 0.5 kg</code>. Com um item só, aparece só o peso —
+           repetir o mesmo número três vezes gastava linha à toa.</p>
+      </div>
+      <div class="nota" data-t="auto" data-x="49.4" data-y="60.3">
+        <h4><span class="b"></span>Quatro linhas por item, sempre</h4>
+        <p>Nota comprida termina em reticências. Sem isso, um item de dez linhas ocupava mais tela
+           que os quatro acima dele juntos — e a lista deixava de ser lista.</p>
+      </div>
+      <div class="nota" data-t="escondido" data-x="76.8" data-y="60">
+        <h4><span class="b"></span>O lápis mostra tudo</h4>
+        <p>Abre o item com a <b>mesma ficha técnica</b> do catálogo em cima e os campos embaixo —
+           inclusive <b>RD</b> na armadura e <b>BD</b> no escudo, que é por onde entra a peça encantada.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="grade">
+    <div class="bloco"><h4>ST mínima</h4>
+      <p>Arma pesada demais para o personagem aparece em vermelho, dizendo o que custa:
+         <i>“Falta ST 3: −3 no ataque e 1 PF a mais”</i>.</p></div>
+    <div class="bloco"><h4>Qualidade da arma</h4>
+      <p>Barata, boa, superior, altíssima. O bônus entra no dano — e <b>só em lâmina</b>:
+         uma maça superior não bate mais forte.</p></div>
+    <div class="bloco"><h4>Armadura por local</h4>
+      <p>Uma peça de tronco e virilha pode entrar só num dos dois, com peso e custo divididos.</p></div>
+    <div class="bloco"><h4>Sobrepor armaduras</h4>
+      <p>Avisa quando o livro não permite empilhar, e cobra o −1 na DX da camada extra.</p></div>
+  </div>
+
+  <div class="tira">
+    <figure><img src="img/15-catalogo-armas.png" alt="Catalogo de armas">
+      <figcaption>O catálogo, com filtro e busca</figcaption></figure>
+  </div>
+</section>
+
+<section id="geral">
+  <h2><span class="n">04</span>Geral — o personagem</h2>
+  <div class="par" data-cena>
+    <div class="fone">
+      <img src="img/01-geral.png" alt="Aba Geral">
+    </div>
+    <div class="notas">
+      <div class="nota" data-t="auto" data-x="39.4" data-y="49.3">
+        <h4><span class="b"></span>O custo de cada atributo</h4>
+        <p>O colchete embaixo do número mostra quantos pontos aquele atributo custou —
+           e o topo da tela soma tudo e diz o que sobra.</p>
+      </div>
+      <div class="nota" data-t="auto" data-x="30" data-y="59">
+        <h4><span class="b"></span>Secundários calculados</h4>
+        <p>PV, Vontade, Percepção e PF saem dos primários, mostrando a base e o quanto foi
+           comprado por cima.</p>
+      </div>
+      <div class="nota" data-t="escondido" data-x="60" data-y="70">
+        <h4><span class="b"></span>O triângulo ao lado de “Desloc.”</h4>
+        <p>Toque e abre <b>todos os deslocamentos</b>: correndo, nadando, voando, rastejando,
+           saltando. A seta é discreta e a maioria não a vê.</p>
+      </div>
+      <div class="nota" data-t="auto" data-x="50" data-y="77">
+        <h4><span class="b"></span>Dano por Força</h4>
+        <p>GdP e GeB já resolvidos pela tabela do livro.</p>
+      </div>
+      <div class="nota" data-t="botao" data-x="15.1" data-y="40.3">
+        <h4><span class="b"></span>Definir Base</h4>
+        <p>Fixa a base a partir da qual os custos passam a ser contados — útil quando o personagem
+           evolui e você quer saber o que foi gasto depois.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="tracos">
+  <h2><span class="n">05</span>Traços, perícias e técnicas</h2>
+  <p class="lede">272 vantagens, 218 desvantagens, 281 perícias e 118 técnicas — com o custo
+     calculado e os modificadores aplicados.</p>
+  <div class="tira">
+    <figure><img src="img/02-tracos.png" alt="Aba Tracos">
+      <figcaption>Vantagens e desvantagens, com o custo por nível</figcaption></figure>
+    <figure><img src="img/03-pericias.png" alt="Aba Pericias">
+      <figcaption>Perícias com o NH pronto e o atributo/dificuldade à mostra</figcaption></figure>
+    <figure><img src="img/04-tecnicas.png" alt="Aba Tecnicas">
+      <figcaption>Técnicas, com o teto de cada uma</figcaption></figure>
+  </div>
+  <div class="grade">
+    <div class="bloco"><h4>Elas não ficam só na lista</h4>
+      <p><i>Reflexos em Combate</i> aparece no Bloqueio. <i>Sorte</i> vira botão na Rolagem.
+         <i>Visão Noturna</i> desconta a penalidade de luz sozinha.</p></div>
+    <div class="bloco"><h4>Incompatibilidade</h4>
+      <p>O app avisa quando dois traços não podem conviver, e quando um passa do teto de nível.</p></div>
+    <div class="bloco"><h4>Modificadores</h4>
+      <p>218 ampliações e limitações, com a porcentagem aplicada ao custo final.</p></div>
+    <div class="bloco"><h4>Autocontrole</h4>
+      <p>O número de autocontrole das desvantagens vira teste rolável.</p></div>
+  </div>
+</section>
+
+<section id="magia">
+  <h2><span class="n">06</span>Magia</h2>
+  <div class="par" data-cena>
+    <div class="fone">
+      <img src="img/05-magia.png" alt="Aba Magia">
+    </div>
+    <div class="notas">
+      <div class="nota" data-t="auto" data-x="75.6" data-y="24.7">
+        <h4><span class="b"></span>O NH de cada magia, pronto</h4>
+        <p>Sai da Aptidão Mágica e dos pontos gastos. Nenhuma conta na mão.</p>
+      </div>
+      <div class="nota" data-t="auto" data-x="33" data-y="27">
+        <h4><span class="b"></span>Escola, classe e dificuldade à mostra</h4>
+        <p><code>IQ/D · Informação/Área · Comunicação | 1 pts</code> — tudo que decide como a
+           magia é lançada, sem abrir nada.</p>
+      </div>
+      <div class="nota" data-t="escondido" data-x="23.6" data-y="48">
+        <h4><span class="b"></span>Toque no nome para a descrição</h4>
+        <p>Abre o texto completo da magia, com duração, manutenção e tempo de execução.</p>
+      </div>
+      <div class="nota" data-t="botao" data-x="50" data-y="19">
+        <h4><span class="b"></span>Adicionar Magia</h4>
+        <p>Busca nas <b>879</b> magias do livro de Magia, com os pré-requisitos conferidos:
+           o app avisa quando falta uma magia exigida por outra.</p>
+      </div>
+      <div class="nota" data-t="auto" data-x="50" data-y="94.6">
+        <h4><span class="b"></span>A aba só existe se houver Aptidão Mágica</h4>
+        <p>Quem não é mago não vê tela vazia. E ao rolar pela aba Rolagem, a energia é cobrada
+           sozinha — se a magia tem <b>custo variável</b> (“1 a 3 PF”), o app pergunta quanto
+           antes de rolar.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="mestre">
+  <h2><span class="n">07</span>O Mestre de Regras e a Saga</h2>
+  <p class="lede">O Módulo Básico inteiro em texto dentro do app — e uma IA que responde
+     citando a página.</p>
+  <div class="par" data-cena>
+    <div class="fone">
+      <img src="img/09-mestre-ia.png" alt="Mestre IA">
+    </div>
+    <div class="notas">
+      <div class="nota" data-t="escondido" data-x="12" data-y="12">
+        <h4><span class="b"></span>O ícone do olho, no canto</h4>
+        <p>Abre o <b>Mestre de Regras</b> de qualquer aba. Pergunte uma regra e ele responde lendo
+           o livro que está dentro do app — não de memória.</p>
+      </div>
+      <div class="nota" data-t="botao" data-x="49" data-y="80">
+        <h4><span class="b"></span>Perguntar em português comum</h4>
+        <p><i>“Quanto custa aparar duas vezes no mesmo turno?”</i> — e vem a resposta com a página.</p>
+      </div>
+      <div class="nota" data-t="botao" data-x="73" data-y="14">
+        <h4><span class="b"></span>Histórico e limpar</h4>
+        <p>A conversa fica salva; o balde apaga.</p>
+      </div>
+    </div>
+  </div>
+  <div class="grade">
+    <div class="bloco"><h4>GURPS Saga</h4>
+      <p>Uma campanha conduzida por IA: gênero, dificuldade, nível tecnológico e se há magia
+         no mundo. O Narrador descreve a cena e responde às suas ações.</p></div>
+    <div class="bloco"><h4>Combate tático</h4>
+      <p>Grade de hexágonos com tokens e NPCs — e dá para <b>falar com o Narrador durante o
+         combate</b>: a ação improvisada vira mecânica.</p></div>
+  </div>
+</section>
+
+<section id="regras">
+  <h2><span class="n">08</span>O que está automatizado, regra por regra</h2>
+  <p class="lede">Sessenta regras do livro implementadas como código puro e testável, cada uma
+     com a sua página. Esta é a lista que existe para nada ser reimplementado por engano.</p>
+  <div class="rolar">
+  <table>
+    <thead><tr><th>Regra</th><th>Onde mora</th><th>Módulo Básico</th></tr></thead>
+    <tbody>
+      <tr><td>Ferimento por local do corpo</td><td><code>FerimentoPorLocalRules</code></td><td>p.399-400, 419-422</td></tr>
+      <tr><td>Tipos de dano (12)</td><td><code>TiposDeDano</code></td><td>p.43-44, 379-380</td></tr>
+      <tr><td>Trauma por impacto</td><td><code>TraumaPorImpacto</code></td><td>p.380</td></tr>
+      <tr><td>Corrosão na armadura</td><td><code>CorrosaoNaArmadura</code></td><td>p.380</td></tr>
+      <tr><td>Cobertura da armadura</td><td><code>CoberturaDaArmadura</code></td><td>p.379</td></tr>
+      <tr><td>Sobrepor armaduras</td><td><code>CamadasDeArmadura</code></td><td>p.287</td></tr>
+      <tr><td>Qualidade da arma</td><td><code>QualidadeDaArma</code></td><td>p.275-276</td></tr>
+      <tr><td>ST mínima da arma</td><td><code>StMinimaDaArma</code></td><td>p.271</td></tr>
+      <tr><td>Ficha técnica da arma</td><td><code>FichaTecnicaDaArma</code></td><td>p.270-272, 508</td></tr>
+      <tr><td>Ficha técnica da armadura</td><td><code>FichaTecnicaDaArmadura</code></td><td>p.283-286</td></tr>
+      <tr><td>Ficha técnica do escudo</td><td><code>FichaTecnicaDoEscudo</code></td><td>p.288, 484</td></tr>
+      <tr><td>Notas da tabela de escudos</td><td><code>NotasDoEscudo</code></td><td>p.288</td></tr>
+      <tr><td>Locais de ataque</td><td><code>LocaisDeAtaque</code></td><td>p.398-400</td></tr>
+      <tr><td>Modificadores de combate</td><td><code>ModificadoresDeCombate</code></td><td>p.547-549</td></tr>
+      <tr><td>Golpe rápido e apara repetida</td><td><code>GolpeRapidoEAparaRules</code></td><td>p.371, 377</td></tr>
+      <tr><td>Avançar e atacar</td><td><code>AvancarEAtacarRules</code></td><td>p.366</td></tr>
+      <tr><td>Apontar</td><td><code>ApontarRules</code></td><td>p.270, 364, 373</td></tr>
+      <tr><td>Tiro contínuo</td><td><code>TiroContinuoRules</code></td><td>p.407-409</td></tr>
+      <tr><td>Tamanho do alvo</td><td><code>TamanhoDoAlvoRules</code></td><td>p.549-550</td></tr>
+      <tr><td>Velocidade e distância</td><td><code>TabelaVelocidadeDistancia</code></td><td>p.550-551</td></tr>
+      <tr><td>Alcance do ataque</td><td><code>AlcanceDoAtaque</code></td><td>p.271</td></tr>
+      <tr><td>Iluminação da cena</td><td><code>IluminacaoRules</code></td><td>p.394, 549</td></tr>
+      <tr><td>Fadiga e recuperação</td><td><code>FadigaRules</code></td><td>p.426-427</td></tr>
+      <tr><td>Marcos de PV e PF</td><td><code>MarcosDeVidaRules</code></td><td>p.419</td></tr>
+      <tr><td>Queda</td><td><code>QuedaRules</code></td><td>p.430-432</td></tr>
+      <tr><td>Fôlego</td><td><code>FolegoRules</code></td><td>p.356</td></tr>
+      <tr><td>Reação</td><td><code>ReacaoRules</code></td><td>p.494</td></tr>
+      <tr><td>Resistência</td><td><code>ResistenciaRules</code></td><td>p.365, 419-424</td></tr>
+      <tr><td>Sentidos</td><td><code>SentidoRules</code></td><td>p.358</td></tr>
+      <tr><td>Sorte</td><td><code>SorteRules</code></td><td>p.90-91</td></tr>
+      <tr><td>Talento instintivo</td><td><code>TalentoInstintivoRules</code></td><td>p.92</td></tr>
+      <tr><td>Visualização</td><td><code>VisualizacaoRules</code></td><td>p.99</td></tr>
+      <tr><td>Autocontrole</td><td><code>AutocontroleRules</code></td><td>p.120</td></tr>
+      <tr><td>Estados temporários</td><td><code>EstadosTemporarios</code></td><td>p.137-158</td></tr>
+      <tr><td>Incompatibilidade de traços</td><td><code>IncompatibilidadeDeTracos</code></td><td>p.124-162</td></tr>
+      <tr><td>Teto de atributo</td><td><code>TetoDeAtributoRules</code></td><td>p.19</td></tr>
+      <tr><td>Teto de nível do traço</td><td><code>TetoDeNivelDoTraco</code></td><td>p.91, 151, 159</td></tr>
+      <tr><td>Deslocamentos</td><td><code>DeslocamentosRules</code></td><td>p.17, 19, 39, 91</td></tr>
+      <tr><td>ST e DX braçais</td><td><code>StBracalRules</code>, <code>DxBracalRules</code></td><td>p.56, 89</td></tr>
+      <tr><td>ST especializada</td><td><code>StEspecializadaRules</code></td><td>p.65, 88</td></tr>
+      <tr><td>Mão inábil</td><td><code>MaoInabilRules</code></td><td>p.14, 157</td></tr>
+      <tr><td>Energia das magias</td><td><code>MagiaEnergiaRules</code></td><td>Magia p.236-241</td></tr>
+      <tr><td>Modificador de equipamento</td><td><code>QualidadeDoEquipamento</code></td><td>p.346</td></tr>
+      <tr><td>Familiaridade cultural</td><td><code>FamiliaridadeCulturalRules</code></td><td>p.24</td></tr>
+      <tr><td>Origem de cada número</td><td><code>OrigemDosNumeros</code></td><td>p.17, 375</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <div class="aviso">
+    <b>2.145 testes automáticos</b>, e boa parte deles não confere um caso: confere a regra inteira.
+    O teto de dano num membro é testado para todo PV de 1 a 40; a tabela de tipos de dano é testada
+    nas doze entradas contra quatro propriedades cada. Teste que só olha o caso que o autor imaginou
+    fica verde com o defeito em pé.
+  </div>
+</section>
+
+<section id="naofaz">
+  <h2><span class="n">09</span>O que o app não faz</h2>
+  <p class="lede">Registrado de propósito — tanto para não prometer o que não existe quanto para
+     não procurarmos o que não está lá.</p>
+  <div class="rolar">
+  <table>
+    <thead><tr><th>Não automatizado</th><th>Por quê</th></tr></thead>
+    <tbody>
+      <tr><td>Multiplicador de preço por qualidade de arma</td><td>depende do NT da campanha, que a ficha não guarda</td></tr>
+      <tr><td>Teste de quebra ao aparar arma pesada</td><td>a qualidade já está guardada; falta a rolagem</td></tr>
+      <tr><td>Redutores de reação por usar armadura</td><td>a exceção do livro é julgamento humano</td></tr>
+      <tr><td>Tempo de vestir e tirar armadura</td><td>só importa em combate por turno</td></tr>
+      <tr><td>Sangramento</td><td>não modelado</td></tr>
+      <tr><td>Custo de vida mensal</td><td>fora do que se usa na mesa</td></tr>
+      <tr><td>Aplicar a corrosão na peça sozinho</td><td>o app não sabe qual peça o ácido atingiu — mostra o número e você decide</td></tr>
+      <tr><td>Montaria, regras especiais por arma, perigos de ambiente</td><td>adiados</td></tr>
+    </tbody>
+  </table>
+  </div>
+</section>
+
+<footer>
+  <p>Ficha GURPS 4ª edição · aplicativo Android, com variante para leitor de tela.
+     Telas capturadas da versão 9.8. GURPS é marca da Steve Jackson Games; este é um
+     aplicativo de uso pessoal e as regras citadas remetem ao Módulo Básico pela página.</p>
+</footer>
+
+</div>
+
+<script>
+(function(){
+  document.querySelectorAll('[data-cena]').forEach(function(cena){
+    var fone  = cena.querySelector('.fone');
+    var notas = Array.prototype.slice.call(cena.querySelectorAll('.nota'));
+
+    notas.forEach(function(nota, i){
+      var n = i + 1;
+      nota.querySelector('.b').textContent = n;
+
+      var pino = document.createElement('button');
+      pino.className = 'pino';
+      pino.type = 'button';
+      pino.textContent = n;
+      pino.dataset.t = nota.dataset.t || 'botao';
+      pino.style.left = nota.dataset.x + '%';
+      pino.style.top  = nota.dataset.y + '%';
+      pino.setAttribute('aria-label', 'Ponto ' + n + ': ' + nota.querySelector('h4').textContent.trim());
+      fone.appendChild(pino);
+
+      function marcar(){
+        cena.querySelectorAll('.pino.on, .nota.on').forEach(function(e){ e.classList.remove('on'); });
+        pino.classList.add('on');
+        nota.classList.add('on');
+      }
+      function focarNota(){
+        marcar();
+        nota.scrollIntoView({block:'nearest', behavior:'smooth'});
+      }
+      pino.addEventListener('click', focarNota);
+      nota.addEventListener('click', function(){
+        marcar();
+        if (window.matchMedia('(max-width: 860px)').matches) {
+          fone.scrollIntoView({block:'center', behavior:'smooth'});
+        }
+      });
+    });
+  });
+})();
+</script>
+</body>
+</html>
