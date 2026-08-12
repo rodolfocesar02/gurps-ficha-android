@@ -3,6 +3,15 @@
 Abra **`index.html`** em qualquer navegador (duplo clique). Não precisa de servidor,
 não precisa de internet.
 
+## A ordem dos capítulos
+
+A página segue a **ordem das abas do app**: Geral, Traços, Raças, Perícias,
+Técnicas, Magia, Equipamento, Rolagem — e depois Ferimento e o Índice de regras.
+Quem está com o app na mão encontra o capítulo onde espera.
+
+⚠️ **Raças** não é uma aba: é um diálogo aberto de dentro de Traços. Fica logo
+depois dela por isso.
+
 ## O que tem dentro
 
 | arquivo | o que é |

@@ -168,279 +168,300 @@
 
 <nav>
   <ul>
-    <li><a href="#rolagem">Rolagem</a></li>
-    <li><a href="#ferimento">Ferimento</a></li>
-    <li><a href="#equip">Equipamento</a></li>
-    <li><a href="#tecnicas">Técnicas</a></li>
     <li><a href="#geral">Geral</a></li>
     <li><a href="#tracos">Traços</a></li>
+    <li><a href="#racas">Raças</a></li>
+    <li><a href="#pericias">Perícias</a></li>
+    <li><a href="#tecnicas">Técnicas</a></li>
     <li><a href="#magia">Magia</a></li>
+    <li><a href="#equip">Equipamento</a></li>
+    <li><a href="#rolagem">Rolagem</a></li>
+    <li><a href="#ferimento">Ferimento</a></li>
     <li><a href="#regras">Índice de regras</a></li>
-    <li><a href="#naofaz">O que não faz</a></li>
   </ul>
 </nav>
 
 <div class="wrap">
 
-<section id="rolagem">
+<section id="geral">
   <div class="cab">
-    <h2><span class="n">Capítulo I</span>A aba Rolagem</h2>
-    <p class="lede">A tela que fica aberta durante o jogo. Quase tudo aqui é clicável — e boa parte
-       não parece. Toque nos pontos.</p>
+    <h2><span class="n">Capítulo I</span>Geral — o personagem</h2>
   </div>
+  <div class="par" data-cena>
+    <div class="fone">
+      <img src="img/01-geral.png" alt="Aba Geral">
+    </div>
+    <div class="notas">
+      <div class="nota" data-t="auto" data-x="39.4" data-y="49.3">
+        <h4><span class="b"></span>O custo de cada atributo</h4>
+        <p>O colchete embaixo do número mostra quantos pontos aquele atributo custou —
+           e o topo da tela soma tudo e diz o que sobra.</p>
+      </div>
+      <div class="nota" data-t="auto" data-x="30" data-y="59">
+        <h4><span class="b"></span>Secundários calculados</h4>
+        <p>PV, Vontade, Percepção e PF saem dos primários, mostrando a base e o quanto foi
+           comprado por cima.</p>
+      </div>
+      <div class="nota" data-t="escondido" data-x="60" data-y="70">
+        <h4><span class="b"></span>O triângulo ao lado de “Desloc.”</h4>
+        <p>Toque e abre <b>todos os deslocamentos</b>: correndo, nadando, voando, rastejando,
+           saltando. A seta é discreta e a maioria não a vê.</p>
+      </div>
+      <div class="nota" data-t="auto" data-x="50" data-y="77">
+        <h4><span class="b"></span>Dano por Força</h4>
+        <p>GdP e GeB já resolvidos pela tabela do livro.</p>
+      </div>
+      <div class="nota" data-t="botao" data-x="15.1" data-y="40.3">
+        <h4><span class="b"></span>Definir Base</h4>
+        <p>Fixa a base a partir da qual os custos passam a ser contados — útil quando o personagem
+           evolui e você quer saber o que foi gasto depois.</p>
+      </div>
+    </div>
+  </div>
+</section>
 
-  <div class="legenda">
-    <span class="lg"><i style="background:#7c8794"></i><span><b>Botão</b> — parece o que é</span></span>
-    <span class="lg"><i style="background:#c39a3a"></i><span><b>Clicável</b>, e não parece</span></span>
-    <span class="lg"><i style="background:#b53b3b"></i><span><b>Gesto</b> invisível</span></span>
-    <span class="lg"><i style="background:#5d8570"></i><span><b>Calculado</b> sozinho</span></span>
+<section id="tracos">
+  <div class="cab">
+    <h2><span class="n">Capítulo II</span>Traços</h2>
+    <p class="lede">272 vantagens e 218 desvantagens, com o custo calculado e os modificadores
+       aplicados. E elas não ficam só na lista.</p>
+  </div>
+  <div class="tira">
+    <figure><img src="img/02-tracos.png" alt="Aba Tracos">
+      <figcaption>Vantagens e desvantagens, com o custo por nível</figcaption></figure>
+    <figure><img src="img/04-tecnicas.png" alt="Aba Tecnicas">
+      <figcaption>A aba de técnicas, ainda vazia, explicando o que falta</figcaption></figure>
+  </div>
+  <div class="grade">
+    <div class="bloco"><h4>Elas não ficam só na lista</h4>
+      <p><i>Reflexos em Combate</i> aparece no Bloqueio. <i>Sorte</i> vira botão na Rolagem.
+         <i>Visão Noturna</i> desconta a penalidade de luz sozinha.</p></div>
+    <div class="bloco"><h4>Incompatibilidade</h4>
+      <p>O app avisa quando dois traços não podem conviver, e quando um passa do teto de nível.</p></div>
+    <div class="bloco"><h4>Modificadores</h4>
+      <p>218 ampliações e limitações, com a porcentagem aplicada ao custo final.</p></div>
+    <div class="bloco"><h4>Autocontrole</h4>
+      <p>O número de autocontrole das desvantagens vira teste rolável.</p></div>
+  </div>
+</section>
+
+<section id="racas">
+  <div class="cab">
+    <h2><span class="n">Capítulo III</span>Raças e Metacaracterísticas</h2>
+    <p class="lede">Dentro da aba Traços há uma ficha inteira paralela: a da <b>raça</b>.
+       Ela tem os próprios ajustes de atributo, as próprias vantagens e o próprio custo —
+       e o app soma tudo sozinho.</p>
   </div>
 
   <div class="par" data-cena>
     <div class="fone">
-      <img src="img/07-rolagem-topo.png" alt="Aba Rolagem do app">
+      <img src="img/32-raca-anoes.png" alt="Raca Anoes carregada do catalogo">
     </div>
     <div class="notas">
-      <div class="nota" data-t="botao" data-x="49.8" data-y="18.1">
-        <h4><span class="b"></span>O canal da mesa</h4>
-        <p>Cada rolagem pode ser publicada num canal de Discord, para o Mestre ver o resultado
-           sem ninguém precisar cantar o número.</p>
+      <div class="nota" data-t="auto" data-x="31" data-y="18.4">
+        <h4><span class="b"></span>Carregou tudo de uma vez</h4>
+        <p>Um toque no catálogo e vem nome, descrição, ajustes de atributo, vantagens,
+           desvantagens, perícias e peculiaridades — a raça inteira.</p>
       </div>
-      <div class="nota" data-t="gesto" data-x="12" data-y="27.8">
-        <h4><span class="b"></span>Arraste o dedo sobre o atributo</h4>
-        <p>Tocar rola contra o atributo. <b>Deslizar para cima ou para baixo</b> muda o modificador
-           da próxima rolagem — sem abrir nada. É o gesto que mais gente não descobre sozinha.
-           Na variante para quem não enxerga há botões no lugar do gesto.</p>
+      <div class="nota" data-t="auto" data-x="53" data-y="34.8">
+        <h4><span class="b"></span>A descrição vem do livro</h4>
+        <p><i>“Os anões são mineradores baixinhos, atarracados e rudes…”</i> — o texto
+           inteiro, editável se a sua campanha tiver anões diferentes.</p>
       </div>
-      <div class="nota" data-t="escondido" data-x="22" data-y="32.6">
-        <h4><span class="b"></span>PV é um botão</h4>
-        <p>Abre o diálogo de ferimento: silhueta do corpo, tipo de dano, RD das armaduras vestidas,
-           e a conta inteira. Está sublinhado justamente por isso.</p>
-        <span class="pag">MB p.399-400, 419-422</span>
+      <div class="nota" data-t="auto" data-x="10.6" data-y="73.7">
+        <h4><span class="b"></span>ST +2, HT +1</h4>
+        <p>Os ajustes raciais ficam <b>separados</b> dos pontos que você gastou. A ficha sabe
+           o que é do personagem e o que é da raça.</p>
       </div>
-      <div class="nota" data-t="escondido" data-x="64.6" data-y="32.6">
-        <h4><span class="b"></span>PF também</h4>
-        <p>Marque de onde veio o cansaço — esforço, magia, calor, sede, sono — e o PF desce sozinho.
-           Desmarcando, sobe de volta.</p>
-        <span class="pag">MB p.426-428</span>
+      <div class="nota" data-t="botao" data-x="50" data-y="51.8">
+        <h4><span class="b"></span>Carregar Raça do Catálogo</h4>
+        <p>Ou preencha à mão: a tela funciona igual para uma raça que você inventou.</p>
       </div>
-      <div class="nota" data-t="auto" data-x="26.1" data-y="38.3">
-        <h4><span class="b"></span>Esquiva e Apara prontas</h4>
-        <p>Já vêm com escudo, carga, Reflexos em Combate e o que mais existir na ficha.
-           Tocando, você vê <b>de onde saiu cada ponto</b>.</p>
+      <div class="nota" data-t="botao" data-x="29.7" data-y="81.9">
+        <h4><span class="b"></span>Limitação de Atributo</h4>
+        <p>Algumas raças não só ajustam: elas <b>limitam</b> o quanto um atributo pode subir.</p>
       </div>
-      <div class="nota" data-t="botao" data-x="26.1" data-y="50">
-        <h4><span class="b"></span>Luz da cena</h4>
-        <p>Escolha a iluminação uma vez; o redutor entra em toda rolagem de visão e de combate —
-           já descontando a Visão Noturna do personagem.</p>
-        <span class="pag">MB p.394, 549</span>
+    </div>
+  </div>
+
+  <div class="par" data-cena>
+    <div class="fone">
+      <img src="img/31-raca-catalogo.png" alt="Catalogo de racas">
+    </div>
+    <div class="notas">
+      <div class="nota" data-t="auto" data-x="32.8" data-y="38">
+        <h4><span class="b"></span>Com a fonte e a página</h4>
+        <p>Anões, Centauros, Elfos, Elfos Negros — cada um com <b>de onde saiu</b>. Não é
+           uma lista inventada: é referência consultável.</p>
       </div>
-      <div class="nota" data-t="botao" data-x="73.3" data-y="50">
-        <h4><span class="b"></span>Qual apara do turno</h4>
-        <p>A 2ª apara do turno custa −4, a 3ª −8, a 4ª −12, e tudo zera no turno seguinte.
-           O app conta.</p>
-        <span class="pag">MB p.377</span>
+      <div class="nota" data-t="botao" data-x="37.5" data-y="30.6">
+        <h4><span class="b"></span>E dá para não usar</h4>
+        <p>A raça padrão é <i>Humano</i>, com tudo em zero. Quem joga só com humanos nunca
+           precisa abrir esta tela.</p>
       </div>
-      <div class="nota" data-t="escondido" data-x="25.9" data-y="62.8">
-        <h4><span class="b"></span>O NH rola o ataque</h4>
-        <p>Tocar no número rola 3d6 com dados 3D e diz o resultado — sucesso, falha,
-           crítico e por quanto.</p>
+    </div>
+  </div>
+
+  <div class="par" data-cena>
+    <div class="fone">
+      <img src="img/33-raca.png" alt="Ajustes secundarios e tracos raciais">
+    </div>
+    <div class="notas">
+      <div class="nota" data-t="auto" data-x="89" data-y="35.2">
+        <h4><span class="b"></span>Os secundários também</h4>
+        <p>Anões têm <b>PF +3</b>. PV, Vontade, Percepção e PF entram na mesma conta.</p>
       </div>
-      <div class="nota" data-t="auto" data-x="80.9" data-y="63.7">
-        <h4><span class="b"></span>GdP e GeB pela ST</h4>
-        <p>A tabela de dano por Força já resolvida, com o botão para alternar entre gume e ponta.</p>
+      <div class="nota" data-t="auto" data-x="53.4" data-y="47.4">
+        <h4><span class="b"></span>E até o Deslocamento</h4>
+        <p><b>Desloc. −1</b> — anão é baixinho, e isso custa velocidade. Velocidade Básica
+           e Modificador de Tamanho também estão aqui.</p>
       </div>
-      <div class="nota" data-t="botao" data-x="49.8" data-y="72.4">
-        <h4><span class="b"></span>Perícias, Magias, Técnicas</h4>
-        <p>Tudo o que está na ficha, rolável com um toque. A magia já cobra a energia.</p>
+      <div class="nota" data-t="botao" data-x="50" data-y="60.3">
+        <h4><span class="b"></span>Três catálogos, dentro da raça</h4>
+        <p>Vantagem, desvantagem e perícia raciais saem dos mesmos catálogos da ficha —
+           272, 218 e 281 — com o custo já calculado.</p>
       </div>
-      <div class="nota" data-t="botao" data-x="49.8" data-y="77.5">
-        <h4><span class="b"></span>Reação e Resistência</h4>
-        <p>O teste de reação com os modificadores sociais somados, e os testes de resistência
-           num lugar só.</p>
-        <span class="pag">MB p.494</span>
+    </div>
+  </div>
+
+  <div class="par" data-cena>
+    <div class="fone">
+      <img src="img/34-raca.png" alt="Vantagens raciais dos anoes">
+    </div>
+    <div class="notas">
+      <div class="nota" data-t="auto" data-x="13.4" data-y="25.8">
+        <h4><span class="b"></span>Cada vantagem com o seu preço</h4>
+        <p>Artífice 10, Equipamento Característico 1, Expectativa de Vida Ampliada 2,
+           Longevidade 2, Resistência a Dano 3…</p>
+      </div>
+      <div class="nota" data-t="auto" data-x="25" data-y="69.9">
+        <h4><span class="b"></span>E com o nível</h4>
+        <p><b>ST de Levantamento — 2 lvl | 6 pts</b>. O nível multiplica o custo, e o app
+           faz a conta.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="par" data-cena>
+    <div class="fone">
+      <img src="img/36-raca-custo.png" alt="Peculiaridades raciais e custo total">
+    </div>
+    <div class="notas">
+      <div class="nota" data-t="auto" data-x="50" data-y="81.2">
+        <h4><span class="b"></span>Custo Total Racial: 35 pontos</h4>
+        <p>Vantagens, desvantagens, perícias, ajustes de atributo, qualidades e peculiaridades —
+           <b>tudo somado</b>. E esse total entra na contagem de pontos do personagem.</p>
+      </div>
+      <div class="nota" data-t="auto" data-x="31.3" data-y="23.1">
+        <h4><span class="b"></span>Perícias raciais</h4>
+        <p><b>Comércio IQ+0 (M) | 2 pts</b> — anão já nasce sabendo negociar. Vem com atributo,
+           dificuldade e custo.</p>
+      </div>
+      <div class="nota" data-t="auto" data-x="34.4" data-y="60.3">
+        <h4><span class="b"></span>Peculiaridades, −1 ponto cada</h4>
+        <p><i>“Espera que anões masculinos tenham longas barbas”</i>,
+           <i>“Prefere ouro a outros metais preciosos”</i>. São traços de sabor que o livro
+           cobra a um ponto — e o app cobra também.</p>
+      </div>
+      <div class="nota" data-t="botao" data-x="29.7" data-y="37.5">
+        <h4><span class="b"></span>Qualidades, +1 cada</h4>
+        <p>O oposto: pequenas vantagens de sabor. Digite e toque no <b>+</b>.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="par" data-cena>
+    <div class="fone">
+      <img src="img/37-metacaracteristicas.png" alt="Lista de metacaracteristicas">
+    </div>
+    <div class="notas">
+      <div class="nota" data-t="auto" data-x="41.7" data-y="36.5">
+        <h4><span class="b"></span>Metacaracterística é um pacote</h4>
+        <p><b>Espírito — 261 pts</b>. Não é uma vantagem: é um <b>conjunto</b> delas que define
+           um tipo de ser. Uma escolha, e vem tudo junto.</p>
+      </div>
+      <div class="nota" data-t="auto" data-x="38.9" data-y="54.8">
+        <h4><span class="b"></span>Máquina, 25 pts</h4>
+        <p>Aplicando, a raça ganha de uma vez <i>Resistente (Imunidade a Danos ao Metabolismo)</i>,
+           <i>Tolerância a Ferimentos (Sem Sangue)</i>, <i>(Não-Vivo)</i> e a desvantagem
+           <i>Sem Recuperação</i> — com os custos, somados e subtraídos.</p>
+      </div>
+      <div class="nota" data-t="auto" data-x="22.2" data-y="31.6">
+        <h4><span class="b"></span>“Do livro”</h4>
+        <p>O rótulo diz que aquelas vieram do Módulo Básico. As que você criar ficam separadas
+           delas.</p>
+      </div>
+      <div class="nota" data-t="auto" data-x="44.4" data-y="64.4">
+        <h4><span class="b"></span>Corpo de Água, 175 pts</h4>
+        <p>São os pacotes que tornam possível jogar com algo que não é humanoide — sem montar
+           trinta vantagens na mão.</p>
       </div>
     </div>
   </div>
 
   <div class="tira">
-    <figure><img src="img/07b-gesto-modificador.png" alt="Modificador em mais 1 depois do arraste">
-      <figcaption>Depois do arraste: <b>mod +1</b> aparece no ataque e no dano</figcaption></figure>
-    <figure><img src="img/13-dados3d.png" alt="Dados 3D rolando">
-      <figcaption>Os dados são 3D e caem na tela</figcaption></figure>
-    <figure><img src="img/14-resultado.png" alt="Sucesso critico por 10">
-      <figcaption>O resultado já interpretado</figcaption></figure>
+    <figure><img src="img/30-raca-vazia.png" alt="Ficha de raca em branco">
+      <figcaption>Em branco: dá para inventar uma raça do zero</figcaption></figure>
+    <figure><img src="img/35-raca.png" alt="Desvantagens e pericias raciais">
+      <figcaption>As desvantagens raciais dos anões — Avareza, Cobiça, Teimosia</figcaption></figure>
   </div>
 </section>
 
-<section id="ferimento">
+<section id="pericias">
   <div class="cab">
-    <h2><span class="n">Capítulo II</span>O botão PV — o ferimento inteiro</h2>
-    <p class="lede">O Mestre diz <i>“12 de corte no peito”</i>. Isto é o que ninguém faz de cabeça
-       no meio da mesa — e o app faz em dois toques.</p>
+    <h2><span class="n">Capítulo IV</span>Perícias</h2>
+    <p class="lede">281 perícias do livro, mais 40 de Artes Marciais. O NH sai do atributo,
+       da dificuldade e dos pontos — e já vem pronto.</p>
   </div>
 
   <div class="par" data-cena>
     <div class="fone">
-      <img src="img/10-pv-silhueta.png" alt="Silhueta do corpo com os orgaos vitais marcados">
+      <img src="img/03-pericias.png" alt="Aba de pericias">
     </div>
     <div class="notas">
-      <div class="nota" data-t="botao" data-x="49.4" data-y="27.5">
-        <h4><span class="b"></span>Toque onde o golpe acertou</h4>
-        <p>A silhueta tem <b>16 regiões, com lado</b> — braço esquerdo e direito são coisas
-           diferentes quando um deles é decepado. O primeiro toque dá zoom; o segundo escolhe.</p>
+      <div class="nota" data-t="auto" data-x="85.4" data-y="38">
+        <h4><span class="b"></span>O NH já calculado</h4>
+        <p>Atributo base, dificuldade e pontos gastos entram na conta. Você vê só o número
+           com que vai rolar.</p>
       </div>
-      <div class="nota" data-t="auto" data-x="13.6" data-y="69.8">
-        <h4><span class="b"></span>Os órgãos vitais são um lugar à parte</h4>
-        <p>O buraco no meio do tronco não é falha de desenho: vitais têm regra própria — ×3 para
-           perfurante e perfuração, e −5 no teste de queda.</p>
-        <span class="pag">MB p.399</span>
+      <div class="nota" data-t="auto" data-x="28.8" data-y="39.9">
+        <h4><span class="b"></span>Atributo e dificuldade à mostra</h4>
+        <p><code>IQ/MD · 4 pts</code> — Inteligência, Muito Difícil, quatro pontos. É o que
+           explica por que o NH é aquele.</p>
       </div>
-      <div class="nota" data-t="botao" data-x="49.9" data-y="65.9">
-        <h4><span class="b"></span>Voltar ao corpo inteiro</h4>
-        <p>O zoom navega entre quatro recortes: corpo todo, rosto, tronco com braços e virilha,
-           e a parte de baixo.</p>
+      <div class="nota" data-t="botao" data-x="50" data-y="19">
+        <h4><span class="b"></span>Adicionar Perícia</h4>
+        <p>Busca no catálogo, com o custo por nível calculado enquanto você escolhe.</p>
       </div>
-    </div>
-  </div>
-
-  <div class="par" data-cena>
-    <div class="fone">
-      <img src="img/10b-pv-resultado.png" alt="Resultado do ferimento com a conta inteira">
-    </div>
-    <div class="notas">
-      <div class="nota" data-t="auto" data-x="49.4" data-y="46.2">
-        <h4><span class="b"></span>Doze tipos de dano</h4>
-        <p>A tabela completa da p.380: contusão, corte, perfuração, as quatro subclasses de
-           perfurante, queimadura, corrosão, toxina, fadiga e atribulação.
-           <b>Fadiga desconta PF</b>, não PV. <b>Atribulação não tira ponto nenhum</b> — vira teste de HT.</p>
-        <span class="pag">MB p.380</span>
+      <div class="nota" data-t="botao" data-x="50" data-y="25">
+        <h4><span class="b"></span>Criar Perícia</h4>
+        <p>Para o que a sua campanha inventou e o livro não tem.</p>
       </div>
-      <div class="nota" data-t="auto" data-x="49.4" data-y="67.5">
-        <h4><span class="b"></span>A RD sai das armaduras que ele está vestindo</h4>
-        <p>A ficha sabe o que ele comprou e o que cada peça cobre — e <b>comprar não é vestir</b>.
-           Cada peça tem a sua caixinha, e a marca fica salva.</p>
-      </div>
-      <div class="nota" data-t="auto" data-x="49.4" data-y="72.1">
-        <h4><span class="b"></span>Armadura flexível avisa</h4>
-        <p>O asterisco do livro quer dizer que o golpe barrado ainda machuca por impacto.
-           O app calcula esse trauma quando a peça segura o golpe inteiro.</p>
-        <span class="pag">MB p.380</span>
-      </div>
-      <div class="nota" data-t="auto" data-x="49.4" data-y="78.4">
-        <h4><span class="b"></span>Choque do próximo turno</h4>
-        <p>Igual aos PV perdidos, com teto de −4 — e o app já diz que <b>não afeta as defesas</b>,
-           que é a metade da regra que todo mundo esquece.</p>
-        <span class="pag">MB p.419-421</span>
-      </div>
-      <div class="nota" data-t="auto" data-x="49.4" data-y="82">
-        <h4><span class="b"></span>Teste de HT contra queda</h4>
-        <p>Ferimento grave é lesão acima de metade do PV inicial num golpe só. O app percebe,
-           avisa e aplica o modificador do local — −5 no rosto e vitais, −10 no crânio.</p>
-        <span class="pag">MB p.420-421</span>
-      </div>
-      <div class="nota" data-t="auto" data-x="24.7" data-y="89.4">
-        <h4><span class="b"></span>A conta aparece escrita</h4>
-        <p><code>12 − RD 1 = 11 × 1.5 = 16</code>. Automação que não se explica é caixa preta —
-           e num jogo de regras, quem não confere não confia.</p>
-      </div>
-    </div>
-  </div>
-
-  <div class="aviso">
-    <b>A ordem importa, e não é óbvia.</b> Tira-se a RD <i>primeiro</i>, e só depois se multiplica
-    pelo tipo. Quem multiplica antes infla o ferimento; quem aplica o teto do membro antes de
-    multiplicar o encolhe. As duas trocas dão números plausíveis — e errados.
-  </div>
-</section>
-
-<section id="equip">
-  <div class="cab">
-    <h2><span class="n">Capítulo III</span>Equipamento</h2>
-    <p class="lede">150 armas, 72 armaduras e 7 escudos, com todas as estatísticas.
-       Tocar num item do catálogo <b>não o compra</b>: abre a ficha técnica.</p>
-  </div>
-
-  <div class="par" data-cena>
-    <div class="fone">
-      <img src="img/16-ficha-arma.png" alt="Ficha tecnica da Alabarda">
-    </div>
-    <div class="notas">
-      <div class="nota" data-t="auto" data-x="49.4" data-y="22.6">
-        <h4><span class="b"></span>Todos os modos de ataque</h4>
-        <p>A Alabarda tem três, e o dano de cada um já vem <b>resolvido com a Força do personagem</b>:
-           <code>GeB+5 corte</code> vira <code>1d+4 corte</code>. E avisa que o segundo modo é a
-           mesma arma — não custa nem pesa de novo.</p>
-      </div>
-      <div class="nota" data-t="auto" data-x="49.4" data-y="41.3">
-        <h4><span class="b"></span>A sigla vem traduzida</h4>
-        <p><code>13‡ / 12</code> não diz nada sozinho. Aqui vem escrito: usa as duas mãos, fica
-           despreparada depois de atacar, a não ser que a sua ST seja 1,5× a exigida.</p>
-        <span class="pag">MB p.271</span>
-      </div>
-      <div class="nota" data-t="auto" data-x="49.4" data-y="50">
-        <h4><span class="b"></span>Cada número explicado</h4>
-        <p>O asterisco do alcance exige uma manobra Preparar. <code>0D</code> no Aparar quer dizer
-           arma desbalanceada: aparou, não ataca no mesmo turno.</p>
-      </div>
-      <div class="nota" data-t="auto" data-x="49.4" data-y="75">
-        <h4><span class="b"></span>A nota de rodapé por extenso</h4>
-        <p>O catálogo guarda só <code>[2]</code>. O app mostra o texto: <i>“pode ficar presa;
-           veja Picaretas”</i>. Número de rodapé sem o rodapé não informa nada.</p>
-      </div>
-      <div class="nota" data-t="botao" data-x="49.9" data-y="88.8">
-        <h4><span class="b"></span>Só então entra na ficha</h4>
-        <p>Dois toques em vez de um — para ninguém comprar uma arma sem descobrir que ela pesa
-           6 kg e exige ST 13.</p>
-      </div>
-    </div>
-  </div>
-
-  <div class="par" data-cena>
-    <div class="fone">
-      <img src="img/06-equip.png" alt="Lista de equipamentos do personagem">
-    </div>
-    <div class="notas">
-      <div class="nota" data-t="auto" data-x="49.4" data-y="28">
-        <h4><span class="b"></span>Peso somado quando há mais de um</h4>
-        <p><code>2x · 0.25 kg cada · total 0.5 kg</code>. Com um item só, aparece só o peso —
-           repetir o mesmo número três vezes gastava linha à toa.</p>
-      </div>
-      <div class="nota" data-t="auto" data-x="49.4" data-y="60.3">
-        <h4><span class="b"></span>Quatro linhas por item, sempre</h4>
-        <p>Nota comprida termina em reticências. Sem isso, um item de dez linhas ocupava mais tela
-           que os quatro acima dele juntos — e a lista deixava de ser lista.</p>
-      </div>
-      <div class="nota" data-t="escondido" data-x="76.8" data-y="60">
-        <h4><span class="b"></span>O lápis mostra tudo</h4>
-        <p>Abre o item com a <b>mesma ficha técnica</b> do catálogo em cima e os campos embaixo —
-           inclusive <b>RD</b> na armadura e <b>BD</b> no escudo, que é por onde entra a peça encantada.</p>
+      <div class="nota" data-t="escondido" data-x="50" data-y="31.2">
+        <h4><span class="b"></span>Perícias Suplementares</h4>
+        <p>As que dão bônus a outras. O app aplica o bônus onde ele vale, em vez de deixar
+           você lembrar na hora da rolagem.</p>
       </div>
     </div>
   </div>
 
   <div class="grade">
-    <div class="bloco"><h4>ST mínima</h4>
-      <p>Arma pesada demais para o personagem aparece em vermelho, dizendo o que custa:
-         <i>“Falta ST 3: −3 no ataque e 1 PF a mais”</i>.</p></div>
-    <div class="bloco"><h4>Qualidade da arma</h4>
-      <p>Barata, boa, superior, altíssima. O bônus entra no dano — e <b>só em lâmina</b>:
-         uma maça superior não bate mais forte.</p></div>
-    <div class="bloco"><h4>Armadura por local</h4>
-      <p>Uma peça de tronco e virilha pode entrar só num dos dois, com peso e custo divididos.</p></div>
-    <div class="bloco"><h4>Sobrepor armaduras</h4>
-      <p>Avisa quando o livro não permite empilhar, e cobra o −1 na DX da camada extra.</p></div>
-  </div>
-
-  <div class="tira">
-    <figure><img src="img/15-catalogo-armas.png" alt="Catalogo de armas">
-      <figcaption>O catálogo, com busca e filtro por tipo</figcaption></figure>
+    <div class="bloco"><h4>Modificador de equipamento</h4>
+      <p>Sem ferramenta, improvisada, boa, superior — com a coluna dupla que o livro usa
+         para perícia tecnológica.</p></div>
+    <div class="bloco"><h4>Familiaridade cultural</h4>
+      <p>A penalidade por não conhecer a cultura entra sozinha.</p></div>
+    <div class="bloco"><h4>Predefinições</h4>
+      <p>O NH que você tem numa perícia que <b>não</b> comprou.</p></div>
+    <div class="bloco"><h4>Talento Instintivo</h4>
+      <p>Na aba Rolagem, um diálogo lista só as perícias que ele <b>não</b> tem, com o NH
+         que a vantagem concede.</p></div>
   </div>
 </section>
 
 <section id="tecnicas">
   <div class="cab">
-    <h2><span class="n">Capítulo IV</span>Técnicas — e os outros livros</h2>
+    <h2><span class="n">Capítulo V</span>Técnicas — e os outros livros</h2>
     <p class="lede">118 técnicas de <b>Artes Marciais</b> e <b>Gun Fu</b>, não só do Módulo Básico.
        É onde fica mais claro que o app não só guarda: ele confere.</p>
   </div>
@@ -532,73 +553,9 @@
   </div>
 </section>
 
-<section id="geral">
-  <div class="cab">
-    <h2><span class="n">Capítulo V</span>Geral — o personagem</h2>
-  </div>
-  <div class="par" data-cena>
-    <div class="fone">
-      <img src="img/01-geral.png" alt="Aba Geral">
-    </div>
-    <div class="notas">
-      <div class="nota" data-t="auto" data-x="39.4" data-y="49.3">
-        <h4><span class="b"></span>O custo de cada atributo</h4>
-        <p>O colchete embaixo do número mostra quantos pontos aquele atributo custou —
-           e o topo da tela soma tudo e diz o que sobra.</p>
-      </div>
-      <div class="nota" data-t="auto" data-x="30" data-y="59">
-        <h4><span class="b"></span>Secundários calculados</h4>
-        <p>PV, Vontade, Percepção e PF saem dos primários, mostrando a base e o quanto foi
-           comprado por cima.</p>
-      </div>
-      <div class="nota" data-t="escondido" data-x="60" data-y="70">
-        <h4><span class="b"></span>O triângulo ao lado de “Desloc.”</h4>
-        <p>Toque e abre <b>todos os deslocamentos</b>: correndo, nadando, voando, rastejando,
-           saltando. A seta é discreta e a maioria não a vê.</p>
-      </div>
-      <div class="nota" data-t="auto" data-x="50" data-y="77">
-        <h4><span class="b"></span>Dano por Força</h4>
-        <p>GdP e GeB já resolvidos pela tabela do livro.</p>
-      </div>
-      <div class="nota" data-t="botao" data-x="15.1" data-y="40.3">
-        <h4><span class="b"></span>Definir Base</h4>
-        <p>Fixa a base a partir da qual os custos passam a ser contados — útil quando o personagem
-           evolui e você quer saber o que foi gasto depois.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section id="tracos">
-  <div class="cab">
-    <h2><span class="n">Capítulo VI</span>Traços e perícias</h2>
-    <p class="lede">272 vantagens, 218 desvantagens e 281 perícias — com o custo calculado e os
-       modificadores aplicados.</p>
-  </div>
-  <div class="tira">
-    <figure><img src="img/02-tracos.png" alt="Aba Tracos">
-      <figcaption>Vantagens e desvantagens, com o custo por nível</figcaption></figure>
-    <figure><img src="img/03-pericias.png" alt="Aba Pericias">
-      <figcaption>Perícias com o NH pronto e o atributo/dificuldade à mostra</figcaption></figure>
-    <figure><img src="img/04-tecnicas.png" alt="Aba Tecnicas">
-      <figcaption>A aba de técnicas, ainda vazia, explicando o que falta</figcaption></figure>
-  </div>
-  <div class="grade">
-    <div class="bloco"><h4>Elas não ficam só na lista</h4>
-      <p><i>Reflexos em Combate</i> aparece no Bloqueio. <i>Sorte</i> vira botão na Rolagem.
-         <i>Visão Noturna</i> desconta a penalidade de luz sozinha.</p></div>
-    <div class="bloco"><h4>Incompatibilidade</h4>
-      <p>O app avisa quando dois traços não podem conviver, e quando um passa do teto de nível.</p></div>
-    <div class="bloco"><h4>Modificadores</h4>
-      <p>218 ampliações e limitações, com a porcentagem aplicada ao custo final.</p></div>
-    <div class="bloco"><h4>Autocontrole</h4>
-      <p>O número de autocontrole das desvantagens vira teste rolável.</p></div>
-  </div>
-</section>
-
 <section id="magia">
   <div class="cab">
-    <h2><span class="n">Capítulo VII</span>Magia — 879 magias, e o caminho até elas</h2>
+    <h2><span class="n">Capítulo VI</span>Magia — 879 magias, e o caminho até elas</h2>
     <p class="lede">É a aba onde o app deixa de ser catálogo e vira ferramenta: ele sabe o que
        falta para cada magia, e sabe traçar o caminho até a que você quer.</p>
   </div>
@@ -783,9 +740,265 @@
   </div>
 </section>
 
+<section id="equip">
+  <div class="cab">
+    <h2><span class="n">Capítulo VII</span>Equipamento</h2>
+    <p class="lede">150 armas, 72 armaduras e 7 escudos, com todas as estatísticas.
+       Tocar num item do catálogo <b>não o compra</b>: abre a ficha técnica.</p>
+  </div>
+
+  <div class="par" data-cena>
+    <div class="fone">
+      <img src="img/16-ficha-arma.png" alt="Ficha tecnica da Alabarda">
+    </div>
+    <div class="notas">
+      <div class="nota" data-t="auto" data-x="49.4" data-y="22.6">
+        <h4><span class="b"></span>Todos os modos de ataque</h4>
+        <p>A Alabarda tem três, e o dano de cada um já vem <b>resolvido com a Força do personagem</b>:
+           <code>GeB+5 corte</code> vira <code>1d+4 corte</code>. E avisa que o segundo modo é a
+           mesma arma — não custa nem pesa de novo.</p>
+      </div>
+      <div class="nota" data-t="auto" data-x="49.4" data-y="41.3">
+        <h4><span class="b"></span>A sigla vem traduzida</h4>
+        <p><code>13‡ / 12</code> não diz nada sozinho. Aqui vem escrito: usa as duas mãos, fica
+           despreparada depois de atacar, a não ser que a sua ST seja 1,5× a exigida.</p>
+        <span class="pag">MB p.271</span>
+      </div>
+      <div class="nota" data-t="auto" data-x="49.4" data-y="50">
+        <h4><span class="b"></span>Cada número explicado</h4>
+        <p>O asterisco do alcance exige uma manobra Preparar. <code>0D</code> no Aparar quer dizer
+           arma desbalanceada: aparou, não ataca no mesmo turno.</p>
+      </div>
+      <div class="nota" data-t="auto" data-x="49.4" data-y="75">
+        <h4><span class="b"></span>A nota de rodapé por extenso</h4>
+        <p>O catálogo guarda só <code>[2]</code>. O app mostra o texto: <i>“pode ficar presa;
+           veja Picaretas”</i>. Número de rodapé sem o rodapé não informa nada.</p>
+      </div>
+      <div class="nota" data-t="botao" data-x="49.9" data-y="88.8">
+        <h4><span class="b"></span>Só então entra na ficha</h4>
+        <p>Dois toques em vez de um — para ninguém comprar uma arma sem descobrir que ela pesa
+           6 kg e exige ST 13.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="par" data-cena>
+    <div class="fone">
+      <img src="img/06-equip.png" alt="Lista de equipamentos do personagem">
+    </div>
+    <div class="notas">
+      <div class="nota" data-t="auto" data-x="49.4" data-y="28">
+        <h4><span class="b"></span>Peso somado quando há mais de um</h4>
+        <p><code>2x · 0.25 kg cada · total 0.5 kg</code>. Com um item só, aparece só o peso —
+           repetir o mesmo número três vezes gastava linha à toa.</p>
+      </div>
+      <div class="nota" data-t="auto" data-x="49.4" data-y="60.3">
+        <h4><span class="b"></span>Quatro linhas por item, sempre</h4>
+        <p>Nota comprida termina em reticências. Sem isso, um item de dez linhas ocupava mais tela
+           que os quatro acima dele juntos — e a lista deixava de ser lista.</p>
+      </div>
+      <div class="nota" data-t="escondido" data-x="76.8" data-y="60">
+        <h4><span class="b"></span>O lápis mostra tudo</h4>
+        <p>Abre o item com a <b>mesma ficha técnica</b> do catálogo em cima e os campos embaixo —
+           inclusive <b>RD</b> na armadura e <b>BD</b> no escudo, que é por onde entra a peça encantada.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="grade">
+    <div class="bloco"><h4>ST mínima</h4>
+      <p>Arma pesada demais para o personagem aparece em vermelho, dizendo o que custa:
+         <i>“Falta ST 3: −3 no ataque e 1 PF a mais”</i>.</p></div>
+    <div class="bloco"><h4>Qualidade da arma</h4>
+      <p>Barata, boa, superior, altíssima. O bônus entra no dano — e <b>só em lâmina</b>:
+         uma maça superior não bate mais forte.</p></div>
+    <div class="bloco"><h4>Armadura por local</h4>
+      <p>Uma peça de tronco e virilha pode entrar só num dos dois, com peso e custo divididos.</p></div>
+    <div class="bloco"><h4>Sobrepor armaduras</h4>
+      <p>Avisa quando o livro não permite empilhar, e cobra o −1 na DX da camada extra.</p></div>
+  </div>
+
+  <div class="tira">
+    <figure><img src="img/15-catalogo-armas.png" alt="Catalogo de armas">
+      <figcaption>O catálogo, com busca e filtro por tipo</figcaption></figure>
+  </div>
+</section>
+
+<section id="rolagem">
+  <div class="cab">
+    <h2><span class="n">Capítulo VIII</span>A aba Rolagem</h2>
+    <p class="lede">A tela que fica aberta durante o jogo. Quase tudo aqui é clicável — e boa parte
+       não parece. Toque nos pontos.</p>
+  </div>
+
+  <div class="legenda">
+    <span class="lg"><i style="background:#7c8794"></i><span><b>Botão</b> — parece o que é</span></span>
+    <span class="lg"><i style="background:#c39a3a"></i><span><b>Clicável</b>, e não parece</span></span>
+    <span class="lg"><i style="background:#b53b3b"></i><span><b>Gesto</b> invisível</span></span>
+    <span class="lg"><i style="background:#5d8570"></i><span><b>Calculado</b> sozinho</span></span>
+  </div>
+
+  <div class="par" data-cena>
+    <div class="fone">
+      <img src="img/07-rolagem-topo.png" alt="Aba Rolagem do app">
+    </div>
+    <div class="notas">
+      <div class="nota" data-t="botao" data-x="49.8" data-y="18.1">
+        <h4><span class="b"></span>O canal da mesa</h4>
+        <p>Cada rolagem pode ser publicada num canal de Discord, para o Mestre ver o resultado
+           sem ninguém precisar cantar o número.</p>
+      </div>
+      <div class="nota" data-t="gesto" data-x="12" data-y="27.8">
+        <h4><span class="b"></span>Arraste o dedo sobre o atributo</h4>
+        <p>Tocar rola contra o atributo. <b>Deslizar para cima ou para baixo</b> muda o modificador
+           da próxima rolagem — sem abrir nada. É o gesto que mais gente não descobre sozinha.
+           Na variante para quem não enxerga há botões no lugar do gesto.</p>
+      </div>
+      <div class="nota" data-t="escondido" data-x="22" data-y="32.6">
+        <h4><span class="b"></span>PV é um botão</h4>
+        <p>Abre o diálogo de ferimento: silhueta do corpo, tipo de dano, RD das armaduras vestidas,
+           e a conta inteira. Está sublinhado justamente por isso.</p>
+        <span class="pag">MB p.399-400, 419-422</span>
+      </div>
+      <div class="nota" data-t="escondido" data-x="64.6" data-y="32.6">
+        <h4><span class="b"></span>PF também</h4>
+        <p>Marque de onde veio o cansaço — esforço, magia, calor, sede, sono — e o PF desce sozinho.
+           Desmarcando, sobe de volta.</p>
+        <span class="pag">MB p.426-428</span>
+      </div>
+      <div class="nota" data-t="auto" data-x="26.1" data-y="38.3">
+        <h4><span class="b"></span>Esquiva e Apara prontas</h4>
+        <p>Já vêm com escudo, carga, Reflexos em Combate e o que mais existir na ficha.
+           Tocando, você vê <b>de onde saiu cada ponto</b>.</p>
+      </div>
+      <div class="nota" data-t="botao" data-x="26.1" data-y="50">
+        <h4><span class="b"></span>Luz da cena</h4>
+        <p>Escolha a iluminação uma vez; o redutor entra em toda rolagem de visão e de combate —
+           já descontando a Visão Noturna do personagem.</p>
+        <span class="pag">MB p.394, 549</span>
+      </div>
+      <div class="nota" data-t="botao" data-x="73.3" data-y="50">
+        <h4><span class="b"></span>Qual apara do turno</h4>
+        <p>A 2ª apara do turno custa −4, a 3ª −8, a 4ª −12, e tudo zera no turno seguinte.
+           O app conta.</p>
+        <span class="pag">MB p.377</span>
+      </div>
+      <div class="nota" data-t="escondido" data-x="25.9" data-y="62.8">
+        <h4><span class="b"></span>O NH rola o ataque</h4>
+        <p>Tocar no número rola 3d6 com dados 3D e diz o resultado — sucesso, falha,
+           crítico e por quanto.</p>
+      </div>
+      <div class="nota" data-t="auto" data-x="80.9" data-y="63.7">
+        <h4><span class="b"></span>GdP e GeB pela ST</h4>
+        <p>A tabela de dano por Força já resolvida, com o botão para alternar entre gume e ponta.</p>
+      </div>
+      <div class="nota" data-t="botao" data-x="49.8" data-y="72.4">
+        <h4><span class="b"></span>Perícias, Magias, Técnicas</h4>
+        <p>Tudo o que está na ficha, rolável com um toque. A magia já cobra a energia.</p>
+      </div>
+      <div class="nota" data-t="botao" data-x="49.8" data-y="77.5">
+        <h4><span class="b"></span>Reação e Resistência</h4>
+        <p>O teste de reação com os modificadores sociais somados, e os testes de resistência
+           num lugar só.</p>
+        <span class="pag">MB p.494</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="tira">
+    <figure><img src="img/07b-gesto-modificador.png" alt="Modificador em mais 1 depois do arraste">
+      <figcaption>Depois do arraste: <b>mod +1</b> aparece no ataque e no dano</figcaption></figure>
+    <figure><img src="img/13-dados3d.png" alt="Dados 3D rolando">
+      <figcaption>Os dados são 3D e caem na tela</figcaption></figure>
+    <figure><img src="img/14-resultado.png" alt="Sucesso critico por 10">
+      <figcaption>O resultado já interpretado</figcaption></figure>
+  </div>
+</section>
+
+<section id="ferimento">
+  <div class="cab">
+    <h2><span class="n">Capítulo IX</span>O botão PV — o ferimento inteiro</h2>
+    <p class="lede">O Mestre diz <i>“12 de corte no peito”</i>. Isto é o que ninguém faz de cabeça
+       no meio da mesa — e o app faz em dois toques.</p>
+  </div>
+
+  <div class="par" data-cena>
+    <div class="fone">
+      <img src="img/10-pv-silhueta.png" alt="Silhueta do corpo com os orgaos vitais marcados">
+    </div>
+    <div class="notas">
+      <div class="nota" data-t="botao" data-x="49.4" data-y="27.5">
+        <h4><span class="b"></span>Toque onde o golpe acertou</h4>
+        <p>A silhueta tem <b>16 regiões, com lado</b> — braço esquerdo e direito são coisas
+           diferentes quando um deles é decepado. O primeiro toque dá zoom; o segundo escolhe.</p>
+      </div>
+      <div class="nota" data-t="auto" data-x="13.6" data-y="69.8">
+        <h4><span class="b"></span>Os órgãos vitais são um lugar à parte</h4>
+        <p>O buraco no meio do tronco não é falha de desenho: vitais têm regra própria — ×3 para
+           perfurante e perfuração, e −5 no teste de queda.</p>
+        <span class="pag">MB p.399</span>
+      </div>
+      <div class="nota" data-t="botao" data-x="49.9" data-y="65.9">
+        <h4><span class="b"></span>Voltar ao corpo inteiro</h4>
+        <p>O zoom navega entre quatro recortes: corpo todo, rosto, tronco com braços e virilha,
+           e a parte de baixo.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="par" data-cena>
+    <div class="fone">
+      <img src="img/10b-pv-resultado.png" alt="Resultado do ferimento com a conta inteira">
+    </div>
+    <div class="notas">
+      <div class="nota" data-t="auto" data-x="49.4" data-y="46.2">
+        <h4><span class="b"></span>Doze tipos de dano</h4>
+        <p>A tabela completa da p.380: contusão, corte, perfuração, as quatro subclasses de
+           perfurante, queimadura, corrosão, toxina, fadiga e atribulação.
+           <b>Fadiga desconta PF</b>, não PV. <b>Atribulação não tira ponto nenhum</b> — vira teste de HT.</p>
+        <span class="pag">MB p.380</span>
+      </div>
+      <div class="nota" data-t="auto" data-x="49.4" data-y="67.5">
+        <h4><span class="b"></span>A RD sai das armaduras que ele está vestindo</h4>
+        <p>A ficha sabe o que ele comprou e o que cada peça cobre — e <b>comprar não é vestir</b>.
+           Cada peça tem a sua caixinha, e a marca fica salva.</p>
+      </div>
+      <div class="nota" data-t="auto" data-x="49.4" data-y="72.1">
+        <h4><span class="b"></span>Armadura flexível avisa</h4>
+        <p>O asterisco do livro quer dizer que o golpe barrado ainda machuca por impacto.
+           O app calcula esse trauma quando a peça segura o golpe inteiro.</p>
+        <span class="pag">MB p.380</span>
+      </div>
+      <div class="nota" data-t="auto" data-x="49.4" data-y="78.4">
+        <h4><span class="b"></span>Choque do próximo turno</h4>
+        <p>Igual aos PV perdidos, com teto de −4 — e o app já diz que <b>não afeta as defesas</b>,
+           que é a metade da regra que todo mundo esquece.</p>
+        <span class="pag">MB p.419-421</span>
+      </div>
+      <div class="nota" data-t="auto" data-x="49.4" data-y="82">
+        <h4><span class="b"></span>Teste de HT contra queda</h4>
+        <p>Ferimento grave é lesão acima de metade do PV inicial num golpe só. O app percebe,
+           avisa e aplica o modificador do local — −5 no rosto e vitais, −10 no crânio.</p>
+        <span class="pag">MB p.420-421</span>
+      </div>
+      <div class="nota" data-t="auto" data-x="24.7" data-y="89.4">
+        <h4><span class="b"></span>A conta aparece escrita</h4>
+        <p><code>12 − RD 1 = 11 × 1.5 = 16</code>. Automação que não se explica é caixa preta —
+           e num jogo de regras, quem não confere não confia.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="aviso">
+    <b>A ordem importa, e não é óbvia.</b> Tira-se a RD <i>primeiro</i>, e só depois se multiplica
+    pelo tipo. Quem multiplica antes infla o ferimento; quem aplica o teto do membro antes de
+    multiplicar o encolhe. As duas trocas dão números plausíveis — e errados.
+  </div>
+</section>
+
 <section id="regras">
   <div class="cab">
-    <h2><span class="n">Apêndice A</span>O que está automatizado, regra por regra</h2>
+    <h2><span class="n">Apêndice</span>O que está automatizado, regra por regra</h2>
     <p class="lede">Sessenta regras do livro implementadas como código puro e testável, cada uma
        com a sua página.</p>
   </div>
@@ -846,29 +1059,6 @@
     O teto de dano num membro é testado para todo PV de 1 a 40; a tabela de tipos de dano é testada
     nas doze entradas contra quatro propriedades cada. Teste que só olha o caso que o autor imaginou
     fica verde com o defeito em pé.
-  </div>
-</section>
-
-<section id="naofaz">
-  <div class="cab">
-    <h2><span class="n">Apêndice B</span>O que o app não faz</h2>
-    <p class="lede">Registrado de propósito — tanto para não prometer o que não existe quanto para
-       não procurarmos o que não está lá.</p>
-  </div>
-  <div class="rolar">
-  <table>
-    <thead><tr><th>Não automatizado</th><th>Por quê</th></tr></thead>
-    <tbody>
-      <tr><td>Multiplicador de preço por qualidade de arma</td><td>depende do NT da campanha, que a ficha não guarda</td></tr>
-      <tr><td>Teste de quebra ao aparar arma pesada</td><td>a qualidade já está guardada; falta a rolagem</td></tr>
-      <tr><td>Redutores de reação por usar armadura</td><td>a exceção do livro é julgamento humano</td></tr>
-      <tr><td>Tempo de vestir e tirar armadura</td><td>só importa em combate por turno</td></tr>
-      <tr><td>Sangramento</td><td>não modelado</td></tr>
-      <tr><td>Custo de vida mensal</td><td>fora do que se usa na mesa</td></tr>
-      <tr><td>Aplicar a corrosão na peça sozinho</td><td>o app não sabe qual peça o ácido atingiu — mostra o número e você decide</td></tr>
-      <tr><td>Montaria, regras especiais por arma, perigos de ambiente</td><td>adiados</td></tr>
-    </tbody>
-  </table>
   </div>
 </section>
 
