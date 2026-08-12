@@ -7293,3 +7293,58 @@ armaduras** sem aviso. O bloco agora só existe para arma e escudo — o escudo
 mantém porque se dá golpe com ele (MB p.288, nota [2]).
 
 - **Status:** ✅ Build OK nas 2 variantes · lint OK · gate **2080** (+13) · ⏭️ **PENDENTE: teste no aparelho** (T-EQ34 a T-EQ39).
+
+---
+
+### Lote EQP-9 — Armadura Flexível e Trauma por Impacto (9.3-EQP9)
+
+MB p.380. Primeira regra apresentada sob a combinação nova: eu levanto, o usuário
+decide (ver a memória *Regra do livro: apresentar*).
+
+#### 🔴 O rótulo prometia uma mecânica que não existia
+
+O `*` do catálogo era lido desde sempre (`CoberturaDaArmadura.Rd.flexivel`), e o
+diálogo de ferimento **anunciava** *"flexível: não impede trauma por impacto"*.
+Não havia uma linha calculando isso — o `flexivel` era usado só para escrever a
+frase.
+
+#### A regra, e a trava que quase me escapou
+
+> *"Para cada 10 pontos completos de dano por corte, perfuração ou perfurante ou
+> 5 pontos de dano por contusão **barrados** pela RD, o personagem sofre 1 PV de
+> dano devido ao trauma por impacto. (…) Contudo, se um único ponto de dano
+> penetrar a RD flexível, **não sofre trauma por impacto**."*
+
+⚠️ Um ponto que passe **cancela** o trauma — não reduz. Isso torna trauma e lesão
+normal **mutuamente exclusivos**, e é o que deixou esta regra entrar sem mexer em
+nada do cálculo de ferimento. A invariante virou teste: varre dano 0..30 contra
+RD 0..20 e cobra que os dois nunca apareçam juntos.
+
+#### ⚠️ O erro que motivou o lote
+
+Eu apresentei a regra ao usuário com um exemplo furado: *"10 de contusão contra a
+Túnica RD 2\* dá 2 PV de trauma"*. Errado duas vezes — 8 penetram (a trava
+cancela), e mesmo que não penetrassem, 2 barrados estão abaixo do mínimo de 5. Ele
+foi testar no aparelho em cima do meu número.
+
+Fica registrado no próprio arquivo da regra. E rendeu um achado honesto: a Túnica
+RD 2\* **nunca** produz trauma — para nada penetrar o dano teria de ser ≤ 2, e 2
+< 5. São só **8** armaduras flexíveis do catálogo com RD ≥ 5.
+
+#### A camada de fora
+
+*"Se uma segunda RD estiver sobreposta à RD flexível, somente o dano que penetrar
+a camada externa é capaz de provocar trauma."* A ficha não guarda a **ordem** das
+peças, então se assume o caso comum — **rígido por fora, flexível por dentro** —,
+que é a própria frase do livro. A conta aparece na tela justamente para o Mestre
+poder corrigir quando for ao contrário.
+
+A RD natural do crânio entra como **rígida**: é osso, fica por dentro de tudo.
+
+#### Um defeito de arrasto que o teste pegou
+
+`desperdicado = lesao - pvPerdidos` virava **negativo** com trauma (lesão zero,
+PV perdidos um), e o aviso do teto de membro dispararia num golpe que nem
+penetrou. Ganhou piso em zero.
+
+- **Status:** ✅ Build OK nas 2 variantes · lint OK · gate **2096** (+16) · ⏭️ **PENDENTE: teste no aparelho** (T-EQ40 a T-EQ43).

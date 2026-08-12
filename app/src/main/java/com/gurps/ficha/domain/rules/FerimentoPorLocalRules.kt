@@ -205,11 +205,21 @@ object FerimentoPorLocalRules {
         val ferimentoGrave: Boolean,
         val choque: Int,
         val testeDeNocaute: TesteDeNocaute?,
-        val avisos: List<String>
+        val avisos: List<String>,
+        /** PV perdidos por **trauma por impacto** (MB p.380). Ver [TraumaPorImpacto]. */
+        val traumaPorImpacto: Int = 0,
+        /** A conta do trauma, pronta para a tela. Null quando não houve. */
+        val contaDoTrauma: String? = null
     ) {
         val conta: String
-            get() = "$danoBruto − RD $rdEfetiva = $penetrante × $multiplicador = " +
-                "$lesaoAntesDoTeto" + if (desperdicado > 0) " → $pvPerdidos (o resto é desperdiçado)" else ""
+            get() = if (traumaPorImpacto > 0 && contaDoTrauma != null) {
+                // Quando o golpe não penetra, "= 0" sozinho parece que nada
+                // aconteceu — e aconteceu: o jogador perdeu PV.
+                "$danoBruto − RD $rdEfetiva = $penetrante → $contaDoTrauma"
+            } else {
+                "$danoBruto − RD $rdEfetiva = $penetrante × $multiplicador = " +
+                    "$lesaoAntesDoTeto" + if (desperdicado > 0) " → $pvPerdidos (o resto é desperdiçado)" else ""
+            }
 
         /**
          * O resultado falado.
@@ -222,6 +232,15 @@ object FerimentoPorLocalRules {
         fun descricaoAcessivel(pvNovo: Int, pvInicial: Int): String = buildString {
             append("Perde $pvPerdidos pontos de vida. ")
             append("Fica com ${RotuloAcessivel.valor(pvNovo)} de $pvInicial. ")
+            // ⚠️ Sem esta frase, quem ouve a tela recebe "a armadura barrou" e
+            // "perde 1 ponto de vida" sem nenhuma ligação entre as duas — e a
+            // conclusão natural é que o app errou.
+            if (traumaPorImpacto > 0) {
+                append("A armadura flexível barrou o golpe inteiro, mas o impacto ")
+                append("atravessou: ${RotuloAcessivel.valor(traumaPorImpacto)} ")
+                append(if (traumaPorImpacto == 1) "ponto " else "pontos ")
+                append("de trauma por impacto. ")
+            }
             if (choque != 0) {
                 append("Choque de ${RotuloAcessivel.modificador(choque)} em destreza e ")
                 append("inteligência, só no próximo turno. ")
@@ -253,7 +272,14 @@ object FerimentoPorLocalRules {
         tipo: DanoTipo,
         local: LocalAtaque,
         rdArmadura: Int = 0,
-        masculino: Boolean = true
+        masculino: Boolean = true,
+        /**
+         * Quanto da [rdArmadura] veio de peças **flexíveis** (as com `*`).
+         *
+         * Lote EQP-9: é o que decide o trauma por impacto (MB p.380). Zero por
+         * padrão, então quem chamava antes continua com o mesmo resultado.
+         */
+        rdFlexivel: Int = 0
     ): Resultado {
         val rdEfetiva = rdArmadura.coerceAtLeast(0) + rdExtraNatural(local)
         val penetrante = (danoBruto - rdEfetiva).coerceAtLeast(0)
@@ -262,9 +288,24 @@ object FerimentoPorLocalRules {
         // qualquer ataque que penetre a RD" (MB p.379).
         val lesao = if (penetrante <= 0) 0 else floor(penetrante * mult).toInt().coerceAtLeast(1)
 
+        // 🔴 Lote EQP-9. A RD natural (crânio) entra como RÍGIDA: é osso, e fica
+        // por dentro de qualquer peça. Ver `TraumaPorImpacto`.
+        val flexivel = rdFlexivel.coerceIn(0, rdArmadura.coerceAtLeast(0))
+        val rigida = rdArmadura.coerceAtLeast(0) - flexivel + rdExtraNatural(local)
+        val trauma = TraumaPorImpacto.calcular(
+            danoBruto = danoBruto,
+            tipo = tipo,
+            penetrante = penetrante,
+            rdFlexivel = flexivel,
+            rdRigida = rigida
+        )
+
         val minimo = minimoQueIncapacita(local, pvInicial)
         val limiteDeceps = minimoQueDeceps(local, pvInicial)
-        var pvPerdidos = lesao
+        // ⚠️ Trauma e lesão normal são MUTUAMENTE EXCLUSIVOS: o trauma só existe
+        // quando nada penetrou, e nada penetrado significa lesão zero. É por isso
+        // que esta soma não precisa de nenhuma ressalva — nunca há os dois.
+        var pvPerdidos = lesao + trauma
         var efeito = EfeitoNoLocal.NENHUM
         val avisos = mutableListOf<String>()
 
@@ -279,7 +320,10 @@ object FerimentoPorLocalRules {
             if (local != LocalAtaque.OLHO) pvPerdidos = minimo
         }
 
-        val desperdicado = lesao - pvPerdidos
+        // ⚠️ `coerceAtLeast(0)`: com trauma por impacto a lesão é ZERO e os PV
+        // perdidos não são — sem o piso isto daria desperdício negativo, e o
+        // aviso do teto de membro dispararia num golpe que nem penetrou.
+        val desperdicado = (lesao - pvPerdidos).coerceAtLeast(0)
 
         // Ferimento grave: um único ferimento acima de PVinicial/2 — OU qualquer
         // lesão incapacitante (MB p.420).
@@ -316,7 +360,9 @@ object FerimentoPorLocalRules {
             ferimentoGrave = grave,
             choque = choquePenalidade,
             testeDeNocaute = teste,
-            avisos = avisos
+            avisos = avisos,
+            traumaPorImpacto = trauma,
+            contaDoTrauma = TraumaPorImpacto.conta(danoBruto, tipo, flexivel, rigida, trauma)
         )
     }
 

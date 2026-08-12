@@ -111,16 +111,20 @@ fun DialogoFerimento(
             CoberturaDaArmadura.rdDe(eq.rdArmaduraExibicao())?.let { CoberturaDaArmadura.Peca(eq.nome, it) }
         }
     val rd = if (usarRd) CoberturaDaArmadura.rdTotal(pecasVestidas) else 0
+    // Lote EQP-9: quanto dessa RD veio de peça FLEXÍVEL (as com `*`). É o que
+    // decide o trauma por impacto — ver `TraumaPorImpacto`.
+    val rdFlexivel = if (!usarRd) 0 else pecasVestidas.filter { it.rd.flexivel }.sumOf { it.rd.principal }
 
     val dano = danoTexto.toIntOrNull() ?: 0
-    val resultado = remember(dano, tipo, local, rd, pvInicial, masculino, escolheu) {
+    val resultado = remember(dano, tipo, local, rd, rdFlexivel, pvInicial, masculino, escolheu) {
         if (dano <= 0 || !escolheu) null else FerimentoPorLocalRules.aplicar(
             pvInicial = pvInicial,
             danoBruto = dano,
             tipo = tipo,
             local = local,
             rdArmadura = rd,
-            masculino = masculino
+            masculino = masculino,
+            rdFlexivel = rdFlexivel
         )
     }
     val pvNovo = pvAtual - (resultado?.pvPerdidos ?: 0)
@@ -414,7 +418,7 @@ private fun PainelDaArmadura(
                 Text(
                     buildString {
                         append("RD ${rdPeca?.raw ?: "?"}")
-                        if (rdPeca?.flexivel == true) append(" · flexível: não impede trauma por impacto")
+                        if (rdPeca?.flexivel == true) append(" · flexível: deixa passar trauma por impacto")
                         if (rdPeca?.dividida == true) append(" · atrás é ${rdPeca.secundaria}")
                         if (rdPeca?.frontalSomente == true) append(" · só na frente")
                     },

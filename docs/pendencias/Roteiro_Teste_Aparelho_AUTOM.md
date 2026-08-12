@@ -1836,3 +1836,25 @@ muda — é esse o problema desses defeitos.
 - **T-EQ39 · a lista de escolha não mudou** — *Adicionar Armadura* → *Túnica*: ✅
   ali a ficha **continua** mostrando Peso 3 kg, Custo $30 e `tronco, virilha`, que
   é a peça inteira do livro — porque ainda não existe peça sua.
+
+---
+
+# Lote EQP-9 — trauma por impacto
+
+> Gate: 2.096 testes, 0 falhas nas duas variantes.
+
+⚠️ **A Túnica não serve para este teste.** RD 2\* nunca gera trauma (o mínimo da
+contusão é 5). Para reproduzir é preciso uma armadura flexível de RD 5+ — por
+exemplo o *Traje Pressurizado* (RD 6\*) ou a *Cota de Malha Longa Dupla*.
+
+- **T-EQ40 · 🔴 o trauma aparece** — vista o *Traje Pressurizado*, aba Rolagem →
+  **PV** → tronco → **Contusão** → dano **6**: ✅ o resultado é **−1 PV**, e a
+  conta diz *"6 − RD 6 = 0 → trauma por impacto: 6 barrados por armadura flexível
+  ÷ 5 = 1 PV"*.
+- **T-EQ41 · 🔴 um ponto que passe cancela** — mesmo traje, dano **7**: ✅ o
+  resultado é **−1 PV** de dano **normal** (1 penetrou), e **não** aparece linha
+  de trauma. Dano **10**: ✅ −4 PV, sem trauma.
+- **T-EQ42 · armadura rígida não dá trauma** — vista só uma peça **sem** `*` (ex.
+  *Armadura de Placas*) e bata com dano igual à RD: ✅ **−0 PV**, sem trauma.
+- **T-EQ43 · a fala** — com TalkBack ligado, no caso do T-EQ40: ✅ ele diz
+  *"trauma por impacto"* e o número **por extenso**, sem hífen solto.
