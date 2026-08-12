@@ -175,7 +175,6 @@
     <li><a href="#geral">Geral</a></li>
     <li><a href="#tracos">Traços</a></li>
     <li><a href="#magia">Magia</a></li>
-    <li><a href="#mestre">Mestre de Regras</a></li>
     <li><a href="#regras">Índice de regras</a></li>
     <li><a href="#naofaz">O que não faz</a></li>
   </ul>
@@ -599,74 +598,188 @@
 
 <section id="magia">
   <div class="cab">
-    <h2><span class="n">Capítulo VII</span>Magia</h2>
+    <h2><span class="n">Capítulo VII</span>Magia — 879 magias, e o caminho até elas</h2>
+    <p class="lede">É a aba onde o app deixa de ser catálogo e vira ferramenta: ele sabe o que
+       falta para cada magia, e sabe traçar o caminho até a que você quer.</p>
   </div>
-  <div class="par" data-cena>
-    <div class="fone">
-      <img src="img/05-magia.png" alt="Aba Magia">
-    </div>
-    <div class="notas">
-      <div class="nota" data-t="auto" data-x="75.6" data-y="24.7">
-        <h4><span class="b"></span>O NH de cada magia, pronto</h4>
-        <p>Sai da Aptidão Mágica e dos pontos gastos. Nenhuma conta na mão.</p>
-      </div>
-      <div class="nota" data-t="auto" data-x="33" data-y="27">
-        <h4><span class="b"></span>Escola, classe e dificuldade à mostra</h4>
-        <p><code>IQ/D · Informação/Área · Comunicação | 1 pts</code> — tudo que decide como a
-           magia é lançada, sem abrir nada.</p>
-      </div>
-      <div class="nota" data-t="escondido" data-x="23.6" data-y="48">
-        <h4><span class="b"></span>Toque no nome para a descrição</h4>
-        <p>Abre o texto completo da magia, com duração, manutenção e tempo de execução.</p>
-      </div>
-      <div class="nota" data-t="botao" data-x="50" data-y="19">
-        <h4><span class="b"></span>Adicionar Magia</h4>
-        <p>Busca nas <b>879</b> magias do livro de Magia, com os pré-requisitos conferidos:
-           o app avisa quando falta uma magia exigida por outra.</p>
-      </div>
-      <div class="nota" data-t="auto" data-x="50" data-y="94.6">
-        <h4><span class="b"></span>A aba só existe se houver Aptidão Mágica</h4>
-        <p>Quem não é mago não vê tela vazia. E ao rolar pela aba Rolagem, a energia é cobrada
-           sozinha — se a magia tem <b>custo variável</b> (“1 a 3 PF”), o app pergunta quanto
-           antes de rolar.</p>
-      </div>
-    </div>
-  </div>
-</section>
 
-<section id="mestre">
-  <div class="cab">
-    <h2><span class="n">Capítulo VIII</span>O Mestre de Regras e a Saga</h2>
-    <p class="lede">O Módulo Básico inteiro em texto dentro do app — e uma IA que responde
-       citando a página.</p>
-  </div>
   <div class="par" data-cena>
     <div class="fone">
-      <img src="img/09-mestre-ia.png" alt="Mestre IA">
+      <img src="img/20-magias-catalogo.png" alt="Catalogo de magias">
     </div>
     <div class="notas">
-      <div class="nota" data-t="escondido" data-x="12" data-y="12">
-        <h4><span class="b"></span>O ícone do olho, no canto</h4>
-        <p>Abre o <b>Mestre de Regras</b> de qualquer aba. Pergunte uma regra e ele responde lendo
-           o livro que está dentro do app — não de memória.</p>
+      <div class="nota" data-t="auto" data-x="25" data-y="37.5">
+        <h4><span class="b"></span>Ele diz exatamente o que falta</h4>
+        <p>Não é um “indisponível” genérico. É <i>“Falta: Aprender Curar Planta”</i>,
+           <i>“Falta: Ter a vantagem/perícia Empatia com animais”</i>,
+           <i>“Falta: Ter 6 magias de Ácido (atual 0)”</i> — cada pré-requisito com o nome
+           do que está faltando, e quanto falta.</p>
       </div>
-      <div class="nota" data-t="botao" data-x="49" data-y="80">
-        <h4><span class="b"></span>Perguntar em português comum</h4>
-        <p><i>“Quanto custa aparar duas vezes no mesmo turno?”</i> — e vem a resposta com a página.</p>
+      <div class="nota" data-t="auto" data-x="21.7" data-y="52.5">
+        <h4><span class="b"></span>E o que já está pronto</h4>
+        <p><b>✓ Requisitos Atendidos</b>: essa você pode aprender agora. A lista inteira fica
+           legível de relance, sem abrir nada.</p>
       </div>
-      <div class="nota" data-t="botao" data-x="73" data-y="14">
-        <h4><span class="b"></span>Histórico e limpar</h4>
-        <p>A conversa fica salva; o balde apaga.</p>
+      <div class="nota" data-t="auto" data-x="9.7" data-y="35.8">
+        <h4><span class="b"></span>A escola embaixo do nome</h4>
+        <p>Plantas, Animais, Deslocamento, Portal, Água, Tecnológica, Metamágica… A escola
+           decide pré-requisitos e estilo, e está sempre à vista.</p>
+      </div>
+      <div class="nota" data-t="botao" data-x="50" data-y="20.8">
+        <h4><span class="b"></span>Filtro por escola</h4>
+        <p>Toque para escolher uma das escolas do livro de Magia e cortar a lista.</p>
+      </div>
+      <div class="nota" data-t="botao" data-x="50" data-y="14.2">
+        <h4><span class="b"></span>Busca por nome</h4>
+        <p>Com 879 magias no catálogo, a busca é o caminho mais curto quando você já sabe
+           o que procura.</p>
+      </div>
+      <div class="nota" data-t="gesto" data-x="9.7" data-y="26.9">
+        <h4><span class="b"></span>Modo Alvo — o Nexus</h4>
+        <p>Um interruptor discreto, e a coisa mais poderosa desta tela. Veja abaixo.</p>
       </div>
     </div>
   </div>
+
+  <div class="par" data-cena>
+    <div class="fone">
+      <img src="img/21-magias-escolas.png" alt="Lista de escolas de magia">
+    </div>
+    <div class="notas">
+      <div class="nota" data-t="auto" data-x="25" data-y="44.6">
+        <h4><span class="b"></span>As escolas do livro, inteiras</h4>
+        <p>Alimentos, Animais, Ar, Clima, Comunicação, Corpo, Cura, Deslocamento, Encantamento,
+           Fogo, Ilusão, Luz e Trevas, Mente — e continua rolando. São as escolas do livro de
+           Magia, não uma seleção.</p>
+      </div>
+      <div class="nota" data-t="botao" data-x="16.7" data-y="14.4">
+        <h4><span class="b"></span>“Todas Escolas” volta atrás</h4>
+        <p>O primeiro item limpa o filtro.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="aviso">
+    <b>O Nexus responde a pergunta que todo mago faz.</b> Você quer uma magia lá na ponta da
+    árvore. Ela exige outra, que exige outra, que exige outra. Descobrir esse caminho na mão
+    significa abrir o livro em várias páginas e anotar num papel — e é exatamente o que o
+    <b>Modo Alvo</b> faz sozinho.
+  </div>
+
+  <div class="par" data-cena>
+    <div class="fone">
+      <img src="img/22-magias-modoalvo.png" alt="Modo alvo ligado">
+    </div>
+    <div class="notas">
+      <div class="nota" data-t="gesto" data-x="9.3" data-y="26.9">
+        <h4><span class="b"></span>Ligue o Modo Alvo</h4>
+        <p>Nada muda no conteúdo da lista — muda o que um toque faz.</p>
+      </div>
+      <div class="nota" data-t="escondido" data-x="82" data-y="35.8">
+        <h4><span class="b"></span>Cada linha ganha “OBJETIVO”</h4>
+        <p>Toque nele e aquela magia vira o <b>destino</b>. O app então mostra só o que
+           interessa para chegar lá.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="par" data-cena>
+    <div class="fone">
+      <img src="img/23-magias-nexus.png" alt="Cadeia de pre-requisitos ate a magia alvo">
+    </div>
+    <div class="notas">
+      <div class="nota" data-t="auto" data-x="16.7" data-y="38">
+        <h4><span class="b"></span>De 774 para 4</h4>
+        <p>Escolhido o alvo, a lista deixa de ser catálogo e vira <b>roteiro</b>: só as magias
+           do caminho, e mais nenhuma.</p>
+      </div>
+      <div class="nota" data-t="auto" data-x="20.8" data-y="32.9">
+        <h4><span class="b"></span>O alvo fica fixo no topo</h4>
+        <p><i>Alvo: Abençoar Plantas</i> — para você não perder de vista onde queria chegar.</p>
+      </div>
+      <div class="nota" data-t="auto" data-x="19.4" data-y="42.6">
+        <h4><span class="b"></span>Por onde começar</h4>
+        <p><b>Localizar Planta</b> é a única com <b>✓ Requisitos Atendidos</b>: é o primeiro
+           degrau, o único que você pode aprender hoje.</p>
+      </div>
+      <div class="nota" data-t="auto" data-x="27.8" data-y="57.5">
+        <h4><span class="b"></span>E a escada inteira, na ordem</h4>
+        <p>Identificar Planta pede Localizar. Curar Planta pede Identificar. Abençoar Plantas
+           pede Curar. <b>Quatro magias, três dependências</b> — e o app leu isso das 879 sozinho.</p>
+      </div>
+      <div class="nota" data-t="botao" data-x="84.7" data-y="32.9">
+        <h4><span class="b"></span>Limpar</h4>
+        <p>Solta o alvo e devolve a lista inteira.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="par" data-cena>
+    <div class="fone">
+      <img src="img/24-magia-forcada.png" alt="Dialogo de adicionar magia com pre-requisito nao atendido">
+    </div>
+    <div class="notas">
+      <div class="nota" data-t="auto" data-x="20" data-y="33">
+        <h4><span class="b"></span>Atributo e dificuldade</h4>
+        <p><code>IQ/D</code> — Inteligência, Difícil. É de onde o NH sai.</p>
+      </div>
+      <div class="nota" data-t="botao" data-x="47.8" data-y="46.3">
+        <h4><span class="b"></span>Os degraus de pontos</h4>
+        <p><b>1, 2, 4, 8</b> — não é campo livre. São os degraus em que o NH realmente sobe;
+           gastar 3 pontos numa magia não compra nada que 2 não comprem.</p>
+      </div>
+      <div class="nota" data-t="auto" data-x="41.1" data-y="65.8">
+        <h4><span class="b"></span>O NH, com a conta à mostra</h4>
+        <p><code>NH: 17 (IQ+AM−2)</code>. Não é só o número: é <b>de onde ele veio</b> —
+           a Inteligência, mais a Aptidão Mágica, menos 2 pela dificuldade.</p>
+      </div>
+      <div class="nota" data-t="auto" data-x="50" data-y="53.2">
+        <h4><span class="b"></span>O impedimento, em vermelho</h4>
+        <p><i>“Pré-requisito não atendido: Aprender Curar Planta”</i>. E o botão
+           <b>Adicionar fica desligado</b> — não dá para passar por cima sem querer.</p>
+      </div>
+      <div class="nota" data-t="escondido" data-x="43" data-y="59.5">
+        <h4><span class="b"></span>Adição Forçada — a saída explícita</h4>
+        <p>O livro é a regra, mas a mesa é sua. Se o Mestre liberou aquela magia por um motivo
+           de história, este é o caminho — e ele existe justamente <b>para não ser acidental</b>.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="par" data-cena>
+    <div class="fone">
+      <img src="img/25-magia-autorizou.png" alt="Pergunta: seu mestre autorizou?">
+    </div>
+    <div class="notas">
+      <div class="nota" data-t="auto" data-x="50.9" data-y="50.2">
+        <h4><span class="b"></span>“Seu Mestre autorizou?”</h4>
+        <p>É o que o app pergunta antes de deixar você quebrar o pré-requisito. Não é um aviso
+           que se fecha no automático: é uma pergunta, com <b>Não</b> e <b>Sim</b>.</p>
+      </div>
+      <div class="nota" data-t="auto" data-x="70" data-y="56.4">
+        <h4><span class="b"></span>Por que isso importa</h4>
+        <p>A regra do livro vale por padrão e a exceção existe — mas passa por uma decisão
+           consciente, com o nome de quem a autoriza. É a diferença entre um app que
+           <b>impõe</b> e um que <b>lembra</b>.</p>
+      </div>
+      <div class="nota" data-t="auto" data-x="41.3" data-y="65.7">
+        <h4><span class="b"></span>E o NH continua à vista</h4>
+        <p>Mesmo no caminho da exceção, o número com que você vai rolar está ali, com a conta.</p>
+      </div>
+    </div>
+  </div>
+
   <div class="grade">
-    <div class="bloco"><h4>GURPS Saga</h4>
-      <p>Uma campanha conduzida por IA: gênero, dificuldade, nível tecnológico e se há magia
-         no mundo. O Narrador descreve a cena e responde às suas ações.</p></div>
-    <div class="bloco"><h4>Combate tático</h4>
-      <p>Grade de hexágonos com tokens e NPCs — e dá para <b>falar com o Narrador durante o
-         combate</b>: a ação improvisada vira mecânica.</p></div>
+    <div class="bloco"><h4>A aba só existe para magos</h4>
+      <p>Sem Aptidão Mágica, ela não aparece. Quem não é mago não vê tela vazia.</p></div>
+    <div class="bloco"><h4>Energia cobrada na hora</h4>
+      <p>Ao rolar pela aba Rolagem, o PF desce sozinho. Custo variável (“1 a 3 PF”)?
+         O app pergunta quanto <b>antes</b> de rolar.</p></div>
+    <div class="bloco"><h4>Descrição completa</h4>
+      <p>Toque no nome da magia na ficha e vem o texto do livro, com duração, manutenção
+         e tempo de execução.</p></div>
+    <div class="bloco"><h4>O contador é deste personagem</h4>
+      <p>As 879 do catálogo menos as que ele já sabe — por isso a lista abre em 774.</p></div>
   </div>
 </section>
 

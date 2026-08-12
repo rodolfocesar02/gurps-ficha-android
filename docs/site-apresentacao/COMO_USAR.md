@@ -47,3 +47,39 @@ As regras e as páginas citadas na página foram conferidas contra o texto do
 Módulo Básico que já vive dentro do app (`chunks.jsonl`). **Nenhuma imagem,
 tabela ou trecho longo dos PDFs foi copiado para cá** — a página cita a página do
 livro e mostra a tela do app, que é o que ela existe para apresentar.
+
+## O que está guardado para depois
+
+`img/_futuro/` tem capturas que **não entram na página ainda**, por decisão do
+usuário: são recursos que valem mais quando estiverem em uso de verdade, com
+histórias reais para mostrar.
+
+| arquivo | do quê é |
+|---|---|
+| `09-mestre-ia.png` | o **Mestre de Regras** — a IA que responde citando a página do livro |
+
+Também ficam fora da página, mas soltas em `img/`, três capturas que já serviram
+e podem voltar: `00-menu.png`, `00b-carregar.png` e `05-magia.png` (a aba de
+magias da ficha, substituída pelas telas do catálogo).
+
+⚠️ A **Saga** — a campanha conduzida por IA, com combate tático em hexágonos —
+não tem captura aqui. Quando ela entrar, é o capítulo que mais precisa de telas
+de uma partida real, não de uma tela de configuração vazia.
+
+## O que está guardado para depois
+
+`img/_futuro/` tem capturas que **não entram na página ainda**, por decisão do
+usuário: são recursos que valem mais quando estiverem em uso de verdade, com
+histórias reais para mostrar.
+
+| arquivo | do quê é |
+|---|---|
+| `09-mestre-ia.png` | o **Mestre de Regras** — a IA que responde citando a página do livro |
+
+Também ficam fora da página, mas soltas em `img/`, três capturas que já serviram
+e podem voltar: `00-menu.png`, `00b-carregar.png` e `05-magia.png` (a aba de
+magias da ficha, substituída pelas telas do catálogo).
+
+⚠️ A **Saga** — a campanha conduzida por IA, com combate tático em hexágonos —
+não tem captura aqui. Quando ela entrar, é o capítulo que mais precisa de telas
+de uma partida real, não de uma tela de configuração vazia.
