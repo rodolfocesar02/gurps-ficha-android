@@ -77,11 +77,17 @@ O modificador é a **soma de componentes**:
 | Antipoderes | −5% (fixo, não por antipoder) | 20-21 |
 | Sem Contramedidas | +0% (padrão) | 21 |
 | Poderes Cósmicos | +50% | 21 |
-| Desvantagem exigida | o valor em pontos vira % (Voto de −10 pts = −10%) | 23 |
+| Desvantagem exigida — **1.** o traço | o valor em pontos vira % (Voto de −10 pts = −10%) | 23 |
+| Desvantagem exigida — **2.** velocidade com que o poder se esvai | +5% gradual · +0% rápido · −5% a mais se ele se voltar contra o usuário | 23 |
+| Desvantagem exigida — **3.** ato para restaurar | +5% um dia · +0% uma semana · −5% um mês | 23 |
 | Energias canalizadas (isolante esotérico) | −5% | 24 |
 | Energias canalizadas (isolante mundano) | −10% | 24 |
 
 E a orientação prática: *"Tente manter o valor entre −10% e −30%"* (p.25).
+
+> ⚠️ **Conferido na revisão:** a linha "Desvantagem exigida" que eu tinha escrito
+> como **um** valor são na verdade **três escolhas encadeadas** (p.23). Um montador
+> que peça só o valor da desvantagem entregaria um número incompleto.
 
 **[FAZER] · POD-7 — montador de modificador por componentes.** Diálogo que soma
 os componentes e devolve o total, para quem cria poder personalizado. Hoje só dá
@@ -242,10 +248,27 @@ suporte à vida, movimento, transformações, alterar a realidade.
 **[FAZER]** — encaixa no controle de PF que a ficha já tem, e é o consumidor
 natural da Reserva de Energia (POD-9).
 
-### Esforço Adicional (p.161)
+### Esforço Adicional (p.160-161)
 
-Queimar PF por efeito extra, na proporção de **1 PF = +15%**; 10 PF = +150%.
-**[FAZER]** — conta fechada, mesmo formato do esforço adicional que já existe.
+> 🔴 **CORRIGIDO na revisão: eu tinha lido a regra errada.** Escrevi *"1 PF =
+> +15% de efeito"*. Isso não é a regra base — é o exemplo de uma **variante
+> cinematográfica opcional** ("Esforço Adicional Divino", p.161), que multiplica
+> pelos PF gastos e **ignora o teto**.
+
+A regra de verdade **não troca PF por efeito** — troca **penalidade em Vontade**:
+
+> *"Para usar um esforço adicional, faça um **teste de Vontade com redutor de −1
+> por aumento de 5% no efeito**, ou fração. (…) O bônus máximo para o efeito é de
+> **100%**, com redutor **−20** para Vontade."* (p.160)
+
+Modificador: **+5** nas situações de *Apenas em Emergências* (p.100).
+
+⚠️ E ela só vale para habilidade **ativa que exija teste para ativar** ou Disputa
+Rápida. Habilidade passiva não usa; habilidade que pede **teste de ataque** também
+não — para ataque o equivalente é o Ataque Total (Determinado).
+
+**[FAZER]** — a conta é fechada e verificável (Atribulação 9 sobre 8 = +12,5% →
+−3). Mas é **outra** conta da que eu tinha planejado.
 
 ### Ampliações Temporárias (p.172) e Uso Predefinido (p.173)
 
@@ -329,3 +352,55 @@ solto; depois o que a aba Rolagem usa; por último o avançado.
 2. **Escape de shell comendo regex.** Um `` virou BACKSPACE literal e deixou um
    teste cego. **Texto Kotlin e regex vão pela ferramenta de edição**, nunca por
    heredoc de shell.
+
+
+---
+
+# Revisão do plano inteiro contra o livro (após POD-11)
+
+Duas correções em dois lotes seguidos (POD-8 e POD-11) me fizeram reler cada
+item ainda não implementado **com a página aberta**, antes de codar.
+
+## O que estava errado
+
+| Item | Eu tinha escrito | O livro diz | Achado em |
+|---|---|---|---|
+| **POD-8** | faltam 17 modificadores e 5 vantagens | 1 e 4 — dos 48 títulos, **16 são remissão** | ao codar |
+| **POD-11** | botão de ativar: HT ou Vontade pela fonte | é o teste de **incapacitação** após falha crítica; Cósmico **imune** | ao codar |
+| **POD-12** | esforço adicional: 1 PF = +15% | **−1 na Vontade por 5%** de efeito, teto +100% a −20; o 15% é variante opcional | nesta revisão |
+| **POD-7** | desvantagem exigida = um valor | **três** escolhas encadeadas (traço, velocidade que se esvai, ato para restaurar) | nesta revisão |
+
+⚠️ O padrão dos quatro é o mesmo: **eu li o trecho e não a seção**. Uma tabela
+dentro de *Poderes Incapacitados*, um exemplo dentro de uma variante opcional, um
+título de remissão, uma linha de uma lista de três. Cada um lido sozinho parece
+uma regra fechada.
+
+## O que resistiu à conferência
+
+| Item | Número | Página | Verificação |
+|---|---|---|---|
+| **POD-6** Habilidades Alternativas | 1/5 do custo, arredondando para cima | 11 | exemplo do livro confere: 36 + 4 + 4 = **44** |
+| **POD-9** Reserva de Energia | 3 pts/PF; recarrega 1 a cada 10 min; −5% se não puder usar PF normal | 119 | citação literal |
+| **POD-12** custo em PF do uso | **1 PF/minuto** intensivo · **1 PF/hora** prolongado | 159 | citação literal |
+| **POD-13** ampliações temporárias | −1 por +10% de ampliação; custa 2 PF | 172 | citação literal |
+| **POD-13** uso predefinido | custa 3 PF | 173 | citação literal |
+| Perícias do Poder (opcional) | IQ/Difícil, predefinido **IQ−6** | 162 | citação literal |
+| Modificadores por Multiplicação | +20% e −50% dão 70% aditivo, **60%** multiplicativo | 102 | exemplo do livro |
+
+## A ordem, revisada
+
+Não mudou de ordem — mudou de **conteúdo**. POD-12 deixou de ser "PF por efeito"
+e virou "penalidade de Vontade por efeito", e POD-7 ficou maior do que parecia.
+
+1. **POD-6** — Habilidades Alternativas *(o mais fechado que sobrou)*
+2. **POD-9** — Reserva de Energia
+3. **POD-7** — montador de modificador *(agora com as três escolhas da desvantagem)*
+4. **POD-12** — esforço adicional e custo em PF do uso
+5. **POD-13** — ampliações temporárias e uso predefinido
+
+## A regra que passei a seguir
+
+**Ler a seção inteira antes de escrever a linha do plano**, e guardar no plano a
+*citação*, não o meu resumo dela. As quatro correções vieram todas de resumo meu
+que soava fechado — e os testes não pegam isso, porque eles guardam o que eu
+escrevi.
