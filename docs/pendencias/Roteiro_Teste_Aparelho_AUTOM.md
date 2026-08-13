@@ -2063,3 +2063,17 @@ exemplo o *Traje Pressurizado* (RD 6\*) ou a *Cota de Malha Longa Dupla*.
   confira que a tabela de custo por nível está lá (Controle 20/15/10;
   Criar 40/20/10).
   ✅ Nenhuma delas duplicou uma vantagem que já existia.
+
+
+---
+
+# Lote POD-11 — O que a fonte decide, e o que o Talento soma
+
+> Gate: 2.225 testes, 0 falhas nas duas variantes.
+
+- **T-PO14 · a regra da fonte aparece no poder** — abra um poder com fonte
+  **Psíquico**: ✅ diz *"teste de Vontade para não ficar incapacitado (p.156)"*.
+  Troque para **Super**: ✅ passa a dizer **HT**. Escolha **Cósmico** (no poder
+  Cósmico): ✅ diz que é **imune**.
+  ✅ Com Talento acima de zero, aparece a frase dizendo que ele soma em ativar,
+  atacar, controlar e defender — **e que não soma no dano nem no teste do alvo**.

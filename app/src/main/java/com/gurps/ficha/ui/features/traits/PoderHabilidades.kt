@@ -19,6 +19,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.gurps.ficha.domain.rules.poderes.HabilidadesDoPoder
+import com.gurps.ficha.domain.rules.poderes.UsoDoPoder
 import com.gurps.ficha.model.Poder
 import com.gurps.ficha.model.PoderDefinicao
 import com.gurps.ficha.ui.AppBotaoIcone
@@ -95,6 +96,27 @@ fun ColumnScope.PainelDeHabilidades(
         Text(
             "Habilidades: ${resumo.custoDasHabilidades} pts · " +
                 "Talento: ${resumo.custoDoTalento} pts · Total: ${resumo.custoTotal} pts",
+            style = UiEstilos.detalheDoItem,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+    }
+
+    // Lote POD-11: o que a FONTE decide na hora de rolar.
+    if (poder.fonte.isNotBlank()) {
+        Text(
+            UsoDoPoder.Incapacitacao.explicar(poder.fonte),
+            style = UiEstilos.detalheDoItem,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+    }
+    if (poder.nivelTalento > 0) {
+        // ⚠️ O Talento soma em ativar, atacar, controlar e defender — e **não**
+        // no dano, na reação, no teste que uma limitação exige, nem no teste do
+        // alvo (p.158). A frase diz as duas metades de propósito.
+        Text(
+            "Talento ${poder.nivelTalento}: +${poder.nivelTalento} para ativar, atacar, " +
+                "controlar e defender com estas habilidades. Não soma no dano nem no " +
+                "teste do alvo (p.158).",
             style = UiEstilos.detalheDoItem,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )

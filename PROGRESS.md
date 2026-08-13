@@ -8041,3 +8041,66 @@ Um número fixo estaria errado em metade dos casos.
    Não é caso de renomear — o nome é do livro. Entrou em `LEGITIMAS`.
 
 - **Status:** ✅ Build OK nas 2 variantes · lint OK · gate **2214** (+7) · ⏭️ **PENDENTE: teste no aparelho** (T-PO13).
+
+
+---
+
+## Lote POD-11 — Eu tinha lido a regra errado no plano
+
+### 🔴 O que o plano mandava fazer
+
+> *"POD-11 — botão de ativar o poder na Rolagem. Faça teste de **HT** se a fonte
+> for Biológico, Elemental, Natureza ou Super, ou de **Vontade** se for Chi,
+> Divino, Espiritual, Mágico, Moral ou Psíquico (p.156)."*
+
+Relendo a página inteira antes de codar, aquela tabela **não é o teste de
+ativação**. Ela está dentro de *Poderes Incapacitados*:
+
+> *"Falhas críticas ao usar um **esforço adicional** (…) ou ao realizar uma
+> **proeza** (…) com um poder pode prejudicar o poder. Faça um teste de HT se o
+> modificador de poder for…"*
+
+E a frase seguinte fecha o buraco que eu mesmo tinha anotado no plano (*"o
+Cósmico não aparece — não chutar"*): **"os poderes cósmicos são imunes a
+incapacitações"**.
+
+⚠️ **Não existe "atributo de ativação do poder".** O que se rola depende da
+**habilidade** (a vantagem), não da fonte. Um botão "ativar poder" que rolasse
+HT ou Vontade pela fonte estaria simplesmente errado — e teria a cara de certo.
+
+### O que existe de verdade, e entrou
+
+**1. O bônus do Talento (p.158)** — e a metade que mais importa é a das
+exclusões:
+
+> *"Isso inclui testes para **ativar, atacar, controlar ou defender**. Isso **não
+> inclui** testes de dano, testes de reação, testes exigidos por limitações ou
+> testes feitos pelo **alvo** da habilidade."*
+
+Sem a lista de exclusões o bônus vazaria justamente para o dano e para o teste de
+resistência da vítima — onde ele mais desequilibraria. As duas exceções que o
+livro nomeia (Aliados com Invocável, Patrono com Altamente Acessível) estão lá
+uma a uma.
+
+**2. A incapacitação (p.156)** — HT para Biológico/Elemental/Natureza/Super,
+Vontade para Chi/Divino/Espiritual/Mágico/Moral/Psíquico, **Cósmico imune**, e
+*"o Mestre decide"* para o resto. Atinge o **poder inteiro**, não a habilidade
+que falhou.
+
+Varredura: nenhuma das 11 fontes do catálogo pode cair no "o Mestre decide" por
+esquecimento nosso.
+
+### Onde apareceu
+
+No diálogo do poder, que é onde a fonte vive: uma linha dizendo contra o que se
+rola, e — quando há Talento — a frase com **as duas metades**, o que ele soma e
+o que ele não soma.
+
+⚠️ **Não fiz botão na aba Rolagem.** A regra que eu ia usar para ele não existia;
+o que existe (o bônus do Talento) precisa saber qual habilidade está sendo
+rolada, e isso é outro lote.
+
+**Sondas:** tirei a imunidade do Cósmico e deixei o Talento somar no dano — os
+dois testes ficaram vermelhos.
+
+- **Status:** ✅ Build OK nas 2 variantes · lint OK · gate **2225** (+11) · ⏭️ **PENDENTE: teste no aparelho** (T-PO14).

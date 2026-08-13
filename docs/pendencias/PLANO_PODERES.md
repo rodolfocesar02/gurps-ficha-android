@@ -213,7 +213,12 @@ O capítulo das regras de **mesa** — é aqui que a aba Rolagem entra.
 > Natureza ou Super, ou de **Vontade** se for Chi, Divino, Espiritual, Mágico,
 > Moral, ou Psíquico."*
 
-**[FAZER] · POD-11 — botão de ativar o poder na Rolagem.** O app **já sabe** a
+> 🔴 **CORRIGIDO no POD-11: esta leitura está errada.** A tabela de HT/Vontade
+> não é o teste de ativação — é o de **incapacitação** depois de falha crítica
+> em esforço adicional ou proeza (p.156), e o Cósmico é **imune**. Não existe
+> "atributo de ativação do poder": o que se rola depende da habilidade.
+
+**[FEITO] · POD-11 — a regra da fonte e o bônus do Talento.** O app **já sabe** a
 fonte do poder (POD-2) e já sabe o nível do Talento (POD-3). Com esta tabela ele
 decide sozinho qual atributo rolar e quanto somar. É um botão que se resolve
 inteiro com o que já está na ficha.
