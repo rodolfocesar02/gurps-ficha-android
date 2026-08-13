@@ -148,6 +148,52 @@ class PoderesTest {
         }
     }
 
+    @Test
+    fun `a descricao e do proprio verbete, nao do vizinho`() {
+        // 🔴 Achado pelo usuário NA TELA: a descrição da Água emendava
+        // "Habilidades de Alteração Corporal Adaptação ao Terreno…" — texto do
+        // verbete SEGUINTE. O corte da extração não pegava e a descrição caía no
+        // teto de 700 caracteres, levando junto o começo do vizinho.
+        val marcasDeOutroVerbete = listOf(
+            // ⚠️ Exige LETRA MAIÚSCULA depois: "Habilidades de Alteração Corporal"
+            // é verbete vizinho, mas "Habilidades de cura permitem…" é o texto do
+            // próprio livro na entrada Cura -- falso positivo meu.
+            //
+            // 🔴 Esta linha nasceu quebrada: o `` que eu tinha posto no fim virou
+            // um BACKSPACE literal (0x08) ao passar por escape de shell, e o
+            // marcador não casava com nada. O teste parecia verde por estar CEGO.
+            Regex("""Habilidades\s+d[eoa]\s+[A-ZÁÉÍÓÚÂÊÔÃÕÇ]"""),
+            Regex("""Cada registro inclui"""),
+            Regex("""Todos estes poderes"""),
+            Regex("""Criação de Poderes \d+"""),
+            Regex("""\d+\s*pontos/nível""")
+        )
+        poderes.forEach { p ->
+            marcasDeOutroVerbete.forEach { marca ->
+                assertFalse(
+                    "'${p.nome}' tem texto de outro verbete na descrição: ${p.descricao.take(160)}",
+                    marca.containsMatchIn(p.descricao)
+                )
+            }
+            assertTrue("'${p.nome}' ficou sem descrição", p.descricao.length > 60)
+        }
+    }
+
+    @Test
+    fun `o Cosmico e a excecao que o livro cobra caro`() {
+        // ⚠️ 🔴 Eu tinha INVENTADO o foco do Cósmico ("A criação e as leis da
+        // realidade") e o da Magia ("Mana."). O livro diz outra coisa, e o
+        // Talento do Cósmico custa o TRIPLO do padrão (p.127).
+        val cosmico = poderes.first { it.nome == "Cósmico" }
+        assertEquals("Tudo!", cosmico.foco)
+        assertEquals(15, cosmico.custoTalentoPorNivel)
+        assertEquals(50, cosmico.modificadores.single().valor)
+
+        val magia = poderes.first { it.nome == "Magia" }
+        assertTrue(magia.foco, magia.foco.contains("mágicas"))
+        assertFalse("o foco inventado voltou", magia.foco.contains("Mana"))
+    }
+
     // ── As onze fontes genéricas (p.26-30) ─────────────────────────────
 
     @Test

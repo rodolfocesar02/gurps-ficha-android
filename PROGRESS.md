@@ -7802,3 +7802,51 @@ Corrigido em `build.gradle.kts` com `inputs.dir("src/main/assets")`. Depois
 disso a sonda fica vermelha sem precisar de `--rerun-tasks`.
 
 - **Status:** ✅ Build OK nas 2 variantes · lint OK · gate **2183** (+22) · ⏭️ **PENDENTE: teste no aparelho** (T-PO1 a T-PO5).
+
+
+---
+
+## Lote POD-4 — Consertando o que o POD-1 entregou torto
+
+Achado **pelo usuário, na tela**: a descrição da **Água** terminava em
+*"(Espiritual)"* e emendava *"Habilidades de Alteração Corporal Adaptação ao
+Terreno…"* — texto do verbete SEGUINTE.
+
+### 🔴 Três defeitos meus, do mais grave para o menos
+
+**1. Eu inventei conteúdo.** No `ESPECIAIS` do extrator, dois verbetes não
+casavam sozinhos e eu escrevi o foco deles de cabeça:
+
+| Poder | Eu escrevi | O livro diz |
+|---|---|---|
+| Cósmico | "A criação e as leis da realidade." | **"Tudo!"** |
+| Magia | "Mana." | **"Operação de 'mágicas'."** |
+
+E o Cósmico tem **Talento de 15 pontos/nível** (p.127), o triplo do padrão — eu
+tinha deixado 5. Isso é o pior tipo de erro que eu posso cometer neste projeto:
+inventar regra com cara de citação.
+
+**2. A descrição vazava entre verbetes.** O corte não pegava e o texto caía no
+teto de 700 caracteres, levando junto o começo do vizinho. **45 das 47** estavam
+contaminadas. Descrição média caiu de 667 para 425 caracteres.
+
+**3. 🔴 O teste que eu escrevi para isso nasceu CEGO.** A regex
+`Habilidades\s+d[eoa]` passou por escape de shell e o `` virou um
+**BACKSPACE literal (0x08)** dentro do `Regex`. O marcador não casava com nada.
+O teste passava por estar cego, não por estar limpo.
+
+⚠️ Lição, e não é a primeira vez nesta sessão: **regex e texto Kotlin não podem
+passar por escape de shell**. Escrever pela ferramenta de edição, ou o escape
+come o padrão em silêncio.
+
+### O que ficou
+
+- Focos e Talento do Cósmico e da Magia conferidos no livro.
+- Descrições cortadas no fim do verbete, com as 5 curtas preenchidas do livro.
+- Teste `a descricao e do proprio verbete, nao do vizinho`, agora com regex viva.
+- Teste `o Cosmico e a excecao que o livro cobra caro`, que trava os dois focos e
+  os 15 pontos/nível.
+- Falso positivo corrigido: **Cura** começa mesmo com *"Habilidades de cura
+  permitem…"* — é o livro. A marca passou a exigir maiúscula depois.
+
+- **Status:** ✅ Build OK nas 2 variantes · lint OK · gate **2185** (+2) · ⏭️ **PENDENTE: teste no aparelho** (T-PO6).

@@ -2003,3 +2003,16 @@ exemplo o *Traje Pressurizado* (RD 6\*) ou a *Cota de Malha Longa Dupla*.
 - **T-PO5 · na variante pra cego** — repita T-PO3 no **pracego**: ✅ o TalkBack lê
   a fonte e o percentual sem sinal cru (deve falar "menos vinte e cinco por
   cento", não "-25%").
+
+
+---
+
+# Lote POD-4 — Descrições e os dois verbetes especiais
+
+> Gate: 2.185 testes, 0 falhas nas duas variantes.
+
+- **T-PO6 · a descrição é do poder certo** — Traços → Configurar Poderes → Novo
+  Poder. Role a lista inteira: ✅ nenhuma descrição emenda "Habilidades de
+  <outro poder>" nem "Cada registro inclui". ✅ **Cósmico** mostra foco
+  **"Tudo!"**, e ao escolhê-lo o diálogo diz **15 pontos/nível** (não 5).
+  ✅ **Magia** mostra foco "Operação de 'mágicas'".

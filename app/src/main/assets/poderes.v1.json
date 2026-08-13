@@ -4,7 +4,7 @@
   "nome": "Água",
   "fontes_possiveis": "Divina, Elemental, Espiritual, Mágica, ou Super",
   "foco": "Água.",
-  "descricao": "Este é o poder de criar e manipular água. Usuários com este poder podem até mesmo se tornar água. Ele pode representar o controle direto sobre a água (Elemental e Super), magia elemental tradicional (Mágica), o favor de um deus do mar (Divina), ou o controle sobre os elementais da água (Espiritual). Habilidades de Alteração Corporal Adaptação ao Terreno, com Ativa; Arremedo; Ataque Constritivo; Camaleão; Crescimento; Elasticidade; Encolhimento; Escorregadio; Forma de Sombra, com Espessura Finita; Habilidades Modulares, com Limitada, Apenas Parte do Corpo (-20%) e Física; Hermafromorfo; Morfose; Pele Elástica; Poder Protegido; Resistência a Dano, com Limitado, Contusão (-40%) ou Pele Resiste",
+  "descricao": "Este é o poder de criar e manipular água. Usuários com este poder podem até mesmo se tornar água. Ele pode representar o controle direto sobre a água (Elemental e Super), magia elemental tradicional (Mágica), o favor de um deus do mar (Divina), ou o controle sobre os elementais da água (Espiritual).",
   "custo_talento_por_nivel": 5,
   "modificadores": [
    {
@@ -35,7 +35,7 @@
   "nome": "Alteração Corporal",
   "fontes_possiveis": "Biológica, Divina, Mágica, ou Super",
   "foco": "A forma física do usuário.",
-  "descricao": "Este é o poder de alterar a aparência, estrutura e composição do próprio corpo. A ficção normalmente atribui a Alteração Corporal à fisiologia alienígena (Biológica), magia poderosa (Mágica), ou mutações bizarras de “corpo de borracha” (Super). Em cenários de fantasia, os servos de demônios e deuses travessos às vezes possuem este poder (Divina). Talento para Alteração Corporal 5 pontos/nível Todos estes poderes seguem as diretrizes do Capítulo 1. Cabe ao Mestre decidir quais poderes existirão em sua campanha. Cada registro inclui: Nome: Um nome “genérico” para o poder. Fontes: Fontes adequadas para o poder; consulte Fonte (pág. 7). Se o poder for conhecido por outro",
+  "descricao": "Este é o poder de alterar a aparência, estrutura e composição do próprio corpo. A ficção normalmente atribui a Alteração Corporal à fisiologia alienígena (Biológica), magia poderosa (Mágica), ou mutações bizarras de “corpo de borracha” (Super). Em cenários de fantasia, os servos de demônios e deuses travessos às vezes possuem este poder (Divina).",
   "custo_talento_por_nivel": 5,
   "modificadores": [
    {
@@ -62,7 +62,7 @@
   "nome": "Alteração de Probabilidades",
   "fontes_possiveis": "Divina, Espiritual, Mágica (“Desejos”), Psíquica, ou Super",
   "foco": "Sorte e destino.",
-  "descricao": "Este é o poder de alterar resultados incertos, desencadear coincidências fortuitas e “abençoar” ou “amaldiçoar” aos outros. Ele pode representar a intervenção divina (Divina), manipulação mística (Mágica), visualização psíquica (Psíquica), os esforços de servos espirituais invisíveis (Espiritual), ou um poder cósmico sutil (Super). A Alteração de Probabilidades não faz nada visivelmente; seus efeitos se manifestam sobre os resultados das tarefas que ela influencia. Talento para Alteração de Probabilidades 5 pontos/nível Habilidades de Alteração de Probabilidades As habilidades marcadas com * estão em aberto. O Mestre decidirá quantos níveis estão disponíveis. Talento Antimagia 5 pontos/níve",
+  "descricao": "Este é o poder de alterar resultados incertos, desencadear coincidências fortuitas e “abençoar” ou “amaldiçoar” aos outros. Ele pode representar a intervenção divina (Divina), manipulação mística (Mágica), visualização psíquica (Psíquica), os esforços de servos espirituais invisíveis (Espiritual), ou um poder cósmico sutil (Super). A Alteração de Probabilidades não faz nada visivelmente; seus efeitos se manifestam sobre os resultados das tarefas que ela influencia.",
   "custo_talento_por_nivel": 5,
   "modificadores": [
    {
@@ -93,7 +93,7 @@
   "nome": "Antimagia",
   "fontes_possiveis": "Antimagia, Divina, ou Espiritual",
   "foco": "Anular o mana, magos e magias.",
-  "descricao": "Este poder lida com a neutralização da magia. Em alguns mundos, a antimagia é uma fonte de poder única e oposta à magia, assim como a antimatéria é o “oposto” da matéria. Em outros, ela se origina dos deuses (Divina) ou espíritos (Espiritual) que censuram o uso da magia para interferir com a criação. Em todos os casos, ela será o antipoder do poder Magia (pág. 130). Talento Antipsi 5 pontos/nível Este Talento não existe em todos os cenários. Em muitos mundos de jogo, Antipsi é sempre um poder aleatório e incontrolável. Habilidades Antipsi Detectar, para poderes psíquicos, usuários de psiquismo, etc.; Escudo Mental, com Limitado, Psíquico (-50%); Estática (Psi); Neutralizar (Psi), mas não co",
+  "descricao": "Este poder lida com a neutralização da magia. Em alguns mundos, a antimagia é uma fonte de poder única e oposta à magia, assim como a antimatéria é o “oposto” da matéria. Em outros, ela se origina dos deuses (Divina) ou espíritos (Espiritual) que censuram o uso da magia para interferir com a criação. Em todos os casos, ela será o antipoder do poder Magia (pág. 130).",
   "custo_talento_por_nivel": 5,
   "modificadores": [
    {
@@ -112,7 +112,7 @@
   "nome": "Antipsi",
   "fontes_possiveis": "Antipsi, Biológica, Chi, ou Super",
   "foco": "Bloqueio de energia e poderes psíquicos.",
-  "descricao": "Antipsi é o antipoder de todos os poderes com o modificador Psíquico, independente do foco. Em muitos cenários, a explicação é uma energia psíquica incomum que interfere com a variedade comum. Essas emissões “antipsi” podem ser categorizadas como psiquismo, mas são imunes a efeitos que bloqueiam o psiquismo (inclusive o próprio antipsi). Outra explicação comum é a interferência por meio da bioenergia, quer através de mutação (Biológica ou Super) ou de meditação (Chi). Cenários em que haja superpoderes tipicamente possuem indivíduos capazes de anular esses poderes, independente do foco. Defesas Ampliadas; Detectar, para itens abençoados ou amaldiçoados, alteração da re",
+  "descricao": "Antipsi é o antipoder de todos os poderes com o modificador Psíquico, independente do foco. Em muitos cenários, a explicação é uma energia psíquica incomum que interfere com a variedade comum. Essas emissões “antipsi” podem ser categorizadas como psiquismo, mas são imunes a efeitos que bloqueiam o psiquismo (inclusive o próprio antipsi). Outra explicação comum é a interferência por meio da bioenergia, quer através de mutação (Biológica ou Super) ou de meditação (Chi). Cenários em que haja superpoderes tipicamente possuem indivíduos capazes de anular esses poderes, independente do foco.",
   "custo_talento_por_nivel": 5,
   "modificadores": [
    {
@@ -135,7 +135,7 @@
   "nome": "Antissuper",
   "fontes_possiveis": "Antissuper, Biológica, Divina, Natureza, ou Psíquica",
   "foco": "Anular superpoderes.",
-  "descricao": "Cenários com superpoderes genéricos normalmente incluem indivíduos capazes de anular esses poderes, independente do foco. Como este poder é capaz de interferir com outros sem ser ele mesmo suscetível a interferência, ele frequentemente está isolado em sua própria categoria “Antissuper”. Outras possibilidades são o controle sobre genes mutantes através da bioenergia (Biológica ou Natureza) ou do psiquismo (Psíquica), ou a vontade de uma divindade que se oponha às “abominações” (Divina). Talento Antissuper 5 pontos/nível Habilidades Antissuper Detectar, qualquer superpoder ou todos eles; Escudo Mental, com Limitado, Ataques Inatos também são permitidos. Eles podem ser por contusão, e somente",
+  "descricao": "Cenários com superpoderes genéricos normalmente incluem indivíduos capazes de anular esses poderes, independente do foco. Como este poder é capaz de interferir com outros sem ser ele mesmo suscetível a interferência, ele frequentemente está isolado em sua própria categoria “Antissuper”. Outras possibilidades são o controle sobre genes mutantes através da bioenergia (Biológica ou Natureza) ou do psiquismo (Psíquica), ou a vontade de uma divindade que se oponha às “abominações” (Divina).",
   "custo_talento_por_nivel": 5,
   "modificadores": [
    {
@@ -162,7 +162,7 @@
   "nome": "Ar",
   "fontes_possiveis": "Divina, Elemental, Espiritual, Mágica, ou Super.",
   "foco": "Gases.",
-  "descricao": "Este é o poder de criar e manipular gases. Em alguns cenários, praticantes com extenso treinamento podem até mesmo se tornar um gás. Ele pode representar o controle direto sobre o ar (Elemental e Super), uma escola de mágicas do ar (Mágica), a aliança com espíritos elementais do ar (Espiritual), ou o favor sagrado de uma divindade celeste (Divina). As habilidades de Ar afetam apenas gases verdadeiros, não nuvens de poeira, plasmas energéticos ou o “éter” sobrenatural ou da superciência. Talento do Ar 5 pontos/nível Habilidades de Ar Caminhar no Ar; Controle (Ar); Criar (Ar ou Gás); Deslocamento Ampliado (Ar); Forma Alternativa (Corpo de Ar); Habilidades Modulares, com duas formas de Limitad",
+  "descricao": "Este é o poder de criar e manipular gases. Em alguns cenários, praticantes com extenso treinamento podem até mesmo se tornar um gás. Ele pode representar o controle direto sobre o ar (Elemental e Super), uma escola de mágicas do ar (Mágica), a aliança com espíritos elementais do ar (Espiritual), ou o favor sagrado de uma divindade celeste (Divina). As habilidades de Ar afetam apenas gases verdadeiros, não nuvens de poeira, plasmas energéticos ou o “éter” sobrenatural ou da superciência.",
   "custo_talento_por_nivel": 5,
   "modificadores": [
    {
@@ -193,7 +193,7 @@
   "nome": "Bem",
   "fontes_possiveis": "Divina, Espiritual, Mágica (“Magia Branca”), ou Moral.",
   "foco": "O Bem puro e simples.",
-  "descricao": "Este poder permite ao usuário perceber e canalizar as forças do Bem. Ele pode convocar o auxílio de espíritos benevolentes (“anjos”), e pode proporcionar calor, cura e bênçãos às pessoas ao seu redor. Este poder normalmente se origina do Bem tangível (Moral), mas pode, em vez disso fluir da magia altruísta (Mágica) ou de um poder superior benéfico (Divina ou Espiritual). Ele é o antipoder de Mal (pág. 131), e inclui defesas contra aquele poder. Talento para Bem 5 pontos/nível Habilidades de Bem Abençoado; Aliados (anjos), com Invocável; Canalização, com Especializada, Anjos (-50%); Controle Térmico, com Calor; Cura; Detectar, para o Bem ou o Mal; Empatia; Escudo Mental; Estática (Mal), com",
+  "descricao": "Este poder permite ao usuário perceber e canalizar as forças do Bem. Ele pode convocar o auxílio de espíritos benevolentes (“anjos”), e pode proporcionar calor, cura e bênçãos às pessoas ao seu redor. Este poder normalmente se origina do Bem tangível (Moral), mas pode, em vez disso fluir da magia altruísta (Mágica) ou de um poder superior benéfico (Divina ou Espiritual). Ele é o antipoder de Mal (pág. 131), e inclui defesas contra aquele poder.",
   "custo_talento_por_nivel": 5,
   "modificadores": [
    {
@@ -220,7 +220,7 @@
   "nome": "Bioenergia",
   "fontes_possiveis": "Biológica, Chi, Psíquica, ou Super",
   "foco": "A energia interna do corpo.",
-  "descricao": "HQs e animes costumam retratar mutantes poderosos (Biológica), artistas marciais (Chi), psis (Psíquica) e supers (Super) como sendo capazes de direcionar energias corporais, em quantidade muito superior ao que o corpo humano poderia conter em termos realistas, para disparar contra inimigos, projetar campos de força, voar etc. Diferente das maioria dos poderes de disparo de raios, a Bioenergia não está associada a um elemento como o fogo ou a luz. 3 Isto faz com que ela seja um poder abrangente útil para heróis projetores de energia que não se encaixem em nenhum outro lugar. Talento para Bioenergia 5 pontos/nível Habilidades de Bioenergia Cura; Língua Ferina, com Baseado em HT; Obscurecer (q",
+  "descricao": "HQs e animes costumam retratar mutantes poderosos (Biológica), artistas marciais (Chi), psis (Psíquica) e supers (Super) como sendo capazes de direcionar energias corporais, em quantidade muito superior ao que o corpo humano poderia conter em termos realistas, para disparar contra inimigos, projetar campos de força, voar etc. Diferente das maioria dos poderes de disparo de raios, a Bioenergia não está associada a um elemento como o fogo ou a luz. 3 Isto faz com que ela seja um poder abrangente útil para heróis projetores de energia que não se encaixem em nenhum outro lugar.",
   "custo_talento_por_nivel": 5,
   "modificadores": [
    {
@@ -247,7 +247,7 @@
   "nome": "Calor/Fogo",
   "fontes_possiveis": "Divina, Elemental, Espiritual, Mágica, Psíquica (“Pirocinese”), ou Super",
   "foco": "Calor e chamas.",
-  "descricao": "O poder Calor/Fogo controla o calor e sua consequência costumeira, o fogo, embora Calor e Fogo possam ser poderes separados em alguns mundos de jogo. Um poder comum nas lendas e na ficção, ele está associado com os deuses do fogo (Divina), mágicas do fogo (Mágica), espíritos elementais do fogo (Espiritual) e controle elemental direto (Elemental e Super). Psíquicos com essas capacidades podem ter Psicocinese (pág. 132)… mas a pirocinese (Psíquica) é costumeiramente um poder único. Talento para Calor/Fogo 5 pontos/nível Foco: Desordem. Habilidades de Calor/Fogo As habilidades marcadas com * servem para um poder Fogo separado; aquelas com um † são adequadas para um poder Calor separado. deus l",
+  "descricao": "O poder Calor/Fogo controla o calor e sua consequência costumeira, o fogo, embora Calor e Fogo possam ser poderes separados em alguns mundos de jogo. Um poder comum nas lendas e na ficção, ele está associado com os deuses do fogo (Divina), mágicas do fogo (Mágica), espíritos elementais do fogo (Espiritual) e controle elemental direto (Elemental e Super). Psíquicos com essas capacidades podem ter Psicocinese (pág. 132)… mas a pirocinese (Psíquica) é costumeiramente um poder único.",
   "custo_talento_por_nivel": 5,
   "modificadores": [
    {
@@ -282,7 +282,7 @@
   "nome": "Caos",
   "fontes_possiveis": "Divina, Espiritual, Moral, ou Super (“Controle da Entropia”).",
   "foco": "Desordem.",
-  "descricao": "Habilidades de Calor/Fogo As habilidades marcadas com * servem para um poder Fogo separado; aquelas com um † são adequadas para um poder Calor separado. deus louco (Divina) ou espíritos trapaceiros (Espiritual), ou até mesmo o “controle da entropia” pseudocientífica (Super). Seja qual for sua fonte, o Caos é o antipoder de Ordem (pág. 131). Talento para Caos 5 pontos/nível Habilidades de Caos Canalização, com Especializada, Espíritos do Caos (-50%); Controle Térmico, com Calor; Detectar, para Caos ou Ordem; Escudo Mental; Estática (Ordem), com Resistível; Médium, com Especializada, Espíritos do Caos (-50%); Neutralizar (Ordem), mas não com Furto de Poder; Obscurecer (Adivinhação); Poder Pro",
+  "descricao": "Este poder lida com o aumento da desordem no universo. Ele funciona em todos os níveis, permitindo ao portador desorganizar objetos materiais e atormentar outros com delírios.",
   "custo_talento_por_nivel": 5,
   "modificadores": [
    {
@@ -309,7 +309,7 @@
   "nome": "Construtos de Força",
   "fontes_possiveis": "Mágica, Psíquica ou Super",
   "foco": "Campos de força semissólidos.",
-  "descricao": "Este poder permite que o usuário conjure uma força que ele seja capaz de moldar como ataques, barreiras, objetos e até mesmo criaturas (embora elas não sejam sencientes). Esta não é uma força fundamental como a gravidade ou o eletromagnetismo, mas algo ligeiramente misterioso; talvez um fenômeno supercientífico (Super), ou energia mágica (Mágica) ou psíquica (Psíquica) em estado bruto. Construtos de força costumam transmitir a sensação de solidez e funcionam como objetos físicos, mas não são materiais e sempre têm uma aparência ligeiramente peculiar (reluzente, verde, sombria etc.). Talento para Construtos de Força 5 pontos/nível Pele Resistente; Resistente, a qualquer ameaça física; ST de",
+  "descricao": "Este poder permite que o usuário conjure uma força que ele seja capaz de moldar como ataques, barreiras, objetos e até mesmo criaturas (embora elas não sejam sencientes). Esta não é uma força fundamental como a gravidade ou o eletromagnetismo, mas algo ligeiramente misterioso; talvez um fenômeno supercientífico (Super), ou energia mágica (Mágica) ou psíquica (Psíquica) em estado bruto. Construtos de força costumam transmitir a sensação de solidez e funcionam como objetos físicos, mas não são materiais e sempre têm uma aparência ligeiramente peculiar (reluzente, verde, sombria etc.).",
   "custo_talento_por_nivel": 5,
   "modificadores": [
    {
@@ -332,7 +332,7 @@
   "nome": "Controle Corporal",
   "fontes_possiveis": "Biológica, Chi, Psíquica, ou Super",
   "foco": "O metabolismo do usuário.",
-  "descricao": "O Controle Corporal permite que o usuário assuma o controle de seu metabolismo para curar lesões, realizar feitos físicos espetaculares, purificar o corpo de venenos e assim por diante. Ele é quase obrigatório para os mestres cinematográficos de yoga e artes marciais (Chi), mas pode, em vez disso, ser um poder mutante (Biológica ou Super) ou até mesmo uma forma variante de cura psíquica (Psíquica). A ficção costuma retratar o Controle Corporal e a Bioenergia como os caminhos “interno” e “externo” de uma mesma disciplina. Talento para Controle Corporal 5 pontos/nível Habilidades de Controle Corporal Ataque Adicional, com Vários Golpes; Consumo Reduzido; Controle do Metabolismo; Defesas Ampli",
+  "descricao": "O Controle Corporal permite que o usuário assuma o controle de seu metabolismo para curar lesões, realizar feitos físicos espetaculares, purificar o corpo de venenos e assim por diante. Ele é quase obrigatório para os mestres cinematográficos de yoga e artes marciais (Chi), mas pode, em vez disso, ser um poder mutante (Biológica ou Super) ou até mesmo uma forma variante de cura psíquica (Psíquica). A ficção costuma retratar o Controle Corporal e a Bioenergia como os caminhos “interno” e “externo” de uma mesma disciplina.",
   "custo_talento_por_nivel": 5,
   "modificadores": [
    {
@@ -359,7 +359,7 @@
   "nome": "Controle da Matéria",
   "fontes_possiveis": "Super.",
   "foco": "Remodelar a matéria.",
-  "descricao": "O Controle da Matéria permite que o usuário altere a forma de objetos macroscópicos e faça ajustes detalhados de suas estruturas atômicas ou mesmo subatômicas. Ele não será capaz de afetar seres vivos; apenas objetos inanimados, mas como muitas de suas habilidades alteram a matéria em contato com seu corpo, ele pode aparentar controlar sua própria estrutura, também. Este poder é extremamente cinematográfico, e melhor reservado para supers com alto nível de poder (Super). Talento para Controle da Matéria 5 pontos/nível Habilidades de Controle da Matéria Adaptação ao Terreno, com Ativa; Aderência; Caminhar sobre Líquidos; Controle (para qualquer variedade de matéria); Criar (Sólido, Líquido,",
+  "descricao": "O Controle da Matéria permite que o usuário altere a forma de objetos macroscópicos e faça ajustes detalhados de suas estruturas atômicas ou mesmo subatômicas. Ele não será capaz de afetar seres vivos; apenas objetos inanimados, mas como muitas de suas habilidades alteram a matéria em contato com seu corpo, ele pode aparentar controlar sua própria estrutura, também. Este poder é extremamente cinematográfico, e melhor reservado para supers com alto nível de poder (Super).",
   "custo_talento_por_nivel": 5,
   "modificadores": [
    {
@@ -374,7 +374,7 @@
   "nome": "Controle de Animais",
   "fontes_possiveis": "Divina, Espiritual, Natureza, Psíquica (“Telepatia Animal”), ou Super",
   "foco": "Criaturas naturais e não-sapientes.",
-  "descricao": "O Controle de Animais permite que o usuário compreenda animais comuns e que dê ordens a eles. Ele não tem efeito sobre criaturas sapientes ou sobrenaturais. Entre as explicações estão uma sintonia inata com os animais (Natureza ou Super), telepatia especializada (Psíquica), e o favor das divindades da natureza (Divina) ou espíritos totêmicos (Espiritual). A Metamorfose serve para xamãs e supers, mas não para psis; o Mestre pode querer substituir habilidades telepáticas (veja Telepatia, pág. 133), especializada em animais, por aquelas com o modificador Psíquico. Talento para Controle de Animais 5 pontos/nível 3 Habilidades de Controle de Animais As vantagens marcadas com um * envolvem o cont",
+  "descricao": "O Controle de Animais permite que o usuário compreenda animais comuns e que dê ordens a eles. Ele não tem efeito sobre criaturas sapientes ou sobrenaturais. Entre as explicações estão uma sintonia inata com os animais (Natureza ou Super), telepatia especializada (Psíquica), e o favor das divindades da natureza (Divina) ou espíritos totêmicos (Espiritual). A Metamorfose serve para xamãs e supers, mas não para psis; o Mestre pode querer substituir habilidades telepáticas (veja Telepatia, pág. 133), especializada em animais, por aquelas com o modificador Psíquico.",
   "custo_talento_por_nivel": 5,
   "modificadores": [
    {
@@ -405,7 +405,7 @@
   "nome": "Controle de Plantas",
   "fontes_possiveis": "Divina, Espiritual, Natureza, Psíquica (“Telepatia com Plantas”), ou Super",
   "foco": "Plantas naturais, não-sapientes.",
-  "descricao": "O Controle de Plantas permite que o usuário comungue com plantas normais e as controle. Ele não tem qualquer efeito sobre a vida vegetal sapiente, flora mágica, ou outras formas de vegetação não-naturais. Na ficção, este poder costuma ser o resultado de uma profunda empatia com as plantas (Natureza ou Super), uma variação de telepatia (Psíquica), ou o favor de deuses ou espíritos da natureza (Divina ou Espiritual). Talento para Controle de Plantas 5 pontos/nível Habilidades de Controle de Plantas Controle (Madeira); Detectar, para um tipo de planta ou para todas as plantas; Empatia com Plantas; Falar com Plantas; Habilidades Modulares, com Ambiental (-40%) e Física; Interposição (Madeira);",
+  "descricao": "O Controle de Plantas permite que o usuário comungue com plantas normais e as controle. Ele não tem qualquer efeito sobre a vida vegetal sapiente, flora mágica, ou outras formas de vegetação não-naturais. Na ficção, este poder costuma ser o resultado de uma profunda empatia com as plantas (Natureza ou Super), uma variação de telepatia (Psíquica), ou o favor de deuses ou espíritos da natureza (Divina ou Espiritual).",
   "custo_talento_por_nivel": 5,
   "modificadores": [
    {
@@ -436,7 +436,7 @@
   "nome": "Controle do Clima",
   "fontes_possiveis": "Divina, Espiritual, Mágica, Natureza, ou Super",
   "foco": "Condições atmosféricas.",
-  "descricao": "Este é o poder de manipular a umidade, pressão e temperatura ambiente. Ele pode canalizar deuses ou espíritos da tempestade (Divina ou Espiritual), envolver “bruxaria climática” (Mágica), ou representar o controle direto (Natureza ou Super). Seus efeitos às vezes se sobrepõem ao Ar, Calor/Fogo, Eletricidade, Frio/Gelo, e Água, mas o Controle do Clima não é um poder elemental. O usuário pode produzir somente clima; por exemplo, granizo, relâmpagos, chuva, calor incômodo e vento. Ele não pode emitir ondas de concussão, disparar raios congelantes, interferir com rádios, transformar-se em chamas etc. Talento para Controle do Clima 5 pontos/nível Habilidades de Controle do Clima Adaptação ao Ter",
+  "descricao": "Este é o poder de manipular a umidade, pressão e temperatura ambiente. Ele pode canalizar deuses ou espíritos da tempestade (Divina ou Espiritual), envolver “bruxaria climática” (Mágica), ou representar o controle direto (Natureza ou Super). Seus efeitos às vezes se sobrepõem ao Ar, Calor/Fogo, Eletricidade, Frio/Gelo, e Água, mas o Controle do Clima não é um poder elemental. O usuário pode produzir somente clima; por exemplo, granizo, relâmpagos, chuva, calor incômodo e vento. Ele não pode emitir ondas de concussão, disparar raios congelantes, interferir com rádios, transformar-se em chamas etc.",
   "custo_talento_por_nivel": 5,
   "modificadores": [
    {
@@ -463,7 +463,7 @@
   "nome": "Controle Espiritual",
   "fontes_possiveis": "Divina, Espiritual, ou Mágica",
   "foco": "Espíritos e o mundo espiritual.",
-  "descricao": "Uma variedade de poderes pode ser transformada em “poderes espirituais” com a simples inclusão do modificador Espiritual. Ele cria um poder que lida com uma classe específica de espírito: demônios, fantasmas, totens, elementais do fogo etc. O Controle Espiritual concede ao usuário o poder de perceber todos os tipos de espíritos, bem como de comunicar-se com eles e prendê-los. Magos rituais devem comprar este poder com o modificador Espiritual, mas a capacidade de controlar espíritos é igualmente adequada para clérigos de fantasia (Divina) e magos (Mágica). Talento para Controle Espiritual 5 pontos/nível Habilidades de Controle Espiritual Abençoado; Aliados (espíritos menores), com Invocável",
+  "descricao": "Uma variedade de poderes pode ser transformada em “poderes espirituais” com a simples inclusão do modificador Espiritual. Ele cria um poder que lida com uma classe específica de espírito: demônios, fantasmas, totens, elementais do fogo etc. O Controle Espiritual concede ao usuário o poder de perceber todos os tipos de espíritos, bem como de comunicar-se com eles e prendê-los. Magos rituais devem comprar este poder com o modificador Espiritual, mas a capacidade de controlar espíritos é igualmente adequada para clérigos de fantasia (Divina) e magos (Mágica).",
   "custo_talento_por_nivel": 5,
   "modificadores": [
    {
@@ -485,8 +485,8 @@
   "id": "cosmico",
   "nome": "Cósmico",
   "fontes_possiveis": "Cósmica.",
-  "foco": "A criação e as leis da realidade.",
-  "descricao": "",
+  "foco": "Tudo!",
+  "descricao": "O poder cósmico representa as capacidades ilimitadas das divindades e (em alguns cenários) dos supers mais poderosos. Ele não possui um único foco; por definição, ele afeta todas as coisas e qualquer coisa — e a única contramedida que se opõe a ele é ele mesmo. Este tipo de escopo ilimitado vem com um preço a ser pago: tanto o modificador de poder quanto o Talento são muito caros.",
   "custo_talento_por_nivel": 15,
   "modificadores": [
    {
@@ -501,7 +501,7 @@
   "nome": "Cura",
   "fontes_possiveis": "Biológica, Chi, Divina (“Cura pela Fé”), Espiritual, Mágica, Psiquismo (“Cura Psíquica”), ou Super.",
   "foco": "A cura de seres vivos.",
-  "descricao": "Habilidades de cura permitem que o usuário diagnostique e trate de doenças e lesões. A maioria dos curandeiros podem curar a si mesmos e a outros, mas uma escolha adequada de vantagens e modificadores pode criar um curandeiro capaz de fazer apenas uma coisa ou a outra. Explicações comuns para a Cura incluem um campo bioenergético restaurador (Biológica ou Super), controle sobre o yin e o yang (Chi), cura pela fé (Divina ou Espiritual), mágicas de cura (Mágica), e cura psíquica (Psíquica). Talento para Cura 5 pontos/nível Habilidades de Cura Controle do Metabolismo; Criar (Medicamentos); Cura; Detectar, para doenças, venenos, sinais vitais, etc.; Empatia; Poder Protegido; Regeneração; Resist",
+  "descricao": "Habilidades de cura permitem que o usuário diagnostique e trate de doenças e lesões. A maioria dos curandeiros podem curar a si mesmos e a outros, mas uma escolha adequada de vantagens e modificadores pode criar um curandeiro especializado.",
   "custo_talento_por_nivel": 5,
   "modificadores": [
    {
@@ -540,7 +540,7 @@
   "nome": "Divino",
   "fontes_possiveis": "Divina.",
   "foco": "A vontade de uma divindade em específico.",
-  "descricao": "Um mortal dotado de poderes por uma divindade poderia simplesmente aplicar o modificador Divino ao poder desta lista que melhor se adequar à esfera de influência de seu padroeiro. Porém, esta não é a única possibilidade. O poder “genérico” descrito a seguir representa um acordo mais tradicional: o sacerdote possui alguns dons inatos que representam o status de santo, mas milagres vistosos, como a cura, castigo divino etc., exigem preces ou mágicas específicas (veja Magia Clerical, pág. MB242). Investidura de Poder 10 pontos/nível 3 A critério do Mestre, a vantagem Investidura de Poder (pág. MB67) concede um bônus de +1 por nível às mágicas “clericais” e às habilidades específicas a seguir.",
+  "descricao": "Um mortal dotado de poderes por uma divindade poderia simplesmente aplicar o modificador Divino ao poder desta lista que melhor se adequar à esfera de influência de seu padroeiro. Porém, esta não é a única possibilidade. O poder “genérico” descrito a seguir representa um acordo mais tradicional: o sacerdote possui alguns dons inatos que representam o status de santo, mas milagres vistosos, como a cura, castigo divino etc., exigem preces ou mágicas específicas (veja Magia Clerical, pág. MB242).",
   "custo_talento_por_nivel": 5,
   "modificadores": [
    {
@@ -555,7 +555,7 @@
   "nome": "Domínio do Tempo",
   "fontes_possiveis": "Divina, Mágica, Psíquica ou Super",
   "foco": "Tempo.",
-  "descricao": "O Domínio do Tempo permite ao usuário observar o passado e se comunicar com ele; receber e enviar informações e mensagens do e para o futuro (e talvez até mesmo convocar suas versões futuras para auxiliá-lo!); viajar no tempo; e influenciar o fluxo do tempo. As explicações incluem o favor de uma divindade capaz de controlar o tempo (Divina), feitiçaria poderosa (Mágica), um elo psíquico entre as versões passadas, presente e futuras do personagem (Psíquica), ou “controle temporal” direto (Super). Talento para Domínio do Tempo 5 pontos/nível Habilidades de Domínio do Tempo Canalização (O Passado); Clarissenciência, com Alcance Temporal; Detectar, para anomalias temporais, saltadores do tempo",
+  "descricao": "O Domínio do Tempo permite ao usuário observar o passado e se comunicar com ele; receber e enviar informações e mensagens do e para o futuro (e talvez até mesmo convocar suas versões futuras para auxiliá-lo!); viajar no tempo; e influenciar o fluxo do tempo. As explicações incluem o favor de uma divindade capaz de controlar o tempo (Divina), feitiçaria poderosa (Mágica), um elo psíquico entre as versões passadas, presente e futuras do personagem (Psíquica), ou “controle temporal” direto (Super).",
   "custo_talento_por_nivel": 5,
   "modificadores": [
    {
@@ -586,7 +586,7 @@
   "nome": "Eletricidade",
   "fontes_possiveis": "Divina, Elemental ou Super",
   "foco": "Fenômenos elétricos.",
-  "descricao": "Este poder lida com a geração e canalização da eletricidade. Seus efeitos mais impressionantes são as descargas destrutivas, como relâmpagos, mas a modulação precisa também é possível, o que permite ao usuário gerar sinais de rádio. Devido às suas características tecnológicas, este é normalmente um superpoder (Elemental e Super), e raramente adequado para poderes sobrenaturais além daqueles associados a deuses do trovão (Divina). O Mestre é livre para fazer exceções. Talento para Eletricidade 5 pontos/nível Habilidades de Eletricidade Controle (Eletricidade); Criar (Eletricidade); Detectar, para eletricidade, sinais de rádio ou magnetismo; Habilidades Modulares, com Limitada, Eletricidade (",
+  "descricao": "Este poder lida com a geração e canalização da eletricidade. Seus efeitos mais impressionantes são as descargas destrutivas, como relâmpagos, mas a modulação precisa também é possível, o que permite ao usuário gerar sinais de rádio. Devido às suas características tecnológicas, este é normalmente um superpoder (Elemental e Super), e raramente adequado para poderes sobrenaturais além daqueles associados a deuses do trovão (Divina). O Mestre é livre para fazer exceções.",
   "custo_talento_por_nivel": 5,
   "modificadores": [
    {
@@ -609,7 +609,7 @@
   "nome": "Eletrocinese",
   "fontes_possiveis": "Psíquica ou Super",
   "foco": "Campos eletromagnéticos.",
-  "descricao": "A eletrocinese permite que o usuário sinta a eletricidade e energia eletromagnética (EM) existente, gere campos EM de baixo nível de potência para controlar essa energia e produza efeitos sutis em sua ausência. Explicações comuns são o “controle de campo” psíquico (Psíquica) ou exótico (Super). A eletrocinese não pode gerar as descargas energéticas associadas ao poder Eletricidade (anterior), mas oferece maior controle e sutileza; tanto que em conjunto com Telepatia sobre Máquinas (pág. 133) ela poderia ser, justificavelmente, um único poder, se o Mestre desejar. Talento para Eletrocinese 5 pontos/nível Habilidades de Eletrocinese Controle (Eletricidade ou Luz); Detectar, para campos ou fen",
+  "descricao": "A eletrocinese permite que o usuário sinta a eletricidade e energia eletromagnética (EM) existente, gere campos EM de baixo nível de potência para controlar essa energia e produza efeitos sutis em sua ausência. Explicações comuns são o “controle de campo” psíquico (Psíquica) ou exótico (Super). A eletrocinese não pode gerar as descargas energéticas associadas ao poder Eletricidade (anterior), mas oferece maior controle e sutileza; tanto que em conjunto com Telepatia sobre Máquinas (pág. 133) ela poderia ser, justificavelmente, um único poder, se o Mestre desejar.",
   "custo_talento_por_nivel": 5,
   "modificadores": [
    {
@@ -628,7 +628,7 @@
   "nome": "Energia Cinética",
   "fontes_possiveis": "Elemental ou Super",
   "foco": "Força física bruta.",
-  "descricao": "Este é o poder de projetar feixes e campos de força capazes de atrair ou repelir objetos, agir como propulsores sem reação e assim por diante. Ela é chamada de “Energia Cinética” em vez de “Força”, pois a única coisa que ela tem em comum com qualquer força física crível é o fato de ambas alterarem a energia cinética. O poder Energia Cinética serve principalmente para supers altamente cinematográficos. Gravidade (pág. 129) e Magnetismo (pág. 130) são ligeiramente mais realistas, e Psicocinese (pág. 132) é mais adequada para o controle de força psíquica. Talento para Energia Cinética 5 pontos/nível Habilidades de Energia Cinética Deslocamento Ampliado (qualquer); Escorregadio; Esquiva Ampliad",
+  "descricao": "Este é o poder de projetar feixes e campos de força capazes de atrair ou repelir objetos, agir como propulsores sem reação e assim por diante. Ela é chamada de “Energia Cinética” em vez de “Força”, pois a única coisa que ela tem em comum com qualquer força física crível é o fato de ambas alterarem a energia cinética. O poder Energia Cinética serve principalmente para supers altamente cinematográficos. Gravidade (pág. 129) e Magnetismo (pág. 130) são ligeiramente mais realistas, e Psicocinese (pág. 132) é mais adequada para o controle de força psíquica.",
   "custo_talento_por_nivel": 5,
   "modificadores": [
    {
@@ -647,7 +647,7 @@
   "nome": "Frio/Gelo",
   "fontes_possiveis": "Divina, Elemental ou Super",
   "foco": "Frio e gelo.",
-  "descricao": "O poder Frio/Gelo possibilita ao usuário congelar seus inimigos ou prendê-los com gelo, “surfar” por uma camada de gelo e assim por diante. Geralmente, ele representa o controle direto sobre o frio (Elemental e Super), mas pode, em vez disso, emanar de um deus que reine sobre o inverno (Divina). O Frio não é um elemento tradicional para magos e alquimistas, mas o Mestre tem a liberdade para ignorar esse fato e permitir uma versão Mágica ou Espiritual deste poder. Em alguns cenários, Frio e Gelo são poderes separados. Talento para Frio/Gelo 5 pontos/nível Habilidades de Frio/Gelo As habilidades marcadas com * servem para um poder Gelo separado; aquelas com um † são adequadas para um poder Fr",
+  "descricao": "O poder Frio/Gelo possibilita ao usuário congelar seus inimigos ou prendê-los com gelo, “surfar” por uma camada de gelo e assim por diante. Geralmente, ele representa o controle direto sobre o frio (Elemental e Super), mas pode, em vez disso, emanar de um deus que reine sobre o inverno (Divina). O Frio não é um elemento tradicional para magos e alquimistas, mas o Mestre tem a liberdade para ignorar esse fato e permitir uma versão Mágica ou Espiritual deste poder. Em alguns cenários, Frio e Gelo são poderes separados.",
   "custo_talento_por_nivel": 5,
   "modificadores": [
    {
@@ -670,7 +670,7 @@
   "nome": "Gravidade",
   "fontes_possiveis": "Elemental ou Super",
   "foco": "Gravidade.",
-  "descricao": "Este é o poder de controlar os campos gravitacionais de objetos massivos (afetando o peso) e projetar ondas gravitacionais concentradas. Ele quase sempre é uma forma de manipulação direta de força (Elemental e Super). Uma vez que a gravidade não é um elemento mágico ou esfera divina tradicional, este poder raramente possui uma fonte sobrenatural. Use Psicocinese (pág. 132) para o controle por uma força sobrenatural. Talento para Gravidade 5 pontos/nível 3 Habilidades de Gravidade Retenção, com Inquebrável; Queda de Gato, com Queda Suave; Aderência, com Atração; Controle (Gravidade); Resistência a Dano, com Campo de Força e Limitada, Física (-20%); Detectar, para manipulação da gravidade ou",
+  "descricao": "Este é o poder de controlar os campos gravitacionais de objetos massivos (afetando o peso) e projetar ondas gravitacionais concentradas. Ele quase sempre é uma forma de manipulação direta de força (Elemental e Super). Uma vez que a gravidade não é um elemento mágico ou esfera divina tradicional, este poder raramente possui uma fonte sobrenatural. Use Psicocinese (pág. 132) para o controle por uma força sobrenatural.",
   "custo_talento_por_nivel": 5,
   "modificadores": [
    {
@@ -689,7 +689,7 @@
   "nome": "Ilusão",
   "fontes_possiveis": "Divina, Espiritual, Mágica, Psíquica, ou Super",
   "foco": "Disfarce sensorial.",
-  "descricao": "Este é o poder de controlar o que é percebido por outros. O ilusionista Habilidades de Luz Controle (Luz); Criar (Luz); Defesas Ampliadas, com Limitada, Luz (-40%); Habilidades Modulares, com Limitada, Luz (-10%)e Física; Ilusão, com Somente Visual; Infravisão; Invisibilidade; Obscurecer, contra Radar a Laser ou qualquer tipo de visão; Poder Protegido; Resistência a Dano, com Limitada, Luz (-40%); Sentido Protegido (Visão); Sentido de Monitoramento (IV Ativo ou Radar a Laser); Telecomunicação (Infravermelho ou Laser); Ultravisão; Ver o Invisível; Visão 360 Graus, com Panóptica 1; Visão Hiperespectral; Visão Microscópica; Visão no Escuro; Visão Noturna; e Visão Telescópica. O Mestre pode per",
+  "descricao": "Este é o poder de controlar o que é percebido por outros. O ilusionista",
   "custo_talento_por_nivel": 5,
   "modificadores": [
    {
@@ -720,7 +720,7 @@
   "nome": "Luz",
   "fontes_possiveis": "Divina, Elemental, Psíquica (“Fotocinese”) ou Super",
   "foco": "A luz visível e semivisível.",
-  "descricao": "O poder luz concede ao portador o controle quase completo sobre a luz. Ele pode focá-la para melhorar sua visão, curvá-la para evitar que objetos sejam vistos ou concentrá-la para atacar seus inimigos com clarões cegantes e lasers. Geralmente, este é um controle elemental direto (Elemental e Super) ou a “fotocinese” psíquica especializada (Psíquica); mas as divindades associadas ao sol, à pureza ou ao bem também podem conceder esse poder (Divina). Talento para Luz 5 pontos/nível padrão e para as habilidades Mágicas. Se esse for o caso, Aptidão Mágica 0 será um pré-requisito para todas as habilidades Mágicas, bem como para Aptidão Mágica 1+, e personagens com Aptidão Mágica poderão gastar po",
+  "descricao": "O poder luz concede ao portador o controle quase completo sobre a luz. Ele pode focá-la para melhorar sua visão, curvá-la para evitar que objetos sejam vistos ou concentrá-la para atacar seus inimigos com clarões cegantes e lasers. Geralmente, este é um controle elemental direto (Elemental e Super) ou a “fotocinese” psíquica especializada (Psíquica); mas as divindades associadas ao sol, à pureza ou ao bem também podem conceder esse poder (Divina).",
   "custo_talento_por_nivel": 5,
   "modificadores": [
    {
@@ -745,9 +745,9 @@
  {
   "id": "magia",
   "nome": "Magia",
-  "fontes_possiveis": "Divina, Elemental, ou Mágica.",
-  "foco": "Mana.",
-  "descricao": "",
+  "fontes_possiveis": "Mágica.",
+  "foco": "Operação de “mágicas”.",
+  "descricao": "Os magos normalmente conjuram a magia com o uso de perícias especializadas chamadas “mágicas”. Porém, se o Mestre preferir, a magia pode operar através de vantagens, as quais podem ser as habilidades de um poder. Para representar uma “escola” de magia específica, aplique o modificador Mágico ao poder mais adequado desta lista.",
   "custo_talento_por_nivel": 5,
   "modificadores": [
    {
@@ -762,7 +762,7 @@
   "nome": "Magnetismo",
   "fontes_possiveis": "Elemental ou Super",
   "foco": "Magnetismo.",
-  "descricao": "Este é um poder cinematográfico de controle do magnetismo. Ele permite que o portador realize os tipos de truques que são justificados por “magnetismo” nas histórias em quadrinhos, como surfar pelo campo magnético da Terra, arremessar objetos pesados e moldar metais, a maioria dos quais são difíceis de explicar em termos de magnetismo realista. Personagens que possuem este poder parecem usar manipulação direta de forças (Elemental e Super), justificada por meio de pseudociência, isso se houver justificativa. Talento para Magnetismo 5 pontos/nível Habilidades de Magnetismo Aderência, com Atração e Magnética (-50%); Caminhar no Ar, com Planetário; Controle (Metais Ferrosos ou Magnetismo); Cri",
+  "descricao": "Este é um poder cinematográfico de controle do magnetismo. Ele permite que o portador realize os tipos de truques que são justificados por “magnetismo” nas histórias em quadrinhos, como surfar pelo campo magnético da Terra, arremessar objetos pesados e moldar metais, a maioria dos quais são difíceis de explicar em termos de magnetismo realista. Personagens que possuem este poder parecem usar manipulação direta de forças (Elemental e Super), justificada por meio de pseudociência, isso se houver justificativa.",
   "custo_talento_por_nivel": 5,
   "modificadores": [
    {
@@ -781,7 +781,7 @@
   "nome": "Mal",
   "fontes_possiveis": "Divina, Espiritual (“Demonologia”), Mágica (“Magia Negra”), ou Moral",
   "foco": "O Mal puro e simples.",
-  "descricao": "Este poder existe apenas em cenários em que o Mal é uma força tangível. O portador está ciente do Mal em todas as suas formas e pode usá-lo para corromper inimigos, invocar demônios e atormentar os outros com calafrios, doenças, terror e muitos outros efeitos desagradáveis. É possível que este poder emane do puro Mal (Moral), de magia proibida (Mágica), ou entidades demoníacas (Divina ou Espiritual). Ele é o antipoder de Bem (pág. 123), e inclui proteção contra esse poder. Talento para Mal 5 pontos/nível Habilidades de Mal Aliados (demônios), com Invocável; Canalização, com Especializada, Demônios (-50%); Controle Térmico, com Frio; Detectar, para o Mal ou o Bem; Escudo Mental; Estática (Be",
+  "descricao": "Este poder existe apenas em cenários em que o Mal é uma força tangível. O portador está ciente do Mal em todas as suas formas e pode usá-lo para corromper inimigos, invocar demônios e atormentar os outros com calafrios, doenças, terror e muitos outros efeitos desagradáveis. É possível que este poder emane do puro Mal (Moral), de magia proibida (Mágica), ou entidades demoníacas (Divina ou Espiritual). Ele é o antipoder de Bem (pág. 123), e inclui proteção contra esse poder.",
   "custo_talento_por_nivel": 5,
   "modificadores": [
    {
@@ -808,7 +808,7 @@
   "nome": "Morte",
   "fontes_possiveis": "Divina, Espiritual, ou Mágica (“Necromancia”)",
   "foco": "A morte e os mortos.",
-  "descricao": "Este poder lida com cada aspecto da morte: cadáveres, fantasmas e maldições que roubam a força vital da vítima. Ele é mais comum entre adoradores de deuses que regem a morte ou o mundo inferior (Divina), magos necromantes (Mágica) e personagens capazes de controlar fantasmas e espíritos da morte (Espiritual). Muitos consideram o poder Morte como maligno, mas isto não é necessariamente verdade; consulte Mal (anterior) para isso. Talento para Morte 5 pontos/nível Habilidades de Morte Aliados (mortos-vivos), com Invocável; Canalização, com Especializada, Fantasmas (-50%); Detectar, para corpos mortos, fantasmas, mortos-vivos etc.; Forma Alternativa (qualquer modelo de morto-vivo); Idade Imutáv",
+  "descricao": "Este poder lida com cada aspecto da morte: cadáveres, fantasmas e maldições que roubam a força vital da vítima. Ele é mais comum entre adoradores de deuses que regem a morte ou o mundo inferior (Divina), magos necromantes (Mágica) e personagens capazes de controlar fantasmas e espíritos da morte (Espiritual). Muitos consideram o poder Morte como maligno, mas isto não é necessariamente verdade; consulte Mal (anterior) para isso.",
   "custo_talento_por_nivel": 5,
   "modificadores": [
    {
@@ -831,7 +831,7 @@
   "nome": "Ordem",
   "fontes_possiveis": "Divina, Espiritual, ou Moral",
   "foco": "Estrutura e serenidade.",
-  "descricao": "O poder Ordem busca combater a desorganização e impor a estrutura no mundo. Ele permite que o usuário bloqueie danos, ruídos e outras perturbações; restaure o estado de paz interior da mente e do corpo; e alcance a iluminação ao perceber os padrões ocultos em meio ao caos da existência. Ele frequentemente representa a personificação da ordem (Moral) ou a vontade de campeões sobrenaturais da justiça, lei ou paz (Divina ou Espiritual). A Ordem é o antipoder de Caos (pág. 124), e proporciona proteção contra aquele poder. Talento para Ordem 5 pontos/nível 3 Habilidades de Ordem Bom Senso; Canalização, com Especializada, Espíritos da Ordem (-50%); Controle Térmico, com Frio; Cura, com Xenocura,",
+  "descricao": "O poder Ordem busca combater a desorganização e impor a estrutura no mundo. Ele permite que o usuário bloqueie danos, ruídos e outras perturbações; restaure o estado de paz interior da mente e do corpo; e alcance a iluminação ao perceber os padrões ocultos em meio ao caos da existência. Ele frequentemente representa a personificação da ordem (Moral) ou a vontade de campeões sobrenaturais da justiça, lei ou paz (Divina ou Espiritual). A Ordem é o antipoder de Caos (pág. 124), e proporciona proteção contra aquele poder.",
   "custo_talento_por_nivel": 5,
   "modificadores": [
    {
@@ -854,7 +854,7 @@
   "nome": "PES",
   "fontes_possiveis": "Chi, Divina (“Profecia”), Espiritual, Mágica (“Adivinhação”), Psíquica, ou Super",
   "foco": "Conhecimento.",
-  "descricao": "A Percepção Extra-Sensorial (PES) é o poder de obter conhecimento através de meios além dos cinco sentidos naturais. Os mitos e as lendas atribuem este dom sobrenatural a mestres das artes marciais (Chi), profetas (Divina), magos (Mágica), psíquicos (Psíquica), xamãs (Espiritual), e à maioria dos outros místicos e iluminados. O Mestre faz os testes de habilidade para o uso de PES em segredo. Quanto melhor o teste, maior a qualidade da informação recebida. No caso de qualquer fracasso, o Mestre dirá ao jogador “você não descobriu nada”. Se o teste fracassar por mais do que 5, o Mestre mentirá! Talento para PES 5 pontos/nível Habilidades de PES Bom Senso; Canalização; Clarissenciência; Detect",
+  "descricao": "A Percepção Extra-Sensorial (PES) é o poder de obter conhecimento através de meios além dos cinco sentidos naturais. Os mitos e as lendas atribuem este dom sobrenatural a mestres das artes marciais (Chi), profetas (Divina), magos (Mágica), psíquicos (Psíquica), xamãs (Espiritual), e à maioria dos outros místicos e iluminados. O Mestre faz os testes de habilidade para o uso de PES em segredo. Quanto melhor o teste, maior a qualidade da informação recebida. No caso de qualquer fracasso, o Mestre dirá ao jogador “você não descobriu nada”.",
   "custo_talento_por_nivel": 5,
   "modificadores": [
    {
@@ -889,7 +889,7 @@
   "nome": "Projeção Astral",
   "fontes_possiveis": "Divina, Espiritual, Mágica, ou Psíquica.",
   "foco": "O Plano Astral.",
-  "descricao": "Este é o poder de perceber o Plano Astral e viajar por ele. Alguns viajantes permanecem em um plano “exterior” que se sobrepõe ao mundo material, permitindo que eles o vejam sem serem percebidos; outros seguem para um plano “interior”, vizinho de planos superiores da existência. Projetores treinados são capazes de fazer ambos. A Projeção Astral é tradicionalmente uma discipli- Talento para Psicocinese 5 pontos/nível Habilidades de Psicocinese Aderência, com Atração; Caminhar no Ar; Caminhar sobre Líquidos; Controle Térmico; Deslocamento Ampliado (Ar); Elasticidade, com Extensão de Força; Poder Protegido; Queda de Gato, com Queda Suave; Resistência a Dano, com Campo de Força e Limitada, Físi",
+  "descricao": "Este é o poder de perceber o Plano Astral e viajar por ele. Alguns viajantes permanecem em um plano “exterior” que se sobrepõe ao mundo material, permitindo que eles o vejam sem serem percebidos; outros seguem para um plano “interior”, vizinho de planos superiores da existência. Projetores treinados são capazes de fazer ambos.",
   "custo_talento_por_nivel": 5,
   "modificadores": [
    {
@@ -916,7 +916,7 @@
   "nome": "Psicocinese",
   "fontes_possiveis": "Psíquica, ou Super.",
   "foco": "Movimento.",
-  "descricao": "Fontes: Divina, Espiritual, Mágica, ou Psíquica. Foco: O Plano Astral. Este é o poder de perceber o Plano Astral e viajar por ele. Alguns viajantes permanecem em um plano “exterior” que se sobrepõe ao mundo material, permitindo que eles o vejam sem serem percebidos; outros seguem para um plano “interior”, vizinho de planos superiores da existência. Projetores treinados são capazes de fazer ambos. A Projeção Astral é tradicionalmente uma discipli- Talento para Psicocinese 5 pontos/nível Habilidades de Psicocinese Aderência, com Atração; Caminhar no Ar; Caminhar sobre Líquidos; Controle Térmico; Deslocamento Ampliado (Ar); Elasticidade, com Extensão de Força; Poder Protegido; Queda de Gato, c",
+  "descricao": "Fontes: Divina, Espiritual, Mágica, ou Psíquica. Foco: O Plano Astral. Este é o poder de perceber o Plano Astral e viajar por ele. Alguns viajantes permanecem em um plano “exterior” que se sobrepõe ao mundo material, permitindo que eles o vejam sem serem percebidos; outros seguem para um plano “interior”, vizinho de planos superiores da existência. Projetores treinados são capazes de fazer ambos.",
   "custo_talento_por_nivel": 5,
   "modificadores": [
    {
@@ -947,7 +947,7 @@
   "nome": "Radiação",
   "fontes_possiveis": "Elemental ou Super",
   "foco": "Partículas energéticas e radiação eletromagnética.",
-  "descricao": "Este poder permite que o usuário detecte, controle e emita radiação perigosa. Ele realmente é adequado apenas como um superpoder (Elemental e Super); a sofisticação científica implicada pela compreensão da radiação não se mistura muito bem com os poderes sobrenaturais. Assim como as histórias em quadrinhos, o poder Radiação trata a radiação como um fenômeno monolítico. Na realidade, partículas alfa, raios gama, nêutrons, raios-X e assim por diante diferem em muito entre si. Cabe ao Mestre decidir qual será o impacto dessas distinções, se houver, sobre este poder. Arremedo*; Audição Discriminatória*; Audição Parabólica*; Controle (Som)*; Criar (Som)*; Fala Subaquática*†; Fala/Audição Subsôni",
+  "descricao": "Este poder permite que o usuário detecte, controle e emita radiação perigosa. Ele realmente é adequado apenas como um superpoder (Elemental e Super); a sofisticação científica implicada pela compreensão da radiação não se mistura muito bem com os poderes sobrenaturais. Assim como as histórias em quadrinhos, o poder Radiação trata a radiação como um fenômeno monolítico. Na realidade, partículas alfa, raios gama, nêutrons, raios-X e assim por diante diferem em muito entre si. Cabe ao Mestre decidir qual será o impacto dessas distinções, se houver, sobre este poder.",
   "custo_talento_por_nivel": 5,
   "modificadores": [
    {
@@ -966,7 +966,7 @@
   "nome": "Som/Vibração",
   "fontes_possiveis": "Elemental, Psiquismo (“Sonocinese”), ou Super",
   "foco": "Vibrações mecânicas de todos os tipos.",
-  "descricao": "O poder Som/Vibração proporciona controle total sobre as vibrações mecânicas, — inclusive o som, a menos que o Mestre determine que o Som e a Vibração sejam poderes separados — no ar, na água ou em materiais sólidos. Isto permite que o usuário amplie seus sentidos de audição e tato, gere ruídos como distração, ataque seus inimigos com som concentrado, e assim por diante. O poder Som/Vibração frequentemente é uma ramificação especializada da Psicocinese (Psíquica) ou uma forma de controle elemental direto (Elemental e Super). Talento para Som/Vibração 5 pontos/nível Habilidades de Som/Vibração As habilidades marcadas com * servem para um poder Som separado; aquelas com um † são adequadas par",
+  "descricao": "O poder Som/Vibração proporciona controle total sobre as vibrações mecânicas, — inclusive o som, a menos que o Mestre determine que o Som e a Vibração sejam poderes separados — no ar, na água ou em materiais sólidos. Isto permite que o usuário amplie seus sentidos de audição e tato, gere ruídos como distração, ataque seus inimigos com som concentrado, e assim por diante. O poder Som/Vibração frequentemente é uma ramificação especializada da Psicocinese (Psíquica) ou uma forma de controle elemental direto (Elemental e Super).",
   "custo_talento_por_nivel": 5,
   "modificadores": [
    {
@@ -989,7 +989,7 @@
   "nome": "Telepatia",
   "fontes_possiveis": "Biológica, Mágica (“Controle da Mente”), Psíquica, ou Super",
   "foco": "Mentes vivas e sapientes.",
-  "descricao": "A Telepatia é o poder de comunicação e controle mental direto. Tradicionalmente, é um poder psíquico (Psíquica), mas parte da ficção moderna a descreve como um fenômeno “neural” que usa um campo bioenergético (Biológica ou Super). O controle mental místico (Mágica) é uma outra possibilidade. Normalmente, a Telepatia afeta apenas seres vivos sapientes (IQ 6+), mas o Mestre deve permitir que ela funcione em todas as mentes sencientes (IQ 1+) nos mundos de jogo em que não exista o poder Controle de Animais. Tentativas de afetar máquinas ou plantas fracassarão automaticamente. Talento para Radiação 5 pontos/nível Habilidades de Radiação Controle (Radiação); Criar (Radiaçã",
+  "descricao": "A Telepatia é o poder de comunicação e controle mental direto. Tradicionalmente, é um poder psíquico (Psíquica), mas parte da ficção moderna a descreve como um fenômeno “neural” que usa um campo bioenergético (Biológica ou Super). O controle mental místico (Mágica) é uma outra possibilidade. Normalmente, a Telepatia afeta apenas seres vivos sapientes (IQ 6+), mas o Mestre deve permitir que ela funcione em todas as mentes sencientes (IQ 1+) nos mundos de jogo em que não exista o poder Controle de Animais. Tentativas de afetar máquinas ou plantas fracassarão automaticamente.",
   "custo_talento_por_nivel": 5,
   "modificadores": [
    {
@@ -1016,7 +1016,7 @@
   "nome": "Telepatia Sobre Máquinas",
   "fontes_possiveis": "Psíquica ou Super",
   "foco": "Mentes Digitais.",
-  "descricao": "Este é o poder de estabelecer uma conexão mental com um computador para comunicar-se com ele ou controlá-lo. Ele é, para as Mentes Digitais, o mesmo que a Telepatia (acima) é para as mentes vivas, e frequentemente é um poder híbrido entre a Eletrocinese e a Telepatia (Psíquica). Ela pode, em vez disso, ser uma capacidade de força bruta para emissão de sinais que tomam o controle da operação normal de máquinas (Super). Ela afeta apenas máquinas que possuam pelo menos um “cérebro” computadorizado rudimentar, e nunca afeta seres vivos. Teleporte Fontes: Mágica, Psíquica ou Super. Foco: Movimento instantâneo. O Teleporte permite que o usuário se mova ou mova outros objetos pelo espaço sem trans",
+  "descricao": "Este é o poder de estabelecer uma conexão mental com um computador para comunicar-se com ele ou controlá-lo. Ele é, para as Mentes Digitais, o mesmo que a Telepatia (acima) é para as mentes vivas, e frequentemente é um poder híbrido entre a Eletrocinese e a Telepatia (Psíquica). Ela pode, em vez disso, ser uma capacidade de força bruta para emissão de sinais que tomam o controle da operação normal de máquinas (Super). Ela afeta apenas máquinas que possuam pelo menos um “cérebro” computadorizado rudimentar, e nunca afeta seres vivos.",
   "custo_talento_por_nivel": 5,
   "modificadores": [
    {
@@ -1031,7 +1031,7 @@
   "nome": "Teleporte",
   "fontes_possiveis": "Mágica, Psíquica ou Super",
   "foco": "Movimento instantâneo.",
-  "descricao": "O Teleporte permite que o usuário se mova ou mova outros objetos pelo espaço sem transpor a distância intermediária. As explicações incluem a transmissão de matéria até seu destino como um feixe de energia (Super) e a distorção do espaço por meio de pura força de vontade (Mágica ou Psíquica). Em alguns cenários, o Teleporte permite que o usuário visite mundos paralelos, muitas vezes por acidente (inclua Incontrolável e Inconsciente em Saltador), embora Viagem Dimensional (pág. 135) seja mais adequada para a tarefa. Talento para Teleporte 5 pontos/nível Habilidades de Teleporte Arrebatador, mas não com Criação; Detectar, para Dobra, transmissão de matéria, buracos de minhoca etc.; Dobra, com",
+  "descricao": "O Teleporte permite que o usuário se mova ou mova outros objetos pelo espaço sem transpor a distância intermediária. As explicações incluem a transmissão de matéria até seu destino como um feixe de energia (Super) e a distorção do espaço por meio de pura força de vontade (Mágica ou Psíquica). Em alguns cenários, o Teleporte permite que o usuário visite mundos paralelos, muitas vezes por acidente (inclua Incontrolável e Inconsciente em Saltador), embora Viagem Dimensional (pág. 135) seja mais adequada para a tarefa.",
   "custo_talento_por_nivel": 5,
   "modificadores": [
    {
@@ -1054,7 +1054,7 @@
   "nome": "Terra",
   "fontes_possiveis": "Divina, Elemental, Espiritual, Mágica, ou Super",
   "foco": "Terra e pedra.",
-  "descricao": "Este é o poder para moldar e criar terra em qualquer forma: solo, areia, barro, pedra etc. Ele pode envolver o controle direto sobre a terra (Elemental e Super), feitiçaria que lide com a terra como elemento mágico tradicional (Mágica), ou a convocação do auxílio de uma deusa da terra (Divina) ou espíritos elementais da terra (Espiritual). As habilidades da Terra normalmente não afetam metais refinados ou outros materiais sólidos. O Mestre pode facilmente adicionar essas capacidades se assim desejar. Talento para Terra 5 pontos/nível Habilidades de Terra Adaptação ao Terreno (Lama ou Areia); Aderência, com Específico, Pedra (-40%); Caminhar no Ar, com Específico, Poeira (-40%); Controle (Te",
+  "descricao": "Este é o poder para moldar e criar terra em qualquer forma: solo, areia, barro, pedra etc. Ele pode envolver o controle direto sobre a terra (Elemental e Super), feitiçaria que lide com a terra como elemento mágico tradicional (Mágica), ou a convocação do auxílio de uma deusa da terra (Divina) ou espíritos elementais da terra (Espiritual). As habilidades da Terra normalmente não afetam metais refinados ou outros materiais sólidos. O Mestre pode facilmente adicionar essas capacidades se assim desejar.",
   "custo_talento_por_nivel": 5,
   "modificadores": [
    {
@@ -1085,7 +1085,7 @@
   "nome": "Trevas",
   "fontes_possiveis": "Divina, Elemental, Espiritual (“Controle das Sombras”) ou Super",
   "foco": "Sombra.",
-  "descricao": "Este é o poder de criar e controlar sombra. Seus efeitos vão desde a capa- O Vampirismo envolve muito mais que o mero roubo de vitalidade com um toque gélido ou ao beber o sangue da vítima. Ele é o poder de roubar pensamentos, sonhos e habilidades dos vivos; talvez até mesmo suas formas físicas. Talento para Vampirismo 5 pontos/nível Habilidades de Vampirismo Sanguessuga é a habilidade central do Vampirismo, e pode ter qualquer conjunto de modificadores. Os ataques são igualmente importantes, e incluem Atribulações com Penalidade em Atributo ou Vantagem Anulada, ou talvez Desvantagem, Amnésia (pensamentos roubados); Ataques por Fadiga com Falta de Sono (sonhos roubados) ou algum outro Perig",
+  "descricao": "Este é o poder de criar e controlar sombra. Seus efeitos vão desde a capa- O Vampirismo envolve muito mais que o mero roubo de vitalidade com um toque gélido ou ao beber o sangue da vítima. Ele é o poder de roubar pensamentos, sonhos e habilidades dos vivos; talvez até mesmo suas formas físicas.",
   "custo_talento_por_nivel": 5,
   "modificadores": [
    {
@@ -1112,7 +1112,7 @@
   "nome": "Vampirismo",
   "fontes_possiveis": "Biológica, Mágica, Psíquica (“Vampirismo Psíquico”) ou Super",
   "foco": "Roubo da força vital.",
-  "descricao": "O Vampirismo envolve muito mais que o mero roubo de vitalidade com um toque gélido ou ao beber o sangue da vítima. Ele é o poder de roubar pensamentos, sonhos e habilidades dos vivos; talvez até mesmo suas formas físicas. Este pode ser um mecanismo de alimentação (Biológica), uma ramificação da necromancia (Mágica), “vampirismo psíquico” tradicional (Psíquica), ou uma variação do poder Antissuper (Super). O Vampirismo não afeta máquinas ou objetos inanimados. Detectar (Vida); Morfose, com Incapaz de Memorizar Formas e Precisa de Amostra; Neutralizar, com Furto de Poder e possivelmente Cósmica; e Poder Protegido. Modificador de Poder: Vampirismo. A vantagem pertence ao poder Vampirismo. Este",
+  "descricao": "O Vampirismo envolve muito mais que o mero roubo de vitalidade com um toque gélido ou ao beber o sangue da vítima. Ele é o poder de roubar pensamentos, sonhos e habilidades dos vivos; talvez até mesmo suas formas físicas. Este pode ser um mecanismo de alimentação (Biológica), uma ramificação da necromancia (Mágica), “vampirismo psíquico” tradicional (Psíquica), ou uma variação do poder Antissuper (Super). O Vampirismo não afeta máquinas ou objetos inanimados. Detectar (Vida); Morfose, com Incapaz de Memorizar Formas e Precisa de Amostra; Neutralizar, com Furto de Poder e possivelmente Cósmica; e Poder Protegido.",
   "custo_talento_por_nivel": 5,
   "modificadores": [
    {
@@ -1147,7 +1147,7 @@
   "nome": "Viagem Dimensional",
   "fontes_possiveis": "Divina, Espiritual, Mágica (“Mágica de Portal”), Psíquica, ou Super.",
   "foco": "Realidades paralelas.",
-  "descricao": "A Viagem Dimensional lida com o contato e trânsito entre outras realidades. A quantidade e a natureza desses reinos dependerá do cenário; este Modificador de Poder: Viagem Dimensional. A vantagem pertence ao poder Viagem Dimensional. Este modificador normalmente é Divino (-10%), Espiritual (-25%), Mágico (-10%), Psíquico (-10%), ou Super (-10%). Vida Fontes: Divina, Espiritual, Mágica (“Magia Druídica”), ou Natureza. Este poder representa uma sintonia especial com a vida e as coisas vivas. Ele concede ao usuário uma longa vida em harmonia com a natureza, e é encontrado entre sacerdotes de divindades da natureza (Divina), xamãs capazes de influenciar os espíritos da natureza (Espiritual), “d",
+  "descricao": "A Viagem Dimensional lida com o contato e trânsito entre outras realidades.",
   "custo_talento_por_nivel": 5,
   "modificadores": [
    {
@@ -1178,7 +1178,7 @@
   "nome": "Vida",
   "fontes_possiveis": "Divina, Espiritual, Mágica (“Magia Druídica”), ou Natureza.",
   "foco": "Força vital.",
-  "descricao": "Habilidades de Viagem Dimensional Arrebatador, mas não com Criação; Atribulação, com uma ampliação Vantagem, capaz de impor Insubstancialidade ou Saltador; Canalização (Universos Paralelos); Clarissenciência, com Alcance Transmundial; Detectar, para fenômenos extradimensionais, saltadores de mundos etc.; Insubstancialidade; Médium (Universos Paralelos); Poder Protegido; Saltador (Mundo), quase sempre com Interplanar; e Telecomunicação (Diapsiquia), com Alcance Transmundial. Estes exemplos desenvolvidos cobrem uma variedade de habilidades ficcionais interessantes. Cada uma delas consiste em uma ou mais vantagens, frequentemente com muitos modificadores. Ao comprá-las, não há necessidade de a",
+  "descricao": "Este poder representa uma sintonia especial com a vida e as coisas vivas. Ele concede ao usuário uma longa vida em harmonia com a natureza, e é encontrado entre sacerdotes de divindades da natureza (Divina) e xamãs (Espiritual).",
   "custo_talento_por_nivel": 5,
   "modificadores": [
    {
