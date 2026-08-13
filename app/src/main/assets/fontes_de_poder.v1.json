@@ -1,0 +1,79 @@
+[
+ {
+  "id": "biologico",
+  "nome": "Biológico",
+  "valor": -10,
+  "pagina": 26,
+  "descricao": "O poder é uma capacidade física do corpo. Cansa (Custa Fadiga, 1 PF) e pode ser cortado por patógenos, drogas e nanotecnologia dirigidos ao metabolismo."
+ },
+ {
+  "id": "chi",
+  "nome": "Chi",
+  "valor": -10,
+  "pagina": 26,
+  "descricao": "O poder emana da força vital do usuário. Exige uma desvantagem de -10 pontos (Doutrinas Religiosas ou Voto Importante); negligenciá-la derruba o poder."
+ },
+ {
+  "id": "cosmico",
+  "nome": "Cósmico",
+  "valor": 50,
+  "pagina": 21,
+  "descricao": "As habilidades ignoram o que bloquearia a versão instintiva, e nada pode tirar o poder do portador. Conta como os primeiros +50% de qualquer ampliação Cósmica."
+ },
+ {
+  "id": "divino",
+  "nome": "Divino",
+  "valor": -10,
+  "pagina": 27,
+  "descricao": "O poder é concedido por uma divindade, que pode revogá-lo se o portador esquecer seus deveres."
+ },
+ {
+  "id": "elemental",
+  "nome": "Elemental",
+  "valor": -10,
+  "pagina": 27,
+  "descricao": "O poder manipula um elemento: um tipo de matéria ou energia natural, ou a ausência dela. Sujeito a contramedidas mundanas."
+ },
+ {
+  "id": "espiritual",
+  "nome": "Espiritual",
+  "valor": -25,
+  "pagina": 28,
+  "descricao": "O poder depende de espíritos, que cobram propiciação e impõem condições."
+ },
+ {
+  "id": "magico",
+  "nome": "Mágico",
+  "valor": -10,
+  "pagina": 28,
+  "descricao": "O poder depende do mana da região: funciona com penalidade, ou não funciona, onde o mana é baixo ou nulo."
+ },
+ {
+  "id": "moral",
+  "nome": "Moral",
+  "valor": -20,
+  "pagina": 28,
+  "descricao": "O poder vem de um princípio moral cósmico (Bem, Mal, Ordem, Caos). Tem antipoder oposto (-5%) e exige uma desvantagem de -15 pontos, em geral Fanatismo."
+ },
+ {
+  "id": "natureza",
+  "nome": "Natureza",
+  "valor": -20,
+  "pagina": 28,
+  "descricao": "O poder canaliza a energia vital que envolve tudo o que vive."
+ },
+ {
+  "id": "psiquico",
+  "nome": "Psíquico",
+  "valor": -10,
+  "pagina": 29,
+  "descricao": "O poder vem da mente do usuário. Está sujeito ao antipoder Antipsi."
+ },
+ {
+  "id": "super",
+  "nome": "Super",
+  "valor": -10,
+  "pagina": 29,
+  "descricao": "Superpoder genérico. Sujeito a Estática e Neutralizar, tanto instintivos quanto como parte de antipoderes."
+ }
+]

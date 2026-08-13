@@ -1,5 +1,7 @@
 package com.gurps.ficha.domain.rules
 
+import com.gurps.ficha.domain.rules.poderes.RegrasDePoder
+
 import com.gurps.ficha.model.Dificuldade
 import com.gurps.ficha.model.ModificadorSelecao
 import com.gurps.ficha.model.TipoCusto
@@ -202,8 +204,12 @@ object CharacterRules {
             it.bonusBase + if (it.porNivel) it.valor * it.niveis else it.valor
         }
 
-        // Regra canônica: Limite de -80% para modificadores negativos líquidos (pág. 102)
-        val percentualFinal = somaPercentual.coerceAtLeast(-80)
+        // Regra canônica: limite de -80% para modificadores negativos líquidos
+        // (MB p.102). ⚠️ GURPS Poderes p.28 repete o MESMO teto para habilidades
+        // de poder: "se o modificador total (…), inclusive o modificador de
+        // poder, for pior que -80%, considere-o como -80%". Um número só, em
+        // `RegrasDePoder`, para os dois livros não saírem de sincronia.
+        val percentualFinal = somaPercentual.coerceAtLeast(RegrasDePoder.PIOR_MODIFICADOR_TOTAL)
         val multiplicador = 1.0 + (percentualFinal / 100.0)
         return if (percentualFinal < 0)
             kotlin.math.floor(valorBase * multiplicador).toInt()
@@ -290,7 +296,7 @@ object CharacterRules {
             // bonusBase=0 (default) preserva comportamento anterior.
             it.bonusBase + if (it.porNivel) it.valor * it.niveis else it.valor
                 }
-                val percentualFinal = somaPercentual.coerceAtLeast(-80)
+                val percentualFinal = somaPercentual.coerceAtLeast(RegrasDePoder.PIOR_MODIFICADOR_TOTAL)
                 val multiplicadorMod = 1.0 + (percentualFinal / 100.0)
                 
                 // Truncar frações (Eliminar frações como pedido em Resistente)
@@ -346,7 +352,7 @@ object CharacterRules {
             it.bonusBase + if (it.porNivel) it.valor * it.niveis else it.valor
         }
 
-        val percentualFinal = somaPercentual.coerceAtLeast(-80)
+        val percentualFinal = somaPercentual.coerceAtLeast(RegrasDePoder.PIOR_MODIFICADOR_TOTAL)
         val multiplicadorMod = 1.0 + (percentualFinal / 100.0)
         val custoFinal = kotlin.math.ceil(valorBase * multiplicadorMod).toInt()
         return if (custoFinal == 0 && valorBase < 0) -1 else custoFinal
@@ -360,7 +366,7 @@ object CharacterRules {
         val valorBase = (basePoder * multIntencao * multFrequencia).toInt()
         
         val somaPercentual = modificadores.sumOf { it.valor }
-        val percentualFinal = somaPercentual.coerceAtLeast(-80)
+        val percentualFinal = somaPercentual.coerceAtLeast(RegrasDePoder.PIOR_MODIFICADOR_TOTAL)
         val multiplicadorMod = 1.0 + (percentualFinal / 100.0)
         
         return kotlin.math.ceil(valorBase * multiplicadorMod).toInt()

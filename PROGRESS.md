@@ -7716,3 +7716,89 @@ O que sustenta a decisão, e não é conversa para justificar depois:
   proporcionais.
 
 - **Status:** ✅ Build OK nas 2 variantes · lint OK · gate **2161** · ⏭️ **PENDENTE: teste no aparelho** (T-GE7).
+
+
+---
+
+## Lotes POD-1, POD-2 e POD-3 — O botão "Configurar Poderes", pelo livro
+
+Fonte: **GURPS Poderes** (243 páginas). Convertido para `docs/livros/GURPS_Poderes.md`.
+⚠️ **Página do PDF = página impressa + 2**; as citações abaixo usam a impressa.
+
+### A armadilha da extração
+
+O PDF **hifeniza no fim da linha**: `Divino` está gravado como `Di-` + quebra +
+`vino`. Sem juntar isso, a fonte some da lista — e eu rodei uma extração inteira
+com **duas fontes faltando em cada poder** sem perceber, porque o resultado
+*parecia* plausível.
+
+Pior: a primeira versão tinha um caminho de reserva que, ao não achar
+`"<Nome> Fontes:"`, pegava o par Fontes/Foco **mais próximo**. Isso colou o
+verbete VIZINHO em silêncio: Divino ficou com o foco de Alteração Corporal, Cura
+com o de Ar, Controle da Matéria com o de Controle Corporal. Três poderes com
+dados de outro, e nada acusava.
+
+🔴 A trava que resolveu foi **foco repetido é erro**. Na primeira execução ela
+pegou um quarto caso que eu não tinha visto: `Bem` é nome curto e casava dentro
+do texto do verbete vizinho, herdando `Gases.` do Ar.
+
+### POD-1 — o catálogo
+
+O antigo tinha 44 entradas e errava de quatro jeitos ao mesmo tempo:
+
+| Problema | Tamanho |
+|---|---|
+| Nomes truncados (o primeiro termo caiu) | **13 de 44** |
+| Poderes ausentes | **4** — Controle da Matéria, Cósmico, Divino, Magia |
+| Linha de gabarito virada item (`nome: "poder."`) | 1 |
+| `modificadorDePoder = 0` e `pagina = 121` | **nas 44** |
+
+Agora são **47 poderes**, com foco único, página real (121-136) e as fontes que
+cada um aceita. Mais `fontes_de_poder.v1.json`, com as **11 fontes genéricas**
+do livro (p.26-30): Espiritual −25%, Moral −20%, Natureza −20%, Cósmico **+50%**
+e −10% para as outras sete.
+
+### POD-2 — o modificador vem da FONTE
+
+O erro de fundo: o app guardava o percentual como **um número digitado no
+poder**. O livro diz, em cada verbete, *"Este modificador normalmente é Divino
+(-10%), Elemental (-10%)…"* — o valor é da fonte, e cada poder aceita só um
+subconjunto (Água aceita 5; Antipsi, 3; média de 3,6).
+
+Agora se escolhe a fonte e o percentual vem junto. O campo de digitar continua,
+porque o Mestre pode montar um modificador próprio somando componentes
+(p.20-25).
+
+⚠️ **O teto de −80% já existia**, em `CharacterRules`, citando o MB p.102 — e é
+a mesma regra do Poderes p.28. Não inventei nada: troquei os **4** `-80` cravados
+por uma constante única, para os dois livros não saírem de sincronia.
+
+### POD-3 — o Talento
+
+🔴 Estava morto em três lugares ao mesmo tempo: **sem campo** na tela (o
+`nivelTalento` era lembrado e salvo, mas nunca desenhado), **sem custo**
+(`custoTotalTalento` estava definido e não era chamado em lugar nenhum do
+projeto) e sem bônus.
+
+Campo criado, **5 pts/nível** (10 se amplo, p.29), aviso — não trava — acima de
+4 níveis (p.8), e `pontosPoderes` entrando em `pontosGastos`.
+
+⚠️ Isso **muda o Restantes** de ficha que já tenha poder com Talento. É o número
+certo passando a aparecer.
+
+O bônus do Talento nos testes de ativação **não** foi feito; fica para apresentar.
+
+### 🔴 O achado que vale mais que o lote
+
+Na sonda, estraguei um valor no `poderes.v1.json` de propósito e **o teste
+passou**. Com `--rerun-tasks`, reprovava.
+
+O Gradle dava a tarefa de teste como atualizada porque **os assets não eram
+entrada dela** — ela só olhava código. Ou seja, **toda varredura de catálogo
+deste projeto** (armas, texto do catálogo, poderes) dava confiança falsa quando
+o que mudava era o `.json`.
+
+Corrigido em `build.gradle.kts` com `inputs.dir("src/main/assets")`. Depois
+disso a sonda fica vermelha sem precisar de `--rerun-tasks`.
+
+- **Status:** ✅ Build OK nas 2 variantes · lint OK · gate **2183** (+22) · ⏭️ **PENDENTE: teste no aparelho** (T-PO1 a T-PO5).

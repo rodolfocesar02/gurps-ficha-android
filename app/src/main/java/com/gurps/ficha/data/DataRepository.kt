@@ -47,6 +47,7 @@ open class DataRepository(internal val context: Context) {
 
 
     private var _poderes: List<PoderDefinicao>? = null
+    private var _fontesDePoder: List<FonteDePoderDefinicao>? = null
     private var _vantagens: List<VantagemDefinicao>? = null
 
     private var _desvantagens: List<DesvantagemDefinicao>? = null
@@ -67,6 +68,9 @@ open class DataRepository(internal val context: Context) {
 
     open val poderes: List<PoderDefinicao>
         get() = _poderes ?: carregarPoderes().also { _poderes = it }
+
+    open val fontesDePoder: List<FonteDePoderDefinicao>
+        get() = _fontesDePoder ?: carregarFontesDePoder().also { _fontesDePoder = it }
 
     open val vantagens: List<VantagemDefinicao>
         get() = _vantagens ?: carregarVantagens().also { _vantagens = it }
@@ -133,6 +137,7 @@ open class DataRepository(internal val context: Context) {
     }
 
     private fun carregarPoderes(): List<PoderDefinicao> = catalogLoaders.carregarPoderes()
+    private fun carregarFontesDePoder(): List<FonteDePoderDefinicao> = catalogLoaders.carregarFontesDePoder()
     private fun carregarVantagens(): List<VantagemDefinicao> = catalogLoaders.carregarVantagens()
     private fun carregarDesvantagens(): List<DesvantagemDefinicao> = catalogLoaders.carregarDesvantagens()
     private fun carregarPericias(): List<PericiaDefinicao> = catalogLoaders.carregarPericias()

@@ -1,3 +1,4 @@
+import org.gradle.api.tasks.PathSensitivity
 import java.util.Properties
 import org.gradle.api.tasks.Exec
 
@@ -76,7 +77,7 @@ android {
         minSdk = 24
         targetSdk = 35
         versionCode = 178
-        versionName = "10.1-GER3"
+        versionName = "10.2-POD3"
         buildConfigField("String", "DISCORD_ROLL_API_BASE_URL", "\"$discordApiBaseUrl\"")
         buildConfigField("String", "DISCORD_ROLL_API_KEY", "\"$discordApiKey\"")
         buildConfigField(
@@ -276,4 +277,16 @@ dependencies {
 // do build, que roda em paralelo agora (org.gradle.parallel no gradle.properties).
 tasks.withType<Test>().configureEach {
     maxParallelForks = (Runtime.getRuntime().availableProcessors() / 2).coerceAtLeast(1)
+
+    // 🔴 Lote POD-1. Vários testes deste projeto varrem os ASSETS de verdade
+    // (armas, poderes, texto do catálogo). O Gradle não sabia disso: mexer num
+    // .json e rodar o portão dava VERDE, porque a tarefa de teste era dada como
+    // atualizada -- ela só olhava código.
+    //
+    // Descoberto na sonda do POD-1: estraguei um valor no `poderes.v1.json` de
+    // propósito e o teste passou. Com `--rerun-tasks`, reprovava. Ou seja, as
+    // varreduras de catálogo estavam dando confiança falsa.
+    inputs.dir("src/main/assets")
+        .withPropertyName("assetsDoCatalogo")
+        .withPathSensitivity(PathSensitivity.RELATIVE)
 }

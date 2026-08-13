@@ -80,6 +80,26 @@ class CatalogLoaders(private val context: Context) {
         }
     }
 
+    /**
+     * As onze fontes genéricas de poder (GURPS Poderes, p.26-30). Lote POD-1.
+     *
+     * ⚠️ Lista separada do catálogo de poderes de propósito: o percentual é da
+     * FONTE, e o mesmo -10% de "Divino" vale para os 30 poderes que a aceitam.
+     */
+    fun carregarFontesDePoder(): List<FonteDePoderDefinicao> {
+        return try {
+            val json = context.assets.open("fontes_de_poder.v1.json").bufferedReader().use { it.readText() }
+            val type = object : TypeToken<List<FonteDePoderDefinicao>>() {}.type
+            val fontes: List<FonteDePoderDefinicao> = gson.fromJson(json, type)
+            clearLoadError("fontes_de_poder")
+            fontes
+        } catch (e: Exception) {
+            registerLoadError("fontes_de_poder", e)
+            e.printStackTrace()
+            emptyList()
+        }
+    }
+
     fun carregarVantagensExtrasArtesMarciaisV1(): List<VantagemDefinicao> {
         return try {
             val json = context.assets.open("vantagens_artes_marciais.v1.json")

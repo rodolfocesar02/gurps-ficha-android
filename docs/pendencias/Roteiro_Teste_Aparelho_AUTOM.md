@@ -1978,3 +1978,28 @@ exemplo o *Traje Pressurizado* (RD 6\*) ou a *Cota de Malha Longa Dupla*.
   você quis, nas cinco vezes. O campo ficou com ~29 dp de altura, abaixo dos
   48 dp de alvo mínimo — se errar o alvo na prática, é aqui que aparece.
   ✅ Repita na variante **pracego**, onde a caixa cresce com a fonte do tema.
+
+
+---
+
+# Lotes POD-1/2/3 — Configurar Poderes
+
+> Gate: 2.183 testes, 0 falhas nas duas variantes.
+
+- **T-PO1 · o catálogo certo** — Traços → Configurar Poderes → Novo Poder: ✅ a
+  lista diz **47 poderes**. Procure **Construtos de Força**, **Controle de
+  Animais** e **Alteração de Probabilidades**: ✅ aparecem com nome inteiro (antes
+  eram "de Força", "Animais", "Probabilidades"). ✅ Não existe item chamado
+  "poder.".
+- **T-PO2 · 🔴 o poder não nasce mais com 0%** — escolha **Água**: ✅ ele já vem
+  com uma fonte preenchida e um percentual diferente de zero.
+- **T-PO3 · a fonte manda no número** — no diálogo do poder, abra **Escolher a
+  fonte**: ✅ só aparecem as fontes que *aquele* poder aceita, cada uma com o
+  valor (Água mostra 5; Espiritual aparece como −25%). Troque a fonte: ✅ o campo
+  "Modificador (%)" muda sozinho junto.
+- **T-PO4 · o Talento custa** — ponha **Talento nível 3**: ✅ o diálogo mostra
+  "15 pontos", e no cabeçalho da ficha o **Restantes cai 15**. Ponha **nível 5**:
+  ✅ aparece o aviso de permissão do Mestre em vermelho, **e deixa salvar**.
+- **T-PO5 · na variante pra cego** — repita T-PO3 no **pracego**: ✅ o TalkBack lê
+  a fonte e o percentual sem sinal cru (deve falar "menos vinte e cinco por
+  cento", não "-25%").

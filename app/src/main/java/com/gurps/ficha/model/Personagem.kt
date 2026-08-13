@@ -252,9 +252,21 @@ data class Personagem(
     val pontosTecnicas: Int get() = tecnicas.sumOf { it.pontosGastos.coerceAtLeast(0) }
     val pontosMagias: Int get() = magias.sumOf { it.pontosGastos.coerceAtLeast(1) }
 
+    /**
+     * O Talento de cada poder. 🔴 Lote POD-3: **existia e não era cobrado**.
+     * `Poder.custoTotalTalento` estava definido no modelo desde sempre e não era
+     * chamado em lugar nenhum do projeto — quem comprava Talento não pagava por
+     * ele. GURPS Poderes, p.8 e p.29: 5 pontos/nível, 10 se for amplo.
+     *
+     * ⚠️ Ligar isto **muda o Restantes** de qualquer ficha que já tenha poder
+     * com Talento. É o número certo passando a aparecer, não um número novo.
+     */
+    val pontosPoderes: Int get() = poderes.sumOf { it.custoTotalTalento }
+
     val pontosGastos: Int get() =
         pontosAtributos + pontosSecundarios + pontosVantagens +
         pontosDesvantagens + pontosQualidades + pontosPeculiaridades + pontosPericias + pontosTecnicas + pontosMagias +
+        pontosPoderes +
         modeloRacial.custoTotal
 
     val pontosTotaisDisponiveis: Int get() = pontosIniciais + xpGanhos
