@@ -463,3 +463,93 @@ onde olhar, não um veredito.
 Ler a seção **até o título seguinte**, não até onde a resposta aparece. Achar o
 número não é o fim da leitura — nas quatro vezes, o número estava certo e o
 problema era o que vinha depois dele.
+
+
+---
+
+# 3ª revisão — leitura COMPLETA das quatro seções restantes
+
+Feita com um extrator que corta **no título seguinte**, não num número de
+caracteres. O corte vem do documento, não da minha paciência.
+
+## 🔴 O achado grave: o POD-8 ficou com 8 modificadores de fora
+
+No POD-8 eu concluí que, dos 48 títulos, **16 eram só remissão** e não existiam
+como modificador. Errado: eles são remissões **para onde o modificador está
+definido dentro do próprio livro**. Segui as referências:
+
+| Modificador | Valor | Onde está definido |
+|---|---|---|
+| Ataque Surpresa | **+150%** | dentro de *De Cima* (p.102) |
+| Solavanco | **+30%** | dentro de *Efeito Incômodo* (p.103) |
+| Fogo Instantâneo | +10% | dentro de *Fogo Contínuo* (p.104) |
+| Defesa Ativa | −40% | p.110 |
+| Efeito do Dano Ausente | −20% | dentro de *Modificadores de Dano* (p.105) |
+| Difícil de Usar | −5% por −3, até −12 | dentro de *Destreinado* (p.102) |
+| Exige Teste de Reação | −5% | dentro de *Volúvel* (p.112) |
+| Gatilho Incontrolável | −5% | dentro de *Incontrolável* (p.104) |
+
+Os outros 8 apontam para o **Módulo Básico** (Subaquático, Sempre Ativa,
+Variável, Uso Limitado, Efeito Seletivo, Desvantagem Exigida, Magnético) ou não
+são modificador (Características Variantes).
+
+⚠️ **Pior que o buraco:** o teste `as remissoes do livro NAO viraram modificador`
+**proíbe** esses 8 de existirem. Ele transformou a minha conclusão errada em
+trava. Quem tentasse acrescentá-los depois seria reprovado pelo gate.
+
+**[FAZER] · POD-8b — os 8 modificadores que ficaram de fora**, e desfazer a trava
+que os proíbe.
+
+## O que a leitura completa acrescentou em cada seção
+
+### Avaliação de Modificadores (p.20-26) — a tabela estava incompleta
+
+Componentes que faltavam na minha tabela:
+
+| Componente | Valor |
+|---|---|
+| Antipoderes — contramedidas **específicas** (Estática/Neutralizar, perícias) | −5% |
+| Antipoderes — **as duas** situações juntas | **−10%** |
+| Contramedidas **tecnológicas** (distinta das mundanas) | −5% |
+| Energias canalizadas — energia que permeia tudo e não pode ser filtrada | **+0%** |
+| Poder fica inútil quando a **Reserva de Energia** esgota | −5% |
+| Efeitos Incômodos | −5% |
+| Penitência para reparar (até um mês de jejum/aventura) | −5% |
+
+⚠️ Eu tinha registrado *"Antipoderes −5% fixo"*. São **dois níveis**.
+
+### Esforço Adicional (p.160) — completo, e menor do que eu temia
+
+A seção tem 2.134 chars; a minha leitura anterior cobria quase tudo. A regra
+segue como corrigido na 2ª revisão: **−1 na Vontade por 5%** de efeito, teto de
+**+100%** a **−20**, **+5** nas situações de *Apenas em Emergências*.
+
+### Ampliações Temporárias (p.172) — números certos, entorno faltando
+
+Confirmados: **−1 por +10%** de ampliação, custa **2 PF**. O que faltava:
+
+- Concentrar + **Vontade** (mental) ou Preparar + **HT** (física);
+- pode usar **perícia** conforme a fonte (Meditação/chi, Magia Ritualística/
+  espiritual, Perícia Abrangente/psíquico, Ritual Religioso/divino,
+  Taumatologia/mágico);
+- **cada PF gasto voluntariamente cancela −1** da penalidade — nunca vira bônus;
+- **o Talento soma** neste teste;
+- sucesso decisivo: **sem custo de PF**;
+- falha crítica: indisponível por **1d segundos** *e* checa incapacitação —
+  que atinge o **poder inteiro** (liga com o POD-11).
+
+### Modificadores por Multiplicação (p.102) — confirmado, sem novidade
+
+Aditivo (padrão do app): +20% e −50% → **70%**. Multiplicativo: → **60%**.
+*"Não se recomenda usar ambos."*
+
+## Placar honesto desta leitura
+
+| | |
+|---|---|
+| Seções lidas até o título seguinte | 4 de 4 |
+| Erros achados | **3** — os 8 modificadores do POD-8, a tabela de componentes incompleta, o entorno das Ampliações Temporárias |
+| Números que resistiram | esforço adicional, ampliações temporárias, multiplicação |
+
+O padrão continua o mesmo dos anteriores: **os números que eu anotei estavam
+certos; o que faltava era o que vinha ao redor deles.**
