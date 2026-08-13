@@ -88,6 +88,42 @@ object HabilidadesAlternativas {
     /** Um grupo só faz sentido com duas ou mais. */
     fun ehGrupoValido(quantidade: Int): Boolean = quantidade >= 2
 
+    /**
+     * **Várias Cópias da Mesma Vantagem** — p.12. Lote POD-18.
+     *
+     * > *"É possível comprar a mesma vantagem mais de uma vez como a habilidade
+     * > de **diferentes poderes** (…). O preço total deve ser pago somente para a
+     * > habilidade mais cara, após aplicar todos os modificadores; as outras terão
+     * > **1/5 do custo** (arredondado para cima)."*
+     *
+     * ⚠️ **A conta é a mesma das alternativas, mas a coisa é outra.** O livro é
+     * explícito: *"diferente das Habilidades Alternativas, **não há conexão**
+     * entre estas habilidades"*. Alternativas são configurações mutuamente
+     * exclusivas do **mesmo** poder; cópias são a mesma vantagem em **poderes
+     * diferentes**, e funcionam ao mesmo tempo.
+     *
+     * Por isso os **três inconvenientes não valem aqui** — e é a diferença que
+     * mais importa: quem confundir os dois vai achar que o desconto veio de graça.
+     */
+    fun custoDasCopias(custosFinais: List<Int>): Int = custoDoGrupo(custosFinais)
+
+    /**
+     * As mesmas vantagens (por nome) ligadas a **poderes diferentes**.
+     * Devolve, por nome, os custos finais de cada cópia.
+     */
+    fun agruparCopias(
+        habilidades: List<Triple<String, Int, String?>>
+    ): Map<String, List<Int>> =
+        habilidades
+            .filter { it.third != null }
+            .groupBy { it.first.trim().lowercase() }
+            .filterValues { copias -> copias.map { it.third }.distinct().size >= 2 }
+            .mapValues { (_, copias) -> copias.map { it.second } }
+
+    fun resumoDasCopias(nome: String, custos: List<Int>): String =
+        "$nome em ${custos.size} poderes: ${custoDasCopias(custos)} pontos em vez de " +
+            "${custos.sum()}. Elas funcionam ao mesmo tempo — não são alternativas."
+
     fun resumo(custosFinais: List<Int>): String {
         if (!ehGrupoValido(custosFinais.size)) {
             return "Um grupo de habilidades alternativas precisa de duas ou mais."

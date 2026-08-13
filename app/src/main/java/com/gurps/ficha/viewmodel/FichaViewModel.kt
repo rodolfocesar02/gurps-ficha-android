@@ -517,9 +517,8 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
     }
     fun removerDesvantagem(index: Int) { personagem = personagem.copy(desvantagens = traitDelegate.removerDesvantagem(personagem, index)) }
     fun atualizarDesvantagem(index: Int, d: DesvantagemSelecionada) { 
-        // Lote POD-5: uma rota só (ver `comModificadorDoPoder`).
-        val poder = personagem.poderes.find { it.id == d.poderId }
-        val dToSave = d.copy(modificadores = comModificadorDoPoder(d.modificadores, poder))
+        // 🔴 POD-17: desvantagem nunca recebe o modificador de poder (p.28).
+        val dToSave = d.copy(modificadores = comModificadorDoPoder(d.modificadores, null))
 
         personagem = personagem.copy(desvantagens = traitDelegate.atualizarDesvantagem(personagem, index, dToSave))
         salvarFicha()
@@ -579,11 +578,19 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
                     modificadores = comModificadorDoPoder(v.modificadores, poder)
                 )
             },
+            // 🔴 POD-17: a desvantagem NUNCA recebe o modificador de poder.
+            // "Ele aplica-se a todas as habilidades do poder (mas não ao seu
+            // Talento, **desvantagens exigidas**, ou Antecedente Incomum)"
+            // (Poderes p.28). No POD-5 eu tratei essa assimetria como defeito e
+            // "consertei" — a assimetria original estava certa.
+            //
+            // O que a desvantagem perde ao apagar o poder é só o VÍNCULO, e
+            // qualquer modificador injetado por engano na versão anterior.
             desvantagens = personagem.desvantagens.map { d ->
                 if (d.poderId != idDoPoder) d
                 else d.copy(
                     poderId = if (poder == null) null else d.poderId,
-                    modificadores = comModificadorDoPoder(d.modificadores, poder)
+                    modificadores = comModificadorDoPoder(d.modificadores, null)
                 )
             }
         )
@@ -615,13 +622,18 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
         salvarFicha()
     }
 
+    /**
+     * Liga a desvantagem ao poder — **sem** aplicar o modificador de poder.
+     *
+     * 🔴 POD-17. A desvantagem exigida é o que *gera* parte do modificador
+     * (Poderes p.23); aplicá-lo de volta nela seria cobrar duas vezes.
+     */
     fun vincularDesvantagemPoder(indexDesvantagem: Int, poderId: String?) {
         personagem = personagem.copy(
             desvantagens = traitDelegate.vincularDesvantagemPoder(personagem, indexDesvantagem, poderId)
         )
-        val poder = personagem.poderes.find { it.id == poderId }
         personagem = personagem.copy(desvantagens = personagem.desvantagens.mapIndexed { idx, d ->
-            if (idx == indexDesvantagem) d.copy(modificadores = comModificadorDoPoder(d.modificadores, poder)) else d
+            if (idx == indexDesvantagem) d.copy(modificadores = comModificadorDoPoder(d.modificadores, null)) else d
         })
         salvarFicha()
     }
@@ -637,6 +649,30 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
         personagem = personagem.copy(vantagens = personagem.vantagens.mapIndexed { i, v ->
             if (i == indexVantagem && v.poderId != null) v.copy(alternativaDoPoder = alternativa) else v
         })
+        salvarFicha()
+    }
+
+    /**
+     * **Compra uma habilidade PARA o poder** — Lote POD-14.
+     *
+     * 🔴 O fluxo estava invertido. Até aqui era preciso criar a vantagem na aba
+     * Traços e **depois** voltar ao poder para ligá-la. O livro faz o contrário:
+     *
+     * > *"O personagem pode usar seus pontos de personagem adquiridos para
+     * > comprar **novas habilidades de Telepatia**."* (MB p.257)
+     *
+     * A vantagem nasce já ligada ao poder e já com o modificador aplicado.
+     *
+     * ⚠️ Ela continua sendo uma vantagem **do personagem**, na lista de Traços —
+     * o poder não a possui. Diferente do `ModeloRacial`, que possui os traços
+     * dele. Aqui muda o caminho de compra, não a propriedade.
+     */
+    fun adicionarHabilidadeAoPoder(vantagem: VantagemSelecionada, poder: Poder) {
+        val comVinculo = vantagem.copy(
+            poderId = poder.id,
+            modificadores = comModificadorDoPoder(vantagem.modificadores, poder)
+        )
+        atualizarVantagensComConfirmacao(personagem.vantagens + comVinculo)
         salvarFicha()
     }
 

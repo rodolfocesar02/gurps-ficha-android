@@ -25,6 +25,7 @@ import com.gurps.ficha.domain.rules.poderes.UsoDoPoder
 import com.gurps.ficha.model.Poder
 import com.gurps.ficha.model.PoderDefinicao
 import com.gurps.ficha.ui.AppBotaoIcone
+import com.gurps.ficha.ui.AppBotaoPrincipal
 import com.gurps.ficha.ui.AppBotaoSecundario
 import com.gurps.ficha.ui.AppSelectionDialog
 import com.gurps.ficha.ui.AppSelectionRow
@@ -52,7 +53,8 @@ import com.gurps.ficha.viewmodel.FichaViewModel
 fun ColumnScope.PainelDeHabilidades(
     viewModel: FichaViewModel,
     poder: Poder,
-    onPedirParaLigar: () -> Unit
+    onPedirParaLigar: () -> Unit,
+    onPedirParaComprar: () -> Unit = {}
 ) {
     val resumo = viewModel.habilidadesDoPoder(poder)
 
@@ -153,7 +155,11 @@ fun ColumnScope.PainelDeHabilidades(
     }
 
     Spacer(Modifier.height(8.dp))
-    AppBotaoSecundario("Ligar habilidade", onPedirParaLigar, larguraTotal = true)
+    // Lote POD-14: comprar a habilidade PARA o poder, que é como o livro faz.
+    // O "Ligar habilidade" continua, para quem já tem a vantagem na ficha.
+    AppBotaoPrincipal("Adicionar habilidade", onPedirParaComprar, larguraTotal = true)
+    Spacer(Modifier.height(4.dp))
+    AppBotaoSecundario("Ligar uma que já tenho", onPedirParaLigar, larguraTotal = true)
 }
 
 /**

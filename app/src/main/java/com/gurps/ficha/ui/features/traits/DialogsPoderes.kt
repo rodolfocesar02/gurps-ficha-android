@@ -215,6 +215,8 @@ fun PoderEditDialog(
     var mostrarLigar by remember(poderBase) { mutableStateOf(false) }
     // Lote POD-7: o montador de modificador por componentes.
     var mostrarMontador by remember(poderBase) { mutableStateOf(false) }
+    // Lote POD-14: comprar a habilidade de dentro do poder.
+    var mostrarComprar by remember(poderBase) { mutableStateOf(false) }
     // Lote POD-9: a Reserva de Energia edita o proprio poder, entao ela
     // precisa de um rascunho local ate o Salvar.
     var rascunho by remember(poderBase) { mutableStateOf(poderBase ?: Poder()) }
@@ -334,7 +336,8 @@ fun PoderEditDialog(
                     PainelDeHabilidades(
                         viewModel = viewModelParaHabilidades,
                         poder = poderBase,
-                        onPedirParaLigar = { mostrarLigar = true }
+                        onPedirParaLigar = { mostrarLigar = true },
+                        onPedirParaComprar = { mostrarComprar = true }
                     )
                     // Lote POD-9: a Reserva de Energia deste poder.
                     PainelDaReserva(rascunho) { rascunho = it }
@@ -367,6 +370,17 @@ fun PoderEditDialog(
                 }
             }
         }
+    }
+
+    if (mostrarComprar && viewModelParaHabilidades != null && poderBase != null) {
+        SelecionarVantagemDialog(
+            viewModel = viewModelParaHabilidades,
+            onDismiss = { mostrarComprar = false },
+            onSelect = { v ->
+                viewModelParaHabilidades.adicionarHabilidadeAoPoder(v, poderBase)
+                mostrarComprar = false
+            }
+        )
     }
 
     if (mostrarMontador) {

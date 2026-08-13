@@ -8370,3 +8370,79 @@ não cobrar. Virou teste: se alguém mexer nos PF a partir deste diálogo, o gat
 acusa.
 
 - **Status:** ✅ Build OK nas 2 variantes · lint OK · gate **2280** (+3) · ⏭️ **PENDENTE: teste no aparelho** (T-PO19).
+
+
+---
+
+## Lotes POD-14, POD-16, POD-17 e POD-18 — as correções da leitura
+
+Todos os quatro vieram de o usuário insistir que eu não tinha entendido a criação
+de poderes. Ele estava certo: eu tinha lido a p.7, pulado para a p.20, e deduzido
+o resto. **Os erros não eram de número — eram de estrutura**, e por isso nenhum
+teste pegou: eles guardavam o que eu escrevi.
+
+### POD-17 — desfazendo uma trava minha
+
+> *"Ele aplica-se a todas as habilidades do poder (**mas não ao seu Talento,
+> desvantagens exigidas, ou Antecedente Incomum**)."* (p.28)
+
+No POD-5 eu vi que `vincularDesvantagemPoder` não aplicava o percentual, **chamei
+de defeito e "consertei"**. A assimetria original estava certa: a desvantagem
+exigida é o que **gera** parte do modificador (p.23) — aplicá-lo de volta nela
+cobra duas vezes.
+
+⚠️ **Segunda vez nesta sessão** que uma conclusão minha virou trava de gate. A
+primeira foi o POD-8b, que proibia 8 modificadores reais de existirem.
+
+### POD-14 — o fluxo de criação estava invertido 🔴
+
+> *"O personagem pode usar seus pontos de personagem adquiridos para comprar
+> **novas habilidades de Telepatia**."* (MB p.257)
+
+Até aqui: criar a vantagem na aba Traços → voltar ao poder → Ligar. Dois lugares,
+na ordem errada.
+
+Agora o poder tem **Adicionar habilidade**, que abre o catálogo de vantagens e
+faz a vantagem nascer **já ligada e já com o modificador**. O caminho antigo
+virou *"Ligar uma que já tenho"*.
+
+⚠️ **A habilidade continua sendo uma vantagem do personagem**, na aba Traços. O
+`ModeloRacial` **possui** os traços dele; o poder não. Copiar a Raça inteira
+faria a habilidade sumir da lista — muda o caminho de compra, não a propriedade.
+
+### POD-16 — o montador contra a Referência Rápida (p.25)
+
+Existe uma **tabela oficial** na p.25 que eu nunca tinha aberto. Contra ela:
+
+| O que eu tinha feito | O que o livro diz |
+|---|---|
+| Contramedidas = escolha **uma** | *"todos os modificadores serão **cumulativos**"* — as três somam |
+| Inventei "Antipoderes −10% (as duas)" | é a **soma** de dois −5% que eu tinha proibido de coexistir |
+| Faltava **Volúvel −20%** | está em Energias Canalizadas |
+| **Cósmico +50%** em Contramedidas | pertence a Energias Canalizadas, e **exclui** as contramedidas |
+| Desvantagem exigida = 3 opções minhas | é o **valor em pontos** do traço, livre |
+
+🔴 Dois testes do POD-7 foram **removidos**, e o motivo ficou escrito no lugar
+deles: eles guardavam a minha leitura errada, não o livro.
+
+### POD-18 — o segundo esquema de desconto
+
+**Várias Cópias da Mesma Vantagem** (p.12): a mesma vantagem comprada em
+**poderes diferentes** paga cheio na mais cara e 1/5 nas outras.
+
+⚠️ Mesma conta das alternativas, **coisa diferente**: *"diferente das Habilidades
+Alternativas, **não há conexão** entre estas habilidades"*. Alternativas são
+mutuamente exclusivas; cópias funcionam ao mesmo tempo, e os três inconvenientes
+**não** valem. Quem confundir vai achar que o desconto veio de graça — por isso a
+frase de resumo diz isso em voz alta.
+
+### A causa raiz, escrita para não repetir
+
+Li **um livro** e tratei como o assunto todo; e dentro dele, li **os trechos** que
+respondiam à pergunta que eu já tinha. As duas coisas têm o mesmo formato:
+**parar de ler quando a resposta aparece**.
+
+O usuário achou os dois seguindo uma remissão que estava na primeira página que
+eu li.
+
+- **Status:** ✅ Build OK nas 2 variantes · lint OK · gate **2290** (+13) · ⏭️ **PENDENTE: teste no aparelho** (T-PO20/T-PO21).

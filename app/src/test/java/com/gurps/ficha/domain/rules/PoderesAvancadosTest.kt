@@ -97,23 +97,17 @@ class PoderesAvancadosTest {
 
     // ══ POD-7 — Montador de modificador (p.20-26) ══════════════════════
 
-    @Test
-    fun `Antipoderes tem DOIS niveis, nao um valor fixo`() {
-        // 🔴 O plano dizia "−5% fixo, não por antipoder". O −5% é um dos dois.
-        val anti = MontadorDeModificador.CATALOGO
-            .filter { it.grupo == MontadorDeModificador.Grupo.ANTIPODERES }
-        assertEquals(3, anti.size)   // nenhum, específicas, as duas
-        assertTrue(anti.any { it.valor == -5 })
-        assertTrue("falta o nivel de -10%", anti.any { it.valor == -10 })
-    }
-
-    @Test
-    fun `a desvantagem exigida sao TRES escolhas`() {
-        val grupos = MontadorDeModificador.CATALOGO.map { it.grupo }.toSet()
-        assertTrue(MontadorDeModificador.Grupo.DESVANTAGEM_TRACO in grupos)
-        assertTrue(MontadorDeModificador.Grupo.DESVANTAGEM_ESVAI in grupos)
-        assertTrue(MontadorDeModificador.Grupo.DESVANTAGEM_RESTAURA in grupos)
-    }
+    // 🔴 Dois testes deste bloco foram REMOVIDOS no POD-16, e o motivo importa:
+    // eles guardavam a minha leitura errada, não o livro.
+    //
+    // · `Antipoderes tem DOIS niveis` — o grupo ANTIPODERES não existe na
+    //   Referência Rápida (p.25). As duas linhas de −5% ficam em Contramedidas,
+    //   que **somam**; o "−10% das duas situações" era invenção minha para tapar
+    //   o buraco de eu ter feito o grupo como escolha única.
+    // · `a desvantagem exigida sao TRES escolhas` — o traço entra por **valor
+    //   livre**, não como um grupo de opções fechadas.
+    //
+    // O que vale agora está em `CorrecaoDosPoderesTest`.
 
     @Test
     fun `o exemplo do livro monta o poder Calor-Fogo`() {
@@ -124,17 +118,22 @@ class PoderesAvancadosTest {
     }
 
     @Test
-    fun `duas escolhas do mesmo grupo sao conflito`() {
-        // ⚠️ Contramedidas é UMA escolha. Somar duas cobraria o mesmo
-        // inconveniente duas vezes.
-        val c = MontadorDeModificador.CATALOGO
-            .filter { it.grupo == MontadorDeModificador.Grupo.CONTRAMEDIDAS }.take(2)
-        assertEquals(listOf(MontadorDeModificador.Grupo.CONTRAMEDIDAS),
-            MontadorDeModificador.conflitosDeGrupo(c))
-        // Já os "extras" somam entre si, e não conflitam.
-        val extras = MontadorDeModificador.CATALOGO
-            .filter { it.grupo == MontadorDeModificador.Grupo.EXTRAS }
-        assertTrue(MontadorDeModificador.conflitosDeGrupo(extras).isEmpty())
+    fun `so o grupo marcado escolha um da conflito`() {
+        // 🔴 ESTE TESTE DIZIA QUE CONTRAMEDIDAS ERA ESCOLHA ÚNICA — errado, e
+        // corrigido no POD-16. O livro só marca "(escolha um)" em alguns grupos;
+        // nos outros, "todos os modificadores serão cumulativos" (p.25).
+        val energias = MontadorDeModificador.CATALOGO
+            .filter { it.grupo == MontadorDeModificador.Grupo.ENERGIAS_CANALIZADAS }.take(2)
+        assertEquals(listOf(MontadorDeModificador.Grupo.ENERGIAS_CANALIZADAS),
+            MontadorDeModificador.conflitosDeGrupo(energias))
+
+        // Contramedidas e "outros" SOMAM — nenhum dos dois conflita.
+        listOf(MontadorDeModificador.Grupo.CONTRAMEDIDAS, MontadorDeModificador.Grupo.EXTRAS)
+            .forEach { g ->
+                val todos = MontadorDeModificador.CATALOGO.filter { it.grupo == g }
+                assertTrue("'${g.rotulo}' voltou a ser escolha unica",
+                    MontadorDeModificador.conflitosDeGrupo(todos).isEmpty())
+            }
     }
 
     @Test

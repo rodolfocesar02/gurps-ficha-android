@@ -2130,3 +2130,20 @@ exemplo o *Traje Pressurizado* (RD 6\*) ou a *Cota de Malha Longa Dupla*.
   aparece o aviso do teto em vermelho.
   ✅ Confira que **os PF do personagem NÃO mudam** ao mexer nos passos — o
   diálogo informa, não gasta.
+
+
+---
+
+# Lotes POD-14/16/17/18 — as correções
+
+> Gate: 2.290 testes, 0 falhas nas duas variantes.
+
+- **T-PO20 · 🔴 comprar a habilidade de dentro do poder** — Traços → Configurar
+  Poderes → abra um poder → **Adicionar habilidade**: ✅ abre o catálogo de
+  vantagens. Escolha uma: ✅ ela aparece na lista do poder **e** na aba Traços,
+  já com o `Mod. de Poder` aplicado. ✅ O botão **Ligar uma que já tenho**
+  continua funcionando para vantagem que já estava na ficha.
+- **T-PO21 · 🔴 a desvantagem NÃO recebe o percentual** — ligue uma desvantagem
+  ao poder: ✅ ela aparece na lista do poder, mas o **custo dela não muda**.
+  ⚠️ Isto é o **contrário** do que o T-PO9 pedia: aquele teste estava errado, e a
+  regra é a p.28 (o modificador não se aplica a desvantagem exigida).

@@ -146,16 +146,31 @@ class HabilidadesDoPoderTest {
     }
 
     @Test
-    fun `ligar desvantagem ao poder aplica o modificador`() {
-        // 🔴 `vincularDesvantagemPoder` NAO aplicava o percentual: ligar a
-        // desvantagem ao poder não mudava o custo dela. Só a vantagem funcionava.
+    fun `a desvantagem NAO recebe o modificador de poder`() {
+        // 🔴🔴 ESTE TESTE DIZIA O CONTRARIO, E ESTAVA ERRADO — lote POD-17.
+        //
+        // No POD-5 eu vi que `vincularDesvantagemPoder` não aplicava o
+        // percentual, chamei de defeito e "consertei". A assimetria original
+        // estava **certa**:
+        //
+        // > "Ele aplica-se a todas as habilidades do poder (mas **não** ao seu
+        // > Talento, **desvantagens exigidas**, ou Antecedente Incomum)."
+        // > (GURPS Poderes, p.28)
+        //
+        // A desvantagem exigida é o que **gera** parte do modificador (p.23);
+        // aplicá-lo de volta nela cobraria duas vezes.
+        //
+        // ⚠️ Segunda vez nesta sessão que uma conclusão minha virou trava de
+        // gate. A primeira foi o POD-8b, que proibia 8 modificadores reais.
         val i = vm.indexOf("fun vincularDesvantagemPoder(")
         assertTrue("o vinculo de desvantagem sumiu", i > 0)
-        val corpo = vm.substring(i, i + 620)
+        val corpo = vm.substring(i, i + 700)
         assertTrue(
-            "a desvantagem nao recebe o modificador do poder: $corpo",
-            corpo.contains("comModificadorDoPoder(")
+            "a desvantagem voltou a receber o modificador do poder: $corpo",
+            corpo.contains("comModificadorDoPoder(d.modificadores, null)")
         )
+        // E o vínculo continua existindo — o que sai é só o percentual.
+        assertTrue("o vinculo em si sumiu", corpo.contains("vincularDesvantagemPoder(personagem"))
     }
 
     @Test

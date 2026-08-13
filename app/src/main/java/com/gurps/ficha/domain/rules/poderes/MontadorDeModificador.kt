@@ -10,26 +10,33 @@ package com.gurps.ficha.domain.rules.poderes
  * Serve para quem cria poder **personalizado**. Quem usa um dos 11 prontos
  * (p.26-30) não precisa disto — o valor já vem fechado.
  *
- * ## 🔴 A tabela que eu tinha estava incompleta
+ * ## 🔴 Refeito no POD-16 contra a Referência Rápida (p.25)
  *
- * A 1ª versão do plano listou 7 componentes. A leitura completa da seção achou
- * mais 6, e corrigiu um: **Antipoderes tem dois níveis**, não um valor fixo.
+ * A 1ª versão fez **Contramedidas como escolha única** — o livro diz que elas
+ * **somam**. Faltava **Volúvel (−20%)**, o **Cósmico** estava no grupo errado, e
+ * a desvantagem exigida virou uma lista de opções minhas em vez do **valor em
+ * pontos** que o livro manda usar.
  */
 object MontadorDeModificador {
 
     /**
-     * Um componente é sempre uma **escolha dentro de um grupo** — não uma caixa
-     * que se marca à vontade. Contramedidas é uma só; energias canalizadas é uma
-     * só. Somar duas do mesmo grupo seria cobrar o mesmo inconveniente duas vezes.
+     * ⚠️ `escolhaUnica` vem da **Referência Rápida** (p.25), que marca
+     * *"(escolha um)"* em alguns grupos e diz, no cabeçalho:
+     * *"a menos que seja indicado o contrário, todos os modificadores serão
+     * **cumulativos**"*.
+     *
+     * 🔴 A 1ª versão fez **Contramedidas como escolha única**. O livro não marca
+     * esse grupo — as três somam. E foi para tapar esse buraco que eu inventei
+     * uma linha "Antipoderes −10% (as duas situações)", que nada mais é do que a
+     * soma de dois −5% que eu mesmo tinha proibido de coexistir.
      */
-    enum class Grupo(val rotulo: String) {
-        CONTRAMEDIDAS("Contramedidas"),
-        ANTIPODERES("Antipoderes"),
-        ENERGIAS_CANALIZADAS("Energias canalizadas"),
-        DESVANTAGEM_TRACO("Desvantagem exigida — o traço"),
-        DESVANTAGEM_ESVAI("Desvantagem exigida — velocidade com que o poder se esvai"),
-        DESVANTAGEM_RESTAURA("Desvantagem exigida — ato para restaurar"),
-        EXTRAS("Outros inconvenientes")
+    enum class Grupo(val rotulo: String, val escolhaUnica: Boolean) {
+        CONTRAMEDIDAS("Contramedidas (somam entre si)", false),
+        DESVANTAGEM_TRACO("Desvantagem exigida — o traço", true),
+        ENERGIAS_CANALIZADAS("Energias canalizadas (escolha uma)", true),
+        DESVANTAGEM_ESVAI("Desvantagem exigida — o poder desaparece (escolha uma)", true),
+        DESVANTAGEM_RESTAURA("Desvantagem exigida — a restauração exige (escolha uma)", true),
+        EXTRAS("Outros inconvenientes (somam entre si)", false)
     }
 
     data class Componente(
@@ -41,57 +48,65 @@ object MontadorDeModificador {
     )
 
     /**
-     * ⚠️ **Desvantagem exigida** entra como três escolhas encadeadas, e não uma.
-     * O plano registrou só a primeira; um montador que pedisse apenas o valor do
-     * traço devolveria um número incompleto.
+     * A **Referência Rápida** do livro (p.25), na ordem dela.
+     *
+     * ⚠️ O **Poder Cósmico (+50%)** aparece em *Energias Canalizadas*, com a nota
+     * de rodapé: *"poderes cósmicos não podem ser bloqueados nem possuem
+     * contramedidas"*. Escolhê-lo **zera** o grupo de contramedidas — ver
+     * [conflitosDeGrupo].
      */
     val CATALOGO: List<Componente> = listOf(
-        // ── Contramedidas (p.20-21) — escolha UMA ──
-        Componente(Grupo.CONTRAMEDIDAS, "Sem contramedidas (padrão)", 0, 21,
-            "O poder não sofre contramedidas além das que já afetam a versão instintiva."),
+        // ── Energias Canalizadas (p.24-25) — escolha UMA ──
+        Componente(Grupo.ENERGIAS_CANALIZADAS, "Não é bloqueável de forma nenhuma", 0, 24),
+        Componente(Grupo.ENERGIAS_CANALIZADAS, "Bloqueável por item ou condição exótica/sobrenatural", -5, 24),
+        Componente(Grupo.ENERGIAS_CANALIZADAS, "Bloqueável por item ou condição mundana", -10, 24),
+        Componente(Grupo.ENERGIAS_CANALIZADAS, "Volúvel", -20, 24,
+            "A energia é, ou parece ser, senciente, e às vezes reage mal."),
+        Componente(Grupo.ENERGIAS_CANALIZADAS, "Poder Cósmico", 50, 21,
+            "Não pode ser bloqueado e não possui contramedidas."),
+
+        // ── Contramedidas (p.20-21) — CUMULATIVAS ──
         Componente(Grupo.CONTRAMEDIDAS, "Contramedidas mundanas", -10, 20,
-            "Ambiente comum na natureza derruba o poder, e o inimigo explora isso com " +
-                "objetos e conhecimentos cotidianos."),
+            "Ambiente comum na natureza derruba o poder, e o inimigo explora isso " +
+                "com objetos e conhecimentos cotidianos."),
+        Componente(Grupo.CONTRAMEDIDAS, "Vantagens ou perícias especiais", -5, 20,
+            "Portadores de Estática, Neutralizar ou perícias conseguem desligá-lo."),
         Componente(Grupo.CONTRAMEDIDAS, "Contramedidas tecnológicas", -5, 20,
-            "Só tecnologia ou treinamento especializado desmonta o poder."),
-        Componente(Grupo.CONTRAMEDIDAS, "Poder cósmico", 50, 21,
-            "As habilidades ignoram o que bloquearia a versão instintiva, e nada tira " +
-                "o poder do portador."),
+            "Drogas, frequências sonoras, aparelhos dedicados."),
 
-        // ── Antipoderes (p.20-21) — DOIS níveis, não um ──
-        Componente(Grupo.ANTIPODERES, "Nenhum antipoder", 0, 21),
-        Componente(Grupo.ANTIPODERES, "Capacidades específicas o anulam", -5, 20,
-            "Portadores de Estática, Neutralizar ou perícias conseguem desligar o poder."),
-        Componente(Grupo.ANTIPODERES, "As duas situações se aplicam", -10, 20,
-            "🔴 O plano dizia que Antipoderes era −5% fixo. São dois níveis."),
+        // ── Desvantagens Exigidas (p.23) ──
+        // O traço entra por VALOR LIVRE (ver `componenteDaDesvantagem`), porque
+        // o livro diz "valor em pontos das desvantagens exigidas, expresso como
+        // percentual" — e não uma lista de opções.
+        Componente(Grupo.DESVANTAGEM_ESVAI, "Gradualmente, dá tempo de escapar", 5, 23),
+        Componente(Grupo.DESVANTAGEM_ESVAI, "Imediatamente", 0, 23),
+        Componente(Grupo.DESVANTAGEM_ESVAI, "Some e ainda se volta contra o usuário", -5, 23),
 
-        // ── Energias canalizadas (p.24) — TRÊS níveis ──
-        Componente(Grupo.ENERGIAS_CANALIZADAS, "Energia onipresente, não filtrável", 0, 24),
-        Componente(Grupo.ENERGIAS_CANALIZADAS, "Bloqueável só por isolante exótico", -5, 24,
-            "Também vale para poderes que dependem do mana da região."),
-        Componente(Grupo.ENERGIAS_CANALIZADAS, "Bloqueável por isolante mundano", -10, 24),
+        Componente(Grupo.DESVANTAGEM_RESTAURA, "Um dia", 5, 23),
+        Componente(Grupo.DESVANTAGEM_RESTAURA, "Uma semana, aventura menor ou ferimento menor", 0, 23),
+        Componente(Grupo.DESVANTAGEM_RESTAURA, "Um mês, aventura maior ou ferimento maior", -5, 23),
 
-        // ── Desvantagem exigida (p.23) — TRÊS escolhas ──
-        Componente(Grupo.DESVANTAGEM_TRACO, "Nenhuma desvantagem exigida", 0, 23),
-        Componente(Grupo.DESVANTAGEM_TRACO, "Desvantagem de −5 pontos", -5, 23),
-        Componente(Grupo.DESVANTAGEM_TRACO, "Desvantagem de −10 pontos", -10, 23,
-            "\"Por exemplo, um Voto de −10 pontos vale −10%.\""),
-        Componente(Grupo.DESVANTAGEM_TRACO, "Desvantagem de −15 pontos", -15, 23),
-
-        Componente(Grupo.DESVANTAGEM_ESVAI, "Some gradualmente, dá tempo de escapar", 5, 23),
-        Componente(Grupo.DESVANTAGEM_ESVAI, "Some rápido, deixa em perigo no combate", 0, 23),
-        Componente(Grupo.DESVANTAGEM_ESVAI, "Some rápido E se volta contra o usuário", -5, 23),
-
-        Componente(Grupo.DESVANTAGEM_RESTAURA, "Um dia de oração ou a renda de um dia", 5, 23),
-        Componente(Grupo.DESVANTAGEM_RESTAURA, "Uma semana, aventura menor ou ferimento leve", 0, 23),
-        Componente(Grupo.DESVANTAGEM_RESTAURA, "Um mês, aventura maior ou ferimento grave", -5, 23),
-
-        // ── Outros (podem somar entre si) ──
-        Componente(Grupo.EXTRAS, "Fica inútil quando a Reserva de Energia esgota", -5, 25,
-            "Liga com a RE (p.119)."),
+        // ── Outros (p.25) — somam ──
+        Componente(Grupo.EXTRAS, "Fica inútil quando a Reserva de Energia esgota", -5, 25),
         Componente(Grupo.EXTRAS, "Efeito Incômodo", -5, 25),
         Componente(Grupo.EXTRAS, "Penitência para reparar (até um mês)", -5, 25)
     )
+
+    /**
+     * A desvantagem exigida entra pelo **valor em pontos**, não por uma lista.
+     *
+     * > *"Código de conduta: **valor em pontos das desvantagens exigidas**,
+     * > expresso como percentual."* (p.25)
+     *
+     * Um Voto de −10 pontos vale −10%; um Fanatismo de −15 vale −15%.
+     */
+    fun componenteDaDesvantagem(valorEmPontos: Int): Componente =
+        Componente(
+            Grupo.DESVANTAGEM_TRACO,
+            "Desvantagem exigida de ${valorEmPontos} pontos",
+            -Math.abs(valorEmPontos), 23,
+            "Idêntico à limitação Pacto (MB p.114); não pode ser escolhida duas vezes."
+        )
 
     /**
      * Soma os componentes, com o teto de −80% do resto do livro.
@@ -102,12 +117,23 @@ object MontadorDeModificador {
     fun total(escolhidos: List<Componente>): Int =
         RegrasDePoder.limitarModificadorTotal(escolhidos.sumOf { it.valor })
 
-    /** Grupos com mais de uma escolha — exceto [Grupo.EXTRAS], que soma. */
+    /** Grupos marcados "(escolha um)" no livro com mais de uma escolha. */
     fun conflitosDeGrupo(escolhidos: List<Componente>): List<Grupo> =
-        escolhidos.filter { it.grupo != Grupo.EXTRAS }
+        escolhidos.filter { it.grupo.escolhaUnica }
             .groupBy { it.grupo }
             .filter { it.value.size > 1 }
             .keys.toList()
+
+    /**
+     * 🔴 *"Poderes cósmicos não podem ser bloqueados nem possuem contramedidas."*
+     * (p.25, nota de rodapé da Referência Rápida.)
+     *
+     * Escolher o Cósmico e ainda marcar contramedidas seria cobrar um
+     * inconveniente que, por definição, o poder não tem.
+     */
+    fun cosmicoComContramedidas(escolhidos: List<Componente>): Boolean =
+        escolhidos.any { it.valor == 50 && it.rotulo.contains("Cósmico") } &&
+            escolhidos.any { it.grupo == Grupo.CONTRAMEDIDAS && it.valor != 0 }
 
     /**
      * *"Tente manter o valor entre −10% e −30%"* (p.25).
