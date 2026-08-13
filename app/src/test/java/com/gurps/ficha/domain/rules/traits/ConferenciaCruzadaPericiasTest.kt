@@ -97,6 +97,14 @@ class ConferenciaCruzadaPericiasTest {
          * classes de motivo.
          */
         val LEGITIMAS: Set<Pair<String, String>> = setOf(
+            // 4. 🔴 COLISÃO DE PALAVRA COMUM — lote POD-8.
+            // A vantagem `Controle` (GURPS Poderes, p.90) tem por nome uma
+            // palavra corriqueira em português, e a varredura procura o nome do
+            // traço dentro do texto da perícia. Ela casou com a página de
+            // Artilharia, que fala de "controle" no sentido comum.
+            // ⚠️ Não é caso de renomear a vantagem: o nome é do livro. É caso de
+            // dizer que a coincidência não é regra.
+            "controle_poderes" to "Artilharia/NT",
             // 3. automação em Kotlin, não em JSON
             "flexibilidade" to "Escalada",
             "flexibilidade" to "Fuga",

@@ -1,428 +1,442 @@
 [
-  {
-    "id": "afeta_outros",
-    "nome": "Afeta Outros",
-    "tipo": "ampliação",
-    "valor": "50",
-    "por_nivel": true,
-    "bonus_base": 0,
-    "pagina": 107,
-    "tags": [
-      "Poderes",
-      "Variável"
-    ],
-    "descricao": "O personagem pode estender os benefícios de sua vantagem a outros. Se ele for capaz de afetar uma quantidade limitada de objetivos dispostos mediante o toque, Afeta Outros custará +50% por pessoa. Isto não é um ataque; ele não terá efeito sobre alvos relutantes. É necessária uma manobra Preparar para fazer contato com cada participante, que deverá estar ao alcance. Isto concede os efeitos da vantagem, não a capacidade de usá-la. O personagem pode “desativá-la” e “ativá-la”, ajustar seu nível e assim por diante, e suas decisões aplicam-se igualmente a ele mesmo e a todos os demais.\n\nA habilidade do personagem afetará outros apenas enquanto eles estiverem em contato com ele. Os alvos poderão interromper o efeito a qualquer momento rompendo o contato com o personagem. Para afetar aqueles que estejam meramente próximos, é necessário incluir Efeito de Área; nesse caso, uma manobra Preparar permitirá que o personagem afete qualquer quantidade de pessoas até o seu limite, se elas estiverem dentro da área.\n\nA versão de Afeta Outros descrita anteriormente serve para habilidades de movimento (como Voo e Interposição) e transformações físicas (por exemplo, Crescimento e Encolhimento). Ela é uma boa maneira de manter os personagens juntos em aventuras que deixariam para trás aqueles incapazes de voar, encolher etc. O Mestre pode permitir Afeta Outros em outras características quando servir a este objetivo.\n\nSe Campo de Força (a seguir) for aplicada a uma das defesas listadas para ela, será possível incluir Afeta Outros por +50% fixos, desde que o personagem também escolha pelo menos um nível de Efeito de Área. Tomados em conjunto, esses três modificadores permitem estender a proteção da vantagem sobre todos que estejam dentro da área do personagem. Esse campo de força protegerá contra ataques e perigos que o atravessem vindos de fora. Ameaças dentro do campo de força ignoram sua proteção.\n\nSe for baseado na Resistência a Dano, o campo de força ainda impedirá o movimento. Inimigos que desejem atravessá-lo deverão forçar a entrada. Os que tentarem isso como ação livre (permitida uma vez por turno) deverão fazer uma avaliação de seu dano em GdP. Aqueles que usarem Ataque, Avançar e Atacar, ou Ataque Total para forçar a entrada, avaliarão o dano normal do ataque. Se o dano ultrapassar a RD, o invasor fará uma abertura grande o bastante para atravessar. Ela se fechará ao fim do turno do invasor, e não enfraquecerá o campo de força.\n\nO MJ não deverá permitir nenhuma forma de Afeta Outros para vantagens que permitam ao usuário fazer algo, como Cura, Ataque Inato e Controle da Mente. Para conceder características proibidas ou afetar objetivos relutantes, o personagem deve ter Atribulação com uma ampliação Vantagem adequada."
-  },
-  {
-    "id": "alcance_temporal",
-    "nome": "Alcance Temporal",
-    "tipo": "ampliação",
-    "valor": "50",
-    "por_nivel": false,
-    "bonus_base": 0,
-    "pagina": 108,
-    "tags": [
-      "Poderes",
-      "Tempo"
-    ],
-    "descricao": "A habilidade do personagem funciona através do tempo. Os testes para usá-la desta forma têm uma penalidade pela diferença temporal entre o personagem e seu alvo; use os Modificadores de Longa Distância (pág. MB241) e substitua cada 1,5 km por um dia. Determine a distância espacial como se estivesse no mesmo ponto do tempo. Esta ampliação valerá +50% se o personagem for capaz de alcançar somente o passado ou somente o futuro, ou +100% se ele puder alcançar ambos; inclua -50% se a habilidade não funcionar no presente.\n\nO Mestre decidirá quais vantagens podem ter esta ampliação. Ela é voltada para habilidades sensoriais e de comunicação (como Clarissenciência e Diapsiquia), mas pode servir para outras habilidades mentais, como a Possessão, se o usuário também tiver uma habilidade que possibilite sentir a presença de seu alvo no tempo. Se o Mestre permitir esta vantagem em um ataque, Cósmica (+50%) será um pré-requisito."
-  },
-  {
-    "id": "alcance_transmundial",
-    "nome": "Alcance Transmundial",
-    "tipo": "ampliação",
-    "valor": "50",
-    "por_nivel": false,
-    "bonus_base": 0,
-    "pagina": 108,
-    "tags": [
-      "Poderes",
-      "Dimensão"
-    ],
-    "descricao": "A habilidade do personagem pode alcançar mundos paralelos. Defina a distância espacial como se o personagem e seu alvo estivessem no mesmo mundo. O MJ ainda pode permitir a variação Alcance Transplanar para habilidades que funcionem entre dimensões além de mundos paralelos. Cada uma valerá +50% se o personagem só puder entrar em contato com outros mundo ou planos, ou +100% se a habilidade dele também funcionar no reino onde ele estiver. Veja Alcance Temporal (pág. 108) para diretrizes sobre vantagens permitidas."
-  },
-  {
-    "id": "ativada_desativada_vontade",
-    "nome": "Ativada ou Desativada à Vontade",
-    "tipo": "ampliação",
-    "valor": "10",
-    "por_nivel": false,
-    "bonus_base": 0,
-    "pagina": 108,
-    "tags": [
-      "Poderes"
-    ],
-    "descricao": "Esta ampliação existe apenas para características fisiológicas (por exemplo, Garras), defesas, e outras características que normalmente sejam \"sempre ativas\". Ela permite ativar ou desativar uma vantagem com uma manobra Preparar. É necessário especificar se ela é ativada, desativada ou permanece no estado atual, seja qual for, quando o personagem é nocauteado.\n\nNão é possível incluir Ativada ou Desativada à Vontade em uma vantagem que liste modificadores especiais que capacitam o usuário a ativá-la e desativá-la, independente da habilidade do personagem ter ou não esses modificadores. Se uma vantagem indicar Ativada ou Desativada à Vontade como uma ampliação especial de valor diferente, esse valor deverá ser usado. Ativada ou Desativada à Vontade também não é permitida para metacaracterísticas. Para ativar ou desativar uma metacaracterística, use Forma Alternativa.\n\nUma versão mais fraca desta ampliação é lógica para algumas vantagens:\n\n**Normalmente Ativa:** Apenas para vantagens \"sempre ativas\" por definição. A habilidade normalmente está ativa, mas o personagem pode desativá-la com o gasto de 1 PF por segundo. Para vantagens que costumem ficar desativadas por definição esta é uma limitação; consulte Sempre Ativa (pág. 107). +5%."
-  },
-  {
-    "id": "campo_de_forca",
-    "nome": "Campo de Força",
-    "tipo": "ampliação",
-    "valor": "20",
-    "por_nivel": false,
-    "bonus_base": 0,
-    "pagina": 108,
-    "tags": [
-      "Poderes",
-      "Defesa"
-    ],
-    "descricao": "Esta ampliação converte uma característica defensiva em um campo projetado a curta distância do corpo do personagem. O campo engolfa e protege todo o corpo do usuário, inclusive seus olhos e qualquer coisa que ele esteja carregando ou usando (até carga Muito Pesada), mesmo que a característica sem modificadores não o faça. Sempre aplique seus efeitos antes dos efeitos de armadura, trajes ambientais etc. Veja Estendendo Defesas (pág. 173) para mais benefícios.\n\nO Campo de Força é adequado para a Abascanto, Escorregadio, Lacrado, Resistência a Dano (porém, nunca com Pele Resistente), Resistência à Pressão, Resistência ao Vácuo, Resistente, Sentido Protegido, Tolerância à Radiação, Tolerância à Temperatura, e Tolerância-G Ampliada. O Mestre pode permiti-lo para outras vantagens. Se tiver várias características com Campo de Força, o personagem deverá indicar se possui um campo de força ou vários (e em qual ordem).\n\nO Campo de Força costuma ocorrer em conjunto com Afeta Outros e Efeito de Área (veja Afeta Outros, pág. 107, para regras), e ao lado da limitação Defesa Ativa (pág. 110)."
-  },
-  {
-    "id": "capaz_carregar_objetos",
-    "nome": "Capaz de Carregar Objetos",
-    "tipo": "ampliação",
-    "valor": "10",
-    "por_nivel": false,
-    "bonus_base": 0,
-    "pagina": 108,
-    "tags": [
-      "Poderes"
-    ],
-    "descricao": "Transformações físicas normalmente afetam o corpo do usuário, mas não seus pertences. Com esta ampliação, a vantagem também transforma os objetos que o personagem estiver transportando ou vestindo. Ela deixa de afetar esses objetos quando o personagem os larga. Capaz de Carregar Objetos já está definida para Encolhimento, Forma de Sombra, Insubstancialidade, Interposição, e Invisibilidade, mas também é útil para Camaleão, Crescimento, Morfose, Pele Elástica, e qualquer outra coisa que o Mestre permita.\n\nO custo dependerá do quanto o personagem pode transportar:\n\n*   **Nenhuma Carga** vale +10%\n*   **Leve**, +20%\n*   **Média**, +50%\n*   **Pesada**, +100%\n\nPara o personagem afetar pessoas que esteja tocando, inclua Afeta Outros (pág. 107). Para estender efeitos defensivos às suas posses, escolha Campo de Força (pág. 108)."
-  },
-  {
-    "id": "confiavel",
-    "nome": "Confiável",
-    "tipo": "ampliação",
-    "valor": "5",
-    "por_nivel": true,
-    "bonus_base": 0,
-    "pagina": 108,
-    "tags": [
-      "Poderes"
-    ],
-    "descricao": "A habilidade do personagem normalmente funciona da forma pretendida. Talvez ele tenha uma extensa experiência ou aptidão natural com ela, ou talvez ela apenas seja fácil de usar. Seja qual for o motivo, ele terá um bônus em todos os testes para usá-la. Esta ampliação funciona exatamente como Talento, e não pode afetar nada que o Talento normalmente não poderia. Ela é cumulativa com Talento, quando aplicável.\n\nConfiável é útil para vantagens que costumam estar sujeitas a grandes penalidades (como -8 para o uso ativo da Precognição). Ela não está disponível para ataques à distância; use Acurado (pág. MB102) para eles. Confiável custa +5% por +1 de bônus, até um máximo de +10."
-  },
-  {
-    "id": "distancia_prolongada",
-    "nome": "Distância Prolongada",
-    "tipo": "ampliação",
-    "valor": "50",
-    "por_nivel": true,
-    "bonus_base": 0,
-    "pagina": 109,
-    "tags": [
-      "Poderes",
-      "Ataque"
-    ],
-    "descricao": "A habilidade de longa distância usa uma classe de penalidades por distância melhor do que a costumeira. Da pior para a melhor, essas categorias são -1/metro, como uma mágica Comum (pág. MB239), a Tabela de Tamanho e Velocidade/Distância (pág. MB550), Modificadores de Longa Distância (pág. MB241), e nenhuma penalidade que seja. Cada nível de Distância Prolongada deixa as penalidades mais favoráveis em uma categoria. As distâncias de 1/2D e Max da habilidade não são alteradas; para isso, use Alcance Ampliado ou Alcance Reduzido. Distância Prolongada afeta o custo de Acompanhamento."
-  },
-  {
-    "id": "erosivo",
-    "nome": "Erosivo",
-    "tipo": "ampliação",
-    "valor": "10",
-    "por_nivel": false,
-    "bonus_base": 0,
-    "pagina": 109,
-    "tags": [
-      "Poderes",
-      "Ataque"
-    ],
-    "descricao": "Erosivo deve acompanhar Agente Sanguíneo, Agente de Contato ou Agente Respiratório, bem como Efeito de Área ou Cone. O ataque do personagem é um gás que corrói vedações de máscaras de gás, trajes ambientais, etc. Sempre que o usuário de algum equipamento deste tipo for exposto ao gás, deverá fazer um teste da HT do equipamento. Considere a HT como 12, a menos que seja especificado o contrário. Qualquer fracasso significará uma infiltração de gás o suficiente para afetar o personagem e reduzir a HT de seu equipamento em 1 (esta perda é cumulativa). Restaurar 1 ponto da HT perdida exige um conserto maior (veja Consertos, pág. MB484)."
-  },
-  {
-    "id": "independente",
-    "nome": "Independente",
-    "tipo": "ampliação",
-    "valor": "40",
-    "por_nivel": false,
-    "bonus_base": 0,
-    "pagina": 109,
-    "tags": [
-      "Poderes"
-    ],
-    "descricao": "Esta ampliação serve para vantagens que exigem a concentração para serem controladas. A habilidade não exige atenção nenhuma após a manobra Concentrar ou Preparar inicial para ativá-la. Se ela exigir uma jogada de dados, ela durará uma quantidade de minutos igual à margem de sucesso do personagem (ou da margem de vitória, no caso de um habilidade resistível) ou sua duração costumeira; o que for menor. Durante esse tempo, ela será completamente autossuficiente. Seus efeitos perdurarão mesmo que o personagem seja incapacitado ou morto.\n\nIndependente não permite várias instâncias dos efeitos da vantagem, a menos que esse seja o padrão da característica. Se esse for o padrão, todas as instâncias serão \"com as mãos livres\", e o personagem será isento das penalidades por usos simultâneos.\n\nO único ponto negativo é que o personagem não terá controle sobre sua habilidade após a ativação. Seus efeitos durarão por todo o prazo especificado anteriormente; não é possível interrompê-los antes ou mantê-los. O personagem deverá especificar todos os detalhes exigidos pela habilidade ao ativá-la, e não poderá mudá-los depois.\n\nIndependente vale +40% para a maioria das vantagens e +70% para aquelas com penalidades por usos simultâneos."
-  },
-  {
-    "id": "reflexiva",
-    "nome": "Reflexiva",
-    "tipo": "ampliação",
-    "valor": "40",
-    "por_nivel": false,
-    "bonus_base": 0,
-    "pagina": 109,
-    "tags": [
-      "Poderes",
-      "Defesa"
-    ],
-    "descricao": "Reflexiva serve para defesas que levam um segundo para serem ativadas, sentidos que exijam um segundo de concentração (por exemplo, Detecção), e qualquer coisa que o Mestre ache que cumpra um papel semelhante. Ela permite que a habilidade se ative sozinha — sob ataque, no caso de uma defesa, ou na presença de algo \"interessante\" no caso de um sentido — sem a necessidade de uma manobra Preparar ou Concentrar. Se normalmente ela exigir um teste de habilidade, a ativação exigirá um teste com redutor de -4; caso contrário, será automática. Se o personagem estiver adormecido, o sucesso na ativação também o acordará.\n\nReflexiva conta como um nível de Tempo Reduzido ao usar a habilidade conscientemente. Ela é incompatível com Defesa Ativa, Sempre Ativa e Normalmente Ativa."
-  },
-  {
-    "id": "ricochete",
-    "nome": "Ricochete",
-    "tipo": "ampliação",
-    "valor": "10",
-    "por_nivel": false,
-    "bonus_base": 0,
-    "pagina": 109,
-    "tags": [
-      "Poderes",
-      "Ataque"
-    ],
-    "descricao": "Ao usar Ricochetes (pág. 166), o ataque do personagem não tem o dano diminuído a cada ricochete."
-  },
-  {
-    "id": "tempo_de_jogo",
-    "nome": "Tempo de Jogo",
-    "tipo": "ampliação",
-    "valor": "0",
-    "por_nivel": false,
-    "bonus_base": 0,
-    "pagina": 109,
-    "tags": [
-      "Poderes",
-      "Variável"
-    ],
-    "descricao": "Algumas características, inclusive Sorte, Serendipidade e Talento Instintivo, dependem do tempo real. Este modificador permite que uma vantagem dessas use o tempo do jogo em vez disso. Se normalmente ela funcionar pelo menos uma vez por hora do mundo real, o personagem terá uma quantidade de usos por dia igual à quantidade máxima de usos por hora real; por exemplo, a Sorte Impossível, que funciona a cada 10 minutos em tempo real, terá seis usos por dia de jogo. Se ela for classificada em termos de uso por sessão, o personagem terá aquela quantidade de usos por semana no jogo; por exemplo, Serendipidade 3 concederá três usos por semana de jogo. O MJ pode ajustar essas proporções."
-  },
-  {
-    "id": "uma_vez_ativa_sempre_ativa",
-    "nome": "Uma Vez Ativa, Sempre Ativa",
-    "tipo": "ampliação",
-    "valor": "50",
-    "por_nivel": false,
-    "bonus_base": 0,
-    "pagina": 109,
-    "tags": [
-      "Poderes",
-      "Físico"
-    ],
-    "descricao": "Apenas para transformações físicas que sejam canceladas se o personagem for nocauteado ou morto; principalmente Pele Elástica, Forma de Sombra e Metamorfose. O personagem reverterá para sua forma \"normal\" apenas se escolher fazê-lo conscientemente. O sono, a inconsciência ou a morte não o forçam a mudar. Partes do corpo perdidas podem permanecer transformadas após o personagem retomar a forma natural; isso deve ser especificado no momento da compra da habilidade."
-  },
-  {
-    "id": "ambiental",
-    "nome": "Ambiental",
-    "tipo": "limitação",
-    "valor": "-5",
-    "por_nivel": false,
-    "bonus_base": 0,
-    "pagina": 110,
-    "tags": [
-      "Poderes",
-      "Variável"
-    ],
-    "descricao": "Apenas vantagens que afetem a outros podem ter esta limitação. A habilidade do personagem manipula um item ou uma condição existente que deve estar em contato com o alvo ou cercá-lo. Diferente de Acesso, isto não afeta a ativação; o personagem pode ativar sua habilidade em qualquer lugar, exceto em caso de falha no teste ou alguma outra limitação. Porém, a habilidade será efetiva apenas se o objetivo estiver em um ambiente específico… e o Mestre poderá alterar seus efeitos se o ambiente que ele estiver tentando manipular for incomum de alguma maneira.\n\n*Exemplo: Uma Retenção que ordene plantas a se enroscarem na vítima não faria nada em uma área sem vegetação. Ela seria um pouco mais do que um incômodo se a única planta por perto fosse uma samambaia… e totalmente imprevisível em uma selva alienígena!*\n\nO Mestre deve basear o valor na raridade do ambiente:\n\n*   **Muito Comum:** O ambiente está presente todo o tempo, fora uma ou duas situações incomuns que um inimigo teria dificuldades para preparar, como em um campo gravitacional, na presença do ar ou em um planeta. -5%.\n*   **Comum:** O ambiente está presente na maior parte do tempo, mas um inimigo criativo poderia tomar providências para que ele estivesse ausente; por exemplo, em contato com a poeira ou na presença de micróbios. -10%.\n*   **Ocasional:** O ambiente normalmente está ausente, ou pode ser facilmente evitado por inimigos (embora um usuário astuto possa ser capaz de se preparar para um encontro importante de maneira a contornar isto); por exemplo, em uma cidade, no ermo, ao ar livre ou tocando o solo. -20%.\n*   **Raro:** O ambiente normalmente está ausente e é difícil para o usuário providenciá-lo; por exemplo, em uma tempestade, com vegetação densa, no deserto ou no subterrâneo. -40%.\n*   **Muito Raro:** O ambiente é tão improvável que a habilidade é inútil na maior parte do tempo; por exemplo, na lava, areia movediça ou no vácuo. -80%.\n\nO MJ deve proibir propostas de limitações ambientais que dupliquem uma das restrições embutidas da habilidade; por exemplo, \"na água\" não é válida para Controle (Água). Em jogos com poderes, uma habilidade que receba -10% por uma medida ou um isolante mundano como parte de seu modificador de poder já possui esta limitação; não é necessário aplicá-la pela segunda vez."
-  },
-  {
-    "id": "apenas_insubstancial",
-    "nome": "Apenas Insubstancial",
-    "tipo": "limitação",
-    "valor": "-30",
-    "por_nivel": false,
-    "bonus_base": 0,
-    "pagina": 110,
-    "tags": [
-      "Poderes"
-    ],
-    "descricao": "A habilidade do personagem afeta apenas alvos intangíveis: seres com a metacaracterística Espírito e usuários de Clarissenciência, Saltador ou Dobra com o modificador especial Projeção. Este modificador é especialmente útil para ataques com o objetivo de exorcizar espíritos."
-  },
-  {
-    "id": "bloqueavel",
-    "nome": "Bloqueável",
-    "tipo": "limitação",
-    "valor": "-5",
-    "por_nivel": false,
-    "bonus_base": 0,
-    "pagina": 110,
-    "tags": [
-      "Poderes",
-      "Ataque"
-    ],
-    "descricao": "Habilidades de ataque à distância (Atribulação, Retenção, Ataque Inato, vantagens com a ampliação Longa Distância, etc.) normalmente funcionam como armas de fogo no que se refere às defesas ativas legais do alvo: a vítima pode apenas se esquivar. Habilidades que afetem uma área, inclusive qualquer coisa com Efeito de Área, Cone ou Explosão, permitem apenas uma tentativa de buscar cobertura, sejam elas de longa distância ou não. Se algum dos tipos de ataque produzir um efeito que o alvo possa tentar bloquear com um escudo, esta será uma limitação de -5%, ou de -10%, se ele também puder tentar aparar.\n\nEsta limitação serve para simular projéteis de baixa velocidade (como redes ou magias de Projétil), enxames de criaturas convocadas e assim por diante. Para bloquear um ataque com Bloqueável e De Cima, como uma chuva de pedras, o defensor deverá segurar seu escudo sobre a cabeça."
-  },
-  {
-    "id": "condicao_cancelamento",
-    "nome": "Condição de Cancelamento",
-    "tipo": "limitação",
-    "valor": "-5",
-    "por_nivel": false,
-    "bonus_base": 0,
-    "pagina": 110,
-    "tags": [
-      "Poderes",
-      "Variável"
-    ],
-    "descricao": "Permitida apenas em habilidades que afetem outros por pelo menos um minuto. Os inimigos do personagem podem interromper os efeitos contínuos de sua habilidade com uma ação simples: beijar o objetivo, dizer três palavras, etc. Se esta condição não for cumprida, os efeitos terão a duração normal.\n\nO valor será -5% se a condição for arcana o suficiente para exigir pesquisa; -10% se um teste de perícia (contra Ritual Religioso, Magia Ritualística, Taumatologia, etc.), puder desvendá-la; ou -20% se ela for conhecimento comum. Esses valores mudam para -0% (um efeito especial), -5% e -10% se a condição for difícil de providenciar, mesmo que seja conhecida, como um beijo de uma princesa ou palavras ditas por um elfo.\n\nHabilidades que não possam terminar até que determinada condição tenha sido cumprida têm meramente Prazo Estendido, Permanente (+150%). Essa ampliação já exige uma condição desse tipo; não é possível escolher Condição de Cancelamento separadamente."
-  },
-  {
-    "id": "custa_pv",
-    "nome": "Custa Pontos de Vida",
-    "tipo": "limitação",
-    "valor": "-10",
-    "por_nivel": true,
-    "bonus_base": 0,
-    "pagina": 110,
-    "tags": [
-      "Poderes",
-      "Variável"
-    ],
-    "descricao": "Esta limitação funciona exatamente como Custa Fadiga (pág. MB111), porém ela gasta os PV em vez dos PF, e tem o dobro do valor: -10% a cada PV por uso, duplicados para -20% se o custo for por segundo. Ela também pode converter os custos de PF integrados em vantagens para custos em PV, a -5% por PF convertido, ou -10% por PF, se o custo for por segundo."
-  },
-  {
-    "id": "distancia_minima",
-    "nome": "Distância Mínima",
-    "tipo": "limitação",
-    "valor": "-5",
-    "por_nivel": false,
-    "bonus_base": 0,
-    "pagina": 110,
-    "tags": [
-      "Poderes",
-      "Ataque"
-    ],
-    "descricao": "O personagem não é capaz de usar sua habilidade de longa distância contra um inimigo dentro de certa distância. Isto deve ser usado para armas com distância mínima para detonação ou que disparem em um arco elevado, e para sensores com um \"ponto cego\" dentro do qual não sejam capazes de definir alvos. O Mestre deve restringir este modificador a habilidades de longa distância que normalmente sejam úteis a uma distância relativamente curta. Isto valerá -10% para uma distância mínima de 5% do máximo, -5% para uma distância mínima igual a 1% do máximo (no mínimo um metro, sempre)."
-  },
-  {
-    "id": "distancia_encurtada",
-    "nome": "Distância Encurtada",
-    "tipo": "limitação",
-    "valor": "-10",
-    "por_nivel": true,
-    "bonus_base": 0,
-    "pagina": 111,
-    "tags": [
-      "Poderes",
-      "Ataque"
-    ],
-    "descricao": "A habilidade de longa distância está sujeita a penalidades por distância mais rígidas que o costumeiro. Use as regras para Distância Prolongada (pág. 109), porém, cada nível torna as penalidades menos favoráveis em uma categoria. É possível combinar Distância Encurtada com Alcance Reduzido, mas o valor total da limitação não pode ultrapassar -30%. A Distância Encurtada afeta o custo de Acompanhamento. Ela é incompatível com Guiado, Teleguiado, Distância Prolongada e Ataque Corpo a Corpo."
-  },
-  {
-    "id": "especifico",
-    "nome": "Específico",
-    "tipo": "limitação",
-    "valor": "-40",
-    "por_nivel": false,
-    "bonus_base": 0,
-    "pagina": 111,
-    "tags": [
-      "Poderes",
-      "Variável"
-    ],
-    "descricao": "Específico restringe uma habilidade que permita interagir com um material a um subconjunto daquilo que ela afeta normalmente. Vantagens que já exijam uma escolha particular de materiais não podem ser Específicas. Esta limitação geralmente vale -40% para materiais comuns, -60% para os incomuns, e -80% para os absurdos, mas cabe ao Mestre definir o valor exato, que pode ser tão pouco quanto -10%, para materiais muito comuns. Habilidades que afetem metais ferrosos — ferro (inclusive aço), níquel e cobalto — têm uma limitação de -50%, chamada \"Magnética\" em vez de \"Específica, Metais Ferrosos\", para economizar espaço. Consulte os exemplos em Aderência (pág. MB35), Caminhar no Ar (pág. 46), Caminhar sobre Líquidos (pág. 46), Super Escalada (pág. 78), e Visão Penetrante (pág. MB97) para mais sugestões."
-  },
-  {
-    "id": "exige_concentrar_preparar",
-    "nome": "Exige Concentrar ou Preparar",
-    "tipo": "limitação",
-    "valor": "-10",
-    "por_nivel": false,
-    "bonus_base": 0,
-    "pagina": 111,
-    "tags": [
-      "Poderes"
-    ],
-    "descricao": "A habilidade do personagem exige uma série de manobras Concentrar ou Preparar para ser mantida. Assumir qualquer outra manobra (como Ataque ou Deslocamento) fará com que ela se desative. Portanto, o portador poderá se mover apenas um passo por segundo ao usá-la, e não poderá atacar, mirar etc. Exige Preparar vale -10%. Exige Concentrar vale -15%, e significa que a habilidade se desativa se o usuário perder a concentração. Não é possível combinar estas limitações uma com a outra ou com Uso Total (pág. 112).\n\nNormalmente, apenas vantagens que possam ser ativadas e normalmente permaneceriam ativadas sem um esforço ativo podem ter essas limitações. Uma habilidade passiva sem condições de ativação definidas (por exemplo, Empatia) também pode tê-las; se esse for o caso, ela exigirá a manobra em questão para ser usada."
-  },
-  {
-    "id": "exige_teste_atributo",
-    "nome": "Exige Teste de (Atributo)",
-    "tipo": "limitação",
-    "valor": "-10",
-    "por_nivel": false,
-    "bonus_base": 0,
-    "pagina": 111,
-    "tags": [
-      "Poderes",
-      "Variável"
-    ],
-    "descricao": "Esta limitação funciona como Inconstante (pág. MB113), exceto que, em vez de fazer um teste contra um número de ativação fixo para usar a vantagem, o personagem fará um teste de DX, IQ, HT, Vontade ou Per (escolha um ao comprar a habilidade). Fatores que modifiquem temporariamente o valor usado afetam esse teste. Para uma habilidade defensiva, o teste deve ser feito cada vez que a defesa possa servir para evitar um ataque ou perigo, ou uma vez por minuto, no caso de exposição constante. -10% para um teste de DX, IQ ou HT; -5% para um teste de Vontade ou Per.\n\nExiste uma versão especial desta limitação para as características defensivas listadas em Campo de Força (pág. 108):\n\n**Defesa Ativa:** A habilidade do personagem somente o protege contra ameaças das quais ele esteja ciente, e apenas se ele tiver sucesso em um teste para usá-la como interposição a tempo. Esse teste é feito com DX/2 + 3, +1 por Reflexos em Combate. Se o personagem tentar usar a mesma habilidade mais de uma vez em um turno, aplique uma penalidade cumulativa de -4 por tentativa após a primeira. O teste será feito com penalidade igual a -4 se o personagem estiver atordoado, e ele não poderá tentá-lo em situações em que não teria uma defesa ativa (ataque por trás, inconsciente etc.). -40%."
-  },
-  {
-    "id": "glamour",
-    "nome": "Glamour",
-    "tipo": "limitação",
-    "valor": "-5",
-    "por_nivel": false,
-    "bonus_base": 0,
-    "pagina": 111,
-    "tags": [
-      "Poderes",
-      "Ilusão"
-    ],
-    "descricao": "Disponível somente para Camaleão, Pele Elástica, Invisibilidade, Metamorfose (com a limitação Cosmética), Silêncio e características similares que alterem a maneira como os outros percebem o usuário. A habilidade do personagem controla a percepção dos outros por meio de sugestão hipnótica persistente, ilusão mental ou compulsão psíquica. Ela não afeta máquinas. Vítimas que sejam seres vivos têm direito a um teste de Vontade para resistir à influência do usuário e percebê-lo normalmente, e indivíduos com Escudo Mental podem adicionar seu nível a este teste. Um teste de resistência contra Vontade -5 vale -5%. Cada +1 no teste vale outros -5% (por exemplo, Vontade +4 equivale a -50%)."
-  },
-  {
-    "id": "prazo_maximo",
-    "nome": "Prazo Máximo",
-    "tipo": "limitação",
-    "valor": "-10",
-    "por_nivel": false,
-    "bonus_base": 0,
-    "pagina": 111,
-    "tags": [
-      "Poderes",
-      "Variável"
-    ],
-    "descricao": "Disponível somente para habilidades benéficas, que possam ser ativadas à vontade e que normalmente possam ser mantidas “ativadas” indefinidamente (por exemplo, Insubstancialidade). A habilidade do personagem pode funcionar apenas por um período de tempo limitado. Depois disso, ela se desativará sem aviso e não poderá ser reativada por cinco minutos. O valor da limitação dependerá do limite de tempo:\n\n*   **Menos de 30 segundos:** -75%\n*   **Até 1 minuto:** -65%\n*   **Até 10 minutos:** -50%\n*   **Até 30 minutos:** -25%\n*   **Até 1 hora:** -10%\n*   **Até 12 horas (ou uma noite):** -5%\n*   **Mais do que 12 horas:** -0%"
-  },
-  {
-    "id": "prazo_minimo",
-    "nome": "Prazo Mínimo",
-    "tipo": "limitação",
-    "valor": "-5",
-    "por_nivel": false,
-    "bonus_base": 0,
-    "pagina": 112,
-    "tags": [
-      "Poderes",
-      "Variável"
-    ],
-    "descricao": "Disponível somente para habilidades que possam ser ativadas e que — segundo o MJ — possam ser um inconveniente grave se não for possível desativá-las à vontade. Uma vez ativada, a habilidade deve permanecer \"ativada\" por um certo período de tempo; não será possível desativá-la antes que esse prazo se esgote. O Prazo Mínimo jamais pode exceder o Prazo Máximo (se houver). O valor da limitação é o que segue:\n\n*   **Menos de 1 hora:** -0%\n*   **Até 8 horas:** -5%\n*   **Até 12 horas (ou uma noite):** -10%\n*   **Até 24 horas:** -15%\n*   **Até 1 semana:** -20%\n*   **Até 1 mês:** -25%\n*   **Mais do que 1 mês:** -30%\n\nNo caso de uma vantagem que permita Sempre Ativa, esta limitação valerá no máximo -5% a menos que Sempre Ativa; por exemplo, se Sempre Ativa for -20%, Prazo Mínimo não poderá ir além de -15%."
-  },
-  {
-    "id": "seletiva",
-    "nome": "Seletiva",
-    "tipo": "limitação",
-    "valor": "-20",
-    "por_nivel": false,
-    "bonus_base": 0,
-    "pagina": 112,
-    "tags": [
-      "Poderes"
-    ],
-    "descricao": "A habilidade do personagem funciona somente quando ligada a uma classe específica de tarefas ou atividades relacionadas (por exemplo, esportes, combate, investigação, ou interação social), ou em uma área específica do cotidiano (por exemplo, trabalho, saúde ou vida amorosa). O MJ tem a última palavra, e pode definir as categorias de maneira tão ampla ou restrita quanto desejar.\n\nSeletiva serve para Intuição, Serendipidade e vantagens que afetem diretamente as possibilidades de sucesso do personagem em suas tarefas (Sorte, Super Sorte, Visualização etc.). O Mestre pode permiti-la em outras características. Porém, alguns \"aspectos\" que podem ser objeto da Seletividade não são úteis mesmo em habilidades normalmente permitidas; por exemplo, a Visualização é tão lenta que Seletiva, Combate a tornaria inútil."
-  },
-  {
-    "id": "uso_total",
-    "nome": "Uso Total",
-    "tipo": "limitação",
-    "valor": "-25",
-    "por_nivel": false,
-    "bonus_base": 0,
-    "pagina": 112,
-    "tags": [
-      "Poderes",
-      "Manobra"
-    ],
-    "descricao": "A habilidade do personagem exige uma manobra Ataque Total; ele não pode usá-la com qualquer outra manobra (por exemplo, Deslocamento ou Mudança de Posição). Ela não terá nenhuma defesa ativa ao usá-la. Se ela permitir o deslocamento por mais do que um passo, ele estará limitado a metade de seu Deslocamento ao seguir em frente. Ele poderá atacar se a vantagem for do tipo que permita fazê-lo, mas o Uso Total não serve apenas para habilidades de ataque; ele também pode ser adicionado a qualquer vantagem que exija uma manobra para ser usada (normalmente Concentrar ou Preparar), substituindo a manobra padrão por Ataque Total. O personagem deve explicar o que está fazendo para ser restringido: concentração profunda, girar em sua posição etc."
-  },
-  {
-    "id": "visivel",
-    "nome": "Visível",
-    "tipo": "limitação",
-    "valor": "-10",
-    "por_nivel": false,
-    "bonus_base": 0,
-    "pagina": 112,
-    "tags": [
-      "Poderes",
-      "Variável"
-    ],
-    "descricao": "A habilidade do personagem possui uma manifestação que a torna completamente óbvia a todos que estiverem por perto. Os efeitos e o valor dependem da vantagem subjacente:\n\n*   Uma habilidade de comunicação, influência, informação ou sensorial, que de outra maneira não teria nenhum efeito visível, como Clarissenciência ou Leitura da Mente, gerará um efeito que chama a atenção (raio cintilante, olho flutuante, etc.) que denuncia o fato do personagem estar afetando ou observando o alvo. Isto torna a sutileza impossível (se não o fizer, não será uma limitação). -10%.\n*   Uma habilidade que permita atacar fisicamente pode se qualificar se normalmente for invisível e em grande parte inevitável; por exemplo, a Telecinese. Além dos efeitos descritos, o alvo terá direito a uma jogada de defesa sem penalidades para evitar o ataque. -20%."
-  },
-  {
-    "id": "voluvel",
-    "nome": "Volúvel",
-    "tipo": "limitação",
-    "valor": "-20",
-    "por_nivel": false,
-    "bonus_base": 0,
-    "pagina": 112,
-    "tags": [
-      "Poderes"
-    ],
-    "descricao": "A habilidade do personagem é, ou parece ser, senciente, e às vezes reage mal. Faça um teste de reação sem modificadores cada vez que desejar usá-la. Para um ataque, esse teste deve ser feito antes de cada uso. Para outras habilidades, a vantagem funcionará até que o personagem precise fazer um teste para ela… nesse momento ele deverá fazer um teste de reação. Por exemplo, Voo exige um teste de reação ao tentar um teste de DX para forçar os limites, ou um teste de Acrobacia Aérea ou da perícia Voo, e Visão no Escuro exige um teste de reação todas as vezes que o usuário tentar um teste de Visão no escuro. Até mesmo habilidades \"passivas\" exigem jogadas de dados, às vezes; consulte Esforço Adicional (pág. 160), Defesa com Poderes (pág. 167), e Proezas (pág. 170).\n\nEm caso de uma reação igual ou superior a Neutra (10+), a habilidade funcionará como o esperado e o personagem poderá tentar sua jogada de ataque, teste de DX, teste de Sentidos etc., conforme aplicável. Uma reação Muito Boa (16–18) concederá +1 ao teste consequente; uma reação Excelente (19+) concederá +2.\n\nNo caso de uma reação igual ou inferior a Fraca (9 ou menos), a habilidade falhará. Se ela já não estava ativa, se recusará a se ativar. Se ela estava ativa, ela se desativará. Normalmente isso não representa um perigo direto para o usuário; por exemplo, Voo desce o personagem delicadamente, e Insubstancialidade o deixa em um espaço aberto. Obviamente, a perda repentina da RD durante uma batalha, da Visão no Escuro em uma sala sem iluminação e repleta de armadilhas e assim por diante podem ameaçar o personagem indiretamente.\n\nCom uma reação igual ou inferior a Muito Fraca (3 ou menos), a habilidade deixará o personagem em perigo, ou se voltará contra ele de alguma maneira desagradável. O Voo o derrubará como uma pedra, a Insubstancialidade o deixará preso dentro de uma parede, o ataque dele atingirá a ele mesmo, e assim por diante. O Mestre deverá ser criativo!\n\nO usuário poderá tentar invocar uma habilidade falhada a cada segundo, se desejar, mas o teste de reação terá uma penalidade cumulativa de -1 por tentativa repetida, conforme a habilidade (ou qualquer força por trás dela) se torna cada vez mais irritada pelas solicitações do personagem. Para eliminar esta penalidade, o personagem deve passar uma hora inteira sem usar sua habilidade.\n\nVolúvel costuma ser parte de um modificador de poder; consulte Forças Volúveis (pág. 24). Neste caso, o resultado do teste de reação e a hora necessária para remover as penalidades por tentativas repetidas se aplicarão à totalidade do poder. As habilidades desses poderes não podem assumir esta limitação; elas já a possuem.\n\nO Mestre pode permitir uma limitação mais leve:\n\n**Exige Teste de Reação:** A habilidade do personagem funciona como descrito anteriormente, mas os modificadores de reação normais se aplicam ao teste de reação, e é possível usar um teste de Influência em seu lugar. -5%."
-  }
+ {
+  "id": "afeta_outros",
+  "nome": "Afeta Outros",
+  "tipo": "ampliação",
+  "valor": "50",
+  "por_nivel": true,
+  "bonus_base": 0,
+  "pagina": 107,
+  "tags": [
+   "Poderes",
+   "Variável"
+  ],
+  "descricao": "O personagem pode estender os benefícios de sua vantagem a outros. Se ele for capaz de afetar uma quantidade limitada de objetivos dispostos mediante o toque, Afeta Outros custará +50% por pessoa. Isto não é um ataque; ele não terá efeito sobre alvos relutantes. É necessária uma manobra Preparar para fazer contato com cada participante, que deverá estar ao alcance. Isto concede os efeitos da vantagem, não a capacidade de usá-la. O personagem pode “desativá-la” e “ativá-la”, ajustar seu nível e assim por diante, e suas decisões aplicam-se igualmente a ele mesmo e a todos os demais.\n\nA habilidade do personagem afetará outros apenas enquanto eles estiverem em contato com ele. Os alvos poderão interromper o efeito a qualquer momento rompendo o contato com o personagem. Para afetar aqueles que estejam meramente próximos, é necessário incluir Efeito de Área; nesse caso, uma manobra Preparar permitirá que o personagem afete qualquer quantidade de pessoas até o seu limite, se elas estiverem dentro da área.\n\nA versão de Afeta Outros descrita anteriormente serve para habilidades de movimento (como Voo e Interposição) e transformações físicas (por exemplo, Crescimento e Encolhimento). Ela é uma boa maneira de manter os personagens juntos em aventuras que deixariam para trás aqueles incapazes de voar, encolher etc. O Mestre pode permitir Afeta Outros em outras características quando servir a este objetivo.\n\nSe Campo de Força (a seguir) for aplicada a uma das defesas listadas para ela, será possível incluir Afeta Outros por +50% fixos, desde que o personagem também escolha pelo menos um nível de Efeito de Área. Tomados em conjunto, esses três modificadores permitem estender a proteção da vantagem sobre todos que estejam dentro da área do personagem. Esse campo de força protegerá contra ataques e perigos que o atravessem vindos de fora. Ameaças dentro do campo de força ignoram sua proteção.\n\nSe for baseado na Resistência a Dano, o campo de força ainda impedirá o movimento. Inimigos que desejem atravessá-lo deverão forçar a entrada. Os que tentarem isso como ação livre (permitida uma vez por turno) deverão fazer uma avaliação de seu dano em GdP. Aqueles que usarem Ataque, Avançar e Atacar, ou Ataque Total para forçar a entrada, avaliarão o dano normal do ataque. Se o dano ultrapassar a RD, o invasor fará uma abertura grande o bastante para atravessar. Ela se fechará ao fim do turno do invasor, e não enfraquecerá o campo de força.\n\nO MJ não deverá permitir nenhuma forma de Afeta Outros para vantagens que permitam ao usuário fazer algo, como Cura, Ataque Inato e Controle da Mente. Para conceder características proibidas ou afetar objetivos relutantes, o personagem deve ter Atribulação com uma ampliação Vantagem adequada."
+ },
+ {
+  "id": "alcance_temporal",
+  "nome": "Alcance Temporal",
+  "tipo": "ampliação",
+  "valor": "50",
+  "por_nivel": false,
+  "bonus_base": 0,
+  "pagina": 108,
+  "tags": [
+   "Poderes",
+   "Tempo"
+  ],
+  "descricao": "A habilidade do personagem funciona através do tempo. Os testes para usá-la desta forma têm uma penalidade pela diferença temporal entre o personagem e seu alvo; use os Modificadores de Longa Distância (pág. MB241) e substitua cada 1,5 km por um dia. Determine a distância espacial como se estivesse no mesmo ponto do tempo. Esta ampliação valerá +50% se o personagem for capaz de alcançar somente o passado ou somente o futuro, ou +100% se ele puder alcançar ambos; inclua -50% se a habilidade não funcionar no presente.\n\nO Mestre decidirá quais vantagens podem ter esta ampliação. Ela é voltada para habilidades sensoriais e de comunicação (como Clarissenciência e Diapsiquia), mas pode servir para outras habilidades mentais, como a Possessão, se o usuário também tiver uma habilidade que possibilite sentir a presença de seu alvo no tempo. Se o Mestre permitir esta vantagem em um ataque, Cósmica (+50%) será um pré-requisito."
+ },
+ {
+  "id": "alcance_transmundial",
+  "nome": "Alcance Transmundial",
+  "tipo": "ampliação",
+  "valor": "50",
+  "por_nivel": false,
+  "bonus_base": 0,
+  "pagina": 108,
+  "tags": [
+   "Poderes",
+   "Dimensão"
+  ],
+  "descricao": "A habilidade do personagem pode alcançar mundos paralelos. Defina a distância espacial como se o personagem e seu alvo estivessem no mesmo mundo. O MJ ainda pode permitir a variação Alcance Transplanar para habilidades que funcionem entre dimensões além de mundos paralelos. Cada uma valerá +50% se o personagem só puder entrar em contato com outros mundo ou planos, ou +100% se a habilidade dele também funcionar no reino onde ele estiver. Veja Alcance Temporal (pág. 108) para diretrizes sobre vantagens permitidas."
+ },
+ {
+  "id": "ativada_desativada_vontade",
+  "nome": "Ativada ou Desativada à Vontade",
+  "tipo": "ampliação",
+  "valor": "10",
+  "por_nivel": false,
+  "bonus_base": 0,
+  "pagina": 108,
+  "tags": [
+   "Poderes"
+  ],
+  "descricao": "Esta ampliação existe apenas para características fisiológicas (por exemplo, Garras), defesas, e outras características que normalmente sejam \"sempre ativas\". Ela permite ativar ou desativar uma vantagem com uma manobra Preparar. É necessário especificar se ela é ativada, desativada ou permanece no estado atual, seja qual for, quando o personagem é nocauteado.\n\nNão é possível incluir Ativada ou Desativada à Vontade em uma vantagem que liste modificadores especiais que capacitam o usuário a ativá-la e desativá-la, independente da habilidade do personagem ter ou não esses modificadores. Se uma vantagem indicar Ativada ou Desativada à Vontade como uma ampliação especial de valor diferente, esse valor deverá ser usado. Ativada ou Desativada à Vontade também não é permitida para metacaracterísticas. Para ativar ou desativar uma metacaracterística, use Forma Alternativa.\n\nUma versão mais fraca desta ampliação é lógica para algumas vantagens:\n\n**Normalmente Ativa:** Apenas para vantagens \"sempre ativas\" por definição. A habilidade normalmente está ativa, mas o personagem pode desativá-la com o gasto de 1 PF por segundo. Para vantagens que costumem ficar desativadas por definição esta é uma limitação; consulte Sempre Ativa (pág. 107). +5%."
+ },
+ {
+  "id": "campo_de_forca",
+  "nome": "Campo de Força",
+  "tipo": "ampliação",
+  "valor": "20",
+  "por_nivel": false,
+  "bonus_base": 0,
+  "pagina": 108,
+  "tags": [
+   "Poderes",
+   "Defesa"
+  ],
+  "descricao": "Esta ampliação converte uma característica defensiva em um campo projetado a curta distância do corpo do personagem. O campo engolfa e protege todo o corpo do usuário, inclusive seus olhos e qualquer coisa que ele esteja carregando ou usando (até carga Muito Pesada), mesmo que a característica sem modificadores não o faça. Sempre aplique seus efeitos antes dos efeitos de armadura, trajes ambientais etc. Veja Estendendo Defesas (pág. 173) para mais benefícios.\n\nO Campo de Força é adequado para a Abascanto, Escorregadio, Lacrado, Resistência a Dano (porém, nunca com Pele Resistente), Resistência à Pressão, Resistência ao Vácuo, Resistente, Sentido Protegido, Tolerância à Radiação, Tolerância à Temperatura, e Tolerância-G Ampliada. O Mestre pode permiti-lo para outras vantagens. Se tiver várias características com Campo de Força, o personagem deverá indicar se possui um campo de força ou vários (e em qual ordem).\n\nO Campo de Força costuma ocorrer em conjunto com Afeta Outros e Efeito de Área (veja Afeta Outros, pág. 107, para regras), e ao lado da limitação Defesa Ativa (pág. 110)."
+ },
+ {
+  "id": "capaz_carregar_objetos",
+  "nome": "Capaz de Carregar Objetos",
+  "tipo": "ampliação",
+  "valor": "10",
+  "por_nivel": false,
+  "bonus_base": 0,
+  "pagina": 108,
+  "tags": [
+   "Poderes"
+  ],
+  "descricao": "Transformações físicas normalmente afetam o corpo do usuário, mas não seus pertences. Com esta ampliação, a vantagem também transforma os objetos que o personagem estiver transportando ou vestindo. Ela deixa de afetar esses objetos quando o personagem os larga. Capaz de Carregar Objetos já está definida para Encolhimento, Forma de Sombra, Insubstancialidade, Interposição, e Invisibilidade, mas também é útil para Camaleão, Crescimento, Morfose, Pele Elástica, e qualquer outra coisa que o Mestre permita.\n\nO custo dependerá do quanto o personagem pode transportar:\n\n*   **Nenhuma Carga** vale +10%\n*   **Leve**, +20%\n*   **Média**, +50%\n*   **Pesada**, +100%\n\nPara o personagem afetar pessoas que esteja tocando, inclua Afeta Outros (pág. 107). Para estender efeitos defensivos às suas posses, escolha Campo de Força (pág. 108)."
+ },
+ {
+  "id": "confiavel",
+  "nome": "Confiável",
+  "tipo": "ampliação",
+  "valor": "5",
+  "por_nivel": true,
+  "bonus_base": 0,
+  "pagina": 108,
+  "tags": [
+   "Poderes"
+  ],
+  "descricao": "A habilidade do personagem normalmente funciona da forma pretendida. Talvez ele tenha uma extensa experiência ou aptidão natural com ela, ou talvez ela apenas seja fácil de usar. Seja qual for o motivo, ele terá um bônus em todos os testes para usá-la. Esta ampliação funciona exatamente como Talento, e não pode afetar nada que o Talento normalmente não poderia. Ela é cumulativa com Talento, quando aplicável.\n\nConfiável é útil para vantagens que costumam estar sujeitas a grandes penalidades (como -8 para o uso ativo da Precognição). Ela não está disponível para ataques à distância; use Acurado (pág. MB102) para eles. Confiável custa +5% por +1 de bônus, até um máximo de +10."
+ },
+ {
+  "id": "distancia_prolongada",
+  "nome": "Distância Prolongada",
+  "tipo": "ampliação",
+  "valor": "50",
+  "por_nivel": true,
+  "bonus_base": 0,
+  "pagina": 109,
+  "tags": [
+   "Poderes",
+   "Ataque"
+  ],
+  "descricao": "A habilidade de longa distância usa uma classe de penalidades por distância melhor do que a costumeira. Da pior para a melhor, essas categorias são -1/metro, como uma mágica Comum (pág. MB239), a Tabela de Tamanho e Velocidade/Distância (pág. MB550), Modificadores de Longa Distância (pág. MB241), e nenhuma penalidade que seja. Cada nível de Distância Prolongada deixa as penalidades mais favoráveis em uma categoria. As distâncias de 1/2D e Max da habilidade não são alteradas; para isso, use Alcance Ampliado ou Alcance Reduzido. Distância Prolongada afeta o custo de Acompanhamento."
+ },
+ {
+  "id": "erosivo",
+  "nome": "Erosivo",
+  "tipo": "ampliação",
+  "valor": "10",
+  "por_nivel": false,
+  "bonus_base": 0,
+  "pagina": 109,
+  "tags": [
+   "Poderes",
+   "Ataque"
+  ],
+  "descricao": "Erosivo deve acompanhar Agente Sanguíneo, Agente de Contato ou Agente Respiratório, bem como Efeito de Área ou Cone. O ataque do personagem é um gás que corrói vedações de máscaras de gás, trajes ambientais, etc. Sempre que o usuário de algum equipamento deste tipo for exposto ao gás, deverá fazer um teste da HT do equipamento. Considere a HT como 12, a menos que seja especificado o contrário. Qualquer fracasso significará uma infiltração de gás o suficiente para afetar o personagem e reduzir a HT de seu equipamento em 1 (esta perda é cumulativa). Restaurar 1 ponto da HT perdida exige um conserto maior (veja Consertos, pág. MB484)."
+ },
+ {
+  "id": "independente",
+  "nome": "Independente",
+  "tipo": "ampliação",
+  "valor": "40",
+  "por_nivel": false,
+  "bonus_base": 0,
+  "pagina": 109,
+  "tags": [
+   "Poderes"
+  ],
+  "descricao": "Esta ampliação serve para vantagens que exigem a concentração para serem controladas. A habilidade não exige atenção nenhuma após a manobra Concentrar ou Preparar inicial para ativá-la. Se ela exigir uma jogada de dados, ela durará uma quantidade de minutos igual à margem de sucesso do personagem (ou da margem de vitória, no caso de um habilidade resistível) ou sua duração costumeira; o que for menor. Durante esse tempo, ela será completamente autossuficiente. Seus efeitos perdurarão mesmo que o personagem seja incapacitado ou morto.\n\nIndependente não permite várias instâncias dos efeitos da vantagem, a menos que esse seja o padrão da característica. Se esse for o padrão, todas as instâncias serão \"com as mãos livres\", e o personagem será isento das penalidades por usos simultâneos.\n\nO único ponto negativo é que o personagem não terá controle sobre sua habilidade após a ativação. Seus efeitos durarão por todo o prazo especificado anteriormente; não é possível interrompê-los antes ou mantê-los. O personagem deverá especificar todos os detalhes exigidos pela habilidade ao ativá-la, e não poderá mudá-los depois.\n\nIndependente vale +40% para a maioria das vantagens e +70% para aquelas com penalidades por usos simultâneos."
+ },
+ {
+  "id": "reflexiva",
+  "nome": "Reflexiva",
+  "tipo": "ampliação",
+  "valor": "40",
+  "por_nivel": false,
+  "bonus_base": 0,
+  "pagina": 109,
+  "tags": [
+   "Poderes",
+   "Defesa"
+  ],
+  "descricao": "Reflexiva serve para defesas que levam um segundo para serem ativadas, sentidos que exijam um segundo de concentração (por exemplo, Detecção), e qualquer coisa que o Mestre ache que cumpra um papel semelhante. Ela permite que a habilidade se ative sozinha — sob ataque, no caso de uma defesa, ou na presença de algo \"interessante\" no caso de um sentido — sem a necessidade de uma manobra Preparar ou Concentrar. Se normalmente ela exigir um teste de habilidade, a ativação exigirá um teste com redutor de -4; caso contrário, será automática. Se o personagem estiver adormecido, o sucesso na ativação também o acordará.\n\nReflexiva conta como um nível de Tempo Reduzido ao usar a habilidade conscientemente. Ela é incompatível com Defesa Ativa, Sempre Ativa e Normalmente Ativa."
+ },
+ {
+  "id": "ricochete",
+  "nome": "Ricochete",
+  "tipo": "ampliação",
+  "valor": "10",
+  "por_nivel": false,
+  "bonus_base": 0,
+  "pagina": 109,
+  "tags": [
+   "Poderes",
+   "Ataque"
+  ],
+  "descricao": "Ao usar Ricochetes (pág. 166), o ataque do personagem não tem o dano diminuído a cada ricochete."
+ },
+ {
+  "id": "tempo_de_jogo",
+  "nome": "Tempo de Jogo",
+  "tipo": "ampliação",
+  "valor": "0",
+  "por_nivel": false,
+  "bonus_base": 0,
+  "pagina": 109,
+  "tags": [
+   "Poderes",
+   "Variável"
+  ],
+  "descricao": "Algumas características, inclusive Sorte, Serendipidade e Talento Instintivo, dependem do tempo real. Este modificador permite que uma vantagem dessas use o tempo do jogo em vez disso. Se normalmente ela funcionar pelo menos uma vez por hora do mundo real, o personagem terá uma quantidade de usos por dia igual à quantidade máxima de usos por hora real; por exemplo, a Sorte Impossível, que funciona a cada 10 minutos em tempo real, terá seis usos por dia de jogo. Se ela for classificada em termos de uso por sessão, o personagem terá aquela quantidade de usos por semana no jogo; por exemplo, Serendipidade 3 concederá três usos por semana de jogo. O MJ pode ajustar essas proporções."
+ },
+ {
+  "id": "uma_vez_ativa_sempre_ativa",
+  "nome": "Uma Vez Ativa, Sempre Ativa",
+  "tipo": "ampliação",
+  "valor": "50",
+  "por_nivel": false,
+  "bonus_base": 0,
+  "pagina": 109,
+  "tags": [
+   "Poderes",
+   "Físico"
+  ],
+  "descricao": "Apenas para transformações físicas que sejam canceladas se o personagem for nocauteado ou morto; principalmente Pele Elástica, Forma de Sombra e Metamorfose. O personagem reverterá para sua forma \"normal\" apenas se escolher fazê-lo conscientemente. O sono, a inconsciência ou a morte não o forçam a mudar. Partes do corpo perdidas podem permanecer transformadas após o personagem retomar a forma natural; isso deve ser especificado no momento da compra da habilidade."
+ },
+ {
+  "id": "ambiental",
+  "nome": "Ambiental",
+  "tipo": "limitação",
+  "valor": "-5",
+  "por_nivel": false,
+  "bonus_base": 0,
+  "pagina": 110,
+  "tags": [
+   "Poderes",
+   "Variável"
+  ],
+  "descricao": "Apenas vantagens que afetem a outros podem ter esta limitação. A habilidade do personagem manipula um item ou uma condição existente que deve estar em contato com o alvo ou cercá-lo. Diferente de Acesso, isto não afeta a ativação; o personagem pode ativar sua habilidade em qualquer lugar, exceto em caso de falha no teste ou alguma outra limitação. Porém, a habilidade será efetiva apenas se o objetivo estiver em um ambiente específico… e o Mestre poderá alterar seus efeitos se o ambiente que ele estiver tentando manipular for incomum de alguma maneira.\n\n*Exemplo: Uma Retenção que ordene plantas a se enroscarem na vítima não faria nada em uma área sem vegetação. Ela seria um pouco mais do que um incômodo se a única planta por perto fosse uma samambaia… e totalmente imprevisível em uma selva alienígena!*\n\nO Mestre deve basear o valor na raridade do ambiente:\n\n*   **Muito Comum:** O ambiente está presente todo o tempo, fora uma ou duas situações incomuns que um inimigo teria dificuldades para preparar, como em um campo gravitacional, na presença do ar ou em um planeta. -5%.\n*   **Comum:** O ambiente está presente na maior parte do tempo, mas um inimigo criativo poderia tomar providências para que ele estivesse ausente; por exemplo, em contato com a poeira ou na presença de micróbios. -10%.\n*   **Ocasional:** O ambiente normalmente está ausente, ou pode ser facilmente evitado por inimigos (embora um usuário astuto possa ser capaz de se preparar para um encontro importante de maneira a contornar isto); por exemplo, em uma cidade, no ermo, ao ar livre ou tocando o solo. -20%.\n*   **Raro:** O ambiente normalmente está ausente e é difícil para o usuário providenciá-lo; por exemplo, em uma tempestade, com vegetação densa, no deserto ou no subterrâneo. -40%.\n*   **Muito Raro:** O ambiente é tão improvável que a habilidade é inútil na maior parte do tempo; por exemplo, na lava, areia movediça ou no vácuo. -80%.\n\nO MJ deve proibir propostas de limitações ambientais que dupliquem uma das restrições embutidas da habilidade; por exemplo, \"na água\" não é válida para Controle (Água). Em jogos com poderes, uma habilidade que receba -10% por uma medida ou um isolante mundano como parte de seu modificador de poder já possui esta limitação; não é necessário aplicá-la pela segunda vez."
+ },
+ {
+  "id": "apenas_insubstancial",
+  "nome": "Apenas Insubstancial",
+  "tipo": "limitação",
+  "valor": "-30",
+  "por_nivel": false,
+  "bonus_base": 0,
+  "pagina": 110,
+  "tags": [
+   "Poderes"
+  ],
+  "descricao": "A habilidade do personagem afeta apenas alvos intangíveis: seres com a metacaracterística Espírito e usuários de Clarissenciência, Saltador ou Dobra com o modificador especial Projeção. Este modificador é especialmente útil para ataques com o objetivo de exorcizar espíritos."
+ },
+ {
+  "id": "bloqueavel",
+  "nome": "Bloqueável",
+  "tipo": "limitação",
+  "valor": "-5",
+  "por_nivel": false,
+  "bonus_base": 0,
+  "pagina": 110,
+  "tags": [
+   "Poderes",
+   "Ataque"
+  ],
+  "descricao": "Habilidades de ataque à distância (Atribulação, Retenção, Ataque Inato, vantagens com a ampliação Longa Distância, etc.) normalmente funcionam como armas de fogo no que se refere às defesas ativas legais do alvo: a vítima pode apenas se esquivar. Habilidades que afetem uma área, inclusive qualquer coisa com Efeito de Área, Cone ou Explosão, permitem apenas uma tentativa de buscar cobertura, sejam elas de longa distância ou não. Se algum dos tipos de ataque produzir um efeito que o alvo possa tentar bloquear com um escudo, esta será uma limitação de -5%, ou de -10%, se ele também puder tentar aparar.\n\nEsta limitação serve para simular projéteis de baixa velocidade (como redes ou magias de Projétil), enxames de criaturas convocadas e assim por diante. Para bloquear um ataque com Bloqueável e De Cima, como uma chuva de pedras, o defensor deverá segurar seu escudo sobre a cabeça."
+ },
+ {
+  "id": "condicao_cancelamento",
+  "nome": "Condição de Cancelamento",
+  "tipo": "limitação",
+  "valor": "-5",
+  "por_nivel": false,
+  "bonus_base": 0,
+  "pagina": 110,
+  "tags": [
+   "Poderes",
+   "Variável"
+  ],
+  "descricao": "Permitida apenas em habilidades que afetem outros por pelo menos um minuto. Os inimigos do personagem podem interromper os efeitos contínuos de sua habilidade com uma ação simples: beijar o objetivo, dizer três palavras, etc. Se esta condição não for cumprida, os efeitos terão a duração normal.\n\nO valor será -5% se a condição for arcana o suficiente para exigir pesquisa; -10% se um teste de perícia (contra Ritual Religioso, Magia Ritualística, Taumatologia, etc.), puder desvendá-la; ou -20% se ela for conhecimento comum. Esses valores mudam para -0% (um efeito especial), -5% e -10% se a condição for difícil de providenciar, mesmo que seja conhecida, como um beijo de uma princesa ou palavras ditas por um elfo.\n\nHabilidades que não possam terminar até que determinada condição tenha sido cumprida têm meramente Prazo Estendido, Permanente (+150%). Essa ampliação já exige uma condição desse tipo; não é possível escolher Condição de Cancelamento separadamente."
+ },
+ {
+  "id": "custa_pv",
+  "nome": "Custa Pontos de Vida",
+  "tipo": "limitação",
+  "valor": "-10",
+  "por_nivel": true,
+  "bonus_base": 0,
+  "pagina": 110,
+  "tags": [
+   "Poderes",
+   "Variável"
+  ],
+  "descricao": "Esta limitação funciona exatamente como Custa Fadiga (pág. MB111), porém ela gasta os PV em vez dos PF, e tem o dobro do valor: -10% a cada PV por uso, duplicados para -20% se o custo for por segundo. Ela também pode converter os custos de PF integrados em vantagens para custos em PV, a -5% por PF convertido, ou -10% por PF, se o custo for por segundo."
+ },
+ {
+  "id": "distancia_minima",
+  "nome": "Distância Mínima",
+  "tipo": "limitação",
+  "valor": "-5",
+  "por_nivel": false,
+  "bonus_base": 0,
+  "pagina": 110,
+  "tags": [
+   "Poderes",
+   "Ataque"
+  ],
+  "descricao": "O personagem não é capaz de usar sua habilidade de longa distância contra um inimigo dentro de certa distância. Isto deve ser usado para armas com distância mínima para detonação ou que disparem em um arco elevado, e para sensores com um \"ponto cego\" dentro do qual não sejam capazes de definir alvos. O Mestre deve restringir este modificador a habilidades de longa distância que normalmente sejam úteis a uma distância relativamente curta. Isto valerá -10% para uma distância mínima de 5% do máximo, -5% para uma distância mínima igual a 1% do máximo (no mínimo um metro, sempre)."
+ },
+ {
+  "id": "distancia_encurtada",
+  "nome": "Distância Encurtada",
+  "tipo": "limitação",
+  "valor": "-10",
+  "por_nivel": true,
+  "bonus_base": 0,
+  "pagina": 111,
+  "tags": [
+   "Poderes",
+   "Ataque"
+  ],
+  "descricao": "A habilidade de longa distância está sujeita a penalidades por distância mais rígidas que o costumeiro. Use as regras para Distância Prolongada (pág. 109), porém, cada nível torna as penalidades menos favoráveis em uma categoria. É possível combinar Distância Encurtada com Alcance Reduzido, mas o valor total da limitação não pode ultrapassar -30%. A Distância Encurtada afeta o custo de Acompanhamento. Ela é incompatível com Guiado, Teleguiado, Distância Prolongada e Ataque Corpo a Corpo."
+ },
+ {
+  "id": "especifico",
+  "nome": "Específico",
+  "tipo": "limitação",
+  "valor": "-40",
+  "por_nivel": false,
+  "bonus_base": 0,
+  "pagina": 111,
+  "tags": [
+   "Poderes",
+   "Variável"
+  ],
+  "descricao": "Específico restringe uma habilidade que permita interagir com um material a um subconjunto daquilo que ela afeta normalmente. Vantagens que já exijam uma escolha particular de materiais não podem ser Específicas. Esta limitação geralmente vale -40% para materiais comuns, -60% para os incomuns, e -80% para os absurdos, mas cabe ao Mestre definir o valor exato, que pode ser tão pouco quanto -10%, para materiais muito comuns. Habilidades que afetem metais ferrosos — ferro (inclusive aço), níquel e cobalto — têm uma limitação de -50%, chamada \"Magnética\" em vez de \"Específica, Metais Ferrosos\", para economizar espaço. Consulte os exemplos em Aderência (pág. MB35), Caminhar no Ar (pág. 46), Caminhar sobre Líquidos (pág. 46), Super Escalada (pág. 78), e Visão Penetrante (pág. MB97) para mais sugestões."
+ },
+ {
+  "id": "exige_concentrar_preparar",
+  "nome": "Exige Concentrar ou Preparar",
+  "tipo": "limitação",
+  "valor": "-10",
+  "por_nivel": false,
+  "bonus_base": 0,
+  "pagina": 111,
+  "tags": [
+   "Poderes"
+  ],
+  "descricao": "A habilidade do personagem exige uma série de manobras Concentrar ou Preparar para ser mantida. Assumir qualquer outra manobra (como Ataque ou Deslocamento) fará com que ela se desative. Portanto, o portador poderá se mover apenas um passo por segundo ao usá-la, e não poderá atacar, mirar etc. Exige Preparar vale -10%. Exige Concentrar vale -15%, e significa que a habilidade se desativa se o usuário perder a concentração. Não é possível combinar estas limitações uma com a outra ou com Uso Total (pág. 112).\n\nNormalmente, apenas vantagens que possam ser ativadas e normalmente permaneceriam ativadas sem um esforço ativo podem ter essas limitações. Uma habilidade passiva sem condições de ativação definidas (por exemplo, Empatia) também pode tê-las; se esse for o caso, ela exigirá a manobra em questão para ser usada."
+ },
+ {
+  "id": "exige_teste_atributo",
+  "nome": "Exige Teste de (Atributo)",
+  "tipo": "limitação",
+  "valor": "-10",
+  "por_nivel": false,
+  "bonus_base": 0,
+  "pagina": 111,
+  "tags": [
+   "Poderes",
+   "Variável"
+  ],
+  "descricao": "Esta limitação funciona como Inconstante (pág. MB113), exceto que, em vez de fazer um teste contra um número de ativação fixo para usar a vantagem, o personagem fará um teste de DX, IQ, HT, Vontade ou Per (escolha um ao comprar a habilidade). Fatores que modifiquem temporariamente o valor usado afetam esse teste. Para uma habilidade defensiva, o teste deve ser feito cada vez que a defesa possa servir para evitar um ataque ou perigo, ou uma vez por minuto, no caso de exposição constante. -10% para um teste de DX, IQ ou HT; -5% para um teste de Vontade ou Per.\n\nExiste uma versão especial desta limitação para as características defensivas listadas em Campo de Força (pág. 108):\n\n**Defesa Ativa:** A habilidade do personagem somente o protege contra ameaças das quais ele esteja ciente, e apenas se ele tiver sucesso em um teste para usá-la como interposição a tempo. Esse teste é feito com DX/2 + 3, +1 por Reflexos em Combate. Se o personagem tentar usar a mesma habilidade mais de uma vez em um turno, aplique uma penalidade cumulativa de -4 por tentativa após a primeira. O teste será feito com penalidade igual a -4 se o personagem estiver atordoado, e ele não poderá tentá-lo em situações em que não teria uma defesa ativa (ataque por trás, inconsciente etc.). -40%."
+ },
+ {
+  "id": "glamour",
+  "nome": "Glamour",
+  "tipo": "limitação",
+  "valor": "-5",
+  "por_nivel": false,
+  "bonus_base": 0,
+  "pagina": 111,
+  "tags": [
+   "Poderes",
+   "Ilusão"
+  ],
+  "descricao": "Disponível somente para Camaleão, Pele Elástica, Invisibilidade, Metamorfose (com a limitação Cosmética), Silêncio e características similares que alterem a maneira como os outros percebem o usuário. A habilidade do personagem controla a percepção dos outros por meio de sugestão hipnótica persistente, ilusão mental ou compulsão psíquica. Ela não afeta máquinas. Vítimas que sejam seres vivos têm direito a um teste de Vontade para resistir à influência do usuário e percebê-lo normalmente, e indivíduos com Escudo Mental podem adicionar seu nível a este teste. Um teste de resistência contra Vontade -5 vale -5%. Cada +1 no teste vale outros -5% (por exemplo, Vontade +4 equivale a -50%)."
+ },
+ {
+  "id": "prazo_maximo",
+  "nome": "Prazo Máximo",
+  "tipo": "limitação",
+  "valor": "-10",
+  "por_nivel": false,
+  "bonus_base": 0,
+  "pagina": 111,
+  "tags": [
+   "Poderes",
+   "Variável"
+  ],
+  "descricao": "Disponível somente para habilidades benéficas, que possam ser ativadas à vontade e que normalmente possam ser mantidas “ativadas” indefinidamente (por exemplo, Insubstancialidade). A habilidade do personagem pode funcionar apenas por um período de tempo limitado. Depois disso, ela se desativará sem aviso e não poderá ser reativada por cinco minutos. O valor da limitação dependerá do limite de tempo:\n\n*   **Menos de 30 segundos:** -75%\n*   **Até 1 minuto:** -65%\n*   **Até 10 minutos:** -50%\n*   **Até 30 minutos:** -25%\n*   **Até 1 hora:** -10%\n*   **Até 12 horas (ou uma noite):** -5%\n*   **Mais do que 12 horas:** -0%"
+ },
+ {
+  "id": "prazo_minimo",
+  "nome": "Prazo Mínimo",
+  "tipo": "limitação",
+  "valor": "-5",
+  "por_nivel": false,
+  "bonus_base": 0,
+  "pagina": 112,
+  "tags": [
+   "Poderes",
+   "Variável"
+  ],
+  "descricao": "Disponível somente para habilidades que possam ser ativadas e que — segundo o MJ — possam ser um inconveniente grave se não for possível desativá-las à vontade. Uma vez ativada, a habilidade deve permanecer \"ativada\" por um certo período de tempo; não será possível desativá-la antes que esse prazo se esgote. O Prazo Mínimo jamais pode exceder o Prazo Máximo (se houver). O valor da limitação é o que segue:\n\n*   **Menos de 1 hora:** -0%\n*   **Até 8 horas:** -5%\n*   **Até 12 horas (ou uma noite):** -10%\n*   **Até 24 horas:** -15%\n*   **Até 1 semana:** -20%\n*   **Até 1 mês:** -25%\n*   **Mais do que 1 mês:** -30%\n\nNo caso de uma vantagem que permita Sempre Ativa, esta limitação valerá no máximo -5% a menos que Sempre Ativa; por exemplo, se Sempre Ativa for -20%, Prazo Mínimo não poderá ir além de -15%."
+ },
+ {
+  "id": "seletiva",
+  "nome": "Seletiva",
+  "tipo": "limitação",
+  "valor": "-20",
+  "por_nivel": false,
+  "bonus_base": 0,
+  "pagina": 112,
+  "tags": [
+   "Poderes"
+  ],
+  "descricao": "A habilidade do personagem funciona somente quando ligada a uma classe específica de tarefas ou atividades relacionadas (por exemplo, esportes, combate, investigação, ou interação social), ou em uma área específica do cotidiano (por exemplo, trabalho, saúde ou vida amorosa). O MJ tem a última palavra, e pode definir as categorias de maneira tão ampla ou restrita quanto desejar.\n\nSeletiva serve para Intuição, Serendipidade e vantagens que afetem diretamente as possibilidades de sucesso do personagem em suas tarefas (Sorte, Super Sorte, Visualização etc.). O Mestre pode permiti-la em outras características. Porém, alguns \"aspectos\" que podem ser objeto da Seletividade não são úteis mesmo em habilidades normalmente permitidas; por exemplo, a Visualização é tão lenta que Seletiva, Combate a tornaria inútil."
+ },
+ {
+  "id": "uso_total",
+  "nome": "Uso Total",
+  "tipo": "limitação",
+  "valor": "-25",
+  "por_nivel": false,
+  "bonus_base": 0,
+  "pagina": 112,
+  "tags": [
+   "Poderes",
+   "Manobra"
+  ],
+  "descricao": "A habilidade do personagem exige uma manobra Ataque Total; ele não pode usá-la com qualquer outra manobra (por exemplo, Deslocamento ou Mudança de Posição). Ela não terá nenhuma defesa ativa ao usá-la. Se ela permitir o deslocamento por mais do que um passo, ele estará limitado a metade de seu Deslocamento ao seguir em frente. Ele poderá atacar se a vantagem for do tipo que permita fazê-lo, mas o Uso Total não serve apenas para habilidades de ataque; ele também pode ser adicionado a qualquer vantagem que exija uma manobra para ser usada (normalmente Concentrar ou Preparar), substituindo a manobra padrão por Ataque Total. O personagem deve explicar o que está fazendo para ser restringido: concentração profunda, girar em sua posição etc."
+ },
+ {
+  "id": "visivel",
+  "nome": "Visível",
+  "tipo": "limitação",
+  "valor": "-10",
+  "por_nivel": false,
+  "bonus_base": 0,
+  "pagina": 112,
+  "tags": [
+   "Poderes",
+   "Variável"
+  ],
+  "descricao": "A habilidade do personagem possui uma manifestação que a torna completamente óbvia a todos que estiverem por perto. Os efeitos e o valor dependem da vantagem subjacente:\n\n*   Uma habilidade de comunicação, influência, informação ou sensorial, que de outra maneira não teria nenhum efeito visível, como Clarissenciência ou Leitura da Mente, gerará um efeito que chama a atenção (raio cintilante, olho flutuante, etc.) que denuncia o fato do personagem estar afetando ou observando o alvo. Isto torna a sutileza impossível (se não o fizer, não será uma limitação). -10%.\n*   Uma habilidade que permita atacar fisicamente pode se qualificar se normalmente for invisível e em grande parte inevitável; por exemplo, a Telecinese. Além dos efeitos descritos, o alvo terá direito a uma jogada de defesa sem penalidades para evitar o ataque. -20%."
+ },
+ {
+  "id": "voluvel",
+  "nome": "Volúvel",
+  "tipo": "limitação",
+  "valor": "-20",
+  "por_nivel": false,
+  "bonus_base": 0,
+  "pagina": 112,
+  "tags": [
+   "Poderes"
+  ],
+  "descricao": "A habilidade do personagem é, ou parece ser, senciente, e às vezes reage mal. Faça um teste de reação sem modificadores cada vez que desejar usá-la. Para um ataque, esse teste deve ser feito antes de cada uso. Para outras habilidades, a vantagem funcionará até que o personagem precise fazer um teste para ela… nesse momento ele deverá fazer um teste de reação. Por exemplo, Voo exige um teste de reação ao tentar um teste de DX para forçar os limites, ou um teste de Acrobacia Aérea ou da perícia Voo, e Visão no Escuro exige um teste de reação todas as vezes que o usuário tentar um teste de Visão no escuro. Até mesmo habilidades \"passivas\" exigem jogadas de dados, às vezes; consulte Esforço Adicional (pág. 160), Defesa com Poderes (pág. 167), e Proezas (pág. 170).\n\nEm caso de uma reação igual ou superior a Neutra (10+), a habilidade funcionará como o esperado e o personagem poderá tentar sua jogada de ataque, teste de DX, teste de Sentidos etc., conforme aplicável. Uma reação Muito Boa (16–18) concederá +1 ao teste consequente; uma reação Excelente (19+) concederá +2.\n\nNo caso de uma reação igual ou inferior a Fraca (9 ou menos), a habilidade falhará. Se ela já não estava ativa, se recusará a se ativar. Se ela estava ativa, ela se desativará. Normalmente isso não representa um perigo direto para o usuário; por exemplo, Voo desce o personagem delicadamente, e Insubstancialidade o deixa em um espaço aberto. Obviamente, a perda repentina da RD durante uma batalha, da Visão no Escuro em uma sala sem iluminação e repleta de armadilhas e assim por diante podem ameaçar o personagem indiretamente.\n\nCom uma reação igual ou inferior a Muito Fraca (3 ou menos), a habilidade deixará o personagem em perigo, ou se voltará contra ele de alguma maneira desagradável. O Voo o derrubará como uma pedra, a Insubstancialidade o deixará preso dentro de uma parede, o ataque dele atingirá a ele mesmo, e assim por diante. O Mestre deverá ser criativo!\n\nO usuário poderá tentar invocar uma habilidade falhada a cada segundo, se desejar, mas o teste de reação terá uma penalidade cumulativa de -1 por tentativa repetida, conforme a habilidade (ou qualquer força por trás dela) se torna cada vez mais irritada pelas solicitações do personagem. Para eliminar esta penalidade, o personagem deve passar uma hora inteira sem usar sua habilidade.\n\nVolúvel costuma ser parte de um modificador de poder; consulte Forças Volúveis (pág. 24). Neste caso, o resultado do teste de reação e a hora necessária para remover as penalidades por tentativas repetidas se aplicarão à totalidade do poder. As habilidades desses poderes não podem assumir esta limitação; elas já a possuem.\n\nO Mestre pode permitir uma limitação mais leve:\n\n**Exige Teste de Reação:** A habilidade do personagem funciona como descrito anteriormente, mas os modificadores de reação normais se aplicam ao teste de reação, e é possível usar um teste de Influência em seu lugar. -5%."
+ },
+ {
+  "id": "normalmente_ativa",
+  "nome": "Normalmente Ativa",
+  "tipo": "limitação",
+  "valor": "",
+  "por_nivel": false,
+  "bonus_base": 0,
+  "pagina": 109,
+  "tags": [
+   "Poderes",
+   "Variável"
+  ],
+  "descricao": "GURPS Poderes, p.109. Qualquer vantagem que possa ser Sempre Ativa pode ser, em vez disso, Normalmente Ativa. ⚠️ O valor é DERIVADO do Sempre Ativa daquela vantagem: se a limitação Sempre Ativa for menor, Normalmente Ativa vale metade dela; se for maior, some uma ampliação de +10% para chegar ao valor. Por isso o percentual entra a mão."
+ }
 ]

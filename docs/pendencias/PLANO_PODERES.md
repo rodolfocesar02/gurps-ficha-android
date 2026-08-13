@@ -116,6 +116,11 @@ nos assets, não regra nova de cálculo.
 | Ampliações e limitações (p.107-113) | 48 | 31 | **17** |
 | Novas vantagens (p.90-97) | 6 | 1 | **5** |
 
+> 🔴 **CORRIGIDO no POD-8: esta tabela está errada.** Dos 48 títulos, **16 são
+> remissão** (*"Solavanco veja Efeito Incômodo"*) e não são modificador próprio.
+> O buraco real era **1 modificador e 4 vantagens** — Características Variantes é
+> seção, e Controle Divino é caixa lateral. Contar título não é contar conteúdo.
+
 **Modificadores ausentes:** Subaquático, Sempre Ativa, Variável, Uso Limitado,
 Ataque Surpresa, Normalmente Ativa, Efeito Seletivo, Fogo Instantâneo, Defesa
 Ativa, Desvantagem Exigida, Difícil de Usar, Efeito do Dano Ausente, Magnético,

@@ -7978,3 +7978,66 @@ onde EM é a sigla de eletromagnético, não a preposição. Tirei o `IGNORE_CAS
 palavra cortada no meio de frase vem sempre em minúscula.
 
 - **Status:** ✅ Build OK nas 2 variantes · lint OK · gate **2207** (+9) · ⏭️ **PENDENTE: teste no aparelho** (T-PO11/T-PO12).
+
+
+---
+
+## Lote POD-8 — Completar os catálogos (e desmentir o meu próprio plano)
+
+### 🔴 O plano prometia 17 modificadores e 5 vantagens. Eram **1 e 4**.
+
+A contagem que eu apresentei veio de listar os **títulos** das páginas 107-113 e
+comparar com o asset. O erro: o livro repete o nome em ordem alfabética só para
+**apontar para o verbete real**.
+
+> *"Solavanco **veja Efeito Incômodo, pág. 103**"*
+> *"Subaquático **veja pág. MB109**"*
+
+Dos 48 títulos, **16 são remissão** e não existem como modificador próprio.
+Contando só os que têm valor: o livro tem **32**, o app já tinha **31**.
+
+Mais duas entradas caíram na conferência:
+
+| Eu contei como | Na verdade é |
+|---|---|
+| Características Variantes (modificador) | seção sobre efeitos especiais, p.113 |
+| Controle Divino (vantagem) | caixa lateral: Controle sobre elementos abstratos, ≥30 pts/nível |
+
+⚠️ **Contar título não é contar conteúdo.** O diff estava certo na forma e errado
+no número, e eu o apresentei como fato.
+
+### O que entrou de verdade
+
+**Quatro vantagens** (cap. 2):
+
+| Vantagem | Custo | Página |
+|---|---|---|
+| Controle | 20 / 15 / 10 por nível, pela raridade do elemento | 90 |
+| Criar | 40 / 20 / 10 por nível, pela amplitude da categoria | 92 |
+| Estática | 30 pontos | 94 |
+| Ilusão | 25 pontos | 95 |
+
+**Um modificador:** Normalmente Ativa (p.109).
+
+### Duas decisões de modelagem
+
+**Controle e Criar ficaram como `special`.** O custo por nível depende de uma
+escolha que o app não modela (raridade do elemento, amplitude da categoria).
+Cravar um número seria inventar; a tabela inteira foi para a descrição, e o teste
+cobra que ela esteja lá.
+
+**Normalmente Ativa ficou com valor vazio, e isso é proposital.** O percentual é
+**derivado** do Sempre Ativa daquela vantagem: metade dele, ou +10% se for maior.
+Um número fixo estaria errado em metade dos casos.
+
+### Dois enganos meus dentro do próprio lote
+
+1. **Confundi zero com ausência.** O teste reprovou *Tempo de Jogo*, que vale
+   **+0%** no livro — valor de verdade: o modificador existe, marca a habilidade
+   e não muda o preço. Ausência é campo **vazio**, não zero.
+2. **Colisão de palavra comum.** A vantagem `Controle` derrubou uma varredura que
+   já existia: ela procura o nome do traço dentro do texto da perícia, e casou
+   com a página de **Artilharia**, que fala de "controle" no sentido corriqueiro.
+   Não é caso de renomear — o nome é do livro. Entrou em `LEGITIMAS`.
+
+- **Status:** ✅ Build OK nas 2 variantes · lint OK · gate **2214** (+7) · ⏭️ **PENDENTE: teste no aparelho** (T-PO13).

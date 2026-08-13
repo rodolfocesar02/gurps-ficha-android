@@ -2049,3 +2049,17 @@ exemplo o *Traje Pressurizado* (RD 6\*) ou a *Cota de Malha Longa Dupla*.
   ✅ Nenhum item termina no meio ("Detectar, para"), e nenhum traz
   "Criação de Poderes 124".
   ✅ Em **Cósmico** e **Magia** não há lista, mas há a explicação do livro.
+
+
+---
+
+# Lote POD-8 — As vantagens de GURPS Poderes
+
+> Gate: 2.214 testes, 0 falhas nas duas variantes.
+
+- **T-PO13 · as quatro vantagens novas** — Traços → Adicionar Vantagem, busque:
+  ✅ **Estática** (30 pts) e **Ilusão** (25 pts) entram com o custo pronto.
+  ✅ **Controle** e **Criar** aparecem com custo **variável** — abra a descrição e
+  confira que a tabela de custo por nível está lá (Controle 20/15/10;
+  Criar 40/20/10).
+  ✅ Nenhuma delas duplicou uma vantagem que já existia.
