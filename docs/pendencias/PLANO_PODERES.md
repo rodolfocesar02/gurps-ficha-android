@@ -64,8 +64,18 @@ Exemplo do livro: Voo [36] + Super Salto 2 [18] + Caminhar no Ar [18] →
 exemplo verificável no livro. Marcar N habilidades como um grupo e o app aplica
 a conta. Economia real de pontos, e hoje o jogador faz na mão.
 
-Inconvenientes que o app deve **[MOSTRAR]** junto: só uma funciona por vez
-(trocar exige manobra Preparar); e o que desativar uma desativa o conjunto.
+Inconvenientes que o app deve **[MOSTRAR]** junto — são **três**, não dois:
+
+1. só uma funciona por vez; trocar exige manobra **Preparar** (trocar de um ataque
+   para outro ataque é ação livre);
+2. o que desativar, incapacitar, neutralizar ou drenar **uma** derruba o conjunto
+   inteiro até ela se recuperar;
+3. habilidade que não possa ser reativada antes de a duração acabar (Neutralizar
+   com Furto de Poder, qualquer coisa com Longa Distância) **tranca todas** pela
+   duração.
+
+> ⚠️ **Achado na 2ª revisão:** eu tinha registrado só dois. O terceiro estava logo
+> depois de onde a minha leitura parou.
 
 ### Avaliação do modificador de poder (p.20-25)
 
@@ -156,9 +166,26 @@ Regras que a ficha consegue guardar sozinha:
 - Ataque por Fadiga, falta de sono e esforço adicional comum **não** a gastam;
 - se o poder não puder recorrer aos PF normais, **−5%** no modificador de poder.
 
-**[FAZER] · POD-9 — Reserva de Energia.** É uma segunda barra de PF, com regra de
-recarga própria e uma trava de fonte. Encaixa no mesmo lugar onde o app já
-controla PF, e o −5% vira componente do montador (POD-7).
+#### 🔴 As cinco limitações da RE — achadas na 2ª revisão
+
+A recarga de "1 ponto a cada 10 minutos" que eu tinha anotado como **a** regra é
+só o **padrão**. O livro dá cinco limitações que mudam a recarga **e** o preço:
+
+| Limitação | O que faz | Valor |
+|---|---|---|
+| **Carga Especial** | não recarrega com o tempo; só por RD com Absorção, Sanguessuga, Roubar Energia | **−70%** (−80% se perder 1 ponto/segundo) |
+| **Carga Lenta** | recarrega devagar | **−20%** (1/hora) · **−60%** (1/dia) |
+| **Poder Único** | só se o personagem tiver 2+ poderes da fonte; a RE serve a **um** deles | **−50%** |
+| **Somente Habilidades** | paga só o PF básico; não serve para esforço adicional nem proezas | **−10%** |
+| **Somente Proezas** | só esforço adicional e proezas; não paga o uso normal | **−10%** |
+
+⚠️ Carga Especial e Carga Lenta são **incompatíveis** entre si; Somente
+Habilidades e Somente Proezas também.
+
+**[FAZER] · POD-9 — Reserva de Energia.** É uma segunda barra de PF com regra de
+recarga própria, trava de fonte **e as cinco limitações acima** — que são o que
+faz a RE valer a pena modelar, porque mudam quando ela volta. O −5% vira
+componente do montador (POD-7).
 
 ### Modificadores por Multiplicação (p.102) — regra opcional
 
@@ -404,3 +431,35 @@ e virou "penalidade de Vontade por efeito", e POD-7 ficou maior do que parecia.
 *citação*, não o meu resumo dela. As quatro correções vieram todas de resumo meu
 que soava fechado — e os testes não pegam isso, porque eles guardam o que eu
 escrevi.
+
+
+---
+
+# 2ª revisão — a pergunta do usuário: *"tem certeza que leu direito desta vez?"*
+
+**Não.** A revisão anterior conferiu os **números**; não conferiu a **extensão**
+das seções — e é a extensão que me pegou nas quatro vezes anteriores.
+
+Medindo os dois itens que eu tinha marcado como mais confiáveis:
+
+| Seção | Tamanho | Eu tinha lido | O que faltava |
+|---|---|---|---|
+| Habilidades Alternativas (p.11) | ~5.700 chars | 2.600 | o **3º inconveniente** |
+| Reservas de Energia (p.119) | ~5.900 chars | 2.200 | as **5 limitações** da RE |
+
+Nos dois casos a **conta principal continuou certa** (1/5 arredondando para cima;
+3 pontos por PF). O que faltava era o entorno — e no POD-9 o entorno é metade do
+lote, porque as limitações mudam a regra de recarga que eu tinha anotado como a
+única.
+
+⚠️ Uma medição grosseira sugere que **Avaliação de Modificadores** (p.20),
+**Esforço Adicional** (p.160), **Ampliações Temporárias** (p.172) e
+**Multiplicação** (p.102) também foram lidos parcialmente. A medida é grosseira
+(conta até o fim da página seguinte, não até o fim da seção), então ela indica
+onde olhar, não um veredito.
+
+## O que passa a valer antes de cada lote
+
+Ler a seção **até o título seguinte**, não até onde a resposta aparece. Achar o
+número não é o fim da leitura — nas quatro vezes, o número estava certo e o
+problema era o que vinha depois dele.
