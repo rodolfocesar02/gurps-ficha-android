@@ -7678,3 +7678,41 @@ alguém desenhar a borda na unha, ela para de acompanhar o tema.
 pequeno de verdade` ficou vermelho. Restaurado.
 
 - **Status:** ✅ Build OK nas 2 variantes · lint OK · gate **2161** (+4) · ⏭️ **PENDENTE: teste no aparelho** (T-GE5/T-GE6).
+
+
+---
+
+## Lote GER-3 — Sem piso de altura, por decisão do usuário
+
+**Pedido:** o usuário montou uma imagem com a versão do GER-2 em cima e uma
+edição dele embaixo, e escreveu: *"quero que fique com a de baixo!"*
+
+#### O que a imagem dele mostrava
+
+Na versão do GER-2 sobrava um **vão entre o rótulo e o texto**. A causa não era
+mais o respiro interno (já em 2 dp) — era o piso de 48 dp: com a caixa presa numa
+altura maior que o conteúdo, a diferença virava espaço vazio no meio.
+
+Tirei o `heightIn`. A caixa passou a ter a altura do que está escrito dentro
+dela: medido no aparelho, **~29 dp** contra os 48. Cartão inteiro: **~73%** do
+que era no GER-2, e o texto encosta no rótulo, como na imagem editada.
+
+#### ⚠️ O que essa decisão custa
+
+**29 dp é abaixo dos 48 dp de alvo mínimo de toque**, que era exatamente o que eu
+tinha usado como argumento para não encolher mais no GER-2. O usuário viu as duas
+na tela e escolheu esta. A troca está feita de olhos abertos, e o teste
+`o campo nao tem piso de altura, e isso foi pedido` existe para que quem vier
+depois saiba que reapertar a altura **desfaz um pedido**, e não corrige um
+descuido.
+
+O que sustenta a decisão, e não é conversa para justificar depois:
+
+- os cinco campos ficam num cartão só deles, separados por 8 dp, **sem nada
+  clicável ao redor** para se errar por perto;
+- a altura sai do `bodyLarge` do **tema**, não de um número cravado — então na
+  variante `pracego` a caixa **cresce sozinha** com a fonte. Conferido no
+  aparelho: a aba Geral do `pracego` continua com os cinco campos legíveis e
+  proporcionais.
+
+- **Status:** ✅ Build OK nas 2 variantes · lint OK · gate **2161** · ⏭️ **PENDENTE: teste no aparelho** (T-GE7).

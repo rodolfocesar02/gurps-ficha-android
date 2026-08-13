@@ -1,6 +1,7 @@
 package com.gurps.ficha.domain.rules
 
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import java.io.File
@@ -48,17 +49,24 @@ class CampoCompactoTest {
     }
 
     @Test
-    fun `o alvo de toque nao encolheu junto`() {
-        // 🔴 O jeito óbvio de deixar o campo ainda menor é tirar este piso. Não dá:
-        // 48 dp é o mínimo de toque do projeto, e este app tem variante pra cego.
-        assertTrue(
-            "o campo perdeu o piso de altura de toque",
-            campo.contains("heightIn(min = UiTokens.TouchMinHeight)")
+    fun `o campo nao tem piso de altura, e isso foi pedido`() {
+        // ⚠️ Lote GER-3. A primeira versão prendia a altura em 48 dp (o mínimo de
+        // toque do projeto) e sobrava um vão entre o rótulo e o texto. O usuário
+        // comparou as duas na tela e escolheu a sem piso — a caixa passa a ter a
+        // altura do que está escrito dentro dela.
+        //
+        // 🔴 Este teste existe para quem vier depois: reapertar a altura aqui
+        // DESFAZ um pedido, não corrige um descuido. Se for para voltar atrás, que
+        // seja com o usuário sabendo, e não por um "isso está fora do guia".
+        assertFalse(
+            "o piso de altura voltou — a altura tem de vir do conteudo",
+            campo.contains("heightIn(")
         )
-        val tokens = fonte("com/gurps/ficha/ui/UiStandards.kt")
+        // O que garante o campo grande para quem precisa: a altura sai do
+        // `bodyLarge` do TEMA, então a variante pracego cresce sozinha.
         assertTrue(
-            "o proprio token de toque mudou de valor",
-            tokens.contains("TouchMinHeight = 48.dp")
+            "a altura deixou de acompanhar a fonte do tema",
+            campo.contains("MaterialTheme.typography.bodyLarge")
         )
     }
 

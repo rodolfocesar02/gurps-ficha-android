@@ -1964,3 +1964,17 @@ exemplo o *Traje Pressurizado* (RD 6\*) ou a *Cota de Malha Longa Dupla*.
   ✅ o TalkBack lê os cinco campos com o rótulo certo (Nome do Personagem,
   Jogador, Pontos, XP, NT), e a moldura continua acompanhando o tema (borda e
   cor de foco visíveis ao entrar no campo).
+
+
+---
+
+# Lote GER-3 — Campo sem piso de altura
+
+> Gate: 2.161 testes, 0 falhas nas duas variantes.
+
+- **T-GE7 · 🔴 acertar o campo com o dedo** — este é o teste que o gate não faz.
+  Na Aba Geral, toque **uma vez** em cada um dos cinco campos (Nome, Jogador,
+  Pontos, XP, NT), sem mirar com cuidado. ✅ O cursor tem de cair no campo que
+  você quis, nas cinco vezes. O campo ficou com ~29 dp de altura, abaixo dos
+  48 dp de alvo mínimo — se errar o alvo na prática, é aqui que aparece.
+  ✅ Repita na variante **pracego**, onde a caixa cresce com a fonte do tema.

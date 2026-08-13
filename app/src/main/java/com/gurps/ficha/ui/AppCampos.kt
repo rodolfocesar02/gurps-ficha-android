@@ -34,11 +34,22 @@ import androidx.compose.ui.unit.dp
  * empilhados a 56 dp cada faziam o cartão ocupar meia tela antes de o primeiro
  * atributo aparecer.
  *
- * ## O que NÃO encolheu
+ * ## ⚠️ O campo NÃO tem piso de altura, e isso foi decidido olhando a tela
  *
- * O **alvo de toque**. O piso é [UiTokens.TouchMinHeight] (48 dp), que é o mínimo
- * de toque do projeto — e este app tem variante para quem não enxerga a tela.
- * Ganhar 8 dp deixando o campo difícil de acertar seria uma troca ruim.
+ * A primeira versão prendia a altura em [UiTokens.TouchMinHeight] (48 dp), o
+ * mínimo de toque do projeto. Com o piso, sobrava um vão entre o rótulo e o
+ * texto — o campo ficava alto sem precisar, porque a altura vinha do piso e não
+ * do conteúdo.
+ *
+ * O usuário comparou as duas na tela e escolheu a **sem piso**: a caixa passa a
+ * ter a altura do que está escrito dentro dela, ~29 dp. **É abaixo dos 48 dp de
+ * alvo de toque**, e a troca foi feita de olhos abertos. Quem for reapertar isso
+ * de novo, saiba que está desfazendo um pedido, não corrigindo um descuido.
+ *
+ * O que sustenta a decisão: os campos ficam separados por 8 dp num cartão só
+ * deles, sem nada clicável ao redor para se errar por perto. E na variante
+ * `pracego` a caixa **cresce sozinha**, porque a altura vem do `bodyLarge` do
+ * tema — quem usa fonte grande recebe campo grande sem número nenhum cravado.
  */
 // O `DecorationBox` ainda e marcado como experimental pelo Material 3. E so o
 // ponto de entrada: as pecas que ele monta (moldura, rotulo, cores) sao as mesmas
@@ -59,7 +70,7 @@ fun AppCampoCompacto(
     BasicTextField(
         value = value,
         onValueChange = onValueChange,
-        modifier = modifier.heightIn(min = UiTokens.TouchMinHeight),
+        modifier = modifier,
         singleLine = singleLine,
         keyboardOptions = keyboardOptions,
         textStyle = MaterialTheme.typography.bodyLarge.copy(
