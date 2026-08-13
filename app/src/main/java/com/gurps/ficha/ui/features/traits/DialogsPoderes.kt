@@ -86,9 +86,15 @@ fun DialogsPoderes(
                     itemsIndexed(personagem.poderes) { index, poder ->
                         AppSelectionRow(
                             nome = poder.nome,
-                            detalhe = detalheDoPoder(poder),
+                            // Lote POD-5: a linha passa a dizer QUANTAS habilidades
+                            // o poder reúne. Antes só mostrava fonte e percentual —
+                            // e um poder sem habilidade nenhuma parecia igual a um
+                            // poder inteiro.
+                            detalhe = detalheDoPoder(poder) +
+                                " · " + resumoCurtoDoPoder(viewModel, poder),
                             onClick = { showEditDialog = poder },
-                            descricaoAcessivel = poder.descricaoAcessivel + ". Toque para editar.",
+                            descricaoAcessivel = poder.descricaoAcessivel + ". " +
+                                resumoCurtoDoPoder(viewModel, poder) + ". Toque para editar.",
                             acoes = {
                                 AppBotaoIcone(
                                     icone = Icons.Default.Edit,
@@ -173,6 +179,7 @@ fun DialogsPoderes(
                 FonteDoPoder(it.nome, it.valor)
             },
             isNew = false,
+            viewModelParaHabilidades = viewModel,
             onDismiss = { showEditDialog = null },
             onSave = { modPoder ->
                 if (index >= 0) viewModel.atualizarPoder(index, modPoder)
@@ -198,9 +205,13 @@ fun PoderEditDialog(
     definicao: PoderDefinicao? = null,
     fontesGerais: List<FonteDoPoder> = emptyList(),
     isNew: Boolean = false,
+    // Lote POD-5: só o poder JÁ SALVO tem habilidades para mostrar. Um poder
+    // que está nascendo não pode ligar nada — ele ainda não existe na ficha.
+    viewModelParaHabilidades: FichaViewModel? = null,
     onDismiss: () -> Unit,
     onSave: (Poder) -> Unit
 ) {
+    var mostrarLigar by remember(poderBase) { mutableStateOf(false) }
     var nome by remember(poderBase) { mutableStateOf(poderBase?.nome ?: "") }
     var fonte by remember(poderBase) { mutableStateOf(poderBase?.fonte ?: "") }
     var foco by remember(poderBase) { mutableStateOf(poderBase?.foco ?: "") }
@@ -303,6 +314,18 @@ fun PoderEditDialog(
                     )
                 }
 
+                // Lote POD-5: o poder mostra o que ele reúne.
+                if (!isNew && viewModelParaHabilidades != null && poderBase != null) {
+                    Spacer(modifier = Modifier.height(12.dp))
+                    HorizontalDivider()
+                    Spacer(modifier = Modifier.height(8.dp))
+                    PainelDeHabilidades(
+                        viewModel = viewModelParaHabilidades,
+                        poder = poderBase,
+                        onPedirParaLigar = { mostrarLigar = true }
+                    )
+                }
+
                 Spacer(modifier = Modifier.height(16.dp))
                 Row(
                     horizontalArrangement = Arrangement.End,
@@ -328,6 +351,14 @@ fun PoderEditDialog(
                 }
             }
         }
+    }
+
+    if (mostrarLigar && viewModelParaHabilidades != null && poderBase != null) {
+        LigarHabilidadeDialog(
+            viewModel = viewModelParaHabilidades,
+            poder = poderBase,
+            onDismiss = { mostrarLigar = false }
+        )
     }
 }
 

@@ -7850,3 +7850,56 @@ come o padrão em silêncio.
   permitem…"* — é o livro. A marca passou a exigir maiúscula depois.
 
 - **Status:** ✅ Build OK nas 2 variantes · lint OK · gate **2185** (+2) · ⏭️ **PENDENTE: teste no aparelho** (T-PO6).
+
+
+---
+
+## Lote POD-5 — O poder deixa de ser um rótulo solto
+
+Primeira leva do plano lido capítulo a capítulo (`docs/pendencias/PLANO_PODERES.md`).
+
+### O buraco
+
+No livro, o poder **é** o conjunto das suas habilidades:
+
+> *"Os portadores do Talento para um poder, **ou qualquer de suas habilidades**
+> (ou seja, qualquer vantagem com seu modificador de poder) são considerados
+> possuidores daquele poder."* (Poderes, p.34)
+
+A ligação `vantagem.poderId` **já existia**, mas só dava para chegar nela **pelo
+lado da vantagem**. Quem abria o poder não via habilidade nenhuma — ele era nome,
+fonte e percentual, e nada dizia o que ele reunia.
+
+Agora: a linha do poder diz quantas habilidades ele tem, o diálogo lista cada
+uma com o custo, dá para **ligar** (escolhendo entre os traços ainda livres) e
+**desligar**. Regra pura em `domain/rules/poderes/HabilidadesDoPoder.kt`.
+
+⚠️ Desligar **não apaga** a vantagem: ela existia antes do poder e continua
+existindo. Sai o vínculo e o percentual injetado, não o traço.
+
+### 🔴 O defeito que apareceu no caminho: quatro rotas, quatro esquecimentos
+
+A mesma lógica de "trocar o `Mod. de Poder:`" estava copiada em **quatro** lugares,
+e cada cópia esquecia uma coisa diferente:
+
+| Função | O que esquecia |
+|---|---|
+| `atualizarPoder` | só mexia nas vantagens (havia uma tarefa pendente escrita em comentário) |
+| `removerPoder` | idem — desvantagem ligada a poder apagado ficava pagando o percentual de um poder que não existe mais |
+| `vincularDesvantagemPoder` | **não aplicava o modificador nenhum**: ligar a desvantagem ao poder não mudava o custo dela |
+| `atualizarVantagem` / `atualizarDesvantagem` | duas cópias a mais do mesmo filtro |
+
+É a lição de sempre: **o defeito mora na diferença entre as rotas**. Cada uma lida
+certo sozinha. Agora é uma — `comModificadorDoPoder` — e o teste conta as cópias.
+
+**Sondas:** reintroduzi os dois defeitos (reaplicar ignorando desvantagens, e o
+vínculo sem modificador) e os dois testes ficaram vermelhos. Restaurado.
+
+### Um teste meu que acusou a própria documentação
+
+O teste procurava a frase da tarefa pendente antiga para garantir que ela não
+voltasse — e passou a reprovar quando eu **citei a frase** no comentário que
+explica o conserto. Reescrevi o comentário sem a citação literal. ⚠️ Teste que
+casa com texto de comentário não distingue código de documentação.
+
+- **Status:** ✅ Build OK nas 2 variantes · lint OK · gate **2198** (+13) · ⏭️ **PENDENTE: teste no aparelho** (T-PO7 a T-PO10).

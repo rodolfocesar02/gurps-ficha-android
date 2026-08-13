@@ -2016,3 +2016,21 @@ exemplo o *Traje Pressurizado* (RD 6\*) ou a *Cota de Malha Longa Dupla*.
   <outro poder>" nem "Cada registro inclui". ✅ **Cósmico** mostra foco
   **"Tudo!"**, e ao escolhê-lo o diálogo diz **15 pontos/nível** (não 5).
   ✅ **Magia** mostra foco "Operação de 'mágicas'".
+
+
+---
+
+# Lote POD-5 — As habilidades do poder
+
+> Gate: 2.198 testes, 0 falhas nas duas variantes.
+
+- **T-PO7 · o poder diz o que reúne** — Traços → Configurar Poderes. ✅ A linha de
+  cada poder termina com "sem habilidades" ou "N habilidades".
+- **T-PO8 · ligar uma vantagem** — abra um poder → **Ligar habilidade** → escolha
+  uma vantagem da ficha. ✅ Ela aparece na lista do poder, e o **custo dela muda**
+  na aba Traços (o percentual do poder passou a valer).
+- **T-PO9 · 🔴 ligar uma DESVANTAGEM** — repita com uma desvantagem (Fobias,
+  Insônia). ✅ O custo dela **também** muda. Antes não mudava — era o defeito.
+- **T-PO10 · 🔴 apagar o poder não apaga o traço** — apague o poder na lixeira.
+  ✅ A vantagem **e** a desvantagem que estavam ligadas continuam na ficha, e o
+  `Mod. de Poder:` sumiu das duas (o custo volta ao de antes).

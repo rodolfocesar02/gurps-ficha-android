@@ -1,5 +1,7 @@
 package com.gurps.ficha.viewmodel
 
+import com.gurps.ficha.domain.rules.poderes.HabilidadesDoPoder
+
 import com.gurps.ficha.domain.rules.LocalAtaque
 
 import android.app.Application
@@ -493,13 +495,10 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
     }
     fun removerVantagem(index: Int) { atualizarVantagensComConfirmacao(traitDelegate.removerVantagem(personagem, index)) }
     fun atualizarVantagem(index: Int, v: VantagemSelecionada) { 
+        // Lote POD-5: uma rota só (ver `comModificadorDoPoder`).
         val poder = personagem.poderes.find { it.id == v.poderId }
-        val modsSemPoder = v.modificadores.filter { !it.nome.startsWith("Mod. de Poder:") }.toMutableList()
-        if (poder != null && poder.modificadorDePoder != 0) {
-            modsSemPoder.add(ModificadorSelecao(id = "mod_poder_${poder.id}", nome = "Mod. de Poder: ${poder.nome}", valor = poder.modificadorDePoder))
-        }
-        val vToSave = v.copy(modificadores = modsSemPoder)
-        
+        val vToSave = v.copy(modificadores = comModificadorDoPoder(v.modificadores, poder))
+
         atualizarVantagensComConfirmacao(traitDelegate.atualizarVantagem(personagem, index, vToSave))
         salvarFicha()
     }
@@ -518,12 +517,9 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
     }
     fun removerDesvantagem(index: Int) { personagem = personagem.copy(desvantagens = traitDelegate.removerDesvantagem(personagem, index)) }
     fun atualizarDesvantagem(index: Int, d: DesvantagemSelecionada) { 
+        // Lote POD-5: uma rota só (ver `comModificadorDoPoder`).
         val poder = personagem.poderes.find { it.id == d.poderId }
-        val modsSemPoder = d.modificadores.filter { !it.nome.startsWith("Mod. de Poder:") }.toMutableList()
-        if (poder != null && poder.modificadorDePoder != 0) {
-            modsSemPoder.add(ModificadorSelecao(id = "mod_poder_${poder.id}", nome = "Mod. de Poder: ${poder.nome}", valor = poder.modificadorDePoder))
-        }
-        val dToSave = d.copy(modificadores = modsSemPoder)
+        val dToSave = d.copy(modificadores = comModificadorDoPoder(d.modificadores, poder))
 
         personagem = personagem.copy(desvantagens = traitDelegate.atualizarDesvantagem(personagem, index, dToSave))
         salvarFicha()
@@ -543,55 +539,102 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
         salvarFicha()
     }
 
+    // ── Lote POD-5: uma rota só para o modificador de poder ────────────
+    //
+    // 🔴 Havia QUATRO cópias desta lógica, e cada uma esquecia um pedaço
+    // diferente:
+    //   · `atualizarPoder` só mexia nas vantagens — havia até uma tarefa
+    //     pendente escrita em comentário, pedindo o mesmo para o outro lado;
+    //   · `removerPoder` idem — desvantagem ligada a poder apagado ficava
+    //     pagando `Mod. de Poder: X` de um poder que não existe mais;
+    //   · `vincularDesvantagemPoder` **não aplicava o modificador nenhum**:
+    //     ligar a desvantagem ao poder não mudava o custo dela.
+    //
+    // O defeito morava na diferença entre as rotas. Agora é uma.
+
+    /** Troca o `Mod. de Poder:` de uma lista de modificadores pelo do [poder]. */
+    private fun comModificadorDoPoder(
+        mods: List<ModificadorSelecao>,
+        poder: Poder?
+    ): List<ModificadorSelecao> {
+        val limpos = mods.filter { !it.nome.startsWith(HabilidadesDoPoder.PREFIXO_DO_MODIFICADOR) }
+        if (poder == null || poder.modificadorDePoder == 0) return limpos
+        return limpos + ModificadorSelecao(
+            id = HabilidadesDoPoder.idDoModificador(poder.id),
+            nome = HabilidadesDoPoder.nomeDoModificador(poder.nome),
+            valor = poder.modificadorDePoder
+        )
+    }
+
+    /**
+     * Reaplica o vínculo nas duas listas de traços de uma vez.
+     * `poder = null` desliga: tira o `poderId` **e** o modificador injetado.
+     */
+    private fun reaplicarPoderNosTracos(idDoPoder: String, poder: Poder?) {
+        personagem = personagem.copy(
+            vantagens = personagem.vantagens.map { v ->
+                if (v.poderId != idDoPoder) v
+                else v.copy(
+                    poderId = if (poder == null) null else v.poderId,
+                    modificadores = comModificadorDoPoder(v.modificadores, poder)
+                )
+            },
+            desvantagens = personagem.desvantagens.map { d ->
+                if (d.poderId != idDoPoder) d
+                else d.copy(
+                    poderId = if (poder == null) null else d.poderId,
+                    modificadores = comModificadorDoPoder(d.modificadores, poder)
+                )
+            }
+        )
+    }
+
     fun atualizarPoder(index: Int, poder: Poder) {
-        val oldPoder = personagem.poderes.getOrNull(index)
         personagem = personagem.copy(poderes = traitDelegate.atualizarPoder(personagem, index, poder))
-        if (oldPoder != null) {
-            personagem = personagem.copy(vantagens = personagem.vantagens.map { v ->
-                if (v.poderId == poder.id) {
-                    val mods = v.modificadores.filter { !it.nome.startsWith("Mod. de Poder:") }.toMutableList()
-                    if (poder.modificadorDePoder != 0) mods.add(ModificadorSelecao(id = "mod_poder_${poder.id}", nome = "Mod. de Poder: ${poder.nome}", valor = poder.modificadorDePoder))
-                    v.copy(modificadores = mods)
-                } else v
-            })
-            // Repetir para desvantagens se tiverem modifier
-        }
+        reaplicarPoderNosTracos(poder.id, poder)
         salvarFicha()
     }
 
     fun removerPoder(index: Int) {
         val oldPoder = personagem.poderes.getOrNull(index)
         personagem = personagem.copy(poderes = traitDelegate.removerPoder(personagem, index))
-        if (oldPoder != null) {
-            personagem = personagem.copy(vantagens = personagem.vantagens.map { v ->
-                if (v.poderId == oldPoder.id) {
-                    val mods = v.modificadores.filter { !it.nome.startsWith("Mod. de Poder:") }
-                    v.copy(poderId = null, modificadores = mods)
-                } else v
-            })
-        }
+        // ⚠️ A vantagem NÃO é apagada junto: ela existia antes do poder e
+        // continua existindo. O que sai é o vínculo e o percentual injetado.
+        if (oldPoder != null) reaplicarPoderNosTracos(oldPoder.id, null)
         salvarFicha()
     }
 
     fun vincularVantagemPoder(indexVantagem: Int, poderId: String?) {
-        personagem = personagem.copy(vantagens = traitDelegate.vincularVantagemPoder(personagem, indexVantagem, poderId))
-        // Atualizar o modificador da vantagem
-        val v = personagem.vantagens[indexVantagem]
+        personagem = personagem.copy(
+            vantagens = traitDelegate.vincularVantagemPoder(personagem, indexVantagem, poderId)
+        )
         val poder = personagem.poderes.find { it.id == poderId }
-        val modsSemPoder = v.modificadores.filter { !it.nome.startsWith("Mod. de Poder:") }.toMutableList()
-        if (poder != null && poder.modificadorDePoder != 0) {
-            modsSemPoder.add(ModificadorSelecao(id = "mod_poder_${poder.id}", nome = "Mod. de Poder: ${poder.nome}", valor = poder.modificadorDePoder))
-        }
-        personagem = personagem.copy(vantagens = personagem.vantagens.mapIndexed { idx, it -> 
-            if (idx == indexVantagem) it.copy(modificadores = modsSemPoder) else it
+        personagem = personagem.copy(vantagens = personagem.vantagens.mapIndexed { idx, v ->
+            if (idx == indexVantagem) v.copy(modificadores = comModificadorDoPoder(v.modificadores, poder)) else v
         })
         salvarFicha()
     }
 
     fun vincularDesvantagemPoder(indexDesvantagem: Int, poderId: String?) {
-        personagem = personagem.copy(desvantagens = traitDelegate.vincularDesvantagemPoder(personagem, indexDesvantagem, poderId))
+        personagem = personagem.copy(
+            desvantagens = traitDelegate.vincularDesvantagemPoder(personagem, indexDesvantagem, poderId)
+        )
+        val poder = personagem.poderes.find { it.id == poderId }
+        personagem = personagem.copy(desvantagens = personagem.desvantagens.mapIndexed { idx, d ->
+            if (idx == indexDesvantagem) d.copy(modificadores = comModificadorDoPoder(d.modificadores, poder)) else d
+        })
         salvarFicha()
     }
+
+    /** O resumo das habilidades de um poder, para a tela do POD-5. */
+    fun habilidadesDoPoder(poder: Poder): HabilidadesDoPoder.Resumo =
+        HabilidadesDoPoder.resumir(
+            idDoPoder = poder.id,
+            vantagens = personagem.vantagens.map { Triple(it.nome, it.custoFinal, it.poderId) },
+            desvantagens = personagem.desvantagens.map { Triple(it.nome, it.custoFinal, it.poderId) },
+            nivelDeTalento = poder.nivelTalento,
+            custoDoTalento = poder.custoTotalTalento
+        )
 
     fun removerPeculiaridade(index: Int) { personagem = personagem.copy(peculiaridades = traitDelegate.removerPeculiaridade(personagem, index)); salvarFicha() }
     fun atualizarPeculiaridade(index: Int, p: String) { personagem = personagem.copy(peculiaridades = traitDelegate.atualizarPeculiaridade(personagem, index, p)); salvarFicha() }
