@@ -8185,3 +8185,83 @@ não reativa antes de a duração acabar **tranca todas** pela duração.
 🔴 O terceiro só apareceu na 2ª revisão — o plano tinha registrado dois.
 
 - **Status:** ✅ Build OK nas 2 variantes · lint OK · gate **2237** (+23 nos dois lotes) · ⏭️ **PENDENTE: teste no aparelho** (T-PO15).
+
+
+---
+
+## Lotes POD-9, POD-7, POD-12 e POD-13 — as quatro regras que faltavam
+
+Feitos em sequência, com um portão só no fim (como no POD-1/2/3). **Todos os
+quatro foram escritos depois da leitura completa das seções** — e dois deles só
+existem na forma certa por causa dela.
+
+### POD-9 — Reserva de Energia (p.119)
+
+3 pontos por PF, presa a uma fonte, recarga padrão de 1 a cada 10 minutos. E as
+**cinco limitações** que o plano não tinha, porque a minha leitura parou antes:
+
+| Limitação | Valor | O que muda |
+|---|---|---|
+| Carga Especial | −70% / −80% | **não recarrega com o tempo** |
+| Carga Lenta | −20% / −60% | 1 por hora / 1 por dia |
+| Poder Único | −50% | serve a um poder só |
+| Somente Habilidades | −10% | não paga esforço adicional |
+| Somente Proezas | −10% | não paga o uso normal |
+
+Dois pares são **incompatíveis** no livro, e há trava: sem ela daria para somar
+−70% com −60% e comprar uma RE quase de graça que não pode existir.
+
+⚠️ E a distinção que mais importa: **esgotar a RE não é ficar com PF baixo**.
+São dois medidores separados, e o livro diz isso nas duas direções.
+
+### POD-7 — Montador de modificador (p.20-26)
+
+A tabela completa, com o que a 1ª versão do plano não tinha: **Antipoderes tem
+dois níveis** (−5% e −10%), há contramedidas **tecnológicas** (−5%), energias
+canalizadas têm um degrau **+0%**, e a "desvantagem exigida" são **três escolhas
+encadeadas**, não uma.
+
+Componente é **escolha dentro de um grupo**, não caixa que se marca à vontade:
+marcar duas contramedidas cobraria o mesmo inconveniente duas vezes. A faixa
+recomendada (−30% a −10%, p.25) **avisa e deixa passar**.
+
+### POD-12 — Esforço adicional e custo em PF (p.159-161)
+
+🔴 O plano dizia "1 PF = +15% de efeito". A regra troca **penalidade de Vontade**:
+**−1 por 5%** de efeito ou fração, teto de **+100%** a **−20**, com **+5** nas
+situações de Apenas em Emergências. O exemplo do livro é o teste: Atribulação 9
+sobre 8 = 12,5% → **−3**.
+
+Não vale para habilidade passiva nem para a que exige **teste de ataque** — nessa,
+o equivalente é o Ataque Total (Determinado).
+
+Custo em PF do uso: **1/minuto** intensivo, **1/hora** prolongado.
+
+### POD-13 — Ampliações temporárias, uso predefinido, multiplicação
+
+−1 por +10% de ampliação; cada PF gasto **cancela −1**, e o Talento soma — **mas
+nunca vira bônus**, e o teto em zero é a regra, não detalhe de implementação.
+Custa 2 PF (3 no uso predefinido), e **zero em sucesso decisivo**. A falha crítica
+dispara a incapacitação do POD-11, no poder inteiro.
+
+Multiplicação (p.102): +20% e −50% dão **70%** no aditivo e **60%** no
+multiplicativo.
+
+### 🔴 O defeito que os testes acharam: ponto flutuante
+
+Duas contas nasceram com `Double` e erravam **por um ponto**:
+
+- `1.0 − 0.70` dá `0.30000000000000004` → 30 × isso = `9.000000000000002` →
+  arredondado para cima vira **10** em vez de 9;
+- `1 + (−80)/100.0` dá `0.19999999999999996` → 100 × isso arredondado para baixo
+  vira **19** em vez de 20.
+
+Um ponto de diferença, só em alguns valores, num número que o jogador não tem
+como conferir de cabeça. As duas viraram conta **inteira**, e há varredura
+(60 bases × 33 modificadores) — porque caso pontual pegou, mas caso pontual não
+cobre uma classe de erro. Sonda: devolvi o `Double` e a varredura reprovou.
+
+⚠️ **Os quatro são regra pura.** Nenhum tem tela ainda; estão testados e prontos
+para a interface quando ela vier.
+
+- **Status:** ✅ Build OK nas 2 variantes · lint OK · gate **2264** (+27) · ⏭️ sem teste de aparelho (não há tela).

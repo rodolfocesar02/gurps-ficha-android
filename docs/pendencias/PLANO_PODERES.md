@@ -570,12 +570,32 @@ certos; o que faltava era o que vinha ao redor deles.**
 | POD-11 | incapacitação pela fonte + bônus do Talento | ✅ feito |
 | **POD-8b** | os 8 modificadores + desfeita a trava | ✅ feito |
 | **POD-6** | Habilidades Alternativas — regra pura pronta; **falta a tela** | ⚠️ parcial |
-| **POD-9** | Reserva de Energia + as **5 limitações** que mudam a recarga | ⏳ falta |
-| **POD-7** | montador de modificador, com a **tabela completa** de componentes | ⏳ falta |
-| **POD-12** | esforço adicional (−1 na Vontade por 5%) + custo em PF do uso | ⏳ falta |
-| **POD-13** | ampliações temporárias, uso predefinido, multiplicação | ⏳ falta |
+| **POD-9** | Reserva de Energia + as 5 limitações | ⚠️ regra pronta; **falta a tela** |
+| **POD-7** | montador de modificador | ⚠️ regra pronta; **falta a tela** |
+| **POD-12** | esforço adicional + custo em PF | ⚠️ regra pronta; **falta a tela** |
+| **POD-13** | ampliações temporárias, uso predefinido, multiplicação | ⚠️ regra pronta; **falta a tela** |
 
 ⚠️ Os marcadores `[FAZER]` deste arquivo ficaram desatualizados em POD-5, POD-8 e
 POD-10: eles foram implementados e o plano continuou dizendo que faltavam. Quem
 lesse só o plano concluiria errado. Corrigido acima — e é mais um caso do mesmo
 problema da sessão: **o documento e o fato divergindo em silêncio.**
+
+
+---
+
+# Onde o PILAR PODERES parou
+
+**Todas as regras do livro que dão para automatizar estão implementadas e
+testadas.** O que falta agora não é leitura de livro — é **tela**:
+
+| Regra | Estado |
+|---|---|
+| POD-6 Habilidades Alternativas | falta marcar o grupo na ficha |
+| POD-7 Montador de modificador | falta o diálogo que soma os componentes |
+| POD-9 Reserva de Energia | falta a segunda barra de PF |
+| POD-12 Esforço adicional | falta o botão na Rolagem |
+| POD-13 Ampliações temporárias | falta o diálogo da proeza |
+
+⚠️ Um lote de **tela** deste tamanho para para teste no aparelho, e mexe na aba
+Rolagem — que é escopo separado. Vale decidir quais destas cinco valem tela antes
+de fazer as cinco.
