@@ -1948,3 +1948,19 @@ exemplo o *Traje Pressurizado* (RD 6\*) ou a *Cota de Malha Longa Dupla*.
 - **T-GE4 · o NT guarda** — ponha **NT 4**, troque de aba e volte: ✅ continua 4.
   Apague o campo e saia: ✅ volta ao valor anterior (não vira 0 — NT 0 é a Idade
   da Pedra, e ninguém apaga querendo isso).
+
+
+---
+
+# Lote GER-2 — Cartão de identificação compacto
+
+> Gate: 2.161 testes, 0 falhas nas duas variantes.
+
+- **T-GE5 · o cartão encolheu, e ainda dá para tocar** — Aba Geral: ✅ os cinco
+  campos (Nome, Jogador, Pontos, XP, NT) estão visivelmente mais baixos, e o
+  botão **Anotações** cabe na mesma tela que as Características Derivadas.
+  ✅ Tocar em cada um dos cinco continua fácil, sem errar o alvo.
+- **T-GE6 · 🔴 na variante pra cego** — abra a mesma aba na variante **pracego**:
+  ✅ o TalkBack lê os cinco campos com o rótulo certo (Nome do Personagem,
+  Jogador, Pontos, XP, NT), e a moldura continua acompanhando o tema (borda e
+  cor de foco visíveis ao entrar no campo).

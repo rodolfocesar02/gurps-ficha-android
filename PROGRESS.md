@@ -7623,3 +7623,58 @@ falta desse número:
 Nenhuma delas foi implementada — ficam para apresentar.
 
 - **Status:** ✅ Build OK nas 2 variantes · lint OK · gate **2157** (+12) · ⏭️ **PENDENTE: teste no aparelho** (T-GE1 a T-GE4).
+
+
+---
+
+## Lote GER-2 — O cartão de identificação encolheu
+
+**Pedido do usuário:** *"o Card onde está o nome do personagem, Jogador, Pontos,
+XP e NT estão muito grande! quero que diminua a caixa de texto, na verdade o
+espaço entre a caixa e o texto interno! deixar o mínimo possível!"*
+
+#### 🔴 Por que não dava para "só" diminuir
+
+O `OutlinedTextField` do Material 3 tem **altura mínima de 56 dp** cravada dentro
+dele e **16 dp de respiro interno** em cima e embaixo. Nenhum dos dois é
+parâmetro: `Modifier.height()` por fora só corta o texto, e o `contentPadding`
+interno não se alcança de fora de jeito nenhum.
+
+A saída foi montar o campo com as peças que o próprio Material publica — um
+`BasicTextField` por dentro e o `OutlinedTextFieldDefaults.DecorationBox`
+desenhando moldura, rótulo e cores. **A aparência continua sendo a do Material**;
+o que passou a ser nosso é só o `contentPadding`. Isso virou o
+`AppCampoCompacto`, em `ui/AppCampos.kt`, no padrão do `AppButtons`/`AppSelectionUi`.
+
+Respiro interno: **2 dp** em cima e embaixo, contra os 16 de fábrica.
+
+#### O que NÃO encolheu, e por quê
+
+O **alvo de toque**. O piso ficou em `UiTokens.TouchMinHeight` (48 dp), que é o
+mínimo de toque do projeto — e este app tem variante para quem não enxerga a
+tela. Ganhar mais 8 dp deixando o campo difícil de acertar seria troca ruim.
+
+⚠️ Depois da primeira medição no aparelho, **o piso de 48 dp é que passou a
+mandar na altura**, não o respiro. Cada campo saiu de 56 para 48 dp; nos cinco
+campos, 40 dp a menos. Na tela, a diferença é o botão **Anotações** passar a
+caber junto com as Características Derivadas.
+
+#### O ajuste que a tela pediu
+
+Com o campo baixo, os 4 dp entre um campo e outro deixaram o rótulo flutuante de
+baixo quase encostando na moldura de cima. Subiram para **8 dp**. O respiro que
+encolheu foi o de **dentro** da caixa; **entre** as caixas ele precisa continuar
+visível.
+
+#### Os testes
+
+Aparência não se testa em JUnit. O que dá para travar é o que faria a mudança
+sumir sem ninguém notar: alguém devolver os cinco campos ao `OutlinedTextField`
+(volta aos 56 dp), ou encolher abaixo dos 48 dp de toque. `CampoCompactoTest`
+guarda os dois, mais a exigência de a moldura continuar vindo do Material — se
+alguém desenhar a borda na unha, ela para de acompanhar o tema.
+
+**Sonda:** devolvi `top = 16.dp` / `bottom = 16.dp` e o teste `o respiro interno e
+pequeno de verdade` ficou vermelho. Restaurado.
+
+- **Status:** ✅ Build OK nas 2 variantes · lint OK · gate **2161** (+4) · ⏭️ **PENDENTE: teste no aparelho** (T-GE5/T-GE6).

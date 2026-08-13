@@ -111,11 +111,20 @@ class XpENivelTecnologicoTest {
     @Test
     fun `a aba Geral tem os dois campos`() {
         val tab = fonte("com/gurps/ficha/ui/TabGeral.kt")
-        assertTrue("falta o campo de XP", tab.contains("label = { Text(\"XP\") }"))
-        assertTrue("falta o campo de NT", tab.contains("label = { Text(\"NT\") }"))
+        assertTrue("falta o campo de XP", temCampo(tab, "XP"))
+        assertTrue("falta o campo de NT", temCampo(tab, "NT"))
         assertTrue("o XP nao e gravado", tab.contains("atualizarXpGanhos("))
         assertTrue("o NT nao e gravado", tab.contains("atualizarNivelTecnologico("))
     }
+
+    /**
+     * O rótulo pode vir nas duas formas: `label = { Text("XP") }` do
+     * `OutlinedTextField`, ou `label = "XP"` do [com.gurps.ficha.ui.AppCampoCompacto]
+     * (lote GER-2). O que este teste guarda é **o campo existir na tela**, não o
+     * componente escolhido para desenhá-lo.
+     */
+    private fun temCampo(fonte: String, rotulo: String) =
+        fonte.contains("label = { Text(\"$rotulo\") }") || fonte.contains("label = \"$rotulo\"")
 
     @Test
     fun `o campo de XP DEFINE, nao acumula`() {

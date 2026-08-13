@@ -138,10 +138,14 @@ fun TabGeral(viewModel: FichaViewModel) {
         verticalArrangement = Arrangement.spacedBy(contentSpacing)
     ) {
         SectionCard(title = "") {
-            OutlinedTextField(
+            // Lote GER-2: os cinco campos deste cartao usam o [AppCampoCompacto].
+            // O `OutlinedTextField` de fabrica tem 56 dp de altura minima e 16 dp de
+            // respiro interno em cima e embaixo -- nenhum dos dois e parametro. Cinco
+            // deles empilhados empurravam os atributos para fora da tela.
+            AppCampoCompacto(
                 value = nomeInput,
                 onValueChange = { nomeInput = it },
-                label = { Text("Nome do Personagem") },
+                label = "Nome do Personagem",
                 modifier = Modifier
                     .fillMaxWidth()
                     .onFocusChanged { focusState ->
@@ -150,14 +154,16 @@ fun TabGeral(viewModel: FichaViewModel) {
                         if (perdeuFoco) {
                             viewModel.atualizarNome(nomeInput)
                         }
-                    },
-                singleLine = true
+                    }
             )
-            Spacer(modifier = Modifier.height(4.dp))
-            OutlinedTextField(
+            // ⚠️ 8 dp, e nao 4: com o campo baixo o rotulo flutuante do de baixo
+            // quase encosta na moldura do de cima. O respiro que encolheu foi o de
+            // DENTRO da caixa; ENTRE as caixas ele precisa continuar visivel.
+            Spacer(modifier = Modifier.height(8.dp))
+            AppCampoCompacto(
                 value = jogadorInput,
                 onValueChange = { jogadorInput = it },
-                label = { Text("Jogador") },
+                label = "Jogador",
                 modifier = Modifier
                     .fillMaxWidth()
                     .onFocusChanged { focusState ->
@@ -166,10 +172,9 @@ fun TabGeral(viewModel: FichaViewModel) {
                         if (perdeuFoco) {
                             viewModel.atualizarJogador(jogadorInput)
                         }
-                    },
-                singleLine = true
+                    }
             )
-            Spacer(modifier = Modifier.height(4.dp))
+            Spacer(modifier = Modifier.height(8.dp))
             // Lote GER-1: os tres numeros da campanha na mesma linha.
             //
             // ⚠️ Os tres tem larguras IGUAIS (`weight(1f)`) de proposito. Antes o
@@ -179,7 +184,7 @@ fun TabGeral(viewModel: FichaViewModel) {
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(rowSpacing)
             ) {
-                OutlinedTextField(
+                AppCampoCompacto(
                     value = pontosInput,
                     onValueChange = {
                         val somenteDigitos = it.filter(Char::isDigit).take(4)
@@ -188,7 +193,7 @@ fun TabGeral(viewModel: FichaViewModel) {
                             ultimoPontosValidos = somenteDigitos
                         }
                     },
-                    label = { Text("Pontos") },
+                    label = "Pontos",
                     modifier = Modifier
                         .weight(1f)
                         .onFocusChanged { focusState ->
@@ -203,13 +208,12 @@ fun TabGeral(viewModel: FichaViewModel) {
                                 }
                             }
                         },
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                    singleLine = true
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
                 )
-                OutlinedTextField(
+                AppCampoCompacto(
                     value = xpInput,
                     onValueChange = { xpInput = it.filter(Char::isDigit).take(4) },
-                    label = { Text("XP") },
+                    label = "XP",
                     modifier = Modifier
                         .weight(1f)
                         .onFocusChanged { focusState ->
@@ -222,13 +226,12 @@ fun TabGeral(viewModel: FichaViewModel) {
                                 viewModel.atualizarXpGanhos(xpInput.toIntOrNull() ?: 0)
                             }
                         },
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                    singleLine = true
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
                 )
-                OutlinedTextField(
+                AppCampoCompacto(
                     value = ntInput,
                     onValueChange = { ntInput = it.filter(Char::isDigit).take(2) },
-                    label = { Text("NT") },
+                    label = "NT",
                     modifier = Modifier
                         .weight(1f)
                         .onFocusChanged { focusState ->
@@ -242,8 +245,7 @@ fun TabGeral(viewModel: FichaViewModel) {
                                 )
                             }
                         },
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                    singleLine = true
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
                 )
             }
         }
