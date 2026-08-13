@@ -729,3 +729,122 @@ não**, e é o nome que vai para a ficha.
 ⚠️ E a lição, que é a mesma da sessão inteira em outra escala: **li um livro e
 tratei como se fosse o assunto todo.** O erro não foi ler mal a página — foi não
 perceber que faltava uma.
+
+
+---
+
+# PLANO DE CORREÇÃO — depois de ler o que eu tinha pulado
+
+Escrito após ler as seções do Capítulo 1 que eu nunca abri (**Exclusividade**
+p.12, **Número de Habilidades** p.19, **Referência Rápida** p.25, **Acúmulo de
+Modificadores** p.28) e o capítulo de Psiquismo do **Módulo Básico** (p.254-258).
+
+Os erros abaixo **não são de número** — são de **estrutura**. Por isso nenhum
+teste pegou: eles guardam o que eu escrevi.
+
+---
+
+## POD-14 — O fluxo de criação está invertido 🔴 *(o mais importante)*
+
+**Hoje**, para dar uma habilidade a um poder:
+1. Traços → Adicionar Vantagem → escolher Leitura da Mente;
+2. voltar em Configurar Poderes → abrir o poder → Ligar habilidade.
+
+**O livro** (MB p.257): *"O personagem pode usar seus pontos adquiridos para
+comprar **novas habilidades de Telepatia**"* — a habilidade é comprada **para o
+poder**.
+
+**Correção:** dentro do poder, **Adicionar habilidade** → abre o catálogo de
+vantagens → a vantagem nasce **já ligada ao poder e já com o modificador**, com
+os botões de Ampliações/Limitações que já existem.
+
+⚠️ **Reaproveitar `BotoesModificadoresPorTipo`**, que já junta
+`modificadores.v1.json` (MB) e `modificadores_poderes.v1.json` (Poderes) e separa
+por tipo. Ele já existia; eu construí o montador do POD-7 ao lado dele sem ver.
+
+⚠️ **Mas não copiar a Raça inteira.** O `ModeloRacial` **possui** os traços dele;
+o poder **não deve possuir** — no livro a habilidade é uma vantagem do
+personagem, comprada com os pontos dele, e tem de continuar aparecendo na aba
+Traços. Muda o **caminho de compra**, não a propriedade.
+
+## POD-15 — O Módulo Básico define os poderes psíquicos, e o app não sabe
+
+> *"Cada poder psíquico tem **seu próprio modificador**, que geralmente vale
+> −10%."* (MB p.255)
+
+| Poder | Modificador no MB | Talento |
+|---|---|---|
+| Telepatia | **Telepático** −10% | 5/nível |
+| Psicocinese | **Psicocinético** −10% | 5/nível |
+| PES | PES −10% | 5/nível |
+| Cura Psíquica | Cura Psíquica −10% | 5/nível |
+| Teleporte | Teleporte Psíquico −10% | 5/nível |
+| **Antipsi** | **Nenhum** | **não existe** |
+
+**Correção:** o modificador injetado passa a ter o **nome do livro**, e os seis
+entram como origem de catálogo ao lado dos 47 de *Poderes*. Antipsi **sem**
+modificador e **sem** Talento, com a frase do livro à vista.
+
+## POD-16 — O montador está estruturalmente errado
+
+Contra a **Referência Rápida** (p.25), que eu nunca tinha lido:
+
+| O que eu fiz | O que o livro diz |
+|---|---|
+| Contramedidas = escolha **uma** | *"todos os modificadores serão **cumulativos**"* — as três somam |
+| Inventei "Antipoderes −10% (as duas)" | é a **soma** de dois −5%, que eu tinha proibido de coexistir |
+| Faltou **Volúvel −20%** | está em Energias Canalizadas |
+| Pus **Cósmico +50%** em Contramedidas | pertence a Energias Canalizadas, e **exclui** as contramedidas |
+| Desvantagem exigida = 3 opções minhas | é o **valor em pontos** da desvantagem, livre |
+
+## POD-17 — 🔴 Uma "correção" minha do POD-5 estava errada
+
+> *"Ele aplica-se a todas as habilidades do poder (**mas não ao seu Talento,
+> desvantagens exigidas, ou Antecedente Incomum**)."* (p.28)
+
+No POD-5 eu tratei como **defeito** o fato de `vincularDesvantagemPoder` não
+aplicar o modificador, e "consertei". A assimetria original estava **certa**: a
+desvantagem exigida **não recebe** o modificador de poder.
+
+⚠️ Eu escrevi um teste travando o comportamento errado. É a segunda vez nesta
+sessão que uma conclusão minha vira trava — a primeira foi o POD-8b.
+
+**Correção:** desfazer, e o teste passa a cobrar o contrário, citando a página.
+
+## POD-18 — Falta o segundo esquema de desconto
+
+**Várias Cópias da Mesma Vantagem** (p.12): a **mesma** vantagem comprada como
+habilidade de **poderes diferentes** paga preço cheio na mais cara e **1/5** nas
+outras, arredondando para cima — a mesma conta das Alternativas.
+
+> *"Diferente das Habilidades Alternativas, **não há conexão** entre estas
+> habilidades."*
+
+O POD-6 implementou só o primeiro esquema. E o p.28 confirma que os dois usam
+**os custos já modificados**.
+
+## POD-19 — Número de Habilidades (p.19), como orientação
+
+Duas vantagens de ataque; duas ou três defesas principais; duas ou três de
+movimento; duas ou três mentais. **[MOSTRAR]**, nunca travar — *"estes limites
+são apenas sugestões"*.
+
+---
+
+## Ordem sugerida
+
+1. **POD-17** — desfazer a trava errada *(menor, e é conserto de coisa no ar)*
+2. **POD-14** — o fluxo de criação *(o que você apontou; o de maior efeito)*
+3. **POD-16** — o montador contra a Referência Rápida
+4. **POD-15** — os seis poderes do Módulo Básico
+5. **POD-18** — Várias Cópias
+6. **POD-19** — a orientação de quantidade
+
+## A causa raiz, escrita para não repetir
+
+Li **um** livro e tratei como o assunto todo; e dentro dele, li **os trechos** que
+respondiam a pergunta que eu já tinha, nunca a seção inteira. As duas coisas têm
+o mesmo formato: **parar de ler quando a resposta aparece**.
+
+⚠️ O usuário achou os dois erros seguindo uma remissão que estava na primeira
+página que eu li.
