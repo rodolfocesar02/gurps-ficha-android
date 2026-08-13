@@ -2091,3 +2091,25 @@ exemplo o *Traje Pressurizado* (RD 6\*) ou a *Cota de Malha Longa Dupla*.
   ele está definido.
   ⚠️ O POD-6 (Habilidades Alternativas) é **regra pura por ora** — ainda não tem
   tela. Nada a testar no aparelho além dos modificadores.
+
+
+---
+
+# Lotes POD-6, POD-7 e POD-9 — as telas
+
+> Gate: 2.277 testes, 0 falhas nas duas variantes.
+
+- **T-PO16 · a Reserva de Energia custa pontos** — abra um poder salvo, ponha
+  **10** em "PF de reserva": ✅ mostra **30 pontos**, e o **Restantes cai 30**.
+  Marque **Carga Especial**: ✅ o custo cai para **9** e a linha passa a dizer
+  "não recarrega com o tempo". Marque **Carga Lenta** junto: ✅ aparece aviso
+  vermelho de que o livro não permite juntar as duas — **e deixa marcar**.
+- **T-PO17 · o montador** — no diálogo do poder, toque em **Montar o modificador
+  por componentes**. Marque "Contramedidas mundanas" (−10%) e depois "Poder
+  cósmico" (+50%): ✅ a primeira **desmarca sozinha** (é uma escolha só por
+  grupo). Marque dois itens de "Outros": ✅ os dois ficam marcados e somam.
+  Toque em **Usar N%**: ✅ o campo "Modificador (%)" do poder recebe o número.
+- **T-PO18 · 🔴 habilidades alternativas** — ligue **três** vantagens ao mesmo
+  poder e marque a caixinha das três. ✅ Aparece a linha de economia, e o
+  **Restantes sobe** (o grupo custa menos que as três soltas). ✅ Os três
+  inconvenientes aparecem abaixo. Desmarque uma: ✅ o total volta a subir.

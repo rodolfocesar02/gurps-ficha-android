@@ -599,3 +599,20 @@ testadas.** O que falta agora não é leitura de livro — é **tela**:
 ⚠️ Um lote de **tela** deste tamanho para para teste no aparelho, e mexe na aba
 Rolagem — que é escopo separado. Vale decidir quais destas cinco valem tela antes
 de fazer as cinco.
+
+
+---
+
+# As telas (11.0-TELAS)
+
+| Regra | Tela |
+|---|---|
+| POD-6 Habilidades Alternativas | ✅ caixa de marcar + economia + os 3 inconvenientes |
+| POD-7 Montador de modificador | ✅ diálogo por componentes, escrevendo no campo existente |
+| POD-9 Reserva de Energia | ✅ campo, limitações, custo e aviso de conflito |
+| POD-12 Esforço adicional | ⏳ **falta** — é ação de mesa, o lugar é a aba Rolagem |
+| POD-13 Ampliações temporárias | ⏳ **falta** — idem |
+
+⚠️ POD-12 e POD-13 não pertencem ao diálogo de poderes: acontecem **no meio de
+uma rolagem**. Pô-las ali seria configurá-las onde ninguém as usa. O passo
+seguinte é decidir onde elas entram na aba Rolagem — conversa antes de código.

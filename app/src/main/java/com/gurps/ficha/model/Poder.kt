@@ -3,6 +3,7 @@ package com.gurps.ficha.model
 import androidx.compose.runtime.Stable
 import com.google.gson.annotations.SerializedName
 import com.gurps.ficha.domain.rules.poderes.RegrasDePoder
+import com.gurps.ficha.domain.rules.poderes.ReservaDeEnergia
 
 /**
  * Um poder **na ficha do personagem**. Lotes POD-1 a POD-3.
@@ -21,7 +22,14 @@ data class Poder(
     var foco: String = "",
     var modificadorDePoder: Int = 0, // Ex: -10 para -10%
     var nivelTalento: Int = 0,
-    var custoTalentoNivel: Int = RegrasDePoder.CUSTO_PADRAO_POR_NIVEL
+    var custoTalentoNivel: Int = RegrasDePoder.CUSTO_PADRAO_POR_NIVEL,
+    /**
+     * Reserva de Energia deste poder, em PF (Poderes, p.119). Lote POD-9.
+     * Zero = o poder usa os PF normais.
+     */
+    var reservaDeEnergia: Int = 0,
+    /** Ids de [ReservaDeEnergia.Limitacao] escolhidas para a RE. */
+    var limitacoesDaReserva: List<String> = emptyList()
 ) {
     /**
      * 🔴 Existia desde sempre e **não era chamado em lugar nenhum** — o Talento
@@ -32,6 +40,22 @@ data class Poder(
 
     /** `null` quando está dentro do teto do livro. */
     val avisoDeTalento: String? get() = RegrasDePoder.avisoDoTeto(nivelTalento)
+
+    /** As limitações da RE já resolvidas — ignora id que não existe mais. */
+    val limitacoesDaReserveResolvidas: Set<ReservaDeEnergia.Limitacao>
+        get() = limitacoesDaReserva.mapNotNull { id ->
+            ReservaDeEnergia.Limitacao.entries.firstOrNull { it.name == id }
+        }.toSet()
+
+    /**
+     * O custo em pontos da Reserva de Energia. Lote POD-9.
+     *
+     * ⚠️ Entra em `pontosGastos` junto com o Talento: a RE **é** uma vantagem
+     * comprada (*"trate-os como uma nova vantagem"*, p.119), não um recurso de
+     * graça.
+     */
+    val custoDaReserva: Int
+        get() = ReservaDeEnergia.custo(reservaDeEnergia, limitacoesDaReserveResolvidas)
 
     val descricaoAcessivel: String
         get() = buildString {

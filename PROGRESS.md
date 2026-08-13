@@ -8265,3 +8265,64 @@ cobre uma classe de erro. Sonda: devolvi o `Double` e a varredura reprovou.
 para a interface quando ela vier.
 
 - **Status:** ✅ Build OK nas 2 variantes · lint OK · gate **2264** (+27) · ⏭️ sem teste de aparelho (não há tela).
+
+
+---
+
+## Lotes POD-6, POD-7 e POD-9 — as regras ganham tela
+
+As três telas que cabem no diálogo do poder. **POD-12 e POD-13 ficaram de fora**,
+e o motivo está no fim.
+
+### POD-9 — a Reserva de Energia
+
+Campo de PF, as cinco limitações em caixas de marcar, e o custo à vista. A RE
+**passou a custar pontos** — `pontosPoderes` agora soma Talento **e** reserva,
+porque o livro diz *"trate-os como uma nova vantagem"* (p.119). Guardá-la sem
+cobrar seria um recurso de graça.
+
+⚠️ Os pares incompatíveis do livro dão **aviso em vermelho, não bloqueio**: quem
+decide na mesa é o Mestre. Mas sem o aviso o jogador somaria −70% com −60% sem
+perceber.
+
+E a frase que fica sempre visível: **esgotar a Reserva não causa os efeitos de PF
+baixo, e tê-la cheia não protege contra eles.** É a confusão mais fácil de
+cometer aqui.
+
+⚠️ Id de limitação que não existe mais é **ignorado**, não derruba a ficha nem
+muda o custo em silêncio.
+
+### POD-7 — o montador de modificador
+
+Diálogo com os componentes da p.20-26 agrupados. Dentro de um grupo a escolha é
+**única** — marcar duas contramedidas cobraria o mesmo inconveniente duas vezes;
+só o grupo "Outros" acumula.
+
+🔴 O montador **escreve no mesmo campo** de modificador que já existia, e não num
+campo próprio. Dois lugares com o mesmo número é exatamente a forma de defeito
+que já apareceu quatro vezes neste projeto — o erro mora na diferença.
+
+### POD-6 — habilidades alternativas
+
+Caixa de marcar em cada habilidade ligada ao poder, a economia do grupo à vista,
+e os três inconvenientes logo abaixo dela: quem lê que economizou 28 pontos
+precisa ler junto o que está abrindo mão.
+
+🔴 **O desconto é POR PODER.** Cada poder tem a *sua* habilidade mais cara. Somar
+tudo num grupo só daria um desconto que o livro não dá — sonda: troquei o
+agrupamento por um grupo único e o teste reprovou.
+
+⚠️ E alternativa **exige** estar ligada a um poder. Marcada solta, seria desconto
+de graça.
+
+### O que NÃO foi feito, e por quê
+
+**POD-12 (esforço adicional) e POD-13 (ampliações temporárias) continuam sem
+tela.** As duas não pertencem ao diálogo de poderes: são ações de **mesa**, no
+meio de uma rolagem — o lugar delas é a aba Rolagem, que é escopo separado e
+mexe no motor de rolagem.
+
+As regras dos dois estão prontas e testadas desde o lote anterior. O que falta é
+decidir **onde** elas aparecem, e isso é conversa antes de código.
+
+- **Status:** ✅ Build OK nas 2 variantes · lint OK · gate **2277** (+13) · ⏭️ **PENDENTE: teste no aparelho** (T-PO16 a T-PO18).

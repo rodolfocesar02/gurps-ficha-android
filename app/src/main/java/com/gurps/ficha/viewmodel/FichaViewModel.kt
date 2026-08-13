@@ -626,6 +626,20 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
         salvarFicha()
     }
 
+    /**
+     * Marca (ou desmarca) uma vantagem como **habilidade alternativa** do poder
+     * a que ela pertence. Lote POD-6.
+     *
+     * ⚠️ Só faz sentido em vantagem já ligada a um poder — alternativa é sempre
+     * alternativa **dentro de um poder**.
+     */
+    fun marcarAlternativa(indexVantagem: Int, alternativa: Boolean) {
+        personagem = personagem.copy(vantagens = personagem.vantagens.mapIndexed { i, v ->
+            if (i == indexVantagem && v.poderId != null) v.copy(alternativaDoPoder = alternativa) else v
+        })
+        salvarFicha()
+    }
+
     /** O resumo das habilidades de um poder, para a tela do POD-5. */
     fun habilidadesDoPoder(poder: Poder): HabilidadesDoPoder.Resumo =
         HabilidadesDoPoder.resumir(

@@ -1,5 +1,7 @@
 package com.gurps.ficha.model
 
+import com.gurps.ficha.domain.rules.poderes.HabilidadesAlternativas
+
 import com.google.gson.Gson
 import com.google.gson.annotations.SerializedName
 import com.gurps.ficha.domain.rules.CharacterRules
@@ -244,7 +246,28 @@ data class Personagem(
         modDeslocamentoBasico = modDeslocamentoBasico
     )
 
-    val pontosVantagens: Int get() = vantagens.sumOf { it.custoFinal }
+    /**
+     * O custo das vantagens, **com o desconto de habilidades alternativas**
+     * aplicado por poder (Poderes, p.11). Lote POD-6.
+     *
+     * > *"pagarão o preço integral apenas para sua habilidade mais cara. Todas as
+     * > outras terão 1/5 do custo (…) após calcular todas as ampliações e
+     * > limitações, aplicar o divisor e arredondar para cima."*
+     *
+     * ⚠️ O desconto é **por poder**: dois poderes com grupos alternativos são
+     * dois grupos, cada um com a sua "mais cara". Somar tudo num grupo só daria
+     * um desconto que o livro não dá.
+     */
+    val pontosVantagens: Int get() {
+        val alternativasPorPoder = vantagens
+            .filter { it.alternativaDoPoder && it.poderId != null }
+            .groupBy { it.poderId }
+        val soltas = vantagens.filterNot { it.alternativaDoPoder && it.poderId != null }
+        return soltas.sumOf { it.custoFinal } +
+            alternativasPorPoder.values.sumOf { grupo ->
+                HabilidadesAlternativas.custoDoGrupo(grupo.map { it.custoFinal })
+            }
+    }
     val pontosDesvantagens: Int get() = desvantagens.sumOf { it.custoFinal }
     val pontosQualidades: Int get() = qualidades.size
     val pontosPeculiaridades: Int get() = peculiaridades.size * -1
@@ -261,7 +284,9 @@ data class Personagem(
      * ⚠️ Ligar isto **muda o Restantes** de qualquer ficha que já tenha poder
      * com Talento. É o número certo passando a aparecer, não um número novo.
      */
-    val pontosPoderes: Int get() = poderes.sumOf { it.custoTotalTalento }
+    // Lote POD-9: a Reserva de Energia tambem e comprada com pontos
+    // ("trate-os como uma nova vantagem", Poderes p.119).
+    val pontosPoderes: Int get() = poderes.sumOf { it.custoTotalTalento + it.custoDaReserva }
 
     val pontosGastos: Int get() =
         pontosAtributos + pontosSecundarios + pontosVantagens +
@@ -504,7 +529,16 @@ data class VantagemSelecionada(
     val specialRule: String? = null,
     var modificadores: List<ModificadorSelecao> = emptyList(),
     override var metadados: Map<String, String>? = null, // Para regras especiais como Ataque Inato
-    var poderId: String? = null // Referência ao Poder que possui esta Vantagem
+    var poderId: String? = null, // Referência ao Poder que possui esta Vantagem
+    /**
+     * Lote POD-6: esta habilidade faz parte do grupo de **habilidades
+     * alternativas** do poder (Poderes, p.11) — configurações mutuamente
+     * exclusivas da mesma capacidade.
+     *
+     * ⚠️ Só tem efeito com [poderId] preenchido: alternativa é sempre
+     * alternativa **dentro de um poder**.
+     */
+    var alternativaDoPoder: Boolean = false
 ) : com.gurps.ficha.domain.rules.traits.TracoSelecionado {
     val custoFinal: Int get() {
         val rule = specialRule ?: CharacterRules.DATA_REPOSITORY_INSTANCE?.getVantagemPorId(definicaoId)?.specialRule

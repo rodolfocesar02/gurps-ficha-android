@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -18,6 +19,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.gurps.ficha.domain.rules.poderes.HabilidadesAlternativas
 import com.gurps.ficha.domain.rules.poderes.HabilidadesDoPoder
 import com.gurps.ficha.domain.rules.poderes.UsoDoPoder
 import com.gurps.ficha.model.Poder
@@ -70,14 +72,26 @@ fun ColumnScope.PainelDeHabilidades(
     }
 
     resumo.habilidades.forEach { h ->
+        val ehAlternativa = !h.ehDesvantagem &&
+            viewModel.personagem.vantagens.getOrNull(h.indice)?.alternativaDoPoder == true
         AppSelectionRow(
             nome = h.nome,
-            detalhe = "${h.custo} pts" + if (h.ehDesvantagem) " · desvantagem" else "",
+            detalhe = "${h.custo} pts" +
+                (if (h.ehDesvantagem) " · desvantagem" else "") +
+                (if (ehAlternativa) " · alternativa" else ""),
             onClick = { },
             descricaoAcessivel = "${h.nome}, ${h.custo} pontos, " +
                 (if (h.ehDesvantagem) "desvantagem" else "vantagem") +
                 " ligada ao poder ${poder.nome}.",
             acoes = {
+                if (!h.ehDesvantagem) {
+                    // Lote POD-6: marcar a habilidade como uma das "configurações"
+                    // mutuamente exclusivas do poder (p.11).
+                    Checkbox(
+                        checked = ehAlternativa,
+                        onCheckedChange = { viewModel.marcarAlternativa(h.indice, it) }
+                    )
+                }
                 AppBotaoIcone(
                     icone = Icons.Default.Clear,
                     descricao = "Desligar ${h.nome} do poder ${poder.nome}",
@@ -90,6 +104,22 @@ fun ColumnScope.PainelDeHabilidades(
                 )
             }
         )
+    }
+
+    // Lote POD-6: a economia do grupo alternativo, quando existe.
+    val alternativas = resumo.habilidades.filterNot { it.ehDesvantagem }
+        .filter { viewModel.personagem.vantagens.getOrNull(it.indice)?.alternativaDoPoder == true }
+        .map { it.custo }
+    if (HabilidadesAlternativas.ehGrupoValido(alternativas.size)) {
+        Text(
+            HabilidadesAlternativas.resumo(alternativas),
+            style = UiEstilos.detalheDoItem,
+            color = MaterialTheme.colorScheme.primary
+        )
+        HabilidadesAlternativas.INCONVENIENTES.forEach {
+            Text("• $it", style = UiEstilos.detalheDoItem,
+                color = MaterialTheme.colorScheme.onSurfaceVariant)
+        }
     }
 
     if (resumo.quantidade > 0) {

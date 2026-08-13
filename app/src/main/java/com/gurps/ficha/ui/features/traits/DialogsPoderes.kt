@@ -24,6 +24,7 @@ import com.gurps.ficha.model.FonteDoPoder
 import com.gurps.ficha.model.Poder
 import com.gurps.ficha.model.PoderDefinicao
 import com.gurps.ficha.ui.AppBotaoIcone
+import com.gurps.ficha.ui.AppBotaoSecundario
 import com.gurps.ficha.ui.AppCampoCompacto
 import com.gurps.ficha.ui.AppSelectionRow
 import com.gurps.ficha.ui.FullscreenDialogContainer
@@ -212,6 +213,11 @@ fun PoderEditDialog(
     onSave: (Poder) -> Unit
 ) {
     var mostrarLigar by remember(poderBase) { mutableStateOf(false) }
+    // Lote POD-7: o montador de modificador por componentes.
+    var mostrarMontador by remember(poderBase) { mutableStateOf(false) }
+    // Lote POD-9: a Reserva de Energia edita o proprio poder, entao ela
+    // precisa de um rascunho local ate o Salvar.
+    var rascunho by remember(poderBase) { mutableStateOf(poderBase ?: Poder()) }
     var nome by remember(poderBase) { mutableStateOf(poderBase?.nome ?: "") }
     var fonte by remember(poderBase) { mutableStateOf(poderBase?.fonte ?: "") }
     var foco by remember(poderBase) { mutableStateOf(poderBase?.foco ?: "") }
@@ -298,6 +304,12 @@ fun PoderEditDialog(
                     )
                 }
 
+                AppBotaoSecundario(
+                    "Montar o modificador por componentes",
+                    { mostrarMontador = true },
+                    larguraTotal = true
+                )
+
                 // O custo do Talento, à vista. Ele passou a entrar no total da
                 // ficha no POD-3 — antes não custava nada.
                 Text(
@@ -324,6 +336,8 @@ fun PoderEditDialog(
                         poder = poderBase,
                         onPedirParaLigar = { mostrarLigar = true }
                     )
+                    // Lote POD-9: a Reserva de Energia deste poder.
+                    PainelDaReserva(rascunho) { rascunho = it }
                     // Lote POD-10: o que o livro sugere para este poder.
                     SugestoesDoLivro(definicao)
                 }
@@ -336,7 +350,7 @@ fun PoderEditDialog(
                     TextButton(onClick = onDismiss) { Text("Cancelar") }
                     Spacer(Modifier.width(8.dp))
                     Button(onClick = {
-                        val base = poderBase ?: Poder()
+                        val base = rascunho
                         onSave(
                             base.copy(
                                 nome = nome,
@@ -353,6 +367,19 @@ fun PoderEditDialog(
                 }
             }
         }
+    }
+
+    if (mostrarMontador) {
+        MontadorDeModificadorDialog(
+            valorAtual = modificador.toIntOrNull() ?: 0,
+            onDismiss = { mostrarMontador = false },
+            onAplicar = { total ->
+                // ⚠️ O montador ESCREVE no campo de modificador, e nao num
+                // campo proprio: e o mesmo numero, e dois lugares divergiriam.
+                modificador = total.toString()
+                mostrarMontador = false
+            }
+        )
     }
 
     if (mostrarLigar && viewModelParaHabilidades != null && poderBase != null) {
