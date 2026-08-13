@@ -44,7 +44,7 @@ E a definição de "ter o poder" (p.34):
 > (ou seja, qualquer vantagem com seu modificador de poder) são considerados
 > possuidores daquele poder."*
 
-**[FAZER] · POD-5 — o poder mostra suas habilidades.** O diálogo do poder precisa
+**[FEITO] · POD-5 — o poder mostra suas habilidades.** O diálogo do poder precisa
 listar as vantagens/desvantagens da ficha que carregam o modificador dele, e
 deixar ligar/desligar dali. Hoje a ligação só existe indo na vantagem. É a peça
 que falta para o poder deixar de ser um rótulo solto.
@@ -146,7 +146,8 @@ Variantes.
 **Vantagens ausentes:** Controle (p.90), Criar (p.92), Controle Divino (p.92),
 Estática (p.94), Ilusão (p.95). *(Neutralizar já existe.)*
 
-**[FAZER] · POD-8 — completar os dois catálogos.** É o mesmo formato do POD-1:
+**[FEITO, MAS INCOMPLETO] · POD-8 — completar os dois catálogos.**
+⚠️ Entregou 4 vantagens e 1 modificador; **faltaram 8 modificadores** — ver POD-8b. É o mesmo formato do POD-1:
 extrair do PDF, varredura como teste. Sem isso, metade dos poderes do livro não
 tem como ser montada na ficha — as habilidades sugeridas citam justamente essas
 vantagens e esses modificadores.
@@ -223,7 +224,7 @@ habilidades** cada. ⚠️ E a contaminação de verbete vizinho reapareceu (Alt
 de Probabilidades puxou a lista da Antimagia) — a extração precisa da mesma trava
 de duplicata que salvou o POD-1.
 
-**[FAZER] · POD-10 — habilidades sugeridas no catálogo.** Novo campo por poder.
+**[FEITO] · POD-10 — habilidades sugeridas no catálogo.** Novo campo por poder.
 Com ele, escolher "Telepatia" passa a **oferecer** as vantagens que fazem parte
 dela, em vez de o jogador ter de saber de cor. É o que fecha o buraco do POD-5.
 
@@ -553,3 +554,28 @@ Aditivo (padrão do app): +20% e −50% → **70%**. Multiplicativo: → **60%**
 
 O padrão continua o mesmo dos anteriores: **os números que eu anotei estavam
 certos; o que faltava era o que vinha ao redor deles.**
+
+
+---
+
+# Status, conferido no arquivo (não de memória)
+
+| Lote | O quê | Situação |
+|---|---|---|
+| POD-1/2/3 | catálogo de 47 poderes, fonte→modificador, Talento | ✅ feito |
+| POD-4 | focos inventados, descrição vazando, teste cego | ✅ feito |
+| POD-5 | o poder lista e gerencia suas habilidades | ✅ feito |
+| POD-10 | as 567 habilidades sugeridas do livro | ✅ feito |
+| POD-8 | 4 vantagens + 1 modificador | ⚠️ **incompleto** |
+| POD-11 | incapacitação pela fonte + bônus do Talento | ✅ feito |
+| **POD-8b** | os **8 modificadores** que ficaram de fora, e desfazer a trava que os proíbe | ⏳ **falta** |
+| **POD-6** | Habilidades Alternativas (1/5, arredondando para cima) + os **3** inconvenientes | ⏳ falta |
+| **POD-9** | Reserva de Energia + as **5 limitações** que mudam a recarga | ⏳ falta |
+| **POD-7** | montador de modificador, com a **tabela completa** de componentes | ⏳ falta |
+| **POD-12** | esforço adicional (−1 na Vontade por 5%) + custo em PF do uso | ⏳ falta |
+| **POD-13** | ampliações temporárias, uso predefinido, multiplicação | ⏳ falta |
+
+⚠️ Os marcadores `[FAZER]` deste arquivo ficaram desatualizados em POD-5, POD-8 e
+POD-10: eles foram implementados e o plano continuou dizendo que faltavam. Quem
+lesse só o plano concluiria errado. Corrigido acima — e é mais um caso do mesmo
+problema da sessão: **o documento e o fato divergindo em silêncio.**
