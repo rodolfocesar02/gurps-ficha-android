@@ -194,6 +194,111 @@ class PoderesTest {
         assertFalse("o foco inventado voltou", magia.foco.contains("Mana"))
     }
 
+    // ── POD-10: as habilidades sugeridas de cada verbete ───────────────
+
+    @Test
+    fun `quase todo poder traz a lista de habilidades do livro`() {
+        val comLista = poderes.filter { it.habilidades.isNotEmpty() }
+        assertEquals("mudou o numero de poderes com lista", 45, comLista.size)
+        val total = poderes.sumOf { it.habilidades.size }
+        assertTrue("total de habilidades caiu: $total", total >= 560)
+    }
+
+    @Test
+    fun `os dois sem lista sao os que o livro escreve em prosa`() {
+        // ⚠️ Vazio aqui NAO e falha de extracao. Cosmico diz "qualquer vantagem
+        // pode ser uma habilidade Cosmica" (p.127) e Magia manda usar outro poder
+        // (p.130). Nos dois casos a explicacao fica na nota.
+        val semLista = poderes.filter { it.habilidades.isEmpty() }.map { it.nome }.toSet()
+        assertEquals(setOf("Cósmico", "Magia"), semLista)
+        poderes.filter { it.nome in semLista }.forEach {
+            assertTrue(
+                "'${it.nome}' ficou sem lista E sem explicacao",
+                it.notaDasHabilidades.length > 40
+            )
+        }
+    }
+
+    @Test
+    fun `nenhuma habilidade ficou cortada no meio`() {
+        // 🔴 A quebra de coluna corta o item ao meio: "Detectar, para" e
+        // "Controle (Clima, ou um subconjunto, como" foram tres casos reais.
+        // Item terminado em preposicao e frase pela metade, nao habilidade.
+        // ⚠️ SEM ignorar maiusculas, de proposito. Com `IGNORE_CASE` a regra
+        // reprovava "Detectar, para campos ou fenomenos **EM**" -- onde EM e a
+        // sigla de eletromagnetico, nao a preposicao. Palavra cortada no meio de
+        // uma frase vem sempre em minuscula.
+        val cortada = Regex(
+            """(?:\b(?:para|com|como|ou|e|de|da|do|em|sem|contra|entre)\s*|,\s*)$"""
+        )
+        poderes.forEach { p ->
+            p.habilidades.forEach { h ->
+                assertFalse(
+                    "'${p.nome}' tem habilidade cortada: '$h'",
+                    cortada.containsMatchIn(h)
+                )
+            }
+        }
+    }
+
+    @Test
+    fun `a lista nao carrega rodape nem nota como se fosse habilidade`() {
+        poderes.forEach { p ->
+            p.habilidades.forEach { h ->
+                assertFalse("'${p.nome}': rodape virou habilidade -> '$h'",
+                    h.contains("Criação de Poderes"))
+                assertFalse("'${p.nome}': nota virou habilidade -> '$h'",
+                    h.startsWith("As habilidades marcadas"))
+                assertFalse("'${p.nome}': titulo virou habilidade -> '$h'",
+                    h.startsWith("Modificador de Poder"))
+                assertTrue("'${p.nome}': habilidade absurdamente longa -> '$h'", h.length < 200)
+            }
+        }
+    }
+
+    @Test
+    fun `nenhum poder herdou a lista do vizinho`() {
+        // A trava que salvou o POD-1 e o POD-4, agora dentro do gate: duas listas
+        // iguais querem dizer que um verbete colou no outro.
+        val porAssinatura = poderes.filter { it.habilidades.size >= 3 }
+            .groupBy { it.habilidades.take(3).joinToString("|") }
+        val repetidas = porAssinatura.filter { it.value.size > 1 }
+        assertTrue(
+            "listas repetidas: " + repetidas.map { (_, ps) -> ps.map { it.nome } },
+            repetidas.isEmpty()
+        )
+    }
+
+    @Test
+    fun `o exemplo conferido no livro bate item a item`() {
+        // Agua, p.121: 19 habilidades, do "Anfibio" ao "Sentido de Vibracao".
+        val agua = poderes.first { it.nome == "Água" }
+        assertEquals(19, agua.habilidades.size)
+        assertEquals("Anfíbio", agua.habilidades.first())
+        assertEquals("Sentido de Vibração (Água)", agua.habilidades.last())
+        assertTrue(
+            "o modificador embutido do livro sumiu",
+            agua.habilidades.any { it.contains("Vapor (-40%)") }
+        )
+    }
+
+    @Test
+    fun `o Talento da Magia e a Aptidao Magica`() {
+        // p.130: "Aptidão Mágica 5 pontos para nível 0 + 10 pontos/nível".
+        // Estava gravado como 5 -- o padrao, e nao o do verbete.
+        assertEquals(10, poderes.first { it.nome == "Magia" }.custoTalentoPorNivel)
+    }
+
+    @Test
+    fun `a tela mostra as sugestoes do livro`() {
+        val p = fonte("com/gurps/ficha/ui/features/traits/PoderHabilidades.kt")
+        assertTrue("as sugestoes nao existem", p.contains("fun ColumnScope.SugestoesDoLivro"))
+        val d = fonte("com/gurps/ficha/ui/features/traits/DialogsPoderes.kt")
+        assertTrue("as sugestoes nao foram ligadas", d.contains("SugestoesDoLivro(definicao)"))
+        assertTrue("a lista de selecao nao diz quantas ha",
+            d.contains("habilidades sugeridas"))
+    }
+
     // ── As onze fontes genéricas (p.26-30) ─────────────────────────────
 
     @Test

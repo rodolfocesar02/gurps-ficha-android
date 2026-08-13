@@ -2034,3 +2034,18 @@ exemplo o *Traje Pressurizado* (RD 6\*) ou a *Cota de Malha Longa Dupla*.
 - **T-PO10 · 🔴 apagar o poder não apaga o traço** — apague o poder na lixeira.
   ✅ A vantagem **e** a desvantagem que estavam ligadas continuam na ficha, e o
   `Mod. de Poder:` sumiu das duas (o custo volta ao de antes).
+
+
+---
+
+# Lote POD-10 — As habilidades sugeridas do livro
+
+> Gate: 2.207 testes, 0 falhas nas duas variantes.
+
+- **T-PO11 · a lista de seleção diz quantas há** — Novo Poder: ✅ os poderes
+  mostram "N habilidades sugeridas". **Água** deve dizer **19**.
+- **T-PO12 · as sugestões aparecem no poder** — abra um poder já salvo: ✅ abaixo
+  das habilidades ligadas aparece **"O livro sugere (p.121)"** com a lista.
+  ✅ Nenhum item termina no meio ("Detectar, para"), e nenhum traz
+  "Criação de Poderes 124".
+  ✅ Em **Cósmico** e **Magia** não há lista, mas há a explicação do livro.

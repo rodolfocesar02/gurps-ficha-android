@@ -20,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.gurps.ficha.domain.rules.poderes.HabilidadesDoPoder
 import com.gurps.ficha.model.Poder
+import com.gurps.ficha.model.PoderDefinicao
 import com.gurps.ficha.ui.AppBotaoIcone
 import com.gurps.ficha.ui.AppBotaoSecundario
 import com.gurps.ficha.ui.AppSelectionDialog
@@ -101,6 +102,42 @@ fun ColumnScope.PainelDeHabilidades(
 
     Spacer(Modifier.height(8.dp))
     AppBotaoSecundario("Ligar habilidade", onPedirParaLigar, larguraTotal = true)
+}
+
+/**
+ * **O que o livro sugere para este poder** — Lote POD-10.
+ *
+ * A lista de habilidades de cada verbete (p.121-136), com os modificadores que o
+ * livro já recomenda. São **567 habilidades** em 45 poderes, média de 12,6.
+ *
+ * ⚠️ É sugestão, não catálogo clicável: o texto do livro traz a vantagem **com o
+ * modificador embutido** (*"Caminhar no Ar, com Específico, Vapor (-40%)"*), e
+ * transformar isso em botão exigiria decidir por conta própria como montar cada
+ * um. Aqui ele serve para o jogador saber **o que procurar** ao ligar habilidade.
+ */
+@Composable
+fun ColumnScope.SugestoesDoLivro(definicao: PoderDefinicao?) {
+    if (definicao == null) return
+    if (definicao.habilidades.isEmpty() && definicao.notaDasHabilidades.isBlank()) return
+
+    Spacer(Modifier.height(12.dp))
+    Text(
+        "O livro sugere (p.${definicao.pagina})",
+        style = UiEstilos.subtituloDialogo
+    )
+    if (definicao.notaDasHabilidades.isNotBlank()) {
+        Text(
+            definicao.notaDasHabilidades,
+            style = UiEstilos.detalheDoItem,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+    }
+    if (definicao.habilidades.isNotEmpty()) {
+        Text(
+            definicao.habilidades.joinToString(" · "),
+            style = UiEstilos.detalheDoItem
+        )
+    }
 }
 
 /**

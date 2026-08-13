@@ -7903,3 +7903,78 @@ explica o conserto. Reescrevi o comentário sem a citação literal. ⚠️ Test
 casa com texto de comentário não distingue código de documentação.
 
 - **Status:** ✅ Build OK nas 2 variantes · lint OK · gate **2198** (+13) · ⏭️ **PENDENTE: teste no aparelho** (T-PO7 a T-PO10).
+
+
+---
+
+## Lote POD-10 — As habilidades sugeridas de cada poder
+
+Segunda leva do plano. Enche a tela que o POD-5 criou: cada verbete do livro
+(p.121-136) traz a lista de vantagens que fazem sentido para aquele poder, já com
+os modificadores recomendados — *"Anfíbio; Caminhar no Ar, com Específico, Vapor
+(-40%); Controle (Água)…"*.
+
+**567 habilidades** em **45 dos 47** poderes, média de **12,6**.
+
+### O leiaute usa três formatos para a mesma coisa
+
+Levei quatro tentativas até enxergar isso:
+
+| Formato | Exemplo |
+|---|---|
+| título abre o bloco | `Habilidades Antissuper Detectar, qualquer superpoder…` |
+| título no **meio** do bloco | `…incontrolável. Habilidades Antipsi Detectar, para…` |
+| bloco **só** com o título, lista no seguinte | Controle de Animais |
+
+E, por cima disso, quando o título cai no **pé da coluna** a lista continua no
+**topo da coluna seguinte** (Calor/Fogo) ou na **página seguinte** (Alteração de
+Probabilidades). A saída foi montar a **ordem de leitura de verdade** — 3 colunas
+por página — e seguir por ela.
+
+### Quatro erros meus no caminho, todos achados por trava
+
+1. **Corte errado.** O fim da lista era "qualquer `Habilidades <Maiúscula>`" — e
+   **Habilidades Modulares é o nome de uma vantagem**. A Água perdeu 9 das 19 em
+   silêncio. Agora só encerra em `Habilidades <nome de poder do catálogo>`.
+2. **Rodapé virando marcador.** `"Criação de Poderes 124"` aparece como bloco no
+   meio da ordem de leitura e zerava a lista de quem tinha o título no pé da
+   coluna. Sai na limpeza; não é conteúdo.
+3. **Nome composto cortado.** A regex parava na primeira maiúscula, então
+   "Controle de Animais" virava "Controle". Passou a testar prefixos contra o
+   catálogo, **do mais longo para o mais curto**.
+4. **Item cortado ao meio** pela quebra de coluna: `"Detectar, para"`,
+   `"Resistência a Dano, com"`. Três casos, detectados e **descartados** — melhor
+   sumir do que aparecer pela metade.
+
+### 🔴 O backspace, de novo — e desta vez virou trava
+
+Escrevi a regex do teste passando por heredoc de shell, e o `` virou
+**BACKSPACE literal (0x08)** dentro do `Regex`. O padrão não casava com nada:
+o teste passava **por estar cego**.
+
+⚠️ **Segunda vez na mesma sessão.** No POD-4 escondeu 45 descrições contaminadas;
+aqui esconderia as habilidades cortadas. Eu já tinha escrito a lição no PROGRESS
+e a violei mesmo assim — regra escrita não impede o erro.
+
+Por isso agora existe `FonteSemCaractereDeControleTest`: varre **todo `.kt` do
+projeto** e reprova qualquer byte de controle. Um byte invisível não é coisa que
+se ache lendo o diff.
+
+### Dois vazios que são do livro, não falha
+
+- **Cósmico**: *"qualquer vantagem pode ser uma habilidade Cósmica"* (p.127).
+- **Magia**: o verbete manda aplicar o modificador Mágico a outro poder (p.130).
+
+Nos dois a explicação foi para `nota_das_habilidades`, e o teste **exige** que
+lista vazia venha acompanhada de nota. Vazio calado seria indistinguível de erro.
+
+⚠️ E o Talento da **Magia** é a Aptidão Mágica, **10 pontos/nível** (p.130) —
+estava gravado com o padrão 5.
+
+### Um falso positivo da minha própria trava
+
+A regra de "item cortado" reprovou *"Detectar, para campos ou fenômenos **EM**"* —
+onde EM é a sigla de eletromagnético, não a preposição. Tirei o `IGNORE_CASE`:
+palavra cortada no meio de frase vem sempre em minúscula.
+
+- **Status:** ✅ Build OK nas 2 variantes · lint OK · gate **2207** (+9) · ⏭️ **PENDENTE: teste no aparelho** (T-PO11/T-PO12).

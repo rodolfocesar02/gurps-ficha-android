@@ -86,6 +86,18 @@ data class PoderDefinicao(
     @SerializedName("custo_talento_por_nivel") val custoTalentoPorNivel: Int =
         RegrasDePoder.CUSTO_PADRAO_POR_NIVEL,
     val modificadores: List<FonteDoPoder> = emptyList(),
+    /**
+     * As vantagens que o livro sugere para este poder, já com os modificadores
+     * recomendados: *"Anfíbio; Caminhar no Ar, com Específico, Vapor (-40%);
+     * Controle (Água)…"* (Água, p.121). Lote POD-10.
+     *
+     * 🔴 Dois poderes têm a lista **vazia de propósito**, e isso é do livro:
+     * Cósmico (*"qualquer vantagem pode ser uma habilidade Cósmica"*) e Magia,
+     * cujo verbete manda usar outro poder. Nos dois, a explicação está em
+     * [notaDasHabilidades] — vazio não é falha de extração.
+     */
+    val habilidades: List<String> = emptyList(),
+    @SerializedName("nota_das_habilidades") val notaDasHabilidades: String = "",
     val pagina: Int = 0
 ) {
     fun normalizada(): PoderDefinicao = copy(nome = nome.trim())

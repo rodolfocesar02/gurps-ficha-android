@@ -28,7 +28,29 @@
     "valor": -10
    }
   ],
-  "pagina": 121
+  "pagina": 121,
+  "habilidades": [
+   "Anfíbio",
+   "Caminhar no Ar, com Específico, Vapor (-40%)",
+   "Caminhar sobre Líquidos",
+   "Controle (Água)",
+   "Controle (Oceanos), com Fenômenos Naturais",
+   "Criar (Água)",
+   "Deslocamento Ampliado (Água)",
+   "Detectar (Água)",
+   "Fala Subaquática",
+   "Forma Alternativa (Corpo de Água)",
+   "Habilidades Modulares, com Limitada, Água (-10%) e Física",
+   "Interposição (Gelo)",
+   "Lacrado",
+   "Não Respira, com Guelras",
+   "Obscurecer (Visão)",
+   "Poder Protegido",
+   "Resistência à Pressão",
+   "Resistência a Dano, com Limitada, Fogo ou Água (ambos -40%)",
+   "Sentido de Vibração (Água)"
+  ],
+  "nota_das_habilidades": ""
  },
  {
   "id": "alteracao_corporal",
@@ -55,7 +77,29 @@
     "valor": -10
    }
   ],
-  "pagina": 121
+  "pagina": 121,
+  "habilidades": [
+   "Adaptação ao Terreno, com Ativa",
+   "Arremedo",
+   "Ataque Constritivo",
+   "Camaleão",
+   "Crescimento",
+   "Elasticidade",
+   "Encolhimento",
+   "Escorregadio",
+   "Forma de Sombra, com Espessura Finita",
+   "Habilidades Modulares, com Limitada, Apenas Parte do Corpo (-20%) e Física",
+   "Hermafromorfo",
+   "Morfose",
+   "Pele Elástica",
+   "Poder Protegido",
+   "Resistência a Dano, com Limitado, Contusão (-40%) ou Pele Resistente",
+   "Restaurar Membros",
+   "Super Salto, com Quicar",
+   "Tolerância a Ferimentos (qualquer uma)",
+   "Ultraflexibilidade das Juntas"
+  ],
+  "nota_das_habilidades": ""
  },
  {
   "id": "alteracao_de_probabilidades",
@@ -86,7 +130,15 @@
     "valor": -10
    }
   ],
-  "pagina": 121
+  "pagina": 121,
+  "habilidades": [
+   "Detectar, para itens abençoados ou amaldiçoados, alteração da realidade, desejos etc",
+   "Poder Protegido",
+   "Serendipidade*, com Desejo",
+   "Sorte, com Desejo",
+   "Super Sorte*, especialmente com Alterar a Realidade e Desejo"
+  ],
+  "nota_das_habilidades": "As habilidades marcadas com * estão em aberto. O Mestre decidirá quantos níveis estão disponíveis. Defesas Ampliadas"
  },
  {
   "id": "antimagia",
@@ -105,7 +157,19 @@
     "valor": -25
    }
   ],
-  "pagina": 122
+  "pagina": 122,
+  "habilidades": [
+   "Abafador de Mana",
+   "Detectar, para magia, mágicas, magos etc",
+   "Escudo Mental, com Limitada, Mágica (-50%)",
+   "Estática (Magia)",
+   "Neutralizar (Mágica), mas não com Furto de Poder",
+   "Obscurecer (qualquer um), com Limitada, Mágica (-20%)",
+   "Resistência à Magia",
+   "Resistência a Dano, com Limitada, Magia (-20%)",
+   "Ver o Invisível (Mágica)"
+  ],
+  "nota_das_habilidades": ""
  },
  {
   "id": "antipsi",
@@ -128,7 +192,18 @@
     "valor": -10
    }
   ],
-  "pagina": 122
+  "pagina": 122,
+  "habilidades": [
+   "Detectar, para poderes psíquicos, usuários de psiquismo, etc",
+   "Escudo Mental, com Limitado, Psíquico (-50%)",
+   "Estática (Psi)",
+   "Neutralizar (Psi), mas não com Furto de Poder",
+   "Obscurecer (qualquer um), com Limitada, Psi (-20%) ou Limitada, PES ou Telepatia (-40%)",
+   "Resistência a Dano, com Limitada, Psi (-20%)",
+   "Resistente ou Imunidade a todos os poderes e habilidades psi ou a poderes e habilidades específicos",
+   "Ver o Invisível (Psíquico)"
+  ],
+  "nota_das_habilidades": ""
  },
  {
   "id": "antissuper",
@@ -155,7 +230,17 @@
     "valor": -10
    }
   ],
-  "pagina": 122
+  "pagina": 122,
+  "habilidades": [
+   "Detectar, qualquer superpoder ou todos eles",
+   "Escudo Mental, com Limitado, Super (-50%)",
+   "Estática (Super)",
+   "Neutralizar (Super), mas não com Furto de Poder",
+   "Obscurecer (qualquer um), com Limitada, Super (-20%)",
+   "Resistência a Dano, com Limitada, Super (-20%)",
+   "Resistente ou Imunidade a todos os superpoderes e habilidades de supers, ou a poderes e habilidades específicos"
+  ],
+  "nota_das_habilidades": ""
  },
  {
   "id": "ar",
@@ -186,7 +271,27 @@
     "valor": -10
    }
   ],
-  "pagina": 123
+  "pagina": 123,
+  "habilidades": [
+   "Caminhar no Ar",
+   "Controle (Ar)",
+   "Criar (Ar ou Gás)",
+   "Deslocamento Ampliado (Ar)",
+   "Forma Alternativa (Corpo de Ar)",
+   "Habilidades Modulares, com duas formas de Limitada, Ar (-10%) e Física",
+   "Lacrado",
+   "Não Respira",
+   "Obscurecer (Visão)",
+   "Poder Protegido",
+   "Resistência à Pressão",
+   "Resistência a Dano, escolha entre Limitada, Ar (-40%) ou Campo e Força e Limitada, Física (-20%)",
+   "Resistência ao Vácuo",
+   "Resistente, a qualquer tipo de ameaça inalada",
+   "Sentido de Vibração (Ar)",
+   "Telecinese, com Ambiental (-5%)",
+   "Voo"
+  ],
+  "nota_das_habilidades": ""
  },
  {
   "id": "bem",
@@ -213,7 +318,27 @@
     "valor": -20
    }
   ],
-  "pagina": 123
+  "pagina": 123,
+  "habilidades": [
+   "Abençoado",
+   "Aliados (anjos), com Invocável",
+   "Canalização, com Especializada, Anjos (-50%)",
+   "Controle Térmico, com Calor",
+   "Cura",
+   "Detectar, para o Bem ou o Mal",
+   "Empatia",
+   "Escudo Mental",
+   "Estática (Mal), com Resistível",
+   "Fé Verdadeira, com Espantar",
+   "Médium, com Especializada, Anjos (-50%)",
+   "Neutralizar (Mal), mas não com Furto de Poder",
+   "Poder Protegido",
+   "Propósito Maior",
+   "Resistente, contra as habilidades do Mal",
+   "Terror (Assombro)",
+   "Visualização, com Abençoar"
+  ],
+  "nota_das_habilidades": ""
  },
  {
   "id": "bioenergia",
@@ -240,7 +365,19 @@
     "valor": -10
    }
   ],
-  "pagina": 123
+  "pagina": 123,
+  "habilidades": [
+   "Cura",
+   "Língua Ferina, com Baseado em HT",
+   "Obscurecer (qualquer um), desde que seja vistoso",
+   "Poder Protegido",
+   "Resistência a Dano, com Campo de Força",
+   "Sentido de Monitoramento (Para-Radar)",
+   "Sentido de Vibração, com Sentido de Percepção",
+   "Terror, com Baseado em HT",
+   "Voo"
+  ],
+  "nota_das_habilidades": ""
  },
  {
   "id": "calor_fogo",
@@ -275,7 +412,22 @@
     "valor": -10
    }
   ],
-  "pagina": 124
+  "pagina": 124,
+  "habilidades": [
+   "Controle (Fogo)*",
+   "Controle Térmico, com Calor†",
+   "Criar (Fogo)*",
+   "Forma Alternativa (Corpo de Fogo)*",
+   "Habilidades Modulares, com Limitada, Fogo (-10%) e Física*",
+   "Infravisão†",
+   "Obscurecer, contra visão ou Radar a Laser (fumaça)*, ou Infravisão†",
+   "Poder Protegido*†",
+   "Resistência a Dano, com Limitada para Frio†, Calor†, ou Projéteis Longa Distância* (todas -40%)",
+   "Sentido de Monitoramento (IV Ativo)†",
+   "Telecomunicação (Infravermelho)†",
+   "Tolerância à Temperatura†"
+  ],
+  "nota_das_habilidades": "As habilidades marcadas com * servem para um poder Fogo separado"
  },
  {
   "id": "caos",
@@ -302,7 +454,24 @@
     "valor": -10
    }
   ],
-  "pagina": 124
+  "pagina": 124,
+  "habilidades": [
+   "Canalização, com Especializada, Espíritos do Caos (-50%)",
+   "Controle Térmico, com Calor",
+   "Detectar, para Caos ou Ordem",
+   "Escudo Mental",
+   "Estática (Ordem), com Resistível",
+   "Médium, com Especializada, Espíritos do Caos (-50%)",
+   "Neutralizar (Ordem), mas não com Furto de Poder",
+   "Obscurecer (Adivinhação)",
+   "Poder Protegido",
+   "Resistente, às habilidades da Ordem",
+   "Telecinese, com Incontrolável",
+   "Terror (Confusão)",
+   "Tolerância a Ferimentos (Difuso), com Enxame e Ativada ou Desativada à Vontade",
+   "Visualização, com Amaldiçoar"
+  ],
+  "nota_das_habilidades": ""
  },
  {
   "id": "construtos_de_forca",
@@ -325,7 +494,20 @@
     "valor": -10
    }
   ],
-  "pagina": 124
+  "pagina": 124,
+  "habilidades": [
+   "Aliados (projeções de força tangíveis), com Lacaio (+0%) e Invocável",
+   "Arrebatador, com Criação e Efeito Incômodo, Objetos têm aparência falsa (-5%)",
+   "Controle (Força Misteriosa)",
+   "Criar (Força Misteriosa)",
+   "Habilidades Modulares, com Limitada, Campos de Força (-5%) e Física",
+   "Ilusão",
+   "Poder Protegido",
+   "Resistência a Dano, com Campo de Força",
+   "Retenção",
+   "Telecinese, com Visível"
+  ],
+  "nota_das_habilidades": ""
  },
  {
   "id": "controle_corporal",
@@ -352,7 +534,21 @@
     "valor": -10
    }
   ],
-  "pagina": 125
+  "pagina": 125,
+  "habilidades": [
+   "Ataque Adicional, com Vários Golpes",
+   "Consumo Reduzido",
+   "Controle do Metabolismo",
+   "Defesas Ampliadas (qualquer uma)",
+   "Deslocamento Ampliado (Solo)",
+   "Digestão Universal",
+   "Equilíbrio Perfeito",
+   "Poder Protegido",
+   "Prender a Respiração",
+   "Queda de Gato",
+   "Regeneração"
+  ],
+  "nota_das_habilidades": ""
  },
  {
   "id": "controle_da_materia",
@@ -367,7 +563,23 @@
     "valor": -10
    }
   ],
-  "pagina": 125
+  "pagina": 125,
+  "habilidades": [
+   "Adaptação ao Terreno, com Ativa",
+   "Aderência",
+   "Caminhar sobre Líquidos",
+   "Controle (para qualquer variedade de matéria)",
+   "Criar (Sólido, Líquido, ou Gasoso), com Transmutação",
+   "Detectar, para qualquer espécie de matéria",
+   "Digestão Universal, com Devorador de Matéria",
+   "Escavação",
+   "Interposição (qualquer uma)",
+   "Poder Protegido",
+   "Resistência a Dano",
+   "Retenção, com Ambiental (varia entre -5% se for possível “solidificar” o ar até -20% se transformar o solo em gosma)",
+   "Tolerância a Ferimentos (Homogêneo ou Difuso)"
+  ],
+  "nota_das_habilidades": ""
  },
  {
   "id": "controle_de_animais",
@@ -398,7 +610,25 @@
     "valor": -10
    }
   ],
-  "pagina": 125
+  "pagina": 125,
+  "habilidades": [
+   "Arremedo",
+   "Controle da Mente*",
+   "Defesas Ampliadas (qualquer uma), com Limitada, Animais (-60%)",
+   "Detectar, para animais ou para qualquer tipo de animal",
+   "Elo Mental, com um animal",
+   "Empatia com Animais",
+   "Falar com Animais",
+   "Leitura da Mente*",
+   "Metamorfose, para qualquer forma animal",
+   "Poder Protegido",
+   "Possessão*",
+   "Resistência a Dano, com Limitada, Animais (-60%)",
+   "Sonda Mental*",
+   "Telecomunicação (Diapsiquia)*",
+   "Vínculo Especial, com um animal"
+  ],
+  "nota_das_habilidades": ""
  },
  {
   "id": "controle_de_plantas",
@@ -429,7 +659,22 @@
     "valor": -10
    }
   ],
-  "pagina": 126
+  "pagina": 126,
+  "habilidades": [
+   "Controle (Madeira)",
+   "Detectar, para um tipo de planta ou para todas as plantas",
+   "Empatia com Plantas",
+   "Falar com Plantas",
+   "Habilidades Modulares, com Ambiental (-40%) e Física",
+   "Interposição (Madeira)",
+   "Poder Protegido",
+   "Possessão, com Somente Plantas (-25%)",
+   "Resistência a Dano, com Limitada, Plantas (-40%)",
+   "Retenção, com Ambiental (-40%)",
+   "Telecinese, com Ambiental (-40%)",
+   "Visão Penetrante, com Específico, Madeira (-40%)"
+  ],
+  "nota_das_habilidades": ""
  },
  {
   "id": "controle_do_clima",
@@ -456,7 +701,12 @@
     "valor": -10
    }
   ],
-  "pagina": 126
+  "pagina": 126,
+  "habilidades": [
+   "Adaptação ao Terreno, para gelo, lama, neve ou outras condições causadas pelo clima",
+   "Caminhar no Ar"
+  ],
+  "nota_das_habilidades": ""
  },
  {
   "id": "controle_espiritual",
@@ -479,7 +729,28 @@
     "valor": -10
    }
   ],
-  "pagina": 126
+  "pagina": 126,
+  "habilidades": [
+   "Abençoado",
+   "Aliados (espíritos menores), com Invocável",
+   "Canalização",
+   "Clarissenciência",
+   "Detectar, para espíritos, fenômenos espirituais etc",
+   "Empatia com Espíritos",
+   "Escudo Mental",
+   "Fé Verdadeira, com Espantar",
+   "Forma Alternativa, com Forma Projetada",
+   "Intuição",
+   "Médium",
+   "Oráculo",
+   "Patrono (espírito maior), com Altamente Acessível",
+   "Poder Protegido",
+   "Saltador (Espiritual)",
+   "Telecinese",
+   "Ver o Invisível (Fantasmas)",
+   "Visualização"
+  ],
+  "nota_das_habilidades": ""
  },
  {
   "id": "cosmico",
@@ -494,7 +765,9 @@
     "valor": 50
    }
   ],
-  "pagina": 127
+  "pagina": 127,
+  "habilidades": [],
+  "nota_das_habilidades": "Qualquer vantagem pode ser uma habilidade Cósmica, desde que tenha o modificador Cósmico. Ao criar um deus, o Mestre deve considerar proibir habilidades opostas à esfera de influência da divindade."
  },
  {
   "id": "cura",
@@ -533,7 +806,21 @@
     "valor": -10
    }
   ],
-  "pagina": 127
+  "pagina": 127,
+  "habilidades": [
+   "Controle do Metabolismo",
+   "Criar (Medicamentos)",
+   "Cura",
+   "Detectar, para doenças, venenos, sinais vitais, etc",
+   "Empatia",
+   "Poder Protegido",
+   "Regeneração",
+   "Resistente ou Imunidade a qualquer efeito físico prejudicial",
+   "Restaurar Membros",
+   "Vínculo Especial, com Transferível (mas não para máquinas)",
+   "Visão Penetrante, com Específico, Carne (-60%)"
+  ],
+  "nota_das_habilidades": ""
  },
  {
   "id": "divino",
@@ -548,7 +835,19 @@
     "valor": -10
    }
   ],
-  "pagina": 127
+  "pagina": 127,
+  "habilidades": [
+   "Divindades que prefiram que seus servos orem pedindo ajuda, em vez de transformá-los em superseres costumam conceder estas vantagens: Abençoado",
+   "Aliados (servos da divindade), com Invocável",
+   "Fé Verdadeira",
+   "Habilidades Modulares (Inspiração Divina), com Limitada, Somente Mágicas (-20%)",
+   "Língua Ferina, com Palavras de Poder",
+   "Oráculo",
+   "Patrono (divindade), com Altamente Acessível",
+   "Propósito Maior",
+   "Serendipidade"
+  ],
+  "nota_das_habilidades": ""
  },
  {
   "id": "dominio_do_tempo",
@@ -579,7 +878,26 @@
     "valor": -10
    }
   ],
-  "pagina": 128
+  "pagina": 128,
+  "habilidades": [
+   "Canalização (O Passado)",
+   "Clarissenciência, com Alcance Temporal",
+   "Detectar, para anomalias temporais, saltadores do tempo etc",
+   "Duplicação, com Sequencial",
+   "Idade Imutável",
+   "Inércia Temporal",
+   "Médium (O Passado)",
+   "Noção do Perigo",
+   "Noção do Tempo Ampliada",
+   "Noção Exata do Tempo",
+   "Padrão de Tempo Alterado",
+   "Poder Protegido",
+   "Precognição",
+   "Psicometria",
+   "Saltador (Tempo)",
+   "Telecomunicação (Diapsiquia), com Alcance Temporal"
+  ],
+  "nota_das_habilidades": ""
  },
  {
   "id": "eletricidade",
@@ -602,7 +920,19 @@
     "valor": -10
    }
   ],
-  "pagina": 128
+  "pagina": 128,
+  "habilidades": [
+   "Controle (Eletricidade)",
+   "Criar (Eletricidade)",
+   "Detectar, para eletricidade, sinais de rádio ou magnetismo",
+   "Habilidades Modulares, com Limitada, Eletricidade (-10%) e Física",
+   "Obscurecer (Radar)",
+   "Poder Protegido",
+   "Resistência a Dano, com Limitada, Eletricidade (-40%)",
+   "Sentido de Monitoramento (Radar de Imagens, Radar ou Visão de Raios T)",
+   "Telecomunicação (Rádio)"
+  ],
+  "nota_das_habilidades": ""
  },
  {
   "id": "eletrocinese",
@@ -621,7 +951,21 @@
     "valor": -10
    }
   ],
-  "pagina": 128
+  "pagina": 128,
+  "habilidades": [
+   "Controle (Eletricidade ou Luz)",
+   "Detectar, para campos ou fenômenos EM",
+   "Ilusão, com Somente Visual",
+   "Infravisão",
+   "Invisibilidade",
+   "Obscurecer, contra qualquer sentido visual ou de Monitoramento, exceto Para-Radar ou Sonar",
+   "Poder Protegido",
+   "Resistência a Dano, com Limitada, Radiação EM (-40%)",
+   "Sentido Protegido (Sentido de Monitoramento ou Visão)",
+   "Sentido de Monitoramento (qualquer um, exceto Para-Radar ou Sonar)",
+   "Telecomunicação (Infravermelho, Laser, ou Rádio)"
+  ],
+  "nota_das_habilidades": ""
  },
  {
   "id": "energia_cinetica",
@@ -640,7 +984,23 @@
     "valor": -10
    }
   ],
-  "pagina": 129
+  "pagina": 129,
+  "habilidades": [
+   "Deslocamento Ampliado (qualquer)",
+   "Escorregadio",
+   "Esquiva Ampliada",
+   "Poder Protegido",
+   "Queda de Gato, com Queda Suave",
+   "Resistência a Dano, com Campo de Força e Limitada, Física (-20%)",
+   "Resistente ou Imunidade à aceleração, enjoo etc",
+   "Retenção, com Inquebrável",
+   "ST de Golpe",
+   "ST de Levantamento",
+   "Super Salto, com Manobrável",
+   "Telecinese",
+   "Voo"
+  ],
+  "nota_das_habilidades": ""
  },
  {
   "id": "frio_gelo",
@@ -663,7 +1023,27 @@
     "valor": -10
    }
   ],
-  "pagina": 129
+  "pagina": 129,
+  "habilidades": [
+   "aquelas com um † são adequadas para um poder Frio separado. Adaptação ao Terreno (Gelo ou Neve)*",
+   "Aderência*†",
+   "Controle (Gelo)*",
+   "Controle (Granizo ou Neve), com Fenômeno Natural*",
+   "Controle Térmico, com Frio†",
+   "Criar (Gelo)*",
+   "Deslocamento Ampliado (Ar ou Solo)*",
+   "Escorregadio*",
+   "Forma Alternativa (Corpo de Gelo)*",
+   "Habilidades Modulares, com Limitada, Frio (-10%) e Física†",
+   "Interposição (Gelo)*",
+   "Obscurecer (Infravisão ou Visão)*†",
+   "Poder Protegido*†",
+   "Resistência a Dano, com uma escolha entre Ablativa ou Semiablativa*, ou Limitada, Frio (-40%) ou Calor (-40%)†",
+   "Retenção, com Engolfar*",
+   "Tolerância a Temperatura†",
+   "Visão Penetrante, com Específica, Gelo (-60%)*"
+  ],
+  "nota_das_habilidades": "As habilidades marcadas com * servem para um poder Gelo separado"
  },
  {
   "id": "gravidade",
@@ -682,7 +1062,26 @@
     "valor": -10
    }
   ],
-  "pagina": 129
+  "pagina": 129,
+  "habilidades": [
+   "Retenção, com Inquebrável",
+   "Queda de Gato, com Queda Suave",
+   "Aderência, com Atração",
+   "Controle (Gravidade)",
+   "Resistência a Dano, com Campo de Força e Limitada, Física (-20%)",
+   "Detectar, para manipulação da gravidade ou objetos massivos",
+   "Deslocamento Ampliado (qualquer um)",
+   "Voo, com Planetário",
+   "Tolerância-G Ampliada, com Campo de Força",
+   "Habilidades Modulares, com Limitada, Gravidade (-10%) e Física",
+   "Poder Protegido",
+   "Super Escalada",
+   "Super Salto, com Planetário",
+   "Telecomunicação (Ondas Gravitacionais)",
+   "Telecinese",
+   "Caminhar no Ar, com Planetário"
+  ],
+  "nota_das_habilidades": ""
  },
  {
   "id": "ilusao",
@@ -713,7 +1112,23 @@
     "valor": -10
    }
   ],
-  "pagina": 129
+  "pagina": 129,
+  "habilidades": [
+   "Aliados (projeções ou sombras semissólidas), com Invocável",
+   "Arremedo",
+   "Camaleão",
+   "Detectar, para ilusões, projeções etc",
+   "Duplicação, com Construto",
+   "Ilusão",
+   "Invisibilidade",
+   "Morfose, com Cosmética",
+   "Obscurecer (qualquer)",
+   "Pele Elástica",
+   "Poder Protegido",
+   "Silêncio",
+   "Ver o Invisível"
+  ],
+  "nota_das_habilidades": ""
  },
  {
   "id": "luz",
@@ -740,7 +1155,31 @@
     "valor": -10
    }
   ],
-  "pagina": 130
+  "pagina": 130,
+  "habilidades": [
+   "Controle (Luz)",
+   "Criar (Luz)",
+   "Defesas Ampliadas, com Limitada, Luz (-40%)",
+   "Habilidades Modulares, com Limitada, Luz (-10%)e Física",
+   "Ilusão, com Somente Visual",
+   "Infravisão",
+   "Invisibilidade",
+   "Obscurecer, contra Radar a Laser ou qualquer tipo de visão",
+   "Poder Protegido",
+   "Resistência a Dano, com Limitada, Luz (-40%)",
+   "Sentido Protegido (Visão)",
+   "Sentido de Monitoramento (IV Ativo ou Radar a Laser)",
+   "Telecomunicação (Infravermelho ou Laser)",
+   "Ultravisão",
+   "Ver o Invisível",
+   "Visão 360 Graus, com Panóptica 1",
+   "Visão Hiperespectral",
+   "Visão Microscópica",
+   "Visão no Escuro",
+   "Visão Noturna",
+   "Visão Telescópica"
+  ],
+  "nota_das_habilidades": ""
  },
  {
   "id": "magia",
@@ -748,14 +1187,16 @@
   "fontes_possiveis": "Mágica.",
   "foco": "Operação de “mágicas”.",
   "descricao": "Os magos normalmente conjuram a magia com o uso de perícias especializadas chamadas “mágicas”. Porém, se o Mestre preferir, a magia pode operar através de vantagens, as quais podem ser as habilidades de um poder. Para representar uma “escola” de magia específica, aplique o modificador Mágico ao poder mais adequado desta lista.",
-  "custo_talento_por_nivel": 5,
+  "custo_talento_por_nivel": 10,
   "modificadores": [
    {
     "fonte": "Mágico",
     "valor": -10
    }
   ],
-  "pagina": 130
+  "pagina": 130,
+  "habilidades": [],
+  "nota_das_habilidades": "O livro não dá lista própria: aplique o modificador Mágico ao poder mais adequado da lista (por exemplo, Calor/Fogo para as mágicas do Fogo). O Talento é a Aptidão Mágica."
  },
  {
   "id": "magnetismo",
@@ -774,7 +1215,15 @@
     "valor": -10
    }
   ],
-  "pagina": 130
+  "pagina": 130,
+  "habilidades": [
+   "Aderência, com Atração e Magnética (-50%)",
+   "Caminhar no Ar, com Planetário",
+   "Controle (Metais Ferrosos ou Magnetismo)",
+   "Criar (Eletricidade)",
+   "Deslocamento Ampliado (Ar)"
+  ],
+  "nota_das_habilidades": ""
  },
  {
   "id": "mal",
@@ -801,7 +1250,25 @@
     "valor": -20
    }
   ],
-  "pagina": 131
+  "pagina": 131,
+  "habilidades": [
+   "Aliados (demônios), com Invocável",
+   "Canalização, com Especializada, Demônios (-50%)",
+   "Controle Térmico, com Frio",
+   "Detectar, para o Mal ou o Bem",
+   "Escudo Mental",
+   "Estática (Bem), com Resistível",
+   "Forma de Sombra, mas não com Insensível à Luz ou Espessura Finita",
+   "Médium, com Especializada, Demônios (-50%)",
+   "Neutralizar (Bem), mas não com Furto de Poder",
+   "Poder Protegido",
+   "Possessão",
+   "Resistente, contra as habilidades do Bem",
+   "Sanguessuga",
+   "Terror",
+   "Visualização, com Amaldiçoar"
+  ],
+  "nota_das_habilidades": ""
  },
  {
   "id": "morte",
@@ -824,7 +1291,20 @@
     "valor": -10
    }
   ],
-  "pagina": 131
+  "pagina": 131,
+  "habilidades": [
+   "Aliados (mortos-vivos), com Invocável",
+   "Canalização, com Especializada, Fantasmas (-50%)",
+   "Detectar, para corpos mortos, fantasmas, mortos-vivos etc",
+   "Forma Alternativa (qualquer modelo de morto-vivo)",
+   "Idade Imutável",
+   "Impossível de Matar",
+   "Médium, com Especializada, Fantasmas (-50%)",
+   "Memória Racial",
+   "Poder Protegido",
+   "Sanguessuga, mas não com Roubar (Outro Valor) Os ataques devem ser Atribulações letais"
+  ],
+  "nota_das_habilidades": ""
  },
  {
   "id": "ordem",
@@ -847,7 +1327,30 @@
     "valor": -20
    }
   ],
-  "pagina": 131
+  "pagina": 131,
+  "habilidades": [
+   "Bom Senso",
+   "Canalização, com Especializada, Espíritos da Ordem (-50%)",
+   "Controle Térmico, com Frio",
+   "Cura, com Xenocura, Qualquer coisa (+100%)",
+   "Detectar, para Caos ou Ordem",
+   "Escudo Mental",
+   "Estática (Caos), com Resistível",
+   "Fleuma",
+   "Indomável",
+   "Intuição",
+   "Médium, com Especializada, Espíritos da Ordem (-50%)",
+   "Neutralizar (Caos), mas não com Furto de Poder",
+   "Oráculo",
+   "Poder Protegido",
+   "Regeneração",
+   "Resistência a Dano, com Campo de Força",
+   "Resistente, às habilidades do Caos",
+   "Restaurar Membros",
+   "Silêncio",
+   "Visualização"
+  ],
+  "nota_das_habilidades": ""
  },
  {
   "id": "pes",
@@ -882,7 +1385,29 @@
     "valor": -10
    }
   ],
-  "pagina": 132
+  "pagina": 132,
+  "habilidades": [
+   "Bom Senso",
+   "Canalização",
+   "Clarissenciência",
+   "Detectar, para seres sobrenaturais ou atividades ligadas à fonte do poder",
+   "Intuição",
+   "Médium",
+   "Memória Racial",
+   "Noção do Perigo",
+   "Oráculo",
+   "Poder Protegido",
+   "Precognição",
+   "Psicometria",
+   "Rastreamento Ampliado",
+   "Sentido Protegido (qualquer sentido especial)",
+   "Sentido de Monitoramento (Para-Radar)",
+   "Ver o Invisível",
+   "Visão 360 Graus, com Panóptica 2",
+   "Visão no Escuro",
+   "Visão Penetrante"
+  ],
+  "nota_das_habilidades": ""
  },
  {
   "id": "projecao_astral",
@@ -909,7 +1434,19 @@
     "valor": -10
    }
   ],
-  "pagina": 132
+  "pagina": 132,
+  "habilidades": [
+   "Canalização, com Especializada, Seres Astrais (-50%)",
+   "Clarissenciência, com Projeção",
+   "Detectar, para seres astrais, projetores astrais etc",
+   "Forma Alternativa (Entidade Astral), com Forma Projetada",
+   "Insubstancialidade, com Projeção",
+   "Médium, com Especializada, Seres Astrais (-50%)",
+   "Poder Protegido",
+   "Saltador (Mundo), com Projeção",
+   "Ver o Invisível (Fantasmas)"
+  ],
+  "nota_das_habilidades": ""
  },
  {
   "id": "psicocinese",
@@ -940,7 +1477,25 @@
     "valor": -10
    }
   ],
-  "pagina": 132
+  "pagina": 132,
+  "habilidades": [
+   "Aderência, com Atração",
+   "Caminhar no Ar",
+   "Caminhar sobre Líquidos",
+   "Controle Térmico",
+   "Deslocamento Ampliado (Ar)",
+   "Elasticidade, com Extensão de Força",
+   "Poder Protegido",
+   "Queda de Gato, com Queda Suave",
+   "Resistência a Dano, com Campo de Força e Limitada, Física (-20%)",
+   "Retenção, com Inquebrável",
+   "Sentido de Vibração, com Sentido de Percepção",
+   "Super Escalada",
+   "Super Salto",
+   "Telecinese",
+   "Voo"
+  ],
+  "nota_das_habilidades": ""
  },
  {
   "id": "radiacao",
@@ -959,7 +1514,22 @@
     "valor": -10
    }
   ],
-  "pagina": 132
+  "pagina": 132,
+  "habilidades": [
+   "Controle (Radiação)",
+   "Criar (Radiação)",
+   "Detectar, para todos os tipos de radiação ou tipos específicos",
+   "Habilidades Modulares, com Limitada, Radiação (-15%) e Física",
+   "Poder Protegido",
+   "Regeneração, com Somente Radiação",
+   "Resistência a Dano, com Limitada, Energia (-20%)",
+   "Sentido de Monitoramento (Para-Radar)",
+   "Telecomunicação (Neutrino)",
+   "Tolerância à Radiação",
+   "Visão Hiperespectral, com Banda Alta Estendida",
+   "Visão Penetrante"
+  ],
+  "nota_das_habilidades": ""
  },
  {
   "id": "som_vibracao",
@@ -982,7 +1552,29 @@
     "valor": -10
    }
   ],
-  "pagina": 133
+  "pagina": 133,
+  "habilidades": [
+   "aquelas com um † são adequadas para um poder Vibração separado. Arremedo*",
+   "Audição Discriminatória*",
+   "Audição Parabólica*",
+   "Controle (Som)*",
+   "Criar (Som)*",
+   "Fala Subaquática*†",
+   "Fala/Audição Subsônica*†",
+   "Habilidades Modulares, com Física e Limitada, Som (-10%)* ou Vibração (-15%)†",
+   "Ilusão, com Somente Auditiva*",
+   "Língua Ferina*†",
+   "Obscurecer (Audição*, Sonar*†, ou Sentido de Vibração†)",
+   "Poder Protegido*†",
+   "Resistência a Dano, com Limitada, Física (-20%)†, Som (-40%)*, ou Vibração (-40%)†",
+   "Sentido de Monitoramento (Sonar)*†",
+   "Sentido de Vibração, mas não com Sentido de Percepção†",
+   "Sentido Protegido (Audição)*",
+   "Silêncio*",
+   "Superaudição/Fala Ultrassônica*†",
+   "Telecomunicação (Som Direcional* ou Sonar*†)"
+  ],
+  "nota_das_habilidades": "As habilidades marcadas com * servem para um poder Som separado"
  },
  {
   "id": "telepatia",
@@ -1009,7 +1601,29 @@
     "valor": -10
    }
   ],
-  "pagina": 133
+  "pagina": 133,
+  "habilidades": [
+   "Camaleão Social",
+   "Controle da Mente",
+   "Detectar, para fenômenos telepáticos, mentes sapientes etc",
+   "Elo Mental",
+   "Empatia",
+   "Escudo Mental",
+   "Ilusão, com Mental",
+   "Invisibilidade, com Glamour",
+   "Leitura da Mente",
+   "Língua Ferina",
+   "Memória Racial",
+   "Pele Elástica, com Glamour",
+   "Poder Protegido",
+   "Possessão, com Troca Mental ou Telecontrole",
+   "Sonda Mental",
+   "Telecomunicação (Diapsiquia)",
+   "Terror, com Ativo",
+   "Vínculo Especial",
+   "Xeno-Adaptabilidade. Inclua Empatia com Animais e Falar com Animais em cenários onde não exista o Controle de Animais"
+  ],
+  "nota_das_habilidades": ""
  },
  {
   "id": "telepatia_sobre_maquinas",
@@ -1024,7 +1638,21 @@
     "valor": -10
    }
   ],
-  "pagina": 133
+  "pagina": 133,
+  "habilidades": [
+   "Canalização (Ciberespaço)",
+   "Controle da Mente, com Somente Cibernética",
+   "Detectar, para Mentes Digitais, transmissões de dados etc",
+   "Elo Mental, com Somente Cibernética",
+   "Invisibilidade, com Somente Máquinas",
+   "Leitura da Mente, com Somente Cibernética",
+   "Médium (Ciberespaço)",
+   "Obscurecer, contra qualquer Sentido de Monitoramento",
+   "Poder Protegido",
+   "Resistente, contra qualquer ameaça mecânica (nanomáquinas, por exemplo)",
+   "Sonda Mental, Somente Cibernética"
+  ],
+  "nota_das_habilidades": ""
  },
  {
   "id": "teleporte",
@@ -1047,7 +1675,16 @@
     "valor": -10
    }
   ],
-  "pagina": 134
+  "pagina": 134,
+  "habilidades": [
+   "Arrebatador, mas não com Criação",
+   "Detectar, para Dobra, transmissão de matéria, buracos de minhoca etc",
+   "Dobra, com qualquer modificador especial",
+   "Esquiva Ampliada",
+   "Poder Protegido",
+   "Saltador (Mundo), mas não com Interplanar"
+  ],
+  "nota_das_habilidades": ""
  },
  {
   "id": "terra",
@@ -1078,7 +1715,25 @@
     "valor": -10
    }
   ],
-  "pagina": 134
+  "pagina": 134,
+  "habilidades": [
+   "Adaptação ao Terreno (Lama ou Areia)",
+   "Aderência, com Específico, Pedra (-40%)",
+   "Caminhar no Ar, com Específico, Poeira (-40%)",
+   "Controle (Terra ou Pedra)",
+   "Criar (Terra)",
+   "Detectar, para terra, minerais específicos, etc",
+   "Escavação",
+   "Forma Alternativa (Corpo de Terra ou Pedra)",
+   "Habilidades Modulares, com Limitada, Terra (-10%) e Física",
+   "Interposição (Terra ou Pedra)",
+   "Obscurecer (Visão)",
+   "Poder Protegido",
+   "Resistência a Dano",
+   "Retenção, com Engolfar e Ambiental (-20%)",
+   "Visão Penetrante, com Específica, Pedra (-40%)"
+  ],
+  "nota_das_habilidades": ""
  },
  {
   "id": "trevas",
@@ -1105,7 +1760,22 @@
     "valor": -10
    }
   ],
-  "pagina": 134
+  "pagina": 134,
+  "habilidades": [
+   "Aliados (seres de sombra), com Invocável",
+   "Controle (Luz)",
+   "Criar (Luz), com Destruição (+0%)",
+   "Forma de Sombra",
+   "Habilidades Modulares, com Limitada, Trevas (-15%) e Física",
+   "Ilusão, com Somente Visual",
+   "Invisibilidade",
+   "Obscurecer, contra radar a laser e qualquer tipo de visão",
+   "Poder Protegido",
+   "Sentido Protegido (Visão)",
+   "Visão no Escuro",
+   "Visão Noturna"
+  ],
+  "nota_das_habilidades": ""
  },
  {
   "id": "vampirismo",
@@ -1140,7 +1810,12 @@
     "valor": -25
    }
   ],
-  "pagina": 135
+  "pagina": 135,
+  "habilidades": [
+   "Ataques por Fadiga com Falta de Sono (sonhos roubados) ou algum outro Perigo",
+   "Ataques por Toxina. Todos os ataques desse tipo exigem Imprecação, Ataque Corpo a Corpo ou Base Sensorial"
+  ],
+  "nota_das_habilidades": "Sanguessuga é a habilidade central do Vampirismo, e pode ter qualquer conjunto de modificadores. Os ataques são igualmente importantes."
  },
  {
   "id": "viagem_dimensional",
@@ -1171,7 +1846,20 @@
     "valor": -10
    }
   ],
-  "pagina": 135
+  "pagina": 135,
+  "habilidades": [
+   "Arrebatador, mas não com Criação",
+   "Atribulação, com uma ampliação Vantagem, capaz de impor Insubstancialidade ou Saltador",
+   "Canalização (Universos Paralelos)",
+   "Clarissenciência, com Alcance Transmundial",
+   "Detectar, para fenômenos extradimensionais, saltadores de mundos etc",
+   "Insubstancialidade",
+   "Médium (Universos Paralelos)",
+   "Poder Protegido",
+   "Saltador (Mundo), quase sempre com Interplanar",
+   "Telecomunicação (Diapsiquia), com Alcance Transmundial"
+  ],
+  "nota_das_habilidades": ""
  },
  {
   "id": "vida",
@@ -1198,6 +1886,24 @@
     "valor": -20
    }
   ],
-  "pagina": 136
+  "pagina": 136,
+  "habilidades": [
+   "Canalização, com Especializada, Espíritos da Natureza (-50%)",
+   "Controle do Metabolismo",
+   "Cura",
+   "Detectar, para animais, plantas, ou todas as formas de vida",
+   "Empatia",
+   "Empatia com Animais",
+   "Empatia com Plantas",
+   "Falar com Animais",
+   "Falar com Plantas",
+   "Idade Imutável",
+   "Impossível de Matar",
+   "Médium, com Especializada, Espíritos da Natureza (-50%)",
+   "Poder Protegido",
+   "Regeneração",
+   "Resistente ou Imunidade a qualquer ameaça natural"
+  ],
+  "nota_das_habilidades": ""
  }
 ]

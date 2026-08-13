@@ -324,6 +324,8 @@ fun PoderEditDialog(
                         poder = poderBase,
                         onPedirParaLigar = { mostrarLigar = true }
                     )
+                    // Lote POD-10: o que o livro sugere para este poder.
+                    SugestoesDoLivro(definicao)
                 }
 
                 Spacer(modifier = Modifier.height(16.dp))
@@ -462,6 +464,13 @@ fun SelecionarPoderDialog(
                                 style = UiEstilos.detalheDoItem,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
+                            if (definicao.habilidades.isNotEmpty()) {
+                                Text(
+                                    "${definicao.habilidades.size} habilidades sugeridas",
+                                    style = UiEstilos.detalheDoItem,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                )
+                            }
                             if (definicao.descricao.isNotBlank()) {
                                 Text(definicao.descricao, style = UiEstilos.detalheDoItem)
                             }
