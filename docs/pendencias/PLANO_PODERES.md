@@ -1,0 +1,321 @@
+# Plano de implementação — GURPS Poderes
+
+> Leitura capítulo a capítulo do livro (`docs/livros/GURPS_Poderes.md`), anotando
+> **o que dá para automatizar na ficha** e o que é conversa de Mestre.
+>
+> ⚠️ **Página do PDF = página impressa + 2.** Toda citação aqui usa a impressa.
+>
+> Legenda de veredito:
+> **[FAZER]** regra fechada, com número, que a ficha consegue calcular ·
+> **[MOSTRAR]** o app só precisa exibir/registrar, não calcular ·
+> **[MESA]** decisão do Mestre, não vira código ·
+> **[FEITO]** já está no app.
+
+---
+
+## Onde o app está hoje (POD-1 a POD-4)
+
+- Catálogo de **47 poderes** com fonte, foco, descrição, página e as fontes
+  válidas de cada um. **[FEITO]**
+- **11 fontes genéricas** com o percentual do livro. **[FEITO]**
+- Escolher a fonte preenche o modificador. **[FEITO]**
+- Talento com campo, custo (5 ou 10/nível, 15 no Cósmico) e entrada em
+  `pontosGastos`; aviso acima de 4 níveis. **[FEITO]**
+- Teto de −80% no modificador total. **[FEITO]**
+
+🔴 **O buraco central:** o app não liga o poder às suas **habilidades**. O
+diálogo cria o rótulo e não diz quais vantagens da ficha pertencem a ele.
+
+---
+
+## Capítulo 1 — Criação de Poderes (p.6-37)
+
+### A anatomia (p.7-8)
+
+Cinco peças: **fonte**, **foco**, **habilidades**, **modificador de poder**,
+**Talento**. A regra que amarra tudo:
+
+> *"Uma vantagem precisa ter o respectivo modificador de poder para ser parte
+> dele; não há exceções."* (p.8)
+
+E a definição de "ter o poder" (p.34):
+
+> *"Os portadores do Talento para um poder, **ou qualquer de suas habilidades**
+> (ou seja, qualquer vantagem com seu modificador de poder) são considerados
+> possuidores daquele poder."*
+
+**[FAZER] · POD-5 — o poder mostra suas habilidades.** O diálogo do poder precisa
+listar as vantagens/desvantagens da ficha que carregam o modificador dele, e
+deixar ligar/desligar dali. Hoje a ligação só existe indo na vantagem. É a peça
+que falta para o poder deixar de ser um rótulo solto.
+
+### Habilidades Alternativas (p.11)
+
+> *"Personagens com 'habilidades alternativas' pagarão o preço integral apenas
+> para sua habilidade mais cara. Todas as outras terão **1/5 do custo**. O custo
+> final de cada habilidade deve ser definido **após** calcular todas as
+> ampliações e limitações (inclusive o modificador de poder), aplicar o divisor e
+> **arredondar para cima**."*
+
+Exemplo do livro: Voo [36] + Super Salto 2 [18] + Caminhar no Ar [18] →
+36 + ⌈18/5⌉ + ⌈18/5⌉ = 36 + 4 + 4 = **44**.
+
+**[FAZER] · POD-6 — grupo de habilidades alternativas.** Cálculo fechado, com
+exemplo verificável no livro. Marcar N habilidades como um grupo e o app aplica
+a conta. Economia real de pontos, e hoje o jogador faz na mão.
+
+Inconvenientes que o app deve **[MOSTRAR]** junto: só uma funciona por vez
+(trocar exige manobra Preparar); e o que desativar uma desativa o conjunto.
+
+### Avaliação do modificador de poder (p.20-25)
+
+O modificador é a **soma de componentes**:
+
+| Componente | Valor | Página |
+|---|---|---|
+| Contramedidas Mundanas | −10% | 20 |
+| Antipoderes | −5% (fixo, não por antipoder) | 20-21 |
+| Sem Contramedidas | +0% (padrão) | 21 |
+| Poderes Cósmicos | +50% | 21 |
+| Desvantagem exigida | o valor em pontos vira % (Voto de −10 pts = −10%) | 23 |
+| Energias canalizadas (isolante esotérico) | −5% | 24 |
+| Energias canalizadas (isolante mundano) | −10% | 24 |
+
+E a orientação prática: *"Tente manter o valor entre −10% e −30%"* (p.25).
+
+**[FAZER] · POD-7 — montador de modificador por componentes.** Diálogo que soma
+os componentes e devolve o total, para quem cria poder personalizado. Hoje só dá
+para digitar o número final.
+
+### Os 11 modificadores prontos (p.26-30) — **[FEITO]**
+
+### Inclusão e melhoria no jogo (p.33-34)
+
+Regras de progressão que o livro **recomenda**, não impõe:
+- para melhorar o Talento, ter usado alguma habilidade do poder na sessão anterior;
+- para melhorar uma habilidade, ter usado **aquela** habilidade;
+- para incluir habilidade nova, ter passado por um "gatilho" (p.36), e comprá-la
+  com Destreinado / Inconstante / Incontrolável, removíveis depois.
+
+**[MESA]** — depende do Mestre lembrar o que foi usado na sessão. Não vira trava.
+**[MOSTRAR]** as três limitações sugeridas como atalho ao adicionar habilidade nova.
+
+### Preços para Talentos (p.29) — **[FEITO]** (5 / 10 / 15 no Cósmico)
+
+---
+
+## Capítulo 2 — Criação de Habilidades (p.38-120)
+
+O maior capítulo, e o mais **catalogável**: quase tudo aqui é conteúdo que falta
+nos assets, não regra nova de cálculo.
+
+### 🔴 O que falta de catálogo (medido contra os assets)
+
+| Asset | No livro | No app | Falta |
+|---|---|---|---|
+| Ampliações e limitações (p.107-113) | 48 | 31 | **17** |
+| Novas vantagens (p.90-97) | 6 | 1 | **5** |
+
+**Modificadores ausentes:** Subaquático, Sempre Ativa, Variável, Uso Limitado,
+Ataque Surpresa, Normalmente Ativa, Efeito Seletivo, Fogo Instantâneo, Defesa
+Ativa, Desvantagem Exigida, Difícil de Usar, Efeito do Dano Ausente, Magnético,
+Exige Teste de Reação, Gatilho Incontrolável, Solavanco, Características
+Variantes.
+
+**Vantagens ausentes:** Controle (p.90), Criar (p.92), Controle Divino (p.92),
+Estática (p.94), Ilusão (p.95). *(Neutralizar já existe.)*
+
+**[FAZER] · POD-8 — completar os dois catálogos.** É o mesmo formato do POD-1:
+extrair do PDF, varredura como teste. Sem isso, metade dos poderes do livro não
+tem como ser montada na ficha — as habilidades sugeridas citam justamente essas
+vantagens e esses modificadores.
+
+### Reservas de Energia (p.119)
+
+> *"Compre Pontos de Fadiga pelo preço costumeiro de **3 pontos cada**, mas trate-os
+> como uma nova vantagem, 'Reserva de Energia' (RE). Ela sempre está ligada a uma
+> fonte de poder particular; por exemplo, 10 PF para poderes psíquicos será
+> 'RE 10 (Psíquico) [30]'."*
+
+Regras que a ficha consegue guardar sozinha:
+- **só abastece habilidades da mesma fonte**;
+- recarrega **1 ponto a cada 10 minutos**, independente de repouso;
+- esgotar a RE **não** causa os efeitos de estar abaixo de 1/3 dos PF, e ter a RE
+  cheia **não** protege contra eles;
+- Ataque por Fadiga, falta de sono e esforço adicional comum **não** a gastam;
+- se o poder não puder recorrer aos PF normais, **−5%** no modificador de poder.
+
+**[FAZER] · POD-9 — Reserva de Energia.** É uma segunda barra de PF, com regra de
+recarga própria e uma trava de fonte. Encaixa no mesmo lugar onde o app já
+controla PF, e o −5% vira componente do montador (POD-7).
+
+### Modificadores por Multiplicação (p.102) — regra opcional
+
+> *"Some e aplique as ampliações. Em seguida, totalize as limitações (reduzindo
+> qualquer total maior que −80% para −80%) e aplique-as ao resultado."*
+
+Exemplo do livro: +20% e −50% dão **70%** no modelo aditivo (o do app hoje) e
+**60%** no multiplicativo.
+
+**[MESA]** com um pedaço **[FAZER]**: é escolha do Mestre, mas se ele escolher, a
+conta é fechada. Vira uma chave na ficha, não um cálculo novo espalhado.
+⚠️ *"não se recomenda usar ambos"* — tem de ser uma chave só, valendo para a ficha
+inteira.
+
+### Habilidades Parcialmente Limitadas (p.70)
+
+> *"RD 5 (10 contra Fogo)" seria RD 5 [25] + RD 5 (Limitada, Fogo, −40%) [15].*
+
+**[MOSTRAR]** — o app já permite comprar as duas entradas separadas; o que falta é
+alguém saber que é assim que se faz. Nota no diálogo, não cálculo novo.
+
+---
+
+## Capítulo 3 — Poderes e Exemplos de Habilidades (p.121-151)
+
+### A lista de habilidades de cada poder — o achado do capítulo
+
+Cada verbete traz **"Habilidades de \<Poder\>"**: a lista das vantagens que o
+livro sugere para aquele poder, já com os modificadores recomendados. Exemplo
+(Água): *"Anfíbio; Caminhar no Ar, com Específico, Vapor (−40%); Caminhar sobre
+Líquidos; Controle (Água); Criar (Água); …"* — **19 itens**.
+
+Teste de extração: **44 dos 47** poderes têm a lista, com média de **12,6
+habilidades** cada. ⚠️ E a contaminação de verbete vizinho reapareceu (Alteração
+de Probabilidades puxou a lista da Antimagia) — a extração precisa da mesma trava
+de duplicata que salvou o POD-1.
+
+**[FAZER] · POD-10 — habilidades sugeridas no catálogo.** Novo campo por poder.
+Com ele, escolher "Telepatia" passa a **oferecer** as vantagens que fazem parte
+dela, em vez de o jogador ter de saber de cor. É o que fecha o buraco do POD-5.
+
+### Exemplos de Habilidades (p.136-151)
+
+Receitas prontas de habilidade (ataques elementais, controle de armas, defesas,
+movimento, mentais, transformações), com tabelas de custo.
+**[MOSTRAR]** — é conteúdo de consulta, e o app já tem o Índice de Regras para
+esse papel. Não vira cálculo.
+
+---
+
+## Capítulo 4 — Poderes em Ação (p.152-178)
+
+O capítulo das regras de **mesa** — é aqui que a aba Rolagem entra.
+
+### 🔴 O teste de ativação (p.156) — a regra mais valiosa do livro para o app
+
+> *"Faça um teste de **HT** se o modificador de poder for Biológico, Elemental,
+> Natureza ou Super, ou de **Vontade** se for Chi, Divino, Espiritual, Mágico,
+> Moral, ou Psíquico."*
+
+**[FAZER] · POD-11 — botão de ativar o poder na Rolagem.** O app **já sabe** a
+fonte do poder (POD-2) e já sabe o nível do Talento (POD-3). Com esta tabela ele
+decide sozinho qual atributo rolar e quanto somar. É um botão que se resolve
+inteiro com o que já está na ficha.
+
+⚠️ Cobre as 10 fontes; o **Cósmico** não aparece na lista do livro — tratar como
+caso à parte, não chutar.
+
+### O Talento no teste (p.158)
+
+Soma nos testes para **usar** a habilidade. **Não** soma no dano, no teste de
+resistência do alvo, nem em reação. Casos por categoria: perícias furtivas,
+suporte à vida, movimento, transformações, alterar a realidade.
+**[FAZER]** junto com o POD-11 — é o bônus do botão.
+
+### Custo em PF do uso (p.159-160)
+
+- uso intensivo (testes a cada 1-2 s): **1 PF por minuto**;
+- uso prolongado de baixa intensidade: **1 PF por hora**;
+- habilidade contínua: teste **uma vez por minuto** e **1 PF por teste**.
+
+**[FAZER]** — encaixa no controle de PF que a ficha já tem, e é o consumidor
+natural da Reserva de Energia (POD-9).
+
+### Esforço Adicional (p.161)
+
+Queimar PF por efeito extra, na proporção de **1 PF = +15%**; 10 PF = +150%.
+**[FAZER]** — conta fechada, mesmo formato do esforço adicional que já existe.
+
+### Ampliações Temporárias (p.172) e Uso Predefinido (p.173)
+
+Concentrar + teste de Vontade (mental) ou Preparar + teste de HT (física);
+**−1 por +10%** de ampliação adicionada; custa **2 PF** (temporária) ou **3 PF**
+(predefinido), além do gasto voluntário.
+**[FAZER]** — mas é regra avançada; fica para depois do POD-11.
+
+### Combinação de Poderes (p.171)
+
+Cada participante com a **mesma** habilidade e poder do líder dá **+50%**; com
+habilidade semelhante de outro poder da mesma fonte, **+25%**.
+**[MESA]** para a ficha (é cena de grupo), **[FAZER]** só se algum dia entrar no
+combate da Saga. Fora do escopo Rolagem-primeiro.
+
+### Perícias do Poder (p.162) — regra opcional
+
+Uma perícia por habilidade, IQ/Difícil, default **IQ−6**.
+**[MESA]** com chave: só existe se o Mestre ligar.
+
+### Regras por fonte (p.176-178)
+
+Poderes divinos pedem teste de reação da divindade; espirituais têm Ira dos
+Espíritos (Volúvel); elementais sofrem **−1 a −9** onde o elemento é suprimido.
+**[MOSTRAR]** — o app registra a fonte e pode lembrar a regra na hora de rolar.
+
+---
+
+## Capítulo 5 — Jogos de Poder (p.179-202)
+
+Guia de Mestre: origens por gênero, nível de poder, restrições, campanhas.
+Varredura por regra numérica achou **7 trechos em 24 páginas** — confirma que é
+capítulo de conversa, não de conta. **[MESA]** quase inteiro.
+
+Duas exceções que a ficha consegue avisar:
+
+- **Teto de pontos em poderes (p.184):** *"a diretriz de não mais que **50%** dos
+  níveis de pontos base se mantém razoavelmente bem para PdJs na faixa de 100 a
+  300 pontos"*. **[MOSTRAR]** — aviso do mesmo tipo do teto de 4 níveis de
+  Talento: mostra e deixa passar.
+- **Talento que também melhora perícia (p.188):** *"o custo do Talento deve ser
+  aumentado para **10 ou 15** pontos/nível"*. **[MOSTRAR]** no campo de custo.
+
+---
+
+# O plano revisado — ordem de implementação
+
+Revisei os cinco capítulos e ordenei por **quanto cada leva destrava**, não pela
+ordem do livro. O critério: primeiro o que faz o poder deixar de ser um rótulo
+solto; depois o que a aba Rolagem usa; por último o avançado.
+
+| Leva | O quê | Por que nesta posição |
+|---|---|---|
+| **POD-5** | O poder lista e gerencia suas **habilidades** | 🔴 É o buraco central. Sem isto o poder não é um poder, é um rótulo. Tudo abaixo depende dele. |
+| **POD-10** | Habilidades **sugeridas** de cada poder, do livro | Enche o POD-5 de conteúdo. Sem ele o jogador tem de saber de cor. |
+| **POD-8** | Completar catálogos: **17** modificadores + **5** vantagens | As habilidades sugeridas citam justamente o que falta. |
+| **POD-11** | **Botão de ativar** o poder na Rolagem (HT ou Von pela fonte, + Talento) | Primeira coisa que aparece na aba Rolagem. Usa só o que já está na ficha. |
+| **POD-6** | **Habilidades alternativas** (1/5 do custo, arredondando para cima) | Conta fechada, exemplo verificável, economia real de pontos. |
+| **POD-9** | **Reserva de Energia** (3 pts/PF, recarga 1 por 10 min) | Segunda barra de PF. Depende do POD-5 para saber a fonte. |
+| **POD-7** | **Montador** de modificador por componentes | Só serve para poder personalizado; a maioria usa os 11 prontos. |
+| **POD-12** | Custo em PF do uso, esforço adicional (1 PF = +15%) | Regra de mesa contínua; depende do POD-11 existir. |
+| **POD-13** | Ampliações temporárias, uso predefinido, multiplicação | Avançado. Último de propósito. |
+
+## O que eu decidi NÃO fazer, e por quê
+
+- **Combinação de Poderes (p.171)** — é cena de grupo, aparece no combate da
+  Saga, não na ficha. Fora do escopo Rolagem-primeiro.
+- **Exemplos de Habilidades (p.136-151)** — receitas de consulta; o app já tem o
+  Índice de Regras para esse papel.
+- **Progressão entre sessões (p.33-34)** — depende do Mestre lembrar o que foi
+  usado. Não vira trava.
+- **Perícias do Poder (p.162)** e **Modificadores por Multiplicação (p.102)** —
+  regras opcionais que mudam a ficha inteira. Só com chave, e só se pedidas.
+
+## ⚠️ Duas armadilhas que a extração já provou existir
+
+1. **Verbete vizinho colando em silêncio.** Aconteceu com foco (POD-1) e com
+   descrição (POD-4), e o teste de extração das habilidades já mostrou o mesmo
+   (Alteração de Probabilidades puxou a lista da Antimagia). **Toda extração nova
+   precisa da trava de duplicata** antes de virar asset.
+2. **Escape de shell comendo regex.** Um `` virou BACKSPACE literal e deixou um
+   teste cego. **Texto Kotlin e regex vão pela ferramenta de edição**, nunca por
+   heredoc de shell.
