@@ -666,3 +666,66 @@ erravam **por um ponto**.
 
 ⚠️ A regra que sobrou de tudo isso: **guardar a citação, não o meu resumo dela**,
 e ler a seção **até o título seguinte**.
+
+
+---
+
+# 🔴 ERRO DE RAIZ — achado pelo usuário: eu nunca li o Módulo Básico
+
+O usuário leu a p.7 de *Poderes* (*"um bom exemplo é a Telepatia, **pág. MB257**"*),
+**foi até a MB257**, e viu que a página descreve o poder de um jeito que o app não
+reproduz. Ele estava certo.
+
+## O que eu fiz de errado
+
+Montei o modelo inteiro de poderes a partir de **GURPS Poderes**, e **nunca abri o
+capítulo de Psiquismo do Módulo Básico (p.254-258)** — mesmo com o próprio livro
+de Poderes apontando para lá, e mesmo com o Módulo Básico já estando no projeto,
+em `chunks.jsonl`, que usei a sessão inteira para outras regras.
+
+## O que o Módulo Básico diz, e o app não sabe
+
+> *"Todas as habilidades psíquicas têm uma limitação especial chamada 'modificador
+> de poder'. **Cada poder psíquico tem seu próprio modificador**, que geralmente
+> vale −10%."* (MB p.255)
+
+O modificador tem **nome próprio, do poder** — não é "escolha uma fonte genérica":
+
+| Poder | Modificador no MB | Valor | Talento |
+|---|---|---|---|
+| Telepatia | **Telepático** | −10% | 5/nível |
+| Psicocinese | **Psicocinético** | −10% | 5/nível |
+| PES | PES | −10% | 5/nível |
+| Cura Psíquica | Cura Psíquica | −10% | 5/nível |
+| Teleporte | Teleporte Psíquico | −10% | 5/nível |
+| **Antipsi** | **Nenhum** | — | **não existe** |
+
+> *"Modificador de Poder: **Nenhum**, já que as habilidades Antipsi não podem ser
+> bloqueadas!"* (MB p.256)
+
+⚠️ **O app dá ao Antipsi três fontes (−10%) e um Talento.** O Módulo Básico diz
+que ele não tem nem um nem outro.
+
+## Por que isso não é só um detalhe
+
+O app apresenta a criação como **"escolha o poder → escolha a fonte genérica"**.
+Isso é a generalização do livro de *Poderes*. Quem joga com o **Módulo Básico** —
+que é a maioria — espera ver `Leitura da Mente (**Telepático**, −10%)` na ficha, e
+recebe uma lista de fontes que o MB não usa.
+
+Os dois modelos são compatíveis (o valor bate: −10%), mas **o nome e o caminho
+não**, e é o nome que vai para a ficha.
+
+## O que a correção precisa ter
+
+1. **Modificador com o nome do livro.** "Telepático", não "Psíquico" nem
+   "Mod. de Poder: Telepatia".
+2. **Os seis poderes psíquicos do MB** como origem de catálogo, ao lado dos 47 de
+   *Poderes* — com a divergência registrada onde ela existe.
+3. **Antipsi sem modificador e sem Talento**, com a explicação do livro à vista.
+4. Um teste que **compare as duas fontes de verdade** e reprove quando elas
+   discordarem em silêncio.
+
+⚠️ E a lição, que é a mesma da sessão inteira em outra escala: **li um livro e
+tratei como se fosse o assunto todo.** O erro não foi ler mal a página — foi não
+perceber que faltava uma.
