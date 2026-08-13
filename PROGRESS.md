@@ -8104,3 +8104,84 @@ rolada, e isso é outro lote.
 dois testes ficaram vermelhos.
 
 - **Status:** ✅ Build OK nas 2 variantes · lint OK · gate **2225** (+11) · ⏭️ **PENDENTE: teste no aparelho** (T-PO14).
+
+
+---
+
+## Lote POD-8b — Desfazendo uma trava minha que estava errada
+
+### 🔴 O teste tinha mais autoridade que o livro
+
+No POD-8 concluí que, dos 48 títulos das p.107-113, **16 eram só remissão** e não
+existiam como modificador. Escrevi um teste chamado
+`as remissoes do livro NAO viraram modificador` **proibindo que existissem**.
+
+A conclusão estava errada. A remissão aponta para onde o modificador está
+**definido dentro do próprio livro**:
+
+> *"Solavanco **veja Efeito Incômodo, pág. 103**"* → e lá está: **+30%**.
+> *"Difícil de Usar **veja Destreinado, pág. 102**"* → e lá está: **−5% por −3**.
+
+Oito dos dezesseis eram modificadores de verdade. Entraram agora:
+
+| Modificador | Valor | Definido sob |
+|---|---|---|
+| Ataque Surpresa | **+150%** | De Cima (p.102) |
+| Solavanco | **+30%** | Efeito Incômodo (p.103) |
+| Fogo Instantâneo | +10% | Fogo Contínuo (p.104) |
+| Defesa Ativa | −40% | p.110 |
+| Efeito do Dano Ausente | −20% | Modificadores de Dano (p.105) |
+| Difícil de Usar | −5% por −3, até −12 | Destreinado (p.102) |
+| Exige Teste de Reação | −5% | Volúvel (p.112) |
+| Gatilho Incontrolável | −5% | Incontrolável (p.104) |
+
+⚠️ **A remissão virou dado.** Cada descrição diz *"definido sob X"* — o livro
+lista numa página e define noutra, e sem registrar isso ninguém acha de volta.
+
+Os outros **8** continuam fora, e agora com teste próprio explicando por quê:
+apontam para o Módulo Básico, ou não são modificador (Características Variantes
+é seção sobre efeitos especiais).
+
+### A lição, que vale além deste lote
+
+**Teste que afirma que algo NÃO existe é o mais perigoso que dá para escrever.**
+Ele não protege regra nenhuma — protege a minha leitura. E, uma vez no gate, ele
+reprova quem estiver certo.
+
+- **Status:** ✅ Build OK nas 2 variantes · lint OK · gate **2237** · ⏭️ **PENDENTE: teste no aparelho** (T-PO15).
+
+---
+
+## Lote POD-6 — Habilidades Alternativas
+
+> *"Personagens com 'habilidades alternativas' pagarão o preço integral apenas
+> para sua habilidade **mais cara**. Todas as outras terão **1/5 do custo** (…)
+> após calcular todas as ampliações e limitações (inclusive o modificador de
+> poder), aplicar o divisor e **arredondar para cima**."* (p.11)
+
+O exemplo do livro é o teste central: Voo [36] + Super Salto 2 [18] + Caminhar no
+Ar [18] → 36 + ⌈18/5⌉ + ⌈18/5⌉ = **44**. Se a conta não reproduzir isso, está
+errada — não importa quão plausível pareça.
+
+### Dois jeitos de errar que não parecem erro
+
+1. **Arredondar para baixo.** 18/5 = 3,6 → 3 daria 42. Como o desconto é de 80%,
+   fica barato de qualquer jeito e ninguém desconfia.
+2. **Tratar toda habilidade de custo máximo como principal.** Com duas de 20
+   pontos, cobrar as duas cheias. O livro diz *"sua habilidade mais cara"*, no
+   singular — **uma** só.
+
+As duas sondas ficaram vermelhas.
+
+⚠️ E o mínimo é **1**, não 0: uma habilidade de 4 pontos continua custando 1. O
+desconto não zera nada.
+
+### Os três inconvenientes
+
+Estão no código porque são o outro lado da economia: só uma funciona por vez
+(trocar exige Preparar); o que derrubar uma derruba o conjunto; e habilidade que
+não reativa antes de a duração acabar **tranca todas** pela duração.
+
+🔴 O terceiro só apareceu na 2ª revisão — o plano tinha registrado dois.
+
+- **Status:** ✅ Build OK nas 2 variantes · lint OK · gate **2237** (+23 nos dois lotes) · ⏭️ **PENDENTE: teste no aparelho** (T-PO15).

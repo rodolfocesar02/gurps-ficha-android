@@ -438,5 +438,109 @@
    "Variável"
   ],
   "descricao": "GURPS Poderes, p.109. Qualquer vantagem que possa ser Sempre Ativa pode ser, em vez disso, Normalmente Ativa. ⚠️ O valor é DERIVADO do Sempre Ativa daquela vantagem: se a limitação Sempre Ativa for menor, Normalmente Ativa vale metade dela; se for maior, some uma ampliação de +10% para chegar ao valor. Por isso o percentual entra a mão."
+ },
+ {
+  "id": "ataque_surpresa",
+  "nome": "Ataque Surpresa",
+  "tipo": "ampliação",
+  "valor": "150",
+  "por_nivel": false,
+  "bonus_base": 0,
+  "pagina": 102,
+  "tags": [
+   "Poderes"
+  ],
+  "descricao": "GURPS Poderes, p.102 (definido sob “De Cima”). O ataque vem por trás do alvo. Quem tem Visão 360 Graus ou Visão Periférica se defende normalmente; quem tem Noção do Perigo se defende com −2 se passar num teste de Percepção. Caso contrário, nenhuma defesa ativa é possível. Adequado a ataques que se teleportam ou emergem de portais atrás do alvo."
+ },
+ {
+  "id": "solavanco",
+  "nome": "Solavanco",
+  "tipo": "ampliação",
+  "valor": "30",
+  "por_nivel": false,
+  "bonus_base": 0,
+  "pagina": 103,
+  "tags": [
+   "Poderes"
+  ],
+  "descricao": "GURPS Poderes, p.103 (definido sob “Efeito Incômodo”). O personagem sofre efeitos nocivos ao usar a habilidade. Escolha entre Penalidade em Atributo, Atordoamento, Incapacitação ou Irritante, como em Atribulação (MB p.43-44). ⚠️ O valor depende do efeito escolhido; +30% é o exemplo do livro para Nauseado."
+ },
+ {
+  "id": "fogo_instantaneo",
+  "nome": "Fogo Instantâneo",
+  "tipo": "ampliação",
+  "valor": "10",
+  "por_nivel": false,
+  "bonus_base": 0,
+  "pagina": 104,
+  "tags": [
+   "Poderes"
+  ],
+  "descricao": "GURPS Poderes, p.104 (definido sob “Fogo Contínuo”). A CdT completa é disparada quase instantaneamente. Siga Fogo Contínuo (MB p.373), mas com dois acertos adicionais por ponto na margem de sucesso."
+ },
+ {
+  "id": "defesa_ativa",
+  "nome": "Defesa Ativa",
+  "tipo": "limitação",
+  "valor": "-40",
+  "por_nivel": false,
+  "bonus_base": 0,
+  "pagina": 110,
+  "tags": [
+   "Poderes"
+  ],
+  "descricao": "GURPS Poderes, p.110 (definido sob “Defesa Ativa”). A habilidade só protege contra ameaças de que o personagem esteja ciente, e só se ele passar num teste para interpô-la a tempo: DX/2 + 3, +1 por Reflexos em Combate. Usar a mesma habilidade mais de uma vez no turno acumula penalidade."
+ },
+ {
+  "id": "efeito_do_dano_ausente",
+  "nome": "Efeito do Dano Ausente",
+  "tipo": "limitação",
+  "valor": "-20",
+  "por_nivel": false,
+  "bonus_base": 0,
+  "pagina": 105,
+  "tags": [
+   "Poderes"
+  ],
+  "descricao": "GURPS Poderes, p.105 (definido sob “Modificadores de Dano”). Com acordo do Mestre, o ataque perde um dos efeitos colaterais comuns do seu tipo de dano. A falta de um efeito que cause dano em PV, PF ou RD vale −20%."
+ },
+ {
+  "id": "dificil_de_usar",
+  "nome": "Difícil de Usar",
+  "tipo": "limitação",
+  "valor": "-5",
+  "por_nivel": true,
+  "bonus_base": 0,
+  "pagina": 102,
+  "tags": [
+   "Poderes"
+  ],
+  "descricao": "GURPS Poderes, p.102 (definido sob “Destreinado”). Penalidade em todos os testes para usar a habilidade, e **o Talento não ajuda**. Cada nível impõe −3. ⚠️ São −5% a cada −3, até o máximo de −12 (ou seja, −20%). Incompatível com Confiável e proibido para ataques à distância."
+ },
+ {
+  "id": "exige_teste_de_reacao",
+  "nome": "Exige Teste de Reação",
+  "tipo": "limitação",
+  "valor": "-5",
+  "por_nivel": false,
+  "bonus_base": 0,
+  "pagina": 112,
+  "tags": [
+   "Poderes"
+  ],
+  "descricao": "GURPS Poderes, p.112 (definido sob “Volúvel”). A habilidade funciona como descrito, mas os modificadores de reação normais se aplicam ao teste, e é possível usar um teste de Influência no lugar."
+ },
+ {
+  "id": "gatilho_incontrolavel",
+  "nome": "Gatilho Incontrolável",
+  "tipo": "limitação",
+  "valor": "-5",
+  "por_nivel": false,
+  "bonus_base": 0,
+  "pagina": 104,
+  "tags": [
+   "Poderes"
+  ],
+  "descricao": "GURPS Poderes, p.104 (definido sob “Incontrolável”). A habilidade se manifesta de forma incontrolável na presença de um item, e não em situações de tensão. Use as categorias de raridade de Fraqueza (MB p.143). ⚠️ Não é limitação significativa se o item for 'Raro'."
  }
 ]

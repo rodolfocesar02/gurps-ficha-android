@@ -568,8 +568,8 @@ certos; o que faltava era o que vinha ao redor deles.**
 | POD-10 | as 567 habilidades sugeridas do livro | ✅ feito |
 | POD-8 | 4 vantagens + 1 modificador | ⚠️ **incompleto** |
 | POD-11 | incapacitação pela fonte + bônus do Talento | ✅ feito |
-| **POD-8b** | os **8 modificadores** que ficaram de fora, e desfazer a trava que os proíbe | ⏳ **falta** |
-| **POD-6** | Habilidades Alternativas (1/5, arredondando para cima) + os **3** inconvenientes | ⏳ falta |
+| **POD-8b** | os 8 modificadores + desfeita a trava | ✅ feito |
+| **POD-6** | Habilidades Alternativas — regra pura pronta; **falta a tela** | ⚠️ parcial |
 | **POD-9** | Reserva de Energia + as **5 limitações** que mudam a recarga | ⏳ falta |
 | **POD-7** | montador de modificador, com a **tabela completa** de componentes | ⏳ falta |
 | **POD-12** | esforço adicional (−1 na Vontade por 5%) + custo em PF do uso | ⏳ falta |

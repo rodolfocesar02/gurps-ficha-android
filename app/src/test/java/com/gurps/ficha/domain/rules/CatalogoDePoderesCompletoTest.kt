@@ -124,21 +124,64 @@ class CatalogoDePoderesCompletoTest {
     }
 
     @Test
-    fun `as remissoes do livro NAO viraram modificador`() {
-        // 🔴 O que quase entrou: 16 titulos que so apontam para outro verbete.
-        // "Solavanco veja Efeito Incomodo"; "Subaquatico veja pag. MB109".
-        // Se algum dia forem importados, viram modificador fantasma com valor
-        // vazio -- e o jogador escolhe um percentual que nao existe.
-        val remissoes = listOf(
-            "Subaquático", "Sempre Ativa", "Uso Limitado", "Ataque Surpresa",
-            "Efeito Seletivo", "Fogo Instantâneo", "Desvantagem Exigida",
-            "Difícil de Usar", "Efeito do Dano Ausente", "Magnético",
-            "Exige Teste de Reação", "Gatilho Incontrolável", "Solavanco",
+    fun `a remissao aponta para onde o modificador esta DEFINIDO`() {
+        // 🔴🔴 ESTE TESTE DIZIA O CONTRARIO, E ESTAVA ERRADO — lote POD-8b.
+        //
+        // No POD-8 eu concluí que 16 títulos eram "só remissão" e **proibi que
+        // virassem modificador**. Errado: a remissão aponta para onde o
+        // modificador está definido **dentro do próprio livro**.
+        //
+        // "Solavanco veja Efeito Incômodo, pág. 103" → lá está: **+30%**.
+        // "Difícil de Usar veja Destreinado, pág. 102" → lá está: **−5% por −3**.
+        //
+        // Oito dos dezesseis eram modificadores de verdade, e o teste os
+        // **bloqueava**: quem tentasse acrescentá-los seria reprovado pelo gate.
+        // Uma conclusão minha virou trava, e a trava tinha mais autoridade que o
+        // livro.
+        //
+        // ⚠️ A lição: teste que afirma que algo **não existe** é o mais perigoso
+        // que dá para escrever. Ele não protege regra nenhuma — protege a minha
+        // leitura.
+        val definidosSobOutroTitulo = mapOf(
+            "Ataque Surpresa" to 150,
+            "Solavanco" to 30,
+            "Fogo Instantâneo" to 10,
+            "Defesa Ativa" to -40,
+            "Efeito do Dano Ausente" to -20,
+            "Difícil de Usar" to -5,
+            "Exige Teste de Reação" to -5,
+            "Gatilho Incontrolável" to -5
+        )
+        val porNome = modificadores.associateBy { semAcento(it.asJsonObject.get("nome").asString) }
+        definidosSobOutroTitulo.forEach { (nome, valor) ->
+            val m = porNome[semAcento(nome)]
+            assertTrue("'$nome' e modificador de verdade e sumiu do catalogo", m != null)
+            assertEquals(
+                "'$nome' esta com valor fora do livro",
+                valor,
+                m!!.asJsonObject.get("valor").asString.toInt()
+            )
+            // A remissão faz parte do dado: o livro lista numa página e define
+            // noutra. Sem registrar isso, ninguém acha de volta.
+            val d = m.asJsonObject.get("descricao").asString
+            assertTrue("'$nome' nao diz sob que titulo esta definido", d.contains("definido sob"))
+        }
+    }
+
+    @Test
+    fun `as remissoes para o Modulo Basico continuam fora`() {
+        // Estas oito **realmente** não são modificador próprio de Poderes: ou
+        // apontam para o Módulo Básico ("Subaquático veja pág. MB109"), ou não
+        // são modificador (Características Variantes é seção sobre efeitos
+        // especiais, p.113).
+        val naoSaoDaqui = listOf(
+            "Subaquático", "Sempre Ativa", "Variável", "Uso Limitado",
+            "Efeito Seletivo", "Desvantagem Exigida", "Magnético",
             "Características Variantes"
         )
         val nomes = nomesDe(modificadores)
-        remissoes.forEach {
-            assertFalse("'$it' e remissao do livro, nao modificador proprio",
+        naoSaoDaqui.forEach {
+            assertFalse("'$it' nao e modificador proprio de GURPS Poderes",
                 semAcento(it) in nomes)
         }
     }

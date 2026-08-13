@@ -2077,3 +2077,17 @@ exemplo o *Traje Pressurizado* (RD 6\*) ou a *Cota de Malha Longa Dupla*.
   Cósmico): ✅ diz que é **imune**.
   ✅ Com Talento acima de zero, aparece a frase dizendo que ele soma em ativar,
   atacar, controlar e defender — **e que não soma no dano nem no teste do alvo**.
+
+
+---
+
+# Lotes POD-8b e POD-6
+
+> Gate: 2.237 testes, 0 falhas nas duas variantes.
+
+- **T-PO15 · os 8 modificadores voltaram** — Traços → abra uma vantagem →
+  Modificadores. Busque **Ataque Surpresa**: ✅ aparece com **+150%**. Busque
+  **Solavanco**: ✅ **+30%**. ✅ A descrição de cada um diz sob que título do livro
+  ele está definido.
+  ⚠️ O POD-6 (Habilidades Alternativas) é **regra pura por ora** — ainda não tem
+  tela. Nada a testar no aparelho além dos modificadores.
