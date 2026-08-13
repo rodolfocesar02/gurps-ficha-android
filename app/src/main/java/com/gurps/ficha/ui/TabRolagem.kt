@@ -392,6 +392,7 @@ fun TabRolagem(viewModel: FichaViewModel) {
 
     var showPericiasDialog by remember { mutableStateOf(false) }
     var showMagiasDialog by remember { mutableStateOf(false) }
+    var showPoderesDialog by remember { mutableStateOf(false) }
     var showTecnicasDialog by remember { mutableStateOf(false) }
     var showMagiaAlmaDialog by remember { mutableStateOf(false) }
     var showRolagemPersonalizadaDialog by remember { mutableStateOf(false) }
@@ -1105,9 +1106,11 @@ fun TabRolagem(viewModel: FichaViewModel) {
         MenuBotoesNavegacaoRolagem(
             showTecnicas = opcoesTecnica.isNotEmpty(),
             showMagias = opcoesMagia.isNotEmpty(),
+            showPoderes = p.poderes.isNotEmpty(),
             onShowPericias = { showPericiasDialog = true },
             onShowTecnicas = { showTecnicasDialog = true },
             onShowMagias = { showMagiasDialog = true },
+            onShowPoderes = { showPoderesDialog = true },
             onShowRolagemLivre = { showRolagemPersonalizadaDialog = true },
             onShowResistencia = { showResistenciaDialog = true }
         )
@@ -1211,6 +1214,13 @@ fun TabRolagem(viewModel: FichaViewModel) {
                 executarRolagem(TipoTeste.PERICIA, contexto, alvo, mod + modsDeEstado.pericias)
             },
             onDismiss = { showPericiasDialog = false }
+        )
+    }
+
+    if (showPoderesDialog) {
+        com.gurps.ficha.ui.features.rolagem.DialogoPoderes(
+            poderes = p.poderes,
+            onDismiss = { showPoderesDialog = false }
         )
     }
 

@@ -794,6 +794,10 @@ fun AtaqueDanoQuickArea(
 fun MenuBotoesNavegacaoRolagem(
     showTecnicas: Boolean,
     showMagias: Boolean,
+    // Lote POD-12/13: so aparece quando ha poder configurado, igual
+    // a Tecnicas e Magias. Personagem sem poder nao ganha botao morto.
+    showPoderes: Boolean = false,
+    onShowPoderes: () -> Unit = {},
     onShowPericias: () -> Unit,
     onShowTecnicas: () -> Unit,
     onShowMagias: () -> Unit,
@@ -855,6 +859,21 @@ fun MenuBotoesNavegacaoRolagem(
             ) {
                 Text(
                     "Magias",
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center
+                )
+            }
+        }
+
+        if (showPoderes) {
+            Button(
+                onClick = onShowPoderes,
+                modifier = Modifier.fillMaxWidth().height(42.dp),
+                contentPadding = PaddingValues(vertical = 2.dp)
+            ) {
+                Text(
+                    "Poderes",
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center

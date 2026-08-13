@@ -610,9 +610,59 @@ de fazer as cinco.
 | POD-6 Habilidades Alternativas | ✅ caixa de marcar + economia + os 3 inconvenientes |
 | POD-7 Montador de modificador | ✅ diálogo por componentes, escrevendo no campo existente |
 | POD-9 Reserva de Energia | ✅ campo, limitações, custo e aviso de conflito |
-| POD-12 Esforço adicional | ⏳ **falta** — é ação de mesa, o lugar é a aba Rolagem |
-| POD-13 Ampliações temporárias | ⏳ **falta** — idem |
+| POD-12 Esforço adicional | ✅ botão Poderes na aba Rolagem |
+| POD-13 Ampliações temporárias | ✅ no mesmo diálogo |
 
 ⚠️ POD-12 e POD-13 não pertencem ao diálogo de poderes: acontecem **no meio de
 uma rolagem**. Pô-las ali seria configurá-las onde ninguém as usa. O passo
 seguinte é decidir onde elas entram na aba Rolagem — conversa antes de código.
+
+
+---
+
+# PILAR PODERES — fechado
+
+Todas as regras de GURPS Poderes que dão para automatizar estão **implementadas,
+testadas e com tela**:
+
+| Lote | Regra | Onde aparece |
+|---|---|---|
+| POD-1/2/3 | catálogo, fonte→modificador, Talento | diálogo de poderes |
+| POD-5 | as habilidades do poder | diálogo de poderes |
+| POD-6 | habilidades alternativas (1/5) | diálogo de poderes |
+| POD-7 | montador de modificador | diálogo de poderes |
+| POD-8/8b | 4 vantagens + 9 modificadores | catálogos |
+| POD-9 | Reserva de Energia | diálogo de poderes |
+| POD-10 | 567 habilidades sugeridas | catálogo |
+| POD-11 | incapacitação pela fonte, bônus do Talento | diálogo + Rolagem |
+| POD-12/13 | esforço adicional, ampliações temporárias | **botão Poderes na Rolagem** |
+
+## O que ficou de fora, e por quê
+
+- **Combinação de Poderes (p.171)** — cena de grupo; vive no combate da Saga.
+- **Exemplos de Habilidades (p.136-151)** — receitas de consulta; o Índice de
+  Regras já faz esse papel.
+- **Progressão entre sessões (p.33-34)** — depende do Mestre lembrar o que foi
+  usado.
+- **Perícias do Poder (p.162)** e **Multiplicação (p.102)** — opcionais que mudam
+  a ficha inteira. A regra da multiplicação **está pronta**; falta só a chave.
+
+## O placar honesto deste pilar
+
+**Cinco erros de leitura meus**, todos do mesmo formato — *li o trecho, não a
+seção*:
+
+| Onde | O que eu escrevi | O que o livro diz |
+|---|---|---|
+| POD-8 | faltam 17 modificadores | 16 títulos eram remissão… |
+| POD-8b | …e não eram modificador | 8 **eram**, definidos sob outro título |
+| POD-11 | botão de ativar: HT/Vontade pela fonte | é o teste de **incapacitação** |
+| POD-12 | 1 PF = +15% de efeito | **−1 na Vontade por 5%** |
+| POD-7 | desvantagem exigida = um valor | **três** escolhas encadeadas |
+
+E dois defeitos que os testes acharam e eu não teria achado lendo: o `\b` que
+virou **backspace** (deixando dois testes cegos) e as contas com `Double` que
+erravam **por um ponto**.
+
+⚠️ A regra que sobrou de tudo isso: **guardar a citação, não o meu resumo dela**,
+e ler a seção **até o título seguinte**.

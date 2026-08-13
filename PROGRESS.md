@@ -8326,3 +8326,47 @@ As regras dos dois estão prontas e testadas desde o lote anterior. O que falta 
 decidir **onde** elas aparecem, e isso é conversa antes de código.
 
 - **Status:** ✅ Build OK nas 2 variantes · lint OK · gate **2277** (+13) · ⏭️ **PENDENTE: teste no aparelho** (T-PO16 a T-PO18).
+
+
+---
+
+## Lotes POD-12 e POD-13 — o botão Poderes na aba Rolagem
+
+**A ideia foi do usuário**, e ela resolveu o impasse do lote anterior: eu tinha
+dito que as duas regras não cabiam no diálogo de poderes e que faltava decidir
+onde elas entravam. Ele apontou o padrão que já estava na tela — *"pode ser um
+botão, semelhante ao da magia, que só aparece quando alguém tiver um poder
+configurado"*.
+
+Era exatamente isso, e o código já tinha a forma pronta: `if (showMagias)` e
+`if (showTecnicas)`. O botão **Poderes** entrou no mesmo formato.
+
+⚠️ Personagem sem poder **não ganha botão morto** — foi a parte da proposta que
+mais importava, e virou teste: trocar a condição por `true` deixa o gate
+vermelho.
+
+### O que o diálogo mostra
+
+Escolhido o poder, ele reúne o que os três últimos lotes produziram:
+
+- **do POD-11:** o que a fonte manda rolar na incapacitação, e o que o Talento
+  soma — com a metade que não soma (dano, teste do alvo);
+- **do POD-9:** os PF de Reserva e a recarga que as limitações escolhidas dão;
+- **do POD-12:** o efeito extra em passos de 5%, com a penalidade de Vontade
+  calculada, o teto de +100% a −20 e o lembrete de que não vale para habilidade
+  passiva nem para a que pede teste de ataque;
+- **do POD-13:** a ampliação em passos de 10%, com o Talento e os PF gastos
+  compensando a penalidade, o custo da tentativa, a perícia que a fonte permite
+  no lugar do atributo, e o aviso de que a falha crítica atinge o **poder
+  inteiro**.
+
+### 🔴 O que ele deliberadamente NÃO faz
+
+**Não rola, e não desconta PF.** Ele diz o número; quem gasta é a mesa.
+
+O app não tem como saber se o jogador foi em frente com a proeza depois de ver a
+penalidade — e cobrar PF de uma tentativa que não aconteceu seria pior do que
+não cobrar. Virou teste: se alguém mexer nos PF a partir deste diálogo, o gate
+acusa.
+
+- **Status:** ✅ Build OK nas 2 variantes · lint OK · gate **2280** (+3) · ⏭️ **PENDENTE: teste no aparelho** (T-PO19).

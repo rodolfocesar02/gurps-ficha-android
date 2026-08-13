@@ -2113,3 +2113,20 @@ exemplo o *Traje Pressurizado* (RD 6\*) ou a *Cota de Malha Longa Dupla*.
   poder e marque a caixinha das três. ✅ Aparece a linha de economia, e o
   **Restantes sobe** (o grupo custa menos que as três soltas). ✅ Os três
   inconvenientes aparecem abaixo. Desmarque uma: ✅ o total volta a subir.
+
+
+---
+
+# Lotes POD-12 e POD-13 — o botão Poderes na Rolagem
+
+> Gate: 2.280 testes, 0 falhas nas duas variantes.
+
+- **T-PO19 · o botão só aparece com poder** — abra a aba **Rolagem** num
+  personagem **sem poder nenhum**: ✅ **não** existe botão Poderes. Configure um
+  poder na aba Traços e volte: ✅ o botão **Poderes** aparece abaixo de Magias.
+  ✅ Toque nele, escolha o poder: mostra o que a fonte manda rolar, e os passos de
+  **Efeito extra** e **Ampliação**.
+  ✅ Suba o Efeito extra até **100%**: a penalidade chega a **−20**. Passe disso:
+  aparece o aviso do teto em vermelho.
+  ✅ Confira que **os PF do personagem NÃO mudam** ao mexer nos passos — o
+  diálogo informa, não gasta.

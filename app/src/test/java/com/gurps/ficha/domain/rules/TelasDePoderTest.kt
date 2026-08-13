@@ -4,6 +4,7 @@ import com.gurps.ficha.domain.rules.poderes.ReservaDeEnergia
 import com.gurps.ficha.model.Personagem
 import com.gurps.ficha.model.Poder
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import java.io.File
@@ -135,6 +136,50 @@ class TelasDePoderTest {
         assertTrue("o setter nao existe", i > 0)
         assertTrue("marca alternativa em vantagem sem poder",
             vm.substring(i, i + 400).contains("v.poderId != null"))
+    }
+
+    // ── POD-12/13: o botão Poderes da aba Rolagem ─────────────────────
+
+    @Test
+    fun `o botao Poderes segue o padrao de Tecnicas e Magias`() {
+        // ⚠️ Só aparece quando há poder configurado. Personagem sem poder não
+        // pode ganhar um botão morto — foi o próprio usuário quem propôs isso,
+        // apontando o padrão que já existia na tela.
+        val c = fonte("com/gurps/ficha/ui/features/rolagem/RolagemComponents.kt")
+        assertTrue("o parametro nao existe", c.contains("showPoderes: Boolean"))
+        assertTrue("o botao nao e condicional", c.contains("if (showPoderes) {"))
+
+        val a = fonte("com/gurps/ficha/ui/TabRolagem.kt")
+        assertTrue(
+            "o botao aparece mesmo sem poder configurado",
+            a.contains("showPoderes = p.poderes.isNotEmpty()")
+        )
+        assertTrue("o dialogo nao foi ligado", a.contains("DialogoPoderes("))
+    }
+
+    @Test
+    fun `o dialogo da Rolagem usa as regras dos POD-11, 12 e 13`() {
+        val d = fonte("com/gurps/ficha/ui/features/rolagem/DialogoPoderes.kt")
+        assertTrue("nao diz o que a fonte manda rolar",
+            d.contains("UsoDoPoder.Incapacitacao.explicar("))
+        assertTrue("falta o esforco adicional", d.contains("EsforcoAdicional.penalidade("))
+        assertTrue("falta a ampliacao temporaria",
+            d.contains("AmpliacoesTemporarias.modificadorFinal("))
+        assertTrue("falta o custo em PF da tentativa",
+            d.contains("AmpliacoesTemporarias.pfDaTentativa("))
+        // 🔴 O elo com o POD-11: a falha crítica atinge o poder INTEIRO.
+        assertTrue("nao avisa que a falha critica atinge o poder inteiro",
+            d.contains("poder INTEIRO checa"))
+    }
+
+    @Test
+    fun `o dialogo NAO desconta PF sozinho`() {
+        // ⚠️ Ele diz o número; quem gasta é a mesa. O app não sabe se o jogador
+        // foi em frente com a proeza, e cobrar PF de uma tentativa que não
+        // aconteceu seria pior do que não cobrar.
+        val d = fonte("com/gurps/ficha/ui/features/rolagem/DialogoPoderes.kt")
+        assertFalse("o dialogo esta mexendo nos PF do personagem",
+            d.contains("aplicarFadiga") || d.contains("atualizarPf"))
     }
 
     // ── A fiação das duas telas ────────────────────────────────────────
