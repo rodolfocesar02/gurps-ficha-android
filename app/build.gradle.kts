@@ -77,7 +77,7 @@ android {
         minSdk = 24
         targetSdk = 35
         versionCode = 178
-        versionName = "11.3-POD15"
+        versionName = "11.4-TELA"
         buildConfigField("String", "DISCORD_ROLL_API_BASE_URL", "\"$discordApiBaseUrl\"")
         buildConfigField("String", "DISCORD_ROLL_API_KEY", "\"$discordApiKey\"")
         buildConfigField(

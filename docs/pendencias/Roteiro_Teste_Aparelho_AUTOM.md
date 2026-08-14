@@ -2158,3 +2158,23 @@ exemplo o *Traje Pressurizado* (RD 6\*) ou a *Cota de Malha Longa Dupla*.
   ⚠️ Agora abra o **Antipsi**: ✅ **não** tem fonte nem percentual, e o nível de
   Talento fica em **0** (o livro diz que ele não tem modificador nenhum, porque
   as habilidades Antipsi não podem ser bloqueadas — MB p.256).
+- **T-PO23 · 🔴 dá para salvar o poder** — abra um poder que tenha habilidades
+  ligadas, Reserva de Energia preenchida e sugestões do livro (ex: Controle
+  Corporal com 3 alternativas). ✅ O miolo **rola**, e **Salvar** e **Cancelar**
+  continuam visíveis no rodapé o tempo todo. Repita no **Montar o modificador**:
+  ✅ o "Total: N%" fica abaixo da lista, sem sobrepor o último item.
+- **T-PO24 · o nome do modificador na escolha** — Configurar Poderes →
+  **Telepatia**: ✅ logo abaixo da fonte aparece *"Na ficha as habilidades levam
+  'Telepático, -10%'"*. Repita em **Psicocinese** (Psicocinético) e **Cura**
+  (Cura Psíquica). Agora o **Antipsi**: ✅ **não** tem lista de fontes, **não**
+  tem campo de Modificador, **não** tem campo de Talento — só a frase do livro.
+- **T-PO25 · o montador sumiu de onde não servia** — abra qualquer poder do
+  catálogo: ✅ **não** existe o botão "Montar o modificador por componentes".
+  Agora **Criar Poder Personalizado**: ✅ o botão está lá.
+- **T-PO26 · a regra recolhida** — poder com 3 alternativas marcadas: ✅ aparece
+  só a linha de economia e um botão *"O que vem junto com esse desconto?"*.
+  Toque: ✅ os três inconvenientes aparecem. ✅ O botão *"Quantas habilidades um
+  poder costuma ter?"* abre as cinco categorias da p.19 e termina com a frase
+  que diz que **não é limite**.
+  ⚠️ Na variante **pracego**, confira que o leitor de tela lê os dois botões e o
+  texto que eles abrem.

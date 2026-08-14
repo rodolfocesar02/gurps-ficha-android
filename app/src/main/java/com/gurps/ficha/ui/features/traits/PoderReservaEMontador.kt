@@ -138,7 +138,7 @@ fun MontadorDeModificadorDialog(
         Surface(
             shape = MaterialTheme.shapes.medium,
             color = MaterialTheme.colorScheme.surface,
-            modifier = Modifier.fillMaxWidth().heightIn(max = 620.dp)
+            modifier = Modifier.fillMaxWidth().heightIn(max = ALTURA_MAXIMA_DO_DIALOGO)
         ) {
             Column(modifier = Modifier.padding(16.dp)) {
                 Text("Montar o modificador", style = UiEstilos.tituloDialogo)
@@ -148,8 +148,11 @@ fun MontadorDeModificadorDialog(
                 )
                 Spacer(Modifier.height(8.dp))
 
+                // 🔴 Lote POD-20: era `fill = false`. Com isso o miolo pedia
+                // mais altura do que sobrava e o "Total: 0%" era desenhado por
+                // cima do último item — o usuário viu isso na tela.
                 Column(
-                    modifier = Modifier.weight(1f, fill = false).verticalScroll(rememberScrollState())
+                    modifier = Modifier.weight(1f).verticalScroll(rememberScrollState())
                 ) {
                     MontadorDeModificador.Grupo.entries.forEach { grupo ->
                         val doGrupo = MontadorDeModificador.CATALOGO.filter { it.grupo == grupo }

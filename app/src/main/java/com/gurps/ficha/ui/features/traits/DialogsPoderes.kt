@@ -1,6 +1,8 @@
 package com.gurps.ficha.ui.features.traits
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -30,6 +32,18 @@ import com.gurps.ficha.ui.AppSelectionRow
 import com.gurps.ficha.ui.FullscreenDialogContainer
 import com.gurps.ficha.ui.UiEstilos
 import com.gurps.ficha.viewmodel.FichaViewModel
+
+/**
+ * **O teto de altura de todo diálogo de poder** — Lote POD-20.
+ *
+ * 🔴 Sem ele o diálogo cresce junto com o conteúdo e o rodapé de botões sai da
+ * tela. Quem tinha um poder com habilidades, reserva e sugestões do livro não
+ * conseguia **salvar nem cancelar** — os dois botões ficavam abaixo da borda.
+ *
+ * ⚠️ Um número só, para os três diálogos: dois valores diferentes seriam duas
+ * rotas para a mesma decisão, e a que ninguém olha é a que quebra.
+ */
+internal val ALTURA_MAXIMA_DO_DIALOGO = 600.dp
 
 /**
  * **Configurar Poderes** — GURPS Poderes. Lotes POD-1 a POD-3.
@@ -65,7 +79,7 @@ fun DialogsPoderes(
         Surface(
             shape = MaterialTheme.shapes.medium,
             color = MaterialTheme.colorScheme.surface,
-            modifier = Modifier.fillMaxWidth().heightIn(max = 600.dp)
+            modifier = Modifier.fillMaxWidth().heightIn(max = ALTURA_MAXIMA_DO_DIALOGO)
         ) {
             Column(modifier = Modifier.padding(16.dp)) {
                 Text(
@@ -83,7 +97,10 @@ fun DialogsPoderes(
                 }
                 Spacer(modifier = Modifier.height(16.dp))
 
-                LazyColumn(modifier = Modifier.weight(1f, fill = false)) {
+                // Lote POD-20: mesma correção do diálogo de edição — com
+                // fill=false a lista podia pedir mais altura do que sobrava e
+                // desenhar por cima do rodapé.
+                LazyColumn(modifier = Modifier.weight(1f)) {
                     itemsIndexed(personagem.poderes) { index, poder ->
                         AppSelectionRow(
                             nome = poder.nome,
@@ -243,7 +260,11 @@ fun PoderEditDialog(
         Surface(
             shape = MaterialTheme.shapes.medium,
             color = MaterialTheme.colorScheme.surface,
-            modifier = Modifier.fillMaxWidth()
+            // 🔴 Lote POD-20: sem teto de altura o diálogo crescia com o
+            // conteúdo (habilidades + reserva + sugestões do livro) e o rodapé
+            // com Salvar/Cancelar saía para fora da tela. O poder ficava
+            // impossível de salvar — achado pelo usuário no aparelho.
+            modifier = Modifier.fillMaxWidth().heightIn(max = ALTURA_MAXIMA_DO_DIALOGO)
         ) {
             Column(modifier = Modifier.padding(16.dp)) {
                 Text(
@@ -262,6 +283,15 @@ fun PoderEditDialog(
                 }
                 Spacer(modifier = Modifier.height(12.dp))
 
+                // ── O miolo rola; o rodapé fica parado (Lote POD-20) ──────
+                // ⚠️ `weight(1f)` com fill=true: o miolo ocupa exatamente o que
+                // sobrou depois do título e do rodapé. Com fill=false ele podia
+                // pedir mais do que sobrava e o Salvar ficava por baixo.
+                Column(
+                    modifier = Modifier
+                        .weight(1f)
+                        .verticalScroll(rememberScrollState())
+                ) {
                 AppCampoCompacto(
                     value = nome,
                     onValueChange = { nome = it },
@@ -270,16 +300,43 @@ fun PoderEditDialog(
                 )
                 Spacer(modifier = Modifier.height(8.dp))
 
-                EscolhaDaFonte(
-                    fonteAtual = fonte,
-                    fontes = fontesDoPoder,
-                    onEscolher = { escolhida ->
-                        fonte = escolhida.fonte
-                        // 🔴 O percentual acompanha a fonte. Era este o elo que
-                        // não existia: o app guardava os dois lados soltos.
-                        modificador = escolhida.valor.toString()
+                // 🔴 Lote POD-24: o Antipsi **não tem** modificador nenhum
+                // ("Modificador de Poder: Nenhum, já que as habilidades Antipsi
+                // não podem ser bloqueadas!" — MB p.256), e mesmo assim a tela
+                // oferecia três fontes. Achado pelo usuário no aparelho.
+                if (definicao?.semModificador == true) {
+                    Text(
+                        "Este poder não tem modificador de poder. " +
+                            "As habilidades dele custam o preço cheio, porque não " +
+                            "podem ser bloqueadas (Módulo Básico, p.${definicao.paginaModuloBasico}).",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                } else {
+                    EscolhaDaFonte(
+                        fonteAtual = fonte,
+                        fontes = fontesDoPoder,
+                        onEscolher = { escolhida ->
+                            fonte = escolhida.fonte
+                            // 🔴 O percentual acompanha a fonte. Era este o elo que
+                            // não existia: o app guardava os dois lados soltos.
+                            modificador = escolhida.valor.toString()
+                        }
+                    )
+                    // 🔴 Lote POD-24: o nome do modificador na hora de ESCOLHER.
+                    // Ele existia desde o POD-15, mas só aparecia depois, ao ligar
+                    // uma habilidade — e o usuário concluiu, com razão, que os
+                    // poderes psíquicos do Módulo Básico não tinham sido feitos.
+                    definicao?.takeIf { it.modificadorProprio.isNotBlank() }?.let { d ->
+                        Text(
+                            "Na ficha as habilidades levam “${d.modificadorProprio}, " +
+                                "${modificador.toIntOrNull() ?: 0}%” — é o nome que o " +
+                                "Módulo Básico dá a este modificador (p.${d.paginaModuloBasico}).",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.primary
+                        )
                     }
-                )
+                }
                 Spacer(modifier = Modifier.height(8.dp))
 
                 AppCampoCompacto(
@@ -290,35 +347,54 @@ fun PoderEditDialog(
                 )
                 Spacer(modifier = Modifier.height(8.dp))
 
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    AppCampoCompacto(
-                        value = modificador,
-                        onValueChange = { modificador = it.filter { c -> c.isDigit() || c == '-' } },
-                        label = "Modificador (%)",
-                        modifier = Modifier.weight(1f),
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
-                    )
-                    AppCampoCompacto(
-                        value = nivelTalento,
-                        onValueChange = { nivelTalento = it.filter(Char::isDigit).take(2) },
-                        label = "Talento (nível)",
-                        modifier = Modifier.weight(1f),
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+                // Lote POD-24: o Antipsi não tem modificador **nem** Talento —
+                // são duas ausências distintas, e por isso dois campos separados
+                // no catálogo (`sem_modificador`, `sem_talento`).
+                val temModificador = definicao?.semModificador != true
+                val temTalento = definicao?.semTalento != true
+                if (temModificador || temTalento) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        if (temModificador) {
+                            AppCampoCompacto(
+                                value = modificador,
+                                onValueChange = {
+                                    modificador = it.filter { c -> c.isDigit() || c == '-' }
+                                },
+                                label = "Modificador (%)",
+                                modifier = Modifier.weight(1f),
+                                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+                            )
+                        }
+                        if (temTalento) {
+                            AppCampoCompacto(
+                                value = nivelTalento,
+                                onValueChange = { nivelTalento = it.filter(Char::isDigit).take(2) },
+                                label = "Talento (nível)",
+                                modifier = Modifier.weight(1f),
+                                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+                            )
+                        }
+                    }
+                }
+
+                // Lote POD-26: o montador (p.20-26) serve para montar um
+                // modificador **próprio**. Nos 47 verbetes do livro o valor já
+                // vem pronto com a fonte, e o botão só atrapalha quem está
+                // seguindo o catálogo.
+                if (definicao == null) {
+                    AppBotaoSecundario(
+                        "Montar o modificador por componentes",
+                        { mostrarMontador = true },
+                        larguraTotal = true
                     )
                 }
 
-                AppBotaoSecundario(
-                    "Montar o modificador por componentes",
-                    { mostrarMontador = true },
-                    larguraTotal = true
-                )
-
                 // O custo do Talento, à vista. Ele passou a entrar no total da
                 // ficha no POD-3 — antes não custava nada.
-                Text(
+                if (temTalento) Text(
                     "Talento: $custoNivel pontos/nível · " +
                         "${RegrasDePoder.custoDoTalento(nivel, custoNivel)} pontos",
                     style = MaterialTheme.typography.bodySmall,
@@ -348,6 +424,7 @@ fun PoderEditDialog(
                     // Lote POD-10: o que o livro sugere para este poder.
                     SugestoesDoLivro(definicao)
                 }
+                } // ── fim do miolo rolável ──
 
                 Spacer(modifier = Modifier.height(16.dp))
                 Row(

@@ -1,5 +1,6 @@
 package com.gurps.ficha.domain.rules
 
+import com.gurps.ficha.domain.rules.poderes.NumeroDeHabilidades
 import com.gurps.ficha.domain.rules.poderes.ReservaDeEnergia
 import com.gurps.ficha.model.Personagem
 import com.gurps.ficha.model.Poder
@@ -232,5 +233,175 @@ class TelasDePoderTest {
             val linhas = fonte(it).lines().size
             assertTrue("$it passou de 1000 linhas ($linhas)", linhas < 1000)
         }
+    }
+
+    // ══ POD-20 — o rodapé do diálogo tem de continuar alcançável ═══════
+
+    /**
+     * 🔴 **Achado pelo usuário no aparelho.** O `PoderEditDialog` montava tudo
+     * num `Column` sem rolagem e sem teto: com habilidades, Reserva de Energia
+     * e as sugestões do livro, o rodapé com **Salvar e Cancelar** saía para
+     * fora da tela. O poder ficava impossível de salvar.
+     *
+     * ⚠️ Este teste lê a **fonte**, e não o comportamento — layout de Compose
+     * não roda em teste de unidade. É o mesmo formato dos testes de fiação:
+     * ele guarda a decisão, não a pintura.
+     */
+    @Test
+    fun `todo dialogo de poder rola o miolo e prende o rodape`() {
+        val arquivos = listOf(
+            "com/gurps/ficha/ui/features/traits/DialogsPoderes.kt",
+            "com/gurps/ficha/ui/features/traits/PoderReservaEMontador.kt"
+        )
+        arquivos.forEach { caminho ->
+            val src = fonte(caminho)
+            // Todo diálogo com rodapé de ação precisa de um miolo que role.
+            assertTrue(
+                "$caminho perdeu a rolagem do miolo",
+                src.contains("verticalScroll(") || src.contains("LazyColumn(")
+            )
+            // E de um teto de altura -- sem ele a rolagem nunca chega a valer,
+            // porque o diálogo simplesmente cresce.
+            assertTrue(
+                "$caminho ficou sem teto de altura",
+                src.contains("heightIn(max = ALTURA_MAXIMA_DO_DIALOGO)")
+            )
+        }
+    }
+
+    @Test
+    fun `o miolo rolavel nao usa fill igual a false`() {
+        // 🔴 Era `weight(1f, fill = false)` no montador: o miolo pedia mais
+        // altura do que sobrava e o "Total" era desenhado POR CIMA do último
+        // item. Com fill=true o miolo ocupa exatamente o que restou.
+        listOf(
+            "com/gurps/ficha/ui/features/traits/DialogsPoderes.kt",
+            "com/gurps/ficha/ui/features/traits/PoderReservaEMontador.kt"
+        ).forEach { caminho ->
+            // ⚠️ Sem regex de propósito: `\n` dentro de string bruta do Kotlin
+            // já me deu dois testes CEGOS nesta sessão (o `\b` que virou
+            // backspace). Busca de texto simples não tem como sair errada.
+            //
+            // ⚠️ Mas as linhas de comentário saem fora: este mesmo arquivo
+            // *explica* o defeito citando "fill = false", e o teste casaria com
+            // a explicação em vez de casar com o código.
+            val src = fonte(caminho)
+                .lines()
+                .filterNot { it.trimStart().startsWith("//") || it.trimStart().startsWith("*") }
+                .joinToString("\n")
+            assertFalse(
+                "$caminho voltou a rolar com fill = false",
+                src.contains("fill = false")
+            )
+        }
+    }
+
+    @Test
+    fun `o teto de altura e um numero so`() {
+        // ⚠️ Duas rotas para a mesma decisão: eram 600.dp num arquivo e 620.dp
+        // no outro. A que ninguém olha é a que quebra.
+        val src = fonte("com/gurps/ficha/ui/features/traits/DialogsPoderes.kt")
+        assertTrue(
+            "a constante do teto sumiu",
+            src.contains("internal val ALTURA_MAXIMA_DO_DIALOGO")
+        )
+        val soltos = Regex("""heightIn\(max = \d+\.dp\)""").findAll(
+            src + fonte("com/gurps/ficha/ui/features/traits/PoderReservaEMontador.kt")
+        ).map { it.value }.toList()
+        assertTrue("voltou altura solta: $soltos", soltos.isEmpty())
+    }
+
+    // == POD-24 -- o nome do modificador na hora de ESCOLHER ============
+
+    @Test
+    fun `o dialogo mostra o nome do modificador do Modulo Basico`() {
+        // O nome existia desde o POD-15, mas so aparecia DEPOIS, ao ligar uma
+        // habilidade. Na hora da escolha a tela so oferecia as fontes genericas
+        // -- e o usuario concluiu, com razao, que nao tinha sido feito.
+        val src = fonte("com/gurps/ficha/ui/features/traits/DialogsPoderes.kt")
+        assertTrue(
+            "o dialogo voltou a esconder o nome do modificador",
+            src.contains("modificadorProprio.isNotBlank()")
+        )
+    }
+
+    @Test
+    fun `poder sem modificador nao oferece fonte nenhuma`() {
+        // "Modificador de Poder: Nenhum, ja que as habilidades Antipsi nao
+        // podem ser bloqueadas!" (MB p.256) -- e mesmo assim a tela oferecia
+        // tres fontes ao Antipsi.
+        val src = fonte("com/gurps/ficha/ui/features/traits/DialogsPoderes.kt")
+        val i = src.indexOf("EscolhaDaFonte(")
+        assertTrue("a chamada de EscolhaDaFonte sumiu", i > 0)
+        // A escolha da fonte tem de estar sob a guarda de semModificador.
+        val antes = src.substring(0, i)
+        assertTrue(
+            "a escolha da fonte deixou de ser condicional",
+            antes.contains("definicao?.semModificador == true")
+        )
+        assertTrue(
+            "o Talento deixou de sumir para quem nao tem",
+            src.contains("definicao?.semTalento != true")
+        )
+    }
+
+    // == POD-26 -- o montador so em poder personalizado ==================
+
+    @Test
+    fun `o montador nao aparece em poder de catalogo`() {
+        // Nos 47 verbetes o valor ja vem com a fonte; o botao era so ruido.
+        val src = fonte("com/gurps/ficha/ui/features/traits/DialogsPoderes.kt")
+        val i = src.indexOf("\"Montar o modificador por componentes\"")
+        assertTrue("o botao do montador sumiu por inteiro", i > 0)
+        val guarda = src.substring(maxOf(0, i - 400), i)
+        assertTrue(
+            "o montador voltou a aparecer sempre",
+            guarda.contains("if (definicao == null)")
+        )
+    }
+
+    // == POD-25 e POD-19 -- regra recolhida, nunca apagada ==============
+
+    @Test
+    fun `os inconvenientes das alternativas ficam atras de um toque`() {
+        val src = fonte("com/gurps/ficha/ui/features/traits/PoderHabilidades.kt")
+        assertTrue(
+            "os inconvenientes voltaram a ser despejados de uma vez",
+            src.contains("if (mostrarPorque) {")
+        )
+        // E continuam existindo -- recolher nao e apagar.
+        assertTrue(
+            "os inconvenientes sumiram da tela",
+            src.contains("HabilidadesAlternativas.INCONVENIENTES")
+        )
+    }
+
+    @Test
+    fun `a orientacao de quantidade diz que NAO e limite`() {
+        // "Estes limites sao apenas sugestoes." Sem esta frase a lista de cinco
+        // categorias parece uma reprovacao do poder do jogador.
+        assertTrue(
+            NumeroDeHabilidades.NAO_E_LIMITE,
+            NumeroDeHabilidades.NAO_E_LIMITE.contains("apenas sugestões")
+        )
+        assertEquals(5, NumeroDeHabilidades.ORIENTACOES.size)
+        assertEquals(19, NumeroDeHabilidades.PAGINA)
+        val src = fonte("com/gurps/ficha/ui/features/traits/PoderHabilidades.kt")
+        assertTrue(
+            "a tela mostra as categorias sem a frase que as desarma",
+            src.contains("NumeroDeHabilidades.NAO_E_LIMITE")
+        )
+    }
+
+    @Test
+    fun `a orientacao de quantidade nao inventa um contador`() {
+        // 🔴 A tentacao era "voce tem 5 de movimento". Das 276 vantagens so 69
+        // trazem categoria, e as 4 etiquetas do catalogo nao sao as 5 do livro.
+        // Um numero errado e pior do que numero nenhum: parece verificacao.
+        val regra = fonte("com/gurps/ficha/domain/rules/poderes/NumeroDeHabilidades.kt")
+        assertFalse(
+            "apareceu contagem automatica na regra de orientacao",
+            regra.contains("fun contar") || regra.contains("fun quantas")
+        )
     }
 }

@@ -8488,3 +8488,60 @@ escrita no teste, com a citação, e a lista de poderes sem modificador é fixad
 - **Status:** ✅ Build OK nas 2 variantes · lint OK · gate **2294** (+4) · ⏭️ **PENDENTE: teste no aparelho** (T-PO22).
 
 > Gate: 2.294 testes, 0 falhas nas duas variantes.
+
+
+## Lote POD-19/20/24/25/26 — o que o aparelho mostrou (11.4-TELA)
+
+Cinco correções de uma leva, todas vindas do **primeiro teste real no
+aparelho**. Nenhuma delas era regra errada — eram regras certas que a tela
+escondia, atropelava ou despejava de uma vez.
+
+### 🔴 POD-20 — dava para configurar o poder, não para salvá-lo
+
+O `PoderEditDialog` montava tudo num `Column` **sem rolagem e sem teto**. Num
+poder com habilidades, Reserva de Energia e as sugestões do livro, o rodapé com
+**Salvar e Cancelar** saía para fora da tela. O poder ficava impossível de
+salvar, e não havia como voltar atrás.
+
+O mesmo `fill = false` aparecia em **três** lugares — o diálogo de edição, o
+montador (onde o "Total" era desenhado por cima do último item) e a lista de
+poderes. Os três agora usam `weight(1f)` com o miolo rolando e o rodapé preso, e
+a altura virou **uma constante só** (`ALTURA_MAXIMA_DO_DIALOGO`): eram 600.dp
+num arquivo e 620.dp no outro.
+
+### POD-24 — o nome do modificador só aparecia depois
+
+O POD-15 gravou "Telepático" no catálogo, e a tela só o mostrava **depois**, ao
+ligar uma habilidade. Na hora de escolher — que é a hora que importa — havia só
+a lista de fontes genéricas. O usuário concluiu que o POD-15 não tinha sido
+feito, e a conclusão era razoável: para ele, o que não está na tela não existe.
+
+⚠️ E o **Antipsi** ainda oferecia três fontes e um campo de Talento, com o livro
+dizendo o contrário na mesma página. Agora ele mostra a frase do livro e mais
+nada.
+
+### POD-26, POD-25, POD-19 — texto na hora errada
+
+- O botão **Montar o modificador** aparecia nos 47 poderes de catálogo, onde o
+  valor já vem pronto com a fonte. Agora só em poder personalizado.
+- As **alternativas** despejavam a economia e os três inconvenientes de uma vez.
+  A regra não foi apagada — foi recolhida atrás de *"O que vem junto com esse
+  desconto?"*.
+- **POD-19, Número de Habilidades (p.19)**, entrou pelo mesmo caminho.
+
+### ⚠️ O contador que eu não escrevi
+
+A ideia era mostrar *"o livro sugere 2 ou 3 de movimento; você tem 5"*. Não dá:
+das **276 vantagens**, só **69** trazem categoria, e as quatro etiquetas do
+catálogo (`combate`, `fisica`, `mental`, `social`) **não são** as cinco
+categorias do livro — "combate" junta ataque e defesa, que o livro conta
+separado, e "movimento" não existe como etiqueta.
+
+Contar assim daria número errado em três de cada quatro fichas, e **número
+errado é pior do que número nenhum: parece uma verificação**. A regra ficou
+escrita e o contador tem um teste que proíbe ele de nascer sem que as 276
+vantagens tenham categoria.
+
+- **Status:** ✅ Build OK nas 2 variantes · lint OK · gate **2303** (+9) · ⏭️ **PENDENTE: teste no aparelho** (T-PO23 a T-PO26).
+
+> Gate: 2.303 testes, 0 falhas nas duas variantes.

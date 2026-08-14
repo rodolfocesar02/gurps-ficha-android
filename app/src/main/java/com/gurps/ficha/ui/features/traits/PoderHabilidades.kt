@@ -21,9 +21,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.gurps.ficha.domain.rules.poderes.HabilidadesAlternativas
 import com.gurps.ficha.domain.rules.poderes.HabilidadesDoPoder
+import com.gurps.ficha.domain.rules.poderes.NumeroDeHabilidades
 import com.gurps.ficha.domain.rules.poderes.UsoDoPoder
 import com.gurps.ficha.model.Poder
 import com.gurps.ficha.model.PoderDefinicao
+import com.gurps.ficha.ui.AppBotaoDiscreto
 import com.gurps.ficha.ui.AppBotaoIcone
 import com.gurps.ficha.ui.AppBotaoPrincipal
 import com.gurps.ficha.ui.AppBotaoSecundario
@@ -112,15 +114,31 @@ fun ColumnScope.PainelDeHabilidades(
     val alternativas = resumo.habilidades.filterNot { it.ehDesvantagem }
         .filter { viewModel.personagem.vantagens.getOrNull(it.indice)?.alternativaDoPoder == true }
         .map { it.custo }
+    // 🔴 Lote POD-25: antes esta parte despejava a economia e os **três**
+    // inconvenientes de uma vez — cinco parágrafos de regra no meio da tela de
+    // quem está montando o primeiro poder. O usuário disse, e estava certo:
+    // "muito complexo e nada intuitivo".
+    //
+    // ⚠️ A regra não foi apagada, foi **recolhida**. Ela continua a um toque, e
+    // continua legível de ponta a ponta na variante pracego — esconder texto de
+    // regra seria trocar um problema por outro pior.
     if (HabilidadesAlternativas.ehGrupoValido(alternativas.size)) {
+        var mostrarPorque by remember { mutableStateOf(false) }
         Text(
             HabilidadesAlternativas.resumo(alternativas),
             style = UiEstilos.detalheDoItem,
             color = MaterialTheme.colorScheme.primary
         )
-        HabilidadesAlternativas.INCONVENIENTES.forEach {
-            Text("• $it", style = UiEstilos.detalheDoItem,
-                color = MaterialTheme.colorScheme.onSurfaceVariant)
+        AppBotaoDiscreto(
+            if (mostrarPorque) "Esconder o que vem junto"
+            else "O que vem junto com esse desconto?",
+            { mostrarPorque = !mostrarPorque }
+        )
+        if (mostrarPorque) {
+            HabilidadesAlternativas.INCONVENIENTES.forEach {
+                Text("• $it", style = UiEstilos.detalheDoItem,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant)
+            }
         }
     }
 
@@ -162,6 +180,32 @@ fun ColumnScope.PainelDeHabilidades(
                 "teste do alvo (p.158).",
             style = UiEstilos.detalheDoItem,
             color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+    }
+
+    // Lote POD-19: quantas habilidades o livro sugere (p.19). Recolhido pelo
+    // mesmo motivo das alternativas — são cinco categorias, e elas não podem
+    // empurrar os botões de ação para fora da vista.
+    var mostrarQuantidade by remember { mutableStateOf(false) }
+    AppBotaoDiscreto(
+        if (mostrarQuantidade) "Esconder a orientação de quantidade"
+        else "Quantas habilidades um poder costuma ter?",
+        { mostrarQuantidade = !mostrarQuantidade }
+    )
+    if (mostrarQuantidade) {
+        NumeroDeHabilidades.ORIENTACOES.forEach { o ->
+            Text(
+                "• ${o.categoria}: ${o.quantidade}. ${o.explicacao}",
+                style = UiEstilos.detalheDoItem,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
+        // ⚠️ Obrigatória: sem ela a lista acima parece um limite, e o jogador
+        // vai achar que o app está reprovando o poder dele.
+        Text(
+            NumeroDeHabilidades.NAO_E_LIMITE,
+            style = UiEstilos.detalheDoItem,
+            color = MaterialTheme.colorScheme.primary
         )
     }
 
