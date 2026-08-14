@@ -8652,3 +8652,35 @@ agora cobra os **nomes** das faixas, não só os preços.
 - **Status:** ✅ Build OK nas 2 variantes · lint OK · gate **2314** (+9) · ⏭️ **PENDENTE: teste no aparelho** (T-PO28, T-PO29).
 
 > Gate: 2.314 testes, 0 falhas nas duas variantes.
+
+
+## Lote POD-23 — os poderes saem de dentro do botão (11.7-ABA)
+
+*"pode se colocar o poder semelhante fica as vantagens e desvantagens, pra fora
+do botão, na tela da aba traços."*
+
+E o pedido está certo pela regra, não só pelo gosto: um poder **é um traço do
+personagem** e **custa pontos** — `pontosPoderes` entra em `pontosGastos` desde
+o POD-3. Escondido atrás de *Configurar Poderes*, quem abria a ficha não tinha
+como saber que ele existia, mesmo pagando por ele.
+
+A seção fica **entre** *Configurar Poderes* e *Adicionar Vantagem*, com lápis e
+lixeira, no mesmo desenho do `VantagemItem`.
+
+⚠️ **O botão continua.** É por ele que se cria um poder novo e se chega ao
+catálogo dos 47. Uma rota para criar, uma vitrine para ver — não são duas rotas
+para a mesma coisa.
+
+### 🔴 A linha mostra dois custos, e não a soma
+
+O poder tem **dois** custos, e somá-los contaria duas vezes:
+
+- **Talento + Reserva de Energia** — o custo do poder em si;
+- **as habilidades** — que são vantagens, e já aparecem na lista de Vantagens
+  logo acima, cada uma com o custo dela.
+
+Um teste guarda a separação.
+
+- **Status:** ✅ Build OK nas 2 variantes · lint OK · gate **2318** (+4) · ⏭️ **PENDENTE: teste no aparelho** (T-PO30).
+
+> Gate: 2.318 testes, 0 falhas nas duas variantes.

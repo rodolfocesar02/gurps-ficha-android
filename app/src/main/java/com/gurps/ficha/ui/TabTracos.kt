@@ -91,6 +91,12 @@ fun TabTracos(viewModel: FichaViewModel) {
             texto = "Configurar Poderes",
             onClick = { showPoderesDialog = true }
         )
+        // Lote POD-23: a lista de poderes sai de dentro do botão e passa a
+        // viver na aba, como as vantagens e as desvantagens. O poder é um traço
+        // do personagem e custa pontos — escondê-lo atrás de um diálogo fazia
+        // quem abria a ficha não saber que ele existia.
+        SecaoDePoderes(viewModel)
+
         BotaoAcaoTracosPadrao(
             texto = "Adicionar Vantagem",
             onClick = { showSelecionarVantagem = true }

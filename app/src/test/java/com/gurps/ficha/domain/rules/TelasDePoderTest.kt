@@ -404,4 +404,59 @@ class TelasDePoderTest {
             regra.contains("fun contar") || regra.contains("fun quantas")
         )
     }
+
+    // == POD-23 -- os poderes na aba, como as vantagens ==================
+
+    @Test
+    fun `a aba Tracos lista os poderes fora do dialogo`() {
+        // Pedido do usuario: "pode se colocar o poder semelhante fica as
+        // vantagens e desvantagens, pra fora do botao, na tela da aba tracos".
+        //
+        // E e certo pela regra: o poder CUSTA pontos (pontosPoderes entra em
+        // pontosGastos desde o POD-3). Escondido atras do botao, quem abria a
+        // ficha nao tinha como saber que ele existia.
+        val aba = fonte("com/gurps/ficha/ui/TabTracos.kt")
+        assertTrue("a secao de poderes nao foi ligada na aba",
+            aba.contains("SecaoDePoderes(viewModel)"))
+
+        // A ordem que o usuario pediu: entre Configurar Poderes e Adicionar
+        // Vantagem.
+        val botaoPoderes = aba.indexOf("\"Configurar Poderes\"")
+        val secao = aba.indexOf("SecaoDePoderes(viewModel)")
+        val botaoVantagem = aba.indexOf("\"Adicionar Vantagem\"")
+        assertTrue("a secao saiu do lugar pedido",
+            botaoPoderes in 1 until secao && secao < botaoVantagem)
+    }
+
+    @Test
+    fun `o botao Configurar Poderes continua existindo`() {
+        // ⚠️ A lista sair do dialogo NAO e o dialogo sumir: e por ele que se
+        // cria um poder novo e se chega ao catalogo dos 47. Uma rota para
+        // criar, uma vitrine para ver -- nao sao duas rotas para a mesma coisa.
+        val aba = fonte("com/gurps/ficha/ui/TabTracos.kt")
+        assertTrue("o caminho de criar poder sumiu", aba.contains("\"Configurar Poderes\""))
+        assertTrue("o dialogo sumiu", aba.contains("DialogsPoderes("))
+    }
+
+    @Test
+    fun `a secao nao aparece para quem nao tem poder`() {
+        // Mesmo criterio do botao da Rolagem (POD-12): nada de cabecalho vazio.
+        val src = fonte("com/gurps/ficha/ui/features/traits/SecaoDePoderes.kt")
+        assertTrue("a secao apareceria vazia", src.contains("if (poderes.isEmpty()) return"))
+    }
+
+    @Test
+    fun `a linha do poder separa o custo dele do custo das habilidades`() {
+        // 🔴 Somar os dois contaria DUAS VEZES: as habilidades sao vantagens e
+        // ja estao na lista de Vantagens, logo acima, com o custo delas.
+        val src = fonte("com/gurps/ficha/ui/features/traits/SecaoDePoderes.kt")
+        assertTrue("o custo do Talento e da Reserva sumiu",
+            src.contains("poder.custoTotalTalento + poder.custoDaReserva"))
+        assertTrue("o custo das habilidades sumiu",
+            src.contains("resumo.custoDasHabilidades"))
+        assertFalse(
+            "os dois custos voltaram a ser somados numa linha so",
+            src.contains("custo + resumo.custoDasHabilidades")
+        )
+    }
 }

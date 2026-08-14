@@ -2200,3 +2200,13 @@ exemplo o *Traje Pressurizado* (RD 6\*) ou a *Cota de Malha Longa Dupla*.
   aspas e soa como o livro, não como resumo. ✅ Nos modificadores novos
   (Ataque Surpresa, Solavanco, Defesa Ativa...) a descrição diz **sob qual
   título** o livro define aquele modificador.
+- **T-PO30 · 🔴 os poderes aparecem na aba Traços** — abra a aba **Traços**
+  com pelo menos um poder configurado: ✅ existe a seção **Poderes** logo abaixo
+  de *Configurar Poderes* e **acima** de *Adicionar Vantagem*, com um card por
+  poder, lápis e lixeira. ✅ O lápis abre o mesmo diálogo de editar.
+  ✅ A lixeira remove o poder e **não** apaga as vantagens ligadas a ele — elas
+  continuam na lista de Vantagens.
+  ✅ A linha do poder mostra os custos **separados** (Talento e Reserva de um
+  lado, habilidades do outro) — se aparecer um número só somando tudo, está
+  contando duas vezes.
+  ⚠️ Personagem **sem** poder nenhum: ✅ a seção não aparece, nem o cabeçalho.
