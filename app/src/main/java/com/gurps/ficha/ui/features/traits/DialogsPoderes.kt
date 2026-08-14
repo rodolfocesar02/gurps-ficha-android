@@ -46,6 +46,20 @@ import com.gurps.ficha.viewmodel.FichaViewModel
 internal val ALTURA_MAXIMA_DO_DIALOGO = 600.dp
 
 /**
+ * **A folga que o rótulo flutuante precisa** — Lote POD-27.
+ *
+ * O rótulo do `AppCampoCompacto` (*"Nome do Poder"*) é desenhado **sobre a
+ * borda** da caixa, metade dele acima do topo. Fora de um recorte isso é
+ * invisível; dentro de um `verticalScroll`, que recorta no limite do miolo, o
+ * rótulo do primeiro campo aparece cortado ao meio.
+ *
+ * ⚠️ Achado pelo usuário no aparelho, e o defeito era **meu, do lote anterior**:
+ * o campo estava certo desde o GER-2; foi a rolagem do POD-20 que trouxe o
+ * recorte junto.
+ */
+internal val FOLGA_DO_ROTULO_FLUTUANTE = 8.dp
+
+/**
  * **Configurar Poderes** — GURPS Poderes. Lotes POD-1 a POD-3.
  *
  * ## 🔴 O que mudou, e por quê
@@ -291,6 +305,12 @@ fun PoderEditDialog(
                     modifier = Modifier
                         .weight(1f)
                         .verticalScroll(rememberScrollState())
+                        // 🔴 Lote POD-27: o rótulo flutuante do `AppCampoCompacto`
+                        // desenha **meio corpo acima** da borda da caixa — é assim
+                        // que o Material o faz. O `verticalScroll` recorta no
+                        // limite do miolo, e o "Nome do Poder" ficava cortado ao
+                        // meio. O defeito nasceu no POD-20, junto com a rolagem.
+                        .padding(top = FOLGA_DO_ROTULO_FLUTUANTE)
                 ) {
                 AppCampoCompacto(
                     value = nome,

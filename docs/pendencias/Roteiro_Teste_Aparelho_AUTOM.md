@@ -2178,3 +2178,11 @@ exemplo o *Traje Pressurizado* (RD 6\*) ou a *Cota de Malha Longa Dupla*.
   que diz que **não é limite**.
   ⚠️ Na variante **pracego**, confira que o leitor de tela lê os dois botões e o
   texto que eles abrem.
+- **T-PO27 · 🔴 a frase do modificador, uma vez só e com a página certa** —
+  abra **Telepatia**: ✅ o cabeçalho diz `Módulo Básico, p.258` (era 257).
+  ✅ A frase *"Na ficha as habilidades levam 'Telepático, -10%'"* aparece
+  **uma vez só**, logo abaixo da fonte — e **não** se repete lá embaixo, no
+  bloco de habilidades. Confira **Psicocinese** (agora p.257, era 258) e
+  **Cura** (agora p.256, era 257).
+  ✅ O rótulo **"Nome do Poder"** aparece inteiro, sem corte no topo — em
+  Novo Poder e em Editar Poder.

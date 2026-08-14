@@ -8545,3 +8545,52 @@ vantagens tenham categoria.
 - **Status:** ✅ Build OK nas 2 variantes · lint OK · gate **2303** (+9) · ⏭️ **PENDENTE: teste no aparelho** (T-PO23 a T-PO26).
 
 > Gate: 2.303 testes, 0 falhas nas duas variantes.
+
+
+## Lote POD-27 — a frase repetida escondia tres paginas erradas (11.5-POD27)
+
+O usuário viu **a mesma frase duas vezes** na tela do poder, com **páginas
+diferentes**: *"...dá a este modificador (p.257)"* e *"...dá ao modificador deste
+poder (p.255)"*. Fui atrás da repetição e encontrei um defeito maior embaixo.
+
+### 🔴 Três das seis páginas do Módulo Básico estavam erradas
+
+| Poder | Catálogo dizia | O livro diz |
+|---|---|---|
+| Telepatia | 257 | **258** |
+| Psicocinese | 258 | **257** |
+| Cura Psíquica | 257 | **256** |
+| PES, Teleporte, Antipsi | — | já estavam certas |
+
+**Telepatia e Psicocinese estavam trocadas entre si.** Nenhum teste do POD-15
+acusou, e o motivo é o de sempre: eles guardavam **o que eu tinha escrito**, e
+nenhum deles abria o Módulo Básico.
+
+### O teste que eu tinha prometido e não escrevi
+
+O plano de correção do POD-15 pedia, com todas as letras, *"um teste que compare
+as duas fontes de verdade e reprove quando elas discordarem em silêncio"*.
+Implementei os outros três itens e pulei este.
+
+Ele agora existe: lê o `chunks.jsonl` — que está no projeto desde sempre, com o
+`page_number` de cada página do MB — e compara verbete por verbete. A informação
+estava a um `readText` de distância o tempo todo.
+
+### A frase agora tem um dono só
+
+Ela estava em **dois arquivos**: o POD-15 a pôs no painel de habilidades, o
+POD-24 a pôs junto da escolha da fonte. Uma tinha a página cravada em 255, a
+outra vinha do catálogo. ⚠️ **Duas rotas para a mesma coisa, e o defeito morava
+na diferença** — o formato que mais aparece neste projeto.
+
+### 🔴 E um defeito que eu criei no lote anterior
+
+O rótulo *"Nome do Poder"* apareceu cortado ao meio. O campo estava certo desde
+o GER-2: o rótulo flutuante do Material desenha **sobre a borda**, metade acima
+do topo da caixa. Foi o `verticalScroll` do **POD-20** que trouxe o recorte
+junto — a rolagem corta no limite do miolo, e a metade de cima do rótulo caía
+fora. Resolvido com uma folga nomeada no topo do miolo.
+
+- **Status:** ✅ Build OK nas 2 variantes · lint OK · gate **2305** (+2) · ⏭️ **PENDENTE: teste no aparelho** (T-PO27).
+
+> Gate: 2.305 testes, 0 falhas nas duas variantes.

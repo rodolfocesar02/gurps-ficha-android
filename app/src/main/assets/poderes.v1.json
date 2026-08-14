@@ -898,7 +898,7 @@
   ],
   "nota_das_habilidades": "",
   "modificador_proprio": "Cura Psíquica",
-  "pagina_modulo_basico": 257,
+  "pagina_modulo_basico": 256,
   "sem_modificador": false,
   "sem_talento": false
  },
@@ -1641,7 +1641,7 @@
   ],
   "nota_das_habilidades": "",
   "modificador_proprio": "Psicocinético",
-  "pagina_modulo_basico": 258,
+  "pagina_modulo_basico": 257,
   "sem_modificador": false,
   "sem_talento": false
  },
@@ -1781,7 +1781,7 @@
   ],
   "nota_das_habilidades": "",
   "modificador_proprio": "Telepático",
-  "pagina_modulo_basico": 257,
+  "pagina_modulo_basico": 258,
   "sem_modificador": false,
   "sem_talento": false
  },

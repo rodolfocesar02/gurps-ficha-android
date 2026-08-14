@@ -151,16 +151,14 @@ fun ColumnScope.PainelDeHabilidades(
         )
     }
 
-    // Lote POD-15: o nome que o modificador leva na ficha.
-    if (poder.nomeDoModificador.isNotBlank() && poder.nomeDoModificador != poder.nome) {
-        Text(
-            "Na ficha, as habilidades levam “${poder.nomeDoModificador}, " +
-                "${poder.modificadorDePoder}%” — é o nome que o Módulo Básico dá " +
-                "ao modificador deste poder (p.255).",
-            style = UiEstilos.detalheDoItem,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
-        )
-    }
+    // 🔴 Lote POD-27: aqui existia uma SEGUNDA cópia da frase do nome do
+    // modificador. O POD-15 a pôs neste painel; o POD-24 a pôs junto da escolha
+    // da fonte, que é onde ela serve — e as duas ficaram na mesma tela, com
+    // páginas **diferentes** (uma fixa em 255, a outra vinda do catálogo).
+    //
+    // ⚠️ É o formato de defeito que mais aparece neste projeto: duas rotas para
+    // a mesma coisa, e o defeito mora na diferença. A frase agora tem um dono
+    // só — `DialogsPoderes.kt`, ao lado da fonte.
 
     // Lote POD-11: o que a FONTE decide na hora de rolar.
     if (poder.fonte.isNotBlank()) {

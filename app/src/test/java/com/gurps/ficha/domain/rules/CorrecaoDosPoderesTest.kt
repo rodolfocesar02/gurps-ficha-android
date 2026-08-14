@@ -269,4 +269,103 @@ class CorrecaoDosPoderesTest {
             corpo.contains("personagem.vantagens + comVinculo")
         )
     }
+
+    // == POD-27 -- as duas fontes de verdade, comparadas ================
+
+    /**
+     * 🔴 **O teste que eu tinha prometido no POD-15 e nao escrevi.**
+     *
+     * O plano de correcao pedia, com todas as letras: *"um teste que compare as
+     * duas fontes de verdade e reprove quando elas discordarem em silencio"*.
+     * Eu implementei os outros tres itens e pulei este.
+     *
+     * O preco apareceu na tela do usuario: **tres das seis** paginas estavam
+     * erradas, e Telepatia e Psicocinese estavam **trocadas entre si**. Nenhum
+     * teste acusou, porque todos os testes do POD-15 guardavam o que eu tinha
+     * escrito -- e nenhum deles abria o Modulo Basico.
+     *
+     * O `chunks.jsonl` ja estava no projeto, com o `page_number` de cada pagina
+     * do MB. A informacao estava a um `readText` de distancia o tempo todo.
+     */
+    @Test
+    fun `a pagina do Modulo Basico bate com o Modulo Basico`() {
+        val paginaNoLivro = paginasDosVerbetesPsiquicos()
+        assertTrue(
+            "nao achei os verbetes psiquicos no chunks.jsonl",
+            paginaNoLivro.size >= 6
+        )
+        poderes.filter { it.paginaModuloBasico > 0 }.forEach { p ->
+            val certo = paginaNoLivro[p.nome] ?: return@forEach
+            assertEquals(
+                "'${p.nome}': o catalogo diz p.${p.paginaModuloBasico} e o " +
+                    "Modulo Basico diz p.$certo",
+                certo, p.paginaModuloBasico
+            )
+        }
+    }
+
+    /** Onde cada verbete psiquico comeca, lido do proprio Modulo Basico. */
+    private fun paginasDosVerbetesPsiquicos(): Map<String, Int> {
+        val direto = File("src/main/assets/chunks.jsonl")
+        val f = if (direto.exists()) direto else File("app/src/main/assets/chunks.jsonl")
+        assertTrue("nao encontrei o chunks.jsonl", f.exists())
+
+        // O titulo do verbete no livro nem sempre e o nome que o app usa.
+        val equivalencias = listOf(
+            "Telepatia" to "Telepatia",
+            "PsiCocinese" to "Psicocinese",
+            "PES - Percep" to "PES",
+            "Cura Psiquica" to "Cura",
+            "Teleporte" to "Teleporte",
+            "Antipsi" to "Antipsi"
+        )
+        val achados = linkedMapOf<String, Int>()
+        val gson = com.google.gson.Gson()
+        f.forEachLine { linha ->
+            if (linha.isBlank()) return@forEachLine
+            val o = runCatching {
+                gson.fromJson(linha, com.google.gson.JsonObject::class.java)
+            }.getOrNull() ?: return@forEachLine
+            // So o Modulo Basico -- os outros livros repetem os numeros de pagina.
+            val display = o.get("page_display")?.asString.orEmpty()
+            if (!display.startsWith("[MB")) return@forEachLine
+            val pagina = o.get("page_number")?.asInt ?: return@forEachLine
+            val texto = o.get("text")?.asString.orEmpty()
+            // ⚠️ Sem regex: `\n` em string bruta do Kotlin já me deixou dois
+            // testes cegos nesta sessão. Linha a linha resolve e não mente.
+            texto.lines().forEach { linhaDoLivro ->
+                val cru = linhaDoLivro.trimStart()
+                if (!cru.startsWith("#")) return@forEach
+                val titulo = cru.trimStart('#').trim().replace("í", "i")
+                equivalencias.forEach { (noLivro, noApp) ->
+                    if (titulo.startsWith(noLivro) && noApp !in achados) {
+                        achados[noApp] = pagina
+                    }
+                }
+            }
+        }
+        return achados
+    }
+
+    @Test
+    fun `a frase do nome do modificador tem um dono so`() {
+        // 🔴 Ela estava em DOIS arquivos, na mesma tela, com paginas diferentes:
+        // uma fixa em 255 e a outra vinda do catalogo. Duas rotas para a mesma
+        // coisa -- e o defeito morava na diferenca.
+        val painel = fonte("com/gurps/ficha/ui/features/traits/PoderHabilidades.kt")
+        assertFalse(
+            "a segunda copia da frase do modificador voltou",
+            painel.contains("as habilidades levam")
+        )
+        val dialogo = fonte("com/gurps/ficha/ui/features/traits/DialogsPoderes.kt")
+        assertTrue(
+            "a frase sumiu de vez",
+            dialogo.contains("as habilidades levam")
+        )
+        // E ela nao pode ter pagina cravada na mao.
+        assertFalse(
+            "a pagina do modificador voltou a ser cravada no codigo",
+            dialogo.contains("modificador (p.255)")
+        )
+    }
 }
