@@ -6257,35 +6257,44 @@
   "id": "controle_poderes",
   "nome": "Controle",
   "pagina": 90,
-  "costKind": "special",
+  "costKind": "choice",
   "fixed": null,
   "perLevel": null,
-  "options": null,
+  "options": [
+   20,
+   15,
+   10
+  ],
   "min": null,
   "max": null,
-  "rawCost": "10, 15 ou 20/nível",
+  "rawCost": "20, 15 ou 10/nível",
   "specialRule": null,
   "tags": [
    "poderes"
   ],
-  "descricao": "GURPS Poderes, p.90. O personagem é capaz de moldar e mover uma categoria particular de matéria, energia ou força (seu “elemento”). Quanto maior o nível, maior a quantidade que ele consegue afetar. O custo por nível vem da raridade do elemento: Comum (Água, Fogo, Luz, Metal, Som, Terra) 20 pontos/nível; Ocasional (Cerâmica, Gelo, Metais Ferrosos, Pedra, Vapor) 15 pontos/nível; Raro (Borracha, Ferro, Papel, Tijolo) 10 pontos/nível. O Mestre pode permitir categorias “Muito Comuns” por 25 ou 30 pontos/nível. ⚠️ Controle não vale para máquinas nem seres vivos."
+  "descricao": "GURPS Poderes, p.90. \"O personagem é capaz de moldar e mover uma categoria particular de matéria, energia ou força (seu “elemento”). Quanto maior o nível do personagem em Controle, maior a quantidade que ele é capaz de afetar. O custo por nível depende do quão significativo o elemento poderá ser em uma\" Comum — categoria extremamente ampla ou predominante, como Água, Fogo, Gravidade, Luz, Madeira, Metal, Plástico, Som ou Terra: 20 pontos/nível. Ocasional — subcategoria ampla de um elemento Comum, como Cerâmica, Gelo, Metais Ferrosos, Pedra ou Vapor: 15 pontos/nível. Raro — qualquer substância relativamente específica, como Borracha, Ferro, Papel ou Tijolo: 10 pontos/nível. \"O MJ deve atribuir o preço de outros elementos por comparação, e pode permitir categorias “Muito Comuns” (por exemplo, “Toda a radiação eletromagnética”) por 25 ou 30 pontos/nível. O Controle não está disponível para máquinas ou seres\" ⚠️ \"O Controle não faz nada sem seu elemento, e não permite ao personagem trazê-lo à existência (para isso, compre Criar).\""
  },
  {
   "id": "criar_poderes",
   "nome": "Criar",
   "pagina": 92,
-  "costKind": "special",
+  "costKind": "choice",
   "fixed": null,
   "perLevel": null,
-  "options": null,
+  "options": [
+   40,
+   20,
+   10,
+   5
+  ],
   "min": null,
   "max": null,
-  "rawCost": "10, 20 ou 40/nível",
+  "rawCost": "40, 20, 10 ou 5/nível",
   "specialRule": null,
   "tags": [
    "poderes"
   ],
-  "descricao": "GURPS Poderes, p.92. O personagem cria um “elemento” do nada, com manobra Concentrar e teste de IQ; cada tentativa custa 2 PF, bem-sucedida ou não. O custo por nível vem da amplitude da categoria: Ampla (Sólidos, Líquidos, Gases, Orgânico, Inorgânico) 40 pontos/nível; Média (Ácidos, Drogas, Terra, Metal, Eletricidade, Som, Luz) 20 pontos/nível; Restrita (Metais Ferrosos, Fogo, Combustíveis Fósseis, Madeira, Luz Visível) 10 pontos/nível."
+  "descricao": "GURPS Poderes, p.92. \"O personagem é capaz de criar um “elemento” — uma categoria específica de matéria ou energia — do nada. Para tanto, é necessária uma manobra Concentrar e um teste de IQ. O sucesso significa que o elemento surge. Um sólido ou líquido se forma na mão ou ao alcance do braço dos personagem, ao passo que gases ou energias aparecem na área ao seu redor ou em uma área que ele esteja tocando (à escolha dele em ambos os casos). O fracasso significa que nada acontece.\" O custo por nível vem da amplitude da categoria: 40 pontos/nível (Ampla), 20 pontos/nível (Média) ou 10 pontos/nível (Restrita). ⚠️ \"Criar produz matéria em estado bruto, não formas específicas, muito menos máquinas. Para criar matéria pré-moldada, compre Criar e Controle (pág. 90) e associe-as com Interligação.\""
  },
  {
   "id": "estatica_poderes",
@@ -6302,7 +6311,7 @@
   "tags": [
    "poderes"
   ],
-  "descricao": "GURPS Poderes, p.94. O personagem irradia energias que impedem completamente que os poderes de uma fonte em particular o afetem. O efeito se estende a qualquer coisa que ele esteja transportando ou vestindo."
+  "descricao": "GURPS Poderes, p.94. \"O personagem irradia energias que impedem completamente que os poderes de uma fonte em particular o afetem. Este efeito se estende a qualquer coisa que ele esteja transportando ou vestindo. Compre Estática separadamente para cada fonte que for capaz de anular. As possibilidades incluem magia, psiquismo, “superpoderes genéricos” e qualquer outra coisa que o Mestre considere suscetível à “interferência”.\" ⚠️ \"A Estática interfere apenas com tentativas de afetar o próprio personagem\": um psicocinético não consegue surrupiar a arma do personagem nem fazê-lo levitar, \"mas ainda poderá assumir o controle de uma espada próxima e atacar com ela, ou derrubar uma tonelada de rochas sobre ele.\" \"nenhum poder é capaz de ter Estática com relação a si mesmo.\""
  },
  {
   "id": "ilusao_poderes",
@@ -6319,6 +6328,6 @@
   "tags": [
    "poderes"
   ],
-  "descricao": "GURPS Poderes, p.95. O personagem é capaz de criar ilusões vívidas. Para criar uma ilusão perturbadora o suficiente para causar uma Verificação de Pânico, é preciso vencer uma Disputa Rápida — e o uso pede teste de perícia, não de IQ."
+  "descricao": "GURPS Poderes, p.95. \"O personagem é capaz de criar ilusões vívidas. Como padrão, elas são construtos de luz e som que aparecem em um raio de dois metros ao redor dele. Ele sempre poderá especificar uma área menor; por exemplo, criar uma arma ilusória em suas mãos. As ilusões não possuem massa nem substância, e são incapazes de afetar\" Enganar alguém exige uma Disputa Rápida, e \"Uma nova Disputa Rápida deve ser feita quando alguém que o personagem já tenha enganado mudar repentinamente a maneira como está interagindo com a ilusão\". A vítima tem +4 se alguém que saiba da ilusão avisá-la, e +10 se a ilusão for criada sem sutileza e à plena vista, ou se ela a examinar com um sentido que não possa ser enganado, normalmente o tato."
  }
 ]

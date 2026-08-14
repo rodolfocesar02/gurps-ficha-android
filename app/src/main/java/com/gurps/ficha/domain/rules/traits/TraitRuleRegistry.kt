@@ -25,6 +25,10 @@ object TraitRuleRegistry {
         // Custo = preço-por-braço × níveis. Ver `BracalCustoRules.kt`.
         register(StBracalRule())
         register(DxBracalRule())
+        // Mesma forma de custo, vindas de GURPS Poderes: a faixa do elemento
+        // fixa o preço de cada nível. Ver `ElementoCustoRules.kt` (POD-21).
+        register(ControleRule())
+        register(CriarRule())
         // Desvantagem: -6 em toda pericia de combate. E Kotlin porque a
         // lista tem ~70 pericias -- declarar uma linha para cada ficaria
         // errado no dia em que o catalogo ganhar a proxima.

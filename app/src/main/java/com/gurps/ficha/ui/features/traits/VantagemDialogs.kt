@@ -33,6 +33,10 @@ import com.gurps.ficha.ui.contadorDe
 import com.gurps.ficha.viewmodel.FichaViewModel
 import com.gurps.ficha.domain.rules.CharacterRules
 import com.gurps.ficha.domain.rules.traits.BracalRuleBase
+import com.gurps.ficha.domain.rules.traits.ControleRule
+import com.gurps.ficha.domain.rules.traits.CriarRule
+import com.gurps.ficha.domain.rules.traits.ElementoRuleBase
+import com.gurps.ficha.domain.rules.traits.regraDeElementoDe
 import com.gurps.ficha.domain.rules.traits.DxBracalRule
 import com.gurps.ficha.domain.rules.traits.StBracalRule
 import com.gurps.ficha.data.DataRepository
@@ -204,9 +208,18 @@ fun ConfigurarVantagemDialog(
     val regraBracal = regraBracalDe(definicao.id)
     var bracosBracal by remember { mutableStateOf(1) }
 
+    // Controle e Criar (POD-21): mesma forma — a faixa do elemento fixa o
+    // preço de cada nível. Ver `ElementoCustoRules.kt`.
+    val regraElemento = regraDeElementoDe(definicao.id)
+    var faixaElemento by remember {
+        mutableStateOf(regraElemento?.faixas?.last()?.nome.orEmpty())
+    }
+
     val metadados = when (definicao.id) {
         StBracalRule.ID, DxBracalRule.ID ->
             mapOf(BracalRuleBase.CHAVE_BRACOS to bracosBracal.toString())
+        ControleRule.ID, CriarRule.ID ->
+            mapOf(ElementoRuleBase.CHAVE_CATEGORIA to faixaElemento)
         "mestre_de_armas" -> mapOf("classId" to classMestre, "pericias_cobertas" to periciasMestre)
         "ataque_inato", "golpeadores" -> mapOf(
             "tipoDano" to tipoDanoAtaque,
@@ -424,6 +437,21 @@ fun ConfigurarVantagemDialog(
                                     bracosBracal = b
                                     nivel = n
                                     custoEscolhido = regraBracal.custoPorNivel(b)
+                                }
+                            )
+                        } else if (regraElemento != null) {
+                            // Faixa do elemento × níveis (POD-21). O usuário viu
+                            // Criar e Controle como custo variável, subindo de 1
+                            // em 1 ponto, quando o livro dá 40/20/10/5 por nível.
+                            ElementoConfig(
+                                regra = regraElemento,
+                                faixaAtual = faixaElemento,
+                                nivel = nivel,
+                                onChanged = { f, n ->
+                                    faixaElemento = f
+                                    nivel = n
+                                    custoEscolhido = regraElemento.faixas
+                                        .first { it.nome == f }.custoPorNivel
                                 }
                             )
                         } else if (definicao.id == "dentes") {

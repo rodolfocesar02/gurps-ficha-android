@@ -52,7 +52,7 @@
   "tags": [
    "Poderes"
   ],
-  "descricao": "Esta ampliação existe apenas para características fisiológicas (por exemplo, Garras), defesas, e outras características que normalmente sejam \"sempre ativas\". Ela permite ativar ou desativar uma vantagem com uma manobra Preparar. É necessário especificar se ela é ativada, desativada ou permanece no estado atual, seja qual for, quando o personagem é nocauteado.\n\nNão é possível incluir Ativada ou Desativada à Vontade em uma vantagem que liste modificadores especiais que capacitam o usuário a ativá-la e desativá-la, independente da habilidade do personagem ter ou não esses modificadores. Se uma vantagem indicar Ativada ou Desativada à Vontade como uma ampliação especial de valor diferente, esse valor deverá ser usado. Ativada ou Desativada à Vontade também não é permitida para metacaracterísticas. Para ativar ou desativar uma metacaracterística, use Forma Alternativa.\n\nUma versão mais fraca desta ampliação é lógica para algumas vantagens:\n\n**Normalmente Ativa:** Apenas para vantagens \"sempre ativas\" por definição. A habilidade normalmente está ativa, mas o personagem pode desativá-la com o gasto de 1 PF por segundo. Para vantagens que costumem ficar desativadas por definição esta é uma limitação; consulte Sempre Ativa (pág. 107). +5%."
+  "descricao": "Esta ampliação existe apenas para características fisiológicas (por exemplo, Garras), defesas, e outras características que normalmente sejam \"sempre ativas\". Ela permite ativar ou desativar uma vantagem com uma manobra Preparar. É necessário especificar se ela é ativada, desativada ou permanece no estado atual, seja qual for, quando o personagem é nocauteado. Não é possível incluir Ativada ou Desativada à Vontade em uma vantagem que liste modificadores especiais que capacitam o usuário a ativá-la e desativá-la, independente da habilidade do personagem ter ou não esses modificadores. Se uma vantagem indicar Ativada ou Desativada à Vontade como uma ampliação especial de valor diferente, esse valor deverá ser usado. Ativada ou Desativada à Vontade também não é permitida para metacaracterísticas. Para ativar ou desativar uma metacaracterística, use Forma Alternativa. Uma versão mais fraca desta ampliação é lógica para algumas\"sempre ativas\" por definição. A habilidade normalmente está ativa, mas o personagem pode desativá-la com o gasto de 1 PF por segundo. Para vantagens que costumem ficar desativadas por definição esta é uma limitação; consulte Sempre Ativa (pág. 107). +5%."
  },
  {
   "id": "campo_de_forca",
@@ -450,7 +450,7 @@
   "tags": [
    "Poderes"
   ],
-  "descricao": "GURPS Poderes, p.102 (definido sob “De Cima”). O ataque vem por trás do alvo. Quem tem Visão 360 Graus ou Visão Periférica se defende normalmente; quem tem Noção do Perigo se defende com −2 se passar num teste de Percepção. Caso contrário, nenhuma defesa ativa é possível. Adequado a ataques que se teleportam ou emergem de portais atrás do alvo."
+  "descricao": "GURPS Poderes, p.102 (definido sob “De Cima”). \"O ataque do personagem é originado por trás do alvo. Vítimas que tenham Visão 360 Graus ou Visão Periférica têm defesa normal, ao passo que aqueles com Noção do Perigo poderão se defender com redutor de -2 se tiverem sucesso em um teste de Percepção. Caso contrário, não será possível nenhuma defesa ativa. Isto é mais adequado para ataques que se teleportam ou emergem de portais extradimensionais por trás do alvo. +150%.\""
  },
  {
   "id": "solavanco",
@@ -463,7 +463,7 @@
   "tags": [
    "Poderes"
   ],
-  "descricao": "GURPS Poderes, p.103 (definido sob “Efeito Incômodo”). O personagem sofre efeitos nocivos ao usar a habilidade. Escolha entre Penalidade em Atributo, Atordoamento, Incapacitação ou Irritante, como em Atribulação (MB p.43-44). ⚠️ O valor depende do efeito escolhido; +30% é o exemplo do livro para Nauseado."
+  "descricao": "GURPS Poderes, p.103 (definido sob “Efeito Incômodo”). \"O personagem sofre efeitos nocivos ao usar sua habilidade. Ele deve escolher entre Penalidade em Atributo, Atordoamento, Incapacitação, e Irritante, conforme descritos em Atribulação (pág. MB43–44).\" ⚠️ O valor acompanha o efeito escolhido: se o personagem sucumbir por um minuto (um segundo, no caso de Atordoamento) e puder fazer um teste de HT a cada minuto (segundo) posterior para se recuperar, aplica-se uma limitação do mesmo tamanho das ampliações equivalentes."
  },
  {
   "id": "fogo_instantaneo",
@@ -476,7 +476,7 @@
   "tags": [
    "Poderes"
   ],
-  "descricao": "GURPS Poderes, p.104 (definido sob “Fogo Contínuo”). A CdT completa é disparada quase instantaneamente. Siga Fogo Contínuo (MB p.373), mas com dois acertos adicionais por ponto na margem de sucesso."
+  "descricao": "GURPS Poderes, p.104 (definido sob “Fogo Contínuo”). \"A CdT completa do personagem é disparada quase que instantaneamente. Siga as regras para Fogo Contínuo (pág. MB373), porém o personagem terá dois acertos adicionais por ponto na margem de sucesso da jogada de ataque. Ao usar o fogo contínuo contra alvos imóveis (veja pág. MB409), qualquer sucesso significará que o personagem acertou todos os tiros.\" +10%."
  },
  {
   "id": "defesa_ativa",
@@ -489,7 +489,7 @@
   "tags": [
    "Poderes"
   ],
-  "descricao": "GURPS Poderes, p.110 (definido sob “Defesa Ativa”). A habilidade só protege contra ameaças de que o personagem esteja ciente, e só se ele passar num teste para interpô-la a tempo: DX/2 + 3, +1 por Reflexos em Combate. Usar a mesma habilidade mais de uma vez no turno acumula penalidade."
+  "descricao": "GURPS Poderes, p.110 (definido sob “Defesa Ativa”). \"A habilidade do personagem somente o protege contra ameaças das quais ele esteja ciente, e apenas se ele tiver sucesso em um teste para usá-la como interposição a tempo. Esse teste é feito com DX/2 + 3, +1 por Reflexos em Combate. Se o personagem tentar usar a mesma habilidade mais de uma vez em um turno, aplique uma penalidade cumulativa de -4 por tentativa após a primeira. O teste será feito com penalidade igual a -4 se o personagem estiver atordoado, e ele não poderá tentá-lo em situações em que não teria uma defesa ativa (ataque por\" -40%."
  },
  {
   "id": "efeito_do_dano_ausente",
@@ -502,7 +502,7 @@
   "tags": [
    "Poderes"
   ],
-  "descricao": "GURPS Poderes, p.105 (definido sob “Modificadores de Dano”). Com acordo do Mestre, o ataque perde um dos efeitos colaterais comuns do seu tipo de dano. A falta de um efeito que cause dano em PV, PF ou RD vale −20%."
+  "descricao": "GURPS Poderes, p.105 (definido sob “Modificadores de Dano”). \"Se o Mestre concordar e os efeitos especiais o permitirem, um ataque pode não ter um dos “efeitos colaterais” comuns para o seu tipo de dano. A falta de um efeito que cause dano ao alvo em PV, PF ou RD vale -20% (como Sem Trauma por\""
  },
  {
   "id": "dificil_de_usar",
@@ -515,7 +515,7 @@
   "tags": [
    "Poderes"
   ],
-  "descricao": "GURPS Poderes, p.102 (definido sob “Destreinado”). Penalidade em todos os testes para usar a habilidade, e **o Talento não ajuda**. Cada nível impõe −3. ⚠️ São −5% a cada −3, até o máximo de −12 (ou seja, −20%). Incompatível com Confiável e proibido para ataques à distância."
+  "descricao": "GURPS Poderes, p.102 (definido sob “Destreinado”). \"O personagem tem uma penalidade em todos os testes\""
  },
  {
   "id": "exige_teste_de_reacao",
@@ -528,7 +528,7 @@
   "tags": [
    "Poderes"
   ],
-  "descricao": "GURPS Poderes, p.112 (definido sob “Volúvel”). A habilidade funciona como descrito, mas os modificadores de reação normais se aplicam ao teste, e é possível usar um teste de Influência no lugar."
+  "descricao": "GURPS Poderes, p.112 (definido sob “Volúvel”). \"A habilidade do personagem funciona como descrito anteriormente, mas os modificadores de reação normais se aplicam ao teste de reação, e é possível usar um teste de Influência em seu lugar. -5%.\""
  },
  {
   "id": "gatilho_incontrolavel",
@@ -541,6 +541,6 @@
   "tags": [
    "Poderes"
   ],
-  "descricao": "GURPS Poderes, p.104 (definido sob “Incontrolável”). A habilidade se manifesta de forma incontrolável na presença de um item, e não em situações de tensão. Use as categorias de raridade de Fraqueza (MB p.143). ⚠️ Não é limitação significativa se o item for 'Raro'."
+  "descricao": "GURPS Poderes, p.104 (definido sob “Incontrolável”). \"A habilidade do personagem se manifesta de maneira incontrolável na presença de um item, não em situações de tensão. Use as categorias de raridade descritas para Fraqueza (pág. MB143). Esta não será uma limitação significativa se o item for “Raro”. Ela valerá -5% se for “Ocasional”, -10% se for “Comum”, ou -15% se for “Muito Comum”. Esse valor deve ser triplicado para habilidades destrutivas.\" ⚠️ O catálogo traz o caso “Ocasional” (-5%); ajuste à mão para os outros."
  }
 ]

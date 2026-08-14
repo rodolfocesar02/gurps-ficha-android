@@ -8594,3 +8594,61 @@ fora. Resolvido com uma folga nomeada no topo do miolo.
 - **Status:** ✅ Build OK nas 2 variantes · lint OK · gate **2305** (+2) · ⏭️ **PENDENTE: teste no aparelho** (T-PO27).
 
 > Gate: 2.305 testes, 0 falhas nas duas variantes.
+
+
+## Lote POD-22 e POD-21 — o texto e o custo das vantagens novas (11.6-DADOS)
+
+### POD-22 — a descrição era **minha**, não do livro
+
+*"vc resumiu a descrição das vantagens do Poderes, precisa ser 100% fidedigno ao
+texto do livro."* Verdade. As 4 vantagens do POD-8 e os 8 modificadores do
+POD-8b traziam o meu resumo.
+
+⚠️ Um resumo meu numa ficha é uma **regra que ninguém pode conferir**: o jogador
+lê, acredita, e não tem como saber que a frase não é do livro.
+
+O teste novo abre o `GURPS_Poderes.md` e exige que **cada trecho entre aspas**
+exista literalmente lá. E o script que aplicou a correção não confiou no meu
+cuidado: ele **apara cada citação no ponto exato em que ela deixa de bater com o
+livro**. Fidelidade por construção, não por atenção.
+
+Isso pegou seis emendas minhas — eu tinha fechado citações com ponto final onde
+o livro segue com `;` ou `:`, e escrito *"Nenhum poder é capaz"* onde o livro diz
+*"nenhum poder é capaz"*, no meio da frase.
+
+### POD-21 — Criar e Controle não são custo variável
+
+*"a vantagem é por nível, porém está como variável, tenho que subir ponto a ponto
+e não 20/15/10!"*
+
+As duas estavam como `costKind: special`, que o app traduz para o `−1 / +1` de um
+ponto por vez. No livro são **duas escolhas encadeadas**: a faixa do elemento
+fixa o preço de cada nível, e o nível multiplica.
+
+⚠️ O projeto **já tinha resolvido este formato** na ST Braçal. A regra nova
+(`ElementoCustoRules.kt`) e a tela (`ElementoConfig.kt`) seguem a forma do
+Braçal de propósito.
+
+### 🔴 E ao ler a seção inteira, achei uma faixa faltando
+
+O catálogo dizia *"10, 20 ou 40/nível"* para Criar. São **quatro** faixas: o
+**Item Específico, 5 pontos/nível**, tinha ficado de fora. Mesmo formato de erro
+da sessão inteira — parei de ler onde a resposta apareceu.
+
+### 🔴🔴 Quarta trava minha contra o livro
+
+O teste do POD-8 exigia `special` com esta justificativa escrita: *"o custo por
+nível depende de uma ESCOLHA que o app não modela"*. Isso não é regra do livro —
+é uma **limitação minha daquele dia, congelada em teste**. Depois de POD-8b,
+POD-17 e POD-15, é a quarta. O formato é sempre o mesmo: eu escrevo *"não dá"* e
+o teste passa a cobrar que continue não dando.
+
+### ⚠️ Uma sonda que NÃO ficou vermelha
+
+Renomeei "Item Específico" para conferir o teste e ele **passou**: `faixaDe` cai
+na faixa mais barata quando o nome não bate, e o custo dava o mesmo. O teste
+agora cobra os **nomes** das faixas, não só os preços.
+
+- **Status:** ✅ Build OK nas 2 variantes · lint OK · gate **2314** (+9) · ⏭️ **PENDENTE: teste no aparelho** (T-PO28, T-PO29).
+
+> Gate: 2.314 testes, 0 falhas nas duas variantes.

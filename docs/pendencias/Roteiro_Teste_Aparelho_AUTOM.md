@@ -2186,3 +2186,17 @@ exemplo o *Traje Pressurizado* (RD 6\*) ou a *Cota de Malha Longa Dupla*.
   **Cura** (agora p.256, era 257).
   ✅ O rótulo **"Nome do Poder"** aparece inteiro, sem corte no topo — em
   Novo Poder e em Editar Poder.
+- **T-PO28 · 🔴 Criar e Controle por nível** — Traços → Adicionar Vantagem →
+  busque **Controle**: ✅ o diálogo mostra **três opções de faixa** (Comum 20,
+  Ocasional 15, Raro 10 pontos/nível) com exemplos, e um contador de **Níveis**
+  separado. Escolha *Comum* e nível 3: ✅ a conta aparece como
+  `20 × 3 = 60 pontos` e o custo na ficha é **60**.
+  Repita em **Criar**: ✅ são **quatro** faixas — Categoria Ampla 40, Média 20,
+  Restrita 10 e **Item Específico 5**.
+  ⚠️ O que NÃO pode acontecer: o botão de `−1 / +1` subindo o custo de um em um
+  ponto. Era esse o defeito.
+- **T-PO29 · a descrição é do livro** — no diálogo de qualquer uma das quatro
+  vantagens novas (Controle, Criar, Estática, Ilusão): ✅ o texto está entre
+  aspas e soa como o livro, não como resumo. ✅ Nos modificadores novos
+  (Ataque Surpresa, Solavanco, Defesa Ativa...) a descrição diz **sob qual
+  título** o livro define aquele modificador.

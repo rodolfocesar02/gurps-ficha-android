@@ -94,17 +94,40 @@ class CatalogoDePoderesCompletoTest {
 
     @Test
     fun `Controle e Criar nao fingem ter um custo unico`() {
-        // ⚠️ Nas duas o custo por nível depende de uma ESCOLHA que o app não
-        // modela (raridade do elemento, amplitude da categoria): Controle é
-        // 20/15/10 e Criar é 40/20/10. Cravar um número seria inventar.
-        // Ficam como `special`, com a tabela inteira na descrição.
+        // 🔴🔴 ESTE TESTE DIZIA O CONTRÁRIO, E ESTAVA ERRADO — lote POD-21.
+        //
+        // Ele exigia `costKind: "special"` com esta justificativa: *"o custo por
+        // nível depende de uma ESCOLHA que o app não modela"*. Isso não é uma
+        // regra do livro — é uma **limitação minha daquele dia**, congelada em
+        // teste. E `special` cai em custo VARIÁVEL, que faz o jogador subir de
+        // um em um ponto até chegar nos 20 ou 40 do livro.
+        //
+        // Quem achou foi o usuário, no aparelho: *"a vantagem é por nível,
+        // porém está como variável, tenho que subir ponto a ponto e não
+        // 20/15/10!"*
+        //
+        // ⚠️ **Quarta vez** nesta sessão que uma conclusão minha vira trava de
+        // portão contra o livro (as outras: POD-8b, POD-17 e POD-15). O formato
+        // é sempre o mesmo — eu escrevo *"não dá para fazer"* e o teste passa a
+        // cobrar que continue não dando.
+        //
+        // O app agora modela: ver `ElementoCustoRules.kt`. O que este teste
+        // guarda hoje é que as faixas do **livro** estão no asset.
         val porNome = vantagens.associateBy { semAcento(it.asJsonObject.get("nome").asString) }
-        listOf("Controle" to "20 pontos/nível", "Criar" to "40 pontos/nível").forEach { (n, tabela) ->
+        val esperado = mapOf(
+            "Controle" to listOf(20, 15, 10),        // p.90 — Comum/Ocasional/Raro
+            "Criar" to listOf(40, 20, 10, 5)         // p.92 — Ampla/Média/Restrita/Item
+        )
+        esperado.forEach { (n, faixas) ->
             val v = porNome[semAcento(n)]!!.asJsonObject
-            assertEquals("'$n' cravou um custo que o livro nao da",
-                "special", v.get("costKind").asString)
-            assertTrue("'$n' esta sem a tabela de custo na descricao",
-                v.get("descricao").asString.contains(tabela))
+            assertEquals(
+                "'$n' voltou a ser custo variavel, subindo de 1 em 1 ponto",
+                "choice", v.get("costKind").asString
+            )
+            assertEquals(
+                "'$n' esta com as faixas fora do livro",
+                faixas, v.get("options").asJsonArray.map { it.asInt }
+            )
         }
     }
 
@@ -228,5 +251,96 @@ class CatalogoDePoderesCompletoTest {
             assertTrue("'$v' e citado nas sugestoes mas nao existe no catalogo",
                 semAcento(v) in nomes)
         }
+    }
+
+    // == POD-22 -- a descricao e do livro, nao um resumo meu ============
+
+    /**
+     * 🔴 **Achado pelo usuario na tela**, lendo a Estatica: *"vc resumiu a
+     * descricao das vantagens do Poderes, precisa ser 100% fidedigno ao texto
+     * do livro"*.
+     *
+     * Ele estava certo. As quatro vantagens do POD-8 e os oito modificadores do
+     * POD-8b tinham **o meu resumo**, nao o texto do livro. Um resumo meu numa
+     * ficha e uma regra que ninguem pode conferir: o jogador le, acredita, e
+     * nao tem como saber que a frase nao e do livro.
+     *
+     * Este teste abre o `GURPS_Poderes.md` e exige que **um trecho literal e
+     * longo** de cada descricao exista no livro. Nao ha como passar escrevendo
+     * de cabeca.
+     *
+     * ⚠️ Ele checa um trecho, nao a descricao inteira: as descricoes juntam
+     * frases de paragrafos diferentes do mesmo verbete, e emendam com "..." ou
+     * com um aviso proprio marcado com ⚠️. O que ele proibe e a **parafrase**.
+     */
+    private fun livro(): String {
+        val direto = File("../docs/livros/GURPS_Poderes.md")
+        val f = if (direto.exists()) direto else File("docs/livros/GURPS_Poderes.md")
+        assertTrue("nao encontrei o GURPS_Poderes.md", f.exists())
+        return f.readText(Charsets.UTF_8).replace(Regex("""\s+"""), " ")
+    }
+
+    /**
+     * Os pedacos entre aspas RETAS da descricao — o que foi copiado do livro.
+     *
+     * ⚠️ As aspas **curvas** (“ ”) NAO delimitam citacao aqui: elas fazem parte
+     * do texto do livro (*"seu “elemento”"*). Converter as duas para o mesmo
+     * caractere partia a citacao no meio e o teste acusava trecho inexistente —
+     * foi o primeiro resultado vermelho deste lote.
+     */
+    private fun trechosCitados(descricao: String): List<String> =
+        Regex("\"([^\"]{40,})\"").findAll(descricao)
+            .map { it.groupValues[1].replace(Regex("""\s+"""), " ").trim() }.toList()
+
+    @Test
+    fun `as vantagens novas citam o livro, nao um resumo meu`() {
+        val texto = livro()
+        val alvos = listOf("controle_poderes", "criar_poderes", "estatica_poderes", "ilusao_poderes")
+        val json = JsonParser.parseString(asset("vantagens.v3.json").readText(Charsets.UTF_8))
+        var conferidas = 0
+        json.asJsonArray.forEach { e ->
+            val o = e.asJsonObject
+            val id = o.get("id")?.asString ?: return@forEach
+            if (id !in alvos) return@forEach
+            conferidas++
+            val citados = trechosCitados(o.get("descricao").asString)
+            assertTrue("'$id' nao cita nenhum trecho literal do livro", citados.isNotEmpty())
+            citados.forEach { trecho ->
+                assertTrue(
+                    "'$id' tem um trecho que NAO esta no livro: ${trecho.take(70)}",
+                    texto.contains(trecho)
+                )
+            }
+        }
+        assertEquals("faltou conferir alguma das 4 vantagens", 4, conferidas)
+    }
+
+    @Test
+    fun `os modificadores novos citam o livro, nao um resumo meu`() {
+        val texto = livro()
+        val alvos = listOf(
+            "Ataque Surpresa", "Solavanco", "Fogo Instantaneo", "Defesa Ativa",
+            "Dificil de Usar", "Exige Teste de Reacao", "Gatilho Incontrolavel",
+            "Efeito do Dano Ausente"
+        )
+        val json = JsonParser.parseString(
+            asset("modificadores_poderes.v1.json").readText(Charsets.UTF_8)
+        )
+        var conferidos = 0
+        json.asJsonArray.forEach { e ->
+            val o = e.asJsonObject
+            val nome = o.get("nome")?.asString ?: return@forEach
+            if (semAcento(nome) !in alvos.map { semAcento(it) }) return@forEach
+            conferidos++
+            val citados = trechosCitados(o.get("descricao").asString)
+            assertTrue("'$nome' nao cita nenhum trecho literal do livro", citados.isNotEmpty())
+            citados.forEach { trecho ->
+                assertTrue(
+                    "'$nome' tem um trecho que NAO esta no livro: ${trecho.take(70)}",
+                    texto.contains(trecho)
+                )
+            }
+        }
+        assertEquals("faltou conferir algum dos 8 modificadores", 8, conferidos)
     }
 }
