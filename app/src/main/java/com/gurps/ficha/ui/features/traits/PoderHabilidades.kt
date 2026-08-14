@@ -133,6 +133,17 @@ fun ColumnScope.PainelDeHabilidades(
         )
     }
 
+    // Lote POD-15: o nome que o modificador leva na ficha.
+    if (poder.nomeDoModificador.isNotBlank() && poder.nomeDoModificador != poder.nome) {
+        Text(
+            "Na ficha, as habilidades levam “${poder.nomeDoModificador}, " +
+                "${poder.modificadorDePoder}%” — é o nome que o Módulo Básico dá " +
+                "ao modificador deste poder (p.255).",
+            style = UiEstilos.detalheDoItem,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+    }
+
     // Lote POD-11: o que a FONTE decide na hora de rolar.
     if (poder.fonte.isNotBlank()) {
         Text(

@@ -2147,3 +2147,11 @@ exemplo o *Traje Pressurizado* (RD 6\*) ou a *Cota de Malha Longa Dupla*.
   ao poder: ✅ ela aparece na lista do poder, mas o **custo dela não muda**.
   ⚠️ Isto é o **contrário** do que o T-PO9 pedia: aquele teste estava errado, e a
   regra é a p.28 (o modificador não se aplica a desvantagem exigida).
+- **T-PO22 · 🔴 o modificador com o nome do Módulo Básico** — Traços →
+  Configurar Poderes → **Telepatia**: ✅ o diálogo mostra `· Módulo Básico,
+  p.257`. Ligue uma habilidade: ✅ na aba Traços ela aparece com
+  **`Mod. de Poder: Telepático, -10%`** — e **não** "Telepatia".
+  Repita em **Psicocinese** (Psicocinético) e **Cura** (Cura Psíquica).
+  ⚠️ Agora abra o **Antipsi**: ✅ **não** tem fonte nem percentual, e o nível de
+  Talento fica em **0** (o livro diz que ele não tem modificador nenhum, porque
+  as habilidades Antipsi não podem ser bloqueadas — MB p.256).

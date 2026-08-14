@@ -50,7 +50,11 @@
    "Resistência a Dano, com Limitada, Fogo ou Água (ambos -40%)",
    "Sentido de Vibração (Água)"
   ],
-  "nota_das_habilidades": ""
+  "nota_das_habilidades": "",
+  "modificador_proprio": "",
+  "pagina_modulo_basico": 0,
+  "sem_modificador": false,
+  "sem_talento": false
  },
  {
   "id": "alteracao_corporal",
@@ -99,7 +103,11 @@
    "Tolerância a Ferimentos (qualquer uma)",
    "Ultraflexibilidade das Juntas"
   ],
-  "nota_das_habilidades": ""
+  "nota_das_habilidades": "",
+  "modificador_proprio": "",
+  "pagina_modulo_basico": 0,
+  "sem_modificador": false,
+  "sem_talento": false
  },
  {
   "id": "alteracao_de_probabilidades",
@@ -138,7 +146,11 @@
    "Sorte, com Desejo",
    "Super Sorte*, especialmente com Alterar a Realidade e Desejo"
   ],
-  "nota_das_habilidades": "As habilidades marcadas com * estão em aberto. O Mestre decidirá quantos níveis estão disponíveis. Defesas Ampliadas"
+  "nota_das_habilidades": "As habilidades marcadas com * estão em aberto. O Mestre decidirá quantos níveis estão disponíveis. Defesas Ampliadas",
+  "modificador_proprio": "",
+  "pagina_modulo_basico": 0,
+  "sem_modificador": false,
+  "sem_talento": false
  },
  {
   "id": "antimagia",
@@ -169,7 +181,11 @@
    "Resistência a Dano, com Limitada, Magia (-20%)",
    "Ver o Invisível (Mágica)"
   ],
-  "nota_das_habilidades": ""
+  "nota_das_habilidades": "",
+  "modificador_proprio": "",
+  "pagina_modulo_basico": 0,
+  "sem_modificador": false,
+  "sem_talento": false
  },
  {
   "id": "antipsi",
@@ -203,7 +219,11 @@
    "Resistente ou Imunidade a todos os poderes e habilidades psi ou a poderes e habilidades específicos",
    "Ver o Invisível (Psíquico)"
   ],
-  "nota_das_habilidades": ""
+  "nota_das_habilidades": "⚠️ Módulo Básico p.256: “Modificador de Poder: Nenhum, já que as habilidades Antipsi não podem ser bloqueadas!” — e o Módulo Básico não define Talento para Antipsi. Em GURPS Poderes (p.122) ele existe, mas “este Talento não existe em todos os cenários”.",
+  "modificador_proprio": "",
+  "pagina_modulo_basico": 256,
+  "sem_modificador": true,
+  "sem_talento": true
  },
  {
   "id": "antissuper",
@@ -240,7 +260,11 @@
    "Resistência a Dano, com Limitada, Super (-20%)",
    "Resistente ou Imunidade a todos os superpoderes e habilidades de supers, ou a poderes e habilidades específicos"
   ],
-  "nota_das_habilidades": ""
+  "nota_das_habilidades": "",
+  "modificador_proprio": "",
+  "pagina_modulo_basico": 0,
+  "sem_modificador": false,
+  "sem_talento": false
  },
  {
   "id": "ar",
@@ -291,7 +315,11 @@
    "Telecinese, com Ambiental (-5%)",
    "Voo"
   ],
-  "nota_das_habilidades": ""
+  "nota_das_habilidades": "",
+  "modificador_proprio": "",
+  "pagina_modulo_basico": 0,
+  "sem_modificador": false,
+  "sem_talento": false
  },
  {
   "id": "bem",
@@ -338,7 +366,11 @@
    "Terror (Assombro)",
    "Visualização, com Abençoar"
   ],
-  "nota_das_habilidades": ""
+  "nota_das_habilidades": "",
+  "modificador_proprio": "",
+  "pagina_modulo_basico": 0,
+  "sem_modificador": false,
+  "sem_talento": false
  },
  {
   "id": "bioenergia",
@@ -377,7 +409,11 @@
    "Terror, com Baseado em HT",
    "Voo"
   ],
-  "nota_das_habilidades": ""
+  "nota_das_habilidades": "",
+  "modificador_proprio": "",
+  "pagina_modulo_basico": 0,
+  "sem_modificador": false,
+  "sem_talento": false
  },
  {
   "id": "calor_fogo",
@@ -427,7 +463,11 @@
    "Telecomunicação (Infravermelho)†",
    "Tolerância à Temperatura†"
   ],
-  "nota_das_habilidades": "As habilidades marcadas com * servem para um poder Fogo separado"
+  "nota_das_habilidades": "As habilidades marcadas com * servem para um poder Fogo separado",
+  "modificador_proprio": "",
+  "pagina_modulo_basico": 0,
+  "sem_modificador": false,
+  "sem_talento": false
  },
  {
   "id": "caos",
@@ -471,7 +511,11 @@
    "Tolerância a Ferimentos (Difuso), com Enxame e Ativada ou Desativada à Vontade",
    "Visualização, com Amaldiçoar"
   ],
-  "nota_das_habilidades": ""
+  "nota_das_habilidades": "",
+  "modificador_proprio": "",
+  "pagina_modulo_basico": 0,
+  "sem_modificador": false,
+  "sem_talento": false
  },
  {
   "id": "construtos_de_forca",
@@ -507,7 +551,11 @@
    "Retenção",
    "Telecinese, com Visível"
   ],
-  "nota_das_habilidades": ""
+  "nota_das_habilidades": "",
+  "modificador_proprio": "",
+  "pagina_modulo_basico": 0,
+  "sem_modificador": false,
+  "sem_talento": false
  },
  {
   "id": "controle_corporal",
@@ -548,7 +596,11 @@
    "Queda de Gato",
    "Regeneração"
   ],
-  "nota_das_habilidades": ""
+  "nota_das_habilidades": "",
+  "modificador_proprio": "",
+  "pagina_modulo_basico": 0,
+  "sem_modificador": false,
+  "sem_talento": false
  },
  {
   "id": "controle_da_materia",
@@ -579,7 +631,11 @@
    "Retenção, com Ambiental (varia entre -5% se for possível “solidificar” o ar até -20% se transformar o solo em gosma)",
    "Tolerância a Ferimentos (Homogêneo ou Difuso)"
   ],
-  "nota_das_habilidades": ""
+  "nota_das_habilidades": "",
+  "modificador_proprio": "",
+  "pagina_modulo_basico": 0,
+  "sem_modificador": false,
+  "sem_talento": false
  },
  {
   "id": "controle_de_animais",
@@ -628,7 +684,11 @@
    "Telecomunicação (Diapsiquia)*",
    "Vínculo Especial, com um animal"
   ],
-  "nota_das_habilidades": ""
+  "nota_das_habilidades": "",
+  "modificador_proprio": "",
+  "pagina_modulo_basico": 0,
+  "sem_modificador": false,
+  "sem_talento": false
  },
  {
   "id": "controle_de_plantas",
@@ -674,7 +734,11 @@
    "Telecinese, com Ambiental (-40%)",
    "Visão Penetrante, com Específico, Madeira (-40%)"
   ],
-  "nota_das_habilidades": ""
+  "nota_das_habilidades": "",
+  "modificador_proprio": "",
+  "pagina_modulo_basico": 0,
+  "sem_modificador": false,
+  "sem_talento": false
  },
  {
   "id": "controle_do_clima",
@@ -706,7 +770,11 @@
    "Adaptação ao Terreno, para gelo, lama, neve ou outras condições causadas pelo clima",
    "Caminhar no Ar"
   ],
-  "nota_das_habilidades": ""
+  "nota_das_habilidades": "",
+  "modificador_proprio": "",
+  "pagina_modulo_basico": 0,
+  "sem_modificador": false,
+  "sem_talento": false
  },
  {
   "id": "controle_espiritual",
@@ -750,7 +818,11 @@
    "Ver o Invisível (Fantasmas)",
    "Visualização"
   ],
-  "nota_das_habilidades": ""
+  "nota_das_habilidades": "",
+  "modificador_proprio": "",
+  "pagina_modulo_basico": 0,
+  "sem_modificador": false,
+  "sem_talento": false
  },
  {
   "id": "cosmico",
@@ -767,7 +839,11 @@
   ],
   "pagina": 127,
   "habilidades": [],
-  "nota_das_habilidades": "Qualquer vantagem pode ser uma habilidade Cósmica, desde que tenha o modificador Cósmico. Ao criar um deus, o Mestre deve considerar proibir habilidades opostas à esfera de influência da divindade."
+  "nota_das_habilidades": "Qualquer vantagem pode ser uma habilidade Cósmica, desde que tenha o modificador Cósmico. Ao criar um deus, o Mestre deve considerar proibir habilidades opostas à esfera de influência da divindade.",
+  "modificador_proprio": "",
+  "pagina_modulo_basico": 0,
+  "sem_modificador": false,
+  "sem_talento": false
  },
  {
   "id": "cura",
@@ -820,7 +896,11 @@
    "Vínculo Especial, com Transferível (mas não para máquinas)",
    "Visão Penetrante, com Específico, Carne (-60%)"
   ],
-  "nota_das_habilidades": ""
+  "nota_das_habilidades": "",
+  "modificador_proprio": "Cura Psíquica",
+  "pagina_modulo_basico": 257,
+  "sem_modificador": false,
+  "sem_talento": false
  },
  {
   "id": "divino",
@@ -847,7 +927,11 @@
    "Propósito Maior",
    "Serendipidade"
   ],
-  "nota_das_habilidades": ""
+  "nota_das_habilidades": "",
+  "modificador_proprio": "",
+  "pagina_modulo_basico": 0,
+  "sem_modificador": false,
+  "sem_talento": false
  },
  {
   "id": "dominio_do_tempo",
@@ -897,7 +981,11 @@
    "Saltador (Tempo)",
    "Telecomunicação (Diapsiquia), com Alcance Temporal"
   ],
-  "nota_das_habilidades": ""
+  "nota_das_habilidades": "",
+  "modificador_proprio": "",
+  "pagina_modulo_basico": 0,
+  "sem_modificador": false,
+  "sem_talento": false
  },
  {
   "id": "eletricidade",
@@ -932,7 +1020,11 @@
    "Sentido de Monitoramento (Radar de Imagens, Radar ou Visão de Raios T)",
    "Telecomunicação (Rádio)"
   ],
-  "nota_das_habilidades": ""
+  "nota_das_habilidades": "",
+  "modificador_proprio": "",
+  "pagina_modulo_basico": 0,
+  "sem_modificador": false,
+  "sem_talento": false
  },
  {
   "id": "eletrocinese",
@@ -965,7 +1057,11 @@
    "Sentido de Monitoramento (qualquer um, exceto Para-Radar ou Sonar)",
    "Telecomunicação (Infravermelho, Laser, ou Rádio)"
   ],
-  "nota_das_habilidades": ""
+  "nota_das_habilidades": "",
+  "modificador_proprio": "",
+  "pagina_modulo_basico": 0,
+  "sem_modificador": false,
+  "sem_talento": false
  },
  {
   "id": "energia_cinetica",
@@ -1000,7 +1096,11 @@
    "Telecinese",
    "Voo"
   ],
-  "nota_das_habilidades": ""
+  "nota_das_habilidades": "",
+  "modificador_proprio": "",
+  "pagina_modulo_basico": 0,
+  "sem_modificador": false,
+  "sem_talento": false
  },
  {
   "id": "frio_gelo",
@@ -1043,7 +1143,11 @@
    "Tolerância a Temperatura†",
    "Visão Penetrante, com Específica, Gelo (-60%)*"
   ],
-  "nota_das_habilidades": "As habilidades marcadas com * servem para um poder Gelo separado"
+  "nota_das_habilidades": "As habilidades marcadas com * servem para um poder Gelo separado",
+  "modificador_proprio": "",
+  "pagina_modulo_basico": 0,
+  "sem_modificador": false,
+  "sem_talento": false
  },
  {
   "id": "gravidade",
@@ -1081,7 +1185,11 @@
    "Telecinese",
    "Caminhar no Ar, com Planetário"
   ],
-  "nota_das_habilidades": ""
+  "nota_das_habilidades": "",
+  "modificador_proprio": "",
+  "pagina_modulo_basico": 0,
+  "sem_modificador": false,
+  "sem_talento": false
  },
  {
   "id": "ilusao",
@@ -1128,7 +1236,11 @@
    "Silêncio",
    "Ver o Invisível"
   ],
-  "nota_das_habilidades": ""
+  "nota_das_habilidades": "",
+  "modificador_proprio": "",
+  "pagina_modulo_basico": 0,
+  "sem_modificador": false,
+  "sem_talento": false
  },
  {
   "id": "luz",
@@ -1179,7 +1291,11 @@
    "Visão Noturna",
    "Visão Telescópica"
   ],
-  "nota_das_habilidades": ""
+  "nota_das_habilidades": "",
+  "modificador_proprio": "",
+  "pagina_modulo_basico": 0,
+  "sem_modificador": false,
+  "sem_talento": false
  },
  {
   "id": "magia",
@@ -1196,7 +1312,11 @@
   ],
   "pagina": 130,
   "habilidades": [],
-  "nota_das_habilidades": "O livro não dá lista própria: aplique o modificador Mágico ao poder mais adequado da lista (por exemplo, Calor/Fogo para as mágicas do Fogo). O Talento é a Aptidão Mágica."
+  "nota_das_habilidades": "O livro não dá lista própria: aplique o modificador Mágico ao poder mais adequado da lista (por exemplo, Calor/Fogo para as mágicas do Fogo). O Talento é a Aptidão Mágica.",
+  "modificador_proprio": "",
+  "pagina_modulo_basico": 0,
+  "sem_modificador": false,
+  "sem_talento": false
  },
  {
   "id": "magnetismo",
@@ -1223,7 +1343,11 @@
    "Criar (Eletricidade)",
    "Deslocamento Ampliado (Ar)"
   ],
-  "nota_das_habilidades": ""
+  "nota_das_habilidades": "",
+  "modificador_proprio": "",
+  "pagina_modulo_basico": 0,
+  "sem_modificador": false,
+  "sem_talento": false
  },
  {
   "id": "mal",
@@ -1268,7 +1392,11 @@
    "Terror",
    "Visualização, com Amaldiçoar"
   ],
-  "nota_das_habilidades": ""
+  "nota_das_habilidades": "",
+  "modificador_proprio": "",
+  "pagina_modulo_basico": 0,
+  "sem_modificador": false,
+  "sem_talento": false
  },
  {
   "id": "morte",
@@ -1304,7 +1432,11 @@
    "Poder Protegido",
    "Sanguessuga, mas não com Roubar (Outro Valor) Os ataques devem ser Atribulações letais"
   ],
-  "nota_das_habilidades": ""
+  "nota_das_habilidades": "",
+  "modificador_proprio": "",
+  "pagina_modulo_basico": 0,
+  "sem_modificador": false,
+  "sem_talento": false
  },
  {
   "id": "ordem",
@@ -1350,7 +1482,11 @@
    "Silêncio",
    "Visualização"
   ],
-  "nota_das_habilidades": ""
+  "nota_das_habilidades": "",
+  "modificador_proprio": "",
+  "pagina_modulo_basico": 0,
+  "sem_modificador": false,
+  "sem_talento": false
  },
  {
   "id": "pes",
@@ -1407,7 +1543,11 @@
    "Visão no Escuro",
    "Visão Penetrante"
   ],
-  "nota_das_habilidades": ""
+  "nota_das_habilidades": "",
+  "modificador_proprio": "PES",
+  "pagina_modulo_basico": 257,
+  "sem_modificador": false,
+  "sem_talento": false
  },
  {
   "id": "projecao_astral",
@@ -1446,7 +1586,11 @@
    "Saltador (Mundo), com Projeção",
    "Ver o Invisível (Fantasmas)"
   ],
-  "nota_das_habilidades": ""
+  "nota_das_habilidades": "",
+  "modificador_proprio": "",
+  "pagina_modulo_basico": 0,
+  "sem_modificador": false,
+  "sem_talento": false
  },
  {
   "id": "psicocinese",
@@ -1495,7 +1639,11 @@
    "Telecinese",
    "Voo"
   ],
-  "nota_das_habilidades": ""
+  "nota_das_habilidades": "",
+  "modificador_proprio": "Psicocinético",
+  "pagina_modulo_basico": 258,
+  "sem_modificador": false,
+  "sem_talento": false
  },
  {
   "id": "radiacao",
@@ -1529,7 +1677,11 @@
    "Visão Hiperespectral, com Banda Alta Estendida",
    "Visão Penetrante"
   ],
-  "nota_das_habilidades": ""
+  "nota_das_habilidades": "",
+  "modificador_proprio": "",
+  "pagina_modulo_basico": 0,
+  "sem_modificador": false,
+  "sem_talento": false
  },
  {
   "id": "som_vibracao",
@@ -1574,7 +1726,11 @@
    "Superaudição/Fala Ultrassônica*†",
    "Telecomunicação (Som Direcional* ou Sonar*†)"
   ],
-  "nota_das_habilidades": "As habilidades marcadas com * servem para um poder Som separado"
+  "nota_das_habilidades": "As habilidades marcadas com * servem para um poder Som separado",
+  "modificador_proprio": "",
+  "pagina_modulo_basico": 0,
+  "sem_modificador": false,
+  "sem_talento": false
  },
  {
   "id": "telepatia",
@@ -1623,7 +1779,11 @@
    "Vínculo Especial",
    "Xeno-Adaptabilidade. Inclua Empatia com Animais e Falar com Animais em cenários onde não exista o Controle de Animais"
   ],
-  "nota_das_habilidades": ""
+  "nota_das_habilidades": "",
+  "modificador_proprio": "Telepático",
+  "pagina_modulo_basico": 257,
+  "sem_modificador": false,
+  "sem_talento": false
  },
  {
   "id": "telepatia_sobre_maquinas",
@@ -1652,7 +1812,11 @@
    "Resistente, contra qualquer ameaça mecânica (nanomáquinas, por exemplo)",
    "Sonda Mental, Somente Cibernética"
   ],
-  "nota_das_habilidades": ""
+  "nota_das_habilidades": "",
+  "modificador_proprio": "",
+  "pagina_modulo_basico": 0,
+  "sem_modificador": false,
+  "sem_talento": false
  },
  {
   "id": "teleporte",
@@ -1684,7 +1848,11 @@
    "Poder Protegido",
    "Saltador (Mundo), mas não com Interplanar"
   ],
-  "nota_das_habilidades": ""
+  "nota_das_habilidades": "",
+  "modificador_proprio": "Teleporte Psíquico",
+  "pagina_modulo_basico": 258,
+  "sem_modificador": false,
+  "sem_talento": false
  },
  {
   "id": "terra",
@@ -1733,7 +1901,11 @@
    "Retenção, com Engolfar e Ambiental (-20%)",
    "Visão Penetrante, com Específica, Pedra (-40%)"
   ],
-  "nota_das_habilidades": ""
+  "nota_das_habilidades": "",
+  "modificador_proprio": "",
+  "pagina_modulo_basico": 0,
+  "sem_modificador": false,
+  "sem_talento": false
  },
  {
   "id": "trevas",
@@ -1775,7 +1947,11 @@
    "Visão no Escuro",
    "Visão Noturna"
   ],
-  "nota_das_habilidades": ""
+  "nota_das_habilidades": "",
+  "modificador_proprio": "",
+  "pagina_modulo_basico": 0,
+  "sem_modificador": false,
+  "sem_talento": false
  },
  {
   "id": "vampirismo",
@@ -1815,7 +1991,11 @@
    "Ataques por Fadiga com Falta de Sono (sonhos roubados) ou algum outro Perigo",
    "Ataques por Toxina. Todos os ataques desse tipo exigem Imprecação, Ataque Corpo a Corpo ou Base Sensorial"
   ],
-  "nota_das_habilidades": "Sanguessuga é a habilidade central do Vampirismo, e pode ter qualquer conjunto de modificadores. Os ataques são igualmente importantes."
+  "nota_das_habilidades": "Sanguessuga é a habilidade central do Vampirismo, e pode ter qualquer conjunto de modificadores. Os ataques são igualmente importantes.",
+  "modificador_proprio": "",
+  "pagina_modulo_basico": 0,
+  "sem_modificador": false,
+  "sem_talento": false
  },
  {
   "id": "viagem_dimensional",
@@ -1859,7 +2039,11 @@
    "Saltador (Mundo), quase sempre com Interplanar",
    "Telecomunicação (Diapsiquia), com Alcance Transmundial"
   ],
-  "nota_das_habilidades": ""
+  "nota_das_habilidades": "",
+  "modificador_proprio": "",
+  "pagina_modulo_basico": 0,
+  "sem_modificador": false,
+  "sem_talento": false
  },
  {
   "id": "vida",
@@ -1904,6 +2088,10 @@
    "Regeneração",
    "Resistente ou Imunidade a qualquer ameaça natural"
   ],
-  "nota_das_habilidades": ""
+  "nota_das_habilidades": "",
+  "modificador_proprio": "",
+  "pagina_modulo_basico": 0,
+  "sem_modificador": false,
+  "sem_talento": false
  }
 ]

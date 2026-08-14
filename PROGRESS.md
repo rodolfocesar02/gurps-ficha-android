@@ -8446,3 +8446,45 @@ O usuário achou os dois seguindo uma remissão que estava na primeira página q
 eu li.
 
 - **Status:** ✅ Build OK nas 2 variantes · lint OK · gate **2290** (+13) · ⏭️ **PENDENTE: teste no aparelho** (T-PO20/T-PO21).
+
+
+## Lote POD-15 — os seis poderes psíquicos do Módulo Básico (11.3-POD15)
+
+O achado do usuário: *Poderes* p.7 manda ver **MB p.257, Telepatia**. Fui ler, e
+lá os poderes psíquicos **não** usam um modificador genérico chamado "Telepatia,
+−10%" — cada um tem **nome próprio de modificador**, dado pelo Módulo Básico:
+
+| Poder | Modificador na ficha | MB |
+|---|---|---|
+| Telepatia | **Telepático**, −10% | p.257 |
+| Psicocinese | **Psicocinético**, −10% | p.256 |
+| PES | **PES**, −10% | p.255 |
+| Cura | **Cura Psíquica**, −10% | p.255 |
+| Teleporte | **Teleporte Psíquico**, −10% | p.257 |
+| Antipsi | **nenhum** | p.256 |
+
+**O Antipsi é a exceção que o livro escreve por extenso:** *"Modificador de
+Poder: Nenhum, já que as habilidades Antipsi não podem ser bloqueadas!"* Ele não
+tem modificador **e não tem Talento** — as duas coisas, e por isso os dois campos
+novos são separados (`sem_modificador`, `sem_talento`).
+
+### O que mudou
+
+- `poderes.v1.json`: `modificador_proprio`, `pagina_modulo_basico`,
+  `sem_modificador` e `sem_talento` nos seis verbetes psíquicos.
+- `PoderDefinicao.nomeDoModificador` — o nome do livro quando existe, o nome do
+  poder quando não existe. A injeção no traço passou a usar **esse** nome.
+- O painel do poder mostra a linha *"Na ficha, as habilidades levam 'Telepático,
+  −10%'"*, e o diálogo mostra `· Módulo Básico, p.257`.
+
+### 🔴 O teste do POD-1 virou trava contra o livro
+
+`o poder ja nasce com a fonte e o percentual do livro` exigia que **todo** poder
+tivesse fonte padrão — e o Antipsi, certo, não tem. **Terceira vez** que uma
+conclusão minha virou trava de portão contra a regra: a exceção agora está
+escrita no teste, com a citação, e a lista de poderes sem modificador é fixada
+(`listOf("Antipsi")`) para não crescer sem alguém ler o livro.
+
+- **Status:** ✅ Build OK nas 2 variantes · lint OK · gate **2294** (+4) · ⏭️ **PENDENTE: teste no aparelho** (T-PO22).
+
+> Gate: 2.294 testes, 0 falhas nas duas variantes.

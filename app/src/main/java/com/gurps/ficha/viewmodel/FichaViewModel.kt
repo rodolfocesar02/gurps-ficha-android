@@ -560,7 +560,11 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
         if (poder == null || poder.modificadorDePoder == 0) return limpos
         return limpos + ModificadorSelecao(
             id = HabilidadesDoPoder.idDoModificador(poder.id),
-            nome = HabilidadesDoPoder.nomeDoModificador(poder.nome),
+            // 🔴 POD-15: o nome vem do livro quando ele dá um — "Telepático",
+            // e não "Telepatia". O valor é o mesmo; o nome é o que vai na ficha.
+            nome = HabilidadesDoPoder.nomeDoModificador(
+                poder.nomeDoModificador.ifBlank { poder.nome }
+            ),
             valor = poder.modificadorDePoder
         )
     }

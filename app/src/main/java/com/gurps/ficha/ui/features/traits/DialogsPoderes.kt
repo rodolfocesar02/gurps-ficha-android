@@ -146,7 +146,8 @@ fun DialogsPoderes(
                         fonte = padrao?.fonte.orEmpty(),
                         foco = d.foco,
                         modificadorDePoder = padrao?.valor ?: 0,
-                        custoTalentoNivel = d.custoTalentoPorNivel
+                        custoTalentoNivel = if (d.semTalento) 0 else d.custoTalentoPorNivel,
+                        nomeDoModificador = d.nomeDoModificador
                     )
                 }
                 showNovoDialog = true
@@ -251,7 +252,10 @@ fun PoderEditDialog(
                 )
                 if (definicao != null && definicao.pagina > 0) {
                     Text(
-                        "GURPS Poderes, p.${definicao.pagina}",
+                        "GURPS Poderes, p.${definicao.pagina}" +
+                            // Lote POD-15: o Módulo Básico também descreve este poder.
+                            if (definicao.paginaModuloBasico > 0)
+                                " · Módulo Básico, p.${definicao.paginaModuloBasico}" else "",
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )

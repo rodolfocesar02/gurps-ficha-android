@@ -29,7 +29,13 @@ data class Poder(
      */
     var reservaDeEnergia: Int = 0,
     /** Ids de [ReservaDeEnergia.Limitacao] escolhidas para a RE. */
-    var limitacoesDaReserva: List<String> = emptyList()
+    var limitacoesDaReserva: List<String> = emptyList(),
+    /**
+     * O nome do modificador na ficha (POD-15). Vazio = usa o nome do poder.
+     * Preenchido com "Telepático", "Psicocinético"… quando o poder vem do
+     * Módulo Básico.
+     */
+    var nomeDoModificador: String = ""
 ) {
     /**
      * 🔴 Existia desde sempre e **não era chamado em lugar nenhum** — o Talento
@@ -122,12 +128,39 @@ data class PoderDefinicao(
      */
     val habilidades: List<String> = emptyList(),
     @SerializedName("nota_das_habilidades") val notaDasHabilidades: String = "",
+    /**
+     * 🔴 Lote POD-15. O **Módulo Básico** (p.254-258) dá nome próprio ao
+     * modificador de cada poder psíquico — *"cada poder psíquico tem **seu
+     * próprio modificador**, que geralmente vale −10%"* (MB p.255).
+     *
+     * "Telepático", "Psicocinético", "Teleporte Psíquico"… O valor bate com o de
+     * *Poderes* (−10%); o que muda é o **nome**, e é o nome que vai para a ficha:
+     * o jogador escreve `Leitura da Mente (Telepático, −10%)`, não
+     * `(Psíquico, −10%)`.
+     *
+     * Vazio = o poder só existe em *GURPS Poderes*, e aí o nome do modificador é
+     * o do próprio poder.
+     */
+    @SerializedName("modificador_proprio") val modificadorProprio: String = "",
+    @SerializedName("pagina_modulo_basico") val paginaModuloBasico: Int = 0,
+    /** *"Modificador de Poder: **Nenhum**"* — só o Antipsi (MB p.256). */
+    @SerializedName("sem_modificador") val semModificador: Boolean = false,
+    /** O Módulo Básico não define Talento para o Antipsi. */
+    @SerializedName("sem_talento") val semTalento: Boolean = false,
     val pagina: Int = 0
 ) {
     fun normalizada(): PoderDefinicao = copy(nome = nome.trim())
 
     /** A fonte sugerida quando o jogador ainda não escolheu: a primeira do livro. */
-    val fontePadrao: FonteDoPoder? get() = modificadores.firstOrNull()
+    val fontePadrao: FonteDoPoder? get() = if (semModificador) null else modificadores.firstOrNull()
+
+    /**
+     * O nome que o modificador leva na ficha: o do **Módulo Básico** quando
+     * existe, senão o do próprio poder (é assim que *Poderes* faz — *"Modificador
+     * de Poder: Água"*).
+     */
+    val nomeDoModificador: String
+        get() = if (modificadorProprio.isNotBlank()) modificadorProprio else nome
 
     fun valorDaFonte(nome: String?): Int? =
         modificadores.firstOrNull { it.fonte.equals(nome?.trim(), ignoreCase = true) }?.valor

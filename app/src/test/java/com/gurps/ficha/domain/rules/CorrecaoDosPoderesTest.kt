@@ -157,6 +157,79 @@ class CorrecaoDosPoderesTest {
         assertFalse("a fala tem sinal cru", RotuloAcessivel.temSinalCru(r))
     }
 
+    // ══ POD-15 — os seis poderes psíquicos do Módulo Básico ═══════════
+
+    private val poderes: List<com.gurps.ficha.model.PoderDefinicao> by lazy {
+        val direto = File("src/main/assets/poderes.v1.json")
+        val f = if (direto.exists()) direto else File("app/src/main/assets/poderes.v1.json")
+        com.google.gson.Gson().fromJson(
+            f.readText(Charsets.UTF_8),
+            object : com.google.gson.reflect.TypeToken<List<com.gurps.ficha.model.PoderDefinicao>>() {}.type
+        )
+    }
+
+    @Test
+    fun `o modificador leva o nome que o Modulo Basico da`() {
+        // 🔴 Achado pelo usuário: ele leu Poderes p.7, seguiu a remissão para
+        // MB257 e viu que o app não reproduz o que a página descreve.
+        //
+        // > "Cada poder psíquico tem **seu próprio modificador**, que geralmente
+        // > vale −10%." (MB p.255)
+        //
+        // O valor bate com o de Poderes; o **nome** não — e é o nome que vai
+        // para a ficha: `Leitura da Mente (Telepático, −10%)`.
+        val esperado = mapOf(
+            "Telepatia" to "Telepático",
+            "Psicocinese" to "Psicocinético",
+            "PES" to "PES",
+            "Cura" to "Cura Psíquica",
+            "Teleporte" to "Teleporte Psíquico"
+        )
+        esperado.forEach { (poder, mod) ->
+            val p = poderes.first { it.nome == poder }
+            assertEquals("'$poder' perdeu o nome do modificador do MB",
+                mod, p.modificadorProprio)
+            assertEquals("o nome usado na ficha esta errado", mod, p.nomeDoModificador)
+            assertTrue("'$poder' nao aponta a pagina do MB", p.paginaModuloBasico > 0)
+        }
+    }
+
+    @Test
+    fun `poder que so existe em Poderes usa o proprio nome`() {
+        // "Modificador de Poder: Água. A vantagem pertence ao poder Água."
+        val agua = poderes.first { it.nome == "Água" }
+        assertEquals("", agua.modificadorProprio)
+        assertEquals("Água", agua.nomeDoModificador)
+    }
+
+    @Test
+    fun `o Antipsi nao tem modificador nem Talento`() {
+        // 🔴 "Modificador de Poder: **Nenhum**, já que as habilidades Antipsi não
+        // podem ser bloqueadas!" (MB p.256). E o MB não define Talento Antipsi.
+        // O app dava a ele três fontes e um Talento.
+        val anti = poderes.first { it.nome == "Antipsi" }
+        assertTrue("o Antipsi voltou a ter modificador", anti.semModificador)
+        assertTrue("o Antipsi voltou a ter Talento", anti.semTalento)
+        // Sem modificador, ele não pode nascer com uma fonte preenchida.
+        assertTrue("o Antipsi nasceria com percentual", anti.fontePadrao == null)
+        assertTrue("a explicacao do livro sumiu",
+            anti.notaDasHabilidades.contains("não podem ser bloqueadas"))
+    }
+
+    @Test
+    fun `o modificador injetado usa o nome do livro`() {
+        val vm = fonte("com/gurps/ficha/viewmodel/FichaViewModel.kt")
+        assertTrue(
+            "o modificador injetado voltou a usar so o nome do poder",
+            vm.contains("poder.nomeDoModificador.ifBlank { poder.nome }")
+        )
+        val d = fonte("com/gurps/ficha/ui/features/traits/DialogsPoderes.kt")
+        assertTrue("o poder novo nao recebe o nome do modificador",
+            d.contains("nomeDoModificador = d.nomeDoModificador"))
+        assertTrue("o Antipsi nasceria com Talento",
+            d.contains("if (d.semTalento) 0 else d.custoTalentoPorNivel"))
+    }
+
     // ══ POD-14 — a habilidade é comprada PARA o poder ══════════════════
 
     @Test

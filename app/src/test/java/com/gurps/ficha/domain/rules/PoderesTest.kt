@@ -356,11 +356,19 @@ class PoderesTest {
     fun `o poder ja nasce com a fonte e o percentual do livro`() {
         // 🔴 Antes todo poder nascia com 0%, e o jogador tinha de saber o número
         // de cabeça para o poder valer alguma coisa no custo.
-        poderes.forEach {
+        //
+        // ⚠️ Uma exceção, e ela é do livro (POD-15): o **Antipsi** não tem
+        // modificador nenhum — *"Modificador de Poder: Nenhum, já que as
+        // habilidades Antipsi não podem ser bloqueadas!"* (MB p.256). Ele nascer
+        // sem fonte é o comportamento certo, não uma falha do catálogo.
+        poderes.filterNot { it.semModificador }.forEach {
             val padrao = it.fontePadrao
             assertNotNull("'${it.nome}' nao tem fonte padrao", padrao)
             assertTrue("'${it.nome}' nasceria com 0%", padrao!!.valor != 0)
         }
+        val semModificador = poderes.filter { it.semModificador }.map { it.nome }
+        assertEquals("a lista de poderes sem modificador mudou",
+            listOf("Antipsi"), semModificador)
     }
 
     @Test
