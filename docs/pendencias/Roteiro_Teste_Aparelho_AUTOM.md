@@ -2029,8 +2029,11 @@ exemplo o *Traje Pressurizado* (RD 6\*) ou a *Cota de Malha Longa Dupla*.
 - **T-PO8 · ligar uma vantagem** — abra um poder → **Ligar habilidade** → escolha
   uma vantagem da ficha. ✅ Ela aparece na lista do poder, e o **custo dela muda**
   na aba Traços (o percentual do poder passou a valer).
-- **T-PO9 · 🔴 ligar uma DESVANTAGEM** — repita com uma desvantagem (Fobias,
-  Insônia). ✅ O custo dela **também** muda. Antes não mudava — era o defeito.
+- ~~**T-PO9 · 🔴 ligar uma DESVANTAGEM**~~ — ⛔ **NÃO RODE ESTE TESTE.**
+  Ele pedia que o custo da desvantagem **também** mudasse. Isso está **errado**:
+  *"Ele aplica-se a todas as habilidades do poder (**mas não ao seu Talento,
+  desvantagens exigidas, ou Antecedente Incomum**)"* (Poderes, p.28). O teste
+  certo é o **T-PO21**, que cobra o contrário. Corrigido no lote POD-17.
 - **T-PO10 · 🔴 apagar o poder não apaga o traço** — apague o poder na lixeira.
   ✅ A vantagem **e** a desvantagem que estavam ligadas continuam na ficha, e o
   `Mod. de Poder:` sumiu das duas (o custo volta ao de antes).

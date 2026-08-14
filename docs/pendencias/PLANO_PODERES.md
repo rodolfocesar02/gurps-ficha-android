@@ -744,7 +744,9 @@ teste pegou: eles guardam o que eu escrevi.
 
 ---
 
-## POD-14 — O fluxo de criação está invertido 🔴 *(o mais importante)*
+## ✅ POD-14 — O fluxo de criação está invertido 🔴 *(o mais importante)*
+
+> **FEITO** — 11.2-CORRECAO. Botão **Adicionar habilidade** dentro do poder.
 
 **Hoje**, para dar uma habilidade a um poder:
 1. Traços → Adicionar Vantagem → escolher Leitura da Mente;
@@ -767,7 +769,9 @@ o poder **não deve possuir** — no livro a habilidade é uma vantagem do
 personagem, comprada com os pontos dele, e tem de continuar aparecendo na aba
 Traços. Muda o **caminho de compra**, não a propriedade.
 
-## POD-15 — O Módulo Básico define os poderes psíquicos, e o app não sabe
+## ✅ POD-15 — O Módulo Básico define os poderes psíquicos, e o app não sabe
+
+> **FEITO** — 11.3-POD15. Nome próprio do modificador + Antipsi sem modificador e sem Talento.
 
 > *"Cada poder psíquico tem **seu próprio modificador**, que geralmente vale
 > −10%."* (MB p.255)
@@ -785,7 +789,9 @@ Traços. Muda o **caminho de compra**, não a propriedade.
 entram como origem de catálogo ao lado dos 47 de *Poderes*. Antipsi **sem**
 modificador e **sem** Talento, com a frase do livro à vista.
 
-## POD-16 — O montador está estruturalmente errado
+## ✅ POD-16 — O montador está estruturalmente errado
+
+> **FEITO** — 11.2-CORRECAO. Montador refeito contra a Referência Rápida (p.25).
 
 Contra a **Referência Rápida** (p.25), que eu nunca tinha lido:
 
@@ -797,7 +803,9 @@ Contra a **Referência Rápida** (p.25), que eu nunca tinha lido:
 | Pus **Cósmico +50%** em Contramedidas | pertence a Energias Canalizadas, e **exclui** as contramedidas |
 | Desvantagem exigida = 3 opções minhas | é o **valor em pontos** da desvantagem, livre |
 
-## POD-17 — 🔴 Uma "correção" minha do POD-5 estava errada
+## ✅ POD-17 — 🔴 Uma "correção" minha do POD-5 estava errada
+
+> **FEITO** — 11.2-CORRECAO. Trava desfeita; o teste cobra o contrário, citando a p.28.
 
 > *"Ele aplica-se a todas as habilidades do poder (**mas não ao seu Talento,
 > desvantagens exigidas, ou Antecedente Incomum**)."* (p.28)
@@ -811,7 +819,9 @@ sessão que uma conclusão minha vira trava — a primeira foi o POD-8b.
 
 **Correção:** desfazer, e o teste passa a cobrar o contrário, citando a página.
 
-## POD-18 — Falta o segundo esquema de desconto
+## ✅ POD-18 — Falta o segundo esquema de desconto
+
+> **FEITO** — 11.2-CORRECAO. Várias Cópias da Mesma Vantagem (p.12).
 
 **Várias Cópias da Mesma Vantagem** (p.12): a **mesma** vantagem comprada como
 habilidade de **poderes diferentes** paga preço cheio na mais cara e **1/5** nas
@@ -823,7 +833,9 @@ outras, arredondando para cima — a mesma conta das Alternativas.
 O POD-6 implementou só o primeiro esquema. E o p.28 confirma que os dois usam
 **os custos já modificados**.
 
-## POD-19 — Número de Habilidades (p.19), como orientação
+## ⏭️ POD-19 — Número de Habilidades (p.19), como orientação
+
+> **ÚNICO ITEM QUE FALTA DO PILAR.** Só orientação na tela; nunca trava.
 
 Duas vantagens de ataque; duas ou três defesas principais; duas ou três de
 movimento; duas ou três mentais. **[MOSTRAR]**, nunca travar — *"estes limites
