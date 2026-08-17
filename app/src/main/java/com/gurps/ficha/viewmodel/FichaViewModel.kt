@@ -94,6 +94,7 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
     // Lote 354 (Saga A5): delegate do modo Saga (Narrador + campanhas + rolagem interativa)
     private val sagaDelegate = FichaSagaDelegate(this, dataRepository, viewModelScope, application)
     private val socialDelegate = FichaSocialDelegate(networkDelegate, configPrefs, viewModelScope)
+    private val notesDelegate = com.gurps.ficha.viewmodel.delegates.FichaNotesDelegate()
     private val deviceId by lazy { Settings.Secure.getString(application.contentResolver, Settings.Secure.ANDROID_ID) ?: "DESCONHECIDO" }
 
     // Propriedades Estáticas/Config
@@ -1225,6 +1226,17 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
     val desvantagensFiltradas get() = searchDelegate.filtrarDesvantagens()
     val periciasFiltradas get() = searchDelegate.filtrarPericias()
     val magiasFiltradas get() = searchDelegate.filtrarMagias()
+
+    // ==========================================
+    // NOTAS DE JOGO
+    // ==========================================
+    fun salvarNotaDeJogo(nota: com.gurps.ficha.model.NotaDeJogo) {
+        personagem = notesDelegate.salvarNota(personagem, nota)
+    }
+
+    fun excluirNotaDeJogo(notaId: String) {
+        personagem = notesDelegate.excluirNota(personagem, notaId)
+    }
     val tecnicasFiltradas get() = searchDelegate.filtrarTecnicas()
     val todasEscolasMagia get() = todasEscolasMagiaCache
     val todasClassesMagia get() = todasClassesMagiaCache

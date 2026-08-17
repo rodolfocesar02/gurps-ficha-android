@@ -2240,3 +2240,21 @@ exemplo o *Traje Pressurizado* (RD 6\*) ou a *Cota de Malha Longa Dupla*.
   - repita com a RD comprada **dentro de um poder**: tem de contar igual.
   - e com um **modificador** na RD (ex: Limitada): o numero continua somando,
   mas aparece a ressalva mandando conferir se vale contra aquele ataque.
+- **T-NO1 - o botao no lugar certo** - aba Rolagem, role ate o menu de botoes:
+  - **Bloco de Notas** e o **ultimo** da lista, depois de *Rolagem Livre*.
+  - ele tem a **mesma cor, altura e fonte** dos outros seis. Se destoar de
+  algum, e porque saiu do componente comum.
+- **T-NO2 - enviar a anotacao** - abra o Bloco de Notas com o **canal definido**
+  no topo da aba:
+  - cada nota mostra o logo do Discord no canto de baixo, do lado oposto a data.
+  - tocar abre a confirmacao com **Sim** e **Nao**, e ela mostra uma previa do
+  texto que vai sair.
+  - **Nao** fecha sem mandar nada.
+  - **Sim** manda, e aparece *"Anotacao enviada."* - confira na mesa que a
+  mensagem chegou no canal escolhido.
+  - **sem canal definido**, o aviso de erro aparece dizendo o motivo (nao pode
+  falhar em silencio).
+  - nota **em branco** nao mostra o logo: nao ha o que enviar.
+  - na variante **pracego**, o leitor de tela oferece a acao *"Enviar esta
+  anotacao para o Discord"* no menu de acoes do cartao. Sem isso o envio fica
+  inalcancavel para quem nao ve a tela.

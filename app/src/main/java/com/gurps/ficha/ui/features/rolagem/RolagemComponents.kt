@@ -802,7 +802,11 @@ fun MenuBotoesNavegacaoRolagem(
     onShowTecnicas: () -> Unit,
     onShowMagias: () -> Unit,
     onShowRolagemLivre: () -> Unit,
-    onShowResistencia: () -> Unit = {}
+    onShowResistencia: () -> Unit = {},
+    // Lote NOTA-1: o Bloco de Notas era um `OutlinedButton` solto ACIMA deste
+    // menu — outra cor, outro tamanho, outra fonte. Entrou aqui para ser o
+    // último botão do painel, com o mesmo desenho dos outros.
+    onShowBlocoDeNotas: () -> Unit = {}
 ) {
     Column(
         modifier = Modifier.fillMaxWidth(),
@@ -888,6 +892,23 @@ fun MenuBotoesNavegacaoRolagem(
         ) {
             Text(
                 "Rolagem Livre",
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Center
+            )
+        }
+
+        // Lote NOTA-1: o último do painel, como o usuário pediu — e com o mesmo
+        // `Button`, a mesma altura de 42 e o mesmo `titleMedium` em negrito dos
+        // outros seis. Antes era um `OutlinedButton` acima do menu, e a
+        // diferença de cor era só o sintoma de ele estar fora do padrão.
+        Button(
+            onClick = onShowBlocoDeNotas,
+            modifier = Modifier.fillMaxWidth().height(42.dp),
+            contentPadding = PaddingValues(vertical = 2.dp)
+        ) {
+            Text(
+                "Bloco de Notas",
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center

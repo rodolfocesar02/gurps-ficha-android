@@ -107,7 +107,8 @@ data class Personagem(
     var sagaSangramentoPenalidadeLocal: Int? = null,
     var sagaSangramentoIntervaloSeg: Int? = null,
     var modeloRacial: ModeloRacial = ModeloRacial(),
-    var historicoLog: List<RegistroLog> = emptyList()
+    var historicoLog: List<RegistroLog> = emptyList(),
+    var notasDeJogo: List<NotaDeJogo> = emptyList()
 ) {
     /**
      * Lista consolidada de todas as perícias (pessoais + raciais).
@@ -403,8 +404,30 @@ data class Personagem(
             if (!jsonObject.has("historicoLog")) {
                 jsonObject.add("historicoLog", com.google.gson.JsonArray())
             }
+            if (!jsonObject.has("notasDeJogo")) {
+                jsonObject.add("notasDeJogo", com.google.gson.JsonArray())
+            }
             return gson.fromJson(jsonObject, Personagem::class.java)
         }
+    }
+}
+
+// ============================================================
+// NOTAS DE JOGO
+// ============================================================
+
+@Stable
+data class NotaDeJogo(
+    val id: String = java.util.UUID.randomUUID().toString(),
+    val texto: String = "",
+    val corHex: String? = null,
+    val dataCriacao: Long = System.currentTimeMillis(),
+    val dataModificacao: Long = System.currentTimeMillis()
+) {
+    val titulo: String get() {
+        if (texto.isBlank()) return "Sem título"
+        val palavras = texto.trim().split("\\s+".toRegex())
+        return if (palavras.size <= 3) texto else palavras.take(3).joinToString(" ") + "..."
     }
 }
 

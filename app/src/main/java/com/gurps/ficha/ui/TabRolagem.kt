@@ -1115,11 +1115,9 @@ fun TabRolagem(viewModel: FichaViewModel) {
             }
         }
 
-        OutlinedButton(
-            onClick = { showBlocoDeNotasDialog = true },
-            modifier = Modifier.fillMaxWidth()
-        ) { Text("Bloco de Notas") }
-
+        // Lote NOTA-1: o botao do Bloco de Notas entrou no menu abaixo, como
+        // ultimo item. Aqui ele era um OutlinedButton solto -- outra cor,
+        // outro tamanho, outra fonte.
         MenuBotoesNavegacaoRolagem(
             showTecnicas = opcoesTecnica.isNotEmpty(),
             showMagias = opcoesMagia.isNotEmpty(),
@@ -1129,7 +1127,8 @@ fun TabRolagem(viewModel: FichaViewModel) {
             onShowMagias = { showMagiasDialog = true },
             onShowPoderes = { showPoderesDialog = true },
             onShowRolagemLivre = { showRolagemPersonalizadaDialog = true },
-            onShowResistencia = { showResistenciaDialog = true }
+            onShowResistencia = { showResistenciaDialog = true },
+            onShowBlocoDeNotas = { showBlocoDeNotasDialog = true }
         )
 
         HistoricoRolagemPanel(

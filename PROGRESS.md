@@ -8812,3 +8812,70 @@ falta igual para quem compra essas vantagens sem poder nenhum.
 - **Status:** Build OK nas 2 variantes - lint OK - gate **2344** (+19) - **PENDENTE: teste no aparelho** (T-PO32, T-PO33).
 
 > Gate: 2.344 testes, 0 falhas nas duas variantes.
+
+
+## Lote NOTA-1 - o Bloco de Notas, e o envio dele para a mesa (12.0-NOTAS)
+
+Um bloco de notas na aba Rolagem: cartoes com titulo automatico (as tres
+primeiras palavras), cor opcional, e o texto da anotacao. A ficha ganhou
+`notasDeJogo`, com migracao para quem ja tem ficha salva - campo ausente entra
+como lista vazia, e nenhuma ficha antiga quebra.
+
+### O botao estava fora do padrao, e a cor era so o sintoma
+
+Ele nasceu como `OutlinedButton` solto **acima** do menu de navegacao - outra
+cor, outra altura, outra fonte. Entrou no menu como **ultimo** dos sete botoes,
+com o mesmo `Button`, os mesmos 42 de altura e o mesmo `titleMedium` em negrito.
+
+A cor diferente nao era o problema: era o aviso de que ele estava fora do
+componente que padroniza os outros seis.
+
+### Enviar a anotacao para o Discord
+
+Icone no canto do cartao, oposto a data, com confirmacao **Sim / Nao** antes -
+enviar e irreversivel, a mensagem cai no canal e nao volta. A confirmacao mostra
+uma **previa do texto**: perguntar "quer enviar?" sem mostrar o que vai sair e
+uma confirmacao de mentira.
+
+E avisa o resultado nos dois casos. Sucesso silencioso faria o jogador mandar de
+novo achando que nao foi.
+
+### A nota viaja no envelope de uma rolagem
+
+O servidor tem **um endpoint so**, `/api/rolls`, e nao existe rota de "mandar
+texto". A nota entra naquele envelope com `testType = "Nota"`.
+
+E adaptacao, nao a forma certa. O que da para garantir daqui e que o pacote seja
+honesto: **`dice` vazio, `total` 0 e `target` nulo** - nada que faca a nota
+*parecer* uma rolagem que aconteceu. Se alguem puser dados ali "para ficar bonito
+no Discord", a mesa ve um resultado que ninguem rolou. Ha teste guardando os
+tres.
+
+### O erro do canal, achado no aparelho - e a causa importa mais que o erro
+
+*"o canal esta definido, porem quando mando a msg ele diz canal de envio nao
+definido"*. Estava certo: eu passava `canalId = null` e o servidor devolvia 400.
+
+Mas a causa nao foi distracao. As quatro rolagens da aba **ja passavam** o canal;
+a nota virou a **quinta rota** para o mesmo envio e nasceu diferente das outras
+quatro. E o formato de defeito que mais se repete neste projeto.
+
+Por isso o teste nao olha so a nota: ele varre **todo** pacote de envio do app e
+exige o canal em cada um, com a quantidade fixada em 5. A sexta rota ja nasce
+coberta, e se o numero mudar o portao obriga alguem a ler.
+
+### Um defeito de acessibilidade que ninguem veria olhando a tela
+
+O cartao usa `mergeDescendants`, que funde tudo num no so - e com isso o icone de
+enviar **sumiria** para o leitor de tela. Na variante `pracego` o envio ficaria
+inalcancavel. Virou acao personalizada do cartao.
+
+### O logo
+
+`Image` e nao `Icon`: o `Icon` do Material pinta o desenho inteiro com uma cor so
+e o logo viraria uma mancha chapada. O PNG saiu da raiz do projeto para
+`res/drawable/ic_discord.png`.
+
+- **Status:** Build OK nas 2 variantes - lint OK - gate **2358** (+14) - **PENDENTE: teste no aparelho** (T-NO1, T-NO2).
+
+> Gate: 2.358 testes, 0 falhas nas duas variantes.
