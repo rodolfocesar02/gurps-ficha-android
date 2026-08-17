@@ -247,4 +247,82 @@ class PadraoDeTelaTest {
             assertTrue("faltou $it", it in nomes)
         }
     }
+
+    // ==================================================================
+    // 5. Todo diálogo rola, e MOSTRA que rola — Lote TELA-1
+    // ==================================================================
+
+    /**
+     * 🔴 **Achado no aparelho de outro jogador, com a fonte do sistema grande.**
+     *
+     * O Compose **não desenha barra de rolagem** no Android. Os diálogos rolavam
+     * e nada dizia isso: a tela terminava, e quem olhava concluía que aquilo era
+     * tudo. Na fonte padrão o conteudo quase sempre cabia, e por isso o defeito
+     * atravessou o projeto inteiro sem aparecer.
+     *
+     * ⚠️ Eu mesmo caí nele **duas vezes** nesta sessão, achando que um diálogo
+     * estava truncado quando ele só não tinha sido rolado. Quem escreveu a tela
+     * se confundiu; o jogador na mesa não tem chance.
+     *
+     * A regra do projeto passou a ser: **container que rola usa
+     * `Modifier.rolagemVertical()`**, que rola e desenha a barra junto. Enquanto
+     * a barra fosse um segundo passo opcional, o próximo diálogo nasceria sem —
+     * que é como os 42 anteriores chegaram até aqui.
+     */
+    @Test
+    fun `🔴 rolagem anonima nao volta ao projeto`() {
+        val achados = arquivos().filter { arquivo ->
+            arquivo.name != "AppBarraDeRolagem.kt" &&
+                arquivo.readText(Charsets.UTF_8)
+                    .contains("verticalScroll(rememberScrollState())")
+        }.map { it.name }
+        assertTrue(
+            "estes arquivos rolam sem mostrar a barra — use Modifier.rolagemVertical(): " +
+                achados.joinToString(", "),
+            achados.isEmpty()
+        )
+    }
+
+    @Test
+    fun `a barra existe para os dois tipos de container`() {
+        // `Column` com rolagem e `LazyColumn` medem de jeitos diferentes; uma
+        // barra só para um deles deixaria metade dos diálogos sem aviso.
+        val barra = arquivos().first { it.name == "AppBarraDeRolagem.kt" }
+            .readText(Charsets.UTF_8)
+        assertTrue("sumiu a barra do Column rolável", barra.contains("estado: ScrollState"))
+        assertTrue("sumiu a barra do LazyColumn", barra.contains("estado: LazyListState"))
+        // ⚠️ Nada de barra numa lista que cabe inteira: ela precisa significar
+        // "tem mais coisa embaixo", ou o jogador aprende a ignorá-la.
+        assertTrue(
+            "a barra passou a aparecer mesmo sem ter o que rolar",
+            barra.contains("if (rolavel <= 0) return@drawWithContent")
+        )
+    }
+
+    @Test
+    fun `a moldura de selecao mostra a barra para todos os dialogos de uma vez`() {
+        val moldura = arquivos().first { it.name == "AppSelectionUi.kt" }
+            .readText(Charsets.UTF_8)
+        assertTrue(
+            "os diálogos de seleção voltaram a rolar sem aviso",
+            moldura.contains("comBarraDeRolagem(estadoDaLista")
+        )
+    }
+
+    @Test
+    fun `🔴 o cabecalho do dialogo de mira rola junto`() {
+        // O bloco de distância, tamanho do alvo e caixinhas ficava FORA da
+        // lista, preso no topo. Com fonte grande ele comia a altura toda e a
+        // lista de "onde acertar" ficava com espaço zero — o jogador via o
+        // cabeçalho e mais nada.
+        val mira = arquivos().first { it.name == "DialogoMira.kt" }
+            .readText(Charsets.UTF_8)
+        val iLista = mira.indexOf("LazyColumn(")
+        val iDistancia = mira.indexOf("LinhaDeDistancia(")
+        assertTrue("o diálogo de mira perdeu a lista", iLista > 0)
+        assertTrue(
+            "o cabeçalho da mira voltou para fora da lista, e some com fonte grande",
+            iDistancia > iLista
+        )
+    }
 }

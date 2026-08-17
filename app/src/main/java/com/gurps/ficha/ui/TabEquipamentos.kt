@@ -877,7 +877,7 @@ private fun ConfigurarArmaduraDialog(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(220.dp)
-                        .verticalScroll(rememberScrollState()),
+                        .rolagemVertical(),
                     verticalArrangement = Arrangement.spacedBy(2.dp)
                 ) {
                     locais.forEach { local ->

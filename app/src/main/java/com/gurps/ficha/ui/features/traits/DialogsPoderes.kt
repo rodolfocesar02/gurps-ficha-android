@@ -25,6 +25,7 @@ import com.gurps.ficha.domain.rules.poderes.RegrasDePoder
 import com.gurps.ficha.model.FonteDoPoder
 import com.gurps.ficha.model.Poder
 import com.gurps.ficha.model.PoderDefinicao
+import com.gurps.ficha.ui.rolagemVertical
 import com.gurps.ficha.ui.AppBotaoIcone
 import com.gurps.ficha.ui.AppBotaoSecundario
 import com.gurps.ficha.ui.AppCampoCompacto
@@ -304,7 +305,7 @@ fun PoderEditDialog(
                 Column(
                     modifier = Modifier
                         .weight(1f)
-                        .verticalScroll(rememberScrollState())
+                        .rolagemVertical()
                         // 🔴 Lote POD-27: o rótulo flutuante do `AppCampoCompacto`
                         // desenha **meio corpo acima** da borda da caixa — é assim
                         // que o Material o faz. O `verticalScroll` recorta no

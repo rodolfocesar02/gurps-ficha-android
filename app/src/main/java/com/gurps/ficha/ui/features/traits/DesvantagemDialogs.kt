@@ -18,6 +18,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.gurps.ficha.model.*
+import com.gurps.ficha.ui.rolagemVertical
 import com.gurps.ficha.ui.FullscreenDialogContainer
 import com.gurps.ficha.ui.UiActionLabels
 import com.gurps.ficha.ui.UiTokens
@@ -175,7 +176,7 @@ fun ConfigurarDesvantagemDialog(definicao: DesvantagemDefinicao, onDismiss: () -
         onDismissRequest = onDismiss,
         title = { Text(definicao.nome, color = MaterialTheme.colorScheme.primary, modifier = Modifier.clickable { if (descricaoCatalogo.isNotBlank()) mostrarDescricaoCatalogo = true }) },
         text = {
-            Column(modifier = Modifier.verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(UiTokens.DialogContentSpacing)) {
+            Column(modifier = Modifier.rolagemVertical(), verticalArrangement = Arrangement.spacedBy(UiTokens.DialogContentSpacing)) {
                 Card(modifier = Modifier.fillMaxWidth(), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer)) {
                     Text("Custo: $custoCalculado pts", modifier = Modifier.padding(12.dp).fillMaxWidth(), textAlign = TextAlign.Center, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
                 }
@@ -461,7 +462,7 @@ fun EditarDesvantagemDialog(
                 modifier = Modifier.clickable { if (descricaoCatalogoFinal.isNotBlank()) mostrarDescricaoCatalogo = true }) 
         },
         text = {
-            Column(modifier = Modifier.verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(UiTokens.DialogContentSpacing)) {
+            Column(modifier = Modifier.rolagemVertical(), verticalArrangement = Arrangement.spacedBy(UiTokens.DialogContentSpacing)) {
                 Card(modifier = Modifier.fillMaxWidth(), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer)) {
                     Text("Custo Final: $custoCalculado pts", modifier = Modifier.padding(12.dp).fillMaxWidth(), textAlign = TextAlign.Center, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
                 }

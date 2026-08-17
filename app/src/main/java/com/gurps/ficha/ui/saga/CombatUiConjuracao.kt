@@ -30,6 +30,7 @@ import com.gurps.ficha.domain.combat.*
 import com.gurps.ficha.viewmodel.FichaViewModel
 import com.gurps.ficha.viewmodel.delegates.CombatenteUi
 import com.gurps.ficha.viewmodel.delegates.FaixaDistancia
+import com.gurps.ficha.ui.rolagemVertical
 
 /**
  * Lote REFACTOR-3: UI de CONJURACAO de magia, recortada de CombatUi.kt (que passava de 2000
@@ -124,7 +125,7 @@ internal fun SubDialogoConjurar(
                         Text("Nenhuma magia com esse nome.", style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant)
                     }
-                    Column(Modifier.verticalScroll(rememberScrollState())) {
+                    Column(Modifier.rolagemVertical()) {
                         filtradas.forEach { m ->
                             // Cada magia é um BOTÃO: um toque já leva ao passo 2 (sem rolar até o fim).
                             // Lote UI-MAG-1: SEGURAR 2s abre a descrição do livro (sem sair do combate).
@@ -186,7 +187,7 @@ internal fun SubDialogoConjurar(
         onDismissRequest = onFechar,
         title = { Text(sel.nome) },
         text = {
-            Column(Modifier.verticalScroll(rememberScrollState())) {
+            Column(Modifier.rolagemVertical()) {
                 Text("${sel.classe} · NH ${sel.nhBasico} · custo ${sel.custoTexto}",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant)

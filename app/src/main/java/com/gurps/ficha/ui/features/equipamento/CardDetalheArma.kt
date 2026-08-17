@@ -23,6 +23,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.gurps.ficha.domain.rules.FichaDeEquipamento
 import com.gurps.ficha.domain.rules.FichaTecnicaDaArma
+import com.gurps.ficha.ui.rolagemVertical
 import com.gurps.ficha.ui.FullscreenDialogContainer
 import com.gurps.ficha.ui.PrimaryActionButton
 import com.gurps.ficha.ui.UiActionLabels
@@ -92,7 +93,7 @@ fun CardDetalheDoItem(
                 modifier = Modifier
                     .weight(1f)
                     .padding(top = 8.dp)
-                    .verticalScroll(rememberScrollState()),
+                    .rolagemVertical(),
                 verticalArrangement = Arrangement.spacedBy(4.dp)
             ) {
                 BlocosDaFicha(ficha)

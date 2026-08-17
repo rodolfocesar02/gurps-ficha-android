@@ -152,7 +152,7 @@ fun ConfigurarTecnicaDialog(
         text = {
             Column(
                 verticalArrangement = Arrangement.spacedBy(UiTokens.DialogContentSpacing),
-                modifier = Modifier.verticalScroll(rememberScrollState())
+                modifier = Modifier.rolagemVertical()
             ) {
                 Text(
                     definicao.nome,
@@ -315,7 +315,7 @@ fun ConfigurarTecnicaDialog(
             text = {
                 Column(
                     verticalArrangement = Arrangement.spacedBy(UiTokens.DialogContentSpacing),
-                    modifier = Modifier.verticalScroll(rememberScrollState())
+                    modifier = Modifier.rolagemVertical()
                 ) {
                     Text(
                         definicao.descricao.ifBlank { "Sem descrição detalhada disponível." },
@@ -409,7 +409,7 @@ fun EditarTecnicaDialog(
         text = {
             Column(
                 verticalArrangement = Arrangement.spacedBy(UiTokens.DialogContentSpacing),
-                modifier = Modifier.verticalScroll(rememberScrollState())
+                modifier = Modifier.rolagemVertical()
             ) {
                 Text(
                     tecnica.nome,
@@ -552,7 +552,7 @@ fun EditarTecnicaDialog(
             text = {
                 Column(
                     verticalArrangement = Arrangement.spacedBy(UiTokens.DialogContentSpacing),
-                    modifier = Modifier.verticalScroll(rememberScrollState())
+                    modifier = Modifier.rolagemVertical()
                 ) {
                     Text(
                         descricaoCatalogo.ifBlank { "Sem descrição detalhada disponível." },
@@ -660,7 +660,7 @@ private fun PericiaSuplementarDetalhesDialog(
         title = { Text(item.nome) },
         text = {
             Column(
-                modifier = Modifier.verticalScroll(rememberScrollState()),
+                modifier = Modifier.rolagemVertical(),
                 verticalArrangement = Arrangement.spacedBy(UiTokens.DialogContentSpacing)
             ) {
                 Text(

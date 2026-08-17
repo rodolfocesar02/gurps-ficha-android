@@ -69,7 +69,7 @@ private fun SelecaoDeCampanha(viewModel: FichaViewModel) {
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
-            .verticalScroll(rememberScrollState())
+            .rolagemVertical()
     ) {
         Text("GURPS Saga", style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold)
         Spacer(Modifier.height(4.dp))

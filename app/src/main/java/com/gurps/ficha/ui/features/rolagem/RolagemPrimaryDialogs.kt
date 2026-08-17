@@ -19,6 +19,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import com.gurps.ficha.ui.rolagemVertical
 import com.gurps.ficha.ui.appCardColors
 import com.gurps.ficha.ui.linhaAlternavel
 import kotlin.math.abs
@@ -260,7 +261,7 @@ fun RolagemPericiasDialog(
                         modifier = Modifier
                             .weight(1f)
                             .fillMaxWidth()
-                            .verticalScroll(rememberScrollState()),
+                            .rolagemVertical(),
                         verticalArrangement = Arrangement.spacedBy(4.dp)
                     ) {
                         opcoesPericia.forEach { pericia ->
@@ -485,7 +486,7 @@ fun RolagemTecnicasDialog(
                         modifier = Modifier
                             .weight(1f)
                             .fillMaxWidth()
-                            .verticalScroll(rememberScrollState()),
+                            .rolagemVertical(),
                         verticalArrangement = Arrangement.spacedBy(4.dp)
                     ) {
                         opcoesTecnica.forEach { tecnica ->
@@ -665,7 +666,7 @@ fun RolagemMagiasDialog(
                         modifier = Modifier
                             .weight(1f)
                             .fillMaxWidth()
-                            .verticalScroll(rememberScrollState()),
+                            .rolagemVertical(),
                         verticalArrangement = Arrangement.spacedBy(4.dp)
                     ) {
                         opcoesMagia.forEach { magia ->

@@ -29,6 +29,7 @@ import androidx.compose.ui.unit.dp
 import com.gurps.ficha.domain.rules.GolpeRapidoEAparaRules
 import com.gurps.ficha.domain.rules.MiraRules
 import com.gurps.ficha.ui.FullscreenDialogContainer
+import com.gurps.ficha.ui.comBarraDeRolagem
 import com.gurps.ficha.ui.UiActionLabels
 import com.gurps.ficha.ui.appCardColors
 import com.gurps.ficha.ui.linhaAlternavel
@@ -224,6 +225,9 @@ fun DialogoMira(
     )
     val nhComDistancia = resultadoDosMods.nhFinal
 
+    // Lote TELA-1: o estado da lista alimenta a barra de rolagem.
+    val estadoDaLista = androidx.compose.foundation.lazy.rememberLazyListState()
+
     FullscreenDialogContainer(onDismiss = onDismiss) {
         Column(modifier = Modifier.fillMaxSize()) {
             Text(
@@ -237,328 +241,344 @@ fun DialogoMira(
                 color = MaterialTheme.colorScheme.outline
             )
 
-            if (ehADistancia) {
-                LinhaDeDistancia(
-                    metros = metros,
-                    velocidade = velocidade,
-                    velocidadeVisivel = indiceVelocidade >= 0,
-                    penalidade = penalidadeDistancia,
-                    alcance = alcance,
-                    onDistancia = { delta ->
-                        onIndices(
-                            (indiceDistancia + delta)
-                                .coerceIn(0, TabelaVelocidadeDistancia.DEGRAUS.lastIndex),
-                            indiceVelocidade
-                        )
-                    },
-                    onVelocidade = { delta ->
-                        onIndices(
-                            indiceDistancia,
-                            (indiceVelocidade + delta)
-                                .coerceIn(-1, TabelaVelocidadeDistancia.DEGRAUS.lastIndex)
-                        )
-                    },
-                    onMostrarVelocidade = { onIndices(indiceDistancia, 0) }
-                )
-
-                // Lote MB-3: o tamanho do alvo, logo abaixo da distância — é a
-                // ordem do livro (passo 2 antes do passo 3) e a ordem em que o
-                // jogador pensa: "atirei no quê, a que distância".
-                LinhaDeTamanhoDoAlvo(
-                    degrau = degrauTamanho,
-                    onPasso = { delta ->
-                        indiceTamanhoAlvo = (indiceTamanhoAlvo + delta)
-                            .coerceIn(0, TamanhoDoAlvoRules.DEGRAUS.lastIndex)
-                    }
-                )
-            }
-
-            // Disopia tem DUAS variantes pelo mesmo custo, e a ficha nao guarda
-            // qual delas e -- entao o app oferece em vez de adivinhar.
-            if (ehADistancia && personagem != null && DisopiaRules.tem(personagem)) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .linhaAlternavel(
-                            marcado = miope,
-                            descricao = DisopiaRules.ROTULO_ACESSIVEL_MIOPE,
-                            onAlternar = { miope = !miope }
-                        )
-                        .padding(top = 2.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Checkbox(checked = miope, onCheckedChange = null)
-                    Text(
-                        DisopiaRules.ROTULO_MIOPE,
-                        style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.error,
-                        modifier = Modifier.padding(start = 2.dp)
-                    )
-                }
-            }
-
-            // Assassino Relutante (MB p.153). Aparece em ataque de qualquer
-            // alcance: o livro fala de "ataque letal", não de arma de fogo.
-            if (personagem != null && PacifismoRules.ehAssassinoRelutante(personagem)) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .linhaAlternavel(
-                            marcado = ataqueLetal,
-                            descricao = PacifismoRules.ROTULO_ACESSIVEL_LETAL,
-                            onAlternar = { ataqueLetal = !ataqueLetal }
-                        )
-                        .padding(top = 2.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Checkbox(checked = ataqueLetal, onCheckedChange = null)
-                    Text(
-                        PacifismoRules.rotulo(personagem, ataqueLetal, veORosto),
-                        style = MaterialTheme.typography.labelSmall,
-                        color = if (ataqueLetal) {
-                            MaterialTheme.colorScheme.error
-                        } else {
-                            MaterialTheme.colorScheme.outline
-                        },
-                        modifier = Modifier.padding(start = 2.dp)
-                    )
-                }
-                // A segunda pergunta só faz sentido depois da primeira: é ela
-                // que decide entre −4 e −2.
-                if (ataqueLetal) {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .linhaAlternavel(
-                                marcado = veORosto,
-                                descricao = PacifismoRules.ROTULO_ACESSIVEL_ROSTO,
-                                onAlternar = { veORosto = !veORosto }
-                            )
-                            .padding(start = 16.dp, top = 2.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Checkbox(checked = veORosto, onCheckedChange = null)
-                        Text(
-                            PacifismoRules.ROTULO_VE_O_ROSTO,
-                            style = MaterialTheme.typography.labelSmall,
-                            color = MaterialTheme.colorScheme.outline,
-                            modifier = Modifier.padding(start = 2.dp)
-                        )
-                    }
-                }
-            }
-
-            if (ehADistancia && personagem != null) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .linhaAlternavel(
-                            marcado = apontouValendo,
-                            descricao = if (apontarBloqueado) {
-                                "Apontar indisponível: o Assassino Relutante não " +
-                                    "pode Apontar num ataque letal."
-                            } else {
-                                ApontarRules.rotuloAcessivelApontar(
-                                    personagem, alcance.precisao, penalidadeDistancia,
-                                    turnosValendo
-                                )
-                            },
-                            // ⚠️ Não é mais liga/desliga: o toque ACUMULA segundos
-                            // e cicla 0 → 1 → 2 → 3 → 0 (MB p.364).
-                            onAlternar = {
-                                if (!apontarBloqueado) {
-                                    turnosApontando = ApontarRules.proximoTurno(turnosApontando)
-                                }
-                            }
-                        )
-                        .padding(top = 2.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Checkbox(
-                        checked = apontouValendo,
-                        onCheckedChange = null,
-                        enabled = !apontarBloqueado
-                    )
-                    Text(
-                        if (apontarBloqueado) {
-                            "Apontar bloqueado — o Assassino Relutante não pode " +
-                                "Apontar num ataque letal (MB p.153)"
-                        } else {
-                            ApontarRules.rotuloApontar(
-                                personagem, alcance.precisao, penalidadeDistancia,
-                                turnosValendo, armaFirmada, bonusDaMira
-                            )
-                        },
-                        style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.outline,
-                        modifier = Modifier.padding(start = 2.dp)
-                    )
-                }
-
-                // A arma firmada só faz sentido depois de começar a apontar —
-                // o +1 do livro é "adicional na Prec", e a Prec só vale
-                // apontando.
-                if (apontouValendo) {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .linhaAlternavel(
-                                marcado = armaFirmada,
-                                descricao = ApontarRules.ROTULO_ACESSIVEL_FIRMADA,
-                                onAlternar = { armaFirmada = !armaFirmada }
-                            )
-                            .padding(start = 16.dp, top = 2.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Checkbox(checked = armaFirmada, onCheckedChange = null)
-                        Text(
-                            ApontarRules.ROTULO_ARMA_FIRMADA,
-                            style = MaterialTheme.typography.labelSmall,
-                            color = MaterialTheme.colorScheme.outline,
-                            modifier = Modifier.padding(start = 2.dp)
-                        )
-                    }
-                }
-
-                // 🔴 Lote ARMA-5: a mira acoplada. Só aparece quando ESTA arma
-                // tem mira embutida no catálogo ("Prec 6+1") — as 12 armas de
-                // fogo cujo "+N" o app descartava. Como o bônus é "adicional na
-                // Prec" (MB p.270), a caixinha segue a mesma regra da arma
-                // firmada: só faz sentido depois de começar a apontar.
-                val bonusDisponivel = alcance.precisaoAcessorio ?: 0
-                if (apontouValendo && bonusDisponivel > 0) {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .linhaAlternavel(
-                                marcado = usandoMiraAcoplada,
-                                descricao = ApontarRules.rotuloAcessivelMiraAcoplada(bonusDisponivel),
-                                onAlternar = { usandoMiraAcoplada = !usandoMiraAcoplada }
-                            )
-                            .padding(start = 16.dp, top = 2.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Checkbox(checked = usandoMiraAcoplada, onCheckedChange = null)
-                        Text(
-                            ApontarRules.rotuloMiraAcoplada(bonusDisponivel),
-                            style = MaterialTheme.typography.labelSmall,
-                            color = MaterialTheme.colorScheme.outline,
-                            modifier = Modifier.padding(start = 2.dp)
-                        )
-                    }
-                }
-            }
-
-            // Lote ARMA-8/9: a vantagem cinematográfica em ação. Não tem
-            // caixinha — não há o que escolher: ou o personagem tem, ou não tem.
-            AtiradorRules.rotulo(
-                estiloDeTiro, alcance.precisao, alcance.duasMaos, alcance.cadenciaTiro,
-                avancarEAtacar, apontouValendo
-            )?.let { texto ->
-                Text(
-                    texto,
-                    style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.tertiary,
-                    fontWeight = FontWeight.Medium,
-                    modifier = Modifier.padding(top = 2.dp)
-                )
-            }
-
-            // Lote ARMA-7: atacar em movimento. Fica **abaixo** do Apontar porque
-            // é a alternativa a ele — e marcá-la desliga o Apontar, que é o que a
-            // regra manda.
-            if (personagem != null) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .linhaAlternavel(
-                            marcado = avancarEAtacar,
-                            descricao = AvancarEAtacarRules.rotuloAcessivel(
-                                ehADistancia, alcance.magnitude, nhBase
-                            ),
-                            onAlternar = { avancarEAtacar = !avancarEAtacar }
-                        )
-                        .padding(top = 2.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Checkbox(checked = avancarEAtacar, onCheckedChange = null)
-                    Text(
-                        AvancarEAtacarRules.rotulo(ehADistancia, alcance.magnitude, nhBase),
-                        style = MaterialTheme.typography.labelSmall,
-                        color = if (avancarEAtacar) {
-                            MaterialTheme.colorScheme.error
-                        } else {
-                            MaterialTheme.colorScheme.outline
-                        },
-                        modifier = Modifier.padding(start = 2.dp)
-                    )
-                }
-                // O jogador precisa saber POR QUE o Apontar sumiu do total.
-                if (avancarEAtacar && turnosApontando > 0) {
-                    Text(
-                        AvancarEAtacarRules.AVISO_EXCLUSIVO,
-                        style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.error,
-                        modifier = Modifier.padding(start = 16.dp)
-                    )
-                }
-            }
-
-            // Lotes MB-1 e MB-4: os modificadores condicionais.
-            PainelModificadoresDeCombate(
-                ehADistancia = ehADistancia,
-                escolhas = modsDeCombate,
-                onAlternar = { m ->
-                    modsDeCombate = modsDeCombate.toMutableMap().apply {
-                        if ((this[m.id] ?: 0) > 0) remove(m.id) else put(m.id, 1)
-                    }
-                },
-                onQuantidade = { m, q ->
-                    modsDeCombate = modsDeCombate.toMutableMap().apply { put(m.id, q) }
-                }
-            )
-
-            // ⚠️ O teto de 9 avisa quando corta. Um NH que para de cair sem
-            // explicação parece defeito — foi a mesma decisão do Apontar.
-            ModificadoresDeCombate.avisoDoTeto(resultadoDosMods)?.let { aviso ->
-                Text(
-                    aviso,
-                    style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.error,
-                    fontWeight = FontWeight.Medium,
-                    modifier = Modifier.padding(top = 4.dp)
-                )
-            }
-
-            // 🔴 Lote ARMA-5: perícia e arma discordando. O app segue a perícia
-            // — que é o ataque que o jogador tocou — mas DIZ que seguiu. Antes
-            // ele escolhia calado e o jogador perdia distância, 1/2D, Máx e o
-            // Apontar inteiro sem nenhum aviso.
-            conflitoArmaPericia?.let { aviso ->
-                Text(
-                    aviso,
-                    style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.error,
-                    fontWeight = FontWeight.Medium,
-                    modifier = Modifier.padding(top = 4.dp)
-                )
-            }
-
-            // Zarolho (MB p.163). Não tem caixinha: a penalidade não depende de
-            // escolha nenhuma do jogador — só de já ter marcado o Apontar.
-            if (personagem != null && ZarolhoRules.tem(personagem)) {
-                Text(
-                    ZarolhoRules.rotulo(personagem, ehADistancia, apontouValendo),
-                    style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.error,
-                    modifier = Modifier.padding(top = 2.dp)
-                )
-            }
 
             LazyColumn(
-                modifier = Modifier.weight(1f),
+                modifier = Modifier
+                    .weight(1f)
+                    .comBarraDeRolagem(estadoDaLista, MaterialTheme.colorScheme.primary),
+                state = estadoDaLista,
                 verticalArrangement = Arrangement.spacedBy(4.dp)
             ) {
+
+            // 🔴 Lote TELA-1: este bloco ficava FORA da lista, preso no topo.
+            // Com a fonte grande do aparelho ele comia a altura toda e a lista
+            // de baixo -- onde se escolhe onde acertar -- ficava com espaco
+            // zero. O jogador via o cabecalho e mais nada.
+            //
+            // ⚠️ Achado no aparelho de outro jogador, com a fonte do sistema
+            // aumentada. Na fonte padrao cabia, e por isso durou tanto.
+            item {
+                Column {
+                if (ehADistancia) {
+                    LinhaDeDistancia(
+                        metros = metros,
+                        velocidade = velocidade,
+                        velocidadeVisivel = indiceVelocidade >= 0,
+                        penalidade = penalidadeDistancia,
+                        alcance = alcance,
+                        onDistancia = { delta ->
+                            onIndices(
+                                (indiceDistancia + delta)
+                                    .coerceIn(0, TabelaVelocidadeDistancia.DEGRAUS.lastIndex),
+                                indiceVelocidade
+                            )
+                        },
+                        onVelocidade = { delta ->
+                            onIndices(
+                                indiceDistancia,
+                                (indiceVelocidade + delta)
+                                    .coerceIn(-1, TabelaVelocidadeDistancia.DEGRAUS.lastIndex)
+                            )
+                        },
+                        onMostrarVelocidade = { onIndices(indiceDistancia, 0) }
+                    )
+
+                    // Lote MB-3: o tamanho do alvo, logo abaixo da distância — é a
+                    // ordem do livro (passo 2 antes do passo 3) e a ordem em que o
+                    // jogador pensa: "atirei no quê, a que distância".
+                    LinhaDeTamanhoDoAlvo(
+                        degrau = degrauTamanho,
+                        onPasso = { delta ->
+                            indiceTamanhoAlvo = (indiceTamanhoAlvo + delta)
+                                .coerceIn(0, TamanhoDoAlvoRules.DEGRAUS.lastIndex)
+                        }
+                    )
+                }
+
+                // Disopia tem DUAS variantes pelo mesmo custo, e a ficha nao guarda
+                // qual delas e -- entao o app oferece em vez de adivinhar.
+                if (ehADistancia && personagem != null && DisopiaRules.tem(personagem)) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .linhaAlternavel(
+                                marcado = miope,
+                                descricao = DisopiaRules.ROTULO_ACESSIVEL_MIOPE,
+                                onAlternar = { miope = !miope }
+                            )
+                            .padding(top = 2.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Checkbox(checked = miope, onCheckedChange = null)
+                        Text(
+                            DisopiaRules.ROTULO_MIOPE,
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.error,
+                            modifier = Modifier.padding(start = 2.dp)
+                        )
+                    }
+                }
+
+                // Assassino Relutante (MB p.153). Aparece em ataque de qualquer
+                // alcance: o livro fala de "ataque letal", não de arma de fogo.
+                if (personagem != null && PacifismoRules.ehAssassinoRelutante(personagem)) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .linhaAlternavel(
+                                marcado = ataqueLetal,
+                                descricao = PacifismoRules.ROTULO_ACESSIVEL_LETAL,
+                                onAlternar = { ataqueLetal = !ataqueLetal }
+                            )
+                            .padding(top = 2.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Checkbox(checked = ataqueLetal, onCheckedChange = null)
+                        Text(
+                            PacifismoRules.rotulo(personagem, ataqueLetal, veORosto),
+                            style = MaterialTheme.typography.labelSmall,
+                            color = if (ataqueLetal) {
+                                MaterialTheme.colorScheme.error
+                            } else {
+                                MaterialTheme.colorScheme.outline
+                            },
+                            modifier = Modifier.padding(start = 2.dp)
+                        )
+                    }
+                    // A segunda pergunta só faz sentido depois da primeira: é ela
+                    // que decide entre −4 e −2.
+                    if (ataqueLetal) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .linhaAlternavel(
+                                    marcado = veORosto,
+                                    descricao = PacifismoRules.ROTULO_ACESSIVEL_ROSTO,
+                                    onAlternar = { veORosto = !veORosto }
+                                )
+                                .padding(start = 16.dp, top = 2.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Checkbox(checked = veORosto, onCheckedChange = null)
+                            Text(
+                                PacifismoRules.ROTULO_VE_O_ROSTO,
+                                style = MaterialTheme.typography.labelSmall,
+                                color = MaterialTheme.colorScheme.outline,
+                                modifier = Modifier.padding(start = 2.dp)
+                            )
+                        }
+                    }
+                }
+
+                if (ehADistancia && personagem != null) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .linhaAlternavel(
+                                marcado = apontouValendo,
+                                descricao = if (apontarBloqueado) {
+                                    "Apontar indisponível: o Assassino Relutante não " +
+                                        "pode Apontar num ataque letal."
+                                } else {
+                                    ApontarRules.rotuloAcessivelApontar(
+                                        personagem, alcance.precisao, penalidadeDistancia,
+                                        turnosValendo
+                                    )
+                                },
+                                // ⚠️ Não é mais liga/desliga: o toque ACUMULA segundos
+                                // e cicla 0 → 1 → 2 → 3 → 0 (MB p.364).
+                                onAlternar = {
+                                    if (!apontarBloqueado) {
+                                        turnosApontando = ApontarRules.proximoTurno(turnosApontando)
+                                    }
+                                }
+                            )
+                            .padding(top = 2.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Checkbox(
+                            checked = apontouValendo,
+                            onCheckedChange = null,
+                            enabled = !apontarBloqueado
+                        )
+                        Text(
+                            if (apontarBloqueado) {
+                                "Apontar bloqueado — o Assassino Relutante não pode " +
+                                    "Apontar num ataque letal (MB p.153)"
+                            } else {
+                                ApontarRules.rotuloApontar(
+                                    personagem, alcance.precisao, penalidadeDistancia,
+                                    turnosValendo, armaFirmada, bonusDaMira
+                                )
+                            },
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.outline,
+                            modifier = Modifier.padding(start = 2.dp)
+                        )
+                    }
+
+                    // A arma firmada só faz sentido depois de começar a apontar —
+                    // o +1 do livro é "adicional na Prec", e a Prec só vale
+                    // apontando.
+                    if (apontouValendo) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .linhaAlternavel(
+                                    marcado = armaFirmada,
+                                    descricao = ApontarRules.ROTULO_ACESSIVEL_FIRMADA,
+                                    onAlternar = { armaFirmada = !armaFirmada }
+                                )
+                                .padding(start = 16.dp, top = 2.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Checkbox(checked = armaFirmada, onCheckedChange = null)
+                            Text(
+                                ApontarRules.ROTULO_ARMA_FIRMADA,
+                                style = MaterialTheme.typography.labelSmall,
+                                color = MaterialTheme.colorScheme.outline,
+                                modifier = Modifier.padding(start = 2.dp)
+                            )
+                        }
+                    }
+
+                    // 🔴 Lote ARMA-5: a mira acoplada. Só aparece quando ESTA arma
+                    // tem mira embutida no catálogo ("Prec 6+1") — as 12 armas de
+                    // fogo cujo "+N" o app descartava. Como o bônus é "adicional na
+                    // Prec" (MB p.270), a caixinha segue a mesma regra da arma
+                    // firmada: só faz sentido depois de começar a apontar.
+                    val bonusDisponivel = alcance.precisaoAcessorio ?: 0
+                    if (apontouValendo && bonusDisponivel > 0) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .linhaAlternavel(
+                                    marcado = usandoMiraAcoplada,
+                                    descricao = ApontarRules.rotuloAcessivelMiraAcoplada(bonusDisponivel),
+                                    onAlternar = { usandoMiraAcoplada = !usandoMiraAcoplada }
+                                )
+                                .padding(start = 16.dp, top = 2.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Checkbox(checked = usandoMiraAcoplada, onCheckedChange = null)
+                            Text(
+                                ApontarRules.rotuloMiraAcoplada(bonusDisponivel),
+                                style = MaterialTheme.typography.labelSmall,
+                                color = MaterialTheme.colorScheme.outline,
+                                modifier = Modifier.padding(start = 2.dp)
+                            )
+                        }
+                    }
+                }
+
+                // Lote ARMA-8/9: a vantagem cinematográfica em ação. Não tem
+                // caixinha — não há o que escolher: ou o personagem tem, ou não tem.
+                AtiradorRules.rotulo(
+                    estiloDeTiro, alcance.precisao, alcance.duasMaos, alcance.cadenciaTiro,
+                    avancarEAtacar, apontouValendo
+                )?.let { texto ->
+                    Text(
+                        texto,
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.tertiary,
+                        fontWeight = FontWeight.Medium,
+                        modifier = Modifier.padding(top = 2.dp)
+                    )
+                }
+
+                // Lote ARMA-7: atacar em movimento. Fica **abaixo** do Apontar porque
+                // é a alternativa a ele — e marcá-la desliga o Apontar, que é o que a
+                // regra manda.
+                if (personagem != null) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .linhaAlternavel(
+                                marcado = avancarEAtacar,
+                                descricao = AvancarEAtacarRules.rotuloAcessivel(
+                                    ehADistancia, alcance.magnitude, nhBase
+                                ),
+                                onAlternar = { avancarEAtacar = !avancarEAtacar }
+                            )
+                            .padding(top = 2.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Checkbox(checked = avancarEAtacar, onCheckedChange = null)
+                        Text(
+                            AvancarEAtacarRules.rotulo(ehADistancia, alcance.magnitude, nhBase),
+                            style = MaterialTheme.typography.labelSmall,
+                            color = if (avancarEAtacar) {
+                                MaterialTheme.colorScheme.error
+                            } else {
+                                MaterialTheme.colorScheme.outline
+                            },
+                            modifier = Modifier.padding(start = 2.dp)
+                        )
+                    }
+                    // O jogador precisa saber POR QUE o Apontar sumiu do total.
+                    if (avancarEAtacar && turnosApontando > 0) {
+                        Text(
+                            AvancarEAtacarRules.AVISO_EXCLUSIVO,
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.error,
+                            modifier = Modifier.padding(start = 16.dp)
+                        )
+                    }
+                }
+
+                // Lotes MB-1 e MB-4: os modificadores condicionais.
+                PainelModificadoresDeCombate(
+                    ehADistancia = ehADistancia,
+                    escolhas = modsDeCombate,
+                    onAlternar = { m ->
+                        modsDeCombate = modsDeCombate.toMutableMap().apply {
+                            if ((this[m.id] ?: 0) > 0) remove(m.id) else put(m.id, 1)
+                        }
+                    },
+                    onQuantidade = { m, q ->
+                        modsDeCombate = modsDeCombate.toMutableMap().apply { put(m.id, q) }
+                    }
+                )
+
+                // ⚠️ O teto de 9 avisa quando corta. Um NH que para de cair sem
+                // explicação parece defeito — foi a mesma decisão do Apontar.
+                ModificadoresDeCombate.avisoDoTeto(resultadoDosMods)?.let { aviso ->
+                    Text(
+                        aviso,
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.error,
+                        fontWeight = FontWeight.Medium,
+                        modifier = Modifier.padding(top = 4.dp)
+                    )
+                }
+
+                // 🔴 Lote ARMA-5: perícia e arma discordando. O app segue a perícia
+                // — que é o ataque que o jogador tocou — mas DIZ que seguiu. Antes
+                // ele escolhia calado e o jogador perdia distância, 1/2D, Máx e o
+                // Apontar inteiro sem nenhum aviso.
+                conflitoArmaPericia?.let { aviso ->
+                    Text(
+                        aviso,
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.error,
+                        fontWeight = FontWeight.Medium,
+                        modifier = Modifier.padding(top = 4.dp)
+                    )
+                }
+
+                // Zarolho (MB p.163). Não tem caixinha: a penalidade não depende de
+                // escolha nenhuma do jogador — só de já ter marcado o Apontar.
+                if (personagem != null && ZarolhoRules.tem(personagem)) {
+                    Text(
+                        ZarolhoRules.rotulo(personagem, ehADistancia, apontouValendo),
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.error,
+                        modifier = Modifier.padding(top = 2.dp)
+                    )
+                }
+                }
+            }
+
                 MiraRules.Grupo.values().forEach { grupo ->
                     val doGrupo = opcoes.filter { it.grupo == grupo }
                     if (doGrupo.isEmpty()) return@forEach

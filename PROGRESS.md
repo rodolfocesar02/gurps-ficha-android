@@ -8925,3 +8925,61 @@ correcao e um caso novo, e caso novo encostando em molde antigo muda toda
 mensagem da mesa junto.
 
 - **Status:** `npm test` 6/6 - o app Android nao foi tocado neste lote - **PENDENTE: reiniciar o bot e conferir na mesa** (T-NO3).
+
+
+## Lote TELA-1 - regra do projeto: todo dialogo rola, e MOSTRA que rola (12.1-ROLAGEM)
+
+Achado no aparelho de **outro jogador**, com a fonte do sistema aumentada. Duas
+coisas diferentes, com a mesma causa:
+
+### 1. O Compose nao desenha barra de rolagem no Android
+
+Nenhum dos **44 dialogos** do app tinha. Eles rolavam, e nada dizia isso: a tela
+terminava e quem olhava concluia que aquilo era tudo.
+
+Na fonte padrao o conteudo quase sempre cabia, e por isso o defeito atravessou o
+projeto inteiro sem aparecer.
+
+⚠️ **Eu mesmo cai nele duas vezes nesta sessao**, achando que um dialogo estava
+truncado quando ele so nao tinha sido rolado. Quem escreveu a tela se confundiu;
+o jogador na mesa nao tem chance.
+
+### 2. O cabecalho do "Onde acertar" nao rolava
+
+No `DialogoMira`, so a lista de baixo rolava. O bloco de distancia, tamanho do
+alvo e caixinhas ficava **preso no topo** — e com fonte grande ele comia a
+altura toda, deixando a lista com espaco **zero**. O jogador via o cabecalho e
+mais nada.
+
+O bloco inteiro entrou na lista como primeiro item. Agora tudo rola junto.
+
+### A regra que ficou
+
+`Modifier.rolagemVertical()` **rola e desenha a barra**, num passo so. As **42**
+chamadas anonimas de `verticalScroll(rememberScrollState())` foram trocadas por
+ela, e o `PadraoDeTelaTest` reprova quem trouxer a forma antiga de volta.
+
+⚠️ A barra ser embutida e proposital. Enquanto ela fosse um segundo passo
+opcional, o proximo dialogo nasceria sem — que e exatamente como os 42 chegaram
+ate aqui.
+
+Nos dialogos de selecao ela entrou na **moldura** (`AppSelectionUi`), valendo
+para os seis de uma vez. Po-la em cada um seria repetir a decisao seis vezes, e
+foi assim que eles ja divergiram de tamanho.
+
+### O que a barra NAO faz
+
+- **Nao recebe toque.** E indicador, nao controle: arrastar barra fina com o dedo
+  vira rolagem tremida. O gesto continua sendo o da lista.
+- **Nao aparece quando tudo cabe.** Uma barra cheia numa lista curta mentiria — e
+  mentiria igual numa lista longa, ate o jogador aprender a ignora-la.
+- **Nao e anunciada pelo leitor de tela**, e esta certo: o leitor ja navega item
+  a item. Ela existe para os olhos.
+
+⚠️ No `LazyColumn` a posicao e **aproximada**: a lista preguicosa so conhece a
+altura do que ja desenhou. Ela responde *"tem mais coisa embaixo?"*, nao
+*"quantos pixels faltam"* — prometer precisao que a lista nao tem seria pior.
+
+- **Status:** Build OK nas 2 variantes - lint OK - gate **2362** (+4) - **PENDENTE: teste no aparelho com fonte grande** (T-TE1).
+
+> Gate: 2.362 testes, 0 falhas nas duas variantes.

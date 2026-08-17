@@ -256,9 +256,16 @@ class TelasDePoderTest {
         arquivos.forEach { caminho ->
             val src = fonte(caminho)
             // Todo diálogo com rodapé de ação precisa de um miolo que role.
+            //
+            // ⚠️ `rolagemVertical()` entrou no lote TELA-1: ela rola **e** desenha
+            // a barra. O teste aceita as duas formas porque o que ele guarda é a
+            // rolagem, não o nome da função — mas quem proíbe a forma anônima de
+            // voltar é o `PadraoDeTelaTest`.
             assertTrue(
                 "$caminho perdeu a rolagem do miolo",
-                src.contains("verticalScroll(") || src.contains("LazyColumn(")
+                src.contains("rolagemVertical(") ||
+                    src.contains("verticalScroll(") ||
+                    src.contains("LazyColumn(")
             )
             // E de um teto de altura -- sem ele a rolagem nunca chega a valer,
             // porque o diálogo simplesmente cresce.

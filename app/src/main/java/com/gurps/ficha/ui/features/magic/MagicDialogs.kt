@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.gurps.ficha.BuildConfig
 import com.gurps.ficha.model.*
+import com.gurps.ficha.ui.rolagemVertical
 import com.gurps.ficha.ui.UiActionLabels
 import com.gurps.ficha.ui.UiTokens
 import com.gurps.ficha.ui.appCardColors
@@ -123,7 +124,7 @@ fun AdicionarMagiaDialog(
         text = {
             Column(
                 verticalArrangement = Arrangement.spacedBy(UiTokens.DialogContentSpacing),
-                modifier = Modifier.verticalScroll(rememberScrollState())
+                modifier = Modifier.rolagemVertical()
             ) {
                 val difNome = definicao.dificuldadeFixa ?: "D"
                 Text("IQ/$difNome", style = MaterialTheme.typography.bodyMedium)
@@ -370,7 +371,7 @@ fun EditarMagiaDialog(
             )
         },
         text = {
-            Column(verticalArrangement = Arrangement.spacedBy(UiTokens.DialogContentSpacing), modifier = Modifier.verticalScroll(rememberScrollState())) {
+            Column(verticalArrangement = Arrangement.spacedBy(UiTokens.DialogContentSpacing), modifier = Modifier.rolagemVertical()) {
                 val difNome = magia.dificuldade.sigla
                 Text("IQ/$difNome", style = MaterialTheme.typography.bodyMedium)
 

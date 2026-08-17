@@ -29,6 +29,7 @@ import androidx.compose.ui.window.Dialog
 import com.gurps.ficha.domain.rules.poderes.MontadorDeModificador
 import com.gurps.ficha.domain.rules.poderes.ReservaDeEnergia
 import com.gurps.ficha.model.Poder
+import com.gurps.ficha.ui.rolagemVertical
 import com.gurps.ficha.ui.AppBotaoPrincipal
 import com.gurps.ficha.ui.AppBotaoSecundario
 import com.gurps.ficha.ui.AppCampoCompacto
@@ -152,7 +153,7 @@ fun MontadorDeModificadorDialog(
                 // mais altura do que sobrava e o "Total: 0%" era desenhado por
                 // cima do último item — o usuário viu isso na tela.
                 Column(
-                    modifier = Modifier.weight(1f).verticalScroll(rememberScrollState())
+                    modifier = Modifier.weight(1f).rolagemVertical()
                 ) {
                     MontadorDeModificador.Grupo.entries.forEach { grupo ->
                         val doGrupo = MontadorDeModificador.CATALOGO.filter { it.grupo == grupo }

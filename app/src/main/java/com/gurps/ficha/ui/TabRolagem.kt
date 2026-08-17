@@ -816,7 +816,7 @@ fun TabRolagem(viewModel: FichaViewModel) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .verticalScroll(rememberScrollState())
+                .rolagemVertical()
                 .padding(start = horizontalPadding, top = 6.dp, end = horizontalPadding, bottom = 16.dp),
             verticalArrangement = Arrangement.spacedBy(4.dp)
         ) {

@@ -23,6 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.gurps.ficha.domain.rules.FadigaRules
+import com.gurps.ficha.ui.rolagemVertical
 import com.gurps.ficha.ui.AppBotaoPasso
 import com.gurps.ficha.ui.AppBotaoPrincipal
 import com.gurps.ficha.ui.AppBotaoSecundario
@@ -80,7 +81,7 @@ fun DialogoFadiga(
         title = { Text("Pontos de Fadiga", style = UiEstilos.tituloDialogo) },
         text = {
             Column(
-                modifier = Modifier.verticalScroll(rememberScrollState()),
+                modifier = Modifier.rolagemVertical(),
                 verticalArrangement = Arrangement.spacedBy(UiTokens.ItemSpacing)
             ) {
                 Text(

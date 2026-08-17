@@ -267,7 +267,7 @@ fun EquipamentoDialog(
             }
 
             Column(
-                modifier = Modifier.weight(1f).verticalScroll(rememberScrollState()),
+                modifier = Modifier.weight(1f).rolagemVertical(),
                 verticalArrangement = Arrangement.spacedBy(UiTokens.DialogContentSpacing)
             ) {
                 // 🔴 Lote EQP-7: era um desenho PROPRIO da ficha -- lista chapada

@@ -30,6 +30,7 @@ import com.gurps.ficha.domain.combat.*
 import com.gurps.ficha.viewmodel.FichaViewModel
 import com.gurps.ficha.viewmodel.delegates.CombatenteUi
 import com.gurps.ficha.viewmodel.delegates.FaixaDistancia
+import com.gurps.ficha.ui.rolagemVertical
 
 /**
  * Lote 365 (Saga B7): UI de combate (visual aprovado no mockup). Três partes:
@@ -81,7 +82,7 @@ fun CombatePainel(
                 Modifier
                     .weight(1f)
                     .fillMaxWidth()
-                    .verticalScroll(rememberScrollState())
+                    .rolagemVertical()
             ) {
                 if (mostrarTracker) CombatTracker(estado.combatentes)
 
@@ -675,7 +676,7 @@ private fun SubDialogoDefesaTotal(
         onDismissRequest = onFechar,
         title = { Text("Defesa Total") },
         text = {
-            Column(Modifier.verticalScroll(rememberScrollState())) {
+            Column(Modifier.rolagemVertical()) {
                 OpcaoRadio(modo == DefesaTotalModo.AUMENTADA, "Aumentada (+2 numa defesa)",
                     "Defesa Total Aumentada, +2 numa defesa à escolha") { modo = DefesaTotalModo.AUMENTADA }
                 OpcaoRadio(modo == DefesaTotalModo.DUPLA, "Dupla (2ª defesa se a 1ª falhar)",
@@ -716,7 +717,7 @@ private fun SubDialogoMover(
         onDismissRequest = onFechar,
         title = { Text("Mover") },
         text = {
-            Column(Modifier.verticalScroll(rememberScrollState())) {
+            Column(Modifier.rolagemVertical()) {
                 Text("Direção", fontWeight = FontWeight.Bold, style = MaterialTheme.typography.labelLarge)
                 OpcaoRadio(!afastar, "Avançar (aproximar)", "Avançar, aproximar do alvo") { afastar = false }
                 OpcaoRadio(afastar, "Recuar (afastar)", "Recuar, afastar do alvo") { afastar = true }
@@ -760,7 +761,7 @@ private fun SubDialogoEscolherAlvo(
         onDismissRequest = onFechar,
         title = { Text(titulo) },
         text = {
-            Column(Modifier.verticalScroll(rememberScrollState())) {
+            Column(Modifier.rolagemVertical()) {
                 alvos.forEach { a ->
                     OpcaoRadio(alvoId == a.id, "${a.nome} — PV ${a.pvAtual}/${a.pvMax} (${a.distanciaM}m)", "Alvo ${a.nome}") { alvoId = a.id }
                 }
@@ -789,7 +790,7 @@ private fun SubDialogoApontar(
         onDismissRequest = onFechar,
         title = { Text("Apontar (mirar) em quem?") },
         text = {
-            Column(Modifier.verticalScroll(rememberScrollState())) {
+            Column(Modifier.rolagemVertical()) {
                 alvos.forEach { a ->
                     OpcaoRadio(alvoId == a.id, "${a.nome} — PV ${a.pvAtual}/${a.pvMax} (${a.distanciaM}m)", "Alvo ${a.nome}") { alvoId = a.id }
                 }
@@ -828,7 +829,7 @@ private fun SubDialogoPostura(
         onDismissRequest = onFechar,
         title = { Text("Mudar de postura") },
         text = {
-            Column(Modifier.verticalScroll(rememberScrollState())) {
+            Column(Modifier.rolagemVertical()) {
                 Text("Atual: $posturaAtual", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 Spacer(Modifier.height(6.dp))
                 posturas.forEach { p ->
@@ -927,7 +928,7 @@ private fun SubDialogoAlvoLocal(
         onDismissRequest = onFechar,
         title = { Text("${manobra.rotulo}: alvo e local") },
         text = {
-            Column(Modifier.verticalScroll(rememberScrollState())) {
+            Column(Modifier.rolagemVertical()) {
                 Text("Alvo", fontWeight = FontWeight.Bold, style = MaterialTheme.typography.labelLarge)
                 alvos.forEach { a ->
                     OpcaoRadio(
@@ -1550,7 +1551,7 @@ private fun SubDialogoVirar(
         onDismissRequest = onFechar,
         title = { Text("Virar-se") },
         text = {
-            Column(Modifier.verticalScroll(rememberScrollState())) {
+            Column(Modifier.rolagemVertical()) {
                 Text(
                     "Ação LIVRE: virar não gasta o seu turno — você pode se orientar e atacar no mesmo " +
                         "segundo (MB p.387). Quem te ataca pela FRENTE não ganha bônus; pelo FLANCO suas " +
@@ -1587,7 +1588,7 @@ private fun SubDialogoTrocarArma(
         onDismissRequest = onFechar,
         title = { Text("Trocar arma") },
         text = {
-            Column(Modifier.verticalScroll(rememberScrollState())) {
+            Column(Modifier.rolagemVertical()) {
                 Text(
                     "Sacar uma arma é a manobra Preparar (gasta o turno) — livre com Saque Rápido.",
                     style = MaterialTheme.typography.bodySmall, fontStyle = FontStyle.Italic,

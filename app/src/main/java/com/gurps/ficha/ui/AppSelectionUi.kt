@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.icons.Icons
@@ -140,8 +141,16 @@ fun AppSelectionDialog(
                 Text(it, style = UiEstilos.detalheDoItem, color = MaterialTheme.colorScheme.outline)
             }
 
+            // Lote TELA-1: a barra de rolagem entra AQUI, na moldura, e com isso
+            // vale para todos os diálogos de seleção de uma vez. Pô-la em cada
+            // um seria repetir a decisão seis vezes — e é assim que eles já
+            // divergiram de tamanho uma vez.
+            val estadoDaLista = rememberLazyListState()
             LazyColumn(
-                modifier = Modifier.weight(1f),
+                state = estadoDaLista,
+                modifier = Modifier
+                    .weight(1f)
+                    .comBarraDeRolagem(estadoDaLista, MaterialTheme.colorScheme.primary),
                 verticalArrangement = Arrangement.spacedBy(UiTokens.LinhaDeListaSpacing),
                 content = conteudo
             )

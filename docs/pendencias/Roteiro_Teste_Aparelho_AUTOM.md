@@ -2266,3 +2266,17 @@ exemplo o *Traje Pressurizado* (RD 6\*) ou a *Cota de Malha Longa Dupla*.
   - faca uma **rolagem comum** logo depois: ela tem de continuar com Dados e
   Resultado exatamente como sempre foi.
   - e uma rolagem que de **3, 4 ou 18**: a tabela critica tem de aparecer igual.
+- **T-TE1 - a barra de rolagem, com a fonte GRANDE** - ⚠️ aumente a fonte do
+  sistema no maximo antes de comecar (Ajustes -> Tela -> Tamanho da fonte). E
+  assim que o defeito aparece; na fonte padrao ele se esconde.
+  - **Onde acertar** (Ataque -> corpo a corpo E a distancia): o cabecalho com
+  distancia, tamanho do alvo e caixinhas **rola junto** com a lista de baixo.
+  Antes ele ficava preso no topo e a lista sumia.
+  - aparece uma **barra fina** do lado direito enquanto ha conteudo abaixo, e
+  ela **anda** conforme voce rola.
+  - o dialogo de **equipamento** (tocar numa arma): da para ler ate a ultima
+  linha, e a barra mostra o quanto falta.
+  - abra um dialogo **curto**, que caiba inteiro na tela: a barra **nao** deve
+  aparecer. Se aparecer sempre, ela para de significar alguma coisa.
+  - na variante **pracego**: o leitor de tela continua navegando normalmente. A
+  barra e so desenho, e nao deve ser anunciada nem virar um alvo de toque.

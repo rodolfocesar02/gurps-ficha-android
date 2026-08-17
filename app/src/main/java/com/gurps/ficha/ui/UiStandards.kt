@@ -124,7 +124,7 @@ fun StandardTabColumn(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .verticalScroll(rememberScrollState())
+            .rolagemVertical()
             .padding(UiTokens.ScreenPadding),
         verticalArrangement = Arrangement.spacedBy(contentSpacing),
         content = content

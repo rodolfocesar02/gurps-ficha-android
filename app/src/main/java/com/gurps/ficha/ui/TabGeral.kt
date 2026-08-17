@@ -133,7 +133,7 @@ fun TabGeral(viewModel: FichaViewModel) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .verticalScroll(rememberScrollState())
+            .rolagemVertical()
             .padding(outerPadding),
         verticalArrangement = Arrangement.spacedBy(contentSpacing)
     ) {
@@ -409,7 +409,7 @@ fun TabGeral(viewModel: FichaViewModel) {
                     Column(
                         modifier = Modifier
                             .weight(1f)
-                            .verticalScroll(rememberScrollState()),
+                            .rolagemVertical(),
                         verticalArrangement = Arrangement.spacedBy(dialogSpacing)
                     ) {
                         OutlinedTextField(
@@ -501,7 +501,7 @@ fun TabGeral(viewModel: FichaViewModel) {
                     }
                     HorizontalDivider()
                     Column(
-                        modifier = Modifier.weight(1f).verticalScroll(rememberScrollState()),
+                        modifier = Modifier.weight(1f).rolagemVertical(),
                         verticalArrangement = Arrangement.spacedBy(4.dp)
                     ) {
                         if (p.historicoLog.isEmpty()) {

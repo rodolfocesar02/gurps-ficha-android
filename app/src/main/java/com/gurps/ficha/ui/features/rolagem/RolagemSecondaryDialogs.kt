@@ -19,6 +19,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import com.gurps.ficha.ui.rolagemVertical
 import com.gurps.ficha.ui.appCardColors
 import com.gurps.ficha.data.network.DiscordVoiceChannel
 import com.gurps.ficha.domain.rules.MagiaEnergiaRules
@@ -311,7 +312,7 @@ fun RolagemMagiaAlmaDialog(
                     modifier = Modifier
                         .weight(1f)
                         .fillMaxWidth()
-                        .verticalScroll(rememberScrollState()),
+                        .rolagemVertical(),
                     verticalArrangement = Arrangement.spacedBy(4.dp)
                 ) {
                     aspectos.forEach { aspecto ->
@@ -355,7 +356,7 @@ fun RolagemDescricaoDialogModal(
             Column(
                 modifier = Modifier
                     .heightIn(max = 460.dp)
-                    .verticalScroll(rememberScrollState())
+                    .rolagemVertical()
             ) {
                 Text(dialogInfo.texto, style = MaterialTheme.typography.bodyMedium)
             }

@@ -36,6 +36,7 @@ import com.gurps.ficha.domain.rules.LocalAtaque
 import com.gurps.ficha.domain.rules.MapaDaSilhueta
 import com.gurps.ficha.model.Equipamento
 import com.gurps.ficha.model.TipoEquipamento
+import com.gurps.ficha.ui.rolagemVertical
 import com.gurps.ficha.ui.AppBotaoPrincipal
 import com.gurps.ficha.ui.AppBotaoSecundario
 import com.gurps.ficha.ui.AppFileiraDeBotoes
@@ -167,7 +168,7 @@ fun DialogoFerimento(
         Text("PV atual: $pvAtual de $pvInicial", style = UiEstilos.subtituloDialogo)
 
         Column(
-            modifier = Modifier.weight(1f).verticalScroll(rememberScrollState()),
+            modifier = Modifier.weight(1f).rolagemVertical(),
             verticalArrangement = Arrangement.spacedBy(UiTokens.ItemSpacing)
         ) {
                 // A ordem é a da mesa: o Mestre canta o número primeiro. Antes o

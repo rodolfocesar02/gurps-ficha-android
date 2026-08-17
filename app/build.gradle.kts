@@ -77,7 +77,7 @@ android {
         minSdk = 24
         targetSdk = 35
         versionCode = 178
-        versionName = "12.0-NOTAS"
+        versionName = "12.1-ROLAGEM"
         buildConfigField("String", "DISCORD_ROLL_API_BASE_URL", "\"$discordApiBaseUrl\"")
         buildConfigField("String", "DISCORD_ROLL_API_KEY", "\"$discordApiKey\"")
         buildConfigField(

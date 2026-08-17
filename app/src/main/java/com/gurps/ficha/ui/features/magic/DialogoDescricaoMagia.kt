@@ -17,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
+import com.gurps.ficha.ui.rolagemVertical
 
 /**
  * Pop-up ÚNICO de descrição de mágica — a regra fiel do livro, com **barra de rolagem**.
@@ -50,7 +51,7 @@ fun DialogoDescricaoMagia(
                 Modifier
                     .fillMaxWidth()
                     .heightIn(max = 420.dp)
-                    .verticalScroll(rememberScrollState())
+                    .rolagemVertical()
             ) {
                 if (!fichaTecnica.isNullOrBlank()) {
                     Text(

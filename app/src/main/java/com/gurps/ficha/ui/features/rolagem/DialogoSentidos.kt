@@ -16,6 +16,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.gurps.ficha.domain.rules.SentidoRules
 import com.gurps.ficha.model.Personagem
+import com.gurps.ficha.ui.rolagemVertical
 
 /**
  * Lote 372: diálogo de Testes de Sentidos (abre ao tocar "PER"). Cada sentido rola contra a
@@ -39,7 +40,7 @@ fun DialogoSentidos(
         onDismissRequest = onFechar,
         title = { Text("Testes de Sentidos") },
         text = {
-            Column(Modifier.verticalScroll(rememberScrollState())) {
+            Column(Modifier.rolagemVertical()) {
                 Text(
                     "Cada sentido rola contra a Percepção, somando Sentidos Aguçados e descontando limitações.",
                     style = MaterialTheme.typography.bodySmall,

@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.gurps.ficha.BuildConfig
 import com.gurps.ficha.model.*
+import com.gurps.ficha.ui.rolagemVertical
 import com.gurps.ficha.ui.FullscreenDialogContainer
 import com.gurps.ficha.ui.UiActionLabels
 import com.gurps.ficha.ui.UiTokens
@@ -240,7 +241,7 @@ fun EditarVantagemDialog(
                 modifier = Modifier.clickable { if (descricaoCatalogoFinal.isNotBlank()) mostrarDescricaoCatalogo = true })
         },
         text = {
-            Column(modifier = Modifier.verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(UiTokens.DialogContentSpacing)) {
+            Column(modifier = Modifier.rolagemVertical(), verticalArrangement = Arrangement.spacedBy(UiTokens.DialogContentSpacing)) {
                 val custoCalculado = CharacterRules.calcularCustoVantagem(
                     personagem = null,
                     definicaoId = vantagem.definicaoId,
