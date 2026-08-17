@@ -95,15 +95,32 @@ fun TabTracos(viewModel: FichaViewModel) {
         // viver na aba, como as vantagens e as desvantagens. O poder é um traço
         // do personagem e custa pontos — escondê-lo atrás de um diálogo fazia
         // quem abria a ficha não saber que ele existia.
-        SecaoDePoderes(viewModel)
+        SecaoDePoderes(
+            viewModel = viewModel,
+            onEditarVantagem = { editingVantagemIndex = it },
+            onEditarDesvantagem = { editingDesvantagemIndex = it }
+        )
 
         BotaoAcaoTracosPadrao(
             texto = "Adicionar Vantagem",
             onClick = { showSelecionarVantagem = true }
         )
-        if (p.vantagens.isNotEmpty()) {
+        // 🔴 Lote POD-28: a habilidade de um poder **sai** desta lista e aparece
+        // só dentro do poder. Achado pelo usuário na tela: *"ela deveria ficar
+        // apenas associado ao poder, não entrando na lista de vantagens, sendo
+        // que é uma habilidade do poder"*.
+        //
+        // ⚠️ Só a EXIBIÇÃO muda. A vantagem continua em `p.vantagens`, e por
+        // isso continua contando em `pontosVantagens` — foi comprada com os
+        // pontos do personagem e o total da ficha tem de refletir isso.
+        //
+        // ⚠️ `withIndex` antes do filtro, de propósito: o índice que vai para
+        // `removerVantagem` é o da lista COMPLETA. Filtrar primeiro e usar a
+        // posição da lista filtrada apagaria a vantagem errada.
+        val vantagensSoltas = p.vantagens.withIndex().filter { it.value.poderId == null }
+        if (vantagensSoltas.isNotEmpty()) {
             Text("Vantagens", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-            p.vantagens.forEachIndexed { index, vantagem ->
+            vantagensSoltas.forEach { (index, vantagem) ->
                 AppListItemCard {
                     VantagemItem(
                         vantagem = vantagem,
@@ -118,9 +135,12 @@ fun TabTracos(viewModel: FichaViewModel) {
             texto = "Adicionar Desvantagem",
             onClick = { showSelecionarDesvantagem = true }
         )
-        if (p.desvantagens.isNotEmpty()) {
+        // Mesma regra do POD-28: a desvantagem exigida por um poder aparece
+        // dentro dele, não aqui.
+        val desvantagensSoltas = p.desvantagens.withIndex().filter { it.value.poderId == null }
+        if (desvantagensSoltas.isNotEmpty()) {
             Text("Desvantagens", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-            p.desvantagens.forEachIndexed { index, desvantagem ->
+            desvantagensSoltas.forEach { (index, desvantagem) ->
                 val permiteAutocontrole = desvantagensPorId[desvantagem.definicaoId]?.usaAutocontroleMental() ?: false
                 AppListItemCard {
                     DesvantagemItem(

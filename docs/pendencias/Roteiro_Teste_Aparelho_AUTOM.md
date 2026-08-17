@@ -2210,3 +2210,14 @@ exemplo o *Traje Pressurizado* (RD 6\*) ou a *Cota de Malha Longa Dupla*.
   lado, habilidades do outro) — se aparecer um número só somando tudo, está
   contando duas vezes.
   ⚠️ Personagem **sem** poder nenhum: ✅ a seção não aparece, nem o cabeçalho.
+- **T-PO31 · 🔴 a habilidade some da lista de Vantagens** — no poder **Água**,
+  use *Adicionar habilidade* e escolha **Abençoado**: ✅ ela aparece **debaixo do
+  poder**, recuada, com o custo. ✅ Ela **não** aparece mais na lista de
+  Vantagens logo abaixo.
+  ⚠️ **O mais importante:** o `Gastos` do topo tem de subir do mesmo jeito que
+  subia antes (9 pontos, no exemplo). Se sumir da tela **e** da conta, é defeito
+  grave — a ficha passa a mentir.
+  ✅ O lápis ao lado da habilidade abre o diálogo de editar a vantagem.
+  ✅ A lixeira apaga **só aquela habilidade**, e a certa: teste com **duas**
+  habilidades no poder e apague a **segunda**, conferindo que a primeira ficou.
+  ✅ O card do poder agora diz *"1 habilidade encontrada"* — com **A** no fim.

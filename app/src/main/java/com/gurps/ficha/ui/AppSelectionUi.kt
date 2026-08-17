@@ -318,5 +318,28 @@ fun contadorDe(quantidade: Int, singular: String, plural: String): String =
     if (quantidade == 1) "1 $singular encontrad${terminacao(singular)}"
     else "$quantidade $plural encontrad${terminacao(plural)}s"
 
-private fun terminacao(palavra: String): String =
-    if (palavra.endsWith("a") || palavra.endsWith("as")) "a" else "o"
+/**
+ * O gênero da palavra, para concordar o particípio.
+ *
+ * 🔴 A primeira versão era só *"termina em -a"*. O usuário viu o resultado na
+ * tela: **"1 habilidade encontrado"**. Três dos doze rótulos do app saíam
+ * errados — *habilidade*, *vantagem* e *desvantagem* são femininos e nenhum
+ * termina em -a.
+ *
+ * ⚠️ Continua sendo heurística, e por isso existe um teste que fixa **as doze
+ * palavras que o app realmente usa**. Palavra nova entra na lista do teste, ou
+ * o erro volta em silêncio — que foi exatamente como este aqui durou.
+ */
+private fun terminacao(palavra: String): String {
+    val p = palavra.substringAfterLast(' ').lowercase()
+    val feminino = p.endsWith("a") || p.endsWith("as") ||
+        // Sufixos femininos do português que não terminam em -a:
+        // -agem (vantagem), -dade (habilidade), -ção, -são, -ice, -ez.
+        p.endsWith("agem") || p.endsWith("agens") ||
+        p.endsWith("dade") || p.endsWith("dades") ||
+        p.endsWith("ção") || p.endsWith("ções") ||
+        p.endsWith("são") || p.endsWith("sões") ||
+        p.endsWith("ice") || p.endsWith("ices") ||
+        p.endsWith("ez") || p.endsWith("ezes")
+    return if (feminino) "a" else "o"
+}

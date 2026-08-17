@@ -8684,3 +8684,53 @@ Um teste guarda a separação.
 - **Status:** ✅ Build OK nas 2 variantes · lint OK · gate **2318** (+4) · ⏭️ **PENDENTE: teste no aparelho** (T-PO30).
 
 > Gate: 2.318 testes, 0 falhas nas duas variantes.
+
+
+## Lote POD-28 — a habilidade mora dentro do poder (11.8-HAB)
+
+*"ele está adicionando tbm na lista de vantagens do personagem! ela deveria
+ficar apenas associado ao poder, não entrando na lista de vantagens, sendo que é
+uma habilidade do poder."*
+
+### ⚠️ Isto desfaz uma decisão que eu tinha escrito no POD-14
+
+Lá eu argumentei, com essas palavras, que a habilidade *"tem de continuar
+aparecendo na aba Traços"*. O argumento estava certo na premissa e **errado na
+conclusão**: o que precisa continuar é ela **contar pontos**, não ela aparecer
+duas vezes na mesma tela.
+
+E o formato de ficha do livro é o do usuário: numa ficha de GURPS escrita à mão o
+poder é um **cabeçalho** e as habilidades vêm indentadas embaixo dele.
+
+### O risco desta mudança, e como ele foi tratado
+
+Sumir da tela **não pode** virar sumir da conta — a vantagem foi comprada com os
+pontos do personagem. Por isso só a **exibição** mudou: a vantagem continua em
+`personagem.vantagens`, e `pontosVantagens` continua somando. Dois testes fixam
+isso antes de qualquer coisa de tela.
+
+### 🔴 A armadilha que quase apagou a vantagem errada
+
+O `forEachIndexed` dava o índice usado por `removerVantagem`. Filtrando a lista,
+esse índice passa a ser o da lista **filtrada** — e a lixeira apagaria outra
+vantagem. Por isso o `withIndex()` vem **antes** do `filter`, e um teste proíbe a
+ordem inversa.
+
+### E as habilidades ganharam lápis e lixeira dentro do poder
+
+Tirar da lista sem mostrar dentro do poder deixaria a vantagem comprada **sem
+nenhum caminho até ela**. ⚠️ A lixeira daqui **apaga**; o `X` de dentro do
+diálogo do poder **desliga**. São ações diferentes, e o rótulo de acessibilidade
+diz qual é qual.
+
+### 🔴 "1 habilidade encontrado"
+
+Na mesma imagem. O contador decidia o gênero por *"termina em -a"*, e **três dos
+doze** rótulos do app saíam errados: *habilidade*, *vantagem* e *desvantagem* são
+femininos e nenhum termina em -a. O teste agora fixa **as doze palavras que o app
+realmente usa** — palavra nova entra na lista, ou o erro volta em silêncio, que
+foi exatamente como este durou.
+
+- **Status:** ✅ Build OK nas 2 variantes · lint OK · gate **2325** (+7) · ⏭️ **PENDENTE: teste no aparelho** (T-PO31).
+
+> Gate: 2.325 testes, 0 falhas nas duas variantes.

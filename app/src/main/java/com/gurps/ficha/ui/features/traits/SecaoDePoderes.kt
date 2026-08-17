@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
@@ -19,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import com.gurps.ficha.model.Poder
 import com.gurps.ficha.ui.AppBotaoIcone
 import com.gurps.ficha.ui.AppListItemCard
@@ -46,7 +48,11 @@ import com.gurps.ficha.viewmodel.FichaViewModel
  * projeto é 1.000: seção nova nasce ao lado, não dentro.
  */
 @Composable
-fun SecaoDePoderes(viewModel: FichaViewModel) {
+fun SecaoDePoderes(
+    viewModel: FichaViewModel,
+    onEditarVantagem: (Int) -> Unit = {},
+    onEditarDesvantagem: (Int) -> Unit = {}
+) {
     val poderes = viewModel.personagem.poderes
     if (poderes.isEmpty()) return
 
@@ -59,15 +65,27 @@ fun SecaoDePoderes(viewModel: FichaViewModel) {
     )
     poderes.forEachIndexed { index, poder ->
         AppListItemCard {
-            PoderItem(
-                viewModel = viewModel,
-                poder = poder,
-                onEdit = { editando = index },
-                // ⚠️ Apagar o poder **não** apaga as vantagens dele: elas foram
-                // compradas com os pontos do personagem e continuam na ficha.
-                // É o que o `removerPoder` já garante desde o POD-5.
-                onDelete = { viewModel.removerPoder(index) }
-            )
+            Column {
+                PoderItem(
+                    viewModel = viewModel,
+                    poder = poder,
+                    onEdit = { editando = index },
+                    // ⚠️ Apagar o poder **não** apaga as vantagens dele: elas
+                    // foram compradas com os pontos do personagem e continuam na
+                    // ficha. É o que o `removerPoder` já garante desde o POD-5.
+                    onDelete = { viewModel.removerPoder(index) }
+                )
+                // 🔴 Lote POD-28: as habilidades saíram da lista de Vantagens e
+                // passam a viver aqui. Elas PRECISAM aparecer, com lápis e
+                // lixeira: tirar da lista sem mostrar aqui deixaria a vantagem
+                // comprada sem nenhum caminho até ela.
+                HabilidadesDoPoderNaAba(
+                    viewModel = viewModel,
+                    poder = poder,
+                    onEditarVantagem = onEditarVantagem,
+                    onEditarDesvantagem = onEditarDesvantagem
+                )
+            }
         }
     }
 
@@ -87,6 +105,82 @@ fun SecaoDePoderes(viewModel: FichaViewModel) {
         }
     }
 }
+
+/**
+ * **As habilidades do poder, listadas debaixo dele** — Lote POD-28.
+ *
+ * Elas são vantagens e desvantagens de verdade, compradas com os pontos do
+ * personagem — e continuam contando no total da ficha. O que mudou é **onde
+ * elas aparecem**: dentro do poder a que pertencem, e não na lista geral.
+ *
+ * ⚠️ É assim que uma ficha de GURPS é escrita à mão: o poder é um cabeçalho, e
+ * as habilidades vêm indentadas embaixo dele.
+ */
+@Composable
+private fun HabilidadesDoPoderNaAba(
+    viewModel: FichaViewModel,
+    poder: Poder,
+    onEditarVantagem: (Int) -> Unit,
+    onEditarDesvantagem: (Int) -> Unit
+) {
+    val resumo = viewModel.habilidadesDoPoder(poder)
+    if (resumo.habilidades.isEmpty()) return
+
+    Column(modifier = Modifier.padding(start = RECUO_DA_HABILIDADE, top = 4.dp)) {
+        resumo.habilidades.forEach { h ->
+            val ehAlternativa = !h.ehDesvantagem &&
+                viewModel.personagem.vantagens.getOrNull(h.indice)?.alternativaDoPoder == true
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .semantics {
+                        contentDescription = "Habilidade do poder ${poder.nome}: " +
+                            "${h.nome}, ${h.custo} pontos" +
+                            (if (h.ehDesvantagem) ", desvantagem exigida" else "") +
+                            (if (ehAlternativa) ", alternativa" else "") + "."
+                    },
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(
+                        "• ${h.nome}",
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                    Text(
+                        "${h.custo} pts" +
+                            (if (h.ehDesvantagem) " · desvantagem exigida" else "") +
+                            (if (ehAlternativa) " · alternativa" else ""),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+                AppBotaoIcone(
+                    icone = Icons.Default.Edit,
+                    descricao = "Editar a habilidade ${h.nome} do poder ${poder.nome}",
+                    onClick = {
+                        if (h.ehDesvantagem) onEditarDesvantagem(h.indice)
+                        else onEditarVantagem(h.indice)
+                    }
+                )
+                AppBotaoIcone(
+                    icone = Icons.Default.Delete,
+                    descricao = "Remover a habilidade ${h.nome} do poder ${poder.nome}",
+                    onClick = {
+                        // ⚠️ Aqui a lixeira APAGA mesmo, e não só desliga do
+                        // poder. O X de dentro do diálogo do poder é que
+                        // desliga. São ações diferentes e o rótulo diz qual é.
+                        if (h.ehDesvantagem) viewModel.removerDesvantagem(h.indice)
+                        else viewModel.removerVantagem(h.indice)
+                    }
+                )
+            }
+        }
+    }
+}
+
+/** O recuo que mostra que a habilidade pertence ao poder de cima. */
+private val RECUO_DA_HABILIDADE = 16.dp
 
 /**
  * A linha de um poder na aba, no mesmo desenho de [VantagemItem].

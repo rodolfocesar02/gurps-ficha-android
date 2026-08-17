@@ -416,13 +416,16 @@ class TelasDePoderTest {
         // pontosGastos desde o POD-3). Escondido atras do botao, quem abria a
         // ficha nao tinha como saber que ele existia.
         val aba = fonte("com/gurps/ficha/ui/TabTracos.kt")
+        // ⚠️ So a chamada, sem os argumentos: o POD-28 acrescentou parametros e
+        // a chamada virou multilinha -- procurar a linha inteira quebrava o
+        // teste sem que nada de errado tivesse acontecido.
         assertTrue("a secao de poderes nao foi ligada na aba",
-            aba.contains("SecaoDePoderes(viewModel)"))
+            aba.contains("SecaoDePoderes("))
 
         // A ordem que o usuario pediu: entre Configurar Poderes e Adicionar
         // Vantagem.
         val botaoPoderes = aba.indexOf("\"Configurar Poderes\"")
-        val secao = aba.indexOf("SecaoDePoderes(viewModel)")
+        val secao = aba.indexOf("SecaoDePoderes(")
         val botaoVantagem = aba.indexOf("\"Adicionar Vantagem\"")
         assertTrue("a secao saiu do lugar pedido",
             botaoPoderes in 1 until secao && secao < botaoVantagem)
