@@ -2221,3 +2221,22 @@ exemplo o *Traje Pressurizado* (RD 6\*) ou a *Cota de Malha Longa Dupla*.
   ✅ A lixeira apaga **só aquela habilidade**, e a certa: teste com **duas**
   habilidades no poder e apague a **segunda**, conferindo que a primeira ficou.
   ✅ O card do poder agora diz *"1 habilidade encontrada"* — com **A** no fim.
+- **T-PO32 - o Talento soma no ataque do poder** - crie um poder com
+  **Talento 3**, use *Adicionar habilidade* -> **Ataque Inato** e configure o
+  dano. Va para a aba **Rolagem**:
+  - o ataque aparece na lista como **"Nome (Poder)"**, com o poder no rotulo.
+  - o NH dele esta **3 pontos acima** do que estaria sem o Talento (compare
+  criando um Ataque Inato solto, igual, fora de qualquer poder).
+  - **O dano NAO muda.** Confira em Dano que a expressao continua a mesma - o
+  livro exclui o Talento do dano por escrito (p.158).
+- **T-PO33 - a RD do corpo desconta** - compre **Resistencia a Dano** nivel 5
+  (25 pontos). Aba Rolagem -> **Ferimento**: escolha uma parte do corpo e ponha
+  10 de dano.
+  - a linha da caixinha diz **"Descontar RD"** (nao mais "da armadura") e o
+  numero inclui os **5** da vantagem, somados a qualquer armadura vestida.
+  - abaixo dela aparece a explicacao *"RD natural 5, somada a da armadura
+  (p.83)"*.
+  - desmarcando a caixa, o dano volta a ser o cheio: a RD natural sai junto.
+  - repita com a RD comprada **dentro de um poder**: tem de contar igual.
+  - e com um **modificador** na RD (ex: Limitada): o numero continua somando,
+  mas aparece a ressalva mandando conferir se vale contra aquele ataque.

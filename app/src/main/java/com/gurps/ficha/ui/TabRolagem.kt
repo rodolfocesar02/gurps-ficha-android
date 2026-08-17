@@ -179,7 +179,18 @@ fun TabRolagem(viewModel: FichaViewModel) {
         // aparecer aqui igual a quem comprou Garras com pontos.
         p.vantagensTotais.forEach { vant ->
             com.gurps.ficha.domain.rules.traits.TraitRuleRegistry.getRuleFor(vant.definicaoId)?.let { rule ->
-                list.addAll(rule.getAttackOptions(p, vant))
+                // Lote POD-29: se a habilidade pertence a um poder, o Talento
+                // dele soma no NH (p.158) e o rotulo diz de que poder ela e.
+                // Um lugar so, para as tres regras que dao ataque e para as
+                // que vierem: tres copias da mesma decisao e como o projeto ja
+                // perdeu quatro rotas de modificador.
+                list.addAll(
+                    com.gurps.ficha.domain.rules.poderes.TalentoNaRolagem.aplicar(
+                        personagem = p,
+                        poderId = vant.poderId,
+                        opcoes = rule.getAttackOptions(p, vant)
+                    )
+                )
             }
         }
         list
@@ -396,6 +407,7 @@ fun TabRolagem(viewModel: FichaViewModel) {
     var showTecnicasDialog by remember { mutableStateOf(false) }
     var showMagiaAlmaDialog by remember { mutableStateOf(false) }
     var showRolagemPersonalizadaDialog by remember { mutableStateOf(false) }
+    var showBlocoDeNotasDialog by remember { mutableStateOf(false) }
     var showConfigAtaqueDialog by remember { mutableStateOf(false) }
     var showConfigDanoDialog by remember { mutableStateOf(false) }
     var showSentidosDialog by remember { mutableStateOf(false) } // Lote 372: diálogo de sentidos ao tocar PER
@@ -1103,6 +1115,11 @@ fun TabRolagem(viewModel: FichaViewModel) {
             }
         }
 
+        OutlinedButton(
+            onClick = { showBlocoDeNotasDialog = true },
+            modifier = Modifier.fillMaxWidth()
+        ) { Text("Bloco de Notas") }
+
         MenuBotoesNavegacaoRolagem(
             showTecnicas = opcoesTecnica.isNotEmpty(),
             showMagias = opcoesMagia.isNotEmpty(),
@@ -1473,6 +1490,10 @@ fun TabRolagem(viewModel: FichaViewModel) {
             pfAtual = pfAtualRolagem,
             equipamentos = p.equipamentos,
             guardadas = p.armadurasGuardadas.toSet(),
+            // Lote POD-30: a RD do proprio corpo (MB p.83) soma com a da
+            // armadura. A vantagem existia no catalogo e nao descontava nada.
+            rdNatural = com.gurps.ficha.domain.rules.ResistenciaDanoNatural.total(p),
+            explicacaoRdNatural = com.gurps.ficha.domain.rules.ResistenciaDanoNatural.explicar(p),
             isPraCegoVariant = isPraCegoVariant,
             onSalvar = { pvNovo, pfNovo, guardadas, _ ->
                 viewModel.aplicarFerimentoPorLocal(pvNovo, pfNovo, guardadas)
@@ -1506,5 +1527,12 @@ fun TabRolagem(viewModel: FichaViewModel) {
             onFecharApara = { showEditarAparaDialog = false },
             onFecharBloqueio = { showEditarBloqueioDialog = false }
         )
+
+    if (showBlocoDeNotasDialog) {
+        com.gurps.ficha.ui.features.rolagem.DialogoBlocoDeNotas(
+            viewModel = viewModel,
+            onClose = { showBlocoDeNotasDialog = false }
+        )
     }
+}
 }

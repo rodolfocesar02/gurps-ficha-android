@@ -8734,3 +8734,81 @@ foi exatamente como este durou.
 - **Status:** ✅ Build OK nas 2 variantes · lint OK · gate **2325** (+7) · ⏭️ **PENDENTE: teste no aparelho** (T-PO31).
 
 > Gate: 2.325 testes, 0 falhas nas duas variantes.
+
+
+## Lotes POD-29 e POD-30 - o poder passa a ter efeito mecanico (11.9-EFEITO)
+
+Pergunta do usuario: *"os poderes, se eu criar um poder, ele vai estar
+automatizado pra se for um ataque e dano? Eu nao sei se os poderes podem causar
+dano, ou efeitos positivo ou negativos na ficha."*
+
+### A resposta de regra, antes do codigo
+
+**O poder e um recipiente.** Ele tem tres coisas proprias e so tres: o
+**modificador** (que mexe no custo), o **Talento** (que da bonus nas rolagens) e
+a **fonte** (que decide o que o bloqueia). Dano e efeito **nunca sao do poder** -
+vem das **habilidades**, que sao vantagens comuns de GURPS.
+
+E isso ja funcionava: o agregador de ataques varre `p.vantagensTotais` **sem
+filtrar por poder**, entao um Ataque Inato comprado dentro de um poder ja
+aparecia em Ataques e em Dano.
+
+### POD-29 - a regra existia, os dois lados nunca se encontraram
+
+O Talento soma em *ativar, atacar, controlar e defender* (p.158). A regra estava
+escrita **inteira** desde o POD-11, em `UsoDoPoder.TipoDeTeste`, e o nivel do
+Talento existia desde o POD-3.
+
+Quem comprava Telepatia com Talento 3 e um Ataque Inato dentro dela via o ataque
+com o NH **sem os +3**. Mais uma vez o formato de sempre: **a regra existe, a
+tela nao pergunta**.
+
+Aplicado em **um lugar so**, e nao dentro de cada regra de ataque. Tres regras
+dao ataque hoje e o catalogo vai ganhar mais; tres copias da mesma decisao e como
+este projeto ja perdeu quatro rotas de modificador e duas RDs.
+
+E o **dano continua sem o Talento**, porque o livro exclui por escrito. Ha um
+teste que le o agregador de dano e reprova se o Talento aparecer la.
+
+O rotulo do ataque passou a dizer **de que poder ele e** - nao e enfeite: pela
+p.156 uma falha critica derruba o **poder inteiro**, e sem o rotulo o jogador nao
+sabe o que cai junto.
+
+### POD-30 - a Resistencia a Dano nao descontava nada
+
+A vantagem estava no catalogo desde sempre, 5 pontos por nivel, e **nao fazia
+nada**. Quem comprava RD 5 pagava 25 pontos e continuava levando o dano inteiro:
+o dialogo de ferimento so somava a armadura vestida.
+
+> *"Subtraia esse valor do dano causado por qualquer ataque fisico ou de energia
+> **depois de aplicar a RD de armaduras artificiais**."* (MB p.83)
+
+Ela **soma** com a armadura. E a habilidade que o livro de *Poderes* mais pede
+entre as de efeito mecanico direto: **23 vezes** nos 567 exemplos.
+
+**Uma caixa de marcar so.** O rotulo dizia *"Descontar RD da armadura"* e
+virou *"Descontar RD"* - quem desmarca quer o ataque sem RD nenhuma. Duas caixas
+seriam duas rotas para a mesma decisao.
+
+**A conta aparece na tela.** RD com *Limitada (so contra fogo)* nao protege de
+tudo, e o app nao sabe o que esta chegando. O numero soma e a ressalva aparece ao
+lado - travar repetiria o erro do `conhecimento_oculto`, e somar em silencio seria
+pior.
+
+### Uma sonda que NAO ficou vermelha
+
+Trocar o descarte de nivel 0 por `rd menor que 0` nao reprovava: a soma dava zero
+do mesmo jeito. Mas a **tela** ganharia uma linha dizendo *"Resistencia a Dano
+0"*. O teste passou a cobrar a lista de fontes e a linha, nao so o total.
+
+### O que fica registrado como NAO feito
+
+Das habilidades que o livro mais pede, so **Telecomunicacao** e agora
+**Resistencia a Dano** tem automacao. Ficam de fora Poder Protegido (35 vezes),
+Detectar (29), Obscurecer (17), Retencao (8), Estatica (7) e Neutralizar (7).
+Isso **nao e divida do pilar Poderes** - e do catalogo de vantagens inteiro, e
+falta igual para quem compra essas vantagens sem poder nenhum.
+
+- **Status:** Build OK nas 2 variantes - lint OK - gate **2344** (+19) - **PENDENTE: teste no aparelho** (T-PO32, T-PO33).
+
+> Gate: 2.344 testes, 0 falhas nas duas variantes.

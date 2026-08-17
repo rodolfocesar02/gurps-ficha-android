@@ -74,6 +74,11 @@ fun DialogoFerimento(
     pfAtual: Int,
     equipamentos: List<Equipamento>,
     guardadas: Set<String>,
+    // Lote POD-30: a RD do próprio corpo (MB p.83), que soma com a da armadura.
+    // ⚠️ Chega calculada, e não como `Personagem`: o contrato deste diálogo é
+    // só de valores, e abrir exceção para um deles convidaria os próximos.
+    rdNatural: Int,
+    explicacaoRdNatural: String?,
     isPraCegoVariant: Boolean,
     onSalvar: (pvNovo: Int, pfNovo: Int, guardadas: Set<String>, resumo: String) -> Unit,
     onFechar: () -> Unit
@@ -115,7 +120,14 @@ fun DialogoFerimento(
         .mapNotNull { eq ->
             CoberturaDaArmadura.rdDe(eq.rdArmaduraExibicao())?.let { CoberturaDaArmadura.Peca(eq.nome, it) }
         }
-    val rd = if (usarRd) CoberturaDaArmadura.rdTotal(pecasVestidas) else 0
+    // 🔴 Lote POD-30: a RD do próprio corpo (MB p.83) **soma** com a da
+    // armadura — *"depois de aplicar a RD de armaduras artificiais"*. A
+    // vantagem existia no catálogo e não descontava nada.
+    //
+    // ⚠️ Ela entra na MESMA caixa de marcar, e não numa segunda: quem desmarca
+    // quer o ataque sem RD nenhuma. Duas caixas seriam duas rotas para a mesma
+    // decisão, e o defeito mora na diferença.
+    val rd = if (usarRd) CoberturaDaArmadura.rdTotal(pecasVestidas) + rdNatural else 0
     // Lote EQP-9: quanto dessa RD veio de peça FLEXÍVEL (as com `*`). É o que
     // decide o trauma por impacto — ver `TraumaPorImpacto`.
     val rdFlexivel = if (!usarRd) 0 else pecasVestidas.filter { it.rd.flexivel }.sumOf { it.rd.principal }
@@ -239,6 +251,7 @@ fun DialogoFerimento(
                     escolheu = escolheu,
                     noLocal = noLocal,
                     naMochila = naMochila,
+                    explicacaoRdNatural = explicacaoRdNatural,
                     usarRd = usarRd,
                     rd = rd,
                     onUsarRd = { usarRd = !usarRd },
@@ -367,6 +380,7 @@ private fun PainelDaArmadura(
     escolheu: Boolean,
     noLocal: List<Equipamento>,
     naMochila: List<String>,
+    explicacaoRdNatural: String?,
     usarRd: Boolean,
     rd: Int,
     onUsarRd: () -> Unit,
@@ -388,10 +402,23 @@ private fun PainelDaArmadura(
     ) {
         Checkbox(checked = usarRd, onCheckedChange = null)
         Text(
-            if (escolheu) "Descontar RD da armadura — RD $rd em ${rotuloDoLocal(local)}"
-            else "Descontar RD da armadura",
+            // Lote POD-30: deixou de ser "da armadura" — o número agora soma a
+            // armadura com a RD do próprio corpo, e o rótulo tem de dizer isso.
+            if (escolheu) "Descontar RD — RD $rd em ${rotuloDoLocal(local)}"
+            else "Descontar RD",
             style = UiEstilos.nomeDoItem,
             modifier = Modifier.padding(start = 2.dp)
+        )
+    }
+
+    // ⚠️ A conta aparece: "somar camadas é decisão do Mestre" vale igual aqui.
+    // Esconder de onde vieram os pontos de RD seria pior que somar errado.
+    if (usarRd) explicacaoRdNatural?.let {
+        Text(
+            it,
+            style = UiEstilos.detalheDoItem,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.padding(horizontal = UiTokens.LinhaDeListaPaddingH)
         )
     }
 
