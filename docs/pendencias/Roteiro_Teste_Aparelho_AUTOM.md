@@ -2280,3 +2280,18 @@ exemplo o *Traje Pressurizado* (RD 6\*) ou a *Cota de Malha Longa Dupla*.
   aparecer. Se aparecer sempre, ela para de significar alguma coisa.
   - na variante **pracego**: o leitor de tela continua navegando normalmente. A
   barra e so desenho, e nao deve ser anunciada nem virar um alvo de toque.
+- **T-AT1 - comprar Velocidade Basica e Deslocamento Basico** - aba **Geral**,
+  cartao **Atributos Secundarios**, logo abaixo de PV/Von/Per/PF:
+  - existem duas linhas novas, **Vel. Basica** e **Desloc. Basico**, com botoes
+  de menos e mais.
+  - toque **+** na Velocidade uma vez: ela sobe **0,25** (nao 1), e os
+  `Gastos` do topo sobem **5** pontos. Toque mais tres vezes: +1,00 no total e
+  **20** pontos gastos.
+  - o **Deslocamento** sobe de 1 em 1 metro por segundo, a 5 pontos cada.
+  - ⚠️ passe de **+2,00** na Velocidade: aparece o aviso vermelho da campanha
+  realista, **mas o botao continua funcionando** -- e sugestao do livro, e ele
+  proprio isenta nao-humanos e supers.
+  - confira em *Caracteristicas Derivadas* que a **Vel. Basica** exibida mudou
+  junto, e que o **Desloc.** acompanhou.
+  - crie um personagem com DX 12 e HT 11 (Velocidade 5,75): o Deslocamento tem
+  de ser **5**, e nao 6.

@@ -8983,3 +8983,57 @@ altura do que ja desenhou. Ela responde *"tem mais coisa embaixo?"*, nao
 - **Status:** Build OK nas 2 variantes - lint OK - gate **2362** (+4) - **PENDENTE: teste no aparelho com fonte grande** (T-TE1).
 
 > Gate: 2.362 testes, 0 falhas nas duas variantes.
+
+
+## Lote ATR-1 - comprar Velocidade Basica e Deslocamento Basico (12.2-VELOCIDADE)
+
+*"Em Racas e metacaracteristicas ja existe essa vantagem, porem no normal nao
+existe."* Verdade.
+
+### 🔴 A regra estava TODA pronta. So a tela nao perguntava.
+
+- o modelo tinha `modVelocidadeBasica` e `modDeslocamentoBasico`;
+- `CharacterRules.calcularPontosSecundarios` **ja cobrava** 5 pontos por passo de
+  0,25 e 5 por metro/segundo;
+- o `FichaViewModel` **ja tinha** `atualizarModVelocidadeBasica` e
+  `atualizarModDeslocamentoBasico`;
+- a Raca ja mexia nos dois.
+
+Na aba Geral eles apareciam so em *Caracteristicas Derivadas*, como numero para
+ler. Quem quisesse comprar Velocidade Basica -- que e o que o livro manda fazer
+com 5 pontos -- nao tinha onde.
+
+⚠️ **Quinta vez** que este formato aparece no projeto: *a regra existe, a tela
+nao pergunta*. Antes foram o XP, o campo de RD, o `custoTotalTalento` e o
+`nivelTalento`.
+
+### O que foi acrescentado, e o que NAO foi
+
+Acrescentado: os dois botoes de compra na aba Geral e o **aviso do limite de
+campanha realista**.
+
+⚠️ O custo **nao** foi reescrito. Ele continua saindo de `CharacterRules`, que ja
+cobrava -- uma segunda conta criaria duas rotas para o mesmo numero, e o defeito
+mora na diferenca. Ha um teste que proibe a reescrita.
+
+### O passo e 0,25, e isso importa
+
+Passo de 1 cobraria **20 pontos por toque**, quatro vezes o degrau do livro -- e
+o jogador so descobriria olhando o total no fim.
+
+### O limite realista avisa, e nao trava
+
+> *"O Mestre nao deve permitir ... mais que 2 pontos positivos ou negativos.
+> Personagens nao-humanos e supers nao estao sujeitos a essa limitacao."*
+
+O proprio livro abre a excecao **na mesma frase**, e metade das fichas deste app
+e de personagem sobre-humano. Travar repetiria o erro do `conhecimento_oculto`.
+
+### E o Deslocamento IGNORA a fracao
+
+*"Velocidade Basica 5,75 tem um Deslocamento Basico de 5."* Arredondar daria 6 --
+um metro por segundo de graca. Ha teste com os tres casos.
+
+- **Status:** Build OK nas 2 variantes - lint OK - gate **2373** (+11) - **PENDENTE: teste no aparelho** (T-AT1).
+
+> Gate: 2.373 testes, 0 falhas nas duas variantes.

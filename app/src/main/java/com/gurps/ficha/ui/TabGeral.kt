@@ -63,6 +63,7 @@ import androidx.compose.material3.IconButton
 import com.gurps.ficha.BuildConfig
 import com.gurps.ficha.viewmodel.FichaViewModel
 import kotlin.math.abs
+import com.gurps.ficha.domain.rules.VelocidadeEDeslocamento
 
 @Composable
 fun TabGeral(viewModel: FichaViewModel) {
@@ -333,6 +334,20 @@ fun TabGeral(viewModel: FichaViewModel) {
                     }
                 }
             }
+
+            // 🔴 Lote ATR-1: os dois que o livro manda comprar com 5 pontos e a
+            // ficha só deixava LER. A regra existia inteira — o modelo, o custo
+            // em `CharacterRules` e os setters do ViewModel — e a tela nunca
+            // perguntou. Quinta vez que este formato aparece no projeto.
+            Spacer(modifier = Modifier.height(8.dp))
+            CompraDeVelocidadeEDeslocamento(
+                modVelocidade = p.modVelocidadeBasica,
+                velocidadeFinal = p.velocidadeBasica,
+                modDeslocamento = p.modDeslocamentoBasico,
+                deslocamentoFinal = p.deslocamentoBasico,
+                onVelocidade = { viewModel.atualizarModVelocidadeBasica(it) },
+                onDeslocamento = { viewModel.atualizarModDeslocamentoBasico(it) }
+            )
         }
 
         SectionCard(title = "Caracteristicas Derivadas") {
@@ -958,3 +973,109 @@ private fun DefinirBaseAtributosDialog(
         }
     )
 }
+
+/**
+ * **Comprar Velocidade Básica e Deslocamento Básico** — MB p.17. Lote ATR-1.
+ *
+ * Os dois custam **5 pontos por degrau**: 0,25 na Velocidade, 1 metro/segundo no
+ * Deslocamento.
+ *
+ * ⚠️ Com botões visíveis, e não só com o arraste dos outros atributos. O arraste
+ * funciona em passos de 1, e aqui o passo da Velocidade é **0,25** — um gesto
+ * que anda quatro degraus de uma vez seria mais fácil de errar do que de acertar.
+ */
+@Composable
+private fun CompraDeVelocidadeEDeslocamento(
+    modVelocidade: Float,
+    velocidadeFinal: Float,
+    modDeslocamento: Int,
+    deslocamentoFinal: Int,
+    onVelocidade: (Float) -> Unit,
+    onDeslocamento: (Int) -> Unit
+) {
+    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+        LinhaDeCompra(
+            nome = "Vel. Básica",
+            valor = VelocidadeEDeslocamento.formatar(velocidadeFinal),
+            custo = VelocidadeEDeslocamento.custoDaVelocidade(modVelocidade),
+            descricaoMenos = "Diminuir a Velocidade Básica em zero vírgula vinte e cinco",
+            descricaoMais = "Aumentar a Velocidade Básica em zero vírgula vinte e cinco",
+            // ⚠️ O teto de ±5,00 não é do livro: é um limite de tela, para o
+            // botão não virar uma corrida sem fim. O limite do LIVRO é o aviso
+            // de campanha realista, logo abaixo, e ele não trava nada.
+            onMenos = {
+                onVelocidade(
+                    (modVelocidade - VelocidadeEDeslocamento.PASSO_DA_VELOCIDADE)
+                        .coerceAtLeast(-5f)
+                )
+            },
+            onMais = {
+                onVelocidade(
+                    (modVelocidade + VelocidadeEDeslocamento.PASSO_DA_VELOCIDADE)
+                        .coerceAtMost(5f)
+                )
+            }
+        )
+        VelocidadeEDeslocamento.avisoDoLimiteRealista(modVelocidade)?.let { aviso ->
+            Text(
+                aviso,
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.error
+            )
+        }
+
+        LinhaDeCompra(
+            nome = "Desloc. Básico",
+            valor = "$deslocamentoFinal m/s",
+            custo = VelocidadeEDeslocamento.custoDoDeslocamento(modDeslocamento),
+            descricaoMenos = "Diminuir o Deslocamento Básico em um metro por segundo",
+            descricaoMais = "Aumentar o Deslocamento Básico em um metro por segundo",
+            onMenos = { onDeslocamento((modDeslocamento - 1).coerceAtLeast(-20)) },
+            onMais = { onDeslocamento((modDeslocamento + 1).coerceAtMost(20)) }
+        )
+    }
+}
+
+/** Uma linha de compra: nome, menos, valor, mais, e o que já foi gasto. */
+@Composable
+private fun LinhaDeCompra(
+    nome: String,
+    valor: String,
+    custo: Int,
+    descricaoMenos: String,
+    descricaoMais: String,
+    onMenos: () -> Unit,
+    onMais: () -> Unit
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(4.dp)
+    ) {
+        Text(
+            nome,
+            style = MaterialTheme.typography.labelMedium,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier.weight(1f)
+        )
+        AppBotaoPasso(sinal = "−", descricao = descricaoMenos, onClick = onMenos)
+        Text(
+            valor,
+            style = MaterialTheme.typography.titleMedium,
+            fontWeight = FontWeight.Bold,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.width(64.dp)
+        )
+        AppBotaoPasso(sinal = "+", descricao = descricaoMais, onClick = onMais)
+        // O que ele já pagou por isto. Some quando não custou nada, para uma
+        // ficha recém-criada não abrir com dois zeros sem sentido.
+        Text(
+            if (custo == 0) "" else "[${if (custo > 0) "+$custo" else "$custo"}]",
+            style = MaterialTheme.typography.bodySmall,
+            color = if (custo >= 0) MaterialTheme.colorScheme.primary
+                    else MaterialTheme.colorScheme.tertiary,
+            modifier = Modifier.width(44.dp)
+        )
+    }
+}
+
