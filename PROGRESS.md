@@ -9037,3 +9037,41 @@ um metro por segundo de graca. Ha teste com os tres casos.
 - **Status:** Build OK nas 2 variantes - lint OK - gate **2373** (+11) - **PENDENTE: teste no aparelho** (T-AT1).
 
 > Gate: 2.373 testes, 0 falhas nas duas variantes.
+
+
+## Lote ATR-1b - o controle segue o costume de cada variante (12.3-GESTO)
+
+*"pra versao visual use o padrao dos atributos, do pv, vont, per, pf onde
+arrasta o dedo pra cima ou pra baixo, ja e o costume de fazer, e no pracego, vc
+deixa o +- como de costume nessa versao."*
+
+Eu tinha posto **botoes nos dois**. Estava errado, e nao so por gosto: quatro
+atributos se ajustando de um jeito e dois logo abaixo de outro **ensina duas
+coisas onde havia uma**. Na mesma tela, no mesmo cartao.
+
+Agora a linha de compra se separa como o resto do app ja se separa:
+
+- **visual** - arraste do dedo, os mesmos **40 px por degrau** do
+  `AtributoSecundarioEditor`;
+- **pracego** - os botoes de − e +, que sao alvo previsivel e anunciavel. Gesto
+  de arraste nao tem como ser descrito ao leitor de tela sem virar adivinhacao.
+
+### ⚠️ O arraste conta DEGRAUS, nao fracoes
+
+Se o gesto somasse 0,25 direto no valor, o acumulo de `Float` faria a Velocidade
+parar em 0,7499998 e o custo virar um misterio. O arraste anda em **degraus
+inteiros** e a fracao sai da multiplicacao, na hora de salvar.
+
+### O teste que sobrou melhor do que comecou
+
+A primeira versao contava **quantas vezes** `passoPx = 40f` aparecia. Isso
+quebraria no dia em que alguem acrescentasse um quarto ajuste na tela, sem nada
+de errado ter acontecido.
+
+O teste passou a cobrar o **invariante**: todo arraste da aba Geral anda o mesmo
+tanto. Sao tres hoje — primarios, secundarios e esta compra — e o que importa e
+que os tres andem juntos.
+
+- **Status:** Build OK nas 2 variantes - lint OK - gate **2377** (+4) - **PENDENTE: teste no aparelho** (T-AT1, atualizado).
+
+> Gate: 2.377 testes, 0 falhas nas duas variantes.

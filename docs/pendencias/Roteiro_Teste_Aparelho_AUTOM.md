@@ -2295,3 +2295,12 @@ exemplo o *Traje Pressurizado* (RD 6\*) ou a *Cota de Malha Longa Dupla*.
   junto, e que o **Desloc.** acompanhou.
   - crie um personagem com DX 12 e HT 11 (Velocidade 5,75): o Deslocamento tem
   de ser **5**, e nao 6.
+- **T-AT1b - o gesto de cada variante** - substitui a parte de botoes do T-AT1.
+  - na variante **visual**: **arraste o dedo** para cima em cima do numero da
+  **Vel. Basica**. Ela sobe 0,25 por degrau, igual ao PV/Von/Per/PF logo acima,
+  e o mesmo tanto de dedo. Para baixo, desce.
+  - o **Desloc. Basico** anda de 1 em 1 no mesmo gesto.
+  - ⚠️ **nao** deve haver botao de − e + na variante visual.
+  - na variante **pracego**: os botoes de − e + estao la, e o leitor de tela le
+  o valor ("Velocidade Basica: 6,50") e o que cada botao faz.
+  - nas duas: os `Gastos` do topo sobem **5 pontos por degrau**.

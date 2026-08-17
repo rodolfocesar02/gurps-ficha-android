@@ -155,4 +155,83 @@ class VelocidadeEDeslocamentoTest {
             aba.contains("descricaoMenos") && aba.contains("descricaoMais")
         )
     }
+
+    // == O controle segue o costume de cada variante ====================
+
+    /**
+     * 🔴 Pedido do usuário depois de ver a tela: *"pra versao visual use o padrao
+     * dos atributos, do pv, vont, per, pf onde arrasta o dedo pra cima ou pra
+     * baixo ... e no pracego, vc deixa o +- como de costume nessa versao"*.
+     *
+     * ⚠️ E ele está certo pela tela, não só pelo gosto: quatro atributos se
+     * ajustando de um jeito e dois logo abaixo de outro ensina **duas** coisas
+     * onde havia uma. A primeira versão que eu fiz punha botões nos dois.
+     */
+    @Test
+    fun `a compra usa arraste na visual e botoes na pracego`() {
+        val aba = fonte("com/gurps/ficha/ui/TabGeral.kt")
+        val i = aba.indexOf("private fun LinhaDeCompra(")
+        assertTrue("a linha de compra sumiu", i > 0)
+        val corpo = aba.substring(i)
+
+        assertTrue(
+            "a linha de compra deixou de separar as duas variantes",
+            corpo.contains("if (isPraCegoVariant)")
+        )
+        assertTrue(
+            "a variante visual perdeu o arraste dos atributos",
+            corpo.contains("detectVerticalDragGestures(")
+        )
+        assertTrue(
+            "a variante pracego perdeu os botoes de menos e mais",
+            corpo.contains("AppBotaoPasso(")
+        )
+    }
+
+    @Test
+    fun `o arraste usa o MESMO passo dos outros atributos`() {
+        // ⚠️ 40 px por degrau e o numero do `AtributoSecundarioEditor`. Um valor
+        // proprio aqui faria a Velocidade responder diferente do PV no mesmo
+        // dedo, na mesma tela.
+        val aba = fonte("com/gurps/ficha/ui/TabGeral.kt")
+        // O invariante e "todo arraste desta tela anda o mesmo tanto", e nao um
+        // numero de ocorrencias -- contar ocorrencias quebraria no dia em que
+        // alguem acrescentasse um quarto ajuste, sem nada de errado ter
+        // acontecido. Sao tres hoje: primarios, secundarios e esta compra.
+        val passos = Regex("""val passoPx = (\S+)""").findAll(aba)
+            .map { it.groupValues[1] }.toList()
+        assertTrue("sumiu o arraste da aba Geral", passos.size >= 3)
+        assertEquals(
+            "algum arraste da aba Geral anda diferente dos outros: $passos",
+            1, passos.toSet().size
+        )
+        assertEquals("40f", passos.first())
+    }
+
+    @Test
+    fun `o arraste conta DEGRAUS, e nao fracoes de Velocidade`() {
+        // 🔴 Se o gesto somasse 0,25 direto no valor, o acumulo de float faria a
+        // Velocidade parar em 0,7499998 e o custo virar um misterio. O arraste
+        // anda em degraus inteiros e a fracao sai da multiplicacao.
+        val aba = fonte("com/gurps/ficha/ui/TabGeral.kt")
+        assertTrue(
+            "a compra da Velocidade voltou a somar fracao direto",
+            aba.contains("CharacterRules.calcularPassosVelocidadeBasica(modVelocidade)")
+        )
+        assertTrue(
+            "o degrau deixou de virar fracao na hora de salvar",
+            aba.contains("onVelocidade(degrau * VelocidadeEDeslocamento.PASSO_DA_VELOCIDADE)")
+        )
+    }
+
+    @Test
+    fun `o valor tem descricao acessivel nas duas variantes`() {
+        // Na visual o numero E o controle; sem descricao ele seria um texto mudo
+        // que por acaso responde ao dedo.
+        val aba = fonte("com/gurps/ficha/ui/TabGeral.kt")
+        assertTrue(
+            "o valor da compra ficou sem descricao acessivel",
+            aba.contains("descricaoDoValor")
+        )
+    }
 }

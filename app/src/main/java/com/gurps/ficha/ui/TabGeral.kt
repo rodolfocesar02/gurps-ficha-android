@@ -63,6 +63,7 @@ import androidx.compose.material3.IconButton
 import com.gurps.ficha.BuildConfig
 import com.gurps.ficha.viewmodel.FichaViewModel
 import kotlin.math.abs
+import com.gurps.ficha.domain.rules.CharacterRules
 import com.gurps.ficha.domain.rules.VelocidadeEDeslocamento
 
 @Composable
@@ -998,22 +999,18 @@ private fun CompraDeVelocidadeEDeslocamento(
             nome = "Vel. Básica",
             valor = VelocidadeEDeslocamento.formatar(velocidadeFinal),
             custo = VelocidadeEDeslocamento.custoDaVelocidade(modVelocidade),
+            // ⚠️ O arraste conta DEGRAUS inteiros, não frações — senão o dedo
+            // escorregaria 0,03 de Velocidade e o custo viraria um mistério.
+            degrauAtual = CharacterRules.calcularPassosVelocidadeBasica(modVelocidade),
             descricaoMenos = "Diminuir a Velocidade Básica em zero vírgula vinte e cinco",
             descricaoMais = "Aumentar a Velocidade Básica em zero vírgula vinte e cinco",
-            // ⚠️ O teto de ±5,00 não é do livro: é um limite de tela, para o
-            // botão não virar uma corrida sem fim. O limite do LIVRO é o aviso
-            // de campanha realista, logo abaixo, e ele não trava nada.
-            onMenos = {
-                onVelocidade(
-                    (modVelocidade - VelocidadeEDeslocamento.PASSO_DA_VELOCIDADE)
-                        .coerceAtLeast(-5f)
-                )
-            },
-            onMais = {
-                onVelocidade(
-                    (modVelocidade + VelocidadeEDeslocamento.PASSO_DA_VELOCIDADE)
-                        .coerceAtMost(5f)
-                )
+            descricaoDoValor = "Velocidade Básica: " +
+                VelocidadeEDeslocamento.formatar(velocidadeFinal),
+            // ⚠️ O teto de ±20 degraus (±5,00) não é do livro: é limite de tela,
+            // para o gesto não virar uma corrida sem fim. O limite do LIVRO é o
+            // aviso de campanha realista, logo abaixo, e ele não trava nada.
+            onDegrau = { degrau ->
+                onVelocidade(degrau * VelocidadeEDeslocamento.PASSO_DA_VELOCIDADE)
             }
         )
         VelocidadeEDeslocamento.avisoDoLimiteRealista(modVelocidade)?.let { aviso ->
@@ -1028,25 +1025,40 @@ private fun CompraDeVelocidadeEDeslocamento(
             nome = "Desloc. Básico",
             valor = "$deslocamentoFinal m/s",
             custo = VelocidadeEDeslocamento.custoDoDeslocamento(modDeslocamento),
+            degrauAtual = modDeslocamento,
             descricaoMenos = "Diminuir o Deslocamento Básico em um metro por segundo",
             descricaoMais = "Aumentar o Deslocamento Básico em um metro por segundo",
-            onMenos = { onDeslocamento((modDeslocamento - 1).coerceAtLeast(-20)) },
-            onMais = { onDeslocamento((modDeslocamento + 1).coerceAtMost(20)) }
+            descricaoDoValor = "Deslocamento Básico: $deslocamentoFinal metros por segundo",
+            onDegrau = { degrau -> onDeslocamento(degrau) }
         )
     }
 }
 
-/** Uma linha de compra: nome, menos, valor, mais, e o que já foi gasto. */
+/**
+ * Uma linha de compra, **no controle que a variante já usa**.
+ *
+ * ⚠️ Na `visual` arrasta-se o dedo para cima e para baixo, igual a PV, Von, Per
+ * e PF logo acima; na `pracego` ficam os botões de − e +. Foi decisão do
+ * usuário, e é a certa: uma tela em que quatro atributos se ajustam de um jeito
+ * e dois de outro ensina duas coisas onde havia uma.
+ *
+ * O `valor` é sempre o **final**; o `degrauAtual` é só o que o jogador comprou.
+ * São coisas diferentes — misturá-las faria o arraste partir do número errado em
+ * toda ficha com bônus racial.
+ */
 @Composable
 private fun LinhaDeCompra(
     nome: String,
     valor: String,
     custo: Int,
+    degrauAtual: Int,
     descricaoMenos: String,
     descricaoMais: String,
-    onMenos: () -> Unit,
-    onMais: () -> Unit
+    descricaoDoValor: String,
+    onDegrau: (Int) -> Unit
 ) {
+    val isPraCegoVariant = BuildConfig.UI_VARIANT.equals("pracego", ignoreCase = true)
+
     Row(
         modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
@@ -1058,15 +1070,64 @@ private fun LinhaDeCompra(
             fontWeight = FontWeight.Bold,
             modifier = Modifier.weight(1f)
         )
-        AppBotaoPasso(sinal = "−", descricao = descricaoMenos, onClick = onMenos)
-        Text(
-            valor,
-            style = MaterialTheme.typography.titleMedium,
-            fontWeight = FontWeight.Bold,
-            textAlign = TextAlign.Center,
-            modifier = Modifier.width(64.dp)
-        )
-        AppBotaoPasso(sinal = "+", descricao = descricaoMais, onClick = onMais)
+
+        if (isPraCegoVariant) {
+            // Botões: alvo de toque previsível e anunciável. Arraste não tem
+            // como ser descrito ao leitor de tela sem virar adivinhação.
+            AppBotaoPasso(
+                sinal = "−",
+                descricao = descricaoMenos,
+                onClick = { onDegrau(degrauAtual - 1) }
+            )
+            Text(
+                valor,
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .width(72.dp)
+                    .semantics { contentDescription = descricaoDoValor }
+            )
+            AppBotaoPasso(
+                sinal = "+",
+                descricao = descricaoMais,
+                onClick = { onDegrau(degrauAtual + 1) }
+            )
+        } else {
+            // ⚠️ Os 40 px por degrau são os mesmos do `AtributoSecundarioEditor`
+            // — não é número novo, é o mesmo gesto dos atributos de cima.
+            Text(
+                valor,
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .width(96.dp)
+                    .semantics { contentDescription = descricaoDoValor }
+                    .pointerInput(nome, degrauAtual) {
+                        var dragAcumulado = 0f
+                        val passoPx = 40f
+                        var degrau = degrauAtual.coerceIn(-20, 20)
+                        detectVerticalDragGestures(
+                            onVerticalDrag = { change, dragAmount ->
+                                change.consume()
+                                dragAcumulado += dragAmount
+                                if (abs(dragAcumulado) >= passoPx) {
+                                    // Dedo para CIMA aumenta, como nos outros.
+                                    degrau = if (dragAcumulado < 0f) {
+                                        (degrau + 1).coerceIn(-20, 20)
+                                    } else {
+                                        (degrau - 1).coerceIn(-20, 20)
+                                    }
+                                    onDegrau(degrau)
+                                    dragAcumulado = 0f
+                                }
+                            }
+                        )
+                    }
+            )
+        }
+
         // O que ele já pagou por isto. Some quando não custou nada, para uma
         // ficha recém-criada não abrir com dois zeros sem sentido.
         Text(
