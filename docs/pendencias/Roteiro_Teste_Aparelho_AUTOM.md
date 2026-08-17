@@ -2258,3 +2258,11 @@ exemplo o *Traje Pressurizado* (RD 6\*) ou a *Cota de Malha Longa Dupla*.
   - na variante **pracego**, o leitor de tela oferece a acao *"Enviar esta
   anotacao para o Discord"* no menu de acoes do cartao. Sem isso o envio fica
   inalcancavel para quem nao ve a tela.
+- **T-NO3 - a anotacao no Discord** - ⚠️ **reinicie o bot antes** (`npm start`
+  em `discord-roll-api/`): a mudanca e do servidor, e ele so a carrega ao subir.
+  Mande uma nota pelo app:
+  - a mensagem mostra **personagem**, **Nota (titulo)** e o **texto**, e mais
+  nada. Sem "Dados: - = 0" e sem "Resultado:".
+  - faca uma **rolagem comum** logo depois: ela tem de continuar com Dados e
+  Resultado exatamente como sempre foi.
+  - e uma rolagem que de **3, 4 ou 18**: a tabela critica tem de aparecer igual.

@@ -8879,3 +8879,49 @@ e o logo viraria uma mancha chapada. O PNG saiu da raiz do projeto para
 - **Status:** Build OK nas 2 variantes - lint OK - gate **2358** (+14) - **PENDENTE: teste no aparelho** (T-NO1, T-NO2).
 
 > Gate: 2.358 testes, 0 falhas nas duas variantes.
+
+
+## Lote NOTA-2 - a anotacao no Discord deixou de parecer rolagem
+
+A anotacao chegava na mesa assim:
+
+```
+jack Eagle eye carter!!!
+Nota (Teste de Nota...)
+Dados: - = 0
+Resultado: Teste de Nota...
+```
+
+As duas linhas do meio nao vinham do app. Quem monta a mensagem e o **bot**, em
+`discord-roll-api/src/server.js`, e ele aplicava o molde de rolagem em tudo que
+chegava.
+
+### O `testType: "Nota"` ja estava no pacote - faltava alguem olhar
+
+O app manda `dice` vazio, `total` 0 e `target` nulo **de proposito**, para a nota
+nao fingir um resultado que ninguem rolou (lote NOTA-1). So que o molde imprimia
+esses campos de qualquer jeito, e o resultado era pior do que se o app tivesse
+mentido: "Dados: - = 0" numa mensagem que e so texto.
+
+O bot ganhou um caso proprio para `testType === 'Nota'`, no mesmo formato do caso
+que ja existia para a tabela critica.
+
+### 🔴 Eu disse que o bot nao estava no projeto, e estava
+
+Procurei com `find -maxdepth 4` e concluí que o bot vivia em outro lugar. Ele
+esta em `discord-roll-api/`, versionado neste mesmo repositorio, a cinco niveis
+de profundidade. **A busca falhou e eu tratei o resultado dela como fato.**
+
+### O primeiro teste deste projeto
+
+O bot nao tinha nenhum. A funcao que monta a mensagem vivia dentro do
+`server.js`, que **sobe o servidor ao ser importado** - dava para ler o codigo,
+mas nao para testa-lo sem abrir uma porta.
+
+Ela saiu para `src/format.js`, pura, e ganhou `npm test` com seis casos. Dois
+guardam a anotacao; os outros quatro guardam o que **nao pode ter mudado**: a
+rolagem comum, a tabela critica, o sucesso decisivo e a falha critica. A
+correcao e um caso novo, e caso novo encostando em molde antigo muda toda
+mensagem da mesa junto.
+
+- **Status:** `npm test` 6/6 - o app Android nao foi tocado neste lote - **PENDENTE: reiniciar o bot e conferir na mesa** (T-NO3).

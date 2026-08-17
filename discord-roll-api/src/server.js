@@ -1,5 +1,9 @@
 const express = require('express');
 const dotenv = require('dotenv');
+// Lote NOTA-2: a montagem da mensagem saiu daqui para `format.js`. Este arquivo
+// sobe o servidor ao ser importado, e por isso a função não tinha como ser
+// testada sem abrir uma porta.
+const { formatRollMessage } = require('./format');
 
 dotenv.config();
 
@@ -59,86 +63,6 @@ function unauthorized(res) {
 function hasValidApiKey(req) {
   const incomingKey = req.header('x-api-key') || '';
   return Boolean(incomingKey && incomingKey === apiKey);
-}
-
-/**
- * Classifica crítico pela regra COMPLETA do GURPS (considera o NH efetivo).
- *  - Decisivo: 3-4 sempre; 5 se NH>=15; 6 se NH>=16.
- *  - Falha crítica: 18 sempre; 17 se NH<=15; soma >= NH+10 sempre.
- * nh pode ser null (sem alvo) -> usa só a regra simples.
- */
-function classificarCritico(soma, nh) {
-  if (soma === 3 || soma === 4) return 'DECISIVO';
-  if (nh != null) {
-    if (soma === 5 && nh >= 15) return 'DECISIVO';
-    if (soma === 6 && nh >= 16) return 'DECISIVO';
-  }
-  if (soma === 18) return 'FALHA';
-  if (nh != null) {
-    if (soma === 17 && nh <= 15) return 'FALHA';
-    if (soma >= nh + 10) return 'FALHA';
-  } else if (soma === 17) {
-    return 'FALHA';
-  }
-  return 'NORMAL';
-}
-
-function formatRollMessage(payload) {
-  const character = payload.character || 'Personagem';
-  const testType = payload.testType || 'Rolagem';
-  const context = payload.context ? ` (${payload.context})` : '';
-  const diceValues = Array.isArray(payload.dice) ? payload.dice : [];
-  const dice = diceValues.length > 0
-    ? diceValues.map((value) => `🎲${value}`).join(' ')
-    : '-';
-  const total = payload.total != null ? String(payload.total) : '-';
-
-  // 2ª mensagem: tabela crítica automática (Golpe Fulminante / Erro Crítico).
-  // O app marca o testType com 💥 ou 💀 e manda o texto pronto no outcome.
-  if (testType.startsWith('💥') || testType.startsWith('💀')) {
-    return [
-      `**${character}**`,
-      `**${testType}**`,
-      `Dados: ${dice} = **${total}**`,
-      '',
-      String(payload.outcome || '')
-    ].join('\n');
-  }
-
-  const margin = Number(payload.margin);
-  const hasMargin = Number.isFinite(margin);
-  const isSuccess = String(payload.outcome || '').startsWith('sucesso') ||
-    String(payload.outcome || '').startsWith('SUCESSO');
-  const isFailure = String(payload.outcome || '').startsWith('falha') ||
-    String(payload.outcome || '').startsWith('FALHA');
-  const isThreeD6 =
-    payload.testType !== 'Dano' &&
-    diceValues.length === 3 &&
-    diceValues.every((value) => Number.isInteger(value) && value >= 1 && value <= 6);
-  const rawDiceTotal = isThreeD6
-    ? diceValues.reduce((acc, value) => acc + value, 0)
-    : null;
-  // NH efetivo = payload.target (já com modificadores), quando houver.
-  const nh = Number.isFinite(Number(payload.target)) ? Number(payload.target) : null;
-  const critico = isThreeD6 ? classificarCritico(rawDiceTotal, nh) : 'NORMAL';
-
-  let outcomeLabel = payload.outcome || '-';
-  if (critico === 'DECISIVO') {
-    outcomeLabel = 'SUCESSO DECISIVO 🍀';
-  } else if (critico === 'FALHA') {
-    outcomeLabel = 'FALHA CRÍTICA! 😈';
-  } else if (hasMargin && isSuccess) {
-    outcomeLabel = `SUCESSO +${Math.abs(margin)}`;
-  } else if (hasMargin && isFailure) {
-    outcomeLabel = `FALHA -${Math.abs(margin)}`;
-  }
-
-  return [
-    `**${character}**`,
-    `**${testType}**${context}`,
-    `Dados: ${dice} = **${total}**`,
-    `Resultado: **${outcomeLabel}**`
-  ].join('\n');
 }
 
 function sanitizeChannelId(value) {
