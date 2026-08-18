@@ -177,7 +177,15 @@ object AtiradorRules {
         duasMaos: Boolean,
         cadenciaTiro: Int?,
         avancarEAtacar: Boolean,
-        apontou: Boolean
+        apontou: Boolean,
+        /**
+         * O app conseguiu identificar a arma do ataque?
+         *
+         * ⚠️ Separado de `precisao != null` de propósito: uma arma **conhecida**
+         * pode simplesmente não ter Precisão (uma funda, um tijolo), e isso é
+         * outra conversa — e outra frase.
+         */
+        armaConhecida: Boolean = true
     ): String? {
         if (estilo == Estilo.NENHUM) return null
         val nome = if (estilo == Estilo.ARQUEIRO_HEROICO) "Arqueiro Heroico" else "Atirador"
@@ -194,7 +202,21 @@ object AtiradorRules {
         }
         val bonus = precisaoSemApontar(estilo, precisao, duasMaos, cadenciaTiro)
         if (bonus <= 0) {
-            return "$nome: esta arma não tem Precisão cadastrada"
+            // 🔴 Duas coisas MUITO diferentes davam a mesma frase.
+            //
+            // "Esta arma não tem Precisão cadastrada" era dito também quando o
+            // app **não sabia qual arma** estava na mão — e aí o jogador ia
+            // conferir a ficha da pistola, achava a Precisão preenchida, e não
+            // entendia mais nada.
+            //
+            // ⚠️ A segunda frase diz o que FAZER. Um aviso que não diz o
+            // caminho é quase tão ruim quanto nenhum aviso.
+            return if (armaConhecida) {
+                "$nome: esta arma não tem Precisão cadastrada"
+            } else {
+                "$nome: não sei qual arma você está usando — escolha-a no " +
+                    "botão DANO para a Precisão entrar"
+            }
         }
         val motivo = if (aplicouMetade(estilo, duasMaos, cadenciaTiro)) {
             val porque = if (duasMaos) "arma de duas mãos" else "arma automática"
@@ -209,8 +231,9 @@ object AtiradorRules {
         duasMaos: Boolean,
         cadenciaTiro: Int?,
         avancarEAtacar: Boolean,
-        apontou: Boolean
+        apontou: Boolean,
+        armaConhecida: Boolean = true
     ): String =
-        rotulo(estilo, precisao, duasMaos, cadenciaTiro, avancarEAtacar, apontou)
+        rotulo(estilo, precisao, duasMaos, cadenciaTiro, avancarEAtacar, apontou, armaConhecida)
             ?: "Sem vantagem de tiro cinematográfico neste ataque."
 }

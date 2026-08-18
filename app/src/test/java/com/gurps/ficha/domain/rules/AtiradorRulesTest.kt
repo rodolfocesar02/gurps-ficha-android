@@ -3,6 +3,7 @@ package com.gurps.ficha.domain.rules
 import com.gurps.ficha.model.Personagem
 import com.gurps.ficha.model.VantagemSelecionada
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
@@ -231,5 +232,64 @@ class AtiradorRulesTest {
             assertTrue("prec $prec", metade <= inteiro)
             assertTrue("prec $prec: metade caiu abaixo do arredondamento", metade * 2 >= prec)
         }
+    }
+
+    // == A frase que mandava o jogador para o lugar errado (ARMA-10) =====
+
+    @Test
+    fun `sem saber a arma, o aviso diz o que FAZER`() {
+        // 🔴 Duas coisas muito diferentes davam a mesma frase. "Esta arma nao
+        // tem Precisao cadastrada" era dito tambem quando o app NAO SABIA qual
+        // arma estava na mao -- e ai o jogador ia conferir a ficha da pistola,
+        // achava a Precisao preenchida, e nao entendia mais nada.
+        val semArma = AtiradorRules.rotulo(
+            estilo = AtiradorRules.Estilo.ATIRADOR,
+            precisao = null, duasMaos = false, cadenciaTiro = 1,
+            avancarEAtacar = false, apontou = false,
+            armaConhecida = false
+        )
+        assertNotNull(semArma)
+        assertTrue(semArma!!, semArma.contains("não sei qual arma"))
+        // ⚠️ E diz o caminho: um aviso que nao diz o que fazer e quase tao ruim
+        // quanto nenhum aviso.
+        assertTrue(semArma, semArma.contains("DANO"))
+    }
+
+    @Test
+    fun `arma conhecida SEM Precisao continua com a frase antiga`() {
+        // Uma funda, um tijolo: arma de verdade, sem Precisao. E outra conversa.
+        val semPrecisao = AtiradorRules.rotulo(
+            estilo = AtiradorRules.Estilo.ATIRADOR,
+            precisao = null, duasMaos = false, cadenciaTiro = 1,
+            avancarEAtacar = false, apontou = false,
+            armaConhecida = true
+        )
+        assertNotNull(semPrecisao)
+        assertTrue(semPrecisao!!, semPrecisao.contains("não tem Precisão cadastrada"))
+        assertTrue(semPrecisao, !semPrecisao.contains("não sei qual arma"))
+    }
+
+    @Test
+    fun `com Precisao, saber ou nao a arma nao muda nada`() {
+        // A distincao so existe para EXPLICAR a ausencia do bonus. Havendo
+        // bonus, nao ha o que explicar.
+        val a = AtiradorRules.rotulo(
+            AtiradorRules.Estilo.ATIRADOR, 3, false, 1, false, false, armaConhecida = true
+        )
+        val b = AtiradorRules.rotulo(
+            AtiradorRules.Estilo.ATIRADOR, 3, false, 1, false, false, armaConhecida = false
+        )
+        assertEquals(a, b)
+        assertTrue(a!!, a.contains("+3"))
+    }
+
+    @Test
+    fun `o padrao continua sendo arma conhecida`() {
+        // ⚠️ Para nenhuma chamada antiga passar a dizer "nao sei qual arma" so
+        // porque ganhou um parametro novo.
+        val semOParametro = AtiradorRules.rotulo(
+            AtiradorRules.Estilo.ATIRADOR, null, false, 1, false, false
+        )
+        assertTrue(semOParametro!!, semOParametro.contains("não tem Precisão cadastrada"))
     }
 }

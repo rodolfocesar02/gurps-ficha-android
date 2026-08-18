@@ -1407,6 +1407,10 @@ fun TabRolagem(viewModel: FichaViewModel) {
                 .conflito(escolhidaNaFonteDeDano, periciaDaMira),
             // Lote ARMA-8/9: Atirador e Arqueiro Heroico valem POR PERÍCIA.
             periciaDoAtaque = periciaDaMira,
+            // Lote ARMA-10: dizer "esta arma não tem Precisão" quando nem
+            // sabemos qual é a arma mandava o jogador conferir a ficha da
+            // pistola, achar a Precisão preenchida, e não entender mais nada.
+            armaConhecida = armaDaMira != null,
             onIndices = { d, v ->
                 indiceDistanciaAlvo = d
                 indiceVelocidadeAlvo = v

@@ -155,6 +155,25 @@ object AlcanceDoAtaque {
             return armaSelecionada
         }
 
+        // 🔴 A arma escolhida na fonte de dano vale TAMBÉM quando ela não tem
+        // nem tipo de combate nem alcance — desde que o ATAQUE seja de longe e
+        // ela tenha Precisão.
+        //
+        // Uma arma digitada à mão costuma vir só com nome, dano e Precisão. Sem
+        // esta linha ela era descartada aqui, e o Atirador dizia "esta arma não
+        // tem Precisão cadastrada" com a Precisão preenchida na ficha, ao lado.
+        //
+        // ⚠️ Exige a Precisão de propósito: é ela que distingue "pistola sem
+        // ficha completa" de "adaga escolhida por engano". Sem esse filtro,
+        // voltaríamos ao defeito do lote ARMA-5.
+        if (armaSelecionada != null &&
+            armaSelecionada.armaTipoCombate.isNullOrBlank() &&
+            armaSelecionada.armaPrecisao != null &&
+            periciaEhADistancia(periciaId)
+        ) {
+            return armaSelecionada
+        }
+
         val deLonge = armas.filter { tipoEhADistancia(it.armaTipoCombate) || it.armaMaximoMetros != null }
         if (deLonge.isEmpty()) return null
 

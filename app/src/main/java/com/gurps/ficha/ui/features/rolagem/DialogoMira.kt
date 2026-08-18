@@ -92,7 +92,16 @@ fun DialogoMira(
     // Lote ARMA-8/9: a perícia do ataque decide se Atirador ou Arqueiro Heroico
     // valem aqui — é assim que o livro escreve ("qualquer arma que utilize as
     // perícias…"), e não pelo tipo da arma.
-    periciaDoAtaque: String? = null
+    periciaDoAtaque: String? = null,
+    /**
+     * O app conseguiu identificar a arma deste ataque?
+     *
+     * ⚠️ Vem de fora porque quem sabe é a aba, que tem a lista de armas e a
+     * escolha do botão DANO. Aqui só chega o resultado — e ele muda o que a
+     * tela DIZ quando a Precisão não aparece: "esta arma não tem Precisão" é
+     * muito diferente de "não sei qual arma é".
+     */
+    armaConhecida: Boolean = true
 ) {
     var desarmar by remember { mutableStateOf(false) }
     var golpeRapido by remember { mutableStateOf(false) }
@@ -475,7 +484,7 @@ fun DialogoMira(
                 // caixinha — não há o que escolher: ou o personagem tem, ou não tem.
                 AtiradorRules.rotulo(
                     estiloDeTiro, alcance.precisao, alcance.duasMaos, alcance.cadenciaTiro,
-                    avancarEAtacar, apontouValendo
+                    avancarEAtacar, apontouValendo, armaConhecida
                 )?.let { texto ->
                     Text(
                         texto,

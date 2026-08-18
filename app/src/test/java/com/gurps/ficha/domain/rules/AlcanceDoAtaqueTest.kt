@@ -26,14 +26,16 @@ class AlcanceDoAtaqueTest {
         tipoCombate: String? = null,
         meioDano: Int? = null,
         maximo: Int? = null,
-        multStRaw: String? = null
+        multStRaw: String? = null,
+        precisao: Int? = null
     ) = Equipamento(
         nome = nome,
         tipo = TipoEquipamento.ARMA,
         armaTipoCombate = tipoCombate,
         armaMeioDanoMetros = meioDano,
         armaMaximoMetros = maximo,
-        armaAlcanceMultStRaw = multStRaw
+        armaAlcanceMultStRaw = multStRaw,
+        armaPrecisao = precisao
     )
 
     // --- as duas listas ---
@@ -259,5 +261,62 @@ class AlcanceDoAtaqueTest {
         )
         assertEquals(7, a.meioDano)
         assertEquals(20, a.maximo)
+    }
+
+    // == A arma digitada a mao (lote ARMA-10) ============================
+
+    @Test
+    fun `arma so com Precisao vale quando o ataque e de longe`() {
+        // 🔴 O caso do usuario: pistola digitada a mao, so com nome, dano e
+        // Precisao -- sem tipo de combate e sem alcance. Era descartada, e o
+        // Atirador dizia "esta arma nao tem Precisao cadastrada" com a Precisao
+        // preenchida na ficha, ao lado.
+        val pistolaNaMao = arma(nome = "Pistola", precisao = 2)
+        val achou = AlcanceDoAtaque.armaDoAtaque(
+            armas = listOf(pistolaNaMao),
+            armaSelecionada = pistolaNaMao,
+            periciaId = "armas_de_fogo_nt_pistola"
+        )
+        assertEquals(pistolaNaMao, achou)
+    }
+
+    @Test
+    fun `sem Precisao, a arma incompleta NAO e adotada`() {
+        // ⚠️ E a Precisao que distingue "pistola sem ficha completa" de "adaga
+        // escolhida por engano". Sem esse filtro voltariamos ao defeito do
+        // lote ARMA-5.
+        val adaga = arma(nome = "Adaga")
+        val achou = AlcanceDoAtaque.armaDoAtaque(
+            armas = listOf(adaga),
+            armaSelecionada = adaga,
+            periciaId = "armas_de_fogo_nt_pistola"
+        )
+        assertNull(achou)
+    }
+
+    @Test
+    fun `arma incompleta nao vale em ataque de CORPO A CORPO`() {
+        // A porta so abre para ataque de longe: uma clava com "Precisao" por
+        // engano no cadastro nao pode virar arma de tiro.
+        val clava = arma(nome = "Clava", precisao = 1)
+        val achou = AlcanceDoAtaque.armaDoAtaque(
+            armas = listOf(clava),
+            armaSelecionada = clava,
+            periciaId = "briga"
+        )
+        assertNull(achou)
+    }
+
+    @Test
+    fun `arma com tipo de combate declarado nao passa por esta porta`() {
+        // Quem tem o tipo preenchido ja foi resolvido nos degraus anteriores --
+        // esta porta e so para a ficha incompleta.
+        val corpoACorpo = arma(nome = "Espada", tipoCombate = "corpo a corpo", precisao = 3)
+        val achou = AlcanceDoAtaque.armaDoAtaque(
+            armas = listOf(corpoACorpo),
+            armaSelecionada = corpoACorpo,
+            periciaId = "armas_de_fogo_nt_pistola"
+        )
+        assertNull(achou)
     }
 }
