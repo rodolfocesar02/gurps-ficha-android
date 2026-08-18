@@ -77,7 +77,27 @@ object AvancarEAtacarRules {
      *
      * Sem isso o jogador vê −6 e não tem como conferir se foi o padrão ou a arma.
      */
-    fun rotulo(ehADistancia: Boolean, magnitude: Int?, nhBase: Int): String {
+    /**
+     * @param ignoraPelaVantagem quem tem Atirador ou Arqueiro Heroico não paga
+     *   esta penalidade (MB p.43/45) — e o rótulo tem de DIZER isso.
+     */
+    fun rotulo(
+        ehADistancia: Boolean,
+        magnitude: Int?,
+        nhBase: Int,
+        ignoraPelaVantagem: Boolean = false
+    ): String {
+        // 🔴 A conta já era zero para quem tem a vantagem; o RÓTULO é que
+        // continuava anunciando "-2". O jogador marcava a caixinha, via "-2"
+        // escrito e o total não mudar, e ficava sem saber em qual dos dois
+        // acreditar.
+        //
+        // ⚠️ E diz o que se paga em troca: o livro não dá as duas coisas
+        // ("tudo isso é em vez de receber o bônus da Prec").
+        if (ignoraPelaVantagem) {
+            return "Avançar e Atacar: 0 — a sua vantagem apaga esta penalidade, " +
+                "em troca da Precisão de graça (MB p.43)"
+        }
         if (!ehADistancia) {
             val p = penalidadeCorpoACorpo(nhBase)
             val teto = if (nhBase + BASICA_CORPO_A_CORPO > TETO_CORPO_A_CORPO) {
@@ -100,7 +120,16 @@ object AvancarEAtacarRules {
         return "Avançar e Atacar: $p ($origem)"
     }
 
-    fun rotuloAcessivel(ehADistancia: Boolean, magnitude: Int?, nhBase: Int): String {
+    fun rotuloAcessivel(
+        ehADistancia: Boolean,
+        magnitude: Int?,
+        nhBase: Int,
+        ignoraPelaVantagem: Boolean = false
+    ): String {
+        if (ignoraPelaVantagem) {
+            return "Marcar que está atacando em movimento, na manobra Avançar e Atacar. " +
+                "A sua vantagem apaga a penalidade, em troca da Precisão de graça."
+        }
         val p = if (ehADistancia) penalidadeADistancia(magnitude) else penalidadeCorpoACorpo(nhBase)
         val comoLer = if (p < 0) "menos ${-p}" else "$p"
         return "Marcar que está atacando em movimento, na manobra Avançar e Atacar. " +

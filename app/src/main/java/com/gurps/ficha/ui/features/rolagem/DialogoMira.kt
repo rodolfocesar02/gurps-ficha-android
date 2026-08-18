@@ -505,7 +505,8 @@ fun DialogoMira(
                             .linhaAlternavel(
                                 marcado = avancarEAtacar,
                                 descricao = AvancarEAtacarRules.rotuloAcessivel(
-                                    ehADistancia, alcance.magnitude, nhBase
+                                    ehADistancia, alcance.magnitude, nhBase,
+                                    AtiradorRules.ignoraAvancarEAtacar(estiloDeTiro)
                                 ),
                                 onAlternar = { avancarEAtacar = !avancarEAtacar }
                             )
@@ -514,7 +515,10 @@ fun DialogoMira(
                     ) {
                         Checkbox(checked = avancarEAtacar, onCheckedChange = null)
                         Text(
-                            AvancarEAtacarRules.rotulo(ehADistancia, alcance.magnitude, nhBase),
+                            AvancarEAtacarRules.rotulo(
+                                ehADistancia, alcance.magnitude, nhBase,
+                                AtiradorRules.ignoraAvancarEAtacar(estiloDeTiro)
+                            ),
                             style = MaterialTheme.typography.labelSmall,
                             color = if (avancarEAtacar) {
                                 MaterialTheme.colorScheme.error

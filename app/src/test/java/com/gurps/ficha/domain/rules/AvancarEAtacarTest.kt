@@ -224,4 +224,41 @@ class AvancarEAtacarTest {
             AvancarEAtacarRules.penalidadeADistancia(carabina.magnitude) <= -2
         )
     }
+
+    // == O rotulo que mentia para quem tem Atirador (ARMA-11) ============
+
+    @Test
+    fun `com a vantagem, o rotulo diz ZERO e nao a penalidade`() {
+        // 🔴 A conta ja era zero; o ROTULO e que continuava anunciando "-2". O
+        // jogador marcava a caixinha, via "-2" escrito e o total nao mudar, e
+        // ficava sem saber em qual dos dois acreditar.
+        val comVantagem = AvancarEAtacarRules.rotulo(
+            ehADistancia = true, magnitude = -2, nhBase = 18, ignoraPelaVantagem = true
+        )
+        assertTrue(comVantagem, comVantagem.contains("0"))
+        assertTrue(comVantagem, !comVantagem.contains("-2"))
+    }
+
+    @Test
+    fun `o rotulo diz o que se paga em troca`() {
+        // ⚠️ O livro nao da as duas coisas: "tudo isso e em vez de receber o
+        // bonus da Prec" (MB p.43).
+        val comVantagem = AvancarEAtacarRules.rotulo(true, -2, 18, ignoraPelaVantagem = true)
+        assertTrue(comVantagem, comVantagem.contains("Precisão"))
+        assertTrue(comVantagem, comVantagem.contains("p.43"))
+    }
+
+    @Test
+    fun `sem a vantagem, o rotulo antigo continua igual`() {
+        val semVantagem = AvancarEAtacarRules.rotulo(true, -2, 18)
+        val explicito = AvancarEAtacarRules.rotulo(true, -2, 18, ignoraPelaVantagem = false)
+        assertEquals(semVantagem, explicito)
+        assertTrue(semVantagem, semVantagem.contains("-2"))
+    }
+
+    @Test
+    fun `o rotulo falado tambem conta a troca`() {
+        val falado = AvancarEAtacarRules.rotuloAcessivel(true, -2, 18, ignoraPelaVantagem = true)
+        assertTrue(falado, falado.contains("apaga a penalidade"))
+    }
 }
