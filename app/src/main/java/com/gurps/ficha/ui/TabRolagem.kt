@@ -87,6 +87,7 @@ fun TabRolagem(viewModel: FichaViewModel) {
     val canaisErro = viewModel.canaisDiscordErro
     val backendOnline = canaisErro.isNullOrBlank()
     var showEditarCanalDialog by remember { mutableStateOf(false) }
+    var showDestinoDialog by remember { mutableStateOf(false) }
 
     // Testes que a queda de PV exigiu e o jogador ainda nao rolou nem dispensou.
     var testesDeMarco by remember { mutableStateOf(emptyList<MarcosDeVidaRules.TesteExigido>()) }
@@ -828,6 +829,15 @@ fun TabRolagem(viewModel: FichaViewModel) {
                 onEditCanal = { showEditarCanalDialog = true }
             )
 
+            // Lote MESA-7 — o segundo destino, **somado** ao do Discord.
+            Spacer(modifier = Modifier.height(6.dp))
+            RolagemDestinoBotao(
+                destino = viewModel.destinoDaRolagem,
+                oQueFalta = viewModel.oQueFaltaNoDestino,
+                isVerySmallScreen = isVerySmallScreen,
+                onClick = { showDestinoDialog = true }
+            )
+
             if (isPraCegoVariant) SectionHeaderPraCego("Atributos e Status")
         PainelAtributosEStatus(
             personagem = p,
@@ -1161,6 +1171,19 @@ fun TabRolagem(viewModel: FichaViewModel) {
             onAtualizarCanais = { viewModel.atualizarCanaisDiscord() },
             onCanalSelecionado = { canal -> viewModel.selecionarCanalDiscord(canal) },
             onDismiss = { showEditarCanalDialog = false }
+        )
+    }
+
+    if (showDestinoDialog) {
+        RolagemDestinoDialog(
+            destino = viewModel.destinoDaRolagem,
+            enderecoAtual = viewModel.mesaEndereco,
+            tokenAtual = viewModel.mesaToken,
+            oQueFalta = viewModel.oQueFaltaNoDestino,
+            onEscolherDestino = { viewModel.escolherDestinoDaRolagem(it) },
+            onSalvarMesa = { endereco, token -> viewModel.configurarMesa(endereco, token) },
+            onTestarMesa = { viewModel.testarMesa() },
+            onDismiss = { showDestinoDialog = false }
         )
     }
 

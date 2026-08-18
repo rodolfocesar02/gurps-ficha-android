@@ -9075,3 +9075,53 @@ que os tres andem juntos.
 - **Status:** Build OK nas 2 variantes - lint OK - gate **2377** (+4) - **PENDENTE: teste no aparelho** (T-AT1, atualizado).
 
 > Gate: 2.377 testes, 0 falhas nas duas variantes.
+
+---
+
+## Lote MESA-7 - o segundo destino da rolagem: a Mesa Virtual (12.4-MESA)
+
+**O pedido, palavra por palavra:** *"nao vamos substituir o nosso botao, vamos
+acrescentar um novo, ai podemos pelo app escolher qual o servidor vamos usar."*
+
+### O que entrou
+
+- `domain/rules/DestinoDaRolagem.kt` - o enum dos tres destinos (NENHUM,
+  DISCORD, MESA) e o `ProntidaoDoDestino`, que diz **o que falta** para cada um.
+- `data/network/MesaApiClient.kt` - fala com o servidor `mesa-virtual`
+  (`POST /api/rolagem`, `GET /api/saude`). Token no **corpo**, nunca na URL.
+- `ui/features/rolagem/RolagemDestinoDialog.kt` - o botao novo e o dialogo da
+  escolha, com endereco, token e "SALVAR E TESTAR".
+- `FichaSocialDelegate` - `enviarRolagem` virou a **porta unica**: o destino e
+  decidido em um lugar so, e as cinco rotas de envio passam por ele.
+
+### Por que NENHUM existe
+
+Sem ele, um app recem-instalado teria de chutar um destino - e chutaria errado
+na metade das vezes, mandando a rolagem para um servidor que aquele jogador
+nunca configurou. No escuro, **nao envia**.
+
+### O botao e novo, e isso foi de proposito
+
+A tentacao era transformar o botao CANAL em "ONDE ENVIAR" e pendurar o Discord
+dentro dele: uma tela a menos. Seria uma regressao para quem so usa Discord -
+o caminho de um toque que essa pessoa faz ha meses passaria a ter dois toques e
+uma pergunta nova. Ha um teste que **reprova** essa "simplificacao".
+
+### "A regra existe, a tela nao pergunta" - a sexta vez
+
+A regra, o cliente HTTP, o delegate e o ViewModel ficaram prontos e verdes com a
+tela ainda sem nenhum botao. Um teste de unidade da regra passaria assim. Por
+isso os testes desta parte **leem o codigo-fonte da tela**: nao e elegante, mas
+e a unica camada onde este defeito aparece.
+
+### Sonda
+
+Trocar `token = it.uppercase()` por `token = it` deixou o teste vermelho
+(`o token nao aparece na tela em minusculo`). Restaurado, verde.
+
+- **Status:** Build OK nas 2 variantes - gate **2394** (+5) - **PENDENTE: teste
+  no aparelho** (T-ME1: escolher Mesa, digitar endereco e token, testar, rolar e
+  ver a rolagem cair no chat da sala; T-ME2: voltar para Discord e conferir que
+  o caminho antigo continua igual).
+
+> Gate: 2.394 testes, 0 falhas nas duas variantes.

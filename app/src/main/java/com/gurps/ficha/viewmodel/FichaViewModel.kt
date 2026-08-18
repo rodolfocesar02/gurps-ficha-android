@@ -119,6 +119,17 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
     val canaisDiscordCarregando get() = socialDelegate.canaisDiscordCarregando
     val canaisDiscordErro get() = socialDelegate.canaisDiscordErro
     val canalDiscordSelecionadoId get() = socialDelegate.canalDiscordSelecionadoId
+
+    // Lote MESA-7: o segundo destino das rolagens, ao lado do Discord.
+    val destinoDaRolagem get() = socialDelegate.destinoDaRolagem
+    val mesaEndereco get() = socialDelegate.mesaEndereco
+    val mesaToken get() = socialDelegate.mesaToken
+    val oQueFaltaNoDestino get() = socialDelegate.oQueFaltaNoDestino
+    fun escolherDestinoDaRolagem(d: com.gurps.ficha.domain.rules.DestinoDaRolagem) =
+        socialDelegate.escolherDestino(d)
+    fun configurarMesa(endereco: String?, token: String?) =
+        socialDelegate.configurarMesa(endereco, token)
+    suspend fun testarMesa() = socialDelegate.testarMesa()
     val canalDiscordSelecionadoNome get() = socialDelegate.canalDiscordSelecionadoNome
 
     // Getters do modo Saga (Lote 354)
