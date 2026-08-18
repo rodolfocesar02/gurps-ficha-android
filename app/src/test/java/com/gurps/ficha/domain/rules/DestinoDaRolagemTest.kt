@@ -215,6 +215,42 @@ class DestinoDaRolagemTest {
     }
 
     @Test
+    fun `a Mesa recebe o retrato do personagem, como o Discord`() {
+        // 🔴 A rolagem chegava no Discord com a cara do personagem e na Mesa
+        // como texto pelado. A mesma imagem, os dois destinos.
+        val cliente = fonte("com/gurps/ficha/data/network/MesaApiClient.kt")
+        assertTrue("o cliente da Mesa nao sabe subir retrato", cliente.contains("fun postRetrato("))
+        assertTrue("o retrato nao vai para /api/retrato", cliente.contains("/api/retrato"))
+        // ⚠️ Token no CORPO, como na rolagem: query string fica no historico.
+        assertTrue(
+            "o token do retrato foi para a URL",
+            cliente.contains("mapOf(\"token\" to token")
+        )
+
+        val vm = fonte("com/gurps/ficha/viewmodel/FichaViewModel.kt")
+        assertTrue(
+            "salvar a ficha nao sobe o retrato para a Mesa",
+            vm.contains("socialDelegate.enviarRetratoParaAMesa(nome, dataUri)")
+        )
+        // E continua subindo para o Discord: o pedido era ACRESCENTAR.
+        assertTrue(
+            "o retrato deixou de ir para o Discord",
+            vm.contains("networkDelegate.enviarRetratoDiscord(nome, dataUri)")
+        )
+    }
+
+    @Test
+    fun `o retrato so vai para a Mesa quando a Mesa e o destino`() {
+        // Subir a imagem para um servidor que a pessoa nao escolheu seria
+        // mandar a cara do personagem para onde ninguem pediu.
+        val delegate = fonte("com/gurps/ficha/viewmodel/delegates/FichaSocialDelegate.kt")
+        assertTrue(
+            "o retrato vai para a Mesa mesmo com o Discord escolhido",
+            delegate.contains("if (destinoDaRolagem != DestinoDaRolagem.MESA) return false")
+        )
+    }
+
+    @Test
     fun `o token nao aparece na tela em minusculo`() {
         // O servidor compara byte a byte; o teclado do telefone nao ajuda.
         val src = fonte("com/gurps/ficha/ui/features/rolagem/RolagemDestinoDialog.kt")

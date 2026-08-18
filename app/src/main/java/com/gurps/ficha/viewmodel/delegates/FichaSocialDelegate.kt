@@ -107,6 +107,24 @@ class FichaSocialDelegate(
      * nascendo diferente das outras — que foi exatamente o defeito do canal do
      * Discord na semana passada.
      */
+    /**
+     * Sobe o retrato do personagem para a Mesa, se a Mesa for o destino.
+     *
+     * 🔴 Espelha o Discord, que já fazia isto — e por isso a rolagem chegava
+     * lá com a cara do personagem e aqui como texto pelado.
+     *
+     * ⚠️ Best-effort, como o do Discord: nunca segura o salvar da ficha. Ficar
+     * sem imagem é um aborrecimento; não salvar a ficha é perder trabalho.
+     */
+    suspend fun enviarRetratoParaAMesa(personagem: String, imagemDataUri: String): Boolean {
+        if (destinoDaRolagem != DestinoDaRolagem.MESA) return false
+        val endereco = mesaEndereco ?: return false
+        val token = mesaToken ?: return false
+        return kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.IO) {
+            MesaApiClient.postRetrato(endereco, token, personagem, imagemDataUri).ok
+        }
+    }
+
     suspend fun enviarRolagem(payload: DiscordRollPayload): RollDispatchStatus =
         when (destinoDaRolagem) {
             DestinoDaRolagem.NENHUM ->

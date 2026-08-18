@@ -90,6 +90,65 @@ object MesaApiClient {
         }
     }
 
+    /**
+     * Sobe o retrato do PERSONAGEM para a sala.
+     *
+     * 🔴 Espelha o que já se fazia com o Discord: a imagem sobe uma vez, ao
+     * salvar a ficha, e a sala a reaproveita em cada rolagem daquele
+     * personagem. Sem isto a rolagem chegava na Mesa como texto pelado,
+     * enquanto no Discord vinha com a cara do personagem ao lado.
+     *
+     * ⚠️ O token vai no **corpo**, como na rolagem, e pela mesma razão: query
+     * string fica no histórico e nos registros de qualquer intermediário.
+     */
+    fun postRetrato(
+        baseUrl: String,
+        token: String,
+        personagem: String,
+        imagemDataUri: String
+    ): DiscordRollSendResult {
+        if (baseUrl.isBlank()) {
+            return DiscordRollSendResult(false, null, "endereco_vazio")
+        }
+        if (token.isBlank()) return DiscordRollSendResult(false, null, "token_vazio")
+        if (personagem.isBlank() || imagemDataUri.isBlank()) {
+            return DiscordRollSendResult(false, null, "sem_imagem")
+        }
+
+        val corpo = gson.toJson(
+            mapOf("token" to token, "personagem" to personagem, "imagem" to imagemDataUri)
+        ).toByteArray(StandardCharsets.UTF_8)
+
+        var connection: HttpURLConnection? = null
+        return try {
+            connection = (URL("${baseUrl.trimEnd('/')}/api/retrato").openConnection() as HttpURLConnection).apply {
+                requestMethod = "POST"
+                doOutput = true
+                connectTimeout = CONNECT_TIMEOUT_MS
+                // ⚠️ Mais folga na leitura que a rolagem: a imagem é bem maior
+                // que uma linha de texto, e um telefone em 3G leva tempo.
+                readTimeout = READ_TIMEOUT_MS * 4
+                setRequestProperty("Content-Type", "application/json; charset=utf-8")
+            }
+            connection.outputStream.use { it.write(corpo) }
+
+            val codigo = connection.responseCode
+            if (codigo in 200..299) {
+                DiscordRollSendResult(true, codigo, null)
+            } else {
+                DiscordRollSendResult(
+                    false, codigo,
+                    if (codigo == 401) "token_da_sala_invalido"
+                    else "http_$codigo ${lerComSeguranca(connection.errorStream).ifBlank { "sem_detalhes" }}"
+                )
+            }
+        } catch (error: Exception) {
+            DiscordRollSendResult(false, null, error.message ?: "erro_desconhecido")
+        } finally {
+            connection?.disconnect()
+        }
+    }
+
     /** A sala está de pé? Serve para o botão de testar, na configuração. */
     fun saude(baseUrl: String): DiscordRollSendResult {
         var connection: HttpURLConnection? = null

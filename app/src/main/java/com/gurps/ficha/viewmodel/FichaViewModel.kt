@@ -846,6 +846,12 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
                 val dataUri = com.gurps.ficha.data.storage.ImagemPersonagemStore.bytesBase64(imagemUri)
                 if (dataUri != null) {
                     networkDelegate.enviarRetratoDiscord(nome, dataUri)
+                    // 🔴 E para a Mesa também, quando é ela o destino.
+                    //
+                    // O Discord já recebia a imagem aqui; a Mesa não, e por isso
+                    // a rolagem chegava lá com a cara do personagem e aqui como
+                    // texto pelado. A mesma imagem, os dois destinos.
+                    socialDelegate.enviarRetratoParaAMesa(nome, dataUri)
                 }
             }
         }
