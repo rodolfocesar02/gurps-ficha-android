@@ -21,7 +21,27 @@ import java.nio.charset.StandardCharsets
 data class MesaRollPayload(
     val token: String,
     val autor: String,
-    val texto: String
+    /**
+     * O texto já pronto.
+     *
+     * ⚠️ Continua indo, e de propósito: se a sala for de uma versão anterior,
+     * ela ignora os campos abaixo e usa este. Sem ele, atualizar o app quebraria
+     * as salas que ainda não foram atualizadas.
+     */
+    val texto: String,
+
+    // 🔴 Os CAMPOS, para a sala montar a frase com as regras de crítico.
+    //
+    // O app montava o texto sozinho, sem as regras, e por isso um SUCESSO
+    // DECISIVO chegava na Mesa como "sucesso" comum — enquanto no Discord vinha
+    // certo, porque lá quem monta é o bot.
+    val tipo: String? = null,
+    val contexto: String? = null,
+    val dados: List<Int>? = null,
+    val total: Int? = null,
+    val resultado: String? = null,
+    val margem: Int? = null,
+    val alvo: Int? = null
 )
 
 /**

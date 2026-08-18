@@ -1062,7 +1062,43 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
 
     fun atualizarCanaisDiscord() = socialDelegate.atualizarCanais()
     fun selecionarCanalDiscord(c: DiscordVoiceChannel?) = socialDelegate.selecionarCanal(c)
-    suspend fun enviarRolagemDiscord(p: DiscordRollPayload) = socialDelegate.enviarRolagem(p)
+    /**
+     * ⚠️ O retrato do personagem já foi para a Mesa nesta sessão?
+     *
+     * Guardado em memória: uma vez por arranque do app basta. Guardar em disco
+     * mentiria no dia em que a sala fosse reiniciada e perdesse a imagem.
+     */
+    private val retratosJaEnviadosAMesa = mutableSetOf<String>()
+
+    /**
+     * 🔴 Garante que a Mesa tem a cara deste personagem ANTES da rolagem.
+     *
+     * A imagem só subia ao **salvar a ficha** — então quem já tinha salvo antes
+     * de escolher a Mesa rolava a sessão inteira sem imagem, e não havia nada
+     * na tela que explicasse por quê. O primeiro lançamento agora resolve isso
+     * sozinho.
+     *
+     * ⚠️ Não segura a rolagem se falhar: rolagem sem imagem é um aborrecimento,
+     * rolagem que não sai é a jogada perdida.
+     */
+    private suspend fun garantirRetratoNaMesa(nomeDoPersonagem: String) {
+        if (nomeDoPersonagem.isBlank()) return
+        if (!retratosJaEnviadosAMesa.add(nomeDoPersonagem)) return
+
+        val imagemUri = personagem.imagemPersonagemUri
+        if (imagemUri.isBlank()) return
+        val dataUri = com.gurps.ficha.data.storage.ImagemPersonagemStore.bytesBase64(imagemUri)
+            ?: return
+        // Se não der certo, tenta de novo na próxima rolagem.
+        if (!socialDelegate.enviarRetratoParaAMesa(nomeDoPersonagem, dataUri)) {
+            retratosJaEnviadosAMesa.remove(nomeDoPersonagem)
+        }
+    }
+
+    suspend fun enviarRolagemDiscord(p: DiscordRollPayload): RollDispatchStatus {
+        garantirRetratoNaMesa(p.character)
+        return socialDelegate.enviarRolagem(p)
+    }
 
     // === UTILITÁRIOS / COMBATE ===
     fun calcularDanoArmaComSt(r: String?) = CharacterRules.resolverDanoPorSt(r?.trim().orEmpty(), personagem.forca)

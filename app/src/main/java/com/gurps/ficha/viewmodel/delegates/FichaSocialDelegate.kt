@@ -146,10 +146,17 @@ class FichaSocialDelegate(
     /**
      * O mesmo lançamento, no chat da sala.
      *
-     * 🔴 Aqui o texto é montado **no app**, e no Discord ele é montado pelo bot.
-     * Isso significa que a mesma rolagem pode sair escrita diferente nos dois
-     * lugares — o preço de não haver biblioteca comum entre um app Kotlin e um
-     * servidor Node. Fica registrado para ninguém descobrir sozinho.
+     * 🔴 **Quem monta a frase é a sala**, e não este app — como já era com o
+     * Discord, onde quem monta é o bot.
+     *
+     * Antes o texto era montado aqui, à mão, e por isso saía SEM as regras de
+     * crítico do GURPS: um SUCESSO DECISIVO chegava na Mesa como "sucesso"
+     * comum, enquanto no Discord vinha certo. A mesa decidia em cima de uma
+     * linha errada.
+     *
+     * ⚠️ O texto pronto continua sendo enviado junto: uma sala de versão
+     * anterior ignora os campos e usa ele. Sem isso, atualizar o app quebraria
+     * as salas que ainda não foram atualizadas.
      */
     private suspend fun enviarParaAMesa(payload: DiscordRollPayload): RollDispatchStatus {
         val endereco = mesaEndereco
@@ -169,7 +176,25 @@ class FichaSocialDelegate(
         }
 
         val resultado = kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.IO) {
-            MesaApiClient.postRoll(endereco, MesaRollPayload(token, payload.character, texto))
+            MesaApiClient.postRoll(
+                endereco,
+                MesaRollPayload(
+                    token = token,
+                    autor = payload.character,
+                    // ⚠️ O texto pronto vai junto, para uma sala de versão
+                    // anterior não parar de receber rolagem.
+                    texto = texto,
+                    // 🔴 E os campos, para a sala montar a frase COM as regras
+                    // de crítico — que este texto acima não tem.
+                    tipo = payload.testType,
+                    contexto = payload.context,
+                    dados = payload.dice,
+                    total = payload.total,
+                    resultado = payload.outcome,
+                    margem = payload.margin,
+                    alvo = payload.target
+                )
+            )
         }
         return RollDispatchStatus(enviado = resultado.ok, detalhe = resultado.error)
     }
