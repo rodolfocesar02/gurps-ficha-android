@@ -14,8 +14,12 @@ Mapa de engenharia completo do projeto. Use para localizar lógicas específicas
 > A suíte passou de **1.830 para 2.408 testes**. Cada item está marcado com **[+ 2026-08-19]**.
 >
 > ⚠️ **Onde as descrições foram buscadas:** no KDoc de cada arquivo, um por um — não de memória.
-> Os três arquivos sem KDoc (`EditorDeNota`, `FichaNotesDelegate`, `ListaDeLocaisPraCego`) estão
-> descritos pelo que o código faz, e ficam anotados como **dívida de documentação**.
+>
+> ✅ **Dívida paga em 2026-08-19:** os arquivos do **Bloco de Notas** (`NotaDeJogo`,
+> `FichaNotesDelegate`, `EditorDeNota`, `DialogoBlocoDeNotas`) ganharam KDoc próprio. A leitura para
+> escrevê-lo destapou **dois defeitos**, registrados no próprio código — ver §3 e §20.
+> Continua sem cabeçalho: `ListaDeLocaisPraCego` (tem KDoc de arquivo, mas o `EditorDeNota` era o
+> caso pior e foi resolvido).
 
 > ➕ **2026-08-03 — Varredura de completude.** O mapa estava com **80 arquivos de código, 113 testes
 > e 5 assets** fora dele — quase todos das frentes de **automação de regras** (jul/ago) e do **padrão
@@ -118,7 +122,7 @@ Base anterior: 2026-06-08 (fidelidade linha-a-linha) | 2026-05-30 (Mestre IA pó
 
 ---
 
-- **`delegates/FichaNotesDelegate.kt`** **[+ 2026-08-19]** — Salva, edita e exclui as notas de jogo (`NotaDeJogo`) do personagem, sempre reordenando por data de modificação (mais recente primeiro). Sem estado próprio: recebe e devolve o `Personagem`. ⚠️ **Sem KDoc** — é o único delegate sem cabeçalho explicando por que existe.
+- **`delegates/FichaNotesDelegate.kt`** **[+ 2026-08-19, Lote NOTA-1]** — O **caderno de anotações**: salva, edita e exclui as `NotaDeJogo` do personagem, reordenando por `dataModificacao` a cada gravação. Sem estado próprio: recebe e devolve o `Personagem`. ⚠️ Salvar e editar são a **mesma porta** (`salvarNota` procura pelo `id`; não achou, acrescenta) — do lado da tela a diferença não existe. 🔴 **E daí vem um defeito conhecido:** salvar uma nota já apagada a traz de volta, porque "id ausente" quer dizer "nota nova". Ver `EditorDeNota`.
 
 ---
 
@@ -645,8 +649,8 @@ registram que o plano inicial descrevia regras que o livro não tem.*
 
 - **`features/rolagem/RolagemDestinoDialog.kt`** **[MESA-7]** — O botão do **destino**. Botão NOVO, e não o de CANAL renomeado: renomear seria uma tela a menos e uma **regressão** para quem só usa Discord.
 - **`features/rolagem/DialogoPoderes.kt`** **[POD-12/13]** — Esforço adicional e ampliação temporária **no meio da rolagem**, não na aba Traços. Segue o padrão de Técnicas e Magias: só aparece quando há o que mostrar.
-- **`features/rolagem/DialogoBlocoDeNotas.kt`** **[NOTA-1]** — O Bloco de Notas e o envio para a mesa. ⚠️ O logo do Discord é `Image` e **não** `Icon`: o `Icon` pinta o desenho inteiro com uma cor só e o logo viraria mancha chapada.
-- **`features/rolagem/EditorDeNota.kt`** **[NOTA-1]** — Editor de uma nota: texto, cor (paleta de 8), excluir e compartilhar por `Intent`. ⚠️ **Sem KDoc.**
+- **`features/rolagem/DialogoBlocoDeNotas.kt`** **[NOTA-1]** — A **lista** do Bloco de Notas: *"um Google Notas dentro do app"*, nas palavras do usuário. Três destinos, cada um no seu lugar — fica no app (automático), sai por `ACTION_SEND` (só o texto), ou vai para o Discord (com confirmação, porque é irreversível). 🔴 A anotação viaja **no envelope de uma rolagem** (`/api/rolls`, `testType = "Nota"`), porque não existe rota de texto no servidor; quem monta o pacote é `NotaParaDiscord`, fora da tela. O Lote NOTA-2 nasceu de a anotação chegar **parecendo uma rolagem**. ⚠️ O logo do Discord é `Image` e não `Icon`: o `Icon` pinta tudo com uma cor só e o logo viraria mancha chapada.
+- **`features/rolagem/EditorDeNota.kt`** **[NOTA-1]** — Escrever uma nota: texto, cor (7 tons **100** do Material), compartilhar e excluir. ⚠️ **Não existe botão de salvar** — fechar É salvar (`onDispose`), porque numa mesa a anotação é sempre interrompida e um botão transformaria toda interrupção em texto perdido. 🔴 **Dois defeitos abertos, achados ao documentar:** (1) **excluir não exclui** — o `onClose` do botão de excluir dispara o `onDispose`, que grava a nota de volta; (2) no **tema escuro** do sistema, o texto usa `onSurface` (quase branco) sobre um fundo pastel claro, e a nota fica ilegível.
 - **`features/rolagem/ListaDeLocaisPraCego.kt`** **[ACESS-2]** — O seletor de local do golpe na variante `pracego`: lista de rádio com rótulo falado, no lugar da silhueta que só funciona com os olhos.
 
 ---

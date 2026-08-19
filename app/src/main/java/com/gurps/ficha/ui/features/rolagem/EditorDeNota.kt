@@ -26,6 +26,20 @@ import com.gurps.ficha.model.NotaDeJogo
 import java.text.SimpleDateFormat
 import java.util.*
 
+/**
+ * **A cor da nota** — as sete do Google Keep, e pelo mesmo motivo.
+ *
+ * São tons **100** do Material: claros o bastante para texto escuro por cima.
+ * A cor aqui não é enfeite — é o único jeito de separar um caderno de notas
+ * soltas sem inventar pastas nem marcadores.
+ *
+ * 🔴 **E é aqui que mora um defeito.** O fundo é sempre claro, mas o texto usa
+ * `MaterialTheme.colorScheme.onSurface` — que no tema **escuro** é quase
+ * branco. Num aparelho com o tema escuro do sistema, a nota fica branca sobre
+ * amarelo-claro: ilegível. O app segue o tema do sistema
+ * (`isSystemInDarkTheme()` no `Theme.kt`), então isso acontece de verdade.
+ * A cura é pintar o texto em função da cor **da nota**, e não do tema.
+ */
 val CoresNotaDeJogo = listOf(
     "#FFFFFF" to "Branco",
     "#FFF9C4" to "Amarelo", // Yellow 100
@@ -36,6 +50,43 @@ val CoresNotaDeJogo = listOf(
     "#FFCCBC" to "Laranja"  // Deep Orange 100
 )
 
+/**
+ * **Escrever uma nota** — Lote NOTA-1.
+ *
+ * A tela cheia de uma anotação: o texto, a cor, compartilhar e excluir. Abre
+ * tanto para uma nota nova quanto para uma existente — do lado de cá não há
+ * diferença, e é por isso que [FichaNotesDelegate.salvarNota] é uma porta só.
+ *
+ * ## Não existe botão de salvar, e é de propósito
+ *
+ * A gravação acontece no `onDispose`: fechar É salvar. Numa mesa de RPG a
+ * anotação é interrompida — o Mestre chama, o dado rola, alguém pergunta uma
+ * regra. Um botão de salvar transforma toda interrupção em texto perdido.
+ *
+ * 🔴 **Mas isso, hoje, tem um preço: excluir não exclui.**
+ *
+ * O botão de excluir chama `onExcluir(nota.id)` e logo `onClose()`. O `onClose`
+ * tira esta tela da composição, e aí o `onDispose` dispara e **grava a nota de
+ * volta** — porque para o delegate um `id` que não está na lista quer dizer
+ * "nota nova". A sequência é: apagou, fechou, ressuscitou.
+ *
+ * A cura é uma bandeira (`var foiExcluida`) marcada antes do `onClose` e
+ * conferida dentro do `onDispose`. Enquanto ela não existir, isto fica escrito
+ * aqui — o defeito é fácil de reproduzir e difícil de acreditar.
+ *
+ * ## Compartilhar para fora do app
+ *
+ * `Intent.ACTION_SEND` com `text/plain` e o seletor do próprio Android: cai no
+ * WhatsApp, no e-mail, no bloco de notas do sistema, no que a pessoa tiver.
+ * ⚠️ Vai **só o texto** — cor e datas ficam para trás, porque do outro lado
+ * ninguém sabe o que fazer com elas.
+ *
+ * O envio para o **Discord** não é aqui: é no [DialogoBlocoDeNotas], a partir
+ * da lista, e passa por uma confirmação.
+ *
+ * @param onSalvar chamado ao fechar, com a nota já com o texto e a cor atuais
+ * @param onExcluir recebe o `id`; quem fecha a tela é o chamador
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EditorDeNota(

@@ -41,6 +41,45 @@ import com.gurps.ficha.viewmodel.FichaViewModel
 import java.text.SimpleDateFormat
 import java.util.*
 
+/**
+ * **O Bloco de Notas** — Lote NOTA-1.
+ *
+ * O pedido do usuário: *"é basicamente um Google Notas, só que dentro do app: o
+ * jogador faz anotações dos acontecimentos do jogo, e pode compartilhar para
+ * fora do app e enviar para o Discord"*.
+ *
+ * Esta é a **lista** — o caderno aberto. Cada nota é um cartão com o título
+ * derivado, a data e a cor de fundo. Toque abre o [EditorDeNota]; o ícone do
+ * Discord manda a anotação para a mesa.
+ *
+ * Três destinos, e cada um tem o seu lugar:
+ *
+ * | Para onde | Onde fica o botão | O que viaja |
+ * |---|---|---|
+ * | Fica no app | (automático, ao fechar o editor) | tudo: texto, cor, datas |
+ * | Fora do app | dentro do editor, ícone de compartilhar | só o texto |
+ * | Discord | aqui na lista, ícone do Discord | o texto, como anotação |
+ *
+ * ## ⚠️ O envio ao Discord pede confirmação
+ *
+ * Mandar para a mesa é **irreversível**: o que caiu no canal, caiu. Um toque
+ * sem volta ao lado de um toque que só abre a nota é um acidente à espera —
+ * por isso existe o [ConfirmarEnvioDaNota] no meio dos dois.
+ *
+ * ## 🔴 A anotação viaja no envelope de uma ROLAGEM
+ *
+ * Não há rota de "mandar texto" no servidor: existe [POST /api/rolls] e mais
+ * nada. A nota entra ali com [testType] valendo "Nota", para o outro lado
+ * distinguir, e quem monta o pacote é [NotaParaDiscord] — **fora da tela**,
+ * porque este era o quinto lugar do app a montar um [DiscordRollPayload] à mão.
+ *
+ * O Lote NOTA-2 nasceu disso: a anotação chegava ao Discord **parecendo uma
+ * rolagem**, com dados e margem de sucesso que nunca existiram.
+ *
+ * ⚠️ O canal é o mesmo já escolhido na aba Rolagem
+ * ([FichaViewModel.canalDiscordSelecionadoId]). Sem canal escolhido o envio
+ * falha, e o aviso vem por Toast — com o motivo, e não só "não deu".
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DialogoBlocoDeNotas(

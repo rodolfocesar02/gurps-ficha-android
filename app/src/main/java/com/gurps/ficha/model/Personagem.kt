@@ -417,6 +417,34 @@ data class Personagem(
 // ============================================================
 
 @Stable
+/**
+ * **Uma anotação de jogo** — Lote NOTA-1.
+ *
+ * O pedido, nas palavras do usuário: *"é basicamente um Google Notas, só que
+ * dentro do app: o jogador faz anotações dos acontecimentos do jogo, e pode
+ * compartilhar para fora do app e enviar para o Discord"*.
+ *
+ * É isso, e nada além disso — **texto solto**. Não há título separado, nem
+ * marcador, nem pasta, nem busca. Numa mesa de RPG a anotação nasce no meio de
+ * uma cena, com o dado ainda na mão: qualquer campo a mais é um campo que
+ * ninguém preenche.
+ *
+ * ## Onde ela mora
+ *
+ * Dentro do **personagem** (`Personagem.notasDeJogo`), e não numa tabela
+ * própria. Duas consequências, e as duas são de propósito:
+ *
+ * - a nota **viaja com a ficha** — exportar, mandar pelo WhatsApp e importar
+ *   noutro aparelho leva as anotações junto, pelo mesmo caminho que já existe;
+ * - a nota é **de um personagem**, não do jogador. Quem joga dois personagens
+ *   tem dois cadernos, que é como a mesa pensa.
+ *
+ * @property corHex `null` quando é branco. ⚠️ O branco não se guarda: assim uma
+ *   nota antiga, salva antes das cores existirem, abre igual a uma nota nova
+ *   sem precisar de migração nenhuma.
+ * @property dataModificacao Reescrita a cada gravação — é por ela que a lista
+ *   se ordena, e não pela criação. O caderno mostra o que se mexeu por último.
+ */
 data class NotaDeJogo(
     val id: String = java.util.UUID.randomUUID().toString(),
     val texto: String = "",
@@ -424,6 +452,13 @@ data class NotaDeJogo(
     val dataCriacao: Long = System.currentTimeMillis(),
     val dataModificacao: Long = System.currentTimeMillis()
 ) {
+    /**
+     * O título é **derivado**, e não digitado: as três primeiras palavras.
+     *
+     * ⚠️ Pedir um título seria pedir uma decisão a quem está no meio de uma
+     * cena. As três palavras erram às vezes, e errar é barato — o texto inteiro
+     * está a um toque de distância.
+     */
     val titulo: String get() {
         if (texto.isBlank()) return "Sem título"
         val palavras = texto.trim().split("\\s+".toRegex())
