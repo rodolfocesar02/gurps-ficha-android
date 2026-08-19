@@ -2,6 +2,21 @@
 
 Mapa de engenharia completo do projeto. Use para localizar lógicas específicas sem varrer o código.
 
+> ➕ **2026-08-19 — 74 commits desde o PV-1b (10/ago).** Nove frentes entraram, e a maior é **nova no
+> projeto**: **Poderes** (suplemento *GURPS Poderes*), com 10 arquivos de regra, 4 telas e um catálogo
+> de fontes. As outras: **EQP-1..14** (a aba Equipamentos inteira — cartões, fichas técnicas de
+> armadura e escudo, qualidade da arma, camadas de armadura, trauma por impacto e 5 tipos de dano),
+> **ROL-1..7** (a aba Rolagem conforme a mockup do usuário), **MESA-7/26/30** (a Mesa Virtual como
+> **segundo** destino da rolagem, ao lado do Discord — que fica), **NOTA-1/2** (Bloco de Notas e o
+> envio dele), **ATR-1** (comprar Velocidade e Deslocamento Básicos), **MAGIA-E1..E3** (o custo em
+> energia das magias), **ACESS-1/2** (rótulos falados e seletor de local na variante `pracego`),
+> **TELA-1** (barra de rolagem em todo diálogo) e **GER-1..3** (XP, NT e campo compacto).
+> A suíte passou de **1.830 para 2.408 testes**. Cada item está marcado com **[+ 2026-08-19]**.
+>
+> ⚠️ **Onde as descrições foram buscadas:** no KDoc de cada arquivo, um por um — não de memória.
+> Os três arquivos sem KDoc (`EditorDeNota`, `FichaNotesDelegate`, `ListaDeLocaisPraCego`) estão
+> descritos pelo que o código faz, e ficam anotados como **dívida de documentação**.
+
 > ➕ **2026-08-03 — Varredura de completude.** O mapa estava com **80 arquivos de código, 113 testes
 > e 5 assets** fora dele — quase todos das frentes de **automação de regras** (jul/ago) e do **padrão
 > de tela** (ago). Todos entraram nas seções abaixo, com a descrição saindo do KDoc de cada arquivo,
@@ -19,7 +34,8 @@ Mapa de engenharia completo do projeto. Use para localizar lógicas específicas
 > ⚠️ Ainda **fora do mapa de propósito**: os arquivos de `ui/saga/` (combate tático) e a suíte
 > `nexus/arcano/`, que já têm documento próprio.
 
-Atualizado em: 2026-07-22 (**§32.9 nova**: PILAR MAGIA no combate; motor executa 98 das 879 magias).
+Atualizado em: **2026-08-19** (varredura dos 74 commits desde o PV-1b — ver o bloco ➕ no topo).
+Base anterior: 2026-07-22 (**§32.9**: PILAR MAGIA no combate; motor executa 98 das 879 magias).
 Rede de invariantes SIM-1 e build paralelo BUILD-1 (gate 7-8min → 1m36s). **§32.4 revista** após a
 refatoração REFACTOR-0..3: a DECISÃO e a TRADUÇÃO saíram do `SagaCombatController` (2243→2099) para
 arquivos puros e testáveis (`RegrasMovimentoTatico`, `TraducaoFichaParaCombate`), e a UI de
@@ -99,6 +115,10 @@ Base anterior: 2026-06-08 (fidelidade linha-a-linha) | 2026-05-30 (Mestre IA pó
 
 
 - **`delegates/FichaHistoryDelegate.kt`** — `diffAndLog(antigo, novo)` compara duas versões do `Personagem` campo a campo (nome, jogador, pontos, XP, os quatro atributos primários, os modificadores secundários, listas de traços/perícias/magias/equipamento) e devolve a ficha com um `RegistroLog` por mudança. É o que alimenta o histórico de alterações da ficha.
+
+---
+
+- **`delegates/FichaNotesDelegate.kt`** **[+ 2026-08-19]** — Salva, edita e exclui as notas de jogo (`NotaDeJogo`) do personagem, sempre reordenando por data de modificação (mais recente primeiro). Sem estado próprio: recebe e devolve o `Personagem`. ⚠️ **Sem KDoc** — é o único delegate sem cabeçalho explicando por que existe.
 
 ---
 
@@ -189,6 +209,50 @@ Base anterior: 2026-06-08 (fidelidade linha-a-linha) | 2026-05-30 (Mestre IA pó
 
 ---
 
+
+### Equipamento: a ficha técnica e as regras do item **[+ 2026-08-19, Lotes EQP-1..14]**
+
+- **`rules/CartaoDoItem.kt`** — O **conteúdo** de um cartão de item da aba Equipamentos. 🔴 Nasceu dentro de um `@Composable` no EQP-1: funcionava, e era intestável — nenhum teste conseguia perguntar *"o que este cartão mostra?"*, só o aparelho respondia. O EQP-2 mostrou o preço.
+- **`rules/FichaDeEquipamento.kt`** — A **forma** de uma ficha técnica, a mesma para arma, armadura e escudo (`Linha`, `ModoNaTela`, `Ficha`). Saiu de dentro de `FichaTecnicaDaArma` (ARMA-2) quando armadura e escudo pediram o mesmo padrão — dar a cada um a sua estrutura seria três rotas para a mesma coisa.
+- **`rules/FichaTecnicaDaArmadura.kt`** — MB p.283-287. O padrão da arma não é o desenho, é a **divisão**: *no meio da jogada* (RD e local), *na hora de comprar* (NT, peso, custo), *observações do livro*.
+- **`rules/FichaTecnicaDoEscudo.kt`** — MB p.288. Mesma divisão.
+- **`rules/NotasDoEscudo.kt`** — As notas de rodapé da Tabela de Escudos (MB p.288). 🔴 O escudo era o único item cuja nota chegava **crua** à ficha: adicionar o *Escudo Grande* deixava o campo *Notas* com `[2, 4, 6]` — que parece dado corrompido.
+- **`rules/QualidadeDaArma.kt`** — Qualidade das armas de combate corpo a corpo, MB p.275-276. ⚠️ **Não confundir com `QualidadeDoEquipamento`** (p.346), que é modificador de **perícia**; este mexe em **dano**. Nomes parecidos, páginas diferentes, contas diferentes.
+- **`rules/StMinimaDaArma.kt`** — MB p.271: −1 na perícia por ponto de ST que falta, e 1 PF a mais no fim do combate.
+- **`rules/CamadasDeArmadura.kt`** — Combinando e sobrepondo armaduras, MB p.287: só se a camada interna for flexível e ocultável; soma a RD; −1 em DX fora da cabeça.
+- **`rules/TraumaPorImpacto.kt`** — Armadura flexível e trauma por impacto, MB p.380: 1 PV a cada 10 de corte/perfuração ou 5 de contusão barrados pela RD.
+- **`rules/TextoDoCatalogo.kt`** — Conserta o texto torto dos catálogos (`cr?nio`, `bra<?>os`, `m?os`), gerados de planilhas de OCR. Estava escrito à mão dentro de `ui/TabEquipamentos.kt`, onde nenhum teste alcançava.
+
+### Atributos, resistência e acessibilidade **[+ 2026-08-19]**
+
+- **`rules/VelocidadeEDeslocamento.kt`** **[Lote ATR-1]** — Comprar Velocidade Básica e Deslocamento Básico (MB p.17). 🔴 Quase tudo já existia (modelo, custo, ViewModel): faltava só a **tela perguntar** — o padrão de defeito mais repetido deste projeto.
+- **`rules/ResistenciaDanoNatural.kt`** **[Lote POD-30]** — RD do próprio corpo, MB p.83. A vantagem estava no catálogo desde sempre e **não fazia nada**: quem comprava RD 5 pagava 25 pontos e levava o dano inteiro.
+- **`rules/RotuloAcessivel.kt`** **[Lote ACESS-1]** — Como um número é **falado**. 🔴 O leitor de tela lê `-4` como travessão, ou pula o hífen e fala "quatro": um redutor vira bônus sem ninguém perceber, e o defeito é **invisível para quem testa com os olhos**.
+
+### Para onde a rolagem vai, e o que não é rolagem **[+ 2026-08-19]**
+
+- **`rules/DestinoDaRolagem.kt`** **[Lote MESA-7]** — Discord, Mesa Virtual, ou os dois. Pedido do usuário, palavra por palavra: *"não vamos substituir o nosso botão, vamos acrescentar um novo"*. O Discord **fica** — e é a rede de segurança: se a sala do PC cair no meio da sessão, um toque devolve as rolagens a ele.
+- **`rules/NotaParaDiscord.kt`** **[Lote NOTA-1]** — ⚠️ A nota viaja **no envelope de uma rolagem**, com `testType = "Nota"`, porque o servidor tem um endpoint só (`/api/rolls`). O próprio arquivo registra: *"isto é uma adaptação, não a forma certa"*.
+
+### Poderes — `domain/rules/poderes/` **[+ 2026-08-19, Lotes POD-1..30]**
+
+*Frente nova, do suplemento **GURPS Poderes**. ⚠️ Ela foi refeita no meio do caminho: os commits
+`a3c02fe6` (**"ERRO DE RAIZ — montei tudo sem ler o Módulo Básico"**) e as três revisões seguintes
+registram que o plano inicial descrevia regras que o livro não tem.*
+
+- **`poderes/RegrasDePoder.kt`** — A anatomia (p.7-8, p.20-30): fonte, foco, um conjunto de vantagens, um modificador de poder e um Talento.
+- **`poderes/HabilidadesDoPoder.kt`** — As habilidades (p.7-8, p.34). 🔴 Até aqui o poder era um **rótulo solto**; no livro ele é o que **une** vantagens já compradas — *"uma vantagem precisa ter o respectivo modificador de poder para ser parte dele; não há exceções"*.
+- **`poderes/HabilidadesAlternativas.kt`** — p.11: paga-se integral só pela mais cara; as outras custam 1/5.
+- **`poderes/MontadorDeModificador.kt`** — Montar um modificador por componentes (p.20-26). Refeito no POD-16 contra a Referência Rápida.
+- **`poderes/NumeroDeHabilidades.kt`** — p.19. ⚠️ É **orientação para o Mestre**, não conta de pontos — o livro fecha a seção dizendo que os limites são sugestões. Por isso não há validação nem aviso: há **texto com a página**.
+- **`poderes/ReservaDeEnergia.kt`** — RE (p.119): PF a 3 pontos cada, presos a uma fonte.
+- **`poderes/UsoDoPoder.kt`** — Usar um poder (p.156, p.158). 🔴 O plano descrevia este lote errado; relendo a página inteira, a tabela citada **não é** o teste de ativação.
+- **`poderes/TalentoNaRolagem.kt`** **[POD-29]** — 🔴 A regra existia inteira desde o POD-11 e o app sabia o nível do Talento desde o POD-3: **os dois nunca se encontraram**.
+- **`poderes/EsforcoEUsoDePoder.kt`** — Esforço adicional (p.159-161). 🔴 O plano dizia *"1 PF = +15% de efeito"* — isso é uma **variante cinematográfica opcional**; a regra base troca **penalidade em Vontade**, não efeito.
+- **`poderes/AmpliacoesTemporarias.kt`** — Ampliações temporárias e proezas (p.172-173, p.102).
+
+---
+
 ## 6. Domain — Trait Rules
 
 *Regras especiais por ID de vantagem. Cada `TraitRule` implementa a interface e é registrada no Registry.*
@@ -228,6 +292,10 @@ Base anterior: 2026-06-08 (fidelidade linha-a-linha) | 2026-05-30 (Mestre IA pó
 - **`traits/BracalCustoRules.kt`** — O **custo** de ST/DX Braçal (MB p.89 e p.56). O app tratava como escolha de três valores fixos; no livro são o preço de **cada +1**, e o que muda é **quantos braços**.
 - **`traits/CegueiraRule.kt`** — Os **−6** da Cegueira em todas as perícias de combate (MB p.127). É classe Kotlin, e não `efeitos`, porque declarar ~70 alvos por nome seria um paredão de JSON que sai de sincronia no primeiro catálogo novo.
 - **`traits/MaoFracaRule.kt`** — **Mão Fraca** (MB p.151): −2 por nível, até 3, nas perícias de **arma de combate corpo a corpo**. ⚠️ Migrada do JSON para Kotlin porque a lista escrita de memória ("perícias delicadas") não era a do livro.
+
+---
+
+- **`rules/traits/ElementoCustoRules.kt`** **[+ 2026-08-19, Lote POD-21]** — Custo de **Controle** (Poderes p.90) e **Criar** (p.92). 🔴 Achado pelo usuário na tela: *"a vantagem é por nível, porém está como variável, tenho que subir ponto a ponto e não 20/15/10!"*. As duas entraram no catálogo como `costKind: "special"`, que o app traduz para custo variável — mas no livro o preço vem de **duas** escolhas: o quanto o elemento é comum e quantos níveis.
 
 ---
 
@@ -340,6 +408,10 @@ Base anterior: 2026-06-08 (fidelidade linha-a-linha) | 2026-05-30 (Mestre IA pó
 
 ---
 
+- **`network/MesaApiClient.kt`** **[+ 2026-08-19, Lotes MESA-7/26/30]** — Fala com a **Mesa Virtual** (o servidor Node do usuário, em `mesa-virtual/`). `postRoll`, `postRetrato` e `saude`. ⚠️ O pacote é mais simples que o do Discord de propósito: lá o bot monta a mensagem a partir dos campos (`dice`, `total`, `margin`), aqui **o app manda o texto já pronto**. 🔴 O próprio KDoc registra o preço disso: *"o mesmo lançamento pode sair escrito diferente nos dois lugares"* — é o defeito de **duas rotas para a mesma coisa**, aceito conscientemente por não haver biblioteca comum entre um app Kotlin e um servidor Node.
+
+---
+
 ## 15. Data — Storage (Room / Persistência)
 
 - **`data/storage/RostoDetector.kt`** — Acha o rosto (ou, na falta dele, o assunto) para enquadrar retratos. Compartilhado pelo `ImagemPersonagemStore` (cabeçalho da ficha) e pelo `TokenImageStore` (tokens do VTT) — antes cada um tinha a sua cópia. É uma **cascata**, não uma chamada só: o ML Kit Face Detection é treinado em rosto humano e falha em criatura, e aí entra a Subject Segmentation e depois o recorte por saliência.
@@ -386,7 +458,7 @@ Base anterior: 2026-06-08 (fidelidade linha-a-linha) | 2026-05-30 (Mestre IA pó
 
 *Data classes puras. Sem lógica de negócio (exceto `Personagem.kt` que tem cálculos derivados).*
 
-- **`model/Personagem.kt`** — Modelo raiz. Todos os campos do personagem GURPS 4ª Ed. (atributos primários/secundários, vantagens, desvantagens, qualidades, peculiaridades, perícias, técnicas, magias, equipamentos, modelo racial, HP/FP de rolagem, notas). Tem propriedades calculadas (`pontosVida`, `pontosFadiga`, `velocidadeBasica`, etc.) que usam `CharacterRules` e `TraitRuleRegistry`. `toJson`/`fromJson` para serialização. **[+ 2026-06-08]** Campos novos `imagemPersonagemUri` (foto RECORTADA do cabeçalho) e `imagemPersonagemOriginalUri` (foto INTEIRA p/ tela cheia) — ambos `file://` em `filesDir/portraits/`, default vazio (retrocompatível). **[+ 2026-06-09]** Campo `imagemPersonagemBase64` — preenchido APENAS na exportação (foto viaja embutida na ficha); limpo no import (não incha persistência local).
+- **`model/Personagem.kt`** — Modelo raiz. Todos os campos do personagem GURPS 4ª Ed. (atributos primários/secundários, vantagens, desvantagens, qualidades, peculiaridades, perícias, técnicas, magias, equipamentos, modelo racial, HP/FP de rolagem, notas). Tem propriedades calculadas (`pontosVida`, `pontosFadiga`, `velocidadeBasica`, etc.) que usam `CharacterRules` e `TraitRuleRegistry`. `toJson`/`fromJson` para serialização. **[+ 2026-06-08]** Campos novos `imagemPersonagemUri` (foto RECORTADA do cabeçalho) e `imagemPersonagemOriginalUri` (foto INTEIRA p/ tela cheia) — ambos `file://` em `filesDir/portraits/`, default vazio (retrocompatível). **[+ 2026-06-09]** Campo `imagemPersonagemBase64` — preenchido APENAS na exportação (foto viaja embutida na ficha); limpo no import (não incha persistência local). **[+ 2026-08-19]** `notasDeJogo` (lista de `NotaDeJogo` -- id, texto, cor, datas, com `titulo` derivado das primeiras palavras); `pontosPoderes` (entra em `pontosGastos`); `pontosVantagens` revisto para **nao** cobrar integral pelas habilidades alternativas; e `rotuloDePontos` / `rotuloDePontosAcessivel` -- o segundo existe porque o leitor de tela nao fala sinal (ver `RotuloAcessivel`).
 
 - **`model/PersonagemInterop.kt`** — Importação/exportação versionada. `importarJson` suporta envelope `{"schema":"gurps-ficha","character":{...}}` e fallback para JSON legado sem envelope. `exportarJson` gera o envelope com metadados (schemaVersion, exportedAtUtc, appVersion, uiVariant).
 
@@ -403,8 +475,11 @@ Base anterior: 2026-06-08 (fidelidade linha-a-linha) | 2026-05-30 (Mestre IA pó
 
 - **`model/PericiasDeCombate.kt`** — `PERICIAS_COMBATE_CORPO_A_CORPO` e `PERICIAS_COMBATE_DISTANCIA` (e a união, `PERICIAS_COMBATE`). A separação existe porque o MIRA-2 precisa perguntar "este ataque é à distância?" — antes era um `setOf` único com um comentário no meio, que separava para humano ler. ⚠️ Guarda **aliases legados** de ids que fichas antigas podem ter gravado; ver `PericiasDeCombateCatalogoTest`.
 - **`model/ModeloRacialTotais.kt`** — O conteúdo **real** de um modelo racial: o dele mais o das metacaracterísticas embutidas (MB p.262), resolvido recursivamente com profundidade limitada.
-- **`model/Poder.kt`** — `Poder` (o poder na ficha) e `PoderDefinicao` (a entrada do catálogo `poderes.v1.json`).
+- **`model/Poder.kt`** — `Poder` (o poder na ficha) e `PoderDefinicao` (a entrada do catálogo `poderes.v1.json`). **[+ 2026-08-19]** O poder ganhou corpo nos Lotes POD-1..30: fonte, foco, modificador, Talento, Reserva de Energia e a ligacao com as vantagens que sao suas habilidades (`vantagem.poderId`).
 - **`model/RegistroLog.kt`** — Uma linha do histórico de alterações da ficha. Preenchido pelo `FichaHistoryDelegate`.
+
+---
+
 
 ---
 
@@ -558,6 +633,24 @@ Base anterior: 2026-06-08 (fidelidade linha-a-linha) | 2026-05-30 (Mestre IA pó
 
 ---
 
+
+### `ui/features/traits/` — o que os Poderes trouxeram **[+ 2026-08-19, Lotes POD-5/7/9/23]**
+
+- **`features/traits/SecaoDePoderes.kt`** — Os poderes **fora do botão**, ao lado das vantagens. Pedido do usuário depois de ver a tela — e certo pela regra, não só pelo gosto: um poder **é um traço**, custa pontos e entra em `pontosGastos` desde o POD-3.
+- **`features/traits/PoderHabilidades.kt`** — As habilidades dentro do diálogo do poder. 🔴 A ligação `vantagem.poderId` já existia, mas só se chegava nela **pelo lado da vantagem**: quem abria o poder não via habilidade nenhuma.
+- **`features/traits/PoderReservaEMontador.kt`** — Reserva de Energia e montador de modificador. ⚠️ Arquivo próprio porque `DialogsPoderes.kt` já passa de 500 linhas e o teto do projeto é 1000: **painel novo nasce ao lado**.
+- **`features/traits/ElementoConfig.kt`** — Configuração de Controle e Criar: faixa do elemento × níveis, no lugar do `−1 / +1` de um ponto por vez.
+
+### `ui/features/rolagem/` — o que entrou em agosto **[+ 2026-08-19]**
+
+- **`features/rolagem/RolagemDestinoDialog.kt`** **[MESA-7]** — O botão do **destino**. Botão NOVO, e não o de CANAL renomeado: renomear seria uma tela a menos e uma **regressão** para quem só usa Discord.
+- **`features/rolagem/DialogoPoderes.kt`** **[POD-12/13]** — Esforço adicional e ampliação temporária **no meio da rolagem**, não na aba Traços. Segue o padrão de Técnicas e Magias: só aparece quando há o que mostrar.
+- **`features/rolagem/DialogoBlocoDeNotas.kt`** **[NOTA-1]** — O Bloco de Notas e o envio para a mesa. ⚠️ O logo do Discord é `Image` e **não** `Icon`: o `Icon` pinta o desenho inteiro com uma cor só e o logo viraria mancha chapada.
+- **`features/rolagem/EditorDeNota.kt`** **[NOTA-1]** — Editor de uma nota: texto, cor (paleta de 8), excluir e compartilhar por `Intent`. ⚠️ **Sem KDoc.**
+- **`features/rolagem/ListaDeLocaisPraCego.kt`** **[ACESS-2]** — O seletor de local do golpe na variante `pracego`: lista de rádio com rótulo falado, no lugar da silhueta que só funciona com os olhos.
+
+---
+
 ## 21. UI — Componentes Utilitários
 
 - **`ui/components/FichaCustomNavigationBar.kt`** — Barra de navegação inferior customizada com ícones e labels das abas. Suporta `onLongPress` no ícone do Mestre IA para ativar a voz. Recebe `estadoLive: EstadoLive` (Gemini Live) e o mapeia internamente para `EstadoVoz` (OUVINDO→ESCUTANDO/anel verde; FALANDO/CONECTANDO/PROCESSANDO→anel amarelo), reusando o anel visual pulsante existente.
@@ -585,6 +678,11 @@ Base anterior: 2026-06-08 (fidelidade linha-a-linha) | 2026-05-30 (Mestre IA pó
 
 ---
 
+- **`ui/AppBarraDeRolagem.kt`** **[+ 2026-08-19, Lote TELA-1]** — A barra de rolagem que o Android **não desenha**. 🔴 Achado no aparelho de **outro jogador**: o Compose não mostra indicador de rolagem, então a tela simplesmente termina e quem olha conclui que aquilo é tudo. Passou o projeto inteiro despercebido porque, na fonte padrão, o conteúdo quase sempre cabia.
+- **`ui/AppCampos.kt`** **[+ 2026-08-19, Lote GER-2]** — O campo de texto compacto. ⚠️ Não é um `OutlinedTextField` menor: o do Material 3 tem **56 dp de altura mínima cravada** e 16 dp de respiro interno, e nada disso é parâmetro. A saída é montar o campo com as peças que o Material publica.
+
+---
+
 ## 22. UI — Tema
 
 - **`ui/theme/Color.kt`** — Paleta de cores do app (Material You / esquemas claro e escuro). Paleta **única** — não há cores condicionadas à variante Visual/Pracego (a diferenciação de variante é só comportamental, nas telas).
@@ -595,7 +693,13 @@ Base anterior: 2026-06-08 (fidelidade linha-a-linha) | 2026-05-30 (Mestre IA pó
 
 ---
 
-## 23. VTT — Mesa Virtual
+## 23. VTT — Mesa Virtual (Foundry)
+
+> ⚠️ **Choque de nomes, e vale ler antes de procurar no lugar errado.** Esta seção é a ponte para o
+> **Foundry VTT** — WebView, codec e descoberta de servidor na LAN. Ela **não** tem relação com a
+> `mesa-virtual/` que nasceu em ago/2026, que é o *Discord próprio* do usuário (voz, vídeo, chat e
+> destino de rolagem) e está na **§31**.
+
 
 - **`vtt/VttBridgeCodec.kt`** — Codec de serialização para a ponte VTT. Converte JSON em JavaScript string literal com escape correto de caracteres especiais. Usado para injetar dados da ficha em WebView do Foundry.
 
@@ -633,8 +737,9 @@ Base anterior: 2026-06-08 (fidelidade linha-a-linha) | 2026-05-30 (Mestre IA pó
 | `desvantagens.v2.json` | Desvantagens oficiais (formato v2 com specialRule) | `CatalogLoaders` |
 | `pericias.v3.json` **[+ Lote PERUNI]** | **O catálogo de perícia em uso.** 281 perícias, unificação de `pericias.json` (base) + `pericias_v2_rules_map.json` (camada). Traz id, nome, atributo, dificuldade, descrição, pré-requisito, predefinido e o rodapé `Modificadores:`. | `CatalogLoaders` |
 | `pericias.json` | ⚠️ **LEGADO** — a base antiga (só id/nome/atributo/dificuldade). Continua no disco até a validação no aparelho fechar. | (não carregado) |
-| `poderes.v1.json` | 44 poderes (GURPS Poderes): fontes possíveis, foco e descrição. | `CatalogLoaders` |
-| `modificadores_poderes.v1.json` | 31 modificadores específicos de poderes, separados do catálogo global. | `CatalogLoaders` |
+| `poderes.v1.json` | **47** poderes (GURPS Poderes): fontes possíveis, foco e descrição. **[+ 2026-08-19]** Cresceu nos Lotes POD-15 (os seis poderes psíquicos do Módulo Básico) e POD-1..3. | `CatalogLoaders` |
+| `modificadores_poderes.v1.json` | **40** modificadores específicos de poderes, separados do catálogo global. **[+ 2026-08-19]** Os 8 que faltavam entraram no POD-8b — o próprio commit registra que **uma trava minha os proibia**. | `CatalogLoaders` |
+| `fontes_de_poder.v1.json` **[+ 2026-08-19, Lote POD-2]** | As **11 fontes de poder** de *GURPS Poderes*: Biológico, Chi, Cósmico, Divino, Elemental, Espiritual, Mágico, Moral, Natureza, Psíquico e Super. Cada uma com o valor do modificador, a página e a descrição. | `CatalogLoaders` |
 | `pericias_artes_marciais.v1.json` | Perícias suplementares (Artes Marciais) | `CatalogLoaders` |
 | `pericias_v2_rules_map.json` | Mapa de regras de perícias v2 (tipo, pré-requisito, predefinido) | `CatalogLoaders` |
 | `magias2versao.json` | Magias com pré-requisitos raw | `CatalogLoaders` |
@@ -720,7 +825,7 @@ Base anterior: 2026-06-08 (fidelidade linha-a-linha) | 2026-05-30 (Mestre IA pó
 - **[+ 2026-06-14] Combate da Saga** (`domain/combat/`): `CombatEncounterTest`, `CombatActionsTest` (inclui Mover e Atacar correto), `HitLocationRulesTest`, `InjuryRulesTest`, `NpcCombatBrainTest`, `CombatResolverTest`, `CombatSessionTest` (sessão ponta a ponta: arma/tipo de dano/distância, narração, avaliar, postura, mover dirigido, rajada, **dual-wield: 2 golpes + mão inábil −4/Ambidestria, sem defesa após Ataque Total**).
 - **[+ 2026-06-14] Narrador/Saga** (`domain/saga/`): `NarradorToolsTest` (contrato das 19 tools — `assertEquals(19, TODAS.size)` após MA-4 `lancar_magia`), `NarradorOutputValidatorTest`, `NarradorToolExecutorCombatTest` (roteamento das 6 tools de combate via `CombatBridge` falsa). Instrumentado: `SagaFoundationTest` (FTS4 real).
 
-### Suítes por frente *(a suíte passou de ~1.200 para 1.830 testes entre jul e ago/2026)*
+### Suítes por frente *(a suíte passou de ~1.200 para **2.408** testes entre jul e ago/2026)*
 
 *O padrão destes testes não é "um caso que eu imaginei": é **varredura** sobre o catálogo real
 e **invariante** ("isto nunca pode acontecer"). Foi assim que apareceram os furos que a asserção
@@ -740,6 +845,14 @@ pontual não pegava.*
 - **ViewModel** (`viewmodel/delegates/`): `NotaBonusManualTest`, `PvPfNegativoTest`.
 - **IA** (`data/network/`, `domain/`): `MestreIAToolsTest`, `ContextoEfeitosParaIATest`.
 - **Pré-requisitos**: `PreRequisitoPericiaComEspecializacaoTest`.
+
+#### Frentes de agosto **[+ 2026-08-19]**
+
+- **Poderes** (`domain/rules/`): `PoderesTest`, `PoderesAvancadosTest`, `HabilidadesDoPoderTest`, `HabilidadesAlternativasTest`, `HabilidadeDentroDoPoderTest`, `UsoDoPoderTest`, `TalentoNaRolagemTest`, `TelasDePoderTest`, `ElementoCustoTest`, `ResistenciaDanoNaturalTest`, `CatalogoDePoderesCompletoTest` (varre o catálogo real), `CorrecaoDosPoderesTest` e `FonteSemCaractereDeControleTest`. ⚠️ Os dois últimos existem por causa de uma correção de rumo: o commit `a3c02fe6` chama-se **"ERRO DE RAIZ — montei tudo sem ler o Módulo Básico"**, e três revisões seguidas conferiram o plano inteiro contra o livro.
+- **Equipamento** (`domain/rules/`): `CartaoDoItemTest`, `FichaTecnicaDeProtecaoTest`, `FichaNaoContradizOItemTest` (⚠️ **invariante**, não caso: a ficha técnica não pode dizer uma coisa e o cartão outra), `QualidadeDaArmaTest`, `StMinimaDaArmaTest`, `CamadasDeArmaduraTest`, `TraumaPorImpactoTest`, `NotasDoEscudoTest`, `TiposDeDanoNovosTest`, `CatalogoSemTextoQuebradoTest` (varre os catálogos atrás de `cr?nio` e companhia).
+- **Rolagem e mesa** (`domain/rules/`): `DestinoDaRolagemTest`, `NotaParaDiscordTest`.
+- **Atributos e ficha** (`domain/rules/`): `VelocidadeEDeslocamentoTest`, `XpENivelTecnologicoTest`, `CampoCompactoTest`.
+- **Fiação da tela** (`ui/`): `FiacaoEquipamentosTest`, `FiacaoEnergiaMagiaTest` e `FichaIgualNosDoisLadosTest`. ⚠️ Os três são **testes de fiação**, a categoria que este projeto aprendeu a duras penas: a regra pode estar certa e verde enquanto a tela não a consulta. O último confere que a ficha sai igual nas duas variantes de build.
 
 ---
 
@@ -794,6 +907,24 @@ Cada variante tem seu próprio **source set** com um ponto de entrada de UI:
 *Pasta `discord-roll-api/` (raiz do projeto Android). Node 18+, Express. Roda no Railway. NÃO é compilado pelo Gradle.*
 
 - **`discord-roll-api/src/server.js`** — API que publica rolagens no Discord via bot. Rotas: `GET /health`, `GET /api/channels` (lista canais de voz, com cache 30min), `POST /api/rolls` (monta mensagem da rolagem e envia ao canal), `GET|POST /api/fichas*` (persistência in-memory de fichas na nuvem por `deviceId`). `formatRollMessage` formata texto (crítico, margem). `sendToDiscord` envia ao endpoint do Discord. **[+ 2026-06-08]** Map `portraits` (in-memory: sanitizedName → {mime,buffer,ext}); `parseDataUri`/`sanitizeName`; rota nova **`POST /api/portrait`** {character, image(data:base64)} guarda o retrato; `sendToDiscord` passou a aceitar portrait opcional → com retrato manda **embed + multipart** (FormData/Blob, globais Node 18+) com `thumbnail` `attachment://portrait.<ext>`, sem retrato manda `{content}` como antes; `/api/rolls` busca `portraits.get(sanitizeName(payload.character))`. Limite do `express.json` subiu p/ 8mb. **[+ 2026-06-09]** `classificarCritico(soma, nh)` aplica a regra COMPLETA com NH (corrige a simplificada 3-4/17-18); `formatRollMessage` detecta a 2ª mensagem de tabela crítica (testType começa com 💥/💀) e renderiza o texto cru. ⚠️ portraits e fichas são in-memory (perdem no restart do Railway). ⚠️ Mudanças exigem **deploy** no Railway p/ valer online.
+
+### Servidor da Mesa Virtual (Node — repositório separado) **[+ 2026-08-19]**
+
+*Pasta `mesa-virtual/` na **raiz do projeto-pai** (fora do submódulo Android), repositório git próprio.
+É o "Discord do usuário": roda no PC dele, com certificado Let's Encrypt em `mesagurps.duckdns.org`.*
+
+⚠️ **O app fala com os dois, e o Discord não foi substituído** — pedido explícito do usuário. Quem
+decide é `domain/rules/DestinoDaRolagem.kt`; quem fala é `data/network/MesaApiClient.kt`.
+
+Rotas usadas pelo app: `POST /api/rolagem` (a rolagem, com o texto já montado e os campos
+estruturados), `POST /api/retrato` (a arte do personagem, subida na 1ª rolagem por
+`FichaViewModel.garantirRetratoNaMesa`) e `GET /api/saude`.
+
+🔴 **Duas rotas para a mesma coisa, aceito conscientemente:** o bot do Discord monta a mensagem a
+partir dos campos; a Mesa recebe o texto pronto. O mesmo lançamento pode sair **escrito diferente**
+nos dois lugares. Está registrado no KDoc do `MesaApiClient`.
+
+---
 
 > **Nota de build [+ 2026-06-08]:** `app/build.gradle.kts` ganhou deps p/ a feature de imagem:
 > `com.google.mlkit:face-detection:16.1.7`, `com.google.android.gms:play-services-mlkit-subject-segmentation:16.0.0-beta1`
