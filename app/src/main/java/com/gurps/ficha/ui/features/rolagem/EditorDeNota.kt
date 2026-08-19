@@ -22,6 +22,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import com.gurps.ficha.domain.rules.CorDaNota
 import com.gurps.ficha.model.NotaDeJogo
 import java.text.SimpleDateFormat
 import java.util.*
@@ -33,12 +34,15 @@ import java.util.*
  * A cor aqui não é enfeite — é o único jeito de separar um caderno de notas
  * soltas sem inventar pastas nem marcadores.
  *
- * 🔴 **E é aqui que mora um defeito.** O fundo é sempre claro, mas o texto usa
- * `MaterialTheme.colorScheme.onSurface` — que no tema **escuro** é quase
- * branco. Num aparelho com o tema escuro do sistema, a nota fica branca sobre
- * amarelo-claro: ilegível. O app segue o tema do sistema
- * (`isSystemInDarkTheme()` no `Theme.kt`), então isso acontece de verdade.
- * A cura é pintar o texto em função da cor **da nota**, e não do tema.
+ * 🔴 **E aqui morou um defeito, corrigido no Lote NOTA-3.** O fundo é sempre
+ * claro, mas o texto saía de `MaterialTheme.colorScheme.onSurface` — que no tema
+ * **escuro** é quase branco. Num aparelho com o tema escuro do sistema, a nota
+ * ficava branca sobre amarelo-claro: ilegível. O app segue o tema do sistema
+ * (`isSystemInDarkTheme()` no `Theme.kt`), então acontecia de verdade — só que
+ * **no aparelho de outra pessoa**, nunca no de quem escreveu a tela.
+ *
+ * A cura está em [com.gurps.ficha.domain.rules.CorDaNota]: a cor do texto sai da
+ * luminância do **fundo**, e não do tema.
  */
 val CoresNotaDeJogo = listOf(
     "#FFFFFF" to "Branco",
@@ -63,16 +67,16 @@ val CoresNotaDeJogo = listOf(
  * anotação é interrompida — o Mestre chama, o dado rola, alguém pergunta uma
  * regra. Um botão de salvar transforma toda interrupção em texto perdido.
  *
- * 🔴 **Mas isso, hoje, tem um preço: excluir não exclui.**
+ * 🔴 **E isso custou um defeito, corrigido no Lote NOTA-3: excluir não excluía.**
  *
  * O botão de excluir chama `onExcluir(nota.id)` e logo `onClose()`. O `onClose`
- * tira esta tela da composição, e aí o `onDispose` dispara e **grava a nota de
+ * tira esta tela da composição, o `onDispose` dispara e **gravava a nota de
  * volta** — porque para o delegate um `id` que não está na lista quer dizer
- * "nota nova". A sequência é: apagou, fechou, ressuscitou.
+ * "nota nova". Apagou, fechou, ressuscitou.
  *
- * A cura é uma bandeira (`var foiExcluida`) marcada antes do `onClose` e
- * conferida dentro do `onDispose`. Enquanto ela não existir, isto fica escrito
- * aqui — o defeito é fácil de reproduzir e difícil de acreditar.
+ * A cura é a bandeira [foiExcluida], marcada **antes** do `onClose` e conferida
+ * dentro do `onDispose`. ⚠️ A ordem é a correção inteira: marcá-la depois não
+ * adiantaria, porque é o `onClose` que dispara o `onDispose`.
  *
  * ## Compartilhar para fora do app
  *
@@ -100,6 +104,25 @@ fun EditorDeNota(
     var corSelecionada by remember { mutableStateOf(nota.corHex ?: "#FFFFFF") }
     var showColorPicker by remember { mutableStateOf(false) }
 
+    /**
+     * 🔴 Excluir precisa avisar o `onDispose` — senão a nota volta.
+     *
+     * O botão de excluir apaga e fecha; fechar tira esta tela da composição, o
+     * `onDispose` dispara e **grava a nota de volta**, porque para o delegate um
+     * `id` que não está na lista quer dizer "nota nova". Apagou, fechou,
+     * ressuscitou — e o jogador só descobre ao ver a nota de pé outra vez.
+     */
+    var foiExcluida by remember { mutableStateOf(false) }
+
+    /**
+     * 🔴 A cor do texto sai do FUNDO, e não do tema.
+     *
+     * O fundo é sempre um tom claro; `onSurface` no tema **escuro** é quase
+     * branco. Ver [CorDaNota] — o defeito só aparecia em aparelho com tema
+     * escuro, ou seja, no de outra pessoa.
+     */
+    val corDoTexto = Color(android.graphics.Color.parseColor(CorDaNota.textoSobre(corSelecionada)))
+
     val dataFormatada = remember(nota.dataCriacao) {
         val sdf = SimpleDateFormat("dd 'de' MMMM HH:mm", Locale("pt", "BR"))
         sdf.format(Date(nota.dataCriacao))
@@ -110,7 +133,7 @@ fun EditorDeNota(
     // Salvar automaticamente ao fechar
     DisposableEffect(Unit) {
         onDispose {
-            if (texto.isNotBlank() || nota.texto.isNotBlank()) {
+            if (!foiExcluida && (texto.isNotBlank() || nota.texto.isNotBlank())) {
                 onSalvar(nota.copy(texto = texto, corHex = corSelecionada.takeIf { it != "#FFFFFF" }))
             }
         }
@@ -134,13 +157,13 @@ fun EditorDeNota(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     IconButton(onClick = onClose) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Voltar")
+                        Icon(Icons.Default.ArrowBack, contentDescription = "Voltar", tint = corDoTexto)
                     }
                     
                     Row {
                         Box {
                             IconButton(onClick = { showColorPicker = true }) {
-                                Icon(Icons.Default.Palette, contentDescription = "Cor")
+                                Icon(Icons.Default.Palette, contentDescription = "Cor", tint = corDoTexto)
                             }
                             DropdownMenu(
                                 expanded = showColorPicker,
@@ -175,14 +198,17 @@ fun EditorDeNota(
                             val shareIntent = Intent.createChooser(sendIntent, "Compartilhar nota")
                             context.startActivity(shareIntent)
                         }) {
-                            Icon(Icons.Default.Share, contentDescription = "Compartilhar")
+                            Icon(Icons.Default.Share, contentDescription = "Compartilhar", tint = corDoTexto)
                         }
                         
                         IconButton(onClick = {
+                            // ⚠️ ANTES de fechar: o `onClose` é que dispara o
+                            // `onDispose`, e ele lê esta bandeira.
+                            foiExcluida = true
                             onExcluir(nota.id)
                             onClose()
                         }) {
-                            Icon(Icons.Default.Delete, contentDescription = "Excluir")
+                            Icon(Icons.Default.Delete, contentDescription = "Excluir", tint = corDoTexto)
                         }
                     }
                 }
@@ -197,7 +223,7 @@ fun EditorDeNota(
                         text = tituloExibicao,
                         style = MaterialTheme.typography.headlineMedium,
                         fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                        color = corDoTexto.copy(alpha = 0.6f)
                     )
                     
                     Spacer(modifier = Modifier.height(4.dp))
@@ -205,7 +231,7 @@ fun EditorDeNota(
                     Text(
                         text = "$dataFormatada | $caracteres caracteres",
                         style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                        color = corDoTexto.copy(alpha = 0.7f)
                     )
                     
                     Spacer(modifier = Modifier.height(16.dp))
@@ -222,6 +248,13 @@ fun EditorDeNota(
                             disabledContainerColor = Color.Transparent,
                             focusedIndicatorColor = Color.Transparent,
                             unfocusedIndicatorColor = Color.Transparent,
+                            // ⚠️ Sem estas quatro, o texto que a pessoa escreve
+                            // continua saindo do tema — e era ele o mais ilegivel.
+                            focusedTextColor = corDoTexto,
+                            unfocusedTextColor = corDoTexto,
+                            cursorColor = corDoTexto,
+                            focusedPlaceholderColor = corDoTexto.copy(alpha = 0.5f),
+                            unfocusedPlaceholderColor = corDoTexto.copy(alpha = 0.5f),
                         ),
                         placeholder = { Text("Fazer notas do jogo...") }
                     )

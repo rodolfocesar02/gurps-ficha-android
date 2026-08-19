@@ -30,6 +30,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import com.gurps.ficha.R
 import androidx.compose.ui.platform.LocalContext
+import com.gurps.ficha.domain.rules.CorDaNota
 import com.gurps.ficha.domain.rules.NotaParaDiscord
 import com.gurps.ficha.model.NotaDeJogo
 import com.gurps.ficha.ui.AppBotaoPrincipal
@@ -222,13 +223,31 @@ fun CardNota(
     val dataExibicao = sdf.format(Date(nota.dataCriacao))
     val previa = if (nota.texto.length > 60) nota.texto.take(60) + "…" else nota.texto
     val descricaoAcessivel = "Nota: ${nota.titulo}. $previa. Criada em $dataExibicao"
-    val backgroundColor = nota.corHex?.let {
+    // A cor da nota, ou null quando ela não tem (ou o hex não dá para ler).
+    val corDaNota = nota.corHex?.let {
         try {
             Color(android.graphics.Color.parseColor(it))
         } catch (e: Exception) {
-            MaterialTheme.colorScheme.surfaceVariant
+            null
         }
-    } ?: MaterialTheme.colorScheme.surfaceVariant
+    }
+    val backgroundColor = corDaNota ?: MaterialTheme.colorScheme.surfaceVariant
+
+    /**
+     * 🔴 A cor do texto sai do FUNDO quando a nota TEM cor.
+     *
+     * O fundo colorido é sempre claro, e `onSurface` no tema escuro é quase
+     * branco — a nota ficava ilegivel em metade dos aparelhos da mesa.
+     *
+     * ⚠️ **Só quando ela tem cor.** Sem cor o fundo é `surfaceVariant`, que é
+     * do tema, e ali a cor do tema é a certa. Sobrepor também nesse caso
+     * trocaria um problema de contraste por outro.
+     */
+    val corDoTexto = if (corDaNota != null) {
+        Color(android.graphics.Color.parseColor(CorDaNota.textoSobre(nota.corHex)))
+    } else {
+        MaterialTheme.colorScheme.onSurface
+    }
 
     Card(
         modifier = Modifier
@@ -264,7 +283,8 @@ fun CardNota(
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
                 maxLines = 2,
-                overflow = TextOverflow.Ellipsis
+                overflow = TextOverflow.Ellipsis,
+                color = corDoTexto
             )
             
             Spacer(modifier = Modifier.height(8.dp))
@@ -274,7 +294,7 @@ fun CardNota(
                 style = MaterialTheme.typography.bodyMedium,
                 maxLines = 5,
                 overflow = TextOverflow.Ellipsis,
-                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.8f)
+                color = corDoTexto.copy(alpha = 0.8f)
             )
             
             Spacer(modifier = Modifier.height(12.dp))
@@ -291,7 +311,7 @@ fun CardNota(
                 Text(
                     text = dataExibicao,
                     style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                    color = corDoTexto.copy(alpha = 0.7f)
                 )
                 // ⚠️ Só aparece quando há o que mandar. Nota em branco não
                 // oferece o botão — e a regra também recusa, do outro lado.

@@ -17,11 +17,15 @@ import com.gurps.ficha.model.Personagem
  * uma nota nova (`NotaDeJogo()`, id sorteado) ou com uma existente, e fecha do
  * mesmo jeito nos dois casos.
  *
- * 🔴 **E é daí que vem um defeito conhecido.** Como "não achei o id" quer dizer
- * *"então é nota nova"*, salvar uma nota **já apagada** a traz de volta. O
- * `EditorDeNota` grava automaticamente ao fechar, e o botão de excluir fecha a
- * tela — nessa ordem, apagar e ressuscitar acontecem em sequência.
- * O rastro está escrito no `EditorDeNota`, no `DisposableEffect`.
+ * 🔴 **E daí veio um defeito, corrigido no Lote NOTA-3.** Como "não achei o id"
+ * quer dizer *"então é nota nova"*, salvar uma nota **já apagada** a trazia de
+ * volta: o `EditorDeNota` grava ao fechar, e o botão de excluir fecha a tela.
+ * Apagou, fechou, ressuscitou.
+ *
+ * ⚠️ A cura **não** foi mexer aqui, e é o ponto: este arquivo está certo.
+ * Acrescentar um `id` desconhecido é justamente o que faz criar nota funcionar.
+ * O defeito era a **ordem** em que a tela chamava as duas coisas, e a bandeira
+ * que resolve mora lá (`foiExcluida`, no `EditorDeNota`).
  *
  * ⚠️ A ordenação é por `dataModificacao`, decrescente, **a cada gravação**.
  * Ordenar na tela em vez de aqui deixaria a lista depender de quem a desenha —

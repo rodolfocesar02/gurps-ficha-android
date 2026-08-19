@@ -16,10 +16,13 @@ Mapa de engenharia completo do projeto. Use para localizar lógicas específicas
 > ⚠️ **Onde as descrições foram buscadas:** no KDoc de cada arquivo, um por um — não de memória.
 >
 > ✅ **Dívida paga em 2026-08-19:** os arquivos do **Bloco de Notas** (`NotaDeJogo`,
-> `FichaNotesDelegate`, `EditorDeNota`, `DialogoBlocoDeNotas`) ganharam KDoc próprio. A leitura para
-> escrevê-lo destapou **dois defeitos**, registrados no próprio código — ver §3 e §20.
-> Continua sem cabeçalho: `ListaDeLocaisPraCego` (tem KDoc de arquivo, mas o `EditorDeNota` era o
-> caso pior e foi resolvido).
+> `FichaNotesDelegate`, `EditorDeNota`, `DialogoBlocoDeNotas`) ganharam KDoc próprio.
+>
+> 🔴 **E a leitura destapou dois defeitos, corrigidos no Lote NOTA-3:** *excluir não excluía* (o
+> `onDispose` gravava a nota de volta) e *ilegível no tema escuro* (o texto saía do tema, sobre um
+> fundo sempre claro). Nenhum dos dois tinha teste, e nenhum apareceria num teste de regra — o
+> primeiro é **ordem de chamada**, o segundo é **cor**. Ver `domain/rules/CorDaNota.kt` (§5) e
+> `ui/FiacaoBlocoDeNotasTest` (§28).
 
 > ➕ **2026-08-03 — Varredura de completude.** O mapa estava com **80 arquivos de código, 113 testes
 > e 5 assets** fora dele — quase todos das frentes de **automação de regras** (jul/ago) e do **padrão
@@ -122,7 +125,7 @@ Base anterior: 2026-06-08 (fidelidade linha-a-linha) | 2026-05-30 (Mestre IA pó
 
 ---
 
-- **`delegates/FichaNotesDelegate.kt`** **[+ 2026-08-19, Lote NOTA-1]** — O **caderno de anotações**: salva, edita e exclui as `NotaDeJogo` do personagem, reordenando por `dataModificacao` a cada gravação. Sem estado próprio: recebe e devolve o `Personagem`. ⚠️ Salvar e editar são a **mesma porta** (`salvarNota` procura pelo `id`; não achou, acrescenta) — do lado da tela a diferença não existe. 🔴 **E daí vem um defeito conhecido:** salvar uma nota já apagada a traz de volta, porque "id ausente" quer dizer "nota nova". Ver `EditorDeNota`.
+- **`delegates/FichaNotesDelegate.kt`** **[+ 2026-08-19, Lote NOTA-1]** — O **caderno de anotações**: salva, edita e exclui as `NotaDeJogo` do personagem, reordenando por `dataModificacao` a cada gravação. Sem estado próprio: recebe e devolve o `Personagem`. ⚠️ Salvar e editar são a **mesma porta** (`salvarNota` procura pelo `id`; não achou, acrescenta) — do lado da tela a diferença não existe. 🔴 **E daí veio um defeito (NOTA-3):** salvar uma nota já apagada a trazia de volta, porque "id ausente" quer dizer "nota nova". ⚠️ A cura **não** foi aqui — este arquivo está certo; o defeito era a ordem em que a tela chamava as duas coisas.
 
 ---
 
@@ -237,6 +240,10 @@ Base anterior: 2026-06-08 (fidelidade linha-a-linha) | 2026-05-30 (Mestre IA pó
 
 - **`rules/DestinoDaRolagem.kt`** **[Lote MESA-7]** — Discord, Mesa Virtual, ou os dois. Pedido do usuário, palavra por palavra: *"não vamos substituir o nosso botão, vamos acrescentar um novo"*. O Discord **fica** — e é a rede de segurança: se a sala do PC cair no meio da sessão, um toque devolve as rolagens a ele.
 - **`rules/NotaParaDiscord.kt`** **[Lote NOTA-1]** — ⚠️ A nota viaja **no envelope de uma rolagem**, com `testType = "Nota"`, porque o servidor tem um endpoint só (`/api/rolls`). O próprio arquivo registra: *"isto é uma adaptação, não a forma certa"*.
+
+### A cor legível **[+ 2026-08-19, Lote NOTA-3]**
+
+- **`rules/CorDaNota.kt`** — Qual cor de texto se lê sobre a cor de uma nota. Luminância relativa da WCAG: fundo claro pede texto escuro, e vice-versa. 🔴 Existe porque o texto vinha do **tema** sobre um fundo **sempre claro** — no tema escuro, branco sobre amarelo-claro. ⚠️ Não é "sempre escuro" (que acertaria nas 7 cores de hoje) porque a lista de cores é **dado**, e no dia em que alguém acrescentar um tom escuro o texto sumiria **em silêncio**. Traz também `contraste()`, para o teste cobrar o número da WCAG (4,5) em vez de acreditar na conta.
 
 ### Poderes — `domain/rules/poderes/` **[+ 2026-08-19, Lotes POD-1..30]**
 
@@ -650,7 +657,7 @@ registram que o plano inicial descrevia regras que o livro não tem.*
 - **`features/rolagem/RolagemDestinoDialog.kt`** **[MESA-7]** — O botão do **destino**. Botão NOVO, e não o de CANAL renomeado: renomear seria uma tela a menos e uma **regressão** para quem só usa Discord.
 - **`features/rolagem/DialogoPoderes.kt`** **[POD-12/13]** — Esforço adicional e ampliação temporária **no meio da rolagem**, não na aba Traços. Segue o padrão de Técnicas e Magias: só aparece quando há o que mostrar.
 - **`features/rolagem/DialogoBlocoDeNotas.kt`** **[NOTA-1]** — A **lista** do Bloco de Notas: *"um Google Notas dentro do app"*, nas palavras do usuário. Três destinos, cada um no seu lugar — fica no app (automático), sai por `ACTION_SEND` (só o texto), ou vai para o Discord (com confirmação, porque é irreversível). 🔴 A anotação viaja **no envelope de uma rolagem** (`/api/rolls`, `testType = "Nota"`), porque não existe rota de texto no servidor; quem monta o pacote é `NotaParaDiscord`, fora da tela. O Lote NOTA-2 nasceu de a anotação chegar **parecendo uma rolagem**. ⚠️ O logo do Discord é `Image` e não `Icon`: o `Icon` pinta tudo com uma cor só e o logo viraria mancha chapada.
-- **`features/rolagem/EditorDeNota.kt`** **[NOTA-1]** — Escrever uma nota: texto, cor (7 tons **100** do Material), compartilhar e excluir. ⚠️ **Não existe botão de salvar** — fechar É salvar (`onDispose`), porque numa mesa a anotação é sempre interrompida e um botão transformaria toda interrupção em texto perdido. 🔴 **Dois defeitos abertos, achados ao documentar:** (1) **excluir não exclui** — o `onClose` do botão de excluir dispara o `onDispose`, que grava a nota de volta; (2) no **tema escuro** do sistema, o texto usa `onSurface` (quase branco) sobre um fundo pastel claro, e a nota fica ilegível.
+- **`features/rolagem/EditorDeNota.kt`** **[NOTA-1]** — Escrever uma nota: texto, cor (7 tons **100** do Material), compartilhar e excluir. ⚠️ **Não existe botão de salvar** — fechar É salvar (`onDispose`), porque numa mesa a anotação é sempre interrompida e um botão transformaria toda interrupção em texto perdido. 🔴 **Dois defeitos achados ao documentar, corrigidos no Lote NOTA-3:** (1) **excluir não excluía** — o `onClose` do botão disparava o `onDispose`, que gravava a nota de volta; curado por uma bandeira marcada **antes** de fechar; (2) no **tema escuro**, o texto saía de `onSurface` (quase branco) sobre fundo pastel claro; curado por `CorDaNota`, que tira a cor do texto da luminância do fundo.
 - **`features/rolagem/ListaDeLocaisPraCego.kt`** **[ACESS-2]** — O seletor de local do golpe na variante `pracego`: lista de rádio com rótulo falado, no lugar da silhueta que só funciona com os olhos.
 
 ---
@@ -856,6 +863,7 @@ pontual não pegava.*
 - **Equipamento** (`domain/rules/`): `CartaoDoItemTest`, `FichaTecnicaDeProtecaoTest`, `FichaNaoContradizOItemTest` (⚠️ **invariante**, não caso: a ficha técnica não pode dizer uma coisa e o cartão outra), `QualidadeDaArmaTest`, `StMinimaDaArmaTest`, `CamadasDeArmaduraTest`, `TraumaPorImpactoTest`, `NotasDoEscudoTest`, `TiposDeDanoNovosTest`, `CatalogoSemTextoQuebradoTest` (varre os catálogos atrás de `cr?nio` e companhia).
 - **Rolagem e mesa** (`domain/rules/`): `DestinoDaRolagemTest`, `NotaParaDiscordTest`.
 - **Atributos e ficha** (`domain/rules/`): `VelocidadeEDeslocamentoTest`, `XpENivelTecnologicoTest`, `CampoCompactoTest`.
+- **Bloco de Notas** **[Lote NOTA-3]**: `domain/rules/CorDaNotaTest` roda a conta e **varre as 7 cores reais lidas do código-fonte** (lista repetida no teste descola justamente no dia que interessa), cobrando contraste ≥ 4,5 da WCAG. `ui/FiacaoBlocoDeNotasTest` lê as duas telas: confere a bandeira `foiExcluida` **e a ordem** em que ela é marcada, e que o texto pergunta a `CorDaNota` — inclusive o `focusedTextColor` do campo, que era o mais fácil de esquecer. ⚠️ A primeira versão da varredura reprovou por causa do **próprio KDoc** que explica o defeito; ela passou a ignorar comentários.
 - **Fiação da tela** (`ui/`): `FiacaoEquipamentosTest`, `FiacaoEnergiaMagiaTest` e `FichaIgualNosDoisLadosTest`. ⚠️ Os três são **testes de fiação**, a categoria que este projeto aprendeu a duras penas: a regra pode estar certa e verde enquanto a tela não a consulta. O último confere que a ficha sai igual nas duas variantes de build.
 
 ---
