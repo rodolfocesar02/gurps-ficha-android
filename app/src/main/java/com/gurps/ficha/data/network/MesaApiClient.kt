@@ -70,20 +70,70 @@ object MesaApiClient {
             return DiscordRollSendResult(ok = false, statusCode = null, error = "token_vazio")
         }
 
-        val endpoint = "${baseUrl.trimEnd('/')}/api/rolagem"
+        // 🔴 401 aqui quer dizer token errado, e é o erro que mais vai
+        // acontecer: o token muda a cada arranque do servidor. Quem traduz isso
+        // é o `enviar`, uma vez, para as três rotas.
         val body = gson.toJson(payload).toByteArray(StandardCharsets.UTF_8)
-        var connection: HttpURLConnection? = null
+        return enviar("${baseUrl.trimEnd('/')}/api/rolagem", body)
+    }
 
+    /**
+     * **Vincula a ficha ao token da pessoa na Mesa** -- lote CAMPO-17.
+     *
+     * 🔴 Manda o bloco `calculado` (CAMPO-16), e nao a ficha crua. A Mesa
+     * precisa da Velocidade Basica para ordenar a iniciativa e da Esquiva para
+     * mostrar ao lado do boneco -- numeros que o JSON cru **nao tem**, porque os
+     * derivados sao propriedades e o Gson serializa campos.
+     *
+     * ⚠️ Best-effort, como o retrato: **nunca segura o salvar da ficha**. Ficar
+     * sem ficha na Mesa e um aborrecimento; nao salvar e perder trabalho.
+     *
+     * ⚠️ O token vai no **corpo**, e nao na URL, pelo motivo de sempre: query
+     * string fica no historico e nos registros de qualquer intermediario.
+     */
+    fun postFicha(
+        baseUrl: String,
+        token: String,
+        autor: String,
+        ficha: com.gurps.ficha.model.FichaCalculada
+    ): DiscordRollSendResult {
+        if (baseUrl.isBlank()) return DiscordRollSendResult(false, null, "endereco_vazio")
+        if (token.isBlank()) return DiscordRollSendResult(false, null, "token_vazio")
+        if (autor.isBlank()) return DiscordRollSendResult(false, null, "sem_autor")
+
+        val corpo = gson.toJson(
+            mapOf("token" to token, "autor" to autor, "ficha" to ficha)
+        ).toByteArray(StandardCharsets.UTF_8)
+
+        return enviar("${baseUrl.trimEnd('/')}/api/ficha", corpo)
+    }
+
+    /**
+     * O POST em si, que era copiado em cada rota.
+     *
+     * ⚠️ Extraido no CAMPO-17: eram tres copias da mesma abertura de conexao,
+     * do mesmo tratamento de 401 e do mesmo `finally`. A quarta copia ia nascer
+     * diferente das outras -- que e como comeca o defeito numero um deste projeto.
+     */
+    private fun enviar(
+        endpoint: String,
+        corpo: ByteArray,
+        // ⚠️ A folga de leitura e parametro porque o retrato precisa de MAIS:
+        // a imagem e bem maior que uma linha de texto, e um telefone em 3G leva
+        // tempo. Fixar o valor aqui teria feito o retrato voltar a falhar em rede
+        // lenta, calado, so por causa da extracao.
+        folgaDeLeitura: Int = READ_TIMEOUT_MS
+    ): DiscordRollSendResult {
+        var connection: HttpURLConnection? = null
         return try {
             connection = (URL(endpoint).openConnection() as HttpURLConnection).apply {
                 requestMethod = "POST"
                 doOutput = true
                 connectTimeout = CONNECT_TIMEOUT_MS
-                readTimeout = READ_TIMEOUT_MS
+                readTimeout = folgaDeLeitura
                 setRequestProperty("Content-Type", "application/json; charset=utf-8")
             }
-            connection.outputStream.use { it.write(body) }
-
+            connection.outputStream.use { it.write(corpo) }
             val statusCode = connection.responseCode
             if (statusCode in 200..299) {
                 DiscordRollSendResult(ok = true, statusCode = statusCode, error = null)
@@ -92,19 +142,12 @@ object MesaApiClient {
                 DiscordRollSendResult(
                     ok = false,
                     statusCode = statusCode,
-                    // 🔴 401 aqui quer dizer token errado, e é o erro que mais
-                    // vai acontecer: o token muda a cada arranque do servidor.
-                    // Dizer isso poupa a mesa de caçar problema de rede.
                     error = if (statusCode == 401) "token_da_sala_invalido"
                             else "http_$statusCode ${erro.ifBlank { "sem_detalhes" }}"
                 )
             }
         } catch (error: Exception) {
-            DiscordRollSendResult(
-                ok = false,
-                statusCode = null,
-                error = error.message ?: "erro_desconhecido"
-            )
+            DiscordRollSendResult(false, null, error.message ?: "erro_desconhecido")
         } finally {
             connection?.disconnect()
         }
@@ -139,34 +182,12 @@ object MesaApiClient {
             mapOf("token" to token, "personagem" to personagem, "imagem" to imagemDataUri)
         ).toByteArray(StandardCharsets.UTF_8)
 
-        var connection: HttpURLConnection? = null
-        return try {
-            connection = (URL("${baseUrl.trimEnd('/')}/api/retrato").openConnection() as HttpURLConnection).apply {
-                requestMethod = "POST"
-                doOutput = true
-                connectTimeout = CONNECT_TIMEOUT_MS
-                // ⚠️ Mais folga na leitura que a rolagem: a imagem é bem maior
-                // que uma linha de texto, e um telefone em 3G leva tempo.
-                readTimeout = READ_TIMEOUT_MS * 4
-                setRequestProperty("Content-Type", "application/json; charset=utf-8")
-            }
-            connection.outputStream.use { it.write(corpo) }
-
-            val codigo = connection.responseCode
-            if (codigo in 200..299) {
-                DiscordRollSendResult(true, codigo, null)
-            } else {
-                DiscordRollSendResult(
-                    false, codigo,
-                    if (codigo == 401) "token_da_sala_invalido"
-                    else "http_$codigo ${lerComSeguranca(connection.errorStream).ifBlank { "sem_detalhes" }}"
-                )
-            }
-        } catch (error: Exception) {
-            DiscordRollSendResult(false, null, error.message ?: "erro_desconhecido")
-        } finally {
-            connection?.disconnect()
-        }
+        // ⚠️ Mais folga na leitura que a rolagem: a imagem é bem maior que uma
+        // linha de texto, e um telefone em 3G leva tempo.
+        return enviar(
+            "${baseUrl.trimEnd('/')}/api/retrato", corpo,
+            folgaDeLeitura = READ_TIMEOUT_MS * 4
+        )
     }
 
     /** A sala está de pé? Serve para o botão de testar, na configuração. */

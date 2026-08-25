@@ -27,6 +27,7 @@ class FichaSocialDelegate(
     private val prefDestino = "rolagem_destino"
     private val prefMesaEndereco = "mesa_endereco"
     private val prefMesaToken = "mesa_token"
+    private val prefMesaNome = "mesa_nome"
 
     var canaisDiscord by mutableStateOf<List<DiscordVoiceChannel>>(emptyList())
     var canaisDiscordCarregando by mutableStateOf(false)
@@ -45,6 +46,15 @@ class FichaSocialDelegate(
     var mesaEndereco by mutableStateOf(configPrefs.getString(prefMesaEndereco, null))
     var mesaToken by mutableStateOf(configPrefs.getString(prefMesaToken, null))
 
+    /**
+     * **O nome com que a pessoa ENTRA na mesa**, e nao o do personagem.
+     *
+     * 🔴 E por ele que a mesa acha o token que ela criou, para lhe colar a
+     * ficha (CAMPO-17). O nome do personagem nao serve: na mesa a pessoa e
+     * "Rodolfo", e o boneco e que se chama "Aria".
+     */
+    var mesaNome by mutableStateOf(configPrefs.getString(prefMesaNome, null))
+
     /** O que impede o envio agora, ou null quando está tudo pronto. */
     val oQueFaltaNoDestino: String?
         get() = ProntidaoDoDestino.oQueFalta(
@@ -56,14 +66,19 @@ class FichaSocialDelegate(
         configPrefs.edit().putString(prefDestino, destino.name).apply()
     }
 
-    fun configurarMesa(endereco: String?, token: String?) {
+    fun configurarMesa(endereco: String?, token: String?, nome: String? = null) {
         // ⚠️ O endereço é limpo aqui, e não na tela: assim o valor GUARDADO já
         // está pronto, e quem for ler depois não precisa lembrar de limpar.
         mesaEndereco = ProntidaoDoDestino.enderecoLimpo(endereco)
         mesaToken = token?.trim()?.uppercase()?.ifBlank { null }
+        // ⚠️ O nome NAO vai para maiusculas: ele e comparado byte a byte com o
+        // que a pessoa digitou ao entrar na sala, e "RODOLFO" nao casa com
+        // "Rodolfo". Ao contrario do token, que a sala compara em maiusculas.
+        mesaNome = nome?.trim()?.ifBlank { null }
         configPrefs.edit()
             .putString(prefMesaEndereco, mesaEndereco)
             .putString(prefMesaToken, mesaToken)
+            .putString(prefMesaNome, mesaNome)
             .apply()
     }
 
@@ -122,6 +137,29 @@ class FichaSocialDelegate(
         val token = mesaToken ?: return false
         return kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.IO) {
             MesaApiClient.postRetrato(endereco, token, personagem, imagemDataUri).ok
+        }
+    }
+
+    /**
+     * Manda a ficha calculada para a Mesa, se a Mesa for o destino.
+     *
+     * 🔴 O `autor` e o NOME DE QUEM ESTA NA MESA, e nao o do personagem: e
+     * por ele que a Mesa acha o token que a pessoa criou. Mandar o nome do
+     * personagem faria a ficha nunca colar em token nenhum -- e o sintoma seria
+     * "nao acontece nada", que e o pior de todos.
+     *
+     * ⚠️ Best-effort, como o retrato: nunca segura o salvar da ficha.
+     */
+    suspend fun enviarFichaParaAMesa(
+        nomeNaMesa: String,
+        ficha: com.gurps.ficha.model.FichaCalculada
+    ): Boolean {
+        if (destinoDaRolagem != DestinoDaRolagem.MESA) return false
+        val endereco = mesaEndereco ?: return false
+        val token = mesaToken ?: return false
+        if (nomeNaMesa.isBlank()) return false
+        return kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.IO) {
+            MesaApiClient.postFicha(endereco, token, nomeNaMesa, ficha).ok
         }
     }
 

@@ -126,14 +126,16 @@ fun RolagemDestinoDialog(
     destino: DestinoDaRolagem,
     enderecoAtual: String?,
     tokenAtual: String?,
+    nomeNaMesaAtual: String?,
     oQueFalta: String?,
     onEscolherDestino: (DestinoDaRolagem) -> Unit,
-    onSalvarMesa: (String?, String?) -> Unit,
+    onSalvarMesa: (String?, String?, String?) -> Unit,
     onTestarMesa: suspend () -> String,
     onDismiss: () -> Unit
 ) {
     var endereco by remember(enderecoAtual) { mutableStateOf(enderecoAtual.orEmpty()) }
     var token by remember(tokenAtual) { mutableStateOf(tokenAtual.orEmpty()) }
+    var nomeNaMesa by remember(nomeNaMesaAtual) { mutableStateOf(nomeNaMesaAtual.orEmpty()) }
     var resultadoDoTeste by remember { mutableStateOf<String?>(null) }
     var testando by remember { mutableStateOf(false) }
     val escopo = rememberCoroutineScope()
@@ -201,9 +203,32 @@ fun RolagemDestinoDialog(
                             .semantics { contentDescription = "Token da sala da mesa virtual" }
                     )
 
+                    // 🔴 **O nome com que voce ENTRA na mesa**, e nao o do personagem.
+                    //
+                    // E por ele que a mesa acha o token que voce criou, para lhe
+                    // colar a ficha (CAMPO-17). O nome do personagem nao serve: na
+                    // mesa voce e "Rodolfo", e o boneco e que se chama "Aria".
+                    //
+                    // ⚠️ Sem este campo a ficha nunca colava em token nenhum, e o
+                    // sintoma seria "nao acontece nada" -- o pior de todos.
+                    OutlinedTextField(
+                        value = nomeNaMesa,
+                        onValueChange = { nomeNaMesa = it },
+                        label = { Text("Seu nome na mesa") },
+                        placeholder = { Text("o mesmo com que voce entra na sala") },
+                        singleLine = true,
+                        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .semantics {
+                                contentDescription =
+                                    "Seu nome na mesa virtual, o mesmo com que voce entra na sala"
+                            }
+                    )
+
                     Button(
                         onClick = {
-                            onSalvarMesa(endereco, token)
+                            onSalvarMesa(endereco, token, nomeNaMesa)
                             testando = true
                             resultadoDoTeste = null
                             escopo.launch {
@@ -239,7 +264,7 @@ fun RolagemDestinoDialog(
             TextButton(onClick = {
                 // ⚠️ Salvar ao fechar, e não só no botão de testar: quem digitou
                 // certo e fechou sem testar perderia tudo o que escreveu.
-                if (destino == DestinoDaRolagem.MESA) onSalvarMesa(endereco, token)
+                if (destino == DestinoDaRolagem.MESA) onSalvarMesa(endereco, token, nomeNaMesa)
                 onDismiss()
             }) {
                 Text("Fechar")

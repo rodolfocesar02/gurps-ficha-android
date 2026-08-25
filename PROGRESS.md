@@ -9128,7 +9128,7 @@ Trocar `token = it.uppercase()` por `token = it` deixou o teste vermelho
 
 ## Lote CAMPO-16 — [2026-08-25] O app exporta o bloco `calculado`
 
-- **Hash:** (a preencher)
+- **Hash:** 792cab2c
 - **O buraco:** o JSON exportado tinha 43 campos e **so dados crus**. Nao tinha
   NH de pericia nenhuma, nem Esquiva, nem Velocidade Basica, nem PV maximo.
   A causa e uma linha de Kotlin: os derivados sao propriedades `get()`, e o Gson
@@ -9165,3 +9165,46 @@ Trocar `token = it.uppercase()` por `token = it` deixou o teste vermelho
   escrito. Ele encontrou **19 derivados** por decidir logo na primeira execucao.
 - **Status:** ✅ Build OK nas 2 variantes — gate **9732**, 0 falhas.
   10 sondas: cada defeito reintroduzido fica vermelho.
+
+## Lote CAMPO-17 — [2026-08-25] A ficha vai para a Mesa e cola no token
+
+- **Hash:** (a preencher)
+- **O que faz:** ao **salvar a ficha**, o app manda o bloco `calculado` para a
+  Mesa Virtual, e ele cola no token daquela pessoa. A mesa passa a saber a
+  Velocidade Basica, a Esquiva e os PV de quem esta no tabuleiro.
+- **Mudancas no app:**
+  - `data/network/MesaApiClient.kt`: `postFicha` para `POST /api/ficha`, com o
+    token no **corpo** — nunca na URL.
+  - **E o POST foi extraido de verdade.** Eram tres copias da mesma abertura de
+    conexao, do mesmo tratamento de 401 e do mesmo `finally`; a quarta ia nascer
+    diferente. De **4 aberturas de conexao para 2**. ⚠️ A folga de leitura ficou
+    como parametro, porque o retrato precisa de mais que a rolagem — fixa-la
+    teria feito o retrato voltar a falhar em rede lenta, calado.
+  - `viewmodel/delegates/FichaSocialDelegate.kt`: `enviarFichaParaAMesa`, e o
+    novo `mesaNome`.
+  - `viewmodel/FichaViewModel.kt`: manda no **mesmo gancho do retrato**, ao
+    salvar. ⚠️ E **fora do `if` da imagem**: uma ficha sem retrato tambem tem
+    Velocidade Basica, e prender uma a outra faria a iniciativa da mesa depender
+    de a pessoa ter escolhido uma foto.
+  - `ui/features/rolagem/RolagemDestinoDialog.kt`: o terceiro campo, **"Seu nome
+    na mesa"**.
+- **🔴 Por que o campo novo era inevitavel:** o `autor` que o app ja mandava e o
+  nome do **personagem**. Na mesa a pessoa e *Rodolfo* e o boneco chama-se
+  *Aria*; e por `criadoPor` que a Mesa acha o token. Mandar o nome errado faria a
+  ficha nunca colar em token nenhum — e o sintoma seria *"nao acontece nada"*, o
+  pior de todos.
+- **⚠️ O nome NAO vai para maiusculas**, ao contrario do token: e comparado byte
+  a byte com o que a pessoa digitou ao entrar, e `RODOLFO` nao casa com `Rodolfo`.
+- **Provado ponta a ponta**, com a Mesa de teste no ar:
+  - `POST /api/ficha` → `{"ok":true,"tokens":["Aria"],"velocidadeBasica":6.25}`
+  - token errado → 401; sem autor → `sem_autor`
+  - a ficha chegou ao navegador **sem recarregar**; o token ficou com 391 bytes
+  - **a fila da luta ordenou por ela**: *Aria* (6,25) veio antes de *Aaaa orc*
+    sem ficha, mesmo perdendo no alfabeto.
+- **⚠️ Um teste antigo caiu, e com razao:** o `DestinoDaRolagemTest` cobrava a
+  chamada `onSalvarMesa(endereco, token)` com os argumentos exatos. Ele passou a
+  cobrar so que a chamada exista — os argumentos sao assunto do compilador.
+- **Status:** ✅ Build OK nas 2 variantes — gate **9772**, 0 falhas.
+  11 sondas no app: cada defeito reintroduzido fica vermelho.
+  🔴 **PENDENTE: teste no aparelho.** Configurar o novo campo "Seu nome na mesa",
+  salvar uma ficha, e ver o boneco receber a Velocidade Basica.

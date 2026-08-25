@@ -208,9 +208,20 @@ class DestinoDaRolagemTest {
             src.contains("if (destino == DestinoDaRolagem.MESA) {")
         )
         // ⚠️ Fechar sem testar nao pode apagar o que a pessoa digitou.
+        //
+        // ⚠️ A comparacao NAO fixa os argumentos: ela fixava, e quebrou no
+        // CAMPO-17 quando entrou o terceiro campo (o nome na mesa). O que
+        // importa e que o `onSalvarMesa` seja chamado ao fechar -- os
+        // argumentos sao assunto do compilador, que ja os confere.
         assertTrue(
             "fechar o dialogo perde o que foi digitado",
-            src.contains("if (destino == DestinoDaRolagem.MESA) onSalvarMesa(endereco, token)")
+            src.contains("if (destino == DestinoDaRolagem.MESA) onSalvarMesa(")
+        )
+        // 🔴 E o terceiro campo TEM de ir junto: sem o nome na mesa, a ficha do
+        // CAMPO-17 nunca cola em token nenhum, e o sintoma e "nao acontece nada".
+        assertTrue(
+            "o nome na mesa nao e guardado ao fechar",
+            src.contains("onSalvarMesa(endereco, token, nomeNaMesa)")
         )
     }
 

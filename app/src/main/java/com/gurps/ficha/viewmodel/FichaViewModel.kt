@@ -127,8 +127,9 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
     val oQueFaltaNoDestino get() = socialDelegate.oQueFaltaNoDestino
     fun escolherDestinoDaRolagem(d: com.gurps.ficha.domain.rules.DestinoDaRolagem) =
         socialDelegate.escolherDestino(d)
-    fun configurarMesa(endereco: String?, token: String?) =
-        socialDelegate.configurarMesa(endereco, token)
+    fun configurarMesa(endereco: String?, token: String?, nome: String? = null) =
+        socialDelegate.configurarMesa(endereco, token, nome)
+    val mesaNome get() = socialDelegate.mesaNome
     suspend fun testarMesa() = socialDelegate.testarMesa()
     val canalDiscordSelecionadoNome get() = socialDelegate.canalDiscordSelecionadoNome
 
@@ -853,6 +854,24 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
                     // texto pelado. A mesma imagem, os dois destinos.
                     socialDelegate.enviarRetratoParaAMesa(nome, dataUri)
                 }
+            }
+        }
+        // 🔴 **E a ficha calculada para a Mesa** (CAMPO-17).
+        //
+        // Vai no MESMO gancho do retrato: salvar a ficha e o momento em que os
+        // numeros mudaram, e e por isso que a mesa acompanha sozinha sem
+        // ninguem carregar em botao nenhum.
+        //
+        // ⚠️ Best-effort, como o retrato, e fora do `if` da imagem: uma ficha sem
+        // retrato tambem tem Velocidade Basica, e prende-la a existencia da
+        // imagem faria a iniciativa depender de a pessoa ter escolhido uma foto.
+        val nomeNaMesa = socialDelegate.mesaNome
+        if (!nomeNaMesa.isNullOrBlank()) {
+            viewModelScope.launch {
+                socialDelegate.enviarFichaParaAMesa(
+                    nomeNaMesa,
+                    com.gurps.ficha.model.FichaCalculada.de(personagem)
+                )
             }
         }
     }
