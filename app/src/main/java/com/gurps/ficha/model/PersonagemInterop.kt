@@ -26,7 +26,19 @@ data class PersonagemInteropEnvelope(
     val exportedAtUtc: String,
     val appVersion: String?,
     val uiVariant: String?,
-    val character: Personagem
+    val character: Personagem,
+    /**
+     * **Os numeros que a ficha calcula** -- lote CAMPO-16.
+     *
+     * 🔴 SO DE SAIDA. Ao importar ele e **ignorado**, e tudo e recalculado
+     * dos dados crus. Sem isso, um arquivo mexido a mao poria uma Esquiva 20
+     * aqui e o app acreditaria -- e ela sobreviveria a tudo, porque nao ha nada
+     * nos dados crus que a contradiga.
+     *
+     * ⚠️ Anulavel para as fichas antigas: um arquivo exportado antes deste
+     * lote nao o tem, e tem de continuar a abrir.
+     */
+    val calculado: FichaCalculada? = null
 )
 
 object PersonagemInterop {
@@ -45,7 +57,11 @@ object PersonagemInterop {
             exportedAtUtc = sdf.format(Date()),
             appVersion = appVersion?.trim()?.takeIf { it.isNotBlank() },
             uiVariant = uiVariant?.trim()?.takeIf { it.isNotBlank() },
-            character = personagem
+            character = personagem,
+            // 🔴 Calculado AQUI, chamando as mesmas propriedades que a tela usa.
+            // A alternativa era a Mesa Virtual recalcular tudo do lado dela -- duas
+            // contas para a mesma coisa, que e o defeito numero um deste projeto.
+            calculado = FichaCalculada.de(personagem)
         )
         return gson.toJson(envelope)
     }

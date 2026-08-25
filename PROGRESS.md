@@ -9125,3 +9125,43 @@ Trocar `token = it.uppercase()` por `token = it` deixou o teste vermelho
   o caminho antigo continua igual).
 
 > Gate: 2.394 testes, 0 falhas nas duas variantes.
+
+## Lote CAMPO-16 — [2026-08-25] O app exporta o bloco `calculado`
+
+- **Hash:** (a preencher)
+- **O buraco:** o JSON exportado tinha 43 campos e **so dados crus**. Nao tinha
+  NH de pericia nenhuma, nem Esquiva, nem Velocidade Basica, nem PV maximo.
+  A causa e uma linha de Kotlin: os derivados sao propriedades `get()`, e o Gson
+  serializa **campos**, nao propriedades. Quem le o arquivo de fora ve os
+  ingredientes e nao ve o bolo.
+- **Por que nao deixar a Mesa recalcular:** seriam **duas contas para a mesma
+  coisa** — o defeito numero um deste projeto, que ja custou caro tres vezes.
+- **Mudancas:**
+  - `model/FichaCalculada.kt` (NOVO): o bloco. Atributos combinados, PV, PF,
+    Vontade, Percepcao, Velocidade Basica, Deslocamento (basico e atual), nivel
+    de carga, Esquiva, Apara, Bloqueio, dano GdP/GeB, **NH de cada pericia**, e
+    os tres numeros de pontos do cabecalho.
+  - `model/PersonagemInterop.kt`: o bloco entra no envelope da exportacao.
+- **Decisoes que mudam comportamento:**
+  - A **Velocidade Basica vai com casas decimais**. 5,25 e 5,50 sao ordens
+    diferentes na iniciativa da Mesa (CAMPO-15); arredondar empataria quem nao
+    empata.
+  - **Apara e Bloqueio sao `null`, e nao zero**, quando nao ha pericia nem
+    escudo. Zero seria "apara e falha sempre"; o certo e "nao apara".
+  - As pericias saem com **NH**, e nao com pontos gastos: virar pontos em NH
+    exige a tabela do livro (MB p.170), que e a segunda conta que nao pode
+    existir.
+  - `periciasTotais`, e nao `pericias`: as raciais concedidas tambem se rolam.
+  - O bloco e **SO DE SAIDA**. Ao importar ele e ignorado e tudo e recalculado
+    dos dados crus — senao um arquivo mexido a mao poria uma Esquiva 20 e o app
+    acreditaria.
+- **O teste que da nome ao lote — o do envelhecimento:**
+  Um teste que so comparasse "o bloco diz 12 e a propriedade diz 12" seria
+  **circular**: o bloco e feito chamando a propriedade. O perigo real e outro —
+  acrescentar um derivado novo ao `Personagem` daqui a seis meses e esquecer de
+  o por no bloco, que fica incompleto **sem ninguem perceber**.
+  O teste varre por reflexao as propriedades calculadas do `Personagem` e cobra
+  que **cada uma** esteja no bloco ou numa lista de exclusoes com motivo
+  escrito. Ele encontrou **19 derivados** por decidir logo na primeira execucao.
+- **Status:** ✅ Build OK nas 2 variantes — gate **9732**, 0 falhas.
+  10 sondas: cada defeito reintroduzido fica vermelho.
