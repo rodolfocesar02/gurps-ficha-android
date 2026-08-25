@@ -9168,7 +9168,7 @@ Trocar `token = it.uppercase()` por `token = it` deixou o teste vermelho
 
 ## Lote CAMPO-17 — [2026-08-25] A ficha vai para a Mesa e cola no token
 
-- **Hash:** (a preencher)
+- **Hash:** 649088a7
 - **O que faz:** ao **salvar a ficha**, o app manda o bloco `calculado` para a
   Mesa Virtual, e ele cola no token daquela pessoa. A mesa passa a saber a
   Velocidade Basica, a Esquiva e os PV de quem esta no tabuleiro.
