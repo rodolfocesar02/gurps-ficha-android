@@ -130,7 +130,18 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
     fun configurarMesa(endereco: String?, token: String?, nome: String? = null) =
         socialDelegate.configurarMesa(endereco, token, nome)
     val mesaNome get() = socialDelegate.mesaNome
-    suspend fun testarMesa() = socialDelegate.testarMesa()
+    /**
+     * 🔴 O tipo de retorno e DECLARADO, e nao inferido.
+     *
+     * Inferido (`= socialDelegate.testarMesa()`), o Debug compilava e o
+     * **Release falhava** nas duas variantes, com "esperava
+     * ResultadoDaConexao, veio String". O compilador resolvia o tipo por um
+     * caminho diferente conforme o modo de compilacao.
+     *
+     * ⚠️ Um tipo declarado nunca depende de por onde o compilador chegou.
+     */
+    suspend fun testarMesa(): com.gurps.ficha.viewmodel.delegates.ResultadoDaConexao =
+        socialDelegate.testarMesa()
     val canalDiscordSelecionadoNome get() = socialDelegate.canalDiscordSelecionadoNome
 
     // Getters do modo Saga (Lote 354)

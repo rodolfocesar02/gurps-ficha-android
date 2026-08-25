@@ -9208,3 +9208,46 @@ Trocar `token = it.uppercase()` por `token = it` deixou o teste vermelho
   11 sondas no app: cada defeito reintroduzido fica vermelho.
   🔴 **PENDENTE: teste no aparelho.** Configurar o novo campo "Seu nome na mesa",
   salvar uma ficha, e ver o boneco receber a Velocidade Basica.
+
+## Lote MESA-44 — [2026-08-25] Conectar à mesa: dois campos e um botão
+
+- **Hash:** (a preencher)
+- **O pedido:** *"em vez de token que o mestre define, escondemos o endereço da
+  sala, o jogador coloca o nome e o token, e direciona pra um navegador da
+  escolha dele"* — e, depois: *"em vez de salvar e testar, coloque conectar a
+  mesa"*.
+- **A tela virou o que já era na prática: a porta de entrada da mesa.**
+  - O campo **Endereço da sala saiu**. Ele nunca muda, e era mais um campo para
+    digitar errado. Vive agora em `MesaApiClient.ENDERECO_PADRAO`.
+    ⚠️ O preço, decidido conscientemente: se o endereço mudar, **é preciso um app
+    novo** para todo o mundo, inclusive para quem só tem o APK.
+  - Ficam **Seu nome** e **Token da sala** — os mesmos dois que se digitam no
+    site. 🔴 E o nome, que no CAMPO-17 era um terceiro campo misterioso ("seu
+    nome na mesa"), agora **explica-se sozinho** por estar ao lado do token.
+  - O botão é **CONECTAR À MESA**: salva, testa e **abre o navegador**.
+    ⚠️ Subiu de 36 dp para 48 dp, que é o mínimo de toque.
+- **🔴 O token vai no fragmento (`#`), e nunca na query (`?`).** O que está
+  depois do `#` **não é enviado ao servidor**: não aparece nos registros de
+  acesso, não vai no `Referer`, não passa por intermediário nenhum. E a mesa
+  **limpa o endereço assim que entra** — o fragmento vai para o histórico e fica
+  à vista na barra, e numa mesa por chamada isso é o token projetado para todos.
+- **🔴 O `Intent` não nomeia navegador nenhum**, então o Android mostra a
+  escolha. Fixar o Chrome tiraria da pessoa uma decisão que é dela.
+- **🔴 Só abre se a sala ACEITOU o token.** O `/api/saude` passou a conferi-lo
+  quando ele vem no cabeçalho `X-Token`. Antes o botão dizia "a sala respondeu"
+  com o token errado, abria o navegador, e a pessoa caía na tela de entrada sem
+  saber por quê — culpando o navegador, e não o token.
+- **🔴 Um defeito meu, apanhado antes de ir para o aparelho:** a primeira versão
+  devolvia só uma **frase** e a tela adivinhava o resto procurando "erro" dentro
+  dela. Parecia funcionar e não funcionava: *"Token errado"* e *"Falta o
+  endereço da sala"* passavam as duas pela peneira, e o navegador abria na
+  mesma. Medido correndo a heurística contra as quatro frases de verdade.
+  Virou `ResultadoDaConexao(ok, recado)` — duas coisas separadas.
+- **🔴 E outro, que só o gate das duas variantes apanhou:** `testarMesa()` tinha
+  o tipo de retorno **inferido**. O Debug compilava e o **Release falhava** nas
+  duas variantes. Um tipo declarado nunca depende de por onde o compilador
+  chegou.
+- **Status:** ✅ Build OK nas 2 variantes — gate **9824**, 0 falhas.
+  13 sondas no app: cada defeito reintroduzido fica vermelho.
+  🔴 **PENDENTE: teste no aparelho.** Pôr nome e token, apertar CONECTAR À MESA,
+  e ver o navegador abrir com você já dentro da sala.

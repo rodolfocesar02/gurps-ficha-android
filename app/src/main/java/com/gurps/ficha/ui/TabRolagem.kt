@@ -1186,6 +1186,7 @@ fun TabRolagem(viewModel: FichaViewModel) {
                 viewModel.configurarMesa(endereco, token, nome)
             },
             onTestarMesa = { viewModel.testarMesa() },
+            onAbrirAMesa = { nome, token -> abrirAMesaNoNavegador(context, nome, token) },
             onDismiss = { showDestinoDialog = false }
         )
     }
@@ -1564,4 +1565,47 @@ fun TabRolagem(viewModel: FichaViewModel) {
         )
     }
 }
+}
+
+
+/**
+ * **Abre a mesa no navegador que a pessoa escolher** -- lote MESA-44.
+ *
+ * ""🔴"" O token vai no **fragmento** (`#`), e nunca na query (`?`).
+ *
+ * O que esta depois do `#` **nao e enviado ao servidor**: nao aparece nos
+ * registros de acesso, nao vai no cabecalho `Referer` para lugar nenhum, e nao
+ * passa por intermediario nenhum no caminho. O que esta depois do `?` vai em
+ * tudo isso -- e este token e a senha da sala inteira.
+ *
+ * ""⚠️"" A mesa **limpa o endereco assim que entra** (`public/convite.js`). O
+ * fragmento nao vai para o servidor, mas vai para o historico do navegador e
+ * fica a vista na barra -- e numa mesa por chamada, com a tela partilhada, isso
+ * e o token projetado para toda a gente.
+ *
+ * ""🔴"" E o `Intent` e generico de proposito: ele NAO nomeia navegador nenhum, e
+ * por isso o Android mostra a escolha (ou usa o que a pessoa ja escolheu). Fixar
+ * o Chrome tiraria dela uma decisao que e dela.
+ */
+internal fun abrirAMesaNoNavegador(
+    context: android.content.Context,
+    nome: String,
+    token: String
+) {
+    if (nome.isBlank() || token.isBlank()) return
+    val endereco = com.gurps.ficha.data.network.MesaApiClient.ENDERECO_PADRAO
+    val convite = endereco.trimEnd('/') + "/#nome=" +
+        java.net.URLEncoder.encode(nome, "UTF-8") + "&t=" +
+        java.net.URLEncoder.encode(token, "UTF-8")
+    try {
+        val intent = android.content.Intent(
+            android.content.Intent.ACTION_VIEW,
+            android.net.Uri.parse(convite)
+        ).addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK)
+        context.startActivity(intent)
+    } catch (_: Exception) {
+        // ""⚠️"" Aparelho sem navegador nenhum. Nao ha o que fazer, e estourar aqui
+        // derrubaria a tela de configuracao inteira -- que ja fez o que importa:
+        // guardar o endereco e o token.
+    }
 }

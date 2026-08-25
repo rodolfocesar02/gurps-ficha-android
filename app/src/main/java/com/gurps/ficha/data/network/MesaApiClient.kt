@@ -51,6 +51,20 @@ data class MesaRollPayload(
  * [DiscordRollApiClient]; este é o **segundo** destino, não o substituto.
  */
 object MesaApiClient {
+    /**
+     * **O endereco da mesa** -- lote MESA-44.
+     *
+     * 🔴 Fixo aqui, e fora da tela. Antes era um campo que toda a gente tinha de
+     * digitar, e ele nunca muda: e sempre a mesa do Rodolfo.
+     *
+     * ⚠️ O preco esta escrito: se este endereco mudar -- outro dominio, outro
+     * servico de DNS dinamico -- **e preciso um app novo** para todo o mundo,
+     * inclusive para quem so tem o APK instalado. Foi decisao consciente, tomada
+     * em 25/ago/2026, contra a alternativa de deixar o campo escondido atras de
+     * um "outra mesa?".
+     */
+    const val ENDERECO_PADRAO = "https://mesagurps.duckdns.org"
+
     private const val CONNECT_TIMEOUT_MS = 5000
     private const val READ_TIMEOUT_MS = 5000
     private val gson = Gson()
@@ -191,7 +205,7 @@ object MesaApiClient {
     }
 
     /** A sala está de pé? Serve para o botão de testar, na configuração. */
-    fun saude(baseUrl: String): DiscordRollSendResult {
+    fun saude(baseUrl: String, token: String? = null): DiscordRollSendResult {
         var connection: HttpURLConnection? = null
         return try {
             val endpoint = "${baseUrl.trimEnd('/')}/api/saude"
@@ -199,12 +213,27 @@ object MesaApiClient {
                 requestMethod = "GET"
                 connectTimeout = CONNECT_TIMEOUT_MS
                 readTimeout = READ_TIMEOUT_MS
+                // 🔴 Com token, a sala confere se ele vale -- MESA-44. Sem esta
+                // conferencia o botao "CONECTAR A MESA" dizia "a sala respondeu" com
+                // o token errado, abria o navegador, e a pessoa caia na tela de
+                // entrada sem saber por que -- culpando o navegador, e nao o token.
+                //
+                // ⚠️ No CABECALHO, e nunca na URL: query string vai para os
+                // registros de qualquer intermediario, e este token e a senha da sala.
+                if (!token.isNullOrBlank()) setRequestProperty("X-Token", token)
             }
             val codigo = connection.responseCode
             DiscordRollSendResult(
                 ok = codigo in 200..299,
                 statusCode = codigo,
-                error = if (codigo in 200..299) null else "http_$codigo"
+                error = when {
+                    codigo in 200..299 -> null
+                    // 🔴 401 aqui e o erro que mais vai acontecer, e agora ele tem um
+                    // nome proprio: dizer "token errado" poupa a mesa de cacar
+                    // problema de rede que nao existe.
+                    codigo == 401 -> "token_da_sala_invalido"
+                    else -> "http_$codigo"
+                }
             )
         } catch (error: Exception) {
             DiscordRollSendResult(false, null, error.message ?: "nao_respondeu")

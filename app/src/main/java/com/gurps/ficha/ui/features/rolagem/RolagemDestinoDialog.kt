@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.text.KeyboardOptions
+import com.gurps.ficha.viewmodel.delegates.ResultadoDaConexao
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -130,13 +131,27 @@ fun RolagemDestinoDialog(
     oQueFalta: String?,
     onEscolherDestino: (DestinoDaRolagem) -> Unit,
     onSalvarMesa: (String?, String?, String?) -> Unit,
-    onTestarMesa: suspend () -> String,
+    /**
+     * Testa a ligacao. Devolve **se deu certo** e **o que dizer**.
+     *
+     * 🔴 Duas coisas separadas de proposito. A primeira versao devolvia so a
+     * frase e esta tela adivinhava o resto procurando "erro" dentro dela --
+     * e "Token errado" passava pela peneira.
+     */
+    onTestarMesa: suspend () -> ResultadoDaConexao,
+    /**
+     * Abre a mesa no navegador que a pessoa escolher, ja com o nome e o token.
+     *
+     * 🔴 Quem monta o endereco e quem sabe abrir e o `TabRolagem`: um dialogo
+     * nao devia saber o que e um `Intent`.
+     */
+    onAbrirAMesa: (String, String) -> Unit,
     onDismiss: () -> Unit
 ) {
     var endereco by remember(enderecoAtual) { mutableStateOf(enderecoAtual.orEmpty()) }
     var token by remember(tokenAtual) { mutableStateOf(tokenAtual.orEmpty()) }
     var nomeNaMesa by remember(nomeNaMesaAtual) { mutableStateOf(nomeNaMesaAtual.orEmpty()) }
-    var resultadoDoTeste by remember { mutableStateOf<String?>(null) }
+    var resultadoDoTeste by remember { mutableStateOf<ResultadoDaConexao?>(null) }
     var testando by remember { mutableStateOf(false) }
     val escopo = rememberCoroutineScope()
 
@@ -176,16 +191,27 @@ fun RolagemDestinoDialog(
                 }
 
                 if (destino == DestinoDaRolagem.MESA) {
+                    // 🔴 **O endereco saiu da tela** (MESA-44). Ele nunca muda, e era
+                    // mais um campo para digitar errado. Vive agora em
+                    // `MesaApiClient.ENDERECO_PADRAO`.
+                    //
+                    // ⚠️ Esta tela virou o que ja era na pratica: a porta de entrada da
+                    // mesa. O nome e o token sao os MESMOS que se digitam no site --
+                    // e o nome, que antes era um terceiro campo misterioso ("seu nome
+                    // na mesa"), agora explica-se sozinho por estar ao lado do token.
                     OutlinedTextField(
-                        value = endereco,
-                        onValueChange = { endereco = it },
-                        label = { Text("Endereço da sala") },
-                        placeholder = { Text("mesagurps.duckdns.org") },
+                        value = nomeNaMesa,
+                        onValueChange = { nomeNaMesa = it },
+                        label = { Text("Seu nome") },
+                        placeholder = { Text("o nome com que voce entra na mesa") },
                         singleLine = true,
                         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
                         modifier = Modifier
                             .fillMaxWidth()
-                            .semantics { contentDescription = "Endereço da sala da mesa virtual" }
+                            .semantics {
+                                contentDescription =
+                                    "Seu nome na mesa virtual, o mesmo com que voce entra na sala"
+                            }
                     )
                     OutlinedTextField(
                         value = token,
@@ -203,51 +229,40 @@ fun RolagemDestinoDialog(
                             .semantics { contentDescription = "Token da sala da mesa virtual" }
                     )
 
-                    // 🔴 **O nome com que voce ENTRA na mesa**, e nao o do personagem.
-                    //
-                    // E por ele que a mesa acha o token que voce criou, para lhe
-                    // colar a ficha (CAMPO-17). O nome do personagem nao serve: na
-                    // mesa voce e "Rodolfo", e o boneco e que se chama "Aria".
-                    //
-                    // ⚠️ Sem este campo a ficha nunca colava em token nenhum, e o
-                    // sintoma seria "nao acontece nada" -- o pior de todos.
-                    OutlinedTextField(
-                        value = nomeNaMesa,
-                        onValueChange = { nomeNaMesa = it },
-                        label = { Text("Seu nome na mesa") },
-                        placeholder = { Text("o mesmo com que voce entra na sala") },
-                        singleLine = true,
-                        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .semantics {
-                                contentDescription =
-                                    "Seu nome na mesa virtual, o mesmo com que voce entra na sala"
-                            }
-                    )
-
                     Button(
                         onClick = {
                             onSalvarMesa(endereco, token, nomeNaMesa)
                             testando = true
                             resultadoDoTeste = null
                             escopo.launch {
-                                resultadoDoTeste = onTestarMesa()
+                                val r = onTestarMesa()
+                                resultadoDoTeste = r
                                 testando = false
+                                // 🔴 **So abre a mesa se a sala tiver aceitado o token.**
+                                //
+                                // Abrir o navegador com token errado poria a pessoa
+                                // diante da tela de entrada da mesa, sem saber por que
+                                // -- e ela culparia o navegador, nao o token. Assim o
+                                // recado aparece aqui, onde ela esta olhando.
+                                if (r.ok) onAbrirAMesa(nomeNaMesa.trim(), token.trim())
                             }
                         },
-                        enabled = !testando,
-                        modifier = Modifier.fillMaxWidth().height(36.dp),
+                        // ⚠️ O botao so acende com os dois campos preenchidos: sem eles
+                        // nao ha o que testar nem o que abrir, e um botao que nao faz
+                        // nada e pior que um botao apagado.
+                        enabled = !testando &&
+                            nomeNaMesa.isNotBlank() && token.isNotBlank(),
+                        modifier = Modifier.fillMaxWidth().height(48.dp),
                         contentPadding = PaddingValues(vertical = 2.dp)
                     ) {
                         Text(
-                            text = if (testando) "TESTANDO..." else "SALVAR E TESTAR",
+                            text = if (testando) "CONECTANDO..." else "CONECTAR À MESA",
                             fontWeight = FontWeight.Bold
                         )
                     }
 
-                    resultadoDoTeste?.let { recado ->
-                        Text(recado, style = MaterialTheme.typography.labelSmall)
+                    resultadoDoTeste?.let { r ->
+                        Text(r.recado, style = MaterialTheme.typography.labelSmall)
                     }
                 }
 

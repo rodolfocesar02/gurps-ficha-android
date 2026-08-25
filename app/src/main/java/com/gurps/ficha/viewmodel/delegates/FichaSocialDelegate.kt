@@ -14,6 +14,20 @@ import com.gurps.ficha.viewmodel.RollDispatchStatus
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
+/**
+ * O que o botao "CONECTAR A MESA" precisa de saber -- MESA-44.
+ *
+ * 🔴 Duas coisas separadas: **deu certo** e **o que dizer a pessoa**. A primeira
+ * versao disto devolvia so a frase, e a tela adivinhava o resto procurando
+ * "erro" e "nao" dentro dela.
+ *
+ * ⚠️ Adivinhar pela frase parecia funcionar e nao funcionava: "Token errado" e
+ * "Falta o endereco da sala" passavam as duas pela peneira, e o navegador abria
+ * na mesma. Foi medido antes de ir para o aparelho, correndo a heuristica contra
+ * as quatro frases de verdade.
+ */
+data class ResultadoDaConexao(val ok: Boolean, val recado: String)
+
 class FichaSocialDelegate(
     private val networkDelegate: FichaNetworkDelegate,
     private val configPrefs: SharedPreferences,
@@ -238,12 +252,21 @@ class FichaSocialDelegate(
     }
 
     /** Testa a sala sem mandar rolagem nenhuma, para a tela de configuração. */
-    suspend fun testarMesa(): String {
-        val endereco = mesaEndereco ?: return "Falta o endereço da sala."
+    suspend fun testarMesa(): ResultadoDaConexao {
+        val endereco = mesaEndereco
+            ?: return ResultadoDaConexao(false, "Falta o endereço da sala.")
         val r = kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.IO) {
-            MesaApiClient.saude(endereco)
+            // 🔴 Com o token -- MESA-44. Antes isto so perguntava se a sala estava
+            // de pe, e dizia "respondeu" com o token errado.
+            MesaApiClient.saude(endereco, mesaToken)
         }
-        return if (r.ok) "A sala respondeu. Está no ar."
-        else "Não respondeu: ${r.error ?: "sem detalhes"}"
+        return when {
+            r.ok -> ResultadoDaConexao(true, "Conectado. A sala respondeu.")
+            // ⚠️ Cada erro com a sua frase, e a do token dizendo O QUE FAZER. "401"
+            // nao ajuda ninguem no meio de uma sessao.
+            r.error == "token_da_sala_invalido" ->
+                ResultadoDaConexao(false, "Token errado. Peça o token novo ao Mestre.")
+            else -> ResultadoDaConexao(false, "Não respondeu: ${r.error ?: "sem detalhes"}")
+        }
     }
 }
