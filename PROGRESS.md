@@ -9211,7 +9211,7 @@ Trocar `token = it.uppercase()` por `token = it` deixou o teste vermelho
 
 ## Lote MESA-44 — [2026-08-25] Conectar à mesa: dois campos e um botão
 
-- **Hash:** (a preencher)
+- **Hash:** 012d097e
 - **O pedido:** *"em vez de token que o mestre define, escondemos o endereço da
   sala, o jogador coloca o nome e o token, e direciona pra um navegador da
   escolha dele"* — e, depois: *"em vez de salvar e testar, coloque conectar a
