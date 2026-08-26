@@ -50,6 +50,28 @@ data class PericiaCalculada(
 )
 
 data class FichaCalculada(
+    /**
+     * **O nome do personagem.** 🔴 Sem ele a Mesa RECUSA a ficha inteira.
+     *
+     * A peneira do servidor comeca assim, e nao ha volta a dar:
+     *
+     * ```js
+     * const nome = texto(c.nome, L.MAXIMO_DO_NOME);
+     * if (!nome) return null;   // ficha_invalida
+     * ```
+     *
+     * ⚠️ E ele faltava aqui desde o CAMPO-16. **Toda** ficha que o app mandou
+     * levou tres meses a ser recusada com 400 -- e calada, porque o envio e
+     * best-effort. Do lado da Mesa os testes montavam fichas a mao, sempre com
+     * nome; deste lado os testes contavam os numeros e nunca o nome. Cada lado
+     * satisfeito, e o encontro dos dois partido.
+     *
+     * 🔴 E ele NAO e o nome de quem esta na mesa: esse vai no `autor`, fora da
+     * ficha, e e por ele que ela acha o boneco. Este e o nome que aparece na
+     * janela da ficha e ao lado do boneco.
+     */
+    val nome: String = "",
+
     // Atributos ja somados com o modelo racial e os bonus de vantagem.
     val st: Int = 10,
     val dx: Int = 10,
@@ -114,6 +136,8 @@ data class FichaCalculada(
         fun de(personagem: Personagem): FichaCalculada {
             val defesas = personagem.defesasAtivas
             return FichaCalculada(
+                // 🔴 O nome PRIMEIRO: sem ele a Mesa recusa a ficha inteira.
+                nome = personagem.nome,
                 st = personagem.st,
                 dx = personagem.dx,
                 iq = personagem.iq,

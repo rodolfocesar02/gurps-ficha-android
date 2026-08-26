@@ -65,6 +65,15 @@ object MesaApiClient {
      */
     const val ENDERECO_PADRAO = "https://mesagurps.duckdns.org"
 
+    /**
+     * O que faz o POST de verdade, trocavel **so em teste**.
+     *
+     * 🔴 Existe para a corrente inteira -- salvar a ficha, o delegate, as tres
+     * peneiras, o corpo em JSON -- poder ser CORRIDA num teste, e nao lida como
+     * texto. Ver `FichaChegaAMesaTest`.
+     */
+    internal var transporteDeTeste: ((String, ByteArray) -> DiscordRollSendResult)? = null
+
     private const val CONNECT_TIMEOUT_MS = 5000
     private const val READ_TIMEOUT_MS = 5000
     private val gson = Gson()
@@ -138,6 +147,15 @@ object MesaApiClient {
         // lenta, calado, so por causa da extracao.
         folgaDeLeitura: Int = READ_TIMEOUT_MS
     ): DiscordRollSendResult {
+        // 🔴 **A costura de teste.** Sem ela, nada nesta corrente se corre num
+        // teste: o `enviar` abre uma conexao de verdade, e entao os testes ficavam
+        // todos a ler o CODIGO como texto -- que foi como o endereco vazio passou
+        // por um lote inteiro sem ninguem dar por ele.
+        //
+        // ⚠️ `internal`: nao aparece fora do modulo, e em producao e sempre
+        // `null`. Quem a poe e o teste, e volta a limpa-la a seguir.
+        transporteDeTeste?.let { return it(endpoint, corpo) }
+
         var connection: HttpURLConnection? = null
         return try {
             connection = (URL(endpoint).openConnection() as HttpURLConnection).apply {
