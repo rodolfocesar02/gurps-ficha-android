@@ -1,6 +1,7 @@
 package com.gurps.ficha.model
 
 import java.io.File
+import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
@@ -120,6 +121,47 @@ class FichaParaAMesaTest {
         assertTrue(
             "o envio da ficha esta dentro do `if` da imagem",
             ondeFechaImagem in (ondeImagem + 1) until ondeFicha
+        )
+    }
+
+    @Test
+    fun `🔴 CARREGAR uma ficha tambem manda para a Mesa`() {
+        // 🔴 *"Quando eu troquei a ficha no emulador, ele nao fez a troca no
+        // boneco que ja estava no grid. Tive que salvar a ficha no app."*
+        //
+        // ⚠️ Trocar de personagem e exatamente o momento em que a mesa precisa
+        // de saber. Preso ao salvar, quem so carregava para consultar deixava o
+        // boneco no mapa com a ficha de OUTRO personagem -- e nada dizia isso.
+        val vm = fonte("com/gurps/ficha/viewmodel/FichaViewModel.kt")
+
+        val carregar = vm.substringAfter("fun carregarFicha(")
+            .substringBefore("private fun ressincronizarMagiasComCatalogo")
+        assertTrue(
+            "carregar uma ficha nao avisa a Mesa: o boneco fica com a ficha antiga",
+            carregar.contains("mandarAFichaParaAMesa()")
+        )
+        // 🔴 E DEPOIS de trocar o personagem: e o NOVO que tem de ir.
+        val ondeTroca = carregar.indexOf("personagem = ressincronizarMagiasComCatalogo")
+        val ondeManda = carregar.indexOf("mandarAFichaParaAMesa()")
+        assertTrue("nao achei os dois", ondeTroca >= 0 && ondeManda >= 0)
+        assertTrue(
+            "manda a ficha ANTES de trocar o personagem: vai a do anterior",
+            ondeManda > ondeTroca
+        )
+
+        // ⚠️ E salvar continua a mandar. UMA funcao para os dois: duas copias
+        // divergiriam, e a que divergisse mandaria ficha diferente da outra.
+        // ⚠️ Corta ANTES da definicao da funcao, e nao no `carregarFicha`: a
+        // definicao vive entre as duas, e `private fun mandarAFichaParaAMesa()`
+        // contem o texto da CHAMADA. Uma sonda apagou a chamada do salvar e este
+        // teste ficou verde -- ele estava a ver a definicao.
+        val salvar = vm.substringAfter("fun salvarFicha(")
+            .substringBefore("private fun mandarAFichaParaAMesa")
+        assertTrue("salvar deixou de avisar a Mesa", salvar.contains("mandarAFichaParaAMesa()"))
+        assertEquals(
+            "o envio foi copiado em vez de partilhado: duas copias divergem",
+            1,
+            Regex("private fun mandarAFichaParaAMesa").findAll(vm).count()
         )
     }
 

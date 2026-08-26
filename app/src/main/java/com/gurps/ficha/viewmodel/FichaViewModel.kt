@@ -887,6 +887,32 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
         // 🔴 O nome em branco tambem PRECISA de recado. Sem isto, quem nunca
         // preencheu "Seu nome" salva a ficha, nada acontece, e nao ha como saber
         // se esta quebrado ou se falta configurar -- que foi o que aconteceu.
+        mandarAFichaParaAMesa()
+    }
+
+    /**
+     * **Manda a ficha calculada para a Mesa** (CAMPO-17).
+     *
+     * 🔴 Chamada de DOIS sitios: ao **salvar** e ao **carregar**. E uma funcao
+     * so de proposito -- duas copias divergiriam, e a que divergisse mandaria uma
+     * ficha diferente da outra sem nada dizer.
+     *
+     * ## 🔴 Por que o CARREGAR tambem manda
+     *
+     * *"Quando eu troquei a ficha no emulador, ele nao fez a troca no boneco que
+     * ja estava no grid. Tive que salvar a ficha no app para ele trocar."*
+     *
+     * ⚠️ Trocar de personagem e **exatamente** o momento em que a mesa precisa
+     * de saber. Prende-lo ao salvar obrigava a um salvar que ninguem queria fazer,
+     * e quem so carregasse para consultar deixava o boneco no mapa com a ficha de
+     * OUTRO personagem -- sem nada na tela dizer que estava velha.
+     *
+     * ⚠️ Best-effort: nunca segura o salvar nem o carregar.
+     */
+    private fun mandarAFichaParaAMesa() {
+        // 🔴 O nome em branco tambem PRECISA de recado. Sem isto, quem nunca
+        // preencheu "Seu nome" salva a ficha, nada acontece, e nao ha como saber
+        // se esta quebrado ou se falta configurar -- que foi o que aconteceu.
         val nomeNaMesa = socialDelegate.mesaNome
         viewModelScope.launch {
             val r = socialDelegate.enviarFichaParaAMesa(
@@ -907,6 +933,16 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
                     personagem = ressincronizarMagiasComCatalogo(it) // MEC-44
                     nomeFichaAtual = nome
                     estaCarregando = false
+                    // 🔴 **E a Mesa fica sabendo AGORA** -- MESA-47.
+                    //
+                    // Trocar de personagem e exatamente o momento em que ela
+                    // precisa de saber. Sem esta linha, o boneco no mapa ficava
+                    // com a ficha do personagem ANTERIOR ate alguem salvar -- e
+                    // nada na tela dizia que ela estava velha.
+                    //
+                    // ⚠️ Depois do `personagem =` acima, e nao antes: e o
+                    // personagem NOVO que tem de ir, e nao o que estava.
+                    mandarAFichaParaAMesa()
                     onResult(true, "Ficha carregada.")
                 },
                 onFailure = { 
