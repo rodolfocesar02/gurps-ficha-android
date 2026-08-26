@@ -124,7 +124,7 @@ class FichaParaAMesaTest {
     }
 
     @Test
-    fun `⚠️ mandar a ficha nunca segura o salvar`() {
+    fun `⚠️ mandar a ficha nunca segura o salvar -- mas nao fica calado`() {
         // ⚠️ Ficar sem ficha na Mesa e um aborrecimento; nao salvar e perder
         // trabalho. Como o retrato, isto e best-effort e corre a parte.
         val envio = delegate.substringAfter("suspend fun enviarFichaParaAMesa(")
@@ -133,10 +133,55 @@ class FichaParaAMesaTest {
             "o envio da ficha nao sai fora da linha principal",
             envio.contains("Dispatchers.IO")
         )
-        // E desiste sem barulho quando falta configuracao.
-        assertTrue("nao desiste sem endereco", envio.contains("mesaEndereco ?: return false"))
-        assertTrue("nao desiste sem token", envio.contains("mesaToken ?: return false"))
-        assertTrue("nao desiste sem nome", envio.contains("nomeNaMesa.isBlank()"))
+
+        // 🔴 Mas best-effort NAO quer dizer calado.
+        //
+        // Isto devolvia um `Boolean` que ninguem lia, e custou duas rodadas: a
+        // ficha nao chegava, e nao havia nada -- nem no aparelho nem no servidor
+        // -- a dizer porque. A causa era o endereco vazio, e um
+        // `if (baseUrl.isBlank())` la no fundo do cliente.
+        assertTrue(
+            "o envio da ficha voltou a devolver so um sim/nao que ninguem le",
+            envio.contains("): ResultadoDaConexao {")
+        )
+
+        // ⚠️ Cada desistencia com a sua frase, e a frase diz O QUE FAZER.
+        assertTrue("falta o recado do token", envio.contains("falta o token da sala"))
+        assertTrue("falta o recado do nome", envio.contains("Seu nome"))
+        assertTrue(
+            "o token errado nao e distinguido dos outros erros",
+            envio.contains("token_da_sala_invalido")
+        )
+
+        // 🔴 E o endereco NAO e uma das desistencias: ele e fixo no codigo, e
+        // foi por vir das preferencias vazias que a ficha nunca chegou a mesa.
+        assertFalse(
+            "voltou a desistir por endereco: ele nao vem de lado nenhum",
+            envio.contains("mesaEndereco ?: return")
+        )
+
+        // E a tela MOSTRA o recado.
+        //
+        // ⚠️ A primeira versao disto so conferia que a tela LIA o `recadoDaMesa`
+        // e que o limpava -- e uma sonda apagou o `showSnackbar` e ficou verde.
+        // Ler e limpar sem mostrar e engolir o recado, que e o defeito que este
+        // lote veio consertar. Agora cobra-se o trecho inteiro, do ler ao mostrar.
+        val tela = fonte("com/gurps/ficha/ui/FichaScreen.kt")
+        val efeito = tela.substringAfter("LaunchedEffect(viewModel.recadoDaMesa)")
+            .substringBefore("if (showSaveDialog)")
+        assertTrue("a tela nao le o que a mesa respondeu", efeito.isNotBlank())
+        assertTrue(
+            "o recado e lido e limpo, mas nunca MOSTRADO",
+            efeito.contains("showSnackbar")
+        )
+        assertTrue(
+            "o recado nao e limpo: ele voltaria a aparecer sozinho",
+            efeito.contains("viewModel.recadoDaMesa = null")
+        )
+        assertTrue(
+            "o recado aparece rapido demais para ser lido",
+            efeito.contains("SnackbarDuration.Long")
+        )
     }
 
     @Test

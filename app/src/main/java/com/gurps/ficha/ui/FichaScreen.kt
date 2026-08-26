@@ -538,6 +538,18 @@ fun FichaScreen(viewModel: FichaViewModel) {
         )
     }
 
+    // 🔴 O recado da mesa (MESA-45). O envio da ficha e best-effort e corre a
+    // parte do salvar -- entao o resultado chega DEPOIS do "Ficha salva.", e tem
+    // de aparecer sozinho quando chegar.
+    //
+    // ⚠️ Duracao longa: e um recado que diz o que fazer ("falta Seu nome"), e
+    // dois segundos nao chegam para o ler.
+    LaunchedEffect(viewModel.recadoDaMesa) {
+        val recado = viewModel.recadoDaMesa ?: return@LaunchedEffect
+        viewModel.recadoDaMesa = null
+        snackbarHostState.showSnackbar(message = recado, duration = SnackbarDuration.Long)
+    }
+
     if (showSaveDialog) {
         SalvarDialog(
             nomeAtual = viewModel.personagem.nome,

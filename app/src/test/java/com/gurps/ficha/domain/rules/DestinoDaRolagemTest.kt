@@ -221,7 +221,7 @@ class DestinoDaRolagemTest {
         // CAMPO-17 nunca cola em token nenhum, e o sintoma e "nao acontece nada".
         assertTrue(
             "o nome na mesa nao e guardado ao fechar",
-            src.contains("onSalvarMesa(endereco, token, nomeNaMesa)")
+            src.contains("onSalvarMesa(token, nomeNaMesa)")
         )
     }
 

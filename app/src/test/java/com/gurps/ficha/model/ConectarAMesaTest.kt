@@ -49,6 +49,63 @@ class ConectarAMesaTest {
         assertTrue(cliente.contains("mesagurps.duckdns.org"))
     }
 
+    // == 🔴 O endereco que a MESA-44 prometeu e nao entregou ======
+
+    @Test
+    fun `🔴 o endereco USADO e a constante, e nao o que veio do disco`() {
+        // 🔴 O teste vizinho conferia que o CAMPO saiu da tela e que a constante
+        // existe -- e passou verde durante o lote inteiro enquanto o valor
+        // continuava a vir das preferencias, onde nunca houve nada.
+        //
+        // ⚠️ Num aparelho onde ninguem tinha digitado o endereco antes (um
+        // emulador, uma instalacao nova) ele ficava VAZIO, o `postFicha` saia no
+        // `if (baseUrl.isBlank())` calado, e a ficha nunca chegava a mesa.
+        // Medido no servidor: pasta `dados/fichas/` vazia, treze bonecos sem ficha.
+        assertTrue(
+            "o endereco voltou a ser lido das preferencias",
+            delegate.contains("val mesaEndereco: String get() = MesaApiClient.ENDERECO_PADRAO")
+        )
+        assertFalse(
+            "ainda ha uma preferencia de endereco: o vazio volta por ali",
+            delegate.contains("prefMesaEndereco")
+        )
+    }
+
+    @Test
+    fun `🔴 configurar a mesa NAO recebe endereco`() {
+        // 🔴 Era por esse parametro que o vazio entrava: a tela passava uma
+        // variavel cujo campo tinha sido removido do ecra.
+        assertTrue(
+            "configurarMesa voltou a receber endereco",
+            delegate.contains("fun configurarMesa(token: String?, nome: String? = null)")
+        )
+        assertFalse(
+            "a tela ainda manda um endereco para o ViewModel",
+            dialogo.contains("onSalvarMesa(endereco")
+        )
+        assertFalse(
+            "a tela ainda guarda um endereco proprio",
+            dialogo.contains("var endereco by remember")
+        )
+    }
+
+    @Test
+    fun `⚠️ nenhum envio a mesa sai por falta de endereco`() {
+        // ⚠️ Havia tres `?: return` presos ao endereco -- tres saidas caladas.
+        // Com ele fixo, nenhuma delas faz sentido, e deixa-las la seria deixar o
+        // defeito de pe a espera de alguem voltar a ligar o endereco ao disco.
+        assertFalse(
+            "ainda ha uma saida calada por endereco nulo",
+            delegate.contains("val endereco = mesaEndereco ?: return")
+        )
+        // ⚠️ A frase ainda aparece num COMENTARIO que conta a historia do
+        // MESA-44 -- e comentario nao e comportamento. O que se cobra e a SAIDA.
+        assertFalse(
+            "testarMesa ainda pode falhar por falta de endereco",
+            delegate.contains("return ResultadoDaConexao(false, \"Falta o endere")
+        )
+    }
+
     @Test
     fun `a tela pede NOME e TOKEN, os mesmos do site`() {
         assertTrue("sumiu o campo do nome", dialogo.contains("Seu nome"))

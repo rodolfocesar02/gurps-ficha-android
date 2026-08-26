@@ -127,8 +127,16 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
     val oQueFaltaNoDestino get() = socialDelegate.oQueFaltaNoDestino
     fun escolherDestinoDaRolagem(d: com.gurps.ficha.domain.rules.DestinoDaRolagem) =
         socialDelegate.escolherDestino(d)
-    fun configurarMesa(endereco: String?, token: String?, nome: String? = null) =
-        socialDelegate.configurarMesa(endereco, token, nome)
+    fun configurarMesa(token: String?, nome: String? = null) =
+        socialDelegate.configurarMesa(token, nome)
+
+    /**
+     * O que a mesa respondeu ao ultimo envio de ficha, quando correu mal.
+     *
+     * 🔴 A tela le, mostra e **limpa**. Sem limpar, o mesmo recado voltaria a
+     * aparecer na proxima recomposicao, e a pessoa acharia que falhou outra vez.
+     */
+    var recadoDaMesa by mutableStateOf<String?>(null)
     val mesaNome get() = socialDelegate.mesaNome
     /**
      * 🔴 O tipo de retorno e DECLARADO, e nao inferido.
@@ -876,14 +884,18 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
         // ⚠️ Best-effort, como o retrato, e fora do `if` da imagem: uma ficha sem
         // retrato tambem tem Velocidade Basica, e prende-la a existencia da
         // imagem faria a iniciativa depender de a pessoa ter escolhido uma foto.
+        // 🔴 O nome em branco tambem PRECISA de recado. Sem isto, quem nunca
+        // preencheu "Seu nome" salva a ficha, nada acontece, e nao ha como saber
+        // se esta quebrado ou se falta configurar -- que foi o que aconteceu.
         val nomeNaMesa = socialDelegate.mesaNome
-        if (!nomeNaMesa.isNullOrBlank()) {
-            viewModelScope.launch {
-                socialDelegate.enviarFichaParaAMesa(
-                    nomeNaMesa,
-                    com.gurps.ficha.model.FichaCalculada.de(personagem)
-                )
-            }
+        viewModelScope.launch {
+            val r = socialDelegate.enviarFichaParaAMesa(
+                nomeNaMesa.orEmpty(),
+                com.gurps.ficha.model.FichaCalculada.de(personagem)
+            )
+            // ⚠️ So fala quando ha o que dizer: um "ok" a cada salvar viraria
+            // ruido, e ruido ensina a ignorar o recado que importa.
+            if (r.recado.isNotBlank() && !r.ok) recadoDaMesa = r.recado
         }
     }
     fun carregarFicha(nome: String, onResult: (Boolean, String) -> Unit) { 

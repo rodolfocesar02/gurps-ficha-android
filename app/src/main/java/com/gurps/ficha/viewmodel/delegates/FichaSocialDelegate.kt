@@ -39,7 +39,6 @@ class FichaSocialDelegate(
     // Lote MESA-7: o segundo destino. ⚠️ Chaves NOVAS, sem tocar nas do
     // Discord -- quem já usava o bot não perde a configuração ao atualizar.
     private val prefDestino = "rolagem_destino"
-    private val prefMesaEndereco = "mesa_endereco"
     private val prefMesaToken = "mesa_token"
     private val prefMesaNome = "mesa_nome"
 
@@ -57,7 +56,23 @@ class FichaSocialDelegate(
     var destinoDaRolagem by mutableStateOf(
         DestinoDaRolagem.de(configPrefs.getString(prefDestino, null))
     )
-    var mesaEndereco by mutableStateOf(configPrefs.getString(prefMesaEndereco, null))
+    /**
+     * **O endereco da sala. FIXO NO CODIGO** -- o conserto do MESA-44 que faltava.
+     *
+     * 🔴 O MESA-44 tirou o campo do endereco da TELA, mas deixou o valor a ser
+     * lido das preferencias -- e la nunca houve nada. Num aparelho onde ninguem
+     * tinha digitado o endereco antes (um emulador, uma instalacao nova), ele
+     * ficava **vazio**, e entao:
+     *
+     * - `postFicha` saia logo no `if (baseUrl.isBlank())`, calado;
+     * - e a ficha nunca chegava a mesa. Medido: pasta `dados/fichas/` vazia no
+     *   servidor, treze bonecos sem ficha, e nada em tela nenhuma a dizer porque.
+     *
+     * ⚠️ Agora ele **nao vem de lado nenhum**: e a constante, sempre. Assim o
+     * defeito deixa de ser possivel, em vez de deixar de acontecer.
+     */
+    val mesaEndereco: String get() = MesaApiClient.ENDERECO_PADRAO
+
     var mesaToken by mutableStateOf(configPrefs.getString(prefMesaToken, null))
 
     /**
@@ -80,17 +95,17 @@ class FichaSocialDelegate(
         configPrefs.edit().putString(prefDestino, destino.name).apply()
     }
 
-    fun configurarMesa(endereco: String?, token: String?, nome: String? = null) {
-        // ⚠️ O endereço é limpo aqui, e não na tela: assim o valor GUARDADO já
-        // está pronto, e quem for ler depois não precisa lembrar de limpar.
-        mesaEndereco = ProntidaoDoDestino.enderecoLimpo(endereco)
+    /**
+     * ⚠️ **Sem endereco.** Ele e fixo (ver `mesaEndereco` acima). Recebe-lo aqui
+     * era o caminho por onde entrava o vazio.
+     */
+    fun configurarMesa(token: String?, nome: String? = null) {
         mesaToken = token?.trim()?.uppercase()?.ifBlank { null }
         // ⚠️ O nome NAO vai para maiusculas: ele e comparado byte a byte com o
         // que a pessoa digitou ao entrar na sala, e "RODOLFO" nao casa com
         // "Rodolfo". Ao contrario do token, que a sala compara em maiusculas.
         mesaNome = nome?.trim()?.ifBlank { null }
         configPrefs.edit()
-            .putString(prefMesaEndereco, mesaEndereco)
             .putString(prefMesaToken, mesaToken)
             .putString(prefMesaNome, mesaNome)
             .apply()
@@ -147,10 +162,9 @@ class FichaSocialDelegate(
      */
     suspend fun enviarRetratoParaAMesa(personagem: String, imagemDataUri: String): Boolean {
         if (destinoDaRolagem != DestinoDaRolagem.MESA) return false
-        val endereco = mesaEndereco ?: return false
         val token = mesaToken ?: return false
         return kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.IO) {
-            MesaApiClient.postRetrato(endereco, token, personagem, imagemDataUri).ok
+            MesaApiClient.postRetrato(mesaEndereco, token, personagem, imagemDataUri).ok
         }
     }
 
@@ -163,17 +177,45 @@ class FichaSocialDelegate(
      * "nao acontece nada", que e o pior de todos.
      *
      * ⚠️ Best-effort, como o retrato: nunca segura o salvar da ficha.
+     *
+     * ## 🔴 Mas best-effort NAO quer dizer calado
+     *
+     * Isto devolvia um `Boolean` que ninguem lia. Custou duas rodadas: a ficha
+     * nao chegava, e nao havia nada -- nem no aparelho nem no servidor -- a dizer
+     * porque. A causa era o endereco vazio, e um `if (baseUrl.isBlank())` la no
+     * fundo do cliente.
+     *
+     * ⚠️ Agora devolve a frase, e quem salva mostra-a. Nao segurar o salvar e
+     * uma coisa; esconder o que aconteceu e outra.
      */
     suspend fun enviarFichaParaAMesa(
         nomeNaMesa: String,
         ficha: com.gurps.ficha.model.FichaCalculada
-    ): Boolean {
-        if (destinoDaRolagem != DestinoDaRolagem.MESA) return false
-        val endereco = mesaEndereco ?: return false
-        val token = mesaToken ?: return false
-        if (nomeNaMesa.isBlank()) return false
-        return kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.IO) {
-            MesaApiClient.postFicha(endereco, token, nomeNaMesa, ficha).ok
+    ): ResultadoDaConexao {
+        // ⚠️ Nao ter a Mesa como destino nao e falha: e a escolha de nao mandar.
+        // Dizer "erro" aqui poria o jogador de Discord a cacar problema que nao ha.
+        if (destinoDaRolagem != DestinoDaRolagem.MESA) {
+            return ResultadoDaConexao(true, "")
+        }
+        val token = mesaToken
+            ?: return ResultadoDaConexao(false, "A ficha nao foi para a mesa: falta o token da sala.")
+        if (nomeNaMesa.isBlank()) {
+            return ResultadoDaConexao(
+                false,
+                "A ficha nao foi para a mesa: falta \"Seu nome\" na tela de destino da rolagem."
+            )
+        }
+        val r = kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.IO) {
+            MesaApiClient.postFicha(mesaEndereco, token, nomeNaMesa, ficha)
+        }
+        return when {
+            r.ok -> ResultadoDaConexao(true, "Ficha enviada para a mesa.")
+            r.error == "token_da_sala_invalido" -> ResultadoDaConexao(
+                false, "A ficha nao foi para a mesa: token errado. Peca o token novo ao Mestre."
+            )
+            else -> ResultadoDaConexao(
+                false, "A ficha nao foi para a mesa: ${r.error ?: "sem detalhes"}"
+            )
         }
     }
 
@@ -213,7 +255,8 @@ class FichaSocialDelegate(
     private suspend fun enviarParaAMesa(payload: DiscordRollPayload): RollDispatchStatus {
         val endereco = mesaEndereco
         val token = mesaToken
-        if (endereco.isNullOrBlank() || token.isNullOrBlank()) {
+        // ⚠️ So o token pode faltar agora: o endereco e fixo no codigo.
+        if (token.isNullOrBlank()) {
             return RollDispatchStatus(enviado = false, detalhe = "mesa_nao_configurada")
         }
 
@@ -254,7 +297,6 @@ class FichaSocialDelegate(
     /** Testa a sala sem mandar rolagem nenhuma, para a tela de configuração. */
     suspend fun testarMesa(): ResultadoDaConexao {
         val endereco = mesaEndereco
-            ?: return ResultadoDaConexao(false, "Falta o endereço da sala.")
         val r = kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.IO) {
             // 🔴 Com o token -- MESA-44. Antes isto so perguntava se a sala estava
             // de pe, e dizia "respondeu" com o token errado.

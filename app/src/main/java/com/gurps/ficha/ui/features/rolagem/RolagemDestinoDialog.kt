@@ -125,12 +125,11 @@ fun RolagemDestinoBotao(
 @Composable
 fun RolagemDestinoDialog(
     destino: DestinoDaRolagem,
-    enderecoAtual: String?,
     tokenAtual: String?,
     nomeNaMesaAtual: String?,
     oQueFalta: String?,
     onEscolherDestino: (DestinoDaRolagem) -> Unit,
-    onSalvarMesa: (String?, String?, String?) -> Unit,
+    onSalvarMesa: (String?, String?) -> Unit,
     /**
      * Testa a ligacao. Devolve **se deu certo** e **o que dizer**.
      *
@@ -148,7 +147,6 @@ fun RolagemDestinoDialog(
     onAbrirAMesa: (String, String) -> Unit,
     onDismiss: () -> Unit
 ) {
-    var endereco by remember(enderecoAtual) { mutableStateOf(enderecoAtual.orEmpty()) }
     var token by remember(tokenAtual) { mutableStateOf(tokenAtual.orEmpty()) }
     var nomeNaMesa by remember(nomeNaMesaAtual) { mutableStateOf(nomeNaMesaAtual.orEmpty()) }
     var resultadoDoTeste by remember { mutableStateOf<ResultadoDaConexao?>(null) }
@@ -231,7 +229,7 @@ fun RolagemDestinoDialog(
 
                     Button(
                         onClick = {
-                            onSalvarMesa(endereco, token, nomeNaMesa)
+                            onSalvarMesa(token, nomeNaMesa)
                             testando = true
                             resultadoDoTeste = null
                             escopo.launch {
@@ -279,7 +277,7 @@ fun RolagemDestinoDialog(
             TextButton(onClick = {
                 // ⚠️ Salvar ao fechar, e não só no botão de testar: quem digitou
                 // certo e fechou sem testar perderia tudo o que escreveu.
-                if (destino == DestinoDaRolagem.MESA) onSalvarMesa(endereco, token, nomeNaMesa)
+                if (destino == DestinoDaRolagem.MESA) onSalvarMesa(token, nomeNaMesa)
                 onDismiss()
             }) {
                 Text("Fechar")

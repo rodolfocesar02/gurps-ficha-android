@@ -1177,13 +1177,12 @@ fun TabRolagem(viewModel: FichaViewModel) {
     if (showDestinoDialog) {
         RolagemDestinoDialog(
             destino = viewModel.destinoDaRolagem,
-            enderecoAtual = viewModel.mesaEndereco,
             tokenAtual = viewModel.mesaToken,
             nomeNaMesaAtual = viewModel.mesaNome,
             oQueFalta = viewModel.oQueFaltaNoDestino,
             onEscolherDestino = { viewModel.escolherDestinoDaRolagem(it) },
-            onSalvarMesa = { endereco, token, nome ->
-                viewModel.configurarMesa(endereco, token, nome)
+            onSalvarMesa = { token, nome ->
+                viewModel.configurarMesa(token, nome)
             },
             onTestarMesa = { viewModel.testarMesa() },
             onAbrirAMesa = { nome, token -> abrirAMesaNoNavegador(context, nome, token) },
