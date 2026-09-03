@@ -137,6 +137,19 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
      * aparecer na proxima recomposicao, e a pessoa acharia que falhou outra vez.
      */
     var recadoDaMesa by mutableStateOf<String?>(null)
+
+    /**
+     * **O que a Mesa Virtual pediu** — lote CC-5.
+     *
+     * 🔴 Chega por um link (`gurpsapp://rolar?...`) em que a pessoa tocou no
+     * tabuleiro. A `FichaScreen` vê que ele existe e salta para a aba Rolagem; a
+     * `TabRolagem` mostra a frase e já põe o modificador no lugar.
+     *
+     * ⚠️ A tela **limpa** depois de usar, como o `recadoDaMesa` acima: sem
+     * limpar, o mesmo pedido voltaria na próxima recomposição e a pessoa ficaria
+     * presa a um ataque que já rolou.
+     */
+    var pedidoDaMesa by mutableStateOf<com.gurps.ficha.domain.rules.PedidoDaMesa.Pedido?>(null)
     val mesaNome get() = socialDelegate.mesaNome
     /**
      * 🔴 O tipo de retorno e DECLARADO, e nao inferido.

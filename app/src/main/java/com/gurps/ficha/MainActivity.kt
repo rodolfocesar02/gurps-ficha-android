@@ -78,6 +78,24 @@ class MainActivity : ComponentActivity() {
             return
         }
 
+        // 🔴 Mesa Virtual: um pedido de rolagem (CC-5).
+        //
+        // `gurpsapp://rolar?o=ataque&pericia=espada_larga&mod=-7&onde=no%20crânio`
+        //
+        // ⚠️ Quem decide o que o link quer dizer é o `PedidoDaMesa`, que é Kotlin
+        // puro e tem teste. Aqui só se pergunta e se guarda — um `if` a mais
+        // neste arquivo seria uma regra sem teste, porque este arquivo não tem.
+        if (action == Intent.ACTION_VIEW &&
+            data?.scheme == com.gurps.ficha.domain.rules.PedidoDaMesa.ESQUEMA) {
+
+            val pedido = com.gurps.ficha.domain.rules.PedidoDaMesa.ler(data.toString())
+
+            if (pedido != null) {
+                viewModel.pedidoDaMesa = pedido
+                return
+            }
+        }
+
         // Importação de Arquivos JSON (WhatsApp/Explorador)
         val uri: Uri? = if (action == Intent.ACTION_VIEW) {
             data

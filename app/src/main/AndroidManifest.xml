@@ -93,6 +93,22 @@
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data android:scheme="gurpsapp" android:host="conectar" />
             </intent-filter>
+
+            <!-- Lote CC-5: a Mesa Virtual pede uma rolagem.
+                 gurpsapp://rolar?o=ataque&amp;pericia=espada_larga&amp;mod=-7
+
+                 O MESMO esquema do "conectar", com um host novo. Dois esquemas
+                 seriam dois registos para a mesma ligacao entre os dois
+                 programas, e no dia em que um mudasse o outro ficaria para tras
+                 sem ninguem reparar.
+
+                 O token da sala NAO viaja no link: ver PedidoDaMesa.kt. -->
+            <intent-filter android:label="Rolar pela Mesa Virtual">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="gurpsapp" android:host="rolar" />
+            </intent-filter>
         </activity>
     </application>
 

@@ -97,7 +97,23 @@ const val HABILITAR_ABA_SAGA = false
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FichaScreen(viewModel: FichaViewModel) {
-    var selectedTab by remember { mutableStateOf(0) }
+    /**
+     * 🟥 **A aba guarda-se pelo NOME, e não pela posição.**
+     *
+     * A lista de abas MUDA de tamanho enquanto o aplicativo corre: a "Magia" só
+     * entra quando o personagem tem aptidão mágica, e isso é decidido depois de
+     * a ficha acabar de carregar. Uma posição guardada antes disso passa a
+     * apontar para outra aba — e ninguém vê nada de errado, porque a tela mostra
+     * uma aba de verdade, só que a errada.
+     *
+     * ⚠️ Medido no emulador, no lote CC-5: o link da Mesa pedia a Rolagem, o
+     * registo dizia `idx=5` — que era a Rolagem — e um segundo depois o mesmo
+     * `idx=5` desenhava o Equipamento, porque a Magia tinha entrado no meio.
+     *
+     * 🔴 E isto **já acontecia sem link nenhum**: quem estivesse na Rolagem
+     * enquanto uma ficha com magia carregava era atirado para o Equipamento.
+     */
+    var abaEscolhida by remember { mutableStateOf("Geral") }
     var vttImmersiveUi by remember { mutableStateOf(false) }
     var showMenuDialog by remember { mutableStateOf(false) }
     var showSaveDialog by remember { mutableStateOf(false) }
@@ -233,6 +249,9 @@ fun FichaScreen(viewModel: FichaViewModel) {
         add("Rolagem")
         if (HABILITAR_ABA_SAGA) add("Saga")
     }
+    // ⚠️ Se a aba escolhida sumir da lista (a Magia, quando a aptidão sai),
+    // cai-se na primeira — e não num índice que já não quer dizer nada.
+    val selectedTab = tabs.indexOf(abaEscolhida).takeIf { it >= 0 } ?: 0
     val selectedTitle = tabs.getOrNull(selectedTab).orEmpty()
     val vttFullscreen = selectedTitle == "VTT" && vttImmersiveUi
     // Lote TOK-6a — MODO JOGO: dentro de uma campanha da Saga, o app vira "jogo em tela cheia"
@@ -345,15 +364,28 @@ fun FichaScreen(viewModel: FichaViewModel) {
         }
     }
 
-    LaunchedEffect(maxTabIndex) {
-        if (selectedTab > maxTabIndex) {
-            selectedTab = maxTabIndex
-        }
-    }
+    // ⚠️ O clampe do índice saiu daqui: com a aba guardada pelo NOME, ela nunca
+    // fica fora da lista — quando o nome some, o `indexOf` acima já cai na
+    // primeira aba sozinho.
     LaunchedEffect(selectedTitle) {
         if (selectedTitle != "VTT") {
             vttImmersiveUi = false
         }
+    }
+
+    /**
+     * **A Mesa pediu uma rolagem** — lote CC-5.
+     *
+     * 🔴 O link `gurpsapp://rolar?...` abre o aplicativo em qualquer aba em que
+     * ele tenha ficado. Sem este salto, a pessoa toca no tabuleiro, o aplicativo
+     * abre na aba Equipamento, e ela tem de ir procurar a Rolagem sozinha — que
+     * e exatamente o trabalho que este lote veio tirar.
+     *
+     * ⚠️ NAO limpa o pedido aqui: quem o consome e a `TabRolagem`, e limpa-lo
+     * antes de ela o ler deixaria a pessoa na aba certa sem o modificador.
+     */
+    LaunchedEffect(viewModel.pedidoDaMesa) {
+        if (viewModel.pedidoDaMesa != null) abaEscolhida = "Rolagem"
     }
     // Orientação landscape é EXCLUSIVA do VTT legado — o Modo Jogo da Saga fica vertical.
     DisposableEffect(vttFullscreen) {
@@ -439,7 +471,7 @@ fun FichaScreen(viewModel: FichaViewModel) {
                 FichaCustomNavigationBar(
                     tabs = tabs,
                     currentIndex = selectedTab,
-                    onTabClick = { index -> selectedTab = index },
+                    onTabClick = { index -> abaEscolhida = tabs[index] },
                     onMestreIAClick = { showMestreIADialog = true },
                     onMestreIALongPress = { iniciarVozComPermissao() },
                     mestreIAAberto = showMestreIADialog,

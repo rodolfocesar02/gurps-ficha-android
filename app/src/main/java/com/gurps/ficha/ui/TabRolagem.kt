@@ -31,6 +31,7 @@ import com.gurps.ficha.domain.roll.CriticoRules
 import com.gurps.ficha.domain.rules.DesastradoRules
 import com.gurps.ficha.domain.rules.EstadosTemporarios
 import com.gurps.ficha.domain.rules.MagiaEnergiaRules
+import com.gurps.ficha.domain.rules.PedidoDaMesa
 import com.gurps.ficha.domain.rules.DxBracalRules
 import com.gurps.ficha.domain.rules.MaoInabilRules
 import com.gurps.ficha.domain.rules.QualidadeDoEquipamento
@@ -812,6 +813,40 @@ fun TabRolagem(viewModel: FichaViewModel) {
     val innerCardPadding = if (isSmallScreen) 4.dp else 8.dp
     val rowSpacing = if (isTinyScreen) 4.dp else 8.dp
 
+    /**
+     * **O que a Mesa Virtual pediu** — lote CC-5.
+     *
+     * 🔴 O modificador entra no mesmo mapa que os `+`/`−` da tela usam. Ele NAO
+     * e um caminho novo: e o mesmo campo que a pessoa mexeria a mao, ja
+     * preenchido — e por isso ela pode corrigi-lo sem nada de especial.
+     *
+     * ⚠️ Consumido **uma vez**, e limpo. Sem limpar, o mesmo pedido voltaria na
+     * proxima recomposicao e apagaria por cima do que a pessoa tivesse mudado.
+     */
+    var oQueAMesaPediu by remember { mutableStateOf<PedidoDaMesa.Pedido?>(null) }
+    LaunchedEffect(viewModel.pedidoDaMesa) {
+        val pedido = viewModel.pedidoDaMesa ?: return@LaunchedEffect
+        oQueAMesaPediu = pedido
+        if (pedido.mod != 0) {
+            when (pedido.oQue) {
+                // 🟥 **O painel do Ataque tem o modificador dele**, e é lá que a
+                // pessoa vai rolar quando a Mesa pede um ataque.
+                //
+                // ⚠️ A primeira versão enchia o modificador na lista de
+                // PERÍCIAS, e o número não aparecia em lado nenhum: o Ataque
+                // Inato do César é uma vantagem, e nem sequer está naquela
+                // lista. Medido no emulador — a faixa dizia "-7" e o NH
+                // continuava 14, com a suíte toda verde.
+                PedidoDaMesa.Oque.ATAQUE -> modificadorAtaque = pedido.mod
+                // A defesa e o dano ainda não têm campo próprio: quem os monta
+                // é o CC-6 e o CC-8. Até lá, a frase diz o número e a pessoa
+                // ajusta — e isso está escrito na tela, e não escondido aqui.
+                else -> Unit
+            }
+        }
+        viewModel.pedidoDaMesa = null
+    }
+
     // --- UI Layout ---
     Box(modifier = Modifier.fillMaxSize()) {
         Column(
@@ -828,6 +863,35 @@ fun TabRolagem(viewModel: FichaViewModel) {
                 compactLabelStyle = compactLabelStyle,
                 onEditCanal = { showEditarCanalDialog = true }
             )
+
+            // 🔴 **O que a Mesa pediu** (CC-5), logo no topo: e a razao de o
+            // aplicativo ter aberto, e tem de ser a primeira coisa que se le.
+            oQueAMesaPediu?.let { pedido ->
+                Spacer(modifier = Modifier.height(6.dp))
+                Surface(
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = MaterialTheme.shapes.small,
+                    color = MaterialTheme.colorScheme.tertiaryContainer
+                ) {
+                    Row(
+                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 8.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = "A Mesa pediu: ${pedido.frase()}",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onTertiaryContainer,
+                            modifier = Modifier.weight(1f)
+                        )
+                        // ⚠️ Da para dispensar: a faixa some, o modificador
+                        // FICA. Tirar o numero junto obrigaria a pessoa a
+                        // escolher entre ler o recado e ficar com a conta.
+                        TextButton(onClick = { oQueAMesaPediu = null }) {
+                            Text("Entendi")
+                        }
+                    }
+                }
+            }
 
             // Lote MESA-7 — o segundo destino, **somado** ao do Discord.
             Spacer(modifier = Modifier.height(6.dp))
