@@ -31,6 +31,7 @@ import com.gurps.ficha.domain.roll.CriticoRules
 import com.gurps.ficha.domain.rules.DesastradoRules
 import com.gurps.ficha.domain.rules.EstadosTemporarios
 import com.gurps.ficha.domain.rules.MagiaEnergiaRules
+import com.gurps.ficha.domain.rules.EscolhaDoPedido
 import com.gurps.ficha.domain.rules.PedidoDaMesa
 import com.gurps.ficha.domain.rules.DxBracalRules
 import com.gurps.ficha.domain.rules.MaoInabilRules
@@ -827,23 +828,11 @@ fun TabRolagem(viewModel: FichaViewModel) {
     LaunchedEffect(viewModel.pedidoDaMesa) {
         val pedido = viewModel.pedidoDaMesa ?: return@LaunchedEffect
         oQueAMesaPediu = pedido
-        if (pedido.mod != 0) {
-            when (pedido.oQue) {
-                // 🟥 **O painel do Ataque tem o modificador dele**, e é lá que a
-                // pessoa vai rolar quando a Mesa pede um ataque.
-                //
-                // ⚠️ A primeira versão enchia o modificador na lista de
-                // PERÍCIAS, e o número não aparecia em lado nenhum: o Ataque
-                // Inato do César é uma vantagem, e nem sequer está naquela
-                // lista. Medido no emulador — a faixa dizia "-7" e o NH
-                // continuava 14, com a suíte toda verde.
-                PedidoDaMesa.Oque.ATAQUE -> modificadorAtaque = pedido.mod
-                // A defesa e o dano ainda não têm campo próprio: quem os monta
-                // é o CC-6 e o CC-8. Até lá, a frase diz o número e a pessoa
-                // ajusta — e isso está escrito na tela, e não escondido aqui.
-                else -> Unit
-            }
-        }
+        // 🔴 **Nenhum campo é preenchido** (CC-6). O diálogo faz a conta, mostra-a,
+        // e rola. Enquanto o pedido virava "um número posto num campo", havia
+        // sempre a pergunta *"qual campo?"* — e eu errei-a duas vezes: pus na
+        // lista de perícias, onde o Ataque Inato nem existe, e ele apareceu
+        // debaixo do Dano, onde não tem nada que fazer.
         viewModel.pedidoDaMesa = null
     }
 
@@ -863,35 +852,6 @@ fun TabRolagem(viewModel: FichaViewModel) {
                 compactLabelStyle = compactLabelStyle,
                 onEditCanal = { showEditarCanalDialog = true }
             )
-
-            // 🔴 **O que a Mesa pediu** (CC-5), logo no topo: e a razao de o
-            // aplicativo ter aberto, e tem de ser a primeira coisa que se le.
-            oQueAMesaPediu?.let { pedido ->
-                Spacer(modifier = Modifier.height(6.dp))
-                Surface(
-                    modifier = Modifier.fillMaxWidth(),
-                    shape = MaterialTheme.shapes.small,
-                    color = MaterialTheme.colorScheme.tertiaryContainer
-                ) {
-                    Row(
-                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 8.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(
-                            text = "A Mesa pediu: ${pedido.frase()}",
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onTertiaryContainer,
-                            modifier = Modifier.weight(1f)
-                        )
-                        // ⚠️ Da para dispensar: a faixa some, o modificador
-                        // FICA. Tirar o numero junto obrigaria a pessoa a
-                        // escolher entre ler o recado e ficar com a conta.
-                        TextButton(onClick = { oQueAMesaPediu = null }) {
-                            Text("Entendi")
-                        }
-                    }
-                }
-            }
 
             // Lote MESA-7 — o segundo destino, **somado** ao do Discord.
             Spacer(modifier = Modifier.height(6.dp))
@@ -1251,6 +1211,33 @@ fun TabRolagem(viewModel: FichaViewModel) {
             onTestarMesa = { viewModel.testarMesa() },
             onAbrirAMesa = { nome, token -> abrirAMesaNoNavegador(context, nome, token) },
             onDismiss = { showDestinoDialog = false }
+        )
+    }
+
+    /**
+     * **O pedido da Mesa, num toque** — CC-6.
+     *
+     * ⚠️ Fica ao pé dos outros diálogos, e não dentro da coluna: ele tem de
+     * aparecer POR CIMA da aba, e não empurrar o que já lá está.
+     */
+    oQueAMesaPediu?.let { pedido ->
+        DialogoPedidoDaMesa(
+            pedido = pedido,
+            opcoes = opcoesAtaque.map {
+                EscolhaDoPedido.Opcao(id = it.id, rotulo = it.label, nh = it.target)
+            },
+            onRolar = { escolha ->
+                oQueAMesaPediu = null
+                // 🔴 A MESMA máquina de rolar de sempre. Um segundo caminho
+                // seria um segundo sítio onde a regra de crítico podia divergir.
+                executarRolagem(
+                    tipo = TipoTeste.ATAQUE,
+                    contextoLabel = EscolhaDoPedido.rotuloDaJogada(pedido, escolha),
+                    alvo = escolha.nh,
+                    mod = pedido.mod
+                )
+            },
+            onDispensar = { oQueAMesaPediu = null }
         )
     }
 
