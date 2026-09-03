@@ -47,13 +47,19 @@ object EscolhaDoPedido {
      * plausível, e ninguém repara.
      */
     fun escolher(pedido: PedidoDaMesa.Pedido, opcoes: List<Opcao>): Resposta {
+        // 🟥 A palavra muda com o que a Mesa pediu. Num pedido de DANO a lista
+        // são armas, e não perícias — a frase *"a Mesa não disse com qual
+        // perícia"* por cima de "Dano ST / Cajado Encantado" manda a pessoa
+        // procurar uma coisa que não está ali. Apanhado no emulador.
+        val comOQue = if (pedido.oQue == PedidoDaMesa.Oque.DANO) "arma" else "perícia"
+
         if (opcoes.isEmpty()) {
             return Resposta(null, emptyList(),
                 "Este boneco não tem nenhuma rolagem de combate na ficha.")
         }
         val quer = pedido.pericia?.trim()?.lowercase()
         if (quer.isNullOrBlank()) {
-            return Resposta(null, opcoes, "A Mesa não disse com qual perícia.")
+            return Resposta(null, opcoes, "Escolha com qual $comOQue.")
         }
 
         val casam = opcoes.filter { pedacosDoId(it.id).contains(quer) }
@@ -65,7 +71,7 @@ object EscolhaDoPedido {
             casam.size > 1 -> Resposta(null, casam,
                 "Há mais de uma \"$quer\" nesta ficha.")
             else -> Resposta(null, opcoes,
-                "Este boneco não tem \"$quer\" na ficha.")
+                "Este boneco não tem \"$quer\" como $comOQue.")
         }
     }
 

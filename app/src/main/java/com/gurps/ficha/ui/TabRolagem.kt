@@ -1221,21 +1221,49 @@ fun TabRolagem(viewModel: FichaViewModel) {
      * aparecer POR CIMA da aba, e não empurrar o que já lá está.
      */
     oQueAMesaPediu?.let { pedido ->
+        // 🔴 **Um pedido de DANO oferece as fontes de dano** (CC-8), e não as
+        // perícias de ataque.
+        //
+        // ⚠️ Rolar 3d6 contra um NH quando a Mesa pediu dano daria um resultado
+        // que parece uma jogada e não é nenhuma: "Falha por 5" onde devia estar
+        // "1d+2 = 7". A tela ficaria bonita e a luta andaria com o número errado.
+        val ehDano = pedido.oQue == PedidoDaMesa.Oque.DANO
         DialogoPedidoDaMesa(
             pedido = pedido,
-            opcoes = opcoesAtaque.map {
-                EscolhaDoPedido.Opcao(id = it.id, rotulo = it.label, nh = it.target)
+            opcoes = if (ehDano) {
+                fontesDano.map {
+                    // ⚠️ Sem NH: o dano não se testa contra nada, e um número
+                    // aqui viraria "1d+2 − 7 = ..." no diálogo.
+                    EscolhaDoPedido.Opcao(id = it.id, rotulo = it.label, nh = null)
+                }
+            } else {
+                opcoesAtaque.map {
+                    EscolhaDoPedido.Opcao(id = it.id, rotulo = it.label, nh = it.target)
+                }
             },
             onRolar = { escolha ->
                 oQueAMesaPediu = null
-                // 🔴 A MESMA máquina de rolar de sempre. Um segundo caminho
-                // seria um segundo sítio onde a regra de crítico podia divergir.
-                executarRolagem(
-                    tipo = TipoTeste.ATAQUE,
-                    contextoLabel = EscolhaDoPedido.rotuloDaJogada(pedido, escolha),
-                    alvo = escolha.nh,
-                    mod = pedido.mod
-                )
+                val comoSeChama = EscolhaDoPedido.rotuloDaJogada(pedido, escolha)
+                // 🔴 A MESMA máquina de rolar de sempre, dos dois lados. Um
+                // segundo caminho seria um segundo sítio onde a regra de crítico
+                // podia divergir.
+                if (ehDano) {
+                    val fonte = fontesDano.find { it.id == escolha.id }
+                    val expr = if (fonte?.id == "st_base") {
+                        if (viewModel.stDamageMode == StDamageMode.GDP) danoGdPEfetivo
+                        else danoGeBEfetivo
+                    } else fonte?.damageExpression
+                    if (expr != null) {
+                        executarRolagemDano(contextoLabel = comoSeChama, danoExpr = expr)
+                    }
+                } else {
+                    executarRolagem(
+                        tipo = TipoTeste.ATAQUE,
+                        contextoLabel = comoSeChama,
+                        alvo = escolha.nh,
+                        mod = pedido.mod
+                    )
+                }
             },
             onDispensar = { oQueAMesaPediu = null }
         )

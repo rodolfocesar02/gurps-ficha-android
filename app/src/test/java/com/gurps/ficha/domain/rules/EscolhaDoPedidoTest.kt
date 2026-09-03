@@ -59,7 +59,7 @@ class EscolhaDoPedidoTest {
         val r = EscolhaDoPedido.escolher(pedido("faca"), AS_DO_CESAR)
         assertNull("escolheu uma que nao foi pedida", r.escolhida)
         assertEquals(3, r.candidatas.size)
-        assertTrue(r.porqueNaoCasou!!.contains("faca"))
+        assertTrue(r.porqueNaoCasou!!, r.porqueNaoCasou!!.contains("faca"))
 
         // Sem perícia nenhuma no pedido: a lista, com o porquê.
         val semNada = EscolhaDoPedido.escolher(pedido(null), AS_DO_CESAR)
@@ -86,6 +86,28 @@ class EscolhaDoPedidoTest {
         EscolhaDoPedido.Opcao("pericia_espada_larga_Direita", "Espada Larga (Direita)", 12),
         EscolhaDoPedido.Opcao("pericia_espada_larga_Esquerda", "Espada Larga (Esquerda)", 8)
     )
+
+    /**
+     * 🟥 **A palavra muda com o que a Mesa pediu.**
+     *
+     * ⚠️ Num pedido de DANO a lista são armas, e não perícias. A frase *"a Mesa
+     * não disse com qual perícia"* por cima de "Dano ST / Cajado Encantado"
+     * manda a pessoa procurar uma coisa que não está ali. Apanhado no emulador.
+     */
+    @Test
+    fun `a frase fala de arma quando o pedido e de dano`() {
+        val asArmas = listOf(
+            EscolhaDoPedido.Opcao("st_base", "Dano ST", null),
+            EscolhaDoPedido.Opcao("arma_cajado", "Cajado Encantado", null)
+        )
+        val doDano = EscolhaDoPedido.escolher(pedido(null, "dano"), asArmas)
+        assertTrue(doDano.porqueNaoCasou, doDano.porqueNaoCasou!!.contains("arma"))
+        assertTrue("falou de pericia num pedido de dano",
+            !doDano.porqueNaoCasou!!.contains("perícia"))
+
+        val doAtaque = EscolhaDoPedido.escolher(pedido(null), AS_DO_CESAR)
+        assertTrue(doAtaque.porqueNaoCasou!!.contains("perícia"))
+    }
 
     /** ⚠️ Uma ficha sem nenhuma rolagem de combate não pode ficar muda. */
     @Test
