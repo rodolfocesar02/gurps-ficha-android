@@ -774,14 +774,20 @@ fun AtaqueDanoQuickArea(
                                 unidade = "/dado",
                                 modifier = Modifier.fillMaxWidth()
                             )
-                            if (!isPraCegoVariant && modAtaqueAtual != 0) {
-                                Text(
-                                    "mod ${if (modAtaqueAtual >= 0) "+$modAtaqueAtual" else "$modAtaqueAtual"}",
-                                    style = compactLabelStyle,
-                                    modifier = Modifier.fillMaxWidth(),
-                                    textAlign = TextAlign.Center
-                                )
-                            }
+                            // 🟥 **O modificador do ataque NÃO aparece aqui.**
+                            //
+                            // Ele acertar mais ou menos não muda quanto dói: são
+                            // duas coisas sem relação nenhuma em GURPS.
+                            //
+                            // ⚠️ E era pior do que uma etiqueta a mais: o
+                            // `onExecutarDano` nunca aplicou o modificador à
+                            // rolagem. A tela dizia "mod −7" debaixo do dano e o
+                            // dano saía inteiro — ela mentia.
+                            //
+                            // 🔴 Na variante PraCego isto não muda nada: lá os
+                            // modificadores são unificados de propósito, num
+                            // cartão só (`PainelModificadorGlobal`), porque
+                            // definir um por teste não se faz sem ver a tela.
                         }
                     }
                 }
