@@ -2,6 +2,19 @@
 
 Mapa de engenharia completo do projeto. Use para localizar lógicas específicas sem varrer o código.
 
+> ➕ **2026-09-04 — a ponte com a Mesa Virtual, e o mapa dela.** Quatro arquivos novos entraram aqui
+> (`PedidoDaMesa`, `EscolhaDoPedido`, `FichaCalculada`, `DialogoPedidoDaMesa`) e seis testes. O resto
+> do trabalho foi do **outro lado**: a Mesa virou um VTT com a ficha do GURPS dentro, e ganhou
+> **mapa próprio** em `mesa-virtual/MAPA_DETALHADO.md` — 129 arquivos descritos. Ver a **§31**.
+>
+> 🔴 **O que mudou de fundo:** o aplicativo passou a ser lido por sete scripts geradores da
+> Mesa. Ele já era o dono das regras; agora isso é **mecânico**, e não uma promessa. Uma mudança
+> em `MapaDaSilhueta.kt` ou `PedidoDaMesa.kt` chega à Mesa na extração seguinte.
+>
+> ⚠️ E há um espelho medido: `mesa-virtual/server/src/campo/pedra-de-toque.json` guarda **51 casos
+> tirados dos testes DESTE repositório** e prova que a Mesa dá o mesmo número. No dia em que nasceu
+> achou duas divergências — uma delas real, o choque de quem tem PV ≥ 20.
+
 > ➕ **2026-08-19 — 74 commits desde o PV-1b (10/ago).** Nove frentes entraram, e a maior é **nova no
 > projeto**: **Poderes** (suplemento *GURPS Poderes*), com 10 arquivos de regra, 4 telas e um catálogo
 > de fontes. As outras: **EQP-1..14** (a aba Equipamentos inteira — cartões, fichas técnicas de
@@ -41,7 +54,8 @@ Mapa de engenharia completo do projeto. Use para localizar lógicas específicas
 > ⚠️ Ainda **fora do mapa de propósito**: os arquivos de `ui/saga/` (combate tático) e a suíte
 > `nexus/arcano/`, que já têm documento próprio.
 
-Atualizado em: **2026-08-19** (varredura dos 74 commits desde o PV-1b — ver o bloco ➕ no topo).
+Atualizado em: **2026-09-04** (a ponte com a Mesa Virtual — ver o bloco ➕ no topo).
+Base anterior: **2026-08-19** (varredura dos 74 commits desde o PV-1b — ver o bloco ➕ no topo).
 Base anterior: 2026-07-22 (**§32.9**: PILAR MAGIA no combate; motor executa 98 das 879 magias).
 Rede de invariantes SIM-1 e build paralelo BUILD-1 (gate 7-8min → 1m36s). **§32.4 revista** após a
 refatoração REFACTOR-0..3: a DECISÃO e a TRADUÇÃO saíram do `SagaCombatController` (2243→2099) para
@@ -262,6 +276,12 @@ registram que o plano inicial descrevia regras que o livro não tem.*
 - **`poderes/EsforcoEUsoDePoder.kt`** — Esforço adicional (p.159-161). 🔴 O plano dizia *"1 PF = +15% de efeito"* — isso é uma **variante cinematográfica opcional**; a regra base troca **penalidade em Vontade**, não efeito.
 - **`poderes/AmpliacoesTemporarias.kt`** — Ampliações temporárias e proezas (p.172-173, p.102).
 
+
+### A ponte com a Mesa Virtual **[+ 2026-09-04]**
+
+- **`rules/PedidoDaMesa.kt`** (203 linhas) **[CC-5]** — O contrato do link `gurpsapp://rolar?…` que a Mesa manda ao aplicativo: quem, contra quem, a que distância, em que parte do corpo, e se é **ataque, defesa ou dano** (`classeDoTeste`). Parser de query escrito à mão, para ser testável **sem Android**. 🟥 **Nenhum token viaja no link** — ele fica em `SharedPreferences`; um endereço fica no histórico e nos registros. `MOD_MAXIMO=20`, `TETO_DO_TEXTO=60`.
+- **`rules/EscolhaDoPedido.kt`** (115 linhas) **[CC-6]** — Cruza o que a Mesa pediu com as rolagens que o personagem **tem** e diz qual é a certa. ⚠️ **Nunca adivinha**: sem uma candidata única, devolve a lista para a pessoa escolher.
+
 ---
 
 ## 6. Domain — Trait Rules
@@ -471,6 +491,8 @@ registram que o plano inicial descrevia regras que o livro não tem.*
 
 - **`model/Personagem.kt`** — Modelo raiz. Todos os campos do personagem GURPS 4ª Ed. (atributos primários/secundários, vantagens, desvantagens, qualidades, peculiaridades, perícias, técnicas, magias, equipamentos, modelo racial, HP/FP de rolagem, notas). Tem propriedades calculadas (`pontosVida`, `pontosFadiga`, `velocidadeBasica`, etc.) que usam `CharacterRules` e `TraitRuleRegistry`. `toJson`/`fromJson` para serialização. **[+ 2026-06-08]** Campos novos `imagemPersonagemUri` (foto RECORTADA do cabeçalho) e `imagemPersonagemOriginalUri` (foto INTEIRA p/ tela cheia) — ambos `file://` em `filesDir/portraits/`, default vazio (retrocompatível). **[+ 2026-06-09]** Campo `imagemPersonagemBase64` — preenchido APENAS na exportação (foto viaja embutida na ficha); limpo no import (não incha persistência local). **[+ 2026-08-19]** `notasDeJogo` (lista de `NotaDeJogo` -- id, texto, cor, datas, com `titulo` derivado das primeiras palavras); `pontosPoderes` (entra em `pontosGastos`); `pontosVantagens` revisto para **nao** cobrar integral pelas habilidades alternativas; e `rotuloDePontos` / `rotuloDePontosAcessivel` -- o segundo existe porque o leitor de tela nao fala sinal (ver `RotuloAcessivel`).
 
+- **`model/FichaCalculada.kt`** (174 linhas) **[CAMPO-16] [+ 2026-09-04]** — O JSON que o app exporta tem 43 campos e **só dados crus**. Este arquivo é o que a Mesa recebe já **calculado** — os números que só o motor do app sabe fazer. É o que evita a Mesa ter uma segunda opinião sobre cada conta.
+
 - **`model/PersonagemInterop.kt`** — Importação/exportação versionada. `importarJson` suporta envelope `{"schema":"gurps-ficha","character":{...}}` e fallback para JSON legado sem envelope. `exportarJson` gera o envelope com metadados (schemaVersion, exportedAtUtc, appVersion, uiVariant).
 
 - **`model/CatalogosSuplementares.kt`** — Data classes dos catálogos suplementares: `PericiaSuplementarItem`, `TecnicaCatalogoItem`, `PericiaV2RuleMapItem` (e subclasses de regra: `PericiaV2TipoRegra`, `PericiaV2PreRequisitoRegra`, `PericiaV2PreDefinidoRegra`).
@@ -601,6 +623,7 @@ registram que o plano inicial descrevia regras que o livro não tem.*
 - **`RolagemComponents.kt`** — Os cartões da aba: cabeçalho, atributos, PV/PF, área de ataque e dano, defesas ativas, histórico e a navegação.
 - **`RolagemPrimaryDialogs.kt`** — Configurar ataque, configurar dano, e as listas de perícia/técnica/magia. ⚠️ Contém `condicionaisDaPericia`, **fonte única** das caixinhas: a lista era montada duas vezes e as duas casavam por índice — bastava uma ganhar uma fonte nova para o marcado somar o valor errado.
 - **`RolagemSecondaryDialogs.kt`** — Rolagem personalizada, magia da alma, energia manual, editar PV/PF, editar canal do Discord, bônus de defesa.
+- **`DialogoPedidoDaMesa.kt`** (159 linhas) **[CC-6] [+ 2026-09-04]** — O que a Mesa pediu, **num toque**. Antes o link abria a aba Rolagem e largava a pessoa no meio de trinta controles, com o modificador solto num campo. Agora abre um diálogo que já diz a conta por extenso (*“NH 14 − 7 = 7”*) e rola. Usa o `EscolhaDoPedido` para saber qual rolagem é.
 - **`DialogosDeDefesaRolagem.kt`** — Os três diálogos de configuração de defesa + os de PV/PF, extraídos quando o MARCOS-1 levou a aba a 1.046 linhas.
 - **`OverlayDados3D.kt`** — A camada que cobre a tela enquanto os dados 3D rolam e mostra o resultado (`textoDoResultado`, `anuncioDoResultado`).
 - **`DialogoMira.kt`** — **Onde acertar** (MIRA-1): a lista de locais com o NH **já reduzido**, mais a linha de distância, o Apontar (contador de segundos), arma firmada, mira acoplada, Avançar e Atacar, Zarolho, Pacifismo e Disopia. É onde quase toda regra de tiro se encontra.
@@ -866,6 +889,11 @@ pontual não pegava.*
 - **Bloco de Notas** **[Lote NOTA-3]**: `domain/rules/CorDaNotaTest` roda a conta e **varre as 7 cores reais lidas do código-fonte** (lista repetida no teste descola justamente no dia que interessa), cobrando contraste ≥ 4,5 da WCAG. `ui/FiacaoBlocoDeNotasTest` lê as duas telas: confere a bandeira `foiExcluida` **e a ordem** em que ela é marcada, e que o texto pergunta a `CorDaNota` — inclusive o `focusedTextColor` do campo, que era o mais fácil de esquecer. ⚠️ A primeira versão da varredura reprovou por causa do **próprio KDoc** que explica o defeito; ela passou a ignorar comentários.
 - **Fiação da tela** (`ui/`): `FiacaoEquipamentosTest`, `FiacaoEnergiaMagiaTest` e `FichaIgualNosDoisLadosTest`. ⚠️ Os três são **testes de fiação**, a categoria que este projeto aprendeu a duras penas: a regra pode estar certa e verde enquanto a tela não a consulta. O último confere que a ficha sai igual nas duas variantes de build.
 
+#### A ponte com a Mesa Virtual **[+ 2026-09-04]**
+
+- **`domain/rules/PedidoDaMesaTest`** e **`EscolhaDoPedidoTest`** — o contrato do link e a escolha da rolagem. ⚠️ O parser de query é escrito à mão **para poder rodar aqui**, sem Android.
+- **`model/FichaCalculadaTest`**, **`FichaParaAMesaTest`**, **`FichaChegaAMesaTest`** e **`ConectarAMesaTest`** — a ficha calculada, a viagem dela até a Mesa e a conexão com a sala. 🔴 O `FichaChegaAMesa` nasceu de um defeito real: a ficha ia **sem nome** e a Mesa recusava todas (MESA-46).
+
 ---
 
 ## 29. Endereços Rápidos (Funções Críticas)
@@ -921,6 +949,23 @@ Cada variante tem seu próprio **source set** com um ponto de entrada de UI:
 - **`discord-roll-api/src/server.js`** — API que publica rolagens no Discord via bot. Rotas: `GET /health`, `GET /api/channels` (lista canais de voz, com cache 30min), `POST /api/rolls` (monta mensagem da rolagem e envia ao canal), `GET|POST /api/fichas*` (persistência in-memory de fichas na nuvem por `deviceId`). `formatRollMessage` formata texto (crítico, margem). `sendToDiscord` envia ao endpoint do Discord. **[+ 2026-06-08]** Map `portraits` (in-memory: sanitizedName → {mime,buffer,ext}); `parseDataUri`/`sanitizeName`; rota nova **`POST /api/portrait`** {character, image(data:base64)} guarda o retrato; `sendToDiscord` passou a aceitar portrait opcional → com retrato manda **embed + multipart** (FormData/Blob, globais Node 18+) com `thumbnail` `attachment://portrait.<ext>`, sem retrato manda `{content}` como antes; `/api/rolls` busca `portraits.get(sanitizeName(payload.character))`. Limite do `express.json` subiu p/ 8mb. **[+ 2026-06-09]** `classificarCritico(soma, nh)` aplica a regra COMPLETA com NH (corrige a simplificada 3-4/17-18); `formatRollMessage` detecta a 2ª mensagem de tabela crítica (testType começa com 💥/💀) e renderiza o texto cru. ⚠️ portraits e fichas são in-memory (perdem no restart do Railway). ⚠️ Mudanças exigem **deploy** no Railway p/ valer online.
 
 ### Servidor da Mesa Virtual (Node — repositório separado) **[+ 2026-08-19]**
+
+> 🟥 **A Mesa tem mapa próprio desde 2026-09-04:
+> `mesa-virtual/MAPA_DETALHADO.md`** — 129 arquivos descritos, um por um, com a
+> descrição saindo do cabeçalho de cada um.
+>
+> ⚠️ Ela cresceu de um servidor de rolagem para um **VTT inteiro**: campo de
+> batalha em hexágonos, a ficha do GURPS dentro do navegador (FICHA-1..13), o
+> combate conduzido de ponta a ponta (CC-1..10) e o espelho de regras contra
+> este aplicativo. São **220 arquivos** e **outro repositório git** — despejá-los
+> aqui dobraria este mapa e misturaria duas árvores. É a mesma regra que já vale
+> para `ui/saga/` e `nexus/arcano/`.
+>
+> 🔴 O que vale saber daqui: o aplicativo é o **dono das regras**, e a Mesa
+> espelha. Sete scripts em `mesa-virtual/server/scripts/` **leem este repositório**
+> e gravam módulos lá dentro — perícias de combate, tabelas críticas, a silhueta
+> do `MapaDaSilhueta.kt`, o contrato do `PedidoDaMesa.kt`. Mudar um desses
+> arquivos aqui muda a Mesa na extração seguinte.
 
 *Pasta `mesa-virtual/` na **raiz do projeto-pai** (fora do submódulo Android), repositório git próprio.
 É o "Discord do usuário": roda no PC dele, com certificado Let's Encrypt em `mesagurps.duckdns.org`.*
