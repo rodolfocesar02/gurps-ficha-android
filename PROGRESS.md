@@ -9454,3 +9454,41 @@ sao chamada, e nao regra.
 - **Status:** ✅ Build OK nas 2 variantes -- gate **2508**. Mesa: **2532**.
   🔴 **PENDENTE: aparelho.** Servico, notificacao, microfone e explorador de
   arquivos nao se provam na bancada -- nenhum deles.
+
+---
+
+## Lote MNA-1b — A aba da Mesa trancava a pessoa la dentro
+
+**Achado por ele no aparelho, na primeira vez que entrou:**
+
+> *"entrei na mesa, porem nao tenho como voltar pra outras abas, nao aparece na
+> parte de baixo! o botao de sair, dentro do menu, tambem nao faz voltar pro app,
+> ou onde existe as outras abas! os icones do app precisam existir tbm na aba da
+> mesa, pra poder navegar entre a ficha e a mesa!"*
+
+- **🟥 O erro foi meu, e de desenho.** Eu tinha metido a Mesa no `hideAppChrome`,
+  junto do VTT e do Modo Jogo da Saga. Parecia certo -- os tres sao tela cheia --
+  e **nao era**: aqueles dois tem saida propria dentro deles, e a Mesa nao tem. O
+  botao SAIR dela sai da **sala**, e nao da **aba**.
+- **A cura:** esconder o cabecalho passou a ser coisa DIFERENTE de esconder as
+  abas. O topo continua escondido (a Mesa ja tem a barra dela, e duas barras uma
+  em cima da outra num telefone nao deixam tabuleiro a vista); a barra de baixo
+  fica.
+- **O SAIR agora tira da aba**, e nao so da sala -- pelos dois caminhos: o botao
+  de dentro da pagina e o `sair()` de vez, que e o da notificacao.
+- **🔴 A aba nascia sem icone** e caia no `else` do `FichaCustomNavigationBar`,
+  que e o do Geral -- a barra ficava com dois bonecos iguais, e o segundo nao
+  dizia para onde levava. Nasceu o `tab_mesa.xml`, um vetor escrito a mao (uma
+  mesa redonda vista de cima, com tres cabecas em volta). Se um dia aparecer um
+  desenho de verdade, ele entra por cima sem mais nada mudar.
+- **⚠️ Nenhum teste pegou isso, e nenhum PODERIA ter pegado:** era a tela
+  desenhada, e a bancada nao desenha. As cinco sondas novas nao encontram o
+  defeito -- elas impedem que ele volte, e ele voltaria, porque a linha que o
+  causou parecia razoavel.
+- **🟥 E uma armadilha na propria sonda:** a primeira versao dela apagava
+  comentarios com uma regex e comeu **339 linhas** do `FichaScreen.kt` -- o
+  `arrayOf("image/*")` do seletor de imagem abre um comentario que so fecha 339
+  linhas abaixo. Dois testes ficaram vermelhos por causa disso, e nao por causa
+  do que mediam. Agora e linha a linha, como o guarda do portugues da Mesa.
+- **Status:** ✅ Build OK nas 2 variantes -- gate **2513**, 0 falhas.
+  🔴 **PENDENTE: aparelho, outra vez.**

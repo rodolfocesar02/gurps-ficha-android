@@ -267,9 +267,26 @@ fun FichaScreen(viewModel: FichaViewModel) {
     // (sem cabeçalho da ficha, sem PontosBar, sem abas). O X no header da campanha (TabSaga) sai.
     // Diferente do VTT, NÃO força landscape — a Saga é vertical.
     val sagaModoJogo = selectedTitle == "Saga" && viewModel.sagaCampanhaAtiva != null
-    // A Mesa é tela cheia: duas barras uma em cima da outra num telefone não
-    // deixam tabuleiro nenhum à vista.
-    val hideAppChrome = vttFullscreen || sagaModoJogo || selectedTitle == "Mesa"
+    val hideAppChrome = vttFullscreen || sagaModoJogo
+    /**
+     * 🟥 **Esconder o cabeçalho NÃO é esconder as abas** — MNA-1b.
+     *
+     * 🔴 Eu tinha metido a Mesa no `hideAppChrome`, junto do VTT e do Modo Jogo.
+     * Era errado, e ele encontrou no aparelho na primeira vez que entrou:
+     *
+     * > *"entrei na mesa, porém não tenho como voltar pra outras abas, não
+     * > aparece na parte de baixo!"*
+     *
+     * O VTT e o Modo Jogo têm saída própria dentro deles. A Mesa **não tem** — e
+     * o botão SAIR dela sai da *sala*, não da *aba*. Esconder a barra de baixo
+     * era trancar a pessoa lá dentro, com o aplicativo inteiro do outro lado.
+     *
+     * ⚠️ O cabeçalho continua escondido, e por uma razão que se vê na tela: a
+     * Mesa já tem a barra dela (SALAS / PESSOAS / MENU) e o mapa é o que
+     * importa. Duas barras uma em cima da outra num telefone não deixam
+     * tabuleiro nenhum à vista.
+     */
+    val esconderOCabecalho = hideAppChrome || selectedTitle == "Mesa"
     val maxTabIndex = tabs.lastIndex
     val exportCompativelLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.CreateDocument("application/json")
@@ -419,7 +436,7 @@ fun FichaScreen(viewModel: FichaViewModel) {
     Scaffold(
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
         topBar = {
-            if (!hideAppChrome) {
+            if (!esconderOCabecalho) {
                 val imagemUri = viewModel.personagem.imagemPersonagemUri
                 if (imagemUri.isNotBlank()) {
                     CabecalhoComImagem(
@@ -505,7 +522,7 @@ fun FichaScreen(viewModel: FichaViewModel) {
             // Quando há foto, a linha de pontos já é exibida SOBRE a imagem no
             // cabeçalho (CabecalhoComImagem), então não repetimos a PontosBar aqui.
             val temImagemNoCabecalho = viewModel.personagem.imagemPersonagemUri.isNotBlank()
-            if (!hideAppChrome && selectedTitle != "Rolagem" && !temImagemNoCabecalho) {
+            if (!esconderOCabecalho && selectedTitle != "Rolagem" && !temImagemNoCabecalho) {
                 PontosBar(viewModel)
             }
             when (selectedTitle) {
@@ -517,8 +534,12 @@ fun FichaScreen(viewModel: FichaViewModel) {
                 "Equip." -> TabEquipamentos(viewModel)
                 "Rolagem" -> TabRolagem(viewModel)
                 "Mesa" -> com.gurps.ficha.ui.features.mesa.TabMesa(
-                    viewModel.mesaNome, viewModel.mesaToken
-                ) { viewModel.pedidoDaMesa = it }
+                    nome = viewModel.mesaNome,
+                    token = viewModel.mesaToken,
+                    // Saiu da sala: volta para a Rolagem, que é de onde se entra.
+                    aoSairDaMesa = { abaEscolhida = "Rolagem" },
+                    aoReceberPedido = { viewModel.pedidoDaMesa = it }
+                )
                 "Saga" -> TabSaga(viewModel)
                 else -> TabGeral(viewModel)
             }

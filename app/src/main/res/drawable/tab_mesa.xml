@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    O ícone da aba da Mesa — MNA-1b.
+
+    🔴 Ela nascia sem ícone e caía no `else` do `FichaCustomNavigationBar`, que é
+    o do Geral. A barra ficava com DOIS bonecos iguais, e o segundo não dizia
+    nada sobre onde levava.
+
+    ⚠️ Vetor, e não PNG: os outros ícones da barra são desenhos que eu não tenho
+    como fazer, e um vetor escrito à mão ao menos existe e é legível. Se um dia
+    aparecer um desenho de verdade, ele entra por cima deste sem mais nada mudar.
+
+    O desenho: uma mesa redonda vista de cima, com três cabeças em volta.
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24"
+    android:tint="#FFFFFF">
+
+    <!-- O tampo da mesa. -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M12,9m-4.6,0a4.6,4.6 0,1 0,9.2 0a4.6,4.6 0,1 0,-9.2 0"
+        android:fillAlpha="0.35" />
+    <path
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="1.6"
+        android:fillColor="#00000000"
+        android:pathData="M12,9m-4.6,0a4.6,4.6 0,1 0,9.2 0a4.6,4.6 0,1 0,-9.2 0" />
+
+    <!-- As três cabeças em volta: uma acima, duas abaixo. -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M12,2.4m-2,0a2,2 0,1 0,4 0a2,2 0,1 0,-4 0" />
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M4.6,16.6m-2,0a2,2 0,1 0,4 0a2,2 0,1 0,-4 0" />
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M19.4,16.6m-2,0a2,2 0,1 0,4 0a2,2 0,1 0,-4 0" />
+
+    <!-- Os ombros de cada um, para não parecerem bolas soltas. -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M8.9,21.6c0,-1.9 1.5,-3.2 3.1,-3.2s3.1,1.3 3.1,3.2z"
+        android:fillAlpha="0.55" />
+</vector>

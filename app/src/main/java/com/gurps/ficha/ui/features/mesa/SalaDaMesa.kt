@@ -105,6 +105,19 @@ object SalaDaMesa {
     var pedirAoTelefone: ((List<String>, (Boolean) -> Unit) -> Unit)? = null
 
     /**
+     * **O que a tela faz quando você sai da mesa** — MNA-1b.
+     *
+     * 🔴 Sair da **sala** não é sair da **aba**. Ele encontrou isto no aparelho:
+     * apertar SAIR dentro da Mesa deixava a pessoa olhando para a porta de
+     * entrada da sala, dentro da mesma aba, sem nada dizendo para onde ir.
+     *
+     * ⚠️ Posto pela [TabMesa] enquanto ela estiver na frente, e `null` quando
+     * não estiver — quem sai pela notificação, com o telefone no bolso, não tem
+     * aba nenhuma para trocar.
+     */
+    var aoSairDaAba: (() -> Unit)? = null
+
+    /**
      * **Quem sabe abrir o explorador de arquivos** — MNA-9.
      *
      * ⚠️ Mesma razão do [pedirAoTelefone]: um `object` não tem tela.
@@ -169,6 +182,9 @@ object SalaDaMesa {
             // saiu pode entrar outra vez sem sair da aba.
             aoSairDaMesa = {
                 janela?.let { ServicoDaMesa.apagar(it.context.applicationContext) }
+                // 🔴 E tira a pessoa da aba. Sem isto ela fica olhando para a
+                // porta da sala de que acabou de sair, sem saber para onde ir.
+                aoSairDaAba?.invoke()
                 // ⚠️ O convite volta a valer: entrar de novo pela porta é um ato
                 // da pessoa, mas se ela recarregar a página o aplicativo pode
                 // convidá-la outra vez sem ela ter de digitar nada.
@@ -504,6 +520,9 @@ object SalaDaMesa {
         oNome = null
         oToken = null
         ponte = null
+        // ⚠️ Depois de apagar, e não antes: quem trocar de aba durante o apagar
+        // encontraria uma janela meio morta.
+        aoSairDaAba?.invoke()
     }
 
     /**

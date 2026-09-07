@@ -36,6 +36,7 @@ import com.gurps.ficha.domain.rules.PedidoDaMesa
 fun TabMesa(
     nome: String?,
     token: String?,
+    aoSairDaMesa: () -> Unit,
     aoReceberPedido: (PedidoDaMesa.Pedido) -> Unit
 ) {
     // 🔴 O botão Voltar anda para trás **dentro da página**. Sem isto ele sairia
@@ -91,6 +92,8 @@ fun TabMesa(
                 false
             }
         }
+        // 🔴 Sair da sala tira da aba — MNA-1b.
+        SalaDaMesa.aoSairDaAba = aoSairDaMesa
         SalaDaMesa.pedirAoTelefone = { quais, responder ->
             aEsperaDaResposta[0] = responder
             caixaDePermissao.launch(quais.toTypedArray())
@@ -101,6 +104,7 @@ fun TabMesa(
         onDispose {
             SalaDaMesa.pedirAoTelefone = null
             SalaDaMesa.escolherArquivo = null
+            SalaDaMesa.aoSairDaAba = null
             // 🔴 Quem estivesse esperando um arquivo recebe "nada", e não o
             // silêncio: sem isto o campo da página fica morto para sempre.
             aEsperaDoArquivo[0]?.invoke(null)
