@@ -150,6 +150,16 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
      * presa a um ataque que já rolou.
      */
     var pedidoDaMesa by mutableStateOf<com.gurps.ficha.domain.rules.PedidoDaMesa.Pedido?>(null)
+
+    /**
+     * **Abrir a aba da Mesa** — MNA-10.
+     *
+     * 🔴 Posto pela tela de configuração quando a sala aceita o token, e limpo
+     * pela `FichaScreen` depois de saltar. É a mesma forma do [pedidoDaMesa] logo
+     * acima, de propósito: um segundo jeito de trocar de aba seria um segundo
+     * jeito de errar a aba.
+     */
+    var irParaAMesa by mutableStateOf(false)
     val mesaNome get() = socialDelegate.mesaNome
     /**
      * 🔴 O tipo de retorno e DECLARADO, e nao inferido.

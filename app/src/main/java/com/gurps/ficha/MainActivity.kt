@@ -66,17 +66,15 @@ class MainActivity : ComponentActivity() {
         val type = intent.type
         val data: Uri? = intent.data
 
-        // Mesa Virtual: Link Mágico do Discord (gurpsapp://conectar?id=...&token=...)
-        if (action == Intent.ACTION_VIEW && data?.scheme == "gurpsapp" && data.host == "conectar") {
-            val discordId = data.getQueryParameter("id")
-            val token = data.getQueryParameter("token")
-            
-            if (discordId != null) {
-                // TODO: Salvar no DataStore ou SharedPreferences para uso na Mesa Virtual
-                android.widget.Toast.makeText(this, "Conectado ao Discord: $discordId", android.widget.Toast.LENGTH_LONG).show()
-            }
-            return
-        }
+        // 🔴 O `gurpsapp://conectar` foi apagado no MNA-10.
+        //
+        // Ele mostrava um aviso na tela e tinha um `TODO` dizendo que ainda ia
+        // guardar o dado. **Nunca guardou.** Era um caminho que parecia ligado e
+        // nao estava -- e quem se liga a Mesa faz isso na tela de configuracao,
+        // que existe, testa a sala e guarda mesmo.
+        //
+        // ⚠️ O `intent-filter` do manifesto fica: um link antigo por ai nao pode
+        // dar erro. Sem ramo aqui, ele abre o aplicativo na tela de sempre.
 
         // 🔴 Mesa Virtual: um pedido de rolagem (CC-5).
         //

@@ -40,8 +40,15 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
         </provider>
+        <!-- 🔴 MNA-10: uma copia so da tela (`singleTask`).
+
+             A aba da Mesa guarda a sala ACIMA das telas, e ela e uma so. Um
+             link `gurpsapp://` abrindo uma segunda copia da MainActivity poria
+             duas telas a disputar a mesma janela, e a que perdesse ficaria
+             com uma parede vazia. -->
         <activity
             android:name=".MainActivity"
+            android:launchMode="singleTask"
             android:exported="true"
             android:label="@string/app_name"
             android:theme="@style/Theme.GURPSFicha">

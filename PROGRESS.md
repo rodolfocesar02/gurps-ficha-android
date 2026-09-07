@@ -9371,3 +9371,34 @@ A pergunta dele **encontrou um defeito no plano**, antes de uma linha ser escrit
   confere a ORDEM e nao so a existencia.
 - **Status:** ✅ Build OK nas 2 variantes -- gate **2510**. Mesa: **2530**.
   🔴 **PENDENTE: aparelho.** Microfone e permissao nao se provam na bancada.
+
+---
+
+## Lote MNA-10 — O botao passa a abrir a aba, e o Chrome sai do aplicativo
+
+Decisao dele: *"abre so a aba"*.
+
+- **O `abrirAMesaNoNavegador` foi apagado.** O botao CONECTAR A MESA guarda a
+  mesa e pede a aba. ⚠️ Guarda ANTES de pedir: a aba so existe com destino MESA
+  e token guardado, e pedi-la antes seria pedir uma aba que ainda nao esta na
+  lista -- o salto cairia na primeira, com a pessoa olhando para o Geral sem
+  entender.
+- **🟥 Quatro sondas do MESA-44 foram apagadas, e de proposito.** Elas guardavam
+  o token no fragmento, o nome escapado, o `Intent` sem navegador fixo e o
+  `catch` de aparelho sem navegador. Eram boas sondas. A funcao **ja nao
+  existe**: o token deixou de virar endereco, e o `ConviteDaMesa` entrega o
+  convite por dentro da pagina. Ficaram duas no lugar: que o navegador saiu
+  mesmo, e que o botao guarda antes de pedir.
+- **⚠️ E o caminho do navegador NAO se perdeu** -- ele so mudou de lado. O
+  `dentro-do-aplicativo.js` da Mesa o mantem vivo na PAGINA, porque o Mestre esta
+  no PC. O que saiu foi o botao do aplicativo, e so ele.
+- **O `TODO` morto do `MainActivity` saiu.** O `gurpsapp://conectar` mostrava um
+  aviso e dizia que ainda ia guardar o dado; **nunca guardou**. O `intent-filter`
+  fica -- um link antigo por ai nao pode dar erro.
+- **`launchMode="singleTask"`.** A aba guarda a sala ACIMA das telas, e ela e uma
+  so. Um link abrindo uma segunda copia da tela poria duas a disputar a mesma
+  janela, e a que perdesse ficaria com uma parede vazia.
+- **⚠️ Dois erros meus no manifesto, apanhados pelo compilador:** comentario XML
+  entre atributos de uma etiqueta, e um `--` dentro de um comentario XML (o XML
+  proibe os dois).
+- **Status:** ✅ Build OK nas 2 variantes -- gate **2508**, 0 falhas.

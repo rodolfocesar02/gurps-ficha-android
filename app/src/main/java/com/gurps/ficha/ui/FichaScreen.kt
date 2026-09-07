@@ -426,6 +426,21 @@ fun FichaScreen(viewModel: FichaViewModel) {
     LaunchedEffect(viewModel.pedidoDaMesa) {
         if (viewModel.pedidoDaMesa != null) abaEscolhida = "Rolagem"
     }
+
+    /**
+     * **CONECTAR À MESA abre a aba** — MNA-10.
+     *
+     * ⚠️ Limpa aqui, e não em quem pediu: se a aba ainda não estiver na lista —
+     * o token acabou de ser guardado e a recomposição não chegou —, o salto cai
+     * na primeira aba e a pessoa fica olhando para o Geral sem entender. Limpar
+     * só depois de a aba existir dá a ela a próxima volta para aparecer.
+     */
+    LaunchedEffect(viewModel.irParaAMesa, temMesaLigada) {
+        if (viewModel.irParaAMesa && temMesaLigada) {
+            abaEscolhida = "Mesa"
+            viewModel.irParaAMesa = false
+        }
+    }
     // Orientação landscape é EXCLUSIVA do VTT legado — o Modo Jogo da Saga fica vertical.
     DisposableEffect(vttFullscreen) {
         val previousOrientation = activity?.requestedOrientation

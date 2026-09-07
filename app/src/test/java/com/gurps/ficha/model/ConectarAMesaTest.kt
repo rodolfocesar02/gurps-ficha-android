@@ -150,51 +150,57 @@ class ConectarAMesaTest {
         )
     }
 
-    // == O token, e onde ele não pode estar ==========================
+    // == O caminho do navegador saiu do aplicativo — MNA-10 ==========
+
+    /**
+     * 🟥 **Quatro sondas do MESA-44 foram apagadas aqui, e é de propósito.**
+     *
+     * Elas guardavam o `abrirAMesaNoNavegador`: o token no fragmento e nunca na
+     * query, o nome escapado, o `Intent` sem navegador fixo, o `catch` para
+     * aparelho sem navegador. Eram boas sondas, e cada uma nasceu de um defeito
+     * de verdade.
+     *
+     * 🔴 A função **já não existe**. Decisão dele no MNA-10: *"abre só a aba"*.
+     * O token deixou de virar endereço, então não há endereço onde ele possa
+     * estar no lugar errado — o [com.gurps.ficha.domain.rules.ConviteDaMesa]
+     * entrega o convite por dentro da página, depois de ela carregar.
+     *
+     * ⚠️ E o que elas guardavam **não se perdeu**: o
+     * `dentro-do-aplicativo.js` da Mesa mantém o caminho do navegador vivo do
+     * lado da **página**, porque o Mestre está no PC. O que saiu foi o botão do
+     * aplicativo, e só ele.
+     *
+     * 🔴 Ficam duas sondas no lugar delas: que o navegador realmente saiu, e que
+     * o botão passou a pedir a aba.
+     */
 
     @Test
-    fun `🔴 o token vai no FRAGMENTO, e nunca na query`() {
-        // 🔴 O que esta depois do `#` NAO e enviado ao servidor: nao aparece nos
-        // registros de acesso, nao vai no `Referer`, nao passa por intermediario
-        // nenhum. O que esta depois do `?` vai em tudo isso -- e este token e a
-        // senha da sala inteira.
-        val semComentario = tab
-            .replace(Regex("/\\*[\\s\\S]*?\\*/"), " ")
-            .lines().joinToString("\n") { it.replace(Regex("//.*$"), " ") }
-        val abrir = semComentario.substringAfter("fun abrirAMesaNoNavegador")
-        assertTrue("nao achei a funcao de abrir", abrir.isNotEmpty())
-        assertTrue("o convite nao usa o fragmento", abrir.contains("\"/#nome=\""))
+    fun `🟥 o aplicativo ja nao abre navegador nenhum`() {
+        // Se alguém trouxer o atalho de volta, isto fica vermelho e obriga a
+        // decidir outra vez — em vez de o app passar a ter duas portas para a
+        // mesma sala, e a pessoa entrar duas vezes e ser expulsa de uma.
         assertFalse(
-            "o token foi para a query string, que vai para os registros do servidor",
-            abrir.contains("?nome=") || abrir.contains("?t=")
+            "o caminho do navegador voltou ao aplicativo",
+            tab.contains("abrirAMesaNoNavegador")
+        )
+        assertFalse(
+            "alguem abriu um Intent para a mesa outra vez",
+            tab.contains("ACTION_VIEW") && tab.contains("ENDERECO_PADRAO")
         )
     }
 
     @Test
-    fun `🔴 nome e token sao escapados no endereco`() {
-        // 🔴 Um nome com espaco, acento ou `&` quebraria o convite ao meio -- e um
-        // nome com `&t=` outro token poderia trocar o token pelo caminho.
-        val abrir = tab.substringAfter("fun abrirAMesaNoNavegador")
-        assertTrue("o nome nao e escapado", abrir.contains("URLEncoder.encode(nome"))
-        assertTrue("o token nao e escapado", abrir.contains("URLEncoder.encode(token"))
-    }
-
-    @Test
-    fun `🔴 o Intent NAO nomeia navegador nenhum`() {
-        // 🔴 O Android mostra a escolha, ou usa o que a pessoa ja escolheu. Fixar
-        // o Chrome tiraria dela uma decisao que e dela.
-        val abrir = tab.substringAfter("fun abrirAMesaNoNavegador")
-        assertTrue(abrir.contains("Intent.ACTION_VIEW"))
-        assertFalse("o app fixou um navegador", abrir.contains("setPackage"))
-        assertFalse(abrir.contains("com.android.chrome"))
-    }
-
-    @Test
-    fun `⚠️ aparelho sem navegador nao derruba a tela`() {
-        // ⚠️ A tela ja fez o que importa: guardar o endereco e o token. Estourar
-        // aqui derrubaria tudo por causa do extra.
-        val abrir = tab.substringAfter("fun abrirAMesaNoNavegador")
-        assertTrue("abrir o navegador pode estourar", abrir.contains("catch"))
+    fun `🔴 CONECTAR A MESA guarda ANTES de pedir a aba`() {
+        // ⚠️ A aba só existe com destino MESA e token guardado. Pedi-la antes de
+        // guardar seria pedir uma aba que ainda não está na lista — e o salto
+        // cairia na primeira, com a pessoa olhando para o Geral sem entender.
+        val trecho = tab.substringAfter("onAbrirAMesa = {")
+        assertTrue("nao achei o que o botao faz", trecho.isNotEmpty())
+        val guarda = trecho.indexOf("configurarMesa(")
+        val pede = trecho.indexOf("irParaAMesa = true")
+        assertTrue("o botao ja nao guarda a mesa", guarda >= 0)
+        assertTrue("o botao ja nao pede a aba", pede >= 0)
+        assertTrue("pede a aba antes de guardar o token", guarda < pede)
     }
 
     // == Só abre se o token valer ====================================
