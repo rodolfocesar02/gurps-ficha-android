@@ -239,6 +239,22 @@ fun FichaScreen(viewModel: FichaViewModel) {
     } else {
         configuration.screenWidthDp < 390 || density.fontScale > 1.1f
     }
+    /**
+     * **A aba da Mesa só aparece quando você está ligado a ela** — MNA-1.
+     *
+     * > *"É igual a aba da magia, ela só aparece quando tem magia."*
+     *
+     * 🔴 Ela é a **consequência** de estar conectado, e nunca a porta de entrada:
+     * quem liga a Mesa pela primeira vez faz isso na tela de configuração, que
+     * já existe e já testa a sala.
+     *
+     * ⚠️ Fora do `pracego` por enquanto. Uma Mesa dentro de um navegador é uma
+     * coisa visual, e fingir que não é seria pior do que não a ter — ela volta
+     * quando houver plano próprio para essa variante.
+     */
+    val temMesaLigada = !isPraCegoVariant &&
+        viewModel.destinoDaRolagem == com.gurps.ficha.domain.rules.DestinoDaRolagem.MESA &&
+        !viewModel.mesaToken.isNullOrBlank()
     val tabs = buildList {
         add("Geral")
         add("Traços")
@@ -247,6 +263,7 @@ fun FichaScreen(viewModel: FichaViewModel) {
         if (temAptidaoMagica) add("Magia")
         add("Equip.")
         add("Rolagem")
+        if (temMesaLigada) add("Mesa")
         if (HABILITAR_ABA_SAGA) add("Saga")
     }
     // ⚠️ Se a aba escolhida sumir da lista (a Magia, quando a aptidão sai),
@@ -258,7 +275,9 @@ fun FichaScreen(viewModel: FichaViewModel) {
     // (sem cabeçalho da ficha, sem PontosBar, sem abas). O X no header da campanha (TabSaga) sai.
     // Diferente do VTT, NÃO força landscape — a Saga é vertical.
     val sagaModoJogo = selectedTitle == "Saga" && viewModel.sagaCampanhaAtiva != null
-    val hideAppChrome = vttFullscreen || sagaModoJogo
+    // 🔴 A Mesa é tela cheia: ela já tem a barra dela, e duas barras uma em cima
+    // da outra num telefone não deixam tabuleiro nenhum à vista.
+    val hideAppChrome = vttFullscreen || sagaModoJogo || selectedTitle == "Mesa"
     val maxTabIndex = tabs.lastIndex
     val exportCompativelLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.CreateDocument("application/json")
@@ -501,6 +520,7 @@ fun FichaScreen(viewModel: FichaViewModel) {
                 "Magia" -> TabMagias(viewModel)
                 "Equip." -> TabEquipamentos(viewModel)
                 "Rolagem" -> TabRolagem(viewModel)
+                "Mesa" -> com.gurps.ficha.ui.features.mesa.TabMesa()
                 "Saga" -> TabSaga(viewModel)
                 else -> TabGeral(viewModel)
             }

@@ -9251,3 +9251,53 @@ Trocar `token = it.uppercase()` por `token = it` deixou o teste vermelho
   13 sondas no app: cada defeito reintroduzido fica vermelho.
   🔴 **PENDENTE: teste no aparelho.** Pôr nome e token, apertar CONECTAR À MESA,
   e ver o navegador abrir com você já dentro da sala.
+
+---
+
+## Lote MNA-1 + MNA-2 — A aba da Mesa, e a sala que nao morre
+
+> *"quando eu tiver mudando de uma aba pra outra, o aplicativo ele nao vai fechar
+> a pagina do navegador, ne? Ele nao vai mutar o microfone nem o audio do
+> jogador?"*
+
+A pergunta dele **encontrou um defeito no plano**, antes de uma linha ser escrita.
+
+- **🟥 O achado.** A `FichaScreen` desenha o corpo das abas com um `when`. Um
+  `when` e uma escolha: **so existe a aba que esta na frente**. Sair da aba nao
+  esconde o que la estava -- apaga. Um `WebView` criado ali dentro recarregaria a
+  pagina a cada troca de aba: fora da sala, microfone mudo, e a sessao perdida --
+  a Mesa guarda a sessao no `sessionStorage` de proposito, para ela morrer quando
+  a aba fecha. O plano dizia apenas *"um WebView em tela cheia"*, e escrito assim
+  sairia com o defeito.
+- **A cura: a sala nao mora na aba.** O `SalaDaMesa.kt` guarda a janela acima das
+  telas, e a `TabMesa.kt` so a **pendura** e **despendura**. E como tirar a janela
+  da parede e voltar a po-la: a sala do outro lado continua la.
+- **🔴 O `MutableContextWrapper`.** Um `WebView` precisa do contexto da tela para
+  desenhar, e a tela morre a cada giro do telefone. O embrulho troca de dono por
+  dentro: ao despendurar, ele volta ao contexto do aplicativo, que nao morre.
+- **🟥 MNA-2: a aba so vai a UM lugar.** O `EnderecoDaMesa.kt` e Kotlin puro, sem
+  Android, e compara a **origem** -- esquema, dono do endereco e porta. Comparar
+  por `startsWith` deixaria passar `https://mesagurps.duckdns.org.enganar.com`,
+  que comeca igual e e outro lugar. Tambem recusa a Mesa usada como **nome de
+  usuario** (`https://mesagurps.duckdns.org@enganar.com`), que e a forma
+  classica. 15 testes.
+- **🔴 A cerca vem ANTES da ponte, e nao depois.** A ponte (MNA-4) dara **a
+  janela** o direito de ler a ficha, e esse direito vai junto para onde ela for.
+  Construir a ponte primeiro deixaria uma versao do aplicativo com o direito dado
+  e sem cerca -- e e sempre essa a versao que fica instalada no telefone de
+  alguem.
+- **🔴 O pedido do aplicativo NAO e recusa.** `gurpsapp://` devolve
+  `E_UM_PEDIDO`, e nao `RECUSAR`: tratar o botao "Atacar" do tabuleiro como
+  navegacao recusada o deixaria mudo -- sem erro, sem nada, que e o pior dos
+  casos.
+- **A aba so aparece ligado a Mesa**, na mesma forma da aba Magia
+  (`destinoDaRolagem == MESA` + `mesaToken`), e fora do `pracego` por enquanto.
+  Escolhida **pelo nome**, nunca pela posicao -- a guarda que o CC-5 pagou.
+- **Faxina:** o `MesaVirtualScreen.kt` e o `MesaVirtualViewModel.kt` (80 linhas
+  de "Em breve" ligadas a nada) foram apagados.
+- **Status:** ✅ Build OK nas 2 variantes -- gate **2501**, 0 falhas.
+  🔴 **PENDENTE: MNA-0, o teste no aparelho.** Entrar na sala, trocar para a aba
+  Pericias, ficar um minuto, voltar -- e alguem no PC dizer se continuou ouvindo.
+  O plano so segue depois disso.
+  ⚠️ E do lado da Mesa, o lote **MESA-CP** (no repositorio da Mesa) consertou o
+  tabuleiro que so ia ao disco de minuto em minuto e nunca ao desligar.
