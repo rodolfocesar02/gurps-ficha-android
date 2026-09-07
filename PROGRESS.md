@@ -9591,3 +9591,41 @@ pessoas em volta de uma mesa e um d20 no meio.
   o mesmo que nao existir, com a vantagem de parecer feito. Na Mesa, uma que
   conta o que a pagina pede e fica vermelha quando ela passa a pedir algo novo.
 - **Status:** ✅ Build OK nas 2 variantes -- gate **2523**. Mesa: **2557**.
+
+---
+
+## Lote BARRA-1 — A barra de abas parou de se mexer
+
+Ele gravou 10 segundos da barra e disse: *"to achando muito desalinhado, os
+efeitos muito mal feito! quero algo mais premiun!"*. Lido quadro a quadro, era
+uma coisa so com tres caras.
+
+- **🟥 O escolhido dobrava de tamanho NO LAYOUT** (31dp → 62dp). Nao era efeito:
+  ele passava a ocupar o dobro do espaco e **empurrava os vizinhos**. A fila
+  inteira deslizava a cada toque. Agora a caixa nunca muda: quem cresce e o
+  desenho, por `graphicsLayer`, que pinta maior sem pedir espaco a ninguem. E
+  **1,3x** em vez de 2x, escolha dele -- o dobro era o que mandava na altura da
+  barra inteira.
+- **🔴 As abas estavam com `Arrangement.End`**, encostadas a direita: com sete
+  ficava um buraco a esquerda, e so com nove (Magia **e** Mesa) a barra parecia
+  cheia. Foram para o centro, com um contrapeso do lado direito da largura do
+  Mestre IA -- sem ele, "centro" seria o centro do espaco que sobra.
+- **🟥 O nome saia da caixa do icone e caia POR CIMA dos vizinhos.** No video:
+  *PERICIAS* escrito sobre os tres ultimos icones, e *TECNICAS* cortado virando
+  *"CNICAS"*. Era posicionado por conta de pixel a mao (`tamanho + 15dp`,
+  `y = -23dp`) com `unbounded`. Agora e **um** nome, numa linha propria de altura
+  reservada, que aparece e some sozinho em 2s com fade.
+- **🔴 O brilho vazava para fora do icone** -- achado dele. A causa era um
+  `scale(1.4)` no desenho: ele **nascia maior que a caixa**. Agora o raio e o da
+  propria caixa e o que varia e a claridade.
+- **O pulinho saiu e o cometa entrou** (ideia dele): um risco de luz corre pelo
+  trilho ate parar debaixo da aba escolhida. Diz **onde voce esta** e **de onde
+  veio** -- e a segunda o pulinho nunca disse. O trilho e as abas usam a MESMA
+  largura, senao um dia divergem.
+- **⚠️ O anel do microfone FICA.** E o unico efeito da barra que **avisa** alguma
+  coisa, em vez de so enfeitar.
+- **A largura de cada aba e calculada**, e nao fixa: sao sete abas num dia e nove
+  no outro, e uma largura fixa desperdicaria tela com sete ou estouraria com nove.
+- **Status:** ✅ Build OK nas 2 variantes -- gate **2529**, 0 falhas.
+  🔴 **PENDENTE: o olho dele.** Sonda nao mede se ficou bonito.
+  ⚠️ Ponto de retorno: a etiqueta `barra-antes-do-redesenho`.
