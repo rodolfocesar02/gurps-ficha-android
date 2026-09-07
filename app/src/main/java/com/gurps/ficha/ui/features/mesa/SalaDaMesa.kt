@@ -17,6 +17,9 @@ import android.webkit.WebChromeClient
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import com.gurps.ficha.domain.rules.ConviteDaMesa
 import com.gurps.ficha.domain.rules.EnderecoDaMesa
 import com.gurps.ficha.domain.rules.PedidoDaMesa
@@ -58,8 +61,17 @@ import com.gurps.ficha.service.ServicoDaMesa
  */
 object SalaDaMesa {
 
-    /** A janela, enquanto ela existir. */
-    private var janela: WebView? = null
+    /**
+     * A janela, enquanto ela existir.
+     *
+     * 🟥 **Estado do Compose, e não um campo comum** — MNA-1c.
+     *
+     * 🔴 É por ela que a tela sabe se a aba da Mesa existe. Um campo comum muda
+     * e **ninguém redesenha**: a aba só apareceria na próxima vez que a tela se
+     * redesenhasse por outro motivo qualquer — e sumiria da mesma forma, sem
+     * relação nenhuma com o que a pessoa fez.
+     */
+    private var janela by mutableStateOf<WebView?>(null)
 
     /** O embrulho que troca de dono. Nasce com a janela e morre com ela. */
     private var embrulho: MutableContextWrapper? = null
@@ -131,7 +143,13 @@ object SalaDaMesa {
     private var oNome: String? = null
     private var oToken: String? = null
 
-    /** Se a sala está de pé. */
+    /**
+     * **Se a sala está de pé** — e é por isto que a aba existe (MNA-1c).
+     *
+     * 🔴 Ela é `true` desde que a janela nasce até você dar SAIR. Não é *"você
+     * está ligado à Mesa"* nem *"você tem um token guardado"*: é a sala **em
+     * pé**, agora.
+     */
     val estaDePe: Boolean get() = janela != null
 
     /**

@@ -2,7 +2,6 @@ package com.gurps.ficha.ui.features.mesa
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import com.gurps.ficha.domain.rules.DestinoDaRolagem
 import com.gurps.ficha.viewmodel.FichaViewModel
 
 /**
@@ -22,22 +21,43 @@ import com.gurps.ficha.viewmodel.FichaViewModel
  */
 
 /**
- * **A aba só aparece quando você está ligado à Mesa.**
+ * **A aba existe enquanto a SALA estiver de pé** — MNA-1c.
  *
- * > *"É igual a aba da magia, ela só aparece quando tem magia."*
+ * ## 🟥 A regra anterior estava certa no papel e errada na tela
  *
- * 🔴 Ela é a **consequência** de estar conectado, e nunca a porta de entrada:
- * quem liga a Mesa pela primeira vez faz isso na tela de configuração, que já
- * existe e já testa a sala.
+ * Era *"destino MESA **e** token guardado"* — a mesma forma da aba Magia, e foi
+ * o que ficou combinado. Só que o token **fica guardado para sempre** depois da
+ * primeira conexão. Na prática a aba virava permanente, que é o contrário de
+ * *"só aparece quando você entra"*.
  *
- * ⚠️ Fora do `pracego` por enquanto. Uma Mesa dentro de um navegador é uma coisa
- * visual, e fingir que não é seria pior do que não a ter — ela volta quando
- * houver plano próprio para essa variante.
+ * Ele viu no aparelho e perguntou:
+ *
+ * > *"ainda está aparecendo! mesmo não tendo entrado na mesa! a ideia não seria
+ * > aparecer apenas quando 'entrasse' na mesa? ou eu estou confuso?"*
+ *
+ * Não estava confuso. Eu é que tinha cumprido a letra da regra sem olhar o que
+ * ela fazia depois da segunda vez.
+ *
+ * ## 🔴 A regra nova, e o nó que ela precisa desatar
+ *
+ * *"A aba existe enquanto a sala estiver de pé."* Dito assim, é impossível: a
+ * sala só sobe quando a aba abre, e a aba só abre se a sala estiver de pé.
+ *
+ * O nó desata na **porta de entrada**, que já existe e é o CONECTAR À MESA
+ * (MNA-10). Ele levanta o [FichaViewModel.irParaAMesa], e é esse pedido — e só
+ * ele — que faz a aba aparecer antes de a sala existir.
+ *
+ * Então o ciclo inteiro é:
+ *
+ * 1. CONECTAR À MESA, com a sala aceitando o token → a aba aparece;
+ * 2. você entra → a sala fica de pé → a aba fica pelo mesmo motivo;
+ * 3. SAIR → a sala cai → **a aba some**, e você volta para a ficha.
+ *
+ * ⚠️ E fechar o aplicativo derruba a sala junto. Ao reabrir não há aba nenhuma,
+ * e entra-se pela porta — que é onde se confere o token de qualquer maneira.
  */
 fun aAbaDaMesaAparece(viewModel: FichaViewModel, ehPraCego: Boolean): Boolean =
-    !ehPraCego &&
-        viewModel.destinoDaRolagem == DestinoDaRolagem.MESA &&
-        !viewModel.mesaToken.isNullOrBlank()
+    !ehPraCego && (SalaDaMesa.estaDePe || viewModel.irParaAMesa)
 
 /**
  * **CONECTAR À MESA abre a aba** — MNA-10.
@@ -45,13 +65,20 @@ fun aAbaDaMesaAparece(viewModel: FichaViewModel, ehPraCego: Boolean): Boolean =
  * @param aparece se a aba já está na lista de abas
  * @param irPara o que fazer para trocar de aba
  *
- * ⚠️ Espera a aba **existir** antes de saltar, e é por isso que o [aparece] entra
- * aqui. O token acabou de ser guardado e a recomposição pode não ter chegado; um
- * salto para uma aba que ainda não está na lista cai na primeira, e a pessoa fica
- * olhando para o Geral sem entender o que aconteceu.
+ * ⚠️ Espera a aba **existir** antes de saltar. O token acabou de ser guardado e a
+ * recomposição pode não ter chegado; um salto para uma aba que ainda não está na
+ * lista cai na primeira, e a pessoa fica olhando para o Geral sem entender.
  *
- * 🔴 E o pedido é limpo **depois** do salto, e não por quem o fez: limpá-lo cedo
- * gastaria a única chance que a aba tem de aparecer.
+ * ## 🟥 E o pedido só é largado quando a SALA está mesmo de pé
+ *
+ * 🔴 Este é o ponto delicado do MNA-1c, e a primeira forma que escrevi tinha o
+ * defeito dentro. Limpar o pedido logo depois de saltar parece a coisa arrumada
+ * a fazer — e é uma corrida perdida: entre pôr a aba na frente e a janela
+ * nascer há uma volta de desenho. Naquela volta a sala **ainda não está de pé**,
+ * e sem o pedido levantado a aba desapareceria da lista no exato momento em que
+ * a pessoa acabou de ser mandada para ela.
+ *
+ * Então o pedido fica levantado até a sala existir. É ela que o baixa.
  */
 @Composable
 fun SaltarParaAMesaQuandoPedirem(
@@ -60,10 +87,11 @@ fun SaltarParaAMesaQuandoPedirem(
     irPara: (String) -> Unit
 ) {
     LaunchedEffect(viewModel.irParaAMesa, aparece) {
-        if (viewModel.irParaAMesa && aparece) {
-            irPara("Mesa")
-            viewModel.irParaAMesa = false
-        }
+        if (viewModel.irParaAMesa && aparece) irPara("Mesa")
+    }
+    LaunchedEffect(SalaDaMesa.estaDePe) {
+        // A sala subiu: o pedido já foi cumprido e pode ser baixado.
+        if (SalaDaMesa.estaDePe) viewModel.irParaAMesa = false
     }
 }
 

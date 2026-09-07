@@ -9492,3 +9492,36 @@ sao chamada, e nao regra.
   do que mediam. Agora e linha a linha, como o guarda do portugues da Mesa.
 - **Status:** ✅ Build OK nas 2 variantes -- gate **2513**, 0 falhas.
   🔴 **PENDENTE: aparelho, outra vez.**
+
+---
+
+## Lote MNA-1c — A aba aparecia sem ninguem ter entrado na mesa
+
+> *"ainda esta aparecendo! mesmo nao tendo entrado na mesa! a ideia nao seria
+> aparecer apenas quando 'entrasse' na mesa? ou eu estou confuso?"*
+
+Nao estava confuso.
+
+- **🟥 A regra antiga estava certa no papel e errada na tela.** Era *"destino
+  MESA **e** token guardado"* -- a mesma forma da aba Magia, e foi o que ficou
+  combinado. So que o token **fica guardado para sempre** depois da primeira
+  conexao: na pratica a aba virava permanente, que e o contrario de *"so aparece
+  quando voce entra"*. Eu cumpri a letra da regra sem olhar o que ela fazia
+  depois da segunda vez.
+- **A regra nova:** a aba existe **enquanto a sala estiver de pe**. SAIR derruba a
+  sala, a aba some, e voce volta para a ficha. Fechar o aplicativo tambem.
+- **🔴 O no que ela precisa desatar:** dito assim e impossivel -- a sala so sobe
+  quando a aba abre, e a aba so abre se a sala estiver de pe. Quem desata e a
+  porta de entrada, o CONECTAR A MESA, que levanta o `irParaAMesa`. Esse pedido,
+  e so ele, faz a aba aparecer antes de a sala existir.
+- **🟥 E o pedido so e largado quando a sala esta MESMO de pe.** Limpa-lo logo
+  depois de saltar parece arrumado e e uma corrida perdida: entre por a aba na
+  frente e a janela nascer ha uma volta de desenho, e naquela volta a sala ainda
+  nao subiu. Sem o pedido levantado, a aba sumiria da lista no exato momento em
+  que a pessoa foi mandada para ela.
+- **🔴 A janela virou estado do Compose.** Um campo comum muda e ninguem
+  redesenha: a aba so apareceria na proxima vez que a tela se redesenhasse por
+  outro motivo qualquer, e sumiria do mesmo jeito -- sem relacao nenhuma com o
+  que a pessoa fez.
+- **Status:** ✅ Build OK nas 2 variantes -- gate **2517**, 0 falhas.
+  🔴 **PENDENTE: aparelho.**

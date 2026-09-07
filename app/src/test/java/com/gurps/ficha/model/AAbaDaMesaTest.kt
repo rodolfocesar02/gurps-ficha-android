@@ -37,6 +37,7 @@ class AAbaDaMesaTest {
     }
     private val aba by lazy { fonte("com/gurps/ficha/ui/features/mesa/TabMesa.kt") }
     private val sala by lazy { fonte("com/gurps/ficha/ui/features/mesa/SalaDaMesa.kt") }
+    private val regra by lazy { fonte("com/gurps/ficha/ui/features/mesa/AAbaDaMesa.kt") }
 
     /**
      * O código sem as linhas de comentário — elas falam do defeito para o
@@ -59,6 +60,64 @@ class AAbaDaMesaTest {
                 t.startsWith("*") || t.startsWith("//") || t.startsWith("/*")
             }
             .joinToString("\n")
+    }
+
+    // == Quando a aba existe — MNA-1c ================================
+
+    @Test
+    fun `🟥 a aba existe enquanto a SALA estiver de pe, e nao pelo token guardado`() {
+        // 🔴 A regra antiga era "destino MESA + token guardado". Estava certa no
+        // papel e errada na tela: o token fica guardado PARA SEMPRE depois da
+        // primeira conexao, e a aba virava permanente -- o contrario de "so
+        // aparece quando voce entra".
+        val linha = regra.lines().first { it.contains("fun aAbaDaMesaAparece") }
+        val corpo = regra.substring(regra.indexOf(linha), regra.indexOf(linha) + 220)
+        assertTrue(
+            "a aba deixou de olhar para a sala",
+            corpo.contains("SalaDaMesa.estaDePe")
+        )
+        assertFalse(
+            "o token guardado voltou a fazer a aba aparecer sem ninguem ter entrado",
+            corpo.contains("mesaToken") || corpo.contains("DestinoDaRolagem")
+        )
+    }
+
+    @Test
+    fun `🔴 o pedido de entrar tambem abre a aba, senao ninguem entra nunca`() {
+        // ⚠️ Sem isto a regra e impossivel: a sala so sobe quando a aba abre, e a
+        // aba so abre se a sala estiver de pe. Quem desata o no e a porta de
+        // entrada -- o CONECTAR A MESA, que levanta o `irParaAMesa`.
+        val linha = regra.lines().first { it.contains("fun aAbaDaMesaAparece") }
+        val corpo = regra.substring(regra.indexOf(linha), regra.indexOf(linha) + 220)
+        assertTrue(corpo.contains("irParaAMesa"))
+    }
+
+    @Test
+    fun `🟥 o pedido so e largado quando a sala esta MESMO de pe`() {
+        // 🔴 Limpa-lo logo depois de saltar e uma corrida perdida: entre por a aba
+        // na frente e a janela nascer ha uma volta de desenho, e naquela volta a
+        // sala ainda nao esta de pe. Sem o pedido levantado, a aba sumiria da
+        // lista no exato momento em que a pessoa foi mandada para ela.
+        val i = regra.indexOf("fun SaltarParaAMesaQuandoPedirem")
+        assertTrue(i > 0)
+        val corpo = regra.substring(i)
+        val onde = corpo.indexOf("irParaAMesa = false")
+        assertTrue("o pedido nunca e largado", onde > 0)
+        val antes = corpo.substring(0, onde)
+        assertTrue(
+            "o pedido e largado sem conferir se a sala subiu",
+            antes.contains("if (SalaDaMesa.estaDePe)")
+        )
+    }
+
+    @Test
+    fun `🔴 a janela e estado do Compose, senao a aba nao aparece nem some`() {
+        // ⚠️ Um campo comum muda e ninguem redesenha: a aba so apareceria na
+        // proxima vez que a tela se redesenhasse por outro motivo qualquer.
+        assertTrue(
+            "a janela voltou a ser um campo comum, e a aba deixou de reagir",
+            sala.contains("private var janela by mutableStateOf<WebView?>(null)")
+        )
     }
 
     // == A saída ======================================================
