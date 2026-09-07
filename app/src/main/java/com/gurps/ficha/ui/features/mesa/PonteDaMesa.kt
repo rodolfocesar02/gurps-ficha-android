@@ -47,7 +47,10 @@ import com.gurps.ficha.domain.rules.PedidoDaMesa
  * @param aoReceberPedido o que fazer com um pedido já limpo. Corre **sempre** na
  *   linha principal — ver [entregar].
  */
-class PonteDaMesa(private val aoReceberPedido: (PedidoDaMesa.Pedido) -> Unit) {
+class PonteDaMesa(
+    private val aoReceberPedido: (PedidoDaMesa.Pedido) -> Unit,
+    private val aoSairDaMesa: () -> Unit
+) {
 
     /**
      * **A página pede uma rolagem.**
@@ -61,6 +64,22 @@ class PonteDaMesa(private val aoReceberPedido: (PedidoDaMesa.Pedido) -> Unit) {
     @JavascriptInterface
     fun pedido(link: String?) {
         entregar(link)
+    }
+
+    /**
+     * **A página avisa que você saiu da mesa** — MNA-8.
+     *
+     * 🔴 Sem isto, sair pelo botão de dentro da página deixaria a notificação na
+     * barra dizendo *"você está na mesa"* — e ela é a única coisa da mesa que se
+     * vê com o aplicativo no bolso.
+     *
+     * ⚠️ A janela **não** é apagada aqui. A página se recarrega sozinha e volta à
+     * porta de entrada; quem saiu continua olhando para a aba, e pode entrar
+     * outra vez sem sair dela. Apagar a janela seria tirar a porta junto.
+     */
+    @JavascriptInterface
+    fun sai() {
+        Handler(Looper.getMainLooper()).post { aoSairDaMesa() }
     }
 
     /**

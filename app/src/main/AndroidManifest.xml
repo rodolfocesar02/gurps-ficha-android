@@ -13,6 +13,19 @@
          a Mesa nao precisa dela, e um `required` aqui tiraria o app da loja
          para todo aparelho sem camera. -->
     <uses-feature android:name="android.hardware.camera" android:required="false" />
+    <!-- 🟥 A sala fica de pe com o telefone no bolso (MNA-8).
+
+         Quando o aplicativo sai da frente, o Android CONGELA o processo: a
+         pagina para, o microfone fecha, e os outros passam a ouvir silencio.
+         Voce continua na lista com o microfone aceso, e ninguem liga os dois
+         fatos. Um servico em primeiro plano e a unica forma de dizer ao
+         Android que isto esta acontecendo agora. -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MICROPHONE" />
+    <!-- ⚠️ Do Android 13 em diante a notificacao so aparece com isto. O
+         servico corre na mesma sem ela; o que se perde e o botao SAIR na
+         barra, e a pessoa tem de voltar ao aplicativo para sair da mesa. -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <!-- Só para salvar o retrato na galeria no Android 9 ou anterior. Do
          Android 10 em diante o MediaStore grava sem permissão nenhuma. -->
     <uses-permission
@@ -31,6 +44,15 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.GURPSFicha"
         tools:targetApi="31">
+        <!-- 🔴 A sala com o telefone no bolso (MNA-8).
+
+             `exported=false`: ninguem de fora acende esta sala. E o tipo
+             `microphone` e o que deixa a voz continuar com a tela apagada. -->
+        <service
+            android:name=".service.ServicoDaMesa"
+            android:exported="false"
+            android:foregroundServiceType="microphone" />
+
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.fileprovider"

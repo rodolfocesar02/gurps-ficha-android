@@ -9402,3 +9402,55 @@ Decisao dele: *"abre so a aba"*.
   entre atributos de uma etiqueta, e um `--` dentro de um comentario XML (o XML
   proibe os dois).
 - **Status:** ✅ Build OK nas 2 variantes -- gate **2508**, 0 falhas.
+
+---
+
+## Lote MNA-8 + MNA-9 — No bolso ate dar SAIR, e o telefone dentro da pagina
+
+### 🟥 Uma coisa que eu achei LENDO, e que teria matado o SAIR
+
+A Mesa usa `confirm` e `alert` em **onze** lugares. Um `WebChromeClient` que nao
+trate `onJsAlert`/`onJsConfirm` faz o WebView **cancelar as duas em silencio** --
+e um deles e o **botao SAIR**. Sem essas linhas, a decisao dele (*"fica conectado
+ate dar SAIR"*) nao teria como ser cumprida: o SAIR nao sairia. Os outros dez
+tambem nao sao pequenos: tirar um boneco do mapa, acabar a luta, apagar uma cena.
+Todos "nao fazem nada", sem erro nenhum.
+
+### MNA-8 — o servico
+
+- Quando o aplicativo sai da frente, o Android **congela** o processo: a pagina
+  para, o microfone fecha, e os outros passam a ouvir silencio. Voce continua na
+  lista com o 🎤 aceso, e ninguem liga os dois fatos.
+- **⚠️ A armadilha do Android 14:** um servico de tipo `microphone` so acende com
+  o `RECORD_AUDIO` **ja concedido**, e a ordem natural e a errada -- a sala sobe
+  primeiro, o microfone vem depois. Por isso ele e tentado **duas vezes**: ao
+  abrir a sala, e outra vez assim que a permissao sai. A segunda e a que pega.
+- **🔴 `START_NOT_STICKY`.** Se o sistema matar o processo, a janela morre com
+  ele; um servico ressuscitado sozinho poria na barra um aviso dizendo "voce esta
+  na mesa" com sala nenhuma atras.
+- **🟥 E ele NUNCA derruba a mesa.** Toda tentativa esta num `try`: se falhar, a
+  sala continua valendo com o aplicativo na frente -- que e o que ela fazia antes
+  deste lote. O preco de o servico falhar e voltar ao MNA-1, e nao perder tudo.
+- O botao **Sair da mesa** mora na notificacao, e nao so dentro da pagina: com o
+  app no bolso, ela e a unica coisa da mesa que se ve.
+
+### MNA-9 — o telefone dentro da pagina
+
+- **Escolher arquivo** (`onShowFileChooser`), para o retrato e a foto do chat.
+  **🟥 A resposta e obrigatoria mesmo quando e "nada":** um `onReceiveValue(null)`
+  esquecido nao deixa so este pedido pendurado -- o WebView passa a ignorar
+  **todos os toques seguintes** naquele campo, para sempre.
+- **Camera** ja entrou no MNA-7.
+- **A imagem do chat** abre por cima, dentro da propria pagina (lado da Mesa).
+
+### ⚠️ Uma promessa minha que eu quebrei, e desfiz
+
+Eu escrevi no plano que a aba entraria na `FichaScreen` por *"tres linhas, sem
+engordar"*. Entrou por **63** -- o arquivo foi de 1048 para 1111, acima do teto
+de 1000. Tirei de la: nasceu o `AAbaDaMesa.kt` com as tres regras que eram da
+Mesa e estavam na tela de todos. Ficou em **1066**, e as seis linhas que sobram
+sao chamada, e nao regra.
+
+- **Status:** ✅ Build OK nas 2 variantes -- gate **2508**. Mesa: **2532**.
+  🔴 **PENDENTE: aparelho.** Servico, notificacao, microfone e explorador de
+  arquivos nao se provam na bancada -- nenhum deles.

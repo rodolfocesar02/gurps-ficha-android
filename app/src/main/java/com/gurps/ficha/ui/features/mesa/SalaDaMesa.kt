@@ -1,12 +1,18 @@
 package com.gurps.ficha.ui.features.mesa
 
 import android.annotation.SuppressLint
+import android.app.Activity
+import android.app.AlertDialog
 import android.content.Context
 import android.content.MutableContextWrapper
+import android.net.Uri
 import android.view.ViewGroup
 import android.os.Handler
 import android.os.Looper
 import android.webkit.PermissionRequest
+import android.webkit.JsPromptResult
+import android.webkit.JsResult
+import android.webkit.ValueCallback
 import android.webkit.WebChromeClient
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
@@ -14,6 +20,7 @@ import android.webkit.WebViewClient
 import com.gurps.ficha.domain.rules.ConviteDaMesa
 import com.gurps.ficha.domain.rules.EnderecoDaMesa
 import com.gurps.ficha.domain.rules.PedidoDaMesa
+import com.gurps.ficha.service.ServicoDaMesa
 
 /**
  * **A sala não mora na aba** — lote MNA-1 do `PLANO_MESA_NO_APP.md`.
@@ -44,10 +51,10 @@ import com.gurps.ficha.domain.rules.PedidoDaMesa
  * dele. Ao despendurar, o embrulho volta ao contexto do aplicativo, que não
  * morre nunca.
  *
- * ## ⚠️ O que este arquivo AINDA não faz
+ * ## ⚠️ O que fica de fora
  *
- * - Não sabe escolher arquivo nem abrir a imagem do chat em tela cheia (MNA-9).
- * - Não sobrevive ao aplicativo ir para o bolso (MNA-8).
+ * - O que sobra de fora: a aba está na variante `visual` apenas, e compartilhar
+ *   tela não existe em WebView nenhum (MNA-7).
  */
 object SalaDaMesa {
 
@@ -97,6 +104,16 @@ object SalaDaMesa {
      */
     var pedirAoTelefone: ((List<String>, (Boolean) -> Unit) -> Unit)? = null
 
+    /**
+     * **Quem sabe abrir o explorador de arquivos** — MNA-9.
+     *
+     * ⚠️ Mesma razão do [pedirAoTelefone]: um `object` não tem tela.
+     *
+     * @return `true` se conseguiu abrir. `false` faz o WebView desistir do
+     *   pedido — e é melhor do que ficar segurando um pedido que nunca responde.
+     */
+    var escolherArquivo: ((Array<String>, (Uri?) -> Unit) -> Boolean)? = null
+
     /** Quem entra, e com que chave. Guardado para o `onPageFinished` alcançar. */
     private var oNome: String? = null
     private var oToken: String? = null
@@ -145,7 +162,19 @@ object SalaDaMesa {
         // 🔴 A ponte (MNA-4). Só depois do [EnderecoDaMesa] existir, e é essa a
         // ordem dos lotes: quem dá o direito de ler a ficha à janela tem de saber
         // que a janela não vai a lado nenhum.
-        val p = PonteDaMesa(aoReceberPedido)
+        val p = PonteDaMesa(
+            aoReceberPedido = aoReceberPedido,
+            // 🔴 Saiu pela página: apaga o serviço, e só ele. A janela fica, e a
+            // página já se recarregou de volta para a porta de entrada — quem
+            // saiu pode entrar outra vez sem sair da aba.
+            aoSairDaMesa = {
+                janela?.let { ServicoDaMesa.apagar(it.context.applicationContext) }
+                // ⚠️ O convite volta a valer: entrar de novo pela porta é um ato
+                // da pessoa, mas se ela recarregar a página o aplicativo pode
+                // convidá-la outra vez sem ela ter de digitar nada.
+                jaConvidou = false
+            }
+        )
         ponte = p
         w.addJavascriptInterface(p, PonteDaMesa.NOME_NA_PAGINA)
 
@@ -181,10 +210,141 @@ object SalaDaMesa {
                 val p = pedido ?: return
                 Handler(Looper.getMainLooper()).post { responderA(p) }
             }
+
+            /**
+             * 🟥 **O `alert` e o `confirm` da página, que sem isto MORREM.**
+             *
+             * Um `WebChromeClient` que não trate `onJsAlert`/`onJsConfirm` faz o
+             * WebView **cancelar** as duas em silêncio. Não é um detalhe de
+             * enfeite: a Mesa usa `confirm` em onze lugares, e um deles é o
+             * **botão SAIR** (`mesa-conexao.js`). Sem estas linhas, o SAIR não
+             * sairia — e a decisão dele é justamente *"fica conectado até dar
+             * SAIR"*.
+             *
+             * ⚠️ Os outros dez também não são pequenos: tirar um boneco do mapa,
+             * acabar a luta, apagar uma cena. Todos "não fazem nada", sem erro.
+             *
+             * 🔴 Só com uma tela na frente. Um diálogo precisa de uma [Activity];
+             * pedido de janela despendurada é **cancelado**, que é o mesmo que o
+             * navegador faz numa aba escondida.
+             */
+            override fun onJsAlert(
+                janelaDaPagina: WebView?,
+                deOnde: String?,
+                recado: String?,
+                resultado: JsResult?
+            ): Boolean {
+                val r = resultado ?: return false
+                val tela = aTelaDaFrente() ?: run { r.cancel(); return true }
+                AlertDialog.Builder(tela)
+                    .setMessage(recado.orEmpty())
+                    .setPositiveButton("OK") { _, _ -> r.confirm() }
+                    // ⚠️ Fechar por fora TAMBÉM responde. Um diálogo dispensado
+                    // sem resposta deixa a página esperando para sempre.
+                    .setOnCancelListener { r.cancel() }
+                    .show()
+                return true
+            }
+
+            override fun onJsConfirm(
+                janelaDaPagina: WebView?,
+                deOnde: String?,
+                pergunta: String?,
+                resultado: JsResult?
+            ): Boolean {
+                val r = resultado ?: return false
+                val tela = aTelaDaFrente() ?: run { r.cancel(); return true }
+                AlertDialog.Builder(tela)
+                    .setMessage(pergunta.orEmpty())
+                    .setPositiveButton("Sim") { _, _ -> r.confirm() }
+                    .setNegativeButton("Não") { _, _ -> r.cancel() }
+                    .setOnCancelListener { r.cancel() }
+                    .show()
+                return true
+            }
+
+            /**
+             * ⚠️ O `prompt` é **recusado**, e não esquecido.
+             *
+             * A Mesa não usa nenhum hoje. Se um dia usar, ele volta `null` — que
+             * a página trata como "a pessoa desistiu" — em vez de ficar pendurado
+             * para sempre.
+             */
+            override fun onJsPrompt(
+                janelaDaPagina: WebView?,
+                deOnde: String?,
+                pergunta: String?,
+                porOmissao: String?,
+                resultado: JsPromptResult?
+            ): Boolean {
+                resultado?.cancel()
+                return true
+            }
+
+            /**
+             * **O "escolher arquivo" da página** — MNA-9.
+             *
+             * A Mesa tem dois: o retrato do personagem e a foto no chat. Sem
+             * este gancho, tocar neles **não faz nada** — e nada aparece na tela
+             * a dizer porquê.
+             *
+             * 🟥 **A resposta é obrigatória, mesmo quando é "nada".** Um
+             * `onReceiveValue(null)` esquecido não deixa só este pedido pendurado:
+             * o WebView passa a **ignorar todos os toques seguintes** naquele
+             * campo, para sempre. O campo fica morto e parece defeito da Mesa.
+             */
+            override fun onShowFileChooser(
+                janelaDaPagina: WebView?,
+                resposta: ValueCallback<Array<Uri>>?,
+                oQueEle: FileChooserParams?
+            ): Boolean {
+                val responder = resposta ?: return false
+                val abrir = escolherArquivo ?: run {
+                    // ⚠️ Sem tela na frente. Responde "nada" e devolve `false`:
+                    // assim o campo continua vivo para a próxima vez.
+                    responder.onReceiveValue(null)
+                    return false
+                }
+
+                val tipos = oQueEle?.acceptTypes
+                    ?.filter { it.isNotBlank() }
+                    ?.toTypedArray()
+                    // ⚠️ Campo sem `accept` aceita tudo. `arrayOf()` vazio faria o
+                    // explorador não mostrar arquivo nenhum.
+                    ?.takeIf { it.isNotEmpty() }
+                    ?: arrayOf("*/*")
+
+                val abriu = abrir(tipos) { escolhido ->
+                    responder.onReceiveValue(
+                        if (escolhido != null) arrayOf(escolhido) else null
+                    )
+                }
+                if (!abriu) responder.onReceiveValue(null)
+                return abriu
+            }
         }
 
         janela = w
         return w
+    }
+
+    /**
+     * A tela em que a janela está pendurada agora, ou `null`.
+     *
+     * 🔴 Um diálogo do Android só nasce de uma [Activity]. Com a janela
+     * despendurada, o embrulho aponta para o contexto do aplicativo — e é por
+     * isso que este método existe em vez de um `janela.context as Activity`, que
+     * estouraria.
+     */
+    private fun aTelaDaFrente(): Activity? {
+        var ctx: Context? = embrulho?.baseContext
+        // ⚠️ Um contexto pode vir embrulhado em vários. Desembrulha até achar a
+        // tela, ou até não haver mais.
+        while (ctx is android.content.ContextWrapper) {
+            if (ctx is Activity) return ctx.takeIf { !it.isFinishing }
+            ctx = ctx.baseContext
+        }
+        return null
     }
 
     /**
@@ -222,7 +382,15 @@ object SalaDaMesa {
         if (pedirDaTela == null) return pedido.deny()
 
         pedirDaTela(falta) { deu ->
-            if (deu) pedido.grant(conhecidos.toTypedArray()) else pedido.deny()
+            if (!deu) return@pedirDaTela pedido.deny()
+            pedido.grant(conhecidos.toTypedArray())
+            // 🟥 MNA-8, a segunda tentativa — e a que costuma pegar.
+            //
+            // 🔴 O serviço é do tipo `microphone`, e do Android 14 em diante ele
+            // só acende com o `RECORD_AUDIO` **já concedido**. A ordem natural é
+            // exatamente a errada: a sala sobe primeiro, o microfone vem depois.
+            // Aqui a permissão acabou de sair, e é o momento certo.
+            ServicoDaMesa.acender(ctx.applicationContext)
         }
     }
 
@@ -263,6 +431,13 @@ object SalaDaMesa {
         val w = janela ?: return
         if (w.url != null) return
         w.loadUrl(EnderecoDaMesa.paraAbrir(enderecoDaSala))
+        // 🟥 MNA-8: a sala passa a valer com o telefone no bolso.
+        //
+        // ⚠️ Do Android 14 em diante isto costuma NÃO pegar aqui: o serviço é do
+        // tipo `microphone`, e o microfone ainda não foi concedido — a pessoa
+        // acabou de abrir a aba. Falha em silêncio de propósito, e é tentado
+        // outra vez assim que a permissão sai (ver `responderA`).
+        ServicoDaMesa.acender(w.context.applicationContext)
     }
 
     /**
@@ -312,6 +487,9 @@ object SalaDaMesa {
      */
     fun sair() {
         val w = janela ?: return
+        // 🔴 O serviço morre com a sala, e só com ela. Trocar de aba, girar o
+        // telefone ou ir para o bolso não passam por aqui — é a decisão dele.
+        ServicoDaMesa.apagar(w.context.applicationContext)
         (w.parent as? ViewGroup)?.removeView(w)
         w.stopLoading()
         // ⚠️ `about:blank` antes de destruir: sem isto, o som que estiver tocando

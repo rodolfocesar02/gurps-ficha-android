@@ -197,24 +197,9 @@ fun FichaScreen(viewModel: FichaViewModel) {
     }
 
     fun iniciarVozComPermissao() {
-        /**
-         * 🟥 **A Mesa manda no microfone enquanto a sala estiver ligada** —
-         * MNA-7. Decisão dele.
-         *
-         * 🔴 O Android **não garante dois donos do microfone**. Deixar os dois
-         * ligados daria um dos dois emudecendo em silêncio, sem erro na tela — e
-         * quem emudecesse seria descoberto por outra pessoa dizendo *"não te
-         * ouço"*, no meio de uma cena.
-         *
-         * ⚠️ Um recado, e não um botão morto: um botão que não faz nada é pior
-         * do que um botão que explica.
-         */
-        if (com.gurps.ficha.ui.features.mesa.SalaDaMesa.estaDePe) {
-            coroutineScope.launch {
-                snackbarHostState.showSnackbar(
-                    "O microfone está com a Mesa. Saia da mesa para falar com o Mestre IA."
-                )
-            }
+        // 🟥 A Mesa manda no microfone enquanto a sala estiver ligada — MNA-7.
+        com.gurps.ficha.ui.features.mesa.oQueImpedeAVozDoMestreIA()?.let { recado ->
+            coroutineScope.launch { snackbarHostState.showSnackbar(recado) }
             return
         }
         if (estadoLive != EstadoLive.OCIOSO && estadoLive != EstadoLive.ERRO) {
@@ -259,22 +244,9 @@ fun FichaScreen(viewModel: FichaViewModel) {
     } else {
         configuration.screenWidthDp < 390 || density.fontScale > 1.1f
     }
-    /**
-     * **A aba da Mesa só aparece quando você está ligado a ela** — MNA-1.
-     *
-     * > *"É igual a aba da magia, ela só aparece quando tem magia."*
-     *
-     * 🔴 Ela é a **consequência** de estar conectado, e nunca a porta de entrada:
-     * quem liga a Mesa pela primeira vez faz isso na tela de configuração, que
-     * já existe e já testa a sala.
-     *
-     * ⚠️ Fora do `pracego` por enquanto. Uma Mesa dentro de um navegador é uma
-     * coisa visual, e fingir que não é seria pior do que não a ter — ela volta
-     * quando houver plano próprio para essa variante.
-     */
-    val temMesaLigada = !isPraCegoVariant &&
-        viewModel.destinoDaRolagem == com.gurps.ficha.domain.rules.DestinoDaRolagem.MESA &&
-        !viewModel.mesaToken.isNullOrBlank()
+    // A aba da Mesa entra sob a mesma condição da Magia — MNA-1, `AAbaDaMesa.kt`.
+    val temMesaLigada =
+        com.gurps.ficha.ui.features.mesa.aAbaDaMesaAparece(viewModel, isPraCegoVariant)
     val tabs = buildList {
         add("Geral")
         add("Traços")
@@ -295,8 +267,8 @@ fun FichaScreen(viewModel: FichaViewModel) {
     // (sem cabeçalho da ficha, sem PontosBar, sem abas). O X no header da campanha (TabSaga) sai.
     // Diferente do VTT, NÃO força landscape — a Saga é vertical.
     val sagaModoJogo = selectedTitle == "Saga" && viewModel.sagaCampanhaAtiva != null
-    // 🔴 A Mesa é tela cheia: ela já tem a barra dela, e duas barras uma em cima
-    // da outra num telefone não deixam tabuleiro nenhum à vista.
+    // A Mesa é tela cheia: duas barras uma em cima da outra num telefone não
+    // deixam tabuleiro nenhum à vista.
     val hideAppChrome = vttFullscreen || sagaModoJogo || selectedTitle == "Mesa"
     val maxTabIndex = tabs.lastIndex
     val exportCompativelLauncher = rememberLauncherForActivityResult(
@@ -427,20 +399,9 @@ fun FichaScreen(viewModel: FichaViewModel) {
         if (viewModel.pedidoDaMesa != null) abaEscolhida = "Rolagem"
     }
 
-    /**
-     * **CONECTAR À MESA abre a aba** — MNA-10.
-     *
-     * ⚠️ Limpa aqui, e não em quem pediu: se a aba ainda não estiver na lista —
-     * o token acabou de ser guardado e a recomposição não chegou —, o salto cai
-     * na primeira aba e a pessoa fica olhando para o Geral sem entender. Limpar
-     * só depois de a aba existir dá a ela a próxima volta para aparecer.
-     */
-    LaunchedEffect(viewModel.irParaAMesa, temMesaLigada) {
-        if (viewModel.irParaAMesa && temMesaLigada) {
-            abaEscolhida = "Mesa"
-            viewModel.irParaAMesa = false
-        }
-    }
+    com.gurps.ficha.ui.features.mesa.SaltarParaAMesaQuandoPedirem(
+        viewModel, temMesaLigada
+    ) { abaEscolhida = it }
     // Orientação landscape é EXCLUSIVA do VTT legado — o Modo Jogo da Saga fica vertical.
     DisposableEffect(vttFullscreen) {
         val previousOrientation = activity?.requestedOrientation
@@ -556,14 +517,8 @@ fun FichaScreen(viewModel: FichaViewModel) {
                 "Equip." -> TabEquipamentos(viewModel)
                 "Rolagem" -> TabRolagem(viewModel)
                 "Mesa" -> com.gurps.ficha.ui.features.mesa.TabMesa(
-                    nome = viewModel.mesaNome,
-                    token = viewModel.mesaToken,
-                    // 🔴 O pedido cai no MESMO lugar que o link de fora do
-                    // aplicativo cai (`MainActivity`), e daí em diante o caminho
-                    // é o do CC-5: o `LaunchedEffect` acima salta para a Rolagem
-                    // e a `TabRolagem` abre o diálogo. Nada disto é novo.
-                    aoReceberPedido = { viewModel.pedidoDaMesa = it }
-                )
+                    viewModel.mesaNome, viewModel.mesaToken
+                ) { viewModel.pedidoDaMesa = it }
                 "Saga" -> TabSaga(viewModel)
                 else -> TabGeral(viewModel)
             }

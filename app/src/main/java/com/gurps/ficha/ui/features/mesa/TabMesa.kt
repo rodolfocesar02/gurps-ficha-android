@@ -6,6 +6,7 @@ import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.remember
+import android.net.Uri
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -20,6 +21,11 @@ import com.gurps.ficha.domain.rules.PedidoDaMesa
  * 🔴 Esta função é **uma parede**, e não uma sala. Ela pendura a janela que o
  * [SalaDaMesa] guarda e, quando a aba sai da frente, tira a janela da parede
  * sem a apagar.
+ *
+ * 🔴 O `aoReceberPedido` entrega o pedido no MESMO lugar em que o link de fora do
+ * aplicativo o entregava (`MainActivity`), e daí em diante o caminho é o do
+ * CC-5: a `FichaScreen` salta para a Rolagem e a `TabRolagem` abre o diálogo.
+ * Nada disso é novo, e é de propósito.
  *
  * ⚠️ Por isso ela é tão curta, e tem de continuar assim: tudo o que for estado
  * escrito aqui dentro morre na próxima troca de aba, porque a `FichaScreen`
@@ -57,7 +63,34 @@ fun TabMesa(
         aEsperaDaResposta[0] = null
     }
 
+    /**
+     * **O explorador de arquivos** — MNA-9. O retrato e a foto do chat.
+     *
+     * 🟥 A resposta é obrigatória mesmo quando é "nada": um cancelamento sem
+     * resposta deixa o campo da página **morto para sempre**, e não só desta vez.
+     * Por isso o guardado é chamado no `?:` também.
+     */
+    val aEsperaDoArquivo = remember { arrayOfNulls<((Uri?) -> Unit)>(1) }
+    val explorador = rememberLauncherForActivityResult(
+        ActivityResultContracts.OpenDocument()
+    ) { escolhido ->
+        aEsperaDoArquivo[0]?.invoke(escolhido)
+        aEsperaDoArquivo[0] = null
+    }
+
     DisposableEffect(Unit) {
+        SalaDaMesa.escolherArquivo = { tipos, responder ->
+            aEsperaDoArquivo[0] = responder
+            try {
+                explorador.launch(tipos)
+                true
+            } catch (_: Exception) {
+                // ⚠️ Aparelho sem explorador de arquivos. Devolver `false` faz o
+                // WebView responder "nada" e o campo continua vivo.
+                aEsperaDoArquivo[0] = null
+                false
+            }
+        }
         SalaDaMesa.pedirAoTelefone = { quais, responder ->
             aEsperaDaResposta[0] = responder
             caixaDePermissao.launch(quais.toTypedArray())
@@ -65,7 +98,14 @@ fun TabMesa(
         // ⚠️ Ao sair da aba, a sala perde a forma de perguntar — de propósito.
         // Uma caixa de permissão por cima da aba Perícias seria um susto sem
         // explicação nenhuma na tela.
-        onDispose { SalaDaMesa.pedirAoTelefone = null }
+        onDispose {
+            SalaDaMesa.pedirAoTelefone = null
+            SalaDaMesa.escolherArquivo = null
+            // 🔴 Quem estivesse esperando um arquivo recebe "nada", e não o
+            // silêncio: sem isto o campo da página fica morto para sempre.
+            aEsperaDoArquivo[0]?.invoke(null)
+            aEsperaDoArquivo[0] = null
+        }
     }
 
     AndroidView(
