@@ -1,6 +1,7 @@
 package com.gurps.ficha.model
 
 import java.io.File
+import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
@@ -236,7 +237,22 @@ class AAbaDaMesaTest {
         )
         assertTrue(
             "o desenho do icone sumiu",
-            File("src/main/res/drawable/tab_mesa.xml").exists()
+            File("src/main/res/drawable/tab_mesa.png").exists()
+        )
+    }
+
+    @Test
+    fun `⚠️ e ha UM icone da Mesa, e nao dois`() {
+        // 🔴 O desenho dele entrou por cima de um vetor que eu tinha escrito à
+        // mão. Dois arquivos com o mesmo nome de recurso e extensões diferentes
+        // param a compilação inteira — e o erro fala de recurso duplicado, sem
+        // dizer que foi um ícone trocado pela metade.
+        val pasta = File("src/main/res/drawable")
+        val achados = pasta.listFiles { f -> f.name.startsWith("tab_mesa.") }
+        assertEquals(
+            "ha mais de um arquivo chamado tab_mesa: " +
+                achados.orEmpty().joinToString { it.name },
+            1, achados?.size
         )
     }
 }

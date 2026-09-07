@@ -9548,3 +9548,21 @@ Nao estava confuso.
   confere o token antes de abrir. Um atalho que pulasse a conferencia poria a
   pessoa diante da porta da sala sem dizer porque.
 - **Status:** ✅ Build OK nas 2 variantes -- gate **2519**, 0 falhas.
+
+---
+
+## Lote MNA-1e — O icone de verdade da aba da Mesa
+
+Ele desenhou o icone e mandou: um hexagono no estilo dos outros, com quatro
+pessoas em volta de uma mesa e um d20 no meio.
+
+- Entrou como `res/drawable/tab_mesa.png` (272x280, o dobro da resolucao dos
+  outros -- mais nitido, e o tamanho na tela e fixo por `Modifier.size`).
+- **🔴 E o vetor que eu tinha escrito a mao SAIU.** Dois arquivos com o mesmo
+  nome de recurso e extensoes diferentes (`tab_mesa.png` e `tab_mesa.xml`) param
+  a compilacao inteira, e o erro fala de recurso duplicado sem dizer que foi um
+  icone trocado pela metade. Ficou uma sonda a contar quantos `tab_mesa.*`
+  existem.
+- ⚠️ O original continua em `mesa-virtual/Mesa.png`; eu copiei, nao movi.
+- **Status:** ✅ Build OK nas 2 variantes -- gate **2520**, 0 falhas. Conferido
+  que o arquivo no app e byte a byte igual ao dele, e que entrou no APK.
