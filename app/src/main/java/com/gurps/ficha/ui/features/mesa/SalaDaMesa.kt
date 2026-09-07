@@ -195,19 +195,23 @@ object SalaDaMesa {
         // que a janela não vai a lado nenhum.
         val p = PonteDaMesa(
             aoReceberPedido = aoReceberPedido,
-            // 🔴 Saiu pela página: apaga o serviço, e só ele. A janela fica, e a
-            // página já se recarregou de volta para a porta de entrada — quem
-            // saiu pode entrar outra vez sem sair da aba.
-            aoSairDaMesa = {
-                janela?.let { ServicoDaMesa.apagar(it.context.applicationContext) }
-                // 🔴 E tira a pessoa da aba. Sem isto ela fica olhando para a
-                // porta da sala de que acabou de sair, sem saber para onde ir.
-                aoSairDaAba?.invoke()
-                // ⚠️ O convite volta a valer: entrar de novo pela porta é um ato
-                // da pessoa, mas se ela recarregar a página o aplicativo pode
-                // convidá-la outra vez sem ela ter de digitar nada.
-                jaConvidou = false
-            }
+            /**
+             * 🟥 **Saiu pela página: a sala cai INTEIRA** — MNA-1d.
+             *
+             * A primeira forma disto apagava só o serviço e deixava a janela
+             * viva, para quem saísse poder entrar de novo sem sair da aba.
+             * Fazia sentido enquanto a aba existia por causa do token guardado.
+             *
+             * 🔴 Deixou de fazer no MNA-1c, e ele viu no aparelho: agora é a
+             * **sala de pé** que decide se o ícone da Mesa existe. Uma janela
+             * viva depois do SAIR é uma sala de pé — e o ícone ficava na barra
+             * com a pessoa já fora da mesa.
+             *
+             * ⚠️ E [sair] faz tudo o que era feito aqui à mão: apaga o serviço,
+             * larga o convite e tira a pessoa da aba. Ter as duas listas era ter
+             * duas listas para esquecer de atualizar.
+             */
+            aoSairDaMesa = { sair() }
         )
         ponte = p
         w.addJavascriptInterface(p, PonteDaMesa.NOME_NA_PAGINA)

@@ -195,6 +195,35 @@ class AAbaDaMesaTest {
         )
     }
 
+    @Test
+    fun `🟥 o SAIR pela pagina derruba a sala INTEIRA, e nao so o servico`() {
+        // 🔴 A primeira forma apagava so o servico e deixava a janela viva, para
+        // quem saisse poder entrar de novo sem sair da aba. Deixou de servir no
+        // MNA-1c: agora e a SALA DE PE que decide se o icone existe, e uma janela
+        // viva depois do SAIR e uma sala de pe -- o icone ficava na barra com a
+        // pessoa ja fora da mesa.
+        val i = sala.indexOf("aoSairDaMesa =")
+        assertTrue("nao achei o que acontece ao sair pela pagina", i > 0)
+        val corpo = sala.substring(i, minOf(i + 120, sala.length))
+        assertTrue(
+            "o SAIR pela pagina deixou de derrubar a sala",
+            corpo.contains("sair()")
+        )
+    }
+
+    @Test
+    fun `🔴 derrubar a sala apaga a janela, e por isso a aba some`() {
+        // ⚠️ E a corrente inteira: sem `janela = null` o `estaDePe` continua
+        // verdadeiro, e a aba fica na barra para sempre.
+        val i = sala.indexOf("fun sair()")
+        assertTrue(i > 0)
+        val corpo = sala.substring(i)
+        listOf("w.destroy()", "janela = null", "ServicoDaMesa.apagar",
+               "jaConvidou = false", "aoSairDaAba?.invoke()").forEach {
+            assertTrue("o sair() deixou de fazer: $it", corpo.take(1400).contains(it))
+        }
+    }
+
     // == O ícone ======================================================
 
     @Test

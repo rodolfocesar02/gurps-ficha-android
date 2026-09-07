@@ -73,9 +73,13 @@ class PonteDaMesa(
      * barra dizendo *"você está na mesa"* — e ela é a única coisa da mesa que se
      * vê com o aplicativo no bolso.
      *
-     * ⚠️ A janela **não** é apagada aqui. A página se recarrega sozinha e volta à
-     * porta de entrada; quem saiu continua olhando para a aba, e pode entrar
-     * outra vez sem sair dela. Apagar a janela seria tirar a porta junto.
+     * 🟥 E a sala cai **inteira** — MNA-1d. A janela é apagada, o serviço some e a
+     * aba sai da barra. Quem sai da mesa está fora dela, e um ícone de Mesa numa
+     * barra de quem já saiu é um ícone que mente.
+     *
+     * ⚠️ Para voltar, o caminho é o mesmo da primeira vez: CONECTAR À MESA, que
+     * confere o token antes de abrir. Um atalho que pulasse essa conferência
+     * poria a pessoa diante da porta da sala sem dizer porquê.
      */
     @JavascriptInterface
     fun sai() {

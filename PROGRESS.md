@@ -9525,3 +9525,26 @@ Nao estava confuso.
   que a pessoa fez.
 - **Status:** ✅ Build OK nas 2 variantes -- gate **2517**, 0 falhas.
   🔴 **PENDENTE: aparelho.**
+
+---
+
+## Lote MNA-1d — O icone da Mesa ficava na barra depois do SAIR
+
+> *"deu certo a 1a parte! a aba somente apareceu quando eu entrei pelo Enviar
+> para mesa! porem faltou fechar o icone da mesa na lista de icones quando der
+> sair da mesa!"*
+
+- **🟥 Consequencia direta do MNA-1c, e minha.** O SAIR pela pagina apagava so o
+  **servico** e deixava a **janela viva**, de proposito: assim quem saisse podia
+  entrar de novo sem sair da aba. Fazia sentido enquanto a aba existia por causa
+  do token guardado.
+- **🔴 Deixou de fazer no MNA-1c.** Agora e a **sala de pe** que decide se o icone
+  existe -- e uma janela viva depois do SAIR **e** uma sala de pe. O icone ficava
+  na barra com a pessoa ja fora da mesa.
+- **A cura:** o SAIR pela pagina chama o `sair()` inteiro, que ja fazia tudo --
+  apaga o servico, apaga a janela, larga o convite e tira a pessoa da aba. Ter as
+  duas listas era ter duas listas para esquecer de atualizar.
+- **⚠️ Para voltar,** o caminho e o mesmo da primeira vez: CONECTAR A MESA, que
+  confere o token antes de abrir. Um atalho que pulasse a conferencia poria a
+  pessoa diante da porta da sala sem dizer porque.
+- **Status:** ✅ Build OK nas 2 variantes -- gate **2519**, 0 falhas.
