@@ -3,6 +3,9 @@ package com.gurps.ficha.ui.features.mesa
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.activity.compose.BackHandler
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.runtime.remember
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -36,6 +39,34 @@ fun TabMesa(
     // faz nada — de propósito. Deixá-lo passar faria o Voltar fechar o
     // aplicativo, e a pessoa perderia a mesa por carregar uma vez de mais.
     BackHandler { SalaDaMesa.voltarDentroDaPagina() }
+
+    /**
+     * **Quem abre a caixa de permissão do Android** — MNA-7.
+     *
+     * 🔴 A resposta chega **depois**, e por isso o que a página pediu tem de
+     * ficar guardado até lá. Sem isto, o pedido do microfone se perderia entre a
+     * pergunta e a resposta, e a página ficaria esperando para sempre — que é
+     * exatamente o defeito que o `onPermissionRequest` veio consertar.
+     */
+    val aEsperaDaResposta = remember { arrayOfNulls<((Boolean) -> Unit)>(1) }
+    val caixaDePermissao = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestMultiplePermissions()
+    ) { resultado ->
+        val deu = resultado.values.all { it }
+        aEsperaDaResposta[0]?.invoke(deu)
+        aEsperaDaResposta[0] = null
+    }
+
+    DisposableEffect(Unit) {
+        SalaDaMesa.pedirAoTelefone = { quais, responder ->
+            aEsperaDaResposta[0] = responder
+            caixaDePermissao.launch(quais.toTypedArray())
+        }
+        // ⚠️ Ao sair da aba, a sala perde a forma de perguntar — de propósito.
+        // Uma caixa de permissão por cima da aba Perícias seria um susto sem
+        // explicação nenhuma na tela.
+        onDispose { SalaDaMesa.pedirAoTelefone = null }
+    }
 
     AndroidView(
         modifier = Modifier.fillMaxSize(),

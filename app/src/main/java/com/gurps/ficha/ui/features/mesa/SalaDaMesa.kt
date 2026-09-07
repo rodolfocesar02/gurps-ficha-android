@@ -4,6 +4,10 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.MutableContextWrapper
 import android.view.ViewGroup
+import android.os.Handler
+import android.os.Looper
+import android.webkit.PermissionRequest
+import android.webkit.WebChromeClient
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
@@ -42,9 +46,7 @@ import com.gurps.ficha.domain.rules.PedidoDaMesa
  *
  * ## ⚠️ O que este arquivo AINDA não faz
  *
- * - Não entrega microfone nem câmera (MNA-7 e MNA-9). A página vai pedir e ficar
- *   esperando, **calada** — é assim que um `WebView` se comporta por omissão, e
- *   é o defeito que aqueles lotes consertam.
+ * - Não sabe escolher arquivo nem abrir a imagem do chat em tela cheia (MNA-9).
  * - Não sobrevive ao aplicativo ir para o bolso (MNA-8).
  */
 object SalaDaMesa {
@@ -81,6 +83,19 @@ object SalaDaMesa {
      * página com uma ponte para um lugar que já não existe.
      */
     private var ponte: PonteDaMesa? = null
+
+    /**
+     * **Quem sabe pedir uma permissão ao telefone** — MNA-7.
+     *
+     * 🔴 Um `object` não tem tela, e só uma tela pode abrir a caixa de
+     * permissão do Android. Quem a tem é a [TabMesa], que põe aqui a forma de
+     * pedir enquanto estiver na frente.
+     *
+     * ⚠️ `null` quando a aba não está pendurada — e aí não se pede nada: uma
+     * caixa de permissão aparecendo por cima da aba Perícias seria um susto sem
+     * explicação.
+     */
+    var pedirAoTelefone: ((List<String>, (Boolean) -> Unit) -> Unit)? = null
 
     /** Quem entra, e com que chave. Guardado para o `onPageFinished` alcançar. */
     private var oNome: String? = null
@@ -150,8 +165,65 @@ object SalaDaMesa {
             }
         }
 
+        w.webChromeClient = object : WebChromeClient() {
+            /**
+             * 🟥 **A linha que todo mundo esquece.**
+             *
+             * O WebView recebe o pedido de microfone da página e, por padrão,
+             * **não responde**. Não recusa — fica calado, e a página espera para
+             * sempre. Do lado de lá parece que a mesa travou.
+             *
+             * 🔴 E não basta dizer que sim: o WebView só pode dar o que o
+             * aplicativo já tem. Um `grant` com o `RECORD_AUDIO` por conceder
+             * devolve um microfone que não grava nada — e, de novo, em silêncio.
+             */
+            override fun onPermissionRequest(pedido: PermissionRequest?) {
+                val p = pedido ?: return
+                Handler(Looper.getMainLooper()).post { responderA(p) }
+            }
+        }
+
         janela = w
         return w
+    }
+
+    /**
+     * O que a página pediu, traduzido para o que o Android entende.
+     *
+     * ⚠️ Só microfone e câmera. Qualquer outro recurso é **recusado**, e não
+     * ignorado: a página que peça algo que este aplicativo não sabe dar tem de
+     * receber um não e seguir em frente.
+     */
+    private fun aPermissaoDo(recurso: String): String? = when (recurso) {
+        PermissionRequest.RESOURCE_AUDIO_CAPTURE -> android.Manifest.permission.RECORD_AUDIO
+        PermissionRequest.RESOURCE_VIDEO_CAPTURE -> android.Manifest.permission.CAMERA
+        else -> null
+    }
+
+    private fun responderA(pedido: PermissionRequest) {
+        val janelaViva = janela ?: return pedido.deny()
+        val ctx = janelaViva.context
+
+        val querem = pedido.resources.orEmpty()
+        val conhecidos = querem.filter { aPermissaoDo(it) != null }
+        // 🔴 Pediu só coisa que não sabemos dar: um NÃO, e não o silêncio.
+        if (conhecidos.isEmpty()) return pedido.deny()
+
+        val precisa = conhecidos.mapNotNull { aPermissaoDo(it) }.distinct()
+        val falta = precisa.filter {
+            androidx.core.content.ContextCompat.checkSelfPermission(ctx, it) !=
+                android.content.pm.PackageManager.PERMISSION_GRANTED
+        }
+        if (falta.isEmpty()) return pedido.grant(conhecidos.toTypedArray())
+
+        val pedirDaTela = pedirAoTelefone
+        // ⚠️ Sem tela na frente não há como perguntar. Recusar é o certo: a
+        // página trata o não, e a pessoa tenta outra vez com a aba aberta.
+        if (pedirDaTela == null) return pedido.deny()
+
+        pedirDaTela(falta) { deu ->
+            if (deu) pedido.grant(conhecidos.toTypedArray()) else pedido.deny()
+        }
     }
 
     /**

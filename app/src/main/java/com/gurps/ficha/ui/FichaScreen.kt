@@ -197,6 +197,26 @@ fun FichaScreen(viewModel: FichaViewModel) {
     }
 
     fun iniciarVozComPermissao() {
+        /**
+         * 🟥 **A Mesa manda no microfone enquanto a sala estiver ligada** —
+         * MNA-7. Decisão dele.
+         *
+         * 🔴 O Android **não garante dois donos do microfone**. Deixar os dois
+         * ligados daria um dos dois emudecendo em silêncio, sem erro na tela — e
+         * quem emudecesse seria descoberto por outra pessoa dizendo *"não te
+         * ouço"*, no meio de uma cena.
+         *
+         * ⚠️ Um recado, e não um botão morto: um botão que não faz nada é pior
+         * do que um botão que explica.
+         */
+        if (com.gurps.ficha.ui.features.mesa.SalaDaMesa.estaDePe) {
+            coroutineScope.launch {
+                snackbarHostState.showSnackbar(
+                    "O microfone está com a Mesa. Saia da mesa para falar com o Mestre IA."
+                )
+            }
+            return
+        }
         if (estadoLive != EstadoLive.OCIOSO && estadoLive != EstadoLive.ERRO) {
             geminiLive.encerrar()
             return

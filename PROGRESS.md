@@ -9341,3 +9341,33 @@ A pergunta dele **encontrou um defeito no plano**, antes de uma linha ser escrit
   Mesa, gate **2527**.
   🔴 **PENDENTE: MNA-0, o teste no aparelho.** Nada disto foi visto correr: e
   WebView, e a bancada nao alcanca.
+
+---
+
+## Lote MNA-7 — A voz
+
+- **🟥 A linha que todo mundo esquece.** O WebView recebe o pedido de microfone
+  da pagina e, por padrao, **nao responde**. Nao recusa -- fica calado, e a
+  pagina espera para sempre. Do lado de la parece que a mesa travou. O
+  `onPermissionRequest` e o que a entrega.
+- **🔴 E nao basta dizer que sim.** O WebView so pode dar o que o aplicativo ja
+  tem. Um `grant` com o `RECORD_AUDIO` por conceder devolve um microfone que nao
+  grava nada -- e, de novo, em silencio. Entao: confere o que falta, pede a
+  caixa do Android, e so depois concede.
+- **⚠️ Sem tela na frente, recusa.** Uma caixa de permissao aparecendo por cima
+  da aba Pericias seria um susto sem explicacao. A pagina trata o nao.
+- **A camera entrou no manifesto**, com `uses-feature required=false`: quem nunca
+  abre a Mesa nao precisa dela, e um `required` tiraria o app da loja para todo
+  aparelho sem camera.
+- **🟥 A Mesa manda no microfone** enquanto a sala estiver ligada -- decisao
+  dele. O Android nao garante dois donos do microfone, e deixar os dois ligados
+  daria um emudecendo em silencio, descoberto por outra pessoa dizendo "nao te
+  ouco" no meio de uma cena. O Mestre IA responde com um recado, e nao com um
+  botao morto.
+- **Compartilhar tela** (lado da Mesa) fica apagado com uma frase. E ali eu achei
+  um defeito meu **lendo, e nao correndo**: o `dentro-do-aplicativo.js` carregava
+  DEPOIS do `mesa.js`, entao os botoes nunca eram apagados e a suite ficava verde
+  a provar uma coisa que nao acontecia. Nasceu o `ponte-antes-de-quem-usa`, que
+  confere a ORDEM e nao so a existencia.
+- **Status:** ✅ Build OK nas 2 variantes -- gate **2510**. Mesa: **2530**.
+  🔴 **PENDENTE: aparelho.** Microfone e permissao nao se provam na bancada.
