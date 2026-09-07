@@ -9566,3 +9566,28 @@ pessoas em volta de uma mesa e um d20 no meio.
 - ⚠️ O original continua em `mesa-virtual/Mesa.png`; eu copiei, nao movi.
 - **Status:** ✅ Build OK nas 2 variantes -- gate **2520**, 0 falhas. Conferido
   que o arquivo no app e byte a byte igual ao dele, e que entrou no APK.
+
+---
+
+## Lote MNA-7b — O `prompt` estava recusado, e com ele morriam DEZ botoes
+
+> *"fiz o teste apareceu o pop-up, porem nao apareceu o boneco, ele fecha o
+> pop-up e nao tem boneco na cena!"*
+
+- **🟥 Erro meu, e do tipo pior:** eu escrevi no `SalaDaMesa.kt`, no MNA-7, que
+  *"a Mesa nao usa nenhum `prompt` hoje"* -- e **nao fui verificar**. Uma linha de
+  busca teria mostrado: ela usa em **dez** lugares.
+- **🔴 O `onJsPrompt` cancelava tudo.** Um deles e o *"Nome do token:"*, que e
+  como um boneco nasce: o nome voltava vazio e a criacao morria em silencio.
+  Criar cena, renomear cena, renomear boneco, escrever no mapa, por alguem na
+  luta e criar sala estavam mortos do mesmo jeito, e **nenhum dizia porque**.
+- **A cura:** uma caixa com campo de texto de verdade, com o texto sugerido ja
+  escolhido -- renomear e quase sempre trocar o nome inteiro, e nao emendar o fim.
+- **⚠️ E a varredura que eu devia ter feito da primeira vez, feita agora:** a
+  pagina usa `prompt`, `confirm` e `alert`, e **so** isso. Sem `beforeunload`,
+  sem tela cheia, sem geolocalizacao, sem download gerado, sem notificacao.
+- **🟥 Duas sondas, uma de cada lado da fronteira:** no app, que os tres dialogos
+  sao atendidos e que **nenhum e recusa seca** -- um `override` que so cancela e
+  o mesmo que nao existir, com a vantagem de parecer feito. Na Mesa, uma que
+  conta o que a pagina pede e fica vermelha quando ela passa a pedir algo novo.
+- **Status:** ✅ Build OK nas 2 variantes -- gate **2523**. Mesa: **2557**.

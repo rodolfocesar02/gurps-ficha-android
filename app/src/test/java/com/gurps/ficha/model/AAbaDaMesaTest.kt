@@ -225,6 +225,55 @@ class AAbaDaMesaTest {
         }
     }
 
+    // == Os tres dialogos da pagina ==================================
+
+    /**
+     * 🟥 **O erro que custou o botao de criar boneco.**
+     *
+     * Eu escrevi no `SalaDaMesa.kt`, no MNA-7, que *"a Mesa nao usa nenhum
+     * `prompt` hoje"* — e **nao fui verificar**. Usa em dez lugares, e um deles e
+     * o *"Nome do token:"*, que e como um boneco nasce.
+     *
+     * 🔴 Com o `cancel()`, ele segurava o hexagono, o menu abria, tocava em "Por
+     * um boneco AQUI", o menu fechava e **nao aparecia boneco nenhum**. Criar
+     * cena, renomear, escrever no mapa e criar sala estavam mortos do mesmo
+     * jeito, e nenhum dizia porque.
+     *
+     * ⚠️ Um WebView que nao trate estes tres **cancela em silencio**. Nao ha erro,
+     * nao ha aviso: o botao simplesmente nao faz nada.
+     */
+    @Test
+    fun `🟥 os TRES dialogos da pagina sao atendidos, e nenhum e recusa seca`() {
+        listOf("onJsAlert", "onJsConfirm", "onJsPrompt").forEach { qual ->
+            val i = sala.indexOf("override fun $qual(")
+            assertTrue("o $qual sumiu -- a pagina fica esperando calada", i > 0)
+            val corpo = sala.substring(i, minOf(i + 1600, sala.length))
+            // 🔴 Tem de haver um caminho que CONFIRMA. Um `override` que so
+            // cancela e o mesmo que nao existir, com a vantagem de parecer feito.
+            assertTrue(
+                "o $qual so sabe cancelar -- e o defeito que matou o criar boneco",
+                corpo.contains(".confirm(")
+            )
+            // E tem de haver dialogo de verdade, e nao uma resposta inventada.
+            assertTrue(
+                "o $qual responde sem perguntar a ninguem",
+                corpo.contains("AlertDialog.Builder")
+            )
+        }
+    }
+
+    @Test
+    fun `🔴 o prompt devolve o que foi ESCRITO, e nao o texto sugerido`() {
+        // ⚠️ Devolver o `porOmissao` faria todo boneco nascer com o nome sugerido,
+        // e ninguem perceberia ate ter tres "Token" no tabuleiro.
+        val i = sala.indexOf("override fun onJsPrompt(")
+        val corpo = sala.substring(i, minOf(i + 1600, sala.length))
+        assertTrue(
+            "o prompt nao le o que a pessoa escreveu",
+            corpo.contains("r.confirm(campo.text.toString())")
+        )
+    }
+
     // == O ícone ======================================================
 
     @Test

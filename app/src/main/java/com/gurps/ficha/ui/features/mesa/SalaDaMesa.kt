@@ -7,6 +7,8 @@ import android.content.Context
 import android.content.MutableContextWrapper
 import android.net.Uri
 import android.view.ViewGroup
+import android.widget.EditText
+import android.widget.FrameLayout
 import android.os.Handler
 import android.os.Looper
 import android.webkit.PermissionRequest
@@ -302,11 +304,22 @@ object SalaDaMesa {
             }
 
             /**
-             * ⚠️ O `prompt` é **recusado**, e não esquecido.
+             * 🟥 **O `prompt`, e um erro meu que custou o botão inteiro.**
              *
-             * A Mesa não usa nenhum hoje. Se um dia usar, ele volta `null` — que
-             * a página trata como "a pessoa desistiu" — em vez de ficar pendurado
-             * para sempre.
+             * Eu escrevi aqui, no MNA-7, que *"a Mesa não usa nenhum `prompt`
+             * hoje"* — e **não fui verificar**. Usa em **dez** lugares. Um deles
+             * é o *"Nome do token:"*, que é como um boneco nasce.
+             *
+             * 🔴 Com o `cancel()`, o nome voltava vazio e a criação morria em
+             * silêncio: ele segurava o hexágono, o menu abria, tocava em *"Pôr um
+             * boneco AQUI"*, o menu fechava e **não aparecia boneco nenhum**.
+             *
+             * ⚠️ E não era só o boneco. Criar cena, renomear cena, renomear
+             * boneco, escrever no mapa, pôr alguém na luta e criar sala — os dez
+             * estavam mortos do mesmo jeito, e nenhum dizia porquê.
+             *
+             * 🔴 A lição, que fica escrita: **eu afirmei uma coisa sobre o código
+             * do outro lado sem a medir.** Uma linha de `grep` teria mostrado.
              */
             override fun onJsPrompt(
                 janelaDaPagina: WebView?,
@@ -315,7 +328,29 @@ object SalaDaMesa {
                 porOmissao: String?,
                 resultado: JsPromptResult?
             ): Boolean {
-                resultado?.cancel()
+                val r = resultado ?: return false
+                val tela = aTelaDaFrente() ?: run { r.cancel(); return true }
+
+                val campo = EditText(tela).apply {
+                    setText(porOmissao.orEmpty())
+                    // ⚠️ O texto já vem escolhido: renomear um boneco é quase
+                    // sempre trocar o nome inteiro, e não emendar o fim dele.
+                    setSelection(0, text.length)
+                }
+                // Uma margem, senão o campo cola nas bordas do diálogo.
+                val moldura = FrameLayout(tela).apply {
+                    val lado = (24 * tela.resources.displayMetrics.density).toInt()
+                    setPadding(lado, lado / 2, lado, 0)
+                    addView(campo)
+                }
+
+                AlertDialog.Builder(tela)
+                    .setMessage(pergunta.orEmpty())
+                    .setView(moldura)
+                    .setPositiveButton("OK") { _, _ -> r.confirm(campo.text.toString()) }
+                    .setNegativeButton("Cancelar") { _, _ -> r.cancel() }
+                    .setOnCancelListener { r.cancel() }
+                    .show()
                 return true
             }
 
