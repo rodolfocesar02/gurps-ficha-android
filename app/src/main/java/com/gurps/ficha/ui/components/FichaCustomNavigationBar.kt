@@ -116,107 +116,99 @@ fun FichaCustomNavigationBar(
                 }
             }
 
-            Row(
-                // ⚠️ A mesma folga em cima, para o icone crescido nao subir
-                // para dentro da linha do nome.
+            /**
+             * 🟥 **O Mestre IA entra na FILA** — achado dele, no aparelho:
+             *
+             * > *"o icone do mestre IA, ficou fora do alinhamento, ele pode
+             * > entrar no grupo ficar todos icones na mesma linha!"*
+             *
+             * 🔴 Ele estava numa âncora à esquerda, fora do grupo, com um
+             * contrapeso vazio do outro lado para o centro não sair torto. Era uma
+             * conta a mais para uma coisa que se resolve pondo tudo na mesma
+             * linha: com ele **dentro**, o grupo é o que é, e o centro é o centro.
+             *
+             * ⚠️ E ele continua a **não ser uma aba**: toque abre o chat, segurar
+             * liga a voz, e o cometa não para debaixo dele — ver o
+             * `OTrilhoDoCometa`.
+             */
+            BoxWithConstraints(
+                // ⚠️ A folga em cima, para o ícone crescido não subir para dentro
+                // da linha do nome.
                 modifier = Modifier.fillMaxWidth().padding(top = 4.dp),
-                verticalAlignment = Alignment.Bottom
+                contentAlignment = Alignment.BottomCenter
             ) {
-                // Ícone Mestre IA fixo à esquerda — toque abre chat, segurar ativa voz
-                Box(modifier = Modifier.width(LARGURA_DA_ANCORA)) {
-                    RPGNavigationItem(
-                        label = "Mestre IA",
-                        iconRes = R.drawable.tab_mestre_ia,
-                        isSelected = mestreIAAberto,
-                        isPraCegoVariant = isPraCegoVariant,
-                        estadoVoz = estadoVozEfetivo,
-                        onClick = onMestreIAClick,
-                        onLongClick = onMestreIALongPress
-                    )
-                }
-
                 /**
-                 * **As abas, no CENTRO** — e não empurradas para a direita.
+                 * 🔴 A largura de cada lugar é **calculada**, e não fixa.
                  *
-                 * > *"quero centralizar os icones! quando nao tiver os icones de
-                 * > magia nem da mesa!"*
-                 *
-                 * 🔴 Aqui estava um `Arrangement.End`, e era essa a causa: com
-                 * sete abas elas se amontoavam à direita e sobrava um buraco à
-                 * esquerda; só com nove — Magia **e** Mesa — a barra parecia
-                 * cheia.
-                 *
-                 * ⚠️ E há um contrapeso do lado direito, da mesma largura do
-                 * Mestre IA. Sem ele, "centro" seria o centro do **espaço que
-                 * sobra**, e não o da tela — a fila ficaria sempre um pouco à
-                 * direita, que é o tipo de torto que se sente e não se explica.
+                 * ⚠️ São sete abas num dia e nove no outro (as Magias entram com a
+                 * aptidão; a Mesa, com a sala aberta), mais o Mestre IA. Uma
+                 * largura fixa que coubesse dez desperdiçaria tela com oito, e uma
+                 * que ficasse bonita com oito estouraria a barra com dez.
                  */
-                BoxWithConstraints(
-                    modifier = Modifier.weight(1f),
-                    contentAlignment = Alignment.BottomCenter
-                ) {
-                    /**
-                     * 🔴 A largura de cada aba é **calculada**, e não fixa.
-                     *
-                     * ⚠️ São sete abas num dia e nove no outro (a Magia entra com
-                     * a aptidão; a Mesa, com a sala aberta). Uma largura fixa que
-                     * coubesse nove desperdiçaria tela com sete, e uma que ficasse
-                     * bonita com sete estouraria a barra com nove.
-                     */
-                    val larguraDaAba = minOf(
-                        LARGURA_IDEAL_DA_ABA,
-                        if (tabs.isEmpty()) LARGURA_IDEAL_DA_ABA else maxWidth / tabs.size
-                    )
+                val quantosLugares = tabs.size + 1
+                val larguraDaAba =
+                    minOf(LARGURA_IDEAL_DA_ABA, maxWidth / quantosLugares)
 
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Row(verticalAlignment = Alignment.Bottom) {
-                            tabs.forEachIndexed { index, title ->
-                                val iconRes = when (title) {
-                                    "Geral" -> R.drawable.tab_geral
-                                    "Traços" -> R.drawable.tab_tracos
-                                    "Perícias" -> R.drawable.tab_pericias
-                                    "Técnicas" -> R.drawable.tab_tecnicas
-                                    "Magia" -> R.drawable.tab_magia
-                                    "Equip." -> R.drawable.tab_equipamentos
-                                    "Rolagem" -> R.drawable.tab_rolagem
-                                    "Mesa" -> R.drawable.tab_mesa
-                                    "Saga" -> R.drawable.tab_mestre_ia
-                                    else -> R.drawable.tab_geral
-                                }
-                                // 🟥 A caixa tem largura FIXA, e é ela que segura
-                                // a fila no lugar. O ícone escolhido cresce por
-                                // dentro dela — ver o `RPGNavigationItem`.
-                                Box(modifier = Modifier.width(larguraDaAba)) {
-                                    RPGNavigationItem(
-                                        label = title,
-                                        iconRes = iconRes,
-                                        isSelected = index == currentIndex,
-                                        isPraCegoVariant = isPraCegoVariant,
-                                        onClick = { onTabClick(index) }
-                                    )
-                                }
-                            }
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Row(verticalAlignment = Alignment.Bottom) {
+                        // O Mestre IA, primeiro da fila e do mesmo tamanho.
+                        Box(modifier = Modifier.width(larguraDaAba)) {
+                            RPGNavigationItem(
+                                label = "Mestre IA",
+                                iconRes = R.drawable.tab_mestre_ia,
+                                isSelected = mestreIAAberto,
+                                isPraCegoVariant = isPraCegoVariant,
+                                estadoVoz = estadoVozEfetivo,
+                                onClick = onMestreIAClick,
+                                onLongClick = onMestreIALongPress
+                            )
                         }
 
-                        // 🔴 A folga por onde o icone cresce.
-                        //
-                        // ⚠️ O `graphicsLayer` pinta 1,3x SEM pedir espaco a
-                        // ninguem -- e por isso a fila nao se mexe. Mas ele pinta
-                        // por cima do que estiver colado: sem estes 5dp, o icone
-                        // escolhido encostaria no trilho do cometa.
-                        Spacer(modifier = Modifier.height(5.dp))
-
-                        OTrilhoDoCometa(
-                            quantasAbas = tabs.size,
-                            escolhida = currentIndex,
-                            larguraDaAba = larguraDaAba,
-                            aceso = !isPraCegoVariant
-                        )
+                        tabs.forEachIndexed { index, title ->
+                            val iconRes = when (title) {
+                                "Geral" -> R.drawable.tab_geral
+                                "Traços" -> R.drawable.tab_tracos
+                                "Perícias" -> R.drawable.tab_pericias
+                                "Técnicas" -> R.drawable.tab_tecnicas
+                                "Magias" -> R.drawable.tab_magia
+                                "Equipamento" -> R.drawable.tab_equipamentos
+                                "Rolagem" -> R.drawable.tab_rolagem
+                                "Mesa" -> R.drawable.tab_mesa
+                                "Saga" -> R.drawable.tab_mestre_ia
+                                else -> R.drawable.tab_geral
+                            }
+                            // 🟥 A caixa tem largura FIXA, e é ela que segura a
+                            // fila no lugar. O ícone escolhido cresce por dentro
+                            // dela — ver o `RPGNavigationItem`.
+                            Box(modifier = Modifier.width(larguraDaAba)) {
+                                RPGNavigationItem(
+                                    label = title,
+                                    iconRes = iconRes,
+                                    isSelected = index == currentIndex,
+                                    isPraCegoVariant = isPraCegoVariant,
+                                    onClick = { onTabClick(index) }
+                                )
+                            }
+                        }
                     }
-                }
 
-                // O contrapeso. Ver a explicação acima.
-                Spacer(modifier = Modifier.width(LARGURA_DA_ANCORA))
+                    // 🔴 A folga por onde o ícone cresce.
+                    //
+                    // ⚠️ O `graphicsLayer` pinta 1,3× SEM pedir espaço a ninguém —
+                    // e é por isso que a fila não se mexe. Mas ele pinta por cima
+                    // do que estiver colado: sem estes 5dp, o ícone escolhido
+                    // encostaria no trilho do cometa.
+                    Spacer(modifier = Modifier.height(5.dp))
+
+                    OTrilhoDoCometa(
+                        quantosLugares = quantosLugares,
+                        // 🔴 `+1`: o lugar zero é o do Mestre IA, e ele não é uma
+                        // aba. Sem isto o cometa pararia sempre um lugar atrás.
+                        lugarAceso = currentIndex + 1,
+                        larguraDaAba = larguraDaAba,
+                        aceso = !isPraCegoVariant
+                    )
+                }
             }
         }
     }
@@ -233,9 +225,6 @@ private const val CRESCIMENTO_DO_ESCOLHIDO = 1.3f
 
 /** O maior que uma aba fica quando sobra espaço. */
 private val LARGURA_IDEAL_DA_ABA = 42.dp
-
-/** O Mestre IA à esquerda, e o contrapeso à direita. */
-private val LARGURA_DA_ANCORA = 42.dp
 
 /**
  * **O cometa** — lote BARRA-1, ideia dele.
@@ -256,25 +245,25 @@ private val LARGURA_DA_ANCORA = 42.dp
  */
 @Composable
 private fun OTrilhoDoCometa(
-    quantasAbas: Int,
-    escolhida: Int,
+    quantosLugares: Int,
+    lugarAceso: Int,
     larguraDaAba: Dp,
     aceso: Boolean
 ) {
-    if (quantasAbas <= 0) return
+    if (quantosLugares <= 0) return
 
     val cor = MaterialTheme.colorScheme.primary
     // ⚠️ A viagem é `spring`, e não `tween`: um cometa que chega e para seco
     // parece um corte de vídeo. A mola encosta e assenta.
     val ondeEle by animateDpAsState(
-        targetValue = larguraDaAba * escolhida.coerceIn(0, quantasAbas - 1),
+        targetValue = larguraDaAba * lugarAceso.coerceIn(0, quantosLugares - 1),
         animationSpec = spring(dampingRatio = 0.75f, stiffness = Spring.StiffnessMediumLow),
         label = "Cometa"
     )
 
     Box(
         modifier = Modifier
-            .width(larguraDaAba * quantasAbas)
+            .width(larguraDaAba * quantosLugares)
             .height(3.dp)
     ) {
         // O trilho, apagado: só o suficiente para o cometa ter por onde correr.

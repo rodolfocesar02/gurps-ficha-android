@@ -100,8 +100,8 @@ fun FichaScreen(viewModel: FichaViewModel) {
     /**
      * 🟥 **A aba guarda-se pelo NOME, e não pela posição.**
      *
-     * A lista de abas MUDA de tamanho enquanto o aplicativo corre: a "Magia" só
-     * entra quando o personagem tem aptidão mágica, e isso é decidido depois de
+     * A lista de abas MUDA de tamanho enquanto o aplicativo corre: as "Magias" só
+     * entram quando o personagem tem aptidão mágica, e isso é decidido depois de
      * a ficha acabar de carregar. Uma posição guardada antes disso passa a
      * apontar para outra aba — e ninguém vê nada de errado, porque a tela mostra
      * uma aba de verdade, só que a errada.
@@ -252,8 +252,8 @@ fun FichaScreen(viewModel: FichaViewModel) {
         add("Traços")
         add("Perícias")
         add("Técnicas")
-        if (temAptidaoMagica) add("Magia")
-        add("Equip.")
+        if (temAptidaoMagica) add("Magias")
+        add("Equipamento")
         add("Rolagem")
         if (temMesaLigada) add("Mesa")
         if (HABILITAR_ABA_SAGA) add("Saga")
@@ -530,8 +530,8 @@ fun FichaScreen(viewModel: FichaViewModel) {
                 "Traços" -> TabTracos(viewModel)
                 "Perícias" -> TabPericias(viewModel)
                 "Técnicas" -> TabTecnicas(viewModel)
-                "Magia" -> TabMagias(viewModel)
-                "Equip." -> TabEquipamentos(viewModel)
+                "Magias" -> TabMagias(viewModel)
+                "Equipamento" -> TabEquipamentos(viewModel)
                 "Rolagem" -> TabRolagem(viewModel)
                 "Mesa" -> com.gurps.ficha.ui.features.mesa.TabMesa(
                     nome = viewModel.mesaNome,

@@ -9629,3 +9629,27 @@ uma coisa so com tres caras.
 - **Status:** ✅ Build OK nas 2 variantes -- gate **2529**, 0 falhas.
   🔴 **PENDENTE: o olho dele.** Sonda nao mede se ficou bonito.
   ⚠️ Ponto de retorno: a etiqueta `barra-antes-do-redesenho`.
+
+---
+
+## Lote BARRA-2 — O Mestre IA entra na fila, e dois nomes mudam
+
+- **🟥 O Mestre IA estava fora do grupo** -- achado dele: *"o icone do mestre IA
+  ficou fora do alinhamento, ele pode entrar no grupo, ficar todos icones na
+  mesma linha!"*. Ele vivia numa ancora a esquerda, com um **contrapeso vazio** do
+  outro lado so para o centro nao sair torto. Era uma conta a mais para uma coisa
+  que se resolve pondo tudo na mesma linha: com ele dentro, o grupo e o que e, e
+  o centro e o centro. Sumiu a `LARGURA_DA_ANCORA` e sumiu o contrapeso.
+  ⚠️ E ele continua a **nao ser uma aba**: toque abre o chat, segurar liga a voz,
+  e o cometa nao para debaixo dele (`lugarAceso = currentIndex + 1`).
+- **Os nomes:** `"Equip."` virou `"Equipamento"`, e `"Magia"` virou `"Magias"` --
+  o resto da barra ja estava no plural (Tracos, Pericias, Tecnicas).
+- **🟥 E foi aqui que nasceu a sonda que faltava.** O nome de uma aba e usado
+  como **chave em tres arquivos**: a lista que a cria, o `when` do icone e o
+  `when` do conteudo. Trocar num so lugar **nao quebra nada** -- a aba cai no
+  `else`, mostra o icone do Geral ou a tela do Geral, e ninguem ve erro nenhum.
+  Foram seis trocas; a sonda agora cobra que toda aba da lista tenha icone
+  proprio E corpo proprio. Conferido que ela morde: esquecer um icone deixa o
+  teste vermelho dizendo qual aba.
+- **Status:** ✅ Build OK nas 2 variantes -- gate **2530**, 0 falhas.
+  ⚠️ Ponto de retorno continua `barra-antes-do-redesenho`.

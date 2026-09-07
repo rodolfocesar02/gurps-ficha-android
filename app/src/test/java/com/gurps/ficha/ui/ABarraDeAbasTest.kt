@@ -66,11 +66,16 @@ class ABarraDeAbasTest {
             "as abas voltaram para a direita -- e o buraco a esquerda com elas",
             codigo.contains("Arrangement.End")
         )
-        // E o contrapeso: sem ele, "centro" e o centro do espaco que sobra, e a
-        // fila fica sempre um pouco a direita.
+        // 🔴 E o Mestre IA esta DENTRO da fila, e nao numa ancora a esquerda com
+        // um contrapeso vazio do outro lado. Achado dele: "o icone do mestre IA
+        // ficou fora do alinhamento, ele pode entrar no grupo".
+        assertFalse(
+            "o Mestre IA voltou para fora da fila, e o centro volta a depender de um contrapeso",
+            codigo.contains("LARGURA_DA_ANCORA")
+        )
         assertTrue(
-            "o contrapeso da direita sumiu, e o centro ficou torto",
-            codigo.contains("Spacer(modifier = Modifier.width(LARGURA_DA_ANCORA))")
+            "a fila deixou de contar o Mestre IA, e o cometa vai parar no lugar errado",
+            codigo.contains("val quantosLugares = tabs.size + 1")
         )
     }
 
@@ -127,8 +132,41 @@ class ABarraDeAbasTest {
         // conta para divergir no dia em que a largura mudasse.
         assertTrue(
             "o cometa deixou de usar a largura da aba, e vai sair do lugar",
-            codigo.contains("larguraDaAba * escolhida")
+            codigo.contains("larguraDaAba * lugarAceso")
         )
+    }
+
+    /**
+     * 🟥 **Toda aba da lista tem icone e tem corpo.**
+     *
+     * O nome de uma aba e usado como **chave** em tres arquivos: a lista que a
+     * cria, o `when` que escolhe o icone, e o `when` que desenha o conteudo.
+     * Trocar o nome num so lugar nao quebra nada -- a aba cai no `else`, mostra
+     * o icone do Geral ou a tela do Geral, e **ninguem ve erro nenhum**.
+     *
+     * 🔴 Esta sonda nasceu ao renomear "Equip." para "Equipamento" e "Magia"
+     * para "Magias", que sao seis trocas em tres arquivos. Ela e a rede.
+     */
+    @Test
+    fun `🟥 toda aba da lista tem icone proprio e corpo proprio`() {
+        val tela = File("src/main/java/com/gurps/ficha/ui/FichaScreen.kt").readText()
+
+        val lista = tela.substringAfter("val tabs = buildList {").substringBefore("\n    }")
+        val nomes = Regex("""add\("([^"]+)"\)""").findAll(lista).map { it.groupValues[1] }.toList()
+        assertTrue("nao achei a lista de abas", nomes.size >= 6)
+
+        val corpos = tela.substringAfter("when (selectedTitle) {").substringBefore("\n            }")
+
+        nomes.forEach { nome ->
+            assertTrue(
+                "a aba \"$nome\" nao tem icone proprio -- ela cai no else e usa o do Geral",
+                codigo.contains("\"$nome\" -> R.drawable.")
+            )
+            assertTrue(
+                "a aba \"$nome\" nao tem corpo proprio -- ela cai no else e mostra o Geral",
+                corpos.contains("\"$nome\" ->")
+            )
+        }
     }
 
     @Test
