@@ -7,7 +7,9 @@ import android.view.ViewGroup
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import com.gurps.ficha.domain.rules.ConviteDaMesa
 import com.gurps.ficha.domain.rules.EnderecoDaMesa
+import com.gurps.ficha.domain.rules.PedidoDaMesa
 
 /**
  * **A sala não mora na aba** — lote MNA-1 do `PLANO_MESA_NO_APP.md`.
@@ -40,10 +42,6 @@ import com.gurps.ficha.domain.rules.EnderecoDaMesa
  *
  * ## ⚠️ O que este arquivo AINDA não faz
  *
- * - Não entra na sala sozinho (MNA-3).
- * - Não tem ponte (MNA-4), e por isso o `E_UM_PEDIDO` ainda não abre diálogo
- *   nenhum: por enquanto ele só **não navega**, que já é melhor do que a página
- *   ir a lado nenhum com um erro na cara.
  * - Não entrega microfone nem câmera (MNA-7 e MNA-9). A página vai pedir e ficar
  *   esperando, **calada** — é assim que um `WebView` se comporta por omissão, e
  *   é o defeito que aqueles lotes consertam.
@@ -59,6 +57,34 @@ object SalaDaMesa {
 
     /** O endereço a que esta sala está presa. Ver [EnderecoDaMesa]. */
     private var enderecoDaSala: String = ""
+
+    /**
+     * Se o convite já foi entregue — MNA-3.
+     *
+     * 🟥 **Uma vez só, e nunca mais.** O `onPageFinished` dispara a cada carga da
+     * página, e a página se recarrega sozinha em dois casos: quando você aperta
+     * SAIR (`sairDaMesa`) e quando a versão da Mesa muda. Convidar de novo ali
+     * poria você de volta na sala **logo depois de ter saído dela** — e você
+     * apertaria SAIR outra vez, e outra.
+     *
+     * ⚠️ O preço: depois de uma recarga por versão nova, a porta aparece com os
+     * campos preenchidos e você aperta entrar. É barato, e é o lado certo de
+     * errar.
+     */
+    private var jaConvidou = false
+
+    /**
+     * A ponte com a ficha — MNA-4. Nasce com a janela e morre com ela.
+     *
+     * ⚠️ Guardada aqui, e não recriada a cada pendurada: o `addJavascriptInterface`
+     * vale para a janela, e trocá-la debaixo de uma página aberta deixaria a
+     * página com uma ponte para um lugar que já não existe.
+     */
+    private var ponte: PonteDaMesa? = null
+
+    /** Quem entra, e com que chave. Guardado para o `onPageFinished` alcançar. */
+    private var oNome: String? = null
+    private var oToken: String? = null
 
     /** Se a sala está de pé. */
     val estaDePe: Boolean get() = janela != null
@@ -76,7 +102,11 @@ object SalaDaMesa {
      * [EnderecoDaMesa] existe: aqui não entra página qualquer.
      */
     @SuppressLint("SetJavaScriptEnabled")
-    fun aJanela(dono: Context, endereco: String): WebView {
+    fun aJanela(
+        dono: Context,
+        endereco: String,
+        aoReceberPedido: (PedidoDaMesa.Pedido) -> Unit
+    ): WebView {
         embrulho?.baseContext = dono
         janela?.let { return it }
 
@@ -97,6 +127,13 @@ object SalaDaMesa {
             mediaPlaybackRequiresUserGesture = false
         }
 
+        // 🔴 A ponte (MNA-4). Só depois do [EnderecoDaMesa] existir, e é essa a
+        // ordem dos lotes: quem dá o direito de ler a ficha à janela tem de saber
+        // que a janela não vai a lado nenhum.
+        val p = PonteDaMesa(aoReceberPedido)
+        ponte = p
+        w.addJavascriptInterface(p, PonteDaMesa.NOME_NA_PAGINA)
+
         w.webViewClient = object : WebViewClient() {
             override fun shouldOverrideUrlLoading(
                 view: WebView?,
@@ -106,6 +143,11 @@ object SalaDaMesa {
             @Deprecated("Só para Android 6 e anteriores; o app vai até o 24.")
             override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean =
                 decidir(url)
+
+            override fun onPageFinished(view: WebView?, url: String?) {
+                super.onPageFinished(view, url)
+                entregarOConvite()
+            }
         }
 
         janela = w
@@ -122,11 +164,19 @@ object SalaDaMesa {
     private fun decidir(endereco: String?): Boolean =
         when (EnderecoDaMesa.oQueFazerCom(endereco, enderecoDaSala)) {
             EnderecoDaMesa.OQueFazer.SEGUIR -> false
-            // ⚠️ Ainda sem ponte (MNA-4). Por agora só não navega: o pedido é
-            // engolido, e o botão do tabuleiro continua sem fazer nada — o que
-            // já era verdade antes deste lote, e passa a ser verdade **sem**
-            // levar a página a um erro.
-            EnderecoDaMesa.OQueFazer.E_UM_PEDIDO -> true
+            // 🟥 MNA-4: o pedido é ENTREGUE, e a navegação é recusada.
+            //
+            // 🔴 É esta linha que tira o botão "Atacar" do mudo. Fora do
+            // aplicativo a página monta um `<a target="_blank">` com este
+            // endereço e clica nele — e dentro de um WebView esse clique some sem
+            // erro nenhum. Aqui ele é apanhado antes de virar navegação.
+            //
+            // ⚠️ E funciona com a Mesa **exatamente como ela está hoje**, sem uma
+            // linha mudada do lado da página.
+            EnderecoDaMesa.OQueFazer.E_UM_PEDIDO -> {
+                ponte?.entregar(endereco)
+                true
+            }
             EnderecoDaMesa.OQueFazer.RECUSAR -> true
         }
 
@@ -141,6 +191,36 @@ object SalaDaMesa {
         val w = janela ?: return
         if (w.url != null) return
         w.loadUrl(EnderecoDaMesa.paraAbrir(enderecoDaSala))
+    }
+
+    /**
+     * **Quem vai entrar** — MNA-3.
+     *
+     * ⚠️ Escrito a cada pendurada, e não só na criação: o token pode ser trocado
+     * na tela de configuração com a aba já de pé, e o convite seguinte tem de
+     * levar o novo. O `jaConvidou` é que garante que ele não é usado duas vezes.
+     */
+    fun quemEntra(nome: String?, token: String?) {
+        oNome = nome
+        oToken = token
+    }
+
+    /**
+     * Manda o convite para dentro da página.
+     *
+     * 🔴 Pelo `#`, e não chamando o `conectar` da página. O `convite.js` já sabe
+     * os três casos — ninguém dentro, o mesmo nome, outro nome — e já preenche os
+     * campos antes de tentar. Ver o [ConviteDaMesa].
+     *
+     * ⚠️ Mexer no `#` **não recarrega** a página. Ela ouve o `hashchange`, trata,
+     * e a primeira coisa que faz é limpar o endereço.
+     */
+    private fun entregarOConvite() {
+        if (jaConvidou) return
+        val w = janela ?: return
+        val js = ConviteDaMesa.oJavascript(oNome, oToken) ?: return
+        jaConvidou = true
+        w.evaluateJavascript(js, null)
     }
 
     /** Anda para trás dentro da página. `false` quando não há para onde. */
@@ -169,6 +249,11 @@ object SalaDaMesa {
         janela = null
         embrulho = null
         enderecoDaSala = ""
+        // 🔴 O convite volta a valer só depois de SAIR. Ver `jaConvidou`.
+        jaConvidou = false
+        oNome = null
+        oToken = null
+        ponte = null
     }
 
     /**

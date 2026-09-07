@@ -9301,3 +9301,43 @@ A pergunta dele **encontrou um defeito no plano**, antes de uma linha ser escrit
   O plano so segue depois disso.
   ⚠️ E do lado da Mesa, o lote **MESA-CP** (no repositorio da Mesa) consertou o
   tabuleiro que so ia ao disco de minuto em minuto e nunca ao desligar.
+
+---
+
+## Lote MNA-3 + MNA-4 + MNA-5 — Entrar sozinho, e a ponte nos dois sentidos
+
+- **MNA-3 — entrar sem digitar nada.** A aba abre no endereco LIMPO e o convite
+  entra depois, por dentro. O `ConviteDaMesa.kt` monta `#nome=…&t=…` e a
+  `SalaDaMesa` o entrega no `onPageFinished`.
+- **🔴 Pelo `#`, e nao chamando o `conectar` da pagina.** O `convite.js` ja
+  preenche os campos antes de tentar -- se a sala recusar, a pessoa fica com o
+  que ia digitar ja la, em vez de um formulario vazio e um erro solto. E o
+  `ouvirOsConvites` ja sabe os TRES casos: ninguem dentro entra; o mesmo nome
+  nao e mexido; outro nome ve a porta e decide. Entrar por cima de alguem seria
+  tirar da mesa, no meio de uma cena, quem nao pediu.
+- **🟥 O convite sai UMA vez, e nunca mais.** O `onPageFinished` dispara a cada
+  carga, e a pagina se recarrega sozinha quando voce aperta SAIR. Convidar de
+  novo ali poria voce de volta na sala logo depois de ter saido -- e voce
+  apertaria SAIR outra vez, e outra.
+- **🟥 Uma aspa no nome nao parte a linha de JavaScript.** Um personagem chamado
+  `O'Brien` fecharia o texto no meio, e o que viesse depois seria codigo. O valor
+  vai percent-escapado, e ha teste com `'; alert(1); //`, com quebra de linha e
+  com `</script>`.
+- **MNA-4 — a ponte.** `PonteDaMesa.kt`, com o MESMO contrato do CC-8: o que
+  atravessa e um `PedidoDaMesa.Pedido`. Um segundo contrato entre os mesmos dois
+  programas seria a garantia de que um dia eles discordam sem ninguem reparar.
+- **🔴 Duas portas, e a de tras funciona com a Mesa COMO ELA ESTA HOJE.** A aba
+  pega o `gurpsapp://` antes de virar navegacao e entrega a ficha -- sem uma
+  linha mudada do lado da pagina. E essa linha que tira o botao "Atacar" do
+  mudo. A ponte explicita (`window.Ficha`) e a porta da frente, mais limpa.
+  As duas terminam na MESMA funcao.
+- **⚠️ De volta para a linha principal antes de tocar em qualquer coisa.** Um
+  metodo com `@JavascriptInterface` corre na linha do JavaScript, e nao na do
+  desenho. Escrever dali um estado que a tela le funciona nove vezes em dez.
+- **MNA-5 — o ataque sem sair** cai fora quase de graca: o pedido entra no MESMO
+  lugar que o link de fora do aplicativo entrava, e dai em diante o caminho e o
+  do CC-5/CC-6 -- salta para a Rolagem e o `DialogoPedidoDaMesa` abre.
+- **Status:** ✅ Build OK nas 2 variantes -- gate **2510**, 0 falhas. Do lado da
+  Mesa, gate **2527**.
+  🔴 **PENDENTE: MNA-0, o teste no aparelho.** Nada disto foi visto correr: e
+  WebView, e a bancada nao alcanca.

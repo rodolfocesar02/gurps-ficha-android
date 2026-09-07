@@ -9,6 +9,7 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.AndroidView
 import com.gurps.ficha.data.network.MesaApiClient
+import com.gurps.ficha.domain.rules.PedidoDaMesa
 
 /**
  * **A aba da Mesa** — lote MNA-1.
@@ -23,7 +24,11 @@ import com.gurps.ficha.data.network.MesaApiClient
  * [SalaDaMesa].
  */
 @Composable
-fun TabMesa() {
+fun TabMesa(
+    nome: String?,
+    token: String?,
+    aoReceberPedido: (PedidoDaMesa.Pedido) -> Unit
+) {
     // 🔴 O botão Voltar anda para trás **dentro da página**. Sem isto ele sairia
     // do aplicativo a meio de uma cena, que é o que um navegador nunca faz.
     //
@@ -38,7 +43,13 @@ fun TabMesa() {
         // é o que vai dentro dela.
         factory = { ctx -> FrameLayout(ctx) },
         update = { moldura ->
-            val janela = SalaDaMesa.aJanela(moldura.context, MesaApiClient.ENDERECO_PADRAO)
+            // ⚠️ Quem entra vai ANTES de abrir: o `onPageFinished` pode disparar
+            // antes de a próxima recomposição chegar, e um convite sem nome é um
+            // convite que não sai.
+            SalaDaMesa.quemEntra(nome, token)
+            val janela = SalaDaMesa.aJanela(
+                moldura.context, MesaApiClient.ENDERECO_PADRAO, aoReceberPedido
+            )
             // 🔴 Tira da parede antiga antes de pendurar nesta. Uma view só tem
             // um pai, e pendurá-la duas vezes é um erro em tempo de execução.
             (janela.parent as? ViewGroup)?.removeView(janela)

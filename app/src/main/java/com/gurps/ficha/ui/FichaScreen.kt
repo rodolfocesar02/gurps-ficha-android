@@ -520,7 +520,15 @@ fun FichaScreen(viewModel: FichaViewModel) {
                 "Magia" -> TabMagias(viewModel)
                 "Equip." -> TabEquipamentos(viewModel)
                 "Rolagem" -> TabRolagem(viewModel)
-                "Mesa" -> com.gurps.ficha.ui.features.mesa.TabMesa()
+                "Mesa" -> com.gurps.ficha.ui.features.mesa.TabMesa(
+                    nome = viewModel.mesaNome,
+                    token = viewModel.mesaToken,
+                    // 🔴 O pedido cai no MESMO lugar que o link de fora do
+                    // aplicativo cai (`MainActivity`), e daí em diante o caminho
+                    // é o do CC-5: o `LaunchedEffect` acima salta para a Rolagem
+                    // e a `TabRolagem` abre o diálogo. Nada disto é novo.
+                    aoReceberPedido = { viewModel.pedidoDaMesa = it }
+                )
                 "Saga" -> TabSaga(viewModel)
                 else -> TabGeral(viewModel)
             }
