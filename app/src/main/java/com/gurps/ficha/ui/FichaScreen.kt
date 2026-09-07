@@ -253,7 +253,7 @@ fun FichaScreen(viewModel: FichaViewModel) {
         add("Perícias")
         add("Técnicas")
         if (temAptidaoMagica) add("Magias")
-        add("Equipamento")
+        add("Equipamentos")
         add("Rolagem")
         if (temMesaLigada) add("Mesa")
         if (HABILITAR_ABA_SAGA) add("Saga")
@@ -531,7 +531,7 @@ fun FichaScreen(viewModel: FichaViewModel) {
                 "Perícias" -> TabPericias(viewModel)
                 "Técnicas" -> TabTecnicas(viewModel)
                 "Magias" -> TabMagias(viewModel)
-                "Equipamento" -> TabEquipamentos(viewModel)
+                "Equipamentos" -> TabEquipamentos(viewModel)
                 "Rolagem" -> TabRolagem(viewModel)
                 "Mesa" -> com.gurps.ficha.ui.features.mesa.TabMesa(
                     nome = viewModel.mesaNome,

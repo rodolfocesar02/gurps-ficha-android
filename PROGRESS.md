@@ -9653,3 +9653,23 @@ uma coisa so com tres caras.
   teste vermelho dizendo qual aba.
 - **Status:** ✅ Build OK nas 2 variantes -- gate **2530**, 0 falhas.
   ⚠️ Ponto de retorno continua `barra-antes-do-redesenho`.
+
+---
+
+## Lote BARRA-3 — Sem trilho: so o rastro, e so enquanto ele anda
+
+- **`"Equipamento"` virou `"Equipamentos"`**, fechando a regra do plural que ele
+  deu: Tracos, Pericias, Tecnicas, Magias, Equipamentos.
+- **🟥 O trilho sumiu** -- pedido dele: *"a linha onde fica o cometa deixe
+  invisivel, apenas o caminho dele quando percorre! sem linha visivel abaixo!"*.
+  Havia uma linha apagada (12%) sempre a vista, para o cometa ter por onde
+  correr. Saiu inteira.
+- **🔴 E o cometa passou a existir so a viajar.** Acende depressa (110ms) e apaga
+  devagar (420ms) -- e o que da a sensacao de rastro, em vez de um risco que
+  pisca. Parado, nao ha nada debaixo dos icones.
+- **⚠️ Quem diz onde voce esta, com o cometa apagado, e o proprio icone** -- 1,3x
+  maior e com o brilho aceso. O cometa nunca foi o indicador; ele e o **caminho**.
+- **🔴 E ele nao acende na primeira composicao.** Sem essa guarda, abrir o
+  aplicativo daria um risco de luz atravessando a barra sem ninguem ter tocado em
+  nada.
+- **Status:** ✅ Build OK nas 2 variantes -- gate **2530**, 0 falhas.

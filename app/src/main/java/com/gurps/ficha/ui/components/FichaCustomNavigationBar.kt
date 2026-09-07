@@ -171,7 +171,7 @@ fun FichaCustomNavigationBar(
                                 "Perícias" -> R.drawable.tab_pericias
                                 "Técnicas" -> R.drawable.tab_tecnicas
                                 "Magias" -> R.drawable.tab_magia
-                                "Equipamento" -> R.drawable.tab_equipamentos
+                                "Equipamentos" -> R.drawable.tab_equipamentos
                                 "Rolagem" -> R.drawable.tab_rolagem
                                 "Mesa" -> R.drawable.tab_mesa
                                 "Saga" -> R.drawable.tab_mestre_ia
@@ -261,40 +261,77 @@ private fun OTrilhoDoCometa(
         label = "Cometa"
     )
 
+    /**
+     * 🟥 **Não há linha nenhuma** — pedido dele:
+     *
+     * > *"a linha onde fica o cometa deixe invisivel, apenas o caminho dele
+     * > quando percorre! sem linha visivel abaixo!"*
+     *
+     * 🔴 Havia um trilho apagado (12% de opacidade) sempre à vista, para o cometa
+     * ter por onde correr. Ele saiu: o que fica é **só o rastro**, e só enquanto
+     * ele anda. Parado, a barra não tem nada por baixo dos ícones.
+     *
+     * ⚠️ E quem diz onde você está, com o cometa apagado, é o próprio ícone — que
+     * está 1,3× maior e com o brilho aceso. O cometa não era o indicador; era o
+     * **caminho**.
+     */
+    var aViajar by remember { mutableStateOf(false) }
+    // 🔴 Não acende na primeira composição. Sem isto, abrir o aplicativo daria um
+    // risco de luz atravessando a barra sem ninguém ter tocado em nada.
+    var jaCorreuUmaVez by remember { mutableStateOf(false) }
+    LaunchedEffect(lugarAceso) {
+        if (!jaCorreuUmaVez) {
+            jaCorreuUmaVez = true
+            return@LaunchedEffect
+        }
+        aViajar = true
+        kotlinx.coroutines.delay(TEMPO_DA_VIAGEM)
+        aViajar = false
+    }
+
+    val opacidade by animateFloatAsState(
+        targetValue = if (aViajar) 1f else 0f,
+        // ⚠️ Acende depressa e apaga devagar: é o que dá a sensação de rastro,
+        // em vez de um risco que pisca.
+        animationSpec = tween(if (aViajar) 110 else 420),
+        label = "CometaOpacidade"
+    )
+
+    // Apagado de vez: não desenha nada, e não fica uma caixa transparente por
+    // cima da barra a apanhar toque nenhum.
+    if (!aceso || opacidade <= 0.01f) {
+        Spacer(modifier = Modifier.height(3.dp))
+        return
+    }
+
     Box(
         modifier = Modifier
             .width(larguraDaAba * quantosLugares)
             .height(3.dp)
     ) {
-        // O trilho, apagado: só o suficiente para o cometa ter por onde correr.
         Box(
             modifier = Modifier
-                .fillMaxWidth()
-                .height(1.dp)
-                .align(Alignment.Center)
-                .drawBehind { drawRect(cor.copy(alpha = 0.12f)) }
-        )
-        if (aceso) {
-            Box(
-                modifier = Modifier
-                    .offset(x = ondeEle)
-                    .width(larguraDaAba)
-                    .height(3.dp)
-                    .drawBehind {
-                        // 🔴 Aceso no meio e apagado nas pontas: é o rastro. Um
-                        // retângulo de cor sólida seria um traço, e não um cometa.
-                        drawRect(
-                            brush = Brush.horizontalGradient(
-                                0f to Color.Transparent,
-                                0.5f to cor,
-                                1f to Color.Transparent
-                            )
+                .offset(x = ondeEle)
+                .width(larguraDaAba)
+                .height(3.dp)
+                .graphicsLayer { alpha = opacidade }
+                .drawBehind {
+                    // 🔴 Aceso no meio e apagado nas pontas: é o rastro. Um
+                    // retângulo de cor sólida seria um traço, e não um cometa.
+                    drawRect(
+                        brush = Brush.horizontalGradient(
+                            0f to Color.Transparent,
+                            0.5f to cor,
+                            1f to Color.Transparent
                         )
-                    }
-            )
-        }
+                    )
+                }
+        )
     }
 }
+
+/** Quanto tempo o cometa leva a atravessar, antes de começar a apagar. */
+private const val TEMPO_DA_VIAGEM = 520L
 
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalFoundationApi::class)
 @Composable
