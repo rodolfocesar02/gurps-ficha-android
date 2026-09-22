@@ -304,4 +304,34 @@ class AAbaDaMesaTest {
             1, achados?.size
         )
     }
+
+    // == O servico que segura a sala no bolso — teste de esforco de 22/set ==
+
+    /**
+     * 🟥 **Sem microfone, o servico tem de subir mesmo assim.**
+     *
+     * O unico tipo declarado era `microphone`, e do Android 14 em diante ele so
+     * sobe com o microfone JA concedido. Quem nunca ligava a voz nunca tinha
+     * servico -- e a sala caia 10 segundos depois de minimizar. Medido no
+     * emulador pelo marcador do proprio servidor; depois do conserto, ficou
+     * presente por 3 minutos no bolso.
+     */
+    @Test
+    fun `🟥 o servico declara um tipo que sobe SEM microfone`() {
+        val manifesto = File("src/main/AndroidManifest.xml").readText()
+        assertTrue(
+            "o servico voltou a ser so microphone -- sem voz ligada, a sala cai ao minimizar",
+            manifesto.contains("android:foregroundServiceType=\"microphone|mediaPlayback\"")
+        )
+        assertTrue(
+            "falta a permissao do tipo mediaPlayback, e o servico estoura ao subir",
+            manifesto.contains("android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK")
+        )
+        val servico = fonte("com/gurps/ficha/service/ServicoDaMesa.kt")
+        assertTrue(
+            "o servico deixou de escolher o tipo pelo microfone concedido",
+            servico.contains("FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK") &&
+                servico.contains("FOREGROUND_SERVICE_TYPE_MICROPHONE")
+        )
+    }
 }

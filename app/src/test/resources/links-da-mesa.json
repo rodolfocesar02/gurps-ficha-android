@@ -1,0 +1,2574 @@
+{
+ "contrato": {
+  "deOnde": "domain/rules/PedidoDaMesa.kt do aplicativo",
+  "esquema": "gurpsapp",
+  "anfitriao": "rolar",
+  "modMaximo": 20,
+  "tetoDoTexto": 60,
+  "tipos": {
+   "ataque": "ataque",
+   "defesa": "defesa",
+   "dano": "dano"
+  },
+  "campos": [
+   "o",
+   "pericia",
+   "mod",
+   "onde",
+   "alvo",
+   "acao"
+  ]
+ },
+ "quantos": 196,
+ "estouros": 0,
+ "casos": [
+  {
+   "rotulo": "tipo=ataque",
+   "link": "gurpsapp://rolar?o=ataque&acao=p1",
+   "erro": null,
+   "esperado": {
+    "oQue": "ataque",
+    "pericia": null,
+    "mod": 0,
+    "onde": null,
+    "alvo": null,
+    "acao": "p1"
+   }
+  },
+  {
+   "rotulo": "tipo=defesa",
+   "link": "gurpsapp://rolar?o=defesa&acao=p1",
+   "erro": null,
+   "esperado": {
+    "oQue": "defesa",
+    "pericia": null,
+    "mod": 0,
+    "onde": null,
+    "alvo": null,
+    "acao": "p1"
+   }
+  },
+  {
+   "rotulo": "tipo=dano",
+   "link": "gurpsapp://rolar?o=dano&acao=p1",
+   "erro": null,
+   "esperado": {
+    "oQue": "dano",
+    "pericia": null,
+    "mod": 0,
+    "onde": null,
+    "alvo": null,
+    "acao": "p1"
+   }
+  },
+  {
+   "rotulo": "tipo=esquiva",
+   "link": null,
+   "erro": null,
+   "esperado": {
+    "oQue": null,
+    "pericia": null,
+    "mod": 0,
+    "onde": null,
+    "alvo": null,
+    "acao": "p1"
+   }
+  },
+  {
+   "rotulo": "tipo=MAIUSCULO",
+   "link": null,
+   "erro": null,
+   "esperado": {
+    "oQue": null,
+    "pericia": null,
+    "mod": 0,
+    "onde": null,
+    "alvo": null,
+    "acao": "p1"
+   }
+  },
+  {
+   "rotulo": "tipo=",
+   "link": null,
+   "erro": null,
+   "esperado": {
+    "oQue": null,
+    "pericia": null,
+    "mod": 0,
+    "onde": null,
+    "alvo": null,
+    "acao": "p1"
+   }
+  },
+  {
+   "rotulo": "tipo=null",
+   "link": null,
+   "erro": null,
+   "esperado": {
+    "oQue": null,
+    "pericia": null,
+    "mod": 0,
+    "onde": null,
+    "alvo": null,
+    "acao": "p1"
+   }
+  },
+  {
+   "rotulo": "mod=0",
+   "link": "gurpsapp://rolar?o=ataque&acao=p1",
+   "erro": null,
+   "esperado": {
+    "oQue": "ataque",
+    "pericia": null,
+    "mod": 0,
+    "onde": null,
+    "alvo": null,
+    "acao": "p1"
+   }
+  },
+  {
+   "rotulo": "mod=1",
+   "link": "gurpsapp://rolar?o=ataque&mod=1&acao=p1",
+   "erro": null,
+   "esperado": {
+    "oQue": "ataque",
+    "pericia": null,
+    "mod": 1,
+    "onde": null,
+    "alvo": null,
+    "acao": "p1"
+   }
+  },
+  {
+   "rotulo": "mod=-1",
+   "link": "gurpsapp://rolar?o=ataque&mod=-1&acao=p1",
+   "erro": null,
+   "esperado": {
+    "oQue": "ataque",
+    "pericia": null,
+    "mod": -1,
+    "onde": null,
+    "alvo": null,
+    "acao": "p1"
+   }
+  },
+  {
+   "rotulo": "mod=7",
+   "link": "gurpsapp://rolar?o=ataque&mod=7&acao=p1",
+   "erro": null,
+   "esperado": {
+    "oQue": "ataque",
+    "pericia": null,
+    "mod": 7,
+    "onde": null,
+    "alvo": null,
+    "acao": "p1"
+   }
+  },
+  {
+   "rotulo": "mod=-7",
+   "link": "gurpsapp://rolar?o=ataque&mod=-7&acao=p1",
+   "erro": null,
+   "esperado": {
+    "oQue": "ataque",
+    "pericia": null,
+    "mod": -7,
+    "onde": null,
+    "alvo": null,
+    "acao": "p1"
+   }
+  },
+  {
+   "rotulo": "mod=19",
+   "link": "gurpsapp://rolar?o=ataque&mod=19&acao=p1",
+   "erro": null,
+   "esperado": {
+    "oQue": "ataque",
+    "pericia": null,
+    "mod": 19,
+    "onde": null,
+    "alvo": null,
+    "acao": "p1"
+   }
+  },
+  {
+   "rotulo": "mod=20",
+   "link": "gurpsapp://rolar?o=ataque&mod=20&acao=p1",
+   "erro": null,
+   "esperado": {
+    "oQue": "ataque",
+    "pericia": null,
+    "mod": 20,
+    "onde": null,
+    "alvo": null,
+    "acao": "p1"
+   }
+  },
+  {
+   "rotulo": "mod=21",
+   "link": "gurpsapp://rolar?o=ataque&mod=20&acao=p1",
+   "erro": null,
+   "esperado": {
+    "oQue": "ataque",
+    "pericia": null,
+    "mod": 20,
+    "onde": null,
+    "alvo": null,
+    "acao": "p1"
+   }
+  },
+  {
+   "rotulo": "mod=-20",
+   "link": "gurpsapp://rolar?o=ataque&mod=-20&acao=p1",
+   "erro": null,
+   "esperado": {
+    "oQue": "ataque",
+    "pericia": null,
+    "mod": -20,
+    "onde": null,
+    "alvo": null,
+    "acao": "p1"
+   }
+  },
+  {
+   "rotulo": "mod=-21",
+   "link": "gurpsapp://rolar?o=ataque&mod=-20&acao=p1",
+   "erro": null,
+   "esperado": {
+    "oQue": "ataque",
+    "pericia": null,
+    "mod": -20,
+    "onde": null,
+    "alvo": null,
+    "acao": "p1"
+   }
+  },
+  {
+   "rotulo": "mod=99",
+   "link": "gurpsapp://rolar?o=ataque&mod=20&acao=p1",
+   "erro": null,
+   "esperado": {
+    "oQue": "ataque",
+    "pericia": null,
+    "mod": 20,
+    "onde": null,
+    "alvo": null,
+    "acao": "p1"
+   }
+  },
+  {
+   "rotulo": "mod=-99",
+   "link": "gurpsapp://rolar?o=ataque&mod=-20&acao=p1",
+   "erro": null,
+   "esperado": {
+    "oQue": "ataque",
+    "pericia": null,
+    "mod": -20,
+    "onde": null,
+    "alvo": null,
+    "acao": "p1"
+   }
+  },
+  {
+   "rotulo": "mod=9999",
+   "link": "gurpsapp://rolar?o=ataque&mod=20&acao=p1",
+   "erro": null,
+   "esperado": {
+    "oQue": "ataque",
+    "pericia": null,
+    "mod": 20,
+    "onde": null,
+    "alvo": null,
+    "acao": "p1"
+   }
+  },
+  {
+   "rotulo": "mod=-9999",
+   "link": "gurpsapp://rolar?o=ataque&mod=-20&acao=p1",
+   "erro": null,
+   "esperado": {
+    "oQue": "ataque",
+    "pericia": null,
+    "mod": -20,
+    "onde": null,
+    "alvo": null,
+    "acao": "p1"
+   }
+  },
+  {
+   "rotulo": "mod=0.4",
+   "link": "gurpsapp://rolar?o=ataque&mod=0&acao=p1",
+   "erro": null,
+   "esperado": {
+    "oQue": "ataque",
+    "pericia": null,
+    "mod": 0,
+    "onde": null,
+    "alvo": null,
+    "acao": "p1"
+   }
+  },
+  {
+   "rotulo": "mod=0.5",
+   "link": "gurpsapp://rolar?o=ataque&mod=1&acao=p1",
+   "erro": null,
+   "esperado": {
+    "oQue": "ataque",
+    "pericia": null,
+    "mod": 1,
+    "onde": null,
+    "alvo": null,
+    "acao": "p1"
+   }
+  },
+  {
+   "rotulo": "mod=1.6",
+   "link": "gurpsapp://rolar?o=ataque&mod=2&acao=p1",
+   "erro": null,
+   "esperado": {
+    "oQue": "ataque",
+    "pericia": null,
+    "mod": 2,
+    "onde": null,
+    "alvo": null,
+    "acao": "p1"
+   }
+  },
+  {
+   "rotulo": "mod=-0.5",
+   "link": "gurpsapp://rolar?o=ataque&mod=0&acao=p1",
+   "erro": null,
+   "esperado": {
+    "oQue": "ataque",
+    "pericia": null,
+    "mod": 0,
+    "onde": null,
+    "alvo": null,
+    "acao": "p1"
+   }
+  },
+  {
+   "rotulo": "mod=-1.6",
+   "link": "gurpsapp://rolar?o=ataque&mod=-2&acao=p1",
+   "erro": null,
+   "esperado": {
+    "oQue": "ataque",
+    "pericia": null,
+    "mod": -2,
+    "onde": null,
+    "alvo": null,
+    "acao": "p1"
+   }
+  },
+  {
+   "rotulo": "alvo#0",
+   "link": "gurpsapp://rolar?o=ataque&alvo=Orc&acao=p1",
+   "erro": null,
+   "esperado": {
+    "oQue": "ataque",
+    "pericia": null,
+    "mod": 0,
+    "onde": null,
+    "alvo": "Orc",
+    "acao": "p1"
+   }
+  },
+  {
+   "rotulo": "pericia#0",
+   "link": "gurpsapp://rolar?o=ataque&pericia=Orc&acao=p1",
+   "erro": null,
+   "esperado": {
+    "oQue": "ataque",
+    "pericia": "Orc",
+    "mod": 0,
+    "onde": null,
+    "alvo": null,
+    "acao": "p1"
+   }
+  },
+  {
+   "rotulo": "onde#0",
+   "link": "gurpsapp://rolar?o=defesa&onde=Orc&acao=p1",
+   "erro": null,
+   "esperado": {
+    "oQue": "defesa",
+    "pericia": null,
+    "mod": 0,
+    "onde": "Orc",
+    "alvo": null,
+    "acao": "p1"
+   }
+  },
+  {
+   "rotulo": "acaoId#0",
+   "link": "gurpsapp://rolar?o=dano&acao=Orc",
+   "erro": null,
+   "esperado": {
+    "oQue": "dano",
+    "pericia": null,
+    "mod": 0,
+    "onde": null,
+    "alvo": null,
+    "acao": "Orc"
+   }
+  },
+  {
+   "rotulo": "alvo#1",
+   "link": "gurpsapp://rolar?o=ataque&alvo=Orc%20%26%20Cia&acao=p1",
+   "erro": null,
+   "esperado": {
+    "oQue": "ataque",
+    "pericia": null,
+    "mod": 0,
+    "onde": null,
+    "alvo": "Orc & Cia",
+    "acao": "p1"
+   }
+  },
+  {
+   "rotulo": "pericia#1",
+   "link": "gurpsapp://rolar?o=ataque&pericia=Orc%20%26%20Cia&acao=p1",
+   "erro": null,
+   "esperado": {
+    "oQue": "ataque",
+    "pericia": "Orc & Cia",
+    "mod": 0,
+    "onde": null,
+    "alvo": null,
+    "acao": "p1"
+   }
+  },
+  {
+   "rotulo": "onde#1",
+   "link": "gurpsapp://rolar?o=defesa&onde=Orc%20%26%20Cia&acao=p1",
+   "erro": null,
+   "esperado": {
+    "oQue": "defesa",
+    "pericia": null,
+    "mod": 0,
+    "onde": "Orc & Cia",
+    "alvo": null,
+    "acao": "p1"
+   }
+  },
+  {
+   "rotulo": "acaoId#1",
+   "link": "gurpsapp://rolar?o=dano&acao=Orc%20%26%20Cia",
+   "erro": null,
+   "esperado": {
+    "oQue": "dano",
+    "pericia": null,
+    "mod": 0,
+    "onde": null,
+    "alvo": null,
+    "acao": "Orc & Cia"
+   }
+  },
+  {
+   "rotulo": "alvo#2",
+   "link": "gurpsapp://rolar?o=ataque&alvo=a%3D1%26b%3D2&acao=p1",
+   "erro": null,
+   "esperado": {
+    "oQue": "ataque",
+    "pericia": null,
+    "mod": 0,
+    "onde": null,
+    "alvo": "a=1&b=2",
+    "acao": "p1"
+   }
+  },
+  {
+   "rotulo": "pericia#2",
+   "link": "gurpsapp://rolar?o=ataque&pericia=a%3D1%26b%3D2&acao=p1",
+   "erro": null,
+   "esperado": {
+    "oQue": "ataque",
+    "pericia": "a=1&b=2",
+    "mod": 0,
+    "onde": null,
+    "alvo": null,
+    "acao": "p1"
+   }
+  },
+  {
+   "rotulo": "onde#2",
+   "link": "gurpsapp://rolar?o=defesa&onde=a%3D1%26b%3D2&acao=p1",
+   "erro": null,
+   "esperado": {
+    "oQue": "defesa",
+    "pericia": null,
+    "mod": 0,
+    "onde": "a=1&b=2",
+    "alvo": null,
+    "acao": "p1"
+   }
+  },
+  {
+   "rotulo": "acaoId#2",
+   "link": "gurpsapp://rolar?o=dano&acao=a%3D1%26b%3D2",
+   "erro": null,
+   "esperado": {
+    "oQue": "dano",
+    "pericia": null,
+    "mod": 0,
+    "onde": null,
+    "alvo": null,
+    "acao": "a=1&b=2"
+   }
+  },
+  {
+   "rotulo": "alvo#3",
+   "link": "gurpsapp://rolar?o=ataque&alvo=Orc%231&acao=p1",
+   "erro": null,
+   "esperado": {
+    "oQue": "ataque",
+    "pericia": null,
+    "mod": 0,
+    "onde": null,
+    "alvo": "Orc#1",
+    "acao": "p1"
+   }
+  },
+  {
+   "rotulo": "pericia#3",
+   "link": "gurpsapp://rolar?o=ataque&pericia=Orc%231&acao=p1",
+   "erro": null,
+   "esperado": {
+    "oQue": "ataque",
+    "pericia": "Orc#1",
+    "mod": 0,
+    "onde": null,
+    "alvo": null,
+    "acao": "p1"
+   }
+  },
+  {
+   "rotulo": "onde#3",
+   "link": "gurpsapp://rolar?o=defesa&onde=Orc%231&acao=p1",
+   "erro": null,
+   "esperado": {
+    "oQue": "defesa",
+    "pericia": null,
+    "mod": 0,
+    "onde": "Orc#1",
+    "alvo": null,
+    "acao": "p1"
+   }
+  },
+  {
+   "rotulo": "acaoId#3",
+   "link": "gurpsapp://rolar?o=dano&acao=Orc%231",
+   "erro": null,
+   "esperado": {
+    "oQue": "dano",
+    "pericia": null,
+    "mod": 0,
+    "onde": null,
+    "alvo": null,
+    "acao": "Orc#1"
+   }
+  },
+  {
+   "rotulo": "alvo#4",
+   "link": "gurpsapp://rolar?o=ataque&alvo=Orc%3Fx%3D1&acao=p1",
+   "erro": null,
+   "esperado": {
+    "oQue": "ataque",
+    "pericia": null,
+    "mod": 0,
+    "onde": null,
+    "alvo": "Orc?x=1",
+    "acao": "p1"
+   }
+  },
+  {
+   "rotulo": "pericia#4",
+   "link": "gurpsapp://rolar?o=ataque&pericia=Orc%3Fx%3D1&acao=p1",
+   "erro": null,
+   "esperado": {
+    "oQue": "ataque",
+    "pericia": "Orc?x=1",
+    "mod": 0,
+    "onde": null,
+    "alvo": null,
+    "acao": "p1"
+   }
+  },
+  {
+   "rotulo": "onde#4",
+   "link": "gurpsapp://rolar?o=defesa&onde=Orc%3Fx%3D1&acao=p1",
+   "erro": null,
+   "esperado": {
+    "oQue": "defesa",
+    "pericia": null,
+    "mod": 0,
+    "onde": "Orc?x=1",
+    "alvo": null,
+    "acao": "p1"
+   }
+  },
+  {
+   "rotulo": "acaoId#4",
+   "link": "gurpsapp://rolar?o=dano&acao=Orc%3Fx%3D1",
+   "erro": null,
+   "esperado": {
+    "oQue": "dano",
+    "pericia": null,
+    "mod": 0,
+    "onde": null,
+    "alvo": null,
+    "acao": "Orc?x=1"
+   }
+  },
+  {
+   "rotulo": "alvo#5",
+   "link": "gurpsapp://rolar?o=ataque&alvo=100%25&acao=p1",
+   "erro": null,
+   "esperado": {
+    "oQue": "ataque",
+    "pericia": null,
+    "mod": 0,
+    "onde": null,
+    "alvo": "100%",
+    "acao": "p1"
+   }
+  },
+  {
+   "rotulo": "pericia#5",
+   "link": "gurpsapp://rolar?o=ataque&pericia=100%25&acao=p1",
+   "erro": null,
+   "esperado": {
+    "oQue": "ataque",
+    "pericia": "100%",
+    "mod": 0,
+    "onde": null,
+    "alvo": null,
+    "acao": "p1"
+   }
+  },
+  {
+   "rotulo": "onde#5",
+   "link": "gurpsapp://rolar?o=defesa&onde=100%25&acao=p1",
+   "erro": null,
+   "esperado": {
+    "oQue": "defesa",
+    "pericia": null,
+    "mod": 0,
+    "onde": "100%",
+    "alvo": null,
+    "acao": "p1"
+   }
+  },
+  {
+   "rotulo": "acaoId#5",
+   "link": "gurpsapp://rolar?o=dano&acao=100%25",
+   "erro": null,
+   "esperado": {
+    "oQue": "dano",
+    "pericia": null,
+    "mod": 0,
+    "onde": null,
+    "alvo": null,
+    "acao": "100%"
+   }
+  },
+  {
+   "rotulo": "alvo#6",
+   "link": "gurpsapp://rolar?o=ataque&alvo=%2541%2542&acao=p1",
+   "erro": null,
+   "esperado": {
+    "oQue": "ataque",
+    "pericia": null,
+    "mod": 0,
+    "onde": null,
+    "alvo": "%41%42",
+    "acao": "p1"
+   }
+  },
+  {
+   "rotulo": "pericia#6",
+   "link": "gurpsapp://rolar?o=ataque&pericia=%2541%2542&acao=p1",
+   "erro": null,
+   "esperado": {
+    "oQue": "ataque",
+    "pericia": "%41%42",
+    "mod": 0,
+    "onde": null,
+    "alvo": null,
+    "acao": "p1"
+   }
+  },
+  {
+   "rotulo": "onde#6",
+   "link": "gurpsapp://rolar?o=defesa&onde=%2541%2542&acao=p1",
+   "erro": null,
+   "esperado": {
+    "oQue": "defesa",
+    "pericia": null,
+    "mod": 0,
+    "onde": "%41%42",
+    "alvo": null,
+    "acao": "p1"
+   }
+  },
+  {
+   "rotulo": "acaoId#6",
+   "link": "gurpsapp://rolar?o=dano&acao=%2541%2542",
+   "erro": null,
+   "esperado": {
+    "oQue": "dano",
+    "pericia": null,
+    "mod": 0,
+    "onde": null,
+    "alvo": null,
+    "acao": "%41%42"
+   }
+  },
+  {
+   "rotulo": "alvo#7",
+   "link": "gurpsapp://rolar?o=ataque&alvo=O'Brien&acao=p1",
+   "erro": null,
+   "esperado": {
+    "oQue": "ataque",
+    "pericia": null,
+    "mod": 0,
+    "onde": null,
+    "alvo": "O'Brien",
+    "acao": "p1"
+   }
+  },
+  {
+   "rotulo": "pericia#7",
+   "link": "gurpsapp://rolar?o=ataque&pericia=O'Brien&acao=p1",
+   "erro": null,
+   "esperado": {
+    "oQue": "ataque",
+    "pericia": "O'Brien",
+    "mod": 0,
+    "onde": null,
+    "alvo": null,
+    "acao": "p1"
+   }
+  },
+  {
+   "rotulo": "onde#7",
+   "link": "gurpsapp://rolar?o=defesa&onde=O'Brien&acao=p1",
+   "erro": null,
+   "esperado": {
+    "oQue": "defesa",
+    "pericia": null,
+    "mod": 0,
+    "onde": "O'Brien",
+    "alvo": null,
+    "acao": "p1"
+   }
+  },
+  {
+   "rotulo": "acaoId#7",
+   "link": "gurpsapp://rolar?o=dano&acao=O'Brien",
+   "erro": null,
+   "esperado": {
+    "oQue": "dano",
+    "pericia": null,
+    "mod": 0,
+    "onde": null,
+    "alvo": null,
+    "acao": "O'Brien"
+   }
+  },
+  {
+   "rotulo": "alvo#8",
+   "link": "gurpsapp://rolar?o=ataque&alvo=aspas%22duplas&acao=p1",
+   "erro": null,
+   "esperado": {
+    "oQue": "ataque",
+    "pericia": null,
+    "mod": 0,
+    "onde": null,
+    "alvo": "aspas\"duplas",
+    "acao": "p1"
+   }
+  },
+  {
+   "rotulo": "pericia#8",
+   "link": "gurpsapp://rolar?o=ataque&pericia=aspas%22duplas&acao=p1",
+   "erro": null,
+   "esperado": {
+    "oQue": "ataque",
+    "pericia": "aspas\"duplas",
+    "mod": 0,
+    "onde": null,
+    "alvo": null,
+    "acao": "p1"
+   }
+  },
+  {
+   "rotulo": "onde#8",
+   "link": "gurpsapp://rolar?o=defesa&onde=aspas%22duplas&acao=p1",
+   "erro": null,
+   "esperado": {
+    "oQue": "defesa",
+    "pericia": null,
+    "mod": 0,
+    "onde": "aspas\"duplas",
+    "alvo": null,
+    "acao": "p1"
+   }
+  },
+  {
+   "rotulo": "acaoId#8",
+   "link": "gurpsapp://rolar?o=dano&acao=aspas%22duplas",
+   "erro": null,
+   "esperado": {
+    "oQue": "dano",
+    "pericia": null,
+    "mod": 0,
+    "onde": null,
+    "alvo": null,
+    "acao": "aspas\"duplas"
+   }
+  },
+  {
+   "rotulo": "alvo#9",
+   "link": "gurpsapp://rolar?o=ataque&alvo=barra%2Finvertida%5Caqui&acao=p1",
+   "erro": null,
+   "esperado": {
+    "oQue": "ataque",
+    "pericia": null,
+    "mod": 0,
+    "onde": null,
+    "alvo": "barra/invertida\\aqui",
+    "acao": "p1"
+   }
+  },
+  {
+   "rotulo": "pericia#9",
+   "link": "gurpsapp://rolar?o=ataque&pericia=barra%2Finvertida%5Caqui&acao=p1",
+   "erro": null,
+   "esperado": {
+    "oQue": "ataque",
+    "pericia": "barra/invertida\\aqui",
+    "mod": 0,
+    "onde": null,
+    "alvo": null,
+    "acao": "p1"
+   }
+  },
+  {
+   "rotulo": "onde#9",
+   "link": "gurpsapp://rolar?o=defesa&onde=barra%2Finvertida%5Caqui&acao=p1",
+   "erro": null,
+   "esperado": {
+    "oQue": "defesa",
+    "pericia": null,
+    "mod": 0,
+    "onde": "barra/invertida\\aqui",
+    "alvo": null,
+    "acao": "p1"
+   }
+  },
+  {
+   "rotulo": "acaoId#9",
+   "link": "gurpsapp://rolar?o=dano&acao=barra%2Finvertida%5Caqui",
+   "erro": null,
+   "esperado": {
+    "oQue": "dano",
+    "pericia": null,
+    "mod": 0,
+    "onde": null,
+    "alvo": null,
+    "acao": "barra/invertida\\aqui"
+   }
+  },
+  {
+   "rotulo": "alvo#10",
+   "link": "gurpsapp://rolar?o=ataque&alvo=..%2F..%2Fetc%2Fpasswd&acao=p1",
+   "erro": null,
+   "esperado": {
+    "oQue": "ataque",
+    "pericia": null,
+    "mod": 0,
+    "onde": null,
+    "alvo": "../../etc/passwd",
+    "acao": "p1"
+   }
+  },
+  {
+   "rotulo": "pericia#10",
+   "link": "gurpsapp://rolar?o=ataque&pericia=..%2F..%2Fetc%2Fpasswd&acao=p1",
+   "erro": null,
+   "esperado": {
+    "oQue": "ataque",
+    "pericia": "../../etc/passwd",
+    "mod": 0,
+    "onde": null,
+    "alvo": null,
+    "acao": "p1"
+   }
+  },
+  {
+   "rotulo": "onde#10",
+   "link": "gurpsapp://rolar?o=defesa&onde=..%2F..%2Fetc%2Fpasswd&acao=p1",
+   "erro": null,
+   "esperado": {
+    "oQue": "defesa",
+    "pericia": null,
+    "mod": 0,
+    "onde": "../../etc/passwd",
+    "alvo": null,
+    "acao": "p1"
+   }
+  },
+  {
+   "rotulo": "acaoId#10",
+   "link": "gurpsapp://rolar?o=dano&acao=..%2F..%2Fetc%2Fpasswd",
+   "erro": null,
+   "esperado": {
+    "oQue": "dano",
+    "pericia": null,
+    "mod": 0,
+    "onde": null,
+    "alvo": null,
+    "acao": "../../etc/passwd"
+   }
+  },
+  {
+   "rotulo": "alvo#11",
+   "link": "gurpsapp://rolar?o=ataque&alvo=Ant%C3%B4nio%20Gon%C3%A7alves&acao=p1",
+   "erro": null,
+   "esperado": {
+    "oQue": "ataque",
+    "pericia": null,
+    "mod": 0,
+    "onde": null,
+    "alvo": "Antônio Gonçalves",
+    "acao": "p1"
+   }
+  },
+  {
+   "rotulo": "pericia#11",
+   "link": "gurpsapp://rolar?o=ataque&pericia=Ant%C3%B4nio%20Gon%C3%A7alves&acao=p1",
+   "erro": null,
+   "esperado": {
+    "oQue": "ataque",
+    "pericia": "Antônio Gonçalves",
+    "mod": 0,
+    "onde": null,
+    "alvo": null,
+    "acao": "p1"
+   }
+  },
+  {
+   "rotulo": "onde#11",
+   "link": "gurpsapp://rolar?o=defesa&onde=Ant%C3%B4nio%20Gon%C3%A7alves&acao=p1",
+   "erro": null,
+   "esperado": {
+    "oQue": "defesa",
+    "pericia": null,
+    "mod": 0,
+    "onde": "Antônio Gonçalves",
+    "alvo": null,
+    "acao": "p1"
+   }
+  },
+  {
+   "rotulo": "acaoId#11",
+   "link": "gurpsapp://rolar?o=dano&acao=Ant%C3%B4nio%20Gon%C3%A7alves",
+   "erro": null,
+   "esperado": {
+    "oQue": "dano",
+    "pericia": null,
+    "mod": 0,
+    "onde": null,
+    "alvo": null,
+    "acao": "Antônio Gonçalves"
+   }
+  },
+  {
+   "rotulo": "alvo#12",
+   "link": "gurpsapp://rolar?o=ataque&alvo=%C3%A7%C3%A3o%20%C3%A3%C3%B5%20%C3%A7%C3%BC&acao=p1",
+   "erro": null,
+   "esperado": {
+    "oQue": "ataque",
+    "pericia": null,
+    "mod": 0,
+    "onde": null,
+    "alvo": "ção ãõ çü",
+    "acao": "p1"
+   }
+  },
+  {
+   "rotulo": "pericia#12",
+   "link": "gurpsapp://rolar?o=ataque&pericia=%C3%A7%C3%A3o%20%C3%A3%C3%B5%20%C3%A7%C3%BC&acao=p1",
+   "erro": null,
+   "esperado": {
+    "oQue": "ataque",
+    "pericia": "ção ãõ çü",
+    "mod": 0,
+    "onde": null,
+    "alvo": null,
+    "acao": "p1"
+   }
+  },
+  {
+   "rotulo": "onde#12",
+   "link": "gurpsapp://rolar?o=defesa&onde=%C3%A7%C3%A3o%20%C3%A3%C3%B5%20%C3%A7%C3%BC&acao=p1",
+   "erro": null,
+   "esperado": {
+    "oQue": "defesa",
+    "pericia": null,
+    "mod": 0,
+    "onde": "ção ãõ çü",
+    "alvo": null,
+    "acao": "p1"
+   }
+  },
+  {
+   "rotulo": "acaoId#12",
+   "link": "gurpsapp://rolar?o=dano&acao=%C3%A7%C3%A3o%20%C3%A3%C3%B5%20%C3%A7%C3%BC",
+   "erro": null,
+   "esperado": {
+    "oQue": "dano",
+    "pericia": null,
+    "mod": 0,
+    "onde": null,
+    "alvo": null,
+    "acao": "ção ãõ çü"
+   }
+  },
+  {
+   "rotulo": "alvo#13",
+   "link": "gurpsapp://rolar?o=ataque&alvo=espa%C3%A7o%20%20duplo&acao=p1",
+   "erro": null,
+   "esperado": {
+    "oQue": "ataque",
+    "pericia": null,
+    "mod": 0,
+    "onde": null,
+    "alvo": "espaço  duplo",
+    "acao": "p1"
+   }
+  },
+  {
+   "rotulo": "pericia#13",
+   "link": "gurpsapp://rolar?o=ataque&pericia=espa%C3%A7o%20%20duplo&acao=p1",
+   "erro": null,
+   "esperado": {
+    "oQue": "ataque",
+    "pericia": "espaço  duplo",
+    "mod": 0,
+    "onde": null,
+    "alvo": null,
+    "acao": "p1"
+   }
+  },
+  {
+   "rotulo": "onde#13",
+   "link": "gurpsapp://rolar?o=defesa&onde=espa%C3%A7o%20%20duplo&acao=p1",
+   "erro": null,
+   "esperado": {
+    "oQue": "defesa",
+    "pericia": null,
+    "mod": 0,
+    "onde": "espaço  duplo",
+    "alvo": null,
+    "acao": "p1"
+   }
+  },
+  {
+   "rotulo": "acaoId#13",
+   "link": "gurpsapp://rolar?o=dano&acao=espa%C3%A7o%20%20duplo",
+   "erro": null,
+   "esperado": {
+    "oQue": "dano",
+    "pericia": null,
+    "mod": 0,
+    "onde": null,
+    "alvo": null,
+    "acao": "espaço  duplo"
+   }
+  },
+  {
+   "rotulo": "alvo#14",
+   "link": "gurpsapp://rolar?o=ataque&alvo=mais%2Bsinal&acao=p1",
+   "erro": null,
+   "esperado": {
+    "oQue": "ataque",
+    "pericia": null,
+    "mod": 0,
+    "onde": null,
+    "alvo": "mais+sinal",
+    "acao": "p1"
+   }
+  },
+  {
+   "rotulo": "pericia#14",
+   "link": "gurpsapp://rolar?o=ataque&pericia=mais%2Bsinal&acao=p1",
+   "erro": null,
+   "esperado": {
+    "oQue": "ataque",
+    "pericia": "mais+sinal",
+    "mod": 0,
+    "onde": null,
+    "alvo": null,
+    "acao": "p1"
+   }
+  },
+  {
+   "rotulo": "onde#14",
+   "link": "gurpsapp://rolar?o=defesa&onde=mais%2Bsinal&acao=p1",
+   "erro": null,
+   "esperado": {
+    "oQue": "defesa",
+    "pericia": null,
+    "mod": 0,
+    "onde": "mais+sinal",
+    "alvo": null,
+    "acao": "p1"
+   }
+  },
+  {
+   "rotulo": "acaoId#14",
+   "link": "gurpsapp://rolar?o=dano&acao=mais%2Bsinal",
+   "erro": null,
+   "esperado": {
+    "oQue": "dano",
+    "pericia": null,
+    "mod": 0,
+    "onde": null,
+    "alvo": null,
+    "acao": "mais+sinal"
+   }
+  },
+  {
+   "rotulo": "alvo#15",
+   "link": "gurpsapp://rolar?o=ataque&alvo=sinal%3Digual&acao=p1",
+   "erro": null,
+   "esperado": {
+    "oQue": "ataque",
+    "pericia": null,
+    "mod": 0,
+    "onde": null,
+    "alvo": "sinal=igual",
+    "acao": "p1"
+   }
+  },
+  {
+   "rotulo": "pericia#15",
+   "link": "gurpsapp://rolar?o=ataque&pericia=sinal%3Digual&acao=p1",
+   "erro": null,
+   "esperado": {
+    "oQue": "ataque",
+    "pericia": "sinal=igual",
+    "mod": 0,
+    "onde": null,
+    "alvo": null,
+    "acao": "p1"
+   }
+  },
+  {
+   "rotulo": "onde#15",
+   "link": "gurpsapp://rolar?o=defesa&onde=sinal%3Digual&acao=p1",
+   "erro": null,
+   "esperado": {
+    "oQue": "defesa",
+    "pericia": null,
+    "mod": 0,
+    "onde": "sinal=igual",
+    "alvo": null,
+    "acao": "p1"
+   }
+  },
+  {
+   "rotulo": "acaoId#15",
+   "link": "gurpsapp://rolar?o=dano&acao=sinal%3Digual",
+   "erro": null,
+   "esperado": {
+    "oQue": "dano",
+    "pericia": null,
+    "mod": 0,
+    "onde": null,
+    "alvo": null,
+    "acao": "sinal=igual"
+   }
+  },
+  {
+   "rotulo": "alvo#16",
+   "link": "gurpsapp://rolar?o=ataque&alvo=comeca%20com%20espaco&acao=p1",
+   "erro": null,
+   "esperado": {
+    "oQue": "ataque",
+    "pericia": null,
+    "mod": 0,
+    "onde": null,
+    "alvo": "comeca com espaco",
+    "acao": "p1"
+   }
+  },
+  {
+   "rotulo": "pericia#16",
+   "link": "gurpsapp://rolar?o=ataque&pericia=comeca%20com%20espaco&acao=p1",
+   "erro": null,
+   "esperado": {
+    "oQue": "ataque",
+    "pericia": "comeca com espaco",
+    "mod": 0,
+    "onde": null,
+    "alvo": null,
+    "acao": "p1"
+   }
+  },
+  {
+   "rotulo": "onde#16",
+   "link": "gurpsapp://rolar?o=defesa&onde=comeca%20com%20espaco&acao=p1",
+   "erro": null,
+   "esperado": {
+    "oQue": "defesa",
+    "pericia": null,
+    "mod": 0,
+    "onde": "comeca com espaco",
+    "alvo": null,
+    "acao": "p1"
+   }
+  },
+  {
+   "rotulo": "acaoId#16",
+   "link": "gurpsapp://rolar?o=dano&acao=comeca%20com%20espaco",
+   "erro": null,
+   "esperado": {
+    "oQue": "dano",
+    "pericia": null,
+    "mod": 0,
+    "onde": null,
+    "alvo": null,
+    "acao": "comeca com espaco"
+   }
+  },
+  {
+   "rotulo": "alvo#17",
+   "link": "gurpsapp://rolar?o=ataque&alvo=termina%20com%20espaco&acao=p1",
+   "erro": null,
+   "esperado": {
+    "oQue": "ataque",
+    "pericia": null,
+    "mod": 0,
+    "onde": null,
+    "alvo": "termina com espaco",
+    "acao": "p1"
+   }
+  },
+  {
+   "rotulo": "pericia#17",
+   "link": "gurpsapp://rolar?o=ataque&pericia=termina%20com%20espaco&acao=p1",
+   "erro": null,
+   "esperado": {
+    "oQue": "ataque",
+    "pericia": "termina com espaco",
+    "mod": 0,
+    "onde": null,
+    "alvo": null,
+    "acao": "p1"
+   }
+  },
+  {
+   "rotulo": "onde#17",
+   "link": "gurpsapp://rolar?o=defesa&onde=termina%20com%20espaco&acao=p1",
+   "erro": null,
+   "esperado": {
+    "oQue": "defesa",
+    "pericia": null,
+    "mod": 0,
+    "onde": "termina com espaco",
+    "alvo": null,
+    "acao": "p1"
+   }
+  },
+  {
+   "rotulo": "acaoId#17",
+   "link": "gurpsapp://rolar?o=dano&acao=termina%20com%20espaco",
+   "erro": null,
+   "esperado": {
+    "oQue": "dano",
+    "pericia": null,
+    "mod": 0,
+    "onde": null,
+    "alvo": null,
+    "acao": "termina com espaco"
+   }
+  },
+  {
+   "rotulo": "alvo#18",
+   "link": "gurpsapp://rolar?o=ataque&acao=p1",
+   "erro": null,
+   "esperado": {
+    "oQue": "ataque",
+    "pericia": null,
+    "mod": 0,
+    "onde": null,
+    "alvo": null,
+    "acao": "p1"
+   }
+  },
+  {
+   "rotulo": "pericia#18",
+   "link": "gurpsapp://rolar?o=ataque&acao=p1",
+   "erro": null,
+   "esperado": {
+    "oQue": "ataque",
+    "pericia": null,
+    "mod": 0,
+    "onde": null,
+    "alvo": null,
+    "acao": "p1"
+   }
+  },
+  {
+   "rotulo": "onde#18",
+   "link": "gurpsapp://rolar?o=defesa&acao=p1",
+   "erro": null,
+   "esperado": {
+    "oQue": "defesa",
+    "pericia": null,
+    "mod": 0,
+    "onde": null,
+    "alvo": null,
+    "acao": "p1"
+   }
+  },
+  {
+   "rotulo": "acaoId#18",
+   "link": "gurpsapp://rolar?o=dano",
+   "erro": null,
+   "esperado": {
+    "oQue": "dano",
+    "pericia": null,
+    "mod": 0,
+    "onde": null,
+    "alvo": null,
+    "acao": null
+   }
+  },
+  {
+   "rotulo": "alvo#19",
+   "link": "gurpsapp://rolar?o=ataque&alvo=&acao=p1",
+   "erro": null,
+   "esperado": {
+    "oQue": "ataque",
+    "pericia": null,
+    "mod": 0,
+    "onde": null,
+    "alvo": null,
+    "acao": "p1"
+   }
+  },
+  {
+   "rotulo": "pericia#19",
+   "link": "gurpsapp://rolar?o=ataque&pericia=&acao=p1",
+   "erro": null,
+   "esperado": {
+    "oQue": "ataque",
+    "pericia": null,
+    "mod": 0,
+    "onde": null,
+    "alvo": null,
+    "acao": "p1"
+   }
+  },
+  {
+   "rotulo": "onde#19",
+   "link": "gurpsapp://rolar?o=defesa&onde=&acao=p1",
+   "erro": null,
+   "esperado": {
+    "oQue": "defesa",
+    "pericia": null,
+    "mod": 0,
+    "onde": null,
+    "alvo": null,
+    "acao": "p1"
+   }
+  },
+  {
+   "rotulo": "acaoId#19",
+   "link": "gurpsapp://rolar?o=dano&acao=",
+   "erro": null,
+   "esperado": {
+    "oQue": "dano",
+    "pericia": null,
+    "mod": 0,
+    "onde": null,
+    "alvo": null,
+    "acao": null
+   }
+  },
+  {
+   "rotulo": "alvo#20",
+   "link": "gurpsapp://rolar?o=ataque&alvo=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa&acao=p1",
+   "erro": null,
+   "esperado": {
+    "oQue": "ataque",
+    "pericia": null,
+    "mod": 0,
+    "onde": null,
+    "alvo": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "acao": "p1"
+   }
+  },
+  {
+   "rotulo": "pericia#20",
+   "link": "gurpsapp://rolar?o=ataque&pericia=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa&acao=p1",
+   "erro": null,
+   "esperado": {
+    "oQue": "ataque",
+    "pericia": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "mod": 0,
+    "onde": null,
+    "alvo": null,
+    "acao": "p1"
+   }
+  },
+  {
+   "rotulo": "onde#20",
+   "link": "gurpsapp://rolar?o=defesa&onde=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa&acao=p1",
+   "erro": null,
+   "esperado": {
+    "oQue": "defesa",
+    "pericia": null,
+    "mod": 0,
+    "onde": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "alvo": null,
+    "acao": "p1"
+   }
+  },
+  {
+   "rotulo": "acaoId#20",
+   "link": "gurpsapp://rolar?o=dano&acao=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+   "erro": null,
+   "esperado": {
+    "oQue": "dano",
+    "pericia": null,
+    "mod": 0,
+    "onde": null,
+    "alvo": null,
+    "acao": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+   }
+  },
+  {
+   "rotulo": "alvo#21",
+   "link": "gurpsapp://rolar?o=ataque&alvo=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa&acao=p1",
+   "erro": null,
+   "esperado": {
+    "oQue": "ataque",
+    "pericia": null,
+    "mod": 0,
+    "onde": null,
+    "alvo": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "acao": "p1"
+   }
+  },
+  {
+   "rotulo": "pericia#21",
+   "link": "gurpsapp://rolar?o=ataque&pericia=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa&acao=p1",
+   "erro": null,
+   "esperado": {
+    "oQue": "ataque",
+    "pericia": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "mod": 0,
+    "onde": null,
+    "alvo": null,
+    "acao": "p1"
+   }
+  },
+  {
+   "rotulo": "onde#21",
+   "link": "gurpsapp://rolar?o=defesa&onde=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa&acao=p1",
+   "erro": null,
+   "esperado": {
+    "oQue": "defesa",
+    "pericia": null,
+    "mod": 0,
+    "onde": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "alvo": null,
+    "acao": "p1"
+   }
+  },
+  {
+   "rotulo": "acaoId#21",
+   "link": "gurpsapp://rolar?o=dano&acao=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+   "erro": null,
+   "esperado": {
+    "oQue": "dano",
+    "pericia": null,
+    "mod": 0,
+    "onde": null,
+    "alvo": null,
+    "acao": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+   }
+  },
+  {
+   "rotulo": "alvo#22",
+   "link": "gurpsapp://rolar?o=ataque&alvo=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa&acao=p1",
+   "erro": null,
+   "esperado": {
+    "oQue": "ataque",
+    "pericia": null,
+    "mod": 0,
+    "onde": null,
+    "alvo": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "acao": "p1"
+   }
+  },
+  {
+   "rotulo": "pericia#22",
+   "link": "gurpsapp://rolar?o=ataque&pericia=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa&acao=p1",
+   "erro": null,
+   "esperado": {
+    "oQue": "ataque",
+    "pericia": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "mod": 0,
+    "onde": null,
+    "alvo": null,
+    "acao": "p1"
+   }
+  },
+  {
+   "rotulo": "onde#22",
+   "link": "gurpsapp://rolar?o=defesa&onde=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa&acao=p1",
+   "erro": null,
+   "esperado": {
+    "oQue": "defesa",
+    "pericia": null,
+    "mod": 0,
+    "onde": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "alvo": null,
+    "acao": "p1"
+   }
+  },
+  {
+   "rotulo": "acaoId#22",
+   "link": "gurpsapp://rolar?o=dano&acao=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+   "erro": null,
+   "esperado": {
+    "oQue": "dano",
+    "pericia": null,
+    "mod": 0,
+    "onde": null,
+    "alvo": null,
+    "acao": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+   }
+  },
+  {
+   "rotulo": "alvo#23",
+   "link": "gurpsapp://rolar?o=ataque&alvo=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa&acao=p1",
+   "erro": null,
+   "esperado": {
+    "oQue": "ataque",
+    "pericia": null,
+    "mod": 0,
+    "onde": null,
+    "alvo": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "acao": "p1"
+   }
+  },
+  {
+   "rotulo": "pericia#23",
+   "link": "gurpsapp://rolar?o=ataque&pericia=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa&acao=p1",
+   "erro": null,
+   "esperado": {
+    "oQue": "ataque",
+    "pericia": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "mod": 0,
+    "onde": null,
+    "alvo": null,
+    "acao": "p1"
+   }
+  },
+  {
+   "rotulo": "onde#23",
+   "link": "gurpsapp://rolar?o=defesa&onde=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa&acao=p1",
+   "erro": null,
+   "esperado": {
+    "oQue": "defesa",
+    "pericia": null,
+    "mod": 0,
+    "onde": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "alvo": null,
+    "acao": "p1"
+   }
+  },
+  {
+   "rotulo": "acaoId#23",
+   "link": "gurpsapp://rolar?o=dano&acao=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+   "erro": null,
+   "esperado": {
+    "oQue": "dano",
+    "pericia": null,
+    "mod": 0,
+    "onde": null,
+    "alvo": null,
+    "acao": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+   }
+  },
+  {
+   "rotulo": "alvo#24",
+   "link": "gurpsapp://rolar?o=ataque&alvo=%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7&acao=p1",
+   "erro": null,
+   "esperado": {
+    "oQue": "ataque",
+    "pericia": null,
+    "mod": 0,
+    "onde": null,
+    "alvo": "çççççççççççççççççççççççççççççççççççççççççççççççççççççççççççç",
+    "acao": "p1"
+   }
+  },
+  {
+   "rotulo": "pericia#24",
+   "link": "gurpsapp://rolar?o=ataque&pericia=%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7&acao=p1",
+   "erro": null,
+   "esperado": {
+    "oQue": "ataque",
+    "pericia": "çççççççççççççççççççççççççççççççççççççççççççççççççççççççççççç",
+    "mod": 0,
+    "onde": null,
+    "alvo": null,
+    "acao": "p1"
+   }
+  },
+  {
+   "rotulo": "onde#24",
+   "link": "gurpsapp://rolar?o=defesa&onde=%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7&acao=p1",
+   "erro": null,
+   "esperado": {
+    "oQue": "defesa",
+    "pericia": null,
+    "mod": 0,
+    "onde": "çççççççççççççççççççççççççççççççççççççççççççççççççççççççççççç",
+    "alvo": null,
+    "acao": "p1"
+   }
+  },
+  {
+   "rotulo": "acaoId#24",
+   "link": "gurpsapp://rolar?o=dano&acao=%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7",
+   "erro": null,
+   "esperado": {
+    "oQue": "dano",
+    "pericia": null,
+    "mod": 0,
+    "onde": null,
+    "alvo": null,
+    "acao": "çççççççççççççççççççççççççççççççççççççççççççççççççççççççççççç"
+   }
+  },
+  {
+   "rotulo": "alvo#25",
+   "link": "gurpsapp://rolar?o=ataque&alvo=%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1&acao=p1",
+   "erro": null,
+   "esperado": {
+    "oQue": "ataque",
+    "pericia": null,
+    "mod": 0,
+    "onde": null,
+    "alvo": "áááááááááááááááááááááááááááááááááááááááááááááááááááááááááááá",
+    "acao": "p1"
+   }
+  },
+  {
+   "rotulo": "pericia#25",
+   "link": "gurpsapp://rolar?o=ataque&pericia=%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1&acao=p1",
+   "erro": null,
+   "esperado": {
+    "oQue": "ataque",
+    "pericia": "áááááááááááááááááááááááááááááááááááááááááááááááááááááááááááá",
+    "mod": 0,
+    "onde": null,
+    "alvo": null,
+    "acao": "p1"
+   }
+  },
+  {
+   "rotulo": "onde#25",
+   "link": "gurpsapp://rolar?o=defesa&onde=%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1&acao=p1",
+   "erro": null,
+   "esperado": {
+    "oQue": "defesa",
+    "pericia": null,
+    "mod": 0,
+    "onde": "áááááááááááááááááááááááááááááááááááááááááááááááááááááááááááá",
+    "alvo": null,
+    "acao": "p1"
+   }
+  },
+  {
+   "rotulo": "acaoId#25",
+   "link": "gurpsapp://rolar?o=dano&acao=%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1",
+   "erro": null,
+   "esperado": {
+    "oQue": "dano",
+    "pericia": null,
+    "mod": 0,
+    "onde": null,
+    "alvo": null,
+    "acao": "áááááááááááááááááááááááááááááááááááááááááááááááááááááááááááá"
+   }
+  },
+  {
+   "rotulo": "alvo#26",
+   "link": "gurpsapp://rolar?o=ataque&alvo=linha%0Aquebrada&acao=p1",
+   "erro": null,
+   "esperado": {
+    "oQue": "ataque",
+    "pericia": null,
+    "mod": 0,
+    "onde": null,
+    "alvo": "linha\nquebrada",
+    "acao": "p1"
+   }
+  },
+  {
+   "rotulo": "pericia#26",
+   "link": "gurpsapp://rolar?o=ataque&pericia=linha%0Aquebrada&acao=p1",
+   "erro": null,
+   "esperado": {
+    "oQue": "ataque",
+    "pericia": "linha\nquebrada",
+    "mod": 0,
+    "onde": null,
+    "alvo": null,
+    "acao": "p1"
+   }
+  },
+  {
+   "rotulo": "onde#26",
+   "link": "gurpsapp://rolar?o=defesa&onde=linha%0Aquebrada&acao=p1",
+   "erro": null,
+   "esperado": {
+    "oQue": "defesa",
+    "pericia": null,
+    "mod": 0,
+    "onde": "linha\nquebrada",
+    "alvo": null,
+    "acao": "p1"
+   }
+  },
+  {
+   "rotulo": "acaoId#26",
+   "link": "gurpsapp://rolar?o=dano&acao=linha%0Aquebrada",
+   "erro": null,
+   "esperado": {
+    "oQue": "dano",
+    "pericia": null,
+    "mod": 0,
+    "onde": null,
+    "alvo": null,
+    "acao": "linha\nquebrada"
+   }
+  },
+  {
+   "rotulo": "alvo#27",
+   "link": "gurpsapp://rolar?o=ataque&alvo=tab%09here&acao=p1",
+   "erro": null,
+   "esperado": {
+    "oQue": "ataque",
+    "pericia": null,
+    "mod": 0,
+    "onde": null,
+    "alvo": "tab\there",
+    "acao": "p1"
+   }
+  },
+  {
+   "rotulo": "pericia#27",
+   "link": "gurpsapp://rolar?o=ataque&pericia=tab%09here&acao=p1",
+   "erro": null,
+   "esperado": {
+    "oQue": "ataque",
+    "pericia": "tab\there",
+    "mod": 0,
+    "onde": null,
+    "alvo": null,
+    "acao": "p1"
+   }
+  },
+  {
+   "rotulo": "onde#27",
+   "link": "gurpsapp://rolar?o=defesa&onde=tab%09here&acao=p1",
+   "erro": null,
+   "esperado": {
+    "oQue": "defesa",
+    "pericia": null,
+    "mod": 0,
+    "onde": "tab\there",
+    "alvo": null,
+    "acao": "p1"
+   }
+  },
+  {
+   "rotulo": "acaoId#27",
+   "link": "gurpsapp://rolar?o=dano&acao=tab%09here",
+   "erro": null,
+   "esperado": {
+    "oQue": "dano",
+    "pericia": null,
+    "mod": 0,
+    "onde": null,
+    "alvo": null,
+    "acao": "tab\there"
+   }
+  },
+  {
+   "rotulo": "alvo#28",
+   "link": "gurpsapp://rolar?o=ataque&alvo=nulo%00dentro&acao=p1",
+   "erro": null,
+   "esperado": {
+    "oQue": "ataque",
+    "pericia": null,
+    "mod": 0,
+    "onde": null,
+    "alvo": "nulo\u0000dentro",
+    "acao": "p1"
+   }
+  },
+  {
+   "rotulo": "pericia#28",
+   "link": "gurpsapp://rolar?o=ataque&pericia=nulo%00dentro&acao=p1",
+   "erro": null,
+   "esperado": {
+    "oQue": "ataque",
+    "pericia": "nulo\u0000dentro",
+    "mod": 0,
+    "onde": null,
+    "alvo": null,
+    "acao": "p1"
+   }
+  },
+  {
+   "rotulo": "onde#28",
+   "link": "gurpsapp://rolar?o=defesa&onde=nulo%00dentro&acao=p1",
+   "erro": null,
+   "esperado": {
+    "oQue": "defesa",
+    "pericia": null,
+    "mod": 0,
+    "onde": "nulo\u0000dentro",
+    "alvo": null,
+    "acao": "p1"
+   }
+  },
+  {
+   "rotulo": "acaoId#28",
+   "link": "gurpsapp://rolar?o=dano&acao=nulo%00dentro",
+   "erro": null,
+   "esperado": {
+    "oQue": "dano",
+    "pericia": null,
+    "mod": 0,
+    "onde": null,
+    "alvo": null,
+    "acao": "nulo\u0000dentro"
+   }
+  },
+  {
+   "rotulo": "alvo#29",
+   "link": "gurpsapp://rolar?o=ataque&alvo=%3Cscript%3Ealert(1)%3C%2Fscript%3E&acao=p1",
+   "erro": null,
+   "esperado": {
+    "oQue": "ataque",
+    "pericia": null,
+    "mod": 0,
+    "onde": null,
+    "alvo": "<script>alert(1)</script>",
+    "acao": "p1"
+   }
+  },
+  {
+   "rotulo": "pericia#29",
+   "link": "gurpsapp://rolar?o=ataque&pericia=%3Cscript%3Ealert(1)%3C%2Fscript%3E&acao=p1",
+   "erro": null,
+   "esperado": {
+    "oQue": "ataque",
+    "pericia": "<script>alert(1)</script>",
+    "mod": 0,
+    "onde": null,
+    "alvo": null,
+    "acao": "p1"
+   }
+  },
+  {
+   "rotulo": "onde#29",
+   "link": "gurpsapp://rolar?o=defesa&onde=%3Cscript%3Ealert(1)%3C%2Fscript%3E&acao=p1",
+   "erro": null,
+   "esperado": {
+    "oQue": "defesa",
+    "pericia": null,
+    "mod": 0,
+    "onde": "<script>alert(1)</script>",
+    "alvo": null,
+    "acao": "p1"
+   }
+  },
+  {
+   "rotulo": "acaoId#29",
+   "link": "gurpsapp://rolar?o=dano&acao=%3Cscript%3Ealert(1)%3C%2Fscript%3E",
+   "erro": null,
+   "esperado": {
+    "oQue": "dano",
+    "pericia": null,
+    "mod": 0,
+    "onde": null,
+    "alvo": null,
+    "acao": "<script>alert(1)</script>"
+   }
+  },
+  {
+   "rotulo": "alvo#30",
+   "link": "gurpsapp://rolar?o=ataque&alvo=emoji%20%F0%9F%90%89%20dragao&acao=p1",
+   "erro": null,
+   "esperado": {
+    "oQue": "ataque",
+    "pericia": null,
+    "mod": 0,
+    "onde": null,
+    "alvo": "emoji 🐉 dragao",
+    "acao": "p1"
+   }
+  },
+  {
+   "rotulo": "pericia#30",
+   "link": "gurpsapp://rolar?o=ataque&pericia=emoji%20%F0%9F%90%89%20dragao&acao=p1",
+   "erro": null,
+   "esperado": {
+    "oQue": "ataque",
+    "pericia": "emoji 🐉 dragao",
+    "mod": 0,
+    "onde": null,
+    "alvo": null,
+    "acao": "p1"
+   }
+  },
+  {
+   "rotulo": "onde#30",
+   "link": "gurpsapp://rolar?o=defesa&onde=emoji%20%F0%9F%90%89%20dragao&acao=p1",
+   "erro": null,
+   "esperado": {
+    "oQue": "defesa",
+    "pericia": null,
+    "mod": 0,
+    "onde": "emoji 🐉 dragao",
+    "alvo": null,
+    "acao": "p1"
+   }
+  },
+  {
+   "rotulo": "acaoId#30",
+   "link": "gurpsapp://rolar?o=dano&acao=emoji%20%F0%9F%90%89%20dragao",
+   "erro": null,
+   "esperado": {
+    "oQue": "dano",
+    "pericia": null,
+    "mod": 0,
+    "onde": null,
+    "alvo": null,
+    "acao": "emoji 🐉 dragao"
+   }
+  },
+  {
+   "rotulo": "alvo#31",
+   "link": "gurpsapp://rolar?o=ataque&alvo=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx&acao=p1",
+   "erro": null,
+   "esperado": {
+    "oQue": "ataque",
+    "pericia": null,
+    "mod": 0,
+    "onde": null,
+    "alvo": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+    "acao": "p1"
+   }
+  },
+  {
+   "rotulo": "pericia#31",
+   "link": "gurpsapp://rolar?o=ataque&pericia=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx&acao=p1",
+   "erro": null,
+   "esperado": {
+    "oQue": "ataque",
+    "pericia": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+    "mod": 0,
+    "onde": null,
+    "alvo": null,
+    "acao": "p1"
+   }
+  },
+  {
+   "rotulo": "onde#31",
+   "link": "gurpsapp://rolar?o=defesa&onde=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx&acao=p1",
+   "erro": null,
+   "esperado": {
+    "oQue": "defesa",
+    "pericia": null,
+    "mod": 0,
+    "onde": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+    "alvo": null,
+    "acao": "p1"
+   }
+  },
+  {
+   "rotulo": "acaoId#31",
+   "link": "gurpsapp://rolar?o=dano&acao=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+   "erro": null,
+   "esperado": {
+    "oQue": "dano",
+    "pericia": null,
+    "mod": 0,
+    "onde": null,
+    "alvo": null,
+    "acao": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+   }
+  },
+  {
+   "rotulo": "alvo#32",
+   "link": "gurpsapp://rolar?o=ataque&alvo=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx%F0%9F%90%89&acao=p1",
+   "erro": null,
+   "esperado": {
+    "oQue": "ataque",
+    "pericia": null,
+    "mod": 0,
+    "onde": null,
+    "alvo": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx🐉",
+    "acao": "p1"
+   }
+  },
+  {
+   "rotulo": "pericia#32",
+   "link": "gurpsapp://rolar?o=ataque&pericia=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx%F0%9F%90%89&acao=p1",
+   "erro": null,
+   "esperado": {
+    "oQue": "ataque",
+    "pericia": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx🐉",
+    "mod": 0,
+    "onde": null,
+    "alvo": null,
+    "acao": "p1"
+   }
+  },
+  {
+   "rotulo": "onde#32",
+   "link": "gurpsapp://rolar?o=defesa&onde=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx%F0%9F%90%89&acao=p1",
+   "erro": null,
+   "esperado": {
+    "oQue": "defesa",
+    "pericia": null,
+    "mod": 0,
+    "onde": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx🐉",
+    "alvo": null,
+    "acao": "p1"
+   }
+  },
+  {
+   "rotulo": "acaoId#32",
+   "link": "gurpsapp://rolar?o=dano&acao=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx%F0%9F%90%89",
+   "erro": null,
+   "esperado": {
+    "oQue": "dano",
+    "pericia": null,
+    "mod": 0,
+    "onde": null,
+    "alvo": null,
+    "acao": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx🐉"
+   }
+  },
+  {
+   "rotulo": "alvo#33",
+   "link": "gurpsapp://rolar?o=ataque&alvo=%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89&acao=p1",
+   "erro": null,
+   "esperado": {
+    "oQue": "ataque",
+    "pericia": null,
+    "mod": 0,
+    "onde": null,
+    "alvo": "🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉",
+    "acao": "p1"
+   }
+  },
+  {
+   "rotulo": "pericia#33",
+   "link": "gurpsapp://rolar?o=ataque&pericia=%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89&acao=p1",
+   "erro": null,
+   "esperado": {
+    "oQue": "ataque",
+    "pericia": "🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉",
+    "mod": 0,
+    "onde": null,
+    "alvo": null,
+    "acao": "p1"
+   }
+  },
+  {
+   "rotulo": "onde#33",
+   "link": "gurpsapp://rolar?o=defesa&onde=%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89&acao=p1",
+   "erro": null,
+   "esperado": {
+    "oQue": "defesa",
+    "pericia": null,
+    "mod": 0,
+    "onde": "🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉",
+    "alvo": null,
+    "acao": "p1"
+   }
+  },
+  {
+   "rotulo": "acaoId#33",
+   "link": "gurpsapp://rolar?o=dano&acao=%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89",
+   "erro": null,
+   "esperado": {
+    "oQue": "dano",
+    "pericia": null,
+    "mod": 0,
+    "onde": null,
+    "alvo": null,
+    "acao": "🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉"
+   }
+  },
+  {
+   "rotulo": "tudo#0",
+   "link": "gurpsapp://rolar?o=ataque&pericia=Orc&mod=-20&onde=Orc&alvo=Orc&acao=p0",
+   "erro": null,
+   "esperado": {
+    "oQue": "ataque",
+    "pericia": "Orc",
+    "mod": -20,
+    "onde": "Orc",
+    "alvo": "Orc",
+    "acao": "p0"
+   }
+  },
+  {
+   "rotulo": "tudo#1",
+   "link": "gurpsapp://rolar?o=ataque&pericia=Orc%20%26%20Cia&mod=-19&onde=Orc%20%26%20Cia&alvo=Orc%20%26%20Cia&acao=p1",
+   "erro": null,
+   "esperado": {
+    "oQue": "ataque",
+    "pericia": "Orc & Cia",
+    "mod": -19,
+    "onde": "Orc & Cia",
+    "alvo": "Orc & Cia",
+    "acao": "p1"
+   }
+  },
+  {
+   "rotulo": "tudo#2",
+   "link": "gurpsapp://rolar?o=ataque&pericia=a%3D1%26b%3D2&mod=-18&onde=a%3D1%26b%3D2&alvo=a%3D1%26b%3D2&acao=p2",
+   "erro": null,
+   "esperado": {
+    "oQue": "ataque",
+    "pericia": "a=1&b=2",
+    "mod": -18,
+    "onde": "a=1&b=2",
+    "alvo": "a=1&b=2",
+    "acao": "p2"
+   }
+  },
+  {
+   "rotulo": "tudo#3",
+   "link": "gurpsapp://rolar?o=ataque&pericia=Orc%231&mod=-17&onde=Orc%231&alvo=Orc%231&acao=p3",
+   "erro": null,
+   "esperado": {
+    "oQue": "ataque",
+    "pericia": "Orc#1",
+    "mod": -17,
+    "onde": "Orc#1",
+    "alvo": "Orc#1",
+    "acao": "p3"
+   }
+  },
+  {
+   "rotulo": "tudo#4",
+   "link": "gurpsapp://rolar?o=ataque&pericia=Orc%3Fx%3D1&mod=-16&onde=Orc%3Fx%3D1&alvo=Orc%3Fx%3D1&acao=p4",
+   "erro": null,
+   "esperado": {
+    "oQue": "ataque",
+    "pericia": "Orc?x=1",
+    "mod": -16,
+    "onde": "Orc?x=1",
+    "alvo": "Orc?x=1",
+    "acao": "p4"
+   }
+  },
+  {
+   "rotulo": "tudo#5",
+   "link": "gurpsapp://rolar?o=ataque&pericia=100%25&mod=-15&onde=100%25&alvo=100%25&acao=p5",
+   "erro": null,
+   "esperado": {
+    "oQue": "ataque",
+    "pericia": "100%",
+    "mod": -15,
+    "onde": "100%",
+    "alvo": "100%",
+    "acao": "p5"
+   }
+  },
+  {
+   "rotulo": "tudo#6",
+   "link": "gurpsapp://rolar?o=ataque&pericia=%2541%2542&mod=-14&onde=%2541%2542&alvo=%2541%2542&acao=p6",
+   "erro": null,
+   "esperado": {
+    "oQue": "ataque",
+    "pericia": "%41%42",
+    "mod": -14,
+    "onde": "%41%42",
+    "alvo": "%41%42",
+    "acao": "p6"
+   }
+  },
+  {
+   "rotulo": "tudo#7",
+   "link": "gurpsapp://rolar?o=ataque&pericia=O'Brien&mod=-13&onde=O'Brien&alvo=O'Brien&acao=p7",
+   "erro": null,
+   "esperado": {
+    "oQue": "ataque",
+    "pericia": "O'Brien",
+    "mod": -13,
+    "onde": "O'Brien",
+    "alvo": "O'Brien",
+    "acao": "p7"
+   }
+  },
+  {
+   "rotulo": "tudo#8",
+   "link": "gurpsapp://rolar?o=ataque&pericia=aspas%22duplas&mod=-12&onde=aspas%22duplas&alvo=aspas%22duplas&acao=p8",
+   "erro": null,
+   "esperado": {
+    "oQue": "ataque",
+    "pericia": "aspas\"duplas",
+    "mod": -12,
+    "onde": "aspas\"duplas",
+    "alvo": "aspas\"duplas",
+    "acao": "p8"
+   }
+  },
+  {
+   "rotulo": "tudo#9",
+   "link": "gurpsapp://rolar?o=ataque&pericia=barra%2Finvertida%5Caqui&mod=-11&onde=barra%2Finvertida%5Caqui&alvo=barra%2Finvertida%5Caqui&acao=p9",
+   "erro": null,
+   "esperado": {
+    "oQue": "ataque",
+    "pericia": "barra/invertida\\aqui",
+    "mod": -11,
+    "onde": "barra/invertida\\aqui",
+    "alvo": "barra/invertida\\aqui",
+    "acao": "p9"
+   }
+  },
+  {
+   "rotulo": "tudo#10",
+   "link": "gurpsapp://rolar?o=ataque&pericia=..%2F..%2Fetc%2Fpasswd&mod=-10&onde=..%2F..%2Fetc%2Fpasswd&alvo=..%2F..%2Fetc%2Fpasswd&acao=p10",
+   "erro": null,
+   "esperado": {
+    "oQue": "ataque",
+    "pericia": "../../etc/passwd",
+    "mod": -10,
+    "onde": "../../etc/passwd",
+    "alvo": "../../etc/passwd",
+    "acao": "p10"
+   }
+  },
+  {
+   "rotulo": "tudo#11",
+   "link": "gurpsapp://rolar?o=ataque&pericia=Ant%C3%B4nio%20Gon%C3%A7alves&mod=-9&onde=Ant%C3%B4nio%20Gon%C3%A7alves&alvo=Ant%C3%B4nio%20Gon%C3%A7alves&acao=p11",
+   "erro": null,
+   "esperado": {
+    "oQue": "ataque",
+    "pericia": "Antônio Gonçalves",
+    "mod": -9,
+    "onde": "Antônio Gonçalves",
+    "alvo": "Antônio Gonçalves",
+    "acao": "p11"
+   }
+  },
+  {
+   "rotulo": "tudo#12",
+   "link": "gurpsapp://rolar?o=ataque&pericia=%C3%A7%C3%A3o%20%C3%A3%C3%B5%20%C3%A7%C3%BC&mod=-8&onde=%C3%A7%C3%A3o%20%C3%A3%C3%B5%20%C3%A7%C3%BC&alvo=%C3%A7%C3%A3o%20%C3%A3%C3%B5%20%C3%A7%C3%BC&acao=p12",
+   "erro": null,
+   "esperado": {
+    "oQue": "ataque",
+    "pericia": "ção ãõ çü",
+    "mod": -8,
+    "onde": "ção ãõ çü",
+    "alvo": "ção ãõ çü",
+    "acao": "p12"
+   }
+  },
+  {
+   "rotulo": "tudo#13",
+   "link": "gurpsapp://rolar?o=ataque&pericia=espa%C3%A7o%20%20duplo&mod=-7&onde=espa%C3%A7o%20%20duplo&alvo=espa%C3%A7o%20%20duplo&acao=p13",
+   "erro": null,
+   "esperado": {
+    "oQue": "ataque",
+    "pericia": "espaço  duplo",
+    "mod": -7,
+    "onde": "espaço  duplo",
+    "alvo": "espaço  duplo",
+    "acao": "p13"
+   }
+  },
+  {
+   "rotulo": "tudo#14",
+   "link": "gurpsapp://rolar?o=ataque&pericia=mais%2Bsinal&mod=-6&onde=mais%2Bsinal&alvo=mais%2Bsinal&acao=p14",
+   "erro": null,
+   "esperado": {
+    "oQue": "ataque",
+    "pericia": "mais+sinal",
+    "mod": -6,
+    "onde": "mais+sinal",
+    "alvo": "mais+sinal",
+    "acao": "p14"
+   }
+  },
+  {
+   "rotulo": "tudo#15",
+   "link": "gurpsapp://rolar?o=ataque&pericia=sinal%3Digual&mod=-5&onde=sinal%3Digual&alvo=sinal%3Digual&acao=p15",
+   "erro": null,
+   "esperado": {
+    "oQue": "ataque",
+    "pericia": "sinal=igual",
+    "mod": -5,
+    "onde": "sinal=igual",
+    "alvo": "sinal=igual",
+    "acao": "p15"
+   }
+  },
+  {
+   "rotulo": "tudo#16",
+   "link": "gurpsapp://rolar?o=ataque&pericia=comeca%20com%20espaco&mod=-4&onde=comeca%20com%20espaco&alvo=comeca%20com%20espaco&acao=p16",
+   "erro": null,
+   "esperado": {
+    "oQue": "ataque",
+    "pericia": "comeca com espaco",
+    "mod": -4,
+    "onde": "comeca com espaco",
+    "alvo": "comeca com espaco",
+    "acao": "p16"
+   }
+  },
+  {
+   "rotulo": "tudo#17",
+   "link": "gurpsapp://rolar?o=ataque&pericia=termina%20com%20espaco&mod=-3&onde=termina%20com%20espaco&alvo=termina%20com%20espaco&acao=p17",
+   "erro": null,
+   "esperado": {
+    "oQue": "ataque",
+    "pericia": "termina com espaco",
+    "mod": -3,
+    "onde": "termina com espaco",
+    "alvo": "termina com espaco",
+    "acao": "p17"
+   }
+  },
+  {
+   "rotulo": "tudo#18",
+   "link": "gurpsapp://rolar?o=ataque&mod=-2&acao=p18",
+   "erro": null,
+   "esperado": {
+    "oQue": "ataque",
+    "pericia": null,
+    "mod": -2,
+    "onde": null,
+    "alvo": null,
+    "acao": "p18"
+   }
+  },
+  {
+   "rotulo": "tudo#19",
+   "link": "gurpsapp://rolar?o=ataque&pericia=&mod=-1&onde=&alvo=&acao=p19",
+   "erro": null,
+   "esperado": {
+    "oQue": "ataque",
+    "pericia": null,
+    "mod": -1,
+    "onde": null,
+    "alvo": null,
+    "acao": "p19"
+   }
+  },
+  {
+   "rotulo": "tudo#20",
+   "link": "gurpsapp://rolar?o=ataque&pericia=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa&onde=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa&alvo=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa&acao=p20",
+   "erro": null,
+   "esperado": {
+    "oQue": "ataque",
+    "pericia": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "mod": 0,
+    "onde": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "alvo": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "acao": "p20"
+   }
+  },
+  {
+   "rotulo": "tudo#21",
+   "link": "gurpsapp://rolar?o=ataque&pericia=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa&mod=1&onde=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa&alvo=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa&acao=p21",
+   "erro": null,
+   "esperado": {
+    "oQue": "ataque",
+    "pericia": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "mod": 1,
+    "onde": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "alvo": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "acao": "p21"
+   }
+  },
+  {
+   "rotulo": "tudo#22",
+   "link": "gurpsapp://rolar?o=ataque&pericia=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa&mod=2&onde=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa&alvo=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa&acao=p22",
+   "erro": null,
+   "esperado": {
+    "oQue": "ataque",
+    "pericia": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "mod": 2,
+    "onde": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "alvo": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "acao": "p22"
+   }
+  },
+  {
+   "rotulo": "tudo#23",
+   "link": "gurpsapp://rolar?o=ataque&pericia=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa&mod=3&onde=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa&alvo=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa&acao=p23",
+   "erro": null,
+   "esperado": {
+    "oQue": "ataque",
+    "pericia": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "mod": 3,
+    "onde": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "alvo": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "acao": "p23"
+   }
+  },
+  {
+   "rotulo": "tudo#24",
+   "link": "gurpsapp://rolar?o=ataque&pericia=%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7&mod=4&onde=%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7&alvo=%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7%C3%A7&acao=p24",
+   "erro": null,
+   "esperado": {
+    "oQue": "ataque",
+    "pericia": "çççççççççççççççççççççççççççççççççççççççççççççççççççççççççççç",
+    "mod": 4,
+    "onde": "çççççççççççççççççççççççççççççççççççççççççççççççççççççççççççç",
+    "alvo": "çççççççççççççççççççççççççççççççççççççççççççççççççççççççççççç",
+    "acao": "p24"
+   }
+  },
+  {
+   "rotulo": "tudo#25",
+   "link": "gurpsapp://rolar?o=ataque&pericia=%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1&mod=5&onde=%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1&alvo=%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1%C3%A1&acao=p25",
+   "erro": null,
+   "esperado": {
+    "oQue": "ataque",
+    "pericia": "áááááááááááááááááááááááááááááááááááááááááááááááááááááááááááá",
+    "mod": 5,
+    "onde": "áááááááááááááááááááááááááááááááááááááááááááááááááááááááááááá",
+    "alvo": "áááááááááááááááááááááááááááááááááááááááááááááááááááááááááááá",
+    "acao": "p25"
+   }
+  },
+  {
+   "rotulo": "tudo#26",
+   "link": "gurpsapp://rolar?o=ataque&pericia=linha%0Aquebrada&mod=6&onde=linha%0Aquebrada&alvo=linha%0Aquebrada&acao=p26",
+   "erro": null,
+   "esperado": {
+    "oQue": "ataque",
+    "pericia": "linha\nquebrada",
+    "mod": 6,
+    "onde": "linha\nquebrada",
+    "alvo": "linha\nquebrada",
+    "acao": "p26"
+   }
+  },
+  {
+   "rotulo": "tudo#27",
+   "link": "gurpsapp://rolar?o=ataque&pericia=tab%09here&mod=7&onde=tab%09here&alvo=tab%09here&acao=p27",
+   "erro": null,
+   "esperado": {
+    "oQue": "ataque",
+    "pericia": "tab\there",
+    "mod": 7,
+    "onde": "tab\there",
+    "alvo": "tab\there",
+    "acao": "p27"
+   }
+  },
+  {
+   "rotulo": "tudo#28",
+   "link": "gurpsapp://rolar?o=ataque&pericia=nulo%00dentro&mod=8&onde=nulo%00dentro&alvo=nulo%00dentro&acao=p28",
+   "erro": null,
+   "esperado": {
+    "oQue": "ataque",
+    "pericia": "nulo\u0000dentro",
+    "mod": 8,
+    "onde": "nulo\u0000dentro",
+    "alvo": "nulo\u0000dentro",
+    "acao": "p28"
+   }
+  },
+  {
+   "rotulo": "tudo#29",
+   "link": "gurpsapp://rolar?o=ataque&pericia=%3Cscript%3Ealert(1)%3C%2Fscript%3E&mod=9&onde=%3Cscript%3Ealert(1)%3C%2Fscript%3E&alvo=%3Cscript%3Ealert(1)%3C%2Fscript%3E&acao=p29",
+   "erro": null,
+   "esperado": {
+    "oQue": "ataque",
+    "pericia": "<script>alert(1)</script>",
+    "mod": 9,
+    "onde": "<script>alert(1)</script>",
+    "alvo": "<script>alert(1)</script>",
+    "acao": "p29"
+   }
+  },
+  {
+   "rotulo": "tudo#30",
+   "link": "gurpsapp://rolar?o=ataque&pericia=emoji%20%F0%9F%90%89%20dragao&mod=10&onde=emoji%20%F0%9F%90%89%20dragao&alvo=emoji%20%F0%9F%90%89%20dragao&acao=p30",
+   "erro": null,
+   "esperado": {
+    "oQue": "ataque",
+    "pericia": "emoji 🐉 dragao",
+    "mod": 10,
+    "onde": "emoji 🐉 dragao",
+    "alvo": "emoji 🐉 dragao",
+    "acao": "p30"
+   }
+  },
+  {
+   "rotulo": "tudo#31",
+   "link": "gurpsapp://rolar?o=ataque&pericia=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx&mod=11&onde=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx&alvo=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx&acao=p31",
+   "erro": null,
+   "esperado": {
+    "oQue": "ataque",
+    "pericia": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+    "mod": 11,
+    "onde": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+    "alvo": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+    "acao": "p31"
+   }
+  },
+  {
+   "rotulo": "tudo#32",
+   "link": "gurpsapp://rolar?o=ataque&pericia=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx%F0%9F%90%89&mod=12&onde=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx%F0%9F%90%89&alvo=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx%F0%9F%90%89&acao=p32",
+   "erro": null,
+   "esperado": {
+    "oQue": "ataque",
+    "pericia": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx🐉",
+    "mod": 12,
+    "onde": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx🐉",
+    "alvo": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx🐉",
+    "acao": "p32"
+   }
+  },
+  {
+   "rotulo": "tudo#33",
+   "link": "gurpsapp://rolar?o=ataque&pericia=%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89&mod=13&onde=%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89&alvo=%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89%F0%9F%90%89&acao=p33",
+   "erro": null,
+   "esperado": {
+    "oQue": "ataque",
+    "pericia": "🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉",
+    "mod": 13,
+    "onde": "🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉",
+    "alvo": "🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉🐉",
+    "acao": "p33"
+   }
+  }
+ ]
+}

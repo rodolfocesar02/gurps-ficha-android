@@ -106,11 +106,35 @@ class ServicoDaMesa : Service() {
             this, android.Manifest.permission.RECORD_AUDIO
         ) == PackageManager.PERMISSION_GRANTED
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && temMicrofone) {
-            startForeground(ID_DO_AVISO, aviso, ServiceInfo.FOREGROUND_SERVICE_TYPE_MICROPHONE)
+        /**
+         * 🟥 **O tipo sem microfone** — achado do teste de esforço de 22/set.
+         *
+         * Aqui havia um `startForeground` sem tipo quando o microfone ainda não
+         * tinha sido concedido. Do Android 14 em diante isso usa os tipos do
+         * manifesto — e o único era `microphone`, que exige o microfone. Lançava
+         * sempre, o `try` segurava, e o serviço **nunca subia** para quem ainda
+         * não tinha ligado a voz.
+         *
+         * Medido no emulador, pelo marcador do próprio servidor: a sala caía **10
+         * segundos** depois de minimizar. Era exatamente o que ele pediu que não
+         * acontecesse: *"TUDO fica conectado até dar SAIR"*.
+         *
+         * 🔴 Agora, sem microfone, o serviço sobe como `mediaPlayback` — o
+         * aplicativo toca a voz dos outros, e esse tipo não pede permissão nem
+         * tem prazo. Com o microfone concedido, sobe como `microphone`, que é o
+         * que deixa a captura continuar com a tela apagada.
+         *
+         * ⚠️ Não `dataSync`, que seria a escolha óbvia: no Android 15 ele é
+         * cortado depois de 6 horas por dia, e uma sessão longa cairia sozinha.
+         */
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            val tipo = if (temMicrofone) {
+                ServiceInfo.FOREGROUND_SERVICE_TYPE_MICROPHONE
+            } else {
+                ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK
+            }
+            startForeground(ID_DO_AVISO, aviso, tipo)
         } else {
-            // Sem microfone concedido ainda. Do Android 14 em diante isto lança,
-            // e quem chamou trata — ver o cabeçalho.
             startForeground(ID_DO_AVISO, aviso)
         }
     }

@@ -9673,3 +9673,35 @@ uma coisa so com tres caras.
   aplicativo daria um risco de luz atravessando a barra sem ninguem ter tocado em
   nada.
 - **Status:** ✅ Build OK nas 2 variantes -- gate **2530**, 0 falhas.
+
+---
+
+## Teste de esforco de 22/set — o servico que nunca subia
+
+Cerca de 500 investidas contra as duas metades acharam seis coisas; quatro eram
+defeitos. Tres moram na Mesa (ver o commit de la). Este e o do aplicativo, e era
+o mais grave.
+
+- **🟥 A sala caia 10 SEGUNDOS depois de minimizar** -- exatamente o que ele
+  pediu que nao acontecesse (*"TUDO fica conectado ate dar SAIR"*). Medido pelo
+  marcador do proprio servidor: `17:18:08 presente -> 17:18:18 AUSENTE`.
+- **🔴 A causa, em corrente:** o servico era so do tipo `microphone` → do Android
+  14 em diante ele so sobe com o microfone JA concedido → o microfone so e pedido
+  quando a pagina pede voz → quem nunca ligava a voz nunca tinha servico → o
+  Android congelava o processo → o fio morria. O `try` que eu tinha posto segurou
+  a queda, mas segurou uma coisa que nao funcionava.
+- **A cura:** sem microfone, o servico sobe como `mediaPlayback` -- o aplicativo
+  de fato toca a voz dos outros, e esse tipo nao pede permissao nem tem prazo.
+  Com o microfone concedido, sobe como `microphone`, que e o que deixa a captura
+  continuar com a tela apagada.
+  ⚠️ **Nao `dataSync`**, que seria a escolha obvia: no Android 15 ele e cortado
+  depois de 6 horas por dia, e uma sessao longa cairia sozinha.
+- **✅ PROVADO NO EMULADOR, e nao so compilado:** o Android confirma
+  `isForeground=true types=0x2`, e o app ficou **3 minutos no bolso sem sair da
+  sala**. Antes caia em 10 segundos.
+- **🟥 E nasceu o teste da costura** (`ACosturaDoLinkTest.kt`): 196 enderecos
+  gerados pelo codigo DE VERDADE da Mesa, lidos pelo `PedidoDaMesa`. Achou 21
+  campos a chegar diferentes do que a Mesa dizia mandar (espacos nas pontas) e
+  cinco enderecos que a Mesa nem conseguia montar (o emoji partido). O encontro
+  entre os dois programas passa a ter dono.
+- **Status:** ✅ Build OK nas 2 variantes -- gate **2535**, 0 falhas. Mesa: 2569.
