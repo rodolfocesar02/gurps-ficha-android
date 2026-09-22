@@ -114,7 +114,6 @@ fun FichaScreen(viewModel: FichaViewModel) {
      * enquanto uma ficha com magia carregava era atirado para o Equipamento.
      */
     var abaEscolhida by remember { mutableStateOf("Geral") }
-    var vttImmersiveUi by remember { mutableStateOf(false) }
     var showMenuDialog by remember { mutableStateOf(false) }
     var showSaveDialog by remember { mutableStateOf(false) }
     var showLoadDialog by remember { mutableStateOf(false) }
@@ -262,12 +261,14 @@ fun FichaScreen(viewModel: FichaViewModel) {
     // cai-se na primeira — e não num índice que já não quer dizer nada.
     val selectedTab = tabs.indexOf(abaEscolhida).takeIf { it >= 0 } ?: 0
     val selectedTitle = tabs.getOrNull(selectedTab).orEmpty()
-    val vttFullscreen = selectedTitle == "VTT" && vttImmersiveUi
     // Lote TOK-6a — MODO JOGO: dentro de uma campanha da Saga, o app vira "jogo em tela cheia"
     // (sem cabeçalho da ficha, sem PontosBar, sem abas). O X no header da campanha (TabSaga) sai.
-    // Diferente do VTT, NÃO força landscape — a Saga é vertical.
+    // Fica na vertical: o Modo Jogo da Saga é de telefone em pé.
     val sagaModoJogo = selectedTitle == "Saga" && viewModel.sagaCampanhaAtiva != null
-    val hideAppChrome = vttFullscreen || sagaModoJogo
+    // 🔴 So o Modo Jogo da Saga esconde a barra inteira. O VTT, que tambem a
+    // escondia, foi apagado em 22/set: ele era o tabuleiro de antes, e quem faz
+    // esse trabalho hoje e a Mesa.
+    val hideAppChrome = sagaModoJogo
     /**
      * 🟥 **Esconder o cabeçalho NÃO é esconder as abas** — MNA-1b.
      *
@@ -395,11 +396,6 @@ fun FichaScreen(viewModel: FichaViewModel) {
     // ⚠️ O clampe do índice saiu daqui: com a aba guardada pelo NOME, ela nunca
     // fica fora da lista — quando o nome some, o `indexOf` acima já cai na
     // primeira aba sozinho.
-    LaunchedEffect(selectedTitle) {
-        if (selectedTitle != "VTT") {
-            vttImmersiveUi = false
-        }
-    }
 
     /**
      * **A Mesa pediu uma rolagem** — lote CC-5.
@@ -419,19 +415,6 @@ fun FichaScreen(viewModel: FichaViewModel) {
     com.gurps.ficha.ui.features.mesa.SaltarParaAMesaQuandoPedirem(
         viewModel, temMesaLigada
     ) { abaEscolhida = it }
-    // Orientação landscape é EXCLUSIVA do VTT legado — o Modo Jogo da Saga fica vertical.
-    DisposableEffect(vttFullscreen) {
-        val previousOrientation = activity?.requestedOrientation
-        if (vttFullscreen && activity != null) {
-            activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
-        }
-        onDispose {
-            if (activity != null) {
-                activity.requestedOrientation =
-                    previousOrientation ?: ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
-            }
-        }
-    }
 
     Scaffold(
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },

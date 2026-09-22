@@ -132,8 +132,9 @@ class AAbaDaMesaTest {
             "a Mesa voltou para o hideAppChrome, e isso esconde a barra de abas",
             linha.contains("\"Mesa\"")
         )
-        // E o que ele guarda continua valendo para quem tem saída própria.
-        assertTrue(linha.contains("vttFullscreen"))
+        // ⚠️ O `vttFullscreen` saiu desta linha em 22/set, com o VTT inteiro: ele
+        // era o tabuleiro de antes, e quem faz esse trabalho hoje e a Mesa. Ficou
+        // so o Modo Jogo da Saga, que TEM saida propria dentro dele.
         assertTrue(linha.contains("sagaModoJogo"))
     }
 

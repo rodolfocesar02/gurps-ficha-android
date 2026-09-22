@@ -9705,3 +9705,27 @@ o mais grave.
   cinco enderecos que a Mesa nem conseguia montar (o emoji partido). O encontro
   entre os dois programas passa a ter dono.
 - **Status:** ✅ Build OK nas 2 variantes -- gate **2535**, 0 falhas. Mesa: 2569.
+
+---
+
+## Faxina 1 — o VTT legado saiu (663 linhas)
+
+Decisao dele: *"o VTT e um projeto legado. O VTT hoje e o que a mesa se tornou."*
+E o metodo foi o que combinamos: **apagar, rodar tudo, e so deixar apagado se
+ficar verde**.
+
+- **🟥 O double check, classe por classe:** as seis do `vtt/` tinham **zero**
+  referencias fora da propria pasta. A aba "VTT" nao existe mais na lista de
+  abas, entao `selectedTitle == "VTT"` era **sempre falso** -- e com ele o
+  `vttFullscreen`, o giro para paisagem e o bloco que desligava o modo imersivo
+  eram codigo morto dentro da `FichaScreen`. O `VTT_API_BASE_URL` so era usado
+  pelos proprios arquivos do VTT.
+- **⚠️ E um recorte que quase saiu errado:** quase toda mencao a "VTT" fora da
+  pasta e **comentario dos lotes TOK-x (VTT 2D)** -- e isso e o canvas da
+  **Saga**, que FICA. A Saga nao e legado: esta em pausa, e e decisao dele.
+- **Saiu:** `vtt/` (6 arquivos), o teste dele, quatro trechos mortos na
+  `FichaScreen` e o `VTT_API_BASE_URL` do Gradle. **663 linhas fora, 8 dentro.**
+- **✅ Provado, e nao so compilado:** gate **2534** (era 2535 -- o unico teste do
+  VTT saiu junto), as DUAS variantes compilam e testam, e o aplicativo abre no
+  emulador sem nada no log.
+- ⚠️ A `FichaScreen` caiu para **1071** linhas. Continua acima do teto de 1000.

@@ -65,12 +65,6 @@ android {
         ) ?: "http://10.0.2.2:8787")
             .trimEnd('/')
             .replace("\"", "\\\"")
-        val vttApiBaseUrl = (firstNonBlank(
-            project.findProperty("VTT_API_BASE_URL") as? String,
-            localProperties.getProperty("VTT_API_BASE_URL")
-        ) ?: "http://10.0.2.2:3001")
-            .trimEnd('/')
-            .replace("\"", "\\\"")
 
 
         applicationId = "com.gurps.ficha"
@@ -91,7 +85,6 @@ android {
         // REGRA OPERACIONAL: Estas URLs e IDs foram validados via script. 
         // Proibida a alteração sem validação prévia de conectividade (Success 200).
         
-        buildConfigField("String", "VTT_API_BASE_URL", "\"$vttApiBaseUrl\"")
         
         // --- MESTRE IA PRIME (CHAVES GLOBAIS) ---
         buildConfigField("String", "MESTRE_IA_GEMINI_KEY", "\"$geminiKey\"")
