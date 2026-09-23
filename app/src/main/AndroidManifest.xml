@@ -4,6 +4,13 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <!-- MF-9: o comando de voz da Mesa usa o reconhecedor do Android. Desde o
+         Android 11 o app so enxerga o servico de reconhecimento se o declarar. -->
+    <queries>
+        <intent>
+            <action android:name="android.speech.RecognitionService" />
+        </intent>
+    </queries>
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
     <!-- 🔴 A camera, para o video do jogador na Mesa (MNA-7/MNA-9).
          A Mesa pede `getUserMedia({video:true})` em `mesa.js`; sem esta linha

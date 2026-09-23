@@ -250,7 +250,7 @@ fun FichaScreen(viewModel: FichaViewModel) {
     }
     // A aba da Mesa entra sob a mesma condição da Magia — MNA-1, `AAbaDaMesa.kt`.
     val temMesaLigada =
-        com.gurps.ficha.ui.features.mesa.aAbaDaMesaAparece(viewModel, isPraCegoVariant)
+        com.gurps.ficha.ui.features.mesa.aAbaDaMesaAparece(viewModel)
     val tabs = buildList {
         add("Geral")
         add("Traços")

@@ -213,7 +213,11 @@ object SalaDaMesa {
              * larga o convite e tira a pessoa da aba. Ter as duas listas era ter
              * duas listas para esquecer de atualizar.
              */
-            aoSairDaMesa = { sair() }
+            aoSairDaMesa = { sair() },
+            // MF-9: o comando de voz do modo falado, ouvido pelo Android.
+            aoPedirComando = { janela?.let { OuvidoDoComando.ouvir(it) } },
+            // MF-10: quem usa o `pracego` entra na Mesa já com o modo falado.
+            querFalado = com.gurps.ficha.BuildConfig.UI_VARIANT.equals("pracego", ignoreCase = true)
         )
         ponte = p
         w.addJavascriptInterface(p, PonteDaMesa.NOME_NA_PAGINA)

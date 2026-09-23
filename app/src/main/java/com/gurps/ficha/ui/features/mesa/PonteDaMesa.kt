@@ -49,7 +49,11 @@ import com.gurps.ficha.domain.rules.PedidoDaMesa
  */
 class PonteDaMesa(
     private val aoReceberPedido: (PedidoDaMesa.Pedido) -> Unit,
-    private val aoSairDaMesa: () -> Unit
+    private val aoSairDaMesa: () -> Unit,
+    /** MF-9: a página pediu para ouvir um comando de voz. */
+    private val aoPedirComando: () -> Unit = {},
+    /** MF-10: a variante `pracego` abre a Mesa com o modo falado ligado. */
+    private val querFalado: Boolean = false
 ) {
 
     /**
@@ -85,6 +89,25 @@ class PonteDaMesa(
     fun sai() {
         Handler(Looper.getMainLooper()).post { aoSairDaMesa() }
     }
+
+    /**
+     * **A página pede um comando de voz** — MF-9.
+     *
+     * A janela não reconhece voz; quem ouve é o [OuvidoDoComando], e o texto
+     * volta pela [ComandoDeVozDaMesa]. Na linha principal, como tudo aqui.
+     */
+    @JavascriptInterface
+    fun ouvirComando() {
+        Handler(Looper.getMainLooper()).post { aoPedirComando() }
+    }
+
+    /**
+     * **Abrir já no modo falado?** — MF-10. A página pergunta ao nascer; o
+     * `pracego` diz que sim. ⚠️ Só na primeira vez: se a pessoa desligar, o
+     * aparelho lembra a escolha dela (quem decide é a página).
+     */
+    @JavascriptInterface
+    fun querModoFalado(): Boolean = querFalado
 
     /**
      * Entrega um pedido, venha ele da ponte ou do endereço interceptado.

@@ -56,8 +56,13 @@ import com.gurps.ficha.viewmodel.FichaViewModel
  * ⚠️ E fechar o aplicativo derruba a sala junto. Ao reabrir não há aba nenhuma,
  * e entra-se pela porta — que é onde se confere o token de qualquer maneira.
  */
-fun aAbaDaMesaAparece(viewModel: FichaViewModel, ehPraCego: Boolean): Boolean =
-    !ehPraCego && (SalaDaMesa.estaDePe || viewModel.irParaAMesa)
+fun aAbaDaMesaAparece(viewModel: FichaViewModel): Boolean =
+    SalaDaMesa.estaDePe || viewModel.irParaAMesa
+
+// 🔴 **E o `pracego` também** — MF-10 da Mesa Falada. Até aqui a aba ficava
+// escondida na variante para cegos, porque a Mesa era um mapa desenhado e nada
+// mais. Com o modo falado ela fala o mapa, e a variante passa a abri-la -- já
+// com o modo falado ligado (`PonteDaMesa.querModoFalado`).
 
 /**
  * **CONECTAR À MESA abre a aba** — MNA-10.
