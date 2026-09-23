@@ -55,6 +55,7 @@ import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -113,7 +114,11 @@ fun FichaScreen(viewModel: FichaViewModel) {
      * 🔴 E isto **já acontecia sem link nenhum**: quem estivesse na Rolagem
      * enquanto uma ficha com magia carregava era atirado para o Equipamento.
      */
-    var abaEscolhida by remember { mutableStateOf("Geral") }
+    // 🔴 `rememberSaveable`, e não `remember`: girar o telefone DESMONTA a tela
+    // e monta outra, e o `remember` voltava a "Geral" -- quem estava na Mesa
+    // era atirado para a Geral a cada giro. O `Saveable` guarda a escolha fora
+    // da tela e a devolve.
+    var abaEscolhida by rememberSaveable { mutableStateOf("Geral") }
     var showMenuDialog by remember { mutableStateOf(false) }
     var showSaveDialog by remember { mutableStateOf(false) }
     var showLoadDialog by remember { mutableStateOf(false) }
