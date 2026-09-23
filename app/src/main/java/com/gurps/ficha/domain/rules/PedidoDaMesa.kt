@@ -17,7 +17,7 @@ package com.gurps.ficha.domain.rules
  *
  * ## 🔴 O token da sala NÃO viaja aqui
  *
- * Um link é texto: ele fica no histórico do navegador, nos registos, e em
+ * Um link é texto: ele fica no histórico do navegador, nos registros, e em
  * qualquer coisa que veja a URL. O aplicativo **já sabe** a que mesa está ligado
  * — foi a pessoa que a configurou — e é de lá que o token sai na hora de mandar
  * a rolagem de volta.
@@ -106,7 +106,7 @@ object PedidoDaMesa {
         //
         // O `am start` do Android mostra o endereço como `gurpsapp://rolar/...`,
         // e eu escrevi isto a achar que era essa a causa de o link não pegar. NÃO
-        // era: o registo do aparelho mostrou o endereço a chegar inteiro e sem
+        // era: o registro do aparelho mostrou o endereço a chegar inteiro e sem
         // barra, e o defeito estava noutro lado (ver a `FichaScreen`).
         //
         // 🔴 Fica na mesma, e de propósito: um `Uri` pode trazer o caminho `/`

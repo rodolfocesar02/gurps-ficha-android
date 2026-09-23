@@ -106,7 +106,7 @@ class FichaCalculadaTest {
     @Test
     fun `o bloco concorda com as propriedades da tela`() {
         // ⚠️ Este teste sozinho e fraco -- e circular, porque o bloco e feito
-        // chamando estas mesmas propriedades. Ele existe so para apanhar um
+        // chamando estas mesmas propriedades. Ele existe so para pegar um
         // campo LIGADO AO ERRADO: `vontade = personagem.percepcao`, que e um
         // erro de copiar e colar que ninguem le no diff.
         val p = umPersonagem()
@@ -193,7 +193,7 @@ class FichaCalculadaTest {
     }
 
     @Test
-    fun `uma ficha exportada ANTES deste lote continua a abrir`() {
+    fun `uma ficha exportada ANTES deste lote continua abrindo`() {
         // ⚠️ Um arquivo antigo nao tem o bloco. Ele tem de abrir na mesma.
         val json = PersonagemInterop.exportarJson(umPersonagem())
         val root = JsonParser.parseString(json).asJsonObject

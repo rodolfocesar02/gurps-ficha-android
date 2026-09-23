@@ -482,7 +482,7 @@ object SalaDaMesa {
             // 🔴 É esta linha que tira o botão "Atacar" do mudo. Fora do
             // aplicativo a página monta um `<a target="_blank">` com este
             // endereço e clica nele — e dentro de um WebView esse clique some sem
-            // erro nenhum. Aqui ele é apanhado antes de virar navegação.
+            // erro nenhum. Aqui ele é pego antes de virar navegação.
             //
             // ⚠️ E funciona com a Mesa **exatamente como ela está hoje**, sem uma
             // linha mudada do lado da página.

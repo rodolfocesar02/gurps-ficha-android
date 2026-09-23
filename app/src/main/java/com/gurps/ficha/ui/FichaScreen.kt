@@ -108,7 +108,7 @@ fun FichaScreen(viewModel: FichaViewModel) {
      * uma aba de verdade, só que a errada.
      *
      * ⚠️ Medido no emulador, no lote CC-5: o link da Mesa pedia a Rolagem, o
-     * registo dizia `idx=5` — que era a Rolagem — e um segundo depois o mesmo
+     * registro dizia `idx=5` — que era a Rolagem — e um segundo depois o mesmo
      * `idx=5` desenhava o Equipamento, porque a Magia tinha entrado no meio.
      *
      * 🔴 E isto **já acontecia sem link nenhum**: quem estivesse na Rolagem

@@ -129,7 +129,7 @@ object EnderecoDaMesa {
      *
      * 🔴 Sem o nome e sem o token. Eles vão por dentro, depois de a página
      * carregar (MNA-3): um endereço fica no histórico da janela e em qualquer
-     * registo que veja a URL, e o [PedidoDaMesa] já tinha tomado esta decisão
+     * registro que veja a URL, e o [PedidoDaMesa] já tinha tomado esta decisão
      * uma vez, pelo mesmo motivo.
      */
     fun paraAbrir(base: String): String = base.trim().trimEnd('/')

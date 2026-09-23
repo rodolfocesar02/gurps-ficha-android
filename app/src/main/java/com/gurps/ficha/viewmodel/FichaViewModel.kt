@@ -916,7 +916,7 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
     /**
      * **Manda a ficha calculada para a Mesa** (CAMPO-17).
      *
-     * 🔴 Chamada de DOIS sitios: ao **salvar** e ao **carregar**. E uma funcao
+     * 🔴 Chamada de DOIS lugares: ao **salvar** e ao **carregar**. E uma funcao
      * so de proposito -- duas copias divergiriam, e a que divergisse mandaria uma
      * ficha diferente da outra sem nada dizer.
      *

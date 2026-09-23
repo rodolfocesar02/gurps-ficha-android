@@ -1254,7 +1254,7 @@ fun TabRolagem(viewModel: FichaViewModel) {
                 oQueAMesaPediu = null
                 val comoSeChama = EscolhaDoPedido.rotuloDaJogada(pedido, escolha)
                 // 🔴 A MESMA máquina de rolar de sempre, dos dois lados. Um
-                // segundo caminho seria um segundo sítio onde a regra de crítico
+                // segundo caminho seria um segundo lugar onde a regra de crítico
                 // podia divergir.
                 if (ehDano) {
                     val fonte = fontesDano.find { it.id == escolha.id }

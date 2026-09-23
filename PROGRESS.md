@@ -9237,13 +9237,13 @@ Trocar `token = it.uppercase()` por `token = it` deixou o teste vermelho
   quando ele vem no cabeçalho `X-Token`. Antes o botão dizia "a sala respondeu"
   com o token errado, abria o navegador, e a pessoa caía na tela de entrada sem
   saber por quê — culpando o navegador, e não o token.
-- **🔴 Um defeito meu, apanhado antes de ir para o aparelho:** a primeira versão
+- **🔴 Um defeito meu, pego antes de ir para o aparelho:** a primeira versão
   devolvia só uma **frase** e a tela adivinhava o resto procurando "erro" dentro
   dela. Parecia funcionar e não funcionava: *"Token errado"* e *"Falta o
   endereço da sala"* passavam as duas pela peneira, e o navegador abria na
   mesma. Medido correndo a heurística contra as quatro frases de verdade.
   Virou `ResultadoDaConexao(ok, recado)` — duas coisas separadas.
-- **🔴 E outro, que só o gate das duas variantes apanhou:** `testarMesa()` tinha
+- **🔴 E outro, que só o gate das duas variantes pegou:** `testarMesa()` tinha
   o tipo de retorno **inferido**. O Debug compilava e o **Release falhava** nas
   duas variantes. Um tipo declarado nunca depende de por onde o compilador
   chegou.
@@ -9398,7 +9398,7 @@ Decisao dele: *"abre so a aba"*.
 - **`launchMode="singleTask"`.** A aba guarda a sala ACIMA das telas, e ela e uma
   so. Um link abrindo uma segunda copia da tela poria duas a disputar a mesma
   janela, e a que perdesse ficaria com uma parede vazia.
-- **⚠️ Dois erros meus no manifesto, apanhados pelo compilador:** comentario XML
+- **⚠️ Dois erros meus no manifesto, pegos pelo compilador:** comentario XML
   entre atributos de uma etiqueta, e um `--` dentro de um comentario XML (o XML
   proibe os dois).
 - **Status:** ✅ Build OK nas 2 variantes -- gate **2508**, 0 falhas.

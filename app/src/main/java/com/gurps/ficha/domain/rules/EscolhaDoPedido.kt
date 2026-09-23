@@ -14,7 +14,7 @@ package com.gurps.ficha.domain.rules
  *
  * É Kotlin puro, para poder ser provado sem aparelho. Quem rola é a aba Rolagem,
  * com a mesma máquina de sempre — um segundo caminho de rolagem seria um segundo
- * sítio onde a regra de crítico podia divergir.
+ * lugar onde a regra de crítico podia divergir.
  */
 object EscolhaDoPedido {
 
@@ -50,7 +50,7 @@ object EscolhaDoPedido {
         // 🟥 A palavra muda com o que a Mesa pediu. Num pedido de DANO a lista
         // são armas, e não perícias — a frase *"a Mesa não disse com qual
         // perícia"* por cima de "Dano ST / Cajado Encantado" manda a pessoa
-        // procurar uma coisa que não está ali. Apanhado no emulador.
+        // procurar uma coisa que não está ali. Flagrado no emulador.
         val comOQue = if (pedido.oQue == PedidoDaMesa.Oque.DANO) "arma" else "perícia"
 
         if (opcoes.isEmpty()) {

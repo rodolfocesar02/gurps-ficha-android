@@ -92,7 +92,7 @@ class EscolhaDoPedidoTest {
      *
      * ⚠️ Num pedido de DANO a lista são armas, e não perícias. A frase *"a Mesa
      * não disse com qual perícia"* por cima de "Dano ST / Cajado Encantado"
-     * manda a pessoa procurar uma coisa que não está ali. Apanhado no emulador.
+     * manda a pessoa procurar uma coisa que não está ali. Flagrado no emulador.
      */
     @Test
     fun `a frase fala de arma quando o pedido e de dano`() {

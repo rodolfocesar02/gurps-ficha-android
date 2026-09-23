@@ -241,7 +241,7 @@ private val LARGURA_IDEAL_DA_ABA = 42.dp
  * em que a largura mudasse.
  *
  * ⚠️ Fora do `pracego`: um risco de luz não diz nada a quem não vê a tela, e o
- * anel do microfone continua a ser o único efeito que **avisa** alguma coisa.
+ * anel do microfone continua sendo o único efeito que **avisa** alguma coisa.
  */
 @Composable
 private fun OTrilhoDoCometa(
@@ -298,7 +298,7 @@ private fun OTrilhoDoCometa(
     )
 
     // Apagado de vez: não desenha nada, e não fica uma caixa transparente por
-    // cima da barra a apanhar toque nenhum.
+    // cima da barra pegando toque nenhum.
     if (!aceso || opacidade <= 0.01f) {
         Spacer(modifier = Modifier.height(3.dp))
         return

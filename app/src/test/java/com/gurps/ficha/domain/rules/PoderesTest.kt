@@ -493,7 +493,7 @@ class PoderesTest {
         val c = fonte("com/gurps/ficha/domain/rules/CharacterRules.kt")
         assertFalse("voltou o -80 cravado", c.contains("coerceAtLeast(-80)"))
         assertEquals(
-            "os quatro sitios de soma de modificador precisam do teto",
+            "os quatro lugares de soma de modificador precisam do teto",
             4,
             Regex("coerceAtLeast\\(RegrasDePoder\\.PIOR_MODIFICADOR_TOTAL\\)").findAll(c).count()
         )

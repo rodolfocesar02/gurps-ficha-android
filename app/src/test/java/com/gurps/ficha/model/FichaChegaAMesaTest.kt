@@ -36,7 +36,7 @@ import org.junit.Test
  * **chama a função**. O que se mede é o pedido HTTP que sai — ou não sai — pela
  * costura `MesaApiClient.transporteDeTeste`.
  *
- * Assim, qualquer peneira nova que apareça no caminho é apanhada, esteja ela no
+ * Assim, qualquer peneira nova que apareça no caminho é pega, esteja ela no
  * arquivo que estiver.
  */
 class FichaChegaAMesaTest {
@@ -151,7 +151,7 @@ class FichaChegaAMesaTest {
     @Test
     fun `🔴 com tudo configurado, a ficha SAI do app`() {
         // 🔴 É o teste que faltava. Ele corre o caminho todo, do delegate ao
-        // corpo em JSON -- e teria apanhado o endereço vazio na hora.
+        // corpo em JSON -- e teria pego o endereço vazio na hora.
         ligarACostura()
         val d = delegateConfigurado()
 

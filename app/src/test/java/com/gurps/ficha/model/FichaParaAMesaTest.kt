@@ -9,12 +9,12 @@ import org.junit.Test
 /**
  * **A ficha vai para a Mesa** — lote CAMPO-17.
  *
- * ⚠️ Le codigo como texto. Isso apanha uma classe de defeito concreta — o app a
+ * ⚠️ Le codigo como texto. Isso pega uma classe de defeito concreta — o app a
  * mandar para `/api/fichas` e o servidor a servir `/api/ficha` — que nenhum
- * teste dos dois lados apanha, porque cada um esta internamente certo e eles
+ * teste dos dois lados pega, porque cada um esta internamente certo e eles
  * nunca se falam num teste.
  *
- * 🔴 O que ele **nao** apanha e se o botao funciona no aparelho. Isso continua a
+ * 🔴 O que ele **nao** pega e se o botao funciona no aparelho. Isso continua a
  * ser um dedo.
  */
 class FichaParaAMesaTest {
@@ -149,17 +149,17 @@ class FichaParaAMesaTest {
             ondeManda > ondeTroca
         )
 
-        // ⚠️ E salvar continua a mandar. UMA funcao para os dois: duas copias
+        // ⚠️ E salvar continua mandando. UMA funcao para os dois: duas copias
         // divergiriam, e a que divergisse mandaria ficha diferente da outra.
         // ⚠️ Corta ANTES da definicao da funcao, e nao no `carregarFicha`: a
         // definicao vive entre as duas, e `private fun mandarAFichaParaAMesa()`
         // contem o texto da CHAMADA. Uma sonda apagou a chamada do salvar e este
-        // teste ficou verde -- ele estava a ver a definicao.
+        // teste ficou verde -- ele estava vendo a definicao.
         val salvar = vm.substringAfter("fun salvarFicha(")
             .substringBefore("private fun mandarAFichaParaAMesa")
         assertTrue("salvar deixou de avisar a Mesa", salvar.contains("mandarAFichaParaAMesa()"))
         assertEquals(
-            "o envio foi copiado em vez de partilhado: duas copias divergem",
+            "o envio foi copiado em vez de compartilhado: duas copias divergem",
             1,
             Regex("private fun mandarAFichaParaAMesa").findAll(vm).count()
         )

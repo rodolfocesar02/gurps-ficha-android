@@ -82,7 +82,7 @@ class ServicoDaMesa : Service() {
         try {
             acenderDeVerdade()
         } catch (erro: Exception) {
-            // ⚠️ Não dá para segurar o processo. A mesa continua a valer com o
+            // ⚠️ Não dá para segurar o processo. A mesa continua valendo com o
             // aplicativo na frente; parar aqui é melhor do que ficar um serviço
             // meio de pé com uma notificação que mente.
             android.util.Log.w(ETIQUETA, "nao consegui acender: " + erro.message)

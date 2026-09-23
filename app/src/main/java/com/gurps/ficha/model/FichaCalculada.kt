@@ -33,7 +33,7 @@ package com.gurps.ficha.model
  *
  * O perigo real nao e o numero sair errado: e alguem acrescentar um derivado
  * novo ao `Personagem` daqui a seis meses e esquecer de o pôr aqui. O bloco
- * continua a existir, continua certo no que tem, e fica **incompleto sem que
+ * continua existindo, continua certo no que tem, e fica **incompleto sem que
  * ninguem perceba**.
  *
  * Por isso ha um teste que varre as propriedades calculadas do `Personagem` por

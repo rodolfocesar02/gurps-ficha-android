@@ -55,7 +55,7 @@ class ConectarAMesaTest {
     fun `🔴 o endereco USADO e a constante, e nao o que veio do disco`() {
         // 🔴 O teste vizinho conferia que o CAMPO saiu da tela e que a constante
         // existe -- e passou verde durante o lote inteiro enquanto o valor
-        // continuava a vir das preferencias, onde nunca houve nada.
+        // continuava vindo das preferencias, onde nunca houve nada.
         //
         // ⚠️ Num aparelho onde ninguem tinha digitado o endereco antes (um
         // emulador, uma instalacao nova) ele ficava VAZIO, o `postFicha` saia no
@@ -74,7 +74,7 @@ class ConectarAMesaTest {
     @Test
     fun `🔴 configurar a mesa NAO recebe endereco`() {
         // 🔴 Era por esse parametro que o vazio entrava: a tela passava uma
-        // variavel cujo campo tinha sido removido do ecra.
+        // variavel cujo campo tinha sido removido da tela.
         assertTrue(
             "configurarMesa voltou a receber endereco",
             delegate.contains("fun configurarMesa(token: String?, nome: String? = null)")

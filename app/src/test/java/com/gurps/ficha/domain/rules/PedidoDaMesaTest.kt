@@ -36,7 +36,7 @@ class PedidoDaMesaTest {
      * faria o aplicativo abrir na aba de sempre sem dizer porquê.
      *
      * 🔴 Escrevi isto a achar que era a causa de o link não pegar no emulador.
-     * **Não era** — o registo mostrou o endereço a chegar inteiro e sem barra.
+     * **Não era** — o registro mostrou o endereço a chegar inteiro e sem barra.
      * O teste fica porque a tolerância é boa; a explicação é que estava errada.
      */
     @Test

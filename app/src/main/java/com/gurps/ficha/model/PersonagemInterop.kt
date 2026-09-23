@@ -36,7 +36,7 @@ data class PersonagemInteropEnvelope(
      * nos dados crus que a contradiga.
      *
      * ⚠️ Anulavel para as fichas antigas: um arquivo exportado antes deste
-     * lote nao o tem, e tem de continuar a abrir.
+     * lote nao o tem, e tem de continuar abrindo.
      */
     val calculado: FichaCalculada? = null
 )
