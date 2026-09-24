@@ -62,8 +62,12 @@ object MesaApiClient {
      * inclusive para quem so tem o APK instalado. Foi decisao consciente, tomada
      * em 25/ago/2026, contra a alternativa de deixar o campo escondido atras de
      * um "outra mesa?".
+     *
+     * 🔴 **Trocado em 24/set/2026 (RW-5 do `PLANO_MESA_NA_NUVEM.md`):** a Mesa saiu
+     * do PC dele e mora no Railway, ligada 24 horas. O `mesagurps.duckdns.org`
+     * dependia do PC ligado.
      */
-    const val ENDERECO_PADRAO = "https://mesagurps.duckdns.org"
+    const val ENDERECO_PADRAO = "https://mesa-production-b0e5.up.railway.app"
 
     /**
      * O que faz o POST de verdade, trocavel **so em teste**.

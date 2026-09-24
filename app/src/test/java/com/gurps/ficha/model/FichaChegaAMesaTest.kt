@@ -163,7 +163,7 @@ class FichaChegaAMesaTest {
         assertEquals("saiu pedido a mais ou a menos", 1, pedidos.size)
         assertEquals(
             "a ficha foi para o endereco errado",
-            "https://mesagurps.duckdns.org/api/ficha",
+            "https://mesa-production-b0e5.up.railway.app/api/ficha",
             pedidos[0].endpoint
         )
     }
@@ -334,7 +334,7 @@ class FichaChegaAMesaTest {
             configPrefs = PrefsDeMentira(),
             scope = kotlinx.coroutines.CoroutineScope(kotlinx.coroutines.Dispatchers.Unconfined)
         )
-        assertEquals("https://mesagurps.duckdns.org", d.mesaEndereco)
+        assertEquals("https://mesa-production-b0e5.up.railway.app", d.mesaEndereco)
         assertNotNull(d.mesaEndereco)
         assertFalse("o endereco voltou a poder ser vazio", d.mesaEndereco.isBlank())
     }
