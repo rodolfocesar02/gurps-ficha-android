@@ -123,7 +123,32 @@ data class FichaCalculada(
      */
     val pontosGastos: Int = 0,
     val pontosRestantes: Int = 0,
-    val pontosTotaisDisponiveis: Int = 0
+    val pontosTotaisDisponiveis: Int = 0,
+
+    /**
+     * **As ARMAS**, no MESMO formato do arquivo da ficha (27/set).
+     *
+     * 🔴 O buraco: a Mesa acende o alcance da arma ao mirar (R-3) e lê a arma
+     * pelo `equipamentos` do arquivo -- mas o jogador so mandava este resumo, sem
+     * arma nenhuma. O alcance so funcionava no boneco com ficha anexada pelo
+     * Mestre. Agora a ficha do jogador leva as armas e a Mesa as le pela mesma
+     * funcao do arquivo (`armasDaCrua`): uma conta so, dos dois lados.
+     *
+     * ⚠️ So o que e arma (tipo ARMA ou com tipo de combate): mochila, corda e
+     * racao nao servem a Mesa e so pesariam no envio.
+     */
+    val equipamentos: List<Equipamento> = emptyList(),
+
+    /**
+     * **As VANTAGENS**, so os ids (27/set) -- inclusive as do modelo racial.
+     *
+     * 🔴 A Visao Periferica e a Visao 360° mudam a defesa pelo flanco e pelas
+     * costas (R-2), e a Mesa as procura aqui (`visao_periferica`,
+     * `visao_360_graus`). Pelas **totais**, e nao so as compradas: uma raca com
+     * Visao 360° a ganha pelo modelo, e escondê-la faria o Mestre achar que o
+     * boneco tem costas desprotegidas.
+     */
+    val vantagens: List<String> = emptyList()
 ) {
     companion object {
         /**
@@ -167,7 +192,11 @@ data class FichaCalculada(
                 },
                 pontosGastos = personagem.pontosGastos,
                 pontosRestantes = personagem.pontosRestantes,
-                pontosTotaisDisponiveis = personagem.pontosTotaisDisponiveis
+                pontosTotaisDisponiveis = personagem.pontosTotaisDisponiveis,
+                equipamentos = personagem.equipamentos.filter {
+                    it.tipo == TipoEquipamento.ARMA || it.armaTipoCombate != null
+                },
+                vantagens = personagem.vantagensTotais.map { it.definicaoId }.distinct()
             )
         }
     }

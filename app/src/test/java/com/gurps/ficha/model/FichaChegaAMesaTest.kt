@@ -143,7 +143,24 @@ class FichaChegaAMesaTest {
      */
     private val umPersonagem = Personagem(
         nome = "Jack Eagle Eye Carter",
-        forca = 11, destreza = 12, inteligencia = 13, vitalidade = 12
+        forca = 11, destreza = 12, inteligencia = 13, vitalidade = 12,
+        // 🔴 Uma arma de cada tipo, e uma mochila que NAO e arma (27/set): a
+        // Mesa acende o alcance (R-3) pelo que vem aqui, e a mochila nao pode ir.
+        equipamentos = listOf(
+            Equipamento(
+                nome = "Espada Larga", tipo = TipoEquipamento.ARMA,
+                armaTipoCombate = "corpo_a_corpo", armaAlcanceCorpoACorpo = "1",
+                armaDanoRaw = "GeB+1 cort"
+            ),
+            Equipamento(
+                nome = "Arco Longo", tipo = TipoEquipamento.ARMA,
+                armaTipoCombate = "distancia", armaAlcanceMultStRaw = "×15/×20",
+                armaDuasMaos = true
+            ),
+            Equipamento(nome = "Mochila", tipo = TipoEquipamento.GERAL)
+        ),
+        // 🔴 A Visao 360° muda a defesa pelas costas (R-2).
+        vantagens = listOf(VantagemSelecionada(definicaoId = "visao_360_graus", nome = "Visao 360°"))
     )
 
     // == 🔴 A corrente inteira ======================================
@@ -227,6 +244,27 @@ class FichaChegaAMesaTest {
         // E os que a mesa mostra ao lado do boneco.
         listOf("esquiva", "pontosVida", "pontosFadiga", "deslocamentoAtual")
             .forEach { assertTrue("a ficha foi sem `$it`", corpo.contains("\"$it\"")) }
+    }
+
+    @Test
+    fun `🔴 a ficha leva as ARMAS e as VANTAGENS -- e so as armas`() {
+        // 🔴 O buraco de 27/set: o boneco do jogador chegava a Mesa sem arma e
+        // sem visao, e o alcance (R-3) e o flanco (R-2) so funcionavam quando o
+        // Mestre anexava a ficha inteira a mao.
+        ligarACostura()
+        val d = delegateConfigurado()
+        runBlocking { d.enviarFichaParaAMesa("emulador", FichaCalculada.de(umPersonagem)) }
+
+        val corpo = pedidos[0].corpo
+        listOf(
+            "\"nome\":\"Espada Larga\"", "\"armaAlcanceCorpoACorpo\":\"1\"",
+            "\"nome\":\"Arco Longo\"", "\"armaAlcanceMultStRaw\":\"×15/×20\"",
+            "\"armaTipoCombate\":\"distancia\"",
+            "\"vantagens\":[\"visao_360_graus\"]"
+        ).forEach {
+            assertTrue("a ficha foi sem `$it`. CORPO: " + corpo.take(900), corpo.contains(it))
+        }
+        assertFalse("a mochila foi junto, e ela nao e arma", corpo.contains("Mochila"))
     }
 
     // == ⚠️ Onde ela NÃO sai, e por que ==============================

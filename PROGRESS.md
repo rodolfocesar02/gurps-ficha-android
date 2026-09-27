@@ -9729,3 +9729,21 @@ ficar verde**.
   VTT saiu junto), as DUAS variantes compilam e testam, e o aplicativo abre no
   emulador sem nada no log.
 - ⚠️ A `FichaScreen` caiu para **1071** linhas. Continua acima do teto de 1000.
+
+## Lote FICHA-ARMAS — [2026-09-27] A ficha do jogador leva as armas e a visao
+- **O defeito:** o resumo que o app manda a Mesa (`FichaCalculada`) nao tinha
+  arma nem vantagem. O alcance da arma (R-3) e o flanco/costas (R-2) so
+  funcionavam no boneco cuja ficha o Mestre anexou a mao.
+- **Mudancas:**
+  - `FichaCalculada.kt`: campos `equipamentos` (so as armas, no MESMO formato
+    do arquivo da ficha -- a Mesa le pela mesma funcao `armasDaCrua`) e
+    `vantagens` (ids, pelas **totais**, inclusive as da raca).
+  - `FichaChegaAMesaTest.kt`: o personagem de teste ganhou espada, arco,
+    mochila e Visao 360; teste novo cobra armas + vantagens e que a mochila
+    NAO vai. Sonda: desligar a copia das vantagens deixa o teste vermelho.
+  - Mesa (`campo-ficha-contrato.test.js`, commit `2e7344d`): o corpo REAL do
+    app agora traz armas e visao, e o boneco sai com alcance, 1/2D 165 m,
+    Max 220 m (ST 11, x15/x20) e visao 360. Sonda tambem morde.
+- Corpo do envio: 926 bytes (limite da rota: 256 KB).
+- Versao 12.6-ARMAS (182).
+- **Status:** ✅ Build OK (2 variantes), suite da Mesa 2880/2880
