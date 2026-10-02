@@ -2173,42 +2173,44 @@
     "raw": "4d+2 pa"
    },
    "precisao": {
-    "raw": "5+1",
-    "valor": 5
+    "raw": "4",
+    "valor": 4
    },
    "alcanceDistancia": {
-    "raw": "45/145",
+    "raw": "400/3.000",
     "partes": [
-     "45",
-     "145"
+     "400",
+     "3.000"
     ],
-    "metadeDano": "45",
-    "maximo": "145"
+    "metadeDano": "400",
+    "maximo": "3.000"
    },
    "peso": {
-    "raw": "3,3/0,01",
+    "raw": "3,6/0,5",
     "partes": [
-     "3,3",
-     "0,01"
+     "3,6",
+     "0,5"
     ],
-    "armaKg": 3.3,
-    "municaoKg": 0.01
+    "armaKg": 3.6,
+    "municaoKg": 0.5
    },
    "cdt": {
-    "raw": "",
-    "valor": null
+    "raw": "15",
+    "valor": 15
    },
    "tiros": {
-    "raw": "1"
+    "raw": "30+1(3)"
    },
    "custo": {
-    "raw": "$1.200",
-    "valor": 1200.0
+    "raw": "$900",
+    "valor": 900.0
    },
    "stMinimo": {
-    "raw": "13(3)",
-    "valor": 13,
-    "flags": []
+    "raw": "9†",
+    "valor": 9,
+    "flags": [
+     "dagger"
+    ]
    },
    "magnitude": {
     "raw": "-3",
@@ -2219,13 +2221,13 @@
     "valor": 2
    },
    "cl": {
-    "raw": "",
-    "valor": null
+    "raw": "2",
+    "valor": 2
    },
-   "observacoes": "[2]",
+   "observacoes": "[1]",
    "source": "xlsx_armas_fogo",
    "reviewFlags": [
-    "linha_suspeita_sem_fonte_ARMA7"
+    "linha_corrigida_pelo_livro_02out"
    ]
   },
   {

@@ -9747,3 +9747,17 @@ ficar verde**.
 - Corpo do envio: 926 bytes (limite da rota: 256 KB).
 - Versao 12.6-ARMAS (182).
 - **Status:** ✅ Build OK (2 variantes), suite da Mesa 2880/2880
+
+## Lote CARABINA — [2026-10-02] A Carabina de Assalto 5,56 mm com a linha do livro
+- **O defeito:** desde o ARMA-7 a linha dela era de outra arma (Prec 5+1,
+  alcance 45/145, 1 tiro, ST 13(3), $1.200) e levava a marca "linha suspeita
+  sem fonte". Em 02/out o Rodolfo mandou a foto da linha do livro (MB p.278).
+- **Mudancas:**
+  - `armas_fogo.v1.normalized.json`: Prec 4, 400/3.000, 3,6/0,5, CdT 15,
+    30+1(3), ST 9†, Magn -3, Rcl 2, $900, CL 2, nota [1].
+  - `AvancarEAtacarTest.kt`: o teste "linha sem fonte fica marcada" virou um
+    que cobra os numeros do livro.
+  - `ArmasCatalogoTest.kt`: contagens 12→11 armas com mira (o "+1" era falso),
+    45→46 com CL, 46/48→47/49 flags de ST.
+- Versao 12.6.1-CARABINA (183).
+- **Status:** ✅ Build OK (2 variantes)

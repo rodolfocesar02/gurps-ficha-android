@@ -213,14 +213,22 @@ class AvancarEAtacarTest {
     }
 
     @Test
-    fun `⚠️ a linha sem fonte no livro fica MARCADA, nao inventada`() {
-        // A Carabina de Assalto 5,56 mm também parece deslocada, mas os campos
-        // dela (alcance 45/145, custo $1.200) não batem com nenhuma linha do
-        // livro — corrigi-la seria inventar. Ela leva reviewFlag e segue como
-        // está, com a guarda da Magnitude protegendo a conta.
+    fun `a Carabina de Assalto 5-56 mm tem a linha do LIVRO, MB p278`() {
+        // 🔴 Ela estava marcada como "linha sem fonte" desde o ARMA-7: alcance
+        // 45/145, $1.200, 1 tiro -- campos que nao batem com linha nenhuma. Em
+        // 02/out o Rodolfo mandou a foto da linha do livro, e ela foi corrigida
+        // campo a campo. Antes isto so conferia a guarda da Magnitude.
         val carabina = arma(fogo, "Carabina de Assalto, 5,56 mm")
+        assertEquals(4, carabina.precisao)
+        assertEquals(400, carabina.meioDanoMetros)
+        assertEquals(3000, carabina.maximoMetros)
+        assertEquals(15, carabina.cadenciaTiro)
+        assertEquals("30+1(3)", carabina.tirosRaw)
+        assertEquals(9, carabina.stMinimo)
+        assertEquals(-3, carabina.magnitude)
+        assertEquals(900f, carabina.custoBase)
         assertTrue(
-            "a guarda tem de segurar mesmo com o dado suspeito",
+            "a Magnitude -3 tem de dar a penalidade do Avancar e Atacar",
             AvancarEAtacarRules.penalidadeADistancia(carabina.magnitude) <= -2
         )
     }

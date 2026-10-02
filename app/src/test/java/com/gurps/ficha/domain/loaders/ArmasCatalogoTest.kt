@@ -89,9 +89,11 @@ class ArmasCatalogoTest {
     // ==================================================================
 
     @Test
-    fun `🔴 as 12 armas com mira acoplada trazem o bonus separado`() {
+    fun `🔴 as 11 armas com mira acoplada trazem o bonus separado`() {
         val comMira = todas().filter { it.temMiraAcoplada }
-        assertEquals("mudou a conta de armas com mira", 12, comMira.size)
+        // ⚠️ Eram 12 ate 02/out: a Carabina de Assalto 5,56 mm tinha "5+1" de
+        // uma linha errada. No livro a Precisao dela e 4, sem mira.
+        assertEquals("mudou a conta de armas com mira", 11, comMira.size)
         // Todas são de fogo — arco e besta não têm luneta de fábrica na tabela.
         assertTrue(
             "mira acoplada apareceu fora das armas de fogo",
@@ -295,26 +297,32 @@ class ArmasCatalogoTest {
 
     @Test
     fun `⚠️ CL so existe onde o livro cadastrou`() {
-        // 45 armas de fogo têm CL. Corpo a corpo não tem coluna nenhuma — e
+        // 46 armas de fogo têm CL. Corpo a corpo não tem coluna nenhuma — e
         // inventar CL 0 ali diria "arma proibida" para uma faca de cozinha.
         //
         // ⚠️ Eram 42 até o **Lote ARMA-7**: o Rifle de Atirador .338, a ACI 6,8 mm
         // e o Rifle de Gauss tinham a linha deslocada uma coluna e perdiam a CL
         // no fim dela. O conserto devolveu as três (CL 3, 1 e 2).
-        assertEquals(45, todas().count { it.cl != null })
+        //
+        // ⚠️ E 46 desde 02/out: a Carabina de Assalto 5,56 mm ganhou a linha do
+        // livro (MB p.278), com CL 2.
+        assertEquals(46, todas().count { it.cl != null })
         assertTrue(corpoACorpo().all { it.cl == null })
     }
 
     @Test
     fun `as flags da coluna ST sobrevivem`() {
         val comFlag = todas().filter { it.stFlags.isNotEmpty() }
-        // 46 armas carregam 48 flags: a Glaive e a Alabarda têm as DUAS. Guardar
+        // 47 armas carregam 49 flags: a Glaive e a Alabarda têm as DUAS. Guardar
         // só a primeira perderia metade da informação delas.
         //
         // ⚠️ Eram 43/45 até o **Lote ARMA-7**: as três armas de linha deslocada
         // tinham perdido o † junto com a ST (uma delas chegou a marcar ST 41).
-        assertEquals(46, comFlag.size)
-        assertEquals(48, comFlag.sumOf { it.stFlags.size })
+        //
+        // ⚠️ E 47/49 desde 02/out: a Carabina de Assalto 5,56 mm tem ST 9† no
+        // livro, e a linha errada nao tinha o †.
+        assertEquals(47, comFlag.size)
+        assertEquals(49, comFlag.sumOf { it.stFlags.size })
         assertEquals(
             listOf("dagger", "double_dagger"),
             porNome(corpoACorpo(), "Alabarda").stFlags
