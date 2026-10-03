@@ -226,6 +226,36 @@ object MesaApiClient {
         )
     }
 
+    /**
+     * **A ficha INTEIRA do jogador para a Mesa** -- RF-0 da Roda da Ficha.
+     *
+     * 🔴 Rota propria (`/api/ficha-inteira`), e nao um `postFicha` maior: aquela
+     * tem teto de 256 kB, e a ficha de um mago com 100 magias passa disso.
+     *
+     * ⚠️ Vai DEPOIS do resumo, e o resumo continua indo (uma Mesa de versao
+     * anterior nao conhece esta rota). O token vai no **corpo**, nunca na URL.
+     */
+    fun postFichaInteira(
+        baseUrl: String,
+        token: String,
+        autor: String,
+        ficha: com.google.gson.JsonObject
+    ): DiscordRollSendResult {
+        if (baseUrl.isBlank()) return DiscordRollSendResult(false, null, "endereco_vazio")
+        if (token.isBlank()) return DiscordRollSendResult(false, null, "token_vazio")
+        if (autor.isBlank()) return DiscordRollSendResult(false, null, "sem_autor")
+
+        val corpo = gson.toJson(
+            mapOf("token" to token, "autor" to autor, "ficha" to ficha)
+        ).toByteArray(StandardCharsets.UTF_8)
+
+        // ⚠️ Mais folga na leitura: sao dezenas de kB, e o telefone pode estar em 3G.
+        return enviar(
+            "${baseUrl.trimEnd('/')}/api/ficha-inteira", corpo,
+            folgaDeLeitura = READ_TIMEOUT_MS * 4
+        )
+    }
+
     /** A sala está de pé? Serve para o botão de testar, na configuração. */
     fun saude(baseUrl: String, token: String? = null): DiscordRollSendResult {
         var connection: HttpURLConnection? = null

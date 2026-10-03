@@ -190,7 +190,10 @@ class FichaSocialDelegate(
      */
     suspend fun enviarFichaParaAMesa(
         nomeNaMesa: String,
-        ficha: com.gurps.ficha.model.FichaCalculada
+        ficha: com.gurps.ficha.model.FichaCalculada,
+        // 🔴 RF-0 (Roda da Ficha): a ficha INTEIRA, para a Mesa rolar tudo por ela.
+        // Opcional de proposito: quem chama so com o resumo continua funcionando.
+        fichaInteira: com.google.gson.JsonObject? = null
     ): ResultadoDaConexao {
         // ⚠️ Nao ter a Mesa como destino nao e falha: e a escolha de nao mandar.
         // Dizer "erro" aqui poria o jogador de Discord a cacar problema que nao ha.
@@ -207,6 +210,20 @@ class FichaSocialDelegate(
         }
         val r = kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.IO) {
             MesaApiClient.postFicha(mesaEndereco, token, nomeNaMesa, ficha)
+        }
+        // 🔴 A inteira vai DEPOIS do resumo e so se o resumo chegou: um token errado
+        // serve para os dois, e dois recados iguais seriam ruido.
+        if (r.ok && fichaInteira != null) {
+            val i = kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.IO) {
+                MesaApiClient.postFichaInteira(mesaEndereco, token, nomeNaMesa, fichaInteira)
+            }
+            // ⚠️ O resumo ja foi: o boneco tem Esquiva e iniciativa. So a Roda e que
+            // fica sem a ficha toda, e a pessoa tem de saber por que.
+            if (!i.ok) {
+                return ResultadoDaConexao(
+                    false, "A ficha completa nao foi para a mesa: ${i.error ?: "sem detalhes"}"
+                )
+            }
         }
         return when {
             r.ok -> ResultadoDaConexao(true, "Ficha enviada para a mesa.")

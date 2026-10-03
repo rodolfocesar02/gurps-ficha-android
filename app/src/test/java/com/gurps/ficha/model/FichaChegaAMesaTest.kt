@@ -267,6 +267,190 @@ class FichaChegaAMesaTest {
         assertFalse("a mochila foi junto, e ela nao e arma", corpo.contains("Mochila"))
     }
 
+    // == 🔴 RF-0: a ficha INTEIRA ====================================
+
+    /**
+     * 🔴 Um personagem com o que a Roda da Ficha precisa: vantagem COM NIVEL,
+     * pericia, magia e equipamento -- mais a foto e o historico, que NAO podem ir.
+     *
+     * ⚠️ Os numeros fogem dos padroes (DX 12, IQ 13, Aptidao Magica 2) pelo mesmo
+     * motivo do `umPersonagem`: com tudo a 10 um campo que deixasse de ir
+     * continuava dando a resposta certa por acaso.
+     */
+    private val umPersonagemCompleto = umPersonagem.copy(
+        vantagens = listOf(
+            VantagemSelecionada(definicaoId = "visao_360_graus", nome = "Visao 360°"),
+            VantagemSelecionada(definicaoId = "aptidao_magica", nome = "Aptidao Magica", nivel = 2)
+        ),
+        pericias = listOf(
+            PericiaSelecionada(
+                definicaoId = "espada_larga", nome = "Espada Larga",
+                atributoBase = AtributoBase.DX, dificuldade = Dificuldade.MEDIA, pontosGastos = 4
+            ),
+            PericiaSelecionada(
+                definicaoId = "furtividade", nome = "Furtividade",
+                atributoBase = AtributoBase.DX, dificuldade = Dificuldade.MEDIA, pontosGastos = 2
+            )
+        ),
+        magias = listOf(
+            MagiaSelecionada(
+                definicaoId = "bola_de_fogo", nome = "Bola de Fogo",
+                dificuldade = Dificuldade.DIFICIL, pontosGastos = 4
+            )
+        ),
+        // 🔴 O que NAO vai: 343 kB de foto e o historico do telefone.
+        imagemPersonagemBase64 = "FOTO".repeat(2000),
+        imagemPersonagemUri = "content://foto",
+        historicoLog = listOf(RegistroLog(1L, "rolou um dado no telefone"))
+    )
+
+    private fun mandarAInteira() {
+        ligarACostura()
+        val d = delegateConfigurado()
+        val r = runBlocking {
+            d.enviarFichaParaAMesa(
+                "emulador", FichaCalculada.de(umPersonagemCompleto),
+                PersonagemInterop.fichaInteiraParaAMesa(umPersonagemCompleto)
+            )
+        }
+        assertTrue("a ficha nao saiu: " + r.recado, r.ok)
+    }
+
+    @Test
+    fun `🔴 RF-0 -- a ficha INTEIRA sai para a rota propria, DEPOIS do resumo`() {
+        mandarAInteira()
+
+        val rotas = pedidos.map { it.endpoint.substringAfterLast('/') }
+        assertEquals("o resumo primeiro, a inteira depois", listOf("ficha", "ficha-inteira"), rotas)
+        assertEquals(
+            "https://mesa-production-b0e5.up.railway.app/api/ficha-inteira",
+            pedidos[1].endpoint
+        )
+        val corpo = pedidos[1].corpo
+        assertTrue("falta o token no corpo", corpo.contains("\"token\":\"K88NFHG5\""))
+        assertTrue("o autor nao e o nome NA MESA", corpo.contains("\"autor\":\"emulador\""))
+        assertFalse("o token foi parar na URL", pedidos[1].endpoint.contains("K88NFHG5"))
+    }
+
+    @Test
+    fun `🔴 RF-0 -- a inteira leva vantagem com NIVEL, pericia, magia e equipamento`() {
+        mandarAInteira()
+        val corpo = pedidos[1].corpo
+
+        // 🔴 O nivel e o que muda a conta (Aptidao Magica 2 soma 2 em toda magia):
+        // o resumo so leva os ids, e e por isso que a inteira existe.
+        listOf(
+            "\"definicaoId\":\"aptidao_magica\"", "\"nivel\":2",
+            "\"definicaoId\":\"espada_larga\"", "\"pontosGastos\":4",
+            "\"definicaoId\":\"bola_de_fogo\"",
+            "\"nome\":\"Espada Larga\"", "\"nome\":\"Arco Longo\"",
+            // A mochila nao e arma, mas na ficha INTEIRA ela vai: a Roda lista Itens.
+            "\"nome\":\"Mochila\""
+        ).forEach {
+            assertTrue("a ficha inteira foi sem `$it`. CORPO: " + corpo.take(900), corpo.contains(it))
+        }
+    }
+
+    @Test
+    fun `🔴 RF-0 -- a foto e o historico NAO vao (343 kB a cada salvar)`() {
+        mandarAInteira()
+        val corpo = pedidos[1].corpo
+
+        assertFalse("a foto foi na ficha inteira", corpo.contains("imagemPersonagem"))
+        assertFalse("a foto foi na ficha inteira", corpo.contains("FOTOFOTO"))
+        assertFalse("o historico do telefone foi para a mesa", corpo.contains("historicoLog"))
+        assertFalse("o historico do telefone foi para a mesa", corpo.contains("rolou um dado"))
+    }
+
+    @Test
+    fun `🔴 RF-0 -- grava o corpo REAL e o NH do app, para o teste da Mesa usar`() {
+        // 🔴 Os dois lados do contrato: o corpo que o app manda (a Mesa o le com os
+        // motores) e o NH que o APP calcula (a Mesa tem de dar o mesmo). Sem isto
+        // cada lado inventa a sua ficha, e o encontro fica sem dono.
+        mandarAInteira()
+
+        java.io.File("build/ficha-inteira-como-o-app-manda.json").also {
+            it.parentFile?.mkdirs()
+        }.writeText(pedidos[1].corpo)
+
+        val calculada = FichaCalculada.de(umPersonagemCompleto)
+        val nhDasPericias = calculada.pericias.joinToString(",") { "\"${it.id}\":${it.nh}" }
+        val magia = umPersonagemCompleto.magias.first()
+        val nhDaMagia = magia.calcularNivel(umPersonagemCompleto, 2)
+        java.io.File("build/ficha-inteira-nh-do-app.json").writeText(
+            "{\"pericias\":{$nhDasPericias},\"magias\":{\"${magia.definicaoId}\":$nhDaMagia}," +
+                "\"esquiva\":${calculada.esquiva},\"velocidadeBasica\":${calculada.velocidadeBasica}}"
+        )
+
+        // DX 12, Media, 4 pontos -> DX+1 = 13. (MB p.170)
+        assertEquals(
+            13, calculada.pericias.first { it.id == "espada_larga" }.nh
+        )
+    }
+
+    @Test
+    fun `⚠️ RF-0 -- sem a inteira, so o resumo sai (quem chama como antes nao quebra)`() {
+        ligarACostura()
+        val d = delegateConfigurado()
+        val r = runBlocking {
+            d.enviarFichaParaAMesa("emulador", FichaCalculada.de(umPersonagemCompleto))
+        }
+        assertTrue(r.ok)
+        assertEquals(listOf("ficha"), pedidos.map { it.endpoint.substringAfterLast('/') })
+    }
+
+    @Test
+    fun `⚠️ RF-0 -- token recusado, nao sai a inteira e o recado e um so`() {
+        ligarACostura(DiscordRollSendResult(false, 401, "token_da_sala_invalido"))
+        val d = delegateConfigurado()
+        val r = runBlocking {
+            d.enviarFichaParaAMesa(
+                "emulador", FichaCalculada.de(umPersonagemCompleto),
+                PersonagemInterop.fichaInteiraParaAMesa(umPersonagemCompleto)
+            )
+        }
+        assertFalse(r.ok)
+        assertEquals("o token errado serve para os dois: um pedido so", 1, pedidos.size)
+        assertTrue(r.recado.contains("Mestre"))
+    }
+
+    @Test
+    fun `🔴 RF-0 -- resumo chegou e a inteira falhou, o recado DIZ que a completa nao foi`() {
+        // ⚠️ Uma Mesa de versao anterior responde 404 a rota nova. O resumo foi, o
+        // boneco tem Esquiva e iniciativa; so a Roda ficaria sem a ficha toda, e a
+        // pessoa tem de saber por que -- best-effort nao e calado.
+        pedidos.clear()
+        MesaApiClient.transporteDeTeste = { endpoint, corpo ->
+            pedidos.add(Pedido(endpoint, String(corpo, Charsets.UTF_8)))
+            if (endpoint.endsWith("/api/ficha-inteira")) DiscordRollSendResult(false, 404, "http_404 sem_detalhes")
+            else DiscordRollSendResult(true, 200, null)
+        }
+        val d = delegateConfigurado()
+        val r = runBlocking {
+            d.enviarFichaParaAMesa(
+                "emulador", FichaCalculada.de(umPersonagemCompleto),
+                PersonagemInterop.fichaInteiraParaAMesa(umPersonagemCompleto)
+            )
+        }
+        assertFalse(r.ok)
+        assertEquals(2, pedidos.size)
+        assertTrue("o recado nao diz que a ficha COMPLETA nao foi", r.recado.contains("completa"))
+    }
+
+    @Test
+    fun `🔴 RF-0 -- com o destino no Discord, nenhuma das duas sai`() {
+        ligarACostura()
+        val d = delegateConfigurado(destino = DestinoDaRolagem.DISCORD)
+        val r = runBlocking {
+            d.enviarFichaParaAMesa(
+                "emulador", FichaCalculada.de(umPersonagemCompleto),
+                PersonagemInterop.fichaInteiraParaAMesa(umPersonagemCompleto)
+            )
+        }
+        assertTrue(r.ok)
+        assertEquals(0, pedidos.size)
+    }
+
     // == ⚠️ Onde ela NÃO sai, e por que ==============================
 
     @Test

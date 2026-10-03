@@ -66,6 +66,35 @@ object PersonagemInterop {
         return gson.toJson(envelope)
     }
 
+    /**
+     * O que NAO vai na ficha inteira que o app manda para a Mesa -- RF-0.
+     *
+     * 🔴 A foto (343 kB no Cesar, 72% do arquivo) e o historico do telefone. A foto
+     * ja sobe sozinha por `postRetrato`; o historico nao serve a mesa. Mandar os
+     * dois a cada salvar gastaria o plano de dados do jogador a troco de nada.
+     *
+     * ⚠️ A Mesa tem a mesma lista (`FORA_NA_ENTRADA`, `ficha-crua.js`) e tira de
+     * novo o que chegar: este corte e so para nao gastar a rede.
+     */
+    private val FORA_DA_FICHA_INTEIRA = listOf(
+        "imagemPersonagemBase64", "imagemPersonagemUri",
+        "imagemPersonagemOriginalUri", "historicoLog"
+    )
+
+    /**
+     * **A ficha inteira, como a Mesa a le** -- RF-0.
+     *
+     * 🔴 E o mesmo JSON do arquivo salvo (`Personagem.toJson`), e nao o envelope da
+     * exportacao: o navegador do Mestre anexa esse mesmo formato, e e nele que
+     * todos os motores da Mesa (`ficha-motor.js` e companhia) foram escritos.
+     * Os numeros derivados nao vao: a Mesa os calcula, com as mesmas regras.
+     */
+    fun fichaInteiraParaAMesa(personagem: Personagem): JsonObject {
+        val ficha = gson.toJsonTree(personagem).asJsonObject
+        FORA_DA_FICHA_INTEIRA.forEach { ficha.remove(it) }
+        return ficha
+    }
+
     fun importarJson(json: String): PersonagemImportResult {
         if (json.isBlank()) {
             throw IllegalArgumentException("JSON vazio.")

@@ -84,6 +84,26 @@ class FichaParaAMesaTest {
     }
 
     @Test
+    fun `🔴 RF-0 -- o salvar e o carregar mandam a ficha INTEIRA junto do resumo`() {
+        // 🔴 O `FichaChegaAMesaTest` corre o delegate, mas nao o ViewModel: se o
+        // ViewModel deixar de passar a inteira, la tudo continua verde e a Roda da
+        // Ficha fica sem a ficha dos jogadores. Este e o elo, lido do texto como os
+        // vizinhos (o ViewModel nao sobe num teste JVM).
+        val envio = viewModel.substringAfter("val nomeNaMesa = socialDelegate.mesaNome").take(700)
+        assertTrue(
+            "o envio nao leva a ficha inteira",
+            envio.contains("PersonagemInterop.fichaInteiraParaAMesa(personagem)")
+        )
+        // E e a MESMA funcao `mandarAFichaParaAMesa` que salvar e carregar chamam:
+        // uma so, para as duas mandarem o mesmo.
+        assertEquals(
+            "a ficha inteira foi mandada de mais de um lugar",
+            1,
+            Regex("fichaInteiraParaAMesa\\(").findAll(viewModel).count()
+        )
+    }
+
+    @Test
     fun `⚠️ o nome na mesa NAO vai para maiusculas`() {
         // ⚠️ Ao contrario do token, que a sala compara em maiusculas, o nome e
         // comparado byte a byte com o que a pessoa digitou ao entrar — e

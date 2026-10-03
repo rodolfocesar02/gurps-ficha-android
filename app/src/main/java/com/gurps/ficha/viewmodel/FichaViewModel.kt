@@ -940,7 +940,9 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
         viewModelScope.launch {
             val r = socialDelegate.enviarFichaParaAMesa(
                 nomeNaMesa.orEmpty(),
-                com.gurps.ficha.model.FichaCalculada.de(personagem)
+                com.gurps.ficha.model.FichaCalculada.de(personagem),
+                // RF-0: a ficha inteira vai junto, para a Roda da Ficha rolar tudo na Mesa.
+                com.gurps.ficha.model.PersonagemInterop.fichaInteiraParaAMesa(personagem)
             )
             // ⚠️ So fala quando ha o que dizer: um "ok" a cada salvar viraria
             // ruido, e ruido ensina a ignorar o recado que importa.
