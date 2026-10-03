@@ -9761,3 +9761,15 @@ ficar verde**.
     45→46 com CL, 46/48→47/49 flags de ST.
 - Versao 12.6.1-CARABINA (183).
 - **Status:** ✅ Build OK (2 variantes)
+
+## Lote RF-0 — [2026-10-03] A ficha inteira do jogador chega a Mesa (Roda da Ficha)
+- **Hash:** 4269b299 (app) + 7c785d8 (Mesa)
+- **Mudancas:**
+  - `PersonagemInterop.fichaInteiraParaAMesa`: a ficha como o arquivo salvo, sem foto nem historico.
+  - `MesaApiClient.postFichaInteira` + `FichaSocialDelegate.enviarFichaParaAMesa` (3o parametro opcional): vai depois do resumo; falha da inteira vira recado.
+  - `FichaViewModel.mandarAFichaParaAMesa`: passa a inteira (1 linha).
+  - `FichaChegaAMesaTest` (+8) e `FichaParaAMesaTest` (+1); grava `app/build/ficha-inteira-como-o-app-manda.json` e `...-nh-do-app.json` para a Mesa.
+  - Mesa: `/api/ficha-inteira`, o dono le e mexe na ficha do proprio boneco (nome + segredo de sessao), o dano da Mesa nao some ao reenviar. Suite da Mesa 2925/2925.
+- Sondas: 5 do app e 9 da Mesa mordem.
+- Versao 12.7.0-RF0 (184).
+- **Status:** ✅ Build OK (2 variantes), 2551 testes por variante
