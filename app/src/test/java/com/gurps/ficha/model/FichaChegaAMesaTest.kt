@@ -298,6 +298,22 @@ class FichaChegaAMesaTest {
                 dificuldade = Dificuldade.DIFICIL, pontosGastos = 4
             )
         ),
+        // 🔴 RF-3: duas tecnicas, para a Mesa dar o MESMO NH que o app. Uma pela pericia
+        // (Espada Larga 13 + 1 nivel = 14) e uma pelo Aparar (13/2+3 = 9, -1, +2 = 10).
+        tecnicas = listOf(
+            TecnicaSelecionada(
+                definicaoId = "golpe_firme", nome = "Golpe Firme",
+                periciaBaseDefinicaoId = "espada_larga", periciaBaseNome = "Espada Larga",
+                preDefinidoRaw = "Espada Larga-0", preDefinidoModificador = 0,
+                nivelRelativoPredefinido = 1, pontosGastos = 2
+            ),
+            TecnicaSelecionada(
+                definicaoId = "aparar_firme", nome = "Aparar Firme",
+                periciaBaseDefinicaoId = "espada_larga", periciaBaseNome = "Espada Larga",
+                preDefinidoRaw = "Aparar", preDefinidoModificador = -1,
+                nivelRelativoPredefinido = 2, pontosGastos = 3
+            )
+        ),
         // 🔴 O que NAO vai: 343 kB de foto e o historico do telefone.
         imagemPersonagemBase64 = "FOTO".repeat(2000),
         imagemPersonagemUri = "content://foto",
@@ -377,10 +393,17 @@ class FichaChegaAMesaTest {
         val nhDasPericias = calculada.pericias.joinToString(",") { "\"${it.id}\":${it.nh}" }
         val magia = umPersonagemCompleto.magias.first()
         val nhDaMagia = magia.calcularNivel(umPersonagemCompleto, 2)
+        // 🔴 RF-3: o NH das tecnicas, tambem calculado pelo app.
+        val nhDasTecnicas = umPersonagemCompleto.tecnicas.joinToString(",") {
+            "\"${it.definicaoId}\":${it.calcularNivel(umPersonagemCompleto)}"
+        }
         java.io.File("build/ficha-inteira-nh-do-app.json").writeText(
             "{\"pericias\":{$nhDasPericias},\"magias\":{\"${magia.definicaoId}\":$nhDaMagia}," +
+                "\"tecnicas\":{$nhDasTecnicas}," +
                 "\"esquiva\":${calculada.esquiva},\"velocidadeBasica\":${calculada.velocidadeBasica}}"
         )
+        assertEquals(14, umPersonagemCompleto.tecnicas[0].calcularNivel(umPersonagemCompleto))
+        assertEquals(10, umPersonagemCompleto.tecnicas[1].calcularNivel(umPersonagemCompleto))
 
         // DX 12, Media, 4 pontos -> DX+1 = 13. (MB p.170)
         assertEquals(
