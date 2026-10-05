@@ -9773,3 +9773,11 @@ ficar verde**.
 - Sondas: 5 do app e 9 da Mesa mordem.
 - Versao 12.7.0-RF0 (184).
 - **Status:** ✅ Build OK (2 variantes), 2551 testes por variante
+
+## Lote RF-3 — [2026-10-05] Os seis grupos da ficha na roda (so o teste do app mudou)
+- **Hash:** 3ea7ac05 (app, so teste) + Mesa (ver o PLANO da Roda da Ficha)
+- **Mudancas:**
+  - `FichaChegaAMesaTest`: o corpo real leva 2 tecnicas (pela pericia: Espada Larga 13 + 1 = 14; pelo Aparar: 13/2+3 = 9, -1, +2 = 10) e grava o NH do app.
+  - Achado: a Mesa lia a tecnica por `periciaBaseId`/`niveisComprados`, que o app nunca escreveu; toda tecnica de jogador saia com NH null. Consertado do lado da Mesa (`ficha-motor.js`).
+- Sem versao nova (so teste). Suite do app: 2 variantes verdes.
+- **Status:** ✅ testes das 2 variantes
