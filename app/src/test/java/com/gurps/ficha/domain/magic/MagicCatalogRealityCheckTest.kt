@@ -283,4 +283,26 @@ class MagicCatalogRealityCheckTest {
         }
         assertTrue("classe fora das grafias certas em ${sujas.size} magia(s): ${sujas.take(8)}", sujas.isEmpty())
     }
+
+    /**
+     * Lote MG-0 (Mesa, fecho): nenhum `id` do catálogo se repete.
+     *
+     * A magia da p.31 (Animais) vinha com o id `passo_leve` — o do Passo Leve da p.144. A Mesa guarda
+     * por `id` e a segunda sobrescrevia a primeira; e a regra de pré-requisito do `MagicEngine` e o
+     * texto do `DataRepository`, presos ao id `passageiro_interno`, nunca valiam para ninguém.
+     */
+    @Test
+    fun `nenhum id do catalogo real se repete e o Passageiro Interno tem o id dele`() {
+        val catalogo = carregarCatalogo()
+        Assume.assumeNotNull(catalogo)
+        val magias = (0 until catalogo!!.length()).map { catalogo.getJSONObject(it) }
+        val repetidos = magias.map { it.optString("id") }.groupBy { it }.filter { it.value.size > 1 }.keys
+        assertTrue("id repetido no catalogo real: $repetidos", repetidos.isEmpty())
+
+        val porId = magias.associateBy { it.optString("id") }
+        // O Passageiro Interno é o da p.31; o Passo Leve é o da p.144 (Escola de Deslocamento).
+        assertEquals(31, porId.getValue("passageiro_interno").optInt("pagina"))
+        assertEquals("Passageiro Interno", porId.getValue("passageiro_interno").optString("nome"))
+        assertEquals(144, porId.getValue("passo_leve").optInt("pagina"))
+    }
 }

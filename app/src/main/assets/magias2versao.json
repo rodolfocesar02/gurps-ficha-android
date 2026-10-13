@@ -13953,8 +13953,8 @@
     "custoManter": 1
   },
   {
-    "id": "passo_leve",
-    "nome": "Passo Leve",
+    "id": "passageiro_interno",
+    "nome": "Passageiro Interno",
     "dificuldade": "D",
     "pagina": 31,
     "classe": "Comum",
@@ -13965,14 +13965,14 @@
     "energia": "04/01",
     "tempoOperacao": "3 seg.",
     "preRequisitos": "2 magicas de Controle de Animal diferentes",
-    "descricao": "Comum\n\nCaminhe sobre qualquer superfície (que deve suportar seu peso) sem deixar traços, impossibilitando o rastreamento. Se a vegetação estiver presente na superfície, alguns vestígios da pessoa permanecerão, tornando o rastreamento possível a uma penalidade de -8. Essa mágica também impedirá que o objetivo dispare armadilhas de pressão e afins.\n\nDuração: 10 minutos.\n\nCusto: 4 para operar. 1 para manter. Se o operador também conhecer Ocultar Rastros, um ponto extra de energia para operar e manter garantirá que até mesmo a vegetação não tenha nenhum vestígio da passagem do objetivo.\n\nPré-requisitos: Aporte e Moldar Terra.\n\nItem\n\nCalçados; o item deve ter uma imagem de uma corça. Afeta apenas o usuário. Custo de energia para criar: 400.",
+    "descricao": "Comum\n\nFunciona sobre qualquer tipo de animal (mas não em seres sapientes). Esta é a versão para animais da mágica Passageiro da Alma (pág. 49). O operador torna-se capaz de ver através dos olhos do objetivo, ouvir com seus ouvidos, etc., durante o tempo em que mantiver a concentração (ele não perde o domínio de seu próprio corpo e pode agir normalmente.) O operador não exerce qualquer outro tipo de controle sobre o objetivo, que por sua vez, não sabe que o operador está “observando”.\n\nDuração: 1 minuto.\n\nCusto: 4 para operar: 1 para manter.\n\nTempo de operação: 3 segundos.\n\nPré-requisitos: Ao menos duas mágicas Controle de (Animal) diferentes. O operador deve conhecer a mágica Controle de (Animal) do tipo de animal que está sendo usado “montado” antes que possa usar esta mágica sobre aquele tipo de animal.\n\nItem\n\nUm par de joias idênticas — uma de ouro, outra de prata. A de ouro deve ser usada pelo operador, a de prata pelo objetivo (p.ex., numa coleira). Desse modo, a mágica pode ser feita a qualquer momento, independente da distância. Utilizável apenas por magos. Se o item contiver uma Gema de Energia, ela deverá fazer parte da peça de ouro. Se qualquer um dos itens se quebrar, o outro perderá seu encantamento. Custo para criar: 1.000 de energia (pelo par). Cada peça do par deverá conter uma opala no valor de $100.",
     "mecanica": {
-      "efeito": "narrado",
-      "notas": "Caminha sobre qualquer superfície sem deixar rastros (rastreamento -8 em vegetação); não dispara armadilhas de pressão. Utilidade."
+      "efeito": "informacao",
+      "notas": "Operador ve/ouve pelos sentidos de um animal enquanto se concentra; sem controle e o animal nao percebe. Age normalmente. 4/1."
     },
     "duracaoTipo": "temporaria",
-    "duracaoSeg": 600,
-    "tempoOperacaoSeg": 1,
+    "duracaoSeg": 60,
+    "tempoOperacaoSeg": 3,
     "custoOperar": 4,
     "custoManter": 1
   },
