@@ -137,7 +137,7 @@
     "nome": "Adaga de Gelo",
     "dificuldade": "D",
     "pagina": 188,
-    "classe": "Projetil",
+    "classe": "Projétil",
     "escola": [
       "Água"
     ],
@@ -1590,7 +1590,7 @@
     "nome": "Arremessar Mágica",
     "dificuldade": "MD",
     "pagina": 128,
-    "classe": "Projetil/Especial",
+    "classe": "Projétil/Especial",
     "escola": [
       "Metamágica"
     ],
@@ -2544,7 +2544,7 @@
     "nome": "Bola de Ácido",
     "dificuldade": "D",
     "pagina": 191,
-    "classe": "Projetil",
+    "classe": "Projétil",
     "escola": [
       "Água"
     ],
@@ -2596,7 +2596,7 @@
     "nome": "Bola de Fogo",
     "dificuldade": "D",
     "pagina": 74,
-    "classe": "Projetil",
+    "classe": "Projétil",
     "escola": [
       "Fogo"
     ],
@@ -2626,7 +2626,7 @@
     "nome": "Bola de Fogo Explosiva",
     "dificuldade": "D",
     "pagina": 75,
-    "classe": "Projetil",
+    "classe": "Projétil",
     "escola": [
       "Fogo"
     ],
@@ -2932,7 +2932,7 @@
     "nome": "Carne para Gelo",
     "dificuldade": "MD",
     "pagina": 190,
-    "classe": "Comum/R/HT",
+    "classe": "Comum/R-HT",
     "escola": [
       "Água"
     ],
@@ -4632,7 +4632,7 @@
     "nome": "Convocar Animal (Criaturas da Terra)",
     "dificuldade": "D",
     "pagina": 30,
-    "classe": "Comm",
+    "classe": "Comum",
     "escola": [
       "Animais"
     ],
@@ -4651,7 +4651,7 @@
     "nome": "Convocar Animal (Criaturas do Ar)",
     "dificuldade": "D",
     "pagina": 30,
-    "classe": "Comm",
+    "classe": "Comum",
     "escola": [
       "Animais"
     ],
@@ -4670,7 +4670,7 @@
     "nome": "Convocar Animal (Criaturas do Mar)",
     "dificuldade": "D",
     "pagina": 30,
-    "classe": "Comm",
+    "classe": "Comum",
     "escola": [
       "Animais"
     ],
@@ -4808,7 +4808,7 @@
     "nome": "Convocar Máquina/NT",
     "dificuldade": "D",
     "pagina": 176,
-    "classe": "Comm",
+    "classe": "Comum",
     "escola": [
       "Tecnológica"
     ],
@@ -4880,7 +4880,7 @@
     "nome": "Copiar",
     "dificuldade": "D",
     "pagina": 116,
-    "classe": "Comm",
+    "classe": "Comum",
     "escola": [
       "Quebrar e Consertar"
     ],
@@ -4902,7 +4902,7 @@
     "nome": "Cores",
     "dificuldade": "D",
     "pagina": 110,
-    "classe": "Comm",
+    "classe": "Comum",
     "escola": [
       "Luz e Trevas"
     ],
@@ -6625,7 +6625,7 @@
     "nome": "Desviar Teleporte",
     "dificuldade": "MD",
     "pagina": 84,
-    "classe": "Bloq./R-Mágica",
+    "classe": "Bloqueio/R-Mágica",
     "escola": [
       "Portal",
       "Deslocamento"
@@ -7179,7 +7179,7 @@
     "nome": "Drenar Aptidão Mágica",
     "dificuldade": "MD",
     "pagina": 130,
-    "classe": "Comum/ R-Vont+AM",
+    "classe": "Comum/R-Vont+AM",
     "escola": [
       "Metamágica"
     ],
@@ -7605,7 +7605,7 @@
     "nome": "Enfeitiçar",
     "dificuldade": "MD",
     "pagina": 60,
-    "classe": "Encant./R-Especial",
+    "classe": "Encantamento/R-Especial",
     "escola": [
       "Encantamento"
     ],
@@ -8331,7 +8331,7 @@
     "nome": "Espectro",
     "dificuldade": "MD",
     "pagina": 160,
-    "classe": "Encantamento/ R-HT",
+    "classe": "Encantamento/R-HT",
     "escola": [
       "Necromancia",
       "Encantamento"
@@ -8586,7 +8586,7 @@
     "nome": "Evisceração",
     "dificuldade": "MD",
     "pagina": 154,
-    "classe": "Comum/ R-HT ou IQ",
+    "classe": "Comum/R-HT ou IQ",
     "escola": [
       "Necromancia"
     ],
@@ -9642,7 +9642,7 @@
     "nome": "Gira-Lâminas",
     "dificuldade": "D",
     "pagina": 168,
-    "classe": "Comum/ R-Especial",
+    "classe": "Comum/R-Especial",
     "escola": [
       "Proteção"
     ],
@@ -9809,7 +9809,7 @@
     "nome": "Guarda-Mágica",
     "dificuldade": "MD",
     "pagina": 127,
-    "classe": "Comum/ R-Especial",
+    "classe": "Comum/R-Especial",
     "escola": [
       "Metamágica"
     ],
@@ -9944,7 +9944,7 @@
     "nome": "Identificar Função/NT",
     "dificuldade": "D",
     "pagina": 176,
-    "classe": "Informação/ R-Mágica",
+    "classe": "Informação/R-Mágica",
     "escola": [
       "Tecnológica"
     ],
@@ -14579,7 +14579,7 @@
     "nome": "Poltergeist",
     "dificuldade": "D",
     "pagina": 144,
-    "classe": "Projetil/R-HT",
+    "classe": "Projétil/R-HT",
     "escola": [
       "Deslocamento"
     ],
@@ -15075,7 +15075,7 @@
     "nome": "Projétil de Pedra",
     "dificuldade": "D",
     "pagina": 52,
-    "classe": "Projetil",
+    "classe": "Projétil",
     "escola": [
       "Terra"
     ],
@@ -15125,7 +15125,7 @@
     "nome": "Proteção",
     "dificuldade": "D",
     "pagina": 122,
-    "classe": "Bloq./R-Mágica",
+    "classe": "Bloqueio/R-Mágica",
     "escola": [
       "Metamágica"
     ],
@@ -15145,7 +15145,7 @@
     "nome": "Proteção Superior",
     "dificuldade": "D",
     "pagina": 122,
-    "classe": "Bloq./R-Mágica",
+    "classe": "Bloqueio/R-Mágica",
     "escola": [
       "Metamágica"
     ],
@@ -15455,7 +15455,7 @@
     "nome": "Raio Solar",
     "dificuldade": "D",
     "pagina": 114,
-    "classe": "Projetil",
+    "classe": "Projétil",
     "escola": [
       "Luz e Trevas"
     ],
@@ -15508,7 +15508,7 @@
     "nome": "Rastrear Teleporte",
     "dificuldade": "D",
     "pagina": 84,
-    "classe": "Informação/ R-Mágica",
+    "classe": "Informação/R-Mágica",
     "escola": [
       "Portal",
       "Deslocamento"
@@ -15712,7 +15712,7 @@
     "nome": "Refletir",
     "dificuldade": "D",
     "pagina": 122,
-    "classe": "Bloq./R-Mágica",
+    "classe": "Bloqueio/R-Mágica",
     "escola": [
       "Metamágica"
     ],
@@ -15914,7 +15914,7 @@
     "nome": "Relampago",
     "dificuldade": "D",
     "pagina": 196,
-    "classe": "Projetil",
+    "classe": "Projétil",
     "escola": [
       "Clima",
       "Ar"
@@ -15945,7 +15945,7 @@
     "nome": "Relampago Explosivo",
     "dificuldade": "D",
     "pagina": 196,
-    "classe": "Projetil",
+    "classe": "Projétil",
     "escola": [
       "Clima",
       "Ar"
@@ -16428,7 +16428,7 @@
     "nome": "Resistência à Magia",
     "dificuldade": "D",
     "pagina": 123,
-    "classe": "Com./R-Vont+AM",
+    "classe": "Comum/R-Vont+AM",
     "escola": [
       "Metamágica"
     ],

@@ -251,4 +251,36 @@ class MagicCatalogRealityCheckTest {
         assertTrue("sem buffUmUnicoUso viram RD/BD persistente — regra errada: $faltando",
             faltando.isEmpty())
     }
+
+    /**
+     * Lote MG-0 (Mesa): a `classe` do catálogo só tem as grafias CERTAS.
+     *
+     * O parser aceita "Comm", "Projetil", "Bloq.", "Encant." — mas a Mesa lê a `classe` com regex
+     * simples, e "Comm" fazia a penalidade de distância não valer em 7 magias, em silêncio. Os
+     * apelidos continuam aceitos pelo parser (os testes dele provam); o que não pode é voltarem para
+     * o DADO. Para consertar: `node scripts/auditar-magias.js --normalizar-classe`, em `mesa-virtual/server`.
+     */
+    @Test
+    fun `toda classe do catalogo real usa so as grafias certas`() {
+        val catalogo = carregarCatalogo()
+        Assume.assumeNotNull(catalogo)
+        val certas = setOf(
+            "Comum", "Área", "Projétil", "Toque", "Bloqueio", "Informação", "Encantamento", "Especial",
+        )
+        val sujas = mutableListOf<String>()
+        for (i in 0 until catalogo!!.length()) {
+            val magia = catalogo.getJSONObject(i)
+            val classe = magia.optString("classe", "")
+            val segmentos = classe.split("/")
+            // "Área/R-(ST+Vont)/2": o "2" é continuação da resistência, não classe.
+            val ok = segmentos.all { seg ->
+                seg == seg.trim() && (
+                    seg.startsWith("R-") || seg.matches(Regex("""\d+""")) ||
+                        seg.split(" ou ").all { it in certas }
+                    )
+            }
+            if (!ok) sujas += "${magia.optString("id")}: '$classe'"
+        }
+        assertTrue("classe fora das grafias certas em ${sujas.size} magia(s): ${sujas.take(8)}", sujas.isEmpty())
+    }
 }
