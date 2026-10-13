@@ -9801,3 +9801,13 @@ ficar verde**.
 - Corrige a linha do lote anterior (MG-0) que dizia "Nada mais mudou": faltava esta.
 - Sem versao nova (so dado e teste). Suite do app: `./gradlew build`, 2 variantes verdes.
 - **Status:** ✅ Build OK (2 variantes), suite da Mesa 3240/3240
+
+## Lote MC-0 — [2026-10-13] O localizador: onde esta cada magia do catalogo no livro (plano do catalogo de magias)
+- **Hash:** 20bc702a (app, so scripts + dado) + commit da Mesa (relatorio e plano)
+- **Mudancas:**
+  - `scripts/magias/`: `localizador.js`, `localizar-magias-no-livro.js`, `magias-no-livro.json` (o indice), `magias-localizacao-manual.json` (so localizacao), `localizador.test.js` (21 testes, `node --test scripts/magias/localizador.test.js`).
+  - Das 879 magias: 879 com a linha da tabela-resumo; 814 com a entrada em bloco recortavel; 39 so por pagina (colunas embaralhadas); 26 sem entrada no `chunks.jsonl`. Localizadas nas duas fontes: 853 (97,0%).
+  - Achado: o 1o casamento errava 11 magias (entrada de outra pagina); agora so vale titulo a ate 3 paginas da que a tabela manda.
+  - Achado: Medo (p.134) nao tem entrada no texto extraido; pp.161, 169 e 185 tem pouco texto; Passo Leve esta na p.145 (o catalogo diz 144).
+- Nada do app Kotlin mudou (sem build novo). Relatorio: `mesa-virtual/planos/magias/COBERTURA-MC-0.md`.
+- **Status:** ✅ 21 testes do localizador; suite do app nao tocada
