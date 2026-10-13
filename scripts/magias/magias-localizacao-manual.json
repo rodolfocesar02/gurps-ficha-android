@@ -1,0 +1,32 @@
+{
+  "_como": "SÓ LOCALIZAÇÃO (MC-0): onde a entrada está no chunks.jsonl quando o script não a acha pelo nome. Nenhum número, nenhum texto do livro. `linha` é o índice da linha do título dentro da página (0-based). `tabela` é o nome EXATO da linha da tabela-resumo.",
+  "magias": [
+    {
+      "id": "conduzir_corrente_eletricant",
+      "pagina": 180,
+      "linha": 35,
+      "titulo": "Conduzir Corrente Elétrica/NT",
+      "nota": "o título no livro vem em duas linhas e repete \"Elétrica\""
+    },
+    {
+      "id": "corpo_de_sombra",
+      "pagina": 114,
+      "linha": 41,
+      "titulo": "Corpo de Sombra",
+      "nota": "o texto do livro perdeu \"Corpo de\"; a linha é \"Sombra (MD)\", classe Comum/R-HT como na tabela"
+    },
+    {
+      "id": "ver_a_forma_real",
+      "pagina": 106,
+      "linha": 76,
+      "titulo": "Ver a Forma Real",
+      "nota": "o texto do livro perdeu \"Ver a\"; a linha é \"Forma Real\", classe Informação como na tabela"
+    },
+    {
+      "id": "combustivel_essencialnt",
+      "pagina": 179,
+      "tabela": "Combustível/NT",
+      "nota": "a linha da tabela quebrou o nome: nome \"Combustível/NT\", classe \"Essencial/Comum\""
+    }
+  ]
+}
