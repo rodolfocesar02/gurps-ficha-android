@@ -9781,3 +9781,13 @@ ficar verde**.
   - Achado: a Mesa lia a tecnica por `periciaBaseId`/`niveisComprados`, que o app nunca escreveu; toda tecnica de jogador saia com NH null. Consertado do lado da Mesa (`ficha-motor.js`).
 - Sem versao nova (so teste). Suite do app: 2 variantes verdes.
 - **Status:** ✅ testes das 2 variantes
+
+## Lote MG-0 — [2026-10-13] O catalogo de magias, lido por inteiro (plano das magias da Mesa)
+- **Hash:** c64af2eb (app, so dado + teste) + 5a89f49 (Mesa)
+- **Mudancas:**
+  - `magias2versao.json`: so 30 linhas do campo `classe` (Comm, Com., Projetil, Bloq., Encant., R/HT, espaco depois da barra). Nada mais mudou.
+  - `MagicCatalogRealityCheckTest`: +1 teste, a classe do catalogo real so tem as grafias certas.
+  - Mesa: leitor unico do catalogo (conferido primeiro), relatorio em `mesa-virtual/planos/magias/RELATORIO-MG-0.md`, extrator para se o catalogo vier sujo.
+- Achado: a Mesa cobra a energia pelo cabecalho; em 8 magias o numero conferido (que o app usa) e outro. Fica para o MG-4.
+- Sem versao nova (so dado e teste). Suite do app: 2 variantes verdes (testVisualDebugUnitTest e testPracegoDebugUnitTest).
+- **Status:** ✅ testes das 2 variantes, suite da Mesa 3240/3240
