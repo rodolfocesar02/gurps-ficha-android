@@ -9791,3 +9791,13 @@ ficar verde**.
 - Achado: a Mesa cobra a energia pelo cabecalho; em 8 magias o numero conferido (que o app usa) e outro. Fica para o MG-4.
 - Sem versao nova (so dado e teste). Suite do app: 2 variantes verdes (testVisualDebugUnitTest e testPracegoDebugUnitTest).
 - **Status:** ✅ testes das 2 variantes, suite da Mesa 3240/3240
+
+## Lote MG-0 (fecho) — [2026-10-13] A magia da p.31 volta a ser o Passageiro Interno
+- **Hash:** 6036b374 (app, dado + teste)
+- **Mudancas:**
+  - `magias2versao.json`: a entrada da p.31 tinha o id `passo_leve` (repetido com a da p.144), o nome e a descricao do Passo Leve. Agora e `passageiro_interno`, com a descricao e a mecanica dele e os numeros da entrada do livro (p.31): 1 min · 4 para operar, 1 para manter · 3 s (eram 600 s e 1 s, os do Passo Leve).
+  - `MagicCatalogRealityCheckTest`: +1 teste, nenhum `id` do catalogo real se repete e o Passageiro Interno tem o id dele.
+- Achado: a regra de pre-requisito de `MagicEngine` (2 caminhos de Controle de Animal) e o texto do `DataRepository` estavam presos ao id `passageiro_interno` e nunca valiam; agora valem.
+- Corrige a linha do lote anterior (MG-0) que dizia "Nada mais mudou": faltava esta.
+- Sem versao nova (so dado e teste). Suite do app: `./gradlew build`, 2 variantes verdes.
+- **Status:** ✅ Build OK (2 variantes), suite da Mesa 3240/3240
