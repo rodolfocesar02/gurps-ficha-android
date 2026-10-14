@@ -13,8 +13,7 @@
   "blocoSemCampos": 50,
   "remissoes": 0,
   "casamentoTabela": {
-   "exato": 808,
-   "aproximado": 1,
+   "exato": 809,
    "base": 48,
    "generico": 8,
    "manual": 1,
@@ -22,12 +21,12 @@
    "prefixo-inverso": 1
   },
   "casamentoEntrada": {
-   "exato": 752,
-   "aproximado": 2,
+   "exato": 753,
    "pagina": 34,
    "base": 45,
    "generico": 17,
-   "manual": 3
+   "manual": 3,
+   "aproximado": 1
   }
  },
  "magias": {
@@ -2540,10 +2539,10 @@
    }
   },
   "aquece": {
-   "nome": "Aquece",
+   "nome": "Aquecer",
    "paginaCatalogo": 195,
    "tabela": {
-    "casamento": "aproximado",
+    "casamento": "exato",
     "variante": null,
     "reparada": null,
     "paginaDoChunk": 224,
@@ -2562,7 +2561,7 @@
    },
    "entrada": {
     "formato": "bloco",
-    "casamento": "aproximado",
+    "casamento": "exato",
     "variante": null,
     "titulo": "Aquecer",
     "pagina": 195,
@@ -4033,7 +4032,7 @@
    }
   },
   "aumentar_vitalidade": {
-   "nome": "Aumentar Vitlidade",
+   "nome": "Aumentar Vitalidade",
    "paginaCatalogo": 37,
    "tabela": {
     "casamento": "generico",
@@ -27050,7 +27049,7 @@
    "tabela": {
     "casamento": "exato",
     "variante": null,
-    "reparada": null,
+    "reparada": "colunas-trocadas",
     "paginaDoChunk": 233,
     "linha": 4,
     "nome": "Ocultar Rastros",
@@ -27060,8 +27059,8 @@
      "classe": "Comum",
      "escola": "Plantas",
      "duracao": "1 min",
-     "energia": "1 seg",
-     "tempo": "2/1",
+     "energia": "2/1",
+     "tempo": "1 seg",
      "preRequisitos": "Curar Planta"
     }
    },
@@ -27094,11 +27093,11 @@
   },
   "olhar_de_relampago": {
    "nome": "Olhar de Relampago",
-   "paginaCatalogo": 163,
+   "paginaCatalogo": 198,
    "tabela": {
     "casamento": "exato",
     "variante": null,
-    "reparada": null,
+    "reparada": "colunas-trocadas",
     "paginaDoChunk": 233,
     "linha": 5,
     "nome": "Olhar de Relâmpago",
@@ -27108,8 +27107,8 @@
      "classe": "Comum",
      "escola": "Clima/Ar",
      "duracao": "1 seg",
-     "energia": "2 seg",
-     "tempo": "1 a 4",
+     "energia": "1 a 4",
+     "tempo": "2 seg",
      "preRequisitos": "Relâmpago, Imunidade a Relâmpagos"
     }
    },
@@ -27150,7 +27149,7 @@
    "tabela": {
     "casamento": "exato",
     "variante": null,
-    "reparada": null,
+    "reparada": "colunas-trocadas",
     "paginaDoChunk": 233,
     "linha": 6,
     "nome": "Olho Mágico",
@@ -27160,8 +27159,8 @@
      "classe": "Comum",
      "escola": "Reconhecimento",
      "duracao": "1 min",
-     "energia": "2 seg",
-     "tempo": "4/2",
+     "energia": "4/2",
+     "tempo": "2 seg",
      "preRequisitos": "Aporte, Visão Aguçada"
     }
    },
@@ -27202,7 +27201,7 @@
    "tabela": {
     "casamento": "exato",
     "variante": null,
-    "reparada": null,
+    "reparada": "colunas-trocadas",
     "paginaDoChunk": 233,
     "linha": 7,
     "nome": "Olho Mágico Invisível",
@@ -27212,8 +27211,8 @@
      "classe": "Comum",
      "escola": "Reconhecimento",
      "duracao": "1 min",
-     "energia": "4 seg",
-     "tempo": "5/3",
+     "energia": "5/3",
+     "tempo": "4 seg",
      "preRequisitos": "Olho Mágico, Invisibilidade"
     }
    },
@@ -27254,7 +27253,7 @@
    "tabela": {
     "casamento": "exato",
     "variante": null,
-    "reparada": null,
+    "reparada": "colunas-trocadas",
     "paginaDoChunk": 233,
     "linha": 8,
     "nome": "Olhos do Falcão",
@@ -27264,8 +27263,8 @@
      "classe": "Comum",
      "escola": "Luz e Trevas",
      "duracao": "1 min",
-     "energia": "2 seg",
-     "tempo": "2/nível/M#",
+     "energia": "2/nível/M#",
+     "tempo": "2 seg",
      "preRequisitos": "Visão Aguçada ou 5 mágicas de Luz; não pode ter Cegueira ou Disopia"
     }
    },
@@ -27306,7 +27305,7 @@
    "tabela": {
     "casamento": "exato",
     "variante": null,
-    "reparada": null,
+    "reparada": "colunas-trocadas",
     "paginaDoChunk": 233,
     "linha": 9,
     "nome": "Ondas",
@@ -27316,8 +27315,8 @@
      "classe": "Especial/Área",
      "escola": "Clima/Água",
      "duracao": "1 hora",
-     "energia": "1 min",
-     "tempo": "1/60/I",
+     "energia": "1/60/I",
+     "tempo": "1 min",
      "preRequisitos": "Moldar Água"
     }
    },
@@ -27354,11 +27353,11 @@
   },
   "orientacao": {
    "nome": "Orientação",
-   "paginaCatalogo": 105,
+   "paginaCatalogo": 101,
    "tabela": {
     "casamento": "exato",
     "variante": null,
-    "reparada": null,
+    "reparada": "colunas-trocadas",
     "paginaDoChunk": 233,
     "linha": 10,
     "nome": "Orientação",
@@ -27368,8 +27367,8 @@
      "classe": "Informação",
      "escola": "Reconhecimento",
      "duracao": "Instant",
-     "energia": "1 seg",
-     "tempo": "2",
+     "energia": "2",
+     "tempo": "1 seg",
      "preRequisitos": "AM1"
     }
    },
@@ -27398,11 +27397,11 @@
   },
   "ouvido_magico": {
    "nome": "Ouvido Mágico",
-   "paginaCatalogo": 173,
+   "paginaCatalogo": 174,
    "tabela": {
     "casamento": "exato",
     "variante": null,
-    "reparada": null,
+    "reparada": "colunas-trocadas",
     "paginaDoChunk": 233,
     "linha": 11,
     "nome": "Ouvido Mágico",
@@ -27412,8 +27411,8 @@
      "classe": "Comum",
      "escola": "Som",
      "duracao": "1 min",
-     "energia": "2 seg",
-     "tempo": "4/3",
+     "energia": "4/3",
+     "tempo": "2 seg",
      "preRequisitos": "Aporte, Audição Remota"
     }
    },
@@ -27450,11 +27449,11 @@
   },
   "ouvido_magico_invisivel": {
    "nome": "Ouvido Mágico Invisível",
-   "paginaCatalogo": 173,
+   "paginaCatalogo": 174,
    "tabela": {
     "casamento": "exato",
     "variante": null,
-    "reparada": null,
+    "reparada": "colunas-trocadas",
     "paginaDoChunk": 233,
     "linha": 12,
     "nome": "Ouvido Mágico Invisível",
@@ -27464,8 +27463,8 @@
      "classe": "Comum",
      "escola": "Som",
      "duracao": "1 min",
-     "energia": "4 seg",
-     "tempo": "5/3",
+     "energia": "5/3",
+     "tempo": "4 seg",
      "preRequisitos": "Ouvido Mágico, Invisibilidade"
     }
    },
@@ -27502,11 +27501,11 @@
   },
   "paladar_remoto": {
    "nome": "Paladar Remoto",
-   "paginaCatalogo": 104,
+   "paginaCatalogo": 77,
    "tabela": {
     "casamento": "exato",
     "variante": null,
-    "reparada": null,
+    "reparada": "colunas-trocadas",
     "paginaDoChunk": 233,
     "linha": 13,
     "nome": "Paladar Remoto",
@@ -27516,8 +27515,8 @@
      "classe": "Comum",
      "escola": "Alimentos/Reconhecimento",
      "duracao": "1 min",
-     "energia": "3 seg",
-     "tempo": "3/1",
+     "energia": "3/1",
+     "tempo": "3 seg",
      "preRequisitos": "AM1, sem Anosmia, Localizar Alimento, Localizar Ar"
     }
    },
@@ -27558,7 +27557,7 @@
    "tabela": {
     "casamento": "exato",
     "variante": null,
-    "reparada": null,
+    "reparada": "colunas-trocadas",
     "paginaDoChunk": 233,
     "linha": 14,
     "nome": "Pane/NT",
@@ -27568,8 +27567,8 @@
      "classe": "Comum/R/-HT",
      "escola": "Tecnológica",
      "duracao": "Instant",
-     "energia": "1 seg",
-     "tempo": "3",
+     "energia": "3",
+     "tempo": "1 seg",
      "preRequisitos": "Controle de Máquina"
     }
    },
@@ -27593,7 +27592,7 @@
    "tabela": {
     "casamento": "exato",
     "variante": null,
-    "reparada": null,
+    "reparada": "colunas-trocadas",
     "paginaDoChunk": 233,
     "linha": 15,
     "nome": "Pânico",
@@ -27603,8 +27602,8 @@
      "classe": "Área/R-Vont",
      "escola": "Mente",
      "duracao": "1 min",
-     "energia": "1 seg",
-     "tempo": "4/2",
+     "energia": "4/2",
+     "tempo": "1 seg",
      "preRequisitos": "Medo"
     }
    },
@@ -27641,7 +27640,7 @@
    "tabela": {
     "casamento": "exato",
     "variante": null,
-    "reparada": null,
+    "reparada": "colunas-trocadas",
     "paginaDoChunk": 233,
     "linha": 16,
     "nome": "Paralisar Membro",
@@ -27651,8 +27650,8 @@
      "classe": "Toque/R-HT",
      "escola": "Corpo",
      "duracao": "1 min",
-     "energia": "1 seg",
-     "tempo": "3",
+     "energia": "3",
+     "tempo": "1 seg",
      "preRequisitos": "AM1, 5 mágicas do Corpo incl. Inabilidade"
     }
    },
@@ -27689,7 +27688,7 @@
    "tabela": {
     "casamento": "exato",
     "variante": null,
-    "reparada": null,
+    "reparada": "colunas-trocadas",
     "paginaDoChunk": 233,
     "linha": 17,
     "nome": "Paralisia Total",
@@ -27699,8 +27698,8 @@
      "classe": "Toque/R-HT",
      "escola": "Corpo",
      "duracao": "1 min",
-     "energia": "1 seg",
-     "tempo": "5",
+     "energia": "5",
+     "tempo": "1 seg",
      "preRequisitos": "Paralisar Membro"
     }
    },
@@ -27737,7 +27736,7 @@
    "tabela": {
     "casamento": "exato",
     "variante": null,
-    "reparada": null,
+    "reparada": "colunas-trocadas",
     "paginaDoChunk": 233,
     "linha": 18,
     "nome": "Passageiro da Alma",
@@ -27747,8 +27746,8 @@
      "classe": "Comum/R-Vont",
      "escola": "Comunicação",
      "duracao": "1 min",
-     "energia": "3 seg",
-     "tempo": "5/2",
+     "energia": "5/2",
+     "tempo": "3 seg",
      "preRequisitos": "Leitura da Mente"
     }
    },
@@ -27789,7 +27788,7 @@
    "tabela": {
     "casamento": "base",
     "variante": "Criaturas do Ar",
-    "reparada": null,
+    "reparada": "colunas-trocadas",
     "paginaDoChunk": 233,
     "linha": 19,
     "nome": "Passageiro Interno",
@@ -27799,8 +27798,8 @@
      "classe": "Comum",
      "escola": "Animais",
      "duracao": "1 min",
-     "energia": "3 seg",
-     "tempo": "4/1",
+     "energia": "4/1",
+     "tempo": "3 seg",
      "preRequisitos": "2 mágicas de Controle#"
     }
    },
@@ -27841,7 +27840,7 @@
    "tabela": {
     "casamento": "base",
     "variante": "Criaturas da Terra",
-    "reparada": null,
+    "reparada": "colunas-trocadas",
     "paginaDoChunk": 233,
     "linha": 19,
     "nome": "Passageiro Interno",
@@ -27851,8 +27850,8 @@
      "classe": "Comum",
      "escola": "Animais",
      "duracao": "1 min",
-     "energia": "3 seg",
-     "tempo": "4/1",
+     "energia": "4/1",
+     "tempo": "3 seg",
      "preRequisitos": "2 mágicas de Controle#"
     }
    },
@@ -27893,7 +27892,7 @@
    "tabela": {
     "casamento": "base",
     "variante": "Criaturas do Mar",
-    "reparada": null,
+    "reparada": "colunas-trocadas",
     "paginaDoChunk": 233,
     "linha": 19,
     "nome": "Passageiro Interno",
@@ -27903,8 +27902,8 @@
      "classe": "Comum",
      "escola": "Animais",
      "duracao": "1 min",
-     "energia": "3 seg",
-     "tempo": "4/1",
+     "energia": "4/1",
+     "tempo": "3 seg",
      "preRequisitos": "2 mágicas de Controle#"
     }
    },
@@ -27945,7 +27944,7 @@
    "tabela": {
     "casamento": "exato",
     "variante": null,
-    "reparada": null,
+    "reparada": "colunas-trocadas",
     "paginaDoChunk": 233,
     "linha": 19,
     "nome": "Passageiro Interno",
@@ -27955,8 +27954,8 @@
      "classe": "Comum",
      "escola": "Animais",
      "duracao": "1 min",
-     "energia": "3 seg",
-     "tempo": "4/1",
+     "energia": "4/1",
+     "tempo": "3 seg",
      "preRequisitos": "2 mágicas de Controle#"
     }
    },
@@ -27993,11 +27992,11 @@
   },
   "passo_leve": {
    "nome": "Passo Leve",
-   "paginaCatalogo": 144,
+   "paginaCatalogo": 145,
    "tabela": {
     "casamento": "exato",
     "variante": null,
-    "reparada": null,
+    "reparada": "colunas-trocadas",
     "paginaDoChunk": 233,
     "linha": 20,
     "nome": "Passo Leve",
@@ -28007,8 +28006,8 @@
      "classe": "Comum",
      "escola": "Deslocamento",
      "duracao": "10 min",
-     "energia": "1 seg",
-     "tempo": "4/1#",
+     "energia": "4/1#",
+     "tempo": "1 seg",
      "preRequisitos": "Aporte, Moldar Terra"
     }
    },
@@ -28041,11 +28040,11 @@
   },
   "pedra_da_alma": {
    "nome": "Pedra da Alma",
-   "paginaCatalogo": 159,
+   "paginaCatalogo": 71,
    "tabela": {
     "casamento": "exato",
     "variante": null,
-    "reparada": null,
+    "reparada": "colunas-trocadas",
     "paginaDoChunk": 233,
     "linha": 21,
     "nome": "Pedra da Alma",
@@ -28055,8 +28054,8 @@
      "classe": "Encantamento",
      "escola": "Encantamento",
      "duracao": "Perm",
-     "energia": "—",
-     "tempo": "500",
+     "energia": "500",
+     "tempo": "—",
      "preRequisitos": "AM3, Encantar, Aprisionar Alma"
     }
    },
@@ -28085,11 +28084,11 @@
   },
   "pedra_de_mana": {
    "nome": "Pedra de Mana",
-   "paginaCatalogo": 57,
+   "paginaCatalogo": 70,
    "tabela": {
     "casamento": "exato",
     "variante": null,
-    "reparada": null,
+    "reparada": "colunas-trocadas",
     "paginaDoChunk": 233,
     "linha": 22,
     "nome": "Pedra de Mana",
@@ -28099,8 +28098,8 @@
      "classe": "Encantamento",
      "escola": "Encantamento",
      "duracao": "Indef",
-     "energia": "—",
-     "tempo": "5",
+     "energia": "5",
+     "tempo": "—",
      "preRequisitos": "Encantar"
     }
    },
@@ -28125,11 +28124,11 @@
   },
   "pedra_magica": {
    "nome": "Pedra Mágica",
-   "paginaCatalogo": 57,
+   "paginaCatalogo": 60,
    "tabela": {
     "casamento": "exato",
     "variante": null,
-    "reparada": null,
+    "reparada": "colunas-trocadas",
     "paginaDoChunk": 233,
     "linha": 23,
     "nome": "Pedra Mágica",
@@ -28139,8 +28138,8 @@
      "classe": "Encantamento",
      "escola": "Encantamento",
      "duracao": "Varia",
-     "energia": "—",
-     "tempo": "20× custo da mágica",
+     "energia": "20× custo da mágica",
+     "tempo": "—",
      "preRequisitos": "Encantar, Retardar"
     }
    },
@@ -28160,11 +28159,11 @@
   },
   "pedra_para_carne": {
    "nome": "Pedra para Carne",
-   "paginaCatalogo": 52,
+   "paginaCatalogo": 53,
    "tabela": {
     "casamento": "exato",
     "variante": null,
-    "reparada": null,
+    "reparada": "colunas-trocadas",
     "paginaDoChunk": 233,
     "linha": 24,
     "nome": "Pedra para Carne",
@@ -28174,8 +28173,8 @@
      "classe": "Comum",
      "escola": "Terra",
      "duracao": "Instant",
-     "energia": "5 seg",
-     "tempo": "10",
+     "energia": "10",
+     "tempo": "5 seg",
      "preRequisitos": "AM2, Pedra para Terra, Carne para Pedra"
     }
    },
@@ -28212,7 +28211,7 @@
    "tabela": {
     "casamento": "exato",
     "variante": null,
-    "reparada": null,
+    "reparada": "colunas-trocadas",
     "paginaDoChunk": 233,
     "linha": 25,
     "nome": "Pedra para Terra",
@@ -28222,8 +28221,8 @@
      "classe": "Comum",
      "escola": "Terra",
      "duracao": "Perm",
-     "energia": "1 seg",
-     "tempo": "6/0,75 m³",
+     "energia": "6/0,75 m³",
+     "tempo": "1 seg",
      "preRequisitos": "Terra para Pedra ou 4 mágicas da Terra"
     }
    },
@@ -28260,7 +28259,7 @@
    "tabela": {
     "casamento": "exato",
     "variante": null,
-    "reparada": null,
+    "reparada": "colunas-trocadas",
     "paginaDoChunk": 233,
     "linha": 26,
     "nome": "Pegadas Falsas",
@@ -28270,8 +28269,8 @@
      "classe": "Comum/R-Vont",
      "escola": "Plantas",
      "duracao": "1 min",
-     "energia": "1 seg",
-     "tempo": "2/1",
+     "energia": "2/1",
+     "tempo": "1 seg",
      "preRequisitos": "Moldar Planta, Moldar Terra"
     }
    },
@@ -28304,11 +28303,11 @@
   },
   "pentagrama": {
    "nome": "Pentagrama",
-   "paginaCatalogo": 125,
+   "paginaCatalogo": 124,
    "tabela": {
     "casamento": "exato",
     "variante": null,
-    "reparada": null,
+    "reparada": "colunas-trocadas",
     "paginaDoChunk": 233,
     "linha": 27,
     "nome": "Pentagrama",
@@ -28318,8 +28317,8 @@
      "classe": "Especial",
      "escola": "Metamágica",
      "duracao": "Perm",
-     "energia": "—",
-     "tempo": "1/0,1 m²#",
+     "energia": "1/0,1 m²#",
+     "tempo": "—",
      "preRequisitos": "Escudo Antimágica"
     }
    },
@@ -28356,11 +28355,11 @@
   },
   "pequeno_desejo": {
    "nome": "Pequeno Desejo",
-   "paginaCatalogo": 61,
+   "paginaCatalogo": 58,
    "tabela": {
     "casamento": "exato",
     "variante": null,
-    "reparada": null,
+    "reparada": "colunas-trocadas",
     "paginaDoChunk": 233,
     "linha": 28,
     "nome": "Pequeno Desejo",
@@ -28370,8 +28369,8 @@
      "classe": "Encantamento",
      "escola": "Encantamento",
      "duracao": "Especial",
-     "energia": "—",
-     "tempo": "180",
+     "energia": "180",
+     "tempo": "—",
      "preRequisitos": "Encantar"
     }
    },
@@ -28404,7 +28403,7 @@
    "tabela": {
     "casamento": "exato",
     "variante": null,
-    "reparada": null,
+    "reparada": "colunas-trocadas",
     "paginaDoChunk": 233,
     "linha": 29,
     "nome": "Percepção de Emoção",
@@ -28414,8 +28413,8 @@
      "classe": "Comum",
      "escola": "Comunicação",
      "duracao": "Instant",
-     "energia": "1 seg",
-     "tempo": "2",
+     "energia": "2",
+     "tempo": "1 seg",
      "preRequisitos": "Percepção de Inimigos"
     }
    },
@@ -28444,11 +28443,11 @@
   },
   "percepcao_de_espiritos": {
    "nome": "Percepção de Espíritos",
-   "paginaCatalogo": 150,
+   "paginaCatalogo": 149,
    "tabela": {
     "casamento": "exato",
     "variante": null,
-    "reparada": null,
+    "reparada": "colunas-trocadas",
     "paginaDoChunk": 233,
     "linha": 30,
     "nome": "Percepção de Espíritos",
@@ -28458,8 +28457,8 @@
      "classe": "Informação/Área",
      "escola": "Necromancia",
      "duracao": "Instant",
-     "energia": "1 seg",
-     "tempo": "1#",
+     "energia": "1#",
+     "tempo": "1 seg",
      "preRequisitos": "Visão da Morte, ou Percepção de Vida e AM1"
     }
    },
@@ -28467,11 +28466,11 @@
   },
   "percepcao_de_inimigos": {
    "nome": "Percepção de Inimigos",
-   "paginaCatalogo": 45,
+   "paginaCatalogo": 44,
    "tabela": {
     "casamento": "exato",
     "variante": null,
-    "reparada": null,
+    "reparada": "colunas-trocadas",
     "paginaDoChunk": 233,
     "linha": 31,
     "nome": "Percepção de Inimigos",
@@ -28481,8 +28480,8 @@
      "classe": "Informação/Área",
      "escola": "Comunicação",
      "duracao": "Instant",
-     "energia": "1 seg",
-     "tempo": "2#",
+     "energia": "2#",
+     "tempo": "1 seg",
      "preRequisitos": "—"
     }
    },
@@ -28507,11 +28506,11 @@
   },
   "percepcao_de_magia": {
    "nome": "Percepção de Magia",
-   "paginaCatalogo": 101,
+   "paginaCatalogo": 102,
    "tabela": {
     "casamento": "exato",
     "variante": null,
-    "reparada": null,
+    "reparada": "colunas-trocadas",
     "paginaDoChunk": 233,
     "linha": 32,
     "nome": "Percepção de Magia",
@@ -28521,8 +28520,8 @@
      "classe": "Informação",
      "escola": "Reconhecimento",
      "duracao": "1 min",
-     "energia": "1 seg",
-     "tempo": "3/2",
+     "energia": "3/2",
+     "tempo": "1 seg",
      "preRequisitos": "Detecção de Magia"
     }
    },
@@ -28543,7 +28542,7 @@
    "tabela": {
     "casamento": "exato",
     "variante": null,
-    "reparada": null,
+    "reparada": "colunas-trocadas",
     "paginaDoChunk": 233,
     "linha": 33,
     "nome": "Percepção de Mana",
@@ -28553,8 +28552,8 @@
      "classe": "Informação",
      "escola": "Reconhecimento",
      "duracao": "Instant",
-     "energia": "5 seg",
-     "tempo": "3",
+     "energia": "3",
+     "tempo": "5 seg",
      "preRequisitos": "Detecção de Magia"
     }
    },
@@ -28562,11 +28561,11 @@
   },
   "percepcao_de_observacao": {
    "nome": "Percepção de Observação",
-   "paginaCatalogo": 166,
+   "paginaCatalogo": 167,
    "tabela": {
     "casamento": "exato",
     "variante": null,
-    "reparada": null,
+    "reparada": "colunas-trocadas",
     "paginaDoChunk": 233,
     "linha": 34,
     "nome": "Percepção de Observação",
@@ -28576,8 +28575,8 @@
      "classe": "Área",
      "escola": "Proteção",
      "duracao": "1 hora",
-     "energia": "5 seg",
-     "tempo": "1/M#",
+     "energia": "1/M#",
+     "tempo": "5 seg",
      "preRequisitos": "Percepção do Perigo ou Resguardar"
     }
    },
@@ -28614,11 +28613,11 @@
   },
   "percepcao_de_planta": {
    "nome": "Percepção de Planta",
-   "paginaCatalogo": 162,
+   "paginaCatalogo": 163,
    "tabela": {
     "casamento": "exato",
     "variante": null,
-    "reparada": null,
+    "reparada": "colunas-trocadas",
     "paginaDoChunk": 233,
     "linha": 35,
     "nome": "Percepção de Planta",
@@ -28628,8 +28627,8 @@
      "classe": "Comum/R-Ocultar Rastros",
      "escola": "Plantas",
      "duracao": "1 min",
-     "energia": "1 seg",
-     "tempo": "3/2",
+     "energia": "3/2",
+     "tempo": "1 seg",
      "preRequisitos": "Alarme Florestal, Ocultar Rastros"
     }
    },
@@ -28662,11 +28661,11 @@
   },
   "percepcao_de_veracidade": {
    "nome": "Percepção de Veracidade",
-   "paginaCatalogo": 47,
+   "paginaCatalogo": 45,
    "tabela": {
     "casamento": "exato",
     "variante": null,
-    "reparada": null,
+    "reparada": "colunas-trocadas",
     "paginaDoChunk": 233,
     "linha": 36,
     "nome": "Percepção de Veracidade",
@@ -28676,8 +28675,8 @@
      "classe": "Informação/R-Vont",
      "escola": "Comunicação",
      "duracao": "Instant",
-     "energia": "1 seg",
-     "tempo": "2",
+     "energia": "2",
+     "tempo": "1 seg",
      "preRequisitos": "Percepção de Emoção"
     }
    },
@@ -28710,7 +28709,7 @@
    "tabela": {
     "casamento": "exato",
     "variante": null,
-    "reparada": null,
+    "reparada": "colunas-trocadas",
     "paginaDoChunk": 233,
     "linha": 37,
     "nome": "Percepção de Vida",
@@ -28720,8 +28719,8 @@
      "classe": "Informação/Área",
      "escola": "Comunicação",
      "duracao": "Instant",
-     "energia": "1 seg",
-     "tempo": "1#",
+     "energia": "1#",
+     "tempo": "1 seg",
      "preRequisitos": "—"
     }
    },
@@ -28750,7 +28749,7 @@
    "tabela": {
     "casamento": "exato",
     "variante": null,
-    "reparada": null,
+    "reparada": "colunas-trocadas",
     "paginaDoChunk": 233,
     "linha": 38,
     "nome": "Percepção do Perigo",
@@ -28760,8 +28759,8 @@
      "classe": "Informação",
      "escola": "Proteção",
      "duracao": "Instant",
-     "energia": "1 seg",
-     "tempo": "3",
+     "energia": "3",
+     "tempo": "1 seg",
      "preRequisitos": "Percepção de Inimigos ou Noção do Perigo"
     }
    },
@@ -28794,7 +28793,7 @@
    "tabela": {
     "casamento": "exato",
     "variante": null,
-    "reparada": null,
+    "reparada": "colunas-trocadas",
     "paginaDoChunk": 233,
     "linha": 39,
     "nome": "Perfume",
@@ -28804,8 +28803,8 @@
      "classe": "Comum/R-HT",
      "escola": "Corpo",
      "duracao": "10 min",
-     "energia": "1 seg",
-     "tempo": "2/1",
+     "energia": "2/1",
+     "tempo": "1 seg",
      "preRequisitos": "Gerar Odor"
     }
    },
@@ -28829,7 +28828,7 @@
    "tabela": {
     "casamento": "exato",
     "variante": null,
-    "reparada": null,
+    "reparada": "colunas-trocadas",
     "paginaDoChunk": 233,
     "linha": 40,
     "nome": "Pergaminho Mágico",
@@ -28839,8 +28838,8 @@
      "classe": "Encantamento",
      "escola": "Encantamento",
      "duracao": "Varia",
-     "energia": "dias=custo",
-     "tempo": "Especial",
+     "energia": "Especial",
+     "tempo": "dias=custo",
      "preRequisitos": "AM1, 1 idioma com Sotaque"
     }
    },
@@ -28873,11 +28872,11 @@
   },
   "persuasao": {
    "nome": "Persuasão",
-   "paginaCatalogo": 48,
+   "paginaCatalogo": 45,
    "tabela": {
     "casamento": "exato",
     "variante": null,
-    "reparada": null,
+    "reparada": "colunas-trocadas",
     "paginaDoChunk": 233,
     "linha": 41,
     "nome": "Persuasão",
@@ -28887,8 +28886,8 @@
      "classe": "Comum/R-Vont",
      "escola": "Comunicação",
      "duracao": "1 min",
-     "energia": "1 seg",
-     "tempo": "2×bônus#",
+     "energia": "2×bônus#",
+     "tempo": "1 seg",
      "preRequisitos": "Percepção de Emoção"
     }
    },
@@ -28921,7 +28920,7 @@
    "tabela": {
     "casamento": "exato",
     "variante": null,
-    "reparada": null,
+    "reparada": "colunas-trocadas",
     "paginaDoChunk": 233,
     "linha": 42,
     "nome": "Pés Plantados",
@@ -28931,8 +28930,8 @@
      "classe": "Comum/R-ST",
      "escola": "Corpo",
      "duracao": "1 min#",
-     "energia": "1 seg",
-     "tempo": "3",
+     "energia": "3",
+     "tempo": "1 seg",
      "preRequisitos": "Estorvar"
     }
    },
@@ -28965,11 +28964,11 @@
   },
   "pesadelo": {
    "nome": "Pesadelo",
-   "paginaCatalogo": 139,
+   "paginaCatalogo": 140,
    "tabela": {
     "casamento": "exato",
     "variante": null,
-    "reparada": null,
+    "reparada": "colunas-trocadas",
     "paginaDoChunk": 233,
     "linha": 43,
     "nome": "Pesadelo",
@@ -28979,8 +28978,8 @@
      "classe": "Comum/R-Vont",
      "escola": "Mente",
      "duracao": "1 hora",
-     "energia": "1 min",
-     "tempo": "6",
+     "energia": "6",
+     "tempo": "1 min",
      "preRequisitos": "AM2, Visão da Morte, Medo, Sono"
     }
    },
@@ -29017,11 +29016,11 @@
   },
   "pestilencia": {
    "nome": "Pestilência",
-   "paginaCatalogo": 152,
+   "paginaCatalogo": 154,
    "tabela": {
     "casamento": "exato",
     "variante": null,
-    "reparada": null,
+    "reparada": "colunas-trocadas",
     "paginaDoChunk": 233,
     "linha": 44,
     "nome": "Pestilência",
@@ -29031,8 +29030,8 @@
      "classe": "Comum",
      "escola": "Necromancia",
      "duracao": "Perm",
-     "energia": "30 seg",
-     "tempo": "6",
+     "energia": "6",
+     "tempo": "30 seg",
      "preRequisitos": "AM1, Roubar Vitalidade, Deteriorar"
     }
    },
@@ -29073,7 +29072,7 @@
    "tabela": {
     "casamento": "exato",
     "variante": null,
-    "reparada": null,
+    "reparada": "colunas-trocadas",
     "paginaDoChunk": 233,
     "linha": 45,
     "nome": "Petrificação Parcial",
@@ -29083,8 +29082,8 @@
      "classe": "Comum/R-HT",
      "escola": "Terra",
      "duracao": "Perm",
-     "energia": "3 seg",
-     "tempo": "12",
+     "energia": "12",
+     "tempo": "3 seg",
      "preRequisitos": "AM2, Carne para Pedra"
     }
    },
@@ -29121,7 +29120,7 @@
    "tabela": {
     "casamento": "exato",
     "variante": null,
-    "reparada": null,
+    "reparada": "colunas-trocadas",
     "paginaDoChunk": 233,
     "linha": 46,
     "nome": "Plastivisão",
@@ -29131,8 +29130,8 @@
      "classe": "Comum",
      "escola": "Tecnológica/Reconhecimento",
      "duracao": "30 seg",
-     "energia": "1 seg",
-     "tempo": "2/5 m/I",
+     "energia": "2/5 m/I",
+     "tempo": "1 seg",
      "preRequisitos": "Moldar Plástico"
     }
    },
@@ -29169,7 +29168,7 @@
    "tabela": {
     "casamento": "exato",
     "variante": null,
-    "reparada": null,
+    "reparada": "colunas-trocadas",
     "paginaDoChunk": 233,
     "linha": 47,
     "nome": "Poltergeist",
@@ -29179,8 +29178,8 @@
      "classe": "Projétil/R-HT",
      "escola": "Deslocamento",
      "duracao": "Instant",
-     "energia": "1 seg",
-     "tempo": "1 ou 2#",
+     "energia": "1 ou 2#",
+     "tempo": "1 seg",
      "preRequisitos": "Aporte"
     }
    },
@@ -29217,7 +29216,7 @@
    "tabela": {
     "casamento": "exato",
     "variante": null,
-    "reparada": null,
+    "reparada": "colunas-trocadas",
     "paginaDoChunk": 233,
     "linha": 48,
     "nome": "Possessão",
@@ -29227,8 +29226,8 @@
      "classe": "Comum/R-Vont",
      "escola": "Comunicação",
      "duracao": "1 min",
-     "energia": "1 min",
-     "tempo": "10/4",
+     "energia": "10/4",
+     "tempo": "1 min",
      "preRequisitos": "AM1, e Controle de Pessoa ou Possessão de Animais"
     }
    },
@@ -29265,11 +29264,11 @@
   },
   "possessao_de_animais": {
    "nome": "Possessão de Animais",
-   "paginaCatalogo": 31,
+   "paginaCatalogo": 32,
    "tabela": {
     "casamento": "exato",
     "variante": null,
-    "reparada": null,
+    "reparada": "colunas-trocadas",
     "paginaDoChunk": 233,
     "linha": 49,
     "nome": "Possessão de Animais",
@@ -29279,8 +29278,8 @@
      "classe": "Comum/R-Vont",
      "escola": "Animais",
      "duracao": "1 min",
-     "energia": "5 seg",
-     "tempo": "6/2",
+     "energia": "6/2",
+     "tempo": "5 seg",
      "preRequisitos": "Passageiro Interno ou Possessão"
     }
    },
@@ -29317,11 +29316,11 @@
   },
   "possessao_de_maquinant": {
    "nome": "Possessão de Máquina/NT",
-   "paginaCatalogo": 176,
+   "paginaCatalogo": 178,
    "tabela": {
     "casamento": "exato",
     "variante": null,
-    "reparada": null,
+    "reparada": "colunas-trocadas",
     "paginaDoChunk": 233,
     "linha": 50,
     "nome": "Possessão de Máquina/NT",
@@ -29331,8 +29330,8 @@
      "classe": "Comum/R-Vont",
      "escola": "Tecnológica",
      "duracao": "1 min",
-     "energia": "30 seg",
-     "tempo": "6,2",
+     "energia": "6,2",
+     "tempo": "30 seg",
      "preRequisitos": "Controle de Máquina, Passageiro Interno ou Passageiro da Alma"
     }
    },
@@ -29373,7 +29372,7 @@
    "tabela": {
     "casamento": "exato",
     "variante": null,
-    "reparada": null,
+    "reparada": "colunas-trocadas",
     "paginaDoChunk": 233,
     "linha": 51,
     "nome": "Possessão Permanente",
@@ -29383,8 +29382,8 @@
      "classe": "Comum/R-Vont",
      "escola": "Comunicação",
      "duracao": "Indef",
-     "energia": "5 min",
-     "tempo": "30",
+     "energia": "30",
+     "tempo": "5 min",
      "preRequisitos": "AM3, Possessão"
     }
    },
@@ -29421,11 +29420,11 @@
   },
   "possessao_permanente_de_animais": {
    "nome": "Possessão Permanente de Animais",
-   "paginaCatalogo": 31,
+   "paginaCatalogo": 32,
    "tabela": {
     "casamento": "exato",
     "variante": null,
-    "reparada": null,
+    "reparada": "colunas-trocadas",
     "paginaDoChunk": 233,
     "linha": 52,
     "nome": "Possessão Permanente de Animais",
@@ -29435,8 +29434,8 @@
      "classe": "Comum/R-Vont",
      "escola": "Animais",
      "duracao": "Indef",
-     "energia": "1 min",
-     "tempo": "20",
+     "energia": "20",
+     "tempo": "1 min",
      "preRequisitos": "AM2, Possessão de Animais"
     }
    },
@@ -29473,11 +29472,11 @@
   },
   "possessao_permanente_de_maquinant": {
    "nome": "Possessão Permanente de Máquina/NT",
-   "paginaCatalogo": 176,
+   "paginaCatalogo": 178,
    "tabela": {
     "casamento": "exato",
     "variante": null,
-    "reparada": null,
+    "reparada": "colunas-trocadas",
     "paginaDoChunk": 233,
     "linha": 53,
     "nome": "Possessão Permanente de Máquina/NT",
@@ -29487,8 +29486,8 @@
      "classe": "Comum/R-Vont",
      "escola": "Tecnológica",
      "duracao": "Indef#",
-     "energia": "5 min",
-     "tempo": "30",
+     "energia": "30",
+     "tempo": "5 min",
      "preRequisitos": "AM3, Possessão de Máquina"
     }
    },
@@ -29525,11 +29524,11 @@
   },
   "precisao": {
    "nome": "Precisão",
-   "paginaCatalogo": 66,
+   "paginaCatalogo": 65,
    "tabela": {
     "casamento": "exato",
     "variante": null,
-    "reparada": null,
+    "reparada": "colunas-trocadas",
     "paginaDoChunk": 233,
     "linha": 54,
     "nome": "Precisão",
@@ -29539,8 +29538,8 @@
      "classe": "Encantamento",
      "escola": "Encantamento",
      "duracao": "Perm",
-     "energia": "—",
-     "tempo": "Varia",
+     "energia": "Varia",
+     "tempo": "—",
      "preRequisitos": "Encantar e 5 mágicas do Ar"
     }
    },
@@ -29573,7 +29572,7 @@
    "tabela": {
     "casamento": "exato",
     "variante": null,
-    "reparada": null,
+    "reparada": "colunas-trocadas",
     "paginaDoChunk": 233,
     "linha": 55,
     "nome": "Pré-História",
@@ -29583,8 +29582,8 @@
      "classe": "Informação",
      "escola": "Reconhecimento",
      "duracao": "Instant",
-     "energia": "—",
-     "tempo": "Varia hora=custo",
+     "energia": "Varia hora=custo",
+     "tempo": "—",
      "preRequisitos": "História Antiga"
     }
    },
@@ -29617,11 +29616,11 @@
   },
   "prender_a_respiracao": {
    "nome": "Prender a Respiração",
-   "paginaCatalogo": 89,
+   "paginaCatalogo": 39,
    "tabela": {
     "casamento": "exato",
     "variante": null,
-    "reparada": null,
+    "reparada": "colunas-trocadas",
     "paginaDoChunk": 233,
     "linha": 56,
     "nome": "Prender a Respiração",
@@ -29631,8 +29630,8 @@
      "classe": "Comum",
      "escola": "Corpo",
      "duracao": "1 min",
-     "energia": "1 seg",
-     "tempo": "4/2",
+     "energia": "4/2",
+     "tempo": "1 seg",
      "preRequisitos": "AM1, Vigor"
     }
    },
@@ -29665,11 +29664,11 @@
   },
   "prender_espirito": {
    "nome": "Prender Espírito",
-   "paginaCatalogo": 153,
+   "paginaCatalogo": 158,
    "tabela": {
     "casamento": "exato",
     "variante": null,
-    "reparada": null,
+    "reparada": "colunas-trocadas",
     "paginaDoChunk": 233,
     "linha": 57,
     "nome": "Prender Espírito",
@@ -29679,8 +29678,8 @@
      "classe": "Comum/R-Vont",
      "escola": "Necromancia",
      "duracao": "Perm",
-     "energia": "5 min",
-     "tempo": "Varia",
+     "energia": "Varia",
+     "tempo": "5 min",
      "preRequisitos": "Comandar Espírito, Aprisionar Alma"
     }
    },
@@ -29721,7 +29720,7 @@
    "tabela": {
     "casamento": "exato",
     "variante": null,
-    "reparada": null,
+    "reparada": "colunas-trocadas",
     "paginaDoChunk": 233,
     "linha": 58,
     "nome": "Presença",
@@ -29731,8 +29730,8 @@
      "classe": "Comum/R-Espec",
      "escola": "Comunicação",
      "duracao": "1 hora",
-     "energia": "10 seg",
-     "tempo": "4/4",
+     "energia": "4/4",
+     "tempo": "10 seg",
      "preRequisitos": "Persuasão, Atrair"
     }
    },
@@ -29769,11 +29768,11 @@
   },
   "preservar_alimento": {
    "nome": "Preservar Alimento",
-   "paginaCatalogo": 77,
+   "paginaCatalogo": 79,
    "tabela": {
     "casamento": "exato",
     "variante": null,
-    "reparada": null,
+    "reparada": "colunas-trocadas",
     "paginaDoChunk": 233,
     "linha": 59,
     "nome": "Preservar Alimento",
@@ -29783,8 +29782,8 @@
      "classe": "Comum",
      "escola": "Alimentos",
      "duracao": "1 semana",
-     "energia": "1 seg",
-     "tempo": "Especial",
+     "energia": "Especial",
+     "tempo": "1 seg",
      "preRequisitos": "Deteriorar"
     }
    },
@@ -29821,7 +29820,7 @@
    "tabela": {
     "casamento": "exato",
     "variante": null,
-    "reparada": null,
+    "reparada": "colunas-trocadas",
     "paginaDoChunk": 233,
     "linha": 60,
     "nome": "Preservar Combustível/NT",
@@ -29831,8 +29830,8 @@
      "classe": "Comum",
      "escola": "Tecnológica",
      "duracao": "1 semana",
-     "energia": "1 seg",
-     "tempo": "4/0,5 kg/M",
+     "energia": "4/0,5 kg/M",
+     "tempo": "1 seg",
      "preRequisitos": "Testar Combustível"
     }
    },
@@ -29869,7 +29868,7 @@
    "tabela": {
     "casamento": "exato",
     "variante": null,
-    "reparada": null,
+    "reparada": "colunas-trocadas",
     "paginaDoChunk": 233,
     "linha": 61,
     "nome": "Prever Movimento da Terra",
@@ -29879,8 +29878,8 @@
      "classe": "Informação",
      "escola": "Terra",
      "duracao": "Instant",
-     "energia": "Varia",
-     "tempo": "2 por dia#",
+     "energia": "2 por dia#",
+     "tempo": "Varia",
      "preRequisitos": "4 mágicas da Terra"
     }
    },
@@ -35858,7 +35857,7 @@
   },
   "sono_coletivo": {
    "nome": "Sono Coletivo",
-   "paginaCatalogo": 37,
+   "paginaCatalogo": 137,
    "tabela": {
     "casamento": "exato",
     "variante": null,
@@ -36010,7 +36009,7 @@
   },
   "sopro_de_acido": {
    "nome": "Sopro de Ácido",
-   "paginaCatalogo": null,
+   "paginaCatalogo": 192,
    "tabela": {
     "casamento": "exato",
     "variante": null,

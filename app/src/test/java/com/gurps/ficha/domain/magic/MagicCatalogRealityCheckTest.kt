@@ -210,8 +210,12 @@ class MagicCatalogRealityCheckTest {
      *
      * Achado no teste de aparelho: o usuário relatou não ver as zonas acabarem. A investigação
      * mostrou que quase todas estão certas (Chuva de Fogo dura 1 minuto = 60 turnos, e uma luta não
-     * dura tanto), MAS a Tempestade de Faíscas estava com **1 min.** contra os **10 segundos** do
-     * livro — 6× mais. Erro de transcrição que o MEC-5 não pegou.
+     * dura tanto), MAS a Tempestade de Faíscas estava com **1 min.** contra os **10 segundos** que a
+     * descrição do catálogo dizia.
+     *
+     * **MC-1 (13/out/2026) desfez isso:** a tabela-resumo do livro (p.197) e a própria entrada dizem
+     * "1 minuto após atingir a força total". Os 10 segundos eram da Nuvem de Faíscas, ao lado, e a
+     * descrição do catálogo (transcrita por IA) tinha herdado o número errado. O livro manda: 60.
      */
     @Test
     fun `duracao das magias de zona bate com o livro`() {
@@ -220,7 +224,7 @@ class MagicCatalogRealityCheckTest {
         val esperado = mapOf(
             "chuva_de_acido" to 60, "chuva_de_fogo" to 60, "chuva_de_pedras" to 60,
             "mau_cheiro" to 300, "nuvem_de_faiscas" to 10, "nuvem_de_fogo" to 10,
-            "tempestade_de_faiscas" to 10,
+            "tempestade_de_faiscas" to 60,
         )
         val erros = mutableListOf<String>()
         var vistas = 0
@@ -300,9 +304,10 @@ class MagicCatalogRealityCheckTest {
         assertTrue("id repetido no catalogo real: $repetidos", repetidos.isEmpty())
 
         val porId = magias.associateBy { it.optString("id") }
-        // O Passageiro Interno é o da p.31; o Passo Leve é o da p.144 (Escola de Deslocamento).
+        // O Passageiro Interno é o da p.31; o Passo Leve é o da Escola de Deslocamento.
         assertEquals(31, porId.getValue("passageiro_interno").optInt("pagina"))
         assertEquals("Passageiro Interno", porId.getValue("passageiro_interno").optString("nome"))
-        assertEquals(144, porId.getValue("passo_leve").optInt("pagina"))
+        // MC-1: a tabela e o título do livro estão na p.145 (o catálogo dizia 144)
+        assertEquals(145, porId.getValue("passo_leve").optInt("pagina"))
     }
 }

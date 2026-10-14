@@ -345,22 +345,43 @@ test('livro real: páginas lidas à mão no CONFERENCIA batem (inclusive onde o 
     assert.strictEqual(x.entrada.pagina, pagina, nome + ': página da entrada');
     assert.strictEqual(x.entrada.formato, 'bloco', nome + ': bloco recortável');
   });
-  // a Possessão de Máquina: o catálogo diz 176 e o livro 178 — é o índice que sabe
-  const pm = catalogo.find((c) => c.nome === 'Possessão de Máquina/NT');
-  assert.notStrictEqual(pm.pagina, 178, 'o catálogo ainda erra a página (o MC-1 conserta)');
 });
 
-test('livro real: onde o catálogo erra a página, a tabela e a entrada concordam entre si', { skip: !TEM_O_LIVRO }, () => {
+test('livro real: onde o catálogo errava a página (MC-1 consertou), catálogo, tabela e entrada concordam', { skip: !TEM_O_LIVRO }, () => {
   const { indice, catalogo } = indiceReal();
-  // [nome, página do catálogo, página do livro]. O Passo Leve: o CONFERENCIA dizia 144 por herdar do
-  // catálogo; tabela e título estão na 145.
-  [['Passo Leve', 144, 145], ['Possessão de Máquina/NT', 176, 178]].forEach(([nome, doCatalogo, doLivro]) => {
+  // [nome, página do livro]. O catálogo dizia 144 (Passo Leve) e 176 (Possessão de Máquina).
+  [['Passo Leve', 145], ['Possessão de Máquina/NT', 178]].forEach(([nome, doLivro]) => {
     const m = catalogo.find((c) => c.nome === nome);
     const x = indice.magias[m.id];
-    assert.strictEqual(m.pagina, doCatalogo, nome + ': o catálogo (se consertarem, tire daqui)');
+    assert.strictEqual(m.pagina, doLivro, nome + ': catálogo');
     assert.strictEqual(x.tabela.pagina, doLivro, nome + ': tabela');
     assert.strictEqual(x.entrada.pagina, doLivro, nome + ': entrada');
   });
+});
+
+test('tabela: página com Energia e Tempo trocados é detectada pelo conteúdo e corrigida', () => {
+  const linha = (pag, nome, dur, a, b) => '| ' + pag + ' | ' + nome + ' | Comum | Escola | ' + dur + ' | ' + a + ' | ' + b + ' | Alfa | 1 |';
+  const trocada = [];
+  for (let i = 0; i < 6; i++) trocada.push(linha(10 + i, 'Troca' + i, '1 min', (i + 1) + ' seg', (i + 2) + '/1'));
+  const normal = [];
+  for (let i = 0; i < 6; i++) normal.push(linha(20 + i, 'Normal' + i, '1 min', (i + 2) + '/1', (i + 1) + ' seg'));
+  const livro = livroDe({ 224: ['# Página 224 - Apêndice'].concat(normal), 225: ['# Página 225 - Apêndice'].concat(trocada) });
+  const r = L.lerTabela(livro);
+  assert.deepStrictEqual(r.colunasTrocadas, [225]);
+  const t = r.linhas.find((x) => x.nome === 'Troca0');
+  assert.deepStrictEqual([t.energia, t.tempo, t.reparada], ['2/1', '1 seg', 'colunas-trocadas']);
+  const n = r.linhas.find((x) => x.nome === 'Normal0');
+  assert.deepStrictEqual([n.energia, n.tempo, n.reparada], ['2/1', '1 seg', null], 'página normal não se mexe');
+});
+
+test('livro real: só a página 233 do texto tem Energia e Tempo trocados, e ficam 58 linhas reparadas', { skip: !TEM_O_LIVRO }, () => {
+  const livro = L.carregarLivro(CHUNKS);
+  const r = L.lerTabela(livro);
+  assert.deepStrictEqual(r.colunasTrocadas, [233]);
+  assert.strictEqual(r.linhas.filter((t) => /colunas-trocadas/.test(t.reparada || '')).length, 58);
+  // a Passo Leve: duração 10 min, energia 4/1#, tempo 1 seg (era "1 seg" na energia)
+  const passo = r.linhas.find((t) => t.nome === 'Passo Leve');
+  assert.deepStrictEqual([passo.duracao, passo.energia, passo.tempo], ['10 min', '4/1#', '1 seg']);
 });
 
 test('livro real: nenhum bloco engole o título de outra magia, e quase todos têm Duração/Custo', { skip: !TEM_O_LIVRO }, () => {

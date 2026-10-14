@@ -30,6 +30,7 @@ const ULTIMA_PAGINA_DAS_ENTRADAS = 222;
 /** Quantas páginas, no máximo, uma entrada pode atravessar além da do título. */
 const PAGINAS_QUE_UMA_ENTRADA_ATRAVESSA = 2;
 const CELULAS_DA_TABELA = 9;
+const TEM_UNIDADE_DE_TEMPO = /\b(?:seg|min|hora|dia|semana|instant)/i;
 /** Página com tantas linhas de tabela (e essa fração do texto) é página de colunas embaralhadas. */
 const LINHAS_DE_TABELA_PARA_SER_COLUNAS = 6;
 const FRACAO_DE_TABELA_PARA_SER_COLUNAS = 0.35;
@@ -110,9 +111,11 @@ function carregarLivro(caminhoDoChunks) {
 function lerTabela(livro) {
   const linhas = [];
   const malFormadas = [];
+  const colunasTrocadas = [];
   for (let n = PRIMEIRA_PAGINA_DA_TABELA; n <= ULTIMA_PAGINA_DA_TABELA; n++) {
     const ls = livro.paginas.get(n);
     if (!ls) continue;
+    const daPagina = [];
     ls.forEach((bruta, i) => {
       const t = bruta.trim();
       if (!t.startsWith('|')) return;
@@ -135,7 +138,7 @@ function lerTabela(livro) {
       }
       if (celulas[0] === '') reparada = reparada || 'sem-pagina';
       const marca = tirarMarcaDeDificuldade(celulas[1]);
-      linhas.push({
+      daPagina.push({
         pagina: celulas[0] === '' ? null : parseInt(celulas[0], 10),
         nome: marca.texto,
         muitoDificil: marca.muitoDificil,
@@ -151,8 +154,22 @@ function lerTabela(livro) {
         linha: i,
       });
     });
+    // No texto extraído, uma página da tabela (a 233) saiu com Energia e Tempo TROCADOS. Detecta-se
+    // pelo conteúdo: a maioria das linhas tem unidade de tempo na coluna de energia e nenhuma na de tempo.
+    const trocadas = daPagina.filter((t) => TEM_UNIDADE_DE_TEMPO.test(t.energia) && !TEM_UNIDADE_DE_TEMPO.test(t.tempo)).length;
+    const normais = daPagina.filter((t) => !TEM_UNIDADE_DE_TEMPO.test(t.energia) && TEM_UNIDADE_DE_TEMPO.test(t.tempo)).length;
+    if (trocadas >= 5 && trocadas > 3 * normais) {
+      colunasTrocadas.push(n);
+      daPagina.forEach((t) => {
+        const e = t.energia;
+        t.energia = t.tempo;
+        t.tempo = e;
+        t.reparada = t.reparada ? t.reparada + '+colunas-trocadas' : 'colunas-trocadas';
+      });
+    }
+    daPagina.forEach((t) => linhas.push(t));
   }
-  return { linhas, malFormadas };
+  return { linhas, malFormadas, colunasTrocadas };
 }
 
 // ---------------------------------------------------------------------------------- as entradas
@@ -370,6 +387,38 @@ function recortarBloco(livro, titulo, ehOutroTitulo) {
     pagina += 1;
   }
   return { paginaInicio: titulo.pagina, linhaInicio: titulo.linha, paginaFim, linhaFim, campos };
+}
+
+/**
+ * Os campos de cabeçalho de uma entrada, COMO O LIVRO ESCREVE (texto depois dos dois-pontos, sem
+ * marcas): `{ duracao, custo, tempo, preRequisitos, classe }`. Lê por programa do bloco já
+ * localizado; nenhum valor é digitado. `classe` é a linha de classe logo depois do título.
+ * Um rótulo que aparece mais de uma vez fica com a PRIMEIRA ocorrência.
+ */
+function camposDaEntrada(livro, entrada) {
+  const saida = {};
+  if (!entrada || entrada.formato !== 'bloco') return saida;
+  const linhas = linhasDoBloco(livro, entrada);
+  // a classe: a 1ª linha (depois do título) que é só classe
+  for (let i = 1; i < Math.min(linhas.length, 8); i++) {
+    if (!semMarcas(linhas[i])) continue;
+    if (ehLinhaDeClasse(linhas[i])) { saida.classe = semMarcas(linhas[i]).replace(/\.\s*$/, ''); }
+    break;
+  }
+  linhas.forEach((l) => {
+    // uma linha pode ter vários campos em células: "| **Duração:** 1 min. | **Custo:** 2 |"
+    const pedacos = l.includes('|') ? l.split('|') : [l];
+    pedacos.forEach((p) => {
+      const rotulo = rotuloDoCampo(p);
+      if (!rotulo) return;
+      const valor = p.replace(/^(?:>\s*)+/, '').replace(/\*\*/g, '').replace(/^[\s|+-]+/, '')
+        .replace(/^[^:]*:\s*/, '').trim();
+      if (rotulo === 'custo') {
+        if (saida.custo === undefined) saida.custo = valor;
+      } else if (saida[rotulo] === undefined) saida[rotulo] = valor;
+    });
+  });
+  return saida;
 }
 
 /** O bloco só remete a outra página ("Como listada em Mágicas de X, pág. 105.")? -> o número, ou null. */
@@ -754,5 +803,6 @@ module.exports = {
   construirIndice,
   lerLocalizacaoManual,
   remissaoDoBloco,
+  camposDaEntrada,
   resumir,
 };
