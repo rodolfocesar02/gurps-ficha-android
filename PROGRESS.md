@@ -9822,3 +9822,14 @@ ficar verde**.
   - NAO mexido: `preRequisitos` (formas adaptadas ao motor de busca; explicacao do Rodolfo) e acento/caixa dos nomes.
 - Sem versao nova (so dado e teste). Build das 2 variantes verde; suite da Mesa verde. Relatorio: `mesa-virtual/planos/magias/RELATORIO-MC-1.md`.
 - **Status:** ✅ Build OK (2 variantes)
+
+## Lote MC-2 — [2026-10-14] Os numeros conferidos das magias, refeitos pelo livro (plano do catalogo de magias)
+- **Hash:** a28df5d4 (app) + commit da Mesa (leitor do custo, derivados, relatorio, plano)
+- **Mudancas:**
+  - `magias2versao.json`: duracaoTipo/duracaoSeg, tempoOperacaoSeg, custoOperar e custoManter apagados (de 17/jul, da descricao por IA) e refeitos da tabela + entrada do livro. Duracao 846 (antes 652), tempo 826 (641), custo de operar 542 (324), manter 317 (228). 91 mudaram de valor; 51 vezes o livro discorda de si (vale a entrada). Campos novos: custoTipo, custoFormula, custoManterTipo, tempoTipo, duracaoFormula, conferido, conferidoPagina, conferidoPor.
+  - `scripts/magias/`: `aplicar-numeros-conferidos.js`, `numeros.js` (a juncao), `numeros.test.js` (15 testes; 54 no total em `node --test scripts/magias/*.test.js`).
+  - `MagicCatalogNumerosDoLivroTest` (novo, 3 testes): relê a linha da tabela no chunks.jsonl e confere com os parsers do app; forma e sentido dos campos; as 8 da CONFERENCIA.
+  - `MagicTimeTest`: Arma Congelante passa a 3/1 - 3 s (o teste esperava o erro; a entrada que o Rodolfo colou e a tabela dizem isso).
+  - Formula nao vira numero (custoOperar so em custo fixo); "metade" nao vira numero; "Indefinida" = permanente + duracaoFormula; tempo em faixa grava o minimo.
+- Sem versao nova (so dado e teste). Build das 2 variantes verde; suite da Mesa 3249/3249. Relatorio: `mesa-virtual/planos/magias/RELATORIO-MC-2.md`.
+- **Status:** ✅ Build OK (2 variantes)
