@@ -436,8 +436,10 @@ function linhasDoBloco(livro, bloco) {
   const primeira = bloco.paginaInicio != null ? bloco.paginaInicio : bloco.pagina;
   for (let p = primeira; p <= bloco.paginaFim; p++) {
     const ls = livro.paginas.get(p) || [];
-    const de = p === primeira ? bloco.linhaInicio : 1;
+    let de = p === primeira ? bloco.linhaInicio : 1;
     const ate = p === bloco.paginaFim ? bloco.linhaFim : ls.length;
+    // a quebra de página não é quebra de parágrafo: pula as linhas vazias logo depois do "# Página N"
+    if (p !== primeira) while (de < ate && !String(ls[de]).trim()) de++;
     for (let i = de; i < ate; i++) saida.push(ls[i]);
   }
   return saida;
