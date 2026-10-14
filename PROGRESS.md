@@ -9833,3 +9833,14 @@ ficar verde**.
   - Formula nao vira numero (custoOperar so em custo fixo); "metade" nao vira numero; "Indefinida" = permanente + duracaoFormula; tempo em faixa grava o minimo.
 - Sem versao nova (so dado e teste). Build das 2 variantes verde; suite da Mesa 3249/3249. Relatorio: `mesa-virtual/planos/magias/RELATORIO-MC-2.md`.
 - **Status:** ✅ Build OK (2 variantes)
+
+## Lote MC-3 — [2026-10-14] A descricao das magias, recortada do livro (opcao A; plano do catalogo de magias)
+- **Hash:** 2b95488b (app) + commit da Mesa (relatorio, plano)
+- **Mudancas:**
+  - `magias2versao.json`: `descricao` = bloco da entrada do livro, recortado por programa, em 812 das 879 magias (`descricaoConferida: true`, `descricaoPagina`, `descricaoTitulo` nas variantes); as 67 restantes ficam com a antiga, marcadas (`descricaoConferida: false`, `descricaoMotivo`).
+  - Das 812: 329 iguais ao livro, 45 contidas, 278 com algum numero diferente, 152 com outras palavras, 8 eram de outra magia.
+  - `scripts/magias/`: `aplicar-descricoes.js`, `descricao.js` (o recortador), `descricao.test.js` (15 testes; 69 no total em `node --test scripts/magias/*.test.js`); `localizador.js`: a quebra de pagina nao vira quebra de paragrafo.
+  - `MagicCatalogDescricaoDoLivroTest` (novo, 2 testes): cada linha da descricao conferida existe no livro, nas paginas do bloco; toda magia tem a marca e o motivo.
+  - O `resumoDaDescricao` do combate devolve resumo nas 879 (0 sem resumo, como antes). A Mesa nao carrega a descricao do catalogo.
+- Sem versao nova (so dado e teste). Build das 2 variantes verde; suite da Mesa 3249/3249. Relatorio: `mesa-virtual/planos/magias/RELATORIO-MC-3.md`.
+- **Status:** ✅ Build OK (2 variantes)
