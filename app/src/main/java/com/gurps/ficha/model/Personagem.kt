@@ -877,7 +877,7 @@ data class MagiaDefinicao(
     /** Lote AR-1: regra estruturada legível pela máquina (ao lado da `descricao` fiel). Null = usa o comportamento padrão. */
     val mecanica: com.gurps.ficha.domain.magic.MagiaMecanica? = null,
 
-    // ── Lote MEC-5b: os números CANÔNICOS, extraídos da `descricao` (que é fiel ao livro) ──
+    // ── Lote MEC-5b: números CANÔNICOS (a `descricao` de julho não era fiel; refeitos do livro no MC-2/MC-3) ──
     // Os campos de texto acima (`duracao`, `energia`, `tempoOperacao`) são a transcrição do
     // cabeçalho, e a auditoria provou que ela DIVERGE do livro em dezenas de mágicas (Arma
     // Congelante: cabeçalho diz custo 3, o livro diz 4). Estes campos são a verdade conferida

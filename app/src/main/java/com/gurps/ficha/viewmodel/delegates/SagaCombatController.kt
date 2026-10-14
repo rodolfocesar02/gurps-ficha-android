@@ -1313,39 +1313,18 @@ class SagaCombatController(
         s.registrarMagiaAtiva(magia.nome, "heroi", alvoId, durSeg, if (dur == TipoDuracao.DURADOURA) 0 else manut, dur, exigeConcentracao = false, buff = buff)
     }
 
-    /** Extrai (tipo de duração, segundos) do campo `duracao` do catálogo ("1 min.", "permanente", "instantâneo"). */
-    private fun parseDuracao(txt: String?): Pair<TipoDuracao, Int> =
-        com.gurps.ficha.domain.magic.MagicTime.parseDuracao(txt)
-
     // ── Lote MEC-5b: preferir o número CANÔNICO do catálogo ao parser do texto ───────────────────
-    // Os campos de texto (`duracao`, `energia`, `tempoOperacao`) são a transcrição do cabeçalho, e a
-    // auditoria contra a `descricao` (fiel ao livro) provou que ela erra em dezenas de mágicas. Onde
-    // o número conferido existe, ele manda; onde não existe (240 mágicas, confiança < alta), o
-    // parser continua valendo — fallback honesto, não invenção.
+    // O número conferido contra o LIVRO (MC-2) manda; onde não existe (custo variável, tempo "Varia"),
+    // o parser do texto do cabeçalho continua valendo — fallback honesto, não invenção.
+    // MC-5: a regra mora em `CicloDaMagia` (domínio puro, com teste e pedra de toque); aqui só delega.
+    private fun custoCanonico(def: com.gurps.ficha.model.MagiaDefinicao?): com.gurps.ficha.domain.magic.CustoEnergia? =
+        com.gurps.ficha.domain.magic.CicloDaMagia.custo(def?.custoOperar, def?.custoManter, def?.energia)
 
-    /** Custo conferido contra o livro, ou null quando a mágica não tem número canônico. */
-    private fun custoCanonico(def: com.gurps.ficha.model.MagiaDefinicao?): com.gurps.ficha.domain.magic.CustoEnergia? {
-        val operar = def?.custoOperar ?: return null
-        return com.gurps.ficha.domain.magic.CustoEnergia(
-            base = operar, variavel = false, minimo = operar.coerceAtLeast(1),
-            manutencao = def.custoManter, original = def.energia.orEmpty(),
-        )
-    }
+    private fun duracaoDe(def: com.gurps.ficha.model.MagiaDefinicao?, txt: String?): Pair<TipoDuracao, Int> =
+        com.gurps.ficha.domain.magic.CicloDaMagia.duracao(def?.duracaoTipo, def?.duracaoSeg, txt)
 
-    /** (tipo, segundos) conferidos contra o livro; cai no parser do texto quando não há canônico. */
-    private fun duracaoDe(def: com.gurps.ficha.model.MagiaDefinicao?, txt: String?): Pair<TipoDuracao, Int> {
-        val tipo = when (def?.duracaoTipo) {
-            "instantanea" -> TipoDuracao.INSTANTANEA
-            "temporaria" -> TipoDuracao.TEMPORARIA
-            "permanente" -> TipoDuracao.PERMANENTE
-            else -> return parseDuracao(txt)
-        }
-        return tipo to (def.duracaoSeg ?: 0)
-    }
-
-    /** Tempo de operação conferido contra o livro; cai no parser do texto quando não há canônico. */
     private fun tempoDe(def: com.gurps.ficha.model.MagiaDefinicao?, txt: String?): Int =
-        def?.tempoOperacaoSeg?.takeIf { it > 0 } ?: parseTempoSeg(txt)
+        com.gurps.ficha.domain.magic.CicloDaMagia.tempoSeg(def?.tempoOperacaoSeg, txt)
 
     /**
      * Lote MA-3d: começa a MIRA de uma magia de ÁREA — o app entra em modo "toque um hex". A magia só

@@ -46,7 +46,7 @@ data class EfeitoVfx(val arquetipo: ArquetipoVfx, val paleta: PaletaVfx)
 
 object VfxMapper {
 
-    /** Deriva a paleta do ELEMENTO, lendo nome + notas curadas (o mesmo texto fiel ao livro). */
+    /** Deriva a paleta do ELEMENTO, lendo nome + notas curadas (resumo nosso, não o texto do livro). */
     fun paletaDe(nome: String, mec: MagiaMecanica?): PaletaVfx {
         val t = (nome + " " + (mec?.notas ?: "")).lowercase()
         return when {
