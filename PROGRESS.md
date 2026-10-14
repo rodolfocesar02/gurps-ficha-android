@@ -9811,3 +9811,14 @@ ficar verde**.
   - Achado: Medo (p.134) nao tem entrada no texto extraido; pp.161, 169 e 185 tem pouco texto; Passo Leve esta na p.145 (o catalogo diz 144).
 - Nada do app Kotlin mudou (sem build novo). Relatorio: `mesa-virtual/planos/magias/COBERTURA-MC-0.md`.
 - **Status:** ✅ 21 testes do localizador; suite do app nao tocada
+
+## Lote MC-1 — [2026-10-13] O cabecalho do catalogo de magias igual a tabela do livro (plano do catalogo de magias)
+- **Hash:** 1133974a (app) + commit da Mesa (leitor, derivados, relatorio, plano)
+- **Mudancas:**
+  - `magias2versao.json`: duracao, energia, tempoOperacao, classe e pagina passam a ser o que a tabela-resumo do livro escreve (811 magias); variantes de familia (68) so comparadas. Valor mudou: duracao 59, energia 13, tempo 36, classe 2, pagina 31. Campo novo `fonteCabecalho`. Nomes: Aquece -> Aquecer, Aumentar Vitlidade -> Aumentar Vitalidade (id igual).
+  - `scripts/magias/`: `aplicar-cabecalho-da-tabela.js`, `cabecalho.js` (regras), `prerequisitos.js`, `cabecalho-excecoes.json`, 16 testes novos (39 no total, `node --test`); o localizador passou a reparar a tabela (Energia/Tempo trocados na p.233).
+  - `MagicCatalogCabecalhoDoLivroTest` (novo, 4 testes): relê a linha da tabela no chunks.jsonl e exige igualdade campo a campo; nomes que o motor procura existem no catalogo.
+  - `MagicCatalogRealityCheckTest`: Tempestade de Faiscas passa a 60 s (livro: 1 minuto, p.197; os 10 s eram da Nuvem de Faiscas) e Passo Leve na p.145. Cada um e uma linha do relatorio: "o teste esperava o erro".
+  - NAO mexido: `preRequisitos` (formas adaptadas ao motor de busca; explicacao do Rodolfo) e acento/caixa dos nomes.
+- Sem versao nova (so dado e teste). Build das 2 variantes verde; suite da Mesa verde. Relatorio: `mesa-virtual/planos/magias/RELATORIO-MC-1.md`.
+- **Status:** ✅ Build OK (2 variantes)
