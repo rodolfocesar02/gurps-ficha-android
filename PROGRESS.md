@@ -9844,3 +9844,13 @@ ficar verde**.
   - O `resumoDaDescricao` do combate devolve resumo nas 879 (0 sem resumo, como antes). A Mesa nao carrega a descricao do catalogo.
 - Sem versao nova (so dado e teste). Build das 2 variantes verde; suite da Mesa 3249/3249. Relatorio: `mesa-virtual/planos/magias/RELATORIO-MC-3.md`.
 - **Status:** ✅ Build OK (2 variantes)
+
+## Lote MC-4 — [2026-10-14] A mecanica das magias confrontada com o livro (plano do catalogo de magias)
+- **Hash:** b23773e5 (app) + commit da Mesa (derivados regenerados, relatorio, plano)
+- **Mudancas:**
+  - `magias2versao.json`: `mecanica.entrega` pela classe do livro (105 mudancas: toque -> nenhuma 78, projetil -> nenhuma 25, nenhuma -> toque 2). Campos novos na mecanica: `toqueOpcional` (Desidratar, Geladura), `ataqueComoChicote` (Chicote de Relampago), `semJogadaDeAtaque` (Bola de Relampagos). Projeteis completados do livro: Bola de Fogo Explosiva 25/50/1, Concussao 20/40/1. Marca `mecanicaConferida` (812 true) e `mecanicaMotivo`.
+  - Para ele conferir: Fender, Sopro Congelante, Sopro de Vapor (p.192: 1d na descricao e 1d+1 na linha de custo), Tempestade de Faiscas (dano); Controle de Pessoa e Controle de Elemental Fogo (resistencia).
+  - `scripts/magias/`: `aplicar-mecanica.js`, `mecanica.js`, `mecanica-extra.js`, `mecanica-lida-na-pagina.json` (so posicao de linha), `mecanica.test.js` (13 testes; 82 no total).
+  - `MagicCatalogMecanicaDoLivroTest` (novo, 5 testes). As notas nao foram tocadas.
+- Sem versao nova (so dado e teste). Build das 2 variantes verde; suite da Mesa 3249/3249. Relatorio: `mesa-virtual/planos/magias/RELATORIO-MC-4.md`.
+- **Status:** ✅ Build OK (2 variantes)
