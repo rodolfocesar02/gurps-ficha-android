@@ -9869,3 +9869,11 @@ ficar verde**.
   - Versao **185** (`12.8.0-MAGIAS-LIVRO`).
 - Mesa: suite 3250/3250; `RELATORIO-MG-0.md` regenerado (660 -> 664 completas; duracao 652 -> 846, tempo 635 -> 748, custo de operar 324 -> 542). Relatorio final: `mesa-virtual/planos/magias/RELATORIO-FINAL-CATALOGO.md`.
 - **Status:** ✅ Build OK (2 variantes)
+
+## Lote MC-6 — [2026-10-14] Os outros catalogos tem a mesma doenca? (so relatorio, plano do catalogo de magias)
+- **Hash:** 1eafa9bb (app) + commit da Mesa (RELATORIO-MC-6.md e plano)
+- **Mudancas:** `scripts/catalogos/` (novo): `livro.js`, `tabelas.js`, `comparar.js`, `amostra-mc6.js`, `relatorio-mc6.js` e `catalogos.test.js` (10 testes). So leitura: nenhum catalogo foi alterado.
+- **Medido (40 por catalogo, semente fixa; erros/comparados):** vantagens custo 2/34, pagina 0/38, efeitos 1/24; desvantagens custo 1/31, pagina 0/36, efeitos 1/34; pericias atributo 0/39, dificuldade 1/38, predefinido 1/30, pagina 0/35; **tecnicas dificuldade 5/26, predefinido 1/21, pagina 15/26**.
+- **Achado:** 19 das 218 desvantagens trazem a marca `=== PAGE N ===` na descricao (lixo de extracao; varredura completa). So as tecnicas tem a doenca das magias: merecem plano igual; os outros tres, correcao pontual. Decisao do Rodolfo.
+- Sem versao nova (so script e relatorio). Relatorio: `mesa-virtual/planos/magias/RELATORIO-MC-6.md`.
+- **Status:** ✅ 10 testes JS verdes (sem mudanca no app; build do MC-5 vale)
