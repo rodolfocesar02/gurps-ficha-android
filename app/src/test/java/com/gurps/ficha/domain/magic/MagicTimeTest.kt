@@ -138,17 +138,19 @@ class MagicTimeTest {
 
     @Test
     fun `o canonico corrigiu as transcricoes erradas que a auditoria achou`() {
-        // Casos verificados À MÃO contra a descrição fiel do livro (o cabeçalho diverge nos três).
+        // Casos verificados contra o livro (o cabeçalho diverge nos três).
+        // MC-2 (13/out): a Arma Congelante estava aqui como 4/1 · 2 s, número da `descricao` transcrita
+        // por IA. A entrada do livro (colada pelo Rodolfo) e a tabela dizem 3/1 · 3 s: o teste esperava o erro.
         val catalogo = carregarCatalogo()
         Assume.assumeNotNull(catalogo)
         val porNome = (0 until catalogo!!.length()).associate {
             val m = catalogo.getJSONObject(it); m.optString("nome") to m
         }
-        // Arma Congelante: cabeçalho "03/01"; livro "Custo: 4 para operar: 1 para manter".
+        // Arma Congelante: livro (entrada e tabela) "1 min · 3 para operar, 1 para manter · 3 s".
         porNome["Arma Congelante"]?.let {
-            assertEquals(4, it.optInt("custoOperar"))
+            assertEquals(3, it.optInt("custoOperar"))
             assertEquals(1, it.optInt("custoManter"))
-            assertEquals(2, it.optInt("tempoOperacaoSeg")) // cabeçalho dizia "3 seg."
+            assertEquals(3, it.optInt("tempoOperacaoSeg"))
         }
         // Analisar Mágica: cabeçalho "5"; livro "Custo: 8".
         porNome["Analisar Mágica"]?.let { assertEquals(8, it.optInt("custoOperar")) }
