@@ -14,6 +14,15 @@ transcreve.
 | 2 | `aplicar-numeros-conferidos.js` | `custoOperar/Manter`, `duracaoSeg/Tipo`, `tempoOperacaoSeg` + campos de fórmula + `energiaTela/duracaoTela/tempoOperacaoTela` | `RELATORIO-MC-2.md` |
 | 3 | `aplicar-descricoes.js` | `descricao` = bloco da entrada do livro | `RELATORIO-MC-3.md` |
 | 4 | `aplicar-mecanica.js` | `mecanica.entrega`, projétil, marcas | `RELATORIO-MC-4.md` |
+| 5 (só se uma página do `chunks.jsonl` estiver ruim) | `pdf-para-chunks.py` | só o `text` das páginas pedidas, em `chunks.jsonl` | `RELATORIO-MC-7.md` |
+
+**Páginas ruins no `chunks.jsonl`** (cortadas ou com colunas embaralhadas): o PDF de Magia tem camada de texto. 
+`python -I scripts/magias/pdf-para-chunks.py --pdf "<PDF>" --paginas 23,33 [--mostrar] [--aplicar]` lê a página do PDF 
+(ordem das colunas, parágrafos, tabelas), mostra o que mudaria (números que saem e entram) e, com `--aplicar`, troca só 
+essas linhas do `chunks.jsonl`. Depois rode a cadeia **0, 1, 2, 3, 4** (a 1 também: ela refresca o cabeçalho e as 
+exceções) e suba `CODEX_VERSION_CURRENT`. ⚠️ `mecanica-lida-na-pagina.json` guarda posições de LINHA de páginas que 
+foram embaralhadas: se reextrair uma delas, reaponte as linhas (e confira o `mecanica.test.js`). Número que SAI 
+da página depois de reextrair é sinal de erro do conversor: o ensaio mostra.
 
 Relatórios ficam em `mesa-virtual/planos/magias/`. As lacunas de leitura (página embaralhada, entrada sem
 texto) viram `*Motivo` no próprio catálogo — nunca um número inventado.

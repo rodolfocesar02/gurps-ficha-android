@@ -3,7 +3,7 @@
  "magias": {
   "alimento_essencial": {
    "duracao": {
-    "motivo": "o-livro-discorda-de-si: tabela e catalogo contra a entrada, vale a entrada",
+    "motivo": "o-livro-discorda-de-si: vale a entrada",
     "catalogo": "Indefinida",
     "tabela": "Perm.",
     "entrada": "Indefinida"
@@ -11,7 +11,7 @@
   },
   "alongar_objeto": {
    "tempoOperacao": {
-    "motivo": "o-livro-discorda-de-si: tabela e catalogo contra a entrada, vale a entrada",
+    "motivo": "o-livro-discorda-de-si: vale a entrada",
     "catalogo": "5 segundos",
     "tabela": "3 seg",
     "entrada": "5 segundos"
@@ -19,7 +19,7 @@
   },
   "alterar_terreno": {
    "duracao": {
-    "motivo": "o-livro-discorda-de-si: tabela e catalogo contra a entrada, vale a entrada",
+    "motivo": "o-livro-discorda-de-si: vale a entrada",
     "catalogo": "2 dias",
     "tabela": "2d dias",
     "entrada": "2 dias"
@@ -27,7 +27,7 @@
   },
   "alucinacao": {
    "tempoOperacao": {
-    "motivo": "o-livro-discorda-de-si: tabela e catalogo contra a entrada, vale a entrada",
+    "motivo": "o-livro-discorda-de-si: vale a entrada",
     "catalogo": "2 segundos",
     "tabela": "3 seg",
     "entrada": "2 segundos"
@@ -35,7 +35,7 @@
   },
   "animar_sombra": {
    "duracao": {
-    "motivo": "o-livro-discorda-de-si: tabela e catalogo contra a entrada, vale a entrada",
+    "motivo": "o-livro-discorda-de-si: vale a entrada",
     "catalogo": "5 segundos",
     "tabela": "10 seg",
     "entrada": "5 segundos"
@@ -43,7 +43,7 @@
   },
   "anular_possessao": {
    "duracao": {
-    "motivo": "o-livro-discorda-de-si: tabela e catalogo contra a entrada, vale a entrada",
+    "motivo": "o-livro-discorda-de-si: vale a entrada",
     "catalogo": "Permanente",
     "tabela": "Instant",
     "entrada": "Permanente"
@@ -51,13 +51,13 @@
   },
   "apanhar_magica": {
    "duracao": {
-    "motivo": "o-livro-discorda-de-si: tabela e catalogo contra a entrada, vale a entrada",
+    "motivo": "o-livro-discorda-de-si: vale a entrada",
     "catalogo": "10 horas",
     "tabela": "Instant",
     "entrada": "10 horas"
    },
    "tempoOperacao": {
-    "motivo": "o-livro-discorda-de-si: tabela e catalogo contra a entrada, vale a entrada",
+    "motivo": "o-livro-discorda-de-si: vale a entrada",
     "catalogo": "10 segundos",
     "tabela": "1 seg",
     "entrada": "10 segundos"
@@ -65,7 +65,7 @@
   },
   "aumentar_objeto": {
    "tempoOperacao": {
-    "motivo": "o-livro-discorda-de-si: tabela e catalogo contra a entrada, vale a entrada",
+    "motivo": "o-livro-discorda-de-si: vale a entrada",
     "catalogo": "5 segundos",
     "tabela": "3 seg",
     "entrada": "5 segundos"
@@ -81,7 +81,7 @@
   },
   "coceira": {
    "duracao": {
-    "motivo": "o-livro-discorda-de-si: tabela e catalogo contra a entrada, vale a entrada",
+    "motivo": "o-livro-discorda-de-si: vale a entrada",
     "catalogo": "10 minutos",
     "tabela": "Coçar#",
     "entrada": "10 minutos"
@@ -89,7 +89,7 @@
   },
   "combustivel_essencialnt": {
    "tempoOperacao": {
-    "motivo": "o-livro-discorda-de-si: tabela e catalogo contra a entrada, vale a entrada",
+    "motivo": "o-livro-discorda-de-si: vale a entrada",
     "catalogo": "10 segundos",
     "tabela": "1 seg",
     "entrada": "10 segundos"
@@ -103,7 +103,7 @@
   },
   "contrair_objeto": {
    "tempoOperacao": {
-    "motivo": "o-livro-discorda-de-si: tabela e catalogo contra a entrada, vale a entrada",
+    "motivo": "o-livro-discorda-de-si: vale a entrada",
     "catalogo": "5 segundos",
     "tabela": "3 seg",
     "entrada": "5 segundos"
@@ -111,7 +111,7 @@
   },
   "controle_de_maquinant": {
    "tempoOperacao": {
-    "motivo": "o-livro-discorda-de-si: tabela e catalogo contra a entrada, vale a entrada",
+    "motivo": "o-livro-discorda-de-si: vale a entrada",
     "catalogo": "4 segundos",
     "tabela": "1 seg",
     "entrada": "4 segundos"
@@ -127,7 +127,7 @@
   },
   "corpo_etereo": {
    "tempoOperacao": {
-    "motivo": "o-livro-discorda-de-si: tabela e catalogo contra a entrada, vale a entrada",
+    "motivo": "o-livro-discorda-de-si: vale a entrada",
     "catalogo": "3 segundos",
     "tabela": "30 seg",
     "entrada": "3 segundos"
@@ -135,29 +135,21 @@
   },
   "desintegrar": {
    "tempoOperacao": {
-    "motivo": "o-livro-discorda-de-si: tabela e catalogo contra a entrada, vale a entrada",
+    "motivo": "o-livro-discorda-de-si: vale a entrada",
     "catalogo": "5 segundos",
     "tabela": "1 seg",
     "entrada": "5 segundos"
    }
   },
-  "dom_das_linguas": {
-   "tempoOperacao": {
-    "motivo": "o-livro-discorda-de-si: tabela e catalogo contra a entrada, vale a entrada",
-    "catalogo": "10 segundos",
-    "tabela": "1 seg.",
-    "entrada": "10 segundos"
-   }
-  },
   "encolher_objeto": {
    "duracao": {
-    "motivo": "o-livro-discorda-de-si: tabela e catalogo contra a entrada, vale a entrada",
+    "motivo": "o-livro-discorda-de-si: vale a entrada",
     "catalogo": "Permanente",
     "tabela": "1 hora",
     "entrada": "Permanente"
    },
    "tempoOperacao": {
-    "motivo": "o-livro-discorda-de-si: tabela e catalogo contra a entrada, vale a entrada",
+    "motivo": "o-livro-discorda-de-si: vale a entrada",
     "catalogo": "10 minutos",
     "tabela": "3 seg.",
     "entrada": "10 minutos"
@@ -181,39 +173,15 @@
   },
   "extinguir_radiacao": {
    "tempoOperacao": {
-    "motivo": "o-livro-discorda-de-si: tabela e catalogo contra a entrada, vale a entrada",
+    "motivo": "o-livro-discorda-de-si: vale a entrada",
     "catalogo": "10 segundos",
     "tabela": "1 seg",
     "entrada": "10 segundos"
-   }
-  },
-  "fragmentar": {
-   "tempoOperacao": {
-    "motivo": "o-livro-discorda-de-si: tabela e catalogo contra a entrada, vale a entrada",
-    "catalogo": "3 segundos",
-    "tabela": "1 seg",
-    "entrada": "3 segundos"
-   }
-  },
-  "identificar_planta": {
-   "tempoOperacao": {
-    "motivo": "o-livro-discorda-de-si: tabela e catalogo contra a entrada, vale a entrada",
-    "catalogo": "10 segundos",
-    "tabela": "1 seg.",
-    "entrada": "10 segundos"
-   }
-  },
-  "leitura_da_mente": {
-   "tempoOperacao": {
-    "motivo": "o-livro-discorda-de-si: tabela e catalogo contra a entrada, vale a entrada",
-    "catalogo": "3 segundos",
-    "tabela": "10 seg.",
-    "entrada": "3 segundos"
    }
   },
   "morte_putrefata": {
    "tempoOperacao": {
-    "motivo": "o-livro-discorda-de-si: tabela e catalogo contra a entrada, vale a entrada",
+    "motivo": "o-livro-discorda-de-si: vale a entrada",
     "catalogo": "5 segundos",
     "tabela": "3 seg",
     "entrada": "5 segundos"
@@ -241,14 +209,6 @@
     "entrada": "Comum; Resistível com HT"
    }
   },
-  "poltergeist": {
-   "duracao": {
-    "motivo": "o-livro-discorda-de-si: tabela e catalogo contra a entrada, vale a entrada",
-    "catalogo": "1 minuto",
-    "tabela": "Instant",
-    "entrada": "1 minuto"
-   }
-  },
   "possessao_de_maquinant": {
    "energia": {
     "motivo": "tabela-perde-a-manutencao",
@@ -267,23 +227,15 @@
   },
   "preservar_alimento": {
    "tempoOperacao": {
-    "motivo": "o-livro-discorda-de-si: tabela e catalogo contra a entrada, vale a entrada",
+    "motivo": "o-livro-discorda-de-si: vale a entrada",
     "catalogo": "30 segundos",
     "tabela": "1 seg",
     "entrada": "30 segundos"
    }
   },
-  "projecao_de_sonho": {
-   "tempoOperacao": {
-    "motivo": "o-livro-discorda-de-si: tabela e catalogo contra a entrada, vale a entrada",
-    "catalogo": "3 segundos",
-    "tabela": "1 min.",
-    "entrada": "3 segundos"
-   }
-  },
   "retardar_cura": {
    "tempoOperacao": {
-    "motivo": "o-livro-discorda-de-si: tabela e catalogo contra a entrada, vale a entrada",
+    "motivo": "o-livro-discorda-de-si: vale a entrada",
     "catalogo": "30 segundos",
     "tabela": "10 seg.",
     "entrada": "30 segundos"
@@ -299,7 +251,7 @@
   },
   "roubar_corrente_eletricant": {
    "tempoOperacao": {
-    "motivo": "o-livro-discorda-de-si: tabela e catalogo contra a entrada, vale a entrada",
+    "motivo": "o-livro-discorda-de-si: vale a entrada",
     "catalogo": "5 segundos",
     "tabela": "1 seg.",
     "entrada": "5 segundos"
@@ -323,7 +275,7 @@
   },
   "telemagica": {
    "duracao": {
-    "motivo": "o-livro-discorda-de-si: tabela e catalogo contra a entrada, vale a entrada",
+    "motivo": "o-livro-discorda-de-si: vale a entrada",
     "catalogo": "5 segundos",
     "tabela": "1 min",
     "entrada": "5 segundos"
@@ -339,7 +291,7 @@
   },
   "testar_combustivelnt": {
    "tempoOperacao": {
-    "motivo": "o-livro-discorda-de-si: tabela e catalogo contra a entrada, vale a entrada",
+    "motivo": "o-livro-discorda-de-si: vale a entrada",
     "catalogo": "30 segundos",
     "tabela": "1 seg",
     "entrada": "30 segundos"
@@ -355,13 +307,13 @@
   },
   "transformar_objeto": {
    "duracao": {
-    "motivo": "o-livro-discorda-de-si: tabela e catalogo contra a entrada, vale a entrada",
+    "motivo": "o-livro-discorda-de-si: vale a entrada",
     "catalogo": "Permanente",
     "tabela": "1 hora",
     "entrada": "Permanente"
    },
    "tempoOperacao": {
-    "motivo": "o-livro-discorda-de-si: tabela e catalogo contra a entrada, vale a entrada",
+    "motivo": "o-livro-discorda-de-si: vale a entrada",
     "catalogo": "1 hora",
     "tabela": "Varia",
     "entrada": "1 hora"
@@ -369,13 +321,13 @@
   },
   "ver_localizacao": {
    "duracao": {
-    "motivo": "o-livro-discorda-de-si: tabela e catalogo contra a entrada, vale a entrada",
+    "motivo": "o-livro-discorda-de-si: vale a entrada",
     "catalogo": "1 minuto",
     "tabela": "Instantâneo",
     "entrada": "1 minuto"
    },
    "tempoOperacao": {
-    "motivo": "o-livro-discorda-de-si: tabela e catalogo contra a entrada, vale a entrada",
+    "motivo": "o-livro-discorda-de-si: vale a entrada",
     "catalogo": "10 minutos",
     "tabela": "10 seg.",
     "entrada": "10 minutos"
@@ -383,7 +335,7 @@
   },
   "viagem_planar": {
    "duracao": {
-    "motivo": "o-livro-discorda-de-si: tabela e catalogo contra a entrada, vale a entrada",
+    "motivo": "o-livro-discorda-de-si: vale a entrada",
     "catalogo": "Permanente",
     "tabela": "Instantâneo",
     "entrada": "Permanente"
@@ -391,7 +343,7 @@
   },
   "viagem_planar_para_outro": {
    "duracao": {
-    "motivo": "o-livro-discorda-de-si: tabela e catalogo contra a entrada, vale a entrada",
+    "motivo": "o-livro-discorda-de-si: vale a entrada",
     "catalogo": "Permanente",
     "tabela": "Instantâneo",
     "entrada": "Permanente"

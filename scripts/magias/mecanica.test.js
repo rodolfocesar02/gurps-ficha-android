@@ -117,14 +117,14 @@ test('livro real: Chicote de Relâmpago e Bola de Relâmpagos marcados como a CO
   assert.strictEqual(c.find((m) => m.id === 'bola_de_relampagos').mecanica.semJogadaDeAtaque, true);
 });
 
-test('livro real: as 46 de dano e cura conferem com o livro, salvo as 4 listadas', { skip: !TEM_O_LIVRO }, () => {
+test('livro real: as 46 de dano e cura conferem com o livro, salvo as 3 listadas', { skip: !TEM_O_LIVRO }, () => {
   const calc = A.calcular();
   const naoConfere = calc.resultado.filter((r) => (r.danoStatus && r.danoStatus.status !== 'confere') || r.curaStatus === 'diverge')
     .map((r) => r.m.nome).sort();
-  // Fender (a entrada não está no texto), Sopro Congelante (a entrada só traz o Item), Sopro de Vapor
-  // (o livro diz 1d na descrição e 1d+1 na linha de custo) e Tempestade de Faíscas (o livro dá 1d-1/2d-2/3d-3
-  // por custo 2/4/6; o catálogo tem 1 por energia).
-  assert.deepStrictEqual(naoConfere, ['Fender', 'Sopro Congelante', 'Sopro de Vapor', 'Tempestade de Faíscas']);
+  // Sopro Congelante (a entrada só traz o Item), Sopro de Vapor (o livro diz 1d na descrição e 1d+1 na linha
+  // de custo) e Tempestade de Faíscas (o livro dá 1d-1/2d-2/3d-3 por custo 2/4/6; o catálogo tem 1 por energia).
+  // Fender saiu da lista em 19/out/2026: a página 117 foi reextraída do PDF e a entrada passou a existir (confere).
+  assert.deepStrictEqual(naoConfere, ['Sopro Congelante', 'Sopro de Vapor', 'Tempestade de Faíscas']);
   const alvo = calc.resultado.filter((r) => ['dano', 'cura'].includes((r.m.mecanica || {}).efeito));
   assert.strictEqual(alvo.length, 46);
 });

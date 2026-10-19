@@ -32,7 +32,7 @@ class MestreIARepository(
     // Versão do formato de search_text. Bump aqui + em CODEX_VERSION_CURRENT para forçar re-importação.
     // v1: apenas texto do chunk. v2: texto + source_title (permite buscar "subaquatico" → chunks do Pyramid).
     private val CODEX_VERSION_KEY = "codex_search_text_version"
-    private val CODEX_VERSION_CURRENT = 4  // Lote 352: chunks.jsonl sem embeddings (Códex em dieta) — força re-seed do Room
+    private val CODEX_VERSION_CURRENT = 5  // MC-7: 13 páginas de Magia reextraídas do PDF (chunks.jsonl) — força re-seed do Room (v4: Lote 352, Códex sem embeddings)
 
     /**
      * Sincroniza o Códex (chunks.jsonl) se o banco estiver vazio ou desatualizado.

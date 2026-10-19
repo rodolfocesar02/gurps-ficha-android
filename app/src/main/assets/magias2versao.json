@@ -12,15 +12,14 @@
     "energia": "1",
     "tempoOperacao": "5 min.",
     "preRequisitos": "Curar Planta",
-    "descricao": "Área\n\nFaz com que as plantas dentro da área de efeito cresçam mais rápido e mais fortes pelo resto da estação de crescimento. O rendimento da cultura dentro da área de efeito é dobrado.\n\nDuração: Uma safra ou estação de crescimento.\n\nCusto básico: 1. Para serem afetadas, as plantas devem estar inteiramente dentro da área de efeito.\n\nTempo de operação: 5 minutos. Pré-requisito: Curar Planta.\n\nItem\n\nCajado. Utilizável apenas por um mago. Custo de energia para criar: 500.",
-    "descricaoConferida": false,
-    "descricaoMotivo": "sem-entrada-no-texto",
+    "descricao": "Área\n\nFaz com que as plantas dentro da área de efeito cresçam mais rápido e mais fortes pelo resto da estação de crescimento. O rendimento da cultura dentro da área de efeito é dobrado.\n\nDuração: Uma safra ou estação de crescimento.\n\nCusto básico: 1. Para serem afetadas, as plantas devem estar inteiramente dentro da área de efeito.\n\nTempo de operação: 5 minutos.\n\nPré-requisito: Curar Planta.\n\nItem\nCajado. Utilizável apenas por um mago. Custo de energia para criar: 500.",
+    "descricaoConferida": true,
+    "descricaoPagina": 161,
     "mecanica": {
       "efeito": "ambiente",
       "notas": "Plantas na área crescem mais rápido/fortes pela estação; rendimento da cultura dobrado. Sem efeito de combate."
     },
-    "mecanicaConferida": false,
-    "mecanicaMotivo": "sem-texto-do-livro",
+    "mecanicaConferida": true,
     "fonteCabecalho": "tabela",
     "duracaoFormula": "1 plant./estação",
     "tempoOperacaoSeg": 300,
@@ -31,8 +30,8 @@
     "conferidoPagina": 161,
     "conferidoPor": {
       "duracao": "formula",
-      "tempoOperacao": "tabela",
-      "custo": "tabela"
+      "tempoOperacao": "tabela+entrada",
+      "custo": "tabela+entrada"
     }
   },
   {
@@ -619,17 +618,16 @@
     "energia": "3",
     "tempoOperacao": "1 seg.",
     "preRequisitos": "Purificar a Água, Deteriorar",
-    "descricao": "Área\n\nTorna a água não potável. A água suja é facilmente reconhecida por sua cor e cheiro pouco convidativos, enquanto a cerveja ou o vinho sujo podem ser mais difíceis de detectar. Qualquer pessoa tola o suficiente para beber deve fazer um teste de HT. Em um teste bem-sucedido, ele simplesmente se sente doente e perde 2 PV. Em um teste fracassado, ele é tomado por cólicas dolorosas no estômago, perdendo 1d+1 PV; ele sofre uma penalidade de -3 para todas as perícias até que os PV perdidos sejam restaurados.\n\nA água suja também falha em satisfazer a sede e não pode suportar peixes ou outros habitantes da água (qualquer tipo de peixe se sufoca lentamente na água contaminada; um mamífero marinho fica doente por ingeri-la). Em um corpo de água, a água suja é eventualmente diluída até ficar inofensiva; se operada em um córrego da montanha, por exemplo, essa mágica dura efetivamente apenas um ou dois segundos.\n\nCusto básico: 3.\n\nPré-requisitos: Purificar a Água e Deteriorar.\n\nItem\n\nCajado ou varinha. O objeto deve tocar a água objetivo. Custo de energia para criar: 100.",
-    "descricaoConferida": false,
-    "descricaoMotivo": "sem-entrada-no-texto",
+    "descricao": "Área\n\nTorna a água não potável. A água suja é facilmente reconhecida por sua cor e cheiro pouco convidativos, enquanto a cerveja ou o vinho sujo podem ser mais difíceis de detectar. Qualquer pessoa tola o suficiente para beber deve fazer um teste de HT. Em um teste bem-sucedido, ele simplesmente se sente doente e perde 2 PV. Em um teste fracassado, ele é tomado por cólicas dolorosas no estômago, perdendo 1d+1 PV; ele sofre uma penalidade de -3 para todas as perícias até que os PV perdidos sejam restaurados.\n\nA água suja também falha em satisfazer a sede e não pode suportar peixes ou outros habitantes da água (qualquer tipo de peixe se sufoca lentamente na água contaminada; um mamífero marinho fica doente por ingeri-la). Em um corpo de água, a água suja é eventualmente diluída até ficar inofensiva; se operada em um córrego da montanha, por exemplo, essa mágica dura efetivamente apenas um ou dois segundos.\n\nCusto básico: 3.\n\nPré-requisitos: Purificar a Água e Deteriorar.\n\nItem\nCajado ou varinha. O objeto deve tocar a água objetivo. Custo de energia para criar: 100.",
+    "descricaoConferida": true,
+    "descricaoPagina": 185,
     "mecanica": {
       "efeito": "narrado",
       "entrega": "area",
       "condicaoResistencia": "HT",
       "notas": "Torna a água/bebida não potável (área). Quem beber testa HT: sucesso perde 2 PV; falha perde 1d+1 PV + -3 em todas as perícias até curar. Dano por INGESTÃO, não ataque direto — narrar."
     },
-    "mecanicaConferida": false,
-    "mecanicaMotivo": "sem-texto-do-livro",
+    "mecanicaConferida": true,
     "fonteCabecalho": "tabela",
     "duracaoTipo": "permanente",
     "duracaoSeg": 0,
@@ -642,7 +640,7 @@
     "conferidoPor": {
       "duracao": "tabela",
       "tempoOperacao": "tabela",
-      "custo": "tabela"
+      "custo": "tabela+entrada"
     }
   },
   {
@@ -1489,28 +1487,29 @@
     "energia": "Varia",
     "tempoOperacao": "3 seg",
     "preRequisitos": "AM2, 3 mágicas de Moldar",
-    "descricao": "Comum; Resistência Especial\n\nAnima um objeto existente (estátua, espada, cadeira...) Suas habilidades e atributos dependem de seu corpo — isso é inteiramente a critério do Mestre.\n\nExemplos: uma cadeira poderia se movimentar e chutar a canela das pessoas ou uma espada poderia serpente ar no braço do portador, mas um bule de chá poderia fazer pouco mais do que correr divertidamente pela mesa...\n\nConcentração é necessária; o objeto animado não tem pontuação de IQ e é pouco mais que um fantoche. Autossuficiência e Iniciativa não funcionarão em um objeto animado.\n\nUm ser segurando tal objeto resiste com Vontade.\n\nDuração: 1 minuto.\n\nCusto: 1 para operar para cada 2 kg que o objeto pesa. Dobre o custo para animar pedra, triplique para metal. Mesmo custo para manter.\n\nTempo de operação: 3 segundos.\n\nPré-requisitos: Aptidão Mágica 2 e pelo menos três mágicas “Moldar”.\n\nItem\n\n(a) Qualquer objeto pode ser permanentemente animado por 100 vezes o custo de operação. (b) Varinha, cajado ou joias. Utilizável apenas por magos; o item deve tocar o objetivo. Custo de energia para criar: 2.000.",
-    "descricaoConferida": false,
-    "descricaoMotivo": "sem-entrada-no-texto",
+    "descricao": "Comum; Resistência Especial\n\nAnima um objeto existente (estátua, espada, cadeira…) Suas habilidades e atributos dependem de seu corpo — isso é inteiramente a critério do Mestre.\n\nExemplos: uma cadeira poderia se movimentar e chutar a canela das pessoas ou uma espada poderia serpentear no braço do portador, mas um bule de chá poderia fazer pouco mais do que correr divertidamente pela mesa…\n\nConcentração é necessária; o objeto animado não tem pontuação de IQ e é pouco mais que um fantoche. Autossuficiência e Iniciativa não funcionarão em um objeto animado.\n\nUm ser segurando tal objeto resiste com Vontade.\n\nDuração: 1 minuto.\n\nCusto: 1 para operar para cada 2 kg que o objeto pesa. Dobre o custo para animar pedra, triplique para metal. Mesmo custo para manter.\n\nTempo de operação: 3 segundos.\n\nPré-requisitos: Aptidão Mágica 2 e pelo menos três mágicas “Moldar”.\n\nItem\n(a) Qualquer objeto pode ser permanentemente animado por 100 vezes o custo de operação. (b) Varinha, cajado ou joias. Utilizável apenas por magos; o item deve tocar o objetivo. Custo de energia para criar: 2.000.",
+    "descricaoConferida": true,
+    "descricaoPagina": 117,
     "mecanica": {
       "efeito": "controle",
       "notas": "Anima objeto inanimado como fantoche (exige concentração). Quem o segura resiste com Vontade. 1 energia/2 kg; x2 pedra, x3 metal."
     },
-    "mecanicaConferida": false,
-    "mecanicaMotivo": "sem-texto-do-livro",
+    "mecanicaConferida": true,
     "fonteCabecalho": "tabela",
     "duracaoTipo": "temporaria",
     "duracaoSeg": 60,
     "tempoOperacaoSeg": 3,
     "tempoTipo": "fixo",
-    "custoTipo": "varia",
-    "custoFormula": "Varia",
+    "custoOperar": 1,
+    "custoManter": 1,
+    "custoManterTipo": "igual",
+    "custoTipo": "fixo",
     "conferido": "livro",
     "conferidoPagina": 117,
     "conferidoPor": {
-      "duracao": "tabela",
-      "tempoOperacao": "tabela",
-      "custo": "tabela"
+      "duracao": "tabela+entrada",
+      "tempoOperacao": "tabela+entrada",
+      "custo": "entrada"
     }
   },
   {
@@ -1784,7 +1783,7 @@
     "energia": "2",
     "tempoOperacao": "1 seg",
     "preRequisitos": "Desviar Projetil",
-    "descricao": "Bloqueio\n\nO operador pega um projétil prestes a atingi-lo. Esta mágica é operada com um modificador, dependendo da natureza do projétil capturado.\n\nPenalidades de Apanhar Projétil:\nArmas de arremesso grandes: +4\nFacas de arremesso: +2\nFlechas: 0\nDardos/Virotes: -5\nBalas/Supersônicos: Impossível\n\nConsiderada um Aparar pelo operador para fins de combate. O projétil está despreparado quando apanhado.\n\nPara pegar uma magia de projétil, use Apanhar Mágica.\n\nCusto: 2.\n\nPré-requisito: Desviar Projétil.\n\nItem: Luva. Custo de energia para criar: 300.",
+    "descricao": "Bloqueio\n\nO operador pega um projétil prestes a atingi-lo. Esta mágica é operada com um modificador, dependendo da natureza do projétil capturado. Considerada um Aparar pelo operador para fins de combate. O projétil está despreparado quando apanhado. Para pegar uma magia de projétil, use Apanhar Mágica.\n\nTipo de Projétil\nPenalidade\nArmas de arremesso grandes (machados, lanças, etc.)\n+4\nFacas de arremesso\n+2\nFlechas\n0\nDardos de zarabatana, virotes\n-5\nBalas, projéteis supersônicos\nImpossível\n\nCusto: 2.\n\nPré-requisito: Desviar Projétil.\n\nItem\nLuva. Custo de energia para criar: 300.",
     "descricaoConferida": true,
     "descricaoPagina": 168,
     "mecanica": {
@@ -2082,15 +2081,14 @@
     "energia": "2",
     "tempoOperacao": "3 seg",
     "preRequisitos": "6 mágicas do Ar",
-    "descricao": "Cria a essência mágica do Ar. O Ar Essencial é “mais puro” e pode ser usado (respirado ou consumido) pelo triplo do tempo antes de tornar-se imprestável. O fogo queima mais quente (não mais rápido) no Ar Essencial, acrescentando um ponto de dano a cada dado (isto aumenta ainda mais o calor da Chama Essencial!). Se o Ar Essencial for criado numa área aberta, ele se dispersará dentro de 5 segundos.\n\nDuração: Permanente, até dispersado ou consumido.\n\nCusto básico: 2.\n\nTempo de operação: 3 segundos.\n\nPré-requisitos: Pelo menos seis mágicas do Ar.\n\nItem\n\nCajado, varinha ou joias. Utilizável apenas por magos. Custo para criar: 800 de energia e um ônix de $400.",
-    "descricaoConferida": false,
-    "descricaoMotivo": "so-pagina",
+    "descricao": "Área\n\nCria a essência mágica do Ar. O Ar Essencial é “mais puro” e pode ser usado (respirado ou consumido) pelo triplo do tempo antes de tornar-se imprestável. O fogo queima mais quente (não mais rápido) no Ar Essencial, acrescentando um ponto de dano a cada dado (isto aumenta ainda mais o calor da Chama Essencial!). Se o Ar Essencial for criado numa área aberta, ele se dispersará dentro de 5 segundos.\n\nDuração: Permanente, até dispersado ou consumido.\n\nCusto básico: 2.\n\nTempo de operação: 3 segundos.\n\nPré-requisitos: Pelo menos seis mágicas do Ar.\n\nItem\nCajado, varinha ou joias. Utilizável apenas por magos. Custo para criar: 800 de energia e um ônix de $400.",
+    "descricaoConferida": true,
+    "descricaoPagina": 26,
     "mecanica": {
       "efeito": "ambiente",
       "notas": "Cria ar essencial (respirável pelo triplo do tempo). Fogo no Ar Essencial ganha +1 de dano por dado. Em área aberta dispersa em 5s. Custo básico 2, permanente."
     },
-    "mecanicaConferida": false,
-    "mecanicaMotivo": "sem-texto-do-livro",
+    "mecanicaConferida": true,
     "fonteCabecalho": "tabela",
     "duracaoTipo": "permanente",
     "duracaoSeg": 0,
@@ -2102,8 +2100,8 @@
     "conferidoPagina": 26,
     "conferidoPor": {
       "duracao": "tabela",
-      "tempoOperacao": "tabela",
-      "custo": "tabela"
+      "tempoOperacao": "tabela+entrada",
+      "custo": "tabela+entrada"
     }
   },
   {
@@ -2119,9 +2117,9 @@
     "energia": "3/1",
     "tempoOperacao": "3 seg",
     "preRequisitos": "Criar Água",
-    "descricao": "Comum\n\nFaz com que qualquer arma esfrie ao toque (sem prejudicar o usuário) e cause +2 de dano à maioria dos inimigos (depois de penetrar na armadura). Armas de metal não são danificadas; as de madeira se quebram assim que a mágica termina. A arma também libera frio, reduzindo a temperatura em sua vizinhança.\n\nDuração: 1 minuto.\n\nCusto: 4 para operar: 1 para manter.\n\nTempo de operação: 2 segundos.\n\nPré-requisitos: Aptidão Mágica 2 e Frio.\n\nItem\n\nUma arma que se torna gelada sempre que usada, sem custo de energia para o usuário. Custo de energia para criar: 750; uma safira de $400 deve ser colocada na arma.",
-    "descricaoConferida": false,
-    "descricaoMotivo": "sem-entrada-no-texto",
+    "descricao": "Comum\n\nFaz com que qualquer arma fique muito fria. Isso não prejudica o usuário ou a arma, mas um ataque com a arma causa +2 de dano à maioria dos inimigos se ela penetrar a RD. Multiplique esse bônus por qualquer Vulnerabilidade (pág. MB161) ao gelo ou frio. Adicione esse bônus à lesão final infligida pelo ataque — por exemplo, um ataque de gelo “empalador” ainda é bom apenas para +2 de dano, não para +4.\n\nDuração: 1 minuto.\n\nCusto: 3 para operar. 1 para manter.\n\nTempo de operação: 3 segundos.\n\nPré-requisito: Criar Água.\n\nItem\nUma arma que se torna congelada sempre que empunhada, sem custo de energia para o usuário. Custo para criar: 750 de energia, $2.000 em materiais mágicos.",
+    "descricaoConferida": true,
+    "descricaoPagina": 185,
     "mecanica": {
       "efeito": "buff",
       "buffDanoArma": 2,
@@ -2129,8 +2127,7 @@
       "buffRotulo": "Arma Congelante (+2 frio)",
       "notas": "+2 de dano (frio) após a RD, arma corpo a corpo. Efeito de frio que reduz o alvo fica narrado. Duração 1 min."
     },
-    "mecanicaConferida": false,
-    "mecanicaMotivo": "sem-texto-do-livro",
+    "mecanicaConferida": true,
     "fonteCabecalho": "tabela",
     "duracaoTipo": "temporaria",
     "duracaoSeg": 60,
@@ -2143,9 +2140,9 @@
     "conferido": "livro",
     "conferidoPagina": 185,
     "conferidoPor": {
-      "duracao": "tabela",
-      "tempoOperacao": "tabela",
-      "custo": "tabela"
+      "duracao": "tabela+entrada",
+      "tempoOperacao": "tabela+entrada",
+      "custo": "tabela+entrada"
     }
   },
   {
@@ -2311,7 +2308,7 @@
     "energia": "4/1",
     "tempoOperacao": "2 seg",
     "preRequisitos": "AM2, Calor",
-    "descricao": "Comum\nO objetivo está envolto em chamas sem sentir qualquer desconforto — ele, e qualquer coisa que ele carregue, está sob uma mágica básica de Resistência ao Fogo. As chamas fornecem a iluminação usual e calor para o ambiente. Os ataques corpo a corpo contra o objetivo provocam um ponto extra de dano por fogo.\n\nQualquer ataque corpo a corpo que acerte o objetivo desencadeia uma reação de 1d ao longo da arma contra o inimigo. Este ataque atinge automaticamente a mão que segura a arma se o alcance da arma for 1 ou menos. Se o objetivo agarrar ou for agarrado, o inimigo recebe dano por queimadura de 3d, mas a mágica será quebrada.\n\nDuração: 1 minuto.\n\nCusto: 6 para operar. 3 para manter.\n\nPré-requisitos: Aptidão Mágica 1, Resistência ao Fogo e Jato de Chamas.\n\nItem\n(a) Cajado ou joias. Utilizável apenas por magos. Custo de energia para criar: 600; deve incluir $300 em rubis.\n(b) Capa ou armadura. Só afeta o usuário. Quando ativada, a capa parece literalmente tecida de chamas; ela protege contra ataques pelas costas e dos lados, mas não pela frente, a menos que seja empunhada como um manto leve (veja Capa, pág. MB186). Custo de energia para criar: 700 para a capa, 1.000 para armadura.",
+    "descricao": "Comum\n\nFaz com que qualquer arma arda em fogo, o que não prejudica o usuário, mas permite que a arma cause +2 de dano a inimigos ou objetos inflamáveis (depois de penetrar na armadura e acrescentar outros bônus). Armas de metal não são danificadas; as de madeira se tornam cinzas assim que a mágica termina. A arma também libera luz como uma tocha.\n\nDuração: 1 minuto.\n\nCusto: 4 para operar. 1 para manter.\n\nTempo de operação: 2 segundos.\n\nPré-requisitos: Aptidão Mágica 2 e Calor.\n\nItem\nUma arma que arde sempre que usada, sem custo de energia para o usuário. Custo de energia para criar: 750; um rubi de $400 deve ser colocado na arma.",
     "descricaoConferida": true,
     "descricaoPagina": 75,
     "mecanica": {
@@ -2327,17 +2324,16 @@
     "duracaoSeg": 60,
     "tempoOperacaoSeg": 2,
     "tempoTipo": "fixo",
-    "custoOperar": 6,
-    "custoManter": 3,
+    "custoOperar": 4,
+    "custoManter": 1,
     "custoManterTipo": "numero",
     "custoTipo": "fixo",
-    "energiaTela": "6/3",
     "conferido": "livro",
     "conferidoPagina": 75,
     "conferidoPor": {
       "duracao": "tabela+entrada",
-      "tempoOperacao": "tabela",
-      "custo": "entrada"
+      "tempoOperacao": "tabela+entrada",
+      "custo": "tabela+entrada"
     }
   },
   {
@@ -2541,16 +2537,15 @@
     "energia": "6/3",
     "tempoOperacao": "1 seg",
     "preRequisitos": "AM1, Imunidade ao Fogo, Jato de Chamas",
-    "descricao": "Comum\n\nO objetivo está envolto em chamas sem sentir qualquer desconforto — ele, e qualquer coisa que ele carregue, está sob uma mágica básica de Resistência ao Fogo. As chamas fornecem a iluminação usual e calor para o ambiente. Os ataques corpo a corpo contra o objetivo provocam um ponto extra de dano por fogo.\n\nQualquer ataque corpo a corpo que acerte o objetivo desencadeia uma reação de 1d ao longo da arma contra o inimigo. Este ataque atinge automaticamente a mão que segura a arma se o alcance da arma for 1 ou menos. Se o objetivo agarrar ou for agarrado, o inimigo recebe dano por queimadura de 3d, mas a mágica será quebrada.\n\nDuração: 1 minuto.\n\nCusto: 6 para operar: 3 para manter.\n\nPré-requisitos: Aptidão Mágica 1, Resistência ao Fogo e Jato de Chamas.\n\nItem\n\n(a) Cajado ou joias. Utilizável apenas por magos. Custo de energia para criar: 600; deve incluir $300 em rubis. (b) Capa ou armadura. Só afeta o usuário. Quando ativada, a capa parece literalmente tecida de chamas; ela protege contra ataques pelas costas e dos lados, mas não pela frente, a menos que seja empunhada como um manto leve (veja Capa, pág. MB186). Custo de energia para criar: 700 para a capa, 1.000 para armadura.",
-    "descricaoConferida": false,
-    "descricaoMotivo": "sem-entrada-no-texto",
+    "descricao": "Comum\n\nO objetivo está envolto em chamas sem sentir qualquer desconforto — ele, e qualquer coisa que ele carregue, está sob uma mágica básica de Resistência ao Fogo. As chamas fornecem a iluminação usual e calor para o ambiente. Os ataques corpo a corpo contra o objetivo provocam um ponto extra de dano por fogo.\n\nQualquer ataque corpo a corpo que acerte o objetivo desencadeia uma reação de 1d ao longo da arma contra o inimigo. Este ataque atinge automaticamente a mão que segura a arma se o alcance da arma for 1 ou menos. Se o objetivo agarrar ou for agarrado, o inimigo recebe dano por queimadura de 3d, mas a mágica será quebrada.\n\nDuração: 1 minuto.\n\nCusto: 6 para operar. 3 para manter.\n\nPré-requisitos: Aptidão Mágica 1, Resistência ao Fogo e Jato de Chamas.\n\nItem\n(a) Cajado ou joias. Utilizável apenas por magos. Custo de energia para criar: 600; deve incluir $300 em rubis. (b) Capa ou armadura. Só afeta o usuário. Quando ativada, a capa parece literalmente tecida de chamas; ela protege contra ataques pelas costas e dos lados, mas não pela frente, a menos que seja empunhada como um manto leve (veja Capa, pág. MB186). Custo de energia para criar: 700 para a capa, 1.000 para armadura.",
+    "descricaoConferida": true,
+    "descricaoPagina": 75,
     "mecanica": {
       "efeito": "buff",
       "buffRotulo": "armadura flamejante",
       "notas": "NARRADO: alvo envolto em chamas com Resistencia ao Fogo basica. Atacante corpo a corpo leva +1 de dano por fogo e uma reacao de 1d ao longo da arma (acerta automaticamente a mao se o alcance da arma for 1 ou menos). Se o alvo agarrar ou for agarrado, o inimigo leva 3d de queimadura e a magia se quebra. Dano refletido no atacante nao cabe em nenhum campo do motor."
     },
-    "mecanicaConferida": false,
-    "mecanicaMotivo": "sem-texto-do-livro",
+    "mecanicaConferida": true,
     "fonteCabecalho": "tabela",
     "duracaoTipo": "temporaria",
     "duracaoSeg": 60,
@@ -2563,9 +2558,9 @@
     "conferido": "livro",
     "conferidoPagina": 75,
     "conferidoPor": {
-      "duracao": "tabela",
+      "duracao": "tabela+entrada",
       "tempoOperacao": "tabela",
-      "custo": "tabela"
+      "custo": "tabela+entrada"
     }
   },
   {
@@ -2660,7 +2655,7 @@
     "energia": "3#",
     "tempoOperacao": "1 seg",
     "preRequisitos": "Nó",
-    "descricao": "Comum\n\nAmarra o objetivo com um pedaço de corda ou corrente (que não é criado pela mágica, apenas é animada). Útil para embrulhar pacotes, amarrar barcos, amarrar prisioneiros e assim por diante. Um objetivo com resistência ativa resiste usando DX. A amarra é um nó normal (embora possa ser transformado em um Nó mágico aumentando o gasto de energia).\n\nDuração: Permanente.\n\nCusto: 3 para operar (1 extra para operar Nó nela).\n\nPré-requisito: Nó.\n\nItem\nUma corda ou corrente que envolve o item (que deve ser tocado) quando uma palavra de comando é falada; o encantamento é perdido se for cortada ou quebrada. Custo de energia para criar: 90 por metro de comprimento.",
+    "descricao": "Comum\n\nAmarra o objetivo com um pedaço de corda ou corrente (que não é criado pela mágica, apenas é animada). Útil para embrulhar pacotes, amarrar barcos, amarrar prisioneiros e assim por diante. Um objetivo com resistência ativa resiste usando DX. A amarra é um nó normal (embora possa ser transformado em um nó mágico aumentando o gasto de energia).\n\nDuração: Permanente.\n\nCusto: 3 para operar (1 extra para operar Nó nela).\n\nPré-requisito: Nó.\n\nItem\nUma corda ou corrente que envolve o item (que deve ser tocado) quando uma palavra de comando é falada; o encantamento é perdido se for cortada ou quebrada. Custo de energia para criar: 90 por metro de comprimento.",
     "descricaoConferida": true,
     "descricaoPagina": 118,
     "mecanica": {
@@ -2734,29 +2729,30 @@
     "energia": "2",
     "tempoOperacao": "1 seg",
     "preRequisitos": "Dor",
-    "descricao": "Comum; Resistível com HT\n\nO objetivo fica fisicamente atordoado (pág. MB420), e deve fazer um teste de HT a cada segundo para tentar se recuperar.\n\nCusto: 2. Não pode ser mantida. Pré-requisitos: Dor.\n\nItem\n\n(a) Qualquer item. Sempre ativo; o usuário fica atordoado até que o item seja removido. Custo para criar: 500 de energia. (b) Cajado ou varinha. Utilizável apenas por magos; o item deve tocar o objetivo. Custo para criar: 1.100 de energia.",
-    "descricaoConferida": false,
-    "descricaoMotivo": "so-pagina",
+    "descricao": "Comum; Resistível com HT\n\nO objetivo fica fisicamente atordoado (pág. MB420), e deve fazer um teste de HT a cada segundo para tentar se recuperar.\n\nCusto: 2. Não pode ser mantida.\n\nPré-requisitos: Dor.\n\nItem\n(a) Qualquer item. Sempre ativo; o usuário fica atordoado até que o item seja removido. Custo para criar: 500 de energia. (b) Cajado ou varinha. Utilizável apenas por magos; o item deve tocar o objetivo. Custo para criar: 1.100 de energia.",
+    "descricaoConferida": true,
+    "descricaoPagina": 37,
     "mecanica": {
       "efeito": "condicao",
       "condicao": "atordoado",
       "notas": "Alvo fisicamente atordoado; teste de HT a cada segundo para recuperar. Nao pode ser mantida."
     },
-    "mecanicaConferida": false,
-    "mecanicaMotivo": "sem-texto-do-livro",
+    "mecanicaConferida": true,
     "fonteCabecalho": "tabela",
     "duracaoTipo": "instantanea",
     "duracaoSeg": 0,
     "tempoOperacaoSeg": 1,
     "tempoTipo": "fixo",
     "custoOperar": 2,
+    "custoManter": 0,
+    "custoManterTipo": "nao",
     "custoTipo": "fixo",
     "conferido": "livro",
     "conferidoPagina": 37,
     "conferidoPor": {
       "duracao": "tabela",
       "tempoOperacao": "tabela",
-      "custo": "tabela"
+      "custo": "entrada"
     }
   },
   {
@@ -3200,7 +3196,7 @@
     "energia": "2 a 10/M",
     "tempoOperacao": "1 seg",
     "preRequisitos": "2 mágicas de Atrofiar",
-    "descricao": "Comum; Resistível com HT\n\nReduz todos os testes de Sentidos do objetivo em 1 para cada dois pontos de energia colocados na mágica.\n\nDuração: 10 minutos.\nCusto: 2 a 10 para operar. Metade disso para manter.\nPré-requisitos: Quaisquer duas variações de Atrofiar (Sentido).",
+    "descricao": "Comum; Resistível com HT\n\nReduz todos os testes de Sentidos do objetivo.\n\nDuração: 10 minutos.\n\nCusto: 2 a 10 para operar. Metade disso para manter. Sentidos são reduzidos em 1 para cada dois pontos de energia colocados na mágica.\n\nPré-requisitos: Quaisquer duas variações de Atrofiar (Sentido).\n\nItem\nRoupas ou joias. As pontuações do Sentido do usuário são reduzidas. Custo de energia para criar: 200 por ponto de redução.",
     "descricaoConferida": true,
     "descricaoPagina": 134,
     "mecanica": {
@@ -3279,7 +3275,7 @@
     "energia": "1 a 5",
     "tempoOperacao": "nenhum",
     "preRequisitos": "Graça",
-    "descricao": "Comum ou Bloqueio\n\nExistem, na verdade, quatro variações desta mágica: Aumentar Força, Aumentar Destreza, Aumentar Inteligência e Aumentar Vitalidade. Cada mágica deve ser estudada separadamente, mas todas as quatro funcionam de maneira idêntica.",
+    "descricao": "Comum ou Bloqueio\n\nExistem, na verdade, quatro variações desta mágica: Aumentar Força, Aumentar Destreza, Aumentar Inteligência e Aumentar Vitalidade. Cada mágica deve ser estudada separadamente, mas todas as quatro funcionam de maneira idêntica.\n\nEsta mágica aumenta o atributo do objetivo apenas por tempo suficiente para um único teste ou ação curta — uma Disputa Rápida, um teste de atributo, um golpe, preparar uma arma, resistir a uma mágica, arremessar um objeto, etc. Não pode ser utilizada para melhorar um teste que represente vários segundos de esforço, como uma Disputa Normal. O atributo incrementado afeta todas as características secundárias, com exceção de PV e PF. Um NH elevado não reduz o custo para operar esta mágica.\n\nAumentar Inteligência é uma mágica de Controle da Mente, não uma mágica de Controle do Corpo.\n\nCusto: 1 para cada ponto de incremento de atributo (máximo de 5).\n\nPré-requisitos: Há um pré-requisito diferente para cada versão:\n\nMágica\b\nPré-requisito\nAumentar Destreza\nGraça\nAumentar Vitalidade\nVigor\nAumentar Força\nForça\nAumentar Inteligência\nSabedoria\n\nItem\nCajado, varinha, joias ou artigo de vestuário. Custo para criar: 300 de energia.",
     "descricaoConferida": true,
     "descricaoPagina": 37,
     "descricaoTitulo": "Aumentar (Atributo)",
@@ -3299,15 +3295,14 @@
     "duracaoSeg": 0,
     "tempoOperacaoSeg": 0,
     "tempoTipo": "instantaneo",
-    "custoTipo": "faixa",
-    "custoMinimo": 1,
-    "custoMaximo": 5,
+    "custoTipo": "porUnidade",
+    "custoFormula": "1 para cada ponto de incremento de atributo (máximo de 5).",
     "conferido": "livro",
     "conferidoPagina": 37,
     "conferidoPor": {
       "duracao": "tabela",
       "tempoOperacao": "tabela",
-      "custo": "tabela"
+      "custo": "entrada"
     }
   },
   {
@@ -3324,7 +3319,7 @@
     "energia": "1 a 5",
     "tempoOperacao": "nenhum",
     "preRequisitos": "Força",
-    "descricao": "Comum ou Bloqueio\n\nExistem, na verdade, quatro variações desta mágica: Aumentar Força, Aumentar Destreza, Aumentar Inteligência e Aumentar Vitalidade. Cada mágica deve ser estudada separadamente, mas todas as quatro funcionam de maneira idêntica.",
+    "descricao": "Comum ou Bloqueio\n\nExistem, na verdade, quatro variações desta mágica: Aumentar Força, Aumentar Destreza, Aumentar Inteligência e Aumentar Vitalidade. Cada mágica deve ser estudada separadamente, mas todas as quatro funcionam de maneira idêntica.\n\nEsta mágica aumenta o atributo do objetivo apenas por tempo suficiente para um único teste ou ação curta — uma Disputa Rápida, um teste de atributo, um golpe, preparar uma arma, resistir a uma mágica, arremessar um objeto, etc. Não pode ser utilizada para melhorar um teste que represente vários segundos de esforço, como uma Disputa Normal. O atributo incrementado afeta todas as características secundárias, com exceção de PV e PF. Um NH elevado não reduz o custo para operar esta mágica.\n\nAumentar Inteligência é uma mágica de Controle da Mente, não uma mágica de Controle do Corpo.\n\nCusto: 1 para cada ponto de incremento de atributo (máximo de 5).\n\nPré-requisitos: Há um pré-requisito diferente para cada versão:\n\nMágica\b\nPré-requisito\nAumentar Destreza\nGraça\nAumentar Vitalidade\nVigor\nAumentar Força\nForça\nAumentar Inteligência\nSabedoria\n\nItem\nCajado, varinha, joias ou artigo de vestuário. Custo para criar: 300 de energia.",
     "descricaoConferida": true,
     "descricaoPagina": 37,
     "descricaoTitulo": "Aumentar (Atributo)",
@@ -3344,15 +3339,14 @@
     "duracaoSeg": 0,
     "tempoOperacaoSeg": 0,
     "tempoTipo": "instantaneo",
-    "custoTipo": "faixa",
-    "custoMinimo": 1,
-    "custoMaximo": 5,
+    "custoTipo": "porUnidade",
+    "custoFormula": "1 para cada ponto de incremento de atributo (máximo de 5).",
     "conferido": "livro",
     "conferidoPagina": 37,
     "conferidoPor": {
       "duracao": "tabela",
       "tempoOperacao": "tabela",
-      "custo": "tabela"
+      "custo": "entrada"
     }
   },
   {
@@ -3369,7 +3363,7 @@
     "energia": "1 a 5",
     "tempoOperacao": "nenhum",
     "preRequisitos": "Sabedoria",
-    "descricao": "Comum ou Bloqueio\n\nExistem, na verdade, quatro variações desta mágica: Aumentar Força, Aumentar Destreza, Aumentar Inteligência e Aumentar Vitalidade. Cada mágica deve ser estudada separadamente, mas todas as quatro funcionam de maneira idêntica.",
+    "descricao": "Comum ou Bloqueio\n\nExistem, na verdade, quatro variações desta mágica: Aumentar Força, Aumentar Destreza, Aumentar Inteligência e Aumentar Vitalidade. Cada mágica deve ser estudada separadamente, mas todas as quatro funcionam de maneira idêntica.\n\nEsta mágica aumenta o atributo do objetivo apenas por tempo suficiente para um único teste ou ação curta — uma Disputa Rápida, um teste de atributo, um golpe, preparar uma arma, resistir a uma mágica, arremessar um objeto, etc. Não pode ser utilizada para melhorar um teste que represente vários segundos de esforço, como uma Disputa Normal. O atributo incrementado afeta todas as características secundárias, com exceção de PV e PF. Um NH elevado não reduz o custo para operar esta mágica.\n\nAumentar Inteligência é uma mágica de Controle da Mente, não uma mágica de Controle do Corpo.\n\nCusto: 1 para cada ponto de incremento de atributo (máximo de 5).\n\nPré-requisitos: Há um pré-requisito diferente para cada versão:\n\nMágica\b\nPré-requisito\nAumentar Destreza\nGraça\nAumentar Vitalidade\nVigor\nAumentar Força\nForça\nAumentar Inteligência\nSabedoria\n\nItem\nCajado, varinha, joias ou artigo de vestuário. Custo para criar: 300 de energia.",
     "descricaoConferida": true,
     "descricaoPagina": 37,
     "descricaoTitulo": "Aumentar (Atributo)",
@@ -3384,15 +3378,14 @@
     "duracaoSeg": 0,
     "tempoOperacaoSeg": 0,
     "tempoTipo": "instantaneo",
-    "custoTipo": "faixa",
-    "custoMinimo": 1,
-    "custoMaximo": 5,
+    "custoTipo": "porUnidade",
+    "custoFormula": "1 para cada ponto de incremento de atributo (máximo de 5).",
     "conferido": "livro",
     "conferidoPagina": 37,
     "conferidoPor": {
       "duracao": "tabela",
       "tempoOperacao": "tabela",
-      "custo": "tabela"
+      "custo": "entrada"
     }
   },
   {
@@ -3409,7 +3402,7 @@
     "energia": "1 a 5",
     "tempoOperacao": "nenhum",
     "preRequisitos": "Vigor",
-    "descricao": "Comum ou Bloqueio\n\nExistem, na verdade, quatro variações desta mágica: Aumentar Força, Aumentar Destreza, Aumentar Inteligência e Aumentar Vitalidade. Cada mágica deve ser estudada separadamente, mas todas as quatro funcionam de maneira idêntica.",
+    "descricao": "Comum ou Bloqueio\n\nExistem, na verdade, quatro variações desta mágica: Aumentar Força, Aumentar Destreza, Aumentar Inteligência e Aumentar Vitalidade. Cada mágica deve ser estudada separadamente, mas todas as quatro funcionam de maneira idêntica.\n\nEsta mágica aumenta o atributo do objetivo apenas por tempo suficiente para um único teste ou ação curta — uma Disputa Rápida, um teste de atributo, um golpe, preparar uma arma, resistir a uma mágica, arremessar um objeto, etc. Não pode ser utilizada para melhorar um teste que represente vários segundos de esforço, como uma Disputa Normal. O atributo incrementado afeta todas as características secundárias, com exceção de PV e PF. Um NH elevado não reduz o custo para operar esta mágica.\n\nAumentar Inteligência é uma mágica de Controle da Mente, não uma mágica de Controle do Corpo.\n\nCusto: 1 para cada ponto de incremento de atributo (máximo de 5).\n\nPré-requisitos: Há um pré-requisito diferente para cada versão:\n\nMágica\b\nPré-requisito\nAumentar Destreza\nGraça\nAumentar Vitalidade\nVigor\nAumentar Força\nForça\nAumentar Inteligência\nSabedoria\n\nItem\nCajado, varinha, joias ou artigo de vestuário. Custo para criar: 300 de energia.",
     "descricaoConferida": true,
     "descricaoPagina": 37,
     "descricaoTitulo": "Aumentar (Atributo)",
@@ -3429,15 +3422,14 @@
     "duracaoSeg": 0,
     "tempoOperacaoSeg": 0,
     "tempoTipo": "instantaneo",
-    "custoTipo": "faixa",
-    "custoMinimo": 1,
-    "custoMaximo": 5,
+    "custoTipo": "porUnidade",
+    "custoFormula": "1 para cada ponto de incremento de atributo (máximo de 5).",
     "conferido": "livro",
     "conferidoPagina": 37,
     "conferidoPor": {
       "duracao": "tabela",
       "tempoOperacao": "tabela",
-      "custo": "tabela"
+      "custo": "entrada"
     }
   },
   {
@@ -4095,9 +4087,9 @@
     "energia": "1/BD+#",
     "tempoOperacao": "1 seg",
     "preRequisitos": "AM1",
-    "descricao": "Bloqueio\n\nUma versão instantânea da magia Escudo — adiciona ao BD do objetivo um único teste de defesa. Esta mágica não é cumulativa com os efeitos de Escudo — use o maior valor.\n\nCusto: 1 por ponto de BD (máximo de 5). Pré-requisito: Aptidão Mágica 1.",
-    "descricaoConferida": false,
-    "descricaoMotivo": "sem-entrada-no-texto",
+    "descricao": "Bloqueio\n\nUma versão instantânea da magia Escudo — adiciona ao BD do objetivo um único teste de defesa. Esta mágica não é cumulativa com os efeitos de Escudo — use o maior valor.\n\nCusto: 1 por ponto de BD (máximo de 5).\n\nPré-requisito: Aptidão Mágica 1.",
+    "descricaoConferida": true,
+    "descricaoPagina": 166,
     "mecanica": {
       "efeito": "buff",
       "buffRotulo": "BD+1 a +5 em um unico teste de defesa (1 energia por ponto)",
@@ -4107,21 +4099,20 @@
       "buffMaxNiveis": 5,
       "buffUmUnicoUso": true
     },
-    "mecanicaConferida": false,
-    "mecanicaMotivo": "sem-texto-do-livro",
+    "mecanicaConferida": true,
     "fonteCabecalho": "tabela",
     "duracaoTipo": "instantanea",
     "duracaoSeg": 0,
     "tempoOperacaoSeg": 1,
     "tempoTipo": "fixo",
-    "custoTipo": "porUnidade",
-    "custoFormula": "1/BD+#",
+    "custoTipo": "porPonto",
+    "custoFormula": "1 por ponto de BD (máximo de 5).",
     "conferido": "livro",
     "conferidoPagina": 166,
     "conferidoPor": {
       "duracao": "tabela",
       "tempoOperacao": "tabela",
-      "custo": "tabela"
+      "custo": "entrada"
     }
   },
   {
@@ -4304,7 +4295,7 @@
     "energia": "2 a 2× AM#",
     "tempoOperacao": "1 a 3 seg",
     "preRequisitos": "Bola de Fogo",
-    "descricao": "Projétil\nCria uma bola de fogo que afeta tanto o alvo quanto as coisas próximas. Ela tem 1/2D 25, Max 50, Prec 1. Pode ser lançada em uma parede, chão, etc. (com um bônus de -4 para acertar) para capturar inimigos na explosão. O alvo e qualquer um mais próximo do alvo que um metro recebe dano total. Os mais afastados dividem o dano em três vezes a distância em metros (arredondado para baixo).\n\nCusto: Qualquer quantia até duas vezes o seu nível de Aptidão Mágica por segundo, por três segundos. A bola de fogo causa 1d de dano por queimadura a cada 2 pontos de energia.\n\nTempo de operação: 1 a 3 segundos.\n\nPré-requisito: Bola de Fogo.\n\nItem\nCajado ou varinha — a bola é disparada a partir da ponta do item. Custo de energia para criar: 1.200; deve incluir um rubi no valor de $500. Utilizável apenas por magos.",
+    "descricao": "Projétil\n\nCria uma bola de fogo que afeta tanto o alvo quanto as coisas próximas. Ela tem 1/2D 25, Max 50, Prec. 1. Pode ser lançada em uma parede, chão, etc. (com um bônus de -4 para acertar) para capturar inimigos na explosão. O alvo e qualquer um mais próximo do alvo que um metro recebe dano total. Os mais afastados dividem o dano em três vezes a distância em metros (arredondado para baixo).\n\nCusto: Qualquer quantia até duas vezes o seu nível de Aptidão Mágica por segundo, por três segundos. A bola de fogo causa 1d de dano por queimadura a cada 2 pontos de energia.\n\nTempo de operação: 1 a 3 segundos.\n\nPré-requisito: Bola de Fogo.\n\nItem\nCajado ou varinha — a bola é disparada a partir da ponta do item. Custo de energia para criar: 1.200; deve incluir um rubi no valor de $500. Utilizável apenas por magos.",
     "descricaoConferida": true,
     "descricaoPagina": 75,
     "mecanica": {
@@ -4434,7 +4425,7 @@
     "energia": "2",
     "tempoOperacao": "1 seg",
     "preRequisitos": "Medo",
-    "descricao": "Área; Resistível com Vontade-1\n\nTorna o(s) objetivo(s) destemidos. Qualquer um sob esta mágica deve fazer um teste de IQ para evitar ser corajoso sem ser cauteloso.\n\nDuração: 1 hora.\nCusto básico: 2.\nPré-requisito: Medo.",
+    "descricao": "Área; Resistível com Vontade-1\n\nTorna o(s) objetivo(s) destemidos. Qualquer um sob esta mágica deve fazer um teste de IQ para evitar ser corajoso sem ser cauteloso.\n\nDuração: 1 hora, a menos que seja combatida por Medo.\n\nCusto básico: 2. Não pode ser mantida.\n\nPré-requisito: Medo.\n\nItem\n(a) Qualquer item. Sempre ativo; o item mantém uma mágica Bravura em seu usuário. Custo de energia para criar: 500. (b) Cajado ou varinha. Utilizável apenas por magos; o item deve tocar o objetivo. Custo de energia para criar: 500.",
     "descricaoConferida": true,
     "descricaoPagina": 134,
     "mecanica": {
@@ -4450,13 +4441,15 @@
     "tempoOperacaoSeg": 1,
     "tempoTipo": "fixo",
     "custoOperar": 2,
+    "custoManter": 0,
+    "custoManterTipo": "nao",
     "custoTipo": "fixo",
     "conferido": "livro",
     "conferidoPagina": 134,
     "conferidoPor": {
-      "duracao": "tabela+entrada",
+      "duracao": "tabela",
       "tempoOperacao": "tabela",
-      "custo": "tabela+entrada"
+      "custo": "entrada"
     }
   },
   {
@@ -4736,7 +4729,7 @@
     "energia": "1 por 25 kg/M#",
     "tempoOperacao": "1 seg",
     "preRequisitos": "Aporte",
-    "descricao": "Comum\n\nAnde nas paredes ou nos tetos como se eles estivessem nivelados.\n\nDuração: 1 minuto.\nCusto: 1 por 25 kg, mínimo de 2 pontos. Metade disso para manter.\nPré-requisito: Aporte.",
+    "descricao": "Comum\n\nAnde nas paredes ou nos tetos como se eles estivessem nivelados. O objetivo deve manter pelo menos uma mão ou pé em contato com a superfície; caso contrário, a mágica será quebrada. O combate terá uma penalidade de -2 para o caminhador de paredes e seu inimigo por causa dos ângulos estranhos.\n\nDuração: 1 minuto.\n\nCusto: 1 por 25 kg, mínimo de 2 pontos. Metade disso para manter.\n\nPré-requisito: Aporte.\n\nItem\nJoias ou sapatos. O item deve conter uma imagem de uma aranha, mosca ou lagarto. Só afeta o usuário. Custo de energia para criar: 1.000.",
     "descricaoConferida": true,
     "descricaoPagina": 144,
     "mecanica": {
@@ -4887,7 +4880,7 @@
     "energia": "4/2",
     "tempoOperacao": "10 seg",
     "preRequisitos": "Entalhar, Medidas",
-    "descricao": "Especial\n\nQuando operada em um pergaminho ou qualquer outra superfície de escrita (incluindo um mapa anteriormente inacabado), essa mágica cria um mapa do que o detentor do pergaminho percebe. O operador deve declarar a escala usada para o mapa, onde é o norte, o ponto no pergaminho onde o mapeamento começa e quais recursos devem aparecer no mapa.\n\nO mapa assim criado é da mesma qualidade como se tivesse sido desenhado por alguém com NH em Cartografia igual ou menor ao nível de habilidade efetivo do operador com esta mágica e sua perícia Cartografia. Não é melhor em conteúdo do que se o detentor tivesse tido tempo para escrever ele mesmo — a mágica nada mais é do que uma economizadora de tempo.\n\nDuração: 1 hora. A mágica não expira se o usuário do pergaminho sair de perto do mapa, ela simplesmente não consegue escrever nada até que ele volte ao lugar. As inscrições em si são permanentes.\n\nCusto: 4 para operar. 2 para manter.\n\nTempo de operação: 10 segundos.\n\nPré-requisitos: Entalhar e Medidas.\n\nItem\n(a) Um pergaminho pode ser automatizado, atualizando-se sempre que seu portador entra em uma nova área (e gasta energia para ativá-lo). Custo de energia para criar: 100. (b) Varinha ou cajado. Custo de energia para criar: 300.",
+    "descricao": "Especial\n\nQuando operada em um pergaminho ou qualquer outra superfície de escrita (incluindo um mapa anteriormente inacabado), essa mágica cria um mapa do que o detentor do pergaminho percebe.\n\nO operador deve declarar a escala usada para o mapa, onde é o norte, o ponto no pergaminho onde o mapeamento começa e quais recursos devem aparecer no mapa. O mapa assim criado é da mesma qualidade como se tivesse sido desenhado por alguém com NH em Cartografia igual ou menor ao nível de habilidade efetivo do operador com esta mágica e sua perícia Cartografia. Não é melhor em conteúdo como se o detentor tivesse tido tempo para escrever ele mesmo — a mágica nada mais é do que uma economizadora de tempo.\n\nDuração: 1 hora. A mágica não expira se o usuário do pergaminho sair de perto do mapa, ela simplesmente não consegue escrever nada até que ele volte ao lugar. As inscrições em si são permanentes.\n\nCusto: 4 para operar. 2 para manter.\n\nTempo de operação: 10 segundos.\n\nPré-requisitos: Entalhar e Medidas.\n\nItem\n(a) Um pergaminho pode ser automapeado, atualizando-se sempre que seu portador entra em uma nova área (e gasta energia para ativá-lo). Custo de energia para criar: 100. (b) Varinha ou cajado. Custo de energia para criar: 300.",
     "descricaoConferida": true,
     "descricaoPagina": 118,
     "mecanica": {
@@ -5271,9 +5264,9 @@
     "energia": "1 ou 10",
     "tempoOperacao": "1 seg",
     "preRequisitos": "Conceder Vitalidade",
-    "descricao": "Comum\n\nO sangramento do objetivo é interrompido imediatamente, como se estivesse enfaixado por alguém com a perícia Primeiros Socorros (pág. MB219). Isso restaura 1 PV e evita mais perda de PV devido ao sangramento se as Regras Opcionais de Sangramento (pág. MB420) estiverem em vigor. O objetivo desta mágica não pode se beneficiar subsequentemente do enfaixamento dos mesmos ferimentos.\n\nEsta mágica também pode ser usada para estabilizar um ferimento fatal (pág. MB423), a um custo substancialmente maior.\n\nDuração: Permanente, embora lesões posteriores sangrem normalmente.\n\nCusto: 1 para parar o sangramento em um ferimento normal; 10 para estabilizar um ferimento mortal.\n\nPré-requisito: Conceder Vitalidade.\n\nItem\n\nQualquer item; O item deve ter uma gravura de um pelicano. Evita que o usuário sangre e sofra ferimentos mortais. Custo de energia para criar: 500.",
-    "descricaoConferida": false,
-    "descricaoMotivo": "so-pagina",
+    "descricao": "Comum\n\nO sangramento do objetivo é interrompido imediatamente, como se estivesse enfaixado por alguém com a perícia Primeiros Socorros (pág. MB219). Isso restaura 1 PV e evita mais perda de PV devido ao sangramento se as Regras Opcionais de Sangramento (pág. MB420) estiverem em vigor. O objetivo desta mágica não pode se beneficiar subsequentemente do enfaixamento dos mesmos ferimentos.\n\nEsta mágica também pode ser usada para estabilizar um ferimento fatal (pág. MB423), a um custo substancialmente maior.\n\nDuração: Permanente, embora lesões posteriores sangrem normalmente.\n\nCusto: 1 para parar o sangramento em um ferimento normal; 10 para estabilizar um ferimento mortal.\n\nPré-requisito: Conceder Vitalidade.\n\nItem\nQualquer item; O item deve ter uma gravura de um pelicano. Evita que o usuário sangre e sofra ferimentos mortais. Custo de energia para criar: 500.",
+    "descricaoConferida": true,
+    "descricaoPagina": 91,
     "mecanica": {
       "efeito": "cura",
       "removeCondicoes": [
@@ -5282,21 +5275,20 @@
       "curaAoLimpar": 1,
       "notas": "Interrompe o sangramento (remove SANGRANDO) e restaura 1 PV. Alvo padrão: o próprio operador."
     },
-    "mecanicaConferida": false,
-    "mecanicaMotivo": "sem-texto-do-livro",
+    "mecanicaConferida": true,
     "fonteCabecalho": "tabela",
     "duracaoTipo": "permanente",
     "duracaoSeg": 0,
     "tempoOperacaoSeg": 1,
     "tempoTipo": "fixo",
     "custoTipo": "varia",
-    "custoFormula": "1 ou 10",
+    "custoFormula": "1 para parar o sangramento em um ferimento normal; 10 para estabilizar um ferimento mortal.",
     "conferido": "livro",
     "conferidoPagina": 91,
     "conferidoPor": {
       "duracao": "tabela",
       "tempoOperacao": "tabela",
-      "custo": "tabela"
+      "custo": "tabela+entrada"
     }
   },
   {
@@ -5312,7 +5304,7 @@
     "energia": "3/2#",
     "tempoOperacao": "3 seg",
     "preRequisitos": "6 mágicas do Fogo",
-    "descricao": "Área\nComo Criar Fogo, exceto que o fogo criado é a essência mágica do fogo. Qualquer mago pode dizer a diferença olhando. Não pode ser extinto por água comum ou mágica comum, mas apenas por uma quantidade similar de Água Essencial ou por Anular Mágica. Chama Essencial causa +1 de dano a qualquer um que ela queime (+2 para criaturas aquáticas).\n\nDuração: 1 minuto.\n\nCusto básico: 3. 2 para manter. Esta chama inflama todos os materiais inflamáveis, e toda a chama permanece essencial enquanto a mágica for mantida. Se a mágica não for mantida, quaisquer materiais que forem inflamados continuarão a queimar com chama comum.",
+    "descricao": "Área\n\nComo Criar Fogo, exceto que o fogo criado é a essência mágica do fogo. Qualquer mago pode dizer a diferença olhando. Não pode ser extinto por água comum ou mágica comum, mas apenas por uma quantidade similar de Água Essencial ou por Anular Mágica. Chama Essencial causa +1 de dano a qualquer um que ela queime (+2 para criaturas aquáticas).\n\nDuração: 1 minuto.\n\nCusto básico: 3. 2 para manter. Esta chama inflama todos os materiais inflamáveis, e toda a chama permanece essencial enquanto a mágica for mantida. Se a mágica não for mantida, quaisquer materiais que forem inflamados continuarão a queimar com chama comum.\n\nTempo de operação: 3 segundos.\n\nPré-requisitos: Pelo menos seis outras mágicas do Fogo.\n\nItem\nVarinha, cajado ou joias. Utilizável apenas por magos. Custo de energia para criar: 800; deve incluir um rubi de $400.",
     "descricaoConferida": true,
     "descricaoPagina": 75,
     "mecanica": {
@@ -5333,7 +5325,7 @@
     "conferidoPagina": 75,
     "conferidoPor": {
       "duracao": "tabela+entrada",
-      "tempoOperacao": "tabela",
+      "tempoOperacao": "tabela+entrada",
       "custo": "tabela+entrada"
     }
   },
@@ -5389,7 +5381,7 @@
     "energia": "3",
     "tempoOperacao": "10 seg",
     "preRequisitos": "Serralheiro ou Aporte e AM2",
-    "descricao": "Comum; Resistível com Tranca Mágica\n\nAbre as fechaduras magicamente.\n\nCusto: 3.\nTempo de operação: 10 segundos.\nPré-requisitos: Aptidão Mágica 2 e Aporte, ou Serralheiro.",
+    "descricao": "Comum; Resistível com Tranca Mágica\n\nAbre as fechaduras magicamente. Uma mágica Tranca Mágica recebe um teste para resistir à Chave-Mestra. Quaisquer modificadores para a dificuldade da tranca que se aplicariam à perícia Arrombamento também afetam esta mágica.\n\nDuração: Uma vez aberta, uma trava permanece aberta até ser fechada.\n\nCusto: 3. Não pode ser mantida.\n\nTempo de operação: 10 segundos.\n\nPré-requisitos: Aptidão Mágica 2 e Aporte, ou Serralheiro.\n\nItem\nUma chave de platina ou um amuleto de platina na forma de uma chave. Seu valor intrínseco deve ser de pelo menos $800. Custo de energia para criar: 2.000.",
     "descricaoConferida": true,
     "descricaoPagina": 144,
     "mecanica": {
@@ -5404,13 +5396,15 @@
     "tempoOperacaoSeg": 10,
     "tempoTipo": "fixo",
     "custoOperar": 3,
+    "custoManter": 0,
+    "custoManterTipo": "nao",
     "custoTipo": "fixo",
     "conferido": "livro",
     "conferidoPagina": 144,
     "conferidoPor": {
       "duracao": "tabela",
       "tempoOperacao": "tabela+entrada",
-      "custo": "tabela+entrada"
+      "custo": "entrada"
     }
   },
   {
@@ -6248,7 +6242,7 @@
     "energia": "3/1",
     "tempoOperacao": "3 seg",
     "preRequisitos": "Falar com Animais ou 3 mágicas de Comunicação",
-    "descricao": "Comum\n\nO objetivo ganha uma linguagem (apenas criaturas sapientes) ao nível de compreensão do operador ou Com Sotaque — o que for menor. O operador deve conhecer o idioma em questão.\n\nDuração: 1 minuto.\nCusto: 3 para operar, 1 para manter.\nTempo de operação: 3 segundos.\nPré-requisito: Conceder Idioma.",
+    "descricao": "Comum\n\nO objetivo ganha uma linguagem (apenas criaturas sapientes) ao nível de compreensão do operador ou Com Sotaque — o que for menor. O operador deve conhecer o idioma em questão.\n\nDuração: 1 minuto.\n\nCusto: 3 para opera. 1 para manter.\n\nTempo de operação: 3 segundos.\n\nPré-requisitos: Falar com Animais ou três mágicas de Comunicação e Empatia.",
     "descricaoConferida": true,
     "descricaoPagina": 46,
     "mecanica": {
@@ -6401,9 +6395,9 @@
     "energia": "2 a 2× AM#",
     "tempoOperacao": "1 a 3 seg",
     "preRequisitos": "Moldar Ar, Estrondo",
-    "descricao": "Projétil\n\nO operador cria uma bola de ar altamente pressurizado em sua mão. Quando a bola de ar atinge um alvo, ela explode. Essa explosão é extremamente barulhenta; qualquer pessoa em um raio de 10 metros deve ser bem-sucedida num teste de HT-3 ou ficará atordoada. Pessoas atordoadas podem repetir o teste de HT-3 a cada segundo para se recuperar. Audição Protegida concede um bônus de +5 a esse teste. Concussão tem 1/2D 20, Max 40, Prec 1; para a jogada de ataque, deve-se utilizar a perícia Ataque Inato.\n\nEsta também é uma mágica de Som.\n\nCusto: Qualquer quantia até no máximo o dobro do nível de Aptidão Mágica do operador por segundo, por três segundos. Para cada 2 pontos de energia empregados na mágica, o projétil causa 1d pontos de dano por contusão. Veja Explosões, pág. MB414, para mais detalhes sobre dano explosivo.\n\nTempo de operação: 1 a 3 segundos. Pré-requisitos: Moldar Ar e Estrondo (pág. 171).\n\nItem\n\nCajado ou varinha — o projétil é lançado da extremidade do item. Utilizável apenas por magos. Custo para criar: 1.000 de energia e um ônix de $400.",
-    "descricaoConferida": false,
-    "descricaoMotivo": "so-pagina",
+    "descricao": "Projétil\n\nO operador cria uma bola de ar altamente pressurizado em sua mão. Quando a bola de ar atinge um alvo, ela explode. Essa explosão é extremamente barulhenta; qualquer pessoa em um raio de 10 metros deve ser bem-sucedida num teste de HT-3 ou ficará atordoada. Pessoas atordoadas podem repetir o teste de HT-3 a cada segundo para se recuperar. Audição Protegida concede um bônus de +5 a esse teste. Concussão tem 1/2D 20, Max 40, Prec 1; para a jogada de ataque, deve-se utilizar a perícia Ataque Inato.\n\nEsta também é uma mágica de Som.\n\nCusto: Qualquer quantia até no máximo o dobro do nível de Aptidão Mágica do operador por segundo, por três segundos. Para cada 2 pontos de energia empregados na mágica, o projétil causa 1d pontos de dano por contusão. Veja Explosões, pág. MB414, para mais detalhes sobre dano explosivo.\n\nTempo de operação: 1 a 3 segundos.\n\nPré-requisitos: Moldar Ar e Estrondo (pág. 171).\n\nItem\nCajado ou varinha — o projétil é lançado da extremidade do item. Utilizável apenas por magos. Custo para criar: 1.000 de energia e um ônix de $400.",
+    "descricaoConferida": true,
+    "descricaoPagina": 26,
     "mecanica": {
       "efeito": "dano",
       "danoPorEnergia": "1d",
@@ -6426,13 +6420,13 @@
     "tempoMinSeg": 1,
     "tempoMaxSeg": 3,
     "custoTipo": "ateAptidao",
-    "custoFormula": "2 a 2× AM#",
+    "custoFormula": "Qualquer quantia até no máximo o dobro do nível de Aptidão Mágica do operador por segundo, por três segundos. Para cada 2 pontos de energia empregados na mágica, o projétil causa 1d pontos de dano por contusão. Veja Explosões, pág. MB414, para mais detalhes sobre dano explosivo.",
     "conferido": "livro",
     "conferidoPagina": 26,
     "conferidoPor": {
       "duracao": "tabela",
-      "tempoOperacao": "tabela",
-      "custo": "tabela"
+      "tempoOperacao": "tabela+entrada",
+      "custo": "tabela+entrada"
     }
   },
   {
@@ -6741,28 +6735,27 @@
     "energia": "Varia",
     "tempoOperacao": "10 seg",
     "preRequisitos": "Moldar Água",
-    "descricao": "Comum\n\nTransforma a água em gelo sólido. O gelo mantém a forma do seu recipiente; em águas abertas, o volume afetado congela como uma esfera ou cubo, por opção do operador. Uma mágica Moldar Água pode ser operada para moldar a água antes de ser congelada ou para alterar a forma do gelo depois de congelado.\n\nDuração: O gelo dura até derreter naturalmente.\n\nCusto: 2 para um objeto do tamanho de um punho, 4 para 25 litros, 6 para 250 litros, mais 3 para cada 250 litros adicionais. Se a temperatura estiver acima de zero, o operador pode manter a mágica gastando o custo de operação uma vez a cada 10 minutos.\n\nTempo de operação: 10 segundos. Pré-requisito: Moldar Água.\n\nItem\n\nCajado, varinha ou joias. Custo para criar: 200 de energia, $100 em uma gema azul.",
-    "descricaoConferida": false,
-    "descricaoMotivo": "sem-entrada-no-texto",
+    "descricao": "Comum\n\nTransforma a água em gelo sólido. O gelo mantém a forma do seu recipiente; em águas abertas, o volume afetado congela como uma esfera ou cubo, por opção do operador. Uma mágica Moldar Água pode ser operada para moldar a água antes de ser congelada ou para alterar a forma do gelo depois de congelado.\nDuração: O gelo dura até derreter naturalmente.\n\nCusto: 2 para um objeto do tamanho de um punho, 4 para 25 litros, 6 para 250 litros, mais 3 para cada 250 litros adicionais. Se a temperatura estiver acima de zero, o operador pode manter a mágica gastando o custo de operação uma vez a cada 10 minutos.\n\nTempo de operação: 10 segundos.\n\nPré-requisito: Moldar Água.\n\nItem\nCajado, varinha ou joias. Custo para criar: 200 de energia, $100 em uma gema azul.",
+    "descricaoConferida": true,
+    "descricaoPagina": 185,
     "mecanica": {
       "efeito": "ambiente",
       "notas": "Transforma água em gelo sólido. Custo por volume (2 punho / 4 por 25L / 6 por 250L). Utilidade/controle de terreno."
     },
-    "mecanicaConferida": false,
-    "mecanicaMotivo": "sem-texto-do-livro",
+    "mecanicaConferida": true,
     "fonteCabecalho": "tabela",
     "duracaoTipo": "permanente",
     "duracaoSeg": 0,
     "tempoOperacaoSeg": 10,
     "tempoTipo": "fixo",
     "custoTipo": "varia",
-    "custoFormula": "Varia",
+    "custoFormula": "2 para um objeto do tamanho de um punho, 4 para 25 litros, 6 para 250 litros, mais 3 para cada 250 litros adicionais. Se a temperatura estiver acima de zero, o operador pode manter a mágica gastando o custo de operação uma vez a cada 10 minutos.",
     "conferido": "livro",
     "conferidoPagina": 185,
     "conferidoPor": {
       "duracao": "tabela",
-      "tempoOperacao": "tabela",
-      "custo": "tabela"
+      "tempoOperacao": "tabela+entrada",
+      "custo": "tabela+entrada"
     }
   },
   {
@@ -8171,16 +8164,15 @@
     "energia": "5/2",
     "tempoOperacao": "5 seg",
     "preRequisitos": "Moldar Água",
-    "descricao": "Comum; Resistível com HT\n\nConcede temporariamente ao objetivo a metacaracterística Corpo de Água (pág. MB263). Roupas (até 3 kg) se tornam líquidas junto com ele, enquanto outras posses caem no chão.\n\nDuração: 1 minuto. Custo: 5 para operar: 2 para manter. Tempo de operação: 5 segundos. Pré-requisito: Moldar Água.\n\nItem\n\n(a) Cajado, varinha ou joia. Afeta apenas o usuário. Uma desvantagem grave é que, assim que é ativado, o objeto cai da mão do usuário — portanto, uma mágica operada com esse objeto dura apenas um minuto. Custo de energia para criar: 1.200. (b) Cajado, varinha ou joia. Afeta apenas o usuário. Diferentemente do objeto anterior, esse objeto fica aquoso junto com o usuário, permitindo que ele mantenha a mágica por mais de um minuto. Enquanto aquoso, o objeto perde quaisquer poderes mágicos que possa ter normalmente. Custo de energia para criar: 2.500.",
-    "descricaoConferida": false,
-    "descricaoMotivo": "sem-entrada-no-texto",
+    "descricao": "Comum; Resistível com HT\n\nConcede temporariamente ao objetivo a metacaracterística Corpo de Água (pág. MB263). Roupas (até 3 kg) se tornam líquidas junto com ele, enquanto outras posses caem no chão.\n\nDuração: 1 minuto.\n\nCusto: 5 para operar. 2 para manter.\n\nTempo de operação: 5 segundos.\n\nPré-requisito: Moldar Água.\n\nItem\n(a) Cajado, varinha ou joia. Afeta apenas o usuário. Uma desvantagem grave é que, assim que é ativado, o objeto cai da mão do usuário — portanto, uma mágica operada com esse objeto dura apenas um minuto. Custo de energia para criar: 1.200. (b) Cajado, varinha ou joia. Afeta apenas o usuário. Diferentemente do objeto anterior, esse objeto fica aquoso junto com o usuário, permitindo que ele mantenha a mágica por mais de um minuto. Enquanto aquoso, o objeto perde quaisquer poderes mágicos que possa ter normalmente. Custo de energia para criar: 2.500.",
+    "descricaoConferida": true,
+    "descricaoPagina": 185,
     "mecanica": {
       "efeito": "buff",
       "buffRotulo": "Corpo de Água",
       "notas": "Metacaracterística Corpo de Água (MB p263) por 1 min; Resistível com HT. Roupas até 3kg liquefazem junto, o resto cai no chão. Efeito narrado — não cabe em número."
     },
-    "mecanicaConferida": false,
-    "mecanicaMotivo": "sem-texto-do-livro",
+    "mecanicaConferida": true,
     "fonteCabecalho": "tabela",
     "duracaoTipo": "temporaria",
     "duracaoSeg": 60,
@@ -8193,9 +8185,9 @@
     "conferido": "livro",
     "conferidoPagina": 185,
     "conferidoPor": {
-      "duracao": "tabela",
-      "tempoOperacao": "tabela",
-      "custo": "tabela"
+      "duracao": "tabela+entrada",
+      "tempoOperacao": "tabela+entrada",
+      "custo": "tabela+entrada"
     }
   },
   {
@@ -8983,7 +8975,7 @@
     "energia": "2/4 litros",
     "tempoOperacao": "1 seg",
     "preRequisitos": "Purificar a Água",
-    "descricao": "Comum\n\nPermite ao operador criar água pura a partir do nada. Essa água pode aparecer em diversas formas: dentro de um recipiente, como um globo.",
+    "descricao": "Comum\n\nPermite ao operador criar água pura a partir do nada. Essa água pode aparecer em diversas formas: dentro de um recipiente, como um globo.\nsuspenso no ar (que cai imediatamente) ou na forma de uma névoa densa de gotículas (nessa forma, 4 litros de água podem apagar todo tipo de fogo em um raio de 1 metro). A água não pode ser criada no interior de um inimigo para afogá-lo!\n\nDuração: A água criada é permanente.\n\nCusto: 2 para cada 4 litros criado.\n\nPré-requisito: Purificar a Água.\n\nItem\nCajado, varinha ou joias. Custo de energia para criar: 200.",
     "descricaoConferida": true,
     "descricaoPagina": 184,
     "mecanica": {
@@ -8997,13 +8989,13 @@
     "tempoOperacaoSeg": 1,
     "tempoTipo": "fixo",
     "custoTipo": "porUnidade",
-    "custoFormula": "2/4 litros",
+    "custoFormula": "2 para cada 4 litros criado.",
     "conferido": "livro",
     "conferidoPagina": 184,
     "conferidoPor": {
       "duracao": "tabela",
       "tempoOperacao": "tabela",
-      "custo": "tabela"
+      "custo": "tabela+entrada"
     }
   },
   {
@@ -9863,9 +9855,9 @@
     "energia": "1 a 4",
     "tempoOperacao": "1 seg",
     "preRequisitos": "AM1, Cura Superficial",
-    "descricao": "Comum\n\nRestaura até 8 PV para o objetivo. Não elimina doenças ou venenos, mas curará os danos causados por essas coisas.\n\nCaso contrário, esta mágica funciona da mesma forma que Cura Superficial: com uma penalidade de -3 por operação no mesmo objetivo em um dia, e a perícia Medicina com NH 15 ou superior mitigará os efeitos de uma falha crítica.\n\nAs penalidades para operações repetidas são acumuladas separadamente para Cura Superficial e Cura Profunda. Por exemplo, um operador poderia operar as duas mágicas no mesmo objetivo no mesmo dia, sem penalidade.\n\nCusto: 1 a 4. Duas vezes o valor gasto é restaurado para o objetivo.\n\nPré-requisitos: Aptidão Mágica 1 e Cura Superficial.\n\nItem\n\nVarinha ou cajado decorado com um padrão de serpente. O item deve tocar o objetivo. Utilizável apenas por magos, ou por não-magos perícia Medicina 20 ou superior. Custo de energia para criar: 1.500.",
-    "descricaoConferida": false,
-    "descricaoMotivo": "so-pagina",
+    "descricao": "Comum\n\nRestaura até 8 PV para o objetivo. Não elimina doenças ou venenos, mas curará os danos causados por essas coisas.\n\nCaso contrário, esta mágica funciona da mesma forma que Cura Superficial: com uma penalidade de -3 por operação no mesmo objetivo em um dia, e a perícia Medicina com NH 15 ou superior mitigará os efeitos de uma falha crítica.\n\nAs penalidades para operações repetidas são acumuladas separadamente para Cura Superficial e Cura Profunda. Por exemplo, um operador poderia operar as duas mágicas no mesmo objetivo no mesmo dia, sem penalidade.\n\nCusto: 1 a 4. Duas vezes o valor gasto é restaurado para o objetivo.\n\nPré-requisitos: Aptidão Mágica 1 e Cura Superficial.\n\nItem\nVarinha ou cajado decorado com um padrão de serpente. O item deve tocar o objetivo. Utilizável apenas por magos, ou por não-magos perícia Medicina 20 ou superior. Custo de energia para criar: 1.500.",
+    "descricaoConferida": true,
+    "descricaoPagina": 91,
     "mecanica": {
       "efeito": "cura",
       "notas": "Cura ATE 8 PV: gasta 1 a 4 energia, restaura o DOBRO ao alvo. Nao remove doenca/veneno (so o dano). -3 por operacao repetida no mesmo alvo/dia (contador separado de Cura Superficial); Medicina NH15+ mitiga falha critica.",
@@ -9886,7 +9878,7 @@
     "conferidoPor": {
       "duracao": "tabela",
       "tempoOperacao": "tabela",
-      "custo": "tabela"
+      "custo": "tabela+entrada"
     }
   },
   {
@@ -9902,9 +9894,9 @@
     "energia": "1 a 3",
     "tempoOperacao": "1 seg",
     "preRequisitos": "Conceder Vitalidade",
-    "descricao": "Comum\n\nRestaura até 3 PV para o objetivo. Não elimina doenças ou venenos, mas curará os danos causados por essas coisas.\n\nEsta mágica é arriscada se usada mais de uma vez por dia pelo mesmo operador no mesmo objetivo. Se tentar, faça um teste com uma penalidade de -3 para a primeira repetição, -6 para a segunda e assim por diante.\n\nSe você tiver a perícia Medicina com NH 15 ou superior, uma falha crítica com esta mágica conta apenas como uma falha comum — a menos que você esteja tentando a mágica mais de uma vez por dia no mesmo objetivo.\n\nCusto: 1 a 3. O mesmo valor é restaurado ao objetivo.\n\nPré-requisito: Conceder Vitalidade.\n\nItem\n\nVarinha ou cajado, decorada com um padrão de serpente. O item deve tocar o objetivo. Utilizável apenas por magos, ou por não-magos com perícia Medicina 15 ou superior. Custo de energia para criar: 600.",
-    "descricaoConferida": false,
-    "descricaoMotivo": "so-pagina",
+    "descricao": "Comum\n\nRestaura até 3 PV para o objetivo. Não elimina doenças ou venenos, mas curará os danos causados por essas coisas.\n\nEsta mágica é arriscada se usada mais de uma vez por dia pelo mesmo operador no mesmo objetivo. Se tentar, faça um teste com uma penalidade de -3 para a primeira repetição, -6 para a segunda e assim por diante.\n\nSe você tiver a perícia Medicina com NH 15 ou superior, uma falha crítica com esta mágica conta apenas como uma falha comum — a menos que você esteja tentando a mágica mais de uma vez por dia no mesmo objetivo.\n\nCusto: 1 a 3. O mesmo valor é restaurado ao objetivo.\n\nPré-requisito: Conceder Vitalidade.\n\nItem\nVarinha ou cajado, decorada com um padrão de serpente. O item deve tocar o objetivo. Utilizável apenas por magos, ou por não-magos com perícia Medicina 15 ou superior. Custo de energia para criar: 600.",
+    "descricaoConferida": true,
+    "descricaoPagina": 91,
     "mecanica": {
       "efeito": "cura",
       "notas": "Cura ATE 3 PV: gasta 1 a 3 energia, restaura o MESMO valor. Nao remove doenca/veneno (so o dano). -3 na 1a repeticao no mesmo alvo/dia, -6 na 2a, etc.; Medicina NH15+ converte falha critica em comum.",
@@ -9925,7 +9917,7 @@
     "conferidoPor": {
       "duracao": "tabela",
       "tempoOperacao": "tabela",
-      "custo": "tabela"
+      "custo": "tabela+entrada"
     }
   },
   {
@@ -9941,9 +9933,9 @@
     "energia": "20",
     "tempoOperacao": "1 min",
     "preRequisitos": "AM3, Cura Profunda",
-    "descricao": "Comum\n\nRestaura todos os PV perdidos do objetivo. Não elimina doenças ou venenos, nem recupera partes do corpo danificadas ou ausentes, mas pode curar os PV perdidos em qualquer uma dessas coisas.\n\nUm determinado objetivo só pode se beneficiar desta mágica uma vez por dia, seja ela operada pelo mesmo operador ou por um operador diferente de cada vez. Se você tiver a perícia Medicina com NH 15 ou superior, uma falha crítica com esta mágica conta apenas como uma falha.\n\nCusto: 20. Uma tentativa por dia por objetivo.\n\nTempo de operação: 1 minuto.\n\nPré-requisitos: Aptidão Mágica 3 e Cura Profunda.\n\nItem\n\nVarinha ou cajado decorado com um padrão de serpente. O item deve tocar o objetivo. Utilizável apenas por magos, ou por não-magos com a perícia Medicina 25 ou superior. Custo de energia para criar: 4.000.",
-    "descricaoConferida": false,
-    "descricaoMotivo": "so-pagina",
+    "descricao": "Comum\n\nRestaura todos os PV perdidos do objetivo. Não elimina doenças ou venenos, nem recupera partes do corpo danificadas ou ausentes, mas pode curar os PV perdidos em qualquer uma dessas coisas.\n\nUm determinado objetivo só pode se beneficiar desta mágica uma vez por dia, seja ela operada pelo mesmo operador ou por um operador diferente de cada vez. Se você tiver a perícia Medicina com NH 15 ou superior, uma falha crítica com esta mágica conta apenas como uma falha.\n\nCusto: 20. Uma tentativa por dia por objetivo.\n\nTempo de operação: 1 minuto.\n\nPré-requisitos: Aptidão Mágica 3 e Cura Profunda.\n\nItem\nVarinha ou cajado decorado com um padrão de serpente. O item deve tocar o objetivo. Utilizável apenas por magos, ou por não-magos com a perícia Medicina 25 ou superior. Custo de energia para criar: 4.000.",
+    "descricaoConferida": true,
+    "descricaoPagina": 91,
     "mecanica": {
       "efeito": "cura",
       "notas": "Restaura TODOS os PV perdidos do alvo. Custo 20, 1x por dia por alvo (qualquer operador). Nao remove doenca/veneno nem partes ausentes. Medicina NH15+ converte falha critica em comum.",
@@ -9961,8 +9953,8 @@
     "conferidoPagina": 91,
     "conferidoPor": {
       "duracao": "tabela",
-      "tempoOperacao": "tabela",
-      "custo": "tabela"
+      "tempoOperacao": "tabela+entrada",
+      "custo": "tabela+entrada"
     }
   },
   {
@@ -9978,15 +9970,14 @@
     "energia": "4",
     "tempoOperacao": "10 min",
     "preRequisitos": "Cura Profunda, Aliviar Enjoo",
-    "descricao": "Comum\n\nElimina um tipo de doença ou infecção do corpo do objetivo. Um teste de Diagnose bem sucedido (pelo operador ou outro) deve preceder a operação; se não, o uso da mágica será com uma penalidade de -5! Não cura nenhum dano que a doença tenha causado ao paciente; a mágica apenas elimina a doença subjacente.\n\nDuração: A doença se foi, mas o objetivo não está imune para sempre…\n\nCusto: 4.\n\nTempo de operação: 10 minutos. Uma tentativa.\n\nPré-requisitos: Aliviar Enjoo e Cura Profunda.\n\nItem\n\nVarinha ou cajado, decorado com um padrão de serpente. O item deve tocar o objetivo. Utilizável apenas por magos. Custo de energia para criar: 800 para curar uma doença específica, ou 1.500 para um item que cura qualquer doença.",
-    "descricaoConferida": false,
-    "descricaoMotivo": "so-pagina",
+    "descricao": "Comum\n\nElimina um tipo de doença ou infecção do corpo do objetivo. Um teste de Diagnose bem sucedido (pelo operador ou outro) deve preceder a operação; se não, o uso da mágica será com uma penalidade de -5! Não cura nenhum dano que a doença tenha causado ao paciente; a mágica apenas elimina a doença subjacente.\n\nDuração: A doença se foi, mas o objetivo não está imune para sempre…\n\nCusto: 4.\n\nTempo de operação: 10 minutos. Uma tentativa.\n\nPré-requisitos: Aliviar Enjoo e Cura Profunda.\n\nItem\nVarinha ou cajado, decorado com um padrão de serpente. O item deve tocar o objetivo. Utilizável apenas por magos. Custo de energia para criar: 800 para curar uma doença específica, ou 1.500 para um item que cura qualquer doença.",
+    "descricaoConferida": true,
+    "descricaoPagina": 91,
     "mecanica": {
       "efeito": "narrado",
       "notas": "Elimina 1 doenca/infeccao do corpo (nao cura o dano que ela causou). Exige teste de Diagnose antes, senao -5. Custo 4, 10 min, uma tentativa. Nao da imunidade futura."
     },
-    "mecanicaConferida": false,
-    "mecanicaMotivo": "sem-texto-do-livro",
+    "mecanicaConferida": true,
     "fonteCabecalho": "tabela",
     "duracaoTipo": "instantanea",
     "duracaoSeg": 0,
@@ -9998,8 +9989,8 @@
     "conferidoPagina": 91,
     "conferidoPor": {
       "duracao": "tabela",
-      "tempoOperacao": "tabela",
-      "custo": "tabela"
+      "tempoOperacao": "tabela+entrada",
+      "custo": "tabela+entrada"
     }
   },
   {
@@ -10015,7 +10006,7 @@
     "energia": "3",
     "tempoOperacao": "1 min",
     "preRequisitos": "Identificar Planta",
-    "descricao": "Área\n\nCura as plantas de doenças, parasitas e danos dentro de uma área. As plantas ainda devem estar vivas para a mágica funcionar.\n\nDuração: Permanente.\nCusto básico: 3. Árvores maiores que as mudas exigem um raio de pelo menos 3 metros.\nTempo de operação: 1 minuto.\nPré-requisito: Identificar Planta.",
+    "descricao": "Área\n\nCura as plantas de doenças, danos dentro de uma área. As plantas ainda devem estar vivas para a mágica funcionar. parasitas e\n\nDuração: Permanente.\n\nCusto básico: 3. Árvores maiores que as mudas exigem um raio de pelo menos 3 metros.\n\nTempo de operação: 1 minuto.\n\nPré-requisito: Identificar Planta.\n\nItem\nCajado. O item deve tocar a planta. Custo de energia para criar: 400.",
     "descricaoConferida": true,
     "descricaoPagina": 161,
     "mecanica": {
@@ -10088,7 +10079,7 @@
     "energia": "1 por ST-/M",
     "tempoOperacao": "1 seg",
     "preRequisitos": "—",
-    "descricao": "Comum; Resistível com HT\n\nReduz temporariamente a ST do objetivo. Isso afetará o dano básico do objetivo com armas, mas não os PV. Afeta a Base de Carga, mas o MJ, se quiser, pode ignorar esse detalhe para fins de jogabilidade.\n\nDuração: 1 minuto.\nCusto: 1 para cada ponto de redução de ST (máximo 5). Metade do total (arredondar para cima) para manter.\nItem\nGraça\n(a) Cajado ou varinha. Utilizável apenas por magos; o item deve ser apontado para (mas não deve necessariamente tocar) o objetivo. Custo para criar: 900 de energia. (b) Qualquer item. Sempre ativo; reduz a ST do usuário. Custo para criar: 100 de energia para cada ponto de redução da ST do usuário.\nComum\nFragilidade\nAumenta a DX do objetivo temporariamente. Sua Velocidade Básica e NH com todas as perícias baseadas em DX também são aumentados. Um operador pode incrementar sua própria DX para melhorar suas chances de atingir o alvo com mágicas de projétil, etc.\nComum; Resistível com HT\nReduz a HT do objetivo temporariamente. Isso afeta todas as características que dependem de HT (Velocidade Básica, perícias baseadas em HT, resistência a veneno e magia, inconsciência, morte, etc.), com exceção daquelas que dependem dos PF, as quais não são afetadas. O custo para operar não é reduzido devido a um NH elevado.\nDuração: 1 minuto. Custo: 4 para cada ponto de incremento de DX (máximo de 5). O mesmo custo para manter. Pré-requisitos: Inabilidade.\nDuração: 1 minuto.\nCusto: 2 por ponto de decréscimo de HT (máximo de 5). O mesmo custo para manter.\nEsta mágica aumenta o atributo do objetivo apenas por tempo suficiente para um único teste ou ação curta — uma Disputa Rápida, um teste de atributo, um golpe, preparar uma arma, resistir a uma mágica, arremessar um objeto, etc. Não pode ser utilizada para melhorar um teste que represente vários segundos de esforço, como uma Disputa Normal. O atributo incrementado afeta todas as características secundárias, com exceção de PV e PF. Um NH elevado não reduz o custo para operar esta mágica.\nPré-requisitos: Conceder Energia (pág. 89).\nItem\nAumentar Inteligência é uma mágica de Controle da Mente, não uma mágica de Controle do Corpo.\n(a) Qualquer item. Sempre ativo; a HT do usuário é reduzida enquanto o item é usado. Custo para criar: 200 de energia por ponto de redução de HT. (b) Cajado ou varinha. Utilizável apenas por magos; o usuário deve tocar o objetivo. Custo para criar: 1.000 de energia.\nCusto: 1 para cada ponto de incremento de atributo (máximo de 5). Pré-requisitos: Há um pré-requisito diferente para cada versão:\nForça\nComum\nMágica\nPré-requisito\nAumenta a ST do objetivo temporariamente. Isso tem influência sobre o dano, Base de Carga e Pontos de Vida, mas não cura ferimentos. Se, ao término da mágica, as feridas do objetivo deixarem-no com -1×PV Inicial ou menos, ele terá que fazer um teste HT para sobreviver. Um NH alto não diminui o custo para operar esta mágica.\nAumentar Destreza\nGraça\nAumentar Vitalidade\nVigor\nDuração: 1 minuto.\nAumentar Força\nForça\nCusto: 2 para cada ponto de incremento de ST (máximo de 5). O mesmo custo para manter.\nAumentar Inteligência\nSabedoria\nPré-requisitos: Conceder Energia.\nItem\nItem\n(a) Qualquer item. Sempre ativo; a ST do usuário é aumentada enquanto o item é usado. Custo para criar: 1.500 de energia por ponto de incremento (máximo 5). (b) Cajado ou varinha. Utilizável apenas por magos; o item deve tocar o objetivo. Custo para criar: 1.000 de energia.\nCajado, varinha, joias ou artigo de vestuário. Custo para criar: 300 de energia.\nVigor\nAtordoamento\nComum\nComum; Resistível com HT\nAumenta a HT do objetivo temporariamente. Isso afeta a Velocidade Básica, PF e capacidade de resistir a traumas e doenças. Um operador pode incrementar sua própria HT. Se os PF do objetivo, ao término da mágica, estiverem abaixo de zero, ele sofrerá imediatamente 1 ponto de dano para cada PF abaixo de zero, correndo o risco de desmaiar. Um NH elevado não reduz o custo para operar esta mágica.\nO objetivo fica fisicamente atordoado (pág. MB420), e deve fazer um teste de HT a cada segundo para tentar se recuperar.\nDuração: 1 minuto.\nCusto: 2. Não pode ser mantida.\nCusto: 2 para cada ponto de incremento de HT (máximo de 5). O mesmo custo para manter.\nPré-requisitos: Dor.\nPré-requisitos: Conceder Vitalidade ou Fragilidade.\nItem\nItem\n(a) Qualquer item. Sempre ativo; a HT do usuário é aumentada enquanto o item é usado. Custo para criar: 1.500 de energia por ponto de incremento (máximo 5). (b) Cajado ou varinha. Utilizável apenas por magos; o item deve tocar o objetivo. Custo para criar: 1.000 de energia.\n(a) Qualquer item. Sempre ativo; o usuário fica atordoado até que o item seja removido. Custo para criar: 500 de energia. (b) Cajado ou varinha. Utilizável apenas por magos; o item deve tocar o objetivo. Custo para criar: 1.100 de energia.",
+    "descricao": "Comum; Resistível com HT\n\nReduz temporariamente a ST do objetivo. Isso afetará o dano básico do objetivo com armas, mas não os PV. Afeta a Base de Carga, mas o MJ, se quiser, pode ignorar esse detalhe para fins de jogabilidade.\n\nDuração: 1 minuto.\nCusto: 1 para cada ponto de redução de ST (máximo 5). Metade do total (arredondar para cima) para manter.\nItem\n(a) Cajado ou varinha. Utilizável apenas por magos; o item deve ser apontado para (mas não deve necessariamente tocar) o objetivo. Custo para criar: 900 de energia. (b) Qualquer item. Sempre ativo; reduz a ST do usuário. Custo para criar: 100 de energia para cada ponto de redução da ST do usuário.",
     "descricaoConferida": true,
     "descricaoPagina": 36,
     "mecanica": {
@@ -11068,7 +11059,7 @@
     "energia": "2",
     "tempoOperacao": "2 seg.",
     "preRequisitos": "Percepção do Perigo ou Testar Alimento",
-    "descricao": "Área; Informação\n\nRevela a presença de toxinas e concede um bônus de +2 em qualquer teste subsequente de Venenefício para identificar o(s) agente(s) exato(s). O operador pode excluir qualquer tipo de veneno que deseje ao operar.\n\nCusto Básico: 2.\nTempo de operação: 2 segundos.\nPré-requisito: Percepção do Perigo ou Testar Alimento.",
+    "descricao": "Área; Informação\n\nRevela a presença de toxinas e concede um bônus de +2 em qualquer teste subsequente de Venenefício para identificar o(s) agente(s) exato(s). O operador pode excluir qualquer tipo de veneno que deseje ao operar (para procurar especificamente agentes nervosos, por exemplo, ou excluir venenos “benignos” como o álcool).\n\nEsta também é uma mágica de Cura.\n\nCusto Básico: 2.\n\nTempo de operação: 2 segundos.\n\nPré-requisito: Percepção do Perigo ou Testar Alimento.\n\nItem\nCajado, varinha ou joia. Custo de energia para criar: 250.",
     "descricaoConferida": true,
     "descricaoPagina": 166,
     "mecanica": {
@@ -11253,7 +11244,7 @@
     "energia": "2",
     "tempoOperacao": "1 seg.",
     "preRequisitos": "Apanhar Projétil",
-    "descricao": "Bloqueio\n\nFaz com que um projétil (incluindo mágicas) antes de acertar o objetivo, volte ao atacante. Se o ataque do atacante for bem sucedido, ele acerta em si mesmo — se não, ele vê o projétil voar de volta para ele e errar. Considerada um Aparar (pelo operador) para fins de combate. Aplicar modificadores de distância normais se o operador não for o objetivo.\n\nCusto: 2.\n\nPré-requisito: Apanhar Projétil.\n\nItem: Joias, arma ou escudo. Custo de energia para criar: 400.",
+    "descricao": "Bloqueio\n\nFaz com que um projétil (incluindo mágicas) antes de acertar o objetivo, volte ao atacante. Se o ataque do atacante for bem sucedido, ele acerta em si mesmo — se não, ele vê o projétil voar de volta para ele e errar. Considerada um Aparar (pelo operador) para fins de combate. Aplicar modificadores de distância normais se o operador não for o objetivo.\n\nCusto: 2.\n\nPré-requisito: Apanhar Projétil.\n\nItem\nJoias, arma ou escudo. Custo de energia para criar: 400.",
     "descricaoConferida": true,
     "descricaoPagina": 168,
     "mecanica": {
@@ -11364,16 +11355,15 @@
     "energia": "3/I",
     "tempoOperacao": "1 seg.",
     "preRequisitos": "Criar Água",
-    "descricao": "Comum\n\nRemove a água do ambiente. Pode ser usada para secar roupas, criar um caminho seco através de um lago raso, ou até mesmo desidratar um inimigo aquático (causando 1d de dano por ponto de energia, sem direito a resistência). Se operada em um ser vivo, causa dano como Desidratar, mas com um teste de resistência.\n\nDuração: A água dissipada é irrecuperável.\n\nCusto: 2 por 4 litros de água dissipada. Se a água estiver sendo segurada por um ser vivo, o custo é de 5.\n\nPré-requisitos: Criar Água e Dissipar Ar.\n\nItem\n\nCajado ou varinha. Custo de energia para criar: 300.",
-    "descricaoConferida": false,
-    "descricaoMotivo": "sem-entrada-no-texto",
+    "descricao": "Área\n\nProvoca o desaparecimento de água (em qualquer forma), deixando para trás um vácuo ou, talvez, grãos secos de impurezas. Se houver mais água em volta, ela refluirá para preencher o espaço vazio. Esta mágica é boa para secar as coisas, salvar uma vítima de afogamento etc. Não pode ser usada como um ataque “desidratante” contra um inimigo\n\nDuração: Permanente.\n\nCusto básico: 3. Em águas profundas, a área tem apenas 2 metros de altura (ou profundidade). Mesmo custo para manter.\n\nPré-requisito: Criar Água.\n\nItem\nVarinha, cajado ou joias. Custo de energia para criar: 300.",
+    "descricaoConferida": true,
+    "descricaoPagina": 185,
     "mecanica": {
       "efeito": "ambiente",
       "armadura": "ignora",
       "notas": "Remove água do ambiente (2 por 4 litros). Contra criatura aquática: 1d/energia SEM resistência. Em ser vivo: dano como Desidratar COM R-HT (custo 5). Uso primário: secar/remover água."
     },
-    "mecanicaConferida": false,
-    "mecanicaMotivo": "sem-texto-do-livro",
+    "mecanicaConferida": true,
     "fonteCabecalho": "tabela",
     "duracaoTipo": "permanente",
     "duracaoSeg": 0,
@@ -11386,9 +11376,9 @@
     "conferido": "livro",
     "conferidoPagina": 185,
     "conferidoPor": {
-      "duracao": "tabela",
+      "duracao": "tabela+entrada",
       "tempoOperacao": "tabela",
-      "custo": "tabela"
+      "custo": "tabela+entrada"
     }
   },
   {
@@ -11446,7 +11436,7 @@
     "energia": "Varia",
     "tempoOperacao": "1 seg.",
     "preRequisitos": "Requisitar Idioma, 3 idiomas Com Sotaque",
-    "descricao": "Comum\n\nConcede alfabetização em qualquer idioma (apenas para criaturas sapientes).\n\nDuração: 1 minuto.\nCusto: 2 para compreensão Rudimentar; 4 para compreensão Com Sotaque; 6 para compreensão Materna. Metade para manter.\nPré-requisitos: Requisitar Idioma e três idiomas escritos Com Sotaque ou melhor.\n\nItem\nQualquer item que protege a cabeça ou joias. Afeta somente o usuário e apenas para determinados idiomas. Custo de energia para criar: 300 por idioma incluído (deve ser conhecido pelo criador).",
+    "descricao": "Comum\n\nConcede alfabetização em qualquer idioma (apenas para criaturas sapientes).\n\nDuração: 1 minuto.\n\nCusto: 2 para compreensão Rudimentar; 4 para compreensão Com Sotaque; 6 para compreensão Materna. Metade para manter.\n\nPré-requisitos: Requisitar Idioma e três idiomas escritos Com Sotaque ou melhor.\n\nItem\nQualquer item que protege a cabeça ou joias. Afeta somente o usuário e apenas para determinados idiomas. Custo de energia para criar: 300 por idioma incluído (deve ser conhecido pelo criador).",
     "descricaoConferida": true,
     "descricaoPagina": 46,
     "mecanica": {
@@ -11481,9 +11471,9 @@
     ],
     "duracao": "1 min.",
     "energia": "Varia",
-    "tempoOperacao": "10 segundos",
+    "tempoOperacao": "1 seg.",
     "preRequisitos": "Requisitar Idioma, 3 idiomas Com Sotaque",
-    "descricao": "Comum\n\nPermite a fala e compreensão de qualquer idioma (apenas criaturas sapientes). Não é possível fornecer fala ou audição a quem não possui essas habilidades.\n\nDuração: 1 minuto.\nCusto: 2 para compreensão Rudimentar; 4 para compreensão Com Sotaque; 6 para compreensão Materna. Metade para manter.\nTempo de operação: 10 segundos.\nPré-requisito: Percepção de Veracidade ou Requisitar Idioma.\n\nItem\nCoroa, capacete ou outro item que protege a cabeça. Utilizável apenas por magos. Custo de energia para criar: 1.000.",
+    "descricao": "Comum\n\nPermite a fala e compreensão de qualquer idioma (apenas criaturas sapientes). Não é possível fornecer fala ou audição a quem não possui essas habilidades.\n\nDuração: 1 minuto.\n\nCusto: 2 para compreensão Rudimentar; 4 para compreensão Com Sotaque; 6 para compreensão Materna. Metade para manter.\n\nPré-requisitos: Requisitar Idioma e três idiomas falados Com Sotaque ou melhor.\n\nItem\nQualquer item que protege a cabeça ou joias. Afeta somente o usuário e apenas para determinados idiomas. Custo de energia para criar: 300 por idioma incluído (deve ser conhecido pelo criador).",
     "descricaoConferida": true,
     "descricaoPagina": 46,
     "mecanica": {
@@ -11495,7 +11485,7 @@
     "fonteCabecalho": "tabela",
     "duracaoTipo": "temporaria",
     "duracaoSeg": 60,
-    "tempoOperacaoSeg": 10,
+    "tempoOperacaoSeg": 1,
     "tempoTipo": "fixo",
     "custoTipo": "varia",
     "custoFormula": "2 para compreensão Rudimentar; 4 para compreensão Com Sotaque; 6 para compreensão Materna. Metade para manter.",
@@ -11503,7 +11493,7 @@
     "conferidoPagina": 46,
     "conferidoPor": {
       "duracao": "tabela+entrada",
-      "tempoOperacao": "entrada",
+      "tempoOperacao": "tabela",
       "custo": "tabela+entrada"
     }
   },
@@ -12504,28 +12494,27 @@
     "energia": "1 por 0,5 kg/M#",
     "tempoOperacao": "2 seg./0,5 kg",
     "preRequisitos": "—",
-    "descricao": "Comum; Resistência Especial\n\nEnrijece temporariamente um objeto flácido; transforma uma corda em um poste, por exemplo, ou um fio em uma micha. Não funciona em seres vivos. Esta mágica pode ser usada para fazer armas improvisadas; o Mestre julga sua eficácia.\n\nEsta mágica também pode ser usada para endurecer as roupas de um inimigo. Neste caso, o inimigo resiste à mágica com sua ST+2. Se funcionar, ele ficará com DX-1 para cada meio quilo de roupa que foi endurecido, e essa alteração no DX afeta seu Deslocamento.\n\nDuração: 10 minutos.\n\nCusto: 1 por 0,5 kg de peso do objetivo — mínimo 2. Metade disso para manter.\n\nTempo de operação: 2 segundos por 0,5 kg de peso.\n\nPré-requisito: Remendar.\n\nItem\n\nLuvas. Custo de energia para criar: 500.",
-    "descricaoConferida": false,
-    "descricaoMotivo": "so-pagina",
+    "descricao": "Comum; Resistência Especial\n\nEnrijece temporariamente um objeto flácido; transforma uma corda em um poste, por exemplo, ou um fio em uma micha. Não funciona em seres vivos. Esta mágica pode ser usada para fazer armas improvisadas; o Mestre julga sua eficácia.\n\nEsta mágica também pode ser usada para endurecer as roupas de um inimigo. Neste caso, o inimigo resiste à mágica com sua ST+2. Se funcionar, ele ficará com DX-1 para cada meio quilo de roupa que foi endurecido, e essa alteração no DX afeta seu Deslocamento.\n\nDuração: 10 minutos.\n\nCusto: 1 por 0,5 kg de peso do objetivo — mínimo 2. Metade disso para manter.\n\nTempo de operação: 2 segundos por 0,5 kg de peso.\n\nPré-requisito: Remendar.",
+    "descricaoConferida": true,
+    "descricaoPagina": 117,
     "mecanica": {
       "efeito": "controle",
       "notas": "Enrijece objeto flácido (corda vira poste). Usada nas roupas de um inimigo: ele resiste com ST+2; se falhar, -1 DX por 0,5 kg de roupa endurecida, afetando o Deslocamento. Não funciona em seres vivos."
     },
-    "mecanicaConferida": false,
-    "mecanicaMotivo": "sem-texto-do-livro",
+    "mecanicaConferida": true,
     "fonteCabecalho": "tabela",
     "duracaoTipo": "temporaria",
     "duracaoSeg": 600,
     "tempoTipo": "varia",
     "tempoFormula": "2 seg./0,5 kg",
     "custoTipo": "porUnidade",
-    "custoFormula": "1 por 0,5 kg/M#",
+    "custoFormula": "1 por 0,5 kg de peso do objetivo — mínimo 2. Metade disso para manter.",
     "conferido": "livro",
     "conferidoPagina": 117,
     "conferidoPor": {
-      "duracao": "tabela",
+      "duracao": "tabela+entrada",
       "tempoOperacao": "formula",
-      "custo": "tabela"
+      "custo": "tabela+entrada"
     }
   },
   {
@@ -13348,7 +13337,7 @@
     "energia": "5/2",
     "tempoOperacao": "1 seg",
     "preRequisitos": "Aporte ou Escudo",
-    "descricao": "Comum\n\nAfasta qualquer projétil sem causar danos pela menor fração necessária para garantir que eles perdem o objetivo; o efeito do jogo é que o projétil continua em linha reta além do objetivo. Funciona em todos os tipos de projéteis — flechas, balas, pedras caindo, mágicas de projéteis, estilhaços, tortas de creme — tudo. O Mestre deve esconder a existência da magia dos inimigos do operador o maior tempo possível, dizendo que eles perderam!\n\nDuração: 1 minuto. Custo: 5 para operar. 2 para manter.\n\nPré-requisito: Aporte ou Escudo.\n\nItem: Varinha, cajado, arma ou armadura. Custo de energia para criar: 400.",
+    "descricao": "Comum\n\nAfasta qualquer projétil sem causar danos pela menor fração necessária para garantir que eles perdem o objetivo; o efeito do jogo é que o projétil continua em linha reta além do objetivo. Funciona em todos os tipos de projéteis — flechas, balas, pedras caindo, mágicas de projéteis, estilhaços, tortas de creme — tudo. O Mestre deve esconder a existência da magia dos inimigos do operador o maior tempo possível, dizendo que eles perderam!\n\nDuração: 1 minuto.\n\nCusto: 5 para operar. 2 para manter.\n\nPré-requisito: Aporte ou Escudo.\n\nItem\nVarinha, cajado, arma ou armadura. Custo de energia para criar: 400.",
     "descricaoConferida": true,
     "descricaoPagina": 168,
     "mecanica": {
@@ -13371,7 +13360,7 @@
     "conferidoPor": {
       "duracao": "tabela+entrada",
       "tempoOperacao": "tabela",
-      "custo": "tabela"
+      "custo": "tabela+entrada"
     }
   },
   {
@@ -14271,7 +14260,7 @@
     "energia": "2 a 6",
     "tempoOperacao": "1 seg",
     "preRequisitos": "AM2, Fragmentar, Aporte",
-    "descricao": "Comum\n\nComo Fragmentar, mas o objetivo, com se estilhaça, explode violentamente, causando Dano de Fragmentação (pág. MB414).\n\nCusto: 2 a 6; causa 1d de dano para cada dois pontos de energia colocados nela. Dobre o custo para aumentar o dano em 1d+2.\n\nPré-requisitos: Aptidão Mágica 2, Fragmentar e Aporte.\n\nItem\nVarinha, cajado ou luva. O item deve atingir o objetivo. Custo de energia para criar: 1.000.",
+    "descricao": "Comum\n\nComo Fragmentar, mas o objetivo, se estilhaça, explode violentamente, causando Dano de Fragmentação (pág. MB414).\n\nCusto: 2 a 6; causa 1d de dano para cada dois pontos de energia colocados nela. Dobre o custo para aumentar o dano em 1d+2.\n\nPré-requisitos: Aptidão Mágica 2, Fragmentar e Aporte.\n\nItem\nVarinha, cajado ou luva. O item deve atingir o objetivo. Custo de energia para criar: 1.000.",
     "descricaoConferida": true,
     "descricaoPagina": 118,
     "mecanica": {
@@ -14844,9 +14833,9 @@
     "energia": "1 por dado",
     "tempoOperacao": "1 seg",
     "preRequisitos": "AM2, Fragmentar",
-    "descricao": "Comum\n\nFaz buracos em objetos inanimados, paredes, etc. Veja pág. MB557, para o RD e PV de objetos comuns. Esta mágica funciona como um ataque extremamente perfurante, perfurando um buraco de meio metro de diâmetro (a área afetada pode ser menor a critério do operador).\n\nCusto: 1 por dado de dano a ser infligido ao objeto. Pré-requisitos: Aptidão Mágica 2 e Fragmentar.\n\nItem\n\nVarinha, cajado ou luva. Deve atacar o objeto. Custo de energia para criar: 1.000.",
-    "descricaoConferida": false,
-    "descricaoMotivo": "so-pagina",
+    "descricao": "Comum\n\nFaz buracos em objetos inanimados, paredes, etc. Veja pág. MB557, para o RD e PV de objetos comuns. Esta mágica funciona como um ataque extremamente perfurante, perfurando um buraco de meio metro de diâmetro (a área afetada pode ser menor a critério do operador).\nCusto: 1 por dado de dano a ser infligido ao objeto.\n\nPré-requisitos: Aptidão Mágica 2 e Fragmentar.\n\nItem\nVarinha, cajado ou luva. Deve atacar o objeto. Custo de energia para criar: 1.000.",
+    "descricaoConferida": true,
+    "descricaoPagina": 117,
     "mecanica": {
       "efeito": "dano",
       "danoPorEnergia": "1d",
@@ -14855,21 +14844,20 @@
       "notas": "Só objetos inanimados/paredes: buraco de meio metro. Funciona como ataque extremamente perfurante. 1 de energia por dado.",
       "alvoValido": "objeto"
     },
-    "mecanicaConferida": false,
-    "mecanicaMotivo": "sem-texto-do-livro, dano-sem-texto",
+    "mecanicaConferida": true,
     "fonteCabecalho": "tabela",
     "duracaoTipo": "instantanea",
     "duracaoSeg": 0,
     "tempoOperacaoSeg": 1,
     "tempoTipo": "fixo",
     "custoTipo": "porDado",
-    "custoFormula": "1 por dado",
+    "custoFormula": "1 por dado de dano a ser infligido ao objeto.",
     "conferido": "livro",
     "conferidoPagina": 117,
     "conferidoPor": {
       "duracao": "tabela",
       "tempoOperacao": "tabela",
-      "custo": "tabela"
+      "custo": "tabela+entrada"
     }
   },
   {
@@ -15106,9 +15094,9 @@
     "energia": "2 por ST+/I",
     "tempoOperacao": "1 seg",
     "preRequisitos": "Conceder Energia",
-    "descricao": "Comum\n\nAumenta a ST do objetivo temporariamente. Isso tem influência sobre o dano, Base de Carga e Pontos de Vida, mas não cura ferimentos. Se, ao término da mágica, as feridas do objetivo deixarem-no com -1×PV Inicial ou menos, ele terá que fazer um teste HT para sobreviver. Um NH alto não diminui o custo para operar esta mágica.\n\nDuração: 1 minuto.\n\nCusto: 2 para cada ponto de incremento de ST (máximo de 5). O mesmo custo para manter.\n\nPré-requisitos: Conceder Energia.\n\nItem\n\n(a) Qualquer item. Sempre ativo; a ST do usuário é aumentada enquanto o item é usado. Custo para criar: 1.500 de energia por ponto de incremento (máximo 5). (b) Cajado ou varinha. Utilizável apenas por magos; o item deve tocar o objetivo. Custo para criar: 1.000 de energia.",
-    "descricaoConferida": false,
-    "descricaoMotivo": "so-pagina",
+    "descricao": "Comum\n\nAumenta a ST do objetivo temporariamente. Isso tem influência sobre o dano, Base de Carga e Pontos de Vida, mas não cura ferimentos. Se, ao término da mágica, as feridas do objetivo deixarem-no com -1×PV Inicial ou menos, ele terá que fazer um teste HT para sobreviver. Um NH alto não diminui o custo para operar esta mágica.\n\nDuração: 1 minuto.\n\nCusto: 2 para cada ponto de incremento de ST (máximo de 5). O mesmo custo para manter.\n\nPré-requisitos: Conceder Energia.\n\nItem\n(a) Qualquer item. Sempre ativo; a ST do usuário é aumentada enquanto o item é usado. Custo para criar: 1.500 de energia por ponto de incremento (máximo 5). (b) Cajado ou varinha. Utilizável apenas por magos; o item deve tocar o objetivo. Custo para criar: 1.000 de energia.",
+    "descricaoConferida": true,
+    "descricaoPagina": 37,
     "mecanica": {
       "efeito": "buff",
       "buffAtributo": "ST",
@@ -15118,21 +15106,20 @@
       "buffRotulo": "Força +ST",
       "notas": "+1 ST por 2 de energia, máx +5 (dano/Carga/PV). Duração 1 min."
     },
-    "mecanicaConferida": false,
-    "mecanicaMotivo": "sem-texto-do-livro",
+    "mecanicaConferida": true,
     "fonteCabecalho": "tabela",
     "duracaoTipo": "temporaria",
     "duracaoSeg": 60,
     "tempoOperacaoSeg": 1,
     "tempoTipo": "fixo",
     "custoTipo": "porUnidade",
-    "custoFormula": "2 por ST+/I",
+    "custoFormula": "2 para cada ponto de incremento de ST (máximo de 5). O mesmo custo para manter.",
     "conferido": "livro",
     "conferidoPagina": 37,
     "conferidoPor": {
-      "duracao": "tabela",
+      "duracao": "tabela+entrada",
       "tempoOperacao": "tabela",
-      "custo": "tabela"
+      "custo": "tabela+entrada"
     }
   },
   {
@@ -15186,7 +15173,7 @@
     "energia": "5/2",
     "tempoOperacao": "30 seg",
     "preRequisitos": "AM2, Forma de Planta",
-    "descricao": "Especial; Resistível com Vontade\n\nComo Forma de Planta, mas utilizável em outros. Apenas o operador ou a mágica Remover Maldição pode terminar a mágica. A perda de IQ logo transformará o objetivo em um verdadeiro vegetal!\nOs olhos de Patrick se abriram no escuro; o formigamento de sua proteção improvisada zumbiu em sua mente. O mais silenciosamente que pôde, ele rolou para dentro do pequeno espaço que havia deixado entre a cama e a parede e caiu no chão. Lá, debaixo da cama, ele tentou se concentrar em pequenos e silenciosos pensamentos enquanto três pares de pés se aproximavam de fininho...",
+    "descricao": "Especial; Resistível com Vontade\n\nComo Forma de Planta, mas utilizável em outros. Apenas o operador ou a mágica Remover Maldição pode terminar a mágica. A perda de IQ logo transformará o objetivo em um verdadeiro vegetal!\nCapítulo Vinte e Dois Mágicas de Proteção e Aviso\n\nA Escola de Proteção e Aviso é uma Os olhos de Patrick se abriram no segunda especialidade comum para escuro; o formigamento de sua protemagos. É uma escola particularmente ção improvisada zumbiu em sua menacessível; a maioria de suas mágicas te. O mais silenciosamente que pôde, tem poucos pré-requisitos. Além disso, ele rolou para dentro do pequeno esum mago sábio é um mago com um paço que havia deixado entre a cama plano de contingência. e a parede e caiu no chão. Lá, debaixo da cama, ele tentou se concentrar em",
     "descricaoConferida": true,
     "descricaoPagina": 165,
     "mecanica": {
@@ -15341,9 +15328,9 @@
     "energia": "2 por HT-/I#",
     "tempoOperacao": "1 seg",
     "preRequisitos": "Conceder Energia",
-    "descricao": "Comum; Resistível com HT\n\nReduz a HT do objetivo temporariamente. Isso afeta todas as características que dependem de HT (Velocidade Básica, perícias baseadas em HT, resistência a veneno e magia, inconsciência, morte, etc.), com exceção daquelas que dependem dos PF, as quais não são afetadas. O custo para operar não é reduzido devido a um NH elevado.\n\nDuração: 1 minuto.\n\nCusto: 2 por ponto de decréscimo de HT (máximo de 5). O mesmo custo para manter.\n\nPré-requisitos: Conceder Energia (pág. 89).\n\nItem\n\n(a) Qualquer item. Sempre ativo; a HT do usuário é reduzida enquanto o item é usado. Custo para criar: 200 de energia por ponto de redução de HT. (b) Cajado ou varinha. Utilizável apenas por magos; o usuário deve tocar o objetivo. Custo para criar: 1.000 de energia.",
-    "descricaoConferida": false,
-    "descricaoMotivo": "so-pagina",
+    "descricao": "Comum; Resistível com HT\n\nReduz a HT do objetivo temporariamente. Isso afeta todas as características que dependem de HT (Velocidade Básica, perícias baseadas em HT, resistência a veneno e magia, inconsciência, morte, etc.), com exceção daquelas que dependem dos PF, as quais não são afetadas. O custo para operar não é reduzido devido a um NH elevado.\n\nDuração: 1 minuto.\n\nCusto: 2 por ponto de decréscimo de HT (máximo de 5). O mesmo custo para manter.\n\nPré-requisitos: Conceder Energia (pág. 89).\n\nItem\n(a) Qualquer item. Sempre ativo; a HT do usuário é reduzida enquanto o item é usado. Custo para criar: 200 de energia por ponto de redução de HT. (b) Cajado ou varinha. Utilizável apenas por magos; o usuário deve tocar o objetivo. Custo para criar: 1.000 de energia.",
+    "descricaoConferida": true,
+    "descricaoPagina": 37,
     "mecanica": {
       "efeito": "buff",
       "buffAtributo": "HT",
@@ -15353,21 +15340,20 @@
       "buffRotulo": "Fragilidade −HT",
       "notas": "−1 HT por 2 de energia, máx −5, R-HT. Duração 1 min."
     },
-    "mecanicaConferida": false,
-    "mecanicaMotivo": "sem-texto-do-livro",
+    "mecanicaConferida": true,
     "fonteCabecalho": "tabela",
     "duracaoTipo": "temporaria",
     "duracaoSeg": 60,
     "tempoOperacaoSeg": 1,
     "tempoTipo": "fixo",
-    "custoTipo": "porUnidade",
-    "custoFormula": "2 por HT-/I#",
+    "custoTipo": "porPonto",
+    "custoFormula": "2 por ponto de decréscimo de HT (máximo de 5). O mesmo custo para manter.",
     "conferido": "livro",
     "conferidoPagina": 37,
     "conferidoPor": {
-      "duracao": "tabela",
+      "duracao": "tabela+entrada",
       "tempoOperacao": "tabela",
-      "custo": "tabela"
+      "custo": "entrada"
     }
   },
   {
@@ -15381,9 +15367,9 @@
     ],
     "duracao": "Instant",
     "energia": "1 a 3",
-    "tempoOperacao": "3 segundos",
+    "tempoOperacao": "1 seg",
     "preRequisitos": "AM1, Enfraquecer",
-    "descricao": "Semelhante a Enfraquecer, só que mais rápido — pode ser operada em um único segundo e pode ser convertida repetidamente. Se a mágica não causar dano suficiente para realmente quebrar o objetivo, o objetivo não sofrerá dano algum. Essa mágica afeta apenas objetos inanimados.\n\nCusto: 1 a 3; causa 1d de dano para cada ponto de energia colocada nela.\n\nPré-requisitos: Aptidão Mágica 1 e Enfraquecer.\nItem\nEntalhar\nA mágica Desatar também desata\nVarinha, cajado ou luva. O item deve ser usado para atacar o objetivo. Custo de energia para criar: 500.\nÁrea; Resistível com Vontade\numa mágica Nó, mas a mágica Nó recebe um teste de resistência.\nComo listada em Mágicas de Ilusão e Criação, pág. 97.\nDuração: Até a senha ser falada, ou a corda for cortada ou quebrada!\nAnimar\nEndurecer\nCusto: 2. Não pode ser mantida — precisa ser refeita se a corda estiver desamarrada.\nObjeto (MD)\nComum; Resistência Especial\nTempo de operação: 3 segundos.\nComum; Resistência Especial\nEnrijece temporariamente um objeto flácido; transforma uma corda em um poste, por exemplo, ou um fio em uma micha. Não funciona em seres vivos. Esta mágica pode ser usada para armas improvisadas; o Mestre julga sua eficácia.\nPré-requisito: Endurecer.\nAnima um objeto existente (estátua, espada, cadeira…). Suas habilidades e atributos dependem de seu corpo — isso é inteiramente a critério do Mestre.\nEsta mágica também pode ser usada para endurecer as roupas de um inimigo. Neste caso, o inimigo resiste à mágica com sua ST+2. Se funcionar, ele ficará com DX-1 para cada meio quilo de roupa que foi endurecido, e essa alteração no DX afeta seu Deslocamento.\nItem\nExemplos: uma cadeira poderia se movimentar e chutar a canela das pessoas ou uma espada poderia serpente no braço do portador, mas um bule de chá poderia fazer pouco mais do que correr divertidamente pela mesa…\nDuração: 10 minutos.\nCorda. Qualquer nó amarrado com esta corda não pode ser desatado sem mágica. Uma senha é definida quando a corda é encantada. O encantamento é quebrado se a corda for cortada. Custo de energia para criar: 20 por cada 30 cm de corda.\nConcentração é necessária; o objeto animado não tem pontuação de IQ e é pouco mais que um fantoche. Autossuficiência e Iniciativa não funcionarão em um objeto animado.\nCusto: 1 por 0,5 kg de peso do objetivo — mínimo 2. Metade disso para manter.\nRemodelar\nUm ser segurando tal objeto resiste com Vontade.\nTempo de operação: 2 segundos por 0,5 kg de peso.\nComum\nDuração: 1 minuto.\nPré-requisito: Remendar.\nMolde qualquer substância inanimada como se fosse argila. No entanto, não transmite qualquer capacidade artística adicional para o objetivo! Qualquer objeto inanimado que o objetivo pegar enquanto estiver sob esta mágica, amolecerá ligeiramente — isso pode ser problemático. Por exemplo, se ele tentar empunhar uma espada ou cajado, causará apenas metade do dano! Uma arma disparada enquanto “amolecida” será arruinada. Qualquer material moldado se tornará duro novamente, em sua nova forma, assim que o objetivo remover suas mãos dele.\nCusto: 1 para operar para cada 2 kg que o objeto pesa. Dobre o custo para animar pedra, triplique para metal. Mesmo custo para manter.\nPortas e paredes inconvenientes podem ser removidas com o dobro de material por segundo. Esta mágica pode até mesmo ser usada para escavar através da rocha, mas como o objetivo está cavando através da terra macia com as mãos, é lento e cansativo.\nTempo de operação: 3 segundos.\nDuração: 1 minuto.\nPré-requisitos: Aptidão Mágica 2 e pelo menos três mágicas “Moldar”.\nCusto: 6 para operar. 3 para manter.\nItem\nTempo de operação: 10 segundos.\n(a) Qualquer objeto pode ser permanentemente animado por 100 vezes o custo de operação. (b) Varinha, cajado ou joias. Utilizável apenas por magos; o item deve tocar o objetivo. Custo de energia para criar: 2.000.\nPré-requisitos: Aptidão Mágica 1, Enfraquecer e Moldar Terra ou Moldar Planta.\nItem\nLuvas. Custo de energia para criar: 500.\nNó\nFender (MD)\nComum\nComum\nFaz um nó que não pode ser desatado sem mágica (embora a corda possa ser cortada, é claro). O nó desata quando alguém diz a senha (especificada na operação) enquanto toca a corda em qualquer ponto ao longo de seu comprimento. Assim, uma corda amarrada no topo de um penhasco se soltará quando alguém no fundo do penhasco disser a senha, se ele puder tocar a corda. Nó também funciona para cordas, cintos de castidade, etc., a critério do operador.\nFaz buracos em objetos inanimados, paredes, etc. Veja pág. MB557, para o RD e PV de objetos comuns. Esta mágica funciona como um ataque extremamente perfurante, perfurando um buraco de meio metro de diâmetro (a área afetada pode ser menor a critério do operador).\n\nUm homem deve possuir uma fazenda ou um ofício mecânico para sua cultura. Devemos ter uma base para nossas realizações mais elevadas, nossos delicados entretenimentos de poesia e filosofia, no trabalho de nossas mãos.\n– Ralph Waldo Emerson",
+    "descricao": "Semelhante a Enfraquecer, só que mais rápido — pode ser operada em um único segundo e pode ser convertida repetidamente. Se a mágica não causar dano suficiente para realmente quebrar o objetivo, o objetivo não sofrerá dano algum. Essa mágica afeta apenas objetos inanimados.\n\nCusto: 1 a 3; causa 1d de dano para cada ponto de energia colocada nela.\n\nPré-requisitos: Aptidão Mágica 1 e Enfraquecer.\nItem\nVarinha, cajado ou luva. O item deve ser usado para atacar o objetivo. Custo de energia para criar: 500.",
     "descricaoConferida": true,
     "descricaoPagina": 116,
     "mecanica": {
@@ -15394,7 +15380,7 @@
     "fonteCabecalho": "tabela",
     "duracaoTipo": "instantanea",
     "duracaoSeg": 0,
-    "tempoOperacaoSeg": 3,
+    "tempoOperacaoSeg": 1,
     "tempoTipo": "fixo",
     "custoTipo": "faixa",
     "custoMinimo": 1,
@@ -15403,7 +15389,7 @@
     "conferidoPagina": 116,
     "conferidoPor": {
       "duracao": "tabela",
-      "tempoOperacao": "entrada",
+      "tempoOperacao": "tabela",
       "custo": "tabela+entrada"
     }
   },
@@ -15571,7 +15557,7 @@
     "energia": "3/2",
     "tempoOperacao": "4 seg.",
     "preRequisitos": "Bravura",
-    "descricao": "Comum; Resistível com Vontade\n\nFaz com que o objetivo lute como um berserker (veja pág. MB143).\n\nDuração: 10 minutos.\nCusto: 3 para operar. 2 para manter.\nTempo de operação: 4 segundos.\nPré-requisito: Bravura.",
+    "descricao": "Comum; Resistível com Vontade\n\nFaz com que o objetivo lute como um berserker (veja Fúria em Desvantagens, pág. MB143). Se inimigos conhecidos estiverem à vista (ou até mesmo ao alcance da voz), eles serão atacados primeiro.\n\nDuração: 10 minutos, ou menos, se a luta terminar e o objetivo sair da fúria alucinada, conforme pág. MB143.\n\nTempo de opreação: 4 segundos.\n\nCusto: 3 para operar. 2 para manter.\n\nPré-requisito: Bravura.\n\nItem\n(a) Cajado ou varinha; utilizável apenas por magos. O item deve incluir uma representação de um urso ou um dente de urso. Custo de energia para criar: 750. (b) Manto de pele de urso que lança a mágica em seu usuário sem custo de energia (resistência normal é possível). Ele serve como uma Capa Pesada com BD 2, RD 2 e 20 PV. Se a capa perder todo os seus PV, o encantamento será destruído. Custo de energia para criar: 500.",
     "descricaoConferida": true,
     "descricaoPagina": 134,
     "mecanica": {
@@ -15592,8 +15578,8 @@
     "conferido": "livro",
     "conferidoPagina": 134,
     "conferidoPor": {
-      "duracao": "tabela+entrada",
-      "tempoOperacao": "tabela+entrada",
+      "duracao": "tabela",
+      "tempoOperacao": "tabela",
       "custo": "tabela+entrada"
     }
   },
@@ -15963,16 +15949,16 @@
     "energia": "2/2",
     "tempoOperacao": "1 seg.",
     "preRequisitos": "Escudo ou Girar Lâmina",
-    "descricao": "Comum\n\nUma versão contínua de Girar Lâmina — todas as lâminas que atacam o objetivo são viradas, causando apenas um dano por contusão e se tornando despreparadas. Para cada ataque de lâmina, gere uma Disputa Rápida entre a DX do usuário e o NH efetivo do operador para ver qual deles vence. Útil apenas contra ataques de lâmina, como em Girar Lâmina.\n\nNote que, ao contrário de Girar Lâmina, a magia é operada sobre aquele que está sendo atacado e não sobre o atacante.\n\nDuração: 1 minuto.\n\nCusto: 2. O mesmo custo para manter.\n\nPré-requisito: Escudo ou Girar Lâmina.\n\nItem\n\nVarinha, cajado, joias, arma ou armadura. Custo de energia para criar. 300.",
-    "descricaoConferida": false,
-    "descricaoMotivo": "sem-entrada-no-texto",
+    "descricao": "Comum\n\nUma versão contínua de Girar Lâmina — todas as lâminas que atacam o objetivo são viradas, causando apenas um dano por contusão e se tornando despreparadas. Para cada ataque de lâmina, gere uma Disputa Rápida entre a DX do usuário e o NH efetivo do operador para ver qual deles vence. Útil apenas contra ataques de lâmina, como em Girar Lâmina.\n\nNote que, ao contrário de Girar Lâmina, a magia é operada sobre aquele que está sendo atacado e não sobre o atacante.\n\nDuração: 1 minuto.\n\nCusto: 2. O mesmo custo para manter.\n\nPré-requisito: Escudo ou Girar Lâmina.\n\nItem\nVarinha, cajado, joias, arma ou armadura. Custo de energia para criar: 300.",
+    "descricaoConferida": true,
+    "descricaoPagina": 168,
+    "descricaoTitulo": "Gira-Lâmina",
     "mecanica": {
       "efeito": "buff",
       "buffRotulo": "laminas viram: so dano de contusao e ficam despreparadas",
       "notas": "Duracao 1 min; 2 para operar e 2 para manter. Toda lamina que ataca o alvo e virada: causa apenas dano de contusao e fica despreparada. Cada ataque de lamina exige Disputa Rapida entre a DX do atacante e o NH efetivo do operador. So contra laminas; depende de disputa e conversao de tipo de dano -> narrado."
     },
-    "mecanicaConferida": false,
-    "mecanicaMotivo": "sem-texto-do-livro",
+    "mecanicaConferida": true,
     "fonteCabecalho": "tabela",
     "duracaoTipo": "temporaria",
     "duracaoSeg": 60,
@@ -15980,14 +15966,14 @@
     "tempoTipo": "fixo",
     "custoOperar": 2,
     "custoManter": 2,
-    "custoManterTipo": "numero",
+    "custoManterTipo": "igual",
     "custoTipo": "fixo",
     "conferido": "livro",
     "conferidoPagina": 168,
     "conferidoPor": {
-      "duracao": "tabela",
+      "duracao": "tabela+entrada",
       "tempoOperacao": "tabela",
-      "custo": "tabela"
+      "custo": "tabela+entrada"
     }
   },
   {
@@ -16076,7 +16062,7 @@
     "energia": "3/3",
     "tempoOperacao": "3 seg.",
     "preRequisitos": "AM2, Aporte",
-    "descricao": "Comum\n\nAtaca um objetivo à distância transmitindo a força do golpe magicamente.\n\nItem: Cajado ou outra arma. Custo de energia para criar: 1.000 por 0,5 kg de peso da arma.",
+    "descricao": "Comum\n\nAtaca um objetivo à distância. O operador escolhe uma única arma corpo a corpo que, durante a mágica, ganha alcance infinito apenas em relação ao objetivo. A arma deve ser uma que dê golpes — as manoplas de bronze tudo bem, mas um garrote não! Enquanto o objetivo estiver dentro da linha de visão do operador, a arma do operador pode atingi-lo. O objetivo defende normalmente (esquiva, bloqueio, aparar), como se um duplo invisível do operador estivesse envolvido com ele.\n\nO próprio corpo do operador (para socar, morder e chutar) conta como uma arma para propósitos desta mágica. Se o objetivo entrar no alcance real da arma, regras normais serão aplicadas.\n\nA arma não se estica ou salta da mão do operador; a força do golpe é transmitida magicamente. Aplique modificadores de ataque à distância padrão (pág. MB548) aos ataques do operador.\n\nNote que as propriedades mágicas da arma (por exemplo, Arma Flamejante) ou do operador (por exemplo, mágicas de Toque) não podem ser usadas através desta mágica!\n\nDuração: 5 segundos.\n\nCusto: 3. O mesmo custo para manter.\n\nTempo de operação: 3 segundos.\n\nPré-requisitos: Aptidão Mágica 2 e Aporte.\n\nItem\nCajado ou outra arma. Custo de energia para criar: 1.000 por 0,5 kg de peso da arma (mínimo 0,5 kg).",
     "descricaoConferida": true,
     "descricaoPagina": 144,
     "mecanica": {
@@ -16092,14 +16078,14 @@
     "tempoTipo": "fixo",
     "custoOperar": 3,
     "custoManter": 3,
-    "custoManterTipo": "numero",
+    "custoManterTipo": "igual",
     "custoTipo": "fixo",
     "conferido": "livro",
     "conferidoPagina": 144,
     "conferidoPor": {
-      "duracao": "tabela",
-      "tempoOperacao": "tabela",
-      "custo": "tabela"
+      "duracao": "tabela+entrada",
+      "tempoOperacao": "tabela+entrada",
+      "custo": "tabela+entrada"
     }
   },
   {
@@ -16115,9 +16101,9 @@
     "energia": "4 por DX+/I",
     "tempoOperacao": "1 seg.",
     "preRequisitos": "Inabilidade",
-    "descricao": "Comum\n\nAumenta a DX do objetivo temporariamente. Sua Velocidade Básica e NH com todas as perícias baseadas em DX também são aumentados. Um operador pode incrementar sua própria DX para melhorar suas chances de atingir o alvo com mágicas de projétil, etc.\n\nDuração: 1 minuto.\n\nCusto: 4 para cada ponto de incremento de DX (máximo de 5). O mesmo custo para manter.\n\nPré-requisitos: Inabilidade.\n\nItem\n\n(a) Qualquer item. Sempre ativo; a DX do usuário é aumentada enquanto o item é usado! Trata-se de um item muito raro. Custo para criar: 2.000 de energia por ponto de incremento (máximo 5). (b) Cajado ou varinha. Utilizável apenas por magos; o item deve tocar o objetivo. Custo para criar: 2.000 de energia.",
-    "descricaoConferida": false,
-    "descricaoMotivo": "so-pagina",
+    "descricao": "Comum\n\nAumenta a DX do objetivo temporariamente. Sua Velocidade Básica e NH com todas as perícias baseadas em DX também são aumentados. Um operador pode incrementar sua própria DX para melhorar suas chances de atingir o alvo com mágicas de projétil, etc.\n\nDuração: 1 minuto.\n\nCusto: 4 para cada ponto de incremento de DX (máximo de 5). O mesmo custo para manter.\n\nPré-requisitos: Inabilidade.\n\nItem\n(a) Qualquer item. Sempre ativo; a DX do usuário é aumentada enquanto o item é usado! Trata-se de um item muito raro. Custo para criar: 2.000 de energia por ponto de incremento (máximo 5). (b) Cajado ou varinha. Utilizável apenas por magos; o item deve tocar o objetivo. Custo para criar: 2.000 de energia.",
+    "descricaoConferida": true,
+    "descricaoPagina": 37,
     "mecanica": {
       "efeito": "buff",
       "buffAtributo": "DX",
@@ -16127,21 +16113,20 @@
       "buffRotulo": "Graça +DX",
       "notas": "+1 DX por 4 de energia, máx +5 (ataque/defesa/perícias-DX). Duração 1 min."
     },
-    "mecanicaConferida": false,
-    "mecanicaMotivo": "sem-texto-do-livro",
+    "mecanicaConferida": true,
     "fonteCabecalho": "tabela",
     "duracaoTipo": "temporaria",
     "duracaoSeg": 60,
     "tempoOperacaoSeg": 1,
     "tempoTipo": "fixo",
     "custoTipo": "porUnidade",
-    "custoFormula": "4 por DX+/I",
+    "custoFormula": "4 para cada ponto de incremento de DX (máximo de 5). O mesmo custo para manter.",
     "conferido": "livro",
     "conferidoPagina": 37,
     "conferidoPor": {
-      "duracao": "tabela",
+      "duracao": "tabela+entrada",
       "tempoOperacao": "tabela",
-      "custo": "tabela"
+      "custo": "tabela+entrada"
     }
   },
   {
@@ -16196,16 +16181,15 @@
     "energia": "1/1",
     "tempoOperacao": "2 seg.",
     "preRequisitos": "Moldar Água ou Escudo",
-    "descricao": "Comum\n\nAnde em qualquer precipitação leve sem se molhar. Um “escudo” invisível é visto desviando as gotas de chuva que chegam. Guarda-Chuva não funciona contra granizo intenso (ou mágico), chuva de pedras ou sapos, etc. Esta também é uma mágica de Proteção e Aviso.\n\nDuração: 10 minutos.\n\nCusto: 1. Tempo de operação: 2 segundos. Pré-requisito: Moldar Água ou Escudo.\n\nItem\n\nJoalheria. Sempre ativo. Afeta apenas o usuário. Custo para criar: 100 de energia.",
-    "descricaoConferida": false,
-    "descricaoMotivo": "sem-entrada-no-texto",
+    "descricao": "Comum\n\nAnde em qualquer precipitação leve sem se molhar. Um “escudo” invisível é visto desviando as gotas de chuva que chegam. Guarda-Chuva não funciona contra granizo intenso (ou mágico), chuva de pedras ou sapos, etc.\n\nEsta também é uma mágica de Proteção e Aviso.\n\nDuração: 10 minutos.\n\nCusto: 1.\n\nTempo de operação: 2 segundos.\n\nPré-requisito: Moldar Água ou Escudo.\n\nItem\nJoalheria. Sempre ativo. Afeta apenas o usuário. Custo para criar: 100 de energia.",
+    "descricaoConferida": true,
+    "descricaoPagina": 185,
     "mecanica": {
       "efeito": "buff",
       "buffRotulo": "não se molha em chuva leve",
       "notas": "Duracao 10 min; custo 1; operacao 2 s. Mantem o alvo seco em precipitacao leve; nao funciona contra granizo intenso/magico, chuva de pedras etc. Utilidade fora de combate, sem numero."
     },
-    "mecanicaConferida": false,
-    "mecanicaMotivo": "sem-texto-do-livro",
+    "mecanicaConferida": true,
     "fonteCabecalho": "tabela",
     "duracaoTipo": "temporaria",
     "duracaoSeg": 600,
@@ -16218,8 +16202,8 @@
     "conferido": "livro",
     "conferidoPagina": 185,
     "conferidoPor": {
-      "duracao": "tabela",
-      "tempoOperacao": "tabela",
+      "duracao": "tabela+entrada",
+      "tempoOperacao": "tabela+entrada",
       "custo": "tabela"
     }
   },
@@ -16566,9 +16550,9 @@
     ],
     "duracao": "Instant.",
     "energia": "2",
-    "tempoOperacao": "10 segundos",
+    "tempoOperacao": "1 seg.",
     "preRequisitos": "Localizar Planta",
-    "descricao": "Informação\n\nDetermina o tipo e espécie de qualquer planta. Também fornece informações básicas sobre ela (comestível, venenosa, etc). Uma operação bem-sucedida desta mágica concede um bônus de +3 ao NH da perícia Naturalista ou Medicina para determinar propriedades medicinais ou outras propriedades especiais da planta.\n\nCusto: 2.\nTempo de operação: 10 segundos.\nPré-requisito: Localizar Planta.",
+    "descricao": "Informação\n\nDetermina o tipo e espécie de qualquer planta. Também fornece informações básicas sobre ela (comestível, venenosa, etc). Uma operação bem-sucedida desta mágica concede um bônus de +3 ao NH da perícia Naturalista ou Medicina para determinar propriedades medicinais ou outras propriedades especiais da planta.\n\nCusto: 2.\n\nPré-requisito: Localizar Planta.\n\nItem\nVarinha ou cajado. Custo de energia para criar: 200.",
     "descricaoConferida": true,
     "descricaoPagina": 161,
     "mecanica": {
@@ -16579,7 +16563,7 @@
     "fonteCabecalho": "tabela",
     "duracaoTipo": "instantanea",
     "duracaoSeg": 0,
-    "tempoOperacaoSeg": 10,
+    "tempoOperacaoSeg": 1,
     "tempoTipo": "fixo",
     "custoOperar": 2,
     "custoTipo": "fixo",
@@ -16587,7 +16571,7 @@
     "conferidoPagina": 161,
     "conferidoPor": {
       "duracao": "tabela",
-      "tempoOperacao": "entrada",
+      "tempoOperacao": "tabela",
       "custo": "tabela+entrada"
     }
   },
@@ -16909,7 +16893,7 @@
     "energia": "4/3",
     "tempoOperacao": "10 seg.",
     "preRequisitos": "Remover Infecção ou Vigor",
-    "descricao": "Comum\nO objetivo é imune a doenças enquanto a mágica durar, de acordo com a vantagem de Resistente a Doenças (veja Resistente, pág. MB84). Esta também é uma mágica de Proteção e Aviso.\nDuração: 1 hora.\nCusto: 4 para operar. 3 para manter.\nTempo de operação: 10 segundos.\nPré-requisito: Remover Infecção ou Vigor.\nItem\nItem\nItem\n(a) Joias. Sempre ativo; o usuário é imune a doenças. Um item raro e valorizado! Custo de energia para criar: 1.000 para um item que resiste a uma doença específica, 2.500 para um que resiste a todas as doenças.\nQualquer item; O item deve ter uma gravura de um pelicano. Evita que o usuário sangre e sofra ferimentos mortais. Custo de energia para criar: 500.\nVarinha ou cajado decorado com um padrão de serpente. O item deve tocar o objetivo. Utilizável apenas por magos, ou por não-magos perícia Medicina 20 ou superior. Custo de energia para criar: 1.500.\n(b) Joias. Sempre ativo; impede que o usuário espalhe qualquer doença que possa ter. “Cordas do Leproso” é um exemplo deste item. Custo de energia para criar: 250.\nCura Superficial\nCura Superior (MD)\nImunidade a Veneno\nComum\nComum\nComum\nRestaura até 3 PV para o objetivo. Não elimina doenças ou venenos, mas curará os danos causados por essas coisas.\nRestaura todos os PV perdidos do objetivo. Não elimina doenças ou venenos, nem recupera partes do corpo danificadas ou ausentes, mas pode curar os PV perdidos em qualquer uma dessas coisas.\nO objetivo se torna imune a venenos durante o efeito da mágica. Para alguns venenos muito persistentes, isso é apenas um atraso do inevitável, já que vestígios do veneno ainda podem estar no sistema do objetivo quando a mágica terminar! Esta também é uma mágica de Proteção e Aviso.\nEsta mágica é arriscada se usada mais de uma vez por dia pelo mesmo operador no mesmo objetivo. Se tentar, faça um teste com uma penalidade de -3 para a primeira repetição, -6 para a segunda e assim por diante. Se você tiver a perícia Medicina com NH 15 ou superior, uma falha crítica com esta mágica conta apenas como uma falha comum — a menos que você esteja tentando a mágica mais de uma vez por dia no mesmo objetivo.\nUm determinado objetivo só pode se beneficiar desta mágica uma vez por dia, seja ela operada pelo mesmo operador ou por um operador diferente de cada vez. Se você tiver a perícia Medicina com NH 15 ou superior, uma falha crítica com esta mágica conta apenas como uma falha.\nDuração: 1 hora.\nCusto: 1 a 3. O mesmo valor é restaurado ao objetivo.\nCusto: 20. Uma tentativa por dia por objetivo.\nCusto: 4 para operar. 3 para manter.\nPré-requisito: Conceder Vitalidade.\nTempo de operação: 1 minuto.\nTempo de operação: 10 segundos.\nItem\nPré-requisitos: Aptidão Mágica 3 e Cura Profunda.\nPré-requisito: Vigor.\nVarinha ou cajado, decorada com um padrão de serpente. O item deve tocar o objetivo. Utilizável apenas por magos, ou por não-magos com perícia Medicina 15 ou superior. Custo de energia para criar: 600.\nItem\nItem\nCura Profunda (MD)\nVarinha ou cajado decorado com um padrão de serpente. O item deve tocar o objetivo. Utilizável apenas por magos, ou por não-magos com a perícia Medicina 25 ou superior. Custo de energia para criar: 4.000.\nJoias. O item deve ter uma gravura de um unicórnio. Sempre ativo; o usuário é imune a venenos. Um item raro e valorizado! Custo de energia para criar: 500 para um item que resiste a um veneno específico, 4.000 para um que resiste a todos os venenos.\nComum\nCurar Doenças\nCessar Sangramento\nRestaura até 8 PV para o objetivo. Não elimina doenças ou venenos, mas curará os danos causados por essas coisas. Caso contrário, esta mágica funciona da mesma forma que Cura Superficial: com uma penalidade de -3 por operação no mesmo objetivo em um dia, e a perícia Medicina com NH 15 ou superior mitigará os efeitos de uma falha crítica. As penalidades para operações repetidas são acumuladas separadamente para Cura Superficial e Cura Profunda. Por exemplo, um operador poderia operar as duas mágicas no mesmo objetivo no mesmo dia, sem penalidade.\nComum\nComum\nCusto: 1 a 4. Duas vezes o valor gasto é restaurado para o objetivo.\nElimina um tipo de doença ou infecção do corpo do objetivo. Um teste de Diagnose bem sucedido (pelo operador ou outro) deve preceder a operação; se não, o uso da mágica será com uma penalidade de -5! Não cura nenhum dano que a doença tenha causado ao paciente; a mágica apenas elimina a doença subjacente.\nO sangramento do objetivo é interrompido imediatamente, como se estivesse enfaixado por alguém com a perícia Primeiros Socorros (pág. MB219). Isso restaura 1 PV e evita mais perda de PV devido ao sangramento se as Regras Opcionais de Sangramento (pág. MB420) estiverem em vigor. O objetivo desta mágica não pode se beneficiar subsequentemente do enfaixamento dos mesmos ferimentos.\nPré-requisitos: Aptidão Mágica 1 e Cura Superficial.\nDuração: A doença se foi, mas o objetivo não está imune para sempre…\nEsta mágica também pode ser usada para estabilizar um ferimento fatal (pág. MB423), a um custo substancialmente maior.\nCusto: 4.\nDuração: Permanente, embora lesões posteriores sangrem normalmente.\nTempo de operação: 10 minutos. Uma tentativa.\nCusto: 1 para parar o sangramento em um ferimento normal; 10 para estabilizar um ferimento mortal.\nPré-requisitos: Aliviar Enjoo e Cura Profunda.\nPré-requisito: Conceder Vitalidade.\nItem\nVarinha ou cajado, decorado com um padrão de serpente. O item deve tocar o objetivo. Utilizável apenas por magos. Custo de energia para criar: 800 para curar uma doença específica, ou 1.500 para um item que cura qualquer doença.",
+    "descricao": "Comum\nO objetivo é imune a doenças enquanto a mágica durar, de acordo com a vantagem de Resistente a Doenças (veja Resistente, pág. MB84). Esta também é uma mágica de Proteção e Aviso.\nDuração: 1 hora.\nCusto: 4 para operar. 3 para manter.\nTempo de operação: 10 segundos.\nPré-requisito: Remover Infecção ou Vigor.\nItem\n(a) Joias. Sempre ativo; o usuário é imune a doenças. Um item raro e valorizado! Custo de energia para criar: 1.000 para um item que resiste a uma doença específica, 2.500 para um que resiste a todas as doenças. (b) Joias. Sempre ativo; impede que o usuário espalhe qualquer doença que possa ter. “Cordas do Leproso” é um exemplo deste item. Custo de energia para criar: 250.",
     "descricaoConferida": true,
     "descricaoPagina": 90,
     "mecanica": {
@@ -17180,16 +17164,15 @@
     "energia": "4/3",
     "tempoOperacao": "10 seg.",
     "preRequisitos": "Vigor",
-    "descricao": "Comum\n\nO objetivo se torna imune a venenos durante o efeito da mágica. Para alguns venenos muito persistentes, isso é apenas um atraso do inevitável, já que vestígios do veneno ainda podem estar no sistema do objetivo quando a mágica terminar! Esta também é uma mágica de Proteção e Aviso.\n\nDuração: 1 hora.\n\nCusto: 4 para operar. 3 para manter.\n\nTempo de operação: 10 segundos.\n\nPré-requisito: Vigor.\n\nItem\n\nJoias. O item deve ter uma gravura de um unicórnio. Sempre ativo; o usuário é imune a venenos. Um item raro e valorizado! Custo de energia para criar: 500 para um item que resiste a um veneno específico, 4.000 para um que resiste a todos os venenos.",
-    "descricaoConferida": false,
-    "descricaoMotivo": "so-pagina",
+    "descricao": "Comum\n\nO objetivo se torna imune a venenos durante o efeito da mágica. Para alguns venenos muito persistentes, isso é apenas um atraso do inevitável, já que vestígios do veneno ainda podem estar no sistema do objetivo quando a mágica terminar! Esta também é uma mágica de Proteção e Aviso.\n\nDuração: 1 hora.\n\nCusto: 4 para operar. 3 para manter.\n\nTempo de operação: 10 segundos.\n\nPré-requisito: Vigor.\n\nItem\nJoias. O item deve ter uma gravura de um unicórnio. Sempre ativo; o usuário é imune a venenos. Um item raro e valorizado! Custo de energia para criar: 500 para um item que resiste a um veneno específico, 4.000 para um que resiste a todos os venenos.",
+    "descricaoConferida": true,
+    "descricaoPagina": 91,
     "mecanica": {
       "efeito": "buff",
       "buffRotulo": "imune a veneno 1h",
       "notas": "Duracao 1 hora; 4 para operar, 3 para manter; operacao 10 s. Alvo fica imune a venenos; vestigios persistentes podem agir quando a magia acabar. Imunidade — sem numero de combate."
     },
-    "mecanicaConferida": false,
-    "mecanicaMotivo": "sem-texto-do-livro",
+    "mecanicaConferida": true,
     "fonteCabecalho": "tabela",
     "duracaoTipo": "temporaria",
     "duracaoSeg": 3600,
@@ -17202,9 +17185,9 @@
     "conferido": "livro",
     "conferidoPagina": 91,
     "conferidoPor": {
-      "duracao": "tabela",
-      "tempoOperacao": "tabela",
-      "custo": "tabela"
+      "duracao": "tabela+entrada",
+      "tempoOperacao": "tabela+entrada",
+      "custo": "tabela+entrada"
     }
   },
   {
@@ -18266,9 +18249,9 @@
     ],
     "duracao": "1 min.",
     "energia": "4/2",
-    "tempoOperacao": "3 segundos",
+    "tempoOperacao": "10 seg.",
     "preRequisitos": "Percepção de Veracidade ou Requisitar Idioma",
-    "descricao": "Comum; Resistível com Vontade\n\nPermite ao operador ler a mente do objetivo. Funciona em qualquer ser vivo, mas não terá muita utilidade se não for usada em uma criatura sapiente. Detecta apenas pensamentos superficiais (o que o objetivo está pensando no momento). Esta mágica não funcionará em objetivos adormecidos ou inconscientes. O objetivo só saberá que alguém leu sua mente no caso de uma falha crítica.\n\nDuração: 1 minuto.\nCusto: 3 para operar, 1 para manter.\nTempo de operação: 3 segundos.\nPré-requisitos: Falar com Animais ou três mágicas de Comunicação e Empatia.\n\nModificadores: -2 se o operador não souber o idioma materno do objetivo; -2 se o objetivo for de uma raça diferente; -4 ou mais se o objetivo for um alienígena!",
+    "descricao": "Comum; Resistível com Vontade\n\nPermite ao operador ler a mente do objetivo. Funciona em qualquer ser vivo, mas não terá muita utilidade se não for usada em uma criatura sapiente. Detecta apenas pensamentos superficiais (o que o objetivo está pensando no momento). Esta mágica não funcionará em objetivos adormecidos ou inconscientes. O objetivo só saberá que alguém leu sua mente no caso de uma falha crítica.\n\nModificadores: -2 se o operador não souber o idioma materno do objetivo; -2 se o objetivo for de uma raça diferente; -4 ou mais se o objetivo for um alienígena!\n\nDuração: 1 minuto.\n\nCusto: 4 para operar. 2 para manter.\n\nTempo de operação: 10 segundos.\n\nPré-requisito: Percepção de Veracidade ou Requisitar Idioma.\n\nItem\nCoroa, capacete ou outro item que protege a cabeça. Utilizável apenas por magos. Custo de energia para criar: 1.000.",
     "descricaoConferida": true,
     "descricaoPagina": 46,
     "mecanica": {
@@ -18279,19 +18262,18 @@
     "fonteCabecalho": "tabela",
     "duracaoTipo": "temporaria",
     "duracaoSeg": 60,
-    "tempoOperacaoSeg": 3,
+    "tempoOperacaoSeg": 10,
     "tempoTipo": "fixo",
-    "custoOperar": 3,
-    "custoManter": 1,
+    "custoOperar": 4,
+    "custoManter": 2,
     "custoManterTipo": "numero",
     "custoTipo": "fixo",
-    "energiaTela": "3/1",
     "conferido": "livro",
     "conferidoPagina": 46,
     "conferidoPor": {
       "duracao": "tabela+entrada",
-      "tempoOperacao": "entrada",
-      "custo": "entrada"
+      "tempoOperacao": "tabela+entrada",
+      "custo": "tabela+entrada"
     }
   },
   {
@@ -18999,15 +18981,14 @@
     "energia": "2",
     "tempoOperacao": "1 seg.",
     "preRequisitos": "—",
-    "descricao": "Informação\n\nObtém a direção e a distância aproximada do crescimento de plantas mais próximo, ou de um tipo de planta específico. Utilize os Modificadores de Longa Distância (pág. 14). Qualquer planta conhecida pode ser excluída se o operador mencioná-la antes de operar.\n\nCusto: 2\n\nItem\n\nUma varinha, cajado ou estatueta de madeira esculpida. Custo de energia para criar: 50.",
-    "descricaoConferida": false,
-    "descricaoMotivo": "sem-entrada-no-texto",
+    "descricao": "Informação\n\nObtém a direção e a distância aproximada do crescimento de plantas mais próximo, ou de um tipo de planta específico. Utilize os Modificadores de Longa Distância (pág. 14). Qualquer planta conhecida pode ser excluída se o operador mencioná-la antes de operar.\n\nCusto: 2\n\nItem\nUma varinha, cajado ou estatueta de madeira esculpida. Custo de energia para criar: 50.",
+    "descricaoConferida": true,
+    "descricaoPagina": 161,
     "mecanica": {
       "efeito": "informacao",
       "notas": "Direção e distância aproximada da planta (ou tipo) mais próxima. Modificadores de Longa Distância."
     },
-    "mecanicaConferida": false,
-    "mecanicaMotivo": "sem-texto-do-livro",
+    "mecanicaConferida": true,
     "fonteCabecalho": "tabela",
     "duracaoTipo": "instantanea",
     "duracaoSeg": 0,
@@ -19020,7 +19001,7 @@
     "conferidoPor": {
       "duracao": "tabela",
       "tempoOperacao": "tabela",
-      "custo": "tabela"
+      "custo": "tabela+entrada"
     }
   },
   {
@@ -19847,7 +19828,7 @@
     "energia": "4#",
     "tempoOperacao": "1 min",
     "preRequisitos": "AM1, Apressar",
-    "descricao": "Comum\n\nDuplica a velocidade de deslocamento de longa distância do objetivo.\n\nDuração: 1 dia de marcha.\nCusto: 4.\nTempo de operação: 1 minuto.\nPré-requisitos: Aptidão Mágica 1 e Apressar.",
+    "descricao": "Comum\n\nDuplica a velocidade de deslocamento de longa distância do objetivo. No final do dia, o objetivo perde 10 PF e deve dormir. Esta mágica não tem efeito no Deslocamento em combate ou na Velocidade Básica.\n\nDuração: 1 dia de marcha.\n\nCusto: 4. Não pode ser mantida.\n\nTempo de operação: 1 minuto.\n\nPré-requisitos: Aptidão Mágica 1 e Apressar.\n\nItem\nCalçado ou joias. Só afeta o usuário. Custo de energia para criar: 400.",
     "descricaoConferida": true,
     "descricaoPagina": 144,
     "mecanica": {
@@ -19862,13 +19843,15 @@
     "tempoOperacaoSeg": 60,
     "tempoTipo": "fixo",
     "custoOperar": 4,
+    "custoManter": 0,
+    "custoManterTipo": "nao",
     "custoTipo": "fixo",
     "conferido": "livro",
     "conferidoPagina": 144,
     "conferidoPor": {
       "duracao": "tabela",
       "tempoOperacao": "tabela+entrada",
-      "custo": "tabela+entrada"
+      "custo": "entrada"
     }
   },
   {
@@ -20118,9 +20101,9 @@
     "energia": "1",
     "tempoOperacao": "1 seg",
     "preRequisitos": "Percepção de Emoção ou Vantagem Empatia",
-    "descricao": "Área; Resistível com Vontade\n\nO(s) objetivo(s) sentem medo. O operador recebe +3 de bônus em testes de reação em situações de combate em potencial e outras situações em que as ameaças são efetivas, mas sofre -3 de penalidade nos testes de lealdade e situações em que aterrorizar os PdMs é contraproducente.\n\nDuração: 10 minutos a menos que seja contrariada por Bravura.\n\nCusto básico: 1. Não pode ser mantida. Pré-requisito: Percepção de Emoção ou a vantagem Empatia.\n\nItem\n\n(a) Qualquer item. Sempre ativo; o item faz com que o usuário sinta medo. Custo de energia para criar: 200. (b) Cajado ou varinha. Utilizável apenas por magos; o item deve tocar no objetivo. Custo de energia para criar: 300.",
-    "descricaoConferida": false,
-    "descricaoMotivo": "sem-entrada-no-texto",
+    "descricao": "Área; Resistível com Vontade\n\nO(s) objetivo(s) sentem medo. O operador recebe +3 de bônus em testes de reação em situações de combate em potencial e outras situações em que as ameaças são efetivas, mas sofre -3 de penalidade nos testes de lealdade e situações em que aterrorizar os PdMs é contraproducente.\n\nDuração: 10 minutos a menos que seja contrariada por Bravura.\n\nCusto básico: 1. Não pode ser mantida.\n\nPré-requisito: Percepção de Emoção ou a vantagem Empatia.\n\nItem\n(a) Qualquer item. Sempre ativo; o item faz com que o usuário sinta medo. Custo de energia para criar: 200. (b) Cajado ou varinha. Utilizável apenas por magos; o item deve tocar no objetivo. Custo de energia para criar: 300.",
+    "descricaoConferida": true,
+    "descricaoPagina": 134,
     "mecanica": {
       "efeito": "condicao",
       "entrega": "area",
@@ -20128,21 +20111,22 @@
       "notas": "Area (raio conforme energia), R-Vont, 10 min. Alvos sentem medo: +3 nas reacoes do operador em situacoes de ameaca, -3 em lealdade/onde aterrorizar e contraproducente. Contrariada por Bravura.",
       "condicaoDuracaoSeg": 600
     },
-    "mecanicaConferida": false,
-    "mecanicaMotivo": "sem-texto-do-livro",
+    "mecanicaConferida": true,
     "fonteCabecalho": "tabela",
     "duracaoTipo": "temporaria",
     "duracaoSeg": 600,
     "tempoOperacaoSeg": 1,
     "tempoTipo": "fixo",
     "custoOperar": 1,
+    "custoManter": 0,
+    "custoManterTipo": "nao",
     "custoTipo": "fixo",
     "conferido": "livro",
     "conferidoPagina": 134,
     "conferidoPor": {
       "duracao": "tabela",
       "tempoOperacao": "tabela",
-      "custo": "tabela"
+      "custo": "entrada"
     }
   },
   {
@@ -20831,7 +20815,7 @@
     "energia": "1/1#",
     "tempoOperacao": "2 seg",
     "preRequisitos": "Criar Água",
-    "descricao": "Comum\n\nPermite ao operador esculpir a água (gelo ou vapor), dar-lhe qualquer forma e até movê-la por aí. Depois de assumir a nova forma, a água irá mantê-la sem que o operador precise se concentrar. Um corpo de água movimentado move-se com Deslocamento 3. Oitenta litros criam um muro de 2m x 1m, capaz de barrar bolas de fogo.\n\nDuração: 1 minuto.\nCusto: 1 para cada 80 litros. Mesmo custo para manter.\nTempo de operação: 2 segundos.\nPré-requisito: Criar Água.\n\nItens\n(a) Temporário: Cajado ou joia que cai da mão após ativado (dura 1 min). Custo: 1.200.\n(b) Permanente: O item torna-se aquoso junto com o usuário, permitindo manter a mágica. Custo: 2.500.\nDuração: O gelo dura até derreter naturalmente.\n\nCusto: 2 para um objeto do tamanho de um punho, 4 para 25 litros, 6 para 250 litros, mais 3 para cada 250 litros adicionais. Se a temperatura estiver acima de zero, o operador pode manter a mágica gastando o custo de operação uma vez a cada 10 minutos.\n\nTempo de operação: 10 segundos.\n\nPré-requisito: Moldar Água.\n\nItem\nCajado, varinha ou joias. Custo para criar: 200 de energia, $100 em uma gema azul.",
+    "descricao": "Comum\n\nPermite ao operador esculpir a água (o gelo ou o vapor), dar-lhe qualquer forma e até movê-la por aí. Depois de assumir a nova forma, a água irá mantê-la, sem que o operador precise se concentrar, até que a duração da mágica termine. Um corpo de água movimentado com esta mágica se move com Deslocamento 3.\n\nUm muro de água criado para barrar ataques de fogo pode ser bastante útil. Oitenta litros de água são suficientes para criar um muro de 2 metros de altura e 1 metro de comprimento, capaz de barrar bolas de fogo e fogo comum\n\nDuração: 1 minuto.\n\nCusto: 1 para moldar 80 litros. Mesmo custo para manter.\n\nTempo de operação: 2 segundos.\n\nPré-requisito: Criar Água.\n\nItem\nCajado, varinha ou joias. Custo de energia para criar: 400.",
     "descricaoConferida": true,
     "descricaoPagina": 185,
     "mecanica": {
@@ -20844,8 +20828,8 @@
     "duracaoSeg": 60,
     "tempoOperacaoSeg": 2,
     "tempoTipo": "fixo",
-    "custoTipo": "porUnidade",
-    "custoFormula": "1 para cada 80 litros. Mesmo custo para manter.",
+    "custoTipo": "varia",
+    "custoFormula": "1 para moldar 80 litros. Mesmo custo para manter.",
     "conferido": "livro",
     "conferidoPagina": 185,
     "conferidoPor": {
@@ -21017,16 +21001,15 @@
     "energia": "3/1#",
     "tempoOperacao": "10 seg",
     "preRequisitos": "Identificar Planta",
-    "descricao": "Comum\n\nModela e da forma com as mãos à plantas e material vegetal. Concede um bônus de +2 à Carpintaria e Artista (Marcenaria), ou permite que o operador trabalhe sem quaisquer ferramentas com uma penalidade de -1 no NH. Útil para a construção de casas e móveis, reparação de escudos e equipamentos e remoção de obstáculos de madeira. Pode ser usada na arma de um inimigo em combate, causando 2d de dano a armas de madeira; veja Golpes Visando a Arma do Oponente (pág. MB400) para detalhes sobre danos em armas.\n\nDuração: 1 minuto.\n\nCusto: 3 para operar. 1 para manter. Dobre o custo se o material não estiver mais vivo.\n\nTempo de operação: 10 segundos. Pré-requisito: Identificar Planta.\n\nItem\n\nLuvas de material vegetal. Custo de energia para criar: 500.",
-    "descricaoConferida": false,
-    "descricaoMotivo": "sem-entrada-no-texto",
+    "descricao": "Comum\n\nModela e da forma com as mãos à plantas e material vegetal . Concede um bônus de +2 à Carpintaria e Artista (Marcenaria), ou permite que o operador trabalhe sem quaisquer ferramentas com uma penalidade de -1 no NH. Útil para a construção de casas e móveis, reparação de escudos e equipamentos e remoção de obstáculos de madeira. Pode ser usada na arma de um inimigo em combate, causando 2d de dano a armas de madeira; veja Golpes Visando a Arma do Oponente (pág. MB400) para detalhes sobre danos em armas.\n\nDuração: 1 minuto.\n\nCusto: 3 para operar. 1 para manter. Dobre o custo se o material não estiver mais vivo.\n\nTempo de operação: 10 segundos.\n\nPré-requisito: Identificar Planta.\n\nItem\nLuvas de material vegetal. Custo de energia para criar: 500.",
+    "descricaoConferida": true,
+    "descricaoPagina": 161,
     "mecanica": {
       "efeito": "buff",
       "buffRotulo": "+2 Carpintaria/Artista (Marcenaria)",
       "notas": "Bonus de PERICIA (+2 Carpintaria e Artista/Marcenaria; -1 no NH se trabalhar sem ferramentas) — fora do motor. O uso em combate (2d de dano a armas de MADEIRA do inimigo, ver Golpes Visando a Arma do Oponente, MB400) e dano em OBJETO, nao buff nem dano em PV: fica narrado. Dobre o custo se o material nao estiver vivo."
     },
-    "mecanicaConferida": false,
-    "mecanicaMotivo": "sem-texto-do-livro",
+    "mecanicaConferida": true,
     "fonteCabecalho": "tabela",
     "duracaoTipo": "temporaria",
     "duracaoSeg": 60,
@@ -21039,9 +21022,9 @@
     "conferido": "livro",
     "conferidoPagina": 161,
     "conferidoPor": {
-      "duracao": "tabela",
-      "tempoOperacao": "tabela",
-      "custo": "tabela"
+      "duracao": "tabela+entrada",
+      "tempoOperacao": "tabela+entrada",
+      "custo": "tabela+entrada"
     }
   },
   {
@@ -21736,7 +21719,7 @@
     "energia": "1/I",
     "tempoOperacao": "5 min",
     "preRequisitos": "AM1 e Sentinela ou Escudo",
-    "descricao": "Área\n\nProduz uma névoa densa e opalescente que confunde a entrada de qualquer pessoa; figuras a mais de 2 metros de distância não podem ser vistas, exceto por Visão de Magia. Aqueles que estavam dentro dela quando foi operada são imunes aos seus efeitos; eles podem sentir isso como um brilho cintilante, mas não afetará sua visão ou os confundirá. Outros devem fazer um teste contra (IQ+Resistência à Magia) a cada segundo, ou usar Visão de Magia, para evitar perder o caminho e caminhar em direções aleatoriamente escolhidas, a menos que tenham um guia. Senso de Direção evita esse problema.\n\nUma Verificação de Pânico também é requerida de intrusos que entram pela primeira vez na névoa, e novamente a cada 5 minutos. Qualquer um que falhar na primeira Verificação de Pânico ficará muito relutante em entrar! Animais perigosos simplesmente evitam a névoa, mas sofrem os efeitos normais se, por algum motivo, precisarem penetrá-la.\n\nAqueles \"nativos\" da névoa têm +1 em suas jogadas de defesa quando atacados por intrusos, e os intrusos têm -1 para suas próprias jogadas de defesa contra \"nativos\".\n\nEsta mágica é uma excelente defesa para um grupo acampando em território perigoso. O operador deve operar Neblina Mística em uma área centrada em si mesmo. Quanto maior a área que ele pode cobrir, melhor!\n\nDuração: 10 horas. Custo básico: 1. O custo para manter é o mesmo.",
+    "descricao": "Área\n\nProduz uma névoa densa e opalescente que confunde a entrada de qualquer pessoa; figuras a mais de 2 metros de distância não podem ser vistas, exceto por Visão de Magia. Aqueles que estavam dentro dela quando foi operada são imunes aos seus efeitos; eles podem sentir isso como um brilho cintilante, mas não afetará sua visão ou os confundirá. Outros devem fazer um teste contra (IQ+Resistência à Magia) a cada segundo, ou usar Visão de Magia, para evitar perder o caminho e caminhar em direções aleatoriamente escolhidas, a menos que tenham um guia. Senso de Direção evita esse problema.\n\nUma Verificação de Pânico também é requerida de intrusos que entram pela primeira vez na névoa, e novamente a cada 5 minutos. Qualquer um que falhar na primeira Verificação de Pânico ficará muito relutante em entrar! Animais perigosos simplesmente evitam a névoa, mas sofrem os efeitos normais se, por algum motivo, precisarem penetrá-la.\n\nAqueles “nativos” da névoa têm +1 em suas jogadas de defesa quando atacados por intrusos, e os intrusos têm -1 para suas próprias jogadas de defesa contra “nativos”.\n\nEsta mágica é uma excelente defesa para um grupo acampando em território perigoso. O operador deve operar Neblina Mística em uma área centrada em si mesmo. Quanto maior a área que ele pode cobrir, melhor!\n\nDuração: 10 horas.\n\nCusto básico: 1. O custo para manter é o mesmo.",
     "descricaoConferida": true,
     "descricaoPagina": 168,
     "mecanica": {
@@ -21924,15 +21907,14 @@
     "energia": "2",
     "tempoOperacao": "3 seg",
     "preRequisitos": "Endurecer",
-    "descricao": "Comum\n\nFaz um nó que não pode ser desatado sem mágica (embora a corda possa ser cortada, é claro). O nó desata quando alguém diz a senha (especificada na operação) enquanto toca a corda em qualquer ponto ao longo de seu comprimento. Assim, uma corda amarrada no topo de um penhasco se soltará quando alguém no fundo do penhasco disser a senha, se ele puder tocar a corda. Nó também funciona para cordas, cintos de castidade, etc.\n\nA mágica Desatar também desata uma mágica Nó, mas a mágica Nó recebe um teste de resistência.\n\nDuração: Até a senha ser falada, ou a corda for cortada ou quebrada!\n\nCusto: 2. Não pode ser mantida — precisa ser refeita se a corda estiver desamarrada.\n\nTempo de operação: 3 segundos. Pré-requisito: Endurecer.\n\nItem\n\nCorda. Qualquer nó amarrado com esta corda não pode ser desatado sem mágica. Uma senha é definida quando a corda é encantada. O encantamento é quebrado se a corda for cortada. Custo de energia para criar: 20 por cada 30 cm de corda.",
-    "descricaoConferida": false,
-    "descricaoMotivo": "so-pagina",
+    "descricao": "Comum\n\nFaz um nó que não pode ser desatado sem mágica (embora a corda possa ser cortada, é claro). O nó desata quando alguém diz a senha (especificada na operação) enquanto toca a corda em qualquer ponto ao longo de seu comprimento. Assim, uma corda amarrada no topo de um penhasco se soltará quando alguém no fundo do penhasco disser a senha, se ele puder tocar a corda. Nó também funciona para cordas, cintos de castidade, etc.\n\nA mágica Desatar também desata uma mágica Nó, mas a mágica Nó recebe um teste de resistência.\n\nDuração: Até a senha ser falada, ou a corda for cortada ou quebrada!\n\nCusto: 2. Não pode ser mantida — precisa ser refeita se a corda estiver desamarrada.\n\nTempo de operação: 3 segundos.\n\nPré-requisito: Endurecer.\n\nItem\nCorda. Qualquer nó amarrado com esta corda não pode ser desatado sem mágica. Uma senha é definida quando a corda é encantada. O encantamento é quebrado se a corda for cortada. Custo de energia para criar: 20 por cada 30 cm de corda.",
+    "descricaoConferida": true,
+    "descricaoPagina": 117,
     "mecanica": {
       "efeito": "narrado",
       "notas": "Nó indesatável sem magia até a senha ser dita tocando a corda (ou a corda ser cortada). Desatar remove, mas o Nó tem direito a teste de resistência. Não pode ser mantida."
     },
-    "mecanicaConferida": false,
-    "mecanicaMotivo": "sem-texto-do-livro",
+    "mecanicaConferida": true,
     "fonteCabecalho": "tabela",
     "duracaoTipo": "permanente",
     "duracaoSeg": 0,
@@ -21940,13 +21922,15 @@
     "tempoOperacaoSeg": 3,
     "tempoTipo": "fixo",
     "custoOperar": 2,
+    "custoManter": 0,
+    "custoManterTipo": "nao",
     "custoTipo": "fixo",
     "conferido": "livro",
     "conferidoPagina": 117,
     "conferidoPor": {
       "duracao": "tabela",
-      "tempoOperacao": "tabela",
-      "custo": "tabela"
+      "tempoOperacao": "tabela+entrada",
+      "custo": "entrada"
     }
   },
   {
@@ -22054,7 +22038,7 @@
     "energia": "1 a 5/I",
     "tempoOperacao": "1 a 5 seg",
     "preRequisitos": "Moldar Ar, Bola de Fogo",
-    "descricao": "Área\nCria uma nuvem rodopiante de chamas e brasas de fogo. Não bloqueia a visão, mas inflige dano por queimadura a todos dentro dela. Criaturas na nuvem recebem dano em seus próprios turnos. Se menos de um segundo inteiro for gasto na área afetada, o dano é reduzido pela metade (arredondado para baixo). Armadura protege normalmente. Somente materiais altamente inflamáveis podem pegar fogo.\n\nDuração: 10 segundos.\n\nCusto básico: 1 a 5; a nuvem inflige 1 ponto de dano por segundo para cada ponto de energia colocado no custo base. Mesmo custo para manter.\n\nTempo de operação: 1 a 5 segundos, dependendo do custo base.\n\nPré-requisitos: Moldar Ar e Bola de Fogo.\nItem\nCajado, varinha ou joias. Utilizável apenas por magos. Custo para criar: 175 de energia e um rubi de $500.",
+    "descricao": "Área\n\nCria uma nuvem rodopiante de chamas e brasas de fogo. Não bloqueia a visão, mas inflige dano por queimadura a todos dentro dela. Criaturas na nuvem recebem dano em seus próprios turnos. Se menos de um segundo inteiro for gasto na área afetada, o dano é reduzido pela metade (arredondado para baixo). Armadura protege normalmente. Somente materiais altamente inflamáveis podem pegar fogo.\n\nDuração: 10 segundos.\n\nCusto básico: 1 a 5; a nuvem inflige 1 ponto de dano por segundo para cada ponto de energia colocado no custo base. Mesmo custo para manter.\n\nTempo de operação: 1 a 5 segundos, dependendo do custo base.\n\nPré-requisitos: Moldar Ar e Bola de Fogo.\nItem\nCajado, varinha ou joias. Utilizável apenas por magos. Custo para criar: 175 de energia e um rubi de $500.",
     "descricaoConferida": true,
     "descricaoPagina": 75,
     "mecanica": {
@@ -22176,7 +22160,7 @@
     "energia": "4/2",
     "tempoOperacao": "10 seg",
     "preRequisitos": "AM2, Aporte",
-    "descricao": "Comum\n\nAnima um único objeto para realizar trabalhos repetitivos.\n\nDuração: 1 hora.\nCusto: 4 para operar. 2 para manter.\nTempo de operação: 10 segundos.\nPré-requisitos: Aptidão Mágica 2 e Aporte.",
+    "descricao": "Comum\n\nAnima um único objeto para realizar trabalhos repetitivos. Ele pode realizar aproximadamente o mesmo tipo de tarefa que um homem de ST 15: um balde pode transportar água de um córrego até um barril, uma vassoura pode varrer um prédio várias vezes, uma besta pode se armar etc. O programa do objeto não pode ser alterado ou responder a eventos… apenas faz o seu trabalho sem pensar. O uso inteligente de Conexão pode fazer com que o Objeto Dançante responda efetivamente às situações, mas isso requer um pensamento cuidadoso.\n\nDuração: 1 hora.\n\nCusto: 4 para operar. 2 para manter.\n\nTempo de operação: 10 segundos.\n\nPré-requisitos: Aptidão Mágica 2 e Aporte.\n\nItem\nEsta mágica pode se tornar permanente em qualquer objeto. Custo para criar: 400 de energia, $500 em ingredientes mágicos. O objeto deve ser “lembrado” de sua programação uma vez por dia enquanto o encantamento está acontecendo.",
     "descricaoConferida": true,
     "descricaoPagina": 144,
     "mecanica": {
@@ -22365,7 +22349,7 @@
     "energia": "3/1",
     "tempoOperacao": "1 seg",
     "preRequisitos": "Percepção de Veracidade ou Ocultar Emoção",
-    "descricao": "Comum\n\nEsta mágica cria uma resistência a qualquer tentativa de leitura da mente ou controle dos pensamentos do objetivo. Para afetá-lo, o ataque precisa vencer uma Disputa Rápida com esta mágica. Mesmo que o ataque consiga superar esta mágica, o objetivo ainda terá direito a seu próprio teste de resistência (feito separadamente). Ocultar Pensamentos não afeta mecanismos de controle da mente implementados anteriormente.\n\nDuração: 10 minutos.\nCusto: 3 para operar, 1 para manter.\nPré-requisito: Percepção de Veracidade ou Ocultar Emoção.\n\nItem\nCoroa, capacete ou outro item que cobre a cabeça. Custo de energia para criar: 1.000.",
+    "descricao": "Comum\n\nEsta mágica cria uma resistência a qualquer tentativa de leitura da mente ou controle dos pensamentos do objetivo. Para afetá-lo, o ataque precisa vencer uma Disputa Rápida com esta mágica. Mesmo que o ataque consiga superar esta mágica, o objetivo ainda terá direito a seu próprio teste de resistência (feito separadamente). Ocultar Pensamentos não afeta mecanismos de controle da mente implementados anteriormente.\n\nDuração: 10 minutos.\n\nCusto: 3 para operar. 1 para manter.\n\nPré-requisito: Percepção de Veracidade ou Ocultar Emoção.\n\nItem\nCoroa, capacete ou outro item que cobre a cabeça. Custo de energia para criar: 1.000.",
     "descricaoConferida": true,
     "descricaoPagina": 46,
     "mecanica": {
@@ -22826,7 +22810,7 @@
     "energia": "4/2",
     "tempoOperacao": "1 seg",
     "preRequisitos": "Medo",
-    "descricao": "Área; Resistível com Vontade\n\nAqueles que estão na área afetada fogem com medo irracional, longe do operador, enquanto a mágica durar.\n\nDuração: 1 minuto.\nCusto básico: 4 para operar. 2 para manter.\nPré-requisito: Medo.",
+    "descricao": "Área; Resistível com Vontade\n\nAqueles que estão na área afetada fogem com medo irracional, longe do operador, enquanto a mágica durar. Um objetivo que não pode escapar pode virar e fazer a manobra Defesa Total, se for atacado.\n\nDuração: 1 minuto.\n\nCusto básico: 4 para operar. 2 para manter.\n\nPré-requisito: Medo.\n\nItem\nCajado ou varinha. Utilizável apenas por magos; o item deve tocar no objetivo. Custo de energia para criar: 500.",
     "descricaoConferida": true,
     "descricaoPagina": 134,
     "mecanica": {
@@ -23807,7 +23791,7 @@
     "energia": "3",
     "tempoOperacao": "1 seg",
     "preRequisitos": "Percepção de Inimigos ou Vantagem Noção do Perigo",
-    "descricao": "Informação\n\nDiz ao operador se há algum perigo imediato por perto; também detecta um perigo distante se ele estiver prestes a se aproximar e atacar! Descreve a natureza do perigo que está a cerca de 1 minuto de distância.\n\nCusto: 3.\nPré-requisito: Percepção de Inimigos ou a vantagem Noção do Perigo.",
+    "descricao": "Informação\n\nenquanto três pares de pés se aproximavam de fininho.\n\nDiz ao operador se há algum peri-“Ele não está aqui”, a voz de Boz go imediato por perto; também detecta sussurrou suavemente.\n\num perigo distante se ele estiver pres-Patrick não conseguiu distinguir tes a se aproximar e atacar! Descreve a a conversa sussurrada entre os três natureza do perigo que está a cerca de garotos mais velhos e quase gritou de 1 minuto de distância; se houver algum surpresa quando começaram a bater perigo em 5 minutos, a mágica produz vigorosamente na cama. Talvez eles um presságio, mas não dá detalhes (exceto, talvez, no caso de um sucesso quisessem ter certeza de que ele não decisivo). havia colocado um encantamento sobre si mesmo antes de ir dormir. Ele se\n\nCusto: 3. encolheu, ouvindo as pancadas acima\n\nPré-requisito: Percepção de Inimigos de sua cabeça e tentando não pensar no ou a vantagem Noção do Perigo. que teria acontecido se ele não tivesse\n\nItem\naprendido a colocar uma proteção na porta antes que Boz decidir que não ia Varinha, cajado ou joias. Custo de com a cara dele.\n\nenergia para criar: 400.",
     "descricaoConferida": true,
     "descricaoPagina": 166,
     "mecanica": {
@@ -24137,11 +24121,11 @@
     "escola": [
       "Deslocamento"
     ],
-    "duracao": "1 minuto",
+    "duracao": "Instant",
     "energia": "1 ou 2#",
     "tempoOperacao": "1 seg",
     "preRequisitos": "Aporte",
-    "descricao": "Projétil; Resistível com HT\n\nArremessa o objetivo em um alvo escolhido pelo operador. O efeito é como se um homem com ST 15 jogasse o objetivo (veja Arremesso, pág. MB349).\n\nDuração: 1 minuto.\nCusto: 1 ponto para um item até 5 kg (1d de dano); 2 pontos por algo até 12,5 kg (1d+1 de dano); 1 por 25 kg (mínimo 2 pontos) para pesos maiores.\nMetade disso para manter.\nPré-requisito: Aporte.",
+    "descricao": "Projétil; Resistível com HT\n\nArremessa o objetivo em um alvo escolhido pelo operador. O efeito é como se um homem com ST 15 jogasse o objetivo (veja Arremesso, pág. MB349). Quando atinge algo, causa dano por contusão. Um teste de DX-4 ou com a perícia Arremesso é necessário para acertar o alvo, que pode se esquivar ou bloquear normalmente. Note que somente o objetivo da mágica — não o alvo a ser acertado — pode resistir! 1/2D 20, Max 60, Prec 1. Considere a distância do alvo até o operador ou do objetivo que está sendo arremessada, o que estiver mais longe.\n\nCusto: 1 ponto para um item até 5 kg (1d de dano); 2 pontos por algo até 12,5 kg (1d+1 de dano).\n\nPré-requisito: Aporte.\n\nItem\nCajado ou varinha. Utilizável apenas por magos; o item deve apontar para o item e depois para o alvo. Custo de energia para criar: 1.000.",
     "descricaoConferida": true,
     "descricaoPagina": 144,
     "mecanica": {
@@ -24156,18 +24140,18 @@
     },
     "mecanicaConferida": true,
     "fonteCabecalho": "tabela",
-    "duracaoTipo": "temporaria",
-    "duracaoSeg": 60,
+    "duracaoTipo": "instantanea",
+    "duracaoSeg": 0,
     "tempoOperacaoSeg": 1,
     "tempoTipo": "fixo",
     "custoTipo": "varia",
-    "custoFormula": "1 ou 2#",
+    "custoFormula": "1 ponto para um item até 5 kg (1d de dano); 2 pontos por algo até 12,5 kg (1d+1 de dano).",
     "conferido": "livro",
     "conferidoPagina": 144,
     "conferidoPor": {
-      "duracao": "entrada",
+      "duracao": "tabela",
       "tempoOperacao": "tabela",
-      "custo": "tabela"
+      "custo": "tabela+entrada"
     }
   },
   {
@@ -24778,9 +24762,9 @@
     ],
     "duracao": "1 min.",
     "energia": "3/3",
-    "tempoOperacao": "3 segundos",
+    "tempoOperacao": "1 min.",
     "preRequisitos": "Transmissão de Sonho",
-    "descricao": "Comum\n\nUsando esta mágica, o operador projeta sua presença nos sonhos do objetivo para conversar com ele. Faça uma Disputa Rápida do NH da mágica contra a Vontade do objetivo a cada minuto; uma vez que o objetivo vença, a mágica é quebrada e nenhum outro contato é possível naquela noite.\n\nUtilize os Modificadores de Longa Distância (pág. 14) e Leitura da Mente (pág. 46). Se o operador e o objetivo não se conhecerem, haverá uma penalidade adicional de -2. O objetivo pode usar sua perícia Sonhos (veja pág. MB223) para ajudar no processo; jogue a cada minuto para pular a disputa.\n\nEsta também é uma mágica de Controle da Mente.\n\nDuração: 1 minuto. Cada minuto permite a troca de duas frases (uma do operador e outra do objetivo).\nCusto: 3 para operar, 3 para manter. Uma tentativa por noite.\nTempo de operação: 1 minuto.\nPré-requisito: Transmissão de Sonho.\n\nItem\nQualquer item que protege a cabeça. Utilizável apenas por magos. Custo de energia para criar: 800.",
+    "descricao": "Comum\n\nUsando esta mágica, o operador projeta sua presença nos sonhos do objetivo para conversar com ele. Faça uma Disputa Rápida do NH da mágica contra a Vontade do objetivo a cada minuto; uma vez que o objetivo vença, a mágica é quebrada e nenhum outro contato é possível naquela noite.\n\nUtilize os Modificadores de Longa Distância (pág. 14) e Leitura da Mente (pág. 46). Se o operador e o objetivo não se conhecerem, haverá uma penalidade adicional de -2. O objetivo pode usar sua perícia Sonhos (veja pág. MB223) para ajudar no processo; jogue a cada minuto para pular a disputa.\n\nEsta também é uma mágica de Controle da Mente.\n\nDuração: 1 minuto. Cada minuto permite a troca de duas frases (uma do operador e outra do objetivo).\n\nCusto: 3 para operar. 3 para manter. Uma tentativa por noite.\n\nTempo de operação: 1 minuto.\n\nPré-requisito: Transmissão de Sonho.\n\nItem\nQualquer item que protege a cabeça. Utilizável apenas por magos. Custo de energia para criar: 800.",
     "descricaoConferida": true,
     "descricaoPagina": 46,
     "mecanica": {
@@ -24791,19 +24775,18 @@
     "fonteCabecalho": "tabela",
     "duracaoTipo": "temporaria",
     "duracaoSeg": 60,
-    "tempoOperacaoSeg": 3,
+    "tempoOperacaoSeg": 60,
     "tempoTipo": "fixo",
     "custoOperar": 3,
-    "custoManter": 1,
+    "custoManter": 3,
     "custoManterTipo": "numero",
     "custoTipo": "fixo",
-    "energiaTela": "3/1",
     "conferido": "livro",
     "conferidoPagina": 46,
     "conferidoPor": {
       "duracao": "tabela+entrada",
-      "tempoOperacao": "entrada",
-      "custo": "entrada"
+      "tempoOperacao": "tabela+entrada",
+      "custo": "tabela+entrada"
     }
   },
   {
@@ -24902,7 +24885,7 @@
     "energia": "4/2",
     "tempoOperacao": "3 seg.",
     "preRequisitos": "Arma Flamejante",
-    "descricao": "Comum\nComo Arma Flamejante, mas operada em uma arma de projétil. A própria arma adquire uma aparência brilhante e ardente. Qualquer projétil dispara em chamas, causando +2 de dano conforme Arma Flamejante; queima em cinzas depois de atingir um alvo ou após 10 segundos, o que ocorrer primeiro.\n\nDuração: 1 minuto.\n\nCusto: 4 para operar. 2 para manter. O custo dobra se os projéteis a serem disparados forem de pedra ou metal.\n\nTempo de operação: 3 segundos.\n\nPré-requisito: Arma Flamejante.\n\nItem\nUma arma de projétil que dispara projéteis flamejantes sempre que usada, sem custo de energia para o usuário. Custo de energia para criar: 1.000; um rubi de $500 deve ser colocado na arma.",
+    "descricao": "Comum\n\nComo Arma Flamejante, mas operada em uma arma de projétil. A própria arma adquire uma aparência brilhante e ardente. Qualquer projétil dispara em chamas, causando +2 de dano conforme Arma Flamejante; queima em cinzas depois de atingir um alvo ou após 10 segundos, o que ocorrer primeiro.\n\nDuração: 1 minuto.\n\nCusto: 4 para operar. 2 para manter. O custo dobra se os projéteis a serem disparados forem de pedra ou metal.\n\nTempo de operação: 3 segundos.\n\nPré-requisito: Arma Flamejante.\n\nItem\nUma arma de projétil que dispara projéteis flamejantes sempre que usada, sem custo de energia para o usuário. Custo de energia para criar: 1.000; um rubi de $500 deve ser colocado na arma.",
     "descricaoConferida": true,
     "descricaoPagina": 75,
     "mecanica": {
@@ -24988,7 +24971,7 @@
     "energia": "2 a 10/M",
     "tempoOperacao": "1 seg.",
     "preRequisitos": "2 mágicas de Sentido Aguçado",
-    "descricao": "Comum\n\nConcede bônus a todas as jogadas de Sentido do objetivo.\n\nDuração: 10 minutos.\n\nCusto: 2 para cada +1 de bônus (máximo 5). Metade disso para manter.\n\nPré-requisitos: Quaisquer duas variações de Sentido Aguçado.",
+    "descricao": "Comum\n\nConcede bônus a todas as jogadas de Sentido do objetivo.\n\nDuração: 10 minutos.\n\nCusto: 2 para cada +1 de bônus (máximo 5). Metade disso para manter.\n\nPré-requisitos: Quaisquer duas variações de Sentido Aguçado.\nItem\nRoupas ou joias. Custo de energia para criar: 300 por ponto de melhoria.",
     "descricaoConferida": true,
     "descricaoPagina": 133,
     "mecanica": {
@@ -26046,7 +26029,7 @@
     "energia": "2",
     "tempoOperacao": "1 seg.",
     "preRequisitos": "Espelho",
-    "descricao": "Bloqueio; Resiste a ataques visuais\n\nResiste a um ataque visual (inclui Olhar de Relâmpago, Fascinar e qualquer poder que exija contato visual) prestes a atingir o objetivo. Se bem sucedido, o ataque visual é refletido para longe do objetivo; um sucesso de 10 ou mais, ou um sucesso decisivo, reflete o olhar de volta para o atacante. Se falhar, o ataque visual afeta o objetivo normalmente. Considere um Aparar pelo operador para fins de combate. Aplique modificadores de distância normais se o operador não for o objetivo.\n\nCusto: 2.\n\nPré-requisito: Espelho.\n\nItem: Joias. Custo de energia para criar: 600; deve incluir um pequeno espelho.",
+    "descricao": "Bloqueio; Resiste a ataques visuais\n\nResiste a um ataque visual (inclui Olhar de Relâmpago, Fascinar e qualquer poder que exija contato visual) prestes a atingir o objetivo. Se bem sucedido, o ataque visual é refletido para longe do objetivo; um sucesso de 10 ou mais, ou um sucesso decisivo, reflete o olhar de volta para o atacante. Se falhar, o ataque visual afeta o objetivo normalmente. Considere um Aparar pelo operador para fins de combate. Aplique modificadores de distância Normais se o operador não for o objetivo.\n\nCusto: 2.\n\nPré-requisito: Espelho.\n\nItem\nJoias. Custo de energia para criar: 600; deve incluir um pequeno espelho.",
     "descricaoConferida": true,
     "descricaoPagina": 168,
     "mecanica": {
@@ -26478,16 +26461,15 @@
     "energia": "6/3",
     "tempoOperacao": "10 seg.",
     "preRequisitos": "AM1, Enfraquecer, Moldar Terra ou Moldar Planta",
-    "descricao": "Comum\n\nMolde qualquer substância inanimada como se fosse argila. No entanto, não transmite qualquer capacidade artística adicional para o objetivo! Qualquer objeto inanimado que o objetivo pegar enquanto estiver sob esta mágica, amolecerá ligeiramente — isso pode ser problemático. Por exemplo, se ele tentar empunhar uma espada ou cajado, causará apenas metade do dano! Uma arma disparada enquanto “amolecida” será arruinada. Qualquer material moldado se tornará duro novamente, em sua nova forma, assim que o objetivo remover suas mãos dele.\n\nPortas e paredes inconvenientes podem ser removidas com o dobro de material por segundo. Esta mágica pode até mesmo ser usada para escavar através da rocha, mas como o objetivo está cavando através da terra macia com as mãos, é lento e cansativo.\n\nDuração: 1 minuto. Custo: 6 para operar. 3 para manter. Tempo de operação: 10 segundos. Pré-requisitos: Aptidão Mágica 1, Enfraquecer e Moldar Terra ou Moldar Planta.\n\nItem\n\nLuvas. Custo de energia para criar: 500.",
-    "descricaoConferida": false,
-    "descricaoMotivo": "so-pagina",
+    "descricao": "Comum\n\nMolde qualquer substância inanimada como se fosse argila. No entanto, não transmite qualquer capacidade artística adicional para o objetivo! Qualquer objeto inanimado que o objetivo pegar enquanto estiver sob esta mágica, amolecerá ligeiramente — isso pode ser problemático. Por exemplo, se ele tentar empunhar uma espada ou cajado, causará apenas metade do dano! Uma arma disparada enquanto “amolecida” será arruinada. Qualquer material moldado se tornará duro novamente, em sua nova forma, assim que o objetivo remover suas mãos dele.\n\nPortas e paredes inconvenientes podem ser removidas com o dobro de material por segundo. Esta mágica pode até mesmo ser usada para escavar através da rocha, mas como o objetivo está cavando através da terra macia com as mãos, é lento e cansativo.\n\nDuração: 1 minuto.\n\nCusto: 6 para operar. 3 para manter.\n\nTempo de operação: 10 segundos.\n\nPré-requisitos: Aptidão Mágica 1, Enfraquecer e Moldar Terra ou Moldar Planta.\n\nItem\nLuvas. Custo de energia para criar: 500.",
+    "descricaoConferida": true,
+    "descricaoPagina": 117,
     "mecanica": {
       "efeito": "buff",
       "buffRotulo": "molda matéria inanimada como argila",
       "notas": "Molda materia inanimada como argila por 1 min; nada de bonus a atributo/RD/deslocamento. O unico efeito de combate e um EFEITO COLATERAL de metade do dano na arma empunhada (arma de disparo usada assim e arruinada) - o motor so tem buffDanoArma como bonus fixo apos a RD, nao um multiplicador de 1/2, entao a penalidade fica narrada. Escavar/atravessar portas e paredes: dobro de material por segundo"
     },
-    "mecanicaConferida": false,
-    "mecanicaMotivo": "sem-texto-do-livro",
+    "mecanicaConferida": true,
     "fonteCabecalho": "tabela",
     "duracaoTipo": "temporaria",
     "duracaoSeg": 60,
@@ -26500,9 +26482,9 @@
     "conferido": "livro",
     "conferidoPagina": 117,
     "conferidoPor": {
-      "duracao": "tabela",
-      "tempoOperacao": "tabela",
-      "custo": "tabela"
+      "duracao": "tabela+entrada",
+      "tempoOperacao": "tabela+entrada",
+      "custo": "tabela+entrada"
     }
   },
   {
@@ -26971,16 +26953,15 @@
     "energia": "3/1",
     "tempoOperacao": "3 seg.",
     "preRequisitos": "Conceder Idioma",
-    "descricao": "Comum\n\nO operador ganha uma linguagem no nível de compreensão do objetivo ou Com Sotaque, o que for menor. O objetivo deve conhecer o idioma em questão.\n\nDuração: 1 minuto.\n\nCusto: 3 para operar. 1 para manter. Tempo de operação: 3 segundos. Pré-requisito: Conceder Idioma.",
-    "descricaoConferida": false,
-    "descricaoMotivo": "sem-entrada-no-texto",
+    "descricao": "Comum\n\nO operador ganha uma linguagem no nível de compreensão do objetivo ou Com Sotaque, o que for menor. O objetivo deve conhecer o idioma em questão.\n\nDuração: 1 minuto.\n\nCusto: 3 para operar. 1 para manter.\n\nTempo de operação: 3 segundos.\n\nPré-requisito: Conceder Idioma.",
+    "descricaoConferida": true,
+    "descricaoPagina": 46,
     "mecanica": {
       "efeito": "buff",
       "buffRotulo": "idioma copiado do alvo",
       "notas": "Operador ganha um idioma no nivel do alvo ou Com Sotaque, o menor. O alvo deve conhecer o idioma."
     },
-    "mecanicaConferida": false,
-    "mecanicaMotivo": "sem-texto-do-livro",
+    "mecanicaConferida": true,
     "fonteCabecalho": "tabela",
     "duracaoTipo": "temporaria",
     "duracaoSeg": 60,
@@ -26993,9 +26974,9 @@
     "conferido": "livro",
     "conferidoPagina": 46,
     "conferidoPor": {
-      "duracao": "tabela",
-      "tempoOperacao": "tabela",
-      "custo": "tabela"
+      "duracao": "tabela+entrada",
+      "tempoOperacao": "tabela+entrada",
+      "custo": "tabela+entrada"
     }
   },
   {
@@ -27165,16 +27146,15 @@
     "energia": "3/3",
     "tempoOperacao": "1 seg.",
     "preRequisitos": "Consertar, Fragmentar",
-    "descricao": "Comum\n\nFaz um pequeno objeto (como uma arma, ou qualquer outra coisa que um ser humano normal possa segurar em uma mão) resistente a quebras. Uma arma de metal barata ou regular é tratada como uma arma “boa” enquanto durar a mágica, e uma arma “boa” como “muito boa”. Outros itens têm seus pontos de vida duplicados e nunca irão quebrar devido a quedas acidentais, etc. Duplica a RD e o PV de um escudo se as regras de danos a escudos forem usadas (pág. MB484). Essa mágica não aumenta a resistência à “penetração”, por isso não é bom para paredes, armaduras, etc.\n\nDuração: 1 hora.\n\nCusto: 3 para operar. 3 para manter. Pré-requisitos: Consertar e Fragmentar.\n\nItem\n\nQualquer item pode ficar permanentemente inquebrável; se o item quebrar, as peças não ficarão mais encantadas. Custo de energia para criar: 400.",
-    "descricaoConferida": false,
-    "descricaoMotivo": "sem-entrada-no-texto",
+    "descricao": "Comum\n\nFaz um pequeno objeto (como uma arma, ou qualquer outra coisa que um ser humano normal possa segurar em uma mão) resistente a quebras. Uma arma de metal barata ou regular é tratada como uma arma “boa” enquanto durar a mágica, e uma arma “boa” como “muito boa”. Outros itens têm seus pontos de vida duplicados e nunca irão quebrar devido a quedas acidentais, etc. Duplica a RD e o PV de um escudo se as regras de danos a escudos forem usadas (pág. MB484). Essa mágica não aumenta a resistência à “penetração”, por isso não é bom para paredes, armaduras, etc.\n\nDuração: 1 hora.\n\nCusto: 3 para operar. 3 para manter.\n\nPré-requisitos: Consertar e Fragmentar.\n\nItem\nQualquer item pode ficar permanentemente inquebrável; se o item quebrar, as peças não ficarão mais encantadas. Custo de energia para criar: 400.",
+    "descricaoConferida": true,
+    "descricaoPagina": 118,
     "mecanica": {
       "efeito": "buff",
       "buffRotulo": "arma sobe 1 grau de qualidade (PV x2)",
       "notas": "Sobe 1 grau de QUALIDADE da arma (barata/comum -> boa; boa -> muito boa) - qualidade de arma em GURPS e bonus de NH/precisao, nao dano; o motor nao tem campo para grau de qualidade. Demais itens: PV dobrado e nao quebram por acidente; escudo tem RD e PV dobrados (dano a escudos, MB p484) - isso e RD DO ESCUDO como objeto, nao RD do personagem, e a magia diz explicitamente que NAO aumenta resistenc"
     },
-    "mecanicaConferida": false,
-    "mecanicaMotivo": "sem-texto-do-livro",
+    "mecanicaConferida": true,
     "fonteCabecalho": "tabela",
     "duracaoTipo": "temporaria",
     "duracaoSeg": 3600,
@@ -27187,9 +27167,9 @@
     "conferido": "livro",
     "conferidoPagina": 118,
     "conferidoPor": {
-      "duracao": "tabela",
+      "duracao": "tabela+entrada",
       "tempoOperacao": "tabela",
-      "custo": "tabela"
+      "custo": "tabela+entrada"
     }
   },
   {
@@ -27323,16 +27303,15 @@
     "energia": "4/2",
     "tempoOperacao": "1 seg.",
     "preRequisitos": "Criar Água, Dissipar Ar",
-    "descricao": "Permite ao objetivo respirar ar como se fosse água; a mágica também impede que criaturas aquáticas se desidratem no ar. Esta mágica é útil principalmente para manter peixes, homens-peixe, etc., vivos fora d’água. O objetivo não perde a capacidade de respirar água normalmente.\n\nEsta também é uma mágica da Água.\n\nDuração: 1 minuto. Custo: 3 para operar: 1 para manter. Pré-requisitos: Criar Água e Dissipar Ar.\n\nItem\n\nCajado, varinha, joias ou roupas; afeta apenas o usuário. Custo para criar: 150 de energia.",
-    "descricaoConferida": false,
-    "descricaoMotivo": "so-pagina",
+    "descricao": "Comum\n\nPermite ao objetivo respirar ar como se fosse água; a mágica também impede que criaturas aquáticas se desidratem no ar. Esta mágica é útil principalmente para manter peixes, homens-peixe, etc., vivos fora d’água. O objetivo não perde a capacidade de respirar água normalmente.\n\nEsta também é uma mágica da Água.\n\nDuração: 1 minuto.\n\nCusto: 3 para operar. 1 para manter.\n\nPré-requisitos: Criar Água e Dissipar Ar.\n\nItem\nCajado, varinha, joias ou roupas; afeta apenas o usuário. Custo para criar: 150 de energia.",
+    "descricaoConferida": true,
+    "descricaoPagina": 26,
     "mecanica": {
       "efeito": "buff",
       "buffRotulo": "criatura aquática respira ar",
       "notas": "Alvo respira ar como se fosse água e não se desidrata no ar, por 1 min. Serve para manter peixes/homens-peixe vivos fora d'água. Utilidade narrada."
     },
-    "mecanicaConferida": false,
-    "mecanicaMotivo": "sem-texto-do-livro",
+    "mecanicaConferida": true,
     "fonteCabecalho": "tabela",
     "duracaoTipo": "temporaria",
     "duracaoSeg": 60,
@@ -27346,9 +27325,9 @@
     "conferido": "livro",
     "conferidoPagina": 26,
     "conferidoPor": {
-      "duracao": "tabela",
+      "duracao": "tabela+entrada",
       "tempoOperacao": "tabela",
-      "custo": "conferencia"
+      "custo": "entrada"
     }
   },
   {
@@ -27851,29 +27830,28 @@
     "energia": "1/25 kg/M",
     "tempoOperacao": "1 seg.",
     "preRequisitos": "Aporte",
-    "descricao": "Diminui a velocidade de um objetivo em queda para 1 metro por segundo. Nenhum dano será sofrido ao aterrissar em uma superfície normal (espetos, etc. ainda causariam metade do dano). Esta mágica pode ser operada antes que o objetivo fique no ar. Se o objetivo já está caindo, ele cairá mais 3 metros (assumindo a gravidade padrão de 1G) no segundo normalmente necessário para operar esta mágica.\n\nDuração: 1 minuto. Custo: 1 por 25 kg de peso. Metade disso para manter. Pré-requisito: Aporte.\n\nItem\n\nRoupas ou joias. Custo de energia para criar: 1.000.",
-    "descricaoConferida": false,
-    "descricaoMotivo": "sem-entrada-no-texto",
+    "descricao": "Comum\n\nDiminui a velocidade de um objetivo em queda para 1 metro por segundo. Nenhum dano será sofrido ao aterrissar em uma superfície normal (espetos, etc. ainda causariam metade do dano). Esta mágica pode ser operada antes que o objetivo fique no ar. Se o objetivo já está caindo, ele cairá mais 3 metros (assumindo a gravidade padrão de 1G) no segundo normalmente necessário para operar esta mágica.\n\nDuração: 1 minuto.\n\nCusto: 1 por 25 kg de peso. Metade disso para manter.\n\nPré-requisito: Aporte.\n\nItem\nRoupas ou joias. Custo de energia para criar: 1.000.",
+    "descricaoConferida": true,
+    "descricaoPagina": 144,
     "mecanica": {
       "efeito": "buff",
       "buffRotulo": "queda a 1 m/s (sem dano ao pousar)",
       "notas": "Reduz a velocidade de queda para 1 m/s; sem dano ao aterrissar em superfície normal (espetos ainda causam metade). Custo 1 por 25 kg. Situacional — narrar."
     },
-    "mecanicaConferida": false,
-    "mecanicaMotivo": "sem-texto-do-livro",
+    "mecanicaConferida": true,
     "fonteCabecalho": "tabela",
     "duracaoTipo": "temporaria",
     "duracaoSeg": 60,
     "tempoOperacaoSeg": 1,
     "tempoTipo": "fixo",
     "custoTipo": "porUnidade",
-    "custoFormula": "1/25 kg/M",
+    "custoFormula": "1 por 25 kg de peso. Metade disso para manter.",
     "conferido": "livro",
     "conferidoPagina": 144,
     "conferidoPor": {
-      "duracao": "tabela",
+      "duracao": "tabela+entrada",
       "tempoOperacao": "tabela",
-      "custo": "tabela"
+      "custo": "tabela+entrada"
     }
   },
   {
@@ -28001,16 +27979,15 @@
     "energia": "3/1",
     "tempoOperacao": "1 seg.",
     "preRequisitos": "Prontidão",
-    "descricao": "O objetivo pode ver tudo ao seu redor, como se ele tivesse a vantagem Visão 360 Graus (pág. MB97).\n\nDuração: 1 minuto.\n\nCusto: 3 para operar. 1 para manter. Pré-requisito: Prontidão.\n\nItem\n\nArma, roupas ou joias. Custo de energia para criar: 1.000.",
-    "descricaoConferida": false,
-    "descricaoMotivo": "sem-entrada-no-texto",
+    "descricao": "Comum\n\nO objetivo pode ver tudo ao seu redor, como se ele tivesse a vantagem Visão 360 Graus (pág. MB97).\n\nDuração: 1 minuto.\n\nCusto: 3 para operar. 1 para manter.\n\nPré-requisito: Prontidão.\n\nItem\nArma, roupas ou joias. Custo de energia para criar: 1.000.",
+    "descricaoConferida": true,
+    "descricaoPagina": 134,
     "mecanica": {
       "efeito": "buff",
       "buffRotulo": "Visao 360 Graus",
       "notas": "1 min. Custo 3 para operar, 1 para manter. Alvo enxerga tudo ao redor como a vantagem Visao 360 Graus (MB97). NARRADO: e uma vantagem — o motor nao modela facing por vantagem; o Narrador decide se anula o -2 de flanco/costas. Pre-req Prontidao."
     },
-    "mecanicaConferida": false,
-    "mecanicaMotivo": "sem-texto-do-livro",
+    "mecanicaConferida": true,
     "fonteCabecalho": "tabela",
     "duracaoTipo": "temporaria",
     "duracaoSeg": 60,
@@ -28023,9 +28000,9 @@
     "conferido": "livro",
     "conferidoPagina": 134,
     "conferidoPor": {
-      "duracao": "tabela",
+      "duracao": "tabela+entrada",
       "tempoOperacao": "tabela",
-      "custo": "tabela"
+      "custo": "tabela+entrada"
     }
   },
   {
@@ -28077,7 +28054,7 @@
     "energia": "7/3",
     "tempoOperacao": "1 seg.",
     "preRequisitos": "Escudo Antiprojétil ou Domo de Força",
-    "descricao": "Comum\n\nRetorna qualquer ataque à distância (incluindo mágicas de projétil) contra o atacante. Se o teste de \"acertar\" do atacante for bem sucedido, ele acerta em si mesmo — se não, ele vê o projétil voar de volta para ele e errar. O efeito do jogo é como se o projétil tivesse saltado diretamente do objetivo da magia para o atacante.\n\nDuração: 1 minuto. Custo: 7 para operar. 3 para manter.\n\nPré-requisito: Escudo Antiprojéteis ou Domo de Força.\n\nItem: Varinha, cajado, arma ou armadura. Custo de energia para criar: 600.",
+    "descricao": "Comum\n\nRetorna qualquer ataque à distância (incluindo mágicas de projétil) contra o atacante. Se o teste de “acertar” do atacante for bem sucedido, ele acerta em si mesmo — se não, ele vê o projétil voar de volta para ele e errar. O efeito do jogo é como se o projétil tivesse saltado diretamente do objetivo da magia para o atacante.\n\nDuração: 1 minuto.\n\nCusto: 7 para operar. 3 para manter.\n\nPré-requisito: Escudo Antiprojéteis ou Domo de Força.\n\nItem\nVarinha, cajado, arma ou armadura. Custo de energia para criar: 600.",
     "descricaoConferida": true,
     "descricaoPagina": 168,
     "mecanica": {
@@ -28100,7 +28077,7 @@
     "conferidoPor": {
       "duracao": "tabela+entrada",
       "tempoOperacao": "tabela",
-      "custo": "tabela"
+      "custo": "tabela+entrada"
     }
   },
   {
@@ -28885,14 +28862,14 @@
     "duracaoFormula": "1 plant./estação",
     "tempoOperacaoSeg": 300,
     "tempoTipo": "fixo",
-    "custoTipo": "varia",
-    "custoFormula": "1. Para serem afetadas, as plantas devem estar inteiramente dentro da área de efeito.",
+    "custoOperar": 1,
+    "custoTipo": "fixo",
     "conferido": "livro",
     "conferidoPagina": 162,
     "conferidoPor": {
       "duracao": "formula",
       "tempoOperacao": "tabela+entrada",
-      "custo": "entrada"
+      "custo": "tabela+entrada"
     }
   },
   {
@@ -29439,7 +29416,7 @@
     "energia": "6/3",
     "tempoOperacao": "1 min",
     "preRequisitos": "Leitura da Mente",
-    "descricao": "Comum; Resistível com Vontade\n\nSonde a mente de um objetivo para encontrar pensamentos profundos e conhecimento de coisas sobre as quais o objetivo não está pensando no momento. Com efeito, o operador pode fazer uma pergunta simples (respondida por não mais que 10 palavras) por minuto e obter a resposta mais verdadeira que o objetivo pode dar. O objetivo não está ciente da intrusão, exceto em caso de falha crítica. A linguagem não é uma barreira para esta mágica, e o objetivo pode até estar dormindo. Objetivos de diferentes raças podem ser mais difíceis de pesquisar, a critério do Mestre.\n\nModificadores: Os mesmos de Leitura da Mente, acima. Se o objetivo foi magicamente forçado a esquecer algo, esta mágica não pode recuperá-lo.\n\nDuração: 1 minuto.\nCusto: 6 para operar, 3 para manter.\nTempo de operação: 1 minuto.\nPré-requisito: Leitura da Mente.\n\nItem\nBoné, coroa, capacete ou outro item que protege a cabeça. Utilizável apenas por magos. Custo de energia para criar: 1.500.",
+    "descricao": "Comum; Resistível com Vontade\n\nSonde a mente de um objetivo para encontrar pensamentos profundos e conhecimento de coisas sobre as quais o objetivo não está pensando no momento. Com efeito, o operador pode fazer uma pergunta simples (respondida por não mais que 10 palavras) por minuto e obter a resposta mais verdadeira que o objetivo pode dar. O objetivo não está ciente da intrusão, exceto em caso de falha crítica. A linguagem não é uma barreira para esse mágica, e o objetivo pode até estar dormindo. Objetivos de diferentes raças podem ser mais difíceis de pesquisar, a critério do Mestre.\n\nModificadores: Os mesmos de Leitura da Mente, acima. Se o objetivo foi magicamente forçado a esquecer algo, este mágica não pode recuperá-lo.\n\nDuração: 1 minuto.\n\nCusto: 6 para operar. 3 para manter.\n\nTempo de operação: 1 minuto.\n\nPré-requisito: Leitura da Mente.\n\nItem\nBoné, coroa, capacete ou outro item que protege a cabeça. Utilizável apenas por magos. Custo de energia para criar: 1.500.",
     "descricaoConferida": true,
     "descricaoPagina": 46,
     "mecanica": {
@@ -30988,7 +30965,7 @@
     "energia": "4",
     "tempoOperacao": "1 seg",
     "preRequisitos": "Medo",
-    "descricao": "Área; Resistível com Vontade\n\nQualquer pessoa na área que não resista deve fazer imediatamente uma Verificação de Pânico com uma penalidade de -3.\n\nCusto básico: 4.\nPré-requisito: Medo.",
+    "descricao": "Área; Resistível com Vontade\n\nQualquer pessoa na área que não resista deve fazer imediatamente uma Verificação de Pânico com uma penalidade de -3.\n\nCusto básico: 4.\n\nPré-requisito: Medo.\n\nItem\nCajado ou varinha. Utilizável apenas por magos; o item deve tocar no objetivo. Custo de energia para criar: 600.",
     "descricaoConferida": true,
     "descricaoPagina": 134,
     "mecanica": {
@@ -31170,7 +31147,7 @@
     "energia": "1 por IQ-/M",
     "tempoOperacao": "1 seg",
     "preRequisitos": "IQ 12+",
-    "descricao": "Comum; Resistível com Vontade\n\nO objetivo sofre uma penalidade de -1 em sua IQ e perícias baseadas em IQ para cada ponto de energia colocado na mágica.\n\nDuração: 1 minuto.\nCusto: 1 a 5 para operar. Metade disso para manter.\nPré-requisito: IQ 12 ou superior.",
+    "descricao": "Comum; Resistível com Vontade\n\nO objetivo sofre uma penalidade de -1 em sua IQ e perícias baseadas em IQ (incluindo mágicas) para cada ponto de energia colocado na mágica. O Mestre também pode requerer um teste de IQ para lembrar coisas complexas enquanto estiver sob a influência desta mágica.\n\nDuração: 1 minuto.\n\nCusto: 1 a 5 para operar. Metade disso para manter (arredondar para cima).\n\nPré-requisito: IQ 12 ou superior.\n\nItem\n(a) Qualquer item. Sempre ativo; o item reduz a IQ do usuário. Custo de energia para criar: 100 para cada ponto de redução de IQ. (b) Cajado ou varinha. Utilizável apenas por magos; o item deve tocar o objetivo. Custo de energia para criar: 800.",
     "descricaoConferida": true,
     "descricaoPagina": 134,
     "mecanica": {
@@ -31415,7 +31392,7 @@
     "energia": "3/2",
     "tempoOperacao": "2 seg.",
     "preRequisitos": "Tolice",
-    "descricao": "Comum; Resistível com HT\n\nO objetivo parece e age normalmente, mas não percebe o que está acontecendo ao seu redor, ou lembra mais tarde.\n\nDuração: 1 minuto.\nCusto: 3 para operar. 2 para manter.\nTempo de operação: 2 segundos.\nPré-requisito: Tolice.",
+    "descricao": "Comum; Resistível com HT\n\nO objetivo parece e age normalmente, mas não percebe o que está acontecendo ao seu redor, ou lembra mais tarde. Um guarda atordoado fica quieto enquanto um ladrão passa por ele! Qualquer lesão ou resistência bem-sucedida a uma mágica faz com que o objetivo saia do estado de torpor e retorne ao estado de alerta completo.\n\nDuração: 1 minuto.\n\nCusto: 3 para operar. 2 para manter.\n\nTempo de operação: 2 segundos.\n\nPré-requisito: Tolice.\n\nItem\n(a) Qualquer item. Sempre ativo; o item causa efeitos da mágica Torpor. Custo de energia para criar: 400. (b) Cajado ou varinha. Utilizável apenas por magos; o item deve tocar o objetivo. Custo de energia para criar: 1.000.",
     "descricaoConferida": true,
     "descricaoPagina": 134,
     "mecanica": {
@@ -31493,7 +31470,7 @@
     "energia": "3/2",
     "tempoOperacao": "4 seg.",
     "preRequisitos": "AM1",
-    "descricao": "Comum; Resiste à mágica\n\nTranca uma porta magicamente. A porta não se abrirá enquanto a mágica não for removida.\n\nDuração: 6 horas.\nCusto: 3 para operar; 2 para manter.\nTempo de operação: 4 segundos.\nPré-requisito: Aptidão Mágica 1.",
+    "descricao": "Comum; Resiste à mágica Chave-Mestra\n\nTranca uma porta magicamente. A porta não se abrirá enquanto a mágica não for removida (tanto uma Contramágica, como uma Chave-Mestra se contrapõem a ela), ou a própria porta for destruída.\n\nDuração: 6 horas.\n\nCusto: 3 para operar. 2 para manter.\n\nTempo de operação: 4 segundos.\n\nPré-requisitos: Aptidão Mágica 1.\n\nItem\nUma chave de ouro que deve tocar a porta. Custo de energia para criar: 200.",
     "descricaoConferida": true,
     "descricaoPagina": 166,
     "mecanica": {
@@ -32134,16 +32111,15 @@
     "energia": "8/3",
     "tempoOperacao": "2 seg.",
     "preRequisitos": "AM2, Corpo de Ar, Furacão",
-    "descricao": "Área; Resistível com HT ou DX\n\nArrebata todas as pessoas dentro da área original de efeito para algum outro lugar através de um gigantesco Turbilhão rodopiante. O Turbilhão tem Deslocamento 10. O operador pode excluir qualquer um presente na área, desde que ele especifique durante a operação. Quem estiver dentro da área resiste com o mais alto entre seus atributos HT ou DX.\n\nQuem for arrebatado pelo Turbilhão fica temporariamente vaporizado, conforme a mágica Corpo de Ar (pág. 24). O Turbilhão não consegue penetrar objetos sólidos.\n\nEsta também é uma mágica de Deslocamento.\n\nDuração: 10 segundos.\n\nCusto básico: 8 para operar. 3 para manter.\n\nTempo de operação: 2 segundos.\n\nPré-requisitos: Aptidão Mágica 2, Corpo de Ar e Furacão.\n\nItem\n\nCajado. Utilizável apenas por magos. Custo para criar: 1.200 de energia e um ônix de $800.",
-    "descricaoConferida": false,
-    "descricaoMotivo": "so-pagina",
+    "descricao": "Área; Resistível com HT ou DX\n\nArrebata todas as pessoas dentro da área original de efeito para algum outro lugar através de um gigantesco Turbilhão rodopiante. O Turbilhão tem Deslocamento 10. O operador pode excluir qualquer um presente na área, desde que ele especifique durante a operação. Quem estiver dentro da área resiste com o mais alto entre seus atributos HT ou DX.\n\nQuem for arrebatado pelo Turbilhão fica temporariamente vaporizado, conforme a mágica Corpo de Ar (pág. 24). O Turbilhão não consegue penetrar objetos sólidos.\n\nEsta também é uma mágica de Deslocamento.\n\nDuração: 10 segundos.\n\nCusto básico: 8 para operar. 3 para manter.\n\nTempo de operação: 2 segundos.\n\nPré-requisitos: Aptidão Mágica 2, Corpo de Ar e Furacão.\n\nItem\nCajado. Utilizável apenas por magos. Custo para criar: 1.200 de energia e um ônix de $800.",
+    "descricaoConferida": true,
+    "descricaoPagina": 26,
     "mecanica": {
       "efeito": "controle",
       "condicaoResistencia": "HT ou DX",
       "notas": "Área: arrebata todos na área p/ outro lugar via turbilhão (Deslocamento 10); resistem c/ o maior entre HT ou DX. Operador pode excluir presentes. Arrebatados ficam vaporizados como Corpo de Ar. Não penetra sólidos."
     },
-    "mecanicaConferida": false,
-    "mecanicaMotivo": "sem-texto-do-livro",
+    "mecanicaConferida": true,
     "fonteCabecalho": "tabela",
     "duracaoTipo": "temporaria",
     "duracaoSeg": 10,
@@ -32156,9 +32132,9 @@
     "conferido": "livro",
     "conferidoPagina": 26,
     "conferidoPor": {
-      "duracao": "tabela",
-      "tempoOperacao": "tabela",
-      "custo": "tabela"
+      "duracao": "tabela+entrada",
+      "tempoOperacao": "tabela+entrada",
+      "custo": "tabela+entrada"
     }
   },
   {
@@ -32738,9 +32714,9 @@
     "energia": "2 por HT+/I#",
     "tempoOperacao": "1 seg.",
     "preRequisitos": "Conceder Vitalidade ou Fragilidade",
-    "descricao": "Comum\n\nAumenta a HT do objetivo temporariamente. Isso afeta a Velocidade Básica, PF e capacidade de resistir a traumas e doenças. Um operador pode incrementar sua própria HT. Se os PF do objetivo, ao término da mágica, estiverem abaixo de zero, ele sofrerá imediatamente 1 ponto de dano para cada PF abaixo de zero, correndo o risco de desmaiar. Um NH elevado não reduz o custo para operar esta mágica.\n\nDuração: 1 minuto.\n\nCusto: 2 para cada ponto de incremento de HT (máximo de 5). O mesmo custo para manter.\n\nPré-requisitos: Conceder Vitalidade ou Fragilidade.\n\nItem\n\n(a) Qualquer item. Sempre ativo; a HT do usuário é aumentada enquanto o item é usado. Custo para criar: 1.500 de energia por ponto de incremento (máximo 5). (b) Cajado ou varinha. Utilizável apenas por magos; o item deve tocar o objetivo. Custo para criar: 1.000 de energia.",
-    "descricaoConferida": false,
-    "descricaoMotivo": "so-pagina",
+    "descricao": "Comum\n\nAumenta a HT do objetivo temporariamente. Isso afeta a Velocidade Básica, PF e capacidade de resistir a traumas e doenças. Um operador pode incrementar sua própria HT. Se os PF do objetivo, ao término da mágica, estiverem abaixo de zero, ele sofrerá imediatamente 1 ponto de dano para cada PF abaixo de zero, correndo o risco de desmaiar. Um NH elevado não reduz o custo para operar esta mágica.\n\nDuração: 1 minuto.\n\nCusto: 2 para cada ponto de incremento de HT (máximo de 5). O mesmo custo para manter.\n\nPré-requisitos: Conceder Vitalidade\n\nou Fragilidade.\n\nItem\n(a) Qualquer item. Sempre ativo; a HT do usuário é aumentada enquanto o item é usado. Custo para criar: 1.500 de energia por ponto de incremento (máximo 5). (b) Cajado ou varinha. Utilizável apenas por magos; o item deve tocar o objetivo. Custo para criar: 1.000 de energia.",
+    "descricaoConferida": true,
+    "descricaoPagina": 37,
     "mecanica": {
       "efeito": "buff",
       "buffAtributo": "HT",
@@ -32750,21 +32726,20 @@
       "buffRotulo": "Vigor +HT",
       "notas": "+1 HT por 2 de energia, máx +5 (Vel Básica/resistências). Duração 1 min."
     },
-    "mecanicaConferida": false,
-    "mecanicaMotivo": "sem-texto-do-livro",
+    "mecanicaConferida": true,
     "fonteCabecalho": "tabela",
     "duracaoTipo": "temporaria",
     "duracaoSeg": 60,
     "tempoOperacaoSeg": 1,
     "tempoTipo": "fixo",
     "custoTipo": "porUnidade",
-    "custoFormula": "2 por HT+/I#",
+    "custoFormula": "2 para cada ponto de incremento de HT (máximo de 5). O mesmo custo para manter.",
     "conferido": "livro",
     "conferidoPagina": 37,
     "conferidoPor": {
-      "duracao": "tabela",
+      "duracao": "tabela+entrada",
       "tempoOperacao": "tabela",
-      "custo": "tabela"
+      "custo": "tabela+entrada"
     }
   },
   {

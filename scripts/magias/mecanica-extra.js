@@ -33,7 +33,7 @@ function danoPorFormula(m) {
 /** As linhas (página:linha) que o JSON manual aponta, juntas. */
 function linhasApontadas(livro, item) {
   const ls = livro.paginas.get(item.pagina) || [];
-  return (item.linhas || []).map((i) => ls[i]).filter((x) => x !== undefined);
+  return (item.linhas || []).map((i) => ls[i]).filter((x) => x !== undefined).map((x) => x.replace(/\*\*/g, ''));
 }
 
 /**

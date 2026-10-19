@@ -266,12 +266,13 @@ function localizadorMutilado(trechoParaTirar, nome) {
 }
 
 /**
- * A CATRACA da cobertura: o que foi medido em 13/out/2026 (879 magias). Só sobe. Se o catálogo ou
+ * A CATRACA da cobertura: o que foi medido em 13/out/2026 (879 magias) e subiu em 19/out/2026 (13 páginas reextraídas do PDF, MC-7:
+ * localizada 853 -> 871, bloco 814 -> 851). Só sobe. Se o catálogo ou
  * o livro mudarem e a cobertura cair, este teste fica vermelho com os números; se subir, suba aqui.
  */
-const CATRACA = { comTabela: 879, localizada: 853, comBlocoETabela: 814 };
+const CATRACA = { comTabela: 879, localizada: 871, comBlocoETabela: 851 };
 
-test('livro real: a cobertura não cai (catraca: tabela 879, localizada 853, bloco 814)', { skip: !TEM_O_LIVRO }, () => {
+test('livro real: a cobertura não cai (catraca: tabela 879, localizada 871, bloco 851)', { skip: !TEM_O_LIVRO }, () => {
   const { indice, catalogo } = indiceReal();
   const r = L.resumir(indice);
   assert.strictEqual(r.total, catalogo.length);
@@ -314,9 +315,9 @@ test('livro real: as 20 magias que mais aparecem em jogo estão no índice, com 
     'Toque Chocante', 'Jato de Chamas', 'Fender', 'Sono', 'Atordoamento', 'Cegar', 'Medo', 'Paralisia Total',
     'Cura Superficial', 'Cura Profunda', 'Escudo', 'Armadura', 'Acelerar', 'Invisibilidade'];
   assert.strictEqual(nomes.length, 20);
-  // Medo (p.134): o `chunks.jsonl` só tem as menções ("Pré-requisito: Medo."), não a entrada. NÃO se
-  // casa com o "Medo" da p.215, que é outra coisa. Para o Rodolfo conferir no livro.
-  const SEM_ENTRADA_NO_TEXTO = ['Medo'];
+  // Medo (p.134) não tinha a entrada no texto extraído; deixou de faltar em 19/out/2026, quando as 13 páginas
+  // foram reextraídas do PDF (MC-7). Se uma destas voltar a faltar, ponha o nome aqui, com a razão.
+  const SEM_ENTRADA_NO_TEXTO = [];
   nomes.forEach((n) => {
     const m = catalogo.find((c) => L.normalizar(c.nome) === L.normalizar(n));
     assert.ok(m, n + ' está no catálogo');

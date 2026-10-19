@@ -1,11 +1,11 @@
 {
-  "_como": "SÓ LOCALIZAÇÃO (MC-4): em que página e linha do chunks.jsonl está o número da mecânica que o bloco recortado não traz (página de colunas embaralhadas). O script lê os números dessas linhas; aqui não há número nem texto do livro.",
+  "_como": "SÓ LOCALIZAÇÃO (MC-4): em que página e linha do chunks.jsonl está o número da mecânica que o bloco recortado não traz (página de colunas embaralhadas); desde 19/out/2026 as páginas 26 e 91 foram reextraídas do PDF e as linhas apontam o texto novo. O script lê os números dessas linhas; aqui não há número nem texto do livro.",
   "magias": [
     {
       "id": "concussao",
       "pagina": 26,
       "linhas": [
-        12
+        19
       ],
       "tipo": "projetil"
     },
@@ -13,7 +13,7 @@
       "id": "concussao",
       "pagina": 26,
       "linhas": [
-        14
+        23
       ],
       "tipo": "dano"
     },
@@ -21,8 +21,8 @@
       "id": "cura_superficial",
       "pagina": 91,
       "linhas": [
-        7,
-        9
+        46,
+        52
       ],
       "tipo": "cura"
     },
@@ -30,8 +30,8 @@
       "id": "cura_profunda",
       "pagina": 91,
       "linhas": [
-        15,
-        16
+        64,
+        70
       ],
       "tipo": "cura"
     },
@@ -39,7 +39,7 @@
       "id": "cura_superior",
       "pagina": 91,
       "linhas": [
-        9
+        86
       ],
       "tipo": "curaTotal"
     }
