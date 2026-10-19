@@ -9888,3 +9888,17 @@ ficar verde**.
   - Versao **186** (`12.8.1-MAGIAS-TELA`).
 - Gate: `testVisualDebugUnitTest` + `testPracegoDebugUnitTest` verdes, `assembleVisualDebug` + `assemblePracegoDebug` OK. Mesa: suite 3257/3257.
 - **Status:** ✅ Build OK (2 variantes)
+
+## Lote MC-7 — [2026-10-19] 13 paginas de Magia reextraidas do PDF (as 29 magias de combate sem descricao do livro)
+- **Hash:** e058725c (app) + commit da Mesa (relatorio MC-7, leitor de custo, derivados regenerados)
+- **Mudancas:**
+  - `scripts/magias/pdf-para-chunks.py` (novo): le a camada de texto do PDF de Magia (`GURPS 4ª Edição - Magia.pdf`, 2025: o que o Rodolfo le) e troca SO o `text` das paginas pedidas no `chunks.jsonl` (13 linhas; o resto byte a byte). Ordem das colunas, paragrafos, tabelas, hifen do fim da linha. Ensaio (`--mostrar`) mostra os numeros que saem e entram.
+  - Paginas 26, 37, 46, 75, 91, 117, 118, 134, 144, 161, 166, 168 e 185 (as de colunas embaralhadas e as cortadas). Nenhum numero do texto antigo saiu.
+  - Cadeia do MC rodada de novo (0, 1, 2, 3, 4, sem mexer nos scripts): descricao do livro 812 -> 849, as 29 de combate 0 -> 29, mecanica conferida 811 -> 844, entrada em bloco 814 -> 851.
+  - 22 magias mudaram de numero (o antigo vinha da transcricao por IA): Arma Flamejante 6/3 -> 4/1, Leitura da Mente 3/1 -> 4/2 e 3 -> 10 s, Projecao de Sonho (manter 3, tempo 1 min.), Dom das Linguas / Fragmentar / Identificar Planta (tempo 1 s), Poltergeist (instantanea), 6 magias com "nao pode ser mantida". Textos de tela (ponta 2): 21 -> 18.
+  - **Correcao:** o "o livro diz 4 e 2 s" da Arma Congelante (MG-0) vinha da descricao antiga; o livro diz 3/1 e 3 s, igual a tabela.
+  - Guardas: `localizador.test.js` (catraca 853/814 -> 871/851; Medo sai dos "sem entrada"), `mecanica.test.js` (Fender sai das divergencias), `mecanica-lida-na-pagina.json` (so posicoes de linha: Concussao e as 3 Curas apontam o texto novo).
+  - Mesa: `magia-custo-do-livro.js` aceita "3 para opera." (erro de impressao da p.46), trata "1 ponto para X; 2 pontos por Y" como lista de casos (Poltergeist) e "N. Para..." como outra frase (Abencoar Plantas). 3 testes novos; sonda: sem o conserto o teste fica vermelho.
+  - `CODEX_VERSION_CURRENT` 4 -> 5 (chunks.jsonl mudou). Versao **187** (`12.8.2-MAGIAS-PDF`).
+- Gate: `testVisualDebugUnitTest` + `testPracegoDebugUnitTest` verdes (as 4 guardas Kotlin que releem o livro rodaram, 0 puladas), `assembleVisualDebug` + `assemblePracegoDebug` OK; scripts JS do app 87/87; Mesa 3259/3259. Relatorio: `mesa-virtual/planos/magias/RELATORIO-MC-7.md`.
+- **Status:** ✅ Build OK (2 variantes)
