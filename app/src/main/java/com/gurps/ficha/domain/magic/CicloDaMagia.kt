@@ -49,4 +49,23 @@ object CicloDaMagia {
      */
     fun tempoSeg(segundos: Int?, texto: String?): Int =
         segundos?.takeIf { it > 0 } ?: MagicTime.parseTempoSeg(texto)
+
+    /**
+     * O texto que a TELA mostra (e que as contas leem): o texto do número conferido
+     * (`energiaTela`/`duracaoTela`/`tempoOperacaoTela`) quando existe, senão o cabeçalho do livro.
+     *
+     * O script do catálogo (`numeros.js`) só grava a `*Tela` onde o cabeçalho (a tabela-resumo) diz
+     * um número e a entrada do livro, que vale, diz outro: Desintegrar tem "1 a 4" na tabela e
+     * "1 a 10" na entrada, e a tela tem de mostrar 1 a 10 — o que é cobrado.
+     */
+    fun textoDaTela(cabecalho: String?, tela: String?): String? =
+        tela?.takeIf { it.isNotBlank() } ?: cabecalho
+
+    /** A magia com `energia`, `duracao` e `tempoOperacao` já trocados pelo texto da tela. */
+    fun comTextoDaTela(def: com.gurps.ficha.model.MagiaDefinicao): com.gurps.ficha.model.MagiaDefinicao =
+        def.copy(
+            energia = textoDaTela(def.energia, def.energiaTela),
+            duracao = textoDaTela(def.duracao, def.duracaoTela),
+            tempoOperacao = textoDaTela(def.tempoOperacao, def.tempoOperacaoTela),
+        )
 }

@@ -1004,8 +1004,10 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
                 classe = def.classe?.takeIf { it.isNotBlank() } ?: m.classe,
                 energia = def.energia?.takeIf { it.isNotBlank() } ?: m.energia,
                 tempoOperacao = def.tempoOperacao?.takeIf { it.isNotBlank() } ?: m.tempoOperacao,
+                // A duração também: a lista de magias mostra a do catálogo (texto do número conferido).
+                duracao = def.duracao?.takeIf { it.isNotBlank() } ?: m.duracao,
             )
-            if (nova.classe != m.classe || nova.energia != m.energia) mudou++
+            if (nova.classe != m.classe || nova.energia != m.energia || nova.duracao != m.duracao || nova.tempoOperacao != m.tempoOperacao) mudou++
             nova
         }
         if (mudou > 0) {

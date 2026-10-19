@@ -243,3 +243,77 @@ test('livro real: a cobertura dos números não cai (catraca)', { skip: !TEM_O_L
   assert.ok(c('custoOperar') >= 542, 'custo de operar ' + c('custoOperar'));
   assert.ok(c('custoManter') >= 317, 'custo de manter ' + c('custoManter'));
 });
+
+// ------------------------------------------------------------------------------ 3. o texto da tela
+
+const camposFixo = (operar, manterTipo, manter) => {
+  const c = { custoTipo: 'fixo', custoOperar: operar };
+  if (manterTipo) { c.custoManterTipo = manterTipo; if (manter !== undefined) c.custoManter = manter; }
+  return c;
+};
+
+test('tela: o cabeçalho (tabela) diz um número, o conferido (entrada) outro -> grava o texto do conferido', opcoes, () => {
+  // Desintegrar: "1 a 4" na tabela, "1 a 10" na entrada
+  assert.strictEqual(N.energiaDaTela({ energia: '1 a 4' }, { custoTipo: 'faixa', custoMinimo: 1, custoMaximo: 10 }), '1 a 10');
+  // Arma Flamejante: "4/1" na tabela, "6 para operar, 3 para manter" na entrada
+  assert.strictEqual(N.energiaDaTela({ energia: '4/1' }, camposFixo(6, 'numero', 3)), '6/3');
+  // "metade" fica "/M" (o arredondamento é regra do MG-3, não do texto); o "#" do cabeçalho é mantido
+  assert.strictEqual(N.energiaDaTela({ energia: '6/M#' }, camposFixo(1, 'metade')), '1/M#');
+  // "não pode ser mantida" é "/0"
+  assert.strictEqual(N.energiaDaTela({ energia: '8/4' }, camposFixo(5, 'nao', 0)), '5/0');
+  // a fórmula do cabeçalho ("1 por IQ-") sai quando o conferido é uma faixa
+  assert.strictEqual(N.energiaDaTela({ energia: '1 por IQ-/M' }, { custoTipo: 'faixa', custoMinimo: 1, custoMaximo: 5, custoManterTipo: 'metade' }), '1 a 5/M');
+});
+
+test('tela: onde o cabeçalho concorda com o conferido, ou não diz número, NADA é gravado', opcoes, () => {
+  assert.strictEqual(N.energiaDaTela({ energia: '4/2' }, camposFixo(4, 'numero', 2)), null, 'concordam');
+  assert.strictEqual(N.energiaDaTela({ energia: '1 a 3/I' }, { custoTipo: 'faixa', custoMinimo: 1, custoMaximo: 3 }), null, 'faixa igual, com sufixo');
+  assert.strictEqual(N.energiaDaTela({ energia: 'Varia' }, camposFixo(3, 'numero', 2)), null, '"Varia": o jogador escolhe');
+  assert.strictEqual(N.energiaDaTela({ energia: 'Varia' }, { custoTipo: 'faixa', custoMinimo: 1, custoMaximo: 3 }), null);
+  assert.strictEqual(N.energiaDaTela({ energia: '4' }, camposFixo(4, 'metade')), null, '"metade" não discorda de um cabeçalho sem manutenção');
+});
+
+test('tela: duração e tempo, na gramática do cabeçalho', opcoes, () => {
+  // criar_elemental: a tabela diz "Perm.", a entrada diz 1 hora
+  assert.strictEqual(N.duracaoDaTela({ duracao: 'Perm.' }, { duracaoTipo: 'temporaria', duracaoSeg: 3600 }), '1 hora');
+  assert.strictEqual(N.duracaoDaTela({ duracao: '1 min' }, { duracaoTipo: 'temporaria', duracaoSeg: 60 }), null);
+  assert.strictEqual(N.duracaoDaTela({ duracao: '1 min' }, { duracaoTipo: 'temporaria', duracaoSeg: 7200 }), '2 horas');
+  assert.strictEqual(N.duracaoDaTela({ duracao: 'Varia' }, { duracaoTipo: 'temporaria', duracaoSeg: 60 }), null, 'ilegível não é reescrito');
+  // chuva_de_fogo: a tabela diz "1 seg", o conferido é 60 s
+  assert.strictEqual(N.tempoDaTela({ tempoOperacao: '1 seg' }, { tempoTipo: 'fixo', tempoOperacaoSeg: 60 }), '1 min.');
+  assert.strictEqual(N.tempoDaTela({ tempoOperacao: '3 seg.' }, { tempoTipo: 'fixo', tempoOperacaoSeg: 3 }), null);
+  assert.strictEqual(N.tempoDaTela({ tempoOperacao: '1 a 3 seg.' }, { tempoTipo: 'fixo', tempoOperacaoSeg: 2 }), null, 'faixa continua faixa');
+  assert.strictEqual(N.segundosEmTexto(90), '90 seg.');
+  assert.strictEqual(N.segundosEmTexto(86400), '1 dia');
+  assert.strictEqual(N.segundosEmTexto(172800), '2 dias');
+  assert.strictEqual(N.segundosEmTexto(604800), '1 semana');
+});
+
+test('livro real: Desintegrar tem "1 a 10" na tela e "1 a 4" no cabeçalho; nenhuma tela repete o cabeçalho', { skip: !TEM_O_LIVRO }, () => {
+  const catalogo = JSON.parse(fs.readFileSync(CATALOGO, 'utf8'));
+  const des = catalogo.find((m) => m.id === 'desintegrar');
+  assert.strictEqual(des.energia, '1 a 4');
+  assert.strictEqual(des.energiaTela, '1 a 10');
+  // nenhuma tela repete o cabeçalho (seria ruído) e toda tela vem de um número conferido
+  catalogo.forEach((m) => {
+    if (m.energiaTela) { assert.notStrictEqual(m.energiaTela, m.energia, m.id); assert.ok(m.custoTipo === 'fixo' || m.custoTipo === 'faixa', m.id); }
+    if (m.duracaoTela) { assert.notStrictEqual(m.duracaoTela, m.duracao, m.id); assert.ok(m.duracaoTipo, m.id); }
+    if (m.tempoOperacaoTela) { assert.notStrictEqual(m.tempoOperacaoTela, m.tempoOperacao, m.id); assert.ok(m.tempoOperacaoSeg !== undefined, m.id); }
+  });
+});
+
+test('🟥 sonda: o catálogo gravado É o que `derivar` tira do livro, com a tela e tudo (nada à mão)', { skip: !TEM_O_LIVRO }, () => {
+  const catalogo = JSON.parse(fs.readFileSync(CATALOGO, 'utf8'));
+  const livro = L.carregarLivro(CHUNKS);
+  const indice = L.construirIndice(livro, catalogo, { manual: L.lerLocalizacaoManual(path.join(__dirname, 'magias-localizacao-manual.json')) });
+  const erros = [];
+  catalogo.forEach((m) => {
+    const x = indice.magias[m.id];
+    const entrada = x.entrada && x.entrada.formato === 'bloco' ? L.camposDaEntrada(livro, x.entrada) : {};
+    const d = N.derivar(m, x, entrada, { legado: m, protegida: m.conferidoPor && Object.values(m.conferidoPor).includes('conferencia') });
+    ['energiaTela', 'duracaoTela', 'tempoOperacaoTela'].forEach((k) => {
+      if ((d.campos[k] || null) !== (m[k] || null)) erros.push(m.id + ' ' + k + ': gravado ' + m[k] + ' × livro ' + d.campos[k]);
+    });
+  });
+  assert.deepStrictEqual(erros.slice(0, 10), [], 'tela fora do livro em ' + erros.length + ' ponto(s)');
+});

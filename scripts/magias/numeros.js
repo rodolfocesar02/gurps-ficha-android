@@ -216,8 +216,90 @@ const CAMPOS_DOS_NUMEROS = [
   'duracaoTipo', 'duracaoSeg', 'duracaoFormula',
   'tempoOperacaoSeg', 'tempoTipo', 'tempoMinSeg', 'tempoMaxSeg', 'tempoUnidadeSeg', 'tempoFormula',
   'custoOperar', 'custoManter', 'custoManterTipo', 'custoTipo', 'custoMinimo', 'custoMaximo', 'custoFormula',
+  'energiaTela', 'duracaoTela', 'tempoOperacaoTela',
   'conferido', 'conferidoPagina', 'conferidoPor',
 ];
+
+// ---------------------------------------------------------------------------------- o texto da tela
+
+/**
+ * O texto que a TELA mostra (e de onde sai o que é cobrado) quando o número conferido discorda do
+ * cabeçalho. O cabeçalho (`energia`, `duracao`, `tempoOperacao`) é a linha da tabela-resumo e fica
+ * como está — é a prova do que a tabela diz. Onde o NÚMERO conferido (que vale a entrada) é outro, o
+ * script grava aqui o texto do número certo, na mesma gramática do cabeçalho, para o aplicativo e a
+ * Mesa o lerem com os leitores que já têm: "6/3", "1 a 10", "1 hora", "1 min.".
+ *
+ *  - só nasce onde o cabeçalho diz um NÚMERO e ele difere do conferido (ou onde o conferido é uma
+ *    faixa e o cabeçalho outra coisa que não "Varia"/"Especial");
+ *  - cabeçalho "Varia"/ilegível não é reescrito: ali não há número para trocar, e a tela deixa o
+ *    jogador escolher (quem tem custo conferido é a Saga);
+ *  - nenhum número é digitado: tudo sai dos campos que `derivar` acabou de ler do livro.
+ */
+function segundosEmTexto(s) {
+  const unidades = [[604800, 'semana', 'semanas'], [86400, 'dia', 'dias'], [3600, 'hora', 'horas']];
+  for (const [v, um, varios] of unidades) {
+    if (s >= v && s % v === 0) { const n = s / v; return n + ' ' + (n === 1 ? um : varios); }
+  }
+  if (s >= 60 && s % 60 === 0) return (s / 60) + ' min.';
+  return s + ' seg.';
+}
+
+/** A manutenção do conferido, na gramática do cabeçalho: "/M" metade, "/0" não pode, "/N" número. */
+function sufixoDaManutencao(campos) {
+  if (campos.custoManterTipo === 'metade') return '/M';
+  if (campos.custoManterTipo === 'nao') return '/0';
+  if ((campos.custoManterTipo === 'numero' || campos.custoManterTipo === 'igual')
+      && campos.custoManter !== undefined && campos.custoManter !== null) return '/' + campos.custoManter;
+  return '';
+}
+
+function energiaDaTela(m, campos) {
+  const cc = leitorDeCusto();
+  if (!cc || !m.energia) return null;
+  const H = cc.oCustoDaTabela(m.energia);
+  if (!H.entendido) return null;
+  const nota = /#\s*$/.test(String(m.energia).trim()) ? '#' : '';
+  if (campos.custoTipo === 'fixo' && campos.custoOperar !== undefined && campos.custoOperar !== null) {
+    if (!concreto(H)) return null;
+    const C = {
+      tipo: 'fixo', operar: campos.custoOperar, minimo: null, maximo: null,
+      manterTipo: campos.custoManterTipo || null, manter: campos.custoManter === undefined ? null : campos.custoManter,
+    };
+    const manterDosDois = manutencaoEfetiva(H) !== null && manutencaoEfetiva(C) !== null;
+    if (mesmoCusto(H, C) && (!manterDosDois || mesmaManutencao(H, C))) return null;
+    return campos.custoOperar + sufixoDaManutencao(campos) + nota;
+  }
+  if (campos.custoTipo === 'faixa' && campos.custoMinimo !== undefined && campos.custoMaximo !== undefined) {
+    if (H.tipo === 'varia' || H.tipo === 'especial') return null;
+    if (H.tipo === 'faixa' && H.minimo === campos.custoMinimo && H.maximo === campos.custoMaximo) return null;
+    return campos.custoMinimo + ' a ' + campos.custoMaximo + sufixoDaManutencao(campos) + nota;
+  }
+  return null;
+}
+
+function duracaoDaTela(m, campos) {
+  if (!campos.duracaoTipo || !m.duracao) return null;
+  const H = lerDuracao(m.duracao, false);
+  if (!H || !H.entendida) return null;
+  const doCabecalho = { tipo: H.tipo === 'indefinida' ? 'permanente' : H.tipo, segundos: H.segundos };
+  const doConferido = { tipo: campos.duracaoTipo, segundos: campos.duracaoTipo === 'temporaria' ? campos.duracaoSeg : 0 };
+  if (mesmaDuracao(doCabecalho, doConferido)) return null;
+  const nota = /#\s*$/.test(String(m.duracao).trim()) ? '#' : '';
+  if (campos.duracaoTipo === 'permanente') return (campos.duracaoFormula === 'Indefinida' ? 'Indef.' : 'Perm.') + nota;
+  if (campos.duracaoTipo === 'instantanea') return 'Instant.' + nota;
+  return segundosEmTexto(campos.duracaoSeg) + nota;
+}
+
+function tempoDaTela(m, campos) {
+  if (campos.tempoTipo !== 'fixo' && campos.tempoTipo !== 'instantaneo') return null;
+  if (!m.tempoOperacao) return null;
+  const H = lerTempo(m.tempoOperacao, false);
+  if (!H || !H.entendido || (H.tipo !== 'fixo' && H.tipo !== 'instantaneo')) return null;
+  const doCabecalho = H.tipo === 'instantaneo' ? 0 : H.segundos;
+  if (doCabecalho === campos.tempoOperacaoSeg) return null;
+  const nota = /#\s*$/.test(String(m.tempoOperacao).trim()) ? '#' : '';
+  return (campos.tempoTipo === 'instantaneo' ? 'Instant.' : segundosEmTexto(campos.tempoOperacaoSeg)) + nota;
+}
 
 /**
  * Deriva os números conferidos de UMA magia.
@@ -313,6 +395,14 @@ function derivar(m, x, entrada, opcoes) {
     });
   }
 
+  // O texto da tela: só onde o número conferido discorda do cabeçalho (ver `energiaDaTela`).
+  const telaEnergia = energiaDaTela(m, campos);
+  const telaDuracao = duracaoDaTela(m, campos);
+  const telaTempo = tempoDaTela(m, campos);
+  if (telaEnergia !== null) campos.energiaTela = telaEnergia;
+  if (telaDuracao !== null) campos.duracaoTela = telaDuracao;
+  if (telaTempo !== null) campos.tempoOperacaoTela = telaTempo;
+
   campos.conferido = 'livro';
   const pagina = (t && t.pagina) || (x.entrada && x.entrada.pagina) || null;
   if (pagina) campos.conferidoPagina = pagina;
@@ -330,4 +420,8 @@ module.exports = {
   resolverCusto,
   derivar,
   primeiraFrase,
+  energiaDaTela,
+  duracaoDaTela,
+  tempoDaTela,
+  segundosEmTexto,
 };

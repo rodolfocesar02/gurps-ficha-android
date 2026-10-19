@@ -11,12 +11,21 @@ transcreve.
 |---|---|---|---|
 | 0 | `localizar-magias-no-livro.js` | nada (gera `magias-no-livro.json`) | `COBERTURA-MC-0.md` |
 | 1 | `aplicar-cabecalho-da-tabela.js` | classe, escola, duração, energia, tempo, página | `RELATORIO-MC-1.md` |
-| 2 | `aplicar-numeros-conferidos.js` | `custoOperar/Manter`, `duracaoSeg/Tipo`, `tempoOperacaoSeg` + campos de fórmula | `RELATORIO-MC-2.md` |
+| 2 | `aplicar-numeros-conferidos.js` | `custoOperar/Manter`, `duracaoSeg/Tipo`, `tempoOperacaoSeg` + campos de fórmula + `energiaTela/duracaoTela/tempoOperacaoTela` | `RELATORIO-MC-2.md` |
 | 3 | `aplicar-descricoes.js` | `descricao` = bloco da entrada do livro | `RELATORIO-MC-3.md` |
 | 4 | `aplicar-mecanica.js` | `mecanica.entrega`, projétil, marcas | `RELATORIO-MC-4.md` |
 
 Relatórios ficam em `mesa-virtual/planos/magias/`. As lacunas de leitura (página embaralhada, entrada sem
 texto) viram `*Motivo` no próprio catálogo — nunca um número inventado.
+
+## A tela mostra o número que é cobrado (`*Tela`)
+
+O cabeçalho (`energia`, `duracao`, `tempoOperacao`) é a linha da **tabela-resumo** e fica como está. Onde o número
+conferido (vale a entrada) discorda dele e o cabeçalho diz um número, o script grava o texto do número certo em
+`energiaTela`, `duracaoTela`, `tempoOperacaoTela` ("1 a 10", "6/3", "1 hora"). O app troca o cabeçalho por ele ao
+carregar o catálogo (`CicloDaMagia.comTextoDaTela`) e a Mesa ao ler a ficha (`magia-na-tela.js`): tela e conta leem o
+mesmo número. Cabeçalho "Varia" não é reescrito (decisão do Rodolfo, `PONTAS-ANTES-DO-MG-1.md`). Guardas:
+`numeros.test.js` (seção 3), `TextoDaTelaDoLivroTest`, `test/magia-na-tela.test.js` na Mesa.
 
 ## O que NÃO se corrige para "ficar igual à prosa do livro"
 

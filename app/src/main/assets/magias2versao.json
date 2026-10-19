@@ -1320,6 +1320,7 @@
     "tempoTipo": "fixo",
     "custoOperar": 8,
     "custoTipo": "fixo",
+    "energiaTela": "8",
     "conferido": "livro",
     "conferidoPagina": 102,
     "conferidoPor": {
@@ -2330,6 +2331,7 @@
     "custoManter": 3,
     "custoManterTipo": "numero",
     "custoTipo": "fixo",
+    "energiaTela": "6/3",
     "conferido": "livro",
     "conferidoPagina": 75,
     "conferidoPor": {
@@ -5617,6 +5619,7 @@
     "custoManter": 1,
     "custoManterTipo": "igual",
     "custoTipo": "fixo",
+    "tempoOperacaoTela": "1 min.",
     "conferido": "livro",
     "conferidoPagina": 74,
     "conferidoPor": {
@@ -7317,6 +7320,7 @@
     "custoManter": 2,
     "custoManterTipo": "numero",
     "custoTipo": "fixo",
+    "energiaTela": "4/2",
     "conferido": "livro",
     "conferidoPagina": 176,
     "conferidoPor": {
@@ -7959,6 +7963,7 @@
     "custoManter": 3,
     "custoManterTipo": "numero",
     "custoTipo": "fixo",
+    "energiaTela": "6/3",
     "conferido": "livro",
     "conferidoPagina": 176,
     "conferidoPor": {
@@ -8658,6 +8663,7 @@
     "custoManter": 0,
     "custoManterTipo": "nao",
     "custoTipo": "fixo",
+    "energiaTela": "5/0",
     "conferido": "livro",
     "conferidoPagina": 146,
     "conferidoPor": {
@@ -9173,6 +9179,7 @@
     "duracaoSeg": 3600,
     "custoTipo": "porPonto",
     "custoFormula": "1 ponto por cada 10 pontos de personagem usados para construir o elemental. O custo mínimo de energia é 4 (embora isso nem sempre convoque um elemental de 40 pontos).",
+    "duracaoTela": "1 hora",
     "conferido": "livro",
     "conferidoPagina": 28,
     "conferidoPor": {
@@ -9208,6 +9215,7 @@
     "duracaoSeg": 3600,
     "custoTipo": "porPonto",
     "custoFormula": "1 ponto por cada 10 pontos de personagem usados para construir o elemental. O custo mínimo de energia é 4 (embora isso nem sempre convoque um elemental de 40 pontos).",
+    "duracaoTela": "1 hora",
     "conferido": "livro",
     "conferidoPagina": 28,
     "conferidoPor": {
@@ -9243,6 +9251,7 @@
     "duracaoSeg": 3600,
     "custoTipo": "porPonto",
     "custoFormula": "1 ponto por cada 10 pontos de personagem usados para construir o elemental. O custo mínimo de energia é 4 (embora isso nem sempre convoque um elemental de 40 pontos).",
+    "duracaoTela": "1 hora",
     "conferido": "livro",
     "conferidoPagina": 28,
     "conferidoPor": {
@@ -9278,6 +9287,7 @@
     "duracaoSeg": 3600,
     "custoTipo": "porPonto",
     "custoFormula": "1 ponto por cada 10 pontos de personagem usados para construir o elemental. O custo mínimo de energia é 4 (embora isso nem sempre convoque um elemental de 40 pontos).",
+    "duracaoTela": "1 hora",
     "conferido": "livro",
     "conferidoPagina": 28,
     "conferidoPor": {
@@ -10510,6 +10520,7 @@
     "custoTipo": "faixa",
     "custoMinimo": 1,
     "custoMaximo": 10,
+    "energiaTela": "1 a 10",
     "conferido": "livro",
     "conferidoPagina": 120,
     "conferidoPor": {
@@ -13705,6 +13716,7 @@
     "custoManter": 0,
     "custoManterTipo": "nao",
     "custoTipo": "fixo",
+    "energiaTela": "2/0",
     "conferido": "livro",
     "conferidoPagina": 152,
     "conferidoPor": {
@@ -15694,6 +15706,7 @@
     "custoOperar": 2,
     "custoManterTipo": "metade",
     "custoTipo": "fixo",
+    "energiaTela": "2/M",
     "conferido": "livro",
     "conferidoPagina": 193,
     "conferidoPor": {
@@ -17265,6 +17278,7 @@
     "custoOperar": 1,
     "custoManterTipo": "metade",
     "custoTipo": "fixo",
+    "energiaTela": "1/M",
     "conferido": "livro",
     "conferidoPagina": 74,
     "conferidoPor": {
@@ -18271,6 +18285,7 @@
     "custoManter": 1,
     "custoManterTipo": "numero",
     "custoTipo": "fixo",
+    "energiaTela": "3/1",
     "conferido": "livro",
     "conferidoPagina": 46,
     "conferidoPor": {
@@ -20980,6 +20995,7 @@
     "custoOperar": 1,
     "custoManterTipo": "metade",
     "custoTipo": "fixo",
+    "energiaTela": "1/M#",
     "conferido": "livro",
     "conferidoPagina": 182,
     "conferidoPor": {
@@ -24781,6 +24797,7 @@
     "custoManter": 1,
     "custoManterTipo": "numero",
     "custoTipo": "fixo",
+    "energiaTela": "3/1",
     "conferido": "livro",
     "conferidoPagina": 46,
     "conferidoPor": {
@@ -27325,6 +27342,7 @@
     "custoManter": 1,
     "custoManterTipo": "numero",
     "custoTipo": "fixo",
+    "energiaTela": "3/1",
     "conferido": "livro",
     "conferidoPagina": 26,
     "conferidoPor": {
@@ -31174,6 +31192,7 @@
     "custoTipo": "faixa",
     "custoMinimo": 1,
     "custoMaximo": 5,
+    "energiaTela": "1 a 5/M",
     "conferido": "livro",
     "conferidoPagina": 134,
     "conferidoPor": {
@@ -32318,6 +32337,7 @@
     "custoManter": 20,
     "custoManterTipo": "numero",
     "custoTipo": "fixo",
+    "energiaTela": "50/20",
     "conferido": "livro",
     "conferidoPagina": 103,
     "conferidoPor": {
@@ -32696,6 +32716,7 @@
     "custoManter": 0,
     "custoManterTipo": "nao",
     "custoTipo": "fixo",
+    "energiaTela": "8/0",
     "conferido": "livro",
     "conferidoPagina": 138,
     "conferidoPor": {

@@ -881,7 +881,7 @@ private fun MagiaDefinicao.normalizada(): MagiaDefinicao {
             preRequisitos?.sanitized().takeUnless { it.isNullOrBlank() } ?: meta.preRequisitos.orEmpty()
         ).takeIf { it.isNotBlank() },
         texto = descricaoRaw.takeUnless { it.isBlank() } ?: meta.descricao
-    )
+    ).let { com.gurps.ficha.domain.magic.CicloDaMagia.comTextoDaTela(it) }
 }
 
 private data class MetaMagiaExtraida(

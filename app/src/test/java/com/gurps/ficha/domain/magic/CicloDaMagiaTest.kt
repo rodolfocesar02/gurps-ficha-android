@@ -121,6 +121,18 @@ class CicloDaMagiaTest {
     }
 
     @Test
+    fun `a tela mostra o texto do numero conferido quando ele existe`() {
+        // Desintegrar: a tabela diz "1 a 4", a entrada do livro diz "1 a 10" -- a tela mostra o que se cobra.
+        assertEquals("1 a 10", CicloDaMagia.textoDaTela("1 a 4", "1 a 10"))
+        assertEquals("6/3", CicloDaMagia.textoDaTela("4/1", "6/3"))
+        assertEquals("1 hora", CicloDaMagia.textoDaTela("Perm.", "1 hora"))
+        // sem texto da tela o cabeçalho vale, do jeito que o livro o escreve
+        assertEquals("1 a 3/I", CicloDaMagia.textoDaTela("1 a 3/I", null))
+        assertEquals("Varia", CicloDaMagia.textoDaTela("Varia", ""))
+        assertNull(CicloDaMagia.textoDaTela(null, null))
+    }
+
+    @Test
     fun `o numero conferido manda sobre o texto do cabecalho`() {
         val custo = CicloDaMagia.custo(7, 3, "9/9")
         assertEquals(7, custo?.base)

@@ -892,6 +892,19 @@ data class MagiaDefinicao(
     val duracaoTipo: String? = null,
     /** Tempo de operação em SEGUNDOS ("1 hora" de ritual = 3600). */
     val tempoOperacaoSeg: Int? = null,
+    /** "fixo" | "faixa" | "varia" | ... — como o custo foi lido do livro (MC-2). null = não informado. */
+    val custoTipo: String? = null,
+    /** Piso e teto do custo conferido quando [custoTipo] é "faixa" (Desintegrar: 1 a 10). */
+    val custoMinimo: Int? = null,
+    val custoMaximo: Int? = null,
+    // ── Lote MG-ponta2: o TEXTO da tela quando o número conferido discorda do cabeçalho ──
+    // O cabeçalho (`energia`, `duracao`, `tempoOperacao`) é a linha da tabela-resumo do livro. Onde o
+    // número conferido (vale a entrada) é outro, o script `numeros.js` grava aqui o texto certo, na mesma
+    // gramática do cabeçalho ("6/3", "1 a 10", "1 hora"). O carregador do catálogo troca o cabeçalho por
+    // ele (`CicloDaMagia.comTextoDaTela`), e assim a tela e a conta leem o mesmo número.
+    val energiaTela: String? = null,
+    val duracaoTela: String? = null,
+    val tempoOperacaoTela: String? = null,
 ) {
     // Mantendo atributo base IQ fixo para magias
     val atributoBase: String get() = "IQ"
