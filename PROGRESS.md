@@ -9902,3 +9902,14 @@ ficar verde**.
   - `CODEX_VERSION_CURRENT` 4 -> 5 (chunks.jsonl mudou). Versao **187** (`12.8.2-MAGIAS-PDF`).
 - Gate: `testVisualDebugUnitTest` + `testPracegoDebugUnitTest` verdes (as 4 guardas Kotlin que releem o livro rodaram, 0 puladas), `assembleVisualDebug` + `assemblePracegoDebug` OK; scripts JS do app 87/87; Mesa 3259/3259. Relatorio: `mesa-virtual/planos/magias/RELATORIO-MC-7.md`.
 - **Status:** ✅ Build OK (2 variantes)
+
+## Lote MC-7b — [2026-10-19] As outras 16 paginas de Magia, direto do PDF (mesmo script do MC-7)
+- **Hash:** (commit deste lote; ver `git log`) + commit da Mesa (relatorio MC-7 parte 2, derivados regenerados)
+- **Mudancas:**
+  - Paginas 23, 33, 43, 60, 66, 70, 89, 101, 102, 106, 115, 119, 149, 162, 169 e 193 reextraidas do PDF por `pdf-para-chunks.py` (o Rodolfo pediu: "faca as 16 restantes direto do PDF do meu computador"). As 13 do MC-7 foram REFEITAS com o conversor melhorado: as p.161 e p.166 tinham a historinha de abertura de capitulo misturada no meio da descricao.
+  - Conversor: margens das colunas pelas linhas longas; tabelas so com 2+ linhas de colunas alinhadas; conto (14+ linhas coloridas sem rotulo) fora e colunas refeitas sem ele; rotulos em italico colorido de qualquer palavra seguida de ":"; decoracao de capitulo fora. Desisti de separar "quadros de texto" pelo tamanho da letra (varia de 8,4 a 8,9 e comia paragrafos).
+  - Cadeia do MC rodada de novo (0, 1, 2, 3, 4): descricao do livro 849 -> **878 de 879** (so "Gema de Energia de Uma So Escola" fica marcada), mecanica conferida 844 -> **873**, entrada so por pagina 20 -> 0. Desde antes do MC-7: 812 -> 878 e 811 -> 873.
+  - Apenas 10 magias mudaram de numero/cabecalho (Criar Ar e Purificar o Ar "nao pode ser mantida", Geada custo 1, Ocultar 1 hora, Ver a Forma Real 10 s...). Textos de tela 18 -> 17.
+  - `localizador.test.js`: catraca localizada 878, bloco 878. `CODEX_VERSION_CURRENT` 5 -> 6. Versao **188** (`12.8.3-MAGIAS-PDF2`).
+- Gate: `testVisualDebugUnitTest` + `testPracegoDebugUnitTest` verdes, `assembleVisualDebug` + `assemblePracegoDebug` OK; scripts JS 87/87; Mesa 3259/3259 (um teste de tempo real falhou uma vez sob carga e passou 3 vezes isolado e na suite de novo). Relatorio: `mesa-virtual/planos/magias/RELATORIO-MC-7.md` (parte 2).
+- **Status:** ✅ Build OK (2 variantes)

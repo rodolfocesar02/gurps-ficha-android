@@ -4,13 +4,13 @@
  "resumo": {
   "total": 879,
   "comTabela": 879,
-  "comBloco": 851,
-  "soPagina": 20,
-  "semEntrada": 8,
-  "localizada": 871,
-  "comBlocoETabela": 851,
+  "comBloco": 878,
+  "soPagina": 0,
+  "semEntrada": 1,
+  "localizada": 878,
+  "comBlocoETabela": 878,
   "semNenhuma": 0,
-  "blocoSemCampos": 44,
+  "blocoSemCampos": 38,
   "remissoes": 0,
   "casamentoTabela": {
    "exato": 809,
@@ -21,10 +21,9 @@
    "prefixo-inverso": 1
   },
   "casamentoEntrada": {
-   "exato": 789,
-   "base": 45,
+   "exato": 805,
+   "base": 51,
    "generico": 17,
-   "pagina": 15,
    "manual": 3,
    "aproximado": 2
   }
@@ -58,25 +57,25 @@
     "titulo": "Abençoar Plantas",
     "pagina": 161,
     "paginaFim": 162,
-    "linhaInicio": 74,
+    "linhaInicio": 68,
     "linhaFim": 2,
     "temCampos": true,
     "campos": {
      "duracao": {
       "pagina": 161,
-      "linha": 79
+      "linha": 73
      },
      "custo": {
       "pagina": 161,
-      "linha": 81
+      "linha": 75
      },
      "tempo": {
       "pagina": 161,
-      "linha": 83
+      "linha": 77
      },
      "preRequisitos": {
       "pagina": 161,
-      "linha": 85
+      "linha": 79
      }
     },
     "remissao": null
@@ -607,9 +606,26 @@
     "pagina": 118,
     "paginaFim": 119,
     "linhaInicio": 107,
-    "linhaFim": 2,
-    "temCampos": false,
-    "campos": {},
+    "linhaFim": 13,
+    "temCampos": true,
+    "campos": {
+     "duracao": {
+      "pagina": 119,
+      "linha": 2
+     },
+     "custo": {
+      "pagina": 119,
+      "linha": 4
+     },
+     "tempo": {
+      "pagina": 119,
+      "linha": 6
+     },
+     "preRequisitos": {
+      "pagina": 119,
+      "linha": 8
+     }
+    },
     "remissao": null
    }
   },
@@ -921,21 +937,21 @@
     "titulo": "Alarme Florestal",
     "pagina": 162,
     "paginaFim": 162,
-    "linhaInicio": 73,
-    "linhaFim": 84,
+    "linhaInicio": 123,
+    "linhaFim": 137,
     "temCampos": true,
     "campos": {
      "duracao": {
       "pagina": 162,
-      "linha": 77
+      "linha": 128
      },
      "custo": {
       "pagina": 162,
-      "linha": 78
+      "linha": 130
      },
      "preRequisitos": {
       "pagina": 162,
-      "linha": 79
+      "linha": 132
      }
     },
     "remissao": null
@@ -1708,10 +1724,23 @@
     "titulo": "Analisar Mágica",
     "pagina": 102,
     "paginaFim": 102,
-    "linhaInicio": 20,
-    "linhaFim": 26,
-    "temCampos": false,
-    "campos": {},
+    "linhaInicio": 68,
+    "linhaFim": 84,
+    "temCampos": true,
+    "campos": {
+     "custo": {
+      "pagina": 102,
+      "linha": 75
+     },
+     "tempo": {
+      "pagina": 102,
+      "linha": 77
+     },
+     "preRequisitos": {
+      "pagina": 102,
+      "linha": 79
+     }
+    },
     "remissao": null
    }
   },
@@ -3463,17 +3492,17 @@
     "titulo": "Atordoamento",
     "pagina": 37,
     "paginaFim": 38,
-    "linhaInicio": 98,
+    "linhaInicio": 96,
     "linhaFim": 2,
     "temCampos": true,
     "campos": {
      "custo": {
       "pagina": 37,
-      "linha": 103
+      "linha": 101
      },
      "preRequisitos": {
       "pagina": 37,
-      "linha": 105
+      "linha": 103
      }
     },
     "remissao": null
@@ -4123,17 +4152,17 @@
     "titulo": "Aumentar (Atributo)",
     "pagina": 37,
     "paginaFim": 37,
-    "linhaInicio": 73,
-    "linhaFim": 96,
+    "linhaInicio": 71,
+    "linhaFim": 94,
     "temCampos": true,
     "campos": {
      "custo": {
       "pagina": 37,
-      "linha": 82
+      "linha": 80
      },
      "preRequisitos": {
       "pagina": 37,
-      "linha": 84
+      "linha": 82
      }
     },
     "remissao": null
@@ -4167,17 +4196,17 @@
     "titulo": "Aumentar (Atributo)",
     "pagina": 37,
     "paginaFim": 37,
-    "linhaInicio": 73,
-    "linhaFim": 96,
+    "linhaInicio": 71,
+    "linhaFim": 94,
     "temCampos": true,
     "campos": {
      "custo": {
       "pagina": 37,
-      "linha": 82
+      "linha": 80
      },
      "preRequisitos": {
       "pagina": 37,
-      "linha": 84
+      "linha": 82
      }
     },
     "remissao": null
@@ -4211,17 +4240,17 @@
     "titulo": "Aumentar (Atributo)",
     "pagina": 37,
     "paginaFim": 37,
-    "linhaInicio": 73,
-    "linhaFim": 96,
+    "linhaInicio": 71,
+    "linhaFim": 94,
     "temCampos": true,
     "campos": {
      "custo": {
       "pagina": 37,
-      "linha": 82
+      "linha": 80
      },
      "preRequisitos": {
       "pagina": 37,
-      "linha": 84
+      "linha": 82
      }
     },
     "remissao": null
@@ -4255,17 +4284,17 @@
     "titulo": "Aumentar (Atributo)",
     "pagina": 37,
     "paginaFim": 37,
-    "linhaInicio": 73,
-    "linhaFim": 96,
+    "linhaInicio": 71,
+    "linhaFim": 94,
     "temCampos": true,
     "campos": {
      "custo": {
       "pagina": 37,
-      "linha": 82
+      "linha": 80
      },
      "preRequisitos": {
       "pagina": 37,
-      "linha": 84
+      "linha": 82
      }
     },
     "remissao": null
@@ -4456,7 +4485,7 @@
     "pagina": 43,
     "paginaFim": 43,
     "linhaInicio": 2,
-    "linhaFim": 15,
+    "linhaFim": 18,
     "temCampos": true,
     "campos": {
      "duracao": {
@@ -4465,15 +4494,15 @@
      },
      "custo": {
       "pagina": 43,
-      "linha": 8
+      "linha": 9
      },
      "tempo": {
       "pagina": 43,
-      "linha": 9
+      "linha": 11
      },
      "preRequisitos": {
       "pagina": 43,
-      "linha": 10
+      "linha": 13
      }
     },
     "remissao": null
@@ -4507,17 +4536,17 @@
     "titulo": "Aura",
     "pagina": 101,
     "paginaFim": 102,
-    "linhaInicio": 68,
-    "linhaFim": 8,
+    "linhaInicio": 104,
+    "linhaFim": 2,
     "temCampos": true,
     "campos": {
      "custo": {
       "pagina": 101,
-      "linha": 75
+      "linha": 111
      },
      "preRequisitos": {
       "pagina": 101,
-      "linha": 76
+      "linha": 113
      }
     },
     "remissao": null
@@ -5104,12 +5133,12 @@
     "pagina": 60,
     "paginaFim": 60,
     "linhaInicio": 2,
-    "linhaFim": 18,
+    "linhaFim": 15,
     "temCampos": true,
     "campos": {
      "preRequisitos": {
       "pagina": 60,
-      "linha": 16
+      "linha": 13
      }
     },
     "remissao": null
@@ -5143,17 +5172,17 @@
     "titulo": "Bloquear",
     "pagina": 166,
     "paginaFim": 167,
-    "linhaInicio": 66,
+    "linhaInicio": 56,
     "linhaFim": 2,
     "temCampos": true,
     "campos": {
      "custo": {
       "pagina": 166,
-      "linha": 71
+      "linha": 61
      },
      "preRequisitos": {
       "pagina": 166,
-      "linha": 73
+      "linha": 63
      }
     },
     "remissao": null
@@ -5475,17 +5504,17 @@
     "titulo": "Braço de Ferro",
     "pagina": 169,
     "paginaFim": 169,
-    "linhaInicio": 16,
-    "linhaFim": 22,
+    "linhaInicio": 80,
+    "linhaFim": 92,
     "temCampos": true,
     "campos": {
      "custo": {
       "pagina": 169,
-      "linha": 19
+      "linha": 85
      },
      "preRequisitos": {
       "pagina": 169,
-      "linha": 20
+      "linha": 87
      }
     },
     "remissao": null
@@ -5667,13 +5696,13 @@
     "titulo": "Cajado",
     "pagina": 70,
     "paginaFim": 70,
-    "linhaInicio": 34,
-    "linhaFim": 43,
+    "linhaInicio": 39,
+    "linhaFim": 51,
     "temCampos": true,
     "campos": {
      "preRequisitos": {
       "pagina": 70,
-      "linha": 39
+      "linha": 46
      }
     },
     "remissao": null
@@ -5864,7 +5893,7 @@
     "pagina": 148,
     "paginaFim": 149,
     "linhaInicio": 98,
-    "linhaFim": 8,
+    "linhaFim": 6,
     "temCampos": false,
     "campos": {},
     "remissao": null
@@ -7447,14 +7476,30 @@
     }
    },
    "entrada": {
-    "formato": "colunas",
-    "casamento": "pagina",
+    "formato": "bloco",
+    "casamento": "exato",
     "variante": null,
-    "titulo": null,
+    "titulo": "Compartilhar Energia",
     "pagina": 89,
-    "linha": 10,
-    "temCampos": false,
-    "campos": {}
+    "paginaFim": 89,
+    "linhaInicio": 70,
+    "linhaFim": 85,
+    "temCampos": true,
+    "campos": {
+     "duracao": {
+      "pagina": 89,
+      "linha": 79
+     },
+     "custo": {
+      "pagina": 89,
+      "linha": 81
+     },
+     "preRequisitos": {
+      "pagina": 89,
+      "linha": 83
+     }
+    },
+    "remissao": null
    }
   },
   "compartilhar_vitalidade": {
@@ -7727,14 +7772,26 @@
     }
    },
    "entrada": {
-    "formato": "colunas",
-    "casamento": "pagina",
+    "formato": "bloco",
+    "casamento": "exato",
     "variante": null,
-    "titulo": null,
+    "titulo": "Conceder Energia",
     "pagina": 89,
-    "linha": 2,
-    "temCampos": false,
-    "campos": {}
+    "paginaFim": 89,
+    "linhaInicio": 40,
+    "linhaFim": 52,
+    "temCampos": true,
+    "campos": {
+     "custo": {
+      "pagina": 89,
+      "linha": 45
+     },
+     "preRequisitos": {
+      "pagina": 89,
+      "linha": 47
+     }
+    },
+    "remissao": null
    }
   },
   "conceder_idioma": {
@@ -7915,14 +7972,30 @@
     }
    },
    "entrada": {
-    "formato": "colunas",
-    "casamento": "pagina",
+    "formato": "bloco",
+    "casamento": "exato",
     "variante": null,
-    "titulo": null,
+    "titulo": "Conceder Vitalidade",
     "pagina": 89,
-    "linha": 6,
-    "temCampos": false,
-    "campos": {}
+    "paginaFim": 89,
+    "linhaInicio": 54,
+    "linhaFim": 68,
+    "temCampos": true,
+    "campos": {
+     "duracao": {
+      "pagina": 89,
+      "linha": 59
+     },
+     "custo": {
+      "pagina": 89,
+      "linha": 61
+     },
+     "preRequisitos": {
+      "pagina": 89,
+      "linha": 63
+     }
+    },
+    "remissao": null
    }
   },
   "concussao": {
@@ -9984,7 +10057,7 @@
     "titulo": "Convocar Sombra",
     "pagina": 102,
     "paginaFim": 103,
-    "linhaInicio": 26,
+    "linhaInicio": 86,
     "linhaFim": 2,
     "temCampos": false,
     "campos": {},
@@ -10887,25 +10960,25 @@
     "titulo": "Corpulência",
     "pagina": 43,
     "paginaFim": 43,
-    "linhaInicio": 58,
-    "linhaFim": 73,
+    "linhaInicio": 20,
+    "linhaFim": 38,
     "temCampos": true,
     "campos": {
      "duracao": {
       "pagina": 43,
-      "linha": 65
+      "linha": 27
      },
      "custo": {
       "pagina": 43,
-      "linha": 66
+      "linha": 29
      },
      "tempo": {
       "pagina": 43,
-      "linha": 67
+      "linha": 31
      },
      "preRequisitos": {
       "pagina": 43,
-      "linha": 68
+      "linha": 33
      }
     },
     "remissao": null
@@ -11139,25 +11212,25 @@
     "titulo": "Crescimento de Plantas",
     "pagina": 162,
     "paginaFim": 162,
-    "linhaInicio": 12,
-    "linhaFim": 24,
+    "linhaInicio": 18,
+    "linhaFim": 34,
     "temCampos": true,
     "campos": {
      "duracao": {
       "pagina": 162,
-      "linha": 16
+      "linha": 23
      },
      "custo": {
       "pagina": 162,
-      "linha": 17
+      "linha": 25
      },
      "tempo": {
       "pagina": 162,
-      "linha": 18
+      "linha": 27
      },
      "preRequisitos": {
       "pagina": 162,
-      "linha": 19
+      "linha": 29
      }
     },
     "remissao": null
@@ -11191,21 +11264,21 @@
     "titulo": "Criação Inspirada",
     "pagina": 115,
     "paginaFim": 115,
-    "linhaInicio": 28,
-    "linhaFim": 39,
+    "linhaInicio": 6,
+    "linhaFim": 19,
     "temCampos": true,
     "campos": {
      "duracao": {
       "pagina": 115,
-      "linha": 35
+      "linha": 13
      },
      "custo": {
       "pagina": 115,
-      "linha": 36
+      "linha": 15
      },
      "tempo": {
       "pagina": 115,
-      "linha": 37
+      "linha": 17
      }
     },
     "remissao": null
@@ -11429,16 +11502,29 @@
     }
    },
    "entrada": {
-    "formato": "colunas",
+    "formato": "bloco",
     "casamento": "exato",
     "variante": null,
     "titulo": "Criar Ar",
     "pagina": 23,
     "paginaFim": 24,
-    "linhaInicio": 29,
+    "linhaInicio": 36,
     "linhaFim": 2,
-    "temCampos": false,
-    "campos": {},
+    "temCampos": true,
+    "campos": {
+     "duracao": {
+      "pagina": 23,
+      "linha": 41
+     },
+     "custo": {
+      "pagina": 23,
+      "linha": 43
+     },
+     "preRequisitos": {
+      "pagina": 23,
+      "linha": 45
+     }
+    },
     "remissao": null
    }
   },
@@ -12678,25 +12764,25 @@
     "titulo": "Curar Planta",
     "pagina": 161,
     "paginaFim": 161,
-    "linhaInicio": 38,
-    "linhaFim": 54,
+    "linhaInicio": 32,
+    "linhaFim": 48,
     "temCampos": true,
     "campos": {
      "duracao": {
       "pagina": 161,
-      "linha": 43
+      "linha": 37
      },
      "custo": {
       "pagina": 161,
-      "linha": 45
+      "linha": 39
      },
      "tempo": {
       "pagina": 161,
-      "linha": 47
+      "linha": 41
      },
      "preRequisitos": {
       "pagina": 161,
-      "linha": 49
+      "linha": 43
      }
     },
     "remissao": null
@@ -13044,14 +13130,34 @@
     }
    },
    "entrada": {
-    "formato": "colunas",
-    "casamento": "pagina",
+    "formato": "bloco",
+    "casamento": "exato",
     "variante": null,
-    "titulo": null,
+    "titulo": "Descanso Final",
     "pagina": 89,
-    "linha": 10,
-    "temCampos": false,
-    "campos": {}
+    "paginaFim": 89,
+    "linhaInicio": 14,
+    "linhaFim": 38,
+    "temCampos": true,
+    "campos": {
+     "duracao": {
+      "pagina": 89,
+      "linha": 27
+     },
+     "custo": {
+      "pagina": 89,
+      "linha": 29
+     },
+     "tempo": {
+      "pagina": 89,
+      "linha": 31
+     },
+     "preRequisitos": {
+      "pagina": 89,
+      "linha": 33
+     }
+    },
+    "remissao": null
    }
   },
   "descongelar": {
@@ -13615,7 +13721,36 @@
      "preRequisitos": "Criação Inspirada, Percepção de Espíritos"
     }
    },
-   "entrada": null
+   "entrada": {
+    "formato": "bloco",
+    "casamento": "exato",
+    "variante": null,
+    "titulo": "Despertar Espírito do Ofício",
+    "pagina": 115,
+    "paginaFim": 116,
+    "linhaInicio": 21,
+    "linhaFim": 2,
+    "temCampos": true,
+    "campos": {
+     "duracao": {
+      "pagina": 115,
+      "linha": 30
+     },
+     "custo": {
+      "pagina": 115,
+      "linha": 32
+     },
+     "tempo": {
+      "pagina": 115,
+      "linha": 34
+     },
+     "preRequisitos": {
+      "pagina": 115,
+      "linha": 36
+     }
+    },
+    "remissao": null
+   }
   },
   "destilar": {
    "nome": "Destilar",
@@ -13896,21 +14031,21 @@
     "titulo": "Detecção de Magia",
     "pagina": 101,
     "paginaFim": 101,
-    "linhaInicio": 21,
-    "linhaFim": 36,
+    "linhaInicio": 70,
+    "linhaFim": 86,
     "temCampos": true,
     "campos": {
      "custo": {
       "pagina": 101,
-      "linha": 28
+      "linha": 77
      },
      "tempo": {
       "pagina": 101,
-      "linha": 29
+      "linha": 79
      },
      "preRequisitos": {
       "pagina": 101,
-      "linha": 30
+      "linha": 81
      }
     },
     "remissao": null
@@ -13944,21 +14079,21 @@
     "titulo": "Detecção de Veneno",
     "pagina": 166,
     "paginaFim": 166,
-    "linhaInicio": 30,
-    "linhaFim": 46,
+    "linhaInicio": 20,
+    "linhaFim": 36,
     "temCampos": true,
     "campos": {
      "custo": {
       "pagina": 166,
-      "linha": 37
+      "linha": 27
      },
      "tempo": {
       "pagina": 166,
-      "linha": 39
+      "linha": 29
      },
      "preRequisitos": {
       "pagina": 166,
-      "linha": 41
+      "linha": 31
      }
     },
     "remissao": null
@@ -14704,21 +14839,21 @@
     "titulo": "Domo Atmosférico",
     "pagina": 169,
     "paginaFim": 169,
-    "linhaInicio": 22,
-    "linhaFim": 29,
+    "linhaInicio": 109,
+    "linhaFim": 122,
     "temCampos": true,
     "campos": {
      "duracao": {
       "pagina": 169,
-      "linha": 25
+      "linha": 116
      },
      "custo": {
       "pagina": 169,
-      "linha": 26
+      "linha": 118
      },
      "preRequisitos": {
       "pagina": 169,
-      "linha": 27
+      "linha": 120
      }
     },
     "remissao": null
@@ -14752,21 +14887,21 @@
     "titulo": "Domo Climático",
     "pagina": 169,
     "paginaFim": 169,
-    "linhaInicio": 6,
-    "linhaFim": 13,
+    "linhaInicio": 94,
+    "linhaFim": 107,
     "temCampos": true,
     "campos": {
      "duracao": {
       "pagina": 169,
-      "linha": 9
+      "linha": 101
      },
      "custo": {
       "pagina": 169,
-      "linha": 10
+      "linha": 103
      },
      "preRequisitos": {
       "pagina": 169,
-      "linha": 11
+      "linha": 105
      }
     },
     "remissao": null
@@ -15813,13 +15948,13 @@
     "titulo": "Enfeitiçar",
     "pagina": 60,
     "paginaFim": 60,
-    "linhaInicio": 18,
-    "linhaFim": 34,
+    "linhaInicio": 36,
+    "linhaFim": 53,
     "temCampos": true,
     "campos": {
      "preRequisitos": {
       "pagina": 60,
-      "linha": 32
+      "linha": 51
      }
     },
     "remissao": null
@@ -16183,26 +16318,26 @@
     "variante": null,
     "titulo": "Entrelaçamento",
     "pagina": 162,
-    "paginaFim": 162,
-    "linhaInicio": 84,
-    "linhaFim": 93,
+    "paginaFim": 163,
+    "linhaInicio": 139,
+    "linhaFim": 5,
     "temCampos": true,
     "campos": {
      "duracao": {
       "pagina": 162,
-      "linha": 88
+      "linha": 144
      },
      "custo": {
       "pagina": 162,
-      "linha": 89
+      "linha": 146
      },
      "tempo": {
       "pagina": 162,
-      "linha": 90
+      "linha": 148
      },
      "preRequisitos": {
       "pagina": 162,
-      "linha": 91
+      "linha": 150
      }
     },
     "remissao": null
@@ -18698,9 +18833,14 @@
     "pagina": 65,
     "paginaFim": 66,
     "linhaInicio": 56,
-    "linhaFim": 2,
-    "temCampos": false,
-    "campos": {},
+    "linhaFim": 6,
+    "temCampos": true,
+    "campos": {
+     "preRequisitos": {
+      "pagina": 66,
+      "linha": 4
+     }
+    },
     "remissao": null
    }
   },
@@ -18726,23 +18866,23 @@
     }
    },
    "entrada": {
-    "formato": "colunas",
+    "formato": "bloco",
     "casamento": "exato",
     "variante": null,
     "titulo": "Flecha Mágica Rápida",
     "pagina": 66,
     "paginaFim": 66,
-    "linhaInicio": 22,
-    "linhaFim": 40,
+    "linhaInicio": 31,
+    "linhaFim": 52,
     "temCampos": true,
     "campos": {
      "custo": {
       "pagina": 66,
-      "linha": 28
+      "linha": 36
      },
      "preRequisitos": {
       "pagina": 66,
-      "linha": 38
+      "linha": 46
      }
     },
     "remissao": null
@@ -18777,12 +18917,12 @@
     "pagina": 66,
     "paginaFim": 66,
     "linhaInicio": 8,
-    "linhaFim": 22,
+    "linhaFim": 29,
     "temCampos": true,
     "campos": {
      "preRequisitos": {
       "pagina": 66,
-      "linha": 20
+      "linha": 23
      }
     },
     "remissao": null
@@ -18816,25 +18956,25 @@
     "titulo": "Florescer",
     "pagina": 162,
     "paginaFim": 162,
-    "linhaInicio": 61,
-    "linhaFim": 73,
+    "linhaInicio": 90,
+    "linhaFim": 103,
     "temCampos": true,
     "campos": {
      "duracao": {
       "pagina": 162,
-      "linha": 65
+      "linha": 95
      },
      "custo": {
       "pagina": 162,
-      "linha": 66
+      "linha": 97
      },
      "tempo": {
       "pagina": 162,
-      "linha": 67
+      "linha": 99
      },
      "preRequisitos": {
       "pagina": 162,
-      "linha": 68
+      "linha": 101
      }
     },
     "remissao": null
@@ -19013,7 +19153,7 @@
     "pagina": 165,
     "paginaFim": 166,
     "linhaInicio": 75,
-    "linhaFim": 6,
+    "linhaFim": 4,
     "temCampos": false,
     "campos": {},
     "remissao": null
@@ -19047,25 +19187,25 @@
     "titulo": "Fortalecer",
     "pagina": 119,
     "paginaFim": 119,
-    "linhaInicio": 22,
-    "linhaFim": 35,
+    "linhaInicio": 15,
+    "linhaFim": 31,
     "temCampos": true,
     "campos": {
      "duracao": {
       "pagina": 119,
-      "linha": 27
+      "linha": 20
      },
      "custo": {
       "pagina": 119,
-      "linha": 28
+      "linha": 22
      },
      "tempo": {
       "pagina": 119,
-      "linha": 29
+      "linha": 24
      },
      "preRequisitos": {
       "pagina": 119,
-      "linha": 30
+      "linha": 26
      }
     },
     "remissao": null
@@ -19141,23 +19281,23 @@
     }
    },
    "entrada": {
-    "formato": "colunas",
+    "formato": "bloco",
     "casamento": "exato",
     "variante": null,
     "titulo": "Fortificar",
     "pagina": 66,
     "paginaFim": 67,
-    "linhaInicio": 64,
+    "linhaInicio": 54,
     "linhaFim": 2,
     "temCampos": true,
     "campos": {
      "custo": {
       "pagina": 66,
-      "linha": 70
+      "linha": 59
      },
      "preRequisitos": {
       "pagina": 66,
-      "linha": 82
+      "linha": 71
      }
     },
     "remissao": null
@@ -19555,7 +19695,36 @@
      "preRequisitos": "AM2, Aporte, 6 mágicas de Quebrar e Consertar incl. Remodelar"
     }
    },
-   "entrada": null
+   "entrada": {
+    "formato": "bloco",
+    "casamento": "exato",
+    "variante": null,
+    "titulo": "Fusão com Arma",
+    "pagina": 119,
+    "paginaFim": 120,
+    "linhaInicio": 73,
+    "linhaFim": 9,
+    "temCampos": true,
+    "campos": {
+     "duracao": {
+      "pagina": 120,
+      "linha": 4
+     },
+     "custo": {
+      "pagina": 120,
+      "linha": 5
+     },
+     "tempo": {
+      "pagina": 120,
+      "linha": 6
+     },
+     "preRequisitos": {
+      "pagina": 120,
+      "linha": 7
+     }
+    },
+    "remissao": null
+   }
   },
   "geada": {
    "nome": "Geada",
@@ -19585,21 +19754,21 @@
     "titulo": "Geada",
     "pagina": 193,
     "paginaFim": 193,
-    "linhaInicio": 10,
-    "linhaFim": 26,
+    "linhaInicio": 6,
+    "linhaFim": 24,
     "temCampos": true,
     "campos": {
      "duracao": {
       "pagina": 193,
-      "linha": 18
+      "linha": 15
      },
      "custo": {
       "pagina": 193,
-      "linha": 19
+      "linha": 17
      },
      "preRequisitos": {
       "pagina": 193,
-      "linha": 20
+      "linha": 19
      }
     },
     "remissao": null
@@ -19721,12 +19890,12 @@
     "pagina": 69,
     "paginaFim": 70,
     "linhaInicio": 41,
-    "linhaFim": 7,
+    "linhaFim": 24,
     "temCampos": true,
     "campos": {
      "preRequisitos": {
       "pagina": 70,
-      "linha": 5
+      "linha": 6
      }
     },
     "remissao": null
@@ -20307,21 +20476,17 @@
     "titulo": "História",
     "pagina": 106,
     "paginaFim": 106,
-    "linhaInicio": 36,
-    "linhaFim": 48,
+    "linhaInicio": 28,
+    "linhaFim": 39,
     "temCampos": true,
     "campos": {
      "custo": {
       "pagina": 106,
-      "linha": 42
-     },
-     "tempo": {
-      "pagina": 106,
-      "linha": 44
+      "linha": 33
      },
      "preRequisitos": {
       "pagina": 106,
-      "linha": 46
+      "linha": 37
      }
     },
     "remissao": null
@@ -20355,10 +20520,23 @@
     "titulo": "História Antiga",
     "pagina": 106,
     "paginaFim": 106,
-    "linhaInicio": 8,
-    "linhaFim": 10,
-    "temCampos": false,
-    "campos": {},
+    "linhaInicio": 41,
+    "linhaFim": 52,
+    "temCampos": true,
+    "campos": {
+     "custo": {
+      "pagina": 106,
+      "linha": 46
+     },
+     "tempo": {
+      "pagina": 106,
+      "linha": 48
+     },
+     "preRequisitos": {
+      "pagina": 106,
+      "linha": 50
+     }
+    },
     "remissao": null
    }
   },
@@ -20390,7 +20568,7 @@
     "titulo": "Homúnculo",
     "pagina": 70,
     "paginaFim": 71,
-    "linhaInicio": 43,
+    "linhaInicio": 53,
     "linhaFim": 11,
     "temCampos": true,
     "campos": {
@@ -20512,14 +20690,26 @@
     }
    },
    "entrada": {
-    "formato": "pagina",
-    "casamento": "pagina",
+    "formato": "bloco",
+    "casamento": "exato",
     "variante": null,
-    "titulo": null,
+    "titulo": "Identificar Mágica",
     "pagina": 102,
-    "linha": 2,
-    "temCampos": false,
-    "campos": {}
+    "paginaFim": 102,
+    "linhaInicio": 2,
+    "linhaFim": 14,
+    "temCampos": true,
+    "campos": {
+     "custo": {
+      "pagina": 102,
+      "linha": 7
+     },
+     "preRequisitos": {
+      "pagina": 102,
+      "linha": 9
+     }
+    },
+    "remissao": null
    }
   },
   "identificar_metal": {
@@ -20594,17 +20784,17 @@
     "titulo": "Identificar Planta",
     "pagina": 161,
     "paginaFim": 161,
-    "linhaInicio": 24,
-    "linhaFim": 36,
+    "linhaInicio": 18,
+    "linhaFim": 30,
     "temCampos": true,
     "campos": {
      "custo": {
       "pagina": 161,
-      "linha": 29
+      "linha": 23
      },
      "preRequisitos": {
       "pagina": 161,
-      "linha": 31
+      "linha": 25
      }
     },
     "remissao": null
@@ -21158,7 +21348,7 @@
     "titulo": "Imunidade à Pressão",
     "pagina": 169,
     "paginaFim": 170,
-    "linhaInicio": 29,
+    "linhaInicio": 124,
     "linhaFim": 2,
     "temCampos": false,
     "campos": {},
@@ -22720,9 +22910,9 @@
     "variante": null,
     "titulo": "Leitura do Corpo",
     "pagina": 88,
-    "paginaFim": 90,
+    "paginaFim": 89,
     "linhaInicio": 10,
-    "linhaFim": 2,
+    "linhaFim": 5,
     "temCampos": true,
     "campos": {
      "custo": {
@@ -23050,7 +23240,7 @@
     "pagina": 105,
     "paginaFim": 106,
     "linhaInicio": 100,
-    "linhaFim": 8,
+    "linhaFim": 11,
     "temCampos": true,
     "campos": {
      "custo": {
@@ -23211,19 +23401,19 @@
     }
    },
    "entrada": {
-    "formato": "colunas",
+    "formato": "bloco",
     "casamento": "exato",
     "variante": null,
     "titulo": "Localizar Ar",
     "pagina": 23,
     "paginaFim": 23,
-    "linhaInicio": 21,
-    "linhaFim": 29,
+    "linhaInicio": 24,
+    "linhaFim": 34,
     "temCampos": true,
     "campos": {
      "custo": {
       "pagina": 23,
-      "linha": 26
+      "linha": 29
      }
     },
     "remissao": null
@@ -23433,10 +23623,23 @@
     "titulo": "Localizar Magia",
     "pagina": 102,
     "paginaFim": 102,
-    "linhaInicio": 14,
-    "linhaFim": 20,
-    "temCampos": false,
-    "campos": {},
+    "linhaInicio": 52,
+    "linhaFim": 66,
+    "temCampos": true,
+    "campos": {
+     "custo": {
+      "pagina": 102,
+      "linha": 57
+     },
+     "tempo": {
+      "pagina": 102,
+      "linha": 59
+     },
+     "preRequisitos": {
+      "pagina": 102,
+      "linha": 61
+     }
+    },
     "remissao": null
    }
   },
@@ -23560,13 +23763,13 @@
     "titulo": "Localizar Planta",
     "pagina": 161,
     "paginaFim": 161,
-    "linhaInicio": 12,
-    "linhaFim": 22,
+    "linhaInicio": 6,
+    "linhaFim": 16,
     "temCampos": true,
     "campos": {
      "custo": {
       "pagina": 161,
-      "linha": 17
+      "linha": 11
      }
     },
     "remissao": null
@@ -24328,25 +24531,25 @@
     "titulo": "Magreza",
     "pagina": 43,
     "paginaFim": 43,
-    "linhaInicio": 15,
-    "linhaFim": 28,
+    "linhaInicio": 40,
+    "linhaFim": 56,
     "temCampos": true,
     "campos": {
      "duracao": {
       "pagina": 43,
-      "linha": 20
+      "linha": 45
      },
      "custo": {
       "pagina": 43,
-      "linha": 21
+      "linha": 47
      },
      "tempo": {
       "pagina": 43,
-      "linha": 22
+      "linha": 49
      },
      "preRequisitos": {
       "pagina": 43,
-      "linha": 23
+      "linha": 51
      }
     },
     "remissao": null
@@ -24421,7 +24624,24 @@
      "preRequisitos": "Encantar, Localizador"
     }
    },
-   "entrada": null
+   "entrada": {
+    "formato": "bloco",
+    "casamento": "exato",
+    "variante": null,
+    "titulo": "Malefício",
+    "pagina": 60,
+    "paginaFim": 60,
+    "linhaInicio": 17,
+    "linhaFim": 34,
+    "temCampos": true,
+    "campos": {
+     "preRequisitos": {
+      "pagina": 60,
+      "linha": 32
+     }
+    },
+    "remissao": null
+   }
   },
   "manipular": {
    "nome": "Manipular",
@@ -24607,25 +24827,25 @@
     "titulo": "Marca Mística",
     "pagina": 119,
     "paginaFim": 119,
-    "linhaInicio": 2,
-    "linhaFim": 17,
+    "linhaInicio": 51,
+    "linhaFim": 71,
     "temCampos": true,
     "campos": {
      "duracao": {
       "pagina": 119,
-      "linha": 7
+      "linha": 60
      },
      "custo": {
       "pagina": 119,
-      "linha": 9
+      "linha": 62
      },
      "tempo": {
       "pagina": 119,
-      "linha": 10
+      "linha": 64
      },
      "preRequisitos": {
       "pagina": 119,
-      "linha": 11
+      "linha": 66
      }
     },
     "remissao": null
@@ -25243,7 +25463,7 @@
     "pagina": 32,
     "paginaFim": 33,
     "linhaInicio": 81,
-    "linhaFim": 17,
+    "linhaFim": 19,
     "temCampos": true,
     "campos": {
      "duracao": {
@@ -25252,15 +25472,15 @@
      },
      "custo": {
       "pagina": 33,
-      "linha": 9
+      "linha": 10
      },
      "tempo": {
       "pagina": 33,
-      "linha": 10
+      "linha": 12
      },
      "preRequisitos": {
       "pagina": 33,
-      "linha": 11
+      "linha": 14
      }
     },
     "remissao": null
@@ -25295,7 +25515,7 @@
     "pagina": 32,
     "paginaFim": 33,
     "linhaInicio": 81,
-    "linhaFim": 17,
+    "linhaFim": 19,
     "temCampos": true,
     "campos": {
      "duracao": {
@@ -25304,15 +25524,15 @@
      },
      "custo": {
       "pagina": 33,
-      "linha": 9
+      "linha": 10
      },
      "tempo": {
       "pagina": 33,
-      "linha": 10
+      "linha": 12
      },
      "preRequisitos": {
       "pagina": 33,
-      "linha": 11
+      "linha": 14
      }
     },
     "remissao": null
@@ -25347,7 +25567,7 @@
     "pagina": 32,
     "paginaFim": 33,
     "linhaInicio": 81,
-    "linhaFim": 17,
+    "linhaFim": 19,
     "temCampos": true,
     "campos": {
      "duracao": {
@@ -25356,15 +25576,15 @@
      },
      "custo": {
       "pagina": 33,
-      "linha": 9
+      "linha": 10
      },
      "tempo": {
       "pagina": 33,
-      "linha": 10
+      "linha": 12
      },
      "preRequisitos": {
       "pagina": 33,
-      "linha": 11
+      "linha": 14
      }
     },
     "remissao": null
@@ -25548,14 +25768,34 @@
     }
    },
    "entrada": {
-    "formato": "pagina",
-    "casamento": "pagina",
-    "variante": null,
-    "titulo": null,
+    "formato": "bloco",
+    "casamento": "base",
+    "variante": "Criaturas do Ar",
+    "titulo": "Metamorfose Permanente",
     "pagina": 33,
-    "linha": 19,
-    "temCampos": false,
-    "campos": {}
+    "paginaFim": 34,
+    "linhaInicio": 39,
+    "linhaFim": 2,
+    "temCampos": true,
+    "campos": {
+     "duracao": {
+      "pagina": 33,
+      "linha": 44
+     },
+     "custo": {
+      "pagina": 33,
+      "linha": 46
+     },
+     "tempo": {
+      "pagina": 33,
+      "linha": 48
+     },
+     "preRequisitos": {
+      "pagina": 33,
+      "linha": 50
+     }
+    },
+    "remissao": null
    }
   },
   "metamorfose_permanente_animal_mar": {
@@ -25580,14 +25820,34 @@
     }
    },
    "entrada": {
-    "formato": "pagina",
-    "casamento": "pagina",
-    "variante": null,
-    "titulo": null,
+    "formato": "bloco",
+    "casamento": "base",
+    "variante": "Criaturas do Mar",
+    "titulo": "Metamorfose Permanente",
     "pagina": 33,
-    "linha": 19,
-    "temCampos": false,
-    "campos": {}
+    "paginaFim": 34,
+    "linhaInicio": 39,
+    "linhaFim": 2,
+    "temCampos": true,
+    "campos": {
+     "duracao": {
+      "pagina": 33,
+      "linha": 44
+     },
+     "custo": {
+      "pagina": 33,
+      "linha": 46
+     },
+     "tempo": {
+      "pagina": 33,
+      "linha": 48
+     },
+     "preRequisitos": {
+      "pagina": 33,
+      "linha": 50
+     }
+    },
+    "remissao": null
    }
   },
   "metamorfose_permanente_animal_terra": {
@@ -25612,14 +25872,34 @@
     }
    },
    "entrada": {
-    "formato": "pagina",
-    "casamento": "pagina",
-    "variante": null,
-    "titulo": null,
+    "formato": "bloco",
+    "casamento": "base",
+    "variante": "Criaturas da Terra",
+    "titulo": "Metamorfose Permanente",
     "pagina": 33,
-    "linha": 19,
-    "temCampos": false,
-    "campos": {}
+    "paginaFim": 34,
+    "linhaInicio": 39,
+    "linhaFim": 2,
+    "temCampos": true,
+    "campos": {
+     "duracao": {
+      "pagina": 33,
+      "linha": 44
+     },
+     "custo": {
+      "pagina": 33,
+      "linha": 46
+     },
+     "tempo": {
+      "pagina": 33,
+      "linha": 48
+     },
+     "preRequisitos": {
+      "pagina": 33,
+      "linha": 50
+     }
+    },
+    "remissao": null
    }
   },
   "metamorfose_superior": {
@@ -25696,14 +25976,34 @@
     }
    },
    "entrada": {
-    "formato": "pagina",
-    "casamento": "pagina",
-    "variante": null,
-    "titulo": null,
+    "formato": "bloco",
+    "casamento": "base",
+    "variante": "Criaturas do Ar",
+    "titulo": "Metamorfosear Outro",
     "pagina": 33,
-    "linha": 19,
-    "temCampos": false,
-    "campos": {}
+    "paginaFim": 33,
+    "linhaInicio": 21,
+    "linhaFim": 37,
+    "temCampos": true,
+    "campos": {
+     "duracao": {
+      "pagina": 33,
+      "linha": 26
+     },
+     "custo": {
+      "pagina": 33,
+      "linha": 28
+     },
+     "tempo": {
+      "pagina": 33,
+      "linha": 30
+     },
+     "preRequisitos": {
+      "pagina": 33,
+      "linha": 32
+     }
+    },
+    "remissao": null
    }
   },
   "metamorfosear_outro_animal_mar": {
@@ -25728,14 +26028,34 @@
     }
    },
    "entrada": {
-    "formato": "pagina",
-    "casamento": "pagina",
-    "variante": null,
-    "titulo": null,
+    "formato": "bloco",
+    "casamento": "base",
+    "variante": "Criaturas do Mar",
+    "titulo": "Metamorfosear Outro",
     "pagina": 33,
-    "linha": 19,
-    "temCampos": false,
-    "campos": {}
+    "paginaFim": 33,
+    "linhaInicio": 21,
+    "linhaFim": 37,
+    "temCampos": true,
+    "campos": {
+     "duracao": {
+      "pagina": 33,
+      "linha": 26
+     },
+     "custo": {
+      "pagina": 33,
+      "linha": 28
+     },
+     "tempo": {
+      "pagina": 33,
+      "linha": 30
+     },
+     "preRequisitos": {
+      "pagina": 33,
+      "linha": 32
+     }
+    },
+    "remissao": null
    }
   },
   "metamorfosear_outro_animal_terra": {
@@ -25760,14 +26080,34 @@
     }
    },
    "entrada": {
-    "formato": "pagina",
-    "casamento": "pagina",
-    "variante": null,
-    "titulo": null,
+    "formato": "bloco",
+    "casamento": "base",
+    "variante": "Criaturas da Terra",
+    "titulo": "Metamorfosear Outro",
     "pagina": 33,
-    "linha": 19,
-    "temCampos": false,
-    "campos": {}
+    "paginaFim": 33,
+    "linhaInicio": 21,
+    "linhaFim": 37,
+    "temCampos": true,
+    "campos": {
+     "duracao": {
+      "pagina": 33,
+      "linha": 26
+     },
+     "custo": {
+      "pagina": 33,
+      "linha": 28
+     },
+     "tempo": {
+      "pagina": 33,
+      "linha": 30
+     },
+     "preRequisitos": {
+      "pagina": 33,
+      "linha": 32
+     }
+    },
+    "remissao": null
    }
   },
   "mira_rapida": {
@@ -26069,25 +26409,25 @@
     "titulo": "Moldar Planta",
     "pagina": 161,
     "paginaFim": 161,
-    "linhaInicio": 56,
-    "linhaFim": 72,
+    "linhaInicio": 50,
+    "linhaFim": 66,
     "temCampos": true,
     "campos": {
      "duracao": {
       "pagina": 161,
-      "linha": 61
+      "linha": 55
      },
      "custo": {
       "pagina": 161,
-      "linha": 63
+      "linha": 57
      },
      "tempo": {
       "pagina": 161,
-      "linha": 65
+      "linha": 59
      },
      "preRequisitos": {
       "pagina": 161,
-      "linha": 67
+      "linha": 61
      }
     },
     "remissao": null
@@ -26941,7 +27281,7 @@
     "pagina": 168,
     "paginaFim": 169,
     "linhaInicio": 116,
-    "linhaFim": 2,
+    "linhaFim": 9,
     "temCampos": true,
     "campos": {
      "duracao": {
@@ -26951,6 +27291,14 @@
      "custo": {
       "pagina": 168,
       "linha": 129
+     },
+     "tempo": {
+      "pagina": 169,
+      "linha": 2
+     },
+     "preRequisitos": {
+      "pagina": 169,
+      "linha": 4
      }
     },
     "remissao": null
@@ -27122,14 +27470,30 @@
     }
    },
    "entrada": {
-    "formato": "pagina",
-    "casamento": "pagina",
+    "formato": "bloco",
+    "casamento": "exato",
     "variante": null,
-    "titulo": null,
+    "titulo": "Nevoeiro",
     "pagina": 193,
-    "linha": 26,
-    "temCampos": false,
-    "campos": {}
+    "paginaFim": 193,
+    "linhaInicio": 26,
+    "linhaFim": 42,
+    "temCampos": true,
+    "campos": {
+     "duracao": {
+      "pagina": 193,
+      "linha": 33
+     },
+     "custo": {
+      "pagina": 193,
+      "linha": 35
+     },
+     "preRequisitos": {
+      "pagina": 193,
+      "linha": 37
+     }
+    },
+    "remissao": null
    }
   },
   "no": {
@@ -27368,21 +27732,21 @@
     "titulo": "Nuvem de Pólen",
     "pagina": 162,
     "paginaFim": 162,
-    "linhaInicio": 36,
-    "linhaFim": 49,
+    "linhaInicio": 54,
+    "linhaFim": 70,
     "temCampos": true,
     "campos": {
      "duracao": {
       "pagina": 162,
-      "linha": 42
+      "linha": 61
      },
      "custo": {
       "pagina": 162,
-      "linha": 43
+      "linha": 63
      },
      "preRequisitos": {
       "pagina": 162,
-      "linha": 44
+      "linha": 65
      }
     },
     "remissao": null
@@ -27513,7 +27877,36 @@
      "preRequisitos": "Crescimento de Plantas"
     }
    },
-   "entrada": null
+   "entrada": {
+    "formato": "bloco",
+    "casamento": "exato",
+    "variante": null,
+    "titulo": "Ocultar",
+    "pagina": 162,
+    "paginaFim": 162,
+    "linhaInicio": 105,
+    "linhaFim": 121,
+    "temCampos": true,
+    "campos": {
+     "duracao": {
+      "pagina": 162,
+      "linha": 110
+     },
+     "custo": {
+      "pagina": 162,
+      "linha": 112
+     },
+     "tempo": {
+      "pagina": 162,
+      "linha": 114
+     },
+     "preRequisitos": {
+      "pagina": 162,
+      "linha": 116
+     }
+    },
+    "remissao": null
+   }
   },
   "ocultar_emocao": {
    "nome": "Ocultar Emoção",
@@ -27744,20 +28137,20 @@
     "pagina": 162,
     "paginaFim": 162,
     "linhaInicio": 2,
-    "linhaFim": 12,
+    "linhaFim": 16,
     "temCampos": true,
     "campos": {
      "duracao": {
       "pagina": 162,
-      "linha": 5
+      "linha": 7
      },
      "custo": {
       "pagina": 162,
-      "linha": 6
+      "linha": 9
      },
      "preRequisitos": {
       "pagina": 162,
-      "linha": 7
+      "linha": 11
      }
     },
     "remissao": null
@@ -28051,17 +28444,17 @@
     "titulo": "Orientação",
     "pagina": 101,
     "paginaFim": 101,
-    "linhaInicio": 36,
-    "linhaFim": 47,
+    "linhaInicio": 7,
+    "linhaFim": 19,
     "temCampos": true,
     "campos": {
      "custo": {
       "pagina": 101,
-      "linha": 41
+      "linha": 12
      },
      "preRequisitos": {
       "pagina": 101,
-      "linha": 42
+      "linha": 14
      }
     },
     "remissao": null
@@ -28782,13 +29175,13 @@
     "titulo": "Pedra de Mana",
     "pagina": 70,
     "paginaFim": 70,
-    "linhaInicio": 27,
-    "linhaFim": 34,
+    "linhaInicio": 26,
+    "linhaFim": 37,
     "temCampos": true,
     "campos": {
      "preRequisitos": {
       "pagina": 70,
-      "linha": 32
+      "linha": 35
      }
     },
     "remissao": null
@@ -28822,7 +29215,7 @@
     "titulo": "Pedra Mágica",
     "pagina": 60,
     "paginaFim": 61,
-    "linhaInicio": 34,
+    "linhaInicio": 55,
     "linhaFim": 2,
     "temCampos": false,
     "campos": {},
@@ -29134,7 +29527,28 @@
      "preRequisitos": "Visão da Morte, ou Percepção de Vida e AM1"
     }
    },
-   "entrada": null
+   "entrada": {
+    "formato": "bloco",
+    "casamento": "exato",
+    "variante": null,
+    "titulo": "Percepção de Espíritos",
+    "pagina": 149,
+    "paginaFim": 150,
+    "linhaInicio": 33,
+    "linhaFim": 2,
+    "temCampos": true,
+    "campos": {
+     "custo": {
+      "pagina": 149,
+      "linha": 38
+     },
+     "preRequisitos": {
+      "pagina": 149,
+      "linha": 40
+     }
+    },
+    "remissao": null
+   }
   },
   "percepcao_de_inimigos": {
    "nome": "Percepção de Inimigos",
@@ -29198,14 +29612,30 @@
     }
    },
    "entrada": {
-    "formato": "pagina",
-    "casamento": "pagina",
+    "formato": "bloco",
+    "casamento": "exato",
     "variante": null,
-    "titulo": null,
+    "titulo": "Percepção de Magia",
     "pagina": 102,
-    "linha": 2,
-    "temCampos": false,
-    "campos": {}
+    "paginaFim": 102,
+    "linhaInicio": 34,
+    "linhaFim": 50,
+    "temCampos": true,
+    "campos": {
+     "duracao": {
+      "pagina": 102,
+      "linha": 41
+     },
+     "custo": {
+      "pagina": 102,
+      "linha": 43
+     },
+     "preRequisitos": {
+      "pagina": 102,
+      "linha": 45
+     }
+    },
+    "remissao": null
    }
   },
   "percepcao_de_mana": {
@@ -29229,7 +29659,32 @@
      "preRequisitos": "Detecção de Magia"
     }
    },
-   "entrada": null
+   "entrada": {
+    "formato": "bloco",
+    "casamento": "exato",
+    "variante": null,
+    "titulo": "Percepção de Mana",
+    "pagina": 101,
+    "paginaFim": 101,
+    "linhaInicio": 88,
+    "linhaFim": 102,
+    "temCampos": true,
+    "campos": {
+     "custo": {
+      "pagina": 101,
+      "linha": 93
+     },
+     "tempo": {
+      "pagina": 101,
+      "linha": 95
+     },
+     "preRequisitos": {
+      "pagina": 101,
+      "linha": 97
+     }
+    },
+    "remissao": null
+   }
   },
   "percepcao_de_observacao": {
    "nome": "Percepção de Observação",
@@ -29443,17 +29898,17 @@
     "titulo": "Percepção do Perigo",
     "pagina": 166,
     "paginaFim": 166,
-    "linhaInicio": 8,
-    "linhaFim": 28,
+    "linhaInicio": 6,
+    "linhaFim": 18,
     "temCampos": true,
     "campos": {
      "custo": {
       "pagina": 166,
-      "linha": 19
+      "linha": 11
      },
      "preRequisitos": {
       "pagina": 166,
-      "linha": 21
+      "linha": 13
      }
     },
     "remissao": null
@@ -30262,21 +30717,21 @@
     "titulo": "Pré-História",
     "pagina": 106,
     "paginaFim": 106,
-    "linhaInicio": 48,
-    "linhaFim": 60,
+    "linhaInicio": 54,
+    "linhaFim": 65,
     "temCampos": true,
     "campos": {
      "custo": {
       "pagina": 106,
-      "linha": 54
+      "linha": 59
      },
      "tempo": {
       "pagina": 106,
-      "linha": 56
+      "linha": 61
      },
      "preRequisitos": {
       "pagina": 106,
-      "linha": 58
+      "linha": 63
      }
     },
     "remissao": null
@@ -30606,21 +31061,21 @@
     "titulo": "Previsão do Tempo",
     "pagina": 193,
     "paginaFim": 194,
-    "linhaInicio": 40,
+    "linhaInicio": 44,
     "linhaFim": 2,
     "temCampos": true,
     "campos": {
      "custo": {
       "pagina": 193,
-      "linha": 48
+      "linha": 51
      },
      "tempo": {
       "pagina": 193,
-      "linha": 50
+      "linha": 53
      },
      "preRequisitos": {
       "pagina": 193,
-      "linha": 51
+      "linha": 55
      }
     },
     "remissao": null
@@ -31484,16 +31939,25 @@
     }
    },
    "entrada": {
-    "formato": "colunas",
+    "formato": "bloco",
     "casamento": "exato",
     "variante": null,
     "titulo": "Purificar o Ar",
     "pagina": 23,
     "paginaFim": 23,
-    "linhaInicio": 10,
-    "linhaFim": 21,
-    "temCampos": false,
-    "campos": {},
+    "linhaInicio": 8,
+    "linhaFim": 22,
+    "temCampos": true,
+    "campos": {
+     "duracao": {
+      "pagina": 23,
+      "linha": 15
+     },
+     "custo": {
+      "pagina": 23,
+      "linha": 17
+     }
+    },
     "remissao": null
    }
   },
@@ -31752,25 +32216,25 @@
     "titulo": "Rastrear",
     "pagina": 106,
     "paginaFim": 106,
-    "linhaInicio": 22,
-    "linhaFim": 36,
+    "linhaInicio": 13,
+    "linhaFim": 26,
     "temCampos": true,
     "campos": {
      "duracao": {
       "pagina": 106,
-      "linha": 28
+      "linha": 18
      },
      "custo": {
       "pagina": 106,
-      "linha": 30
+      "linha": 20
      },
      "tempo": {
       "pagina": 106,
-      "linha": 32
+      "linha": 22
      },
      "preRequisitos": {
       "pagina": 106,
-      "linha": 34
+      "linha": 24
      }
     },
     "remissao": null
@@ -31883,21 +32347,21 @@
     "titulo": "Reconstruir Mágica",
     "pagina": 106,
     "paginaFim": 106,
-    "linhaInicio": 60,
-    "linhaFim": 76,
+    "linhaInicio": 67,
+    "linhaFim": 83,
     "temCampos": true,
     "campos": {
      "custo": {
       "pagina": 106,
-      "linha": 66
+      "linha": 72
      },
      "tempo": {
       "pagina": 106,
-      "linha": 68
+      "linha": 76
      },
      "preRequisitos": {
       "pagina": 106,
-      "linha": 70
+      "linha": 78
      }
     },
     "remissao": null
@@ -31983,7 +32447,7 @@
     "titulo": "Recordar",
     "pagina": 106,
     "paginaFim": 107,
-    "linhaInicio": 90,
+    "linhaInicio": 99,
     "linhaFim": 17,
     "temCampos": true,
     "campos": {
@@ -32081,14 +32545,26 @@
     }
    },
    "entrada": {
-    "formato": "colunas",
-    "casamento": "pagina",
+    "formato": "bloco",
+    "casamento": "exato",
     "variante": null,
-    "titulo": null,
+    "titulo": "Recuperar Energia",
     "pagina": 89,
-    "linha": 14,
-    "temCampos": false,
-    "campos": {}
+    "paginaFim": 90,
+    "linhaInicio": 87,
+    "linhaFim": 2,
+    "temCampos": true,
+    "campos": {
+     "custo": {
+      "pagina": 89,
+      "linha": 96
+     },
+     "preRequisitos": {
+      "pagina": 89,
+      "linha": 98
+     }
+    },
+    "remissao": null
    }
   },
   "reduzir_carga": {
@@ -34854,17 +35330,17 @@
     "titulo": "Revelar Posição",
     "pagina": 101,
     "paginaFim": 101,
-    "linhaInicio": 2,
-    "linhaFim": 13,
+    "linhaInicio": 21,
+    "linhaFim": 33,
     "temCampos": true,
     "campos": {
      "custo": {
       "pagina": 101,
-      "linha": 7
+      "linha": 26
      },
      "preRequisitos": {
       "pagina": 101,
-      "linha": 8
+      "linha": 28
      }
     },
     "remissao": null
@@ -35946,25 +36422,25 @@
     "titulo": "Secar Plantas",
     "pagina": 162,
     "paginaFim": 162,
-    "linhaInicio": 49,
-    "linhaFim": 61,
+    "linhaInicio": 72,
+    "linhaFim": 88,
     "temCampos": true,
     "campos": {
      "duracao": {
       "pagina": 162,
-      "linha": 53
+      "linha": 77
      },
      "custo": {
       "pagina": 162,
-      "linha": 54
+      "linha": 79
      },
      "tempo": {
       "pagina": 162,
-      "linha": 55
+      "linha": 81
      },
      "preRequisitos": {
       "pagina": 162,
-      "linha": 56
+      "linha": 83
      }
     },
     "remissao": null
@@ -36565,7 +37041,36 @@
      "preRequisitos": "Luz Contínua ou Escudo"
     }
    },
-   "entrada": null
+   "entrada": {
+    "formato": "bloco",
+    "casamento": "exato",
+    "variante": null,
+    "titulo": "Sombrear",
+    "pagina": 169,
+    "paginaFim": 169,
+    "linhaInicio": 11,
+    "linhaFim": 29,
+    "temCampos": true,
+    "campos": {
+     "duracao": {
+      "pagina": 169,
+      "linha": 18
+     },
+     "custo": {
+      "pagina": 169,
+      "linha": 20
+     },
+     "tempo": {
+      "pagina": 169,
+      "linha": 22
+     },
+     "preRequisitos": {
+      "pagina": 169,
+      "linha": 24
+     }
+    },
+    "remissao": null
+   }
   },
   "sonda_mental": {
    "nome": "Sonda Mental",
@@ -37039,7 +37544,7 @@
     "pagina": 192,
     "paginaFim": 193,
     "linhaInicio": 63,
-    "linhaFim": 10,
+    "linhaFim": 4,
     "temCampos": true,
     "campos": {
      "duracao": {
@@ -37779,7 +38284,7 @@
     "pagina": 100,
     "paginaFim": 101,
     "linhaInicio": 44,
-    "linhaFim": 2,
+    "linhaFim": 5,
     "temCampos": true,
     "campos": {
      "duracao": {
@@ -38654,17 +39159,17 @@
     "titulo": "Testar Carga",
     "pagina": 101,
     "paginaFim": 101,
-    "linhaInicio": 13,
-    "linhaFim": 21,
+    "linhaInicio": 35,
+    "linhaFim": 47,
     "temCampos": true,
     "campos": {
      "custo": {
       "pagina": 101,
-      "linha": 18
+      "linha": 40
      },
      "preRequisitos": {
       "pagina": 101,
-      "linha": 19
+      "linha": 42
      }
     },
     "remissao": null
@@ -39174,25 +39679,25 @@
     "titulo": "Tranca Mágica",
     "pagina": 166,
     "paginaFim": 166,
-    "linhaInicio": 48,
-    "linhaFim": 64,
+    "linhaInicio": 38,
+    "linhaFim": 54,
     "temCampos": true,
     "campos": {
      "duracao": {
       "pagina": 166,
-      "linha": 53
+      "linha": 43
      },
      "custo": {
       "pagina": 166,
-      "linha": 55
+      "linha": 45
      },
      "tempo": {
       "pagina": 166,
-      "linha": 57
+      "linha": 47
      },
      "preRequisitos": {
       "pagina": 166,
-      "linha": 59
+      "linha": 49
      }
     },
     "remissao": null
@@ -39270,25 +39775,25 @@
     "titulo": "Transformar Corpo",
     "pagina": 43,
     "paginaFim": 43,
-    "linhaInicio": 28,
-    "linhaFim": 45,
+    "linhaInicio": 58,
+    "linhaFim": 78,
     "temCampos": true,
     "campos": {
      "duracao": {
       "pagina": 43,
-      "linha": 37
+      "linha": 67
      },
      "custo": {
       "pagina": 43,
-      "linha": 38
+      "linha": 69
      },
      "tempo": {
       "pagina": 43,
-      "linha": 39
+      "linha": 71
      },
      "preRequisitos": {
       "pagina": 43,
-      "linha": 40
+      "linha": 73
      }
     },
     "remissao": null
@@ -39374,25 +39879,25 @@
     "titulo": "Transformar Outro",
     "pagina": 43,
     "paginaFim": 43,
-    "linhaInicio": 45,
-    "linhaFim": 58,
+    "linhaInicio": 80,
+    "linhaFim": 96,
     "temCampos": true,
     "campos": {
      "duracao": {
       "pagina": 43,
-      "linha": 50
+      "linha": 85
      },
      "custo": {
       "pagina": 43,
-      "linha": 51
+      "linha": 87
      },
      "tempo": {
       "pagina": 43,
-      "linha": 52
+      "linha": 89
      },
      "preRequisitos": {
       "pagina": 43,
-      "linha": 53
+      "linha": 91
      }
     },
     "remissao": null
@@ -39700,14 +40205,34 @@
     }
    },
    "entrada": {
-    "formato": "pagina",
-    "casamento": "pagina",
+    "formato": "bloco",
+    "casamento": "exato",
     "variante": null,
-    "titulo": null,
+    "titulo": "Transmogrificação",
     "pagina": 43,
-    "linha": 29,
-    "temCampos": false,
-    "campos": {}
+    "paginaFim": 44,
+    "linhaInicio": 98,
+    "linhaFim": 21,
+    "temCampos": true,
+    "campos": {
+     "duracao": {
+      "pagina": 43,
+      "linha": 103
+     },
+     "custo": {
+      "pagina": 43,
+      "linha": 105
+     },
+     "tempo": {
+      "pagina": 43,
+      "linha": 107
+     },
+     "preRequisitos": {
+      "pagina": 43,
+      "linha": 109
+     }
+    },
+    "remissao": null
    }
   },
   "transparencia": {
@@ -39738,17 +40263,17 @@
     "titulo": "Transparência",
     "pagina": 119,
     "paginaFim": 119,
-    "linhaInicio": 35,
+    "linhaInicio": 33,
     "linhaFim": 49,
     "temCampos": true,
     "campos": {
      "duracao": {
       "pagina": 119,
-      "linha": 40
+      "linha": 38
      },
      "custo": {
       "pagina": 119,
-      "linha": 41
+      "linha": 40
      },
      "tempo": {
       "pagina": 119,
@@ -39756,7 +40281,7 @@
      },
      "preRequisitos": {
       "pagina": 119,
-      "linha": 43
+      "linha": 44
      }
     },
     "remissao": null
@@ -40154,20 +40679,16 @@
     "formato": "bloco",
     "casamento": "manual",
     "variante": null,
-    "titulo": "Forma Real",
+    "titulo": "Tempo de operação: 10 segundos.",
     "pagina": 106,
     "paginaFim": 106,
     "linhaInicio": 76,
-    "linhaFim": 90,
+    "linhaFim": 83,
     "temCampos": true,
     "campos": {
-     "custo": {
-      "pagina": 106,
-      "linha": 82
-     },
      "preRequisitos": {
       "pagina": 106,
-      "linha": 84
+      "linha": 78
      }
     },
     "remissao": null
@@ -40734,7 +41255,7 @@
     "pagina": 37,
     "paginaFim": 37,
     "linhaInicio": 55,
-    "linhaFim": 71,
+    "linhaFim": 69,
     "temCampos": true,
     "campos": {
      "duracao": {
@@ -40877,17 +41398,17 @@
     "titulo": "Visão da Morte",
     "pagina": 149,
     "paginaFim": 149,
-    "linhaInicio": 10,
-    "linhaFim": 20,
+    "linhaInicio": 8,
+    "linhaFim": 24,
     "temCampos": true,
     "campos": {
      "duracao": {
       "pagina": 149,
-      "linha": 15
+      "linha": 13
      },
      "custo": {
       "pagina": 149,
-      "linha": 16
+      "linha": 15
      },
      "tempo": {
       "pagina": 149,
@@ -40895,7 +41416,7 @@
      },
      "preRequisitos": {
       "pagina": 149,
-      "linha": 18
+      "linha": 19
      }
     },
     "remissao": null
@@ -40929,21 +41450,21 @@
     "titulo": "Visão das Plantas",
     "pagina": 162,
     "paginaFim": 162,
-    "linhaInicio": 24,
-    "linhaFim": 36,
+    "linhaInicio": 36,
+    "linhaFim": 52,
     "temCampos": true,
     "campos": {
      "duracao": {
       "pagina": 162,
-      "linha": 29
+      "linha": 43
      },
      "custo": {
       "pagina": 162,
-      "linha": 30
+      "linha": 45
      },
      "preRequisitos": {
       "pagina": 162,
-      "linha": 31
+      "linha": 47
      }
     },
     "remissao": null
@@ -40977,10 +41498,23 @@
     "titulo": "Visão de Magia",
     "pagina": 102,
     "paginaFim": 102,
-    "linhaInicio": 8,
-    "linhaFim": 14,
-    "temCampos": false,
-    "campos": {},
+    "linhaInicio": 16,
+    "linhaFim": 32,
+    "temCampos": true,
+    "campos": {
+     "duracao": {
+      "pagina": 102,
+      "linha": 23
+     },
+     "custo": {
+      "pagina": 102,
+      "linha": 25
+     },
+     "preRequisitos": {
+      "pagina": 102,
+      "linha": 27
+     }
+    },
     "remissao": null
    }
   },

@@ -23,6 +23,9 @@ essas linhas do `chunks.jsonl`. Depois rode a cadeia **0, 1, 2, 3, 4** (a 1 tamb
 exceções) e suba `CODEX_VERSION_CURRENT`. ⚠️ `mecanica-lida-na-pagina.json` guarda posições de LINHA de páginas que 
 foram embaralhadas: se reextrair uma delas, reaponte as linhas (e confira o `mecanica.test.js`). Número que SAI 
 da página depois de reextrair é sinal de erro do conversor: o ensaio mostra.
+O conversor já sabe: colunas pelas linhas longas, tabelas só com 2+ linhas alinhadas, historinha de abertura de capítulo 
+(14+ linhas coloridas sem rótulo) fora. **Confira SEMPRE o ensaio de uma página nova** (`--mostrar`): quadros de texto que 
+cortam as colunas (p.66) entram no meio da entrada de cima, e páginas de abertura de capítulo são as mais frágeis.
 
 Relatórios ficam em `mesa-virtual/planos/magias/`. As lacunas de leitura (página embaralhada, entrada sem
 texto) viram `*Motivo` no próprio catálogo — nunca um número inventado.

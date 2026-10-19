@@ -54,6 +54,8 @@ def classificar(linha):
         return "ignorar"
     if all(eh_branco(s) for s in spans):
         return "ignorar"  # aba do capítulo e número da página
+    if all("-Black" in s["font"] for s in spans):
+        return "ignorar"  # título decorativo da abertura do capítulo (letras enormes)
     # citação em destaque (itálico grande) e a assinatura dela
     if any(s["font"].endswith("-It") and s["size"] >= LIMIAR_TITULO for s in spans):
         return "ignorar"
@@ -66,14 +68,19 @@ def classificar(linha):
         return "item"
     primeiro = spans[0]
     colorido = primeiro["color"] not in (PRETO, BRANCO)
-    if colorido and primeiro["font"].endswith("-It") and ROTULOS.match(primeiro["text"].strip().rstrip(":").strip()):
+    # um rótulo é um trecho em itálico e colorido no começo da linha ("Duração", "Custo", "Modificadores", "Exemplos")
+    seguinte = next((x["text"] for x in spans[1:]), "")
+    if colorido and primeiro["font"].endswith("-It") and (
+            ROTULOS.match(primeiro["text"].strip().rstrip(":").strip())
+            or seguinte.lstrip().startswith(":") or primeiro["text"].rstrip().endswith(":")):
         return "rotulo"
-    if colorido and not primeiro["font"].endswith("-It"):
+    if colorido:
         return "continua-rotulo"
     return "corpo"
 
 
 def eh_inicio_de_rotulo(span):
+    # no MEIO de uma linha só vale a palavra de rótulo conhecida (itálico colorido solto pode ser ênfase)
     return (span["color"] not in (PRETO, BRANCO) and span["font"].endswith("-It")
             and ROTULOS.match(span["text"].strip().rstrip(":").strip()) is not None)
 
@@ -109,8 +116,9 @@ def linhas_da_pagina(pagina):
 
 
 def bordas_das_colunas(linhas):
-    """As margens esquerdas das colunas: os x0 que MUITAS linhas compartilham (um recuo de parágrafo cai no mesmo grupo)."""
-    xs = sorted(l["x0"] for l in linhas if l["tipo"] in ("corpo", "rotulo", "titulo", "item"))
+    """As margens esquerdas das colunas: os x0 que várias linhas LONGAS compartilham.
+    Linhas curtas (texto que contorna uma figura, células de tabela) não abrem coluna."""
+    xs = sorted(l["x0"] for l in linhas if (l["x1"] - l["x0"]) >= 100)
     grupos = []  # [min_x0, quantidade]
     for x in xs:
         if grupos and x - grupos[-1][0] < 12.0:
@@ -120,7 +128,7 @@ def bordas_das_colunas(linhas):
     if not grupos:
         return [0.0]
     maior = max(g[1] for g in grupos)
-    bordas = [g[0] for g in grupos if g[1] >= max(6, 0.15 * maior)]
+    bordas = [g[0] for g in grupos if g[1] >= max(4, 0.12 * maior)]
     return bordas or [grupos[0][0]]
 
 
@@ -139,7 +147,8 @@ def coluna_da_linha(linha, bordas):
 
 
 def agrupar_tabelas(ordenadas):
-    """Células lado a lado (mesma coluna, mesmo topo) viram uma linha de tabela: `{"tipo": "tabela", "celulas": [...]}`."""
+    """Células lado a lado (mesma coluna, mesmo topo) viram uma linha de tabela:
+    `{"tipo": "tabela", "celulas": [...], "geo": [(x0, x1)...], "orig": [as linhas]}`. Depois `validar_tabelas` confere."""
     saida = []
     for i, l in enumerate(ordenadas):
         ant = saida[-1] if saida else None
@@ -152,29 +161,82 @@ def agrupar_tabelas(ordenadas):
                 and abs(l["x0"] - ant["x0"]) <= 8 and -2 <= l["y0"] - ant["y1"] <= 3):
             ant["celulas"][0] = ant["celulas"][0] + " " + texto_da_linha(l)
             ant["y1"] = l["y1"]
+            ant["orig"].append(l)
             continue
         if (ant and l["tipo"] == "corpo" and ant["tipo"] in ("corpo", "tabela") and ant["col"] == l["col"]
                 and abs(l["y0"] - ant["y0"]) <= 2.5 and l["x0"] > ant["x1"] + 6):
             if ant["tipo"] == "corpo":
-                ant = dict(ant, tipo="tabela", celulas=[texto_da_linha(ant)])
+                ant = dict(ant, tipo="tabela", celulas=[texto_da_linha(ant)], geo=[(ant["x0"], ant["x1"])], orig=[ant])
                 saida[-1] = ant
             ant["celulas"].append(texto_da_linha(l))
+            ant["geo"].append((l["x0"], l["x1"]))
+            ant["orig"].append(l)
             ant["x1"] = l["x1"]
             continue
         saida.append(l)
-    return desfazer_tabelas_de_uma_linha(saida)
+    return validar_tabelas(saida)
 
 
-def desfazer_tabelas_de_uma_linha(itens):
-    """Uma tabela tem 2 linhas ou mais. Uma linha sozinha com pedaços separados é texto justificado com espaços largos."""
-    saida = []
-    for i, l in enumerate(itens):
-        if l["tipo"] == "tabela":
-            vizinha = (i > 0 and itens[i - 1]["tipo"] == "tabela") or (i + 1 < len(itens) and itens[i + 1]["tipo"] == "tabela")
-            if not vizinha:
-                l = dict(l, tipo="corpo", spans=[{"text": " ".join(l["celulas"]), "font": "", "size": 0, "color": 0, "flags": 0}])
-        saida.append(l)
+def validar_tabelas(itens):
+    """Uma tabela tem 2 linhas ou mais, e suas colunas ALINHAM de uma linha para a outra (à esquerda ou à direita).
+    Texto justificado com espaços largos, ou contornando uma figura, tem pedaços lado a lado que não alinham: volta a
+    ser texto, linha por linha."""
+    saida, i = [], 0
+    while i < len(itens):
+        if itens[i]["tipo"] != "tabela":
+            saida.append(itens[i])
+            i += 1
+            continue
+        j = i
+        while j + 1 < len(itens) and itens[j + 1]["tipo"] == "tabela":
+            j += 1
+        grupo = itens[i:j + 1]
+        valida = len(grupo) >= 2
+        if valida:
+            n = min(len(r["geo"]) for r in grupo)
+            for k in range(n):
+                x0 = [r["geo"][k][0] for r in grupo]
+                x1 = [r["geo"][k][1] for r in grupo]
+                if not (max(x0) - min(x0) <= 6 or max(x1) - min(x1) <= 6):
+                    valida = False
+        if valida:
+            saida.extend(grupo)
+        else:
+            for r in grupo:
+                saida.extend(r["orig"])
+        i = j + 1
     return saida
+
+
+def sem_contos(ordenadas):
+    """Contos (a história de abertura de capítulo) são texto COLORIDO sem rótulo na frente. O valor de um campo que
+    continua em outra linha vem logo depois do rótulo (uma cadeia curta); o valor que continua no topo da página, vindo
+    da página anterior, é uma corrida de uma dúzia de linhas. Uma corrida de 14 ou mais linhas coloridas seguidas é um
+    conto: a página tem conto, e todas as linhas coloridas sem rótulo na frente saem."""
+    presas, cadeia, ultima_col = set(), 0, None
+    for i, l in enumerate(ordenadas):
+        if l["tipo"] == "rotulo":
+            cadeia, ultima_col = 1, l["col"]
+        elif l["tipo"] == "continua-rotulo" and cadeia and cadeia <= 5 and l["col"] == ultima_col:
+            cadeia += 1
+            presas.add(i)
+        else:
+            cadeia = 0
+    # a corrida mais longa de linhas coloridas seguidas na mesma coluna
+    maior, corrida, anterior = 0, 0, None
+    for l in ordenadas:
+        if l["tipo"] == "continua-rotulo" and (anterior is None or anterior["col"] == l["col"]):
+            corrida += 1
+        elif l["tipo"] == "continua-rotulo":
+            corrida = 1
+        else:
+            corrida = 0
+        anterior = l if l["tipo"] == "continua-rotulo" else None
+        maior = max(maior, corrida)
+    if maior < 14:
+        return ordenadas
+    fora = {i for i, l in enumerate(ordenadas) if l["tipo"] == "continua-rotulo" and i not in presas}
+    return [l for i, l in enumerate(ordenadas) if i not in fora]
 
 
 def ordenar(linhas):
@@ -182,7 +244,14 @@ def ordenar(linhas):
     for l in linhas:
         l["col"] = coluna_da_linha(l, colunas)
     ordenadas = sorted(linhas, key=lambda l: (l["col"], round(l["y0"], 1), l["x0"]))
-    return agrupar_tabelas(ordenadas), colunas
+    sem = sem_contos(ordenadas)
+    if len(sem) != len(ordenadas):
+        # o conto tinha colunas próprias (margens esquerdas que não são as da página): sem ele, as colunas se refazem
+        colunas = bordas_das_colunas(sem)
+        for l in sem:
+            l["col"] = coluna_da_linha(l, colunas)
+        sem = sorted(sem, key=lambda l: (l["col"], round(l["y0"], 1), l["x0"]))
+    return agrupar_tabelas(sem), colunas
 
 
 # ------------------------------------------------------------------------------------- vocabulário

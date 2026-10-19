@@ -201,6 +201,14 @@
     "entrada": "Área"
    }
   },
+  "ocultar": {
+   "duracao": {
+    "motivo": "o-livro-discorda-de-si: vale a entrada",
+    "catalogo": "1 hora",
+    "tabela": "1 min",
+    "entrada": "1 hora"
+   }
+  },
   "panent": {
    "classe": {
     "motivo": "tabela-ilegivel",
@@ -317,6 +325,14 @@
     "catalogo": "1 hora",
     "tabela": "Varia",
     "entrada": "1 hora"
+   }
+  },
+  "ver_a_forma_real": {
+   "tempoOperacao": {
+    "motivo": "o-livro-discorda-de-si: vale a entrada",
+    "catalogo": "10 segundos",
+    "tabela": "1 seg.",
+    "entrada": "10 segundos"
    }
   },
   "ver_localizacao": {

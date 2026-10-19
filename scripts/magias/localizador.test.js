@@ -269,10 +269,12 @@ function localizadorMutilado(trechoParaTirar, nome) {
  * A CATRACA da cobertura: o que foi medido em 13/out/2026 (879 magias) e subiu em 19/out/2026 (13 páginas reextraídas do PDF, MC-7:
  * localizada 853 -> 871, bloco 814 -> 851). Só sobe. Se o catálogo ou
  * o livro mudarem e a cobertura cair, este teste fica vermelho com os números; se subir, suba aqui.
+ * 19/out/2026 (MC-7): 29 páginas reextraídas do PDF -> localizada 878, bloco 878 (só "Gema de Energia de Uma Só
+ * Escola", uma variante descrita dentro da entrada da Gema de Energia, continua sem entrada própria).
  */
-const CATRACA = { comTabela: 879, localizada: 871, comBlocoETabela: 851 };
+const CATRACA = { comTabela: 879, localizada: 878, comBlocoETabela: 878 };
 
-test('livro real: a cobertura não cai (catraca: tabela 879, localizada 871, bloco 851)', { skip: !TEM_O_LIVRO }, () => {
+test('livro real: a cobertura não cai (catraca: tabela 879, localizada 878, bloco 878)', { skip: !TEM_O_LIVRO }, () => {
   const { indice, catalogo } = indiceReal();
   const r = L.resumir(indice);
   assert.strictEqual(r.total, catalogo.length);
