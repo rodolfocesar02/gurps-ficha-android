@@ -9877,3 +9877,14 @@ ficar verde**.
 - **Achado:** 19 das 218 desvantagens trazem a marca `=== PAGE N ===` na descricao (lixo de extracao; varredura completa). So as tecnicas tem a doenca das magias: merecem plano igual; os outros tres, correcao pontual. Decisao do Rodolfo.
 - Sem versao nova (so script e relatorio). Relatorio: `mesa-virtual/planos/magias/RELATORIO-MC-6.md`.
 - **Status:** ✅ 10 testes JS verdes (sem mudanca no app; build do MC-5 vale)
+
+## Lote MG-ponta2 — [2026-10-19] A tela mostra o numero que e cobrado (antes do MG-1 do plano das magias)
+- **Hash:** f3147897 (app) + commit da Mesa (magia-na-tela, ficha-crua, pedra de toque, PONTAS-ANTES-DO-MG-1.md)
+- **Mudancas:**
+  - Achado: o catalogo guarda o cabecalho (linha da tabela-resumo) e, a parte, o numero conferido (vale a entrada). A aba Rolagem e a Mesa mostravam E cobravam o cabecalho; so a Saga cobrava o conferido. Desintegrar: tabela "1 a 4", entrada "1 a 10" (a Mesa recusava gastar 10).
+  - `scripts/magias/numeros.js`: grava `energiaTela`, `duracaoTela`, `tempoOperacaoTela` so onde o conferido discorda de um cabecalho que diz numero (21 magias, lista em `mesa-virtual/planos/magias/PONTAS-ANTES-DO-MG-1.md`). Cabecalho "Varia" nao e reescrito: 17 magias para o Rodolfo decidir.
+  - `CicloDaMagia.comTextoDaTela` (chamado em `MagiaDefinicao.normalizada()`): o cabecalho e trocado no carregador; `ressincronizarMagiasComCatalogo` leva tambem a duracao. `MagiaDefinicao`: campos `*Tela`, `custoTipo`, `custoMinimo`, `custoMaximo`.
+  - `TextoDaTelaDoLivroTest` (novo, 4 testes: Desintegrar 1 a 10 na conta da Rolagem e da Saga; todo texto de tela e lido como o conferido; sem tela o cabecalho passa intacto; guarda contra custo conferido contradito) + caso novo no `CicloDaMagiaTest`; `numeros.test.js` 82 -> 87. Sonda: `textoDaTela` devolvendo o cabecalho deixa 3 vermelhos.
+  - Versao **186** (`12.8.1-MAGIAS-TELA`).
+- Gate: `testVisualDebugUnitTest` + `testPracegoDebugUnitTest` verdes, `assembleVisualDebug` + `assemblePracegoDebug` OK. Mesa: suite 3257/3257.
+- **Status:** ✅ Build OK (2 variantes)
