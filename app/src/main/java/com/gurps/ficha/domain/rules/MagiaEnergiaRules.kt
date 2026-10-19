@@ -77,6 +77,9 @@ object MagiaEnergiaRules {
         }
     }
 
+    /** O que pode vir depois da barra de um custo "operar/manter": um número ("04/02"), "M" ou "I" ("2/M#"). */
+    private val DEPOIS_DA_BARRA = Regex("""^\s*(?:\d+|[MmIi])\s*#?\s*$""")
+
     private val FAIXA = Regex("""^(\d+)\s*a\s*(\d+)$""", RegexOption.IGNORE_CASE)
     private val SO_NUMERO = Regex("""^\d+$""")
     private val FAIXA_ABERTA = Regex("""^(\d+)\s*a\s+\S+$""", RegexOption.IGNORE_CASE)
@@ -101,10 +104,17 @@ object MagiaEnergiaRules {
         if (bruto.isBlank()) return Custo(0, 0, bruto, desconhecido = true)
 
         // A barra separa OPERAR de MANTER ("04/02"). Vale o de operar.
-        val cabeca = bruto
+        val partes = bruto
             .replace("pontos", "", ignoreCase = true)
             .replace("ponto", "", ignoreCase = true)
-            .split('/')[0]
+            .split('/')
+        // 🔴 Depois da barra pode vir uma UNIDADE, não o custo de manter: "150/0,5 kg", "1/litro", "50/pt", "3/ponto".
+        // Lido pela primeira parte, o Arma Dançante ("1000/0,5 kg", custo de ENCANTAMENTO por meio quilo da arma) saía como
+        // "custa 1000 PF". O que não é "N", "M" ou "I" depois da barra é uma conta por unidade: o jogador diz quanto gasta.
+        if (partes.size > 1 && !DEPOIS_DA_BARRA.matches(partes[1])) {
+            return Custo(0, 0, bruto, desconhecido = true)
+        }
+        val cabeca = partes[0]
             .replace("#", "")
             .trim()
 

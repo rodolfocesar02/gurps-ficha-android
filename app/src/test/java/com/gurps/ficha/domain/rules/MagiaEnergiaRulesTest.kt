@@ -4,6 +4,7 @@ import com.google.gson.JsonParser
 import java.io.File
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
@@ -121,6 +122,14 @@ class MagiaEnergiaRulesTest {
         // "04/02" = 4 para operar, 2 para manter. São mais de 200 mágicas nesse
         // formato; ler o número errado dobraria ou dividiria o gasto.
         assertEquals(4, MagiaEnergiaRules.parseCusto("04/02").fixo)
+        // 🔴 "N/unidade" NÃO é "operar/manter": o Arma Dançante (1000/0,5 kg) pergunta, não custa 1000
+        listOf("150/0,5 kg", "1000/0,5 kg#", "1/litro", "50/pt", "3/ponto", "2/+1 MT/I", "1/12,5 kg#", "3/4 litros").forEach { t ->
+            val c = MagiaEnergiaRules.parseCusto(t)
+            assertTrue("$t devia perguntar", c.desconhecido)
+            assertNull("$t não pode ser um custo fixo", c.fixo)
+        }
+        assertEquals(2, MagiaEnergiaRules.parseCusto("2/M#").fixo)
+        assertEquals(1, MagiaEnergiaRules.parseCusto("1/I").fixo)
         assertEquals(3, MagiaEnergiaRules.parseCusto("03/01").fixo)
         assertEquals(2, MagiaEnergiaRules.parseCusto("2/M").fixo)
         assertEquals(3, MagiaEnergiaRules.parseCusto("3#").fixo)

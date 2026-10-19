@@ -9942,3 +9942,16 @@ ficar verde**.
 - Mesa (religar): derivados regenerados (`magias-ciclo.json` 306 KB), cartao pergunta o raio/peso/escolhas das 272.
 - Gate: `testVisualDebugUnitTest` + `testPracegoDebugUnitTest` verdes (2586 + 2586, 0 puladas), `assembleVisualDebug` + `assemblePracegoDebug` OK; scripts JS do app 96/96; Mesa 3302/3302.
 - **Status:** ✅ Build OK (2 variantes)
+
+## Lote MG-ficha — [2026-10-19] As informações da magia chegam inteiras à Mesa? Conferido com a ficha REAL do César (105 magias)
+- **Hash:** (commit deste lote; ver `git log`) + commit da Mesa (validador, cabeçalho pelo catálogo, testes com a ficha real e com navegador de verdade)
+- **Pedido dele (remoto):** conferir se as fichas entregam a magia inteira à Mesa, testar com ficha do projeto, fora da produção, antes de subir.
+- **Achados (ficha `mesa-virtual/Cesar_Aureo.json`, exportada em set/2026):** a ficha traz os 11 campos em todas as 105 (nenhum sem id, nenhum fora do catálogo), **mas** 8 magias estavam VELHAS no que importa porque a ficha guarda o cabeçalho do dia da exportação (Jato de Areia "03/01" onde o livro diz "1 a 3"; Torpor, Terror, Coceira, Jato de Lama, Toque com duração diferente; Cores com classe "Comm"; Relâmpago "Projetil"). A ficha de exemplo mais antiga (6 campos por magia, sem classe/energia/duração/tempo) chegava SEM custo nenhum. **E** 5 magias de ENCANTAMENTO ("1000/0,5 kg", Arma Dançante, Espada Fiel, Sacar Rápido, Arma Graciosa, Escudo Dançante) eram lidas como "custa 150 a 1000 PF": depois da barra vinha uma UNIDADE, lida como "manter".
+- **Mudancas:**
+  - Mesa: `magia-na-tela.js` troca, ao ler a ficha, classe/energia/duração/tempo pelo cabeçalho do CATÁLOGO de hoje (por `definicaoId`; `cab` no `magias-ciclo.json`); magia fora do catálogo fica como veio. Só para teste: `MESA_FICHA_MANDA_NO_CABECALHO=1`.
+  - Mesa e app: `oCustoDaMagia` / `MagiaEnergiaRules.parseCusto`: o que não é "N", "M" ou "I" depois da barra ("150/0,5 kg", "1/litro", "50/pt", "3/ponto") é conta por unidade: o jogador diz quanto gasta, em vez de pagar 1000 PF sozinho. Testes nos dois lados.
+  - `server/scripts/validar-magias-da-ficha.js` (novo): confere uma ficha magia por magia (campos, em dia com o livro, o que a Mesa entende, o cartão); `node scripts/validar-magias-da-ficha.js ../Cesar_Aureo.json`.
+  - Testes: `magias-da-ficha-real.test.js` (em processo + Mesa de verdade: 6 magias rolam e cobram o certo) e `magias-do-cesar-no-navegador.test.js` (Chrome/Edge de verdade: campo de volume, raio, texto inválido, Rolar com clique). Sondas: 3 mordem.
+  - Versao **191** (`12.8.6-MAGIAS-FICHA`).
+- Gate: `testVisualDebugUnitTest` + `testPracegoDebugUnitTest` verdes (2586 + 2586, 0 puladas), `assembleVisualDebug` + `assemblePracegoDebug` OK; scripts JS do app 96/96; Mesa 3311/3311.
+- **Status:** ✅ Build OK (2 variantes)
