@@ -248,8 +248,9 @@ test('livro real: a cobertura dos números não cai (catraca)', { skip: !TEM_O_L
   // 19/out: 14 magias de custo por condição deixaram de ter um número-base (542 → 530 de operar) e o Transformar
   // Objeto passou a "igual ao custo" no tempo (826 → 825): contas, não números.
   assert.ok(c('tempoOperacaoSeg') >= 825, 'tempo ' + c('tempoOperacaoSeg'));
-  assert.ok(c('custoOperar') >= 530, 'custo de operar ' + c('custoOperar'));
-  assert.ok(c('custoManter') >= 317, 'custo de manter ' + c('custoManter'));
+  // 19/out, lote 2: Manipular e mais 1 de custo por unidade deixaram de ter número-base (530 → 528; manter 317 → 316)
+  assert.ok(c('custoOperar') >= 528, 'custo de operar ' + c('custoOperar'));
+  assert.ok(c('custoManter') >= 316, 'custo de manter ' + c('custoManter'));
 });
 
 // ------------------------------------------------------------------------------ 3. o texto da tela

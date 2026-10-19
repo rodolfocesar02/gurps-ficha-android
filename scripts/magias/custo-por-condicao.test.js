@@ -27,10 +27,17 @@ const porId = new Map(catalogo.map((m) => [m.id, m]));
 const specs = C.lerOsSpecs();
 const textos = P6.textosDeCusto(catalogo);
 
-test('as 18 magias do pedido dele estão no arquivo', () => {
-  assert.deepStrictEqual(Object.keys(specs).sort(), ['alongar_objeto', 'animar_objeto', 'animar_planta', 'aumentar_objeto', 'brilho',
+test('as 18 magias do pedido dele (lote 1) estão no arquivo à mão', () => {
+  const doLote1 = Object.keys(C.lerOsSpecs(C.ARQUIVO));
+  assert.deepStrictEqual(doLote1.sort(), ['alongar_objeto', 'animar_objeto', 'animar_planta', 'aumentar_objeto', 'brilho',
     'chicote_de_relampago', 'contrair_objeto', 'copiar', 'criar_animal', 'criar_montaria', 'despertar_computadornt', 'encolher_objeto',
     'fortalecer', 'mao_magica', 'reconstruirnt', 'teia_de_aranha', 'transformar_objeto', 'apressar'].sort());
+});
+
+test('o lote 2 tem o tamanho esperado e nenhuma magia aparece nos dois arquivos', () => {
+  const gerados = Object.keys(C.lerOsSpecs(C.ARQUIVO_GERADO));
+  assert.ok(gerados.length >= 250, 'poucas magias no lote 2: ' + gerados.length);
+  assert.strictEqual(Object.keys(specs).length, 18 + gerados.length, 'id repetido entre os dois arquivos');
 });
 
 test('toda conta confere com o texto de custo do livro (número fora de 0 a 4 tem que estar lá)', opcoes, () => {
@@ -61,8 +68,11 @@ test('o catálogo gravado É o que o passo 6 tira do arquivo (idempotente) e nã
   Object.keys(specs).forEach((id) => {
     const m = porId.get(id);
     assert.deepStrictEqual(m.custoPorCondicao.entradas, specs[id].entradas, id);
-    assert.strictEqual(m.custoTipo, specs[id].tipo, id);
-    if (specs[id].tipo !== 'fixo') {
+    if (specs[id].tipo !== 'inalterado') assert.strictEqual(m.custoTipo, specs[id].tipo, id);
+    if (specs[id].tipo === 'inalterado') {
+      // a magia de ÁREA: o custo básico do livro continua no catálogo; a conta o multiplica pelo raio
+      assert.ok(m.custoTipo, id + ': o tipo do passo 2 continua');
+    } else if (specs[id].tipo !== 'fixo') {
       assert.strictEqual(m.custoOperar, undefined, id + ': a conta não pode ter custoOperar');
       assert.strictEqual(m.custoManter, undefined, id + ': a conta não pode ter custoManter');
       assert.ok(m.custoFormula && m.custoFormula.length > 10, id + ': sem o texto do livro');
@@ -77,5 +87,45 @@ test('os 73 casos do livro fecham com a conta do catálogo (o que o app e a Mesa
     const r = MOTOR.oCustoPorCondicao(porId.get(k.id).custoPorCondicao, k.condicoes);
     assert.strictEqual(r.ok, true, k.id + ' ' + JSON.stringify(k.condicoes));
     assert.deepStrictEqual([r.operar, r.manter, r.manterTipo], [k.operar, k.manter, k.manterTipo], k.id + ' ' + JSON.stringify(k.condicoes));
+  });
+});
+
+// ------------------------------------------------------------------------------------------------ lote 2
+
+test('os casos do lote 2 (escritos à mão no gerador, do texto do livro) fecham com a conta do catálogo', opcoes, () => {
+  const arquivo = path.join(RAIZ, 'app', 'src', 'test', 'resources', 'custo_por_condicao_casos_gerados.json');
+  const casos = JSON.parse(fs.readFileSync(arquivo, 'utf8')).casos;
+  assert.ok(casos.length >= 500, 'poucos casos: ' + casos.length);
+  const sem = Object.keys(C.lerOsSpecs(C.ARQUIVO_GERADO)).filter((id) => !casos.some((k) => k.id === id));
+  assert.deepStrictEqual(sem, [], 'magias do lote 2 sem caso');
+  casos.forEach((k) => {
+    const r = MOTOR.oCustoPorCondicao(porId.get(k.id).custoPorCondicao, k.condicoes);
+    assert.strictEqual(r.ok, true, k.id + ' ' + JSON.stringify(k.condicoes) + ' ' + JSON.stringify(r));
+    assert.deepStrictEqual([r.operar, r.manter, r.manterTipo], [k.operar, k.manter, k.manterTipo], k.id + ' ' + JSON.stringify(k.condicoes));
+  });
+});
+
+test('o arquivo gerado É o que o gerador produz (nada à mão)', () => {
+  const G = require('./gerar-custo-por-condicao');
+  G.montar();
+  const out = G.paraJson();
+  const lido = (a) => fs.readFileSync(a, 'utf8').replace(/\r\n/g, '\n');
+  assert.strictEqual(lido(G.SAIDA), JSON.stringify(out.specs, null, 1) + '\n', 'rode node scripts/magias/gerar-custo-por-condicao.js');
+  assert.strictEqual(lido(G.CASOS), JSON.stringify(out.casos, null, 1) + '\n', 'rode node scripts/magias/gerar-custo-por-condicao.js');
+});
+
+test('a regra da ÁREA (Magia p.11): custo básico × raio, no mínimo 1 PF; só as que o livro escreve "Custo básico"', opcoes, () => {
+  // Escudo Antiteleporte: 1/3 por metro, raio mínimo 3 → 1; raio 10 → ⌈3,33⌉ = 4
+  const e = porId.get('escudo_antiteleporte').custoPorCondicao;
+  assert.deepStrictEqual([MOTOR.oCustoPorCondicao(e, { raio: 3 }).operar, MOTOR.oCustoPorCondicao(e, { raio: 10 }).operar], [1, 4]);
+  assert.strictEqual(MOTOR.oCustoPorCondicao(e, { raio: 2 }).erro, 'condicao_invalida', 'abaixo do raio mínimo do livro');
+  // as magias de área do catálogo sem rótulo "Custo básico" no livro NÃO ganham o raio (Acelerar Tempo...)
+  ['acelerar_tempo', 'retardar_tempo', 'retardar_fogo'].forEach((id) => assert.strictEqual(porId.get(id).custoPorCondicao, undefined, id));
+  // toda magia com raio pergunta o raio PRIMEIRO, com o mínimo do livro e o padrão no mínimo
+  const comRaio = [...porId.values()].filter((m) => m.custoPorCondicao && m.custoPorCondicao.entradas.some((x) => x.id === 'raio'));
+  assert.ok(comRaio.length >= 120, 'magias com raio: ' + comRaio.length);
+  comRaio.forEach((m) => {
+    const r = m.custoPorCondicao.entradas.find((x) => x.id === 'raio');
+    assert.strictEqual(r.padrao, r.min, m.id + ': o padrão do raio é o mínimo (o custo de antes, para quem não mexe)');
   });
 });

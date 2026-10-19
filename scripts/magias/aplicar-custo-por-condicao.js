@@ -12,7 +12,10 @@
  *  - grava `custoPorCondicao` ({entradas, operar, manter}: o que o jogador informa e a conta do PF);
  *  - grava o `custoTipo` do spec; onde NÃO é `fixo`, apaga o número-base que o passo 2 leu da primeira frase
  *    ("1 para operar para cada 2 kg" virava custo 1) e guarda no `custoFormula` o texto de custo da entrada;
- *  - onde é `fixo` (Criar Montaria, Mão Mágica, Animar Planta, Despertar Computador/NT), o número-base fica.
+ *  - onde é `fixo` (Criar Montaria, Mão Mágica, Animar Planta, Despertar Computador/NT), o número-base fica;
+ *  - onde é `inalterado` (as de ÁREA do lote 2: custo básico × raio), nem o tipo nem o número-base mudam.
+ *
+ * Os specs vêm de `custo-por-condicao.json` (lote 1, à mão) e `custo-por-condicao-gerado.json` (lote 2, do gerador).
  *
  * Nenhum número do livro é digitado: o texto de custo vem do `chunks.jsonl`, e a guarda (`custo-condicao.js`)
  * confere a conta contra ele. Idempotente.
@@ -56,8 +59,9 @@ function aplicar(catalogo, specs, textos) {
       const c = JSON.parse(JSON.stringify(m)); delete c.custoPorCondicao; return c;
     }
     const c = JSON.parse(JSON.stringify(m));
-    c.custoTipo = spec.tipo;
-    if (spec.tipo !== 'fixo') {
+    // `fixo` e `inalterado` deixam o número-base do catálogo; `inalterado` deixa também o tipo (a magia de área).
+    if (spec.tipo !== 'inalterado') c.custoTipo = spec.tipo;
+    if (spec.tipo !== 'fixo' && spec.tipo !== 'inalterado') {
       delete c.custoOperar; delete c.custoManter; delete c.custoManterTipo; delete c.custoMinimo; delete c.custoMaximo;
       c.custoFormula = textos.get(m.id);
     }

@@ -14,10 +14,13 @@ const fs = require('fs');
 const path = require('path');
 
 const ARQUIVO = path.join(__dirname, 'custo-por-condicao.json');
+/** O lote 2, gerado por `gerar-custo-por-condicao.js` (não se edita à mão). */
+const ARQUIVO_GERADO = path.join(__dirname, 'custo-por-condicao-gerado.json');
 const MOTOR_PATH = '../../../../../mesa-virtual/server/src/campo/magia-energia.js';
 
 const TIPOS_DA_ENTRADA = ['numero', 'inteiro', 'escolha', 'marca'];
-const TIPOS_DO_CUSTO = ['porUnidade', 'varia', 'fixo'];
+/** `inalterado`: o passo 6 não mexe no tipo nem no número-base do catálogo (a magia de ÁREA: o básico segue o do livro). */
+const TIPOS_DO_CUSTO = ['porUnidade', 'varia', 'fixo', 'inalterado'];
 const OPERADORES = ['+', '-', '*', '/', 'cima', 'max', 'min'];
 
 let motorCache = null;
@@ -29,11 +32,18 @@ function motor() {
   return motorCache || null;
 }
 
-/** Os specs do arquivo (sem as chaves de comentário `_...`). */
+/** Os specs do arquivo (sem as chaves de comentário `_...`). Sem argumento: os dois arquivos, e id repetido é erro. */
 function lerOsSpecs(arquivo) {
-  const bruto = JSON.parse(fs.readFileSync(arquivo || ARQUIVO, 'utf8'));
+  const arquivos = arquivo ? [arquivo] : [ARQUIVO].concat(fs.existsSync(ARQUIVO_GERADO) ? [ARQUIVO_GERADO] : []);
   const out = {};
-  Object.keys(bruto).forEach((k) => { if (k.charAt(0) !== '_') out[k] = bruto[k]; });
+  arquivos.forEach((a) => {
+    const bruto = JSON.parse(fs.readFileSync(a, 'utf8'));
+    Object.keys(bruto).forEach((k) => {
+      if (k.charAt(0) === '_') return;
+      if (Object.prototype.hasOwnProperty.call(out, k)) throw new Error('magia repetida nos arquivos de custo por condição: ' + k);
+      out[k] = bruto[k];
+    });
+  });
   return out;
 }
 
@@ -129,4 +139,4 @@ function problemasDoSpec(id, spec, texto) {
   return p;
 }
 
-module.exports = { ARQUIVO, motor, lerOsSpecs, numerosDoTexto, literaisDaConta, problemasDoSpec };
+module.exports = { ARQUIVO, ARQUIVO_GERADO, motor, lerOsSpecs, numerosDoTexto, literaisDaConta, problemasDoSpec };

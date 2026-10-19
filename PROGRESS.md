@@ -9929,3 +9929,16 @@ ficar verde**.
 - **Falta:** a Saga (`MagicCasting`) ainda le o cabecalho; os ~40 "fixos com condicao" e ~260 `porUnidade/porPonto/varia`; o MG-3 cobra o manter; 47 paginas / 206 magias do texto antigo sem confirmar (`AUDITORIA-CHUNKS-VS-PDF.md`).
 - Gate: `testVisualDebugUnitTest` + `testPracegoDebugUnitTest` verdes (2583 + 2583, 0 puladas), `assembleVisualDebug` + `assemblePracegoDebug` OK; scripts JS do app 92/92; Mesa 3297/3297 (+ a sonda: 7 na Mesa e 1 no Kotlin mordem). Conferido no navegador numa Mesa isolada: o campo de peso (virgula brasileira, texto invalido recusado com o porque, Rolar apagado), 3 kg + pedra = 12.
 - **Status:** ✅ Build OK (2 variantes)
+
+## Lote MG-custo2 — [2026-10-19] O custo por condição em 254 magias a mais (fixas com condição, por unidade/ponto, ÁREA)
+- **Hash:** (commit deste lote; ver `git log`) + commit da Mesa (casos, testes, derivados, doc)
+- **Pedido dele:** "as outras magias de custo por condição (as ~40 'fixas com condição' como Imunidade ao Fogo e Lealdade, depois as de custo por unidade), usando a wiki para achar as fórmulas e o PDF para o texto."
+- **Mudancas:**
+  - `scripts/magias/gerar-custo-por-condicao.js` (novo): as fórmulas em forma compacta + 527 casos escritos à mão do texto do livro; grava `custo-por-condicao-gerado.json` (254 magias) e `app/src/test/resources/custo_por_condicao_casos_gerados.json`. `custo-condicao.js` lê os dois arquivos (id repetido é erro); passo 6 aceita `tipo: inalterado` (a de área: o número-base e o tipo do livro ficam).
+  - **272 magias com conta** (18 + 254): 23 fixas com condição (Imunidade ao Fogo ×2/×3, Lealdade, Convocar Espírito ÷2/÷4...), 107 por unidade/ponto (kg, litros, m³, pontos...), **124 de ÁREA**: custo básico × raio, no mínimo 1 PF (Magia p.11; a Saga já fazia, a Rolagem e a Mesa não). Padrão = raio mínimo do livro (quem não mexe paga o de antes); só as que o livro escreve "Custo básico". O custo de manter também multiplica pelo raio (suposição, documentada).
+  - Ficaram de fora: custo de encantamento de item, custo = outra magia, as "Varia" sem fórmula na linha de custo (107), as de área com "Custo:" (Acelerar Tempo...). Pendente a regra dos Comuns × MT do alvo (apresentada a ele).
+  - Versao **190** (`12.8.5-MAGIAS-CUSTO2`).
+  - Guardas: `custo-por-condicao.test.js` (9: gerador sem deriva, casos do lote 2, regra da área, sondas), Kotlin `CustoPorCondicaoTest` (10: os 600 casos e o raio padrão), Mesa `custo-por-condicao.test.js` (27). Sondas: 3 no gerador, todas mordem (restauro por MD5).
+- Mesa (religar): derivados regenerados (`magias-ciclo.json` 306 KB), cartao pergunta o raio/peso/escolhas das 272.
+- Gate: `testVisualDebugUnitTest` + `testPracegoDebugUnitTest` verdes (2586 + 2586, 0 puladas), `assembleVisualDebug` + `assemblePracegoDebug` OK; scripts JS do app 96/96; Mesa 3302/3302.
+- **Status:** ✅ Build OK (2 variantes)

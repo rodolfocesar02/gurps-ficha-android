@@ -35,13 +35,12 @@ class CustoPorCondicaoTest {
     private fun calcular(id: String, vararg condicoes: Pair<String, Any?>) =
         CustoPorCondicaoRules.calcular(spec(id), mapOf(*condicoes))
 
-    @Test
-    fun `os 73 casos do livro - operar e manter saem como o livro manda`() {
-        Assume.assumeNotNull(arquivo)
-        val texto = javaClass.classLoader!!.getResourceAsStream("custo_por_condicao_casos.json")!!
+    /** Os casos do livro de um arquivo de `src/test/resources`: o lote 1 (à mão) e o lote 2 (do gerador). */
+    private fun rodarOsCasos(recurso: String, minimo: Int) {
+        val texto = javaClass.classLoader!!.getResourceAsStream(recurso)!!
             .bufferedReader(Charsets.UTF_8).readText()
         val casos = JsonParser.parseString(texto).asJsonObject.getAsJsonArray("casos")
-        assertTrue(casos.size() >= 70)
+        assertTrue("$recurso: poucos casos (${casos.size()})", casos.size() >= minimo)
         casos.forEach { c ->
             val k = c.asJsonObject
             val id = k.get("id").asString
@@ -64,6 +63,49 @@ class CustoPorCondicaoTest {
                 r.manterTipo
             )
         }
+    }
+
+    @Test
+    fun `os 73 casos do livro - operar e manter saem como o livro manda`() {
+        Assume.assumeNotNull(arquivo)
+        rodarOsCasos("custo_por_condicao_casos.json", 70)
+    }
+
+    @Test
+    fun `os casos do lote 2 - as fixas com condicao, as por unidade e as de area`() {
+        Assume.assumeNotNull(arquivo)
+        rodarOsCasos("custo_por_condicao_casos_gerados.json", 500)
+    }
+
+    @Test
+    fun `toda magia com conta no catalogo fecha com os valores padrao e o raio padrao e o minimo`() {
+        Assume.assumeNotNull(arquivo)
+        val comConta = catalogo.values.filter { it.custoPorCondicao != null }
+        assertTrue("magias com conta: ${comConta.size}", comConta.size >= 270)
+        comConta.forEach { m ->
+            val s = m.custoPorCondicao!!
+            val r = CustoPorCondicaoRules.calcular(s, CustoPorCondicaoRules.condicoesPadrao(s))
+            assertTrue("${m.id}: $r", r is CustoPorCondicaoRules.Resultado.Ok)
+            s.entradas.firstOrNull { it.id == "raio" }?.let { raio ->
+                assertEquals("${m.id}: o padrão do raio é o mínimo", raio.min, raio.padrao?.asDouble)
+            }
+        }
+    }
+
+    @Test
+    fun `a regra da area - custo basico vezes o raio, no minimo 1 PF`() {
+        Assume.assumeNotNull(arquivo)
+        // Escudo Antiteleporte: 1/3 por metro, raio mínimo 3 → 1; raio 10 → ⌈3,33⌉ = 4
+        val tres = calcular("escudo_antiteleporte", "raio" to 3.0) as CustoPorCondicaoRules.Resultado.Ok
+        val dez = calcular("escudo_antiteleporte", "raio" to 10.0) as CustoPorCondicaoRules.Resultado.Ok
+        assertEquals(1, tres.operar)
+        assertEquals(4, dez.operar)
+        assertEquals("condicao_invalida", (calcular("escudo_antiteleporte", "raio" to 2.0) as CustoPorCondicaoRules.Resultado.Erro).erro)
+        // Terremoto: a intensidade multiplica (Grave ×4)
+        val grave = calcular("terremoto", "raio" to 3.0, "intensidade" to "grave") as CustoPorCondicaoRules.Resultado.Ok
+        assertEquals(24, grave.operar)
+        // as de área cujo livro escreve "Custo:" (e não "Custo básico:") ficam sem a regra
+        listOf("acelerar_tempo", "retardar_tempo", "retardar_fogo").forEach { assertNull(it, catalogo.getValue(it).custoPorCondicao) }
     }
 
     @Test

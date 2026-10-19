@@ -1,0 +1,6964 @@
+{
+ "_leia": [
+  "Gerado por scripts/magias/gerar-custo-por-condicao.js: NÃO edite à mão (edite o gerador e rode de novo)."
+ ],
+ "atravessar_terra": {
+  "tipo": "fixo",
+  "entradas": [
+   {
+    "id": "material",
+    "tipo": "escolha",
+    "rotulo": "Passar por",
+    "padrao": "terra",
+    "opcoes": [
+     {
+      "id": "terra",
+      "rotulo": "Terra",
+      "valor": 1
+     },
+     {
+      "id": "pedra",
+      "rotulo": "Pedra (dobra o custo)",
+      "valor": 2
+     },
+     {
+      "id": "metal",
+      "rotulo": "Metal (triplica o custo)",
+      "valor": 3
+     }
+    ]
+   }
+  ],
+  "operar": [
+   "*",
+   3,
+   "$material"
+  ],
+  "manter": [
+   "*",
+   3,
+   "$material"
+  ]
+ },
+ "comunicacao": {
+  "tipo": "fixo",
+  "entradas": [
+   {
+    "id": "adicionais",
+    "tipo": "inteiro",
+    "rotulo": "Pessoas adicionais na comunicação",
+    "min": 0,
+    "max": 20,
+    "padrao": 0
+   }
+  ],
+  "operar": [
+   "*",
+   4,
+   [
+    "+",
+    1,
+    "$adicionais"
+   ]
+  ],
+  "manter": [
+   "*",
+   4,
+   [
+    "+",
+    1,
+    "$adicionais"
+   ]
+  ]
+ },
+ "telepatia": {
+  "tipo": "fixo",
+  "entradas": [
+   {
+    "id": "adicionais",
+    "tipo": "inteiro",
+    "rotulo": "Pessoas adicionadas à conexão",
+    "min": 0,
+    "max": 20,
+    "padrao": 0
+   }
+  ],
+  "operar": [
+   "*",
+   4,
+   [
+    "+",
+    1,
+    "$adicionais"
+   ]
+  ],
+  "manter": [
+   "*",
+   4,
+   [
+    "+",
+    1,
+    "$adicionais"
+   ]
+  ]
+ },
+ "controle_de_membro": {
+  "tipo": "fixo",
+  "entradas": [
+   {
+    "id": "uma_mao",
+    "tipo": "marca",
+    "rotulo": "Só sobre uma mão (ou parte análoga do corpo)"
+   }
+  ],
+  "operar": [
+   "-",
+   3,
+   "$uma_mao"
+  ],
+  "manter": [
+   "-",
+   3,
+   "$uma_mao"
+  ]
+ },
+ "convocar_espirito": {
+  "tipo": "fixo",
+  "entradas": [
+   {
+    "id": "local",
+    "tipo": "marca",
+    "rotulo": "Operada no local da morte"
+   },
+   {
+    "id": "cadaver",
+    "tipo": "marca",
+    "rotulo": "Operada sobre o cadáver da pessoa"
+   }
+  ],
+  "operar": [
+   "cima",
+   [
+    "/",
+    20,
+    [
+     "*",
+     [
+      "+",
+      1,
+      "$local"
+     ],
+     [
+      "+",
+      1,
+      "$cadaver"
+     ]
+    ]
+   ]
+  ],
+  "manter": [
+   "cima",
+   [
+    "/",
+    10,
+    [
+     "*",
+     [
+      "+",
+      1,
+      "$local"
+     ],
+     [
+      "+",
+      1,
+      "$cadaver"
+     ]
+    ]
+   ]
+  ]
+ },
+ "detectar_pontos_fracos": {
+  "tipo": "fixo",
+  "entradas": [
+   {
+    "id": "raio",
+    "tipo": "inteiro",
+    "rotulo": "Raio do objeto grande (1 para um objeto comum)",
+    "min": 1,
+    "max": 50,
+    "padrao": 1,
+    "unidade": "m"
+   },
+   {
+    "id": "vivo",
+    "tipo": "marca",
+    "rotulo": "O objetivo é vivo"
+   }
+  ],
+  "operar": [
+   "*",
+   "$raio",
+   [
+    "+",
+    1,
+    "$vivo"
+   ]
+  ]
+ },
+ "enclausuramento_arboreo": {
+  "tipo": "fixo",
+  "entradas": [
+   {
+    "id": "acao",
+    "tipo": "escolha",
+    "rotulo": "Operar",
+    "padrao": "criar",
+    "opcoes": [
+     {
+      "id": "criar",
+      "rotulo": "Criar o enclausuramento",
+      "valor": 8
+     },
+     {
+      "id": "reverter",
+      "rotulo": "Reverter um enclausuramento",
+      "valor": 5
+     }
+    ]
+   }
+  ],
+  "operar": "$acao"
+ },
+ "escriba_musical": {
+  "tipo": "fixo",
+  "entradas": [
+   {
+    "id": "irregular",
+    "tipo": "marca",
+    "rotulo": "Papel não regulado para escrita musical"
+   }
+  ],
+  "operar": [
+   "+",
+   3,
+   "$irregular"
+  ],
+  "manter": [
+   "+",
+   1,
+   "$irregular"
+  ]
+ },
+ "imunidade_a_acido": {
+  "tipo": "fixo",
+  "entradas": [
+   {
+    "id": "ameaca",
+    "tipo": "escolha",
+    "rotulo": "Resistir a",
+    "padrao": "comum",
+    "opcoes": [
+     {
+      "id": "comum",
+      "rotulo": "Ácido comum",
+      "valor": 2
+     },
+     {
+      "id": "essencial",
+      "rotulo": "Ácido Essencial",
+      "valor": 6
+     }
+    ]
+   }
+  ],
+  "operar": "$ameaca",
+  "manter": "metade"
+ },
+ "imunidade_ao_fogo": {
+  "tipo": "fixo",
+  "entradas": [
+   {
+    "id": "calor",
+    "tipo": "escolha",
+    "rotulo": "Resistir a",
+    "padrao": "comum",
+    "opcoes": [
+     {
+      "id": "comum",
+      "rotulo": "Fogo comum",
+      "valor": 1
+     },
+     {
+      "id": "forno",
+      "rotulo": "Alto-forno ou vulcão (duplica o custo)",
+      "valor": 2
+     },
+     {
+      "id": "estrela",
+      "rotulo": "Calor de uma estrela ou bomba nuclear (triplica)",
+      "valor": 3
+     }
+    ]
+   }
+  ],
+  "operar": [
+   "*",
+   2,
+   "$calor"
+  ],
+  "manter": [
+   "*",
+   1,
+   "$calor"
+  ]
+ },
+ "imunidade_ao_frio": {
+  "tipo": "fixo",
+  "entradas": [
+   {
+    "id": "frio",
+    "tipo": "escolha",
+    "rotulo": "Resistir a",
+    "padrao": "comum",
+    "opcoes": [
+     {
+      "id": "comum",
+      "rotulo": "Frio comum",
+      "valor": 1
+     },
+     {
+      "id": "intenso",
+      "rotulo": "Frio de -20° ou mais (dobra o custo)",
+      "valor": 2
+     },
+     {
+      "id": "absoluto",
+      "rotulo": "Frio do zero absoluto (triplica)",
+      "valor": 3
+     }
+    ]
+   }
+  ],
+  "operar": [
+   "*",
+   2,
+   "$frio"
+  ],
+  "manter": [
+   "*",
+   1,
+   "$frio"
+  ]
+ },
+ "lealdade": {
+  "tipo": "fixo",
+  "entradas": [
+   {
+    "id": "relacao",
+    "tipo": "escolha",
+    "rotulo": "O objetivo",
+    "padrao": "conhece",
+    "opcoes": [
+     {
+      "id": "conhece",
+      "rotulo": "Conhece o operador",
+      "valor": 1
+     },
+     {
+      "id": "desconhece",
+      "rotulo": "Não conhece o operador (dobra o custo)",
+      "valor": 2
+     },
+     {
+      "id": "inimigo",
+      "rotulo": "É inimigo do operador (triplica)",
+      "valor": 3
+     }
+    ]
+   }
+  ],
+  "operar": [
+   "*",
+   2,
+   "$relacao"
+  ],
+  "manter": [
+   "*",
+   2,
+   "$relacao"
+  ]
+ },
+ "manipular": {
+  "tipo": "porUnidade",
+  "entradas": [
+   {
+    "id": "peso",
+    "tipo": "numero",
+    "rotulo": "Peso manipulado",
+    "unidade": "kg",
+    "min": 0,
+    "max": 100000,
+    "passo": 0.5,
+    "padrao": 5
+   }
+  ],
+  "operar": [
+   "*",
+   4,
+   [
+    "max",
+    1,
+    [
+     "cima",
+     [
+      "/",
+      "$peso",
+      5
+     ]
+    ]
+   ]
+  ],
+  "manter": [
+   "*",
+   3,
+   [
+    "max",
+    1,
+    [
+     "cima",
+     [
+      "/",
+      "$peso",
+      5
+     ]
+    ]
+   ]
+  ]
+ },
+ "metamorfose_superior": {
+  "tipo": "fixo",
+  "entradas": [
+   {
+    "id": "pontos",
+    "tipo": "inteiro",
+    "rotulo": "Pontos adicionais de limite de modelo",
+    "min": 0,
+    "max": 400,
+    "padrao": 0
+   }
+  ],
+  "operar": [
+   "+",
+   20,
+   [
+    "cima",
+    [
+     "/",
+     "$pontos",
+     5
+    ]
+   ]
+  ],
+  "manter": "metade"
+ },
+ "moldar_planta": {
+  "tipo": "fixo",
+  "entradas": [
+   {
+    "id": "morta",
+    "tipo": "marca",
+    "rotulo": "O material não está mais vivo (dobra o custo)"
+   }
+  ],
+  "operar": [
+   "*",
+   3,
+   [
+    "+",
+    1,
+    "$morta"
+   ]
+  ],
+  "manter": [
+   "*",
+   1,
+   [
+    "+",
+    1,
+    "$morta"
+   ]
+  ]
+ },
+ "muralha_magica": {
+  "tipo": "porUnidade",
+  "entradas": [
+   {
+    "id": "metros",
+    "tipo": "inteiro",
+    "rotulo": "Comprimento da muralha",
+    "min": 1,
+    "max": 40,
+    "padrao": 1,
+    "unidade": "m"
+   }
+  ],
+  "operar": [
+   "*",
+   2,
+   "$metros"
+  ],
+  "manter": "igual"
+ },
+ "passo_leve": {
+  "tipo": "fixo",
+  "entradas": [
+   {
+    "id": "vegetacao",
+    "tipo": "marca",
+    "rotulo": "Apagar também os vestígios na vegetação (conhece Ocultar Rastros)"
+   }
+  ],
+  "operar": [
+   "+",
+   4,
+   "$vegetacao"
+  ],
+  "manter": [
+   "+",
+   1,
+   "$vegetacao"
+  ]
+ },
+ "pedra_para_carne": {
+  "tipo": "fixo",
+  "entradas": [
+   {
+    "id": "metal",
+    "tipo": "marca",
+    "rotulo": "Restaurar uma pessoa transformada em metal (dobra o custo)"
+   }
+  ],
+  "operar": [
+   "*",
+   10,
+   [
+    "+",
+    1,
+    "$metal"
+   ]
+  ]
+ },
+ "projeteis_flamejantes": {
+  "tipo": "fixo",
+  "entradas": [
+   {
+    "id": "duro",
+    "tipo": "marca",
+    "rotulo": "Projéteis de pedra ou metal (dobra o custo)"
+   }
+  ],
+  "operar": [
+   "*",
+   4,
+   [
+    "+",
+    1,
+    "$duro"
+   ]
+  ],
+  "manter": [
+   "*",
+   2,
+   [
+    "+",
+    1,
+    "$duro"
+   ]
+  ]
+ },
+ "soterramento": {
+  "tipo": "fixo",
+  "entradas": [
+   {
+    "id": "acao",
+    "tipo": "escolha",
+    "rotulo": "Operar",
+    "padrao": "soterrar",
+    "opcoes": [
+     {
+      "id": "soterrar",
+      "rotulo": "Soterrar",
+      "valor": 10
+     },
+     {
+      "id": "reverter",
+      "rotulo": "Reverter um soterramento",
+      "valor": 6
+     }
+    ]
+   }
+  ],
+  "operar": "$acao"
+ },
+ "visao_microscopica": {
+  "tipo": "fixo",
+  "entradas": [
+   {
+    "id": "duplicacoes",
+    "tipo": "escolha",
+    "rotulo": "Duplicações do custo de operação",
+    "padrao": "nenhuma",
+    "opcoes": [
+     {
+      "id": "nenhuma",
+      "rotulo": "Nenhuma",
+      "valor": 1
+     },
+     {
+      "id": "uma",
+      "rotulo": "1 duplicação (ampliação ×10)",
+      "valor": 2
+     },
+     {
+      "id": "duas",
+      "rotulo": "2 duplicações (ampliação ×100)",
+      "valor": 4
+     },
+     {
+      "id": "tres",
+      "rotulo": "3 duplicações (ampliação ×1.000)",
+      "valor": 8
+     }
+    ]
+   }
+  ],
+  "operar": [
+   "*",
+   4,
+   "$duplicacoes"
+  ],
+  "manter": [
+   "*",
+   2,
+   "$duplicacoes"
+  ]
+ },
+ "forca": {
+  "tipo": "porUnidade",
+  "entradas": [
+   {
+    "id": "pontos",
+    "tipo": "inteiro",
+    "rotulo": "Pontos de aumento de ST",
+    "min": 1,
+    "max": 5,
+    "padrao": 1
+   }
+  ],
+  "operar": [
+   "*",
+   2,
+   "$pontos"
+  ],
+  "manter": "igual"
+ },
+ "graca": {
+  "tipo": "porUnidade",
+  "entradas": [
+   {
+    "id": "pontos",
+    "tipo": "inteiro",
+    "rotulo": "Pontos de aumento de DX",
+    "min": 1,
+    "max": 5,
+    "padrao": 1
+   }
+  ],
+  "operar": [
+   "*",
+   4,
+   "$pontos"
+  ],
+  "manter": "igual"
+ },
+ "sabedoria": {
+  "tipo": "porUnidade",
+  "entradas": [
+   {
+    "id": "pontos",
+    "tipo": "inteiro",
+    "rotulo": "Pontos de aumento de IQ",
+    "min": 1,
+    "max": 5,
+    "padrao": 1
+   }
+  ],
+  "operar": [
+   "*",
+   4,
+   "$pontos"
+  ],
+  "manter": "igual"
+ },
+ "vigor": {
+  "tipo": "porUnidade",
+  "entradas": [
+   {
+    "id": "pontos",
+    "tipo": "inteiro",
+    "rotulo": "Pontos de aumento de HT",
+    "min": 1,
+    "max": 5,
+    "padrao": 1
+   }
+  ],
+  "operar": [
+   "*",
+   2,
+   "$pontos"
+  ],
+  "manter": "igual"
+ },
+ "fragilidade": {
+  "tipo": "porUnidade",
+  "entradas": [
+   {
+    "id": "pontos",
+    "tipo": "inteiro",
+    "rotulo": "Pontos de decréscimo de HT",
+    "min": 1,
+    "max": 5,
+    "padrao": 1
+   }
+  ],
+  "operar": [
+   "*",
+   2,
+   "$pontos"
+  ],
+  "manter": "igual"
+ },
+ "liberdade": {
+  "tipo": "porUnidade",
+  "entradas": [
+   {
+    "id": "pontos",
+    "tipo": "inteiro",
+    "rotulo": "Pontos de bônus",
+    "min": 1,
+    "max": 5,
+    "padrao": 1
+   }
+  ],
+  "operar": [
+   "*",
+   2,
+   "$pontos"
+  ],
+  "manter": "igual"
+ },
+ "enfraquecer_vontade": {
+  "tipo": "porUnidade",
+  "entradas": [
+   {
+    "id": "pontos",
+    "tipo": "inteiro",
+    "rotulo": "Pontos de redução de Vontade",
+    "min": 1,
+    "max": 5,
+    "padrao": 1
+   }
+  ],
+  "operar": [
+   "*",
+   2,
+   "$pontos"
+  ],
+  "manter": "metade"
+ },
+ "fortalecer_vontade": {
+  "tipo": "porUnidade",
+  "entradas": [
+   {
+    "id": "pontos",
+    "tipo": "inteiro",
+    "rotulo": "Pontos de aumento de Vontade",
+    "min": 1,
+    "max": 5,
+    "padrao": 1
+   }
+  ],
+  "operar": "$pontos",
+  "manter": "metade"
+ },
+ "debilitar": {
+  "tipo": "porUnidade",
+  "entradas": [
+   {
+    "id": "pontos",
+    "tipo": "inteiro",
+    "rotulo": "Pontos de redução de ST",
+    "min": 1,
+    "max": 5,
+    "padrao": 1
+   }
+  ],
+  "operar": "$pontos",
+  "manter": "metade"
+ },
+ "prontidao": {
+  "tipo": "porUnidade",
+  "entradas": [
+   {
+    "id": "pontos",
+    "tipo": "inteiro",
+    "rotulo": "Pontos de bônus",
+    "min": 1,
+    "max": 5,
+    "padrao": 1
+   }
+  ],
+  "operar": [
+   "*",
+   2,
+   "$pontos"
+  ],
+  "manter": "metade"
+ },
+ "sentido_agucado_audicao_agucada": {
+  "tipo": "porUnidade",
+  "entradas": [
+   {
+    "id": "pontos",
+    "tipo": "inteiro",
+    "rotulo": "Pontos de bônus",
+    "min": 1,
+    "max": 5,
+    "padrao": 1
+   }
+  ],
+  "operar": "$pontos",
+  "manter": "metade"
+ },
+ "sentido_agucado_visao_agucada": {
+  "tipo": "porUnidade",
+  "entradas": [
+   {
+    "id": "pontos",
+    "tipo": "inteiro",
+    "rotulo": "Pontos de bônus",
+    "min": 1,
+    "max": 5,
+    "padrao": 1
+   }
+  ],
+  "operar": "$pontos",
+  "manter": "metade"
+ },
+ "sentido_agucado_olfato_paladar_agucado": {
+  "tipo": "porUnidade",
+  "entradas": [
+   {
+    "id": "pontos",
+    "tipo": "inteiro",
+    "rotulo": "Pontos de bônus",
+    "min": 1,
+    "max": 5,
+    "padrao": 1
+   }
+  ],
+  "operar": "$pontos",
+  "manter": "metade"
+ },
+ "embriaguez": {
+  "tipo": "porUnidade",
+  "entradas": [
+   {
+    "id": "pontos",
+    "tipo": "inteiro",
+    "rotulo": "Pontos de IQ e DX perdidos",
+    "min": 1,
+    "max": 5,
+    "padrao": 1
+   }
+  ],
+  "operar": "$pontos",
+  "manter": "metade"
+ },
+ "persuasao": {
+  "tipo": "porUnidade",
+  "entradas": [
+   {
+    "id": "pontos",
+    "tipo": "inteiro",
+    "rotulo": "Bônus a adicionar ao teste",
+    "min": 1,
+    "max": 5,
+    "padrao": 1
+   }
+  ],
+  "operar": [
+   "*",
+   2,
+   "$pontos"
+  ],
+  "manter": "igual"
+ },
+ "vexacao": {
+  "tipo": "porUnidade",
+  "entradas": [
+   {
+    "id": "pontos",
+    "tipo": "inteiro",
+    "rotulo": "Penalidade subtraída do teste",
+    "min": 1,
+    "max": 5,
+    "padrao": 1
+   }
+  ],
+  "operar": [
+   "*",
+   2,
+   "$pontos"
+  ],
+  "manter": "igual"
+ },
+ "robustez": {
+  "tipo": "porUnidade",
+  "entradas": [
+   {
+    "id": "pontos",
+    "tipo": "inteiro",
+    "rotulo": "Pontos de RD",
+    "min": 1,
+    "max": 5,
+    "padrao": 1
+   }
+  ],
+  "operar": "$pontos"
+ },
+ "bloquear": {
+  "tipo": "porUnidade",
+  "entradas": [
+   {
+    "id": "pontos",
+    "tipo": "inteiro",
+    "rotulo": "Pontos de BD",
+    "min": 1,
+    "max": 5,
+    "padrao": 1
+   }
+  ],
+  "operar": "$pontos"
+ },
+ "aumentar": {
+  "tipo": "porUnidade",
+  "entradas": [
+   {
+    "id": "pontos",
+    "tipo": "inteiro",
+    "rotulo": "Pontos de MT a mais",
+    "min": 1,
+    "max": 10,
+    "padrao": 1
+   }
+  ],
+  "operar": [
+   "*",
+   2,
+   "$pontos"
+  ],
+  "manter": "igual"
+ },
+ "aumentar_outro": {
+  "tipo": "porUnidade",
+  "entradas": [
+   {
+    "id": "pontos",
+    "tipo": "inteiro",
+    "rotulo": "Pontos de MT a mais",
+    "min": 1,
+    "max": 10,
+    "padrao": 1
+   }
+  ],
+  "operar": [
+   "*",
+   2,
+   "$pontos"
+  ],
+  "manter": "igual"
+ },
+ "encolher": {
+  "tipo": "porUnidade",
+  "entradas": [
+   {
+    "id": "pontos",
+    "tipo": "inteiro",
+    "rotulo": "Pontos de MT a menos",
+    "min": 1,
+    "max": 10,
+    "padrao": 1
+   }
+  ],
+  "operar": [
+   "*",
+   2,
+   "$pontos"
+  ],
+  "manter": "igual"
+ },
+ "encolher_outro": {
+  "tipo": "porUnidade",
+  "entradas": [
+   {
+    "id": "pontos",
+    "tipo": "inteiro",
+    "rotulo": "Pontos de MT a menos",
+    "min": 1,
+    "max": 10,
+    "padrao": 1
+   }
+  ],
+  "operar": [
+   "*",
+   2,
+   "$pontos"
+  ],
+  "manter": "igual"
+ },
+ "olhos_do_falcao": {
+  "tipo": "porUnidade",
+  "entradas": [
+   {
+    "id": "pontos",
+    "tipo": "inteiro",
+    "rotulo": "Níveis de visão telescópica",
+    "min": 1,
+    "max": 10,
+    "padrao": 1
+   }
+  ],
+  "operar": [
+   "*",
+   2,
+   "$pontos"
+  ],
+  "manter": "metade"
+ },
+ "fender": {
+  "tipo": "porUnidade",
+  "entradas": [
+   {
+    "id": "dados",
+    "tipo": "inteiro",
+    "rotulo": "Dados de dano a infligir ao objeto",
+    "min": 1,
+    "max": 20,
+    "padrao": 1
+   }
+  ],
+  "operar": "$dados"
+ },
+ "caminhar_nas_paredes": {
+  "tipo": "porUnidade",
+  "entradas": [
+   {
+    "id": "peso",
+    "tipo": "numero",
+    "rotulo": "Peso do objetivo",
+    "unidade": "kg",
+    "min": 0,
+    "max": 100000,
+    "passo": 0.5,
+    "padrao": 25
+   }
+  ],
+  "operar": [
+   "max",
+   2,
+   [
+    "cima",
+    [
+     "/",
+     "$peso",
+     25
+    ]
+   ]
+  ],
+  "manter": "metade"
+ },
+ "levitacao": {
+  "tipo": "porUnidade",
+  "entradas": [
+   {
+    "id": "peso",
+    "tipo": "numero",
+    "rotulo": "Peso do objetivo",
+    "unidade": "kg",
+    "min": 0,
+    "max": 100000,
+    "passo": 0.5,
+    "padrao": 40
+   }
+  ],
+  "operar": [
+   "max",
+   2,
+   [
+    "cima",
+    [
+     "/",
+     "$peso",
+     40
+    ]
+   ]
+  ],
+  "manter": "metade"
+ },
+ "retardar_queda": {
+  "tipo": "porUnidade",
+  "entradas": [
+   {
+    "id": "peso",
+    "tipo": "numero",
+    "rotulo": "Peso do objetivo",
+    "unidade": "kg",
+    "min": 0,
+    "max": 100000,
+    "passo": 0.5,
+    "padrao": 25
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "cima",
+    [
+     "/",
+     "$peso",
+     25
+    ]
+   ]
+  ],
+  "manter": "metade"
+ },
+ "remendar": {
+  "tipo": "porUnidade",
+  "entradas": [
+   {
+    "id": "peso",
+    "tipo": "numero",
+    "rotulo": "Peso do objetivo",
+    "unidade": "kg",
+    "min": 0,
+    "max": 100000,
+    "passo": 0.5,
+    "padrao": 5
+   }
+  ],
+  "operar": [
+   "max",
+   2,
+   [
+    "cima",
+    [
+     "/",
+     "$peso",
+     5
+    ]
+   ]
+  ],
+  "manter": "metade"
+ },
+ "endurecer": {
+  "tipo": "porUnidade",
+  "entradas": [
+   {
+    "id": "peso",
+    "tipo": "numero",
+    "rotulo": "Peso do objetivo",
+    "unidade": "kg",
+    "min": 0,
+    "max": 100000,
+    "passo": 0.5,
+    "padrao": 0.5
+   }
+  ],
+  "operar": [
+   "max",
+   2,
+   [
+    "cima",
+    [
+     "/",
+     "$peso",
+     0.5
+    ]
+   ]
+  ],
+  "manter": "metade"
+ },
+ "estragar": {
+  "tipo": "porUnidade",
+  "entradas": [
+   {
+    "id": "peso",
+    "tipo": "numero",
+    "rotulo": "Peso do material arruinado",
+    "unidade": "kg",
+    "min": 0,
+    "max": 100000,
+    "passo": 0.5,
+    "padrao": 0.5
+   }
+  ],
+  "operar": [
+   "*",
+   2,
+   [
+    "max",
+    1,
+    [
+     "cima",
+     [
+      "/",
+      "$peso",
+      0.5
+     ]
+    ]
+   ]
+  ],
+  "manter": "igual"
+ },
+ "ocultar_objeto": {
+  "tipo": "porUnidade",
+  "entradas": [
+   {
+    "id": "peso",
+    "tipo": "numero",
+    "rotulo": "Peso do objeto",
+    "unidade": "kg",
+    "min": 0,
+    "max": 100000,
+    "passo": 0.5,
+    "padrao": 0.5
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "cima",
+    [
+     "/",
+     "$peso",
+     0.5
+    ]
+   ]
+  ],
+  "manter": "igual"
+ },
+ "faca_alada": {
+  "tipo": "porUnidade",
+  "entradas": [
+   {
+    "id": "peso",
+    "tipo": "numero",
+    "rotulo": "Peso da arma",
+    "unidade": "kg",
+    "min": 0,
+    "max": 100000,
+    "passo": 0.5,
+    "padrao": 0.5
+   },
+   {
+    "id": "nao_arremessada",
+    "tipo": "marca",
+    "rotulo": "Arma que normalmente não é arremessada (dobra o custo)"
+   }
+  ],
+  "operar": [
+   "*",
+   [
+    "max",
+    1,
+    [
+     "cima",
+     [
+      "/",
+      "$peso",
+      0.5
+     ]
+    ]
+   ],
+   [
+    "+",
+    1,
+    "$nao_arremessada"
+   ]
+  ]
+ },
+ "maturar": {
+  "tipo": "porUnidade",
+  "entradas": [
+   {
+    "id": "peso",
+    "tipo": "numero",
+    "rotulo": "Peso do alimento",
+    "unidade": "kg",
+    "min": 0,
+    "max": 100000,
+    "passo": 0.5,
+    "padrao": 0.5
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "cima",
+    [
+     "/",
+     "$peso",
+     0.5
+    ]
+   ]
+  ],
+  "manter": "nenhum"
+ },
+ "purificar_o_alimento": {
+  "tipo": "porUnidade",
+  "entradas": [
+   {
+    "id": "peso",
+    "tipo": "numero",
+    "rotulo": "Peso do material",
+    "unidade": "kg",
+    "min": 0,
+    "max": 100000,
+    "passo": 0.5,
+    "padrao": 0.5
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "cima",
+    [
+     "/",
+     "$peso",
+     0.5
+    ]
+   ]
+  ]
+ },
+ "combustivel_essencialnt": {
+  "tipo": "porUnidade",
+  "entradas": [
+   {
+    "id": "peso",
+    "tipo": "numero",
+    "rotulo": "Peso do combustível",
+    "unidade": "kg",
+    "min": 0,
+    "max": 100000,
+    "passo": 0.5,
+    "padrao": 0.5
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "cima",
+    [
+     "/",
+     "$peso",
+     0.5
+    ]
+   ]
+  ]
+ },
+ "purificar_o_combustivelnt": {
+  "tipo": "porUnidade",
+  "entradas": [
+   {
+    "id": "peso",
+    "tipo": "numero",
+    "rotulo": "Peso do material",
+    "unidade": "kg",
+    "min": 0,
+    "max": 100000,
+    "passo": 0.5,
+    "padrao": 1
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "cima",
+    "$peso"
+   ]
+  ]
+ },
+ "preservar_combustivelnt": {
+  "tipo": "porUnidade",
+  "entradas": [
+   {
+    "id": "peso",
+    "tipo": "numero",
+    "rotulo": "Peso do combustível",
+    "unidade": "kg",
+    "min": 0,
+    "max": 100000,
+    "passo": 0.5,
+    "padrao": 0.5
+   }
+  ],
+  "operar": [
+   "*",
+   4,
+   [
+    "max",
+    1,
+    [
+     "cima",
+     [
+      "/",
+      "$peso",
+      0.5
+     ]
+    ]
+   ]
+  ],
+  "manter": "metade"
+ },
+ "preservar_alimento": {
+  "tipo": "porUnidade",
+  "entradas": [
+   {
+    "id": "peso",
+    "tipo": "numero",
+    "rotulo": "Peso do alimento",
+    "unidade": "kg",
+    "min": 0,
+    "max": 100000,
+    "passo": 0.5,
+    "padrao": 0.5
+   }
+  ],
+  "operar": [
+   "*",
+   2,
+   [
+    "max",
+    1,
+    [
+     "cima",
+     [
+      "/",
+      "$peso",
+      0.5
+     ]
+    ]
+   ]
+  ],
+  "manter": [
+   "max",
+   1,
+   [
+    "cima",
+    "$peso"
+   ]
+  ]
+ },
+ "consertar": {
+  "tipo": "porUnidade",
+  "entradas": [
+   {
+    "id": "peso",
+    "tipo": "numero",
+    "rotulo": "Peso do objetivo",
+    "unidade": "kg",
+    "min": 0,
+    "max": 100000,
+    "passo": 0.5,
+    "padrao": 2.5
+   },
+   {
+    "id": "moveis",
+    "tipo": "marca",
+    "rotulo": "Objeto com partes móveis (custo mínimo 6)"
+   }
+  ],
+  "operar": [
+   "max",
+   [
+    "*",
+    6,
+    "$moveis"
+   ],
+   [
+    "*",
+    2,
+    [
+     "max",
+     1,
+     [
+      "cima",
+      [
+       "/",
+       "$peso",
+       2.5
+      ]
+     ]
+    ]
+   ]
+  ]
+ },
+ "criar_objeto": {
+  "tipo": "porUnidade",
+  "entradas": [
+   {
+    "id": "peso",
+    "tipo": "numero",
+    "rotulo": "Peso do objeto criado",
+    "unidade": "kg",
+    "min": 0,
+    "max": 100000,
+    "passo": 0.5,
+    "padrao": 2.5
+   }
+  ],
+  "operar": [
+   "*",
+   2,
+   [
+    "max",
+    1,
+    [
+     "cima",
+     [
+      "/",
+      "$peso",
+      2.5
+     ]
+    ]
+   ]
+  ]
+ },
+ "duplicar": {
+  "tipo": "porUnidade",
+  "entradas": [
+   {
+    "id": "peso",
+    "tipo": "numero",
+    "rotulo": "Peso do objeto criado",
+    "unidade": "kg",
+    "min": 0,
+    "max": 100000,
+    "passo": 0.5,
+    "padrao": 2.5
+   }
+  ],
+  "operar": [
+   "*",
+   3,
+   [
+    "max",
+    1,
+    [
+     "cima",
+     [
+      "/",
+      "$peso",
+      2.5
+     ]
+    ]
+   ]
+  ]
+ },
+ "aumentar_carga": {
+  "tipo": "porUnidade",
+  "entradas": [
+   {
+    "id": "peso",
+    "tipo": "numero",
+    "rotulo": "Peso original",
+    "unidade": "kg",
+    "min": 0,
+    "max": 100000,
+    "passo": 0.5,
+    "padrao": 12.5
+   },
+   {
+    "id": "fator",
+    "tipo": "escolha",
+    "rotulo": "Carga",
+    "padrao": "dobrar",
+    "opcoes": [
+     {
+      "id": "dobrar",
+      "rotulo": "Dobrar",
+      "valor": 1
+     },
+     {
+      "id": "triplicar",
+      "rotulo": "Triplicar (o dobro do custo)",
+      "valor": 2
+     },
+     {
+      "id": "quadruplicar",
+      "rotulo": "Quadruplicar (o dobro novamente)",
+      "valor": 4
+     }
+    ]
+   }
+  ],
+  "operar": [
+   "*",
+   [
+    "max",
+    1,
+    [
+     "cima",
+     [
+      "/",
+      "$peso",
+      12.5
+     ]
+    ]
+   ],
+   "$fator"
+  ],
+  "manter": "metade"
+ },
+ "tapete_voador": {
+  "tipo": "porUnidade",
+  "entradas": [
+   {
+    "id": "area",
+    "tipo": "numero",
+    "rotulo": "Superfície",
+    "unidade": "m²",
+    "min": 0,
+    "max": 50,
+    "passo": 0.1,
+    "padrao": 0.1
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "cima",
+    [
+     "/",
+     "$area",
+     0.1
+    ]
+   ]
+  ],
+  "manter": "metade"
+ },
+ "pentagrama": {
+  "tipo": "porUnidade",
+  "entradas": [
+   {
+    "id": "area",
+    "tipo": "numero",
+    "rotulo": "Área protegida",
+    "unidade": "m²",
+    "min": 0,
+    "max": 9.9,
+    "passo": 0.1,
+    "padrao": 1
+   }
+  ],
+  "operar": [
+   "max",
+   10,
+   [
+    "cima",
+    [
+     "/",
+     "$area",
+     0.1
+    ]
+   ]
+  ]
+ },
+ "criar_porta": {
+  "tipo": "porUnidade",
+  "entradas": [
+   {
+    "id": "area",
+    "tipo": "numero",
+    "rotulo": "Tamanho da porta",
+    "unidade": "m²",
+    "min": 0,
+    "max": 100,
+    "passo": 0.5,
+    "padrao": 3
+   }
+  ],
+  "operar": [
+   "*",
+   2,
+   [
+    "max",
+    1,
+    [
+     "cima",
+     [
+      "/",
+      "$area",
+      3
+     ]
+    ]
+   ]
+  ]
+ },
+ "madeira_essencial": {
+  "tipo": "porUnidade",
+  "entradas": [
+   {
+    "id": "volume",
+    "tipo": "numero",
+    "rotulo": "Volume",
+    "unidade": "m³",
+    "min": 0,
+    "max": 20,
+    "passo": 0.25,
+    "padrao": 0.75
+   }
+  ],
+  "operar": [
+   "*",
+   8,
+   [
+    "max",
+    1,
+    [
+     "cima",
+     [
+      "/",
+      "$volume",
+      0.75
+     ]
+    ]
+   ]
+  ]
+ },
+ "terra_essencial": {
+  "tipo": "porUnidade",
+  "entradas": [
+   {
+    "id": "volume",
+    "tipo": "numero",
+    "rotulo": "Volume",
+    "unidade": "m³",
+    "min": 0,
+    "max": 20,
+    "passo": 0.25,
+    "padrao": 0.75
+   }
+  ],
+  "operar": [
+   "*",
+   8,
+   [
+    "max",
+    1,
+    [
+     "cima",
+     [
+      "/",
+      "$volume",
+      0.75
+     ]
+    ]
+   ]
+  ]
+ },
+ "terra_para_pedra": {
+  "tipo": "porUnidade",
+  "entradas": [
+   {
+    "id": "volume",
+    "tipo": "numero",
+    "rotulo": "Volume de terra",
+    "unidade": "m³",
+    "min": 0,
+    "max": 30,
+    "passo": 0.25,
+    "padrao": 0.75
+   }
+  ],
+  "operar": [
+   "*",
+   3,
+   [
+    "max",
+    1,
+    [
+     "cima",
+     [
+      "/",
+      "$volume",
+      0.75
+     ]
+    ]
+   ]
+  ]
+ },
+ "pedra_para_terra": {
+  "tipo": "porUnidade",
+  "entradas": [
+   {
+    "id": "volume",
+    "tipo": "numero",
+    "rotulo": "Volume de pedra",
+    "unidade": "m³",
+    "min": 0,
+    "max": 15,
+    "passo": 0.25,
+    "padrao": 0.75
+   }
+  ],
+  "operar": [
+   "*",
+   6,
+   [
+    "max",
+    1,
+    [
+     "cima",
+     [
+      "/",
+      "$volume",
+      0.75
+     ]
+    ]
+   ]
+  ]
+ },
+ "terra_para_agua": {
+  "tipo": "porUnidade",
+  "entradas": [
+   {
+    "id": "volume",
+    "tipo": "numero",
+    "rotulo": "Volume de terra transformada em lama",
+    "unidade": "m³",
+    "min": 0,
+    "max": 60,
+    "passo": 0.25,
+    "padrao": 0.75
+   },
+   {
+    "id": "agua",
+    "tipo": "marca",
+    "rotulo": "Transformar a terra em água (duplica o custo)"
+   }
+  ],
+  "operar": [
+   "*",
+   [
+    "max",
+    1,
+    [
+     "cima",
+     [
+      "/",
+      "$volume",
+      0.75
+     ]
+    ]
+   ],
+   [
+    "+",
+    1,
+    "$agua"
+   ]
+  ]
+ },
+ "criar_terra": {
+  "tipo": "porUnidade",
+  "entradas": [
+   {
+    "id": "volume",
+    "tipo": "numero",
+    "rotulo": "Volume",
+    "unidade": "m³",
+    "min": 0,
+    "max": 30,
+    "passo": 0.25,
+    "padrao": 0.75
+   },
+   {
+    "id": "origem",
+    "tipo": "escolha",
+    "rotulo": "Criar",
+    "padrao": "nada",
+    "opcoes": [
+     {
+      "id": "nada",
+      "rotulo": "Terra do nada",
+      "valor": 2
+     },
+     {
+      "id": "lama",
+      "rotulo": "Solidificar lama em terra",
+      "valor": 1
+     }
+    ]
+   }
+  ],
+  "operar": [
+   "*",
+   "$origem",
+   [
+    "max",
+    1,
+    [
+     "cima",
+     [
+      "/",
+      "$volume",
+      0.75
+     ]
+    ]
+   ]
+  ]
+ },
+ "criar_acido": {
+  "tipo": "porUnidade",
+  "entradas": [
+   {
+    "id": "litros",
+    "tipo": "numero",
+    "rotulo": "Ácido criado",
+    "unidade": "litros",
+    "min": 0,
+    "max": 1000,
+    "passo": 1,
+    "padrao": 1
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "cima",
+    [
+     "/",
+     "$litros",
+     1
+    ]
+   ]
+  ]
+ },
+ "acido_essencial": {
+  "tipo": "porUnidade",
+  "entradas": [
+   {
+    "id": "litros",
+    "tipo": "numero",
+    "rotulo": "Ácido",
+    "unidade": "litros",
+    "min": 0,
+    "max": 1000,
+    "passo": 1,
+    "padrao": 1
+   }
+  ],
+  "operar": [
+   "*",
+   2,
+   [
+    "max",
+    1,
+    [
+     "cima",
+     [
+      "/",
+      "$litros",
+      1
+     ]
+    ]
+   ]
+  ]
+ },
+ "criar_agua": {
+  "tipo": "porUnidade",
+  "entradas": [
+   {
+    "id": "litros",
+    "tipo": "numero",
+    "rotulo": "Água criada",
+    "unidade": "litros",
+    "min": 0,
+    "max": 1000,
+    "passo": 1,
+    "padrao": 4
+   }
+  ],
+  "operar": [
+   "*",
+   2,
+   [
+    "max",
+    1,
+    [
+     "cima",
+     [
+      "/",
+      "$litros",
+      4
+     ]
+    ]
+   ]
+  ]
+ },
+ "criar_gelo": {
+  "tipo": "porUnidade",
+  "entradas": [
+   {
+    "id": "litros",
+    "tipo": "numero",
+    "rotulo": "Gelo criado",
+    "unidade": "litros",
+    "min": 0,
+    "max": 1000,
+    "passo": 1,
+    "padrao": 4
+   }
+  ],
+  "operar": [
+   "*",
+   2,
+   [
+    "max",
+    1,
+    [
+     "cima",
+     [
+      "/",
+      "$litros",
+      4
+     ]
+    ]
+   ]
+  ]
+ },
+ "agua_essencial": {
+  "tipo": "porUnidade",
+  "entradas": [
+   {
+    "id": "litros",
+    "tipo": "numero",
+    "rotulo": "Água criada",
+    "unidade": "litros",
+    "min": 0,
+    "max": 1000,
+    "passo": 1,
+    "padrao": 4
+   }
+  ],
+  "operar": [
+   "*",
+   3,
+   [
+    "max",
+    1,
+    [
+     "cima",
+     [
+      "/",
+      "$litros",
+      4
+     ]
+    ]
+   ]
+  ]
+ },
+ "agua_para_vinho": {
+  "tipo": "porUnidade",
+  "entradas": [
+   {
+    "id": "litros",
+    "tipo": "numero",
+    "rotulo": "Água a transformar",
+    "unidade": "litros",
+    "min": 0,
+    "max": 1000,
+    "passo": 1,
+    "padrao": 1
+   },
+   {
+    "id": "bebida",
+    "tipo": "escolha",
+    "rotulo": "Bebida",
+    "padrao": "vinho",
+    "opcoes": [
+     {
+      "id": "cerveja",
+      "rotulo": "Cerveja (metade do custo)",
+      "valor": 0.5
+     },
+     {
+      "id": "vinho",
+      "rotulo": "Vinho",
+      "valor": 1
+     },
+     {
+      "id": "destilada",
+      "rotulo": "Bebida destilada (o dobro do custo)",
+      "valor": 2
+     }
+    ]
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "cima",
+    [
+     "*",
+     "$litros",
+     "$bebida"
+    ]
+   ]
+  ]
+ },
+ "criar_combustivelnt": {
+  "tipo": "porUnidade",
+  "entradas": [
+   {
+    "id": "peso",
+    "tipo": "numero",
+    "rotulo": "Peso do combustível",
+    "unidade": "kg",
+    "min": 0,
+    "max": 100000,
+    "passo": 0.5,
+    "padrao": 0.5
+   },
+   {
+    "id": "nt",
+    "tipo": "inteiro",
+    "rotulo": "NT do combustível",
+    "min": 1,
+    "max": 12,
+    "padrao": 5
+   }
+  ],
+  "operar": [
+   "*",
+   "$nt",
+   [
+    "max",
+    1,
+    [
+     "cima",
+     [
+      "/",
+      "$peso",
+      0.5
+     ]
+    ]
+   ]
+  ]
+ },
+ "toque_congelante": {
+  "tipo": "porUnidade",
+  "entradas": [
+   {
+    "id": "cm",
+    "tipo": "numero",
+    "rotulo": "Espessura do gelo",
+    "unidade": "cm",
+    "min": 0,
+    "max": 50,
+    "passo": 0.5,
+    "padrao": 0.5
+   }
+  ],
+  "operar": [
+   "*",
+   2,
+   [
+    "max",
+    1,
+    [
+     "cima",
+     [
+      "/",
+      "$cm",
+      0.5
+     ]
+    ]
+   ]
+  ]
+ },
+ "curar_radiacao": {
+  "tipo": "porUnidade",
+  "entradas": [
+   {
+    "id": "rads",
+    "tipo": "numero",
+    "rotulo": "Radiação removida",
+    "unidade": "rads",
+    "min": 0,
+    "max": 2000,
+    "passo": 10,
+    "padrao": 10
+   }
+  ],
+  "operar": [
+   "max",
+   5,
+   [
+    "cima",
+    [
+     "/",
+     "$rads",
+     10
+    ]
+   ]
+  ]
+ },
+ "extinguir_radiacao": {
+  "tipo": "porUnidade",
+  "entradas": [
+   {
+    "id": "rads",
+    "tipo": "numero",
+    "rotulo": "Radiação por hora",
+    "unidade": "rads/h",
+    "min": 0,
+    "max": 2000,
+    "passo": 10,
+    "padrao": 10
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "cima",
+    [
+     "/",
+     "$rads",
+     10
+    ]
+   ]
+  ]
+ },
+ "irradiar": {
+  "tipo": "porUnidade",
+  "entradas": [
+   {
+    "id": "rads",
+    "tipo": "numero",
+    "rotulo": "Radiação por hora",
+    "unidade": "rads/h",
+    "min": 0,
+    "max": 2000,
+    "passo": 10,
+    "padrao": 10
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "cima",
+    [
+     "/",
+     "$rads",
+     10
+    ]
+   ]
+  ],
+  "manter": "metade"
+ },
+ "mensagem": {
+  "tipo": "porUnidade",
+  "entradas": [
+   {
+    "id": "segundos",
+    "tipo": "inteiro",
+    "rotulo": "Duração da mensagem",
+    "min": 1,
+    "max": 600,
+    "padrao": 15,
+    "unidade": "s"
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "cima",
+    [
+     "/",
+     "$segundos",
+     15
+    ]
+   ]
+  ]
+ },
+ "translocacao_no_tempo": {
+  "tipo": "porUnidade",
+  "entradas": [
+   {
+    "id": "segundos",
+    "tipo": "inteiro",
+    "rotulo": "Lapso pretendido",
+    "min": 1,
+    "max": 99,
+    "padrao": 1,
+    "unidade": "s"
+   }
+  ],
+  "operar": "$segundos"
+ },
+ "translocar_outro_no_tempo": {
+  "tipo": "porUnidade",
+  "entradas": [
+   {
+    "id": "segundos",
+    "tipo": "inteiro",
+    "rotulo": "Deslocamento pretendido",
+    "min": 1,
+    "max": 99,
+    "padrao": 1,
+    "unidade": "s"
+   }
+  ],
+  "operar": "$segundos"
+ },
+ "puxar": {
+  "tipo": "porUnidade",
+  "entradas": [
+   {
+    "id": "st",
+    "tipo": "inteiro",
+    "rotulo": "ST de \"atração\"",
+    "min": 1,
+    "max": 200,
+    "padrao": 2
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "cima",
+    [
+     "/",
+     "$st",
+     2
+    ]
+   ]
+  ]
+ },
+ "repelir": {
+  "tipo": "porUnidade",
+  "entradas": [
+   {
+    "id": "st",
+    "tipo": "inteiro",
+    "rotulo": "ST de \"repulsão\"",
+    "min": 1,
+    "max": 200,
+    "padrao": 2
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "cima",
+    [
+     "/",
+     "$st",
+     2
+    ]
+   ]
+  ]
+ },
+ "reter": {
+  "tipo": "porUnidade",
+  "entradas": [
+   {
+    "id": "metros",
+    "tipo": "inteiro",
+    "rotulo": "Projeção anulada",
+    "min": 1,
+    "max": 99,
+    "padrao": 1,
+    "unidade": "m"
+   }
+  ],
+  "operar": "$metros"
+ },
+ "retardar_mensagem": {
+  "tipo": "porUnidade",
+  "entradas": [
+   {
+    "id": "frases",
+    "tipo": "inteiro",
+    "rotulo": "Frases simples",
+    "min": 1,
+    "max": 33,
+    "padrao": 1
+   }
+  ],
+  "operar": [
+   "*",
+   3,
+   "$frases"
+  ],
+  "manter": "nenhum"
+ },
+ "aquavisao": {
+  "tipo": "porUnidade",
+  "entradas": [
+   {
+    "id": "metros",
+    "tipo": "numero",
+    "rotulo": "Profundidade",
+    "unidade": "m",
+    "min": 0,
+    "max": 200,
+    "passo": 10,
+    "padrao": 20
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "cima",
+    [
+     "/",
+     "$metros",
+     20
+    ]
+   ]
+  ],
+  "manter": "igual"
+ },
+ "geovisao": {
+  "tipo": "porUnidade",
+  "entradas": [
+   {
+    "id": "metros",
+    "tipo": "numero",
+    "rotulo": "Profundidade",
+    "unidade": "m",
+    "min": 0,
+    "max": 500,
+    "passo": 10,
+    "padrao": 10
+   }
+  ],
+  "operar": [
+   "*",
+   2,
+   [
+    "max",
+    1,
+    [
+     "cima",
+     [
+      "/",
+      "$metros",
+      10
+     ]
+    ]
+   ]
+  ],
+  "manter": "igual"
+ },
+ "metalovisao": {
+  "tipo": "porUnidade",
+  "entradas": [
+   {
+    "id": "metros",
+    "tipo": "numero",
+    "rotulo": "Profundidade",
+    "unidade": "m",
+    "min": 0,
+    "max": 50,
+    "passo": 5,
+    "padrao": 5
+   }
+  ],
+  "operar": [
+   "*",
+   2,
+   [
+    "max",
+    1,
+    [
+     "cima",
+     [
+      "/",
+      "$metros",
+      5
+     ]
+    ]
+   ]
+  ],
+  "manter": "igual"
+ },
+ "plastivisao": {
+  "tipo": "porUnidade",
+  "entradas": [
+   {
+    "id": "metros",
+    "tipo": "numero",
+    "rotulo": "Profundidade",
+    "unidade": "m",
+    "min": 0,
+    "max": 50,
+    "passo": 5,
+    "padrao": 5
+   }
+  ],
+  "operar": [
+   "*",
+   2,
+   [
+    "max",
+    1,
+    [
+     "cima",
+     [
+      "/",
+      "$metros",
+      5
+     ]
+    ]
+   ]
+  ],
+  "manter": "igual"
+ },
+ "visao_das_plantas": {
+  "tipo": "porUnidade",
+  "entradas": [
+   {
+    "id": "metros",
+    "tipo": "numero",
+    "rotulo": "Distância",
+    "unidade": "m",
+    "min": 0,
+    "max": 100,
+    "passo": 10,
+    "padrao": 10
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "cima",
+    [
+     "/",
+     "$metros",
+     10
+    ]
+   ]
+  ],
+  "manter": "igual"
+ },
+ "aerovisao": {
+  "tipo": "porUnidade",
+  "entradas": [
+   {
+    "id": "km",
+    "tipo": "numero",
+    "rotulo": "Distância",
+    "unidade": "km",
+    "min": 0,
+    "max": 500,
+    "passo": 0.5,
+    "padrao": 1.5
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "cima",
+    [
+     "/",
+     "$km",
+     1.5
+    ]
+   ]
+  ],
+  "manter": "metade"
+ },
+ "muralha_absoluta": {
+  "tipo": "porUnidade",
+  "entradas": [
+   {
+    "id": "metros",
+    "tipo": "inteiro",
+    "rotulo": "Comprimento",
+    "min": 1,
+    "max": 24,
+    "padrao": 1,
+    "unidade": "m"
+   }
+  ],
+  "operar": [
+   "*",
+   4,
+   "$metros"
+  ],
+  "manter": "igual"
+ },
+ "muralha_de_forca": {
+  "tipo": "porUnidade",
+  "entradas": [
+   {
+    "id": "metros",
+    "tipo": "inteiro",
+    "rotulo": "Comprimento",
+    "min": 1,
+    "max": 49,
+    "padrao": 1,
+    "unidade": "m"
+   }
+  ],
+  "operar": [
+   "*",
+   2,
+   "$metros"
+  ],
+  "manter": "igual"
+ },
+ "cozinhar": {
+  "tipo": "porUnidade",
+  "entradas": [
+   {
+    "id": "refeicoes",
+    "tipo": "inteiro",
+    "rotulo": "Refeições",
+    "min": 1,
+    "max": 99,
+    "padrao": 1
+   }
+  ],
+  "operar": "$refeicoes"
+ },
+ "temperar": {
+  "tipo": "porUnidade",
+  "entradas": [
+   {
+    "id": "refeicoes",
+    "tipo": "inteiro",
+    "rotulo": "Refeições",
+    "min": 1,
+    "max": 99,
+    "padrao": 1
+   }
+  ],
+  "operar": [
+   "*",
+   2,
+   "$refeicoes"
+  ]
+ },
+ "envenenar_alimento": {
+  "tipo": "porUnidade",
+  "entradas": [
+   {
+    "id": "refeicoes",
+    "tipo": "inteiro",
+    "rotulo": "Refeições",
+    "min": 1,
+    "max": 99,
+    "padrao": 1
+   }
+  ],
+  "operar": [
+   "*",
+   3,
+   "$refeicoes"
+  ]
+ },
+ "banquete_do_tolo": {
+  "tipo": "porUnidade",
+  "entradas": [
+   {
+    "id": "refeicoes",
+    "tipo": "inteiro",
+    "rotulo": "Refeições",
+    "min": 1,
+    "max": 99,
+    "padrao": 1
+   }
+  ],
+  "operar": [
+   "*",
+   2,
+   "$refeicoes"
+  ],
+  "manter": "nenhum"
+ },
+ "deteriorar": {
+  "tipo": "porUnidade",
+  "entradas": [
+   {
+    "id": "refeicoes",
+    "tipo": "inteiro",
+    "rotulo": "Refeições destruídas",
+    "min": 1,
+    "max": 99,
+    "padrao": 1
+   }
+  ],
+  "operar": "$refeicoes"
+ },
+ "alimento_essencial": {
+  "tipo": "porUnidade",
+  "entradas": [
+   {
+    "id": "refeicoes",
+    "tipo": "inteiro",
+    "rotulo": "Refeições",
+    "min": 1,
+    "max": 33,
+    "padrao": 1
+   },
+   {
+    "id": "origem",
+    "tipo": "escolha",
+    "rotulo": "Substância inicial",
+    "padrao": "organica",
+    "opcoes": [
+     {
+      "id": "organica",
+      "rotulo": "Material orgânico",
+      "valor": 3
+     },
+     {
+      "id": "inedivel",
+      "rotulo": "Totalmente não comestível",
+      "valor": 5
+     }
+    ]
+   }
+  ],
+  "operar": [
+   "*",
+   "$refeicoes",
+   "$origem"
+  ]
+ },
+ "criar_alimento": {
+  "tipo": "porUnidade",
+  "entradas": [
+   {
+    "id": "refeicoes",
+    "tipo": "inteiro",
+    "rotulo": "Refeições",
+    "min": 1,
+    "max": 33,
+    "padrao": 1
+   },
+   {
+    "id": "origem",
+    "tipo": "escolha",
+    "rotulo": "Criar a partir de",
+    "padrao": "organico",
+    "opcoes": [
+     {
+      "id": "organico",
+      "rotulo": "Material orgânico",
+      "valor": 2
+     },
+     {
+      "id": "inorganico",
+      "rotulo": "Material inorgânico",
+      "valor": 3
+     },
+     {
+      "id": "nada",
+      "rotulo": "Do nada",
+      "valor": 4
+     }
+    ]
+   }
+  ],
+  "operar": [
+   "*",
+   "$refeicoes",
+   "$origem"
+  ]
+ },
+ "criacao_inspirada": {
+  "tipo": "porUnidade",
+  "entradas": [
+   {
+    "id": "dias",
+    "tipo": "inteiro",
+    "rotulo": "Dias gastos na criação do objeto",
+    "min": 1,
+    "max": 19,
+    "padrao": 1
+   }
+  ],
+  "operar": [
+   "*",
+   5,
+   "$dias"
+  ]
+ },
+ "criar_nascente": {
+  "tipo": "porUnidade",
+  "entradas": [
+   {
+    "id": "aumento",
+    "tipo": "inteiro",
+    "rotulo": "Aumento da produção (em unidades de 4 litros por hora)",
+    "min": 1,
+    "max": 19,
+    "padrao": 1
+   }
+  ],
+  "operar": [
+   "*",
+   5,
+   "$aumento"
+  ]
+ },
+ "secar_nascente": {
+  "tipo": "porUnidade",
+  "entradas": [
+   {
+    "id": "reducao",
+    "tipo": "inteiro",
+    "rotulo": "Redução da produção (em unidades de 4 litros por hora)",
+    "min": 1,
+    "max": 33,
+    "padrao": 1
+   }
+  ],
+  "operar": [
+   "*",
+   3,
+   "$reducao"
+  ]
+ },
+ "protecao_superior": {
+  "tipo": "porUnidade",
+  "entradas": [
+   {
+    "id": "alvos",
+    "tipo": "inteiro",
+    "rotulo": "Objetivos protegidos",
+    "min": 1,
+    "max": 99,
+    "padrao": 1
+   }
+  ],
+  "operar": [
+   "max",
+   4,
+   "$alvos"
+  ]
+ },
+ "prender_espirito": {
+  "tipo": "porUnidade",
+  "entradas": [
+   {
+    "id": "pontos",
+    "tipo": "inteiro",
+    "rotulo": "Pontos de personagem do espírito",
+    "min": 3,
+    "max": 297,
+    "padrao": 90
+   }
+  ],
+  "operar": [
+   "max",
+   30,
+   [
+    "cima",
+    [
+     "/",
+     "$pontos",
+     3
+    ]
+   ]
+  ]
+ },
+ "roubar_forca": {
+  "tipo": "porUnidade",
+  "entradas": [
+   {
+    "id": "pontos",
+    "tipo": "inteiro",
+    "rotulo": "Pontos de personagem roubados",
+    "min": 1,
+    "max": 99,
+    "padrao": 10
+   }
+  ],
+  "operar": [
+   "max",
+   10,
+   "$pontos"
+  ]
+ },
+ "roubar_graca": {
+  "tipo": "porUnidade",
+  "entradas": [
+   {
+    "id": "pontos",
+    "tipo": "inteiro",
+    "rotulo": "Pontos de personagem roubados",
+    "min": 1,
+    "max": 99,
+    "padrao": 10
+   }
+  ],
+  "operar": [
+   "max",
+   10,
+   "$pontos"
+  ]
+ },
+ "roubar_vigor": {
+  "tipo": "porUnidade",
+  "entradas": [
+   {
+    "id": "pontos",
+    "tipo": "inteiro",
+    "rotulo": "Pontos de personagem roubados",
+    "min": 1,
+    "max": 99,
+    "padrao": 10
+   }
+  ],
+  "operar": [
+   "max",
+   10,
+   "$pontos"
+  ]
+ },
+ "roubar_sabedoria": {
+  "tipo": "porUnidade",
+  "entradas": [
+   {
+    "id": "pontos",
+    "tipo": "inteiro",
+    "rotulo": "Pontos de personagem roubados",
+    "min": 1,
+    "max": 99,
+    "padrao": 10
+   }
+  ],
+  "operar": [
+   "max",
+   10,
+   "$pontos"
+  ]
+ },
+ "roubar_pericia": {
+  "tipo": "porUnidade",
+  "entradas": [
+   {
+    "id": "pontos",
+    "tipo": "inteiro",
+    "rotulo": "Pontos de personagem roubados",
+    "min": 1,
+    "max": 99,
+    "padrao": 10
+   }
+  ],
+  "operar": [
+   "max",
+   10,
+   "$pontos"
+  ]
+ },
+ "convocacao_planar": {
+  "tipo": "porUnidade",
+  "entradas": [
+   {
+    "id": "pontos",
+    "tipo": "inteiro",
+    "rotulo": "Pontos de personagem da entidade",
+    "min": 10,
+    "max": 990,
+    "padrao": 200
+   }
+  ],
+  "operar": [
+   "max",
+   20,
+   [
+    "cima",
+    [
+     "/",
+     "$pontos",
+     10
+    ]
+   ]
+  ],
+  "manter": "nenhum"
+ },
+ "convocar_demonio": {
+  "tipo": "porUnidade",
+  "entradas": [
+   {
+    "id": "pontos",
+    "tipo": "inteiro",
+    "rotulo": "Pontos de personagem do demônio",
+    "min": 10,
+    "max": 990,
+    "padrao": 200
+   }
+  ],
+  "operar": [
+   "max",
+   20,
+   [
+    "cima",
+    [
+     "/",
+     "$pontos",
+     10
+    ]
+   ]
+  ]
+ },
+ "controle_de_elemental_ar": {
+  "tipo": "porUnidade",
+  "entradas": [
+   {
+    "id": "pontos",
+    "tipo": "inteiro",
+    "rotulo": "Pontos de personagem do elemental",
+    "min": 10,
+    "max": 990,
+    "padrao": 40
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "cima",
+    [
+     "/",
+     "$pontos",
+     10
+    ]
+   ]
+  ],
+  "manter": "metade"
+ },
+ "criar_elemental_ar": {
+  "tipo": "porUnidade",
+  "entradas": [
+   {
+    "id": "pontos",
+    "tipo": "inteiro",
+    "rotulo": "Pontos de personagem do elemental",
+    "min": 10,
+    "max": 990,
+    "padrao": 40
+   }
+  ],
+  "operar": [
+   "max",
+   4,
+   [
+    "cima",
+    [
+     "/",
+     "$pontos",
+     10
+    ]
+   ]
+  ]
+ },
+ "controle_de_elemental_fogo": {
+  "tipo": "porUnidade",
+  "entradas": [
+   {
+    "id": "pontos",
+    "tipo": "inteiro",
+    "rotulo": "Pontos de personagem do elemental",
+    "min": 10,
+    "max": 990,
+    "padrao": 40
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "cima",
+    [
+     "/",
+     "$pontos",
+     10
+    ]
+   ]
+  ],
+  "manter": "metade"
+ },
+ "criar_elemental_fogo": {
+  "tipo": "porUnidade",
+  "entradas": [
+   {
+    "id": "pontos",
+    "tipo": "inteiro",
+    "rotulo": "Pontos de personagem do elemental",
+    "min": 10,
+    "max": 990,
+    "padrao": 40
+   }
+  ],
+  "operar": [
+   "max",
+   4,
+   [
+    "cima",
+    [
+     "/",
+     "$pontos",
+     10
+    ]
+   ]
+  ]
+ },
+ "controle_de_elemental_terra": {
+  "tipo": "porUnidade",
+  "entradas": [
+   {
+    "id": "pontos",
+    "tipo": "inteiro",
+    "rotulo": "Pontos de personagem do elemental",
+    "min": 10,
+    "max": 990,
+    "padrao": 40
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "cima",
+    [
+     "/",
+     "$pontos",
+     10
+    ]
+   ]
+  ],
+  "manter": "metade"
+ },
+ "criar_elemental_terra": {
+  "tipo": "porUnidade",
+  "entradas": [
+   {
+    "id": "pontos",
+    "tipo": "inteiro",
+    "rotulo": "Pontos de personagem do elemental",
+    "min": 10,
+    "max": 990,
+    "padrao": 40
+   }
+  ],
+  "operar": [
+   "max",
+   4,
+   [
+    "cima",
+    [
+     "/",
+     "$pontos",
+     10
+    ]
+   ]
+  ]
+ },
+ "controle_de_elemental_agua": {
+  "tipo": "porUnidade",
+  "entradas": [
+   {
+    "id": "pontos",
+    "tipo": "inteiro",
+    "rotulo": "Pontos de personagem do elemental",
+    "min": 10,
+    "max": 990,
+    "padrao": 40
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "cima",
+    [
+     "/",
+     "$pontos",
+     10
+    ]
+   ]
+  ],
+  "manter": "metade"
+ },
+ "criar_elemental_agua": {
+  "tipo": "porUnidade",
+  "entradas": [
+   {
+    "id": "pontos",
+    "tipo": "inteiro",
+    "rotulo": "Pontos de personagem do elemental",
+    "min": 10,
+    "max": 990,
+    "padrao": 40
+   }
+  ],
+  "operar": [
+   "max",
+   4,
+   [
+    "cima",
+    [
+     "/",
+     "$pontos",
+     10
+    ]
+   ]
+  ]
+ },
+ "memoria_falsa": {
+  "tipo": "porUnidade",
+  "entradas": [
+   {
+    "id": "duracao",
+    "tipo": "escolha",
+    "rotulo": "Duração",
+    "padrao": "hora",
+    "opcoes": [
+     {
+      "id": "hora",
+      "rotulo": "Uma hora",
+      "valor": 0
+     },
+     {
+      "id": "dia",
+      "rotulo": "Um dia inteiro",
+      "valor": 1
+     }
+    ]
+   }
+  ],
+  "operar": [
+   "max",
+   3,
+   [
+    "*",
+    8,
+    "$duracao"
+   ]
+  ],
+  "manter": [
+   "max",
+   3,
+   [
+    "*",
+    4,
+    "$duracao"
+   ]
+  ]
+ },
+ "prehistoria": {
+  "tipo": "porUnidade",
+  "entradas": [
+   {
+    "id": "periodo",
+    "tipo": "escolha",
+    "rotulo": "História a ver",
+    "padrao": "k1",
+    "opcoes": [
+     {
+      "id": "k1",
+      "rotulo": "1.000 anos",
+      "valor": 3
+     },
+     {
+      "id": "k10",
+      "rotulo": "10.000 anos",
+      "valor": 5
+     },
+     {
+      "id": "k100",
+      "rotulo": "100.000 anos",
+      "valor": 8
+     },
+     {
+      "id": "mais",
+      "rotulo": "Períodos mais longos",
+      "valor": 10
+     }
+    ]
+   }
+  ],
+  "operar": "$periodo"
+ },
+ "previsao_do_tempo": {
+  "tipo": "porUnidade",
+  "entradas": [
+   {
+    "id": "dias",
+    "tipo": "inteiro",
+    "rotulo": "Duração da previsão",
+    "min": 1,
+    "max": 49,
+    "padrao": 1,
+    "unidade": "dias"
+   },
+   {
+    "id": "local",
+    "tipo": "escolha",
+    "rotulo": "Local",
+    "padrao": "geral",
+    "opcoes": [
+     {
+      "id": "geral",
+      "rotulo": "Na área local",
+      "valor": 1
+     },
+     {
+      "id": "fora",
+      "rotulo": "Fora da área (duplica o custo)",
+      "valor": 2
+     },
+     {
+      "id": "continente",
+      "rotulo": "Em outro continente (quadruplica)",
+      "valor": 4
+     }
+    ]
+   }
+  ],
+  "operar": [
+   "*",
+   2,
+   [
+    "*",
+    "$dias",
+    "$local"
+   ]
+  ]
+ },
+ "prever_movimento_da_terra": {
+  "tipo": "porUnidade",
+  "entradas": [
+   {
+    "id": "dias",
+    "tipo": "inteiro",
+    "rotulo": "Duração da previsão",
+    "min": 1,
+    "max": 49,
+    "padrao": 1,
+    "unidade": "dias"
+   },
+   {
+    "id": "local",
+    "tipo": "escolha",
+    "rotulo": "Local",
+    "padrao": "geral",
+    "opcoes": [
+     {
+      "id": "geral",
+      "rotulo": "Na área local",
+      "valor": 1
+     },
+     {
+      "id": "fora",
+      "rotulo": "Fora da área (duplica o custo)",
+      "valor": 2
+     },
+     {
+      "id": "continente",
+      "rotulo": "Em outro continente (quadruplica)",
+      "valor": 4
+     }
+    ]
+   }
+  ],
+  "operar": [
+   "*",
+   2,
+   [
+    "*",
+    "$dias",
+    "$local"
+   ]
+  ]
+ },
+ "sono_curativo": {
+  "tipo": "porUnidade",
+  "entradas": [
+   {
+    "id": "recuperacao",
+    "tipo": "escolha",
+    "rotulo": "Velocidade de recuperação",
+    "padrao": "normal",
+    "opcoes": [
+     {
+      "id": "normal",
+      "rotulo": "Normal",
+      "valor": 6
+     },
+     {
+      "id": "dobrada",
+      "rotulo": "Dobrada",
+      "valor": 10
+     }
+    ]
+   }
+  ],
+  "operar": "$recuperacao"
+ },
+ "alarme_florestal": {
+  "tipo": "inalterado",
+  "entradas": [
+   {
+    "id": "raio",
+    "tipo": "inteiro",
+    "rotulo": "Raio da área",
+    "min": 1,
+    "max": 100,
+    "padrao": 1,
+    "unidade": "m"
+   }
+  ],
+  "operar": [
+   "max",
+   2,
+   [
+    "*",
+    0.5,
+    "$raio"
+   ]
+  ],
+  "manter": "igual"
+ },
+ "alterar_terreno": {
+  "tipo": "inalterado",
+  "entradas": [
+   {
+    "id": "raio",
+    "tipo": "inteiro",
+    "rotulo": "Raio da área",
+    "min": 1,
+    "max": 100,
+    "padrao": 1,
+    "unidade": "m"
+   }
+  ],
+  "operar": [
+   "max",
+   15,
+   [
+    "*",
+    1,
+    "$raio"
+   ]
+  ],
+  "manter": "nenhum"
+ },
+ "autossuficiencia": {
+  "tipo": "inalterado",
+  "entradas": [
+   {
+    "id": "raio",
+    "tipo": "inteiro",
+    "rotulo": "Raio da área",
+    "min": 1,
+    "max": 100,
+    "padrao": 1,
+    "unidade": "m"
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "*",
+    2,
+    "$raio"
+   ]
+  ],
+  "manter": "nenhum"
+ },
+ "chama_essencial": {
+  "tipo": "inalterado",
+  "entradas": [
+   {
+    "id": "raio",
+    "tipo": "inteiro",
+    "rotulo": "Raio da área",
+    "min": 1,
+    "max": 100,
+    "padrao": 1,
+    "unidade": "m"
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "*",
+    3,
+    "$raio"
+   ]
+  ],
+  "manter": [
+   "max",
+   1,
+   [
+    "*",
+    2,
+    "$raio"
+   ]
+  ]
+ },
+ "chuva_de_adagas_de_gelo": {
+  "tipo": "inalterado",
+  "entradas": [
+   {
+    "id": "raio",
+    "tipo": "inteiro",
+    "rotulo": "Raio da área",
+    "min": 1,
+    "max": 100,
+    "padrao": 1,
+    "unidade": "m"
+   },
+   {
+    "id": "dobro",
+    "tipo": "marca",
+    "rotulo": "Dobrar o custo básico (1d de dano por segundo)"
+   }
+  ],
+  "operar": [
+   "max",
+   2,
+   [
+    "*",
+    [
+     "*",
+     1,
+     "$raio"
+    ],
+    [
+     "+",
+     1,
+     "$dobro"
+    ]
+   ]
+  ]
+ },
+ "chuva_de_fogo": {
+  "tipo": "inalterado",
+  "entradas": [
+   {
+    "id": "raio",
+    "tipo": "inteiro",
+    "rotulo": "Raio da área",
+    "min": 1,
+    "max": 100,
+    "padrao": 1,
+    "unidade": "m"
+   },
+   {
+    "id": "dobro",
+    "tipo": "marca",
+    "rotulo": "Dobrar o custo básico (2d-2 de dano por segundo)"
+   }
+  ],
+  "operar": [
+   "max",
+   2,
+   [
+    "*",
+    [
+     "*",
+     1,
+     "$raio"
+    ],
+    [
+     "+",
+     1,
+     "$dobro"
+    ]
+   ]
+  ],
+  "manter": "igual"
+ },
+ "chuva_de_pedras": {
+  "tipo": "inalterado",
+  "entradas": [
+   {
+    "id": "raio",
+    "tipo": "inteiro",
+    "rotulo": "Raio da área",
+    "min": 1,
+    "max": 100,
+    "padrao": 1,
+    "unidade": "m"
+   },
+   {
+    "id": "dobro",
+    "tipo": "marca",
+    "rotulo": "Dobrar o custo básico (2d-2 de dano por segundo)"
+   }
+  ],
+  "operar": [
+   "max",
+   2,
+   [
+    "*",
+    [
+     "*",
+     1,
+     "$raio"
+    ],
+    [
+     "+",
+     1,
+     "$dobro"
+    ]
+   ]
+  ],
+  "manter": "igual"
+ },
+ "condensar_vapor": {
+  "tipo": "inalterado",
+  "entradas": [
+   {
+    "id": "raio",
+    "tipo": "inteiro",
+    "rotulo": "Raio da área",
+    "min": 1,
+    "max": 100,
+    "padrao": 1,
+    "unidade": "m"
+   }
+  ],
+  "operar": [
+   "max",
+   2,
+   [
+    "*",
+    1,
+    "$raio"
+   ]
+  ]
+ },
+ "conexao": {
+  "tipo": "inalterado",
+  "entradas": [
+   {
+    "id": "raio",
+    "tipo": "inteiro",
+    "rotulo": "Raio da área",
+    "min": 1,
+    "max": 100,
+    "padrao": 1,
+    "unidade": "m"
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "*",
+    8,
+    "$raio"
+   ]
+  ],
+  "manter": "nenhum"
+ },
+ "criar_fogo": {
+  "tipo": "inalterado",
+  "entradas": [
+   {
+    "id": "raio",
+    "tipo": "inteiro",
+    "rotulo": "Raio da área",
+    "min": 1,
+    "max": 100,
+    "padrao": 1,
+    "unidade": "m"
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "*",
+    2,
+    "$raio"
+   ]
+  ],
+  "manter": "metade"
+ },
+ "criar_planta": {
+  "tipo": "inalterado",
+  "entradas": [
+   {
+    "id": "raio",
+    "tipo": "inteiro",
+    "rotulo": "Raio da área",
+    "min": 1,
+    "max": 100,
+    "padrao": 1,
+    "unidade": "m"
+   },
+   {
+    "id": "planta",
+    "tipo": "escolha",
+    "rotulo": "Criar",
+    "padrao": "gramineas",
+    "opcoes": [
+     {
+      "id": "gramineas",
+      "rotulo": "Gramíneas",
+      "valor": 4
+     },
+     {
+      "id": "arbustos",
+      "rotulo": "Arbustos",
+      "valor": 8
+     },
+     {
+      "id": "arvores",
+      "rotulo": "Árvores",
+      "valor": 15
+     }
+    ]
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "*",
+    "$planta",
+    "$raio"
+   ]
+  ]
+ },
+ "descongelar": {
+  "tipo": "inalterado",
+  "entradas": [
+   {
+    "id": "raio",
+    "tipo": "inteiro",
+    "rotulo": "Raio da área",
+    "min": 1,
+    "max": 100,
+    "padrao": 1,
+    "unidade": "m"
+   }
+  ],
+  "operar": [
+   "max",
+   2,
+   [
+    "*",
+    1,
+    "$raio"
+   ]
+  ],
+  "manter": "igual"
+ },
+ "dissipar_agua": {
+  "tipo": "inalterado",
+  "entradas": [
+   {
+    "id": "raio",
+    "tipo": "inteiro",
+    "rotulo": "Raio da área",
+    "min": 1,
+    "max": 100,
+    "padrao": 1,
+    "unidade": "m"
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "*",
+    3,
+    "$raio"
+   ]
+  ],
+  "manter": "igual"
+ },
+ "entalhar": {
+  "tipo": "inalterado",
+  "entradas": [
+   {
+    "id": "raio",
+    "tipo": "inteiro",
+    "rotulo": "Raio da área",
+    "min": 1,
+    "max": 100,
+    "padrao": 1,
+    "unidade": "m"
+   }
+  ],
+  "operar": [
+   "max",
+   2,
+   [
+    "*",
+    1,
+    "$raio"
+   ]
+  ],
+  "manter": "igual"
+ },
+ "entrelacamento": {
+  "tipo": "inalterado",
+  "entradas": [
+   {
+    "id": "raio",
+    "tipo": "inteiro",
+    "rotulo": "Raio da área",
+    "min": 1,
+    "max": 100,
+    "padrao": 1,
+    "unidade": "m"
+   },
+   {
+    "id": "cobertura",
+    "tipo": "escolha",
+    "rotulo": "Cobertura",
+    "padrao": "grama",
+    "opcoes": [
+     {
+      "id": "grama",
+      "rotulo": "Grama",
+      "valor": 1
+     },
+     {
+      "id": "arbustos",
+      "rotulo": "Arbustos e árvores",
+      "valor": 2
+     }
+    ]
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "*",
+    "$cobertura",
+    "$raio"
+   ]
+  ],
+  "manter": "metade"
+ },
+ "escudo_antiteleporte": {
+  "tipo": "inalterado",
+  "entradas": [
+   {
+    "id": "raio",
+    "tipo": "inteiro",
+    "rotulo": "Raio da área",
+    "min": 3,
+    "max": 100,
+    "padrao": 3,
+    "unidade": "m"
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "*",
+    0.3333333333333333,
+    "$raio"
+   ]
+  ],
+  "manter": "igual"
+ },
+ "escurecer": {
+  "tipo": "inalterado",
+  "entradas": [
+   {
+    "id": "raio",
+    "tipo": "inteiro",
+    "rotulo": "Raio da área",
+    "min": 2,
+    "max": 100,
+    "padrao": 2,
+    "unidade": "m"
+   },
+   {
+    "id": "luz",
+    "tipo": "escolha",
+    "rotulo": "Luz",
+    "padrao": "luar",
+    "opcoes": [
+     {
+      "id": "tochas",
+      "rotulo": "Tochas (custo básico 1/2)",
+      "valor": 0.5
+     },
+     {
+      "id": "luar",
+      "rotulo": "Luar (custo básico 1)",
+      "valor": 1
+     },
+     {
+      "id": "estrelas",
+      "rotulo": "Luz das estrelas (custo básico 3/2)",
+      "valor": 1.5
+     },
+     {
+      "id": "total",
+      "rotulo": "Escuridão total (custo básico 2)",
+      "valor": 2
+     }
+    ]
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "*",
+    "$luz",
+    "$raio"
+   ]
+  ]
+ },
+ "fantasma": {
+  "tipo": "inalterado",
+  "entradas": [
+   {
+    "id": "raio",
+    "tipo": "inteiro",
+    "rotulo": "Raio da área",
+    "min": 1,
+    "max": 100,
+    "padrao": 1,
+    "unidade": "m"
+   },
+   {
+    "id": "forca",
+    "tipo": "escolha",
+    "rotulo": "Fantasma com",
+    "padrao": "normal",
+    "opcoes": [
+     {
+      "id": "normal",
+      "rotulo": "ST normal",
+      "valor": 5
+     },
+     {
+      "id": "dobro",
+      "rotulo": "O dobro da ST normal (custo básico 9)",
+      "valor": 9
+     }
+    ]
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "*",
+    "$forca",
+    "$raio"
+   ]
+  ],
+  "manter": "metade"
+ },
+ "ilusao_perfeita": {
+  "tipo": "inalterado",
+  "entradas": [
+   {
+    "id": "raio",
+    "tipo": "inteiro",
+    "rotulo": "Raio da área",
+    "min": 1,
+    "max": 100,
+    "padrao": 1,
+    "unidade": "m"
+   },
+   {
+    "id": "toque",
+    "tipo": "marca",
+    "rotulo": "Enganar também o sentido do toque (custo duplo)"
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "*",
+    [
+     "*",
+     3,
+     "$raio"
+    ],
+    [
+     "+",
+     1,
+     "$toque"
+    ]
+   ]
+  ],
+  "manter": "metade"
+ },
+ "purificar_a_terra": {
+  "tipo": "inalterado",
+  "entradas": [
+   {
+    "id": "raio",
+    "tipo": "inteiro",
+    "rotulo": "Raio da área",
+    "min": 1,
+    "max": 100,
+    "padrao": 1,
+    "unidade": "m"
+   },
+   {
+    "id": "pobre",
+    "tipo": "marca",
+    "rotulo": "Solo pobre, como planície rochosa ou deserto arenoso (dobra o custo)"
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "*",
+    [
+     "*",
+     2,
+     "$raio"
+    ],
+    [
+     "+",
+     1,
+     "$pobre"
+    ]
+   ]
+  ]
+ },
+ "moldar_trevas": {
+  "tipo": "inalterado",
+  "entradas": [
+   {
+    "id": "raio",
+    "tipo": "inteiro",
+    "rotulo": "Raio da área",
+    "min": 1,
+    "max": 100,
+    "padrao": 1,
+    "unidade": "m"
+   },
+   {
+    "id": "sombras",
+    "tipo": "escolha",
+    "rotulo": "Sombras",
+    "padrao": "tridimensionais",
+    "opcoes": [
+     {
+      "id": "tridimensionais",
+      "rotulo": "Tridimensionais",
+      "valor": 2
+     },
+     {
+      "id": "bidimensionais",
+      "rotulo": "Bidimensionais (custo básico 1)",
+      "valor": 1
+     }
+    ]
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "*",
+    "$sombras",
+    "$raio"
+   ]
+  ],
+  "manter": "igual"
+ },
+ "neblina_mistica": {
+  "tipo": "inalterado",
+  "entradas": [
+   {
+    "id": "raio",
+    "tipo": "inteiro",
+    "rotulo": "Raio da área",
+    "min": 1,
+    "max": 100,
+    "padrao": 1,
+    "unidade": "m"
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "*",
+    1,
+    "$raio"
+   ]
+  ],
+  "manter": "igual"
+ },
+ "terremoto": {
+  "tipo": "inalterado",
+  "entradas": [
+   {
+    "id": "raio",
+    "tipo": "inteiro",
+    "rotulo": "Raio da área",
+    "min": 1,
+    "max": 100,
+    "padrao": 1,
+    "unidade": "m"
+   },
+   {
+    "id": "intensidade",
+    "tipo": "escolha",
+    "rotulo": "Intensidade",
+    "padrao": "demonstracao",
+    "opcoes": [
+     {
+      "id": "demonstracao",
+      "rotulo": "Apenas uma demonstração (custo básico)",
+      "valor": 1
+     },
+     {
+      "id": "leve",
+      "rotulo": "Leve (custo básico ×2)",
+      "valor": 2
+     },
+     {
+      "id": "grave",
+      "rotulo": "Grave (custo básico ×4)",
+      "valor": 4
+     }
+    ]
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "*",
+    [
+     "*",
+     2,
+     "$raio"
+    ],
+    "$intensidade"
+   ]
+  ],
+  "manter": "igual"
+ },
+ "ocultar": {
+  "tipo": "inalterado",
+  "entradas": [
+   {
+    "id": "raio",
+    "tipo": "inteiro",
+    "rotulo": "Raio da área",
+    "min": 1,
+    "max": 100,
+    "padrao": 1,
+    "unidade": "m"
+   },
+   {
+    "id": "terreno",
+    "tipo": "escolha",
+    "rotulo": "Terreno",
+    "padrao": "floresta",
+    "opcoes": [
+     {
+      "id": "floresta",
+      "rotulo": "Floresta, selva ou debaixo d'água",
+      "valor": 1
+     },
+     {
+      "id": "planicie",
+      "rotulo": "Planícies ou savana",
+      "valor": 2
+     },
+     {
+      "id": "tundra",
+      "rotulo": "Tundra",
+      "valor": 3
+     }
+    ]
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "*",
+    "$terreno",
+    "$raio"
+   ]
+  ],
+  "manter": "igual"
+ },
+ "percepcao_de_espiritos": {
+  "tipo": "inalterado",
+  "entradas": [
+   {
+    "id": "raio",
+    "tipo": "inteiro",
+    "rotulo": "Raio da área",
+    "min": 1,
+    "max": 100,
+    "padrao": 1,
+    "unidade": "m"
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "*",
+    0.5,
+    "$raio"
+   ]
+  ]
+ },
+ "percepcao_de_vida": {
+  "tipo": "inalterado",
+  "entradas": [
+   {
+    "id": "raio",
+    "tipo": "inteiro",
+    "rotulo": "Raio da área",
+    "min": 1,
+    "max": 100,
+    "padrao": 1,
+    "unidade": "m"
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "*",
+    0.5,
+    "$raio"
+   ]
+  ]
+ },
+ "percepcao_de_inimigos": {
+  "tipo": "inalterado",
+  "entradas": [
+   {
+    "id": "raio",
+    "tipo": "inteiro",
+    "rotulo": "Raio da área",
+    "min": 1,
+    "max": 100,
+    "padrao": 1,
+    "unidade": "m"
+   }
+  ],
+  "operar": [
+   "max",
+   2,
+   [
+    "*",
+    1,
+    "$raio"
+   ]
+  ]
+ },
+ "testar_carga": {
+  "tipo": "inalterado",
+  "entradas": [
+   {
+    "id": "raio",
+    "tipo": "inteiro",
+    "rotulo": "Raio da área",
+    "min": 1,
+    "max": 100,
+    "padrao": 1,
+    "unidade": "m"
+   }
+  ],
+  "operar": [
+   "max",
+   2,
+   [
+    "*",
+    1,
+    "$raio"
+   ]
+  ]
+ },
+ "percepcao_de_observacao": {
+  "tipo": "inalterado",
+  "entradas": [
+   {
+    "id": "raio",
+    "tipo": "inteiro",
+    "rotulo": "Raio da área",
+    "min": 1,
+    "max": 100,
+    "padrao": 1,
+    "unidade": "m"
+   },
+   {
+    "id": "ser",
+    "tipo": "marca",
+    "rotulo": "Operada em um ser (custo 3)"
+   }
+  ],
+  "operar": [
+   "max",
+   [
+    "*",
+    3,
+    "$ser"
+   ],
+   [
+    "*",
+    [
+     "-",
+     1,
+     "$ser"
+    ],
+    "$raio"
+   ]
+  ],
+  "manter": "metade"
+ },
+ "resistencia_ao_fogo": {
+  "tipo": "inalterado",
+  "entradas": [
+   {
+    "id": "raio",
+    "tipo": "inteiro",
+    "rotulo": "Raio da área",
+    "min": 1,
+    "max": 100,
+    "padrao": 1,
+    "unidade": "m"
+   },
+   {
+    "id": "dobro",
+    "tipo": "marca",
+    "rotulo": "Custo dobrado (-10 a tentativas mágicas de acender fogueiras)"
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "*",
+    [
+     "*",
+     3,
+     "$raio"
+    ],
+    [
+     "+",
+     1,
+     "$dobro"
+    ]
+   ]
+  ],
+  "manter": "igual"
+ },
+ "sono_coletivo": {
+  "tipo": "inalterado",
+  "entradas": [
+   {
+    "id": "raio",
+    "tipo": "inteiro",
+    "rotulo": "Raio da área",
+    "min": 2,
+    "max": 100,
+    "padrao": 2,
+    "unidade": "m"
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "*",
+    3,
+    "$raio"
+   ]
+  ]
+ },
+ "sugestao_coletiva": {
+  "tipo": "inalterado",
+  "entradas": [
+   {
+    "id": "raio",
+    "tipo": "inteiro",
+    "rotulo": "Raio da área",
+    "min": 2,
+    "max": 100,
+    "padrao": 2,
+    "unidade": "m"
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "*",
+    4,
+    "$raio"
+   ]
+  ],
+  "manter": [
+   "max",
+   1,
+   [
+    "*",
+    2,
+    "$raio"
+   ]
+  ]
+ },
+ "torpor_coletivo": {
+  "tipo": "inalterado",
+  "entradas": [
+   {
+    "id": "raio",
+    "tipo": "inteiro",
+    "rotulo": "Raio da área",
+    "min": 2,
+    "max": 100,
+    "padrao": 2,
+    "unidade": "m"
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "*",
+    2,
+    "$raio"
+   ]
+  ],
+  "manter": [
+   "max",
+   1,
+   [
+    "*",
+    1,
+    "$raio"
+   ]
+  ]
+ },
+ "zumbis_em_massa": {
+  "tipo": "inalterado",
+  "entradas": [
+   {
+    "id": "raio",
+    "tipo": "inteiro",
+    "rotulo": "Raio da área",
+    "min": 2,
+    "max": 100,
+    "padrao": 2,
+    "unidade": "m"
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "*",
+    7,
+    "$raio"
+   ]
+  ]
+ },
+ "abencoar_plantas": {
+  "tipo": "inalterado",
+  "entradas": [
+   {
+    "id": "raio",
+    "tipo": "inteiro",
+    "rotulo": "Raio da área",
+    "min": 1,
+    "max": 100,
+    "padrao": 1,
+    "unidade": "m"
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "*",
+    1,
+    "$raio"
+   ]
+  ]
+ },
+ "secar_plantas": {
+  "tipo": "inalterado",
+  "entradas": [
+   {
+    "id": "raio",
+    "tipo": "inteiro",
+    "rotulo": "Raio da área",
+    "min": 1,
+    "max": 100,
+    "padrao": 1,
+    "unidade": "m"
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "*",
+    1,
+    "$raio"
+   ]
+  ]
+ },
+ "curar_planta": {
+  "tipo": "inalterado",
+  "entradas": [
+   {
+    "id": "raio",
+    "tipo": "inteiro",
+    "rotulo": "Raio da área",
+    "min": 1,
+    "max": 100,
+    "padrao": 1,
+    "unidade": "m"
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "*",
+    3,
+    "$raio"
+   ]
+  ]
+ },
+ "tempestade_de_faiscas": {
+  "tipo": "inalterado",
+  "entradas": [
+   {
+    "id": "raio",
+    "tipo": "inteiro",
+    "rotulo": "Raio da área",
+    "min": 1,
+    "max": 100,
+    "padrao": 1,
+    "unidade": "m"
+   },
+   {
+    "id": "relampago",
+    "tipo": "escolha",
+    "rotulo": "Relâmpago",
+    "padrao": "r1",
+    "opcoes": [
+     {
+      "id": "r1",
+      "rotulo": "Relâmpago 1d-1",
+      "valor": 2
+     },
+     {
+      "id": "r2",
+      "rotulo": "Relâmpago 2d-2",
+      "valor": 4
+     },
+     {
+      "id": "r3",
+      "rotulo": "Relâmpago 3d-3",
+      "valor": 6
+     }
+    ]
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "*",
+    "$relampago",
+    "$raio"
+   ]
+  ],
+  "manter": "metade"
+ },
+ "muralha_de_luz": {
+  "tipo": "inalterado",
+  "entradas": [
+   {
+    "id": "raio",
+    "tipo": "inteiro",
+    "rotulo": "Raio da área",
+    "min": 1,
+    "max": 100,
+    "padrao": 1,
+    "unidade": "m"
+   },
+   {
+    "id": "energia",
+    "tipo": "inteiro",
+    "rotulo": "Energia no custo básico",
+    "min": 1,
+    "max": 3,
+    "padrao": 1
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "*",
+    "$energia",
+    "$raio"
+   ]
+  ],
+  "manter": "igual"
+ },
+ "muralha_de_relampagos": {
+  "tipo": "inalterado",
+  "entradas": [
+   {
+    "id": "raio",
+    "tipo": "inteiro",
+    "rotulo": "Raio da área",
+    "min": 1,
+    "max": 100,
+    "padrao": 1,
+    "unidade": "m"
+   },
+   {
+    "id": "energia",
+    "tipo": "inteiro",
+    "rotulo": "Energia no custo básico",
+    "min": 2,
+    "max": 6,
+    "padrao": 2
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "*",
+    "$energia",
+    "$raio"
+   ]
+  ],
+  "manter": "igual"
+ },
+ "nuvem_de_faiscas": {
+  "tipo": "inalterado",
+  "entradas": [
+   {
+    "id": "raio",
+    "tipo": "inteiro",
+    "rotulo": "Raio da área",
+    "min": 1,
+    "max": 100,
+    "padrao": 1,
+    "unidade": "m"
+   },
+   {
+    "id": "energia",
+    "tipo": "inteiro",
+    "rotulo": "Energia no custo básico",
+    "min": 1,
+    "max": 5,
+    "padrao": 1
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "*",
+    "$energia",
+    "$raio"
+   ]
+  ],
+  "manter": "igual"
+ },
+ "nuvem_de_fogo": {
+  "tipo": "inalterado",
+  "entradas": [
+   {
+    "id": "raio",
+    "tipo": "inteiro",
+    "rotulo": "Raio da área",
+    "min": 1,
+    "max": 100,
+    "padrao": 1,
+    "unidade": "m"
+   },
+   {
+    "id": "energia",
+    "tipo": "inteiro",
+    "rotulo": "Energia no custo básico",
+    "min": 1,
+    "max": 5,
+    "padrao": 1
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "*",
+    "$energia",
+    "$raio"
+   ]
+  ],
+  "manter": "igual"
+ },
+ "aquece": {
+  "tipo": "inalterado",
+  "entradas": [
+   {
+    "id": "raio",
+    "tipo": "inteiro",
+    "rotulo": "Raio da área",
+    "min": 1,
+    "max": 100,
+    "padrao": 1,
+    "unidade": "m"
+   },
+   {
+    "id": "aplicacoes",
+    "tipo": "inteiro",
+    "rotulo": "Aplicações do custo básico (cada uma aumenta a temperatura em 2° C)",
+    "min": 1,
+    "max": 20,
+    "padrao": 1
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "*",
+    [
+     "*",
+     0.1,
+     "$raio"
+    ],
+    "$aplicacoes"
+   ]
+  ],
+  "manter": "igual"
+ },
+ "resfriar": {
+  "tipo": "inalterado",
+  "entradas": [
+   {
+    "id": "raio",
+    "tipo": "inteiro",
+    "rotulo": "Raio da área",
+    "min": 1,
+    "max": 100,
+    "padrao": 1,
+    "unidade": "m"
+   },
+   {
+    "id": "aplicacoes",
+    "tipo": "inteiro",
+    "rotulo": "Aplicações do custo básico (cada uma reduz a temperatura em 20° C)",
+    "min": 1,
+    "max": 20,
+    "padrao": 1
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "*",
+    [
+     "*",
+     0.1,
+     "$raio"
+    ],
+    "$aplicacoes"
+   ]
+  ],
+  "manter": "igual"
+ },
+ "neve": {
+  "tipo": "inalterado",
+  "entradas": [
+   {
+    "id": "raio",
+    "tipo": "inteiro",
+    "rotulo": "Raio da área",
+    "min": 1,
+    "max": 100,
+    "padrao": 1,
+    "unidade": "m"
+   },
+   {
+    "id": "aplicacoes",
+    "tipo": "inteiro",
+    "rotulo": "Aplicações (cada 1/15 a mais por metro de raio aumenta a neve em 2,5 cm por hora)",
+    "min": 1,
+    "max": 20,
+    "padrao": 1
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "*",
+    [
+     "*",
+     0.06666666666666667,
+     "$raio"
+    ],
+    "$aplicacoes"
+   ]
+  ],
+  "manter": "igual"
+ },
+ "nuvens": {
+  "tipo": "inalterado",
+  "entradas": [
+   {
+    "id": "raio",
+    "tipo": "inteiro",
+    "rotulo": "Raio da área",
+    "min": 1,
+    "max": 100,
+    "padrao": 1,
+    "unidade": "m"
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "*",
+    0.05,
+    "$raio"
+   ]
+  ],
+  "manter": "igual"
+ },
+ "vento": {
+  "tipo": "inalterado",
+  "entradas": [
+   {
+    "id": "raio",
+    "tipo": "inteiro",
+    "rotulo": "Raio da área",
+    "min": 1,
+    "max": 100,
+    "padrao": 1,
+    "unidade": "m"
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "*",
+    0.02,
+    "$raio"
+   ]
+  ],
+  "manter": "igual"
+ },
+ "tempestade": {
+  "tipo": "inalterado",
+  "entradas": [
+   {
+    "id": "raio",
+    "tipo": "inteiro",
+    "rotulo": "Raio da área",
+    "min": 1,
+    "max": 100,
+    "padrao": 1,
+    "unidade": "m"
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "*",
+    0.02,
+    "$raio"
+   ]
+  ],
+  "manter": "igual"
+ },
+ "correnteza": {
+  "tipo": "inalterado",
+  "entradas": [
+   {
+    "id": "raio",
+    "tipo": "inteiro",
+    "rotulo": "Raio da área",
+    "min": 1,
+    "max": 100,
+    "padrao": 1,
+    "unidade": "m"
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "*",
+    0.02,
+    "$raio"
+   ]
+  ],
+  "manter": "igual"
+ },
+ "mare": {
+  "tipo": "inalterado",
+  "entradas": [
+   {
+    "id": "raio",
+    "tipo": "inteiro",
+    "rotulo": "Raio da área",
+    "min": 1,
+    "max": 100,
+    "padrao": 1,
+    "unidade": "m"
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "*",
+    0.03333333333333333,
+    "$raio"
+   ]
+  ],
+  "manter": "igual"
+ },
+ "ondas": {
+  "tipo": "inalterado",
+  "entradas": [
+   {
+    "id": "raio",
+    "tipo": "inteiro",
+    "rotulo": "Raio da área",
+    "min": 1,
+    "max": 100,
+    "padrao": 1,
+    "unidade": "m"
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "*",
+    0.016666666666666666,
+    "$raio"
+   ]
+  ],
+  "manter": "igual"
+ },
+ "chuva": {
+  "tipo": "inalterado",
+  "entradas": [
+   {
+    "id": "raio",
+    "tipo": "inteiro",
+    "rotulo": "Raio da área",
+    "min": 1,
+    "max": 100,
+    "padrao": 1,
+    "unidade": "m"
+   },
+   {
+    "id": "inadequada",
+    "tipo": "marca",
+    "rotulo": "Fazer chover em deserto, ou evitar a chuva em área chuvosa ou pantanosa (dobra o custo)"
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "*",
+    [
+     "*",
+     0.1,
+     "$raio"
+    ],
+    [
+     "+",
+     1,
+     "$inadequada"
+    ]
+   ]
+  ],
+  "manter": "igual"
+ },
+ "chuva_de_nozes": {
+  "tipo": "inalterado",
+  "entradas": [
+   {
+    "id": "raio",
+    "tipo": "inteiro",
+    "rotulo": "Raio da área",
+    "min": 1,
+    "max": 100,
+    "padrao": 1,
+    "unidade": "m"
+   },
+   {
+    "id": "dobro",
+    "tipo": "marca",
+    "rotulo": "Dobrar o custo para dobrar o efeito (-2 de penalidade no NH e visibilidade -1 por 4 metros)"
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "*",
+    [
+     "*",
+     0.1,
+     "$raio"
+    ],
+    [
+     "+",
+     1,
+     "$dobro"
+    ]
+   ]
+  ],
+  "manter": "igual"
+ },
+ "granizo": {
+  "tipo": "inalterado",
+  "entradas": [
+   {
+    "id": "raio",
+    "tipo": "inteiro",
+    "rotulo": "Raio da área",
+    "min": 1,
+    "max": 100,
+    "padrao": 1,
+    "unidade": "m"
+   },
+   {
+    "id": "tipo",
+    "tipo": "escolha",
+    "rotulo": "Granizo",
+    "padrao": "comum",
+    "opcoes": [
+     {
+      "id": "comum",
+      "rotulo": "Comum (custo básico 1/5)",
+      "valor": 0.2
+     },
+     {
+      "id": "prejudicial",
+      "rotulo": "Prejudicial (custo básico 1)",
+      "valor": 1
+     }
+    ]
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "*",
+    "$tipo",
+    "$raio"
+   ]
+  ],
+  "manter": "igual"
+ },
+ "agua_podre": {
+  "tipo": "inalterado",
+  "entradas": [
+   {
+    "id": "raio",
+    "tipo": "inteiro",
+    "rotulo": "Raio da área",
+    "min": 1,
+    "max": 100,
+    "padrao": 1,
+    "unidade": "m"
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "*",
+    3,
+    "$raio"
+   ]
+  ]
+ },
+ "anular_magica": {
+  "tipo": "inalterado",
+  "entradas": [
+   {
+    "id": "raio",
+    "tipo": "inteiro",
+    "rotulo": "Raio da área",
+    "min": 1,
+    "max": 100,
+    "padrao": 1,
+    "unidade": "m"
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "*",
+    3,
+    "$raio"
+   ]
+  ]
+ },
+ "ar_essencial": {
+  "tipo": "inalterado",
+  "entradas": [
+   {
+    "id": "raio",
+    "tipo": "inteiro",
+    "rotulo": "Raio da área",
+    "min": 1,
+    "max": 100,
+    "padrao": 1,
+    "unidade": "m"
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "*",
+    2,
+    "$raio"
+   ]
+  ]
+ },
+ "atrair": {
+  "tipo": "inalterado",
+  "entradas": [
+   {
+    "id": "raio",
+    "tipo": "inteiro",
+    "rotulo": "Raio da área",
+    "min": 1,
+    "max": 100,
+    "padrao": 1,
+    "unidade": "m"
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "*",
+    1,
+    "$raio"
+   ]
+  ],
+  "manter": "igual"
+ },
+ "baliza_viagem_planar": {
+  "tipo": "inalterado",
+  "entradas": [
+   {
+    "id": "raio",
+    "tipo": "inteiro",
+    "rotulo": "Raio da área",
+    "min": 1,
+    "max": 100,
+    "padrao": 1,
+    "unidade": "m"
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "*",
+    10,
+    "$raio"
+   ]
+  ],
+  "manter": "metade"
+ },
+ "baliza_viagem_no_tempo": {
+  "tipo": "inalterado",
+  "entradas": [
+   {
+    "id": "raio",
+    "tipo": "inteiro",
+    "rotulo": "Raio da área",
+    "min": 1,
+    "max": 100,
+    "padrao": 1,
+    "unidade": "m"
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "*",
+    10,
+    "$raio"
+   ]
+  ],
+  "manter": "metade"
+ },
+ "baliza_teleporte": {
+  "tipo": "inalterado",
+  "entradas": [
+   {
+    "id": "raio",
+    "tipo": "inteiro",
+    "rotulo": "Raio da área",
+    "min": 1,
+    "max": 100,
+    "padrao": 1,
+    "unidade": "m"
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "*",
+    10,
+    "$raio"
+   ]
+  ],
+  "manter": "metade"
+ },
+ "barulho": {
+  "tipo": "inalterado",
+  "entradas": [
+   {
+    "id": "raio",
+    "tipo": "inteiro",
+    "rotulo": "Raio da área",
+    "min": 1,
+    "max": 100,
+    "padrao": 1,
+    "unidade": "m"
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "*",
+    4,
+    "$raio"
+   ]
+  ],
+  "manter": [
+   "max",
+   1,
+   [
+    "*",
+    2,
+    "$raio"
+   ]
+  ]
+ },
+ "bravura": {
+  "tipo": "inalterado",
+  "entradas": [
+   {
+    "id": "raio",
+    "tipo": "inteiro",
+    "rotulo": "Raio da área",
+    "min": 1,
+    "max": 100,
+    "padrao": 1,
+    "unidade": "m"
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "*",
+    2,
+    "$raio"
+   ]
+  ],
+  "manter": "nenhum"
+ },
+ "camada_de_gelo": {
+  "tipo": "inalterado",
+  "entradas": [
+   {
+    "id": "raio",
+    "tipo": "inteiro",
+    "rotulo": "Raio da área",
+    "min": 1,
+    "max": 100,
+    "padrao": 1,
+    "unidade": "m"
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "*",
+    3,
+    "$raio"
+   ]
+  ]
+ },
+ "cessar_corrente_eletrica": {
+  "tipo": "inalterado",
+  "entradas": [
+   {
+    "id": "raio",
+    "tipo": "inteiro",
+    "rotulo": "Raio da área",
+    "min": 1,
+    "max": 100,
+    "padrao": 1,
+    "unidade": "m"
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "*",
+    3,
+    "$raio"
+   ]
+  ],
+  "manter": "metade"
+ },
+ "chama_fantasmagorica": {
+  "tipo": "inalterado",
+  "entradas": [
+   {
+    "id": "raio",
+    "tipo": "inteiro",
+    "rotulo": "Raio da área",
+    "min": 1,
+    "max": 100,
+    "padrao": 1,
+    "unidade": "m"
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "*",
+    1,
+    "$raio"
+   ]
+  ],
+  "manter": "igual"
+ },
+ "chuva_de_acido": {
+  "tipo": "inalterado",
+  "entradas": [
+   {
+    "id": "raio",
+    "tipo": "inteiro",
+    "rotulo": "Raio da área",
+    "min": 1,
+    "max": 100,
+    "padrao": 1,
+    "unidade": "m"
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "*",
+    3,
+    "$raio"
+   ]
+  ],
+  "manter": "igual"
+ },
+ "cola": {
+  "tipo": "inalterado",
+  "entradas": [
+   {
+    "id": "raio",
+    "tipo": "inteiro",
+    "rotulo": "Raio da área",
+    "min": 1,
+    "max": 100,
+    "padrao": 1,
+    "unidade": "m"
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "*",
+    3,
+    "$raio"
+   ]
+  ],
+  "manter": "igual"
+ },
+ "controle_de_emocao": {
+  "tipo": "inalterado",
+  "entradas": [
+   {
+    "id": "raio",
+    "tipo": "inteiro",
+    "rotulo": "Raio da área",
+    "min": 1,
+    "max": 100,
+    "padrao": 1,
+    "unidade": "m"
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "*",
+    2,
+    "$raio"
+   ]
+  ],
+  "manter": "nenhum"
+ },
+ "crescimento_de_plantas": {
+  "tipo": "inalterado",
+  "entradas": [
+   {
+    "id": "raio",
+    "tipo": "inteiro",
+    "rotulo": "Raio da área",
+    "min": 1,
+    "max": 100,
+    "padrao": 1,
+    "unidade": "m"
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "*",
+    3,
+    "$raio"
+   ]
+  ],
+  "manter": [
+   "max",
+   1,
+   [
+    "*",
+    2,
+    "$raio"
+   ]
+  ]
+ },
+ "criar_ar": {
+  "tipo": "inalterado",
+  "entradas": [
+   {
+    "id": "raio",
+    "tipo": "inteiro",
+    "rotulo": "Raio da área",
+    "min": 1,
+    "max": 100,
+    "padrao": 1,
+    "unidade": "m"
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "*",
+    1,
+    "$raio"
+   ]
+  ],
+  "manter": "nenhum"
+ },
+ "criar_vapor": {
+  "tipo": "inalterado",
+  "entradas": [
+   {
+    "id": "raio",
+    "tipo": "inteiro",
+    "rotulo": "Raio da área",
+    "min": 1,
+    "max": 100,
+    "padrao": 1,
+    "unidade": "m"
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "*",
+    2,
+    "$raio"
+   ]
+  ],
+  "manter": "nenhum"
+ },
+ "deslocar_terreno": {
+  "tipo": "inalterado",
+  "entradas": [
+   {
+    "id": "raio",
+    "tipo": "inteiro",
+    "rotulo": "Raio da área",
+    "min": 1,
+    "max": 100,
+    "padrao": 1,
+    "unidade": "m"
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "*",
+    10,
+    "$raio"
+   ]
+  ],
+  "manter": [
+   "max",
+   1,
+   [
+    "*",
+    8,
+    "$raio"
+   ]
+  ]
+ },
+ "desorientar": {
+  "tipo": "inalterado",
+  "entradas": [
+   {
+    "id": "raio",
+    "tipo": "inteiro",
+    "rotulo": "Raio da área",
+    "min": 1,
+    "max": 100,
+    "padrao": 1,
+    "unidade": "m"
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "*",
+    1,
+    "$raio"
+   ]
+  ],
+  "manter": "nenhum"
+ },
+ "despertar": {
+  "tipo": "inalterado",
+  "entradas": [
+   {
+    "id": "raio",
+    "tipo": "inteiro",
+    "rotulo": "Raio da área",
+    "min": 1,
+    "max": 100,
+    "padrao": 1,
+    "unidade": "m"
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "*",
+    1,
+    "$raio"
+   ]
+  ]
+ },
+ "desvitalizar_ar": {
+  "tipo": "inalterado",
+  "entradas": [
+   {
+    "id": "raio",
+    "tipo": "inteiro",
+    "rotulo": "Raio da área",
+    "min": 1,
+    "max": 100,
+    "padrao": 1,
+    "unidade": "m"
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "*",
+    2,
+    "$raio"
+   ]
+  ],
+  "manter": "nenhum"
+ },
+ "deteccao_de_veneno": {
+  "tipo": "inalterado",
+  "entradas": [
+   {
+    "id": "raio",
+    "tipo": "inteiro",
+    "rotulo": "Raio da área",
+    "min": 1,
+    "max": 100,
+    "padrao": 1,
+    "unidade": "m"
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "*",
+    2,
+    "$raio"
+   ]
+  ]
+ },
+ "dissipar_ar": {
+  "tipo": "inalterado",
+  "entradas": [
+   {
+    "id": "raio",
+    "tipo": "inteiro",
+    "rotulo": "Raio da área",
+    "min": 1,
+    "max": 100,
+    "padrao": 1,
+    "unidade": "m"
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "*",
+    2,
+    "$raio"
+   ]
+  ]
+ },
+ "domo_absoluto": {
+  "tipo": "inalterado",
+  "entradas": [
+   {
+    "id": "raio",
+    "tipo": "inteiro",
+    "rotulo": "Raio da área",
+    "min": 1,
+    "max": 100,
+    "padrao": 1,
+    "unidade": "m"
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "*",
+    6,
+    "$raio"
+   ]
+  ],
+  "manter": [
+   "max",
+   1,
+   [
+    "*",
+    4,
+    "$raio"
+   ]
+  ]
+ },
+ "domo_atmosferico": {
+  "tipo": "inalterado",
+  "entradas": [
+   {
+    "id": "raio",
+    "tipo": "inteiro",
+    "rotulo": "Raio da área",
+    "min": 1,
+    "max": 100,
+    "padrao": 1,
+    "unidade": "m"
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "*",
+    4,
+    "$raio"
+   ]
+  ],
+  "manter": "metade"
+ },
+ "domo_climatico": {
+  "tipo": "inalterado",
+  "entradas": [
+   {
+    "id": "raio",
+    "tipo": "inteiro",
+    "rotulo": "Raio da área",
+    "min": 1,
+    "max": 100,
+    "padrao": 1,
+    "unidade": "m"
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "*",
+    3,
+    "$raio"
+   ]
+  ],
+  "manter": [
+   "max",
+   1,
+   [
+    "*",
+    2,
+    "$raio"
+   ]
+  ]
+ },
+ "domo_de_forca": {
+  "tipo": "inalterado",
+  "entradas": [
+   {
+    "id": "raio",
+    "tipo": "inteiro",
+    "rotulo": "Raio da área",
+    "min": 1,
+    "max": 100,
+    "padrao": 1,
+    "unidade": "m"
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "*",
+    3,
+    "$raio"
+   ]
+  ],
+  "manter": [
+   "max",
+   1,
+   [
+    "*",
+    2,
+    "$raio"
+   ]
+  ]
+ },
+ "escudo_antimagica": {
+  "tipo": "inalterado",
+  "entradas": [
+   {
+    "id": "raio",
+    "tipo": "inteiro",
+    "rotulo": "Raio da área",
+    "min": 1,
+    "max": 100,
+    "padrao": 1,
+    "unidade": "m"
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "*",
+    3,
+    "$raio"
+   ]
+  ],
+  "manter": [
+   "max",
+   1,
+   [
+    "*",
+    2,
+    "$raio"
+   ]
+  ]
+ },
+ "escuridao": {
+  "tipo": "inalterado",
+  "entradas": [
+   {
+    "id": "raio",
+    "tipo": "inteiro",
+    "rotulo": "Raio da área",
+    "min": 1,
+    "max": 100,
+    "padrao": 1,
+    "unidade": "m"
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "*",
+    2,
+    "$raio"
+   ]
+  ],
+  "manter": [
+   "max",
+   1,
+   [
+    "*",
+    1,
+    "$raio"
+   ]
+  ]
+ },
+ "espantar_zumbi": {
+  "tipo": "inalterado",
+  "entradas": [
+   {
+    "id": "raio",
+    "tipo": "inteiro",
+    "rotulo": "Raio da área",
+    "min": 1,
+    "max": 100,
+    "padrao": 1,
+    "unidade": "m"
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "*",
+    2,
+    "$raio"
+   ]
+  ],
+  "manter": "nenhum"
+ },
+ "evitar": {
+  "tipo": "inalterado",
+  "entradas": [
+   {
+    "id": "raio",
+    "tipo": "inteiro",
+    "rotulo": "Raio da área",
+    "min": 1,
+    "max": 100,
+    "padrao": 1,
+    "unidade": "m"
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "*",
+    3,
+    "$raio"
+   ]
+  ],
+  "manter": [
+   "max",
+   1,
+   [
+    "*",
+    3,
+    "$raio"
+   ]
+  ]
+ },
+ "extinguir_fogo": {
+  "tipo": "inalterado",
+  "entradas": [
+   {
+    "id": "raio",
+    "tipo": "inteiro",
+    "rotulo": "Raio da área",
+    "min": 1,
+    "max": 100,
+    "padrao": 1,
+    "unidade": "m"
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "*",
+    3,
+    "$raio"
+   ]
+  ]
+ },
+ "florescer": {
+  "tipo": "inalterado",
+  "entradas": [
+   {
+    "id": "raio",
+    "tipo": "inteiro",
+    "rotulo": "Raio da área",
+    "min": 1,
+    "max": 100,
+    "padrao": 1,
+    "unidade": "m"
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "*",
+    2,
+    "$raio"
+   ]
+  ],
+  "manter": "nenhum"
+ },
+ "fumaca": {
+  "tipo": "inalterado",
+  "entradas": [
+   {
+    "id": "raio",
+    "tipo": "inteiro",
+    "rotulo": "Raio da área",
+    "min": 1,
+    "max": 100,
+    "padrao": 1,
+    "unidade": "m"
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "*",
+    1,
+    "$raio"
+   ]
+  ],
+  "manter": "metade"
+ },
+ "furacao": {
+  "tipo": "inalterado",
+  "entradas": [
+   {
+    "id": "raio",
+    "tipo": "inteiro",
+    "rotulo": "Raio da área",
+    "min": 1,
+    "max": 100,
+    "padrao": 1,
+    "unidade": "m"
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "*",
+    2,
+    "$raio"
+   ]
+  ],
+  "manter": "metade"
+ },
+ "geada": {
+  "tipo": "inalterado",
+  "entradas": [
+   {
+    "id": "raio",
+    "tipo": "inteiro",
+    "rotulo": "Raio da área",
+    "min": 1,
+    "max": 100,
+    "padrao": 1,
+    "unidade": "m"
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "*",
+    1,
+    "$raio"
+   ]
+  ]
+ },
+ "gerar_odor": {
+  "tipo": "inalterado",
+  "entradas": [
+   {
+    "id": "raio",
+    "tipo": "inteiro",
+    "rotulo": "Raio da área",
+    "min": 1,
+    "max": 100,
+    "padrao": 1,
+    "unidade": "m"
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "*",
+    1,
+    "$raio"
+   ]
+  ],
+  "manter": "nenhum"
+ },
+ "ilusao_complexa": {
+  "tipo": "inalterado",
+  "entradas": [
+   {
+    "id": "raio",
+    "tipo": "inteiro",
+    "rotulo": "Raio da área",
+    "min": 1,
+    "max": 100,
+    "padrao": 1,
+    "unidade": "m"
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "*",
+    2,
+    "$raio"
+   ]
+  ],
+  "manter": "metade"
+ },
+ "ilusao_simples": {
+  "tipo": "inalterado",
+  "entradas": [
+   {
+    "id": "raio",
+    "tipo": "inteiro",
+    "rotulo": "Raio da área",
+    "min": 1,
+    "max": 100,
+    "padrao": 1,
+    "unidade": "m"
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "*",
+    1,
+    "$raio"
+   ]
+  ],
+  "manter": "metade"
+ },
+ "intervalo": {
+  "tipo": "inalterado",
+  "entradas": [
+   {
+    "id": "raio",
+    "tipo": "inteiro",
+    "rotulo": "Raio da área",
+    "min": 1,
+    "max": 100,
+    "padrao": 1,
+    "unidade": "m"
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "*",
+    5,
+    "$raio"
+   ]
+  ]
+ },
+ "limpar": {
+  "tipo": "inalterado",
+  "entradas": [
+   {
+    "id": "raio",
+    "tipo": "inteiro",
+    "rotulo": "Raio da área",
+    "min": 1,
+    "max": 100,
+    "padrao": 1,
+    "unidade": "m"
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "*",
+    2,
+    "$raio"
+   ]
+  ]
+ },
+ "luz_solar": {
+  "tipo": "inalterado",
+  "entradas": [
+   {
+    "id": "raio",
+    "tipo": "inteiro",
+    "rotulo": "Raio da área",
+    "min": 1,
+    "max": 100,
+    "padrao": 1,
+    "unidade": "m"
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "*",
+    2,
+    "$raio"
+   ]
+  ],
+  "manter": [
+   "max",
+   1,
+   [
+    "*",
+    1,
+    "$raio"
+   ]
+  ]
+ },
+ "luz_solar_continua": {
+  "tipo": "inalterado",
+  "entradas": [
+   {
+    "id": "raio",
+    "tipo": "inteiro",
+    "rotulo": "Raio da área",
+    "min": 1,
+    "max": 100,
+    "padrao": 1,
+    "unidade": "m"
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "*",
+    3,
+    "$raio"
+   ]
+  ]
+ },
+ "mau_cheiro": {
+  "tipo": "inalterado",
+  "entradas": [
+   {
+    "id": "raio",
+    "tipo": "inteiro",
+    "rotulo": "Raio da área",
+    "min": 1,
+    "max": 100,
+    "padrao": 1,
+    "unidade": "m"
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "*",
+    1,
+    "$raio"
+   ]
+  ],
+  "manter": "nenhum"
+ },
+ "medidas": {
+  "tipo": "inalterado",
+  "entradas": [
+   {
+    "id": "raio",
+    "tipo": "inteiro",
+    "rotulo": "Raio da área",
+    "min": 1,
+    "max": 100,
+    "padrao": 1,
+    "unidade": "m"
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "*",
+    1,
+    "$raio"
+   ]
+  ]
+ },
+ "medo": {
+  "tipo": "inalterado",
+  "entradas": [
+   {
+    "id": "raio",
+    "tipo": "inteiro",
+    "rotulo": "Raio da área",
+    "min": 1,
+    "max": 100,
+    "padrao": 1,
+    "unidade": "m"
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "*",
+    1,
+    "$raio"
+   ]
+  ],
+  "manter": "nenhum"
+ },
+ "muralha_de_silencio": {
+  "tipo": "inalterado",
+  "entradas": [
+   {
+    "id": "raio",
+    "tipo": "inteiro",
+    "rotulo": "Raio da área",
+    "min": 1,
+    "max": 100,
+    "padrao": 1,
+    "unidade": "m"
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "*",
+    2,
+    "$raio"
+   ]
+  ],
+  "manter": [
+   "max",
+   1,
+   [
+    "*",
+    1,
+    "$raio"
+   ]
+  ]
+ },
+ "muralha_de_vento": {
+  "tipo": "inalterado",
+  "entradas": [
+   {
+    "id": "raio",
+    "tipo": "inteiro",
+    "rotulo": "Raio da área",
+    "min": 1,
+    "max": 100,
+    "padrao": 1,
+    "unidade": "m"
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "*",
+    2,
+    "$raio"
+   ]
+  ],
+  "manter": "metade"
+ },
+ "murchar_planta": {
+  "tipo": "inalterado",
+  "entradas": [
+   {
+    "id": "raio",
+    "tipo": "inteiro",
+    "rotulo": "Raio da área",
+    "min": 1,
+    "max": 100,
+    "padrao": 1,
+    "unidade": "m"
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "*",
+    2,
+    "$raio"
+   ]
+  ]
+ },
+ "nevoeiro": {
+  "tipo": "inalterado",
+  "entradas": [
+   {
+    "id": "raio",
+    "tipo": "inteiro",
+    "rotulo": "Raio da área",
+    "min": 1,
+    "max": 100,
+    "padrao": 1,
+    "unidade": "m"
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "*",
+    2,
+    "$raio"
+   ]
+  ],
+  "manter": "metade"
+ },
+ "nuvem_de_polen": {
+  "tipo": "inalterado",
+  "entradas": [
+   {
+    "id": "raio",
+    "tipo": "inteiro",
+    "rotulo": "Raio da área",
+    "min": 1,
+    "max": 100,
+    "padrao": 1,
+    "unidade": "m"
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "*",
+    1,
+    "$raio"
+   ]
+  ],
+  "manter": "nenhum"
+ },
+ "panico": {
+  "tipo": "inalterado",
+  "entradas": [
+   {
+    "id": "raio",
+    "tipo": "inteiro",
+    "rotulo": "Raio da área",
+    "min": 1,
+    "max": 100,
+    "padrao": 1,
+    "unidade": "m"
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "*",
+    4,
+    "$raio"
+   ]
+  ],
+  "manter": [
+   "max",
+   1,
+   [
+    "*",
+    2,
+    "$raio"
+   ]
+  ]
+ },
+ "proteger_animal": {
+  "tipo": "inalterado",
+  "entradas": [
+   {
+    "id": "raio",
+    "tipo": "inteiro",
+    "rotulo": "Raio da área",
+    "min": 1,
+    "max": 100,
+    "padrao": 1,
+    "unidade": "m"
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "*",
+    1,
+    "$raio"
+   ]
+  ],
+  "manter": "igual"
+ },
+ "purificar_o_ar": {
+  "tipo": "inalterado",
+  "entradas": [
+   {
+    "id": "raio",
+    "tipo": "inteiro",
+    "rotulo": "Raio da área",
+    "min": 1,
+    "max": 100,
+    "padrao": 1,
+    "unidade": "m"
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "*",
+    1,
+    "$raio"
+   ]
+  ],
+  "manter": "nenhum"
+ },
+ "remover_infeccao": {
+  "tipo": "inalterado",
+  "entradas": [
+   {
+    "id": "raio",
+    "tipo": "inteiro",
+    "rotulo": "Raio da área",
+    "min": 1,
+    "max": 100,
+    "padrao": 1,
+    "unidade": "m"
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "*",
+    3,
+    "$raio"
+   ]
+  ]
+ },
+ "repelir_espiritos": {
+  "tipo": "inalterado",
+  "entradas": [
+   {
+    "id": "raio",
+    "tipo": "inteiro",
+    "rotulo": "Raio da área",
+    "min": 1,
+    "max": 100,
+    "padrao": 1,
+    "unidade": "m"
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "*",
+    4,
+    "$raio"
+   ]
+  ],
+  "manter": "metade"
+ },
+ "repelir_hibridos": {
+  "tipo": "inalterado",
+  "entradas": [
+   {
+    "id": "raio",
+    "tipo": "inteiro",
+    "rotulo": "Raio da área",
+    "min": 1,
+    "max": 100,
+    "padrao": 1,
+    "unidade": "m"
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "*",
+    6,
+    "$raio"
+   ]
+  ],
+  "manter": [
+   "max",
+   1,
+   [
+    "*",
+    3,
+    "$raio"
+   ]
+  ]
+ },
+ "resguardar_area": {
+  "tipo": "inalterado",
+  "entradas": [
+   {
+    "id": "raio",
+    "tipo": "inteiro",
+    "rotulo": "Raio da área",
+    "min": 1,
+    "max": 100,
+    "padrao": 1,
+    "unidade": "m"
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "*",
+    3,
+    "$raio"
+   ]
+  ],
+  "manter": [
+   "max",
+   1,
+   [
+    "*",
+    2,
+    "$raio"
+   ]
+  ]
+ },
+ "rouxinol": {
+  "tipo": "inalterado",
+  "entradas": [
+   {
+    "id": "raio",
+    "tipo": "inteiro",
+    "rotulo": "Raio da área",
+    "min": 1,
+    "max": 100,
+    "padrao": 1,
+    "unidade": "m"
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "*",
+    2,
+    "$raio"
+   ]
+  ],
+  "manter": [
+   "max",
+   1,
+   [
+    "*",
+    2,
+    "$raio"
+   ]
+  ]
+ },
+ "sentinela": {
+  "tipo": "inalterado",
+  "entradas": [
+   {
+    "id": "raio",
+    "tipo": "inteiro",
+    "rotulo": "Raio da área",
+    "min": 1,
+    "max": 100,
+    "padrao": 1,
+    "unidade": "m"
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "*",
+    1,
+    "$raio"
+   ]
+  ],
+  "manter": [
+   "max",
+   1,
+   [
+    "*",
+    1,
+    "$raio"
+   ]
+  ]
+ },
+ "silencio": {
+  "tipo": "inalterado",
+  "entradas": [
+   {
+    "id": "raio",
+    "tipo": "inteiro",
+    "rotulo": "Raio da área",
+    "min": 1,
+    "max": 100,
+    "padrao": 1,
+    "unidade": "m"
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "*",
+    2,
+    "$raio"
+   ]
+  ],
+  "manter": [
+   "max",
+   1,
+   [
+    "*",
+    1,
+    "$raio"
+   ]
+  ]
+ },
+ "suspender_magia": {
+  "tipo": "inalterado",
+  "entradas": [
+   {
+    "id": "raio",
+    "tipo": "inteiro",
+    "rotulo": "Raio da área",
+    "min": 1,
+    "max": 100,
+    "padrao": 1,
+    "unidade": "m"
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "*",
+    3,
+    "$raio"
+   ]
+  ],
+  "manter": [
+   "max",
+   1,
+   [
+    "*",
+    2,
+    "$raio"
+   ]
+  ]
+ },
+ "suspender_mana": {
+  "tipo": "inalterado",
+  "entradas": [
+   {
+    "id": "raio",
+    "tipo": "inteiro",
+    "rotulo": "Raio da área",
+    "min": 1,
+    "max": 100,
+    "padrao": 1,
+    "unidade": "m"
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "*",
+    5,
+    "$raio"
+   ]
+  ],
+  "manter": "nenhum"
+ },
+ "suspender_tempo": {
+  "tipo": "inalterado",
+  "entradas": [
+   {
+    "id": "raio",
+    "tipo": "inteiro",
+    "rotulo": "Raio da área",
+    "min": 1,
+    "max": 100,
+    "padrao": 1,
+    "unidade": "m"
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "*",
+    5,
+    "$raio"
+   ]
+  ],
+  "manter": [
+   "max",
+   1,
+   [
+    "*",
+    5,
+    "$raio"
+   ]
+  ]
+ },
+ "tempestade_de_areia": {
+  "tipo": "inalterado",
+  "entradas": [
+   {
+    "id": "raio",
+    "tipo": "inteiro",
+    "rotulo": "Raio da área",
+    "min": 1,
+    "max": 100,
+    "padrao": 1,
+    "unidade": "m"
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "*",
+    3,
+    "$raio"
+   ]
+  ],
+  "manter": "metade"
+ },
+ "terror": {
+  "tipo": "inalterado",
+  "entradas": [
+   {
+    "id": "raio",
+    "tipo": "inteiro",
+    "rotulo": "Raio da área",
+    "min": 1,
+    "max": 100,
+    "padrao": 1,
+    "unidade": "m"
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "*",
+    4,
+    "$raio"
+   ]
+  ]
+ },
+ "travar_vontade": {
+  "tipo": "inalterado",
+  "entradas": [
+   {
+    "id": "raio",
+    "tipo": "inteiro",
+    "rotulo": "Raio da área",
+    "min": 1,
+    "max": 100,
+    "padrao": 1,
+    "unidade": "m"
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "*",
+    3,
+    "$raio"
+   ]
+  ],
+  "manter": "nenhum"
+ },
+ "trevas": {
+  "tipo": "inalterado",
+  "entradas": [
+   {
+    "id": "raio",
+    "tipo": "inteiro",
+    "rotulo": "Raio da área",
+    "min": 1,
+    "max": 100,
+    "padrao": 1,
+    "unidade": "m"
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "*",
+    2,
+    "$raio"
+   ]
+  ],
+  "manter": [
+   "max",
+   1,
+   [
+    "*",
+    1,
+    "$raio"
+   ]
+  ]
+ },
+ "turbilhao": {
+  "tipo": "inalterado",
+  "entradas": [
+   {
+    "id": "raio",
+    "tipo": "inteiro",
+    "rotulo": "Raio da área",
+    "min": 1,
+    "max": 100,
+    "padrao": 1,
+    "unidade": "m"
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "*",
+    8,
+    "$raio"
+   ]
+  ],
+  "manter": [
+   "max",
+   1,
+   [
+    "*",
+    3,
+    "$raio"
+   ]
+  ]
+ }
+}

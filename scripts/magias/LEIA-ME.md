@@ -54,8 +54,12 @@ e gravava um custo FIXO errado (Alongar Objeto 3/2, Animar Objeto 1/1, Teia de A
 ESTRUTURA da conta de cada magia (o que o jogador informa e como sai o PF); o passo 6 a grava no catálogo (`custoPorCondicao`) e
 apaga o número-base errado. Guardas: `custo-por-condicao.test.js` (todo número da conta, fora 0 a 4, tem que estar no texto de custo
 do livro; sonda), `CustoPorCondicaoTest` (Kotlin) e `test/custo-por-condicao.test.js` (Mesa), os três com os 73 casos de
-`app/src/test/resources/custo_por_condicao_casos.json`. As 18 do lote 1; as outras ~260 magias de custo `porUnidade`/`porPonto`/`varia`
-e as ~40 "fixas com condição" (Imunidade ao Fogo ×2/×3, Lealdade, Muralha Mágica...) entram em lotes, a mesma estrutura.
+`app/src/test/resources/custo_por_condicao_casos.json`. As 18 do lote 1; as outro lote 2 (254 magias: 23 "fixas com condição" como Imunidade ao Fogo ×2/×3 e Lealdade, ~105 de custo por unidade/ponto e **124 de ÁREA**,
+custo básico × raio, Magia p.11) vem de `gerar-custo-por-condicao.js` (as fórmulas em forma compacta, com CASOS escritos à mão do texto do livro)
+em `custo-por-condicao-gerado.json`: **não edite esse JSON à mão**, edite o gerador e rode `node scripts/magias/gerar-custo-por-condicao.js`
+(`--conferir` diz se o gravado é o que o gerador produz). A regra do raio só vale onde o livro escreve "Custo BÁSICO" e a classe é Área.
+Ficam de fora (ver o relatório do lote): as que o livro escreve com "Custo:" (Acelerar Tempo...), as de custo = outra magia
+(Repelir Animal, Criar Portal...), os custos de ENCANTAMENTO de item (Arma Dançante...) e as "Varia" sem fórmula no texto.
 
 ## O que NÃO se corrige para "ficar igual à prosa do livro"
 
