@@ -122,7 +122,7 @@ class CicloDaMagiaTest {
 
     @Test
     fun `a tela mostra o texto do numero conferido quando ele existe`() {
-        // Desintegrar: a tabela diz "1 a 4", a entrada do livro diz "1 a 10" -- a tela mostra o que se cobra.
+        // (exemplo à mão) a tabela diz "1 a 4", a entrada diz "1 a 10" -- a tela mostra o que se cobra.
         assertEquals("1 a 10", CicloDaMagia.textoDaTela("1 a 4", "1 a 10"))
         assertEquals("6/3", CicloDaMagia.textoDaTela("4/1", "6/3"))
         assertEquals("1 hora", CicloDaMagia.textoDaTela("Perm.", "1 hora"))

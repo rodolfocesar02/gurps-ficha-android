@@ -9,14 +9,6 @@
     "entrada": "Indefinida"
    }
   },
-  "alongar_objeto": {
-   "tempoOperacao": {
-    "motivo": "o-livro-discorda-de-si: vale a entrada",
-    "catalogo": "5 segundos",
-    "tabela": "3 seg",
-    "entrada": "5 segundos"
-   }
-  },
   "alterar_terreno": {
    "duracao": {
     "motivo": "o-livro-discorda-de-si: vale a entrada",
@@ -63,14 +55,6 @@
     "entrada": "10 segundos"
    }
   },
-  "aumentar_objeto": {
-   "tempoOperacao": {
-    "motivo": "o-livro-discorda-de-si: vale a entrada",
-    "catalogo": "5 segundos",
-    "tabela": "3 seg",
-    "entrada": "5 segundos"
-   }
-  },
   "bola_de_relampagos": {
    "classe": {
     "motivo": "o-livro-discorda-de-si: vale a entrada",
@@ -101,58 +85,12 @@
     "entrada": "Comum"
    }
   },
-  "contrair_objeto": {
-   "tempoOperacao": {
-    "motivo": "o-livro-discorda-de-si: vale a entrada",
-    "catalogo": "5 segundos",
-    "tabela": "3 seg",
-    "entrada": "5 segundos"
-   }
-  },
-  "controle_de_maquinant": {
-   "tempoOperacao": {
-    "motivo": "o-livro-discorda-de-si: vale a entrada",
-    "catalogo": "4 segundos",
-    "tabela": "1 seg",
-    "entrada": "4 segundos"
-   }
-  },
   "corpo_de_vento": {
    "pagina": {
     "motivo": "tabela-sem-pagina",
     "catalogo": 27,
     "tabela": null,
     "entrada": null
-   }
-  },
-  "corpo_etereo": {
-   "tempoOperacao": {
-    "motivo": "o-livro-discorda-de-si: vale a entrada",
-    "catalogo": "3 segundos",
-    "tabela": "30 seg",
-    "entrada": "3 segundos"
-   }
-  },
-  "desintegrar": {
-   "tempoOperacao": {
-    "motivo": "o-livro-discorda-de-si: vale a entrada",
-    "catalogo": "5 segundos",
-    "tabela": "1 seg",
-    "entrada": "5 segundos"
-   }
-  },
-  "encolher_objeto": {
-   "duracao": {
-    "motivo": "o-livro-discorda-de-si: vale a entrada",
-    "catalogo": "Permanente",
-    "tabela": "1 hora",
-    "entrada": "Permanente"
-   },
-   "tempoOperacao": {
-    "motivo": "o-livro-discorda-de-si: vale a entrada",
-    "catalogo": "10 minutos",
-    "tabela": "3 seg.",
-    "entrada": "10 minutos"
    }
   },
   "estorvar": {
@@ -313,40 +251,12 @@
     "entrada": "1 minuto"
    }
   },
-  "transformar_objeto": {
-   "duracao": {
-    "motivo": "o-livro-discorda-de-si: vale a entrada",
-    "catalogo": "Permanente",
-    "tabela": "1 hora",
-    "entrada": "Permanente"
-   },
-   "tempoOperacao": {
-    "motivo": "o-livro-discorda-de-si: vale a entrada",
-    "catalogo": "1 hora",
-    "tabela": "Varia",
-    "entrada": "1 hora"
-   }
-  },
   "ver_a_forma_real": {
    "tempoOperacao": {
     "motivo": "o-livro-discorda-de-si: vale a entrada",
     "catalogo": "10 segundos",
     "tabela": "1 seg.",
     "entrada": "10 segundos"
-   }
-  },
-  "ver_localizacao": {
-   "duracao": {
-    "motivo": "o-livro-discorda-de-si: vale a entrada",
-    "catalogo": "1 minuto",
-    "tabela": "Instantâneo",
-    "entrada": "1 minuto"
-   },
-   "tempoOperacao": {
-    "motivo": "o-livro-discorda-de-si: vale a entrada",
-    "catalogo": "10 minutos",
-    "tabela": "10 seg.",
-    "entrada": "10 minutos"
    }
   },
   "viagem_planar": {

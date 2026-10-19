@@ -905,6 +905,10 @@ data class MagiaDefinicao(
     val energiaTela: String? = null,
     val duracaoTela: String? = null,
     val tempoOperacaoTela: String? = null,
+    // ── O custo que DEPENDE DA CONDIÇÃO (peso, tamanho, material, alcance...) ──
+    // Onde o livro escreve uma CONTA ("1 por 0,5 kg de peso original, por duplicação da dimensão"), o catálogo guarda o
+    // que se pergunta ao jogador e a conta do PF (ver `CustoPorCondicaoRules`). Null = o custo é o do cabeçalho.
+    val custoPorCondicao: com.gurps.ficha.domain.magic.CustoPorCondicao? = null,
 ) {
     // Mantendo atributo base IQ fixo para magias
     val atributoBase: String get() = "IQ"

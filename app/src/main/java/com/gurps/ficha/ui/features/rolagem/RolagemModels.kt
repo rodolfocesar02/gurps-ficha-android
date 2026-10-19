@@ -64,7 +64,9 @@ data class MagiaRollOption(
     // Lote MAGIA-E2: a classe decide a exceção do fracasso — mágica de
     // informação paga o custo total mesmo falhando (MB p.241).
     val classe: String?,
-    val descricao: String
+    val descricao: String,
+    // O custo que DEPENDE DA CONDIÇÃO (peso, tamanho, material...): a conta do catálogo, ou null (custo do cabeçalho).
+    val custoPorCondicao: com.gurps.ficha.domain.magic.CustoPorCondicao? = null
 )
 
 data class TecnicaRollOption(

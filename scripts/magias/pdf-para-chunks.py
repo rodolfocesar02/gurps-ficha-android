@@ -35,6 +35,11 @@ FONTE_TITULO = "BoldIt"
 LIMIAR_TITULO = 13.0
 ROTULOS_DE_CLASSE = ("SemiBold",)
 
+# Duas regras que ajudam algumas páginas e ATRAPALHAM outras (o ensaio de 19/out mudou 46 e 10 páginas, algumas para
+# pior). Por isso só valem quando pedidas, página a página: `--fundir-bordas` e `--quadro-largo`.
+FUNDIR_BORDAS = False
+QUADRO_LARGO = False
+
 SEPARADOR_DE_COLUNA = 40.0  # pontos: dois grupos de x0 mais longe que isto são colunas diferentes
 LACUNA_DE_PARAGRAFO = 2.5   # pontos entre o fim de uma linha e o começo da próxima
 
@@ -129,7 +134,17 @@ def bordas_das_colunas(linhas):
         return [0.0]
     maior = max(g[1] for g in grupos)
     bordas = [g[0] for g in grupos if g[1] >= max(4, 0.12 * maior)]
-    return bordas or [grupos[0][0]]
+    # (`--fundir-bordas`) Duas margens a menos de SEPARADOR_DE_COLUNA uma da outra são a MESMA coluna: o recuo do 1º parágrafo ou o texto
+    # que contorna uma figura começa mais à direita. Vale a mais à esquerda (a margem de verdade). Sem isto, a p.142
+    # (abertura de capítulo) partia o Apressar em duas colunas e perdia o fim da linha do Custo.
+    if not FUNDIR_BORDAS:
+        return bordas or [grupos[0][0]]
+    fundidas = []
+    for b in bordas:
+        if fundidas and b - fundidas[-1] < SEPARADOR_DE_COLUNA:
+            continue
+        fundidas.append(b)
+    return fundidas or [grupos[0][0]]
 
 
 def coluna_da_linha(linha, bordas):
@@ -239,17 +254,47 @@ def sem_contos(ordenadas):
     return [l for i, l in enumerate(ordenadas) if i not in fora]
 
 
-def ordenar(linhas):
-    colunas = bordas_das_colunas(linhas)
+def quadro_largo(linhas, colunas):
+    """Um quadro que ocupa 2 ou mais colunas mas NÃO a página toda (na p.112 o Lampejo, embaixo das duas primeiras
+    colunas, com a terceira correndo ao lado). Lido por coluna, ele se enfiava no meio do Brilho e do Escurecer.
+    Devolve `(x0, x1, y0)` do quadro, ou `None`. As linhas dele vão para uma coluna a mais, no fim."""
+    if len(colunas) < 3:
+        return None
+    gap = min(b - a for a, b in zip(colunas, colunas[1:]))
+    largas = [l for l in linhas if l["tipo"] == "corpo" and (l["x1"] - l["x0"]) > 1.35 * gap]
+    if len(largas) < 3:
+        return None
+    x0, x1 = min(l["x0"] for l in largas), max(l["x1"] for l in largas)
+    if x1 >= colunas[-1] + 10:
+        return None  # ocupa a página toda: é uma faixa, e a ordem por coluna já a trata
+    topo = min(l["y0"] for l in largas)
+    # o título do quadro fica logo acima da primeira linha larga, na margem esquerda dele
+    for l in linhas:
+        if l["tipo"] == "titulo" and abs(l["x0"] - x0) <= 15 and 0 <= topo - l["y0"] <= 60:
+            topo = min(topo, l["y0"])
+    return x0, x1, topo
+
+
+def atribuir_colunas(linhas, colunas):
     for l in linhas:
         l["col"] = coluna_da_linha(l, colunas)
+    quadro = quadro_largo(linhas, colunas) if QUADRO_LARGO else None
+    if quadro:
+        qx0, qx1, qy0 = quadro
+        for l in linhas:
+            if l["x0"] >= qx0 - 5 and l["x1"] <= qx1 + 5 and l["y0"] >= qy0 - 2:
+                l["col"] = len(colunas)
+
+
+def ordenar(linhas):
+    colunas = bordas_das_colunas(linhas)
+    atribuir_colunas(linhas, colunas)
     ordenadas = sorted(linhas, key=lambda l: (l["col"], round(l["y0"], 1), l["x0"]))
     sem = sem_contos(ordenadas)
     if len(sem) != len(ordenadas):
         # o conto tinha colunas próprias (margens esquerdas que não são as da página): sem ele, as colunas se refazem
         colunas = bordas_das_colunas(sem)
-        for l in sem:
-            l["col"] = coluna_da_linha(l, colunas)
+        atribuir_colunas(sem, colunas)
         sem = sorted(sem, key=lambda l: (l["col"], round(l["y0"], 1), l["x0"]))
     return agrupar_tabelas(sem), colunas
 
@@ -487,9 +532,15 @@ def main():
     ap.add_argument("--paginas", required=True, help="páginas IMPRESSAS, separadas por vírgula")
     ap.add_argument("--chunks", default="app/src/main/assets/chunks.jsonl")
     ap.add_argument("--aplicar", action="store_true")
+    ap.add_argument("--fundir-bordas", action="store_true",
+                    help="margens a menos de 40pt são a mesma coluna (p.142, p.2, p.6...); confira o ensaio")
+    ap.add_argument("--quadro-largo", action="store_true",
+                    help="quadro que ocupa 2+ colunas, mas não a página toda, é lido no fim (p.112); confira o ensaio")
     ap.add_argument("--mostrar", action="store_true", help="imprime o markdown de cada página")
     ap.add_argument("--saida", help="grava o markdown de cada página neste JSON (ensaio)")
     a = ap.parse_args()
+    global FUNDIR_BORDAS, QUADRO_LARGO
+    FUNDIR_BORDAS, QUADRO_LARGO = a.fundir_bordas, a.quadro_largo
     sys.stdout.reconfigure(encoding="utf-8")
 
     impressas = [int(x) for x in a.paginas.split(",") if x.strip()]

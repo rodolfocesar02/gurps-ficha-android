@@ -35,22 +35,31 @@ class TextoDaTelaDoLivroTest {
         CicloDaMagia.comTextoDaTela(catalogo.first { it.nome == nome })
 
     @Test
-    fun `Desintegrar mostra 1 a 10 e a conta da aba Rolagem deixa gastar ate 10`() {
+    fun `Respirar Ar mostra 3 e 1 e a conta da aba Rolagem cobra 3`() {
+        Assume.assumeNotNull(arquivo)
+        val bruta = catalogo.first { it.nome == "Respirar Ar" }
+        assertEquals("o cabeçalho é o da tabela", "4/2", bruta.energia)
+        val tela = comoATelaLe("Respirar Ar")
+        assertEquals("3/1", tela.energia)
+        val custo = MagiaEnergiaRules.parseCusto(tela.energia)
+        assertEquals(3, custo.fixo)
+        assertFalse(custo.precisaEscolher)
+        assertEquals("com o cabeçalho de antes, cobrava 4", 4, MagiaEnergiaRules.parseCusto(bruta.energia).fixo)
+        // o motor da Saga lê o mesmo número
+        val saga = MagicEnergy.parse(tela.energia)
+        assertEquals(3, saga.base)
+        assertEquals(1, saga.manutencao)
+    }
+
+    @Test
+    fun `Desintegrar nao tem texto de tela - a entrada do livro diz 1 a 4 como a tabela`() {
+        // O exemplo de antes (tabela 1 a 4, entrada 1 a 10) era erro do texto antigo da p.120, transcrito por IA:
+        // lido o PDF em 19/out/2026, a entrada diz "1 a 4".
         Assume.assumeNotNull(arquivo)
         val bruta = catalogo.first { it.nome == "Desintegrar" }
-        assertEquals("o cabeçalho é o da tabela", "1 a 4", bruta.energia)
-        val tela = comoATelaLe("Desintegrar")
-        assertEquals("1 a 10", tela.energia)
-        val custo = MagiaEnergiaRules.parseCusto(tela.energia)
-        assertEquals(1, custo.minimo)
-        assertEquals(10, custo.maximo)
-        assertTrue(custo.precisaEscolher)
-        assertTrue(custo.dentroDaFaixa(10))
-        assertFalse("com o cabeçalho de antes, 10 não cabia", MagiaEnergiaRules.parseCusto(bruta.energia).dentroDaFaixa(10))
-        // o motor da Saga lê o mesmo teto
-        val saga = MagicEnergy.parse(tela.energia)
-        assertEquals(1, saga.minimo)
-        assertEquals(10, saga.maximo)
+        assertEquals("1 a 4", bruta.energia)
+        assertEquals(null, bruta.energiaTela)
+        assertEquals(4, bruta.custoMaximo)
     }
 
     @Test

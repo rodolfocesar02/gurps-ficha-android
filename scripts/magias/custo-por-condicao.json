@@ -1,0 +1,197 @@
+{
+  "_leia": [
+    "O custo que DEPENDE DA CONDIÇÃO (peso, tamanho, material, alcance...): o que o jogador informa na hora de conjurar e a conta do PF.",
+    "A conta vem do texto de custo da ENTRADA do livro (o `custoFormula` que o catálogo guarda); aqui só se escreve a ESTRUTURA da conta.",
+    "Expressão: número | \"$id\" (valor de uma entrada) | [\"op\", ...]; ops: + - * / cima max min. \"cima\" arredonda para cima.",
+    "O resultado final é sempre arredondado PARA CIMA (decisão dele, 19/out/2026: vale 1 por 0,5 kg, o ímpar do 'metade' e a fração da magia de área).",
+    "manter: \"igual\" (o mesmo custo) | \"metade\" | \"nenhum\" (não se mantém) | uma expressão (pode usar $operar) | ausente (o livro não diz).",
+    "tipo: o custoTipo do catálogo (porUnidade, varia, fixo). Em `fixo` o catálogo guarda o número-base (custoOperar/custoManter).",
+    "Guarda (custo-por-condicao.test.js): todo número da expressão, fora de 0 a 4, tem que aparecer no texto de custo do livro; entradas dentro de min/max.",
+    "Edição: node scripts/magias/aplicar-custo-por-condicao.js; depois, na Mesa, extrair-magias-no-alvo.js."
+  ],
+
+  "alongar_objeto": {
+    "tipo": "porUnidade",
+    "entradas": [
+      { "id": "peso", "tipo": "numero", "rotulo": "Peso original do objeto", "unidade": "kg", "min": 0, "max": 100000, "passo": 0.5, "padrao": 0.5 },
+      { "id": "duplicacoes", "tipo": "inteiro", "rotulo": "Duplicações da dimensão escolhida", "min": 1, "max": 20, "padrao": 1 }
+    ],
+    "operar": ["*", ["cima", ["/", ["max", "$peso", 0.5], 0.5]], "$duplicacoes"],
+    "manter": "igual"
+  },
+  "contrair_objeto": {
+    "tipo": "porUnidade",
+    "entradas": [
+      { "id": "peso", "tipo": "numero", "rotulo": "Peso original do objeto", "unidade": "kg", "min": 0, "max": 100000, "passo": 0.5, "padrao": 0.5 },
+      { "id": "metades", "tipo": "inteiro", "rotulo": "Metades da dimensão escolhida", "min": 1, "max": 20, "padrao": 1 }
+    ],
+    "operar": ["*", ["cima", ["/", ["max", "$peso", 0.5], 0.5]], "$metades"],
+    "manter": "igual"
+  },
+  "aumentar_objeto": {
+    "tipo": "porUnidade",
+    "entradas": [
+      { "id": "peso", "tipo": "numero", "rotulo": "Peso original do objeto", "unidade": "kg", "min": 0, "max": 100000, "passo": 0.5, "padrao": 0.5 },
+      { "id": "mt", "tipo": "inteiro", "rotulo": "Pontos adicionais de MT", "min": 1, "max": 20, "padrao": 1 }
+    ],
+    "operar": ["*", ["cima", ["/", ["max", "$peso", 0.5], 0.5]], "$mt"],
+    "manter": "igual"
+  },
+  "encolher_objeto": {
+    "tipo": "porUnidade",
+    "entradas": [
+      { "id": "peso", "tipo": "numero", "rotulo": "Peso original do objeto", "unidade": "kg", "min": 0, "max": 100000, "passo": 0.5, "padrao": 0.5 },
+      { "id": "mt", "tipo": "inteiro", "rotulo": "Pontos de redução do MT", "min": 1, "max": 20, "padrao": 1 }
+    ],
+    "operar": ["*", ["cima", ["/", ["max", "$peso", 0.5], 0.5]], "$mt"],
+    "manter": "igual"
+  },
+  "transformar_objeto": {
+    "tipo": "porUnidade",
+    "entradas": [
+      { "id": "peso", "tipo": "numero", "rotulo": "Peso do objeto", "unidade": "kg", "min": 0, "max": 100000, "passo": 0.5, "padrao": 0.5 },
+      { "id": "material", "tipo": "escolha", "rotulo": "Mudar para (ou de)", "padrao": "comum", "opcoes": [
+        { "id": "comum", "rotulo": "Outro material", "valor": 1 },
+        { "id": "pedra", "rotulo": "Pedra (dobra o custo)", "valor": 2 },
+        { "id": "metal", "rotulo": "Metal (triplica o custo)", "valor": 3 }
+      ] }
+    ],
+    "operar": ["*", ["cima", ["/", ["max", "$peso", 0.5], 0.5]], "$material"],
+    "manter": "igual"
+  },
+  "animar_objeto": {
+    "tipo": "porUnidade",
+    "entradas": [
+      { "id": "peso", "tipo": "numero", "rotulo": "Peso do objeto", "unidade": "kg", "min": 0, "max": 100000, "passo": 0.5, "padrao": 2 },
+      { "id": "material", "tipo": "escolha", "rotulo": "Animar", "padrao": "comum", "opcoes": [
+        { "id": "comum", "rotulo": "Outro material", "valor": 1 },
+        { "id": "pedra", "rotulo": "Pedra (dobra o custo)", "valor": 2 },
+        { "id": "metal", "rotulo": "Metal (triplica o custo)", "valor": 3 }
+      ] }
+    ],
+    "operar": ["*", ["max", 1, ["cima", ["/", "$peso", 2]]], "$material"],
+    "manter": "igual"
+  },
+  "reconstruirnt": {
+    "tipo": "porUnidade",
+    "entradas": [
+      { "id": "massa", "tipo": "numero", "rotulo": "Massa final do objeto", "unidade": "kg", "min": 0, "max": 1000000, "passo": 50, "padrao": 250 }
+    ],
+    "operar": ["+", 30, ["cima", ["/", ["max", 0, ["-", "$massa", 250]], 250]]]
+  },
+  "fortalecer": {
+    "tipo": "porUnidade",
+    "entradas": [
+      { "id": "rd", "tipo": "inteiro", "rotulo": "Pontos de RD (máximo de 8)", "min": 1, "max": 8, "padrao": 1 },
+      { "id": "tamanho", "tipo": "escolha", "rotulo": "Tamanho do objeto", "padrao": "punho", "opcoes": [
+        { "id": "punho", "rotulo": "Do tamanho de um punho", "valor": 1 },
+        { "id": "medio", "rotulo": "Até 0,025 m³ (dobra o custo)", "valor": 2 },
+        { "id": "mt0", "rotulo": "MT 0 (triplica o custo)", "valor": 3 }
+      ] }
+    ],
+    "operar": ["*", "$rd", "$tamanho"],
+    "manter": "igual"
+  },
+  "criar_animal": {
+    "tipo": "porUnidade",
+    "entradas": [
+      { "id": "mt", "tipo": "inteiro", "rotulo": "MT do animal", "min": -10, "max": 20, "padrao": 0 }
+    ],
+    "operar": ["*", 2, ["max", 1, ["+", 1, "$mt"]]],
+    "manter": "metade"
+  },
+  "criar_montaria": {
+    "tipo": "fixo",
+    "entradas": [
+      { "id": "bruta", "tipo": "marca", "rotulo": "Montaria Bruta" },
+      { "id": "alada", "tipo": "marca", "rotulo": "Montaria Alada" },
+      { "id": "guerra", "tipo": "marca", "rotulo": "Treinada para a Guerra" },
+      { "id": "corrida", "tipo": "marca", "rotulo": "Montaria de Corrida" }
+    ],
+    "operar": ["*", 8, ["+", 1, "$bruta", "$alada", "$guerra", "$corrida"]],
+    "manter": ["*", 3, ["+", 1, "$bruta", "$alada", "$guerra", "$corrida"]]
+  },
+  "despertar_computadornt": {
+    "tipo": "fixo",
+    "entradas": [],
+    "operar": 8,
+    "manter": 2
+  },
+  "mao_magica": {
+    "tipo": "fixo",
+    "entradas": [
+      { "id": "maos", "tipo": "escolha", "rotulo": "Mãos", "padrao": "uma", "opcoes": [
+        { "id": "uma", "rotulo": "Uma mão", "valor": 1 },
+        { "id": "duas", "rotulo": "Duas mãos", "valor": 2 }
+      ] }
+    ],
+    "operar": ["+", 2, ["*", 2, "$maos"]],
+    "manter": ["+", 2, "$maos"]
+  },
+  "apressar": {
+    "tipo": "porUnidade",
+    "entradas": [
+      { "id": "pontos", "tipo": "inteiro", "rotulo": "Pontos de bônus no Deslocamento e na Esquiva (até 3)", "min": 1, "max": 3, "padrao": 1 }
+    ],
+    "operar": ["*", 2, "$pontos"],
+    "manter": "metade"
+  },
+  "chicote_de_relampago": {
+    "tipo": "porUnidade",
+    "entradas": [
+      { "id": "alcance", "tipo": "escolha", "rotulo": "Alcance", "padrao": "m2", "opcoes": [
+        { "id": "m2", "rotulo": "2 metros", "valor": 2 },
+        { "id": "m4", "rotulo": "4 metros", "valor": 4 },
+        { "id": "m6", "rotulo": "6 metros", "valor": 6 },
+        { "id": "m8", "rotulo": "8 metros", "valor": 8 }
+      ] }
+    ],
+    "operar": ["/", "$alcance", 2],
+    "manter": "igual"
+  },
+  "copiar": {
+    "tipo": "porUnidade",
+    "entradas": [
+      { "id": "copias", "tipo": "inteiro", "rotulo": "Número de cópias", "min": 1, "max": 100, "padrao": 1 },
+      { "id": "tamanho", "tipo": "escolha", "rotulo": "Tamanho do documento", "padrao": "p1", "opcoes": [
+        { "id": "p1", "rotulo": "1 página", "valor": 1 },
+        { "id": "p10", "rotulo": "10 páginas (dobra o custo)", "valor": 2 },
+        { "id": "p100", "rotulo": "100 páginas (quadruplica)", "valor": 4 },
+        { "id": "p1000", "rotulo": "1.000 páginas", "valor": 8 },
+        { "id": "p10000", "rotulo": "10.000 páginas", "valor": 16 },
+        { "id": "p100000", "rotulo": "100.000 páginas", "valor": 32 }
+      ] }
+    ],
+    "operar": ["*", ["+", 2, ["-", "$copias", 1]], "$tamanho"]
+  },
+  "teia_de_aranha": {
+    "tipo": "porUnidade",
+    "entradas": [
+      { "id": "comprimento", "tipo": "numero", "rotulo": "Comprimento do fio", "unidade": "m", "min": 0, "max": 100, "passo": 5, "padrao": 5 }
+    ],
+    "operar": ["max", 1, ["cima", ["/", "$comprimento", 5]]],
+    "manter": "metade"
+  },
+  "animar_planta": {
+    "tipo": "fixo",
+    "entradas": [
+      { "id": "anda", "tipo": "marca", "rotulo": "A planta se levanta e anda (Deslocamento 4)" }
+    ],
+    "operar": ["*", 3, ["+", 1, "$anda"]],
+    "manter": "metade"
+  },
+  "brilho": {
+    "tipo": "varia",
+    "entradas": [
+      { "id": "luz", "tipo": "escolha", "rotulo": "Luz", "padrao": "luar", "opcoes": [
+        { "id": "estrelas", "rotulo": "Luz das estrelas (custo básico 1/2)", "valor": 0.5 },
+        { "id": "luar", "rotulo": "Luar (custo básico 1)", "valor": 1 },
+        { "id": "tochas", "rotulo": "Tochas (custo básico 3/2)", "valor": 1.5 },
+        { "id": "dia", "rotulo": "Luz do dia (custo básico 2)", "valor": 2 }
+      ] },
+      { "id": "raio", "tipo": "inteiro", "rotulo": "Raio da área (mínimo de 2 metros)", "unidade": "m", "min": 2, "max": 100, "padrao": 2 }
+    ],
+    "operar": ["max", 1, ["*", "$luz", ["max", 2, "$raio"]]],
+    "manter": "nenhum"
+  }
+}

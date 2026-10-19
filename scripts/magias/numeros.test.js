@@ -213,11 +213,17 @@ test('🟥 sonda: com os números ANTIGOS (os da descrição), as 8 ficam vermel
   assert.strictEqual(magias.size, 8, 'as 8 ficam vermelhas: ' + erros.join('; '));
 });
 
+/** Os campos de custo que o PASSO 6 (`aplicar-custo-por-condicao.js`) reescreve nas magias de custo por condição. */
+const CAMPOS_DE_CUSTO = ['custoOperar', 'custoManter', 'custoManterTipo', 'custoTipo', 'custoMinimo', 'custoMaximo', 'custoFormula'];
+
 test('livro real: o catálogo gravado É o que o leitor tira do livro agora (879, campo a campo)', { skip: !TEM_O_LIVRO }, () => {
   const calc = calcularReal();
   const erros = [];
+  const porCondicao = new Set(Object.keys(require('./custo-condicao').lerOsSpecs()));
   calc.resultado.forEach((r) => {
     N.CAMPOS_DOS_NUMEROS.forEach((k) => {
+      // onde o passo 6 manda no custo (o livro escreve uma CONTA, não um número), o leitor do passo 2 não vale
+      if (porCondicao.has(r.m.id) && CAMPOS_DE_CUSTO.indexOf(k) >= 0) return;
       const esperado = r.d.campos[k];
       const gravado = r.m[k];
       if (JSON.stringify(esperado) !== JSON.stringify(gravado)) erros.push(r.m.nome + ' (p.' + (r.x.tabela && r.x.tabela.pagina) + '): ' + k + ' gravado ' + JSON.stringify(gravado) + ' ≠ livro ' + JSON.stringify(esperado));
@@ -239,8 +245,10 @@ test('livro real: a cobertura dos números não cai (catraca)', { skip: !TEM_O_L
   const catalogo = JSON.parse(fs.readFileSync(CATALOGO, 'utf8'));
   const c = (k) => catalogo.filter((m) => m[k] !== undefined && m[k] !== null).length;
   assert.ok(c('duracaoTipo') >= 846, 'duração ' + c('duracaoTipo'));
-  assert.ok(c('tempoOperacaoSeg') >= 826, 'tempo ' + c('tempoOperacaoSeg'));
-  assert.ok(c('custoOperar') >= 542, 'custo de operar ' + c('custoOperar'));
+  // 19/out: 14 magias de custo por condição deixaram de ter um número-base (542 → 530 de operar) e o Transformar
+  // Objeto passou a "igual ao custo" no tempo (826 → 825): contas, não números.
+  assert.ok(c('tempoOperacaoSeg') >= 825, 'tempo ' + c('tempoOperacaoSeg'));
+  assert.ok(c('custoOperar') >= 530, 'custo de operar ' + c('custoOperar'));
   assert.ok(c('custoManter') >= 317, 'custo de manter ' + c('custoManter'));
 });
 
@@ -253,7 +261,7 @@ const camposFixo = (operar, manterTipo, manter) => {
 };
 
 test('tela: o cabeçalho (tabela) diz um número, o conferido (entrada) outro -> grava o texto do conferido', opcoes, () => {
-  // Desintegrar: "1 a 4" na tabela, "1 a 10" na entrada
+  // uma faixa que a tabela e a entrada escrevem diferente (exemplo à mão: "1 a 4" na tabela, "1 a 10" na entrada)
   assert.strictEqual(N.energiaDaTela({ energia: '1 a 4' }, { custoTipo: 'faixa', custoMinimo: 1, custoMaximo: 10 }), '1 a 10');
   // Arma Flamejante: "4/1" na tabela, "6 para operar, 3 para manter" na entrada
   assert.strictEqual(N.energiaDaTela({ energia: '4/1' }, camposFixo(6, 'numero', 3)), '6/3');
@@ -289,11 +297,15 @@ test('tela: duração e tempo, na gramática do cabeçalho', opcoes, () => {
   assert.strictEqual(N.segundosEmTexto(604800), '1 semana');
 });
 
-test('livro real: Desintegrar tem "1 a 10" na tela e "1 a 4" no cabeçalho; nenhuma tela repete o cabeçalho', { skip: !TEM_O_LIVRO }, () => {
+test('livro real: Respirar Ar tem "3/1" na tela e "4/2" no cabeçalho; nenhuma tela repete o cabeçalho', { skip: !TEM_O_LIVRO }, () => {
   const catalogo = JSON.parse(fs.readFileSync(CATALOGO, 'utf8'));
+  const ar = catalogo.find((m) => m.id === 'respirar_ar');
+  assert.strictEqual(ar.energia, '4/2');
+  assert.strictEqual(ar.energiaTela, '3/1');
+  // a Desintegrar não tem mais tela: lida do PDF, a entrada diz "1 a 4", como a tabela (o "1 a 10" era erro do texto antigo)
   const des = catalogo.find((m) => m.id === 'desintegrar');
   assert.strictEqual(des.energia, '1 a 4');
-  assert.strictEqual(des.energiaTela, '1 a 10');
+  assert.strictEqual(des.energiaTela, undefined);
   // nenhuma tela repete o cabeçalho (seria ruído) e toda tela vem de um número conferido
   catalogo.forEach((m) => {
     if (m.energiaTela) { assert.notStrictEqual(m.energiaTela, m.energia, m.id); assert.ok(m.custoTipo === 'fixo' || m.custoTipo === 'faixa', m.id); }

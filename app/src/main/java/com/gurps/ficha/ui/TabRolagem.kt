@@ -30,6 +30,7 @@ import com.gurps.ficha.data.network.DiscordVoiceChannel
 import com.gurps.ficha.domain.roll.CriticoRules
 import com.gurps.ficha.domain.rules.DesastradoRules
 import com.gurps.ficha.domain.rules.EstadosTemporarios
+import com.gurps.ficha.domain.magic.CustoPorCondicaoRules
 import com.gurps.ficha.domain.rules.MagiaEnergiaRules
 import com.gurps.ficha.domain.rules.EscolhaDoPedido
 import com.gurps.ficha.domain.rules.PedidoDaMesa
@@ -378,7 +379,8 @@ fun TabRolagem(viewModel: FichaViewModel) {
             tempoOperacao = mag.tempoOperacao,
             encantamentoAlvo = mag.encantamentoAlvo,
             classe = mag.classe,
-            descricao = mag.texto.orEmpty()
+            descricao = mag.texto.orEmpty(),
+            custoPorCondicao = viewModel.dataRepository.magias.find { it.id == mag.definicaoId }?.custoPorCondicao
         )
     }
 
@@ -769,6 +771,17 @@ fun TabRolagem(viewModel: FichaViewModel) {
      * rola direto, sem diálogo para nada.
      */
     fun pedirEnergiaAntesDeRolar(magia: MagiaRollOption, modMagia: Int): Boolean {
+        // 🔴 O custo que DEPENDE DA CONDIÇÃO (peso, tamanho, material...): o diálogo pergunta, a conta do catálogo
+        // dá o número, e ele já vem preenchido com o caso-padrão. Vale mesmo quando o cabeçalho parece um número
+        // fixo ("2/pt/M" lido como 2): a conta manda.
+        magia.custoPorCondicao?.let { spec ->
+            val padrao = CustoPorCondicaoRules.calcular(spec, emptyMap())
+            magiaPendenteEnergia = magia
+            rolagemDeMagiaEsperando = magia to modMagia
+            energiaManualInput = ((padrao as? CustoPorCondicaoRules.Resultado.Ok)?.operar ?: 0).toString()
+            showEnergiaManualDialog = true
+            return true
+        }
         val custo = MagiaEnergiaRules.parseCusto(magia.energia)
         val reducao = MagiaEnergiaRules.reducaoPorNh(nhEfetivoDaMagia(magia))
         // ⚠️ O campo do diálogo é o **custo base**: ele mostra "Redução por NH"

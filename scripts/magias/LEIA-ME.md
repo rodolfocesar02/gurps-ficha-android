@@ -15,6 +15,7 @@ transcreve.
 | 3 | `aplicar-descricoes.js` | `descricao` = bloco da entrada do livro | `RELATORIO-MC-3.md` |
 | 4 | `aplicar-mecanica.js` | `mecanica.entrega`, projétil, marcas | `RELATORIO-MC-4.md` |
 | 5 (só se uma página do `chunks.jsonl` estiver ruim) | `pdf-para-chunks.py` | só o `text` das páginas pedidas, em `chunks.jsonl` | `RELATORIO-MC-7.md` |
+| 6 (depois da 2, e de novo a cada vez que a 2 rodar) | `aplicar-custo-por-condicao.js` | `custoPorCondicao` + `custoTipo`/`custoFormula` das magias de `custo-por-condicao.json`; apaga o número-base errado que a 2 lia da 1ª frase | `CUSTO-NA-HORA-DA-CONJURACAO.md` |
 
 **Páginas ruins no `chunks.jsonl`** (cortadas ou com colunas embaralhadas): o PDF de Magia tem camada de texto. 
 `python -I scripts/magias/pdf-para-chunks.py --pdf "<PDF>" --paginas 23,33 [--mostrar] [--aplicar]` lê a página do PDF 
@@ -27,6 +28,13 @@ O conversor já sabe: colunas pelas linhas longas, tabelas só com 2+ linhas ali
 (14+ linhas coloridas sem rótulo) fora. **Confira SEMPRE o ensaio de uma página nova** (`--mostrar`): quadros de texto que 
 cortam as colunas (p.66) entram no meio da entrada de cima, e páginas de abertura de capítulo são as mais frágeis.
 
+**As duas opções do conversor** (`--fundir-bordas` e `--quadro-largo`) existem porque nenhuma regra de layout serve a todas as
+páginas: ligadas por padrão mudavam 46 e 10 páginas já boas, algumas para pior (p.95, p.152, p.165, p.218). Só vale ligar quando o
+ensaio (`--mostrar`) mostra o defeito: `--fundir-bordas` conserta a p.142 (abertura de capítulo com margens a menos de 40 pt) e
+`--quadro-largo` a p.112 (o Lampejo, um quadro de 2 colunas embaixo das duas primeiras). **Confira SEMPRE as linhas de custo**: todo
+"Custo:" do PDF tem que aparecer no texto convertido, e nenhum número do texto antigo pode sumir. A **p.152** (três modelos de
+mortos-vivos no meio da página) o conversor embaralha: ficou o texto antigo.
+
 Relatórios ficam em `mesa-virtual/planos/magias/`. As lacunas de leitura (página embaralhada, entrada sem
 texto) viram `*Motivo` no próprio catálogo — nunca um número inventado.
 
@@ -38,6 +46,16 @@ conferido (vale a entrada) discorda dele e o cabeçalho diz um número, o script
 carregar o catálogo (`CicloDaMagia.comTextoDaTela`) e a Mesa ao ler a ficha (`magia-na-tela.js`): tela e conta leem o
 mesmo número. Cabeçalho "Varia" não é reescrito (decisão do Rodolfo, `PONTAS-ANTES-DO-MG-1.md`). Guardas:
 `numeros.test.js` (seção 3), `TextoDaTelaDoLivroTest`, `test/magia-na-tela.test.js` na Mesa.
+
+## O custo que DEPENDE DA CONDIÇÃO (passo 6)
+
+Onde o livro escreve uma CONTA ("1 por 0,5 kg de peso original, por duplicação da dimensão"), o passo 2 lia o primeiro número da frase
+e gravava um custo FIXO errado (Alongar Objeto 3/2, Animar Objeto 1/1, Teia de Aranha 1...). `custo-por-condicao.json` guarda a
+ESTRUTURA da conta de cada magia (o que o jogador informa e como sai o PF); o passo 6 a grava no catálogo (`custoPorCondicao`) e
+apaga o número-base errado. Guardas: `custo-por-condicao.test.js` (todo número da conta, fora 0 a 4, tem que estar no texto de custo
+do livro; sonda), `CustoPorCondicaoTest` (Kotlin) e `test/custo-por-condicao.test.js` (Mesa), os três com os 73 casos de
+`app/src/test/resources/custo_por_condicao_casos.json`. As 18 do lote 1; as outras ~260 magias de custo `porUnidade`/`porPonto`/`varia`
+e as ~40 "fixas com condição" (Imunidade ao Fogo ×2/×3, Lealdade, Muralha Mágica...) entram em lotes, a mesma estrutura.
 
 ## O que NÃO se corrige para "ficar igual à prosa do livro"
 

@@ -84,7 +84,7 @@
     "energia": "5#",
     "tempoOperacao": "3 seg.",
     "preRequisitos": "AM1, Apressar, IQ 12+",
-    "descricao": "Comum\n\nAcelera muito o objetivo. Com efeito, o objetivo tem um nível de Padrão de Tempo Alterado (pág. MB75) durante o efeito da mágica.\n\nDuração: 10 segundos.\nCusto: 5. Não pode ser mantida; precisa ser refeita. No final da mágica, o objetivo também perde 5 PF (a menos que o operador seja o objetivo).\nTempo de operação: 3 segundos.\nPré-requisitos: Aptidão Mágica 1, IQ 12 ou superior e Apressar.\nItem: (a) Cajado, varinha, joalheria ou capa; afeta apenas o usuário. Uma desvantagem severa é que, com a exceção da capa, o item cai no chão, através do operador, assim que a mágica é operada! Custo de energia para criar: 3.000 (8.000 para a capa). (b) Gema que brilha e vibra quando qualquer ser etéreo está a 50 metros. Custo para criar: Uma gema no valor de $500 e 100 de energia.\nEsta mágica só pode ser operada em\num ponto no espaço ou no chão, não\nem objetos ou criaturas. Uma pequena\npilha de objetos soltos, poeira, folhas\nmortas, pequenos insetos, etc, geral-\nmente se forma no centro.\n\nDuração: 1 minuto.\nCusto: 1 para cada 2 ST de “atração”.\nTempo de operação: 5 segundos.\nPré-requisitos: Aptidão Mágica 2 e\npelo menos quatro mágicas de Desloca-\nmento, incluindo Levitação.\n\nItem\n(a) Varinha, cajado ou joias. Utilizá-\nvel apenas por magos. Custo de energia\npara criar: 250. (b) Uma área pode ser\npermanentemente atraída por 100 ve-\nzes o custo de operação.",
+    "descricao": "Comum\n\nAcelera muito o objetivo. Com efeito, o objetivo tem um nível de Padrão de Tempo Alterado (pág. MB75) durante o efeito da mágica.\n\nDuração: 10 segundos.\n\nCusto: 5. Não pode ser mantida; precisa ser refeita. No final da mágica, o objetivo também perde 5 PF (a menos que o operador seja o objetivo).\n\nTempo de operação: 3 segundos.\n\nPré-requisitos: Aptidão Mágica 1, IQ 12 ou superior e Apressar.\n\nItem\nSapatos ou joias; afeta apenas o usuário. Custo de energia para criar: 2.000. O item custa ao usuário 5 PF para cada 10 segundos de efeito.",
     "descricaoConferida": true,
     "descricaoPagina": 146,
     "mecanica": {
@@ -958,9 +958,9 @@
     ],
     "duracao": "1 hora",
     "energia": "Varia",
-    "tempoOperacao": "5 segundos",
+    "tempoOperacao": "3 seg",
     "preRequisitos": "AM3, Transformar Objeto",
-    "descricao": "Comum\n\nAumenta uma dimensão de um objeto inanimado em 50%. O peso permanece o mesmo, mas a densidade e a integridade estrutural podem ser afetadas.\n\nDuração: 1 hora.\nCusto: 3 para operar. 2 para manter.\nTempo de operação: 5 segundos.\nPré-requisito: Remodelar.",
+    "descricao": "Comum\n\nAumenta, em proporção, um objeto em uma dimensão; o oposto de Contrair Objeto (acima).\n\nDuração: 1 hora.\n\nCusto: 1 por 0,5 kg de peso original (mínimo de 0,5 kg), por duplicação da dimensão escolhida. Mesmo custo para manter.\n\nTempo de operação: 3 segundos.\n\nPré-requisitos: Aptidão Mágica 3 e Transformar Objeto.\n\nItem\nVarinha, cajado ou joias. Utilizável apenas por magos; o item deve tocar o objetivo. Custo de energia para criar: 800.",
     "descricaoConferida": true,
     "descricaoPagina": 120,
     "mecanica": {
@@ -969,19 +969,56 @@
     },
     "mecanicaConferida": true,
     "fonteCabecalho": "tabela",
+    "custoPorCondicao": {
+      "entradas": [
+        {
+          "id": "peso",
+          "tipo": "numero",
+          "rotulo": "Peso original do objeto",
+          "unidade": "kg",
+          "min": 0,
+          "max": 100000,
+          "passo": 0.5,
+          "padrao": 0.5
+        },
+        {
+          "id": "duplicacoes",
+          "tipo": "inteiro",
+          "rotulo": "Duplicações da dimensão escolhida",
+          "min": 1,
+          "max": 20,
+          "padrao": 1
+        }
+      ],
+      "operar": [
+        "*",
+        [
+          "cima",
+          [
+            "/",
+            [
+              "max",
+              "$peso",
+              0.5
+            ],
+            0.5
+          ]
+        ],
+        "$duplicacoes"
+      ],
+      "manter": "igual"
+    },
     "duracaoTipo": "temporaria",
     "duracaoSeg": 3600,
-    "tempoOperacaoSeg": 5,
+    "tempoOperacaoSeg": 3,
     "tempoTipo": "fixo",
-    "custoOperar": 3,
-    "custoManter": 2,
-    "custoManterTipo": "numero",
-    "custoTipo": "fixo",
+    "custoTipo": "porUnidade",
+    "custoFormula": "1 por 0,5 kg de peso original (mínimo de 0,5 kg), por duplicação da dimensão escolhida. Mesmo custo para manter.",
     "conferido": "livro",
     "conferidoPagina": 120,
     "conferidoPor": {
       "duracao": "tabela+entrada",
-      "tempoOperacao": "entrada",
+      "tempoOperacao": "tabela+entrada",
       "custo": "entrada"
     }
   },
@@ -1496,21 +1533,73 @@
     },
     "mecanicaConferida": true,
     "fonteCabecalho": "tabela",
+    "custoPorCondicao": {
+      "entradas": [
+        {
+          "id": "peso",
+          "tipo": "numero",
+          "rotulo": "Peso do objeto",
+          "unidade": "kg",
+          "min": 0,
+          "max": 100000,
+          "passo": 0.5,
+          "padrao": 2
+        },
+        {
+          "id": "material",
+          "tipo": "escolha",
+          "rotulo": "Animar",
+          "padrao": "comum",
+          "opcoes": [
+            {
+              "id": "comum",
+              "rotulo": "Outro material",
+              "valor": 1
+            },
+            {
+              "id": "pedra",
+              "rotulo": "Pedra (dobra o custo)",
+              "valor": 2
+            },
+            {
+              "id": "metal",
+              "rotulo": "Metal (triplica o custo)",
+              "valor": 3
+            }
+          ]
+        }
+      ],
+      "operar": [
+        "*",
+        [
+          "max",
+          1,
+          [
+            "cima",
+            [
+              "/",
+              "$peso",
+              2
+            ]
+          ]
+        ],
+        "$material"
+      ],
+      "manter": "igual"
+    },
     "duracaoTipo": "temporaria",
     "duracaoSeg": 60,
     "tempoOperacaoSeg": 3,
     "tempoTipo": "fixo",
-    "custoOperar": 1,
-    "custoManter": 1,
-    "custoManterTipo": "igual",
-    "custoTipo": "fixo",
+    "custoTipo": "porUnidade",
     "conferido": "livro",
     "conferidoPagina": 117,
     "conferidoPor": {
       "duracao": "tabela+entrada",
       "tempoOperacao": "tabela+entrada",
       "custo": "entrada"
-    }
+    },
+    "custoFormula": "1 para operar para cada 2 kg que o objeto pesa. Dobre o custo para animar pedra, triplique para metal. Mesmo custo para manter."
   },
   {
     "id": "animar_planta",
@@ -1534,6 +1623,25 @@
     },
     "mecanicaConferida": true,
     "fonteCabecalho": "tabela",
+    "custoPorCondicao": {
+      "entradas": [
+        {
+          "id": "anda",
+          "tipo": "marca",
+          "rotulo": "A planta se levanta e anda (Deslocamento 4)"
+        }
+      ],
+      "operar": [
+        "*",
+        3,
+        [
+          "+",
+          1,
+          "$anda"
+        ]
+      ],
+      "manter": "metade"
+    },
     "duracaoTipo": "temporaria",
     "duracaoSeg": 60,
     "tempoOperacaoSeg": 5,
@@ -1871,20 +1979,37 @@
     },
     "mecanicaConferida": true,
     "fonteCabecalho": "tabela",
+    "custoPorCondicao": {
+      "entradas": [
+        {
+          "id": "pontos",
+          "tipo": "inteiro",
+          "rotulo": "Pontos de bônus no Deslocamento e na Esquiva (até 3)",
+          "min": 1,
+          "max": 3,
+          "padrao": 1
+        }
+      ],
+      "operar": [
+        "*",
+        2,
+        "$pontos"
+      ],
+      "manter": "metade"
+    },
     "duracaoTipo": "temporaria",
     "duracaoSeg": 60,
     "tempoOperacaoSeg": 2,
     "tempoTipo": "fixo",
-    "custoOperar": 2,
-    "custoManterTipo": "metade",
-    "custoTipo": "fixo",
+    "custoTipo": "porUnidade",
     "conferido": "livro",
     "conferidoPagina": 142,
     "conferidoPor": {
       "duracao": "tabela+entrada",
       "tempoOperacao": "tabela+entrada",
       "custo": "entrada"
-    }
+    },
+    "custoFormula": "2 para operar por ponto de bônus sobre o Deslocamento e a Esquiva do objetivo. Metade disso para manter."
   },
   {
     "id": "apressar_fogo",
@@ -3517,9 +3642,9 @@
     ],
     "duracao": "1 hora",
     "energia": "Varia",
-    "tempoOperacao": "5 segundos",
+    "tempoOperacao": "3 seg",
     "preRequisitos": "Alongar Objeto",
-    "descricao": "Comum\n\nAumenta as dimensões de um objeto inanimado por um fator de 2. O peso do objeto permanece o mesmo, mas sua densidade diminui em oito vezes. A RD e os PV do objeto são divididos por 2.\n\nDuração: 1 hora.\nCusto: 4 para operar. 2 para manter.\nTempo de operação: 5 segundos.\nPré-requisito: Contrair Objeto.",
+    "descricao": "Comum\n\nAmplia um objeto em tamanho, mantendo suas proporções, aumentando seu modificador de Tamanho. Multiplique o peso por 3,5 e os PV por 1,5, para cada ponto adicionado do modificador de Tamanho; adicione 1 na RD para cada 2 pontos adicionados no modificador de Tamanho.\n\nDuração: 1 hora.\n\nCusto: 1 por 0,5 kg do peso original (mínimo de 0,5 kg) para cada ponto adicional de MT. Mesmo custo para manter.\n\nTempo de operação: 3 segundos.\n\nPré-requisito: Alongar Objeto.\n\nItem\nVarinha, cajado ou joias. Utilizável apenas por magos; o item deve tocar o objetivo. Custo de energia para criar: 800.",
     "descricaoConferida": true,
     "descricaoPagina": 120,
     "mecanica": {
@@ -3528,19 +3653,56 @@
     },
     "mecanicaConferida": true,
     "fonteCabecalho": "tabela",
+    "custoPorCondicao": {
+      "entradas": [
+        {
+          "id": "peso",
+          "tipo": "numero",
+          "rotulo": "Peso original do objeto",
+          "unidade": "kg",
+          "min": 0,
+          "max": 100000,
+          "passo": 0.5,
+          "padrao": 0.5
+        },
+        {
+          "id": "mt",
+          "tipo": "inteiro",
+          "rotulo": "Pontos adicionais de MT",
+          "min": 1,
+          "max": 20,
+          "padrao": 1
+        }
+      ],
+      "operar": [
+        "*",
+        [
+          "cima",
+          [
+            "/",
+            [
+              "max",
+              "$peso",
+              0.5
+            ],
+            0.5
+          ]
+        ],
+        "$mt"
+      ],
+      "manter": "igual"
+    },
     "duracaoTipo": "temporaria",
     "duracaoSeg": 3600,
-    "tempoOperacaoSeg": 5,
+    "tempoOperacaoSeg": 3,
     "tempoTipo": "fixo",
-    "custoOperar": 4,
-    "custoManter": 2,
-    "custoManterTipo": "numero",
-    "custoTipo": "fixo",
+    "custoTipo": "porUnidade",
+    "custoFormula": "1 por 0,5 kg do peso original (mínimo de 0,5 kg) para cada ponto adicional de MT. Mesmo custo para manter.",
     "conferido": "livro",
     "conferidoPagina": 120,
     "conferidoPor": {
       "duracao": "tabela+entrada",
-      "tempoOperacao": "entrada",
+      "tempoOperacao": "tabela+entrada",
       "custo": "entrada"
     }
   },
@@ -4248,7 +4410,7 @@
     "energia": "1 a AM#",
     "tempoOperacao": "1 a 3 seg",
     "preRequisitos": "AM1, Criar Fogo, Moldar Fogo",
-    "descricao": "Projétil\n\nLança uma bola de fogo de uma mão. Isto tem 1/2D 25, Max 50, Prec 1. Quando atinge algo, desaparece em uma nuvem de chamas. Esta mágica é susceptível de incendiar alvos inflamáveis.\nCusto: Qualquer quantia até o seu nível de Aptidão Mágica por segundo, por três segundos. A bola de fogo causa 1d de dano por ponto de energia.\n\nTempo de operação: 1 a 3 segundos.\n\nPré-requisitos: Aptidão Mágica 1, Criar Fogo e Moldar Fogo.\n\nItem\nCajado ou varinha — a bola é disparada a partir da ponta do item. Custo de energia para criar: 800; deve incluir um rubi no valor de $400. Utilizável apenas por magos.",
+    "descricao": "Projétil\n\nLança uma bola de fogo de uma mão. Isto tem 1/2D 25, Max 50, Prec. 1. Quando atinge algo, desaparece em uma nuvem de chamas. Esta mágica é susceptível de incendiar alvos inflamáveis.\nCusto: Qualquer quantia até o seu nível de Aptidão Mágica por segundo, por três segundos. A bola de fogo causa 1d de dano por ponto de energia.\n\nTempo de operação: 1 a 3 segundos.\n\nPré-requisitos: Aptidão Mágica 1, Criar Fogo e Moldar Fogo.\n\nItem\nCajado ou varinha — a bola é disparada a partir da ponta do item. Custo de energia para criar: 800; deve incluir um rubi no valor de $400. Utilizável apenas por magos.",
     "descricaoConferida": true,
     "descricaoPagina": 74,
     "mecanica": {
@@ -4464,7 +4626,7 @@
     "energia": "Varia",
     "tempoOperacao": "Varia",
     "preRequisitos": "Luz Contínua",
-    "descricao": "Área\n\nSufoca uma área com um brilho uniforme. Objetos e seres em pé na área não projetarão nenhuma sombra a menos que uma fonte de luz mais forte do que o brilho do ambiente seja trazida.\n\nDuração: Variável. O Mestre deve rolar 2d para o número de dias.\nCusto básico: 2 para operar; 1 para manter.\nPré-requisito: Trevas.\n\nItem\nPiso, chão ou um tapete podem ser encantados para que a área acima (cerca de 2 metros) esteja em permanente escuridão. Custo de energia para criar: 150 por metro quadrado.",
+    "descricao": "Área\n\nSufoca uma área com um brilho uniforme. Objetos e seres em pé na área não projetarão nenhuma sombra a menos que uma fonte de luz mais forte do que o brilho do ambiente seja trazida.\n\nDuração: Variável. O Mestre deve rolar 2d para o número de dias.\n\nCusto básico: 1/2 para a luz das estrelas; 1 para o luar; 3/2 para tochas; 2 para a luz do dia (brilhante, sem penalidade de visão). Raio mínimo é de 2 metros.\n\nTempo de operação: 1 segundo por metade dos pontos do custo básico.\n\nPré-requisito: Luz Contínua.\n\nItem\n(a) Varinha, cajado ou joias. Custo de energia para criar: 250. (b) Uma área pode ser permanentemente iluminada por 100 vezes o custo da operação.",
     "descricaoConferida": true,
     "descricaoPagina": 112,
     "mecanica": {
@@ -4474,19 +4636,72 @@
     },
     "mecanicaConferida": true,
     "fonteCabecalho": "tabela",
+    "custoPorCondicao": {
+      "entradas": [
+        {
+          "id": "luz",
+          "tipo": "escolha",
+          "rotulo": "Luz",
+          "padrao": "luar",
+          "opcoes": [
+            {
+              "id": "estrelas",
+              "rotulo": "Luz das estrelas (custo básico 1/2)",
+              "valor": 0.5
+            },
+            {
+              "id": "luar",
+              "rotulo": "Luar (custo básico 1)",
+              "valor": 1
+            },
+            {
+              "id": "tochas",
+              "rotulo": "Tochas (custo básico 3/2)",
+              "valor": 1.5
+            },
+            {
+              "id": "dia",
+              "rotulo": "Luz do dia (custo básico 2)",
+              "valor": 2
+            }
+          ]
+        },
+        {
+          "id": "raio",
+          "tipo": "inteiro",
+          "rotulo": "Raio da área (mínimo de 2 metros)",
+          "unidade": "m",
+          "min": 2,
+          "max": 100,
+          "padrao": 2
+        }
+      ],
+      "operar": [
+        "max",
+        1,
+        [
+          "*",
+          "$luz",
+          [
+            "max",
+            2,
+            "$raio"
+          ]
+        ]
+      ],
+      "manter": "nenhum"
+    },
     "duracaoFormula": "Varia",
     "tempoTipo": "varia",
     "tempoFormula": "Varia",
-    "custoOperar": 2,
-    "custoManter": 1,
-    "custoManterTipo": "numero",
-    "custoTipo": "fixo",
+    "custoTipo": "varia",
+    "custoFormula": "1/2 para a luz das estrelas; 1 para o luar; 3/2 para tochas; 2 para a luz do dia (brilhante, sem penalidade de visão). Raio mínimo é de 2 metros.",
     "conferido": "livro",
     "conferidoPagina": 112,
     "conferidoPor": {
       "duracao": "formula",
       "tempoOperacao": "formula",
-      "custo": "entrada"
+      "custo": "tabela"
     }
   },
   {
@@ -4577,7 +4792,7 @@
     "energia": "Varia",
     "tempoOperacao": "1 min",
     "preRequisitos": "Criar Fogo, Moldar Fogo",
-    "descricao": "Comum\n\nAumenta a temperatura de um objeto. Não produz necessariamente fogo, embora a maioria das coisas se queime se for suficientemente aquecida. O calor será irradiado normalmente. (Use isso como uma diretriz para efeitos jogáveis — não tente transformar a mágica em um exercício de física!)\n\nQualquer mago que planeje fazer uso extensivo dessa mágica deve se armar com uma lista de pontos de fusão de vários materiais. A mágica pode ter desvantagens. Se o operador estivesse na cadeia, ele poderia derreter as barras para fugir… mas o calor irradiado provavelmente o incomodaria primeiro!\n\nDuração: 1 minuto. Cada minuto aumenta a temperatura do alvo em 10°. A temperatura máxima possível com esta mágica é de 1.500°.\n\nCusto: 1 para um objeto até o tamanho de um punho, 2 para um objeto até 0,75 m³, e 2 a cada 0,75 m³ para um objeto maior. A mudança de temperatura pode ser dobrada para 20° por minuto pelo dobro do custo, triplicada para 30° por minuto pelo triplo do custo e assim por diante. Custos de aquecimento mais lentos não são menores. Mesmo custo para manter.\n\nTempo de operação: 1 minuto.\n\nPré-requisitos: Criar Fogo e Moldar Fogo.\n\nItem\nCajado, varinha ou joias. Custo de energia para criar: 400; o item deve incluir um rubi no valor de $300.",
+    "descricao": "Comum\n\nAumenta a temperatura de um objeto. Não produz necessariamente fogo, embora a maioria das coisas se queime se for suficientemente aquecida. O calor será irradiado normalmente. (Use isso como uma diretriz para efeitos jogáveis — não tente transformar a mágica em um exercício de física!)\n\nQualquer mago que planeje fazer uso extensivo dessa mágica deve se armar com uma lista de pontos de fusão de vários materiais. A mágica pode ter desvantagens. Se o operador estivesse na cadeia, ele poderia derreter as barras para fugir… mas o calor irradiado provavelmente o incomodaria primeiro.\n\nDuração: 1 minuto. Cada minuto aumenta a temperatura do alvo em 10°. A temperatura máxima possível com esta mágica é de 1.500°.\n\nCusto: 1 para um objeto até o tamanho de um punho, 2 para um objeto até 0,75 m³, e 2 a cada 0,75 m³ para um objeto maior. A mudança de temperatura pode ser dobrada para 20° por minuto pelo dobro do custo, triplicada para 30° por minuto pelo triplo do custo e assim por diante. Custos de aquecimento mais lentos não são menores. Mesmo custo para manter.\n\nTempo de operação: 1 minuto.\n\nPré-requisitos: Criar Fogo e Moldar Fogo.\n\nItem\nCajado, varinha ou joias. Custo de energia para criar: 400; o item deve incluir um rubi no valor de $300.",
     "descricaoConferida": true,
     "descricaoPagina": 74,
     "mecanica": {
@@ -5436,21 +5651,57 @@
     },
     "mecanicaConferida": true,
     "fonteCabecalho": "tabela",
+    "custoPorCondicao": {
+      "entradas": [
+        {
+          "id": "alcance",
+          "tipo": "escolha",
+          "rotulo": "Alcance",
+          "padrao": "m2",
+          "opcoes": [
+            {
+              "id": "m2",
+              "rotulo": "2 metros",
+              "valor": 2
+            },
+            {
+              "id": "m4",
+              "rotulo": "4 metros",
+              "valor": 4
+            },
+            {
+              "id": "m6",
+              "rotulo": "6 metros",
+              "valor": 6
+            },
+            {
+              "id": "m8",
+              "rotulo": "8 metros",
+              "valor": 8
+            }
+          ]
+        }
+      ],
+      "operar": [
+        "/",
+        "$alcance",
+        2
+      ],
+      "manter": "igual"
+    },
     "duracaoTipo": "temporaria",
     "duracaoSeg": 10,
     "tempoOperacaoSeg": 2,
     "tempoTipo": "fixo",
-    "custoOperar": 1,
-    "custoManter": 1,
-    "custoManterTipo": "numero",
-    "custoTipo": "fixo",
+    "custoTipo": "porUnidade",
     "conferido": "livro",
     "conferidoPagina": 196,
     "conferidoPor": {
       "duracao": "tabela+entrada",
       "tempoOperacao": "tabela+entrada",
       "custo": "entrada"
-    }
+    },
+    "custoFormula": "1 para operar com dois metros de alcance (máximo de 8 metros). 1 para manter."
   },
   {
     "id": "chuva",
@@ -5586,7 +5837,7 @@
     "energia": "1/I#",
     "tempoOperacao": "1 seg",
     "preRequisitos": "AM2, Criar Fogo",
-    "descricao": "Área\n\nGotas de fogo chovem do céu para a área de efeito, causando 1d-1 de dano por fogo por segundo a todos dentro dela. Criaturas sob a Chuva de Fogo recebem dano em seus próprios turnos; se menos de um segundo inteiro for gasto na área afetada, o dano é reduzido pela metade (arredondado para baixo). A mágica só pode ser operada ao ar livre. Armadura protege da maneira usual. Um escudo com um BD de 2 ou melhor pode ser segurado em cima para bloquear as chamas, mas pode levar dano (pág. MB484). Isto requer duas mãos e uma ação Preparar, e consegue automaticamente proteger o personagem uma vez que o escudo esteja preparado para cima, mas isso o desprepara de suas funções normais de proteção!\n\nObjetos inanimados, como prédios, protegem com sua RD, mas algumas estruturas (consulte PV e RD de Estruturas, pág. MB558) podem ser danificadas ou incendiar-se.\n\nDuração: 1 minuto.\n\nCusto básico: 1 para operar (mínimo 2). Mesmo custo para manter. Pelo dobro do custo básico, a chuva de fogo causa 2d-2 por segundo!\n\nTempo de operação: Um minuto.\n\nPré-requisitos: Aptidão Mágica 2 e Criar Fogo.\n\nItem\nCajado. Utilizável apenas por magos. Custo de energia para criar: 600.",
+    "descricao": "Área\n\nGotas de fogo chovem do céu para a área de efeito, causando 1d-1 de dano por fogo por segundo a todos dentro dela. Criaturas sob a Chuva de Fogo recebem dano em seus próprios turnos; se menos de um segundo inteiro for gasto na área afetada, o dano é reduzido pela metade (arredondado para baixo).\n\nA mágica só pode ser operada ao ar livre. Armadura protege da maneira usual. Um escudo com um BD de 2 ou melhor pode ser segurado em cima para bloquear as chamas, mas pode levar dano (pág. MB484). Isto requer duas mãos e uma ação Preparar, e consegue automaticamente proteger o personagem uma vez que o escudo esteja preparado para cima, mas isso o desprepara de suas funções normais de proteção!\n\nObjetos inanimados, como prédios, protegem com sua RD, mas algumas estruturas (consulte PV e RD de Estruturas, pág. MB558) podem ser danificadas ou incendiar-se.\n\nDuração: 1 minuto.\n\nCusto básico: 1 para operar (mínimo 2). Mesmo custo para manter. Pelo dobro do custo básico, a chuva de fogo causa 2d-2 por segundo!\n\nTempo de operação: Um minuto.\n\nPré-requisitos: Aptidão Mágica 2 e Criar Fogo.\n\nItem\nCajado. Utilizável apenas por magos. Custo de energia para criar: 600.",
     "descricaoConferida": true,
     "descricaoPagina": 74,
     "mecanica": {
@@ -6801,9 +7052,9 @@
     ],
     "duracao": "1 hora",
     "energia": "Varia",
-    "tempoOperacao": "5 segundos",
+    "tempoOperacao": "3 seg",
     "preRequisitos": "AM3, Transformar Objeto",
-    "descricao": "Comum\n\nReduz as dimensões de um objeto inanimado por um fator de 2. O peso do objeto permanece o mesmo, mas sua densidade aumenta em oito vezes. Isso não afeta a RD ou os PV do objeto.\n\nDuração: 1 hora.\nCusto: 4 para operar. 2 para manter.\nTempo de operação: 5 segundos.\nPré-requisitos: Aptidão Mágica 2 e Remodelar.",
+    "descricao": "Comum\n\nReduz, em proporção, um objeto em uma dimensão. Uma corda ou lâmina pode ficar mais curta, por exemplo. Esta mágica poderia facilmente tornar a maioria das roupas inutilizáveis. Isso reduz o modificador de Tamanho do objeto, a menos que o objeto não esteja sendo contraído em sua dimensão mais longa. A RD do objeto permanece inalterada, mas seu PV geralmente diminui proporcionalmente ao reescalonamento.\n\nDuração: 1 hora.\n\nCusto: 1 por 0,5 kg de peso original (mínimo de 0,5 kg) para cada metade da dimensão escolhida. Mesmo custo para manter.\n\nTempo de operação: 3 segundos.\n\nPré-requisitos: Aptidão Mágica 3 e Transformar Objeto.\n\nItem\nVarinha, cajado ou joias. Utilizável apenas por magos; o item deve tocar o objetivo. Custo de energia para criar: 800.",
     "descricaoConferida": true,
     "descricaoPagina": 120,
     "mecanica": {
@@ -6812,19 +7063,56 @@
     },
     "mecanicaConferida": true,
     "fonteCabecalho": "tabela",
+    "custoPorCondicao": {
+      "entradas": [
+        {
+          "id": "peso",
+          "tipo": "numero",
+          "rotulo": "Peso original do objeto",
+          "unidade": "kg",
+          "min": 0,
+          "max": 100000,
+          "passo": 0.5,
+          "padrao": 0.5
+        },
+        {
+          "id": "metades",
+          "tipo": "inteiro",
+          "rotulo": "Metades da dimensão escolhida",
+          "min": 1,
+          "max": 20,
+          "padrao": 1
+        }
+      ],
+      "operar": [
+        "*",
+        [
+          "cima",
+          [
+            "/",
+            [
+              "max",
+              "$peso",
+              0.5
+            ],
+            0.5
+          ]
+        ],
+        "$metades"
+      ],
+      "manter": "igual"
+    },
     "duracaoTipo": "temporaria",
     "duracaoSeg": 3600,
-    "tempoOperacaoSeg": 5,
+    "tempoOperacaoSeg": 3,
     "tempoTipo": "fixo",
-    "custoOperar": 4,
-    "custoManter": 2,
-    "custoManterTipo": "numero",
-    "custoTipo": "fixo",
+    "custoTipo": "porUnidade",
+    "custoFormula": "1 por 0,5 kg de peso original (mínimo de 0,5 kg) para cada metade da dimensão escolhida. Mesmo custo para manter.",
     "conferido": "livro",
     "conferidoPagina": 120,
     "conferidoPor": {
       "duracao": "tabela+entrada",
-      "tempoOperacao": "entrada",
+      "tempoOperacao": "tabela+entrada",
       "custo": "entrada"
     }
   },
@@ -7290,9 +7578,9 @@
     ],
     "duracao": "1 min",
     "energia": "6/3",
-    "tempoOperacao": "4 segundos",
+    "tempoOperacao": "1 seg",
     "preRequisitos": "Identificar Função, Serralheiro, Relampago",
-    "descricao": "Comum\n\nControle as ações de uma máquina (qualquer coisa abaixo do IQ 6, de qualquer tamanho) ou várias pequenas, até 1.000 máquinas ou 50 kg no total. O operador deve estar ciente das funções da máquina para controlá-la. A mágica não fornece a perícia de usar a máquina — o operador deve usar seu próprio NH em Canhoneiro, Operação de Computadores, Condução, etc. É necessária concentração.\n\nA mágica atua através dos gatilhos e controles da máquina, mecânicos ou elétricos. Um mago pode usar a mágica para fazer uma câmera tirar uma foto, um robô estrangular seu criador do mal ou uma arma descarregar toda a sua munição. Ele não pode mirar o objeto ou movê-lo, a menos que seja automirado ou autopropulsionado (pelo menos sem adicionar uma mágica Aporte).\n\nSe alguma outra coisa tiver controle (uma IA em um veículo ou operador humano no banco do motorista, por exemplo), ele poderá contestar o controle da máquina a cada segundo com uma Disputa Rápida do NH efetivo do operador contra o NH do controlador (ou Vontade+NT para controle cibernético).\n\nUm mago que conhece essa mágica pode usar as mágicas Cavalgar Item ou Passageiro Interno nas máquinas; note, no entanto, que o aparelho sensorial de uma máquina pode não ser facilmente inteligível para um ser humano!\n\nDuração: 1 minuto\nCusto: 4 para operar; 2 para manter\nTempo de operação: 4 segundos\nPré-requisito: Controle de Máquina\n\nItem: Cajado, varinha ou joias. Custo de energia para criar: 1.500.",
+    "descricao": "Comum\n\nControle as ações de uma máquina (qualquer coisa abaixo do IQ 6, de qualquer tamanho) ou várias pequenas, até 1.000 máquinas ou 50 kg no total. O operador deve estar ciente das funções da máquina para controlá-la. A mágica não fornece a perícia de usar a máquina — o operador deve usar seu próprio NH em Canhoneiro, Operação de Computadores, Condução, etc. É necessária concentração.\n\nA mágica atua através dos gatilhos e controles da máquina, mecânicos ou elétricos. Um mago pode usar a mágica para fazer uma câmera tirar uma foto, um robô estrangular seu criador do mal ou uma arma descarregar toda a sua munição. Ele não pode mirar o objeto ou movê-lo, a menos que seja automirado ou autopropulsionado (pelo menos sem adicionar uma mágica Aporte).\n\nSe alguma outra coisa tiver controle (uma IA em um veículo ou operador humano no banco do motorista, por exemplo), ele poderá contestar o controle da máquina a cada segundo com uma Disputa Rápida do NH efetivo do operador contra o NH do controlador (ou Vontade+NT para controle cibernético ).\n\nUm mago que conhece essa mágica pode usar as mágicas Cavalgar ou Passageiro Interno nas máquinas; note, no entanto, que o aparelho sensorial de uma máquina pode não ser facilmente inteligível para um ser humano!\n\nDuração: 1 minuto.\n\nCusto: 6 para operar. 3 para manter.\n\nPré-requisitos: Identificar Função, Serralheiro e Relâmpago.\n\nItem\nCajado, varinha, chapelaria ou joias. Custo de energia para criar: 1.000 para um item que controla um tipo específico de máquina, 2.000 para um que controla qualquer máquina.",
     "descricaoConferida": true,
     "descricaoPagina": 176,
     "mecanica": {
@@ -7303,19 +7591,18 @@
     "fonteCabecalho": "tabela",
     "duracaoTipo": "temporaria",
     "duracaoSeg": 60,
-    "tempoOperacaoSeg": 4,
+    "tempoOperacaoSeg": 1,
     "tempoTipo": "fixo",
-    "custoOperar": 4,
-    "custoManter": 2,
+    "custoOperar": 6,
+    "custoManter": 3,
     "custoManterTipo": "numero",
     "custoTipo": "fixo",
-    "energiaTela": "4/2",
     "conferido": "livro",
     "conferidoPagina": 176,
     "conferidoPor": {
       "duracao": "tabela+entrada",
-      "tempoOperacao": "entrada",
-      "custo": "entrada"
+      "tempoOperacao": "tabela",
+      "custo": "tabela+entrada"
     }
   },
   {
@@ -7935,7 +8222,7 @@
     "energia": "4/2",
     "tempoOperacao": "4 seg",
     "preRequisitos": "Controle de Máquina",
-    "descricao": "Comum\n\nChame uma máquina de um tipo pelo nome (qualquer coisa com IQ 6). A distância não importa para esta mágica. Se a mágica for operada com sucesso, o operador saberá a localização da máquina mais próxima do tipo e quanto tempo levará para que a máquina chegue até ele. Ela se move em direção ao operador o mais rápido possível, até que a mágica termine ou a máquina alcance a vizinhança imediata do operador.\n\nObviamente, a máquina pode não ser muito boa em encontrar o caminho, ou pode ficar sem combustível ou energia, etc. Por exemplo, um refrigerador de NT7 não conseguiria se mover. Um carro NT7 continuaria em linha reta na velocidade máxima, sem ver (e, portanto, incapaz de evitar) obstáculos como pedestres, valas, postes de iluminação…\n\nQuando a máquina alcança o operador, ela fica próxima, sem atacar, até a mágica terminar. A mágica será quebrada se o operador ou um de seus companheiros atacar a máquina.\n\nDuração: 1 minuto\nCusto: 6 para operar; 3 para manter\nPré-requisitos: Identificar Função, Serralheiro e Relâmpago\n\nItem: Cajado, varinha ou joias. Custo de energia para criar: 500 para um item que convoca um tipo de máquina específica, 1.000 para um item que pode convocar qualquer máquina.",
+    "descricao": "Comum\n\nChame uma máquina de um tipo pelo nome (qualquer coisa com IQ 6). A distância não importa para esta mágica. Se a mágica for operada com sucesso, o operador saberá a localização da máquina mais próxima do tipo e quanto tempo levará para que a máquina chegue até ele. Ela se move em direção ao operador o mais rápido possível, até que a mágica termine ou a máquina alcance a vizinhança imediata do operador.\n\nObviamente, a máquina pode não ser muito boa em encontrar o caminho, ou pode ficar sem combustível ou energia, etc. Por exemplo, um refrigerador de NT7 não conseguiria se mover. Um carro NT7 continuaria em linha reta na velocidade máxima, sem ver (e, portanto, incapaz de evitar) obstáculos como pedestres, valas, postes de iluminação…\n\nQuando a máquina alcança o operador, ela fica próxima, sem atacar, até a mágica terminar. A mágica será quebrada se o operador ou um de seus companheiros atacar a máquina.\n\nDuração: 1 minuto.\n\nCusto: 4 para operar. 2 para manter.\n\nTempo de operação: 4 segundos.\n\nPré-requisito: Controle de Máquina.\n\nItem\nCajado, varinha ou joias. Custo de energia para criar: 500 para um item que convoca um tipo de máquina específica, 1.000 para um item que pode convocar qualquer máquina.",
     "descricaoConferida": true,
     "descricaoPagina": 176,
     "mecanica": {
@@ -7948,17 +8235,16 @@
     "duracaoSeg": 60,
     "tempoOperacaoSeg": 4,
     "tempoTipo": "fixo",
-    "custoOperar": 6,
-    "custoManter": 3,
+    "custoOperar": 4,
+    "custoManter": 2,
     "custoManterTipo": "numero",
     "custoTipo": "fixo",
-    "energiaTela": "6/3",
     "conferido": "livro",
     "conferidoPagina": 176,
     "conferidoPor": {
       "duracao": "tabela+entrada",
-      "tempoOperacao": "tabela",
-      "custo": "entrada"
+      "tempoOperacao": "tabela+entrada",
+      "custo": "tabela+entrada"
     }
   },
   {
@@ -7974,7 +8260,7 @@
     "energia": "50/20",
     "tempoOperacao": "10 min",
     "preRequisitos": "Convocar Espíritos ou Adivinhação",
-    "descricao": "Informação; Resistível com Vontade\n\nConvoca uma “sombra” do objetivo de um possível futuro, para responder às perguntas do operador. A sombra não mentirá (exceto em uma falha crítica), mas ficará desorientada; portanto, suas respostas podem ser obscuras e imprecisas. Uma pergunta pode ser feita por minuto, a mágica é mantida. Como a sombra só vem do futuro mais provável, essa mágica pode ser um augúrio insatisfatório.\n\nExemplo: Felix Magister pode chamar uma sombra de seu amigo Rudolph de dois meses à frente, e perguntar se seu ataque ao dragão foi bem-sucedido — e então, se a resposta for “não”, persuadir o verdadeiro Rudolph a não tentar. A sombra simplesmente veio de um futuro diferente. Claro, a sombra também pode responder “não — foi cancelada”.\n\nNo momento em que a sombra é trazida, o objetivo terá um sonho vívido no qual ele verá seu(s) questionador(es) e lembrará de tudo o que foi dito — se o evento previsto se tornar realidade.\n\nModificadores de NH: -1 para cada ano no futuro que a sombra é trazida; -5 se o objetivo não estiver presente ou -10 se não tiver nada relacionado ao objetivo (roupas, mechas de cabelo, etc.). -10 se o nome completo do objetivo não for conhecido.\n\nEsta mágica não pode ser tentada mais de uma vez por ano na mesma pessoa. Esta é uma mágica muito poderosa, e os Mestres podem querer restringir o acesso a essa mágica, ou exigir materiais caros.",
+    "descricao": "Informação; Resistível com Vontade\n\nConvoca uma “sombra” do objetivo de um possível futuro, para responder às perguntas do operador. A sombra não mentirá (exceto em uma falha crítica), mas ficará desorientada; portanto, suas respostas podem ser obscuras e imprecisas. Uma pergunta pode ser feita por minuto, a mágica é mantida. Como a sombra só vem do futuro mais provável, essa mágica pode ser um augúrio insatisfatório.\n\nExemplo: Felix Magister pode chamar uma sombra de seu amigo Rudolph de dois meses à frente, e perguntar se seu ataque ao dragão foi bem-sucedido — e então, se a resposta for “não”, persuadir o verdadeiro Rudolph a não tentar. A sombra simplesmente veio de um futuro diferente. Claro, a sombra também pode responder “não — foi cancelada”.\n\nNo momento em que a sombra é trazida, o objetivo terá um sonho vívido no qual ele verá seu(s) questionador(es) e lembrará de tudo o que foi dito — se o evento previsto se tornar realidade.\n\nModificadores de NH: -1 para cada ano no futuro que a sombra é trazida; -5 se o objetivo não estiver presente ou -10 se não tiver nada relacionado ao objetivo (roupas, mechas de cabelo, etc.). -10 se o nome completo do objetivo não for conhecido.\n\nEsta mágica não pode ser tentada mais de uma vez por ano na mesma pessoa. Esta é uma mágica muito poderosa, e os Mestres podem querer restringir o acesso a essa mágica, ou exigir materiais caros.\nDuração: 1 minuto.\n\nCusto: 50 para operar. 20 para manter.\n\nTempo de operação: 10 minutos. Uma tentativa por ano.\n\nPré-requisito: Convocar Espírito ou Adivinhação.\n\nItem\nCajado, varinha ou joia. Utilizável apenas por um mago. O item não dá habilidade para operar a mágica, mas concede um bônus de +2 no NH para quem conhece a mágica. Custo de energia para criar: 800.",
     "descricaoConferida": true,
     "descricaoPagina": 102,
     "mecanica": {
@@ -7994,9 +8280,9 @@
     "conferido": "livro",
     "conferidoPagina": 102,
     "conferidoPor": {
-      "duracao": "tabela",
-      "tempoOperacao": "tabela",
-      "custo": "tabela"
+      "duracao": "tabela+entrada",
+      "tempoOperacao": "tabela+entrada",
+      "custo": "tabela+entrada"
     }
   },
   {
@@ -8059,19 +8345,82 @@
     },
     "mecanicaConferida": true,
     "fonteCabecalho": "tabela",
+    "custoPorCondicao": {
+      "entradas": [
+        {
+          "id": "copias",
+          "tipo": "inteiro",
+          "rotulo": "Número de cópias",
+          "min": 1,
+          "max": 100,
+          "padrao": 1
+        },
+        {
+          "id": "tamanho",
+          "tipo": "escolha",
+          "rotulo": "Tamanho do documento",
+          "padrao": "p1",
+          "opcoes": [
+            {
+              "id": "p1",
+              "rotulo": "1 página",
+              "valor": 1
+            },
+            {
+              "id": "p10",
+              "rotulo": "10 páginas (dobra o custo)",
+              "valor": 2
+            },
+            {
+              "id": "p100",
+              "rotulo": "100 páginas (quadruplica)",
+              "valor": 4
+            },
+            {
+              "id": "p1000",
+              "rotulo": "1.000 páginas",
+              "valor": 8
+            },
+            {
+              "id": "p10000",
+              "rotulo": "10.000 páginas",
+              "valor": 16
+            },
+            {
+              "id": "p100000",
+              "rotulo": "100.000 páginas",
+              "valor": 32
+            }
+          ]
+        }
+      ],
+      "operar": [
+        "*",
+        [
+          "+",
+          2,
+          [
+            "-",
+            "$copias",
+            1
+          ]
+        ],
+        "$tamanho"
+      ]
+    },
     "duracaoTipo": "permanente",
     "duracaoSeg": 0,
     "tempoOperacaoSeg": 5,
     "tempoTipo": "fixo",
-    "custoOperar": 2,
-    "custoTipo": "fixo",
+    "custoTipo": "porUnidade",
     "conferido": "livro",
     "conferidoPagina": 116,
     "conferidoPor": {
       "duracao": "tabela+entrada",
       "tempoOperacao": "tabela+entrada",
       "custo": "entrada"
-    }
+    },
+    "custoFormula": "2 mais 1 para cada cópia feita. O documento copiado pode ser 10 vezes maior se o operador dobrar o custo de energia; assim, 4 de energia produziria uma cópia de um documento de dez páginas, enquanto 8 energia copiaria um livro de 100 páginas."
   },
   {
     "id": "cores",
@@ -8631,9 +8980,9 @@
     ],
     "duracao": "10 seg",
     "energia": "8/4",
-    "tempoOperacao": "3 segundos",
+    "tempoOperacao": "30 seg",
     "preRequisitos": "6 mágicas de Deslocamento ou AM3 e Corpo de Ar",
-    "descricao": "Comum\n\nO objetivo se torna etéreo e pode se mover através de objetos sólidos e criaturas como se eles não estivessem lá. Suas roupas se tornam etéreas, mas não seu equipamento. Ele não pode empunhar armas ou mover coisas, e não precisa respirar, comer ou beber enquanto está etéreo. Ele, na maioria dos aspectos, se tornou um fantasma. Ele pode ser visto, embora tenha uma aparência translúcida e possa ser ouvido se ele falar. Ataques físicos e a maioria das mágicas não podem afetar alguém que é etéreo. No entanto, qualquer mágica das Escolas de Comunicação e Empatia ou Controle da Mente tem efeito normal em uma pessoa etérea e é Resistível com -2! Da mesma forma, as Mágicas de Necromancia que afetam a mente ou a alma terão efeito normal e serão Resistíveis com uma penalidade de -2.\n\nIndivíduos etéreos podem usar mágica, mas com uma penalidade de -5 no NH; o plano etéreo parece ser uma área de baixo mana. Corpos etéreos podem se interpenetrar e não podem ferir um ao outro, exceto com mágicas, como acima.\n\nDuração: 10 segundos.\nCusto: 5. Não pode ser mantida; precisa ser refeita. No final da mágica, o objetivo também perde 5 PF (a menos que o operador seja o objetivo).\nTempo de operação: 3 segundos.\nPré-requisitos: Aptidão Mágica 1, IQ 12 ou superior e Apressar.\nItem: Sapatos ou joias; afeta apenas o usuário. Custo de energia para criar: 2.000. O item custa ao usuário 5 PF para cada 10 segundos de efeito.",
+    "descricao": "Comum\n\nO objetivo se torna etéreo e pode se mover através de objetos sólidos e criaturas como se eles não estivessem lá. Suas roupas se tornam etéreas, mas não seu equipamento. Ele não pode empunhar armas ou mover coisas, e não precisa respirar, comer ou beber enquanto está etéreo. Ele, na maioria dos aspectos, se tornou um fantasma. Ele pode ser visto, embora tenha uma aparência translúcida e possa ser ouvido se ele falar.\n\nAtaques físicos e a maioria das mágicas não podem afetar alguém que é etéreo. No entanto, qualquer mágica das Escolas de Comunicação e Empatia ou Controle da Mente tem efeito normal em uma pessoa etérea e é Resistível a -2! Da mesma forma, as Mágicas de Necromancia que afetam a mente ou a alma terão efeito normal e serão Resistíveis com uma penalidade de -2.\n\nIndivíduos etéreos podem usar mágica, mas com uma penalidade de -5 no NH; o plano etéreo parece ser uma área de baixo mana. Corpos etéreos podem se interpenetrar e não podem ferir um ao outro, exceto com mágicas, como acima.\n\nDuração: 10 segundos.\n\nCusto: 8 para operar. 4 para manter.\n\nTempo de operação: 30 segundos.\n\nPré-requisitos: Aptidão Mágica 3 e Corpo de Ar ou seis mágicas de Deslocamento.\n\nItem\n(a) Cajado, varinha, joalheria ou capa; afeta apenas o usuário. Uma desvantagem severa é que, com a exceção da capa, o item cai no chão, através do operador, assim que a mágica é operada! Custo de energia para criar: 3.000 (8.000 para a capa). (b) Gema que brilha e vibra quando qualquer ser etéreo está a 50 metros. Custo para criar: Uma gema no valor de $500 e 100 de energia.",
     "descricaoConferida": true,
     "descricaoPagina": 146,
     "mecanica": {
@@ -8645,19 +8994,18 @@
     "fonteCabecalho": "tabela",
     "duracaoTipo": "temporaria",
     "duracaoSeg": 10,
-    "tempoOperacaoSeg": 3,
+    "tempoOperacaoSeg": 30,
     "tempoTipo": "fixo",
-    "custoOperar": 5,
-    "custoManter": 0,
-    "custoManterTipo": "nao",
+    "custoOperar": 8,
+    "custoManter": 4,
+    "custoManterTipo": "numero",
     "custoTipo": "fixo",
-    "energiaTela": "5/0",
     "conferido": "livro",
     "conferidoPagina": 146,
     "conferidoPor": {
       "duracao": "tabela+entrada",
-      "tempoOperacao": "entrada",
-      "custo": "entrada"
+      "tempoOperacao": "tabela+entrada",
+      "custo": "tabela+entrada"
     }
   },
   {
@@ -9052,21 +9400,46 @@
     },
     "mecanicaConferida": true,
     "fonteCabecalho": "tabela",
+    "custoPorCondicao": {
+      "entradas": [
+        {
+          "id": "mt",
+          "tipo": "inteiro",
+          "rotulo": "MT do animal",
+          "min": -10,
+          "max": 20,
+          "padrao": 0
+        }
+      ],
+      "operar": [
+        "*",
+        2,
+        [
+          "max",
+          1,
+          [
+            "+",
+            1,
+            "$mt"
+          ]
+        ]
+      ],
+      "manter": "metade"
+    },
     "duracaoTipo": "temporaria",
     "duracaoSeg": 60,
     "tempoTipo": "igualAoCusto",
     "tempoUnidadeSeg": 1,
     "tempoFormula": "seg = custo",
-    "custoOperar": 2,
-    "custoManterTipo": "metade",
-    "custoTipo": "fixo",
+    "custoTipo": "porUnidade",
     "conferido": "livro",
     "conferidoPagina": 98,
     "conferidoPor": {
       "duracao": "tabela+entrada",
       "tempoOperacao": "tabela",
       "custo": "entrada"
-    }
+    },
+    "custoFormula": "2, multiplicado por 1+MT para animais maiores que MT 0. Metade disso para manter."
   },
   {
     "id": "criar_ar",
@@ -9416,6 +9789,54 @@
     },
     "mecanicaConferida": true,
     "fonteCabecalho": "tabela",
+    "custoPorCondicao": {
+      "entradas": [
+        {
+          "id": "bruta",
+          "tipo": "marca",
+          "rotulo": "Montaria Bruta"
+        },
+        {
+          "id": "alada",
+          "tipo": "marca",
+          "rotulo": "Montaria Alada"
+        },
+        {
+          "id": "guerra",
+          "tipo": "marca",
+          "rotulo": "Treinada para a Guerra"
+        },
+        {
+          "id": "corrida",
+          "tipo": "marca",
+          "rotulo": "Montaria de Corrida"
+        }
+      ],
+      "operar": [
+        "*",
+        8,
+        [
+          "+",
+          1,
+          "$bruta",
+          "$alada",
+          "$guerra",
+          "$corrida"
+        ]
+      ],
+      "manter": [
+        "*",
+        3,
+        [
+          "+",
+          1,
+          "$bruta",
+          "$alada",
+          "$guerra",
+          "$corrida"
+        ]
+      ]
+    },
     "duracaoTipo": "temporaria",
     "duracaoSeg": 3600,
     "tempoOperacaoSeg": 3,
@@ -10485,9 +10906,9 @@
     ],
     "duracao": "Perm.",
     "energia": "1 a 4",
-    "tempoOperacao": "5 segundos",
+    "tempoOperacao": "1 seg",
     "preRequisitos": "AM2, Fragmentar, Estragar, Terra para Ar, Dissipar Ar e Dissipar Água",
-    "descricao": "Comum; Resistível com HT\n\nO objetivo simplesmente se desintegra em pó fino. Se o objetivo for um ser vivo, ele sofre 1d de dano para cada ponto de energia investido; se PV chegar a 0, ele se desintegra completamente.\n\nDuração: Permanente.\nCusto: 1 a 10. Custo mínimo de 5 para desintegrar um objeto inanimado MT 0.\nTempo de operação: 5 segundos.\nPré-requisitos: Aptidão Mágica 3 e Fragmentar.\n“Fascinante! Simplesmente fascinante!”\nLady Ann sorriu. “Então, a viagem valeu a pena, Doutor?”\n“Mais que isso, minha querida senhora. Como sua família adquiriu um dispositivo tão singular?” Perguntou Doutor Bernard.\n“Eu sinceramente não sei. É uma herança dos Goulding há séculos, e ele está cercado de todo tipo de boatos e lendas, mas suas origens são um mistério. Ninguém sequer sabe o que ele faz de verdade. Quando eu era pequena, minha ama me disse que estava vivo e eu nunca deveria tocá-lo.”\n“Bem, essa é uma conclusão compreensível para um leigo. A julgar por sua idade e desenho, suspeito que venha das cidades-estado Arquigulonianas, e tenha sido criado para lidar com saques mágicos. É uma obra magistral: identifica encantamentos e mágicas, remove armadilhas mágicas e destrói completamente itens de origem infernal.\n“O mais interessante, no entanto, ele é autossuficiente. Deve haver várias centenas de peças encantadas dentro dessa caixa oblonga, suportando centenas de mágicas condicionais interligadas. Quem quer que tenha encantado, criou um item que pode responder de maneira inteligente aos eventos, de modo não convencional. Eu estou admirado com ele.”\n“Intrigante. Não está vivo, então?”\n“Ah não. É apenas incrivelmente complexo.”\n“Bem, isso é um alívio, Doutor. Eu não tenho como agradecer o suficiente por sua vinda. Você ficaria para o jantar?”\n\nSomos todos aprendizes de uma arte da qual ninguém jamais se torna mestre.\n– Ernest Hemingway\n\nAs mágicas desta escola têm a ver com a estrutura da magia em si. São mágicas sobre mágicas ou mágicas que afetam outras mágicas. Apenas magos podem aprender metamágicas; até mesmo as metamágicas mais básicas exigem Aptidão Mágica 1.",
+    "descricao": "Comum\n\nSemelhante ao Fragmentar, mas deixa apenas poeira (não pode ser reparado!). Se o dano causado não destruir o objetivo, ele não será afetado. Essa mágica afeta apenas objetos inanimados e não pode afetar partes de objetos.\n\nDuração: Permanente.\n\nCusto: 1 a 4; faz 1d de dano para cada ponto de energia colocado nela.\n\nPré-requisitos: Aptidão Mágica 2, Fragmentar, Estragar, Terra para Ar, Dissipar Ar e Dissipar Água.\n\nItem\nComo em Fragmentar. Custo de energia para criar: 1.500.",
     "descricaoConferida": true,
     "descricaoPagina": 120,
     "mecanica": {
@@ -10502,18 +10923,17 @@
     "fonteCabecalho": "tabela",
     "duracaoTipo": "permanente",
     "duracaoSeg": 0,
-    "tempoOperacaoSeg": 5,
+    "tempoOperacaoSeg": 1,
     "tempoTipo": "fixo",
     "custoTipo": "faixa",
     "custoMinimo": 1,
-    "custoMaximo": 10,
-    "energiaTela": "1 a 10",
+    "custoMaximo": 4,
     "conferido": "livro",
     "conferidoPagina": 120,
     "conferidoPor": {
       "duracao": "tabela+entrada",
-      "tempoOperacao": "entrada",
-      "custo": "entrada"
+      "tempoOperacao": "tabela",
+      "custo": "tabela+entrada"
     }
   },
   {
@@ -10728,6 +11148,11 @@
     },
     "mecanicaConferida": true,
     "fonteCabecalho": "tabela",
+    "custoPorCondicao": {
+      "entradas": [],
+      "operar": 8,
+      "manter": 2
+    },
     "duracaoTipo": "temporaria",
     "duracaoSeg": 3600,
     "tempoOperacaoSeg": 10,
@@ -12410,11 +12835,11 @@
     "escola": [
       "Quebrar e Consertar"
     ],
-    "duracao": "Permanente",
+    "duracao": "1 hora",
     "energia": "Varia",
-    "tempoOperacao": "10 minutos",
+    "tempoOperacao": "3 seg.",
     "preRequisitos": "Contrair Objeto",
-    "descricao": "Comum\n\nReduz permanentemente o tamanho e o peso de um objeto inanimado em uma porcentagem igual à margem de sucesso do operador (máximo de 50%).\n\nDuração: Permanente.\nCusto: 20.\nTempo de operação: 10 minutos.\nPré-requisitos: Contrair Objeto e Enfraquecer.",
+    "descricao": "Comum\n\nReduz o tamanho de um objeto mantendo suas proporções, diminuindo seu modificador de Tamanho. Multiplique o peso por 1/3 e o PV por 2/3, por cada ponto subtraído do modificador de Tamanho; subtraia 1 RD para cada 2 pontos subtraídos do modificador de Tamanho.\n\nDuração: 1 hora.\n\nCusto: 1 por 0,5 kg do peso original (mínimo de 0,5 kg) para cada ponto de redução do MT. Mesmo custo para manter.\n\nTempo de operação: 3 segundos.\n\nPré-requisito: Contrair Objeto.\n\nItem\nVarinha, cajado ou joias. Utilizável apenas por magos; o item deve tocar o objetivo. Custo de energia para criar: 800.",
     "descricaoConferida": true,
     "descricaoPagina": 120,
     "mecanica": {
@@ -12423,17 +12848,56 @@
     },
     "mecanicaConferida": true,
     "fonteCabecalho": "tabela",
-    "duracaoTipo": "permanente",
-    "duracaoSeg": 0,
-    "tempoOperacaoSeg": 600,
+    "custoPorCondicao": {
+      "entradas": [
+        {
+          "id": "peso",
+          "tipo": "numero",
+          "rotulo": "Peso original do objeto",
+          "unidade": "kg",
+          "min": 0,
+          "max": 100000,
+          "passo": 0.5,
+          "padrao": 0.5
+        },
+        {
+          "id": "mt",
+          "tipo": "inteiro",
+          "rotulo": "Pontos de redução do MT",
+          "min": 1,
+          "max": 20,
+          "padrao": 1
+        }
+      ],
+      "operar": [
+        "*",
+        [
+          "cima",
+          [
+            "/",
+            [
+              "max",
+              "$peso",
+              0.5
+            ],
+            0.5
+          ]
+        ],
+        "$mt"
+      ],
+      "manter": "igual"
+    },
+    "duracaoTipo": "temporaria",
+    "duracaoSeg": 3600,
+    "tempoOperacaoSeg": 3,
     "tempoTipo": "fixo",
-    "custoOperar": 20,
-    "custoTipo": "fixo",
+    "custoTipo": "porUnidade",
+    "custoFormula": "1 por 0,5 kg do peso original (mínimo de 0,5 kg) para cada ponto de redução do MT. Mesmo custo para manter.",
     "conferido": "livro",
     "conferidoPagina": 120,
     "conferidoPor": {
-      "duracao": "entrada",
-      "tempoOperacao": "entrada",
+      "duracao": "tabela+entrada",
+      "tempoOperacao": "tabela+entrada",
       "custo": "entrada"
     }
   },
@@ -12720,7 +13184,7 @@
     "energia": "3/3",
     "tempoOperacao": "4 seg.",
     "preRequisitos": "Embriaguez ou Pestilência",
-    "descricao": "Comum; Resistível com HT.\n\nFaz com que o objetivo se sinta enjoado e com náuseas (tonturas, vômitos etc.). Ele pode correr se necessário (a metade do seu deslocamento normal), mas não pode fazer nada além de manter as mágicas existentes e dar respostas muito simples. Quando a mágica desaparece, o enjoo desaparece instantaneamente.\n\nEsta é também uma mágica de Controle do Corpo.\n\nDuração: 1 minuto.\nCusto: 3 para operar; 3 para manter.\nTempo de operação: 4 segundos.\nPré-requisito: Embriaguez ou Pestilência.",
+    "descricao": "Comum; Resistível com HT\n\nFaz com que o objetivo se sinta enjoado e com náuseas (tonturas, vômitos etc.). Ele pode correr se necessário (a metade do seu deslocamento normal), mas não pode fazer nada além de manter as mágicas existentes e dar respostas muito simples. Quando a mágica desaparece, o enjoo desaparece instantaneamente.\n\nEsta é também uma mágica de Controle do Corpo.\n\nDuração: 1 minuto.\n\nCusto: 3 para operar. 3 para manter.\n\nTempo de operação: 4 segundos.\n\nPré-requisito: Embriaguez ou Pestilência.\n\nItem\n(a) Qualquer item. Sempre ativo; o item causa os efeitos da mágica Enjoo. Custo de energia para criar: 300. (b) Cajado ou varinha. Utilizável apenas por magos; o item deve tocar o objetivo. Custo de energia para criar: 1.500.",
     "descricaoConferida": true,
     "descricaoPagina": 138,
     "mecanica": {
@@ -13482,7 +13946,7 @@
     "energia": "Varia",
     "tempoOperacao": "Varia",
     "preRequisitos": "Luz Contínua",
-    "descricao": "Área\n\nMergulha uma área na escuridão. Quanto mais energia é colocada no custo básico, mais sombria fica a luz ambiente. Ao contrário da mágica Trevas, as fontes de luz ainda funcionam normalmente dentro da área.\n\nDuração: Variável. O Mestre deve rolar 2d para o número de dias.\nCusto básico: 1/2 para tochas; 1 para o luar; 3/2 para a luz das estrelas; 2 para a escuridão total. Raio mínimo é de 2 metros.\nTempo de operação: 1 segundo por metade dos pontos do custo básico.\nPré-requisito: Luz Contínua.\n\nItem\n(a) Varinha, cajado ou joias. Custo de energia para criar: 250.\n(b) Uma área pode ser permanentemente escurecida por 100 vezes o custo da operação.",
+    "descricao": "Área\n\nMergulha uma área na escuridão. Quanto mais energia é colocada no custo básico, mais sombria fica a luz ambiente. Ao contrário da mágica Trevas, as fontes de luz ainda funcionam normalmente dentro da área.\n\nDuração: Variável. O Mestre deve rolar 2d para o número de dias.\n\nCusto básico: 1/2 para tochas; 1 para o luar; 3/2 para a luz das estrelas; 2 para a escuridão total. Raio mínimo é de 2 metros.\n\nTempo de operação: 1 segundo por metade dos pontos do custo básico.\n\nPré-requisito: Luz Contínua.\n\nItem\n(a) Varinha, cajado ou joias. Custo de energia para criar: 250. (b) Uma área pode ser permanentemente escurecida por 100 vezes o custo da operação.",
     "descricaoConferida": true,
     "descricaoPagina": 112,
     "mecanica": {
@@ -13518,7 +13982,7 @@
     "energia": "2/1",
     "tempoOperacao": "1 seg",
     "preRequisitos": "Trevas",
-    "descricao": "Área\n\nEnvolve a área afetada em um negrume impenetrável. Ninguém pode ver a área afetada e ninguém dentro da área afetada pode ver nada; veja Visibilidade, pág. MB394 para regras de combate. A vantagem Visão no Escuro permite que você veja através de uma mágica Trevas, mas Visão Noturna e Infravisão não.\n\nDuração: 1 minuto.\nCusto básico: 2 para operar; 1 para manter.\nPré-requisito: Trevas.\n\nItem\nPiso, chão ou um tapete podem ser encantados para que a área acima (cerca de 2 metros) esteja em permanente escuridão. Custo de energia para criar: 150 por metro quadrado.",
+    "descricao": "Área\n\nEnvolve a área afetada em um negrume impenetrável. Ninguém pode ver a área afetada e ninguém dentro da área afetada pode ver nada; veja Visibilidade, pág. MB394 para regras de combate. A vantagem Visão no Escuro permite que você veja através de uma mágica Trevas, mas Visão Noturna e Infravisão não.\n\nDuração: 1 minuto.\n\nCusto básico: 2 para operar. 1 para manter.\n\nPré-requisito: Trevas.\n\nItem\nPiso, chão ou um tapete podem ser encantados para que a área acima (cerca de 2 metros) esteja em permanente escuridão. Custo de energia para criar: 150 por metro quadrado.",
     "descricaoConferida": true,
     "descricaoPagina": 112,
     "mecanica": {
@@ -13836,7 +14300,7 @@
     "energia": "2/2",
     "tempoOperacao": "1 seg",
     "preRequisitos": "Cores",
-    "descricao": "Comum\n\nCria uma superfície reflexiva. Pode ser operada em um objeto ou pode ser independente (caso em que é dividida em duas). A superfície do espelho não é necessariamente plana; o operador poderia criar uma casa de espelhos, por exemplo.\n\nEm um universo científico-paradigmático, os operadores com conhecimento de física podem usar essa mágica para criar refletores parabólicos. Uma curva simples pode ser suficiente para cozinhar carne; uma grande e precisa poderia ser usada para derreter o chumbo, dada luz solar suficiente em ângulos apropriados. Contra alvos vivos, o Mestre pode assumir que tal espelho causaria 1 ponto de dano por queimadura a cada 10 segundos. Para acender as coisas, use as diretrizes de Atear Fogo (pág. 72), substituindo o tamanho do Espelho pelo custo de energia listado. Um espelho de 8 metros de raio inflama a madeira pesada em cerca de 10 segundos. Outros usos semelhantes estão sujeitos à aprovação do Mestre.\n\nDuração: 1 minuto.\nCusto: 2. O mesmo custo para manter.\nPré-requisito: Cores.\n\nItem\nVarinha, cajado ou joias. Custo de energia para criar: 350; o item deve incluir um pequeno espelho.",
+    "descricao": "Comum\n\nCria uma superfície reflexiva. Pode ser operada em um objeto ou pode ser independente (caso em que é dividida em duas). A superfície do espelho não é necessariamente plana; o operador poderia criar uma casa de espelhos, por exemplo.\n\nEm um universo científico-paradigmático, os operadores com conhecimento de física podem usar essa mágica para criar refletores parabólicos. Uma curva simples pode ser suficiente para cozinhar carne; uma grande e precisa poderia ser usada para derreter o chumbo, dada luz solar suficiente em ângulos apropriados. Contra alvos vivos, o Mestre pode assumir que tal espelho causaria 1 ponto de dano por queimadura a cada 10 segundos. Para acender as coisas, use as diretrizes de Atear Fogo (pág. 72), substituindo o tamanho do Espelho pelo custo de energia listado. Um espelho de 8 metros de raio inflama a madeira pesada em cerca de 10 segundos. Outros usos semelhantes estão sujeitos à aprovação do Mestre.\n\nDuração: 1 minuto.\n\nCusto: 2. O mesmo custo para manter.\n\nPré-requisito: Cores.\n\nItem\nVarinha, cajado ou joias. Custo de energia para criar: 350; o item deve incluir um pequeno espelho.",
     "descricaoConferida": true,
     "descricaoPagina": 112,
     "mecanica": {
@@ -13986,7 +14450,7 @@
     "energia": "15",
     "tempoOperacao": "1 hora",
     "preRequisitos": "AM2, Esquecimento, IQ 13+",
-    "descricao": "Comum; Resistível com Vontade ou Perícia.\n\nComo Esquecimento, mas permanente. O objetivo também esquece que ele já sabia disso ou que estava encantado. Outro mago com esta mágica pode restaurar as coisas esquecidas redefinindo a mágica e vencendo uma Disputa Rápida de Mágicas com a mágica Esquecimento Permanente original.\n\nDuração: Permanente.\nCusto: 15.\nTempo de operação: 1 hora.\nPré-requisitos: Aptidão Mágica 2, Esquecimento e IQ 13 ou superior.\n\nItem\nQualquer item. O mesmo efeito que para o item Esquecimento, mas se for usado por um dia inteiro, a coisa é esquecida para sempre, a menos que a mágica seja removida por Remover Maldição ou uma mágica Esquecimento Permanente oposta. Custo de energia para criar: 1.000.",
+    "descricao": "Comum; Resistível com Vontade ou Perícia\n\nComo Esquecimento, mas permanente. O objetivo também esquece que ele já sabia disso ou que estava encantado. Outro mago com esta mágica pode restaurar as coisas esquecidas redefinindo a mágica e vencendo uma Disputa Rápida de Mágicas com a mágica Esquecimento Permanente original.\n\nDuração: Permanente.\n\nCusto: 15.\n\nTempo de operação: 1 hora.\n\nPré-requisitos: Aptidão Mágica 2, Esquecimento e IQ 13 ou superior.\n\nItem\nQualquer item. O mesmo efeito que para o item Esquecimento, mas se for usado por um dia inteiro, a coisa é esquecida para sempre, a menos que a mágica seja removida por Remover Maldição ou uma mágica Esquecimento Permanente oposta. Custo de energia para criar: 1.000.",
     "descricaoConferida": true,
     "descricaoPagina": 138,
     "mecanica": {
@@ -14641,7 +15105,7 @@
     "energia": "5/3",
     "tempoOperacao": "1 seg",
     "preRequisitos": "Convocar Máquina",
-    "descricao": "Comum\n\nComunique-se com qualquer máquina (de qualquer IQ) no próprio “idioma” da máquina. A menos que o idioma seja transmitido pelo som, o objetivo deve manter contato físico com a porta ou antena da interface da máquina. A quantidade de informações trocadas depende da inteligência da máquina; nenhuma máquina abaixo do IQ 3 provavelmente saberá muito do seu interesse. Cada minuto da mágica permite uma pergunta e resposta.\n\nEsta também é uma mágica de Comunicação e Empatia.\n\nDuração: 1 minuto\nCusto: 5 para operar; 3 para manter\nPré-requisito: Convocar Máquina\n\nItem: Cajado, varinha ou joias. Custo de energia para criar: 1.200 para um item que fala com um tipo de máquina específico, 5.000 para um item que pode falar com qualquer máquina.",
+    "descricao": "Comum\n\nComunique-se com qualquer máquina (de qualquer IQ) no próprio “idioma” da máquina. A menos que o idioma seja transmitido pelo som, o objetivo deve manter contato físico com a porta ou antena da interface da máquina. A quantidade de informações trocadas depende da inteligência da máquina; nenhuma máquina abaixo do IQ 3 provavelmente saberá muito do seu interesse. Cada minuto da mágica permite uma pergunta e resposta.\n\nEsta também é uma mágica de Comunicação e Empatia.\n\nDuração: 1 minuto.\n\nCusto: 5 para operar. 3 para manter.\n\nPré-requisito: Convocar Máquina.\n\nItem\nCajado, varinha ou joias. Custo de energia para criar: 1.200 para um item que fala com um tipo de máquina específico, 5.000 para um item que pode falar com qualquer máquina.",
     "descricaoConferida": true,
     "descricaoPagina": 176,
     "mecanica": {
@@ -15214,21 +15678,60 @@
     },
     "mecanicaConferida": true,
     "fonteCabecalho": "tabela",
+    "custoPorCondicao": {
+      "entradas": [
+        {
+          "id": "rd",
+          "tipo": "inteiro",
+          "rotulo": "Pontos de RD (máximo de 8)",
+          "min": 1,
+          "max": 8,
+          "padrao": 1
+        },
+        {
+          "id": "tamanho",
+          "tipo": "escolha",
+          "rotulo": "Tamanho do objeto",
+          "padrao": "punho",
+          "opcoes": [
+            {
+              "id": "punho",
+              "rotulo": "Do tamanho de um punho",
+              "valor": 1
+            },
+            {
+              "id": "medio",
+              "rotulo": "Até 0,025 m³ (dobra o custo)",
+              "valor": 2
+            },
+            {
+              "id": "mt0",
+              "rotulo": "MT 0 (triplica o custo)",
+              "valor": 3
+            }
+          ]
+        }
+      ],
+      "operar": [
+        "*",
+        "$rd",
+        "$tamanho"
+      ],
+      "manter": "igual"
+    },
     "duracaoTipo": "temporaria",
     "duracaoSeg": 3600,
     "tempoOperacaoSeg": 5,
     "tempoTipo": "fixo",
-    "custoOperar": 1,
-    "custoManter": 1,
-    "custoManterTipo": "igual",
-    "custoTipo": "fixo",
+    "custoTipo": "porUnidade",
     "conferido": "livro",
     "conferidoPagina": 119,
     "conferidoPor": {
       "duracao": "tabela+entrada",
       "tempoOperacao": "tabela+entrada",
       "custo": "entrada"
-    }
+    },
+    "custoFormula": "1 para operar por ponto de RD (máximo de 8) para um objeto do tamanho de um punho, dobre para um objeto até 0,025 m³, triplique para um objeto MT 0. Mesmo custo para manter."
   },
   {
     "id": "fortalecer_vontade",
@@ -15438,7 +15941,7 @@
     "energia": "Varia",
     "tempoOperacao": "1 min.",
     "preRequisitos": "Calor",
-    "descricao": "Comum\n\nO inverso do calor (acima). Pode reduzir a temperatura de qualquer objeto para zero absoluto, se mantido por tempo suficiente.\n\nDuração, Custo e Tempo de operação: Exatamente como para Calor, exceto que cada minuto reduz a temperatura do alvo em 10°.\n\nPré-requisito: Calor.",
+    "descricao": "Comum\n\nO inverso do calor (acima). Pode reduzir a temperatura de qualquer objeto para zero absoluto, se mantido por tempo suficiente.\n\nDuração, Custo e Tempo de operação: Exatamente como para Calor, exceto que cada minuto reduz a temperatura do alvo em 10°.\n\nPré-requisito: Calor.\n\nItem\nCajado, varinha ou joias. Custo de energia para criar: 400; os itens devem incluir um rubi de $300 e uma safira de $300.",
     "descricaoConferida": true,
     "descricaoPagina": 74,
     "mecanica": {
@@ -15474,7 +15977,7 @@
     "energia": "1/M",
     "tempoOperacao": "1 seg.",
     "preRequisitos": "Moldar Fogo, Extinguir Fogo",
-    "descricao": "Área\n\nCria uma área de fumaça densa. Até mesmo a espessura de um metro dessa fumaça bloqueia a visão. Até que se dissipe, tem o efeito de gás lacrimogêneo (qualquer um que falhe em um teste de HT não pode fazer nada além de tossir e chorar). A fumaça é um pouco quente e sobe lentamente (cerca de meio metro por segundo). A taxa de dissipação depende da área e da presença do vento; dentro de casa, geralmente dura até que a mágica expire, mas ao ar livre em um dia de ventania pode durar apenas 10 segundos ou mais.",
+    "descricao": "Área\n\nCria uma área de fumaça densa. Até mesmo a espessura de um metro dessa fumaça bloqueia a visão. Até que se dissipe, tem o efeito de gás lacrimogêneo (qualquer um que falhe em um teste de HT não pode fazer nada além de tossir e chorar). A fumaça é um pouco quente e sobe lentamente (cerca de meio metro por segundo). A taxa de dissipação depende da área e da presença do vento; dentro de casa, geralmente dura até que a mágica expire, mas ao ar livre em um dia de ventania pode durar apenas 10 segundos ou mais.\nDuração: 5 minutos, exceto em áreas com muito vento.\n\nCusto básico: 1. Metade disso para manter.\n\nPré-requisitos: Moldar Fogo e Extinguir Fogo.\n\nItem\nCajado, varinha ou joias. Custo de energia para criar: 50.",
     "descricaoConferida": true,
     "descricaoPagina": 73,
     "mecanica": {
@@ -15496,7 +15999,7 @@
     "conferidoPor": {
       "duracao": "tabela",
       "tempoOperacao": "tabela",
-      "custo": "tabela"
+      "custo": "tabela+entrada"
     }
   },
   {
@@ -15627,7 +16130,7 @@
     "energia": "8/4",
     "tempoOperacao": "5 seg.",
     "preRequisitos": "AM2, Aporte, 6 mágicas de Quebrar e Consertar incl. Remodelar",
-    "descricao": "Comum; Resistível com HT (ou por NH efetivo em armas mágicas)\n\nO corpo do operador se mistura magicamente com a arma branca que ele está empunhando. Roupas (até 3 kg) desaparecem junto com ele, mas o resto de seu equipamento cai no chão. A arma agora dança no ar, como se empunhada por um oponente invisível. O objetivo mantém sua perícia e atributos com armas enquanto assume uma Velocidade mínima de 5. Ataques visando a arma terão uma penalidade normal pelo tamanho (pág. MB400). A arma só pode se esquivar ou aparar, mas tem RD natural apropriada ao seu material (pág. MB483). Se a arma for quebrada, a mágica termina e o objetivo reaparece, ileso, mas fisicamente atordoado, segurando a arma inútil em sua(s) mão(s).\n\nO objetivo não pode falar, então ele só pode operar mágicas que ele conhece com NH 20 ou melhor. O HT do objetivo\nMágicas de Quebrar e Consertar como Enfraquecer e Fragmentar. Armas mágicas resistem à fusão com o seu poder. Se o objetivo desejar ativar qualquer um dos encantamentos da arma mágica, ele deve ganhar uma Disputa Comum de sua Vontade contra o poder da arma.\n\nDuração: 1 minuto.\nCusto: 8 para operar. 4 para manter.\nTempo de operação: 5 segundos.\nPré-requisitos: Aptidão Mágica 2, Aporte e pelo menos seis mágicas de Quebrar e Consertar, incluindo Remodelar.",
+    "descricao": "Comum; Resistível com HT (ou por NH efetivo em armas mágicas)\n\nO corpo do operador se mistura magicamente com a arma branca que ele está empunhando. Roupas (até 3 kg) desaparecem junto com ele, mas o resto de seu equipamento cai no chão. A arma agora dança no ar, como se empunhada por um oponente invisível. O objetivo mantém sua perícia e atributos com armas enquanto assume uma Velocidade mínima de 5. Ataques visando a arma terão uma penalidade normal pelo tamanho (pág. MB400). A arma só pode se esquivar ou aparar, mas tem RD natural apropriada ao seu material (pág. MB483). Se a arma for quebrada, a mágica termina e o objetivo reaparece, ileso, mas fisicamente atordoado, segurando a arma inútil em sua(s) mão(s).\n\nO objetivo não pode falar, então ele só pode operar mágicas que ele conhece com NH 20 ou melhor. O HT do objetivo\nresiste a Mágicas de Quebrar e Consertar como Enfraquecer e Fragmentar.\n\nArmas mágicas resistem à fusão com o seu poder. Se o objetivo desejar ativar qualquer um dos encantamentos da arma mágica, ele deve ganhar uma Disputa Comum de sua Vontade contra o poder da arma.\n\nDuração: 1 minuto.\n\nCusto: 8 para operar. 4 para manter.\n\nTempo de operação: 5 segundos.\n\nPré-requisitos: Aptidão Mágica 2, Aporte e pelo menos seis mágicas de Quebrar e Consertar, incluindo Remodelar.\n\nItem\n(a) Joias. O item desaparece junto com seu usuário quando a mágica é operada, então o operador pode mantê-la. Custo de energia para criar: 2.000. (b) Qualquer arma. Custo de energia para criar: 500 por 0,5 kg de peso da arma (mínimo 0,5 kg). (c) Uma arma mágica pode ser encantada para não resistir à fusão por um custo de energia de 500 por 0,5 kg de peso da arma (mínimo de 0,5 kg).",
     "descricaoConferida": true,
     "descricaoPagina": 119,
     "mecanica": {
@@ -16431,7 +16934,7 @@
     "energia": "8",
     "tempoOperacao": "10 min.",
     "preRequisitos": "Localizar Máquina",
-    "descricao": "Comum; Resistível com magias que escondem magia\n\nRevela as funções da máquina em questão. Se o objetivo tiver mais de uma função, a mágica as revela em ordem de complexidade (primeiro mais simples) e diz ao operador “existem mais funções”. As operações posteriores revelarão as funções restantes, uma por operação.\n\nA mágica também pode ser usada para revelar como ativar funções conhecidas (ou seja, qual botão pressionar); o operador recebe uma tentativa, com uma penalidade de -5! Se for bem-sucedido, o operador poderá usar a máquina com a perícia apropriada (ou IQ-6), com uma penalidade de apenas -1 por desconhecimento.\n\nCusto: 8\nTempo de operação: 10 minutos\nPré-requisito: Localizar Máquina\n\nItem: Cajado, varinha ou joias. Custo de energia para criar: 1.500.",
+    "descricao": "Informação; Resistível com mágicas que escondem magia\n\nRevela as funções da máquina em questão. Se o objetivo tiver mais de uma função, a mágica as revela em ordem de complexidade (primeiro mais simples) e diz ao operador “existem mais funções”. As operações posteriores revelarão as funções restantes, uma por operação.\n\nA mágica também pode ser usada para revelar como ativar funções conhecidas (ou seja, qual botão pressionar); o operador recebe uma tentativa, com uma penalidade de -5! Se for bem-sucedido, o operador poderá usar a máquina com a perícia apropriada (ou IQ-6), com uma penalidade de apenas -1 por desconhecimento.\n\nCusto: 8.\n\nTempo de operação: 10 minutos.\n\nPré-requisito: Localizar Máquina.\n\nItem\nCajado, varinha ou joias. Custo de energia para criar: 1.500.",
     "descricaoConferida": true,
     "descricaoPagina": 176,
     "mecanica": {
@@ -17190,7 +17693,7 @@
     "energia": "2/1#",
     "tempoOperacao": "1 seg.",
     "preRequisitos": "Resistência ao Fogo",
-    "descricao": "Comum\n\nO objetivo (pessoa, criatura ou objeto) e qualquer coisa que ele carregue se tornam imunes aos efeitos do calor e do fogo (mas não da eletricidade).\n\nDuração: 1 minuto.\n\nCusto: 2 para operar. 1 para manter. Duplique o custo se o objetivo deve resistir a um alto-forno ou vulcão; o custo triplica se o objetivo tiver que resistir ao calor de uma estrela, bomba nuclear, etc. Somente o primeiro nível de proteção é necessário contra mágicas do Fogo do tipo de combate.\n\nPré-requisito: Resistência ao Fogo.\n\nItem\nCajado, varinha ou joias. Custo de energia para criar: 400; os itens devem incluir um rubi de $300 e uma safira de $300.",
+    "descricao": "Comum\n\nO objetivo (pessoa, criatura ou objeto) e qualquer coisa que ele carregue se tornam imunes aos efeitos do calor e do fogo (mas não da eletricidade).\n\nDuração: 1 minuto.\n\nCusto: 2 para operar. 1 para manter. Duplique o custo se o objetivo deve resistir a um alto-forno ou vulcão; o custo triplica se o objetivo tiver que resistir ao calor de uma estrela, bomba nuclear, etc. Somente o primeiro nível de proteção é necessário contra mágicas do Fogo do tipo de combate.\n\nPré-requisito: Resistência ao Fogo.\n\nItem\nCajado, varinha ou joia; afeta apenas o usuário. Custo de energia para criar: 800; deve incluir um rubi no valor de $500 e um ônix negro no valor de $200.",
     "descricaoConferida": true,
     "descricaoPagina": 74,
     "mecanica": {
@@ -17230,7 +17733,7 @@
     "energia": "2/1",
     "tempoOperacao": "1 seg.",
     "preRequisitos": "Calor",
-    "descricao": "Comum\n\nO objetivo (pessoa, criatura ou objeto) e qualquer coisa que ele carregue se tornam imunes aos efeitos do frio e do congelamento (mas não do gelo caindo, das lanças mágicas de gelo, etc.).\n\nDuração: 5 minutos, exceto em áreas com muito vento.\n\nCusto básico: 1. Metade disso para manter.\n\nPré-requisitos: Moldar Fogo e Extinguir Fogo.\n\nItem\nCajado, varinha ou joia; afeta apenas o usuário. Custo de energia para criar: 800; deve incluir um rubi no valor de $500 e um ônix negro no valor de $200.",
+    "descricao": "Comum\n\nO objetivo (pessoa, criatura ou objeto) e qualquer coisa que ele carregue se tornam imunes aos efeitos do frio e do congelamento (mas não do gelo caindo, das lanças mágicas de gelo, etc.).\n\nDuração: 1 minuto.\n\nCusto: 2 para operar. 1 para manter. Dobre o custo se o objetivo deve resistir a frio de -20° ou mais; triplique o custo se o objetivo tiver que resistir ao frio do zero absoluto.\n\nPré-requisito: Calor.\n\nItem\nCajado, varinha ou joia; afeta apenas o usuário. Custo para criar: 800 de energia, uma esmeralda de $500 e um ônix negro de $200.",
     "descricaoConferida": true,
     "descricaoPagina": 74,
     "mecanica": {
@@ -17245,16 +17748,16 @@
     "duracaoSeg": 60,
     "tempoOperacaoSeg": 1,
     "tempoTipo": "fixo",
-    "custoOperar": 1,
-    "custoManterTipo": "metade",
+    "custoOperar": 2,
+    "custoManter": 1,
+    "custoManterTipo": "numero",
     "custoTipo": "fixo",
-    "energiaTela": "1/M",
     "conferido": "livro",
     "conferidoPagina": 74,
     "conferidoPor": {
-      "duracao": "tabela",
+      "duracao": "tabela+entrada",
       "tempoOperacao": "tabela",
-      "custo": "entrada"
+      "custo": "tabela+entrada"
     }
   },
   {
@@ -17862,7 +18365,7 @@
     "energia": "2/1",
     "tempoOperacao": "1 seg.",
     "preRequisitos": "Luz Contínua ou Moldar Luz",
-    "descricao": "Comum\n\nEmite um feixe de luz brilhante de um dedo. Este feixe pode ser usado como uma lanterna. Dá uma boa iluminação por 10 metros na direção em que está apontada, e alguma visão será possível até 30 metros de distância. Ele pode ser usado como um sinal de até um quilômetro se a visibilidade for boa. Pode ser usado em combate para cegar inimigos em um raio de 10 metros, mas somente em escuridão relativa (por exemplo, quando a penalidade de combate é de pelo menos -5). A cada turno, o operador faz um teste contra a perícia Ataque Inato ou DX-4, com uma penalidade de -5 para acertar o rosto. Este ataque pode ser esquivado ou bloqueado, mas não aparado. Se o alvo for atingido, ele terá uma penalidade de -4 de penalidade para perícias de combate em seu próximo turno e com uma penalidade de -1 pelo restante do combate. Este efeito não é cumulativo. Inimigos com Visão Noturna dobram estas penalidades.\n\nDuração: 1 minuto.\nCusto: 2 para operar; 1 para manter.\nPré-requisito: Luz Contínua ou Moldar Luz.\n\nItem\nLuva ou anel; o item deixa o usuário operar a mágica. Custo de energia para criar: 200.",
+    "descricao": "Comum\n\nEmite um feixe de luz brilhante de um dedo. Este feixe pode ser usado como uma lanterna. Dá uma boa iluminação por 10 metros na direção em que está apontada, e alguma visão será possível até 30 metros de distância. Ele pode ser usado como um sinal de até um quilômetro se a visibilidade for boa. Pode ser usado em combate para cegar inimigos em um raio de 10 metros, mas somente em escuridão relativa (por exemplo, quando a penalidade de combate é de pelo menos -5). A cada turno, o operador faz um teste contra a perícia Ataque Inato ou DX-4, com uma penalidade de -5 para acertar o rosto. Este ataque pode ser esquivado ou bloqueado, mas não aparado. Se o alvo for atingido, ele terá uma penalidade de -4 de penalidade para perícias de combate em seu próximo turno e com uma penalidade de -1 pelo restante do combate. Este efeito não é cumulativo. Inimigos com Visão Noturna dobram estas penalidades.\n\nDuração: 1 minuto.\n\nCusto: 2 para operar. 1 para manter.\n\nPré-requisito: Luz Contínua ou Moldar Luz.\n\nItem\nLuva ou anel; o item deixa o usuário operar a mágica. Custo de energia para criar: 200.",
     "descricaoConferida": true,
     "descricaoPagina": 112,
     "mecanica": {
@@ -18104,7 +18607,7 @@
     "energia": "4",
     "tempoOperacao": "1 min.",
     "preRequisitos": "AM1, Controle de Emoção",
-    "descricao": "Comum; Resistível com Vontade.\n\nSemelhante a Condicionamento Permanente, mas funciona apenas com um objetivo voluntário. Enquanto o mago opera a mágica, o objetivo deve falar o juramento.\n\nO objetivo pode conscientemente tentar quebrar seu juramento (fazendo um teste de Vontade) não mais que uma vez por dia. A mágica resiste à tentativa; se o objetivo supera a resistência, ele consegue quebrar o juramento só desta vez. Um sucesso decisivo pelo objetivo ou uma falha crítica pela mágica interrompe a mágica. A mágica só pode ser quebrada por Remover Maldição.\n\nTentativas desconhecidas, como quando o objetivo é levado a quebrar seu juramento, não são resistidas pela mágica.\n\nDuração: Permanente.\nCusto: 4.\nTempo de operação: 1 minuto.\nPré-requisitos: Aptidão Mágica 1 e Controle de Emoção.",
+    "descricao": "Comum; Resistível com Vontade\n\nSemelhante a Condicionamento Permanente, mas funciona apenas com um objetivo voluntário. Enquanto o mago opera a mágica, o objetivo deve falar o juramento.\n\nO objetivo pode conscientemente tentar quebrar seu juramento (fazendo um teste de Vontade) não mais que uma vez por dia. A mágica resiste à tentativa; se o objetivo supera a resistência, ele consegue quebrar o juramento só desta vez. Um sucesso decisivo pelo objetivo ou uma falha crítica pela mágica interrompe a mágica. A mágica só pode ser quebrada por Remover Maldição.\n\nTentativas desconhecidas, como quando o objetivo é levado a quebrar seu juramento, não são resistidas pela mágica.\n\nDuração: Permanente.\n\nCusto: 4.\n\nTempo de operação: 1 minuto.\n\nPré-requisitos: Aptidão Mágica 1 e Controle de Emoção.\n\nItem\nJoias. Sempre ativo; afeta apenas o usuário. Custo de energia para criar: 550.",
     "descricaoConferida": true,
     "descricaoPagina": 138,
     "mecanica": {
@@ -18140,7 +18643,7 @@
     "energia": "4",
     "tempoOperacao": "2 seg.",
     "preRequisitos": "Luz Contínua",
-    "descricao": "Comum\n\nCria um lampejo brilhante de luz. Isto irá cegar totalmente alguns que o veem, e reduz a DX dos outros por 3 (o que reduz todas os NHs de perícias baseadas em DX). Pode afetar qualquer um que esteja enfrentando o lampejo e tenha os olhos abertos (a decisão do Mestre, se as miniaturas não estiverem sendo usadas). O próprio operador não é afetado se ele fechar os olhos enquanto opera a mágica. Cada outra criatura no alcance deve fazer um teste de HT para evitar os piores efeitos:\n\nDistância\nSe teste de HT foi feito\nSe teste de HT não foi feito\nDentro de 10 metros\n1 min. com -3 na DX\n3 seg. cego, 1 min. com -3 na DX\n11 a 25 metros\n10 seg. com -3 na DX\n1 minuto com -3 na DX\n26 metros ou mais\nnenhum efeito\n3 segundos com -3 na DX\n\nCusto: 4.\nTempo de operação: 2 segundos.\nPré-requisito: Luz Contínua.",
+    "descricao": "Comum\n\nCria um lampejo brilhante de luz. Isto irá cegar totalmente alguns que o veem, e reduz a DX dos outros por 3 (o que reduz todas os NHs de perícias baseadas em DX). Pode afetar qualquer um que esteja enfrentando o lampejo e tenha os olhos abertos (a decisão do Mestre, se as miniaturas não estiverem sendo usadas). O próprio operador não é afetado se ele fechar os olhos enquanto opera a mágica. Cada outra criatura no alcance deve fazer um teste de HT para evitar os piores efeitos:\n\nDistância Se teste de HT foi feito Se teste de HT não foi feito Dentro de 10 metros 1 min. com -3 na DX 3 seg. cego, 1 min. com -3 na DX 11 a 25 metros 10 seg. com -3 na DX 1 minuto com -3 na DX 26 metros ou mais nenhum efeito 3 segundos com -3 na DX\n\nCusto: 4.\n\nTempo de operação: 2 segundos.\n\nPré-requisito: Luz Contínua.",
     "descricaoConferida": true,
     "descricaoPagina": 112,
     "mecanica": {
@@ -19747,6 +20250,42 @@
     },
     "mecanicaConferida": true,
     "fonteCabecalho": "tabela",
+    "custoPorCondicao": {
+      "entradas": [
+        {
+          "id": "maos",
+          "tipo": "escolha",
+          "rotulo": "Mãos",
+          "padrao": "uma",
+          "opcoes": [
+            {
+              "id": "uma",
+              "rotulo": "Uma mão",
+              "valor": 1
+            },
+            {
+              "id": "duas",
+              "rotulo": "Duas mãos",
+              "valor": 2
+            }
+          ]
+        }
+      ],
+      "operar": [
+        "+",
+        2,
+        [
+          "*",
+          2,
+          "$maos"
+        ]
+      ],
+      "manter": [
+        "+",
+        2,
+        "$maos"
+      ]
+    },
     "duracaoTipo": "temporaria",
     "duracaoSeg": 60,
     "tempoOperacaoSeg": 3,
@@ -21470,7 +22009,7 @@
     "energia": "4/2",
     "tempoOperacao": "1 seg",
     "preRequisitos": "5 mágicas de Reconhecimento ou Geovisão",
-    "descricao": "Comum\n\nVeja através de uma única parede, piso, teto ou outra barreira semelhante de até 1 metro de espessura (o material não importa).\n\nDuração: 1 minuto\nCusto: 4 para operar; 2 para manter\nPré-requisitos: Cinco outras mágicas de Reconhecimento ou Geovisão\n\nItem\nCajado, varinha ou joia. Custo de energia para criar: 600.",
+    "descricao": "Comum\n\nVeja através de uma única parede, piso, teto ou outra barreira semelhante de até 1 metro de espessura (o material não importa).\n\nDuração: 1 minuto.\n\nCusto: 4 para operar. 2 para manter.\n\nPré-requisitos: Cinco outras mágicas de Reconhecimento ou Geovisão.\n\nItem\nCajado, varinha ou joia. Custo de energia para criar: 600.",
     "descricaoConferida": true,
     "descricaoPagina": 103,
     "mecanica": {
@@ -22757,7 +23296,7 @@
     "energia": "3",
     "tempoOperacao": "1 seg",
     "preRequisitos": "Controle de Máquina",
-    "descricao": "Comum; Resistível com HT\n\nO equivalente para máquina ao Espasmo (pág. 35). Essa mágica faz com que algo dê errado por um momento.",
+    "descricao": "Comum; Resistível com HT\n\nO equivalente para máquina ao Espasmo (pág. 35). Essa mágica faz com que algo dê errado por um mo-",
     "descricaoConferida": true,
     "descricaoPagina": 176,
     "mecanica": {
@@ -25437,7 +25976,7 @@
     "energia": "1/2 ST/I",
     "tempoOperacao": "5 seg.",
     "preRequisitos": "AM2, 4 mágicas de Deslocamento incl. Levitação",
-    "descricao": "Comum\n\nQuando operada em um único ponto, isso cria uma zona de “atração”. Objetos (incluindo seres vivos) são puxados para o ponto central com Deslocamento 1 por uma força que aumenta à medida que se aproxima dela. Os seres vivos podem “resistir” com uma Disputa Rápida de ST a cada segundo. A puxada tem um ST igual a duas vezes a energia colocada na mágica no centro, reduzida em 1 para cada metro de distância. A mágica não tem nenhum efeito em objetos com mais de 20 vezes o sua ST. Note que, para arrastar um ser humano comum (peso de 70 kg) ao longo de um piso comum, a mágica teria que ter um ST de pelo menos 8.",
+    "descricao": "Comum\n\nQuando operada em um único ponto, isso cria uma zona de “atração”. Objetos (incluindo seres vivos) são puxados para o ponto central com Deslocamento 1 por uma força que aumenta à medida que se aproxima dela. Os seres vivos podem “resistir” com uma Disputa Rápida de ST a cada segundo. A puxada tem um ST igual a duas vezes a energia colocada na mágica no centro, reduzida em 1 para cada metro de distância. A mágica não tem nenhum efeito em objetos com mais de 20 vezes o sua ST. Note que, para arrastar um ser humano comum (peso de 70 kg) ao longo de um piso comum, a mágica teria que ter um ST de pelo menos 8.\nEsta mágica só pode ser operada em\num ponto no espaço ou no chão, não\nem objetos ou criaturas. Uma pequena\npilha de objetos soltos, poeira, folhas\nmortas, pequenos insetos, etc, geral-\nmente se forma no centro.\n\nDuração: 1 minuto.\nCusto: 1 para cada 2 ST de “atração”.\nTempo de operação: 5 segundos.\nPré-requisitos: Aptidão Mágica 2 e\npelo menos quatro mágicas de Desloca-\nmento, incluindo Levitação.\n\nItem\n(a) Varinha, cajado ou joias. Utilizá-\nvel apenas por magos. Custo de energia\npara criar: 250. (b) Uma área pode ser\npermanentemente atraída por 100 ve-\nzes o custo de operação.",
     "descricaoConferida": true,
     "descricaoPagina": 146,
     "mecanica": {
@@ -25452,13 +25991,13 @@
     "tempoOperacaoSeg": 5,
     "tempoTipo": "fixo",
     "custoTipo": "porUnidade",
-    "custoFormula": "1/2 ST/I",
+    "custoFormula": "1 para cada 2 ST de “atração”.",
     "conferido": "livro",
     "conferidoPagina": 146,
     "conferidoPor": {
-      "duracao": "tabela",
-      "tempoOperacao": "tabela",
-      "custo": "tabela"
+      "duracao": "tabela+entrada",
+      "tempoOperacao": "tabela+entrada",
+      "custo": "tabela+entrada"
     }
   },
   {
@@ -25759,19 +26298,53 @@
     },
     "mecanicaConferida": true,
     "fonteCabecalho": "tabela",
+    "custoPorCondicao": {
+      "entradas": [
+        {
+          "id": "massa",
+          "tipo": "numero",
+          "rotulo": "Massa final do objeto",
+          "unidade": "kg",
+          "min": 0,
+          "max": 1000000,
+          "passo": 50,
+          "padrao": 250
+        }
+      ],
+      "operar": [
+        "+",
+        30,
+        [
+          "cima",
+          [
+            "/",
+            [
+              "max",
+              0,
+              [
+                "-",
+                "$massa",
+                250
+              ]
+            ],
+            250
+          ]
+        ]
+      ]
+    },
     "duracaoTipo": "permanente",
     "duracaoSeg": 0,
     "tempoTipo": "varia",
     "tempoFormula": "Varia",
-    "custoOperar": 30,
-    "custoTipo": "fixo",
+    "custoTipo": "porUnidade",
     "conferido": "livro",
     "conferidoPagina": 177,
     "conferidoPor": {
       "duracao": "tabela+entrada",
       "tempoOperacao": "formula",
       "custo": "entrada"
-    }
+    },
+    "custoFormula": "30 se a massa final for de 250 kg ou menos; o estado atual de reparo do objeto não é um fator. Adicione 1 ao custo para cada 250 kg ou fração adicional de massa final."
   },
   {
     "id": "recordar",
@@ -29546,7 +30119,7 @@
     "energia": "4",
     "tempoOperacao": "30 seg",
     "preRequisitos": "Sono, Silêncio",
-    "descricao": "Comum; Resistência Especial\n\nO objetivo recebe uma noite de sono tranquila. Esta mágica cura a insônia, permite o sono em ambientes ruidosos e disruptivos e protege contra pesadelos e a mágica Pesadelo. Este período conta em dobro em termos de recuperação de PV e PF. O operador pode despertar o objetivo com uma palavra. Caso contrário, o objetivo não pode ser despertado, exceto por lesão ou com a mágica Despertar.\n\nEsta mágica funciona apenas em um objetivo voluntário; caso contrário, a resistência é automática.\n\nDuração: 8 horas.\nCusto: 4.\nTempo de operação: 30 segundos.\nPré-requisitos: Sono e Silêncio.\n\nItem\n(a) Varinha ou cajado que dá o poder de operar esta mágica. Custo de energia para criar: 900. (b) Qualquer item. Se o usuário estiver disposto a dormir, o item o coloca para dormir de acordo com a mágica; ele acorda em oito horas, ou se o item for removido. Custo de energia para criar: 800.",
+    "descricao": "Comum; Resistência Especial\n\nO objetivo recebe uma noite de sono tranquila. Esta mágica cura a insônia, permite o sono em ambientes ruidosos e disruptivos e protege contra pesadelos e a mágica Pesadelo. Este período conta em dobro em termos de recuperação de PV e PF. O operador pode despertar o objetivo com uma palavra. Caso contrário, o objetivo não pode ser despertado, exceto por lesão ou com a mágica Despertar.\n\nEsta mágica funciona apenas em um objetivo voluntário; caso contrário, a resistência é automática.\n\nDuração: 8 horas.\n\nCusto: 4.\n\nTempo de operação: 30 segundos.\n\nPré-requisitos: Sono e Silêncio.\n\nItem\n(a) Varinha ou cajado que dá o poder de operar esta mágica. Custo de energia para criar: 900. (b) Qualquer item. Se o usuário estiver disposto a dormir, o item o coloca para dormir de acordo com a mágica; ele acorda em oito horas, ou se o item for removido. Custo de energia para criar: 800.",
     "descricaoConferida": true,
     "descricaoPagina": 138,
     "mecanica": {
@@ -30297,7 +30870,7 @@
     "energia": "1/0,1 m²/M",
     "tempoOperacao": "5 seg",
     "preRequisitos": "Voo ou AM2 e Caminhar no Ar",
-    "descricao": "Comum\n\nTransforma um tapete (ou qualquer outro objeto em que alguém possa razoavelmente ficar em pé ou dentro dele — caldeirão, cadeira, toalha, vassoura, etc.) em um veículo voador.\n\nEle estará sob o comando da primeira pessoa a subir a bordo. Se houver vários seres já a bordo quando a mágica for operada, faça uma Disputa Rápida de Vontade para ver quem fica com o controle; o operador (se a bordo) recebe um bônus de +5 nesse teste. Se o piloto sair do tapete, faça outra disputa rápida entre os passageiros restantes para ver quem fica no controle.\n\nO Deslocamento máximo do tapete é igual ao NH efetivo do operador e pode ser pilotado com uma curva de 1 G sem necessidade de testes de habilidade (pág. MB466). Use a perícia Pilotagem (Contragravidade) (pág. MB217) para controlar o tapete.\n\nEm geral, um piloto não pode cair de um tapete voador, a menos que ele pule deliberadamente ou seja derrubado por um obstáculo (como um galho de árvore) ou ataque; o tapete mantém seus pilotos a bordo com segurança através de uma combinação de manobras mágicas e ágeis. Um tapete voador não se inclina, dobra ou curva-se; a mágica fornece especificamente uma plataforma estável e nivelada (o que dificulta o voo através de lacunas estreitas). Qualquer piloto envolvido em atividades extenuantes, como lutas, deve fazer um teste de DX todo turno para evitar cair (o Mestre pode modificar este teste dependendo da atividade). Em todos os outros aspectos, trate qualquer um que esteja lutando em um tapete voador como se estivesse no solo (ignore as regras especiais para os combatentes em voo na pág. MB548).\n\nPersonagens que apontam uma arma de projétil de um tapete em movimento só podem receber o bônus de Prec; com o objetivo de turnos extras não dá mais bônus. É claro, alguém lutando de uma vassoura ou cadeira voadora estaria sujeito às penalidades habituais por estar sentado (pág. MB547).\n\nMestres generosos podem estipular que, após o operador cancelar a mágica, o transporte permanece no ar por 2d+2 segundos, balançando mais com cada momento que passa. Isso às vezes permite um pouso seguro e acidentado.\n\nDuração: 10 minutos.\nCusto: 1 por 0,1 m² de superfície. Cada porção dessas levará cerca de 12,5 kg (ou menos, de material frágil). Metade disso para manter.\nTempo de operação: 5 segundos.\nPré-requisitos: Aptidão Mágica 2 e Caminhar no Ar, ou Voo.\nCusto: 8 para operar; 4 para manter.\nItem: Um tapete pode ser permanentemente encantado por 200 vezes o custo de operação.",
+    "descricao": "Comum\n\nTransforma um tapete (ou qualquer outro objeto em que alguém possa razoavelmente ficar em pé ou dentro dele — caldeirão, cadeira, toalha, vassoura, etc.) em um veículo voador. Ele estará sob o comando da primeira pessoa a subir a bordo. Se houver vários seres já a bordo quando a mágica for operada, faça uma Disputa Rápida de Vontade para ver quem fica com o controle; o operador (se a bordo) recebe um bônus de +5 nesse teste. Se o piloto sair do tapete, faça outra disputa rápida entre os passageiros restantes para ver quem fica no controle.\n\nO Deslocamento máximo do tapete é igual ao NH efetivo do operador e pode ser pilotado com uma curva de 1 G sem necessidade de testes de habilidade (pág. MB466). Use a perícia Pilotagem (Contragravidade) (pág. MB217) para controlar o tapete.\n\nEm geral, um piloto não pode cair de um tapete voador, a menos que ele pule deliberadamente ou seja derrubado por um obstáculo (como um galho de árvore) ou ataque; o tapete mantém seus pilotos a bordo com segurança através de uma combinação de manobras mágicas e ágeis. Um tapete voador não se inclina, dobra ou curva-se; a mágica fornece especificamente uma plataforma estável e nivelada (o que dificulta o voo através de lacunas estreitas). Qualquer piloto envolvido em atividades extenuantes, como lutas, deve fazer um teste de DX todo turno para evitar cair (o Mestre pode modificar este teste dependendo da atividade). Em todos os outros aspectos, trate qualquer um que esteja lutando em um tapete voador como se estivesse no solo (ignore as regras especiais para os combatentes em voo na pág. MB548). Personagens que apontam uma arma de projétil de um tapete em movimento só podem receber o bônus de Prec; com o objetivo de turnos extras não dá mais bônus. É claro, alguém lutando de uma vassoura ou cadeira voadora estaria sujeito às penalidades habituais por estar sentado (pág. MB547).\n\nMestres generosos podem estipular que, após o operador cancelar a mágica, o transporte permanece no ar por 2d+2 segundos, balançando mais com cada momento que passa. Isso às vezes permite um pouso seguro e acidentado.\n\nDuração: 10 minutos.\n\nCusto: 1 por 0,1 m² de superfície. Cada porção dessas levará cerca de 12,5 kg (ou menos, de material frágil). Metade disso para manter.\n\nTempo de operação: 5 segundos.\n\nPré-requisitos: Aptidão Mágica 2 e Caminhar no Ar, ou Voo.\n\nItem\nUm tapete pode ser permanentemente encantado por 200 vezes o custo de operação.",
     "descricaoConferida": true,
     "descricaoPagina": 146,
     "mecanica": {
@@ -30384,20 +30957,46 @@
     },
     "mecanicaConferida": true,
     "fonteCabecalho": "tabela",
+    "custoPorCondicao": {
+      "entradas": [
+        {
+          "id": "comprimento",
+          "tipo": "numero",
+          "rotulo": "Comprimento do fio",
+          "unidade": "m",
+          "min": 0,
+          "max": 100,
+          "passo": 5,
+          "padrao": 5
+        }
+      ],
+      "operar": [
+        "max",
+        1,
+        [
+          "cima",
+          [
+            "/",
+            "$comprimento",
+            5
+          ]
+        ]
+      ],
+      "manter": "metade"
+    },
     "duracaoTipo": "temporaria",
     "duracaoSeg": 60,
     "tempoOperacaoSeg": 1,
     "tempoTipo": "fixo",
-    "custoOperar": 1,
-    "custoManterTipo": "metade",
-    "custoTipo": "fixo",
+    "custoTipo": "porUnidade",
     "conferido": "livro",
     "conferidoPagina": 32,
     "conferidoPor": {
       "duracao": "tabela+entrada",
       "tempoOperacao": "tabela",
       "custo": "entrada"
-    }
+    },
+    "custoFormula": "1 para operar por 5 metros de comprimento de fio (máximo de 100 metros). Metade disso para manter."
   },
   {
     "id": "telemagica",
@@ -31556,11 +32155,11 @@
     "escola": [
       "Quebrar e Consertar"
     ],
-    "duracao": "Permanente",
+    "duracao": "1 hora",
     "energia": "Varia",
-    "tempoOperacao": "1 hora",
+    "tempoOperacao": "Varia",
     "preRequisitos": "Aptidao Magica 2, Remodelar e 4 magicas de Criar",
-    "descricao": "Comum\n\nComo Remodelar, mas o objetivo é permanentemente transformado em um novo objeto. O novo objeto deve ser feito do mesmo material que o antigo e ter o mesmo peso. O operador deve possuir a perícia profissional ou o ofício apropriado para fabricar o novo objeto manualmente (ou pelo menos um NH básico de 10 na perícia se o Mestre permitir).\n\nDuração: Permanente.\nCusto: 30.\nTempo de operação: 1 hora.\nPré-requisito: Remodelar.",
+    "descricao": "Comum; Resistência Especial\n\nAltera um objeto para outro objeto com o mesmo peso. A mudança pode ser qualquer coisa — uma arma pode ser transformada em uma boneca de pano, por exemplo. Assim como Criar Objeto (pág. 98), qualquer coisa que o mago ponha em existência deve ser algo com o qual ele esteja familiarizado. Para transformar algo em um objeto funcional, o operador deve ter a perícia apropriada para fazer um objeto similar; a boneca de pano mencionada acima será uma boneca de pano muito pobre, a menos que o operador tenha a perícia Costura, e se ele quiser transformar uma boneca de pano em uma arma, é melhor que ele tenha a perícia Armeiro.\n\nUm objeto mantido ou usado por alguém resiste com a Vontade de seu proprietário.\n\nDuração: 1 hora.\n\nCusto: 1 para operar para cada 0,5 kg que o objeto pesa (mínimo de 0,5 kg). Dobre o custo para mudar para (ou de) pedra, triplique para metal. Mesmo custo para manter.\n\nTempo de operação: Igual ao custo, em segundos.\n\nPré-requisitos: Aptidão Mágica 2, Remodelar e pelo menos quatro mágicas “Criar”.\n\nItem\nCajado, varinha ou joia. Utilizável apenas por magos. Custo de energia para criar: 1.000.",
     "descricaoConferida": true,
     "descricaoPagina": 120,
     "mecanica": {
@@ -31569,18 +32168,72 @@
     },
     "mecanicaConferida": true,
     "fonteCabecalho": "tabela",
-    "duracaoTipo": "permanente",
-    "duracaoSeg": 0,
-    "tempoOperacaoSeg": 3600,
-    "tempoTipo": "fixo",
-    "custoOperar": 30,
-    "custoTipo": "fixo",
+    "custoPorCondicao": {
+      "entradas": [
+        {
+          "id": "peso",
+          "tipo": "numero",
+          "rotulo": "Peso do objeto",
+          "unidade": "kg",
+          "min": 0,
+          "max": 100000,
+          "passo": 0.5,
+          "padrao": 0.5
+        },
+        {
+          "id": "material",
+          "tipo": "escolha",
+          "rotulo": "Mudar para (ou de)",
+          "padrao": "comum",
+          "opcoes": [
+            {
+              "id": "comum",
+              "rotulo": "Outro material",
+              "valor": 1
+            },
+            {
+              "id": "pedra",
+              "rotulo": "Pedra (dobra o custo)",
+              "valor": 2
+            },
+            {
+              "id": "metal",
+              "rotulo": "Metal (triplica o custo)",
+              "valor": 3
+            }
+          ]
+        }
+      ],
+      "operar": [
+        "*",
+        [
+          "cima",
+          [
+            "/",
+            [
+              "max",
+              "$peso",
+              0.5
+            ],
+            0.5
+          ]
+        ],
+        "$material"
+      ],
+      "manter": "igual"
+    },
+    "duracaoTipo": "temporaria",
+    "duracaoSeg": 3600,
+    "tempoTipo": "varia",
+    "tempoFormula": "Varia",
+    "custoTipo": "porUnidade",
+    "custoFormula": "1 para operar para cada 0,5 kg que o objeto pesa (mínimo de 0,5 kg). Dobre o custo para mudar para (ou de) pedra, triplique para metal. Mesmo custo para manter.",
     "conferido": "livro",
     "conferidoPagina": 120,
     "conferidoPor": {
-      "duracao": "entrada",
-      "tempoOperacao": "entrada",
-      "custo": "entrada"
+      "duracao": "tabela+entrada",
+      "tempoOperacao": "formula",
+      "custo": "tabela"
     }
   },
   {
@@ -31974,7 +32627,7 @@
     "energia": "3",
     "tempoOperacao": "Varia",
     "preRequisitos": "Controle de Emoção",
-    "descricao": "Área; Resistível com (ST+Vontade)/2.\n\nCria uma zona circular que prende qualquer pessoa dentro do momento de sua criação. A barreira é puramente mental, trabalhando nas vontades das pessoas presas. Por esta razão, os objetivos devem estar cientes de que estão sendo cercados — se não estiverem, Travar Vontade não tem nenhum efeito sobre eles.\n\nCada ser preso dentro tem uma chance de escapar a cada dia; faça uma Disputa Normal entre o ser (ST+Vontade)/2 e a Resistência (pág. 10) de Travar Vontade. Cada ser que escapa enfraquece a Resistência de Travar Vontade em 1. Ao atingir Resistência 0 ou em uma falha crítica de sua parte, Travar Vontade se dissipa. Um sucesso decisivo de um ser que foge não quebra Travar Vontade. A mágica também pode ser quebrada se uma parte externa arrancar os círculos.\n\nOs seres presos podem operar mágicas ou lançar projéteis livremente ao longo do limite de Travar Vontade. Um método interessante de fuga é ficar inconsciente e depois cair completamente fora de Travar Vontade!\n\nDuração: um dia.\nCusto básico: 3 para operar. Não pode ser mantida; precisa ser refeita.\nTempo de operação: Desde que o operador faça um círculo na área três vezes no sentido anti-horário.\nPré-requisito: Controle de Emoção.\n\nItem\nJoias. Sempre ativo; afeta apenas o usuário. Custo de energia para criar: 550.",
+    "descricao": "Área; Resistível com (ST+Vontade)/2\n\nCria uma zona circular que prende qualquer pessoa dentro do momento de sua criação. A barreira é puramente mental, trabalhando nas vontades das pessoas presas. Por esta razão, os objetivos devem estar cientes de que estão sendo cercados — se não estiverem, Travar Vontade não tem nenhum efeito sobre eles.\n\nCada ser preso dentro tem uma chance de escapar a cada dia; faça um Disputa Normal entre o ser (ST+Vontade)/2 e a Resistência (pág. 10) de Travar Vontade. Cada ser que escapa enfraquece a Resistência de Travar Vontade em 1. Ao atingir Resistência 0 ou em uma falha crítica de sua parte, Travar Vontade se dissipa. Um sucesso decisivo de um ser que foge não quebra Travar Vontade. A mágica também pode ser quebrada se uma parte externa arrancar os círculos.\n\nOs seres presos podem operar mágicas ou lançar projéteis livremente ao longo do limite de Travar Vontade. Um método interessante de fuga é ficar inconsciente e depois cair completamente fora de Travar Vontade!\n\nDuração: um dia.\n\nCusto básico: 3 para operar. Não pode ser mantida; precisa ser refeita.\n\nTempo de operação: Desde que o operador faça um círculo na área três vezes no sentido anti-horário.\n\nPré-requisito: Controle de Emoção.",
     "descricaoConferida": true,
     "descricaoPagina": 138,
     "mecanica": {
@@ -32013,7 +32666,7 @@
     "energia": "2/1",
     "tempoOperacao": "1 seg.",
     "preRequisitos": "Luz Contínua",
-    "descricao": "Área\n\nCobre a área de efeito com um tom escuro. Uma pessoa dentro da área pode ver fora normalmente, mas não pode ver mais nada dentro da área. Aqueles fora da área podem ver apenas a escuridão dentro. Assim, os ataques para fora da escuridão não sofrem penalidade, mas os ataques para dentro são penalizados; veja Visibilidade, pág. MB394 para regras de combate.\n\nA vantagem Visão no Escuro permite que você veja através de uma mágica Trevas, mas Visão Noturna e Infravisão não.",
+    "descricao": "Área\n\nCobre a área de efeito com um tom escuro. Uma pessoa dentro da área pode ver fora normalmente, mas não pode ver mais nada dentro da área. Aqueles fora da área podem ver apenas a escuridão dentro. Assim, os ataques para fora da escuridão não sofrem penalidade, mas os ataques para dentro são penalizados; veja Visibilidade, pág. MB394 para regras de combate.\n\nA vantagem Visão no Escuro permite que você veja através de uma mágica Trevas, mas Visão Noturna e Infravisão não.\nDuração: 1 minuto.\n\nCusto básico: 2 para operar. 1 para manter.\n\nPré-requisito: Luz Contínua.\n\nItem\nPiso, chão ou um tapete podem ser encantados para que a área acima (cerca de 2 metros) esteja em escuridão permanente. Custo de energia para criar: 120 por metro quadrado.",
     "descricaoConferida": true,
     "descricaoPagina": 111,
     "mecanica": {
@@ -32034,9 +32687,9 @@
     "conferido": "livro",
     "conferidoPagina": 111,
     "conferidoPor": {
-      "duracao": "tabela",
+      "duracao": "tabela+entrada",
       "tempoOperacao": "tabela",
-      "custo": "tabela"
+      "custo": "tabela+entrada"
     }
   },
   {
@@ -32270,11 +32923,11 @@
     "escola": [
       "Reconhecimento"
     ],
-    "duracao": "1 minuto",
+    "duracao": "Instantâneo",
     "energia": "2",
-    "tempoOperacao": "10 minutos",
+    "tempoOperacao": "10 seg.",
     "preRequisitos": "AM1, Revelar Posição",
-    "descricao": "Informação\n\nDá ao operador uma ideia razoável de sua localização geográfica (em alguns quilômetros). Isso será expresso em termos das características nomeadas mais próximas das quais o operador já ouviu falar (se estiver em dúvida se o operador ouviu ou não o recurso, o Mestre deve fazer um teste contra Conhecimento do Terreno do operador). Por exemplo, “Você está no deserto do Saara, a cerca de 45 quilômetros ao norte de Tombuctu”.\n\nDuração: 1 minuto\nCusto: 50 para operar; 20 para manter\nTempo de operação: 10 minutos. Uma tentativa por ano.\nPré-requisito: Convocar Espírito ou Adivinhação\n\nItem\nCajado, varinha ou joia. Utilizável apenas por um mago. O item não dá habilidade para operar a mágica, mas concede um bônus de +2 no NH para quem conhece a mágica. Custo de energia para criar: 800.\n\nItem\nQualquer mapa, globo, etc., pode ser encantado para mostrar a localização do usuário sempre que a mágica for operada. Uma marca (escolhida pelo criador do objeto) aparece no local apropriado, se for bem sucedida. Nenhuma marca aparece se o usuário estiver fora dos limites do mapa. Se a operação falhar, nenhuma marca aparece ou uma errônea aparece. Custo de energia para criar: 225.\n\nCusto: 2\nTempo de operação: 10 segundos. Em operações sucessivas, a mágica repete sua última resposta (certa ou errada) até que o operador se mova um quilômetro ou mais a partir do local.\nPré-requisitos: Aptidão Mágica 1 e Revelar Posição.",
+    "descricao": "Informação\n\nDá ao operador uma ideia razoável de sua localização geográfica (em alguns quilômetros). Isso será expresso em termos das características nomeadas mais próximas das quais o operador já ouviu falar (se estiver em dúvida se o operador ouviu ou não o recurso, o Mestre deve fazer um teste contra Conhecimento do Terreno do operador). Por exemplo, “Você está no deserto do Saara, a cerca de 45 quilômetros ao norte de Tombuctu”.\n\nCusto: 2.\n\nTempo de operação: 10 segundos. Em operações sucessivas, a mágica repete sua última resposta (certa ou errada) até que o operador se mova um quilômetro ou mais a partir do local.\n\nPré-requisitos: Aptidão Mágica 1 e Revelar Posição.\n\nItem\nQualquer mapa, globo, etc., pode ser encantado para mostrar a localização do usuário sempre que a mágica for operada. Uma marca (escolhida pelo criador do objeto) aparece no local apropriado, se for bem sucedida. Nenhuma marca aparece se o usuário estiver fora dos limites do mapa. Se a operação falhar, nenhuma marca aparece ou uma errônea aparece. Custo de energia para criar: 225.",
     "descricaoConferida": true,
     "descricaoPagina": 103,
     "mecanica": {
@@ -32283,21 +32936,18 @@
     },
     "mecanicaConferida": true,
     "fonteCabecalho": "tabela",
-    "duracaoTipo": "temporaria",
-    "duracaoSeg": 60,
-    "tempoOperacaoSeg": 600,
+    "duracaoTipo": "instantanea",
+    "duracaoSeg": 0,
+    "tempoOperacaoSeg": 10,
     "tempoTipo": "fixo",
-    "custoOperar": 50,
-    "custoManter": 20,
-    "custoManterTipo": "numero",
+    "custoOperar": 2,
     "custoTipo": "fixo",
-    "energiaTela": "50/20",
     "conferido": "livro",
     "conferidoPagina": 103,
     "conferidoPor": {
-      "duracao": "entrada",
-      "tempoOperacao": "entrada",
-      "custo": "entrada"
+      "duracao": "tabela",
+      "tempoOperacao": "tabela+entrada",
+      "custo": "tabela+entrada"
     }
   },
   {
@@ -32653,7 +33303,7 @@
     "energia": "6",
     "tempoOperacao": "1 seg.",
     "preRequisitos": "AM2, Sono, Conceder Energia",
-    "descricao": "Comum.\n\nPule uma noite de sono sem efeitos nocivos. Cada noite consecutiva de operação sobre o mesmo objetivo terá uma penalidade acumulada de -3 no NH.\n\nDuração: 1 noite.\nCusto: 8. Não pode ser mantida, mas pode ser reformulada.\nPré-requisitos: Aptidão Mágica 2, Sono e Conceder Energia. Por opção do Mestre, um status “santo” pode ser suficiente.",
+    "descricao": "Comum\n\nPule uma noite de sono sem efeitos nocivos. Cada noite consecutiva de operação sobre o mesmo objetivo terá uma penalidade acumulada de -3 no NH.\n\nDuração: 1 noite.\n\nCusto: 8. Não pode ser mantida, mas pode ser reformulada.\n\nPré-requisitos: Aptidão Mágica 2, Sono e Conceder Energia. Por opção do Mestre, um status “santo” pode ser suficiente.",
     "descricaoConferida": true,
     "descricaoPagina": 138,
     "mecanica": {
@@ -33318,7 +33968,7 @@
     "energia": "8/4",
     "tempoOperacao": "3 seg.",
     "preRequisitos": "Voo",
-    "descricao": "Comum\n\nUma mágica de voo muito rápido. O objetivo tem um Deslocamento de 40 (120 km/h) sem ônus; sobrecarga reduz o Deslocamento normalmente. O objetivo pode se mover e lutar normalmente, e tem uma vantagem de combate se estiver acima de seus inimigos (pág. MB402).\n\nDuração: 1 minuto.\nCusto: 8 para operar; 4 para manter.\nTempo de operação: 3 segundos.\nPré-requisito: Voo.\nItem: Cajado, varinha ou joia. Utilizável apenas por magos; afeta apenas o usuário. Custo de energia para criar: 3.000.",
+    "descricao": "Comum\n\nUma mágica de voo muito rápido. O objetivo tem um Deslocamento de 40 (120 km/h) sem ônus; sobrecarga reduz o Deslocamento normalmente. O objetivo pode se mover e lutar normalmente, e tem uma vantagem de combate se estiver acima de seus inimigos (pág. MB402).\n\nDuração: 1 minuto.\n\nCusto: 8 para operar. 4 para manter.\n\nTempo de operação: 3 segundos.\n\nPré-requisito: Voo.\n\nItem\nCajado, varinha ou joia. Utilizável apenas por magos; afeta apenas o usuário. Custo de energia para criar: 3.000.",
     "descricaoConferida": true,
     "descricaoPagina": 146,
     "mecanica": {

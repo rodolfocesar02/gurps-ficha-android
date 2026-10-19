@@ -39,7 +39,8 @@ class FiacaoEnergiaMagiaTest {
         return arq!!.readText()
     }
 
-    private val dialogos = "com/gurps/ficha/ui/features/rolagem/RolagemSecondaryDialogs.kt"
+    // o diálogo do gasto de energia saiu do RolagemSecondaryDialogs.kt (passara de 1000 linhas) no lote MG-custo
+    private val dialogos = "com/gurps/ficha/ui/features/rolagem/RolagemEnergiaDialog.kt"
     private val aba = "com/gurps/ficha/ui/TabRolagem.kt"
 
     @Test

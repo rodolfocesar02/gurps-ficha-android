@@ -10,7 +10,7 @@
   "localizada": 878,
   "comBlocoETabela": 878,
   "semNenhuma": 0,
-  "blocoSemCampos": 38,
+  "blocoSemCampos": 34,
   "remissoes": 0,
   "casamentoTabela": {
    "exato": 809,
@@ -156,26 +156,26 @@
     "variante": null,
     "titulo": "Acelerar",
     "pagina": 146,
-    "paginaFim": 147,
-    "linhaInicio": 68,
-    "linhaFim": 23,
+    "paginaFim": 146,
+    "linhaInicio": 73,
+    "linhaFim": 89,
     "temCampos": true,
     "campos": {
      "duracao": {
       "pagina": 146,
-      "linha": 73
+      "linha": 78
      },
      "custo": {
       "pagina": 146,
-      "linha": 74
+      "linha": 80
      },
      "tempo": {
       "pagina": 146,
-      "linha": 75
+      "linha": 82
      },
      "preRequisitos": {
       "pagina": 146,
-      "linha": 76
+      "linha": 84
      }
     },
     "remissao": null
@@ -1272,25 +1272,25 @@
     "titulo": "Alongar Objeto",
     "pagina": 120,
     "paginaFim": 120,
-    "linhaInicio": 52,
-    "linhaFim": 62,
+    "linhaInicio": 57,
+    "linhaFim": 73,
     "temCampos": true,
     "campos": {
      "duracao": {
       "pagina": 120,
-      "linha": 57
+      "linha": 62
      },
      "custo": {
       "pagina": 120,
-      "linha": 58
+      "linha": 64
      },
      "tempo": {
       "pagina": 120,
-      "linha": 59
+      "linha": 66
      },
      "preRequisitos": {
       "pagina": 120,
-      "linha": 60
+      "linha": 68
      }
     },
     "remissao": null
@@ -4432,25 +4432,25 @@
     "titulo": "Aumentar Objeto",
     "pagina": 120,
     "paginaFim": 120,
-    "linhaInicio": 40,
-    "linhaFim": 50,
+    "linhaInicio": 93,
+    "linhaFim": 109,
     "temCampos": true,
     "campos": {
      "duracao": {
       "pagina": 120,
-      "linha": 45
+      "linha": 98
      },
      "custo": {
       "pagina": 120,
-      "linha": 46
+      "linha": 100
      },
      "tempo": {
       "pagina": 120,
-      "linha": 47
+      "linha": 102
      },
      "preRequisitos": {
       "pagina": 120,
-      "linha": 48
+      "linha": 104
      }
     },
     "remissao": null
@@ -5356,7 +5356,7 @@
     "titulo": "Bola de Fogo",
     "pagina": 74,
     "paginaFim": 75,
-    "linhaInicio": 93,
+    "linhaInicio": 121,
     "linhaFim": 11,
     "temCampos": true,
     "campos": {
@@ -5596,21 +5596,25 @@
     "titulo": "Brilho",
     "pagina": 112,
     "paginaFim": 112,
-    "linhaInicio": 2,
-    "linhaFim": 14,
+    "linhaInicio": 29,
+    "linhaFim": 45,
     "temCampos": true,
     "campos": {
      "duracao": {
       "pagina": 112,
-      "linha": 7
+      "linha": 34
      },
      "custo": {
       "pagina": 112,
-      "linha": 8
+      "linha": 36
+     },
+     "tempo": {
+      "pagina": 112,
+      "linha": 38
      },
      "preRequisitos": {
       "pagina": 112,
-      "linha": 9
+      "linha": 40
      }
     },
     "remissao": null
@@ -5736,25 +5740,25 @@
     "titulo": "Calor",
     "pagina": 74,
     "paginaFim": 74,
-    "linhaInicio": 2,
-    "linhaFim": 20,
+    "linhaInicio": 13,
+    "linhaFim": 31,
     "temCampos": true,
     "campos": {
      "duracao": {
       "pagina": 74,
-      "linha": 9
+      "linha": 20
      },
      "custo": {
       "pagina": 74,
-      "linha": 11
+      "linha": 22
      },
      "tempo": {
       "pagina": 74,
-      "linha": 13
+      "linha": 24
      },
      "preRequisitos": {
       "pagina": 74,
-      "linha": 15
+      "linha": 26
      }
     },
     "remissao": null
@@ -7011,25 +7015,25 @@
     "titulo": "Chuva de Fogo",
     "pagina": 74,
     "paginaFim": 74,
-    "linhaInicio": 29,
-    "linhaFim": 47,
+    "linhaInicio": 47,
+    "linhaFim": 67,
     "temCampos": true,
     "campos": {
      "duracao": {
       "pagina": 74,
-      "linha": 36
+      "linha": 56
      },
      "custo": {
       "pagina": 74,
-      "linha": 38
+      "linha": 58
      },
      "tempo": {
       "pagina": 74,
-      "linha": 40
+      "linha": 60
      },
      "preRequisitos": {
       "pagina": 74,
-      "linha": 42
+      "linha": 62
      }
     },
     "remissao": null
@@ -8590,25 +8594,25 @@
     "titulo": "Contrair Objeto",
     "pagina": 120,
     "paginaFim": 120,
-    "linhaInicio": 28,
-    "linhaFim": 38,
+    "linhaInicio": 39,
+    "linhaFim": 55,
     "temCampos": true,
     "campos": {
      "duracao": {
       "pagina": 120,
-      "linha": 33
+      "linha": 44
      },
      "custo": {
       "pagina": 120,
-      "linha": 34
+      "linha": 46
      },
      "tempo": {
       "pagina": 120,
-      "linha": 35
+      "linha": 48
      },
      "preRequisitos": {
       "pagina": 120,
-      "linha": 36
+      "linha": 50
      }
     },
     "remissao": null
@@ -9225,25 +9229,21 @@
     "titulo": "Controle de Máquina/NT",
     "pagina": 176,
     "paginaFim": 176,
-    "linhaInicio": 17,
-    "linhaFim": 35,
+    "linhaInicio": 20,
+    "linhaFim": 40,
     "temCampos": true,
     "campos": {
      "duracao": {
       "pagina": 176,
-      "linha": 28
+      "linha": 31
      },
      "custo": {
       "pagina": 176,
-      "linha": 29
-     },
-     "tempo": {
-      "pagina": 176,
-      "linha": 30
+      "linha": 33
      },
      "preRequisitos": {
       "pagina": 176,
-      "linha": 31
+      "linha": 35
      }
     },
     "remissao": null
@@ -10009,21 +10009,25 @@
     "titulo": "Convocar Máquina/NT",
     "pagina": 176,
     "paginaFim": 176,
-    "linhaInicio": 37,
-    "linhaFim": 52,
+    "linhaInicio": 42,
+    "linhaFim": 62,
     "temCampos": true,
     "campos": {
      "duracao": {
       "pagina": 176,
-      "linha": 46
+      "linha": 51
      },
      "custo": {
       "pagina": 176,
-      "linha": 47
+      "linha": 53
+     },
+     "tempo": {
+      "pagina": 176,
+      "linha": 55
      },
      "preRequisitos": {
       "pagina": 176,
-      "linha": 48
+      "linha": 57
      }
     },
     "remissao": null
@@ -10058,9 +10062,26 @@
     "pagina": 102,
     "paginaFim": 103,
     "linhaInicio": 86,
-    "linhaFim": 2,
-    "temCampos": false,
-    "campos": {},
+    "linhaFim": 13,
+    "temCampos": true,
+    "campos": {
+     "duracao": {
+      "pagina": 103,
+      "linha": 2
+     },
+     "custo": {
+      "pagina": 103,
+      "linha": 4
+     },
+     "tempo": {
+      "pagina": 103,
+      "linha": 6
+     },
+     "preRequisitos": {
+      "pagina": 103,
+      "linha": 8
+     }
+    },
     "remissao": null
    }
   },
@@ -10908,25 +10929,25 @@
     "titulo": "Corpo Etéreo",
     "pagina": 146,
     "paginaFim": 146,
-    "linhaInicio": 46,
-    "linhaFim": 59,
+    "linhaInicio": 51,
+    "linhaFim": 71,
     "temCampos": true,
     "campos": {
      "duracao": {
       "pagina": 146,
-      "linha": 53
+      "linha": 60
      },
      "custo": {
       "pagina": 146,
-      "linha": 54
+      "linha": 62
      },
      "tempo": {
       "pagina": 146,
-      "linha": 55
+      "linha": 64
      },
      "preRequisitos": {
       "pagina": 146,
-      "linha": 56
+      "linha": 66
      }
     },
     "remissao": null
@@ -13375,26 +13396,22 @@
     "variante": null,
     "titulo": "Desintegrar",
     "pagina": 120,
-    "paginaFim": 121,
-    "linhaInicio": 76,
-    "linhaFim": 17,
+    "paginaFim": 120,
+    "linhaInicio": 111,
+    "linhaFim": 125,
     "temCampos": true,
     "campos": {
      "duracao": {
       "pagina": 120,
-      "linha": 81
+      "linha": 116
      },
      "custo": {
       "pagina": 120,
-      "linha": 82
-     },
-     "tempo": {
-      "pagina": 120,
-      "linha": 83
+      "linha": 118
      },
      "preRequisitos": {
       "pagina": 120,
-      "linha": 84
+      "linha": 120
      }
     },
     "remissao": null
@@ -15752,25 +15769,25 @@
     "titulo": "Encolher Objeto",
     "pagina": 120,
     "paginaFim": 120,
-    "linhaInicio": 64,
-    "linhaFim": 74,
+    "linhaInicio": 75,
+    "linhaFim": 91,
     "temCampos": true,
     "campos": {
      "duracao": {
       "pagina": 120,
-      "linha": 69
+      "linha": 80
      },
      "custo": {
       "pagina": 120,
-      "linha": 70
+      "linha": 82
      },
      "tempo": {
       "pagina": 120,
-      "linha": 71
+      "linha": 84
      },
      "preRequisitos": {
       "pagina": 120,
-      "linha": 72
+      "linha": 86
      }
     },
     "remissao": null
@@ -16136,25 +16153,25 @@
     "titulo": "Enjoo",
     "pagina": 138,
     "paginaFim": 138,
-    "linhaInicio": 20,
-    "linhaFim": 33,
+    "linhaInicio": 22,
+    "linhaFim": 40,
     "temCampos": true,
     "campos": {
      "duracao": {
       "pagina": 138,
-      "linha": 28
+      "linha": 29
      },
      "custo": {
       "pagina": 138,
-      "linha": 29
+      "linha": 31
      },
      "tempo": {
       "pagina": 138,
-      "linha": 30
+      "linha": 33
      },
      "preRequisitos": {
       "pagina": 138,
-      "linha": 31
+      "linha": 35
      }
     },
     "remissao": null
@@ -17083,25 +17100,25 @@
     "titulo": "Escurecer",
     "pagina": 112,
     "paginaFim": 112,
-    "linhaInicio": 30,
-    "linhaFim": 44,
+    "linhaInicio": 47,
+    "linhaFim": 63,
     "temCampos": true,
     "campos": {
      "duracao": {
       "pagina": 112,
-      "linha": 35
+      "linha": 52
      },
      "custo": {
       "pagina": 112,
-      "linha": 36
+      "linha": 54
      },
      "tempo": {
       "pagina": 112,
-      "linha": 37
+      "linha": 56
      },
      "preRequisitos": {
       "pagina": 112,
-      "linha": 38
+      "linha": 58
      }
     },
     "remissao": null
@@ -17135,21 +17152,21 @@
     "titulo": "Escuridão",
     "pagina": 112,
     "paginaFim": 112,
-    "linhaInicio": 16,
-    "linhaFim": 28,
+    "linhaInicio": 13,
+    "linhaFim": 27,
     "temCampos": true,
     "campos": {
      "duracao": {
       "pagina": 112,
-      "linha": 21
+      "linha": 18
      },
      "custo": {
       "pagina": 112,
-      "linha": 22
+      "linha": 20
      },
      "preRequisitos": {
       "pagina": 112,
-      "linha": 23
+      "linha": 22
      }
     },
     "remissao": null
@@ -17501,22 +17518,22 @@
     "variante": null,
     "titulo": "Espelho",
     "pagina": 112,
-    "paginaFim": 113,
-    "linhaInicio": 77,
-    "linhaFim": 2,
+    "paginaFim": 112,
+    "linhaInicio": 81,
+    "linhaFim": 97,
     "temCampos": true,
     "campos": {
      "duracao": {
       "pagina": 112,
-      "linha": 84
+      "linha": 88
      },
      "custo": {
       "pagina": 112,
-      "linha": 85
+      "linha": 90
      },
      "preRequisitos": {
       "pagina": 112,
-      "linha": 86
+      "linha": 92
      }
     },
     "remissao": null
@@ -17702,25 +17719,25 @@
     "titulo": "Esquecimento Permanente",
     "pagina": 138,
     "paginaFim": 138,
-    "linhaInicio": 72,
-    "linhaFim": 88,
+    "linhaInicio": 83,
+    "linhaFim": 99,
     "temCampos": true,
     "campos": {
      "duracao": {
       "pagina": 138,
-      "linha": 80
+      "linha": 88
      },
      "custo": {
       "pagina": 138,
-      "linha": 81
+      "linha": 90
      },
      "tempo": {
       "pagina": 138,
-      "linha": 82
+      "linha": 92
      },
      "preRequisitos": {
       "pagina": 138,
-      "linha": 83
+      "linha": 94
      }
     },
     "remissao": null
@@ -18504,21 +18521,21 @@
     "titulo": "Falar Com Máquinas/NT",
     "pagina": 176,
     "paginaFim": 176,
-    "linhaInicio": 54,
-    "linhaFim": 67,
+    "linhaInicio": 64,
+    "linhaFim": 80,
     "temCampos": true,
     "campos": {
      "duracao": {
       "pagina": 176,
-      "linha": 61
+      "linha": 71
      },
      "custo": {
       "pagina": 176,
-      "linha": 62
+      "linha": 73
      },
      "preRequisitos": {
       "pagina": 176,
-      "linha": 63
+      "linha": 75
      }
     },
     "remissao": null
@@ -19475,13 +19492,13 @@
     "titulo": "Frio",
     "pagina": 74,
     "paginaFim": 74,
-    "linhaInicio": 20,
-    "linhaFim": 29,
+    "linhaInicio": 33,
+    "linhaFim": 45,
     "temCampos": true,
     "campos": {
      "preRequisitos": {
       "pagina": 74,
-      "linha": 27
+      "linha": 40
      }
     },
     "remissao": null
@@ -19516,9 +19533,22 @@
     "pagina": 73,
     "paginaFim": 74,
     "linhaInicio": 105,
-    "linhaFim": 2,
-    "temCampos": false,
-    "campos": {},
+    "linhaFim": 11,
+    "temCampos": true,
+    "campos": {
+     "duracao": {
+      "pagina": 74,
+      "linha": 2
+     },
+     "custo": {
+      "pagina": 74,
+      "linha": 4
+     },
+     "preRequisitos": {
+      "pagina": 74,
+      "linha": 6
+     }
+    },
     "remissao": null
    }
   },
@@ -19703,24 +19733,24 @@
     "pagina": 119,
     "paginaFim": 120,
     "linhaInicio": 73,
-    "linhaFim": 9,
+    "linhaFim": 17,
     "temCampos": true,
     "campos": {
      "duracao": {
       "pagina": 120,
-      "linha": 4
+      "linha": 6
      },
      "custo": {
       "pagina": 120,
-      "linha": 5
+      "linha": 8
      },
      "tempo": {
       "pagina": 120,
-      "linha": 6
+      "linha": 10
      },
      "preRequisitos": {
       "pagina": 120,
-      "linha": 7
+      "linha": 12
      }
     },
     "remissao": null
@@ -20649,7 +20679,7 @@
     "pagina": 176,
     "paginaFim": 176,
     "linhaInicio": 2,
-    "linhaFim": 15,
+    "linhaFim": 18,
     "temCampos": true,
     "campos": {
      "custo": {
@@ -20658,11 +20688,11 @@
      },
      "tempo": {
       "pagina": 176,
-      "linha": 10
+      "linha": 11
      },
      "preRequisitos": {
       "pagina": 176,
-      "linha": 11
+      "linha": 13
      }
     },
     "remissao": null
@@ -21583,21 +21613,21 @@
     "titulo": "Imunidade ao Fogo",
     "pagina": 74,
     "paginaFim": 74,
-    "linhaInicio": 47,
-    "linhaFim": 61,
+    "linhaInicio": 69,
+    "linhaFim": 83,
     "temCampos": true,
     "campos": {
      "duracao": {
       "pagina": 74,
-      "linha": 52
+      "linha": 74
      },
      "custo": {
       "pagina": 74,
-      "linha": 54
+      "linha": 76
      },
      "preRequisitos": {
       "pagina": 74,
-      "linha": 56
+      "linha": 78
      }
     },
     "remissao": null
@@ -21631,21 +21661,21 @@
     "titulo": "Imunidade ao Frio",
     "pagina": 74,
     "paginaFim": 74,
-    "linhaInicio": 61,
-    "linhaFim": 75,
+    "linhaInicio": 85,
+    "linhaFim": 99,
     "temCampos": true,
     "campos": {
      "duracao": {
       "pagina": 74,
-      "linha": 66
+      "linha": 90
      },
      "custo": {
       "pagina": 74,
-      "linha": 68
+      "linha": 92
      },
      "preRequisitos": {
       "pagina": 74,
-      "linha": 70
+      "linha": 94
      }
     },
     "remissao": null
@@ -22415,21 +22445,21 @@
     "titulo": "Jato de Luz",
     "pagina": 112,
     "paginaFim": 112,
-    "linhaInicio": 46,
-    "linhaFim": 58,
+    "linhaInicio": 65,
+    "linhaFim": 79,
     "temCampos": true,
     "campos": {
      "duracao": {
       "pagina": 112,
-      "linha": 51
+      "linha": 70
      },
      "custo": {
       "pagina": 112,
-      "linha": 52
+      "linha": 72
      },
      "preRequisitos": {
       "pagina": 112,
-      "linha": 53
+      "linha": 74
      }
     },
     "remissao": null
@@ -22707,25 +22737,25 @@
     "titulo": "Juramento",
     "pagina": 138,
     "paginaFim": 138,
-    "linhaInicio": 55,
-    "linhaFim": 70,
+    "linhaInicio": 61,
+    "linhaFim": 81,
     "temCampos": true,
     "campos": {
      "duracao": {
       "pagina": 138,
-      "linha": 65
+      "linha": 70
      },
      "custo": {
       "pagina": 138,
-      "linha": 66
+      "linha": 72
      },
      "tempo": {
       "pagina": 138,
-      "linha": 67
+      "linha": 74
      },
      "preRequisitos": {
       "pagina": 138,
-      "linha": 68
+      "linha": 76
      }
     },
     "remissao": null
@@ -22758,22 +22788,22 @@
     "variante": null,
     "titulo": "Lampejo",
     "pagina": 112,
-    "paginaFim": 112,
-    "linhaInicio": 60,
-    "linhaFim": 75,
+    "paginaFim": 113,
+    "linhaInicio": 99,
+    "linhaFim": 2,
     "temCampos": true,
     "campos": {
      "custo": {
       "pagina": 112,
-      "linha": 71
+      "linha": 106
      },
      "tempo": {
       "pagina": 112,
-      "linha": 72
+      "linha": 108
      },
      "preRequisitos": {
       "pagina": 112,
-      "linha": 73
+      "linha": 110
      }
     },
     "remissao": null
@@ -26980,21 +27010,21 @@
     "titulo": "Muralha de Vidro",
     "pagina": 103,
     "paginaFim": 103,
-    "linhaInicio": 2,
-    "linhaFim": 14,
+    "linhaInicio": 15,
+    "linhaFim": 29,
     "temCampos": true,
     "campos": {
      "duracao": {
       "pagina": 103,
-      "linha": 7
+      "linha": 20
      },
      "custo": {
       "pagina": 103,
-      "linha": 8
+      "linha": 22
      },
      "preRequisitos": {
       "pagina": 103,
-      "linha": 9
+      "linha": 24
      }
     },
     "remissao": null
@@ -28644,7 +28674,7 @@
     "titulo": "Pane/NT",
     "pagina": 176,
     "paginaFim": 177,
-    "linhaInicio": 69,
+    "linhaInicio": 82,
     "linhaFim": 2,
     "temCampos": false,
     "campos": {},
@@ -32032,11 +32062,28 @@
     "variante": null,
     "titulo": "Puxar",
     "pagina": 146,
-    "paginaFim": 146,
-    "linhaInicio": 61,
-    "linhaFim": 66,
-    "temCampos": false,
-    "campos": {},
+    "paginaFim": 147,
+    "linhaInicio": 91,
+    "linhaFim": 23,
+    "temCampos": true,
+    "campos": {
+     "duracao": {
+      "pagina": 147,
+      "linha": 9
+     },
+     "custo": {
+      "pagina": 147,
+      "linha": 10
+     },
+     "tempo": {
+      "pagina": 147,
+      "linha": 11
+     },
+     "preRequisitos": {
+      "pagina": 147,
+      "linha": 12
+     }
+    },
     "remissao": null
    }
   },
@@ -37301,12 +37348,12 @@
     "pagina": 138,
     "paginaFim": 138,
     "linhaInicio": 2,
-    "linhaFim": 18,
+    "linhaFim": 20,
     "temCampos": true,
     "campos": {
      "duracao": {
       "pagina": 138,
-      "linha": 10
+      "linha": 9
      },
      "custo": {
       "pagina": 138,
@@ -37314,11 +37361,11 @@
      },
      "tempo": {
       "pagina": 138,
-      "linha": 12
+      "linha": 13
      },
      "preRequisitos": {
       "pagina": 138,
-      "linha": 13
+      "linha": 15
      }
     },
     "remissao": null
@@ -38237,19 +38284,19 @@
     "campos": {
      "duracao": {
       "pagina": 146,
-      "linha": 17
+      "linha": 13
      },
      "custo": {
       "pagina": 146,
-      "linha": 18
+      "linha": 15
      },
      "tempo": {
       "pagina": 146,
-      "linha": 19
+      "linha": 17
      },
      "preRequisitos": {
       "pagina": 146,
-      "linha": 20
+      "linha": 19
      }
     },
     "remissao": null
@@ -38771,25 +38818,25 @@
     "titulo": "Tepidez",
     "pagina": 74,
     "paginaFim": 74,
-    "linhaInicio": 75,
-    "linhaFim": 93,
+    "linhaInicio": 101,
+    "linhaFim": 119,
     "temCampos": true,
     "campos": {
      "duracao": {
       "pagina": 74,
-      "linha": 82
+      "linha": 108
      },
      "custo": {
       "pagina": 74,
-      "linha": 84
+      "linha": 110
      },
      "tempo": {
       "pagina": 74,
-      "linha": 86
+      "linha": 112
      },
      "preRequisitos": {
       "pagina": 74,
-      "linha": 88
+      "linha": 114
      }
     },
     "remissao": null
@@ -39827,25 +39874,25 @@
     "titulo": "Transformar Objeto",
     "pagina": 120,
     "paginaFim": 120,
-    "linhaInicio": 16,
-    "linhaFim": 26,
+    "linhaInicio": 19,
+    "linhaFim": 37,
     "temCampos": true,
     "campos": {
      "duracao": {
       "pagina": 120,
-      "linha": 21
+      "linha": 26
      },
      "custo": {
       "pagina": 120,
-      "linha": 22
+      "linha": 28
      },
      "tempo": {
       "pagina": 120,
-      "linha": 23
+      "linha": 30
      },
      "preRequisitos": {
       "pagina": 120,
-      "linha": 24
+      "linha": 32
      }
     },
     "remissao": null
@@ -40359,25 +40406,25 @@
     "titulo": "Travar Vontade",
     "pagina": 138,
     "paginaFim": 138,
-    "linhaInicio": 35,
-    "linhaFim": 53,
+    "linhaInicio": 42,
+    "linhaFim": 59,
     "temCampos": true,
     "campos": {
      "duracao": {
       "pagina": 138,
-      "linha": 45
+      "linha": 51
      },
      "custo": {
       "pagina": 138,
-      "linha": 46
+      "linha": 53
      },
      "tempo": {
       "pagina": 138,
-      "linha": 47
+      "linha": 55
      },
      "preRequisitos": {
       "pagina": 138,
-      "linha": 48
+      "linha": 57
      }
     },
     "remissao": null
@@ -40412,9 +40459,22 @@
     "pagina": 111,
     "paginaFim": 112,
     "linhaInicio": 95,
-    "linhaFim": 2,
-    "temCampos": false,
-    "campos": {},
+    "linhaFim": 11,
+    "temCampos": true,
+    "campos": {
+     "duracao": {
+      "pagina": 112,
+      "linha": 2
+     },
+     "custo": {
+      "pagina": 112,
+      "linha": 4
+     },
+     "preRequisitos": {
+      "pagina": 112,
+      "linha": 6
+     }
+    },
     "remissao": null
    }
   },
@@ -40722,25 +40782,21 @@
     "titulo": "Ver Localização",
     "pagina": 103,
     "paginaFim": 104,
-    "linhaInicio": 34,
+    "linhaInicio": 59,
     "linhaFim": 2,
     "temCampos": true,
     "campos": {
-     "duracao": {
-      "pagina": 103,
-      "linha": 39
-     },
      "custo": {
       "pagina": 103,
-      "linha": 40
+      "linha": 64
      },
      "tempo": {
       "pagina": 103,
-      "linha": 41
+      "linha": 66
      },
      "preRequisitos": {
       "pagina": 103,
-      "linha": 42
+      "linha": 68
      }
     },
     "remissao": null
@@ -41205,22 +41261,22 @@
     "variante": null,
     "titulo": "Vigília",
     "pagina": 138,
-    "paginaFim": 138,
-    "linhaInicio": 98,
-    "linhaFim": 108,
+    "paginaFim": 139,
+    "linhaInicio": 108,
+    "linhaFim": 2,
     "temCampos": true,
     "campos": {
      "duracao": {
       "pagina": 138,
-      "linha": 104
+      "linha": 113
      },
      "custo": {
       "pagina": 138,
-      "linha": 105
+      "linha": 115
      },
      "preRequisitos": {
       "pagina": 138,
-      "linha": 106
+      "linha": 117
      }
     },
     "remissao": null
@@ -42043,7 +42099,7 @@
     "pagina": 146,
     "paginaFim": 146,
     "linhaInicio": 26,
-    "linhaFim": 37,
+    "linhaFim": 42,
     "temCampos": true,
     "campos": {
      "duracao": {
@@ -42052,15 +42108,15 @@
      },
      "custo": {
       "pagina": 146,
-      "linha": 32
+      "linha": 33
      },
      "tempo": {
       "pagina": 146,
-      "linha": 33
+      "linha": 35
      },
      "preRequisitos": {
       "pagina": 146,
-      "linha": 34
+      "linha": 37
      }
     },
     "remissao": null
