@@ -1,0 +1,48 @@
+{
+ "_leia": [
+  "Casos da conta do custo da magia (MG-4): a Bloqueio nunca é reduzida pelo NH (Magia p.8 e p.13) e a Comum custa 1 + MT vezes mais num alvo de MT positivo (Magia p.11), ANTES de tirar o NH (Magia p.8).",
+  "Os números foram feitos À MÃO, do texto do livro (não da função). O dono é o app (app/src/test/resources/custo_bloqueio_e_tamanho_casos.json); a Mesa guarda cópia idêntica (test/magia-bloqueio-e-tamanho.test.js confere).",
+  "Entrada: classe e definicaoId da magia do catálogo; temCondicao = a magia tem conta própria de custo (custoPorCondicao); comoBloqueio = operada como defesa; base = custo para MT 0 e sem NH; nh; mt = Modificador de Tamanho do ALVO.",
+  "Saída: fator (1 + MT quando vale, senão 1), bruto = base × fator, reducao (o que o NH tirou), ajustado = max(0, bruto − reducao)."
+ ],
+ "casos": [
+  { "descricao": "Bloqueio pura NH 18: o NH não reduz (Desviar Projétil custa 1)", "classe": "Bloqueio", "definicaoId": "desviar_projetil", "temCondicao": false, "comoBloqueio": true, "base": 1, "nh": 18, "mt": 0, "fator": 1, "bruto": 1, "reducao": 0, "ajustado": 1 },
+  { "descricao": "Bloqueio pura NH 22", "classe": "Bloqueio", "definicaoId": "defasar", "temCondicao": false, "comoBloqueio": true, "base": 3, "nh": 22, "mt": 0, "fator": 1, "bruto": 3, "reducao": 0, "ajustado": 3 },
+  { "descricao": "Bloqueio com resistência, NH 25", "classe": "Bloqueio/R-Mágica", "definicaoId": "translocacao", "temCondicao": false, "comoBloqueio": true, "base": 2, "nh": 25, "mt": 0, "fator": 1, "bruto": 2, "reducao": 0, "ajustado": 2 },
+  { "descricao": "Bloqueio pura, mesmo sem dizer que é defesa (a classe já é só Bloqueio)", "classe": "Bloqueio", "definicaoId": "braco_de_ferro", "temCondicao": false, "comoBloqueio": false, "base": 1, "nh": 20, "mt": 0, "fator": 1, "bruto": 1, "reducao": 0, "ajustado": 1 },
+  { "descricao": "Bloqueio NH 12: nada a reduzir de qualquer jeito", "classe": "Bloqueio", "definicaoId": "desviar_energia", "temCondicao": false, "comoBloqueio": true, "base": 3, "nh": 12, "mt": 0, "fator": 1, "bruto": 3, "reducao": 0, "ajustado": 3 },
+  { "descricao": "Bloqueio não multiplica pelo tamanho: não é Comum", "classe": "Bloqueio", "definicaoId": "desviar_projetil", "temCondicao": false, "comoBloqueio": true, "base": 2, "nh": 15, "mt": 3, "fator": 1, "bruto": 2, "reducao": 0, "ajustado": 2 },
+  { "descricao": "Comum ou Bloqueio operada como Comum, NH 15: tem o desconto de sempre", "classe": "Comum ou Bloqueio", "definicaoId": "aumentar_forca", "temCondicao": false, "comoBloqueio": false, "base": 3, "nh": 15, "mt": 0, "fator": 1, "bruto": 3, "reducao": 1, "ajustado": 2 },
+  { "descricao": "Comum ou Bloqueio operada como Bloqueio, NH 15: sem desconto", "classe": "Comum ou Bloqueio", "definicaoId": "aumentar_forca", "temCondicao": false, "comoBloqueio": true, "base": 3, "nh": 15, "mt": 0, "fator": 1, "bruto": 3, "reducao": 0, "ajustado": 3 },
+  { "descricao": "Comum/Bloqueio/R-IQ como Bloqueio, NH 20: sem desconto", "classe": "Comum/Bloqueio/R-IQ", "definicaoId": "fascinar", "temCondicao": false, "comoBloqueio": true, "base": 4, "nh": 20, "mt": 0, "fator": 1, "bruto": 4, "reducao": 0, "ajustado": 4 },
+  { "descricao": "Comum/Bloqueio/R-IQ como Comum, NH 20: tira 2", "classe": "Comum/Bloqueio/R-IQ", "definicaoId": "fascinar", "temCondicao": false, "comoBloqueio": false, "base": 4, "nh": 20, "mt": 0, "fator": 1, "bruto": 4, "reducao": 2, "ajustado": 2 },
+  { "descricao": "Comum ou Bloqueio como Comum, alvo MT +1, NH 15: ×2 e depois tira 1", "classe": "Comum ou Bloqueio", "definicaoId": "aumentar_forca", "temCondicao": false, "comoBloqueio": false, "base": 3, "nh": 15, "mt": 1, "fator": 2, "bruto": 6, "reducao": 1, "ajustado": 5 },
+  { "descricao": "Comum ou Bloqueio como Bloqueio, alvo MT +2: nem tamanho nem NH", "classe": "Comum ou Bloqueio", "definicaoId": "aumentar_forca", "temCondicao": false, "comoBloqueio": true, "base": 3, "nh": 15, "mt": 2, "fator": 1, "bruto": 3, "reducao": 0, "ajustado": 3 },
+
+  { "descricao": "Comum, alvo humano (MT 0): o custo do livro", "classe": "Comum", "definicaoId": "sono", "temCondicao": false, "comoBloqueio": false, "base": 2, "nh": 12, "mt": 0, "fator": 1, "bruto": 2, "reducao": 0, "ajustado": 2 },
+  { "descricao": "Comum, MT +1: ×2", "classe": "Comum", "definicaoId": "sono", "temCondicao": false, "comoBloqueio": false, "base": 2, "nh": 12, "mt": 1, "fator": 2, "bruto": 4, "reducao": 0, "ajustado": 4 },
+  { "descricao": "Comum, MT +2: ×3", "classe": "Comum", "definicaoId": "sono", "temCondicao": false, "comoBloqueio": false, "base": 2, "nh": 12, "mt": 2, "fator": 3, "bruto": 6, "reducao": 0, "ajustado": 6 },
+  { "descricao": "Comum, MT +3: ×4", "classe": "Comum", "definicaoId": "sono", "temCondicao": false, "comoBloqueio": false, "base": 2, "nh": 12, "mt": 3, "fator": 4, "bruto": 8, "reducao": 0, "ajustado": 8 },
+  { "descricao": "Comum, MT −2: não há redução para MT negativo", "classe": "Comum", "definicaoId": "sono", "temCondicao": false, "comoBloqueio": false, "base": 2, "nh": 12, "mt": -2, "fator": 1, "bruto": 2, "reducao": 0, "ajustado": 2 },
+  { "descricao": "A ordem: MT +2 e NH 16 → (2×3) − 1 = 5, e não (2−1)×3 = 3", "classe": "Comum/R-Vont", "definicaoId": "sono", "temCondicao": false, "comoBloqueio": false, "base": 2, "nh": 16, "mt": 2, "fator": 3, "bruto": 6, "reducao": 1, "ajustado": 5 },
+  { "descricao": "O NH pode zerar o custo multiplicado: MT +1, NH 20, custo 1 → 2 − 2 = 0", "classe": "Comum", "definicaoId": "sono", "temCondicao": false, "comoBloqueio": false, "base": 1, "nh": 20, "mt": 1, "fator": 2, "bruto": 2, "reducao": 2, "ajustado": 0 },
+  { "descricao": "Comum/R-HT, MT +3, NH 15, custo 2 → 8 − 1 = 7", "classe": "Comum/R-HT", "definicaoId": "sono", "temCondicao": false, "comoBloqueio": false, "base": 2, "nh": 15, "mt": 3, "fator": 4, "bruto": 8, "reducao": 1, "ajustado": 7 },
+  { "descricao": "Comum/R-Vont-2, MT +4, NH 25, custo 3 → 15 − 3 = 12", "classe": "Comum/R-Vont-2", "definicaoId": "sono", "temCondicao": false, "comoBloqueio": false, "base": 3, "nh": 25, "mt": 4, "fator": 5, "bruto": 15, "reducao": 3, "ajustado": 12 },
+  { "descricao": "NH 29 sem tamanho: tira 3", "classe": "Comum", "definicaoId": "sono", "temCondicao": false, "comoBloqueio": false, "base": 10, "nh": 29, "mt": 0, "fator": 1, "bruto": 10, "reducao": 3, "ajustado": 7 },
+  { "descricao": "NH 30 sem tamanho: tira 4", "classe": "Comum", "definicaoId": "sono", "temCondicao": false, "comoBloqueio": false, "base": 10, "nh": 30, "mt": 0, "fator": 1, "bruto": 10, "reducao": 4, "ajustado": 6 },
+  { "descricao": "MT +10 (um gigante): ×11", "classe": "Comum", "definicaoId": "sono", "temCondicao": false, "comoBloqueio": false, "base": 1, "nh": 12, "mt": 10, "fator": 11, "bruto": 11, "reducao": 0, "ajustado": 11 },
+  { "descricao": "Custo zero continua zero", "classe": "Comum", "definicaoId": "sono", "temCondicao": false, "comoBloqueio": false, "base": 0, "nh": 12, "mt": 2, "fator": 3, "bruto": 0, "reducao": 0, "ajustado": 0 },
+
+  { "descricao": "Comum com conta própria (Criar Água): o tamanho não multiplica de novo", "classe": "Comum", "definicaoId": "criar_agua", "temCondicao": true, "comoBloqueio": false, "base": 4, "nh": 12, "mt": 2, "fator": 1, "bruto": 4, "reducao": 0, "ajustado": 4 },
+  { "descricao": "Calor tem tabela própria por tamanho do objeto", "classe": "Comum", "definicaoId": "calor", "temCondicao": false, "comoBloqueio": false, "base": 4, "nh": 12, "mt": 2, "fator": 1, "bruto": 4, "reducao": 0, "ajustado": 4 },
+  { "descricao": "Congelar tem tabela própria", "classe": "Comum", "definicaoId": "congelar", "temCondicao": false, "comoBloqueio": false, "base": 4, "nh": 15, "mt": 2, "fator": 1, "bruto": 4, "reducao": 1, "ajustado": 3 },
+  { "descricao": "Ferver Água tem tabela própria", "classe": "Comum", "definicaoId": "ferver_agua", "temCondicao": false, "comoBloqueio": false, "base": 4, "nh": 12, "mt": 3, "fator": 1, "bruto": 4, "reducao": 0, "ajustado": 4 },
+  { "descricao": "Tingir tem tabela própria", "classe": "Comum", "definicaoId": "tingir", "temCondicao": false, "comoBloqueio": false, "base": 5, "nh": 12, "mt": 1, "fator": 1, "bruto": 5, "reducao": 0, "ajustado": 5 },
+
+  { "descricao": "Área não multiplica pelo tamanho (o raio manda)", "classe": "Área/R-Vont", "definicaoId": "sono_em_area", "temCondicao": false, "comoBloqueio": false, "base": 2, "nh": 12, "mt": 2, "fator": 1, "bruto": 2, "reducao": 0, "ajustado": 2 },
+  { "descricao": "Projétil não multiplica; o NH 16 tira 1", "classe": "Projétil", "definicaoId": "bola_de_fogo", "temCondicao": false, "comoBloqueio": false, "base": 3, "nh": 16, "mt": 2, "fator": 1, "bruto": 3, "reducao": 1, "ajustado": 2 },
+  { "descricao": "Toque não multiplica", "classe": "Toque/R-HT", "definicaoId": "toque_gelado", "temCondicao": false, "comoBloqueio": false, "base": 2, "nh": 12, "mt": 2, "fator": 1, "bruto": 2, "reducao": 0, "ajustado": 2 },
+  { "descricao": "Informação não multiplica", "classe": "Informação/R-Vont", "definicaoId": "adivinhacao", "temCondicao": false, "comoBloqueio": false, "base": 3, "nh": 12, "mt": 2, "fator": 1, "bruto": 3, "reducao": 0, "ajustado": 3 },
+  { "descricao": "Comum/Área: a Área manda", "classe": "Comum/Área/R-IQ#", "definicaoId": "sono_em_area", "temCondicao": false, "comoBloqueio": false, "base": 2, "nh": 12, "mt": 2, "fator": 1, "bruto": 2, "reducao": 0, "ajustado": 2 }
+ ]
+}

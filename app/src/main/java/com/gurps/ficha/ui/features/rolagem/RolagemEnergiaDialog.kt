@@ -33,6 +33,13 @@ fun RolagemEnergiaManualDialog(
 ) {
     val exigeVinculoTalisma = magiaEnergia.definicaoId.equals("talisma", ignoreCase = true)
     var menuTalismaExpandido by remember { mutableStateOf(false) }
+    // MG-4: o que só o jogador sabe e muda a conta -- o tamanho do alvo (Comum) e operar como Bloqueio ("Comum ou Bloqueio").
+    var mtAlvo by remember { mutableStateOf(0) }
+    var comoBloqueio by remember { mutableStateOf(false) }
+    fun contaDe(custoBase: Int) = MagiaEnergiaRules.contaDoCusto(
+        base = custoBase, nh = magiaEnergia.target, classe = magiaEnergia.classe, definicaoId = magiaEnergia.definicaoId,
+        temCondicao = magiaEnergia.custoPorCondicao != null, comoBloqueio = comoBloqueio, mt = mtAlvo
+    )
 
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -72,6 +79,14 @@ fun RolagemEnergiaManualDialog(
                         onCusto = { custo -> onInputMudou(custo?.toString().orEmpty()) }
                     )
                 }
+                CustoPorTamanhoEBloqueio(
+                    magia = magiaEnergia,
+                    comoBloqueio = comoBloqueio,
+                    mtAlvo = mtAlvo,
+                    isPraCegoVariant = isPraCegoVariant,
+                    onComoBloqueio = { comoBloqueio = it },
+                    onMt = { mtAlvo = it }
+                )
                 if (exigeVinculoTalisma) {
                     Text(
                         "Talismã: escolha uma magia do repertório para finalizar a rolagem.",
@@ -129,15 +144,27 @@ fun RolagemEnergiaManualDialog(
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
                 energiaManualInput.toIntOrNull()?.let { custoBase ->
-                    val reducao = MagiaEnergiaRules.reducaoPorNh(magiaEnergia.target)
-                    val custoFinal = MagiaEnergiaRules.custoAjustadoPorNh(custoBase, magiaEnergia.target)
+                    val conta = contaDe(custoBase)
+                    val reducao = conta.reducao
+                    val custoFinal = conta.ajustado
+                    // MG-4: o tamanho do alvo (antes do NH) e a Bloqueio (sem NH) entram na frase.
+                    val doTamanho = if (conta.fator > 1) "Tamanho do alvo MT +${conta.mt}: custo $custoBase × ${conta.fator} = ${conta.bruto}. " else ""
+                    val semNh = conta.semDescontoDeNh && MagiaEnergiaRules.reducaoPorNh(magiaEnergia.target) > 0
                     Text(
-                        "Redução por NH ${magiaEnergia.target}: -$reducao | custo final: $custoFinal",
+                        doTamanho + if (semNh) {
+                            "Bloqueio: o NH ${magiaEnergia.target} não reduz o custo (Magia p.8) | custo final: $custoFinal"
+                        } else {
+                            "Redução por NH ${magiaEnergia.target}: -$reducao | custo final: $custoFinal"
+                        },
                         modifier = Modifier.semantics {
                             // ⚠️ O visível mostra "-1"; o falado diz "menos 1".
-                            contentDescription = "Redução por nível de habilidade " +
-                                "${magiaEnergia.target}: ${RotuloAcessivel.modificador(-reducao)}. " +
-                                "Custo final $custoFinal."
+                            contentDescription = doTamanho + if (semNh) {
+                                "Bloqueio: o nível de habilidade ${magiaEnergia.target} não reduz o custo. Custo final $custoFinal."
+                            } else {
+                                "Redução por nível de habilidade " +
+                                    "${magiaEnergia.target}: ${RotuloAcessivel.modificador(-reducao)}. " +
+                                    "Custo final $custoFinal."
+                            }
                         },
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
@@ -162,7 +189,7 @@ fun RolagemEnergiaManualDialog(
                     // no dia em que ele passou a fazer.
                     val custoBase = energiaManualInput.toIntOrNull()
                     if (custoBase != null) {
-                        onAplicar(MagiaEnergiaRules.custoAjustadoPorNh(custoBase, magiaEnergia.target))
+                        onAplicar(contaDe(custoBase).ajustado)
                     } else {
                         onDismiss()
                     }

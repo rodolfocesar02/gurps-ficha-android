@@ -1,5 +1,8 @@
 package com.gurps.ficha.domain.rules
 
+import com.gurps.ficha.domain.magic.MagicClassParser
+import com.gurps.ficha.domain.magic.TipoClasseMagia
+
 /**
  * **O custo em energia de uma mágica** (MB p.236 e p.238).
  *
@@ -41,6 +44,110 @@ object MagiaEnergiaRules {
 
     fun custoAjustadoPorNh(custoBase: Int, nhBasico: Int): Int =
         (custoBase - reducaoPorNh(nhBasico)).coerceAtLeast(0)
+
+    // ==================================================================
+    // 🔴 MG-4 — o que muda a CONTA do custo além do NH: Bloqueio e tamanho do alvo
+    // ==================================================================
+    //
+    // | regra | livro | o que a conta faz |
+    // |---|---|---|
+    // | a **Bloqueio** nunca é reduzida pelo NH | Magia p.8 e p.13 | NH 15, 20... não tira nada |
+    // | a **Comum** custa 1 + MT vezes mais num alvo de MT positivo | Magia p.11 | ×2 para +1, ×3 para +2... |
+    // | a ordem: tamanho ANTES do NH | Magia p.8 | (base × fator) − NH |
+    //
+    // É a MESMA conta da Mesa (`magia-energia.js`, `aContaDoCusto`): as duas leem os mesmos casos
+    // (`custo_bloqueio_e_tamanho_casos.json`) e a mesma leitura da classe (`classes_do_custo_do_catalogo.json`).
+
+    /**
+     * As quatro mágicas Comuns que têm a PRÓPRIA tabela de custo por tamanho do objeto ("2 para um punho, 4 para 25
+     * litros..."; Magia p.11: "algumas mágicas Comuns apresentam tabelas especiais de custo que prevalecem sobre estas
+     * regras"). Multiplicar por 1+MT cobraria duas vezes. As que têm `custoPorCondicao` também têm conta própria.
+     */
+    val COM_TABELA_PROPRIA_DE_TAMANHO: Set<String> = setOf("calor", "congelar", "ferver_agua", "tingir")
+
+    private val CLASSES_QUE_NAO_SAO_BLOQUEIO = setOf(
+        TipoClasseMagia.COMUM, TipoClasseMagia.PROJETIL, TipoClasseMagia.AREA, TipoClasseMagia.TOQUE, TipoClasseMagia.INFORMACAO
+    )
+
+    /**
+     * O NH alto NÃO reduz o custo? Só a Bloqueio:
+     * - Bloqueio pura (23 mágicas): nunca.
+     * - "Comum ou Bloqueio" (8): só quando operada COMO Bloqueio (de defesa, no turno de um inimigo). Operada como Comum, vale
+     *   o desconto de sempre.
+     */
+    fun semDescontoDeNh(classe: String?, comoBloqueio: Boolean = false): Boolean {
+        val c = MagicClassParser.parse(classe).classes
+        if (TipoClasseMagia.BLOQUEIO !in c) return false
+        if (comoBloqueio) return true
+        return c.none { it in CLASSES_QUE_NAO_SAO_BLOQUEIO }
+    }
+
+    /**
+     * O tamanho do alvo multiplica o custo desta mágica? Só a Comum (um objetivo por vez), operada como Comum e sem conta
+     * própria de custo.
+     */
+    fun tamanhoMultiplica(
+        classe: String?,
+        definicaoId: String?,
+        temCondicao: Boolean = false,
+        comoBloqueio: Boolean = false
+    ): Boolean {
+        val c = MagicClassParser.parse(classe).classes
+        if (TipoClasseMagia.COMUM !in c) return false
+        if (TipoClasseMagia.AREA in c || TipoClasseMagia.PROJETIL in c || TipoClasseMagia.TOQUE in c || TipoClasseMagia.INFORMACAO in c) return false
+        if (TipoClasseMagia.BLOQUEIO in c && comoBloqueio) return false
+        if (temCondicao) return false
+        return definicaoId.orEmpty() !in COM_TABELA_PROPRIA_DE_TAMANHO
+    }
+
+    /**
+     * A conta do custo, inteira.
+     *
+     * @property base custo para MT 0 e sem NH (o do catálogo, o escolhido, ou o da conta por condição)
+     * @property mt o MT que de fato entrou (0 quando a regra não vale para esta mágica)
+     * @property fator `1 + MT` quando MT > 0 e a regra vale; senão 1
+     * @property bruto `base × fator`, antes do NH
+     * @property reducao o que o NH tirou (0 na Bloqueio)
+     * @property ajustado o que sai dos PF no sucesso (nunca abaixo de 0)
+     */
+    data class ContaDoCusto(
+        val base: Int,
+        val mt: Int,
+        val fator: Int,
+        val bruto: Int,
+        val semDescontoDeNh: Boolean,
+        val reducao: Int,
+        val ajustado: Int
+    )
+
+    fun contaDoCusto(
+        base: Int,
+        nh: Int,
+        classe: String?,
+        definicaoId: String?,
+        temCondicao: Boolean = false,
+        comoBloqueio: Boolean = false,
+        mt: Int = 0
+    ): ContaDoCusto {
+        val b = base.coerceAtLeast(0)
+        val fator = if (tamanhoMultiplica(classe, definicaoId, temCondicao, comoBloqueio) && mt > 0) 1 + mt else 1
+        val bruto = b * fator
+        val sem = semDescontoDeNh(classe, comoBloqueio)
+        val reducao = if (sem) 0 else reducaoPorNh(nh)
+        return ContaDoCusto(
+            base = b, mt = if (fator > 1) mt else 0, fator = fator, bruto = bruto,
+            semDescontoDeNh = sem, reducao = reducao, ajustado = (bruto - reducao).coerceAtLeast(0)
+        )
+    }
+
+    /** A conta em português: `custo 2 ×3 (alvo MT +2 — Magia p.11) = 6, −1 pelo NH 16`. Igual à da Mesa. */
+    fun textoDaConta(conta: ContaDoCusto, nh: Int): String {
+        var t = "custo ${conta.base}"
+        if (conta.fator > 1) t += " ×${conta.fator} (alvo MT +${conta.mt} — Magia p.11) = ${conta.bruto}"
+        if (conta.reducao > 0) t += ", −${conta.reducao} pelo NH $nh"
+        else if (conta.semDescontoDeNh && reducaoPorNh(nh) > 0) t += " (Bloqueio: o NH não reduz o custo — Magia p.8)"
+        return t
+    }
 
     /**
      * O custo de uma mágica como o catálogo o escreve.

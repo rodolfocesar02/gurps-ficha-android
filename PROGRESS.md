@@ -9955,3 +9955,18 @@ ficar verde**.
   - Versao **191** (`12.8.6-MAGIAS-FICHA`).
 - Gate: `testVisualDebugUnitTest` + `testPracegoDebugUnitTest` verdes (2586 + 2586, 0 puladas), `assembleVisualDebug` + `assemblePracegoDebug` OK; scripts JS do app 96/96; Mesa 3311/3311.
 - **Status:** ✅ Build OK (2 variantes)
+
+## Lote MG-4 — [2026-10-20] A Bloqueio não reduz pelo NH, a Comum custa 1 + MT vezes mais num alvo grande, e o Abascanto do alvo soma na resistência dele (Mesa + app)
+- **Hash:** (commit deste lote; ver `git log`) + commit da Mesa (conta única, servidor, cartão, ficha, testes com Mesa e Chrome de verdade)
+- **Pedido dele (remoto):** "Sim faça como recomenda!" — os 3 pontos que apresentei (Magia p.8, p.11, p.13, p.14), **app e Mesa juntos**.
+- **Regra (lida no capítulo inteiro, não só na página do assunto):** (1) Bloqueio **nunca** é reduzida pelo NH (23 puras; as 8 "Comum ou Bloqueio" só quando operadas COMO Bloqueio) — antes o app e a Mesa davam o Desviar Projétil (custo 1) de graça com NH 15+; (2) Comum: MT positivo multiplica o custo por 1 + MT, **antes** de tirar o NH (custo 2, NH 16, MT +2: 6 − 1 = 5, e não (2−1)×3); MT negativo não reduz; vale em 408 magias (sem conta própria e fora as 4 de tabela própria: Calor, Congelar, Ferver Água, Tingir); (3) o Abascanto do alvo também soma à resistência dele (dobro em Área) — a Mesa só aplicava o lado do mago.
+- **Mudanças:**
+  - `MagiaEnergiaRules.kt` (**regra crítica, autorizada pelo lote**): `semDescontoDeNh`, `tamanhoMultiplica`, `contaDoCusto`, `textoDaConta`, `COM_TABELA_PROPRIA_DE_TAMANHO` — usam o `MagicClassParser` (uma leitura de classe só).
+  - `RolagemCustoTamanhoEBloqueio.kt` (novo): a caixinha "Operar como Bloqueio" (só nas híbridas) e os chips do tamanho do alvo (0 a +6, com o exemplo do livro; só nas Comuns sem conta própria).
+  - `RolagemEnergiaDialog.kt`: a linha de baixo diz o tamanho e/ou que o NH não reduz a Bloqueio; Aplicar leva `contaDe(...).ajustado`.
+  - `TabRolagem.kt` (`pedirEnergiaAntesDeRolar`, 6 linhas): a conta da regra decide se "zerou"; e uma Comum com custo > 0 abre o diálogo mesmo se o NH zerou (o MT poderia devolver o custo; silêncio não é custo zero) — **decisão de interface minha, ele pode reverter**.
+  - Testes: `MagiaCustoBloqueioETamanhoTest` (6): os 35 casos à mão de `custo_bloqueio_e_tamanho_casos.json` (a Mesa roda o MESMO arquivo), as 58 classes do catálogo lidas pelo `MagicClassParser` = as seis respostas da Mesa (`classes_do_custo_do_catalogo.json`, gerado pela leitura da Mesa), 408 magias com fator / 23 + 8 Bloqueio no catálogo do app, a ordem tamanho-antes-do-NH. **Sondas: 6 mordem** (Bloqueio volta a reduzir, fator = MT, NH antes do tamanho, conta própria leva fator, tabela própria leva fator, híbrida como Bloqueio ainda reduz).
+  - Versão **192** (`12.8.7-MAGIAS-TAMANHO`).
+  - Mesa (religada com `railway up`): `magia-energia.js` (`aContaDoCusto`...), `gastar-energia.js`, `depois-da-magia.js` (`tamanhoDoAlvo` lido da ficha do ALVO), `roda-cartao.js`, `ficha-motor.js`, `magia-alvo.js` + `lancar-no-alvo.js` (Abascanto na resistência), `public/campo-tamanho-do-alvo.js` (novo). Testes: 19 + 2 (Mesa de verdade) + 1 (Chrome de verdade); 28 sondas mordem.
+- Gate: `testVisualDebugUnitTest` + `testPracegoDebugUnitTest` verdes (2592 + 2592, 0 puladas), `assembleVisualDebug` + `assemblePracegoDebug` OK; Mesa (suíte inteira) verde.
+- **Status:** ✅ Build OK (2 variantes)

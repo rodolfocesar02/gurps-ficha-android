@@ -783,12 +783,15 @@ fun TabRolagem(viewModel: FichaViewModel) {
             return true
         }
         val custo = MagiaEnergiaRules.parseCusto(magia.energia)
-        val reducao = MagiaEnergiaRules.reducaoPorNh(nhEfetivoDaMagia(magia))
         // ⚠️ O campo do diálogo é o **custo base**: ele mostra "Redução por NH"
         // e aplica o desconto sozinho. Sugerir o valor já descontado descontava
         // duas vezes — um custo 4 com NH 18 virava 2 em vez de 3.
-        val efetivo = (custo.minimo - reducao).coerceAtLeast(0)
-        if (!custo.precisaEscolher && efetivo == 0) return false
+        // MG-4: a Bloqueio não tem o desconto (o custo 1 do Desviar Projétil continua 1), então "zera" é conta da regra.
+        val efetivo = MagiaEnergiaRules.contaDoCusto(custo.minimo, nhEfetivoDaMagia(magia), magia.classe, magia.definicaoId).ajustado
+        // ⚠️ Silêncio não é custo zero: numa Comum o tamanho do alvo (MT) pode devolver o custo que o NH tinha apagado
+        // (custo 2, NH 15, alvo MT +2: ×3 = 6, −1 = 5). Só o diálogo pergunta o MT, então ele abre.
+        val podeSerMaisCaro = custo.minimo > 0 && MagiaEnergiaRules.tamanhoMultiplica(magia.classe, magia.definicaoId)
+        if (!custo.precisaEscolher && efetivo == 0 && !podeSerMaisCaro) return false
 
         magiaPendenteEnergia = magia
         rolagemDeMagiaEsperando = magia to modMagia

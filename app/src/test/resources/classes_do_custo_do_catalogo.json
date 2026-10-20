@@ -1,0 +1,531 @@
+{
+ "_leia": [
+  "O que cada CLASSE do catálogo (as 58 escritas de magias2versao.json) quer dizer para a conta do custo: Bloqueio, Comum, Projétil, Área, Toque, Informação.",
+  "Gerado a partir do catálogo do app, com a leitura da Mesa (magia-energia.js, asClassesDoCusto). O app (MagicClassParser) tem de dar as MESMAS seis respostas; a Mesa confere que o arquivo bate com o catálogo e com a leitura dela.",
+  "Se uma classe nova entrar no catálogo, os dois testes caem até este arquivo ser refeito."
+ ],
+ "classes": [
+  {
+   "classe": "Área",
+   "comum": false,
+   "projetil": false,
+   "area": true,
+   "toque": false,
+   "informacao": false,
+   "bloqueio": false
+  },
+  {
+   "classe": "Área/Informação",
+   "comum": false,
+   "projetil": false,
+   "area": true,
+   "toque": false,
+   "informacao": true,
+   "bloqueio": false
+  },
+  {
+   "classe": "Área/R-(ST+Vont)/2",
+   "comum": false,
+   "projetil": false,
+   "area": true,
+   "toque": false,
+   "informacao": false,
+   "bloqueio": false
+  },
+  {
+   "classe": "Área/R-Espacial",
+   "comum": false,
+   "projetil": false,
+   "area": true,
+   "toque": false,
+   "informacao": false,
+   "bloqueio": false
+  },
+  {
+   "classe": "Área/R-Espec.",
+   "comum": false,
+   "projetil": false,
+   "area": true,
+   "toque": false,
+   "informacao": false,
+   "bloqueio": false
+  },
+  {
+   "classe": "Área/R-Especial",
+   "comum": false,
+   "projetil": false,
+   "area": true,
+   "toque": false,
+   "informacao": false,
+   "bloqueio": false
+  },
+  {
+   "classe": "Área/R-HT",
+   "comum": false,
+   "projetil": false,
+   "area": true,
+   "toque": false,
+   "informacao": false,
+   "bloqueio": false
+  },
+  {
+   "classe": "Área/R-HT ou DX",
+   "comum": false,
+   "projetil": false,
+   "area": true,
+   "toque": false,
+   "informacao": false,
+   "bloqueio": false
+  },
+  {
+   "classe": "Área/R-Mágica",
+   "comum": false,
+   "projetil": false,
+   "area": true,
+   "toque": false,
+   "informacao": false,
+   "bloqueio": false
+  },
+  {
+   "classe": "Área/R-Vont",
+   "comum": false,
+   "projetil": false,
+   "area": true,
+   "toque": false,
+   "informacao": false,
+   "bloqueio": false
+  },
+  {
+   "classe": "Área/R-Vont-1",
+   "comum": false,
+   "projetil": false,
+   "area": true,
+   "toque": false,
+   "informacao": false,
+   "bloqueio": false
+  },
+  {
+   "classe": "Bloqueio",
+   "comum": false,
+   "projetil": false,
+   "area": false,
+   "toque": false,
+   "informacao": false,
+   "bloqueio": true
+  },
+  {
+   "classe": "Bloqueio/R-DX",
+   "comum": false,
+   "projetil": false,
+   "area": false,
+   "toque": false,
+   "informacao": false,
+   "bloqueio": true
+  },
+  {
+   "classe": "Bloqueio/R-Espec.",
+   "comum": false,
+   "projetil": false,
+   "area": false,
+   "toque": false,
+   "informacao": false,
+   "bloqueio": true
+  },
+  {
+   "classe": "Bloqueio/R-Mágica",
+   "comum": false,
+   "projetil": false,
+   "area": false,
+   "toque": false,
+   "informacao": false,
+   "bloqueio": true
+  },
+  {
+   "classe": "Bloqueio/R-Vont",
+   "comum": false,
+   "projetil": false,
+   "area": false,
+   "toque": false,
+   "informacao": false,
+   "bloqueio": true
+  },
+  {
+   "classe": "Comum",
+   "comum": true,
+   "projetil": false,
+   "area": false,
+   "toque": false,
+   "informacao": false,
+   "bloqueio": false
+  },
+  {
+   "classe": "Comum ou Bloqueio",
+   "comum": true,
+   "projetil": false,
+   "area": false,
+   "toque": false,
+   "informacao": false,
+   "bloqueio": true
+  },
+  {
+   "classe": "Comum ou Bloqueio/R-Vont",
+   "comum": true,
+   "projetil": false,
+   "area": false,
+   "toque": false,
+   "informacao": false,
+   "bloqueio": true
+  },
+  {
+   "classe": "Comum/Área/R-IQ#",
+   "comum": true,
+   "projetil": false,
+   "area": true,
+   "toque": false,
+   "informacao": false,
+   "bloqueio": false
+  },
+  {
+   "classe": "Comum/Bloqueio/R-IQ",
+   "comum": true,
+   "projetil": false,
+   "area": false,
+   "toque": false,
+   "informacao": false,
+   "bloqueio": true
+  },
+  {
+   "classe": "Comum/R-#",
+   "comum": true,
+   "projetil": false,
+   "area": false,
+   "toque": false,
+   "informacao": false,
+   "bloqueio": false
+  },
+  {
+   "classe": "Comum/R-DX",
+   "comum": true,
+   "projetil": false,
+   "area": false,
+   "toque": false,
+   "informacao": false,
+   "bloqueio": false
+  },
+  {
+   "classe": "Comum/R-Espec.",
+   "comum": true,
+   "projetil": false,
+   "area": false,
+   "toque": false,
+   "informacao": false,
+   "bloqueio": false
+  },
+  {
+   "classe": "Comum/R-Especial",
+   "comum": true,
+   "projetil": false,
+   "area": false,
+   "toque": false,
+   "informacao": false,
+   "bloqueio": false
+  },
+  {
+   "classe": "Comum/R-HT",
+   "comum": true,
+   "projetil": false,
+   "area": false,
+   "toque": false,
+   "informacao": false,
+   "bloqueio": false
+  },
+  {
+   "classe": "Comum/R-HT ou IQ",
+   "comum": true,
+   "projetil": false,
+   "area": false,
+   "toque": false,
+   "informacao": false,
+   "bloqueio": false
+  },
+  {
+   "classe": "Comum/R-HT#",
+   "comum": true,
+   "projetil": false,
+   "area": false,
+   "toque": false,
+   "informacao": false,
+   "bloqueio": false
+  },
+  {
+   "classe": "Comum/R-HT+2",
+   "comum": true,
+   "projetil": false,
+   "area": false,
+   "toque": false,
+   "informacao": false,
+   "bloqueio": false
+  },
+  {
+   "classe": "Comum/R-Mágica",
+   "comum": true,
+   "projetil": false,
+   "area": false,
+   "toque": false,
+   "informacao": false,
+   "bloqueio": false
+  },
+  {
+   "classe": "Comum/R-Ocultar Rastros",
+   "comum": true,
+   "projetil": false,
+   "area": false,
+   "toque": false,
+   "informacao": false,
+   "bloqueio": false
+  },
+  {
+   "classe": "Comum/R-Portal",
+   "comum": true,
+   "projetil": false,
+   "area": false,
+   "toque": false,
+   "informacao": false,
+   "bloqueio": false
+  },
+  {
+   "classe": "Comum/R-ST",
+   "comum": true,
+   "projetil": false,
+   "area": false,
+   "toque": false,
+   "informacao": false,
+   "bloqueio": false
+  },
+  {
+   "classe": "Comum/R-ST ou Vont",
+   "comum": true,
+   "projetil": false,
+   "area": false,
+   "toque": false,
+   "informacao": false,
+   "bloqueio": false
+  },
+  {
+   "classe": "Comum/R-ST ou Vontade",
+   "comum": true,
+   "projetil": false,
+   "area": false,
+   "toque": false,
+   "informacao": false,
+   "bloqueio": false
+  },
+  {
+   "classe": "Comum/R-Tranca Mágica",
+   "comum": true,
+   "projetil": false,
+   "area": false,
+   "toque": false,
+   "informacao": false,
+   "bloqueio": false
+  },
+  {
+   "classe": "Comum/R-Vont",
+   "comum": true,
+   "projetil": false,
+   "area": false,
+   "toque": false,
+   "informacao": false,
+   "bloqueio": false
+  },
+  {
+   "classe": "Comum/R-Vont ou perícia",
+   "comum": true,
+   "projetil": false,
+   "area": false,
+   "toque": false,
+   "informacao": false,
+   "bloqueio": false
+  },
+  {
+   "classe": "Comum/R-Vont-2",
+   "comum": true,
+   "projetil": false,
+   "area": false,
+   "toque": false,
+   "informacao": false,
+   "bloqueio": false
+  },
+  {
+   "classe": "Comum/R-Vont#",
+   "comum": true,
+   "projetil": false,
+   "area": false,
+   "toque": false,
+   "informacao": false,
+   "bloqueio": false
+  },
+  {
+   "classe": "Comum/R-Vont+1",
+   "comum": true,
+   "projetil": false,
+   "area": false,
+   "toque": false,
+   "informacao": false,
+   "bloqueio": false
+  },
+  {
+   "classe": "Comum/R-Vont+AM",
+   "comum": true,
+   "projetil": false,
+   "area": false,
+   "toque": false,
+   "informacao": false,
+   "bloqueio": false
+  },
+  {
+   "classe": "Encantamento",
+   "comum": false,
+   "projetil": false,
+   "area": false,
+   "toque": false,
+   "informacao": false,
+   "bloqueio": false
+  },
+  {
+   "classe": "Encantamento/R-Especial",
+   "comum": false,
+   "projetil": false,
+   "area": false,
+   "toque": false,
+   "informacao": false,
+   "bloqueio": false
+  },
+  {
+   "classe": "Encantamento/R-HT",
+   "comum": false,
+   "projetil": false,
+   "area": false,
+   "toque": false,
+   "informacao": false,
+   "bloqueio": false
+  },
+  {
+   "classe": "Especial",
+   "comum": false,
+   "projetil": false,
+   "area": false,
+   "toque": false,
+   "informacao": false,
+   "bloqueio": false
+  },
+  {
+   "classe": "Especial/Área",
+   "comum": false,
+   "projetil": false,
+   "area": true,
+   "toque": false,
+   "informacao": false,
+   "bloqueio": false
+  },
+  {
+   "classe": "Especial/R-Vont",
+   "comum": false,
+   "projetil": false,
+   "area": false,
+   "toque": false,
+   "informacao": false,
+   "bloqueio": false
+  },
+  {
+   "classe": "Informação",
+   "comum": false,
+   "projetil": false,
+   "area": false,
+   "toque": false,
+   "informacao": true,
+   "bloqueio": false
+  },
+  {
+   "classe": "Informação/Área",
+   "comum": false,
+   "projetil": false,
+   "area": true,
+   "toque": false,
+   "informacao": true,
+   "bloqueio": false
+  },
+  {
+   "classe": "Informação/R-Espec.",
+   "comum": false,
+   "projetil": false,
+   "area": false,
+   "toque": false,
+   "informacao": true,
+   "bloqueio": false
+  },
+  {
+   "classe": "Informação/R-Mágica",
+   "comum": false,
+   "projetil": false,
+   "area": false,
+   "toque": false,
+   "informacao": true,
+   "bloqueio": false
+  },
+  {
+   "classe": "Informação/R-Vont",
+   "comum": false,
+   "projetil": false,
+   "area": false,
+   "toque": false,
+   "informacao": true,
+   "bloqueio": false
+  },
+  {
+   "classe": "Projétil",
+   "comum": false,
+   "projetil": true,
+   "area": false,
+   "toque": false,
+   "informacao": false,
+   "bloqueio": false
+  },
+  {
+   "classe": "Projétil/Especial",
+   "comum": false,
+   "projetil": true,
+   "area": false,
+   "toque": false,
+   "informacao": false,
+   "bloqueio": false
+  },
+  {
+   "classe": "Projétil/R-HT",
+   "comum": false,
+   "projetil": true,
+   "area": false,
+   "toque": false,
+   "informacao": false,
+   "bloqueio": false
+  },
+  {
+   "classe": "Toque",
+   "comum": false,
+   "projetil": false,
+   "area": false,
+   "toque": true,
+   "informacao": false,
+   "bloqueio": false
+  },
+  {
+   "classe": "Toque/R-HT",
+   "comum": false,
+   "projetil": false,
+   "area": false,
+   "toque": true,
+   "informacao": false,
+   "bloqueio": false
+  }
+ ]
+}
