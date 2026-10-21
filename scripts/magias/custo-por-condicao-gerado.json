@@ -3442,6 +3442,1973 @@
   ],
   "operar": "$recuperacao"
  },
+ "luz_continua": {
+  "tipo": "varia",
+  "entradas": [
+   {
+    "id": "brilho",
+    "tipo": "escolha",
+    "rotulo": "Brilho",
+    "padrao": "luar",
+    "opcoes": [
+     {
+      "id": "luar",
+      "rotulo": "Fraco, como o luar",
+      "valor": 2
+     },
+     {
+      "id": "tocha",
+      "rotulo": "O brilho de uma tocha",
+      "valor": 4
+     },
+     {
+      "id": "dia",
+      "rotulo": "Forte, como a luz do dia",
+      "valor": 6
+     }
+    ]
+   }
+  ],
+  "operar": "$brilho"
+ },
+ "luz_magica": {
+  "tipo": "varia",
+  "entradas": [
+   {
+    "id": "brilho",
+    "tipo": "escolha",
+    "rotulo": "Brilho",
+    "padrao": "velas",
+    "opcoes": [
+     {
+      "id": "velas",
+      "rotulo": "Fraco, como a luz de velas",
+      "valor": 1
+     },
+     {
+      "id": "tocha",
+      "rotulo": "O brilho de uma tocha",
+      "valor": 2
+     },
+     {
+      "id": "dia",
+      "rotulo": "Tão brilhante como o dia",
+      "valor": 3
+     }
+    ]
+   }
+  ],
+  "operar": "$brilho",
+  "manter": "igual"
+ },
+ "luz_magica_continua": {
+  "tipo": "varia",
+  "entradas": [
+   {
+    "id": "brilho",
+    "tipo": "escolha",
+    "rotulo": "Brilho",
+    "padrao": "velas",
+    "opcoes": [
+     {
+      "id": "velas",
+      "rotulo": "Fraco, como a luz de velas",
+      "valor": 2
+     },
+     {
+      "id": "tocha",
+      "rotulo": "O brilho de uma tocha",
+      "valor": 4
+     },
+     {
+      "id": "dia",
+      "rotulo": "Tão brilhante como o dia",
+      "valor": 6
+     }
+    ]
+   }
+  ],
+  "operar": "$brilho",
+  "manter": "igual"
+ },
+ "bencao": {
+  "tipo": "varia",
+  "entradas": [
+   {
+    "id": "grau",
+    "tipo": "escolha",
+    "rotulo": "Bênção de (3 pontos custam 500: só em cerimônia, com o Mestre)",
+    "padrao": "um",
+    "opcoes": [
+     {
+      "id": "um",
+      "rotulo": "1 ponto",
+      "valor": 10
+     },
+     {
+      "id": "dois",
+      "rotulo": "2 pontos",
+      "valor": 50
+     }
+    ]
+   }
+  ],
+  "operar": "$grau",
+  "tamanho": true
+ },
+ "maldicao": {
+  "tipo": "varia",
+  "entradas": [
+   {
+    "id": "grau",
+    "tipo": "escolha",
+    "rotulo": "Maldição de",
+    "padrao": "um",
+    "opcoes": [
+     {
+      "id": "um",
+      "rotulo": "1 ponto",
+      "valor": 3
+     },
+     {
+      "id": "dois",
+      "rotulo": "2 pontos",
+      "valor": 10
+     },
+     {
+      "id": "tres",
+      "rotulo": "3 pontos",
+      "valor": 20
+     }
+    ]
+   }
+  ],
+  "operar": "$grau",
+  "tamanho": true
+ },
+ "loucura": {
+  "tipo": "varia",
+  "entradas": [
+   {
+    "id": "grau",
+    "tipo": "escolha",
+    "rotulo": "Loucura",
+    "padrao": "grave",
+    "opcoes": [
+     {
+      "id": "leve",
+      "rotulo": "Leve",
+      "valor": 2
+     },
+     {
+      "id": "moderada",
+      "rotulo": "Moderada",
+      "valor": 3
+     },
+     {
+      "id": "grave",
+      "rotulo": "Grave",
+      "valor": 4
+     },
+     {
+      "id": "extrema",
+      "rotulo": "Extrema",
+      "valor": 6
+     }
+    ]
+   }
+  ],
+  "operar": "$grau",
+  "manter": "metade",
+  "tamanho": true
+ },
+ "dom_da_escrita": {
+  "tipo": "varia",
+  "entradas": [
+   {
+    "id": "compreensao",
+    "tipo": "escolha",
+    "rotulo": "Compreensão",
+    "padrao": "rudimentar",
+    "opcoes": [
+     {
+      "id": "rudimentar",
+      "rotulo": "Rudimentar",
+      "valor": 2
+     },
+     {
+      "id": "sotaque",
+      "rotulo": "Com Sotaque",
+      "valor": 4
+     },
+     {
+      "id": "materna",
+      "rotulo": "Materna",
+      "valor": 6
+     }
+    ]
+   }
+  ],
+  "operar": "$compreensao",
+  "manter": "metade"
+ },
+ "dom_das_linguas": {
+  "tipo": "varia",
+  "entradas": [
+   {
+    "id": "compreensao",
+    "tipo": "escolha",
+    "rotulo": "Compreensão",
+    "padrao": "rudimentar",
+    "opcoes": [
+     {
+      "id": "rudimentar",
+      "rotulo": "Rudimentar",
+      "valor": 2
+     },
+     {
+      "id": "sotaque",
+      "rotulo": "Com Sotaque",
+      "valor": 4
+     },
+     {
+      "id": "materna",
+      "rotulo": "Materna",
+      "valor": 6
+     }
+    ]
+   }
+  ],
+  "operar": "$compreensao",
+  "manter": "metade"
+ },
+ "cessar_paralisia": {
+  "tipo": "varia",
+  "entradas": [
+   {
+    "id": "alcance",
+    "tipo": "escolha",
+    "rotulo": "Parar a paralisia",
+    "padrao": "membro",
+    "opcoes": [
+     {
+      "id": "membro",
+      "rotulo": "De um único membro",
+      "valor": 1
+     },
+     {
+      "id": "corpo",
+      "rotulo": "De todo o corpo",
+      "valor": 2
+     }
+    ]
+   }
+  ],
+  "operar": "$alcance",
+  "tamanho": true
+ },
+ "cessar_sangramento": {
+  "tipo": "varia",
+  "entradas": [
+   {
+    "id": "ferimento",
+    "tipo": "escolha",
+    "rotulo": "Ferimento",
+    "padrao": "normal",
+    "opcoes": [
+     {
+      "id": "normal",
+      "rotulo": "Normal (parar o sangramento)",
+      "valor": 1
+     },
+     {
+      "id": "mortal",
+      "rotulo": "Mortal (estabilizar)",
+      "valor": 10
+     }
+    ]
+   }
+  ],
+  "operar": "$ferimento",
+  "tamanho": true
+ },
+ "cobertura_ilusoria": {
+  "tipo": "varia",
+  "entradas": [
+   {
+    "id": "objeto",
+    "tipo": "escolha",
+    "rotulo": "Objeto",
+    "padrao": "mao",
+    "opcoes": [
+     {
+      "id": "mao",
+      "rotulo": "Pequeno, que cabe na mão",
+      "valor": 1
+     },
+     {
+      "id": "maior",
+      "rotulo": "Maior",
+      "valor": 2
+     }
+    ]
+   }
+  ],
+  "operar": "$objeto",
+  "manter": "metade"
+ },
+ "protecao": {
+  "tipo": "varia",
+  "entradas": [
+   {
+    "id": "quem",
+    "tipo": "escolha",
+    "rotulo": "Proteger",
+    "padrao": "voce",
+    "opcoes": [
+     {
+      "id": "voce",
+      "rotulo": "Você mesmo",
+      "valor": 2
+     },
+     {
+      "id": "outro",
+      "rotulo": "Alguém que você possa ver",
+      "valor": 3
+     }
+    ]
+   }
+  ],
+  "operar": "$quem"
+ },
+ "refletir": {
+  "tipo": "varia",
+  "entradas": [
+   {
+    "id": "quem",
+    "tipo": "escolha",
+    "rotulo": "Refletir sobre",
+    "padrao": "si",
+    "opcoes": [
+     {
+      "id": "si",
+      "rotulo": "Você mesmo",
+      "valor": 4
+     },
+     {
+      "id": "outro",
+      "rotulo": "Alguém que você possa ver",
+      "valor": 6
+     }
+    ]
+   }
+  ],
+  "operar": "$quem"
+ },
+ "testar_alimento": {
+  "tipo": "varia",
+  "entradas": [
+   {
+    "id": "alcance",
+    "tipo": "escolha",
+    "rotulo": "Testar",
+    "padrao": "um",
+    "opcoes": [
+     {
+      "id": "um",
+      "rotulo": "Uma única refeição ou garrafa de vinho",
+      "valor": 1
+     },
+     {
+      "id": "raio",
+      "rotulo": "Todos os alimentos e bebidas num raio de 1 metro",
+      "valor": 3
+     }
+    ]
+   }
+  ],
+  "operar": "$alcance"
+ },
+ "testar_combustivelnt": {
+  "tipo": "varia",
+  "entradas": [
+   {
+    "id": "alcance",
+    "tipo": "escolha",
+    "rotulo": "Testar",
+    "padrao": "um",
+    "opcoes": [
+     {
+      "id": "um",
+      "rotulo": "0,5 kg ou 4 litros de combustível",
+      "valor": 1
+     },
+     {
+      "id": "raio",
+      "rotulo": "Todo o combustível num raio de 1 metro",
+      "valor": 3
+     }
+    ]
+   }
+  ],
+  "operar": "$alcance"
+ },
+ "tingir": {
+  "tipo": "varia",
+  "entradas": [
+   {
+    "id": "objeto",
+    "tipo": "escolha",
+    "rotulo": "Tingir",
+    "padrao": "pequeno",
+    "opcoes": [
+     {
+      "id": "pequeno",
+      "rotulo": "Um objeto pequeno (até um palmo)",
+      "valor": 1
+     },
+     {
+      "id": "cabelo",
+      "rotulo": "O cabelo de uma pessoa, ou um objeto de cerca de 0,1 m²",
+      "valor": 2
+     },
+     {
+      "id": "pessoa",
+      "rotulo": "Um objeto do tamanho de uma pessoa (MT 0)",
+      "valor": 5
+     }
+    ]
+   }
+  ],
+  "operar": "$objeto"
+ },
+ "imunidade_a_radiacao": {
+  "tipo": "varia",
+  "entradas": [
+   {
+    "id": "fp",
+    "tipo": "escolha",
+    "rotulo": "Fator de proteção",
+    "padrao": "fp10",
+    "opcoes": [
+     {
+      "id": "fp10",
+      "rotulo": "FP 10",
+      "valor": 1
+     },
+     {
+      "id": "fp100",
+      "rotulo": "FP 100",
+      "valor": 2
+     },
+     {
+      "id": "fp1000",
+      "rotulo": "FP 1.000",
+      "valor": 3
+     }
+    ]
+   }
+  ],
+  "operar": "$fp",
+  "manter": "metade",
+  "tamanho": true
+ },
+ "purificar": {
+  "tipo": "varia",
+  "entradas": [
+   {
+    "id": "parte",
+    "tipo": "escolha",
+    "rotulo": "Limpar",
+    "padrao": "mao",
+    "opcoes": [
+     {
+      "id": "mao",
+      "rotulo": "Uma mão ou um pé",
+      "valor": 2
+     },
+     {
+      "id": "tronco",
+      "rotulo": "Um tronco ou um membro",
+      "valor": 4
+     },
+     {
+      "id": "corpo",
+      "rotulo": "Um corpo inteiro",
+      "valor": 6
+     }
+    ]
+   }
+  ],
+  "operar": "$parte",
+  "tamanho": true
+ },
+ "historia": {
+  "tipo": "varia",
+  "entradas": [
+   {
+    "id": "periodo",
+    "tipo": "escolha",
+    "rotulo": "História de",
+    "padrao": "dia",
+    "opcoes": [
+     {
+      "id": "dia",
+      "rotulo": "Um dia",
+      "valor": 3
+     },
+     {
+      "id": "semana",
+      "rotulo": "Uma semana",
+      "valor": 5
+     },
+     {
+      "id": "mes",
+      "rotulo": "Um mês",
+      "valor": 8
+     },
+     {
+      "id": "ano",
+      "rotulo": "Um ano",
+      "valor": 10
+     }
+    ]
+   }
+  ],
+  "operar": "$periodo"
+ },
+ "historia_antiga": {
+  "tipo": "varia",
+  "entradas": [
+   {
+    "id": "periodo",
+    "tipo": "escolha",
+    "rotulo": "História de",
+    "padrao": "ano",
+    "opcoes": [
+     {
+      "id": "ano",
+      "rotulo": "Um ano",
+      "valor": 3
+     },
+     {
+      "id": "dez",
+      "rotulo": "10 anos",
+      "valor": 5
+     },
+     {
+      "id": "cem",
+      "rotulo": "100 anos",
+      "valor": 8
+     },
+     {
+      "id": "mil",
+      "rotulo": "1.000 anos",
+      "valor": 10
+     }
+    ]
+   }
+  ],
+  "operar": "$periodo"
+ },
+ "criar_servo": {
+  "tipo": "varia",
+  "entradas": [
+   {
+    "id": "tipo",
+    "tipo": "escolha",
+    "rotulo": "Servo",
+    "padrao": "comum",
+    "opcoes": [
+     {
+      "id": "comum",
+      "rotulo": "Comum",
+      "valor": 3
+     },
+     {
+      "id": "habilidoso",
+      "rotulo": "Serviçal habilidoso",
+      "valor": 4
+     },
+     {
+      "id": "bruto",
+      "rotulo": "Bruto",
+      "valor": 6
+     }
+    ]
+   }
+  ],
+  "operar": "$tipo",
+  "manter": [
+   "cima",
+   [
+    "/",
+    "$operar",
+    3
+   ]
+  ]
+ },
+ "criar_guerreiro": {
+  "tipo": "varia",
+  "entradas": [
+   {
+    "id": "tipo",
+    "tipo": "escolha",
+    "rotulo": "Guerreiro",
+    "padrao": "comum",
+    "opcoes": [
+     {
+      "id": "comum",
+      "rotulo": "Comum",
+      "valor": 4
+     },
+     {
+      "id": "bruto",
+      "rotulo": "Bruto (ST 16)",
+      "valor": 6
+     }
+    ]
+   }
+  ],
+  "operar": "$tipo",
+  "manter": "igual"
+ },
+ "reduzir_carga": {
+  "tipo": "varia",
+  "entradas": [
+   {
+    "id": "reducao",
+    "tipo": "escolha",
+    "rotulo": "Redução da carga",
+    "padrao": "quarto",
+    "opcoes": [
+     {
+      "id": "quarto",
+      "rotulo": "25%",
+      "valor": 3
+     },
+     {
+      "id": "metade",
+      "rotulo": "50%",
+      "valor": 5
+     }
+    ]
+   }
+  ],
+  "operar": "$reducao",
+  "manter": "metade"
+ },
+ "poltergeist": {
+  "tipo": "varia",
+  "entradas": [
+   {
+    "id": "item",
+    "tipo": "escolha",
+    "rotulo": "Item",
+    "padrao": "leve",
+    "opcoes": [
+     {
+      "id": "leve",
+      "rotulo": "Até 5 kg (1d de dano)",
+      "valor": 1
+     },
+     {
+      "id": "pesado",
+      "rotulo": "Até 12,5 kg (1d+1 de dano)",
+      "valor": 2
+     }
+    ]
+   }
+  ],
+  "operar": "$item"
+ },
+ "magica_penetrante": {
+  "tipo": "varia",
+  "entradas": [
+   {
+    "id": "divisor",
+    "tipo": "escolha",
+    "rotulo": "Divisor de armadura",
+    "padrao": "dois",
+    "opcoes": [
+     {
+      "id": "dois",
+      "rotulo": "(2)",
+      "valor": 2
+     },
+     {
+      "id": "tres",
+      "rotulo": "(3)",
+      "valor": 4
+     },
+     {
+      "id": "cinco",
+      "rotulo": "(5)",
+      "valor": 6
+     },
+     {
+      "id": "dez",
+      "rotulo": "(10)",
+      "valor": 8
+     },
+     {
+      "id": "ignora",
+      "rotulo": "Ignora RD",
+      "valor": 10
+     }
+    ]
+   }
+  ],
+  "operar": "$divisor"
+ },
+ "aporte": {
+  "tipo": "varia",
+  "entradas": [
+   {
+    "id": "peso",
+    "tipo": "escolha",
+    "rotulo": "Peso do objeto",
+    "padrao": "ate05",
+    "opcoes": [
+     {
+      "id": "ate05",
+      "rotulo": "Menos de 0,5 kg",
+      "valor": 1
+     },
+     {
+      "id": "ate5",
+      "rotulo": "Até 5 kg",
+      "valor": 2
+     },
+     {
+      "id": "ate25",
+      "rotulo": "Até 25 kg",
+      "valor": 3
+     },
+     {
+      "id": "ate100",
+      "rotulo": "Até 100 kg",
+      "valor": 4
+     },
+     {
+      "id": "ate150",
+      "rotulo": "Até 150 kg",
+      "valor": 8
+     },
+     {
+      "id": "ate200",
+      "rotulo": "Até 200 kg",
+      "valor": 12
+     },
+     {
+      "id": "ate250",
+      "rotulo": "Até 250 kg",
+      "valor": 16
+     },
+     {
+      "id": "ate300",
+      "rotulo": "Até 300 kg",
+      "valor": 20
+     },
+     {
+      "id": "ate350",
+      "rotulo": "Até 350 kg",
+      "valor": 24
+     },
+     {
+      "id": "ate400",
+      "rotulo": "Até 400 kg",
+      "valor": 28
+     },
+     {
+      "id": "ate450",
+      "rotulo": "Até 450 kg",
+      "valor": 32
+     },
+     {
+      "id": "ate500",
+      "rotulo": "Até 500 kg",
+      "valor": 36
+     }
+    ]
+   }
+  ],
+  "operar": "$peso",
+  "manter": "igual",
+  "fonte": "descricao"
+ },
+ "animar_maquinant": {
+  "tipo": "varia",
+  "entradas": [
+   {
+    "id": "massa",
+    "tipo": "escolha",
+    "rotulo": "Massa da máquina",
+    "padrao": "t1",
+    "opcoes": [
+     {
+      "id": "t1",
+      "rotulo": "Até 1 t",
+      "valor": 8
+     },
+     {
+      "id": "t2",
+      "rotulo": "Até 2 t",
+      "valor": 9
+     },
+     {
+      "id": "t4",
+      "rotulo": "Até 4 t",
+      "valor": 10
+     },
+     {
+      "id": "t8",
+      "rotulo": "Até 8 t",
+      "valor": 11
+     },
+     {
+      "id": "t16",
+      "rotulo": "Até 16 t",
+      "valor": 12
+     },
+     {
+      "id": "t32",
+      "rotulo": "Até 32 t",
+      "valor": 13
+     },
+     {
+      "id": "t64",
+      "rotulo": "Até 64 t",
+      "valor": 14
+     },
+     {
+      "id": "t128",
+      "rotulo": "Até 128 t",
+      "valor": 15
+     },
+     {
+      "id": "t256",
+      "rotulo": "Até 256 t",
+      "valor": 16
+     },
+     {
+      "id": "t512",
+      "rotulo": "Até 512 t",
+      "valor": 17
+     },
+     {
+      "id": "t1024",
+      "rotulo": "Até 1.024 t",
+      "valor": 18
+     }
+    ]
+   }
+  ],
+  "operar": "$massa",
+  "manter": "metade"
+ },
+ "afiar": {
+  "tipo": "varia",
+  "entradas": [
+   {
+    "id": "arma",
+    "tipo": "escolha",
+    "rotulo": "Arma",
+    "padrao": "faca",
+    "opcoes": [
+     {
+      "id": "flecha",
+      "rotulo": "Uma flecha",
+      "valor": 1
+     },
+     {
+      "id": "faca",
+      "rotulo": "Uma faca, lança ou machado",
+      "valor": 2
+     },
+     {
+      "id": "espada1",
+      "rotulo": "Uma espada de uma mão",
+      "valor": 3
+     },
+     {
+      "id": "espada2",
+      "rotulo": "Uma espada de duas mãos",
+      "valor": 5
+     }
+    ]
+   },
+   {
+    "id": "bonus",
+    "tipo": "escolha",
+    "rotulo": "Bônus no dano",
+    "padrao": "mais1",
+    "opcoes": [
+     {
+      "id": "mais1",
+      "rotulo": "+1",
+      "valor": 1
+     },
+     {
+      "id": "mais2",
+      "rotulo": "+2 (duplica o custo)",
+      "valor": 2
+     },
+     {
+      "id": "mais3",
+      "rotulo": "+3 (triplica o custo)",
+      "valor": 3
+     }
+    ]
+   }
+  ],
+  "operar": [
+   "*",
+   "$arma",
+   "$bonus"
+  ],
+  "manter": "metade"
+ },
+ "armadura": {
+  "tipo": "varia",
+  "entradas": [
+   {
+    "id": "rd",
+    "tipo": "inteiro",
+    "rotulo": "Pontos de RD dados ao objetivo",
+    "min": 1,
+    "max": 5,
+    "padrao": 1
+   }
+  ],
+  "operar": [
+   "*",
+   2,
+   "$rd"
+  ],
+  "manter": "metade",
+  "tamanho": true
+ },
+ "escudo": {
+  "tipo": "varia",
+  "entradas": [
+   {
+    "id": "bd",
+    "tipo": "inteiro",
+    "rotulo": "Pontos de Bônus de Defesa dados ao objetivo",
+    "min": 1,
+    "max": 4,
+    "padrao": 1
+   }
+  ],
+  "operar": [
+   "*",
+   2,
+   "$bd"
+  ],
+  "manter": "metade",
+  "tamanho": true
+ },
+ "desidratar": {
+  "tipo": "varia",
+  "entradas": [
+   {
+    "id": "pontos",
+    "tipo": "inteiro",
+    "rotulo": "Energia colocada (1d-1 de dano cada)",
+    "min": 1,
+    "max": 3,
+    "padrao": 1
+   }
+  ],
+  "operar": "$pontos",
+  "tamanho": true
+ },
+ "aprisionar_espirito": {
+  "tipo": "varia",
+  "entradas": [
+   {
+    "id": "espirito",
+    "tipo": "inteiro",
+    "rotulo": "ST + IQ do espírito",
+    "min": 2,
+    "max": 495,
+    "padrao": 20
+   }
+  ],
+  "operar": [
+   "cima",
+   [
+    "/",
+    "$espirito",
+    5
+   ]
+  ],
+  "manter": [
+   "cima",
+   [
+    "/",
+    "$espirito",
+    10
+   ]
+  ]
+ },
+ "controle_de_animal_terra": {
+  "tipo": "varia",
+  "entradas": [
+   {
+    "id": "iq",
+    "tipo": "inteiro",
+    "rotulo": "IQ racial da espécie mais inteligente da categoria",
+    "min": 1,
+    "max": 5,
+    "padrao": 5
+   }
+  ],
+  "operar": "$iq",
+  "manter": "metade",
+  "tamanho": true
+ },
+ "controle_de_animal_ar": {
+  "tipo": "varia",
+  "entradas": [
+   {
+    "id": "iq",
+    "tipo": "inteiro",
+    "rotulo": "IQ racial da espécie mais inteligente da categoria",
+    "min": 1,
+    "max": 5,
+    "padrao": 5
+   }
+  ],
+  "operar": "$iq",
+  "manter": "metade",
+  "tamanho": true
+ },
+ "controle_de_animal_mar": {
+  "tipo": "varia",
+  "entradas": [
+   {
+    "id": "iq",
+    "tipo": "inteiro",
+    "rotulo": "IQ racial da espécie mais inteligente da categoria",
+    "min": 1,
+    "max": 5,
+    "padrao": 5
+   }
+  ],
+  "operar": "$iq",
+  "manter": "metade",
+  "tamanho": true
+ },
+ "contramagica": {
+  "tipo": "varia",
+  "entradas": [
+   {
+    "id": "custo",
+    "tipo": "inteiro",
+    "rotulo": "Custo da mágica a anular (sem o NH elevado do outro operador)",
+    "min": 1,
+    "max": 99,
+    "padrao": 2
+   }
+  ],
+  "operar": [
+   "cima",
+   [
+    "/",
+    "$custo",
+    2
+   ]
+  ]
+ },
+ "suspender_magica": {
+  "tipo": "varia",
+  "entradas": [
+   {
+    "id": "custo",
+    "tipo": "inteiro",
+    "rotulo": "Custo de operação da mágica a suspender (sem o NH elevado do outro operador)",
+    "min": 1,
+    "max": 99,
+    "padrao": 10
+   }
+  ],
+  "operar": [
+   "cima",
+   [
+    "/",
+    "$custo",
+    10
+   ]
+  ],
+  "manter": "igual"
+ },
+ "deslocar_magica": {
+  "tipo": "varia",
+  "entradas": [
+   {
+    "id": "custo",
+    "tipo": "inteiro",
+    "rotulo": "Custo da mágica sendo movida (sem os bônus do outro operador)",
+    "min": 1,
+    "max": 99,
+    "padrao": 4
+   }
+  ],
+  "operar": [
+   "cima",
+   [
+    "/",
+    "$custo",
+    4
+   ]
+  ]
+ },
+ "adiar_magica": {
+  "tipo": "varia",
+  "entradas": [
+   {
+    "id": "custo",
+    "tipo": "inteiro",
+    "rotulo": "Custo da mágica adiada",
+    "min": 1,
+    "max": 99,
+    "padrao": 2
+   }
+  ],
+  "operar": [
+   "max",
+   2,
+   "$custo"
+  ],
+  "manter": "igual"
+ },
+ "compartilhar_energia": {
+  "tipo": "varia",
+  "entradas": [
+   {
+    "id": "usada",
+    "tipo": "inteiro",
+    "rotulo": "Energia realmente usada pelo mago que drena os PF",
+    "min": 1,
+    "max": 49,
+    "padrao": 1
+   }
+  ],
+  "operar": [
+   "*",
+   2,
+   "$usada"
+  ]
+ },
+ "apressar_fogo": {
+  "tipo": "varia",
+  "entradas": [
+   {
+    "id": "fator",
+    "tipo": "inteiro",
+    "rotulo": "Quantas vezes mais rápido o fogo queima (2 = o dobro, 3 = o triplo...)",
+    "min": 2,
+    "max": 20,
+    "padrao": 2
+   }
+  ],
+  "operar": "$fator",
+  "manter": "igual"
+ },
+ "comandar_espirito": {
+  "tipo": "varia",
+  "entradas": [
+   {
+    "id": "pontos",
+    "tipo": "inteiro",
+    "rotulo": "Pontos de personagem do espírito",
+    "min": 10,
+    "max": 990,
+    "padrao": 50
+   }
+  ],
+  "operar": [
+   "cima",
+   [
+    "/",
+    "$pontos",
+    10
+   ]
+  ],
+  "manter": "metade",
+  "tamanho": true
+ },
+ "expulsar": {
+  "tipo": "varia",
+  "entradas": [
+   {
+    "id": "pontos",
+    "tipo": "inteiro",
+    "rotulo": "Pontos de personagem que o objetivo custou",
+    "min": 10,
+    "max": 990,
+    "padrao": 100
+   }
+  ],
+  "operar": [
+   "max",
+   10,
+   [
+    "cima",
+    [
+     "/",
+     "$pontos",
+     10
+    ]
+   ]
+  ]
+ },
+ "animacao": {
+  "tipo": "varia",
+  "entradas": [
+   {
+    "id": "mt",
+    "tipo": "inteiro",
+    "rotulo": "Modificador de Tamanho do objeto (MT; o humano é 0)",
+    "min": 0,
+    "max": 10,
+    "padrao": 0
+   },
+   {
+    "id": "material",
+    "tipo": "escolha",
+    "rotulo": "Material",
+    "padrao": "comum",
+    "opcoes": [
+     {
+      "id": "comum",
+      "rotulo": "Madeira, barro...",
+      "valor": 1
+     },
+     {
+      "id": "pedra",
+      "rotulo": "Pedra (dobra o custo)",
+      "valor": 2
+     },
+     {
+      "id": "metal",
+      "rotulo": "Metal (triplica o custo)",
+      "valor": 3
+     }
+    ]
+   }
+  ],
+  "operar": [
+   "*",
+   3,
+   [
+    "+",
+    1,
+    "$mt"
+   ],
+   "$material"
+  ],
+  "manter": "metade"
+ },
+ "diagramant": {
+  "tipo": "varia",
+  "entradas": [
+   {
+    "id": "toneladas",
+    "tipo": "numero",
+    "rotulo": "Massa da máquina",
+    "unidade": "t",
+    "min": 0,
+    "max": 95,
+    "passo": 0.5,
+    "padrao": 1
+   }
+  ],
+  "operar": [
+   "+",
+   5,
+   [
+    "cima",
+    [
+     "max",
+     0,
+     [
+      "-",
+      "$toneladas",
+      1
+     ]
+    ]
+   ]
+  ],
+  "manter": "metade"
+ },
+ "moldar_agua": {
+  "tipo": "varia",
+  "entradas": [
+   {
+    "id": "litros",
+    "tipo": "numero",
+    "rotulo": "Água moldada",
+    "unidade": "litros",
+    "min": 0,
+    "max": 7000,
+    "passo": 10,
+    "padrao": 80
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "cima",
+    [
+     "/",
+     "$litros",
+     80
+    ]
+   ]
+  ],
+  "manter": "igual"
+ },
+ "purificar_a_agua": {
+  "tipo": "varia",
+  "entradas": [
+   {
+    "id": "litros",
+    "tipo": "numero",
+    "rotulo": "Água a purificar",
+    "unidade": "litros",
+    "min": 0,
+    "max": 392,
+    "passo": 1,
+    "padrao": 4
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "cima",
+    [
+     "/",
+     "$litros",
+     4
+    ]
+   ]
+  ]
+ },
+ "terra_para_ar": {
+  "tipo": "varia",
+  "entradas": [
+   {
+    "id": "volume",
+    "tipo": "numero",
+    "rotulo": "Terra ou pedra transformada em ar",
+    "unidade": "m³",
+    "min": 0,
+    "max": 30,
+    "passo": 0.025,
+    "padrao": 0.025
+   },
+   {
+    "id": "metal",
+    "tipo": "marca",
+    "rotulo": "O material é metal (o triplo do custo)"
+   }
+  ],
+  "operar": [
+   "*",
+   [
+    "+",
+    1,
+    "$metal",
+    "$metal"
+   ],
+   [
+    "min",
+    [
+     "max",
+     1,
+     [
+      "cima",
+      [
+       "/",
+       "$volume",
+       0.025
+      ]
+     ]
+    ],
+    [
+     "*",
+     5,
+     [
+      "max",
+      1,
+      [
+       "cima",
+       [
+        "/",
+        "$volume",
+        0.75
+       ]
+      ]
+     ]
+    ]
+   ]
+  ]
+ },
+ "acionarnt": {
+  "tipo": "varia",
+  "entradas": [
+   {
+    "id": "pcc",
+    "tipo": "numero",
+    "rotulo": "PcC do veículo",
+    "unidade": "t",
+    "min": 0,
+    "max": 1000,
+    "passo": 0.1,
+    "padrao": 1
+   },
+   {
+    "id": "deslocamento",
+    "tipo": "inteiro",
+    "rotulo": "Deslocamento desejado (até a Velocidade Máxima do veículo)",
+    "min": 1,
+    "max": 500,
+    "padrao": 10
+   },
+   {
+    "id": "nh",
+    "tipo": "inteiro",
+    "rotulo": "NH do operador na mágica",
+    "min": 1,
+    "max": 40,
+    "padrao": 15
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "cima",
+    [
+     "/",
+     [
+      "*",
+      "$pcc",
+      "$deslocamento"
+     ],
+     "$nh"
+    ]
+   ]
+  ],
+  "manter": "igual"
+ },
+ "calor": {
+  "tipo": "varia",
+  "entradas": [
+   {
+    "id": "punho",
+    "tipo": "marca",
+    "rotulo": "Objeto do tamanho de um punho (ou menor)"
+   },
+   {
+    "id": "volume",
+    "tipo": "numero",
+    "rotulo": "Volume do objeto",
+    "unidade": "m³",
+    "min": 0,
+    "max": 30,
+    "passo": 0.05,
+    "padrao": 0.75
+   },
+   {
+    "id": "vezes",
+    "tipo": "inteiro",
+    "rotulo": "Velocidade do aquecimento (1 = 10° por minuto, 2 = 20°...)",
+    "min": 1,
+    "max": 10,
+    "padrao": 1
+   }
+  ],
+  "operar": [
+   "*",
+   "$vezes",
+   [
+    "max",
+    "$punho",
+    [
+     "*",
+     [
+      "-",
+      1,
+      "$punho"
+     ],
+     [
+      "*",
+      2,
+      [
+       "max",
+       1,
+       [
+        "cima",
+        [
+         "/",
+         "$volume",
+         0.75
+        ]
+       ]
+      ]
+     ]
+    ]
+   ]
+  ],
+  "manter": "igual"
+ },
+ "frio": {
+  "tipo": "varia",
+  "entradas": [
+   {
+    "id": "punho",
+    "tipo": "marca",
+    "rotulo": "Objeto do tamanho de um punho (ou menor)"
+   },
+   {
+    "id": "volume",
+    "tipo": "numero",
+    "rotulo": "Volume do objeto",
+    "unidade": "m³",
+    "min": 0,
+    "max": 30,
+    "passo": 0.05,
+    "padrao": 0.75
+   },
+   {
+    "id": "vezes",
+    "tipo": "inteiro",
+    "rotulo": "Velocidade do esfriamento (1 = 10° por minuto, 2 = 20°...)",
+    "min": 1,
+    "max": 10,
+    "padrao": 1
+   }
+  ],
+  "operar": [
+   "*",
+   "$vezes",
+   [
+    "max",
+    "$punho",
+    [
+     "*",
+     [
+      "-",
+      1,
+      "$punho"
+     ],
+     [
+      "*",
+      2,
+      [
+       "max",
+       1,
+       [
+        "cima",
+        [
+         "/",
+         "$volume",
+         0.75
+        ]
+       ]
+      ]
+     ]
+    ]
+   ]
+  ],
+  "manter": "igual",
+  "fonte": "como:calor"
+ },
+ "congelar": {
+  "tipo": "varia",
+  "entradas": [
+   {
+    "id": "punho",
+    "tipo": "marca",
+    "rotulo": "Quantidade do tamanho de um punho"
+   },
+   {
+    "id": "litros",
+    "tipo": "numero",
+    "rotulo": "Água a congelar",
+    "unidade": "litros",
+    "min": 0,
+    "max": 5000,
+    "passo": 5,
+    "padrao": 25
+   }
+  ],
+  "operar": [
+   "max",
+   [
+    "*",
+    2,
+    "$punho"
+   ],
+   [
+    "*",
+    [
+     "-",
+     1,
+     "$punho"
+    ],
+    [
+     "+",
+     4,
+     [
+      "*",
+      2,
+      [
+       "min",
+       1,
+       [
+        "cima",
+        [
+         "max",
+         0,
+         [
+          "-",
+          "$litros",
+          25
+         ]
+        ]
+       ]
+      ]
+     ],
+     [
+      "*",
+      3,
+      [
+       "cima",
+       [
+        "/",
+        [
+         "max",
+         0,
+         [
+          "-",
+          "$litros",
+          250
+         ]
+        ],
+        250
+       ]
+      ]
+     ]
+    ]
+   ]
+  ],
+  "manter": "igual"
+ },
+ "ferver_agua": {
+  "tipo": "varia",
+  "entradas": [
+   {
+    "id": "punho",
+    "tipo": "marca",
+    "rotulo": "Quantidade do tamanho de um punho"
+   },
+   {
+    "id": "litros",
+    "tipo": "numero",
+    "rotulo": "Água a ferver",
+    "unidade": "litros",
+    "min": 0,
+    "max": 5000,
+    "passo": 5,
+    "padrao": 25
+   }
+  ],
+  "operar": [
+   "max",
+   [
+    "*",
+    2,
+    "$punho"
+   ],
+   [
+    "*",
+    [
+     "-",
+     1,
+     "$punho"
+    ],
+    [
+     "+",
+     4,
+     [
+      "*",
+      2,
+      [
+       "min",
+       1,
+       [
+        "cima",
+        [
+         "max",
+         0,
+         [
+          "-",
+          "$litros",
+          25
+         ]
+        ]
+       ]
+      ]
+     ],
+     [
+      "*",
+      3,
+      [
+       "cima",
+       [
+        "/",
+        [
+         "max",
+         0,
+         [
+          "-",
+          "$litros",
+          250
+         ]
+        ],
+        250
+       ]
+      ]
+     ]
+    ]
+   ]
+  ]
+ },
+ "criptografar": {
+  "tipo": "varia",
+  "entradas": [
+   {
+    "id": "palavras",
+    "tipo": "inteiro",
+    "rotulo": "Palavras de texto simples",
+    "min": 1,
+    "max": 9000000,
+    "padrao": 1000
+   }
+  ],
+  "operar": [
+   "+",
+   1,
+   [
+    "min",
+    1,
+    [
+     "cima",
+     [
+      "max",
+      0,
+      [
+       "-",
+       "$palavras",
+       1000
+      ]
+     ]
+    ]
+   ],
+   [
+    "min",
+    1,
+    [
+     "cima",
+     [
+      "max",
+      0,
+      [
+       "-",
+       "$palavras",
+       10000
+      ]
+     ]
+    ]
+   ],
+   [
+    "baixo",
+    [
+     "/",
+     [
+      "max",
+      0,
+      [
+       "-",
+       "$palavras",
+       100000
+      ]
+     ],
+     100000
+    ]
+   ]
+  ]
+ },
+ "desatar": {
+  "tipo": "varia",
+  "entradas": [
+   {
+    "id": "tudo",
+    "tipo": "marca",
+    "rotulo": "Desfazer tudo num raio de 1 metro (a pessoa nessa área resiste com a Vontade)"
+   },
+   {
+    "id": "extras",
+    "tipo": "inteiro",
+    "rotulo": "Alvos extras dentro de 1 metro",
+    "min": 0,
+    "max": 20,
+    "padrao": 0
+   }
+  ],
+  "operar": [
+   "max",
+   [
+    "*",
+    6,
+    "$tudo"
+   ],
+   [
+    "*",
+    [
+     "-",
+     1,
+     "$tudo"
+    ],
+    [
+     "+",
+     3,
+     "$extras"
+    ]
+   ]
+  ]
+ },
+ "anular_criacao": {
+  "tipo": "varia",
+  "entradas": [
+   {
+    "id": "objetivo",
+    "tipo": "escolha",
+    "rotulo": "Anular",
+    "padrao": "naovivo",
+    "opcoes": [
+     {
+      "id": "naovivo",
+      "rotulo": "Um objetivo não vivo",
+      "valor": 1
+     },
+     {
+      "id": "vivo",
+      "rotulo": "Uma criação viva",
+      "valor": 3
+     }
+    ]
+   }
+  ],
+  "operar": "$objetivo"
+ },
+ "imunidade_a_pressao": {
+  "tipo": "varia",
+  "entradas": [
+   {
+    "id": "vantagem",
+    "tipo": "escolha",
+    "rotulo": "Vantagem conferida",
+    "padrao": "rp1",
+    "opcoes": [
+     {
+      "id": "rp1",
+      "rotulo": "Resistência à Pressão 1",
+      "valor": 2
+     },
+     {
+      "id": "rp2",
+      "rotulo": "Resistência à Pressão 2",
+      "valor": 3
+     },
+     {
+      "id": "rp3",
+      "rotulo": "Resistência à Pressão 3",
+      "valor": 5
+     },
+     {
+      "id": "vacuo",
+      "rotulo": "Resistência ao Vácuo",
+      "valor": 3
+     }
+    ]
+   }
+  ],
+  "operar": "$vantagem",
+  "manter": "metade",
+  "tamanho": true,
+  "fonte": "descricao"
+ },
+ "desviar_teleporte": {
+  "tipo": "varia",
+  "entradas": [
+   {
+    "id": "pretendido",
+    "tipo": "inteiro",
+    "rotulo": "Custo do Teleporte pretendido (destino original)",
+    "min": 3,
+    "max": 30,
+    "padrao": 3
+   },
+   {
+    "id": "novo",
+    "tipo": "inteiro",
+    "rotulo": "Custo do Teleporte para o novo destino",
+    "min": 3,
+    "max": 30,
+    "padrao": 3
+   }
+  ],
+  "operar": [
+   "max",
+   3,
+   [
+    "max",
+    [
+     "-",
+     "$pretendido",
+     "$novo"
+    ],
+    [
+     "-",
+     "$novo",
+     "$pretendido"
+    ]
+   ]
+  ]
+ },
+ "roubar_energia": {
+  "tipo": "varia",
+  "entradas": [],
+  "operar": 0
+ },
+ "roubar_vitalidade": {
+  "tipo": "varia",
+  "entradas": [],
+  "operar": 0
+ },
+ "recuperar_energia": {
+  "tipo": "varia",
+  "entradas": [],
+  "operar": 0
+ },
  "alarme_florestal": {
   "tipo": "inalterado",
   "entradas": [
@@ -4761,6 +6728,416 @@
   ],
   "manter": "igual"
  },
+ "acelerar_tempo": {
+  "tipo": "inalterado",
+  "entradas": [
+   {
+    "id": "raio",
+    "tipo": "inteiro",
+    "rotulo": "Raio da área",
+    "min": 1,
+    "max": 100,
+    "padrao": 1,
+    "unidade": "m"
+   },
+   {
+    "id": "ritmo",
+    "tipo": "inteiro",
+    "rotulo": "Quantas vezes mais rápido o tempo passa (2 = o dobro, 3 = o triplo...)",
+    "min": 2,
+    "max": 20,
+    "padrao": 2
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "*",
+    "$ritmo",
+    "$raio"
+   ]
+  ],
+  "manter": "igual"
+ },
+ "retardar_tempo": {
+  "tipo": "inalterado",
+  "entradas": [
+   {
+    "id": "raio",
+    "tipo": "inteiro",
+    "rotulo": "Raio da área",
+    "min": 1,
+    "max": 100,
+    "padrao": 1,
+    "unidade": "m"
+   },
+   {
+    "id": "ritmo",
+    "tipo": "inteiro",
+    "rotulo": "Fração da velocidade normal (2 = a metade, 3 = um terço, 4 = um quarto...)",
+    "min": 2,
+    "max": 20,
+    "padrao": 2
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "*",
+    "$ritmo",
+    "$raio"
+   ]
+  ],
+  "manter": "igual"
+ },
+ "retardar_fogo": {
+  "tipo": "inalterado",
+  "entradas": [
+   {
+    "id": "raio",
+    "tipo": "inteiro",
+    "rotulo": "Raio da área",
+    "min": 1,
+    "max": 100,
+    "padrao": 1,
+    "unidade": "m"
+   },
+   {
+    "id": "ritmo",
+    "tipo": "inteiro",
+    "rotulo": "Taxa de queima do incêndio (2 = à metade, 3 = a um terço, 4 = a um quarto...)",
+    "min": 2,
+    "max": 20,
+    "padrao": 2
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "*",
+    "$ritmo",
+    "$raio"
+   ]
+  ],
+  "manter": "igual"
+ },
+ "iniciativa": {
+  "tipo": "inalterado",
+  "entradas": [
+   {
+    "id": "raio",
+    "tipo": "inteiro",
+    "rotulo": "Raio da área",
+    "min": 1,
+    "max": 100,
+    "padrao": 1,
+    "unidade": "m"
+   },
+   {
+    "id": "aumento",
+    "tipo": "inteiro",
+    "rotulo": "Pontos de aumento de DX ou IQ",
+    "min": 0,
+    "max": 30,
+    "padrao": 0
+   },
+   {
+    "id": "pericias",
+    "tipo": "inteiro",
+    "rotulo": "Perícias aumentadas",
+    "min": 0,
+    "max": 10,
+    "padrao": 0
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "*",
+    [
+     "max",
+     3,
+     [
+      "+",
+      [
+       "cima",
+       [
+        "/",
+        "$aumento",
+        3
+       ]
+      ],
+      "$pericias"
+     ]
+    ],
+    "$raio"
+   ]
+  ]
+ },
+ "aura_falsa": {
+  "tipo": "inalterado",
+  "entradas": [
+   {
+    "id": "area",
+    "tipo": "marca",
+    "rotulo": "Operada em uma área (o custo básico é 4, vezes o raio)"
+   },
+   {
+    "id": "raio",
+    "tipo": "inteiro",
+    "rotulo": "Raio da área",
+    "min": 1,
+    "max": 100,
+    "padrao": 1,
+    "unidade": "m"
+   }
+  ],
+  "operar": [
+   "+",
+   [
+    "*",
+    [
+     "-",
+     1,
+     "$area"
+    ],
+    4
+   ],
+   [
+    "*",
+    "$area",
+    [
+     "*",
+     4,
+     "$raio"
+    ]
+   ]
+  ],
+  "manter": "metade"
+ },
+ "barreira_astral": {
+  "tipo": "inalterado",
+  "entradas": [
+   {
+    "id": "raio",
+    "tipo": "inteiro",
+    "rotulo": "Raio da área",
+    "min": 1,
+    "max": 100,
+    "padrao": 1,
+    "unidade": "m"
+   },
+   {
+    "id": "recipiente",
+    "tipo": "marca",
+    "rotulo": "Operada em um recipiente (15 por 0,75 m³), e não como área"
+   },
+   {
+    "id": "volume",
+    "tipo": "numero",
+    "rotulo": "Volume do recipiente",
+    "unidade": "m³",
+    "min": 0,
+    "max": 4.5,
+    "passo": 0.25,
+    "padrao": 0.75
+   }
+  ],
+  "operar": [
+   "+",
+   [
+    "*",
+    [
+     "-",
+     1,
+     "$recipiente"
+    ],
+    [
+     "*",
+     4,
+     "$raio"
+    ]
+   ],
+   [
+    "*",
+    "$recipiente",
+    [
+     "*",
+     15,
+     [
+      "max",
+      1,
+      [
+       "cima",
+       [
+        "/",
+        "$volume",
+        0.75
+       ]
+      ]
+     ]
+    ]
+   ]
+  ],
+  "manter": "metade"
+ },
+ "restaurar_mana": {
+  "tipo": "inalterado",
+  "entradas": [
+   {
+    "id": "raio",
+    "tipo": "inteiro",
+    "rotulo": "Raio da área",
+    "min": 1,
+    "max": 100,
+    "padrao": 1,
+    "unidade": "m"
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "*",
+    10,
+    "$raio"
+   ]
+  ],
+  "fonte": "como:drenar_mana"
+ },
+ "repelir_animal_terra": {
+  "tipo": "inalterado",
+  "entradas": [
+   {
+    "id": "raio",
+    "tipo": "inteiro",
+    "rotulo": "Raio da área",
+    "min": 1,
+    "max": 100,
+    "padrao": 1,
+    "unidade": "m"
+   },
+   {
+    "id": "iq",
+    "tipo": "inteiro",
+    "rotulo": "IQ racial da espécie mais inteligente da categoria (o custo de Controle de Animal)",
+    "min": 1,
+    "max": 5,
+    "padrao": 5
+   },
+   {
+    "id": "altura",
+    "tipo": "inteiro",
+    "rotulo": "Altura da área, em blocos de 4 m (1 = 4 m, 2 = 8 m...)",
+    "min": 1,
+    "max": 10,
+    "padrao": 1
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "*",
+    [
+     "*",
+     "$iq",
+     "$raio"
+    ],
+    "$altura"
+   ]
+  ]
+ },
+ "repelir_animal_ar": {
+  "tipo": "inalterado",
+  "entradas": [
+   {
+    "id": "raio",
+    "tipo": "inteiro",
+    "rotulo": "Raio da área",
+    "min": 1,
+    "max": 100,
+    "padrao": 1,
+    "unidade": "m"
+   },
+   {
+    "id": "iq",
+    "tipo": "inteiro",
+    "rotulo": "IQ racial da espécie mais inteligente da categoria (o custo de Controle de Animal)",
+    "min": 1,
+    "max": 5,
+    "padrao": 5
+   },
+   {
+    "id": "altura",
+    "tipo": "inteiro",
+    "rotulo": "Altura da área, em blocos de 4 m (1 = 4 m, 2 = 8 m...)",
+    "min": 1,
+    "max": 10,
+    "padrao": 1
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "*",
+    [
+     "*",
+     "$iq",
+     "$raio"
+    ],
+    "$altura"
+   ]
+  ]
+ },
+ "repelir_animal_mar": {
+  "tipo": "inalterado",
+  "entradas": [
+   {
+    "id": "raio",
+    "tipo": "inteiro",
+    "rotulo": "Raio da área",
+    "min": 1,
+    "max": 100,
+    "padrao": 1,
+    "unidade": "m"
+   },
+   {
+    "id": "iq",
+    "tipo": "inteiro",
+    "rotulo": "IQ racial da espécie mais inteligente da categoria (o custo de Controle de Animal)",
+    "min": 1,
+    "max": 5,
+    "padrao": 5
+   },
+   {
+    "id": "altura",
+    "tipo": "inteiro",
+    "rotulo": "Altura da área, em blocos de 4 m (1 = 4 m, 2 = 8 m...)",
+    "min": 1,
+    "max": 10,
+    "padrao": 1
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "*",
+    [
+     "*",
+     "$iq",
+     "$raio"
+    ],
+    "$altura"
+   ]
+  ]
+ },
  "aquece": {
   "tipo": "inalterado",
   "entradas": [
@@ -5842,6 +8219,53 @@
    ]
   ]
  },
+ "drenar_mana": {
+  "tipo": "inalterado",
+  "entradas": [
+   {
+    "id": "raio",
+    "tipo": "inteiro",
+    "rotulo": "Raio da área",
+    "min": 1,
+    "max": 100,
+    "padrao": 1,
+    "unidade": "m"
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "*",
+    10,
+    "$raio"
+   ]
+  ]
+ },
+ "ensebar": {
+  "tipo": "inalterado",
+  "entradas": [
+   {
+    "id": "raio",
+    "tipo": "inteiro",
+    "rotulo": "Raio da área",
+    "min": 1,
+    "max": 100,
+    "padrao": 1,
+    "unidade": "m"
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "*",
+    3,
+    "$raio"
+   ]
+  ],
+  "manter": "igual"
+ },
  "escudo_antimagica": {
   "tipo": "inalterado",
   "entradas": [
@@ -6076,6 +8500,38 @@
    [
     "*",
     1,
+    "$raio"
+   ]
+  ]
+ },
+ "geiser": {
+  "tipo": "inalterado",
+  "entradas": [
+   {
+    "id": "raio",
+    "tipo": "inteiro",
+    "rotulo": "Raio da área",
+    "min": 1,
+    "max": 100,
+    "padrao": 1,
+    "unidade": "m"
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "*",
+    5,
+    "$raio"
+   ]
+  ],
+  "manter": [
+   "max",
+   1,
+   [
+    "*",
+    2,
     "$raio"
    ]
   ]
@@ -6323,6 +8779,30 @@
    ]
   ],
   "manter": "nenhum"
+ },
+ "moldar_fogo": {
+  "tipo": "inalterado",
+  "entradas": [
+   {
+    "id": "raio",
+    "tipo": "inteiro",
+    "rotulo": "Raio da área",
+    "min": 1,
+    "max": 100,
+    "padrao": 1,
+    "unidade": "m"
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "*",
+    2,
+    "$raio"
+   ]
+  ],
+  "manter": "metade"
  },
  "muralha_de_silencio": {
   "tipo": "inalterado",
@@ -6737,6 +9217,30 @@
     "$raio"
    ]
   ]
+ },
+ "sorvedouro": {
+  "tipo": "inalterado",
+  "entradas": [
+   {
+    "id": "raio",
+    "tipo": "inteiro",
+    "rotulo": "Raio da área",
+    "min": 1,
+    "max": 100,
+    "padrao": 1,
+    "unidade": "m"
+   }
+  ],
+  "operar": [
+   "max",
+   1,
+   [
+    "*",
+    2,
+    "$raio"
+   ]
+  ],
+  "manter": "metade"
  },
  "suspender_magia": {
   "tipo": "inalterado",

@@ -36,9 +36,13 @@ const un = (qtd, tam) => ['max', 1, ['cima', ['/', qtd, tam]]];
 const mais1 = (...marcas) => ['+', 1, ...marcas];
 
 const DEFS = [];
-/** Uma magia: `tipo` 'fixo' (o custo-base do livro vale no caso-padrão) ou 'porUnidade'. */
-function S(id, tipo, entradas, operar, manter, casos) {
-  DEFS.push({ id, tipo, entradas, operar, manter, casos: casos || [] });
+/**
+ * Uma magia: `tipo` 'fixo' (o custo-base do livro vale no caso-padrão), 'porUnidade', 'varia' ou 'inalterado' (a de Área).
+ * `opcoes`: `tamanho: true` (a conta não é de tamanho: a Comum num alvo grande ainda multiplica por 1 + MT, Magia p.11) e
+ * `fonte` (o texto contra o qual a guarda confere: `"descricao"` ou `"como:<id>"`).
+ */
+function S(id, tipo, entradas, operar, manter, casos, opcoes) {
+  DEFS.push(Object.assign({ id, tipo, entradas, operar, manter, casos: casos || [] }, opcoes || {}));
 }
 
 // ================================================================================================ 1. fixas com condição
@@ -215,7 +219,154 @@ clima('prever_movimento_da_terra');
 S('sono_curativo', 'porUnidade', [E.esc('recuperacao', 'Velocidade de recuperação', 'normal', [['normal', 'Normal', 6], ['dobrada', 'Dobrada', 10]])],
   '$recuperacao', undefined, [[{}, 6, null], [{ recuperacao: 'dobrada' }, 10, null]]);
 
-// ================================================================================================ 3. ÁREA (Magia p.11)
+// ================================================================================================ 3. As "Varia" (P-5, 21/out/2026)
+// A regra mora na linha de Custo da entrada: uma tabela de escolhas ("2 para um brilho fraco, 4 para uma tocha..."), uma fração
+// de outro número ("1/4 da mágica sendo movida") ou uma conta por tamanho. Cada uma leu o PDF de Magia (edição de 2025), não o
+// `chunks.jsonl`: onde ele está velho (p.123 Mágica Penetrante) vale o PDF. Os casos são do texto do livro, escritos à mão.
+//
+// `tamanho: true` — a conta NÃO é de tamanho (é a RD dada, o grau da bênção): a Comum num alvo de MT positivo continua custando
+// 1 + MT vezes (Magia p.11), como já custava antes de a magia ter conta. Sem ele, a conta é "própria" e o tamanho não multiplica.
+/** 1 se `x` passou de `limite`, 0 se não ("até 25 litros": o que passa de 25 muda de faixa). */
+const passou = (x, limite) => ['min', 1, ['cima', ['max', 0, ['-', x, limite]]]];
+const VARIA = (id, entradas, operar, manter, casos, opcoes) => S(id, 'varia', entradas, operar, manter, casos, opcoes);
+/** Uma tabela de escolha do livro: `opcoes` = [id, rótulo, custo]; o `valor` da opção É o custo para operar. */
+const tabela = (entrada, rotulo, padrao, opcoes) => E.esc(entrada, rotulo, padrao, opcoes);
+
+// ---- tabelas de escolha ("N para tal coisa; M para tal outra")
+VARIA('luz_continua', [tabela('brilho', 'Brilho', 'luar', [['luar', 'Fraco, como o luar', 2], ['tocha', 'O brilho de uma tocha', 4], ['dia', 'Forte, como a luz do dia', 6]])],
+  '$brilho', undefined, [[{}, 2, null], [{ brilho: 'tocha' }, 4, null], [{ brilho: 'dia' }, 6, null]]);
+VARIA('luz_magica', [tabela('brilho', 'Brilho', 'velas', [['velas', 'Fraco, como a luz de velas', 1], ['tocha', 'O brilho de uma tocha', 2], ['dia', 'Tão brilhante como o dia', 3]])],
+  '$brilho', 'igual', [[{}, 1, 1], [{ brilho: 'tocha' }, 2, 2], [{ brilho: 'dia' }, 3, 3]]);
+VARIA('luz_magica_continua', [tabela('brilho', 'Brilho', 'velas', [['velas', 'Fraco, como a luz de velas', 2], ['tocha', 'O brilho de uma tocha', 4], ['dia', 'Tão brilhante como o dia', 6]])],
+  '$brilho', 'igual', [[{}, 2, 2], [{ brilho: 'tocha' }, 4, 4], [{ brilho: 'dia' }, 6, 6]]);
+// Bênção: 10 / 50 / 500 para 1, 2 e 3 pontos. Os 500 ficam de fora da conta: passam do teto de 99 PF (nenhum mago tem 500 PF; só magia
+// cerimonial, com vários participantes, que a Mesa não conduz) e o rótulo diz isso.
+VARIA('bencao', [tabela('grau', 'Bênção de (3 pontos custam 500: só em cerimônia, com o Mestre)', 'um', [['um', '1 ponto', 10], ['dois', '2 pontos', 50]])],
+  '$grau', undefined, [[{}, 10, null], [{ grau: 'dois' }, 50, null]], { tamanho: true });
+VARIA('maldicao', [tabela('grau', 'Maldição de', 'um', [['um', '1 ponto', 3], ['dois', '2 pontos', 10], ['tres', '3 pontos', 20]])],
+  '$grau', undefined, [[{}, 3, null], [{ grau: 'dois' }, 10, null], [{ grau: 'tres' }, 20, null]], { tamanho: true });
+VARIA('loucura', [tabela('grau', 'Loucura', 'grave', [['leve', 'Leve', 2], ['moderada', 'Moderada', 3], ['grave', 'Grave', 4], ['extrema', 'Extrema', 6]])],
+  '$grau', 'metade', [[{ grau: 'leve' }, 2, 1], [{ grau: 'moderada' }, 3, 2], [{}, 4, 2], [{ grau: 'extrema' }, 6, 3]], { tamanho: true });
+['dom_da_escrita', 'dom_das_linguas'].forEach((id) => VARIA(id, [tabela('compreensao', 'Compreensão', 'rudimentar', [['rudimentar', 'Rudimentar', 2], ['sotaque', 'Com Sotaque', 4], ['materna', 'Materna', 6]])],
+  '$compreensao', 'metade', [[{}, 2, 1], [{ compreensao: 'sotaque' }, 4, 2], [{ compreensao: 'materna' }, 6, 3]]));
+VARIA('cessar_paralisia', [tabela('alcance', 'Parar a paralisia', 'membro', [['membro', 'De um único membro', 1], ['corpo', 'De todo o corpo', 2]])],
+  '$alcance', undefined, [[{}, 1, null], [{ alcance: 'corpo' }, 2, null]], { tamanho: true });
+VARIA('cessar_sangramento', [tabela('ferimento', 'Ferimento', 'normal', [['normal', 'Normal (parar o sangramento)', 1], ['mortal', 'Mortal (estabilizar)', 10]])],
+  '$ferimento', undefined, [[{}, 1, null], [{ ferimento: 'mortal' }, 10, null]], { tamanho: true });
+VARIA('cobertura_ilusoria', [tabela('objeto', 'Objeto', 'mao', [['mao', 'Pequeno, que cabe na mão', 1], ['maior', 'Maior', 2]])],
+  '$objeto', 'metade', [[{}, 1, 1], [{ objeto: 'maior' }, 2, 1]]);
+VARIA('protecao', [tabela('quem', 'Proteger', 'voce', [['voce', 'Você mesmo', 2], ['outro', 'Alguém que você possa ver', 3]])],
+  '$quem', undefined, [[{}, 2, null], [{ quem: 'outro' }, 3, null]]);
+VARIA('refletir', [tabela('quem', 'Refletir sobre', 'si', [['si', 'Você mesmo', 4], ['outro', 'Alguém que você possa ver', 6]])],
+  '$quem', undefined, [[{}, 4, null], [{ quem: 'outro' }, 6, null]]);
+VARIA('testar_alimento', [tabela('alcance', 'Testar', 'um', [['um', 'Uma única refeição ou garrafa de vinho', 1], ['raio', 'Todos os alimentos e bebidas num raio de 1 metro', 3]])],
+  '$alcance', undefined, [[{}, 1, null], [{ alcance: 'raio' }, 3, null]]);
+VARIA('testar_combustivelnt', [tabela('alcance', 'Testar', 'um', [['um', '0,5 kg ou 4 litros de combustível', 1], ['raio', 'Todo o combustível num raio de 1 metro', 3]])],
+  '$alcance', undefined, [[{}, 1, null], [{ alcance: 'raio' }, 3, null]]);
+VARIA('tingir', [tabela('objeto', 'Tingir', 'pequeno', [['pequeno', 'Um objeto pequeno (até um palmo)', 1], ['cabelo', 'O cabelo de uma pessoa, ou um objeto de cerca de 0,1 m²', 2], ['pessoa', 'Um objeto do tamanho de uma pessoa (MT 0)', 5]])],
+  '$objeto', undefined, [[{}, 1, null], [{ objeto: 'cabelo' }, 2, null], [{ objeto: 'pessoa' }, 5, null]]);
+VARIA('imunidade_a_radiacao', [tabela('fp', 'Fator de proteção', 'fp10', [['fp10', 'FP 10', 1], ['fp100', 'FP 100', 2], ['fp1000', 'FP 1.000', 3]])],
+  '$fp', 'metade', [[{}, 1, 1], [{ fp: 'fp100' }, 2, 1], [{ fp: 'fp1000' }, 3, 2]], { tamanho: true });
+VARIA('purificar', [tabela('parte', 'Limpar', 'mao', [['mao', 'Uma mão ou um pé', 2], ['tronco', 'Um tronco ou um membro', 4], ['corpo', 'Um corpo inteiro', 6]])],
+  '$parte', undefined, [[{}, 2, null], [{ parte: 'tronco' }, 4, null], [{ parte: 'corpo' }, 6, null]], { tamanho: true });
+VARIA('historia', [tabela('periodo', 'História de', 'dia', [['dia', 'Um dia', 3], ['semana', 'Uma semana', 5], ['mes', 'Um mês', 8], ['ano', 'Um ano', 10]])],
+  '$periodo', undefined, [[{}, 3, null], [{ periodo: 'semana' }, 5, null], [{ periodo: 'mes' }, 8, null], [{ periodo: 'ano' }, 10, null]]);
+VARIA('historia_antiga', [tabela('periodo', 'História de', 'ano', [['ano', 'Um ano', 3], ['dez', '10 anos', 5], ['cem', '100 anos', 8], ['mil', '1.000 anos', 10]])],
+  '$periodo', undefined, [[{}, 3, null], [{ periodo: 'dez' }, 5, null], [{ periodo: 'cem' }, 8, null], [{ periodo: 'mil' }, 10, null]]);
+// Criar Servo: 3 operar / 1 manter, 4 / 2 (serviçal habilidoso), 6 / 2 (Bruto). O custo de manter sai do de operar: ⌈operar ÷ 3⌉ dá 1, 2 e 2.
+VARIA('criar_servo', [tabela('tipo', 'Servo', 'comum', [['comum', 'Comum', 3], ['habilidoso', 'Serviçal habilidoso', 4], ['bruto', 'Bruto', 6]])],
+  '$tipo', ['cima', ['/', '$operar', 3]], [[{}, 3, 1], [{ tipo: 'habilidoso' }, 4, 2], [{ tipo: 'bruto' }, 6, 2]]);
+VARIA('criar_guerreiro', [tabela('tipo', 'Guerreiro', 'comum', [['comum', 'Comum', 4], ['bruto', 'Bruto (ST 16)', 6]])],
+  '$tipo', 'igual', [[{}, 4, 4], [{ tipo: 'bruto' }, 6, 6]]);
+VARIA('reduzir_carga', [tabela('reducao', 'Redução da carga', 'quarto', [['quarto', '25%', 3], ['metade', '50%', 5]])],
+  '$reducao', 'metade', [[{}, 3, 2], [{ reducao: 'metade' }, 5, 3]]);
+VARIA('poltergeist', [tabela('item', 'Item', 'leve', [['leve', 'Até 5 kg (1d de dano)', 1], ['pesado', 'Até 12,5 kg (1d+1 de dano)', 2]])],
+  '$item', undefined, [[{}, 1, null], [{ item: 'pesado' }, 2, null]]);
+// Mágica Penetrante: a tabela está na descrição da entrada (a linha de custo diz "veja a tabela abaixo"); o PDF de 2025 dá 2→2, 3→4, 5→6, 10→8, ignora RD→10
+VARIA('magica_penetrante', [tabela('divisor', 'Divisor de armadura', 'dois', [['dois', '(2)', 2], ['tres', '(3)', 4], ['cinco', '(5)', 6], ['dez', '(10)', 8], ['ignora', 'Ignora RD', 10]])],
+  '$divisor', undefined, [[{}, 2, null], [{ divisor: 'tres' }, 4, null], [{ divisor: 'cinco' }, 6, null], [{ divisor: 'dez' }, 8, null], [{ divisor: 'ignora' }, 10, null]]);
+// Aporte: "menos de 0,5 kg 1; até 5 kg 2; até 25 kg 3; até 100 kg 4; cada 50 kg adicionais +4" (mesmo custo para manter)
+VARIA('aporte', [tabela('peso', 'Peso do objeto', 'ate05', [['ate05', 'Menos de 0,5 kg', 1], ['ate5', 'Até 5 kg', 2], ['ate25', 'Até 25 kg', 3], ['ate100', 'Até 100 kg', 4], ['ate150', 'Até 150 kg', 8],
+  ['ate200', 'Até 200 kg', 12], ['ate250', 'Até 250 kg', 16], ['ate300', 'Até 300 kg', 20], ['ate350', 'Até 350 kg', 24], ['ate400', 'Até 400 kg', 28], ['ate450', 'Até 450 kg', 32], ['ate500', 'Até 500 kg', 36]])],
+  '$peso', 'igual', [[{}, 1, 1], [{ peso: 'ate5' }, 2, 2], [{ peso: 'ate25' }, 3, 3], [{ peso: 'ate100' }, 4, 4], [{ peso: 'ate150' }, 8, 8], [{ peso: 'ate500' }, 36, 36]], { fonte: 'descricao' });
+// Animar Máquina/NT: 8 para até 1 t, 9 para 2 t, 10 para 4 t, 11 para 8 t, 12 para 16 t "e assim por diante, com cada ponto de energia extra dobrando a massa"
+VARIA('animar_maquinant', [tabela('massa', 'Massa da máquina', 't1', [['t1', 'Até 1 t', 8], ['t2', 'Até 2 t', 9], ['t4', 'Até 4 t', 10], ['t8', 'Até 8 t', 11], ['t16', 'Até 16 t', 12],
+  ['t32', 'Até 32 t', 13], ['t64', 'Até 64 t', 14], ['t128', 'Até 128 t', 15], ['t256', 'Até 256 t', 16], ['t512', 'Até 512 t', 17], ['t1024', 'Até 1.024 t', 18]])],
+  '$massa', 'metade', [[{}, 8, 4], [{ massa: 't2' }, 9, 5], [{ massa: 't4' }, 10, 5], [{ massa: 't16' }, 12, 6], [{ massa: 't1024' }, 18, 9]]);
+// Afiar: "1 de energia para cada 15 cm de lâmina"; os custos típicos (que o livro manda usar) × o bônus (+2 duplica, +3 triplica); metade para manter
+VARIA('afiar', [tabela('arma', 'Arma', 'faca', [['flecha', 'Uma flecha', 1], ['faca', 'Uma faca, lança ou machado', 2], ['espada1', 'Uma espada de uma mão', 3], ['espada2', 'Uma espada de duas mãos', 5]]),
+  tabela('bonus', 'Bônus no dano', 'mais1', [['mais1', '+1', 1], ['mais2', '+2 (duplica o custo)', 2], ['mais3', '+3 (triplica o custo)', 3]])],
+  ['*', '$arma', '$bonus'], 'metade', [[{}, 2, 1], [{ arma: 'flecha' }, 1, 1], [{ arma: 'espada1', bonus: 'mais2' }, 6, 3], [{ arma: 'espada2', bonus: 'mais3' }, 15, 8]]);
+
+// ---- "N por ponto", "Espírito (ST+IQ) ÷ 5"...: um número que o jogador informa
+VARIA('armadura', [E.int('rd', 'Pontos de RD dados ao objetivo', 1, 5, 1)], ['*', 2, '$rd'], 'metade', [[{ rd: 1 }, 2, 1], [{ rd: 3 }, 6, 3], [{ rd: 5 }, 10, 5]], { tamanho: true });
+VARIA('escudo', [E.int('bd', 'Pontos de Bônus de Defesa dados ao objetivo', 1, 4, 1)], ['*', 2, '$bd'], 'metade', [[{ bd: 1 }, 2, 1], [{ bd: 2 }, 4, 2], [{ bd: 4 }, 8, 4]], { tamanho: true });
+VARIA('desidratar', [E.int('pontos', 'Energia colocada (1d-1 de dano cada)', 1, 3, 1)], '$pontos', undefined, [[{ pontos: 1 }, 1, null], [{ pontos: 3 }, 3, null]], { tamanho: true });
+VARIA('aprisionar_espirito', [E.int('espirito', 'ST + IQ do espírito', 2, 495, 20)], ['cima', ['/', '$espirito', 5]], ['cima', ['/', '$espirito', 10]],
+  [[{ espirito: 20 }, 4, 2], [{ espirito: 23 }, 5, 3], [{ espirito: 100 }, 20, 10]]);
+['terra', 'ar', 'mar'].forEach((x) => VARIA('controle_de_animal_' + x, [E.int('iq', 'IQ racial da espécie mais inteligente da categoria', 1, 5, 5)], '$iq', 'metade',
+  [[{}, 5, 3], [{ iq: 2 }, 2, 1], [{ iq: 4 }, 4, 2]], { tamanho: true }));
+VARIA('contramagica', [E.int('custo', 'Custo da mágica a anular (sem o NH elevado do outro operador)', 1, 99, 2)], ['cima', ['/', '$custo', 2]], undefined,
+  [[{ custo: 2 }, 1, null], [{ custo: 6 }, 3, null], [{ custo: 5 }, 3, null]]);
+VARIA('suspender_magica', [E.int('custo', 'Custo de operação da mágica a suspender (sem o NH elevado do outro operador)', 1, 99, 10)], ['cima', ['/', '$custo', 10]], 'igual',
+  [[{ custo: 10 }, 1, 1], [{ custo: 25 }, 3, 3]]);
+VARIA('deslocar_magica', [E.int('custo', 'Custo da mágica sendo movida (sem os bônus do outro operador)', 1, 99, 4)], ['cima', ['/', '$custo', 4]], undefined,
+  [[{ custo: 4 }, 1, null], [{ custo: 10 }, 3, null]]);
+VARIA('adiar_magica', [E.int('custo', 'Custo da mágica adiada', 1, 99, 2)], ['max', 2, '$custo'], 'igual', [[{ custo: 1 }, 2, 2], [{ custo: 7 }, 7, 7]]);
+VARIA('compartilhar_energia', [E.int('usada', 'Energia realmente usada pelo mago que drena os PF', 1, 49, 1)], ['*', 2, '$usada'], undefined, [[{ usada: 1 }, 2, null], [{ usada: 5 }, 10, null]]);
+VARIA('apressar_fogo', [E.int('fator', 'Quantas vezes mais rápido o fogo queima (2 = o dobro, 3 = o triplo...)', 2, 20, 2)], '$fator', 'igual', [[{}, 2, 2], [{ fator: 3 }, 3, 3]]);
+VARIA('comandar_espirito', [E.int('pontos', 'Pontos de personagem do espírito', 10, 990, 50)], ['cima', ['/', '$pontos', 10]], 'metade', [[{ pontos: 50 }, 5, 3], [{ pontos: 95 }, 10, 5], [{ pontos: 100 }, 10, 5]], { tamanho: true });
+VARIA('expulsar', [E.int('pontos', 'Pontos de personagem que o objetivo custou', 10, 990, 100)], ['max', 10, ['cima', ['/', '$pontos', 10]]], undefined, [[{ pontos: 50 }, 10, null], [{ pontos: 100 }, 10, null], [{ pontos: 250 }, 25, null]]);
+VARIA('animacao', [E.int('mt', 'Modificador de Tamanho do objeto (MT; o humano é 0)', 0, 10, 0), E.esc('material', 'Material', 'comum', [['comum', 'Madeira, barro...', 1], ['pedra', 'Pedra (dobra o custo)', 2], ['metal', 'Metal (triplica o custo)', 3]])],
+  ['*', 3, mais1('$mt'), '$material'], 'metade', [[{}, 3, 2], [{ mt: 2 }, 9, 5], [{ material: 'pedra' }, 6, 3], [{ mt: 1, material: 'metal' }, 18, 9]]);
+
+// ---- por peso, por volume, por distância
+VARIA('diagramant', [E.num('toneladas', 'Massa da máquina', 't', 1, 95, 0.5)], ['+', 5, ['cima', ['max', 0, ['-', '$toneladas', 1]]]], 'metade',
+  [[{ toneladas: 1 }, 5, 3], [{ toneladas: 1.5 }, 6, 3], [{ toneladas: 3 }, 7, 4]]);
+VARIA('moldar_agua', [E.num('litros', 'Água moldada', 'litros', 80, 7000, 10)], un('$litros', 80), 'igual', [[{ litros: 80 }, 1, 1], [{ litros: 81 }, 2, 2], [{ litros: 240 }, 3, 3]]);
+VARIA('purificar_a_agua', [E.num('litros', 'Água a purificar', 'litros', 4, 392, 1)], un('$litros', 4), undefined, [[{ litros: 4 }, 1, null], [{ litros: 9 }, 3, null]]);
+// Terra para Ar: "1 para 0,025 m³ (25 litros)... grandes quantidades de uma só vez, 5 por 0,75 m³; metal pelo triplo": paga-se o menor dos dois preços
+VARIA('terra_para_ar', [E.num('volume', 'Terra ou pedra transformada em ar', 'm³', 0.025, 30, 0.025), E.marca('metal', 'O material é metal (o triplo do custo)')],
+  ['*', mais1('$metal', '$metal'), ['min', un('$volume', 0.025), ['*', 5, un('$volume', 0.75)]]], undefined,
+  [[{}, 1, null], [{ volume: 0.1 }, 4, null], [{ volume: 0.75 }, 5, null], [{ volume: 1.6 }, 15, null], [{ metal: true }, 3, null]]);
+VARIA('acionarnt', [E.num('pcc', 'PcC do veículo', 't', 1, 1000, 0.1), E.int('deslocamento', 'Deslocamento desejado (até a Velocidade Máxima do veículo)', 1, 500, 10), E.int('nh', 'NH do operador na mágica', 1, 40, 15)],
+  ['max', 1, ['cima', ['/', ['*', '$pcc', '$deslocamento'], '$nh']]], 'igual', [[{ pcc: 1.8, deslocamento: 75, nh: 15 }, 9, 9], [{ pcc: 0.5, deslocamento: 4, nh: 15 }, 1, 1]]);
+
+// Calor/Frio: "1 para um punho, 2 para até 0,75 m³, 2 a cada 0,75 m³ para maior; dobrar a mudança de temperatura (20°/min) pelo dobro do custo, e assim por diante"
+const calorOuFrio = (id, opcoes) => VARIA(id, [E.marca('punho', 'Objeto do tamanho de um punho (ou menor)'), E.num('volume', 'Volume do objeto', 'm³', 0.75, 30, 0.05),
+  E.int('vezes', id === 'frio' ? 'Velocidade do esfriamento (1 = 10° por minuto, 2 = 20°...)' : 'Velocidade do aquecimento (1 = 10° por minuto, 2 = 20°...)', 1, 10, 1)],
+  ['*', '$vezes', ['max', '$punho', ['*', ['-', 1, '$punho'], ['*', 2, un('$volume', 0.75)]]]], 'igual',
+  [[{ punho: true }, 1, 1], [{}, 2, 2], [{ volume: 0.76 }, 4, 4], [{ volume: 1.6 }, 6, 6], [{ volume: 1.6, vezes: 2 }, 12, 12], [{ punho: true, vezes: 3 }, 3, 3]], opcoes);
+calorOuFrio('calor');
+calorOuFrio('frio', { fonte: 'como:calor' });
+// Congelar e Ferver Água: "2 para um punho, 4 para 25 litros, 6 para 250 litros, mais 3 para cada 250 litros adicionais"
+const porLitros = (id, manter, rotuloLitros) => VARIA(id, [E.marca('punho', 'Quantidade do tamanho de um punho'), E.num('litros', rotuloLitros, 'litros', 25, 5000, 5)],
+  ['max', ['*', 2, '$punho'], ['*', ['-', 1, '$punho'], ['+', 4, ['*', 2, passou('$litros', 25)], ['*', 3, ['cima', ['/', ['max', 0, ['-', '$litros', 250]], 250]]]]]], manter,
+  [[{ punho: true }, 2, manter ? 2 : null], [{ litros: 25 }, 4, manter ? 4 : null], [{ litros: 26 }, 6, manter ? 6 : null], [{ litros: 250 }, 6, manter ? 6 : null],
+    [{ litros: 251 }, 9, manter ? 9 : null], [{ litros: 500 }, 9, manter ? 9 : null], [{ litros: 501 }, 12, manter ? 12 : null]]);
+porLitros('congelar', 'igual', 'Água a congelar');
+porLitros('ferver_agua', undefined, 'Água a ferver');
+// Criptografar: "1 até 1.000 palavras; 2 até 10.000; 3 até 100.000; +1 para cada 100.000 palavras adicionais" (o exemplo do livro: 1.050.000 palavras = 12)
+VARIA('criptografar', [E.int('palavras', 'Palavras de texto simples', 1, 9000000, 1000)],
+  ['+', 1, passou('$palavras', 1000), passou('$palavras', 10000), ['baixo', ['/', ['max', 0, ['-', '$palavras', 100000]], 100000]]], undefined,
+  [[{ palavras: 1000 }, 1, null], [{ palavras: 1001 }, 2, null], [{ palavras: 10000 }, 2, null], [{ palavras: 10001 }, 3, null], [{ palavras: 100000 }, 3, null],
+    [{ palavras: 199999 }, 3, null], [{ palavras: 200000 }, 4, null], [{ palavras: 1050000 }, 12, null]]);
+// Desatar: "3 para uma única fixação, mais uma para cada alvo extra dentro de um metro; 6 desfaz tudo num raio de um metro"
+VARIA('desatar', [E.marca('tudo', 'Desfazer tudo num raio de 1 metro (a pessoa nessa área resiste com a Vontade)'), E.int('extras', 'Alvos extras dentro de 1 metro', 0, 20, 0)],
+  ['max', ['*', 6, '$tudo'], ['*', ['-', 1, '$tudo'], ['+', 3, '$extras']]], undefined, [[{}, 3, null], [{ extras: 2 }, 5, null], [{ tudo: true }, 6, null]]);
+// Anular Criação: "1 para anular um objetivo não vivo ou 3 para anular uma criação viva"
+VARIA('anular_criacao', [tabela('objetivo', 'Anular', 'naovivo', [['naovivo', 'Um objetivo não vivo', 1], ['vivo', 'Uma criação viva', 3]])],
+  '$objetivo', undefined, [[{}, 1, null], [{ objetivo: 'vivo' }, 3, null]]);
+// Imunidade à Pressão: a tabela da entrada (vantagem conferida → operar / manter); o de manter é sempre a metade, para cima (1, 2, 3 e 2)
+VARIA('imunidade_a_pressao', [tabela('vantagem', 'Vantagem conferida', 'rp1', [['rp1', 'Resistência à Pressão 1', 2], ['rp2', 'Resistência à Pressão 2', 3], ['rp3', 'Resistência à Pressão 3', 5], ['vacuo', 'Resistência ao Vácuo', 3]])],
+  '$vantagem', 'metade', [[{}, 2, 1], [{ vantagem: 'rp2' }, 3, 2], [{ vantagem: 'rp3' }, 5, 3], [{ vantagem: 'vacuo' }, 3, 2]], { tamanho: true, fonte: 'descricao' });
+// Desviar Teleporte: "a diferença de custo entre o destino pretendido e o novo destino; o custo mínimo é 3" (9 contra 3 = 6, nos dois sentidos)
+VARIA('desviar_teleporte', [E.int('pretendido', 'Custo do Teleporte pretendido (destino original)', 3, 30, 3), E.int('novo', 'Custo do Teleporte para o novo destino', 3, 30, 3)],
+  ['max', 3, ['max', ['-', '$pretendido', '$novo'], ['-', '$novo', '$pretendido']]], undefined, [[{}, 3, null], [{ pretendido: 9, novo: 3 }, 6, null], [{ pretendido: 3, novo: 9 }, 6, null], [{ pretendido: 5, novo: 6 }, 3, null]]);
+// Os que o livro diz que não custam nada ao operador
+['roubar_energia', 'roubar_vitalidade', 'recuperar_energia'].forEach((id) => VARIA(id, [], 0, undefined, [[{}, 0, null]]));
+
+// ================================================================================================ 4. ÁREA (Magia p.11)
 // "O custo real para operá-la é igual ao custo básico multiplicado pelo raio da área de efeito em metros (mínimo de
 // 1 m)... Algumas têm uma fração como custo básico... É necessário gastar, no mínimo, um ponto de energia." O app já
 // cobra assim na Saga (`MagicCost.custoAreaPorRaio`); aqui a aba Rolagem e a Mesa passam a perguntar o raio. Só entram
@@ -228,7 +379,7 @@ const EP = 1e-9;
  * `minCusto` (o custo mínimo da magia), `raioMin` (o raio mínimo da magia, em metros), `extras` (entradas além do raio) e
  * `fator` (expressão que multiplica o total: "dobre o custo básico").
  */
-function area(id, { basico, manter, minCusto, raioMin = 1, extras = [], fator = null, casos = null }) {
+function area(id, { basico, manter, minCusto, raioMin = 1, extras = [], fator = null, casos = null, opcoes = null }) {
   const entradas = [E.int('raio', AREA_NOME_RAIO, raioMin, 100, raioMin, 'm')].concat(extras);
   let total = ['*', basico, '$raio'];
   if (fator) total = ['*', total, fator];
@@ -236,7 +387,7 @@ function area(id, { basico, manter, minCusto, raioMin = 1, extras = [], fator = 
   let m;
   if (manter === 'igual' || manter === 'metade' || manter === 'nenhum') m = manter;
   else if (typeof manter === 'number') m = ['max', 1, ['*', manter, '$raio']];
-  S(id, 'inalterado', entradas, operar, m, casos || casosDeArea({ basico, manter, minCusto, raioMin }));
+  S(id, 'inalterado', entradas, operar, m, casos || casosDeArea({ basico, manter, minCusto, raioMin }), opcoes);
 }
 
 /** Os casos de uma área simples (básico numérico): raio mínimo e raio mínimo + 4, contados à parte do motor. */
@@ -331,6 +482,35 @@ function faixaArea(id, de, ate, manter) {
     casos: [[{ raio: 1 }, de, de], [{ raio: 3, energia: ate }, ate * 3, ate * 3]]
   });
 }
+// ---- P-5: as de Área que ainda ficavam sem o raio (Magia p.11: custo básico × raio em metros, mínimo 1 PF)
+const fracaoDoRitmo = (id, rotulo, manter, casos) => { AREA_MANUAL[id] = () => area(id, { basico: '$ritmo', manter, extras: [E.int('ritmo', rotulo, 2, 20, 2)], casos }); };
+fracaoDoRitmo('acelerar_tempo', 'Quantas vezes mais rápido o tempo passa (2 = o dobro, 3 = o triplo...)', 'igual', [[{ raio: 1 }, 2, 2], [{ raio: 4, ritmo: 3 }, 12, 12]]);
+fracaoDoRitmo('retardar_tempo', 'Fração da velocidade normal (2 = a metade, 3 = um terço, 4 = um quarto...)', 'igual', [[{ raio: 1 }, 2, 2], [{ raio: 3, ritmo: 4 }, 12, 12]]);
+fracaoDoRitmo('retardar_fogo', 'Taxa de queima do incêndio (2 = à metade, 3 = a um terço, 4 = a um quarto...)', 'igual', [[{ raio: 1 }, 2, 2], [{ raio: 2, ritmo: 3 }, 6, 6]]);
+// Iniciativa: "1/3 por ponto de aumento de DX ou IQ (para cima), mais 1 por perícia; custo básico mínimo de 3"
+AREA_MANUAL.iniciativa = () => area('iniciativa', {
+  basico: ['max', 3, ['+', ['cima', ['/', '$aumento', 3]], '$pericias']],
+  extras: [E.int('aumento', 'Pontos de aumento de DX ou IQ', 0, 30, 0), E.int('pericias', 'Perícias aumentadas', 0, 10, 0)],
+  casos: [[{ raio: 1 }, 3, null], [{ raio: 1, aumento: 1 }, 3, null], [{ raio: 1, aumento: 12, pericias: 1 }, 5, null], [{ raio: 2, aumento: 12, pericias: 1 }, 10, null]]
+});
+// Aura Falsa: "4 para operar, metade para manter; quando operada em uma área, o custo básico é 4"
+AREA_MANUAL.aura_falsa = () => S('aura_falsa', 'inalterado', [E.marca('area', 'Operada em uma área (o custo básico é 4, vezes o raio)'), E.int('raio', AREA_NOME_RAIO, 1, 100, 1, 'm')],
+  ['+', ['*', ['-', 1, '$area'], 4], ['*', '$area', ['*', 4, '$raio']]], 'metade', [[{}, 4, 2], [{ area: true, raio: 3 }, 12, 6]]);
+// Barreira Astral: "4 para operar e 2 para manter se operada como mágica de Área; 15 por 0,75 m³ se operada em um recipiente, e metade disso para manter"
+AREA_MANUAL.barreira_astral = () => S('barreira_astral', 'inalterado', [E.int('raio', AREA_NOME_RAIO, 1, 100, 1, 'm'),
+  E.marca('recipiente', 'Operada em um recipiente (15 por 0,75 m³), e não como área'), E.num('volume', 'Volume do recipiente', 'm³', 0.75, 4.5, 0.25)],
+  ['+', ['*', ['-', 1, '$recipiente'], ['*', 4, '$raio']], ['*', '$recipiente', ['*', 15, un('$volume', 0.75)]]], 'metade',
+  [[{ raio: 1 }, 4, 2], [{ raio: 3 }, 12, 6], [{ recipiente: true }, 15, 8], [{ recipiente: true, volume: 1.6 }, 45, 23]]);
+// Restaurar Mana: "custo, tempo e pré-requisitos são os mesmos de Drenar Mana" (a linha de custo é a dele)
+AREA_MANUAL.restaurar_mana = () => area('restaurar_mana', { basico: 10, opcoes: { fonte: 'como:drenar_mana' } });
+// Repelir (Animal): "custo básico igual ao de Controle de (Animal) da categoria"; a área sobe 4 m: "duplique o custo básico para 8 metros de altura e assim por diante"
+['terra', 'ar', 'mar'].forEach((x) => {
+  AREA_MANUAL['repelir_animal_' + x] = () => area('repelir_animal_' + x, {
+    basico: '$iq', fator: '$altura',
+    extras: [E.int('iq', 'IQ racial da espécie mais inteligente da categoria (o custo de Controle de Animal)', 1, 5, 5), E.int('altura', 'Altura da área, em blocos de 4 m (1 = 4 m, 2 = 8 m...)', 1, 10, 1)],
+    casos: [[{ raio: 1 }, 5, null], [{ raio: 2, iq: 3 }, 6, null], [{ raio: 2, iq: 3, altura: 2 }, 12, null]]
+  });
+});
 // o tempo: as fracionárias do clima ("1/10 (mínimo 1)") têm o mesmo molde
 const CLIMA = [['aquece', 0.1, 'Aplicações do custo básico (cada uma aumenta a temperatura em 2° C)'], ['resfriar', 0.1, 'Aplicações do custo básico (cada uma reduz a temperatura em 20° C)'],
   ['neve', 1 / 15, 'Aplicações (cada 1/15 a mais por metro de raio aumenta a neve em 2,5 cm por hora)']];
@@ -374,6 +554,13 @@ function areaSimples(texto) {
 }
 
 // ================================================================================================ a saída
+/** Os dois textos de custo falam dos mesmos números? (o do `chunks.jsonl` e o do PDF) */
+function numerosIguais(a, b) {
+  const C = require('./custo-condicao');
+  const x = [...C.numerosDoTexto(a)].sort().join(','); const y = [...C.numerosDoTexto(b)].sort().join(',');
+  return x === y;
+}
+
 /** O texto de custo e o RÓTULO do livro ("Custo básico" ou "Custo") de cada entrada, lidos do `chunks.jsonl`. */
 function textosEComRotulo(catalogo) {
   const L = require('./localizador');
@@ -389,6 +576,15 @@ function textosEComRotulo(catalogo) {
     const pos = x.entrada.campos && x.entrada.campos.custo;
     const linha = pos && livro.paginas.get(pos.pagina) ? String(livro.paginas.get(pos.pagina)[pos.linha] || '') : '';
     if (e.custo) saida.set(m.id, { texto: String(e.custo).replace(/\*\*/g, '').replace(/\s+/g, ' ').trim(), basico: /\*\*Custo b[áa]sico/i.test(linha) || /^Custo b[áa]sico/i.test(linha.replace(/\*\*/g, '')) });
+  });
+  // onde o `chunks.jsonl` não traz a linha de custo da entrada, vale a lida direto do PDF (com o rótulo que o livro usa)
+  const doPdf = require('./custo-condicao').custosDoPdf();
+  catalogo.forEach((m) => {
+    const p = doPdf[m.id];
+    if (!p || !p.texto) return;
+    if (!saida.has(m.id)) saida.set(m.id, { texto: p.texto, basico: p.rotulo === 'basico' });
+    // o rótulo vale o do PDF (o texto antigo às vezes escreve "Custo:" onde o livro diz "Custo básico:")
+    else if (p.rotulo === 'basico' && !saida.get(m.id).basico && numerosIguais(saida.get(m.id).texto, p.texto)) saida.get(m.id).basico = true;
   });
   return saida;
 }
@@ -430,6 +626,8 @@ function paraJson() {
   DEFS.forEach((d) => {
     const s = { tipo: d.tipo, entradas: d.entradas, operar: d.operar };
     if (d.manter !== undefined) s.manter = d.manter;
+    if (d.tamanho) s.tamanho = true;
+    if (d.fonte) s.fonte = d.fonte;
     specs[d.id] = s;
     const tipoManter = d.manter === undefined ? null : (typeof d.manter === 'string' ? d.manter : 'conta');
     d.casos.forEach(([condicoes, operar, manter]) => casos.push({ id: d.id, condicoes, operar, manter, manterTipo: manter === null ? null : tipoManter }));

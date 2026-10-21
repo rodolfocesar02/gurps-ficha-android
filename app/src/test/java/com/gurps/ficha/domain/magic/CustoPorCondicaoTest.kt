@@ -81,7 +81,7 @@ class CustoPorCondicaoTest {
     fun `toda magia com conta no catalogo fecha com os valores padrao e o raio padrao e o minimo`() {
         Assume.assumeNotNull(arquivo)
         val comConta = catalogo.values.filter { it.custoPorCondicao != null }
-        assertTrue("magias com conta: ${comConta.size}", comConta.size >= 270)
+        assertTrue("magias com conta: ${comConta.size}", comConta.size >= 340)
         comConta.forEach { m ->
             val s = m.custoPorCondicao!!
             val r = CustoPorCondicaoRules.calcular(s, CustoPorCondicaoRules.condicoesPadrao(s))
@@ -104,8 +104,51 @@ class CustoPorCondicaoTest {
         // Terremoto: a intensidade multiplica (Grave ×4)
         val grave = calcular("terremoto", "raio" to 3.0, "intensidade" to "grave") as CustoPorCondicaoRules.Resultado.Ok
         assertEquals(24, grave.operar)
-        // as de área cujo livro escreve "Custo:" (e não "Custo básico:") ficam sem a regra
-        listOf("acelerar_tempo", "retardar_tempo", "retardar_fogo").forEach { assertNull(it, catalogo.getValue(it).custoPorCondicao) }
+        // P-5: as de área cujo "Custo básico" é uma conta (2 para o dobro, 3 para o triplo...) também perguntam o raio
+        listOf("acelerar_tempo", "retardar_tempo", "retardar_fogo").forEach { id ->
+            assertEquals(id, listOf("raio", "ritmo"), spec(id).entradas.map { it.id })
+        }
+        val tempo = calcular("retardar_tempo", "raio" to 3.0, "ritmo" to 4.0) as CustoPorCondicaoRules.Resultado.Ok
+        assertEquals(12, tempo.operar)
+    }
+
+    @Test
+    fun `P-5 - os exemplos que o proprio livro da`() {
+        Assume.assumeNotNull(arquivo)
+        fun op(id: String, vararg c: Pair<String, Any?>) = (calcular(id, *c) as CustoPorCondicaoRules.Resultado.Ok).operar
+        // Criptografar: seis suplementos de 175.000 palavras = 1.050.000 palavras custam 12 (só contam as 100.000 palavras COMPLETAS)
+        assertEquals(12, op("criptografar", "palavras" to 1050000.0))
+        assertEquals(3, op("criptografar", "palavras" to 199999.0))
+        assertEquals(4, op("criptografar", "palavras" to 200000.0))
+        // Acionar/NT: (1,8 t × Deslocamento 75) ÷ NH 15 = 9 de energia
+        assertEquals(9, op("acionarnt", "pcc" to 1.8, "deslocamento" to 75.0, "nh" to 15.0))
+        // Desviar Teleporte: 60 km (9) contra 10 m (3) = 6, nos dois sentidos; o mínimo é 3
+        assertEquals(6, op("desviar_teleporte", "pretendido" to 9.0, "novo" to 3.0))
+        assertEquals(6, op("desviar_teleporte", "pretendido" to 3.0, "novo" to 9.0))
+        assertEquals(3, op("desviar_teleporte", "pretendido" to 5.0, "novo" to 6.0))
+        // Mágica Penetrante: o PDF de 2025 (5 → 6, 10 → 8, ignora RD → 10), não o texto antigo (4 → 6, 5 → 8, 10 → 10)
+        assertEquals(6, op("magica_penetrante", "divisor" to "cinco"))
+        assertEquals(8, op("magica_penetrante", "divisor" to "dez"))
+        // quem não gasta nada (Roubar Energia): custo 0, sem perguntar (a aba Rolagem rola direto, sem diálogo)
+        assertEquals(0, op("roubar_energia"))
+        assertTrue(spec("roubar_energia").semPergunta)
+        assertTrue(!spec("luz_continua").semPergunta)
+    }
+
+    @Test
+    fun `P-5 - o operador baixo conta so as unidades completas, e o tamanho true mantem o fator do alvo`() {
+        Assume.assumeNotNull(arquivo)
+        val conta = com.google.gson.JsonParser.parseString("[\"baixo\", \"\$x\"]")
+        assertEquals(9.0, CustoPorCondicaoRules.avaliar(conta, mapOf("x" to 9.5)), 0.0)
+        assertEquals(10.0, CustoPorCondicaoRules.avaliar(conta, mapOf("x" to 10.0)), 0.0)
+        assertEquals(0.0, CustoPorCondicaoRules.avaliar(conta, mapOf("x" to 0.99999)), 0.0)
+        // Armadura: a conta é a RD dada, não o tamanho; num alvo de MT +2 a Comum ainda custa ×3. Luz Contínua tem conta própria: não multiplica.
+        val armadura = catalogo.getValue("armadura")
+        val luz = catalogo.getValue("luz_continua")
+        assertEquals(true, armadura.custoPorCondicao?.tamanho)
+        assertEquals(false, armadura.custoPorCondicao?.contaPropria)
+        assertEquals(6, com.gurps.ficha.domain.rules.MagiaEnergiaRules.contaDoCusto(2, 12, armadura.classe, armadura.id, temCondicao = armadura.custoPorCondicao?.contaPropria == true, mt = 2).bruto)
+        assertEquals(2, com.gurps.ficha.domain.rules.MagiaEnergiaRules.contaDoCusto(2, 12, luz.classe, luz.id, temCondicao = luz.custoPorCondicao?.contaPropria == true, mt = 2).bruto)
     }
 
     @Test

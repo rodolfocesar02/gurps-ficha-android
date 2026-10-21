@@ -1,0 +1,4036 @@
+{
+ "_leia": [
+  "Gerado por scripts/magias/extrair-custos-do-pdf.py a partir do PDF de Magia (edição de 2025). NÃO edite à mão.",
+  "Serve de apoio à guarda do custo por condição onde o chunks.jsonl não traz a linha de custo da entrada."
+ ],
+ "Insignificancia": {
+  "pagina": 48,
+  "rotulo": "custo",
+  "texto": "4 para operar. 4 para manter."
+ },
+ "abencoar_plantas": {
+  "pagina": 161,
+  "rotulo": "basico",
+  "texto": "1. Para serem afetadas, as plantas devem estar inteiramente dentro da área de efeito."
+ },
+ "acalmar_animal": {
+  "pagina": 29,
+  "rotulo": "custo",
+  "texto": "1 a 3."
+ },
+ "acelerar": {
+  "pagina": 146,
+  "rotulo": "custo",
+  "texto": "5. Não pode ser mantida; precisa ser refeita. No final da mágica, o objetivo também perde 5 PF (a menos que o operador seja o objetivo)."
+ },
+ "acelerar_tempo": {
+  "pagina": 86,
+  "rotulo": "basico",
+  "texto": "2 para o dobro, 3 para o triplo, 4 para o quádruplo e assim por diante (sem limite, mas veja o período de tempo limite, abaixo). Mesmos custos para manter."
+ },
+ "acido_essencial": {
+  "pagina": 192,
+  "rotulo": "custo",
+  "texto": "2 por litro."
+ },
+ "adaga_de_gelo": {
+  "pagina": 188,
+  "rotulo": "custo",
+  "texto": "Qualquer quantia até o seu nível de Aptidão Mágica por segundo, por 3 segundos. Causa 1d-1 de dano por perfuração para cada ponto de energia colocado nela. Nenhum efeito extra em criaturas de fogo."
+ },
+ "adiar_magica": {
+  "pagina": 128,
+  "rotulo": "custo",
+  "texto": "O mesmo que o custo da mágica subjacente para operar (mínimo de 2); mesmo custo para manter. A mágica adiada pode ser mantida normalmente, uma vez que tenha entrado em vigor."
+ },
+ "adivinhacao": {
+  "pagina": 108,
+  "rotulo": "custo",
+  "texto": "10."
+ },
+ "aerovisao": {
+  "pagina": 24,
+  "rotulo": "custo",
+  "texto": "1 para cada 1,5 km. Metade desse total para manter."
+ },
+ "afetar_espiritos": {
+  "pagina": 151,
+  "rotulo": "custo",
+  "texto": "4 para operar. 2 para manter."
+ },
+ "afiar": {
+  "pagina": 118,
+  "rotulo": "custo",
+  "texto": "A fórmula é 1 de energia para cada 15 cm de lâmina. Custos típicos (use-os a menos que as circunstâncias sejam muito especiais): 1 para operar uma flecha; 2 para uma faca, lança ou machado; 3 para uma espada de uma mão; 5 para uma espada de duas mãos. Duplique-os para +2 de bônus ou triplique para +3. Metade disso (arredondado para cima) para manter."
+ },
+ "agitar_animal": {
+  "pagina": 30,
+  "rotulo": "custo",
+  "texto": "1 a 3. Não pode ser mantida."
+ },
+ "agonizar": {
+  "pagina": 40,
+  "rotulo": "custo",
+  "texto": "8 para operar. 6 para manter."
+ },
+ "agua_essencial": {
+  "pagina": 189,
+  "rotulo": "custo",
+  "texto": "3 por 4 litros criado."
+ },
+ "agua_para_vinho": {
+  "pagina": 79,
+  "rotulo": "custo",
+  "texto": "1 por litro (metade do custo para cerveja, o dobro do custo para bebidas destiladas)."
+ },
+ "agua_podre": {
+  "pagina": 185,
+  "rotulo": "basico",
+  "texto": "3."
+ },
+ "alarme": {
+  "pagina": 100,
+  "rotulo": "custo",
+  "texto": "1. Não pode ser mantida."
+ },
+ "alarme_florestal": {
+  "pagina": 162,
+  "rotulo": "basico",
+  "texto": "1⁄2 (mínimo 2). Mesmo custo para manter."
+ },
+ "alimento_essencial": {
+  "pagina": 79,
+  "rotulo": "custo",
+  "texto": "3 por refeição, se a substância inicial for algum material orgânico; 5 por refeição se a substância original for totalmente não comestível."
+ },
+ "aliviar_enjoo": {
+  "pagina": 90,
+  "rotulo": "custo",
+  "texto": "2. Não pode ser mantida; precisa ser refeita."
+ },
+ "aliviar_loucura": {
+  "pagina": 92,
+  "rotulo": "custo",
+  "texto": "2. Não pode ser mantida."
+ },
+ "aliviar_paralisia": {
+  "pagina": 93,
+  "rotulo": "custo",
+  "texto": "Igual ao limiar incapacitante para os membros afetados. Mesmo para manter."
+ },
+ "aliviar_vicio": {
+  "pagina": 92,
+  "rotulo": "custo",
+  "texto": "6. Não pode ser mantida."
+ },
+ "alongar_membro": {
+  "pagina": 41,
+  "rotulo": "custo",
+  "texto": "2 para operar. 2 para manter."
+ },
+ "alongar_objeto": {
+  "pagina": 120,
+  "rotulo": "custo",
+  "texto": "1 por 0,5 kg de peso original (mínimo de 0,5 kg), por duplicação da dimensão escolhida. Mesmo custo para manter."
+ },
+ "alterar_corpo": {
+  "pagina": 41,
+  "rotulo": "custo",
+  "texto": "8 para operar. 6 para manter. Pode se tornar permanente, como um encantamento, por um custo de energia de 200."
+ },
+ "alterar_feicoes": {
+  "pagina": 41,
+  "rotulo": "custo",
+  "texto": "4 para operar. 3 para manter. Pode ser tornada permanente, como um encantamento, por um custo em energia igual a 40."
+ },
+ "alterar_terreno": {
+  "pagina": 55,
+  "rotulo": "basico",
+  "texto": "1 para operar (custo mínimo 15). Não pode ser mantida. Volumes com mais de 4 metros podem ser afetados multiplicando o custo básico de acordo."
+ },
+ "alterar_voz": {
+  "pagina": 41,
+  "rotulo": "custo",
+  "texto": "2 para operar. 2 para manter. A mudança pode ser permanente, como um encantamento, por um custo de 200."
+ },
+ "alucinacao": {
+  "pagina": 140,
+  "rotulo": "custo",
+  "texto": "4 para operar. 2 para manter."
+ },
+ "alucinacao_superior": {
+  "pagina": 141,
+  "rotulo": "custo",
+  "texto": "6 para operar. 3 para manter."
+ },
+ "ambidestria": {
+  "pagina": 39,
+  "rotulo": "custo",
+  "texto": "3 para operar. 2 para manter."
+ },
+ "amuleto": {
+  "pagina": 58,
+  "rotulo": "custo",
+  "texto": "50 por ponto de resistência á mágica concedido ao amuleto (máximo de 5)."
+ },
+ "analisar_magica": {
+  "pagina": 102,
+  "rotulo": "custo",
+  "texto": "8."
+ },
+ "andar_em_circulos": {
+  "pagina": 36,
+  "rotulo": "custo",
+  "texto": "3."
+ },
+ "animacao": {
+  "pagina": 150,
+  "rotulo": "custo",
+  "texto": "3, multiplicado pelo MT+1 para objetos maiores que o tamanho humano. Metade disso para manter. Dobre o custo para animar pedra; triplo para animar metal."
+ },
+ "animacao_suspensa": {
+  "pagina": 94,
+  "rotulo": "custo",
+  "texto": "6."
+ },
+ "animar_objeto": {
+  "pagina": 117,
+  "rotulo": "custo",
+  "texto": "1 para operar para cada 2 kg que o objeto pesa. Dobre o custo para animar pedra, triplique para metal. Mesmo custo para manter."
+ },
+ "animar_planta": {
+  "pagina": 164,
+  "rotulo": "custo",
+  "texto": "3 para operar. Metade disso para manter. Dobre o custo se a planta tiver que se levantar e andar (Deslocamento 4) com suas raízes!"
+ },
+ "animar_sombra": {
+  "pagina": 154,
+  "rotulo": "custo",
+  "texto": "4. O mesmo custo para manter."
+ },
+ "anular_criacao": {
+  "pagina": 99,
+  "rotulo": "custo",
+  "texto": "1 para anular um objetivo não vivo ou 3 para anular uma criação viva."
+ },
+ "anular_ilusao": {
+  "pagina": 97,
+  "rotulo": "custo",
+  "texto": "1."
+ },
+ "anular_magica": {
+  "pagina": 126,
+  "rotulo": "basico",
+  "texto": "3."
+ },
+ "anular_possessao": {
+  "pagina": 49,
+  "rotulo": "custo",
+  "texto": "10."
+ },
+ "apanhar_magica": {
+  "pagina": 123,
+  "rotulo": "custo",
+  "texto": "3."
+ },
+ "aporte": {
+  "pagina": 142,
+  "rotulo": "custo",
+  "texto": "Varia com o peso do objeto. Custo para manter é o mesmo. Peso Custo de Energia menos de 0,5 kg 1 até 5 kg 2 até 25 kg 3 até 100 kg 4 cada 50 kg adicionais +4"
+ },
+ "apressar": {
+  "pagina": 142,
+  "rotulo": "custo",
+  "texto": "2 para operar por ponto de bônus sobre o Deslocamento e a Esquiva do objetivo. Metade disso para manter."
+ },
+ "apressar_fogo": {
+  "pagina": 73,
+  "rotulo": "custo",
+  "texto": "2 para um fogo que queima o dobro, 3 para um incêndio que queima o triplo e assim por diante. Mesmo custo para manter."
+ },
+ "aprisionar_alma": {
+  "pagina": 154,
+  "rotulo": "custo",
+  "texto": "8."
+ },
+ "aprisionar_espirito": {
+  "pagina": 157,
+  "rotulo": "custo",
+  "texto": "Espírito (ST+IQ) dividido por 5 para operar, por 10 para manter."
+ },
+ "aquavisao": {
+  "pagina": 187,
+  "rotulo": "custo",
+  "texto": "1 por 20 metros de profundidade para ser operada (até 200 metros). Mesmo custo para manter."
+ },
+ "aquece": {
+  "pagina": 195,
+  "rotulo": "basico",
+  "texto": "1/10 (mínimo 1). Cada aplicação do custo básico aumenta a temperatura ambiente em 2° C. Mesmo custo para manter."
+ },
+ "ar_essencial": {
+  "pagina": 26,
+  "rotulo": "basico",
+  "texto": "2."
+ },
+ "arma_congelante": {
+  "pagina": 185,
+  "rotulo": "custo",
+  "texto": "3 para operar. 1 para manter."
+ },
+ "arma_dancante": {
+  "pagina": 63,
+  "rotulo": "custo",
+  "texto": "1.000 a cada 0,5 kg de peso da arma (mínimo de 0,5 kg). Dobre o custo para obter uma arma com uma Velocidade Básica de 6, ou com perícia de 18. Multiplique o custo por 4 para obter uma arma com ambas as vantagens."
+ },
+ "arma_espiritual": {
+  "pagina": 64,
+  "rotulo": "custo",
+  "texto": "100 por ponto de IQ transferido, mais 25 vezes o custo de Pontos de Personagem de cada perícia, mais 50 vezes o custo total de Pontos de Personagem de todas as vantagens e desvantagens (mínimo de zero). Adicione 300 para Vozes."
+ },
+ "arma_fantasmagorica": {
+  "pagina": 65,
+  "rotulo": "custo",
+  "texto": "250 por 0,5 kg de peso (mínimo 0,5 kg)."
+ },
+ "arma_flamejante": {
+  "pagina": 75,
+  "rotulo": "custo",
+  "texto": "4 para operar. 1 para manter."
+ },
+ "arma_graciosa": {
+  "pagina": 63,
+  "rotulo": "custo",
+  "texto": "150 a cada 0,5 kg de peso (mínimo de 0,5 kg)."
+ },
+ "arma_penetrante": {
+  "pagina": 63,
+  "rotulo": "custo",
+  "texto": "Depende do divisor de armadura conferido à arma. Divisor de Armadura Custo 2 250 3 750 5 2.500 10 7.500 Ignora RD 25.000 Dobre o custo se o objetivo for uma arma de projétil (por exemplo, um arco). Divida o custo por 10 se o objetivo for um projétil (por exemplo, uma flecha). Se o item cair em mais de uma classe (arma, arma de projéteis, projétil), use o maior custo de encantamento. Além de armas, qualquer tipo de ferramenta de corte pode ser encantada. Note que esta mágica pode ser reformulada em um nível mais alto, conforme Precisão."
+ },
+ "arma_protetora": {
+  "pagina": 64,
+  "rotulo": "custo",
+  "texto": "500 para +1 em aparar, 1.000 para +2 e 2.000 para +3. A mágica pode ser reformulada em um nível mais alto, conforme Precisão."
+ },
+ "armadura": {
+  "pagina": 167,
+  "rotulo": "custo",
+  "texto": "Duas vezes a"
+ },
+ "armadura_flamejante": {
+  "pagina": 75,
+  "rotulo": "custo",
+  "texto": "6 para operar. 3 para manter."
+ },
+ "aromas_do_passado": {
+  "pagina": 107,
+  "rotulo": "custo",
+  "texto": "1 para operar. Mesmo custo para manter. A magnitude do modificador de Tempo é adicionada ao custo, então a mágica custa 1 (1+0) para “dentro de um minuto”, mas custaria 6 (1+5) para “4 a 40 dias”."
+ },
+ "arremessar_magica": {
+  "pagina": 128,
+  "rotulo": "custo",
+  "texto": "3. A mágica arremessada pode ser mantida normalmente assim que tiver efeito."
+ },
+ "atar": {
+  "pagina": 118,
+  "rotulo": "custo",
+  "texto": "3 para operar (1 extra para operar Nó nela)."
+ },
+ "atear_fogo": {
+  "pagina": 72,
+  "rotulo": "custo",
+  "texto": "Depende da quantidade de calor desejada: 1 – Como se um fósforo tivesse sido aceso sobre o objetivo. Acende uma vela, cachimbo ou pavio em um segundo. 2 – Como se alguém segurasse uma tocha sobre o objetivo. Incendeia papel ou tecido em um segundo, roupas sendo usadas em quatro segundos. 3 – Como se alguém ligasse um maçarico sobre o objetivo. Incendeia lenha seca ou roupas sendo usadas em um segundo, couro em dois segundos e madeira pesada em seis segundos. 4 – Como se acendessem magnésio ou fósforo sobre o objetivo. Incendeia carvão em um segundo, madeira pesada em dois segundos. O custo para manter é o mesmo que o custo original para operar."
+ },
+ "atordoamento": {
+  "pagina": 37,
+  "rotulo": "custo",
+  "texto": "2. Não pode ser mantida."
+ },
+ "atordoamento_mental": {
+  "pagina": 135,
+  "rotulo": "custo",
+  "texto": "2."
+ },
+ "atrair": {
+  "pagina": 137,
+  "rotulo": "basico",
+  "texto": "1 para operar. Mesmo custo para manter."
+ },
+ "atrapalhar": {
+  "pagina": 38,
+  "rotulo": "custo",
+  "texto": "3."
+ },
+ "atravessar_agua": {
+  "pagina": 188,
+  "rotulo": "custo",
+  "texto": "4 para operar. 3 para manter."
+ },
+ "atravessar_madeira": {
+  "pagina": 164,
+  "rotulo": "custo",
+  "texto": "3 para operar. 2 para manter."
+ },
+ "atravessar_plantas": {
+  "pagina": 163,
+  "rotulo": "custo",
+  "texto": "3 para operar. 1 para manter."
+ },
+ "atravessar_terra": {
+  "pagina": 52,
+  "rotulo": "custo",
+  "texto": "3 para operar. 3 para manter. Dobre o custo para passar pela pedra. Triplique o custo para passar pelo metal."
+ },
+ "atrofiar_membro": {
+  "pagina": 40,
+  "rotulo": "custo",
+  "texto": "5."
+ },
+ "atrofiar_sentido_audicao": {
+  "pagina": 133,
+  "rotulo": "custo",
+  "texto": "1 a 3 para operar. Metade disso para manter. O sentido afetado sofre uma penalidade igual a -2 para cada ponto de energia empregado na mágica."
+ },
+ "atrofiar_sentido_olfato": {
+  "pagina": 133,
+  "rotulo": "custo",
+  "texto": "1 a 3 para operar. Metade disso para manter. O sentido afetado sofre uma penalidade igual a -2 para cada ponto de energia empregado na mágica."
+ },
+ "atrofiar_sentidos": {
+  "pagina": 134,
+  "rotulo": "custo",
+  "texto": "2 a 10 para operar. Metade disso para manter. Sentidos são reduzidos em 1 para cada dois pontos de energia colocados na mágica."
+ },
+ "atrofiar_visao": {
+  "pagina": 133,
+  "rotulo": "custo",
+  "texto": "1 a 3 para operar. Metade disso para manter. O sentido afetado sofre uma penalidade igual a -2 para cada ponto de energia empregado na mágica."
+ },
+ "audicao_remota": {
+  "pagina": 173,
+  "rotulo": "custo",
+  "texto": "4 para operar. 2 para manter."
+ },
+ "aumentar": {
+  "pagina": 42,
+  "rotulo": "custo",
+  "texto": "2 por +1 MT. Mesmo custo para manter."
+ },
+ "aumentar_carga": {
+  "pagina": 143,
+  "rotulo": "custo",
+  "texto": "1 por 12,5 kg de peso original (ou fração) para dobrar, o dobro para triplicar e o dobro novamente para quadruplicar. Metade disso para manter."
+ },
+ "aumentar_objeto": {
+  "pagina": 120,
+  "rotulo": "custo",
+  "texto": "1 por 0,5 kg do peso original (mínimo de 0,5 kg) para cada ponto adicional de MT. Mesmo custo para manter."
+ },
+ "aumentar_outro": {
+  "pagina": 43,
+  "rotulo": "custo",
+  "texto": "2 por +1 MT. Mesmo custo para manter."
+ },
+ "aura": {
+  "pagina": 101,
+  "rotulo": "custo",
+  "texto": "3 (para qualquer de tamanho de objetivo)."
+ },
+ "aura_falsa": {
+  "pagina": 122,
+  "rotulo": "custo",
+  "texto": "4 para operar. Metade disso para manter. Quando operada em uma área, o custo básico é 4."
+ },
+ "autossuficiencia": {
+  "pagina": 96,
+  "rotulo": "basico",
+  "texto": "2. Não requer manutenção."
+ },
+ "baliza_teleporte": {
+  "pagina": 83,
+  "rotulo": "basico",
+  "texto": "10 para operar Metade disso para manter."
+ },
+ "baliza_viagem_no_tempo": {
+  "pagina": 83,
+  "rotulo": "basico",
+  "texto": "10 para operar Metade disso para manter."
+ },
+ "baliza_viagem_planar": {
+  "pagina": 83,
+  "rotulo": "basico",
+  "texto": "10 para operar Metade disso para manter."
+ },
+ "banquete_do_monge": {
+  "pagina": 79,
+  "rotulo": "custo",
+  "texto": "6. Não pode ser mantida."
+ },
+ "banquete_do_tolo": {
+  "pagina": 79,
+  "rotulo": "custo",
+  "texto": "2 por refeição. Não pode ser mantida."
+ },
+ "barreira_astral": {
+  "pagina": 159,
+  "rotulo": "custo",
+  "texto": "4 para operar e 2 para manter se operada como uma mágica de área. 15 por 0,75 m³ se operada em um recipiente, e metade disso para manter."
+ },
+ "barulho": {
+  "pagina": 173,
+  "rotulo": "basico",
+  "texto": "4 para operar. 2 para manter."
+ },
+ "bencao": {
+  "pagina": 129,
+  "rotulo": "custo",
+  "texto": "10 para uma bênção de 1 ponto, 50 para uma bênção de 2 pontos, 500 para uma bênção de 3 pontos. As bênçãos não podem ser “empilhadas” — uma benção mais forte anula a mais fraca."
+ },
+ "bloqueador_de_impressoes": {
+  "pagina": 60,
+  "rotulo": "custo",
+  "texto": "20 por 500 g de capacidade, mínimo 20."
+ },
+ "bloquear": {
+  "pagina": 166,
+  "rotulo": "custo",
+  "texto": "1 por ponto de BD (máximo de 5)."
+ },
+ "boca_magica": {
+  "pagina": 104,
+  "rotulo": "custo",
+  "texto": "4 para operar. 2 para manter."
+ },
+ "bola_de_acido": {
+  "pagina": 191,
+  "rotulo": "custo",
+  "texto": "Qualquer quantia até seu nível de Aptidão Mágica por segundo, por três segundos. A Bola de Ácido causa 1d de dano por ponto de energia."
+ },
+ "bola_de_cristal": {
+  "pagina": 71,
+  "rotulo": "custo",
+  "texto": "1.000."
+ },
+ "bola_de_fogo": {
+  "pagina": 74,
+  "rotulo": "custo",
+  "texto": "Qualquer quantia até o seu nível de Aptidão Mágica por segundo, por três segundos. A bola de fogo causa 1d de dano por ponto de energia."
+ },
+ "bola_de_fogo_explosiva": {
+  "pagina": 75,
+  "rotulo": "custo",
+  "texto": "Qualquer quantia até duas vezes o seu nível de Aptidão Mágica por segundo, por três segundos. A bola de fogo causa 1d de dano por queimadura a cada 2 pontos de energia."
+ },
+ "braco_de_ferro": {
+  "pagina": 169,
+  "rotulo": "custo",
+  "texto": "1."
+ },
+ "bravura": {
+  "pagina": 134,
+  "rotulo": "basico",
+  "texto": "2. Não pode ser mantida."
+ },
+ "brilho": {
+  "pagina": 112,
+  "rotulo": "basico",
+  "texto": "1/2 para a luz das estrelas; 1 para o luar; 3/2 para tochas; 2 para a luz do dia (brilhante, sem penalidade de visão). Raio mínimo é de 2 metros."
+ },
+ "cadencia": {
+  "pagina": 39,
+  "rotulo": "custo",
+  "texto": "5 para operar. 3 para manter. A mágica custa ao objetivo uma quantidade igual de energia por hora, a menos que ele seja o próprio operador."
+ },
+ "cajado": {
+  "pagina": 70,
+  "rotulo": "custo",
+  "texto": "30."
+ },
+ "calor": {
+  "pagina": 74,
+  "rotulo": "custo",
+  "texto": "1 para um objeto até o tamanho de um punho, 2 para um objeto até 0,75 m³, e 2 a cada 0,75 m³ para um objeto maior. A mudança de temperatura pode ser dobrada para 20° por minuto pelo dobro do custo, triplicada para 30° por minuto pelo triplo do custo e assim por diante. Custos de aquecimento mais lentos não são menores. Mesmo custo para manter."
+ },
+ "camada_de_gelo": {
+  "pagina": 186,
+  "rotulo": "basico",
+  "texto": "3."
+ },
+ "caminhar_na_agua": {
+  "pagina": 186,
+  "rotulo": "custo",
+  "texto": "3 para operar. 2 para manter."
+ },
+ "caminhar_nas_nuvens": {
+  "pagina": 148,
+  "rotulo": "custo",
+  "texto": "3 para operar. 2 para manter."
+ },
+ "caminhar_nas_paredes": {
+  "pagina": 144,
+  "rotulo": "custo",
+  "texto": "1 por 25 kg, mínimo de 2 pontos. Metade disso para manter."
+ },
+ "caminhar_no_ar": {
+  "pagina": 25,
+  "rotulo": "custo",
+  "texto": "3 para operar. 2 para manter."
+ },
+ "carne_para_gelo": {
+  "pagina": 190,
+  "rotulo": "custo",
+  "texto": "12 para operar; deve afetar o objetivo inteiro, não apenas uma parte dele!"
+ },
+ "carne_para_pedra": {
+  "pagina": 51,
+  "rotulo": "custo",
+  "texto": "10. Pelo dobro do custo, um objetivo pode ser transformado em uma estátua metálica."
+ },
+ "cartografo": {
+  "pagina": 118,
+  "rotulo": "custo",
+  "texto": "4 para operar. 2 para manter."
+ },
+ "cativar": {
+  "pagina": 139,
+  "rotulo": "custo",
+  "texto": "3 para operar. 3 para manter."
+ },
+ "cavalgar_criaturas_da_terra": {
+  "pagina": 31,
+  "rotulo": "custo",
+  "texto": "2 para operar. 1 para manter."
+ },
+ "cavalgar_criaturas_do_ar": {
+  "pagina": 31,
+  "rotulo": "custo",
+  "texto": "2 para operar. 1 para manter."
+ },
+ "cavalgar_criaturas_do_mar": {
+  "pagina": 31,
+  "rotulo": "custo",
+  "texto": "2 para operar. 1 para manter."
+ },
+ "cegar": {
+  "pagina": 38,
+  "rotulo": "custo",
+  "texto": "4 para operar. 2 para manter."
+ },
+ "cessar_corrente_eletrica": {
+  "pagina": 179,
+  "rotulo": "basico",
+  "texto": "3 para operar. Metade disso para manter."
+ },
+ "cessar_cura": {
+  "pagina": 153,
+  "rotulo": "custo",
+  "texto": "10."
+ },
+ "cessar_espasmo": {
+  "pagina": 35,
+  "rotulo": "custo",
+  "texto": "1."
+ },
+ "cessar_paralisia": {
+  "pagina": 93,
+  "rotulo": "custo",
+  "texto": "1 para um único membro. 2 para todo o corpo."
+ },
+ "cessar_sangramento": {
+  "pagina": 91,
+  "rotulo": "custo",
+  "texto": "1 para parar o sangramento em um ferimento normal; 10 para estabilizar um ferimento mortal."
+ },
+ "chama_essencial": {
+  "pagina": 75,
+  "rotulo": "basico",
+  "texto": "3. 2 para manter. Esta chama inflama todos os materiais inflamáveis, e toda a chama permanece essencial enquanto a mágica for mantida. Se a mágica não for mantida, quaisquer materiais que forem inflamados continuarão a queimar com chama comum."
+ },
+ "chama_fantasmagorica": {
+  "pagina": 73,
+  "rotulo": "basico",
+  "texto": "1. O mesmo custo para manter."
+ },
+ "chavemestra": {
+  "pagina": 144,
+  "rotulo": "custo",
+  "texto": "3. Não pode ser mantida."
+ },
+ "chuva": {
+  "pagina": 195,
+  "rotulo": "basico",
+  "texto": "1/10 (mínimo 1). Custo dobra para fazer chover em um deserto ou outra área (determinação do Mestre), onde a chuva não é natural. Custo dobra para evitar a chuva em uma área naturalmente chuvosa ou pantanosa. Mesmo custo para manter."
+ },
+ "chuva_de_acido": {
+  "pagina": 191,
+  "rotulo": "basico",
+  "texto": "3. O mesmo custo para manter."
+ },
+ "chuva_de_adagas_de_gelo": {
+  "pagina": 192,
+  "rotulo": "basico",
+  "texto": "1 (mínimo 2). Dobrando o custo básico, a Chuva de Adagas de Gelo causa 1d por segundo!"
+ },
+ "chuva_de_fogo": {
+  "pagina": 74,
+  "rotulo": "basico",
+  "texto": "1 para operar (mínimo 2). Mesmo custo para manter. Pelo dobro do custo básico, a chuva de fogo causa 2d-2 por segundo!"
+ },
+ "chuva_de_nozes": {
+  "pagina": 165,
+  "rotulo": "basico",
+  "texto": "1/10 para operar. Mesmo custo para manter. Dobrando o custo, o operador pode dobrar o efeito da mágica (-2 de penalidade no NH e visibilidade -1 por 4 metros), se o Mestre concordar que as florestas são suficientemente densas e selvagens."
+ },
+ "chuva_de_pedras": {
+  "pagina": 53,
+  "rotulo": "basico",
+  "texto": "1 para operar (mínimo 2). Mesmo custo para manter. Pelo dobro do custo básico, a chuva de pedras causa 2d-2 por segundo!"
+ },
+ "cobertura_ilusoria": {
+  "pagina": 96,
+  "rotulo": "custo",
+  "texto": "1 para um objeto pequeno o suficiente para ser segurado na mão ou 2 para objetos maiores. Metade desse custo para manter."
+ },
+ "cocegas": {
+  "pagina": 36,
+  "rotulo": "custo",
+  "texto": "5 para operar. 5 para manter (requer concentração)."
+ },
+ "coceira": {
+  "pagina": 35,
+  "rotulo": "custo",
+  "texto": "2. Não pode ser mantida; precisa ser refeita."
+ },
+ "cola": {
+  "pagina": 142,
+  "rotulo": "basico",
+  "texto": "3 para operar. Mesmo custo para manter."
+ },
+ "comandar_espirito": {
+  "pagina": 153,
+  "rotulo": "custo",
+  "texto": "1 ponto por 10 pontos de personagem usados para construir o espírito. Metade disso (arredondado para cima) para manter. (Se o Mestre não tiver uma ficha de personagem para o espírito, 5 de energia é uma boa base para espíritos menores, ou 10 de energia para um ser mais formidável.)"
+ },
+ "comando": {
+  "pagina": 136,
+  "rotulo": "custo",
+  "texto": "2."
+ },
+ "compartilhar_energia": {
+  "pagina": 89,
+  "rotulo": "custo",
+  "texto": "Duas vezes a quantidade realmente usada pelo mago que drena os PF. A energia gasta pelo operador vai para o poder de outra mágica do mago. PF além do necessário pela mágica não é transferido para o outro mago — use Conceder Energia para fazer isso. O custo para operar esta mágica nunca é reduzido por NH elevado. Um mínimo de 1 PF sempre é gasto ao operar esta mágica."
+ },
+ "compartilhar_vitalidade": {
+  "pagina": 90,
+  "rotulo": "custo",
+  "texto": "Nenhuma energia precisa ser gasta; NH elevado afeta apenas o"
+ },
+ "compelir_a_mentira": {
+  "pagina": 137,
+  "rotulo": "custo",
+  "texto": "4 para operar. 2 para manter."
+ },
+ "compelir_a_verdade": {
+  "pagina": 47,
+  "rotulo": "custo",
+  "texto": "4 para operar. 2 para manter."
+ },
+ "comunicacao": {
+  "pagina": 48,
+  "rotulo": "custo",
+  "texto": "4 para operar. 4 para manter. O mesmo custo para cada pessoa adicional que participa da comunicação."
+ },
+ "conceder_idioma": {
+  "pagina": 46,
+  "rotulo": "custo",
+  "texto": "3 para opera. 1 para manter."
+ },
+ "conceder_magica": {
+  "pagina": 126,
+  "rotulo": "custo",
+  "texto": "Igual ao custo de manutenção da mágica a ser emprestada."
+ },
+ "conceder_pericia": {
+  "pagina": 47,
+  "rotulo": "custo",
+  "texto": "3 para operar. 2 para manter."
+ },
+ "conceder_vitalidade": {
+  "pagina": 89,
+  "rotulo": "custo",
+  "texto": "Qualquer quantia; a energia gasta pelo operador vai para o objetivo como PV restaurados (por exemplo, se o operador gastar 5 de energia, o objetivo recupera 5 PV perdidos). O custo de operação não é reduzido por NH elevado. Não pode ser mantida; precisa ser refeita."
+ },
+ "concussao": {
+  "pagina": 26,
+  "rotulo": "custo",
+  "texto": "Qualquer quantia até no máximo o dobro do nível de Aptidão Mágica do operador por segundo, por três segundos. Para cada 2 pontos de energia empregados na mágica, o projétil causa 1d pontos de dano por contusão. Veja Explosões, pág. MB414, para mais detalhes sobre dano explosivo."
+ },
+ "condensar_vapor": {
+  "pagina": 189,
+  "rotulo": "basico",
+  "texto": "1 (mínimo 2)."
+ },
+ "condicionamento": {
+  "pagina": 140,
+  "rotulo": "custo",
+  "texto": "12."
+ },
+ "condicionamento_permanente": {
+  "pagina": 141,
+  "rotulo": "custo",
+  "texto": "30."
+ },
+ "conexao": {
+  "pagina": 131,
+  "rotulo": "basico",
+  "texto": "8; mágicas de Conexão não podem ser mantidas."
+ },
+ "conexao_com_animal_ar": {
+  "pagina": 30,
+  "rotulo": "custo",
+  "texto": "3."
+ },
+ "conexao_com_animal_mar": {
+  "pagina": 30,
+  "rotulo": "custo",
+  "texto": "3."
+ },
+ "conexao_com_animal_terra": {
+  "pagina": 30,
+  "rotulo": "custo",
+  "texto": "3."
+ },
+ "congelar": {
+  "pagina": 185,
+  "rotulo": "custo",
+  "texto": "2 para um objeto do tamanho de um punho, 4 para 25 litros, 6 para 250 litros, mais 3 para cada 250 litros adicionais. Se a temperatura estiver acima de zero, o operador pode manter a mágica gastando o custo de operação uma vez a cada 10 minutos."
+ },
+ "consertar": {
+  "pagina": 118,
+  "rotulo": "custo",
+  "texto": "2 por 2,5 kg do peso do objetivo. Custo Mínimo de 6 para objetos com partes móveis."
+ },
+ "contrair_objeto": {
+  "pagina": 120,
+  "rotulo": "custo",
+  "texto": "1 por 0,5 kg de peso original (mínimo de 0,5 kg) para cada metade da dimensão escolhida. Mesmo custo para manter."
+ },
+ "contramagica": {
+  "pagina": 121,
+  "rotulo": "custo",
+  "texto": "Metade do custo da mágica a ser anulada, sem contar os bônus de NH elevado do outro operador."
+ },
+ "controle_de_animal_ar": {
+  "pagina": 30,
+  "rotulo": "custo",
+  "texto": "Variável. O custo para operar é igual à IQ racial das espécies mais inteligentes dentro da categoria. Metade disso para manter."
+ },
+ "controle_de_animal_mar": {
+  "pagina": 30,
+  "rotulo": "custo",
+  "texto": "Variável. O custo para operar é igual à IQ racial das espécies mais inteligentes dentro da categoria. Metade disso para manter."
+ },
+ "controle_de_animal_terra": {
+  "pagina": 30,
+  "rotulo": "custo",
+  "texto": "Variável. O custo para operar é igual à IQ racial das espécies mais inteligentes dentro da categoria. Metade disso para manter."
+ },
+ "controle_de_criacao": {
+  "pagina": 99,
+  "rotulo": "custo",
+  "texto": "1."
+ },
+ "controle_de_emocao": {
+  "pagina": 137,
+  "rotulo": "basico",
+  "texto": "2. Não pode ser mantida; a mágica precisa ser refeita."
+ },
+ "controle_de_hibrido": {
+  "pagina": 30,
+  "rotulo": "custo",
+  "texto": "6 para operar. 3 para manter."
+ },
+ "controle_de_ilusao": {
+  "pagina": 97,
+  "rotulo": "custo",
+  "texto": "1."
+ },
+ "controle_de_membro": {
+  "pagina": 40,
+  "rotulo": "custo",
+  "texto": "3 para operar. 3 para manter. Se for operada apenas sobre uma mão (ou parte análoga do corpo), o custo para operar ou manter é de apenas 2, mas o objetivo só pode ser forçado a aumentar o diminuir a força com que segura algo, e assim por diante. Isto ainda pode interferir com gestos para operar mágicas, arremessar granadas e disparar armas de fogo…"
+ },
+ "controle_de_pessoa": {
+  "pagina": 49,
+  "rotulo": "custo",
+  "texto": "3."
+ },
+ "controle_de_planta": {
+  "pagina": 164,
+  "rotulo": "custo",
+  "texto": "3 para operar. Metade disso para manter."
+ },
+ "controle_de_portal": {
+  "pagina": 85,
+  "rotulo": "custo",
+  "texto": "6 para operar. 3 para manter."
+ },
+ "controle_de_zumbi": {
+  "pagina": 152,
+  "rotulo": "custo",
+  "texto": "3."
+ },
+ "conversar": {
+  "pagina": 173,
+  "rotulo": "custo",
+  "texto": "2."
+ },
+ "convocacao_planar": {
+  "pagina": 82,
+  "rotulo": "custo",
+  "texto": "1 ponto por 10 pontos de personagem usados para construir a entidade convocada. O custo mínimo de energia é de 20 (embora isso nem sempre convoque um valor de 200 pontos). O Mestre secretamente determina as capacidades de todas as criaturas convocadas. Não pode ser mantida."
+ },
+ "convocar_animal_ar": {
+  "pagina": 30,
+  "rotulo": "custo",
+  "texto": "3 para operar. 2 para manter. Para chamar vários animais, duplique o custo da mágica. Todas as criaturas dentro de uma certa área (normalmente num raio de 15 km; ou mais, no caso de um resultado excepcional) serão convocadas. O tempo que levarão para chegar dependerá da velocidade que conseguirem desenvolver. Se a mágica terminar antes delas chegarem, elas vão parar e passar a cuidar da própria vida."
+ },
+ "convocar_animal_mar": {
+  "pagina": 30,
+  "rotulo": "custo",
+  "texto": "3 para operar. 2 para manter. Para chamar vários animais, duplique o custo da mágica. Todas as criaturas dentro de uma certa área (normalmente num raio de 15 km; ou mais, no caso de um resultado excepcional) serão convocadas. O tempo que levarão para chegar dependerá da velocidade que conseguirem desenvolver. Se a mágica terminar antes delas chegarem, elas vão parar e passar a cuidar da própria vida."
+ },
+ "convocar_animal_terra": {
+  "pagina": 30,
+  "rotulo": "custo",
+  "texto": "3 para operar. 2 para manter. Para chamar vários animais, duplique o custo da mágica. Todas as criaturas dentro de uma certa área (normalmente num raio de 15 km; ou mais, no caso de um resultado excepcional) serão convocadas. O tempo que levarão para chegar dependerá da velocidade que conseguirem desenvolver. Se a mágica terminar antes delas chegarem, elas vão parar e passar a cuidar da própria vida."
+ },
+ "convocar_demonio": {
+  "pagina": 155,
+  "rotulo": "custo",
+  "texto": "1 ponto por 10 pontos de personagem usados para construir o demônio. O custo mínimo de energia é de 20 (embora isso nem sempre convoque um ser de 200 pontos). Aqueles tentados a convocar demônios poderosos devem ter em mente que tais demônios tendem a ter alta Vontade, com tudo o que implica em controle…"
+ },
+ "convocar_espirito": {
+  "pagina": 150,
+  "rotulo": "custo",
+  "texto": "20 para operar. 10 para manter. Divida pela metade estes custos se a mágica for operada no local da morte ou sobre o cadáver da pessoa que está sendo contatada; divida por quatro estes custos se ambas as condições forem satisfeitas."
+ },
+ "convocar_sombra": {
+  "pagina": 102,
+  "rotulo": "custo",
+  "texto": "50 para operar. 20 para manter."
+ },
+ "convocar_zumbi": {
+  "pagina": 153,
+  "rotulo": "custo",
+  "texto": "5 para operar. 2 para manter. Para chamar muitos zumbis, o dobro do custo. Todos os zumbis dentro de um raio de 16 km (mais para uma operação muito bem sucedida) serão convocados."
+ },
+ "copiar": {
+  "pagina": 116,
+  "rotulo": "custo",
+  "texto": "2 mais 1 para cada cópia feita. O documento copiado pode ser 10 vezes maior se o operador dobrar o custo de energia; assim, 4 de energia produziria uma cópia de um documento de dez páginas, enquanto 8 energia copiaria um livro de 100 páginas."
+ },
+ "cores": {
+  "pagina": 110,
+  "rotulo": "custo",
+  "texto": "2 para operar. 1 para manter (mas a mudança é permanente em uma mágica Luz Contínua)."
+ },
+ "cornucopia": {
+  "pagina": 64,
+  "rotulo": "custo",
+  "texto": "Isto é complicado, porque os jogadores habilidosos encontrarão muitas maneiras criativas de perverter esta mágica. Mestres que acham que Cornucópia é um incômodo podem bani-la completamente. Em geral: O custo de energia é igual a 50 vezes o valor em $, no mundo atual do jogo, do projétil fornecido pela aljava da Cornucópia. Assim, uma aljava que fornecesse flechas comuns ($2 cada) custaria 100 de energia para criar. Isso significa que um mago em um o mundo medieval não conseguia fazer uma “aljava” para munição de alta tecnologia; essa munição é inestimável em seu mundo. Uma aljava Cornucópia pode ser feita para produzir flechas mágicas, mas somente se o mago criador for capaz de fazer tal flecha — e o custo de energia seria tremendo."
+ },
+ "corpo_de_agua": {
+  "pagina": 185,
+  "rotulo": "custo",
+  "texto": "5 para operar. 2 para manter."
+ },
+ "corpo_de_ar": {
+  "pagina": 24,
+  "rotulo": "custo",
+  "texto": "4 para operar. 1 para manter."
+ },
+ "corpo_de_chamas": {
+  "pagina": 76,
+  "rotulo": "custo",
+  "texto": "12 para operar. 4 para manter."
+ },
+ "corpo_de_gelo": {
+  "pagina": 189,
+  "rotulo": "custo",
+  "texto": "7 para operar. 3 para manter."
+ },
+ "corpo_de_lodo": {
+  "pagina": 165,
+  "rotulo": "custo",
+  "texto": "6 para operar. 2 para manter."
+ },
+ "corpo_de_madeira": {
+  "pagina": 165,
+  "rotulo": "custo",
+  "texto": "7 para operar. 3 para manter."
+ },
+ "corpo_de_metal": {
+  "pagina": 183,
+  "rotulo": "custo",
+  "texto": "12 para operar. 6 para manter."
+ },
+ "corpo_de_pedra": {
+  "pagina": 54,
+  "rotulo": "custo",
+  "texto": "10 para operar. 5 para manter."
+ },
+ "corpo_de_plastico": {
+  "pagina": 183,
+  "rotulo": "custo",
+  "texto": "10 para operar. 5 para manter."
+ },
+ "corpo_de_sombra": {
+  "pagina": 114,
+  "rotulo": "custo",
+  "texto": "6 para operar. 3 para manter."
+ },
+ "corpo_de_vento": {
+  "pagina": 27,
+  "rotulo": "custo",
+  "texto": "8 para operar. 4 para manter. O custo não se multiplica por fazê-la em criaturas maiores, como na maioria das mágicas Comuns."
+ },
+ "corpo_etereo": {
+  "pagina": 146,
+  "rotulo": "custo",
+  "texto": "8 para operar. 4 para manter."
+ },
+ "corpulencia": {
+  "pagina": 43,
+  "rotulo": "custo",
+  "texto": "6 para operar. 6 para manter."
+ },
+ "correnteza": {
+  "pagina": 194,
+  "rotulo": "basico",
+  "texto": "1/50 (mínimo 1). Mesmo custo para manter."
+ },
+ "corte_de_cabelo": {
+  "pagina": 39,
+  "rotulo": "custo",
+  "texto": "2."
+ },
+ "cozinhar": {
+  "pagina": 78,
+  "rotulo": "custo",
+  "texto": "1 por refeição."
+ },
+ "crescimento_capilar": {
+  "pagina": 39,
+  "rotulo": "custo",
+  "texto": "1 para operar. 1 para manter."
+ },
+ "crescimento_de_plantas": {
+  "pagina": 162,
+  "rotulo": "basico",
+  "texto": "3 para operar. 2 para manter."
+ },
+ "criacao_inspirada": {
+  "pagina": 115,
+  "rotulo": "custo",
+  "texto": "5 por dia gasto na criação do objeto."
+ },
+ "criar_acido": {
+  "pagina": 190,
+  "rotulo": "custo",
+  "texto": "1 por litro criado."
+ },
+ "criar_agua": {
+  "pagina": 184,
+  "rotulo": "custo",
+  "texto": "2 para cada 4 litros criado."
+ },
+ "criar_alimento": {
+  "pagina": 79,
+  "rotulo": "custo",
+  "texto": "2 por refeição para transformar material orgânico em alimento; 3 para transformar material inorgânico em alimento; 4 para criar alimento do nada."
+ },
+ "criar_animal": {
+  "pagina": 98,
+  "rotulo": "custo",
+  "texto": "2, multiplicado por 1+MT para animais maiores que MT 0. Metade disso para manter."
+ },
+ "criar_ar": {
+  "pagina": 23,
+  "rotulo": "basico",
+  "texto": "1. Não pode ser mantida; precisa ser refeita."
+ },
+ "criar_fogo": {
+  "pagina": 72,
+  "rotulo": "basico",
+  "texto": "2. Metade para manter. Incêndios comuns iniciados por esta mágica não precisam de manutenção."
+ },
+ "criar_gelo": {
+  "pagina": 188,
+  "rotulo": "custo",
+  "texto": "2 por 4 litros de gelo criado."
+ },
+ "criar_guerreiro": {
+  "pagina": 98,
+  "rotulo": "custo",
+  "texto": "4 para operar. 4 para manter. Custo para criar um Guerreiro Bruto (ST 16) é 6 para operar; 6 para manter."
+ },
+ "criar_montaria": {
+  "pagina": 99,
+  "rotulo": "custo",
+  "texto": "8 para operar. 3 para manter. Duplique o custo para uma montaria Bruta, uma montaria Alada, uma montaria Treinada para a Guerra ou uma montaria de Corrida. Triplique o custo para uma montaria Alada de Corrida, etc."
+ },
+ "criar_nascente": {
+  "pagina": 190,
+  "rotulo": "custo",
+  "texto": "5 vezes o aumento na produção da nascente, em 4 litros por hora."
+ },
+ "criar_objeto": {
+  "pagina": 98,
+  "rotulo": "custo",
+  "texto": "2 para cada 2,5 kg que o objeto criado pesar."
+ },
+ "criar_planta": {
+  "pagina": 163,
+  "rotulo": "basico",
+  "texto": "4 para gramíneas; 8 para arbustos; 15 para árvores."
+ },
+ "criar_porta": {
+  "pagina": 84,
+  "rotulo": "custo",
+  "texto": "2 por 3 metros quadrados de tamanho da porta. 2 para manter. Para referência, uma porta moderna geralmente tem cerca de 2,10 metros de altura e 0,9 metros de largura. Uma porta criada com 2 de energia teria que ser significativamente menor."
+ },
+ "criar_portal_teleporte": {
+  "pagina": 85,
+  "rotulo": "custo",
+  "texto": "10 vezes o custo total de energia para as mágicas de Teleporte, Viagem no Tempo e Viagem Planar envolvidos (mais para portais maiores). Mesmo custo para manter. Tornar o portal permanente custa 100 vezes mais que o custo da mágica envolvida."
+ },
+ "criar_portal_viagem_no_tempo": {
+  "pagina": 85,
+  "rotulo": "custo",
+  "texto": "10 vezes o custo total de energia para as mágicas de Teleporte, Viagem no Tempo e Viagem Planar envolvidos (mais para portais maiores). Mesmo custo para manter. Tornar o portal permanente custa 100 vezes mais que o custo da mágica envolvida."
+ },
+ "criar_portal_viagem_planar": {
+  "pagina": 85,
+  "rotulo": "custo",
+  "texto": "10 vezes o custo total de energia para as mágicas de Teleporte, Viagem no Tempo e Viagem Planar envolvidos (mais para portais maiores). Mesmo custo para manter. Tornar o portal permanente custa 100 vezes mais que o custo da mágica envolvida."
+ },
+ "criar_servo": {
+  "pagina": 98,
+  "rotulo": "custo",
+  "texto": "3 para operar. 1 para manter. Para um serviçal habilidoso, 4 para operar; 2 para manter. Para um Bruto, 6 para operar; 2 para manter."
+ },
+ "criar_terra": {
+  "pagina": 51,
+  "rotulo": "custo",
+  "texto": "2 a cada 0,75 m³ para criar terra do nada (mínimo 2) ou 1 a cada 0,75 m³ para solidificar lama, transformando-a em terra (mínimo 1)."
+ },
+ "criar_vapor": {
+  "pagina": 190,
+  "rotulo": "basico",
+  "texto": "2 para operar. Não pode ser mantida."
+ },
+ "criptografar": {
+  "pagina": 135,
+  "rotulo": "custo",
+  "texto": "1 para até 1000 palavras de texto simples; 2 para até 10.000 palavras de texto simples; 3 para até 100.000 palavras de texto simples; +1 para cada 100.000 palavras adicionais. Assim, uma pilha de seis suplementos típicos de GURPS Quarta Edição, com cerca de 175.000 palavras por livro, custaria 12 de energia para criptografar."
+ },
+ "cura_profunda": {
+  "pagina": 91,
+  "rotulo": "custo",
+  "texto": "1 a 4. Duas vezes o valor gasto é restaurado para o objetivo."
+ },
+ "cura_superficial": {
+  "pagina": 91,
+  "rotulo": "custo",
+  "texto": "1 a 3. O mesmo valor é restaurado ao objetivo."
+ },
+ "cura_superior": {
+  "pagina": 91,
+  "rotulo": "custo",
+  "texto": "20. Uma tentativa por dia por objetivo."
+ },
+ "curar_doencas": {
+  "pagina": 91,
+  "rotulo": "custo",
+  "texto": "4."
+ },
+ "curar_planta": {
+  "pagina": 161,
+  "rotulo": "basico",
+  "texto": "3. Árvores maiores que as mudas exigem um raio de pelo menos 3 metros."
+ },
+ "curar_radiacao": {
+  "pagina": 182,
+  "rotulo": "custo",
+  "texto": "1 por 10 rads removidos do corpo do objetivo; custo mínimo 5."
+ },
+ "debilitar": {
+  "pagina": 36,
+  "rotulo": "custo",
+  "texto": "1 para cada ponto de redução de ST (máximo 5). Metade do total (arredondar para cima) para manter. Mágicas de Controle do Corpo 37 5"
+ },
+ "decapitacao": {
+  "pagina": 42,
+  "rotulo": "custo",
+  "texto": "4."
+ },
+ "defasar": {
+  "pagina": 83,
+  "rotulo": "custo",
+  "texto": "3."
+ },
+ "defasar_outro": {
+  "pagina": 83,
+  "rotulo": "custo",
+  "texto": "3."
+ },
+ "denominar": {
+  "pagina": 68,
+  "rotulo": "custo",
+  "texto": "400 ou 200, se o nome estiver escrito no objeto. Deve ser legível (decisão do Mestre). Pode ser pequeno, oculto ou até mesmo disfarçado, mas uma pessoa que examina o objeto deve ser capaz de vê-lo. Esta cláusula é uma das principais razões para a popularidade de línguas mortas e obscuras entre os magos — escrever o nome do seu objeto em uma língua extinta é quase tão seguro quanto não escrevê-lo, e muito mais barato."
+ },
+ "desatar": {
+  "pagina": 145,
+  "rotulo": "custo",
+  "texto": "3 para uma única fixação, mais uma para cada alvo extra dentro de um metro; 6 irá desfazer tudo em um raio de um metro, mas uma pessoa nessa área resiste com sua vontade. Itens mais pesados podem ser desfeitos por um custo proporcional. Por exemplo, se um mago é acorrentado, ele pode querer desfazer um elo da corrente, dobrando-o. O Mestre decide que seria necessário ST 20 (força duas vezes o normal) para abrir um elo manualmente. Portanto, o custo para desfazer esse elo é duas vezes o normal ou 6."
+ },
+ "descanso_final": {
+  "pagina": 89,
+  "rotulo": "custo",
+  "texto": "20."
+ },
+ "descongelar": {
+  "pagina": 186,
+  "rotulo": "basico",
+  "texto": "1 (mínimo 2). Abaixo do congelamento, o custo para manter é o mesmo."
+ },
+ "desejo": {
+  "pagina": 61,
+  "rotulo": "custo",
+  "texto": "250."
+ },
+ "desejo_superior": {
+  "pagina": 62,
+  "rotulo": "custo",
+  "texto": "2.000."
+ },
+ "desidratar": {
+  "pagina": 188,
+  "rotulo": "custo",
+  "texto": "1 para 1d-1 de dano causado, até 3."
+ },
+ "desintegrar": {
+  "pagina": 120,
+  "rotulo": "custo",
+  "texto": "1 a 4; faz 1d de dano para cada ponto de energia colocado nela."
+ },
+ "deslizar": {
+  "pagina": 145,
+  "rotulo": "custo",
+  "texto": "2. O mesmo custo para manter."
+ },
+ "deslocar_magica": {
+  "pagina": 124,
+  "rotulo": "custo",
+  "texto": "1/4 da mágica sendo movida, sem contar os bônus que o outro operador pode ter obtido por NH elevado (arredondado para cima)."
+ },
+ "deslocar_terreno": {
+  "pagina": 55,
+  "rotulo": "basico",
+  "texto": "10 para operar. 8 para manter."
+ },
+ "desorientar": {
+  "pagina": 135,
+  "rotulo": "basico",
+  "texto": "1. Não pode ser mantida."
+ },
+ "despertar": {
+  "pagina": 90,
+  "rotulo": "basico",
+  "texto": "1."
+ },
+ "despertar_espirito_do_oficio": {
+  "pagina": 150,
+  "rotulo": "custo",
+  "texto": "Nenhum para o operador! Para cada 3 PF tirados do objetivo, o operador recupera 1 PF."
+ },
+ "destilar": {
+  "pagina": 79,
+  "rotulo": "custo",
+  "texto": "1 por litro original de líquido."
+ },
+ "desviar": {
+  "pagina": 67,
+  "rotulo": "custo",
+  "texto": "Veja a tabela abaixo. BD Custo +1 100 +2 500 +3 2.000 +4 8.000 +5 20.000 Esta mágica pode ser reformulada para fortalecê-la, conforme Precisão (pág. 65)."
+ },
+ "desviar_energia": {
+  "pagina": 73,
+  "rotulo": "custo",
+  "texto": "1."
+ },
+ "desviar_projetil": {
+  "pagina": 143,
+  "rotulo": "custo",
+  "texto": "1."
+ },
+ "desviar_teleporte": {
+  "pagina": 84,
+  "rotulo": "custo",
+  "texto": "Conforme descrito acima; custo mínimo 3."
+ },
+ "desvitalizar_ar": {
+  "pagina": 25,
+  "rotulo": "basico",
+  "texto": "2. Não pode ser mantida; precisa ser refeita."
+ },
+ "deteccao_de_magia": {
+  "pagina": 101,
+  "rotulo": "custo",
+  "texto": "2."
+ },
+ "deteccao_de_veneno": {
+  "pagina": 166,
+  "rotulo": "basico",
+  "texto": "2."
+ },
+ "detectar_ilusao": {
+  "pagina": 97,
+  "rotulo": "custo",
+  "texto": "2."
+ },
+ "detectar_pontos_fracos": {
+  "pagina": 116,
+  "rotulo": "custo",
+  "texto": "1, ou 1 por raio de um objeto grande. Dobre este custo se o objetivo é vivo."
+ },
+ "deteriorar": {
+  "pagina": 77,
+  "rotulo": "custo",
+  "texto": "1 por refeição destruída."
+ },
+ "deturpar": {
+  "pagina": 172,
+  "rotulo": "custo",
+  "texto": "4 para operar. 2 para manter."
+ },
+ "devolver_projetil": {
+  "pagina": 168,
+  "rotulo": "custo",
+  "texto": "2."
+ },
+ "disfarce_ilusorio": {
+  "pagina": 96,
+  "rotulo": "custo",
+  "texto": "3. Não pode ser mantida."
+ },
+ "dissipar_agua": {
+  "pagina": 185,
+  "rotulo": "basico",
+  "texto": "3. Em águas profundas, a área tem apenas 2 metros de altura (ou profundidade). Mesmo custo para manter."
+ },
+ "dissipar_ar": {
+  "pagina": 24,
+  "rotulo": "basico",
+  "texto": "2."
+ },
+ "dom_da_escrita": {
+  "pagina": 46,
+  "rotulo": "custo",
+  "texto": "2 para compreensão Rudimentar; 4 para compreensão Com Sotaque; 6 para compreensão Materna. Metade para manter."
+ },
+ "dom_das_linguas": {
+  "pagina": 46,
+  "rotulo": "custo",
+  "texto": "2 para compreensão Rudimentar; 4 para compreensão Com Sotaque; 6 para compreensão Materna. Metade para manter."
+ },
+ "dominar_animal_ar": {
+  "pagina": 30,
+  "rotulo": "custo",
+  "texto": "2."
+ },
+ "dominar_animal_mar": {
+  "pagina": 30,
+  "rotulo": "custo",
+  "texto": "2."
+ },
+ "dominar_animal_terra": {
+  "pagina": 30,
+  "rotulo": "custo",
+  "texto": "2."
+ },
+ "domo_absoluto": {
+  "pagina": 170,
+  "rotulo": "basico",
+  "texto": "6 para operar. 4 para manter."
+ },
+ "domo_atmosferico": {
+  "pagina": 169,
+  "rotulo": "basico",
+  "texto": "4 para operar. Metade disso para manter."
+ },
+ "domo_climatico": {
+  "pagina": 169,
+  "rotulo": "basico",
+  "texto": "3 para operar. 2 para manter."
+ },
+ "domo_de_forca": {
+  "pagina": 170,
+  "rotulo": "basico",
+  "texto": "3 para operar. 2 para manter."
+ },
+ "doppelganger": {
+  "pagina": 62,
+  "rotulo": "custo",
+  "texto": "1.000."
+ },
+ "dor": {
+  "pagina": 36,
+  "rotulo": "custo",
+  "texto": "2. Não pode ser mantida; precisa ser refeita."
+ },
+ "drenar_aptidao_magica": {
+  "pagina": 130,
+  "rotulo": "custo",
+  "texto": "30."
+ },
+ "drenar_mana": {
+  "pagina": 127,
+  "rotulo": "basico",
+  "texto": "10."
+ },
+ "duplicar": {
+  "pagina": 98,
+  "rotulo": "custo",
+  "texto": "3 para cada 2,5 kg que o objeto criado pesa."
+ },
+ "ecos_do_passado": {
+  "pagina": 107,
+  "rotulo": "custo",
+  "texto": "2 para operar. 2 para manter. A magnitude do modificador de Tempo é adicionada ao custo, então a mágica custa 2 (2+0) para “dentro de um minuto”, mas custaria 7 (2+5) para “4 a 40 dias”."
+ },
+ "eliminar": {
+  "pagina": 62,
+  "rotulo": "custo",
+  "texto": "100. O operador também deve possuir algum objeto ou relíquia pertencente à pessoa, criatura, raça, etc. envolvidos."
+ },
+ "eliminar_odor": {
+  "pagina": 24,
+  "rotulo": "custo",
+  "texto": "2; o mesmo para manter."
+ },
+ "eloquencia": {
+  "pagina": 174,
+  "rotulo": "custo",
+  "texto": "3 para operar. 2 para manter."
+ },
+ "embriaguez": {
+  "pagina": 136,
+  "rotulo": "custo",
+  "texto": "1 para cada ponto de IQ e DX perdido (máximo 5). Metade disso para manter."
+ },
+ "emudecer": {
+  "pagina": 38,
+  "rotulo": "custo",
+  "texto": "3 para operar. 1 para manter."
+ },
+ "encantamento_temporario": {
+  "pagina": 56,
+  "rotulo": "custo",
+  "texto": "Veja Encantamento, pág. 16."
+ },
+ "encantar": {
+  "pagina": 56,
+  "rotulo": "custo",
+  "texto": "Veja Encantamento (pág. 16)."
+ },
+ "enclausuramento_arboreo": {
+  "pagina": 165,
+  "rotulo": "custo",
+  "texto": "8 para operar. 5 para reverter um Enclausuramento Arbóreo."
+ },
+ "encobrir": {
+  "pagina": 61,
+  "rotulo": "custo",
+  "texto": "100 por quilograma de capacidade extra se os objetos contam como carga; 200 se não."
+ },
+ "encolher": {
+  "pagina": 42,
+  "rotulo": "custo",
+  "texto": "2 por 1 MT. Mesmo custo para manter."
+ },
+ "encolher_objeto": {
+  "pagina": 120,
+  "rotulo": "custo",
+  "texto": "1 por 0,5 kg do peso original (mínimo de 0,5 kg) para cada ponto de redução do MT. Mesmo custo para manter."
+ },
+ "encolher_outro": {
+  "pagina": 42,
+  "rotulo": "custo",
+  "texto": "2 por 1 MT. Mesmo custo para manter."
+ },
+ "endurecer": {
+  "pagina": 117,
+  "rotulo": "custo",
+  "texto": "1 por 0,5 kg de peso do objetivo — mínimo 2. Metade disso para manter."
+ },
+ "energizacao": {
+  "pagina": 57,
+  "rotulo": "custo",
+  "texto": "Veja a tabela abaixo. Poder Custo 1 ponto 500 2 pontos 1.000 3 pontos 2.000 4 pontos 4.000 Dobre o custo para cada ponto adicional. Pode ser reformulada em um nível mais alto, conforme Precisão (pág. 65)."
+ },
+ "enfeiticar": {
+  "pagina": 60,
+  "rotulo": "custo",
+  "texto": "200 vezes o custo de da mágica sendo colocada sobre o objetivo."
+ },
+ "enfraquecer": {
+  "pagina": 116,
+  "rotulo": "custo",
+  "texto": "2 a 6."
+ },
+ "enfraquecer_sangue": {
+  "pagina": 40,
+  "rotulo": "custo",
+  "texto": "9 para operar. 5 para manter."
+ },
+ "enfraquecer_vontade": {
+  "pagina": 136,
+  "rotulo": "custo",
+  "texto": "2 por ponto de redução de Vontade (máximo de 5 de redução da Vontade). Metade isso para manter."
+ },
+ "enjoo": {
+  "pagina": 138,
+  "rotulo": "custo",
+  "texto": "3 para operar. 3 para manter."
+ },
+ "ensebar": {
+  "pagina": 142,
+  "rotulo": "basico",
+  "texto": "3 para operar. Mesmo custo para manter."
+ },
+ "ensurdecer": {
+  "pagina": 38,
+  "rotulo": "custo",
+  "texto": "3 para operar. 1 para manter."
+ },
+ "entalhar": {
+  "pagina": 97,
+  "rotulo": "basico",
+  "texto": "1 para operar. Mesmo custo para manter. Mínimo 2."
+ },
+ "entrelacamento": {
+  "pagina": 162,
+  "rotulo": "basico",
+  "texto": "1 para grama, 2 para arbustos e árvores. Metade disso para manter."
+ },
+ "envelhecer": {
+  "pagina": 154,
+  "rotulo": "custo",
+  "texto": "10 a 50 pontos."
+ },
+ "envenenar_alimento": {
+  "pagina": 78,
+  "rotulo": "custo",
+  "texto": "3 por refeição."
+ },
+ "equilibrio": {
+  "pagina": 39,
+  "rotulo": "custo",
+  "texto": "5 para operar. 3 para manter."
+ },
+ "escalada": {
+  "pagina": 35,
+  "rotulo": "custo",
+  "texto": "1 a 3 para operar. Mesmo custo para manter. O incremento no NH em Escalada do objetivo é igual ao dobro da energia utilizada na mágica."
+ },
+ "escamotear_informacao": {
+  "pagina": 123,
+  "rotulo": "custo",
+  "texto": "4 para operar. 2 para manter."
+ },
+ "esconder": {
+  "pagina": 113,
+  "rotulo": "custo",
+  "texto": "1 a 5 para operar. Mesmo custo para manter."
+ },
+ "escravizar": {
+  "pagina": 141,
+  "rotulo": "custo",
+  "texto": "30."
+ },
+ "escriba": {
+  "pagina": 174,
+  "rotulo": "custo",
+  "texto": "3 para operar. 1 para manter."
+ },
+ "escriba_musical": {
+  "pagina": 174,
+  "rotulo": "custo",
+  "texto": "3 para operar. 1 para manter. Aumente o custo em 1 (operação e manutenção) se o papel fornecido não for devidamente regulado para fins de escrita musical (a caneta tem que trabalhar mais para suprir as linhas, assim como notas!)"
+ },
+ "escudo": {
+  "pagina": 167,
+  "rotulo": "custo",
+  "texto": "Duas vezes o Bônus de Defesa dado ao objetivo, até um BD máximo de 4 (custo 8). Metade disso para manter."
+ },
+ "escudo_antimagica": {
+  "pagina": 124,
+  "rotulo": "basico",
+  "texto": "3 para operar. 2 para manter."
+ },
+ "escudo_antiprojeteis": {
+  "pagina": 168,
+  "rotulo": "custo",
+  "texto": "5 para operar. 2 para manter."
+ },
+ "escudo_antiteleporte": {
+  "pagina": 170,
+  "rotulo": "basico",
+  "texto": "1⁄3 para operar (raio mínimo de 3 metros). Mesmo custo para manter."
+ },
+ "escudo_dancante": {
+  "pagina": 67,
+  "rotulo": "custo",
+  "texto": "250 por 0,5 kg de peso do escudo (mínimo de 0,5 kg). Dobre o custo para encantar um escudo com Velocidade 6 ou Perícia 18. Quadruplique o custo para obter os dois. Esta mágica pode ser reformulada em um nível mais alto, como em Precisão (pág. 65), para melhorar ou reparar o Escudo."
+ },
+ "escudo_protetor": {
+  "pagina": 67,
+  "rotulo": "custo",
+  "texto": "500 para +1 para Bloquear, 1.000 para +2 e 2.000 para +3. Custo: Veja a tabela abaixo. Bônus ao Bloqueio Custo +1 50 +2 1.000 +3 2.000 A mágica pode ser reformulada em um nível mais alto como em Precisão (pág. 65)."
+ },
+ "escurecer": {
+  "pagina": 112,
+  "rotulo": "basico",
+  "texto": "1/2 para tochas; 1 para o luar; 3/2 para a luz das estrelas; 2 para a escuridão total. Raio mínimo é de 2 metros."
+ },
+ "escuridao": {
+  "pagina": 112,
+  "rotulo": "basico",
+  "texto": "2 para operar. 1 para manter."
+ },
+ "esfera_de_gelo": {
+  "pagina": 186,
+  "rotulo": "custo",
+  "texto": "qualquer quantia até o seu nível de Aptidão Mágica por segundo, por 3 segundos. A esfera causa 1d de dano por ponto de energia."
+ },
+ "espada_fiel": {
+  "pagina": 63,
+  "rotulo": "custo",
+  "texto": "750 a cada 0,5 kg da arma (mínimo de 0,5 kg)."
+ },
+ "espantar_espirito": {
+  "pagina": 151,
+  "rotulo": "custo",
+  "texto": "4 para operar. 2 para manter. Cada ponto de energia extra na operação reduz a resistência do espírito em 1."
+ },
+ "espantar_zumbi": {
+  "pagina": 152,
+  "rotulo": "basico",
+  "texto": "2. Não pode ser mantida; precisa ser refeita."
+ },
+ "espasmo": {
+  "pagina": 35,
+  "rotulo": "custo",
+  "texto": "2. Não pode ser mantida"
+ },
+ "espectro": {
+  "pagina": 160,
+  "rotulo": "custo",
+  "texto": "2"
+ },
+ "espectro_de_metal": {
+  "pagina": 54,
+  "rotulo": "custo",
+  "texto": "7 para operar. 4 para manter."
+ },
+ "espelho": {
+  "pagina": 112,
+  "rotulo": "custo",
+  "texto": "2. O mesmo custo para manter."
+ },
+ "espiar_portal": {
+  "pagina": 85,
+  "rotulo": "custo",
+  "texto": "4 para operar. 4 para manter."
+ },
+ "espirito_de_caveira": {
+  "pagina": 151,
+  "rotulo": "custo",
+  "texto": "20."
+ },
+ "esquecimento": {
+  "pagina": 135,
+  "rotulo": "custo",
+  "texto": "3 para operar. 3 para manter."
+ },
+ "esquecimento_permanente": {
+  "pagina": 138,
+  "rotulo": "custo",
+  "texto": "15."
+ },
+ "estorvar": {
+  "pagina": 36,
+  "rotulo": "custo",
+  "texto": "1 a 4 para operar. O mesmo para manter."
+ },
+ "estragar": {
+  "pagina": 118,
+  "rotulo": "custo",
+  "texto": "2 por 0,5 kg de material arruinado. Mesmo custo para manter."
+ },
+ "estrondo": {
+  "pagina": 171,
+  "rotulo": "custo",
+  "texto": "2."
+ },
+ "estupidez": {
+  "pagina": 137,
+  "rotulo": "custo",
+  "texto": "8 para operar. 4 para manter."
+ },
+ "evitar": {
+  "pagina": 140,
+  "rotulo": "basico",
+  "texto": "3 para operar. 3 para manter."
+ },
+ "explodir": {
+  "pagina": 118,
+  "rotulo": "custo",
+  "texto": "2 a 6; causa 1d de dano para cada dois pontos de energia colocados nela. Dobre o custo para aumentar o dano em 1d+2."
+ },
+ "expulsar": {
+  "pagina": 156,
+  "rotulo": "custo",
+  "texto": "1 ponto por 10 pontos de personagem que o objetivo custou. O custo mínimo de energia é 10. O operador não saberá com antecedência a quantidade de energia que a mágica exigirá, e poderá ficar inconsciente ou até se ferir ao operar Expulsar."
+ },
+ "extase": {
+  "pagina": 139,
+  "rotulo": "custo",
+  "texto": "6 para operar. Não pode ser mantida."
+ },
+ "extinguir_fogo": {
+  "pagina": 72,
+  "rotulo": "basico",
+  "texto": "3."
+ },
+ "extinguir_radiacao": {
+  "pagina": 181,
+  "rotulo": "custo",
+  "texto": "1 por 10 rads/hora."
+ },
+ "faca_alada": {
+  "pagina": 145,
+  "rotulo": "custo",
+  "texto": "1 por 0,5 kg do peso da arma. Dobre o custo para uma arma que normalmente não é arremessada (como uma espada larga)."
+ },
+ "falar_com_animais_ar": {
+  "pagina": 31,
+  "rotulo": "custo",
+  "texto": "4 para operar. 2 para manter."
+ },
+ "falar_com_animais_mar": {
+  "pagina": 31,
+  "rotulo": "custo",
+  "texto": "4 para operar. 2 para manter."
+ },
+ "falar_com_animais_terra": {
+  "pagina": 31,
+  "rotulo": "custo",
+  "texto": "4 para operar. 2 para manter."
+ },
+ "falar_com_plantas": {
+  "pagina": 164,
+  "rotulo": "custo",
+  "texto": "3 para operar. 2 para manter."
+ },
+ "fantasma": {
+  "pagina": 97,
+  "rotulo": "basico",
+  "texto": "5. Metade disso para manter. Para um custo básico de 9, o fantasma pode ter o dobro do ST normal (DX não é alterado)."
+ },
+ "fascinar": {
+  "pagina": 135,
+  "rotulo": "custo",
+  "texto": "4."
+ },
+ "feitico": {
+  "pagina": 57,
+  "rotulo": "custo",
+  "texto": "200."
+ },
+ "fender": {
+  "pagina": 117,
+  "rotulo": "custo",
+  "texto": "1 por dado de dano a ser infligido ao objeto."
+ },
+ "ferver_agua": {
+  "pagina": 189,
+  "rotulo": "custo",
+  "texto": "2 para uma quantidade de água do tamanho de um punho (produz aproximadamente um hexágono de vapor), 4 para 25 litros de água (produz cerca de 30 m³ de vapor), 6 para 250 litros de água (produz 300 m³ de vapor), 3 para cada 250 litros adicionais."
+ },
+ "flecha_magica": {
+  "pagina": 65,
+  "rotulo": "custo",
+  "texto": "30 vezes o custo de operação da mágica contida, incluindo o custo de manutenção, se desejado, desde que o item seja uma flecha ou um virote de besta. Em uma reação muito boa, a arma fará literalmente qualquer coisa pelo seu portador; em uma muito ruim, ele se recusa a se comunicar ou cooperar de qualquer maneira. Mágicas de Encantamento 66 Mágicas de Encantamento 66 O Mestre pode decidir que esta mágica pode funcionar em outros tipos de projéteis (por exemplo, balas). Se sim, para esses projéteis, multiplique o custo da operação da mágica contida em 1/10 da Max do projétil, em vez de 30. Se o projétil passar além do Max (por exemplo, se disparado de uma arma mais poderosa) a mágica é desperdiçada. (Esta última regra não se aplica a flechas e virotes.) Note que a necessidade de uma joia ainda se aplica a balas!"
+ },
+ "flecha_magica_rapida": {
+  "pagina": 66,
+  "rotulo": "custo",
+  "texto": "Veja a tabela abaixo. Velocidade Custo 1 50 2 100 3 200 Dobre o custo para cada ponto adicional. Pode ser reformulada em um nível mais alto, conforme Precisão (pág. 65)."
+ },
+ "flecha_magica_vazia": {
+  "pagina": 66,
+  "rotulo": "custo",
+  "texto": "30 vezes a capacidade desejada. As regras de Flechas Mágicas para outros projéteis também se aplicam à Flecha Mágica Vazia."
+ },
+ "florescer": {
+  "pagina": 162,
+  "rotulo": "basico",
+  "texto": "2. Não pode ser mantida."
+ },
+ "fome": {
+  "pagina": 38,
+  "rotulo": "custo",
+  "texto": "2."
+ },
+ "forca": {
+  "pagina": 37,
+  "rotulo": "custo",
+  "texto": "2 para cada ponto de incremento de ST (máximo de 5). O mesmo custo para manter."
+ },
+ "forma_de_planta": {
+  "pagina": 164,
+  "rotulo": "custo",
+  "texto": "5 para operar. 2 para manter."
+ },
+ "forma_de_planta_em_outro": {
+  "pagina": 165,
+  "rotulo": "custo",
+  "texto": "5 para operar. 2 para manter."
+ },
+ "fortalecer": {
+  "pagina": 119,
+  "rotulo": "custo",
+  "texto": "1 para operar por ponto de RD (máximo de 8) para um objeto do tamanho de um punho, dobre para um objeto até 0,025 m³, triplique para um objeto MT 0. Mesmo custo para manter."
+ },
+ "fortalecer_vontade": {
+  "pagina": 136,
+  "rotulo": "custo",
+  "texto": "1 para cada +1 para Vontade (máximo de 5 no aumento da Vontade). Metade disso para manter."
+ },
+ "fortificar": {
+  "pagina": 66,
+  "rotulo": "custo",
+  "texto": "Veja a tabela abaixo. Bônus na RD Custo +1 50 +2 200 +3 800 +4 3.000 +5 8.000 A mágica pode ser reformulada para fortalecê-la, conforme Precisão (pág. 65)."
+ },
+ "fragilidade": {
+  "pagina": 37,
+  "rotulo": "custo",
+  "texto": "2 por ponto de decréscimo de HT (máximo de 5). O mesmo custo para manter."
+ },
+ "fragmentar": {
+  "pagina": 116,
+  "rotulo": "custo",
+  "texto": "1 a 3; causa 1d de dano para cada ponto de energia colocado nela."
+ },
+ "frescor": {
+  "pagina": 187,
+  "rotulo": "custo",
+  "texto": "2 para operar. 1 para manter."
+ },
+ "frio": {
+  "pagina": 74,
+  "rotulo": "custo",
+  "texto": "Exatamente como para Calor, exceto que cada minuto reduz a temperatura do alvo em 10°."
+ },
+ "fumaca": {
+  "pagina": 73,
+  "rotulo": "basico",
+  "texto": "1. Metade disso para manter."
+ },
+ "furacao": {
+  "pagina": 25,
+  "rotulo": "basico",
+  "texto": "2. Metade disso para manter."
+ },
+ "furia": {
+  "pagina": 134,
+  "rotulo": "custo",
+  "texto": "3 para operar. 2 para manter."
+ },
+ "furtividade_magica": {
+  "pagina": 172,
+  "rotulo": "custo",
+  "texto": "3 para operar. 2 para manter."
+ },
+ "fusao_com_arma": {
+  "pagina": 119,
+  "rotulo": "custo",
+  "texto": "8 para operar. 4 para manter."
+ },
+ "geada": {
+  "pagina": 193,
+  "rotulo": "basico",
+  "texto": "1."
+ },
+ "geiser": {
+  "pagina": 190,
+  "rotulo": "basico",
+  "texto": "5 para operar. 2 para manter."
+ },
+ "geladura": {
+  "pagina": 189,
+  "rotulo": "custo",
+  "texto": "1 por dado de dano causado, até 3."
+ },
+ "gema_de_energia": {
+  "pagina": 69,
+  "rotulo": "custo",
+  "texto": "20."
+ },
+ "geovisao": {
+  "pagina": 51,
+  "rotulo": "custo",
+  "texto": "2 por 10 metros de profundidade para operar. Mesmo custo para manter."
+ },
+ "gerar_odor": {
+  "pagina": 24,
+  "rotulo": "basico",
+  "texto": "1. Não pode ser mantida."
+ },
+ "girar_lamina": {
+  "pagina": 167,
+  "rotulo": "custo",
+  "texto": "1."
+ },
+ "golem": {
+  "pagina": 59,
+  "rotulo": "custo",
+  "texto": "250 ou mais."
+ },
+ "golpe_distante": {
+  "pagina": 144,
+  "rotulo": "custo",
+  "texto": "3. O mesmo custo para manter."
+ },
+ "graca": {
+  "pagina": 37,
+  "rotulo": "custo",
+  "texto": "4 para cada ponto de incremento de DX (máximo de 5). O mesmo custo para manter."
+ },
+ "granizo": {
+  "pagina": 195,
+  "rotulo": "basico",
+  "texto": "1/5 (mínimo 1). Para granizo prejudicial, o custo básico é 1. Mesmo custo para manter."
+ },
+ "guardachuva": {
+  "pagina": 185,
+  "rotulo": "custo",
+  "texto": "1."
+ },
+ "guardamagica": {
+  "pagina": 127,
+  "rotulo": "custo",
+  "texto": "1 a 3 para operar. Mesmo custo para manter. O custo não é reduzido por NH elevado."
+ },
+ "guia": {
+  "pagina": 105,
+  "rotulo": "custo",
+  "texto": "4. Uma tentativa por dia."
+ },
+ "historia": {
+  "pagina": 106,
+  "rotulo": "custo",
+  "texto": "3 para a história de um dia; 5 por uma semana; 8 por um mês; 10 por um ano."
+ },
+ "historia_antiga": {
+  "pagina": 106,
+  "rotulo": "custo",
+  "texto": "3 para a história de um ano; 5 por 10 anos de história; 8 por 100 anos; 10 por 1.000 anos."
+ },
+ "homunculo": {
+  "pagina": 70,
+  "rotulo": "custo",
+  "texto": "800."
+ },
+ "hora_certa": {
+  "pagina": 100,
+  "rotulo": "custo",
+  "texto": "1."
+ },
+ "identificar_magica": {
+  "pagina": 102,
+  "rotulo": "custo",
+  "texto": "2."
+ },
+ "identificar_metal": {
+  "pagina": 182,
+  "rotulo": "custo",
+  "texto": "1."
+ },
+ "identificar_planta": {
+  "pagina": 161,
+  "rotulo": "custo",
+  "texto": "2."
+ },
+ "identificar_plastico": {
+  "pagina": 182,
+  "rotulo": "custo",
+  "texto": "1."
+ },
+ "ilusao_complexa": {
+  "pagina": 96,
+  "rotulo": "basico",
+  "texto": "2 para operar. Metade disso para manter."
+ },
+ "ilusao_perfeita": {
+  "pagina": 96,
+  "rotulo": "basico",
+  "texto": "3 para operar. Metade disso para manter. Por um custo duplo, até mesmo o sentido de toque será enganado, embora você não possa “realmente” se aquecer com um fogo ilusório."
+ },
+ "ilusao_simples": {
+  "pagina": 95,
+  "rotulo": "basico",
+  "texto": "1 para operar. Metade disso para manter."
+ },
+ "imagens_do_passado": {
+  "pagina": 107,
+  "rotulo": "custo",
+  "texto": "3 para operar. 3 para manter. A magnitude do modificador de Tempo é adicionada ao custo, então a mágica custa 3 (3+0) para “dentro de um minuto”, mas custaria 8 (3+5) para “4 a 40 dias”."
+ },
+ "imitar_voz": {
+  "pagina": 172,
+  "rotulo": "custo",
+  "texto": "3 para operar. 1 para manter."
+ },
+ "imunidade_a_acido": {
+  "pagina": 190,
+  "rotulo": "custo",
+  "texto": "2 para operar; 6 se o objetivo precisar resistir ao Ácido Essencial. Metade disso para manter."
+ },
+ "imunidade_a_agua": {
+  "pagina": 186,
+  "rotulo": "custo",
+  "texto": "2 para operar. 1 para manter."
+ },
+ "imunidade_a_doencas": {
+  "pagina": 90,
+  "rotulo": "custo",
+  "texto": "4 para operar. 3 para manter."
+ },
+ "imunidade_a_dor": {
+  "pagina": 38,
+  "rotulo": "custo",
+  "texto": "4 para operar. 2 para manter."
+ },
+ "imunidade_a_encantamento": {
+  "pagina": 58,
+  "rotulo": "custo",
+  "texto": "Veja a tabela abaixo. Penalidade Custo -1 50 -2 100 -3 200 -4 500 -5 1.000"
+ },
+ "imunidade_a_pressao": {
+  "pagina": 169,
+  "rotulo": "custo",
+  "texto": "Varia com a vantagem conferida. Vantagem Custo de Energia"
+ },
+ "imunidade_a_radiacao": {
+  "pagina": 182,
+  "rotulo": "custo",
+  "texto": "1 para FP 10, 2 para FP 100, 3 para FP 1.000. Metade disso (arredondar para cima) para manter."
+ },
+ "imunidade_a_sujeira": {
+  "pagina": 116,
+  "rotulo": "custo",
+  "texto": "2 para operar. 1 para manter."
+ },
+ "imunidade_a_veneno": {
+  "pagina": 91,
+  "rotulo": "custo",
+  "texto": "4 para operar. 3 para manter."
+ },
+ "imunidade_ao_fogo": {
+  "pagina": 74,
+  "rotulo": "custo",
+  "texto": "2 para operar. 1 para manter. Duplique o custo se o objetivo deve resistir a um alto-forno ou vulcão; o custo triplica se o objetivo tiver que resistir ao calor de uma estrela, bomba nuclear, etc. Somente o primeiro nível de proteção é necessário contra mágicas do Fogo do tipo de combate."
+ },
+ "imunidade_ao_frio": {
+  "pagina": 74,
+  "rotulo": "custo",
+  "texto": "2 para operar. 1 para manter. Dobre o custo se o objetivo deve resistir a frio de -20° ou mais; triplique o custo se o objetivo tiver que resistir ao frio do zero absoluto."
+ },
+ "imunidade_ao_som": {
+  "pagina": 173,
+  "rotulo": "custo",
+  "texto": "2 para operar. 1 para manter."
+ },
+ "inabilidade": {
+  "pagina": 36,
+  "rotulo": "custo",
+  "texto": "1 a 5 para fazer. Metade desse valor (arredondado para cima) para manter."
+ },
+ "infravisao": {
+  "pagina": 111,
+  "rotulo": "custo",
+  "texto": "3 para operar. 1 para manter."
+ },
+ "iniciativa": {
+  "pagina": 97,
+  "rotulo": "basico",
+  "texto": "1/3 por ponto de aumento de DX ou IQ (arredondado para cima), mais 1 por perícia; custo básico mínimo de 3."
+ },
+ "interromper_envelhecimento": {
+  "pagina": 94,
+  "rotulo": "custo",
+  "texto": "20. Uma tentativa por semana."
+ },
+ "intervalo": {
+  "pagina": 87,
+  "rotulo": "basico",
+  "texto": "5."
+ },
+ "invisibilidade": {
+  "pagina": 114,
+  "rotulo": "custo",
+  "texto": "5 para operar. 3 para manter."
+ },
+ "irradiar": {
+  "pagina": 181,
+  "rotulo": "basico",
+  "texto": "1 por 10 rads/hora. Metade disso para manter."
+ },
+ "jato_de_acido": {
+  "pagina": 192,
+  "rotulo": "custo",
+  "texto": "1 a 3. Causa 1d-1 de dano por cada ponto usado. A distância é igual ao número de dados. O custo para manter é o mesmo."
+ },
+ "jato_de_agua": {
+  "pagina": 187,
+  "rotulo": "custo",
+  "texto": "1 a 3. Dá 1d de dano a cada ponto colocado nele. Distância é igual ao número de dados."
+ },
+ "jato_de_ar": {
+  "pagina": 24,
+  "rotulo": "custo",
+  "texto": "1 a 3. O mesmo para manter."
+ },
+ "jato_de_areia": {
+  "pagina": 52,
+  "rotulo": "custo",
+  "texto": "1 a 3. A distância do jato em metros é igual à energia aplicada nela. Custo para manter é o mesmo."
+ },
+ "jato_de_chamas": {
+  "pagina": 73,
+  "rotulo": "custo",
+  "texto": "1 a 3 pontos. Causa 1d de dano para cada ponto colocado na mágica. A distância do jato em metros é igual ao número de dados. Mesmo custo para manter."
+ },
+ "jato_de_lama": {
+  "pagina": 52,
+  "rotulo": "custo",
+  "texto": "1 a 3. Causa 1d de projeção para cada ponto usado. Distância é igual ao número de dados. Custo para manter é o mesmo."
+ },
+ "jato_de_luz": {
+  "pagina": 112,
+  "rotulo": "custo",
+  "texto": "2 para operar. 1 para manter."
+ },
+ "jato_de_neve": {
+  "pagina": 189,
+  "rotulo": "custo",
+  "texto": "1 a 3. O jato causa 1d de projeção para cada ponto colocado nela. Sua distância é igual ao número de dados. O custo para manter é o mesmo."
+ },
+ "jato_de_radiacao": {
+  "pagina": 182,
+  "rotulo": "custo",
+  "texto": "1 a 3. A distância em metros é igual ao custo de energia. Mesmo custo de manutenção."
+ },
+ "jato_de_som": {
+  "pagina": 173,
+  "rotulo": "custo",
+  "texto": "1 a 4 para operar. Mesmo custo para manter. Distância em metros é igual ao custo de energia."
+ },
+ "jato_de_vapor": {
+  "pagina": 191,
+  "rotulo": "custo",
+  "texto": "1 a 3. Dá 1d-1 de dano escaldante a cada ponto colocado nela. A distância é igual ao número de dados. O custo para manter é o mesmo."
+ },
+ "jornada_rapida": {
+  "pagina": 82,
+  "rotulo": "custo",
+  "texto": "Como Teleporte ou Viagem no Tempo, mais um quarto do custo da viagem, por minuto."
+ },
+ "juramento": {
+  "pagina": 138,
+  "rotulo": "custo",
+  "texto": "4."
+ },
+ "lampejo": {
+  "pagina": 112,
+  "rotulo": "custo",
+  "texto": "4."
+ },
+ "lealdade": {
+  "pagina": 136,
+  "rotulo": "custo",
+  "texto": "2 para operar. 2 para manter. Dobre este custo se o objetivo não conhece o operador, ou triplique se o objetivo for um inimigo do operador."
+ },
+ "leitura_da_mente": {
+  "pagina": 46,
+  "rotulo": "custo",
+  "texto": "4 para operar. 2 para manter."
+ },
+ "leitura_do_corpo": {
+  "pagina": 88,
+  "rotulo": "custo",
+  "texto": "2."
+ },
+ "levitacao": {
+  "pagina": 143,
+  "rotulo": "custo",
+  "texto": "1 por 40 kg (mínimo 2) para operar. Metade (arredondado para cima) para manter."
+ },
+ "liberdade": {
+  "pagina": 148,
+  "rotulo": "custo",
+  "texto": "2 por ponto de bônus (bônus máximo +5). Mesmo custo para manter."
+ },
+ "limite": {
+  "pagina": 68,
+  "rotulo": "custo",
+  "texto": "200."
+ },
+ "limpar": {
+  "pagina": 116,
+  "rotulo": "basico",
+  "texto": "2."
+ },
+ "limpar_a_caca": {
+  "pagina": 78,
+  "rotulo": "custo",
+  "texto": "2."
+ },
+ "localizador": {
+  "pagina": 105,
+  "rotulo": "custo",
+  "texto": "3. Uma tentativa por semana."
+ },
+ "localizar_agua": {
+  "pagina": 184,
+  "rotulo": "custo",
+  "texto": "2."
+ },
+ "localizar_alimento": {
+  "pagina": 77,
+  "rotulo": "custo",
+  "texto": "2."
+ },
+ "localizar_animais": {
+  "pagina": 32,
+  "rotulo": "custo",
+  "texto": "3. Uma tentativa por semana por espécie."
+ },
+ "localizar_ar": {
+  "pagina": 23,
+  "rotulo": "custo",
+  "texto": "1."
+ },
+ "localizar_costa": {
+  "pagina": 184,
+  "rotulo": "custo",
+  "texto": "3."
+ },
+ "localizar_fogo": {
+  "pagina": 72,
+  "rotulo": "custo",
+  "texto": "1."
+ },
+ "localizar_magia": {
+  "pagina": 102,
+  "rotulo": "custo",
+  "texto": "6."
+ },
+ "localizar_passagem": {
+  "pagina": 51,
+  "rotulo": "custo",
+  "texto": "3."
+ },
+ "localizar_planta": {
+  "pagina": 161,
+  "rotulo": "custo",
+  "texto": "2"
+ },
+ "localizar_plastico": {
+  "pagina": 182,
+  "rotulo": "custo",
+  "texto": "3."
+ },
+ "localizar_portal": {
+  "pagina": 85,
+  "rotulo": "custo",
+  "texto": "3."
+ },
+ "localizar_radiacao": {
+  "pagina": 181,
+  "rotulo": "custo",
+  "texto": "3."
+ },
+ "localizar_terra": {
+  "pagina": 50,
+  "rotulo": "custo",
+  "texto": "3."
+ },
+ "loquacidade": {
+  "pagina": 141,
+  "rotulo": "custo",
+  "texto": "2 para operar. 1 para manter."
+ },
+ "loucura": {
+  "pagina": 136,
+  "rotulo": "custo",
+  "texto": "2 para uma loucura Leve; 3 para uma Moderada; 4 para Grave; 6 para Extrema. Metade disso para manter."
+ },
+ "loucura_permanente": {
+  "pagina": 139,
+  "rotulo": "custo",
+  "texto": "20."
+ },
+ "luz": {
+  "pagina": 110,
+  "rotulo": "custo",
+  "texto": "1 para operar. 1 para manter."
+ },
+ "luz_continua": {
+  "pagina": 110,
+  "rotulo": "custo",
+  "texto": "2 para um brilho fraco como o luar, 4 para o brilho de uma tocha, 6 para um brilho forte como a luz do dia."
+ },
+ "luz_magica": {
+  "pagina": 113,
+  "rotulo": "custo",
+  "texto": "1 para um brilho fraco como a luz de velas, 2 para o brilho de uma tocha, 3 para um brilho tão brilhante como o dia. Mesmo custo para manter."
+ },
+ "luz_magica_continua": {
+  "pagina": 113,
+  "rotulo": "custo",
+  "texto": "2 para um brilho fraco como a luz de velas, 4 para o brilho de uma tocha, 6 para um brilho tão brilhante como o dia. Mesmo custo para manter."
+ },
+ "luz_solar": {
+  "pagina": 114,
+  "rotulo": "basico",
+  "texto": "2 para operar. 1 para manter."
+ },
+ "luz_solar_continua": {
+  "pagina": 114,
+  "rotulo": "basico",
+  "texto": "3."
+ },
+ "madeira_essencial": {
+  "pagina": 164,
+  "rotulo": "custo",
+  "texto": "8 por 0,75 m³."
+ },
+ "magica_penetrante": {
+  "pagina": 123,
+  "rotulo": "custo",
+  "texto": "Veja a tabela abaixo. Divisor de Armadura Custo 2 2 3 4 5 6 10 8 Ignora RD 10"
+ },
+ "magreza": {
+  "pagina": 43,
+  "rotulo": "custo",
+  "texto": "6 para operar. 6 para manter."
+ },
+ "maldicao": {
+  "pagina": 129,
+  "rotulo": "custo",
+  "texto": "3 para uma Maldição de 1 ponto, 10 para uma Maldição de 2 pontos, 20 para uma Maldição de 3 pontos. Como Bênção, Maldições não podem ser “empilhadas”."
+ },
+ "maleficio": {
+  "pagina": 60,
+  "rotulo": "custo",
+  "texto": "250. A cera e os ingredientes especiais custam $500."
+ },
+ "manipular": {
+  "pagina": 145,
+  "rotulo": "custo",
+  "texto": "4 para operar e 3 para manter para cada 5 kg manipulados."
+ },
+ "manter_magica": {
+  "pagina": 128,
+  "rotulo": "custo",
+  "texto": "Igual à manutenção normal da mágica-objetivo pelo tanto de tempo que o operador quer que ela dure (incluindo as reduções de custo do operador para NH elevado). Assim, uma mágica que custa 1 por minuto para manter poderia ser ajustada para se manter por 10 minutos a um custo de 10 de energia. Se o operador puder manter a mágica indefinidamente sem custo de energia (devido à NH elevado), o custo é de 1 energia para cada cinco períodos de duração total. Assim, um mago com Terremoto com NH 20 poderia definir a mágica para durar 30 minutos por 6 de energia. NH elevado com esta mágica também reduz o custo normalmente!"
+ },
+ "mao_magica": {
+  "pagina": 104,
+  "rotulo": "custo",
+  "texto": "4 para operar e 3 para manter uma mão; 6 para operar e 4 para manter duas mãos."
+ },
+ "marca_mistica": {
+  "pagina": 119,
+  "rotulo": "custo",
+  "texto": "3"
+ },
+ "marcha_acelerada": {
+  "pagina": 144,
+  "rotulo": "custo",
+  "texto": "4. Não pode ser mantida."
+ },
+ "marcha_lenta": {
+  "pagina": 143,
+  "rotulo": "custo",
+  "texto": "3 para operar. Não pode ser mantida."
+ },
+ "mare": {
+  "pagina": 194,
+  "rotulo": "basico",
+  "texto": "1/30 (mínimo 1). Mesmo custo para manter."
+ },
+ "materializar": {
+  "pagina": 150,
+  "rotulo": "custo",
+  "texto": "5 para operar. 5 para manter."
+ },
+ "maturar": {
+  "pagina": 78,
+  "rotulo": "custo",
+  "texto": "1 por 0,5 kg de alimento. Não pode ser mantida."
+ },
+ "mau_cheiro": {
+  "pagina": 24,
+  "rotulo": "basico",
+  "texto": "1. Não pode ser mantida; precisa ser refeita."
+ },
+ "medidas": {
+  "pagina": 100,
+  "rotulo": "basico",
+  "texto": "1."
+ },
+ "medo": {
+  "pagina": 134,
+  "rotulo": "basico",
+  "texto": "1. Não pode ser mantida."
+ },
+ "memoria_falsa": {
+  "pagina": 139,
+  "rotulo": "custo",
+  "texto": "3 por uma duração de uma hora ou 8 por um dia inteiro. O custo de manutenção é de 3 por hora, se for operada por uma hora, ou 4 por dia, se for operada por um dia."
+ },
+ "memorizar": {
+  "pagina": 105,
+  "rotulo": "custo",
+  "texto": "3 para operar. Não pode ser mantida."
+ },
+ "mensagem": {
+  "pagina": 174,
+  "rotulo": "custo",
+  "texto": "1 por 15 segundos de duração da mensagem."
+ },
+ "metalovisao": {
+  "pagina": 183,
+  "rotulo": "custo",
+  "texto": "2 por 5 metros de profundidade (máximo de 50 metros) para operar. Mesmo custo para manter."
+ },
+ "metamorfose_animal_Ar": {
+  "pagina": 32,
+  "rotulo": "custo",
+  "texto": "Variável (veja acima)."
+ },
+ "metamorfose_animal_Mar": {
+  "pagina": 32,
+  "rotulo": "custo",
+  "texto": "Variável (veja acima)."
+ },
+ "metamorfose_animal_terra": {
+  "pagina": 32,
+  "rotulo": "custo",
+  "texto": "Variável (veja acima)."
+ },
+ "metamorfose_parcial_animal_ar": {
+  "pagina": 34,
+  "rotulo": "custo",
+  "texto": "Variável; nunca menos que 3. Um terço (arredondado para cima) para manter."
+ },
+ "metamorfose_parcial_animal_mar": {
+  "pagina": 34,
+  "rotulo": "custo",
+  "texto": "Variável; nunca menos que 3. Um terço (arredondado para cima) para manter."
+ },
+ "metamorfose_parcial_animal_terra": {
+  "pagina": 34,
+  "rotulo": "custo",
+  "texto": "Variável; nunca menos que 3. Um terço (arredondado para cima) para manter."
+ },
+ "metamorfose_permanente_animal_ar": {
+  "pagina": 33,
+  "rotulo": "custo",
+  "texto": "5 vezes o custo da mágica Metamorfose correspondente."
+ },
+ "metamorfose_permanente_animal_mar": {
+  "pagina": 33,
+  "rotulo": "custo",
+  "texto": "5 vezes o custo da mágica Metamorfose correspondente."
+ },
+ "metamorfose_permanente_animal_terra": {
+  "pagina": 33,
+  "rotulo": "custo",
+  "texto": "5 vezes o custo da mágica Metamorfose correspondente."
+ },
+ "metamorfose_superior": {
+  "pagina": 34,
+  "rotulo": "custo",
+  "texto": "20 para operar, mais 1 para cada 5 pontos adicionais de limite de modelo. Metade disso para manter."
+ },
+ "metamorfosear_outro_animal_ar": {
+  "pagina": 33,
+  "rotulo": "custo",
+  "texto": "Como Metamorfose, mas o custo mínimo da mágica é 6 para operar e 2 para manter."
+ },
+ "metamorfosear_outro_animal_mar": {
+  "pagina": 33,
+  "rotulo": "custo",
+  "texto": "Como Metamorfose, mas o custo mínimo da mágica é 6 para operar e 2 para manter."
+ },
+ "metamorfosear_outro_animal_terra": {
+  "pagina": 33,
+  "rotulo": "custo",
+  "texto": "Como Metamorfose, mas o custo mínimo da mágica é 6 para operar e 2 para manter."
+ },
+ "mira_rapida": {
+  "pagina": 65,
+  "rotulo": "custo",
+  "texto": "100. Por 200 de energia, uma ação de Pontaria pode contar por três turnos de pontaria. Reduzir o custo se o objetivo for um projétil (por exemplo, um dardo ou um machado de arremesso). O encantamento não funciona com munição (como flechas). Note que esta mágica pode ser reformulada em um nível mais alto, conforme Precisão."
+ },
+ "moldar_agua": {
+  "pagina": 185,
+  "rotulo": "custo",
+  "texto": "1 para moldar 80 litros. Mesmo custo para manter."
+ },
+ "moldar_ar": {
+  "pagina": 24,
+  "rotulo": "custo",
+  "texto": "1 a 10 (1 produz uma brisa suave; 4, um vento; 6, uma ventania; 8 ou mais, um pé de vento violento); o mesmo para manter."
+ },
+ "moldar_fogo": {
+  "pagina": 72,
+  "rotulo": "basico",
+  "texto": "2. Metade disso para manter."
+ },
+ "moldar_luz": {
+  "pagina": 111,
+  "rotulo": "custo",
+  "texto": "2. O mesmo custo para manter."
+ },
+ "moldar_metal": {
+  "pagina": 182,
+  "rotulo": "custo",
+  "texto": "6 por 0,75 m³ (4 para metais macios, como chumbo, ouro ou magnésio). Metade disso para manter."
+ },
+ "moldar_planta": {
+  "pagina": 161,
+  "rotulo": "custo",
+  "texto": "3 para operar. 1 para manter. Dobre o custo se o material não estiver mais vivo."
+ },
+ "moldar_plastico": {
+  "pagina": 183,
+  "rotulo": "custo",
+  "texto": "6 para operar. 3 para manter."
+ },
+ "moldar_terra": {
+  "pagina": 50,
+  "rotulo": "custo",
+  "texto": "1 por 0,75 m³ de terra moldado (mínimo 2); metade desse valor (arredondado para cima) para manter. Duplique o custo para moldar a pedra; sextuplique custo para moldar pedras cortadas ou trabalhadas, como uma parede. Não é fácil fazer a sua própria porta para o castelo."
+ },
+ "moldar_trevas": {
+  "pagina": 113,
+  "rotulo": "basico",
+  "texto": "2. O mesmo custo para manter. Para sombras bidimensionais, o custo básico é 1."
+ },
+ "morte_candente": {
+  "pagina": 76,
+  "rotulo": "custo",
+  "texto": "3 para operar. 2 para manter."
+ },
+ "morte_putrefata": {
+  "pagina": 154,
+  "rotulo": "custo",
+  "texto": "3 para operar. 2 para manter."
+ },
+ "muralha_absoluta": {
+  "pagina": 170,
+  "rotulo": "custo",
+  "texto": "4 por metro de comprimento. Mesmo custo para manter."
+ },
+ "muralha_de_forca": {
+  "pagina": 170,
+  "rotulo": "custo",
+  "texto": "2 por metro de comprimento operado. Mesmo custo para manter."
+ },
+ "muralha_de_luz": {
+  "pagina": 113,
+  "rotulo": "basico",
+  "texto": "1 a 3 para operar. Mesmo custo para manter. O brilho da muralha depende da energia colocada em seu custo básico, como em Luz Contínua."
+ },
+ "muralha_de_silencio": {
+  "pagina": 172,
+  "rotulo": "basico",
+  "texto": "2 para operar. 1 para manter."
+ },
+ "muralha_de_vento": {
+  "pagina": 25,
+  "rotulo": "basico",
+  "texto": "2. Metade disso para manter."
+ },
+ "muralha_de_vidro": {
+  "pagina": 103,
+  "rotulo": "custo",
+  "texto": "4 para operar. 2 para manter."
+ },
+ "muralha_magica": {
+  "pagina": 124,
+  "rotulo": "custo",
+  "texto": "2 para operar por parte de muralha de um metro. Mesmo custo para manter. A Muralha Mágica também pode ser operada horizontalmente, como um “teto” ou “piso”; cada ponto de energia cobrirá dois hexágonos em um mapa de batalha."
+ },
+ "murchar_planta": {
+  "pagina": 163,
+  "rotulo": "basico",
+  "texto": "2."
+ },
+ "nadar": {
+  "pagina": 147,
+  "rotulo": "custo",
+  "texto": "6 para operar. 3 para manter."
+ },
+ "nariz_magico": {
+  "pagina": 104,
+  "rotulo": "custo",
+  "texto": "3 para operar. 2 para manter."
+ },
+ "nausear": {
+  "pagina": 38,
+  "rotulo": "custo",
+  "texto": "2. O mesmo custo para manter."
+ },
+ "neblina_mistica": {
+  "pagina": 168,
+  "rotulo": "basico",
+  "texto": "1. O custo para manter é o mesmo. Mágicas de Proteção e Aviso 169 22"
+ },
+ "neutralizacao_instantanea_de_veneno": {
+  "pagina": 92,
+  "rotulo": "custo",
+  "texto": "8. Uma tentativa por dia."
+ },
+ "neutralizar_veneno": {
+  "pagina": 92,
+  "rotulo": "custo",
+  "texto": "5."
+ },
+ "neve": {
+  "pagina": 195,
+  "rotulo": "basico",
+  "texto": "1/15 (mínimo 1). Cada 1/15 de energia adicional por metro de raio aumenta a quantidade de neve em 2,5 centímetro por hora. Mesmo custo para manter."
+ },
+ "nevoeiro": {
+  "pagina": 193,
+  "rotulo": "basico",
+  "texto": "2 para operar. Metade disso para manter."
+ },
+ "no": {
+  "pagina": 117,
+  "rotulo": "custo",
+  "texto": "2. Não pode ser mantida — precisa ser refeita se a corda estiver desamarrada."
+ },
+ "nublar": {
+  "pagina": 113,
+  "rotulo": "custo",
+  "texto": "1 a 5 para operar. Mesmo custo para manter."
+ },
+ "nuvem_de_faiscas": {
+  "pagina": 196,
+  "rotulo": "basico",
+  "texto": "1 a 5; a nuvem causa 1 ponto de dano por segundo para cada ponto de energia investido no custo básico."
+ },
+ "nuvem_de_fogo": {
+  "pagina": 75,
+  "rotulo": "basico",
+  "texto": "1 a 5; a nuvem inflige 1 ponto de dano por segundo para cada ponto de energia colocado no custo base. Mesmo custo para manter."
+ },
+ "nuvem_de_polen": {
+  "pagina": 162,
+  "rotulo": "basico",
+  "texto": "1. Não pode ser mantida."
+ },
+ "nuvens": {
+  "pagina": 194,
+  "rotulo": "basico",
+  "texto": "1/20 (mínimo 1). Mesmo custo para manter."
+ },
+ "objeto_dancante": {
+  "pagina": 144,
+  "rotulo": "custo",
+  "texto": "4 para operar. 2 para manter."
+ },
+ "ocultar": {
+  "pagina": 162,
+  "rotulo": "basico",
+  "texto": "Em floresta ou selva (ou debaixo d’água), 1 para operar; em planícies ou savana, 2; na tundra, 3. O mesmo custo para manter."
+ },
+ "ocultar_emocao": {
+  "pagina": 45,
+  "rotulo": "custo",
+  "texto": "2 para operar. 2 para manter."
+ },
+ "ocultar_magia": {
+  "pagina": 122,
+  "rotulo": "custo",
+  "texto": "1 a 5 para operar. Mesmo custo para manter."
+ },
+ "ocultar_pensamentos": {
+  "pagina": 46,
+  "rotulo": "custo",
+  "texto": "3 para operar. 1 para manter."
+ },
+ "ocultar_rastros": {
+  "pagina": 162,
+  "rotulo": "custo",
+  "texto": "2 para operar. 1 para manter."
+ },
+ "olho_magico": {
+  "pagina": 104,
+  "rotulo": "custo",
+  "texto": "4 para operar. 2 para manter."
+ },
+ "olho_magico_invisivel": {
+  "pagina": 104,
+  "rotulo": "custo",
+  "texto": "5 para operar. 3 para manter."
+ },
+ "olhos_do_falcao": {
+  "pagina": 111,
+  "rotulo": "basico",
+  "texto": "2 por nível de visão telescópica. Metade disso para manter."
+ },
+ "ondas": {
+  "pagina": 194,
+  "rotulo": "basico",
+  "texto": "1/60 (mínimo 1). Mesmo custo para manter."
+ },
+ "orientacao": {
+  "pagina": 101,
+  "rotulo": "custo",
+  "texto": "2."
+ },
+ "ouvido_magico": {
+  "pagina": 174,
+  "rotulo": "custo",
+  "texto": "4 para operar. 3 para manter."
+ },
+ "ouvido_magico_invisivel": {
+  "pagina": 174,
+  "rotulo": "custo",
+  "texto": "5 para operar. 3 para manter."
+ },
+ "paladar_remoto": {
+  "pagina": 77,
+  "rotulo": "custo",
+  "texto": "3 para operar. 1 para manter."
+ },
+ "panico": {
+  "pagina": 134,
+  "rotulo": "basico",
+  "texto": "4 para operar. 2 para manter."
+ },
+ "paralisar_membro": {
+  "pagina": 40,
+  "rotulo": "custo",
+  "texto": "3. Não pode ser mantida; precisa ser refeita."
+ },
+ "paralisia_total": {
+  "pagina": 40,
+  "rotulo": "custo",
+  "texto": "5. Não pode ser mantida; precisa ser refeita."
+ },
+ "passageiro_da_alma": {
+  "pagina": 49,
+  "rotulo": "custo",
+  "texto": "5 para operar. 2 para manter."
+ },
+ "passageiro_interno": {
+  "pagina": 31,
+  "rotulo": "custo",
+  "texto": "4 para operar. 1 para manter."
+ },
+ "passageiro_interno_criaturas_da_terra": {
+  "pagina": 31,
+  "rotulo": "custo",
+  "texto": "4 para operar. 1 para manter."
+ },
+ "passageiro_interno_criaturas_do_ar": {
+  "pagina": 31,
+  "rotulo": "custo",
+  "texto": "4 para operar. 1 para manter."
+ },
+ "passageiro_interno_criaturas_do_mar": {
+  "pagina": 31,
+  "rotulo": "custo",
+  "texto": "4 para operar. 1 para manter."
+ },
+ "passo_leve": {
+  "pagina": 145,
+  "rotulo": "custo",
+  "texto": "4 para operar. 1 para manter. Se o operador também conhecer Ocultar Rastros, um ponto extra de energia para operar e manter garantirá que até mesmo a vegetação não tenha nenhum vestígio da passagem do objetivo."
+ },
+ "pedra_da_alma": {
+  "pagina": 71,
+  "rotulo": "custo",
+  "texto": "500. Uma tentativa; se o encantamento falhar, o operador morre!"
+ },
+ "pedra_de_mana": {
+  "pagina": 70,
+  "rotulo": "custo",
+  "texto": "5. Cada operação carrega a pedra com um único ponto de energia."
+ },
+ "pedra_magica": {
+  "pagina": 60,
+  "rotulo": "custo",
+  "texto": "20 vezes o custo de operação da mágica, incluindo o custo de manutenção, se desejado."
+ },
+ "pedra_para_carne": {
+  "pagina": 53,
+  "rotulo": "custo",
+  "texto": "10. Dobre o custo para restaurar uma pessoa transformada em metal."
+ },
+ "pedra_para_terra": {
+  "pagina": 51,
+  "rotulo": "custo",
+  "texto": "6 a cada 0,75 m³ (mínimo 6)."
+ },
+ "pegadas_falsas": {
+  "pagina": 163,
+  "rotulo": "custo",
+  "texto": "2 para operar. 1 para manter."
+ },
+ "pentagrama": {
+  "pagina": 124,
+  "rotulo": "custo",
+  "texto": "1 por 0,1 m² protegido (mínimo 10). Quando a mágica é operada cerimonialmente, os operadores podem gastar energia extra para aumentar o NH efetivo do Pentagrama. Um mago também pode usar o método de Encantamento Lento e Seguro (embora o Pentagrama não seja tecnicamente uma mágica de Encantamento) para criar um grande pentagrama sozinho."
+ },
+ "pequeno_desejo": {
+  "pagina": 58,
+  "rotulo": "custo",
+  "texto": "180."
+ },
+ "percepcao_de_emocao": {
+  "pagina": 45,
+  "rotulo": "custo",
+  "texto": "2."
+ },
+ "percepcao_de_espiritos": {
+  "pagina": 149,
+  "rotulo": "basico",
+  "texto": "1/2 (mínimo 1)."
+ },
+ "percepcao_de_inimigos": {
+  "pagina": 44,
+  "rotulo": "basico",
+  "texto": "1 (mínimo 2)."
+ },
+ "percepcao_de_magia": {
+  "pagina": 102,
+  "rotulo": "custo",
+  "texto": "3 para operar. 2 para manter."
+ },
+ "percepcao_de_mana": {
+  "pagina": 101,
+  "rotulo": "custo",
+  "texto": "3."
+ },
+ "percepcao_de_observacao": {
+  "pagina": 167,
+  "rotulo": "basico",
+  "texto": "1 para operar. Metade disso para manter. Quando operada em um ser, o custo é 3."
+ },
+ "percepcao_de_planta": {
+  "pagina": 163,
+  "rotulo": "custo",
+  "texto": "3 para operar. 2 para manter."
+ },
+ "percepcao_de_veracidade": {
+  "pagina": 45,
+  "rotulo": "custo",
+  "texto": "2."
+ },
+ "percepcao_de_vida": {
+  "pagina": 45,
+  "rotulo": "basico",
+  "texto": "1⁄2 (mínimo 1)."
+ },
+ "percepcao_do_perigo": {
+  "pagina": 166,
+  "rotulo": "custo",
+  "texto": "3."
+ },
+ "perfume": {
+  "pagina": 35,
+  "rotulo": "custo",
+  "texto": "2 para operar. 1 para manter."
+ },
+ "pergaminho_magico": {
+  "pagina": 57,
+  "rotulo": "custo",
+  "texto": "200."
+ },
+ "persuasao": {
+  "pagina": 45,
+  "rotulo": "custo",
+  "texto": "O dobro do bônus a ser adicionado ao teste. O mesmo custo para manter (no máximo 5)."
+ },
+ "pes_plantados": {
+  "pagina": 36,
+  "rotulo": "custo",
+  "texto": "3. Não pode ser mantida; precisa ser refeita."
+ },
+ "pesadelo": {
+  "pagina": 140,
+  "rotulo": "custo",
+  "texto": "6."
+ },
+ "pestilencia": {
+  "pagina": 154,
+  "rotulo": "custo",
+  "texto": "6."
+ },
+ "petrificacao_parcial": {
+  "pagina": 52,
+  "rotulo": "custo",
+  "texto": "12. Custa mais para petrificar objetivos maiores, como se fosse uma mágica Comum (ou seja, 24 de energia para MT +1, 36 de energia para MT +2, etc.)."
+ },
+ "plastivisao": {
+  "pagina": 183,
+  "rotulo": "custo",
+  "texto": "2 por 5 metros de profundidade (máximo de 50 metros) para operar. Mesmo custo para manter."
+ },
+ "poltergeist": {
+  "pagina": 144,
+  "rotulo": "custo",
+  "texto": "1 ponto para um item até 5 kg (1d de dano); 2 pontos por algo até 12,5 kg (1d+1 de dano)."
+ },
+ "possessao": {
+  "pagina": 49,
+  "rotulo": "custo",
+  "texto": "10 para operar. 4 para manter."
+ },
+ "possessao_de_animais": {
+  "pagina": 32,
+  "rotulo": "custo",
+  "texto": "6 para operar. 2 para manter."
+ },
+ "possessao_permanente": {
+  "pagina": 49,
+  "rotulo": "custo",
+  "texto": "30."
+ },
+ "possessao_permanente_de_animais": {
+  "pagina": 32,
+  "rotulo": "custo",
+  "texto": "20."
+ },
+ "precisao": {
+  "pagina": 65,
+  "rotulo": "custo",
+  "texto": "Veja a tabela abaixo. Divida o custo por 10 se o objetivo for um projétil (por exemplo, uma flecha ou uma bala). Bônus Custo +1 250 +2 1.000 +3 5.000"
+ },
+ "prehistoria": {
+  "pagina": 106,
+  "rotulo": "custo",
+  "texto": "3 por 1.000 anos de história; 5 por 10.000 anos; 8 por 100.000 anos; 10 por períodos mais longos."
+ },
+ "prender_a_respiracao": {
+  "pagina": 39,
+  "rotulo": "custo",
+  "texto": "4 para operar. 2 para manter."
+ },
+ "presenca": {
+  "pagina": 48,
+  "rotulo": "custo",
+  "texto": "4 para operar. 4 para manter."
+ },
+ "preservar_alimento": {
+  "pagina": 79,
+  "rotulo": "custo",
+  "texto": "2 por 0,5 kg de alimento. 1 por quilo para manter."
+ },
+ "prever_movimento_da_terra": {
+  "pagina": 51,
+  "rotulo": "custo",
+  "texto": "2 vezes a duração da previsão em dias. Dobrar o custo para um lugar fora da área local (além do horizonte). Quadruplicar o custo de um lugar em outro continente."
+ },
+ "previsao_do_tempo": {
+  "pagina": 193,
+  "rotulo": "custo",
+  "texto": "2 vezes a duração da previsão, em dias. Duplique o custo de um local fora da área geral (por exemplo, no horizonte). Quadruplique o custo de um local em outro continente. Essa mágica não pode prever o tempo em planetas ou planos diferentes daquele em que o operador está atualmente."
+ },
+ "projecao_da_mente": {
+  "pagina": 105,
+  "rotulo": "custo",
+  "texto": "4 para operar. 2 para manter."
+ },
+ "projecao_de_sonho": {
+  "pagina": 46,
+  "rotulo": "custo",
+  "texto": "3 para operar. 3 para manter. Uma tentativa por noite."
+ },
+ "projeteis_congelantes": {
+  "pagina": 186,
+  "rotulo": "custo",
+  "texto": "4 para operar. 2 para manter."
+ },
+ "projeteis_flamejantes": {
+  "pagina": 75,
+  "rotulo": "custo",
+  "texto": "4 para operar. 2 para manter. O custo dobra se os projéteis a serem disparados forem de pedra ou metal."
+ },
+ "projetil_de_pedra": {
+  "pagina": 52,
+  "rotulo": "custo",
+  "texto": "Qualquer quantia até seu nível Aptidão Mágica por segundo, por 3 segundos. O projétil causa 1d+1 de dano por contusão por ponto de energia."
+ },
+ "prontidao": {
+  "pagina": 133,
+  "rotulo": "custo",
+  "texto": "2 para cada +1 de bônus (máximo 5). Metade disso para manter."
+ },
+ "protecao": {
+  "pagina": 122,
+  "rotulo": "custo",
+  "texto": "2 para operá-la em você mesmo ou 3 para operar em alguém que você possa ver. Você não pode operar Proteção em alguém que você não possa ver."
+ },
+ "protecao_superior": {
+  "pagina": 122,
+  "rotulo": "custo",
+  "texto": "1 por objetivo protegido (custo mínimo 4)."
+ },
+ "proteger_animal": {
+  "pagina": 32,
+  "rotulo": "basico",
+  "texto": "1. O mesmo custo para manter."
+ },
+ "provocar_dormencia": {
+  "pagina": 40,
+  "rotulo": "custo",
+  "texto": "3 para operar. 1 para manter."
+ },
+ "provocar_esterilidade": {
+  "pagina": 41,
+  "rotulo": "custo",
+  "texto": "5."
+ },
+ "pujanca": {
+  "pagina": 65,
+  "rotulo": "custo",
+  "texto": "Veja a tabela abaixo. Divida o custo por 10 se o objetivo for um projétil (por exemplo, uma flecha ou uma bala). Dobre o custo se o objetivo é uma arma de projétil (por exemplo, um arco ou uma pistola). Bônus no Dano Custo +1 250 +2 1.000 +3 5.000 Pode ser reformulada em um nível mais alto, conforme Precisão (pág. 65)."
+ },
+ "purificar": {
+  "pagina": 94,
+  "rotulo": "custo",
+  "texto": "2 para limpar uma mão ou pé, 4 para um tronco ou membro, 6 para um corpo inteiro."
+ },
+ "purificar_a_agua": {
+  "pagina": 184,
+  "rotulo": "custo",
+  "texto": "1 para purificar 4 litros."
+ },
+ "purificar_a_terra": {
+  "pagina": 54,
+  "rotulo": "basico",
+  "texto": "2. Dobre o custo em solos pobres, como planícies rochosas ou deserto arenoso."
+ },
+ "purificar_o_alimento": {
+  "pagina": 78,
+  "rotulo": "custo",
+  "texto": "1 por 0,5 kg de material a ser purificado."
+ },
+ "purificar_o_ar": {
+  "pagina": 23,
+  "rotulo": "basico",
+  "texto": "1. Não pode ser mantida; precisa ser refeita."
+ },
+ "puxar": {
+  "pagina": 146,
+  "rotulo": "custo",
+  "texto": "1 para cada 2 ST de “atração”."
+ },
+ "quietude": {
+  "pagina": 172,
+  "rotulo": "custo",
+  "texto": "2 para operar. 1 para manter."
+ },
+ "radioaudicao": {
+  "pagina": 181,
+  "rotulo": "custo",
+  "texto": "2 para operar. 1 para manter."
+ },
+ "raio_solar": {
+  "pagina": 114,
+  "rotulo": "custo",
+  "texto": "Qualquer quantia até o seu nível de Aptidão Mágica por segundo, por três segundos. O raio causa 1d-1 dano de perfuração por ponto de energia."
+ },
+ "rastrear": {
+  "pagina": 106,
+  "rotulo": "custo",
+  "texto": "3 para operar. 1 para manter. Uma tentativa por dia."
+ },
+ "rastrear_teleporte": {
+  "pagina": 84,
+  "rotulo": "custo",
+  "texto": "3."
+ },
+ "recarregar_gema_de_energia": {
+  "pagina": 126,
+  "rotulo": "custo",
+  "texto": "3 por ponto de energia recarregada."
+ },
+ "reconstruir_magica": {
+  "pagina": 106,
+  "rotulo": "custo",
+  "texto": "3. A magnitude do modificador de Tempo é adicionada ao custo, então a mágica custa 3 (3+0) para “dentro de um minuto”, mas custaria 8 (3+5) para “4 a 40 dias”."
+ },
+ "recordar": {
+  "pagina": 106,
+  "rotulo": "custo",
+  "texto": "4. Não pode ser mantida."
+ },
+ "recordar_caminho": {
+  "pagina": 107,
+  "rotulo": "custo",
+  "texto": "3 para operar. 1 para manter."
+ },
+ "recuperar_energia": {
+  "pagina": 89,
+  "rotulo": "custo",
+  "texto": "Nenhum."
+ },
+ "reduzir_carga": {
+  "pagina": 143,
+  "rotulo": "custo",
+  "texto": "3 para redução de 25%; 5 para redução de 50%. Metade disso (arredondado para cima) para manter."
+ },
+ "reduzir_o_peso": {
+  "pagina": 67,
+  "rotulo": "custo",
+  "texto": "100 para reduzir o peso do item em 25%. 500 para cortar seu peso pela metade."
+ },
+ "refletir": {
+  "pagina": 122,
+  "rotulo": "custo",
+  "texto": "4 para operá-la em si mesmo, 6 para operá-la em alguém que você possa ver; você não pode proteger alguém que você não pode ver."
+ },
+ "refletir_olhar": {
+  "pagina": 168,
+  "rotulo": "custo",
+  "texto": "2."
+ },
+ "reflexos": {
+  "pagina": 39,
+  "rotulo": "custo",
+  "texto": "5 para operar. 3 para manter."
+ },
+ "regeneracao": {
+  "pagina": 93,
+  "rotulo": "custo",
+  "texto": "20. Uma tentativa."
+ },
+ "regeneracao_instantanea": {
+  "pagina": 93,
+  "rotulo": "custo",
+  "texto": "80. Uma tentativa."
+ },
+ "regressao": {
+  "pagina": 47,
+  "rotulo": "custo",
+  "texto": "5. Não pode ser mantido. Uma tentativa por dia."
+ },
+ "rejuvenescer": {
+  "pagina": 94,
+  "rotulo": "custo",
+  "texto": "100. Uma tentativa por mês."
+ },
+ "rejuvenescer_planta": {
+  "pagina": 163,
+  "rotulo": "custo",
+  "texto": "3."
+ },
+ "remendar": {
+  "pagina": 116,
+  "rotulo": "custo",
+  "texto": "1 por 5 kg do objetivo (mínimo 2) para operar. Metade disso (arredondado) para manter."
+ },
+ "remodelar": {
+  "pagina": 117,
+  "rotulo": "custo",
+  "texto": "6 para operar. 3 para manter."
+ },
+ "remover_encantamento": {
+  "pagina": 58,
+  "rotulo": "custo",
+  "texto": "100 ou 1/10 do custo para colocar o encantamento originalmente, o que for maior."
+ },
+ "remover_infeccao": {
+  "pagina": 90,
+  "rotulo": "basico",
+  "texto": "3."
+ },
+ "remover_maldicao": {
+  "pagina": 126,
+  "rotulo": "custo",
+  "texto": "20."
+ },
+ "remover_reflexo": {
+  "pagina": 113,
+  "rotulo": "custo",
+  "texto": "2 para operar. 1 para manter."
+ },
+ "remover_sombra": {
+  "pagina": 110,
+  "rotulo": "custo",
+  "texto": "2 para operar. 1 para manter."
+ },
+ "repelir": {
+  "pagina": 147,
+  "rotulo": "custo",
+  "texto": "1 por 2 ST de “repulsão” do ponto central."
+ },
+ "repelir_animal_ar": {
+  "pagina": 31,
+  "rotulo": "basico",
+  "texto": "Igual ao custo da mágica Controle de (Animal) para aquele tipo de animal."
+ },
+ "repelir_animal_mar": {
+  "pagina": 31,
+  "rotulo": "basico",
+  "texto": "Igual ao custo da mágica Controle de (Animal) para aquele tipo de animal."
+ },
+ "repelir_animal_terra": {
+  "pagina": 31,
+  "rotulo": "basico",
+  "texto": "Igual ao custo da mágica Controle de (Animal) para aquele tipo de animal."
+ },
+ "repelir_espiritos": {
+  "pagina": 158,
+  "rotulo": "basico",
+  "texto": "4 para operar. Metade disso para manter."
+ },
+ "repelir_hibridos": {
+  "pagina": 31,
+  "rotulo": "basico",
+  "texto": "6 para operar. 3 para manter."
+ },
+ "requisitar_idioma": {
+  "pagina": 46,
+  "rotulo": "custo",
+  "texto": "3 para operar. 1 para manter."
+ },
+ "requisitar_pericia": {
+  "pagina": 47,
+  "rotulo": "custo",
+  "texto": "4 para operar. 3 para manter."
+ },
+ "resfriar": {
+  "pagina": 195,
+  "rotulo": "basico",
+  "texto": "1/10 (mínimo 1). Cada aplicação do custo básico reduz a temperatura ambiente em 20° C. Mesmo custo para manter."
+ },
+ "resguardar": {
+  "pagina": 121,
+  "rotulo": "custo",
+  "texto": "3 para operar. 1 para manter."
+ },
+ "resguardar_area": {
+  "pagina": 122,
+  "rotulo": "basico",
+  "texto": "3 para operar. 2 para manter."
+ },
+ "resistencia_a_choques": {
+  "pagina": 118,
+  "rotulo": "custo",
+  "texto": "3 para operar. 3 para manter."
+ },
+ "resistencia_a_magia": {
+  "pagina": 123,
+  "rotulo": "custo",
+  "texto": "1 a 5 para operar. Mesmo custo para manter."
+ },
+ "resistencia_ao_fogo": {
+  "pagina": 73,
+  "rotulo": "basico",
+  "texto": "3. Custo dobrado dá um -10 a tentativas mágicas de acender fogueiras e resiste a todo o calor menos o calor das estrelas. Mesmo custo para manter."
+ },
+ "respirar_agua": {
+  "pagina": 189,
+  "rotulo": "custo",
+  "texto": "4 para operar. 2 para manter."
+ },
+ "respirar_ar": {
+  "pagina": 26,
+  "rotulo": "custo",
+  "texto": "3 para operar. 1 para manter."
+ },
+ "ressurreicao": {
+  "pagina": 94,
+  "rotulo": "custo",
+  "texto": "300. Uma tentativa."
+ },
+ "restauracao": {
+  "pagina": 93,
+  "rotulo": "custo",
+  "texto": "15. Uma tentativa."
+ },
+ "restauracao_instantanea": {
+  "pagina": 93,
+  "rotulo": "custo",
+  "texto": "50. Uma tentativa."
+ },
+ "restaurar": {
+  "pagina": 116,
+  "rotulo": "custo",
+  "texto": "2 para operar. 1 para manter."
+ },
+ "restaurar_audicao": {
+  "pagina": 92,
+  "rotulo": "custo",
+  "texto": "Igual a metade dos pontos de audição restaurados (Per+Audição Aguda); metade para manter."
+ },
+ "restaurar_fala": {
+  "pagina": 93,
+  "rotulo": "custo",
+  "texto": "5 para operar. 3 para manter."
+ },
+ "restaurar_mana": {
+  "pagina": 127,
+  "rotulo": "custo",
+  "texto": "Igual ao custo de manutenção da mágica a ser roubada."
+ },
+ "restaurar_memoria": {
+  "pagina": 92,
+  "rotulo": "custo",
+  "texto": "3."
+ },
+ "retardar": {
+  "pagina": 145,
+  "rotulo": "custo",
+  "texto": "5 para operar. 4 para manter."
+ },
+ "retardar_fogo": {
+  "pagina": 73,
+  "rotulo": "basico",
+  "texto": "2 para um incêndio que queima à metade da taxa normal, 3 para um incêndio que queima a 1/3 da taxa normal e assim por diante. Mesmo custo para manter."
+ },
+ "retardar_mensagem": {
+  "pagina": 173,
+  "rotulo": "custo",
+  "texto": "3 por frase simples — uma ideia por frase. Não pode ser mantida."
+ },
+ "retardar_queda": {
+  "pagina": 144,
+  "rotulo": "custo",
+  "texto": "1 por 25 kg de peso. Metade disso para manter."
+ },
+ "retardar_tempo": {
+  "pagina": 86,
+  "rotulo": "basico",
+  "texto": "Metade da “velocidade” temporal normal custa 2, um terço custa 3, um quarto custa 4 e assim por diante (sem limite, mas veja a mágica Suspender Tempo, abaixo). Mesmos custos para manter."
+ },
+ "retardo": {
+  "pagina": 130,
+  "rotulo": "custo",
+  "texto": "3 para operar. 3 para manter."
+ },
+ "reter": {
+  "pagina": 143,
+  "rotulo": "custo",
+  "texto": "1 para cada metro de projeção anulada."
+ },
+ "retrovisao": {
+  "pagina": 134,
+  "rotulo": "custo",
+  "texto": "3 para operar. 1 para manter."
+ },
+ "revelar_posicao": {
+  "pagina": 101,
+  "rotulo": "custo",
+  "texto": "1."
+ },
+ "reverter_projeteis": {
+  "pagina": 168,
+  "rotulo": "custo",
+  "texto": "7 para operar. 3 para manter."
+ },
+ "robustez": {
+  "pagina": 167,
+  "rotulo": "custo",
+  "texto": "1 por ponto de RD (máximo de 5)."
+ },
+ "roubar_beleza": {
+  "pagina": 159,
+  "rotulo": "custo",
+  "texto": "Igual à diferença de pontos entre as aparências original e final do participante (ou igual ao custo da vantagem roubada, no caso de Carisma ou Voz Melodiosa)."
+ },
+ "roubar_energia": {
+  "pagina": 150,
+  "rotulo": "custo",
+  "texto": "Nenhum para o operador! Para cada 3 PF tirados do objetivo, o operador recupera 1 PF."
+ },
+ "roubar_juventude": {
+  "pagina": 158,
+  "rotulo": "custo",
+  "texto": "10 a 30."
+ },
+ "roubar_pericia": {
+  "pagina": 158,
+  "rotulo": "custo",
+  "texto": "1 por ponto de personagem roubado (custo mínimo de 10)."
+ },
+ "roubar_vitalidade": {
+  "pagina": 150,
+  "rotulo": "custo",
+  "texto": "Nenhum para o operador! Para cada 3 PV tirados do objetivo, o operador recupera 1 PV."
+ },
+ "rouxinol": {
+  "pagina": 167,
+  "rotulo": "basico",
+  "texto": "2 para operar. 2 para manter."
+ },
+ "sabedoria": {
+  "pagina": 135,
+  "rotulo": "custo",
+  "texto": "4 para cada ponto de aumento de IQ (máximo de 5). Mesmo custo manter."
+ },
+ "sacar_rapido": {
+  "pagina": 63,
+  "rotulo": "custo",
+  "texto": "300 por 0,5 kg de peso (mínimo de 0,5 kg); 2.000 para uma aljava, saco, etc., dos quais projéteis comuns saltam para a mão do usuário quando necessário."
+ },
+ "saltar_nuvens": {
+  "pagina": 148,
+  "rotulo": "custo",
+  "texto": "7 para operar. Não pode ser mantida."
+ },
+ "salto": {
+  "pagina": 143,
+  "rotulo": "custo",
+  "texto": "1 a 3 para operar. Não pode ser mantida. O aumento no deslocamento básico do objetivo equivale a duas vezes a energia aplicada à mágica."
+ },
+ "santuario": {
+  "pagina": 86,
+  "rotulo": "custo",
+  "texto": "5 para operar. 5 para manter."
+ },
+ "sapatos_de_neve": {
+  "pagina": 186,
+  "rotulo": "custo",
+  "texto": "2 para operar. 1 para manter."
+ },
+ "secar_nascente": {
+  "pagina": 188,
+  "rotulo": "custo",
+  "texto": "3 vezes a redução na produção da nascente, em 4 litros por hora."
+ },
+ "secar_plantas": {
+  "pagina": 162,
+  "rotulo": "basico",
+  "texto": "1. Para serem afetados, as plantas devem estar inteiramente dentro da área de efeito."
+ },
+ "sede": {
+  "pagina": 38,
+  "rotulo": "custo",
+  "texto": "5."
+ },
+ "senha": {
+  "pagina": 68,
+  "rotulo": "custo",
+  "texto": "400. Reduza pela metade esse custo se a senha estiver escrita no objeto (deve ser legível)."
+ },
+ "sensibilizar": {
+  "pagina": 39,
+  "rotulo": "custo",
+  "texto": "3 para operar. 2 para manter."
+ },
+ "sentido_agucado_audicao_agucada": {
+  "pagina": 133,
+  "rotulo": "custo",
+  "texto": "1 para cada ponto de bônus (máximo 5). Metade do total (arredondado para cima) para manter."
+ },
+ "sentido_agucado_olfato_paladar_agucado": {
+  "pagina": 133,
+  "rotulo": "custo",
+  "texto": "1 para cada ponto de bônus (máximo 5). Metade do total (arredondado para cima) para manter."
+ },
+ "sentido_agucado_visao_agucada": {
+  "pagina": 133,
+  "rotulo": "custo",
+  "texto": "1 para cada ponto de bônus (máximo 5). Metade do total (arredondado para cima) para manter."
+ },
+ "sentinela": {
+  "pagina": 167,
+  "rotulo": "basico",
+  "texto": "1 para operar. 1 para manter."
+ },
+ "serralheiro": {
+  "pagina": 143,
+  "rotulo": "custo",
+  "texto": "2 para operar. 2 para manter."
+ },
+ "silencio": {
+  "pagina": 171,
+  "rotulo": "basico",
+  "texto": "2 para operar. 1 para manter."
+ },
+ "simulacro": {
+  "pagina": 61,
+  "rotulo": "custo",
+  "texto": "O dobro do golem subjacente."
+ },
+ "solidificar": {
+  "pagina": 151,
+  "rotulo": "custo",
+  "texto": "50 para operar. 10 para manter."
+ },
+ "som": {
+  "pagina": 171,
+  "rotulo": "custo",
+  "texto": "50. Audição Aguçada Como listada em Mágicas de Controle da Mente, pág. 133. Silêncio Área Cria uma área de quietude. Ninguém na área consegue ouvir nada, e nada que aconteça lá produzirá qualquer som. É a área que fica afetada e não as pessoas dentro dela; qualquer um que saia poderá falar. Observe que uma área de Silêncio impedirá que mágicas faladas funcionem!"
+ },
+ "sombrear": {
+  "pagina": 169,
+  "rotulo": "custo",
+  "texto": "1 para operar. Metade disso para manter."
+ },
+ "sonda_mental": {
+  "pagina": 46,
+  "rotulo": "custo",
+  "texto": "6 para operar. 3 para manter."
+ },
+ "sono": {
+  "pagina": 135,
+  "rotulo": "custo",
+  "texto": "4."
+ },
+ "sono_coletivo": {
+  "pagina": 137,
+  "rotulo": "basico",
+  "texto": "3. Raio mínimo de 2 metros."
+ },
+ "sono_curativo": {
+  "pagina": 94,
+  "rotulo": "custo",
+  "texto": "6. Por um custo de 10, a velocidade de recuperação é dobrada. Recuperação máxima não é alterada."
+ },
+ "sono_tranquilo": {
+  "pagina": 138,
+  "rotulo": "custo",
+  "texto": "4."
+ },
+ "sopro_congelante": {
+  "pagina": 192,
+  "rotulo": "custo",
+  "texto": "1 a 4. Dá 1d+1 de dano a cada ponto de energia na mágica. Não pode ser mantida."
+ },
+ "sopro_de_acido": {
+  "pagina": 192,
+  "rotulo": "custo",
+  "texto": "1 a 4. Não pode ser mantida."
+ },
+ "sopro_de_fogo": {
+  "pagina": 76,
+  "rotulo": "custo",
+  "texto": "1 a 4. Não pode ser mantida."
+ },
+ "sopro_de_radiacao": {
+  "pagina": 182,
+  "rotulo": "custo",
+  "texto": "1 a 4. Não pode ser mantida."
+ },
+ "sopro_de_vapor": {
+  "pagina": 192,
+  "rotulo": "custo",
+  "texto": "1 a 4. Não pode ser mantida."
+ },
+ "sorvedouro": {
+  "pagina": 187,
+  "rotulo": "basico",
+  "texto": "2 para operar. Metade disso para manter."
+ },
+ "soterramento": {
+  "pagina": 53,
+  "rotulo": "custo",
+  "texto": "10 (6 para reverter um soterramento)."
+ },
+ "subjugar": {
+  "pagina": 139,
+  "rotulo": "custo",
+  "texto": "6 para operar. 3 para manter."
+ },
+ "sugestao": {
+  "pagina": 140,
+  "rotulo": "custo",
+  "texto": "4 para operar. 3 para manter."
+ },
+ "sugestao_coletiva": {
+  "pagina": 141,
+  "rotulo": "basico",
+  "texto": "4 para operar. 2 para manter (raio mínimo é de 2 metros)."
+ },
+ "suspender_aptidao_magica": {
+  "pagina": 130,
+  "rotulo": "custo",
+  "texto": "12 para operar. Mesmo custo para manter. No entanto, o objetivo pode resistir toda vez que a mágica é mantida."
+ },
+ "suspender_encantamento": {
+  "pagina": 58,
+  "rotulo": "custo",
+  "texto": "25 ou 1/100 do custo para colocar o encantamento originalmente, o que for maior. Metade desse valor para manter."
+ },
+ "suspender_magia": {
+  "pagina": 123,
+  "rotulo": "basico",
+  "texto": "3 para operar. 2 para manter."
+ },
+ "suspender_magica": {
+  "pagina": 121,
+  "rotulo": "custo",
+  "texto": "1/10 do custo de operação da mágica a ser suspensa, sem contar com os bônus que o outro operador pode ter recebido por NH elevado (arredondado para cima). Mesmo custo para manter."
+ },
+ "suspender_maldicao": {
+  "pagina": 125,
+  "rotulo": "custo",
+  "texto": "10. O mesmo custo para manter."
+ },
+ "suspender_mana": {
+  "pagina": 125,
+  "rotulo": "basico",
+  "texto": "5. Não pode ser mantida."
+ },
+ "suspender_tempo": {
+  "pagina": 86,
+  "rotulo": "basico",
+  "texto": "5 para operar. 5 para manter."
+ },
+ "talisma": {
+  "pagina": 58,
+  "rotulo": "custo",
+  "texto": "Veja a tabela abaixo. Proteção Custo 1 ponto 15 2 pontos 45 3 pontos 90 4 pontos 150"
+ },
+ "tapete_voador": {
+  "pagina": 146,
+  "rotulo": "custo",
+  "texto": "1 por 0,1 m² de superfície. Cada porção dessas levará cerca de 12,5 kg (ou menos, de material frágil). Metade disso para manter."
+ },
+ "tato_remoto": {
+  "pagina": 100,
+  "rotulo": "custo",
+  "texto": "3 para operar. 1 para manter."
+ },
+ "teia_de_aranha": {
+  "pagina": 32,
+  "rotulo": "custo",
+  "texto": "1 para operar por 5 metros de comprimento de fio (máximo de 100 metros). Metade disso para manter."
+ },
+ "telemagica": {
+  "pagina": 128,
+  "rotulo": "custo",
+  "texto": "Como Teleportar para operar; mesmo custo para manter. NH elevado não reduz o custo. A energia é gasta se a mágica é bem sucedida ou não."
+ },
+ "telepatia": {
+  "pagina": 47,
+  "rotulo": "custo",
+  "texto": "4 para operar. 4 para manter, para uma conexão de 2 vias. O mesmo custo para cada pessoa adicionada."
+ },
+ "teleportar_outro": {
+  "pagina": 147,
+  "rotulo": "custo",
+  "texto": "Custos e penalidades de NH são como Teleporte, com os seguintes multiplicadores: Peso Multiplicador menos de 5 kg ×1/2 5 a 24 kg ×1 25–49 kg ×2 50–99 kg ×3 Um múltiplo adicional para cada 50 kg em diante As consequências de uma jogada perdida são semelhantes, mas objetos inanimados são menos propensos a sofrer danos físicos. Se um objetivo sapiente resiste ao teste, o operador não sofre nenhum outro efeito que não seja o gasto de energia."
+ },
+ "teleporte": {
+  "pagina": 147,
+  "rotulo": "custo",
+  "texto": "3.000. Um item que só levará o usuário a um local predeterminado custa 2.000 para ser criado; o operador deve estar muito familiarizado com esse lugar. Distância Custo Penalidade no NH Até 10 metros 3 0 11–20 metros 4 -1 21–100 metros 5 -2 101–500 metros 6 -3 501 metros a 2,99 km 7 -4 3–14,99 km 8 -5 15–149,99 km 9 -6 150–1.499,99 km 10 -7 cada ×10 seguintes +1 -1 Teleportar Outro (MD) Comum; Resistível com Vontade+1 O mesmo que Teleporte, exceto que o operador não se move, e o objetivo pode ser qualquer coisa ou alguém. Uma parte de um objeto não pode ser teleportada; nem um objeto sólido pode ser teleportado para outro objeto sólido. Separar dois objetos conectados carrega uma penalidade definida pelo Mestre; tirar a rolha de um pote pode ser de -1, enquanto teleportar uma porta trancada de seu batente pode ser de -5. Joias ou roupas sendo usadas, ou um objeto segurado firmemente por outra pessoa, terá uma penalidade de -5 para teleportar para longe, e o portador pode tentar um teste de resistência. Esta também é uma mágica de Portal. Custo: Custos e penalidades de NH são como Teleporte, com os seguintes multiplicadores: Peso Multiplicador menos de 5 kg ×1/2 5 a 24 kg ×1 25–49 kg ×2 50–99 kg ×3 Um múltiplo adicional para cada 50 kg em diante As consequências de uma jogada perdida são semelhantes, mas objetos inanimados são menos propensos a sofrer danos físicos. Se um objetivo sapiente resiste ao teste, o operador não sofre nenhum outro efeito que não seja o gasto de energia."
+ },
+ "temperar": {
+  "pagina": 77,
+  "rotulo": "custo",
+  "texto": "2 por refeição."
+ },
+ "tempestade": {
+  "pagina": 195,
+  "rotulo": "basico",
+  "texto": "1/50 (mínimo 1). Mesmo custo para manter."
+ },
+ "tempestade_de_areia": {
+  "pagina": 27,
+  "rotulo": "basico",
+  "texto": "3 para operar. Metade disso para manter."
+ },
+ "tempestade_de_faiscas": {
+  "pagina": 197,
+  "rotulo": "basico",
+  "texto": "2 (Relâmpago 1d-1), 4 (Relâmpago 2d-2) ou 6 (Relâmpago 3d- 3) a serem operados. Metade disso para manter."
+ },
+ "tepidez": {
+  "pagina": 74,
+  "rotulo": "custo",
+  "texto": "2 para operar. 1 para manter."
+ },
+ "terra_essencial": {
+  "pagina": 53,
+  "rotulo": "custo",
+  "texto": "8 por 0,75 m³."
+ },
+ "terra_para_agua": {
+  "pagina": 52,
+  "rotulo": "custo",
+  "texto": "1 a cada 0,75 m³ de terra transformada em lama. Duplique para transformar terra em água."
+ },
+ "terra_para_ar": {
+  "pagina": 25,
+  "rotulo": "custo",
+  "texto": "1 para transformar 0,025 m³ (25 litros) de terra/pedra em ar, criando ar suficiente para uma pessoa respirar durante 1 minuto. Para transformar grandes quantidades de terra/pedra em ar de uma só vez, o custo é de 5 por 0,75 m³. Metal pode ser transformado em ar pelo triplo do custo."
+ },
+ "terra_para_pedra": {
+  "pagina": 51,
+  "rotulo": "custo",
+  "texto": "3 por 0,75 m³ (mínimo 3)."
+ },
+ "terremoto": {
+  "pagina": 54,
+  "rotulo": "basico",
+  "texto": "2 para operar. Mesmo custo para manter."
+ },
+ "terror": {
+  "pagina": 134,
+  "rotulo": "basico",
+  "texto": "4."
+ },
+ "testar_alimento": {
+  "pagina": 77,
+  "rotulo": "custo",
+  "texto": "1 para testar uma única refeição ou uma única garrafa de vinho; 3 para verificar todos os alimentos e bebidas dentro de um raio de 1 metro."
+ },
+ "testar_carga": {
+  "pagina": 101,
+  "rotulo": "basico",
+  "texto": "1 (mínimo 2)."
+ },
+ "tingir": {
+  "pagina": 116,
+  "rotulo": "custo",
+  "texto": "1 para um objeto pequeno (até um palmo), 2 para alterar a cor do cabelo de uma pessoa ou um objeto com cerca de 0,1 m² e 5 para um objeto do tamanho de uma pessoa (MT 0)."
+ },
+ "tolice": {
+  "pagina": 134,
+  "rotulo": "custo",
+  "texto": "1 a 5 para operar. Metade disso para manter (arredondar para cima)."
+ },
+ "toque": {
+  "pagina": 35,
+  "rotulo": "custo",
+  "texto": "1."
+ },
+ "toque_candente": {
+  "pagina": 76,
+  "rotulo": "custo",
+  "texto": "1 a 3."
+ },
+ "toque_chocante": {
+  "pagina": 196,
+  "rotulo": "custo",
+  "texto": "1 a 3."
+ },
+ "toque_congelante": {
+  "pagina": 188,
+  "rotulo": "custo",
+  "texto": "2 por 0,5cm de gelo; deve afetar o objetivo inteiro, não apenas uma parte dele! Cada 0,5cm causa 1d-1 de dano às criaturas de fogo."
+ },
+ "toque_mortal": {
+  "pagina": 41,
+  "rotulo": "custo",
+  "texto": "1 a 3."
+ },
+ "torpor": {
+  "pagina": 134,
+  "rotulo": "custo",
+  "texto": "3 para operar. 2 para manter."
+ },
+ "torpor_coletivo": {
+  "pagina": 137,
+  "rotulo": "basico",
+  "texto": "2 para operar. 1 para manter. Raio mínimo de 2 metros."
+ },
+ "tranca_magica": {
+  "pagina": 166,
+  "rotulo": "custo",
+  "texto": "3 para operar. 2 para manter."
+ },
+ "trancapes": {
+  "pagina": 36,
+  "rotulo": "custo",
+  "texto": "2."
+ },
+ "transformar_corpo": {
+  "pagina": 43,
+  "rotulo": "custo",
+  "texto": "Variável (veja acima)."
+ },
+ "transformar_objeto": {
+  "pagina": 120,
+  "rotulo": "custo",
+  "texto": "1 para operar para cada 0,5 kg que o objeto pesa (mínimo de 0,5 kg). Dobre o custo para mudar para (ou de) pedra, triplique para metal. Mesmo custo para manter."
+ },
+ "transformar_outro": {
+  "pagina": 43,
+  "rotulo": "custo",
+  "texto": "Como Transformar Corpo, mas o custo mínimo da mágica é 10 para operar e 4 para manter."
+ },
+ "translocacao": {
+  "pagina": 148,
+  "rotulo": "custo",
+  "texto": "2."
+ },
+ "translocacao_no_tempo": {
+  "pagina": 81,
+  "rotulo": "custo",
+  "texto": "1 por segundo do lapso pretendido. O teste de NH da mágica sofre -1 de penalidade por cada segundo de deslocamento pretendido além do primeiro."
+ },
+ "translocar_outro": {
+  "pagina": 148,
+  "rotulo": "custo",
+  "texto": "2."
+ },
+ "translocar_outro_no_tempo": {
+  "pagina": 81,
+  "rotulo": "custo",
+  "texto": "1 por segundo do deslocamento pretendido. O teste de NH da mágica sofre -1 de penalidade por cada segundo de deslocamento pretendido além do primeiro."
+ },
+ "transmissao_de_sonho": {
+  "pagina": 45,
+  "rotulo": "custo",
+  "texto": "3. Uma tentativa por noite. Não pode ser mantida."
+ },
+ "transmissao_mental": {
+  "pagina": 47,
+  "rotulo": "custo",
+  "texto": "4 para operar. 4 para manter."
+ },
+ "transmogrificacao": {
+  "pagina": 43,
+  "rotulo": "custo",
+  "texto": "20. Mesmo custo para manter."
+ },
+ "transparencia": {
+  "pagina": 119,
+  "rotulo": "custo",
+  "texto": "4 para operar. 2 para manter."
+ },
+ "transportar_outro_no_tempo": {
+  "pagina": 81,
+  "rotulo": "custo",
+  "texto": "Como Viagem no Tempo; também usa os multiplicadores de peso de Teleportar Outro."
+ },
+ "travar_vontade": {
+  "pagina": 138,
+  "rotulo": "basico",
+  "texto": "3 para operar. Não pode ser mantida; precisa ser refeita."
+ },
+ "trevas": {
+  "pagina": 111,
+  "rotulo": "custo",
+  "texto": "5 para operar. 2 para manter."
+ },
+ "trocar_de_corpo": {
+  "pagina": 49,
+  "rotulo": "custo",
+  "texto": "120."
+ },
+ "turbilhao": {
+  "pagina": 26,
+  "rotulo": "basico",
+  "texto": "8 para operar. 3 para manter."
+ },
+ "vazamento": {
+  "pagina": 61,
+  "rotulo": "custo",
+  "texto": "100."
+ },
+ "velocidade": {
+  "pagina": 57,
+  "rotulo": "custo",
+  "texto": "Veja a tabela abaixo. Poder Custo 1 ponto 500 2 pontos 1.000 3 pontos 2.000 4 pontos 4.000 Dobre o custo para cada ponto adicional. Pode ser reformulado em um nível mais alto, conforme Precisão (pág. 65)."
+ },
+ "vento": {
+  "pagina": 195,
+  "rotulo": "basico",
+  "texto": "1/50 (mínimo 1). Mesmo custo para manter."
+ },
+ "ver_a_forma_real": {
+  "pagina": 106,
+  "rotulo": "custo",
+  "texto": "2."
+ },
+ "ver_localizacao": {
+  "pagina": 103,
+  "rotulo": "custo",
+  "texto": "2."
+ },
+ "ver_o_invisivel": {
+  "pagina": 113,
+  "rotulo": "custo",
+  "texto": "4 para operar. 2 para manter."
+ },
+ "ver_radiacao": {
+  "pagina": 181,
+  "rotulo": "custo",
+  "texto": "3 para operar. 2 para manter."
+ },
+ "ver_receita": {
+  "pagina": 78,
+  "rotulo": "custo",
+  "texto": "3. Não pode ser mantida."
+ },
+ "ver_segredos": {
+  "pagina": 107,
+  "rotulo": "custo",
+  "texto": "5 para operar. 2 para manter."
+ },
+ "vestuario_ajustavel": {
+  "pagina": 58,
+  "rotulo": "custo",
+  "texto": "O custo para encantar uma camisa de pano ou um par de calças que pode aumentar ou diminuir em tamanho em 10% é 50. Esse custo varia muito, dependendo do tamanho, materiais e adaptabilidade; frações são arredondadas para cima. Para luvas, botas, sapatos, cinto, chapéu ou itens pequenos semelhantes, reduza pela metade o custo. Para algo como anel ou brincos, use um terço do custo. Para sobretudos ou um vestido de corpo inteiro, dobre o custo. Para um traje de pressão ou outro item que literalmente cubra todo o corpo, triplique o custo. Um item com algumas peças de metal incidentais (zíperes, botões, etc.) conta como “tecido”, assim como o couro fino. Couro grosso o suficiente para ter RD, dobre o custo. Armadura de escamas, cota de malha ou itens semelhantes triplica o custo. A armadura de placas e outras roupas de metal sólido multiplicam o custo por cinco. Para roupas excepcionalmente leves (um véu ou lingerie), a metade do custo. Se o item pode ajustar o tamanho em 25%, o dobro do custo. Se ele pode reduzir pela metade ou dobrar de tamanho, custo triplo. Se ele puder diminuir para 1/5 do tamanho, ou aumentar para cinco vezes o tamanho, custo quadruplicado."
+ },
+ "vexacao": {
+  "pagina": 45,
+  "rotulo": "custo",
+  "texto": "Duas vezes a penalidade subtraída do teste para operar. O mesmo custo para manter (no máximo 5)."
+ },
+ "viagem_no_tempo": {
+  "pagina": 81,
+  "rotulo": "custo",
+  "texto": "Veja tabela abaixo."
+ },
+ "viagem_planar": {
+  "pagina": 83,
+  "rotulo": "custo",
+  "texto": "20. Alguns planos podem custar mais, impor uma penalidade de NH, ou ambos."
+ },
+ "vigilia": {
+  "pagina": 138,
+  "rotulo": "custo",
+  "texto": "8. Não pode ser mantida, mas pode ser reformulada."
+ },
+ "vigor": {
+  "pagina": 37,
+  "rotulo": "custo",
+  "texto": "2 para cada ponto de incremento de HT (máximo de 5). O mesmo custo para manter."
+ },
+ "visao_astral": {
+  "pagina": 105,
+  "rotulo": "custo",
+  "texto": "4 para operar. 2 para manter."
+ },
+ "visao_brilhante": {
+  "pagina": 111,
+  "rotulo": "custo",
+  "texto": "2 para operar. 1 para manter."
+ },
+ "visao_da_morte": {
+  "pagina": 149,
+  "rotulo": "custo",
+  "texto": "2."
+ },
+ "visao_das_plantas": {
+  "pagina": 162,
+  "rotulo": "custo",
+  "texto": "1 por 10 metros de distância para operar (100 metros no máximo). Mesmo custo para manter."
+ },
+ "visao_de_magia": {
+  "pagina": 102,
+  "rotulo": "custo",
+  "texto": "3 para operar. 2 para manter."
+ },
+ "visao_do_espectro": {
+  "pagina": 181,
+  "rotulo": "custo",
+  "texto": "4. O mesmo custo para manter."
+ },
+ "visao_magnetica": {
+  "pagina": 181,
+  "rotulo": "custo",
+  "texto": "2 para operar. 1 para manter."
+ },
+ "visao_microscopica": {
+  "pagina": 111,
+  "rotulo": "custo",
+  "texto": "4 para operar. 2 para manter. Cada duplicação do custo de operação aumenta dez vezes a ampliação."
+ },
+ "visao_noturna": {
+  "pagina": 111,
+  "rotulo": "custo",
+  "texto": "3 para operar. 1 para manter."
+ },
+ "visao_sonora": {
+  "pagina": 171,
+  "rotulo": "custo",
+  "texto": "5 para operar. 2 para manter."
+ },
+ "visita_planar": {
+  "pagina": 82,
+  "rotulo": "custo",
+  "texto": "4 para operar. 2 para manter. Alguns planos podem custar mais, impor uma penalidade de NH, ou ambos."
+ },
+ "visualizacao_de_sonho": {
+  "pagina": 45,
+  "rotulo": "custo",
+  "texto": "2 para operar. 1 para manter."
+ },
+ "vomitar": {
+  "pagina": 38,
+  "rotulo": "custo",
+  "texto": "3. Não pode ser mantida."
+ },
+ "voo": {
+  "pagina": 145,
+  "rotulo": "custo",
+  "texto": "5 para operar. 3 para manter."
+ },
+ "voo_do_falcao": {
+  "pagina": 146,
+  "rotulo": "custo",
+  "texto": "8 para operar. 4 para manter."
+ },
+ "voz_amplificada": {
+  "pagina": 173,
+  "rotulo": "custo",
+  "texto": "3 para operar. 1 para manter."
+ },
+ "vozes": {
+  "pagina": 172,
+  "rotulo": "custo",
+  "texto": "3 para operar. 2 para manter."
+ },
+ "vulcao": {
+  "pagina": 54,
+  "rotulo": "custo",
+  "texto": "15 para operar. 10 para manter."
+ },
+ "zumbi": {
+  "pagina": 151,
+  "rotulo": "custo",
+  "texto": "8."
+ },
+ "zumbis_em_massa": {
+  "pagina": 153,
+  "rotulo": "basico",
+  "texto": "7. Raio mínimo 2 metros."
+ }
+}

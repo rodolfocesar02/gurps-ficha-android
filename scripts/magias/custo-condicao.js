@@ -16,12 +16,14 @@ const path = require('path');
 const ARQUIVO = path.join(__dirname, 'custo-por-condicao.json');
 /** O lote 2, gerado por `gerar-custo-por-condicao.js` (não se edita à mão). */
 const ARQUIVO_GERADO = path.join(__dirname, 'custo-por-condicao-gerado.json');
+/** A linha de custo de cada entrada lida DIRETO do PDF (`extrair-custos-do-pdf.py`): apoio onde o `chunks.jsonl` não a traz. */
+const ARQUIVO_DO_PDF = path.join(__dirname, 'custos-do-pdf.json');
 const MOTOR_PATH = '../../../../../mesa-virtual/server/src/campo/magia-energia.js';
 
 const TIPOS_DA_ENTRADA = ['numero', 'inteiro', 'escolha', 'marca'];
 /** `inalterado`: o passo 6 não mexe no tipo nem no número-base do catálogo (a magia de ÁREA: o básico segue o do livro). */
 const TIPOS_DO_CUSTO = ['porUnidade', 'varia', 'fixo', 'inalterado'];
-const OPERADORES = ['+', '-', '*', '/', 'cima', 'max', 'min'];
+const OPERADORES = ['+', '-', '*', '/', 'cima', 'baixo', 'max', 'min'];
 
 let motorCache = null;
 /** O motor da conta (o da Mesa), ou null se a Mesa não está ao lado. */
@@ -30,6 +32,15 @@ function motor() {
     try { motorCache = require(MOTOR_PATH); } catch (e) { motorCache = false; }
   }
   return motorCache || null;
+}
+
+/** O texto de custo de cada entrada, como o PDF o traz (`id → {pagina, rotulo, texto}`); vazio se o arquivo não existe. */
+function custosDoPdf() {
+  if (!fs.existsSync(ARQUIVO_DO_PDF)) return {};
+  const bruto = JSON.parse(fs.readFileSync(ARQUIVO_DO_PDF, 'utf8'));
+  const out = {};
+  Object.keys(bruto).forEach((k) => { if (k.charAt(0) !== '_') out[k] = bruto[k]; });
+  return out;
 }
 
 /** Os specs do arquivo (sem as chaves de comentário `_...`). Sem argumento: os dois arquivos, e id repetido é erro. */
@@ -49,7 +60,8 @@ function lerOsSpecs(arquivo) {
 
 /** Os números que um texto do livro escreve: "0,5 kg" → 0.5; "2.500" → 2500; "1/2" → 0.5 (e 1 e 2). */
 function numerosDoTexto(texto) {
-  const t = String(texto == null ? '' : texto).replace(/(\d{1,3})\.(\d{3})(?!\d)/g, '$1$2');
+  // o PDF escreve a fração com a barra de fração (U+2044): "1⁄2"
+  const t = String(texto == null ? '' : texto).replace(/⁄/g, '/').replace(/(\d{1,3})\.(\d{3})(?!\d)/g, '$1$2');
   const out = new Set();
   const rx = /\d+(?:,\d+)?/g;
   let m;
@@ -89,6 +101,8 @@ function problemasDoSpec(id, spec, texto) {
   const ruim = (m) => p.push(id + ': ' + m);
   if (!spec || typeof spec !== 'object') return [id + ': não é um objeto'];
   if (TIPOS_DO_CUSTO.indexOf(spec.tipo) < 0) ruim('tipo "' + spec.tipo + '" não é um de ' + TIPOS_DO_CUSTO.join('/'));
+  if (spec.tamanho !== undefined && spec.tamanho !== true) ruim('"tamanho" só vale `true` (a conta não leva o tamanho do alvo em conta)');
+  if (spec.fonte !== undefined && !/^(descricao|como:[a-z0-9_]+)$/.test(String(spec.fonte))) ruim('"fonte" é "descricao" ou "como:<id>"');
   const entradas = Array.isArray(spec.entradas) ? spec.entradas : null;
   if (!entradas) { ruim('sem lista de entradas'); return p; }
   const ids = new Set();
@@ -139,4 +153,17 @@ function problemasDoSpec(id, spec, texto) {
   return p;
 }
 
-module.exports = { ARQUIVO, ARQUIVO_GERADO, motor, lerOsSpecs, numerosDoTexto, literaisDaConta, problemasDoSpec };
+/**
+ * O texto contra o qual a guarda confere os números da conta. Em geral é a linha de custo da entrada; `fonte` amplia:
+ *  - `"descricao"`: a linha diz "veja a tabela abaixo" (ou "varia com o peso") e a tabela mora na descrição da entrada;
+ *  - `"como:<id>"`: a entrada diz "exatamente como Calor" e a conta é a da outra.
+ */
+function textoDoGuarda(id, spec, textos, porId) {
+  const proprio = textos.get(id) || '';
+  const fonte = spec && spec.fonte;
+  if (fonte === 'descricao') return proprio + ' ' + String((porId.get(id) || {}).descricao || '');
+  if (typeof fonte === 'string' && fonte.indexOf('como:') === 0) return proprio + ' ' + (textos.get(fonte.slice(5)) || '');
+  return proprio;
+}
+
+module.exports = { ARQUIVO, ARQUIVO_GERADO, ARQUIVO_DO_PDF, custosDoPdf, motor, textoDoGuarda, lerOsSpecs, numerosDoTexto, literaisDaConta, problemasDoSpec };

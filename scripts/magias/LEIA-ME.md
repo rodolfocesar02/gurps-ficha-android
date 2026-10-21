@@ -58,8 +58,14 @@ do livro; sonda), `CustoPorCondicaoTest` (Kotlin) e `test/custo-por-condicao.tes
 custo básico × raio, Magia p.11) vem de `gerar-custo-por-condicao.js` (as fórmulas em forma compacta, com CASOS escritos à mão do texto do livro)
 em `custo-por-condicao-gerado.json`: **não edite esse JSON à mão**, edite o gerador e rode `node scripts/magias/gerar-custo-por-condicao.js`
 (`--conferir` diz se o gravado é o que o gerador produz). A regra do raio só vale onde o livro escreve "Custo BÁSICO" e a classe é Área.
-Ficam de fora (ver o relatório do lote): as que o livro escreve com "Custo:" (Acelerar Tempo...), as de custo = outra magia
-(Repelir Animal, Criar Portal...), os custos de ENCANTAMENTO de item (Arma Dançante...) e as "Varia" sem fórmula no texto.
+Ficam de fora (ver o relatório do lote): as de custo = outra magia (Criar Portal, Enfeitiçar...), os custos de ENCANTAMENTO de item (Arma Dançante...), a
+família do Teleporte (o custo vem com a penalidade de NH) e a Metamorfose (o livro dá só um critério ao Mestre).
+
+**P-5 (21/out/2026) — a "Varia" e a Área sem raio:** 330 contas no gerador (a seção "3. As Varia", `AREA_MANUAL`). Três coisas novas no spec:
+`tamanho: true` (a conta é de RD/bênção/IQ, não de tamanho: a Comum num alvo grande ainda custa 1 + MT vezes, Magia p.11), `fonte` ("descricao" quando a linha diz
+"veja a tabela abaixo"; "como:<id>" quando diz "como Calor") e o operador `baixo` (só as unidades COMPLETAS: Criptografar). **A guarda também lê o PDF:**
+`python -I scripts/magias/extrair-custos-do-pdf.py --pdf "<PDF de Magia>"` grava `custos-do-pdf.json` (a linha de custo de cada entrada, direto do PDF de 2025);
+onde o `chunks.jsonl` não traz a linha (Animação, Comandar Espírito, Expulsar, Drenar Mana...) vale o PDF, e um teste confere TODA conta contra ele.
 
 ## O que NÃO se corrige para "ficar igual à prosa do livro"
 

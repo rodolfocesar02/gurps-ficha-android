@@ -167,6 +167,37 @@
       "duracao": "tabela",
       "tempoOperacao": "tabela+entrada",
       "custo": "tabela+entrada"
+    },
+    "custoPorCondicao": {
+      "entradas": [
+        {
+          "id": "raio",
+          "tipo": "inteiro",
+          "rotulo": "Raio da área",
+          "min": 1,
+          "max": 100,
+          "padrao": 1,
+          "unidade": "m"
+        },
+        {
+          "id": "ritmo",
+          "tipo": "inteiro",
+          "rotulo": "Quantas vezes mais rápido o tempo passa (2 = o dobro, 3 = o triplo...)",
+          "min": 2,
+          "max": 20,
+          "padrao": 2
+        }
+      ],
+      "operar": [
+        "max",
+        1,
+        [
+          "*",
+          "$ritmo",
+          "$raio"
+        ]
+      ],
+      "manter": "igual"
     }
   },
   {
@@ -262,13 +293,60 @@
     "tempoOperacaoSeg": 1,
     "tempoTipo": "fixo",
     "custoTipo": "varia",
-    "custoFormula": "Varia",
+    "custoFormula": "Multiplicar o PcC do veículo (em toneladas) pelo Deslocamento desejado (até a Velocidade Máxima do veículo), depois divida pelo NH do operador. O custo mínimo é de 1 energia; NH elevado não reduz o custo de operação. Mesmo custo de manutenção.",
     "conferido": "livro",
     "conferidoPagina": 180,
     "conferidoPor": {
       "duracao": "tabela+entrada",
       "tempoOperacao": "tabela",
       "custo": "tabela"
+    },
+    "custoPorCondicao": {
+      "entradas": [
+        {
+          "id": "pcc",
+          "tipo": "numero",
+          "rotulo": "PcC do veículo",
+          "unidade": "t",
+          "min": 0,
+          "max": 1000,
+          "passo": 0.1,
+          "padrao": 1
+        },
+        {
+          "id": "deslocamento",
+          "tipo": "inteiro",
+          "rotulo": "Deslocamento desejado (até a Velocidade Máxima do veículo)",
+          "min": 1,
+          "max": 500,
+          "padrao": 10
+        },
+        {
+          "id": "nh",
+          "tipo": "inteiro",
+          "rotulo": "NH do operador na mágica",
+          "min": 1,
+          "max": 40,
+          "padrao": 15
+        }
+      ],
+      "operar": [
+        "max",
+        1,
+        [
+          "cima",
+          [
+            "/",
+            [
+              "*",
+              "$pcc",
+              "$deslocamento"
+            ],
+            "$nh"
+          ]
+        ]
+      ],
+      "manter": "igual"
     }
   },
   {
@@ -344,13 +422,31 @@
     "tempoOperacaoSeg": 10,
     "tempoTipo": "fixo",
     "custoTipo": "varia",
-    "custoFormula": "Varia",
+    "custoFormula": "O mesmo que o custo da mágica subjacente para operar (mínimo de 2); mesmo custo para manter. A mágica adiada pode ser mantida normalmente, uma vez que tenha entrado em vigor.",
     "conferido": "livro",
     "conferidoPagina": 128,
     "conferidoPor": {
       "duracao": "tabela+entrada",
       "tempoOperacao": "tabela+entrada",
       "custo": "tabela"
+    },
+    "custoPorCondicao": {
+      "entradas": [
+        {
+          "id": "custo",
+          "tipo": "inteiro",
+          "rotulo": "Custo da mágica adiada",
+          "min": 1,
+          "max": 99,
+          "padrao": 2
+        }
+      ],
+      "operar": [
+        "max",
+        2,
+        "$custo"
+      ],
+      "manter": "igual"
     }
   },
   {
@@ -523,13 +619,74 @@
     "tempoOperacaoSeg": 4,
     "tempoTipo": "fixo",
     "custoTipo": "varia",
-    "custoFormula": "Varia",
+    "custoFormula": "A fórmula é 1 de energia para cada 15 cm de lâmina. Custos típicos (use-os a menos que as circunstâncias sejam muito especiais): 1 para operar uma flecha; 2 para uma faca, lança ou machado; 3 para uma espada de uma mão; 5 para uma espada de duas mãos. Duplique-os para +2 de bônus ou triplique para +3. Metade disso (arredondado para cima) para manter.",
     "conferido": "livro",
     "conferidoPagina": 118,
     "conferidoPor": {
       "duracao": "tabela+entrada",
       "tempoOperacao": "tabela+entrada",
       "custo": "tabela"
+    },
+    "custoPorCondicao": {
+      "entradas": [
+        {
+          "id": "arma",
+          "tipo": "escolha",
+          "rotulo": "Arma",
+          "padrao": "faca",
+          "opcoes": [
+            {
+              "id": "flecha",
+              "rotulo": "Uma flecha",
+              "valor": 1
+            },
+            {
+              "id": "faca",
+              "rotulo": "Uma faca, lança ou machado",
+              "valor": 2
+            },
+            {
+              "id": "espada1",
+              "rotulo": "Uma espada de uma mão",
+              "valor": 3
+            },
+            {
+              "id": "espada2",
+              "rotulo": "Uma espada de duas mãos",
+              "valor": 5
+            }
+          ]
+        },
+        {
+          "id": "bonus",
+          "tipo": "escolha",
+          "rotulo": "Bônus no dano",
+          "padrao": "mais1",
+          "opcoes": [
+            {
+              "id": "mais1",
+              "rotulo": "+1",
+              "valor": 1
+            },
+            {
+              "id": "mais2",
+              "rotulo": "+2 (duplica o custo)",
+              "valor": 2
+            },
+            {
+              "id": "mais3",
+              "rotulo": "+3 (triplica o custo)",
+              "valor": 3
+            }
+          ]
+        }
+      ],
+      "operar": [
+        "*",
+        "$arma",
+        "$bonus"
+      ],
+      "manter": "metade"
     }
   },
   {
@@ -1689,13 +1846,59 @@
     "tempoOperacaoSeg": 5,
     "tempoTipo": "fixo",
     "custoTipo": "varia",
-    "custoFormula": "Varia",
+    "custoFormula": "3, multiplicado pelo MT+1 para objetos maiores que o tamanho humano. Metade disso para manter. Dobre o custo para animar pedra; triplo para animar metal.",
     "conferido": "livro",
     "conferidoPagina": 150,
     "conferidoPor": {
       "duracao": "tabela",
       "tempoOperacao": "tabela",
       "custo": "tabela"
+    },
+    "custoPorCondicao": {
+      "entradas": [
+        {
+          "id": "mt",
+          "tipo": "inteiro",
+          "rotulo": "Modificador de Tamanho do objeto (MT; o humano é 0)",
+          "min": 0,
+          "max": 10,
+          "padrao": 0
+        },
+        {
+          "id": "material",
+          "tipo": "escolha",
+          "rotulo": "Material",
+          "padrao": "comum",
+          "opcoes": [
+            {
+              "id": "comum",
+              "rotulo": "Madeira, barro...",
+              "valor": 1
+            },
+            {
+              "id": "pedra",
+              "rotulo": "Pedra (dobra o custo)",
+              "valor": 2
+            },
+            {
+              "id": "metal",
+              "rotulo": "Metal (triplica o custo)",
+              "valor": 3
+            }
+          ]
+        }
+      ],
+      "operar": [
+        "*",
+        3,
+        [
+          "+",
+          1,
+          "$mt"
+        ],
+        "$material"
+      ],
+      "manter": "metade"
     }
   },
   {
@@ -1770,6 +1973,75 @@
       "duracao": "tabela",
       "tempoOperacao": "formula",
       "custo": "tabela+entrada"
+    },
+    "custoPorCondicao": {
+      "entradas": [
+        {
+          "id": "massa",
+          "tipo": "escolha",
+          "rotulo": "Massa da máquina",
+          "padrao": "t1",
+          "opcoes": [
+            {
+              "id": "t1",
+              "rotulo": "Até 1 t",
+              "valor": 8
+            },
+            {
+              "id": "t2",
+              "rotulo": "Até 2 t",
+              "valor": 9
+            },
+            {
+              "id": "t4",
+              "rotulo": "Até 4 t",
+              "valor": 10
+            },
+            {
+              "id": "t8",
+              "rotulo": "Até 8 t",
+              "valor": 11
+            },
+            {
+              "id": "t16",
+              "rotulo": "Até 16 t",
+              "valor": 12
+            },
+            {
+              "id": "t32",
+              "rotulo": "Até 32 t",
+              "valor": 13
+            },
+            {
+              "id": "t64",
+              "rotulo": "Até 64 t",
+              "valor": 14
+            },
+            {
+              "id": "t128",
+              "rotulo": "Até 128 t",
+              "valor": 15
+            },
+            {
+              "id": "t256",
+              "rotulo": "Até 256 t",
+              "valor": 16
+            },
+            {
+              "id": "t512",
+              "rotulo": "Até 512 t",
+              "valor": 17
+            },
+            {
+              "id": "t1024",
+              "rotulo": "Até 1.024 t",
+              "valor": 18
+            }
+          ]
+        }
+      ],
+      "operar": "$massa",
+      "manter": "metade"
     }
   },
   {
@@ -1990,6 +2262,29 @@
       "duracao": "tabela",
       "tempoOperacao": "tabela",
       "custo": "entrada"
+    },
+    "custoPorCondicao": {
+      "entradas": [
+        {
+          "id": "objetivo",
+          "tipo": "escolha",
+          "rotulo": "Anular",
+          "padrao": "naovivo",
+          "opcoes": [
+            {
+              "id": "naovivo",
+              "rotulo": "Um objetivo não vivo",
+              "valor": 1
+            },
+            {
+              "id": "vivo",
+              "rotulo": "Uma criação viva",
+              "valor": 3
+            }
+          ]
+        }
+      ],
+      "operar": "$objetivo"
     }
   },
   {
@@ -2233,6 +2528,80 @@
       "duracao": "tabela+entrada",
       "tempoOperacao": "tabela",
       "custo": "tabela+entrada"
+    },
+    "custoPorCondicao": {
+      "entradas": [
+        {
+          "id": "peso",
+          "tipo": "escolha",
+          "rotulo": "Peso do objeto",
+          "padrao": "ate05",
+          "opcoes": [
+            {
+              "id": "ate05",
+              "rotulo": "Menos de 0,5 kg",
+              "valor": 1
+            },
+            {
+              "id": "ate5",
+              "rotulo": "Até 5 kg",
+              "valor": 2
+            },
+            {
+              "id": "ate25",
+              "rotulo": "Até 25 kg",
+              "valor": 3
+            },
+            {
+              "id": "ate100",
+              "rotulo": "Até 100 kg",
+              "valor": 4
+            },
+            {
+              "id": "ate150",
+              "rotulo": "Até 150 kg",
+              "valor": 8
+            },
+            {
+              "id": "ate200",
+              "rotulo": "Até 200 kg",
+              "valor": 12
+            },
+            {
+              "id": "ate250",
+              "rotulo": "Até 250 kg",
+              "valor": 16
+            },
+            {
+              "id": "ate300",
+              "rotulo": "Até 300 kg",
+              "valor": 20
+            },
+            {
+              "id": "ate350",
+              "rotulo": "Até 350 kg",
+              "valor": 24
+            },
+            {
+              "id": "ate400",
+              "rotulo": "Até 400 kg",
+              "valor": 28
+            },
+            {
+              "id": "ate450",
+              "rotulo": "Até 450 kg",
+              "valor": 32
+            },
+            {
+              "id": "ate500",
+              "rotulo": "Até 500 kg",
+              "valor": 36
+            }
+          ]
+        }
+      ],
+      "operar": "$peso",
+      "manter": "igual"
     }
   },
   {
@@ -2328,6 +2697,20 @@
       "duracao": "tabela+entrada",
       "tempoOperacao": "tabela",
       "custo": "tabela+entrada"
+    },
+    "custoPorCondicao": {
+      "entradas": [
+        {
+          "id": "fator",
+          "tipo": "inteiro",
+          "rotulo": "Quantas vezes mais rápido o fogo queima (2 = o dobro, 3 = o triplo...)",
+          "min": 2,
+          "max": 20,
+          "padrao": 2
+        }
+      ],
+      "operar": "$fator",
+      "manter": "igual"
     }
   },
   {
@@ -2393,13 +2776,41 @@
     "tempoOperacaoSeg": 1,
     "tempoTipo": "fixo",
     "custoTipo": "varia",
-    "custoFormula": "Varia",
+    "custoFormula": "Espírito (ST+IQ) dividido por 5 para operar, por 10 para manter.",
     "conferido": "livro",
     "conferidoPagina": 157,
     "conferidoPor": {
       "duracao": "tabela+entrada",
       "tempoOperacao": "tabela",
       "custo": "tabela"
+    },
+    "custoPorCondicao": {
+      "entradas": [
+        {
+          "id": "espirito",
+          "tipo": "inteiro",
+          "rotulo": "ST + IQ do espírito",
+          "min": 2,
+          "max": 495,
+          "padrao": 20
+        }
+      ],
+      "operar": [
+        "cima",
+        [
+          "/",
+          "$espirito",
+          5
+        ]
+      ],
+      "manter": [
+        "cima",
+        [
+          "/",
+          "$espirito",
+          10
+        ]
+      ]
     }
   },
   {
@@ -2967,13 +3378,32 @@
     "tempoOperacaoSeg": 1,
     "tempoTipo": "fixo",
     "custoTipo": "varia",
-    "custoFormula": "Varia",
+    "custoFormula": "Duas vezes a Resistência a Dano dada ao objetivo, a uma RD máxima de 5 (custo 10). Metade disso para manter.",
     "conferido": "livro",
     "conferidoPagina": 167,
     "conferidoPor": {
       "duracao": "tabela+entrada",
       "tempoOperacao": "tabela",
       "custo": "tabela"
+    },
+    "custoPorCondicao": {
+      "entradas": [
+        {
+          "id": "rd",
+          "tipo": "inteiro",
+          "rotulo": "Pontos de RD dados ao objetivo",
+          "min": 1,
+          "max": 5,
+          "padrao": 1
+        }
+      ],
+      "operar": [
+        "*",
+        2,
+        "$rd"
+      ],
+      "manter": "metade",
+      "tamanho": true
     }
   },
   {
@@ -4333,6 +4763,46 @@
       "duracao": "tabela+entrada",
       "tempoOperacao": "tabela+entrada",
       "custo": "tabela+entrada"
+    },
+    "custoPorCondicao": {
+      "entradas": [
+        {
+          "id": "area",
+          "tipo": "marca",
+          "rotulo": "Operada em uma área (o custo básico é 4, vezes o raio)"
+        },
+        {
+          "id": "raio",
+          "tipo": "inteiro",
+          "rotulo": "Raio da área",
+          "min": 1,
+          "max": 100,
+          "padrao": 1,
+          "unidade": "m"
+        }
+      ],
+      "operar": [
+        "+",
+        [
+          "*",
+          [
+            "-",
+            1,
+            "$area"
+          ],
+          4
+        ],
+        [
+          "*",
+          "$area",
+          [
+            "*",
+            4,
+            "$raio"
+          ]
+        ]
+      ],
+      "manter": "metade"
     }
   },
   {
@@ -4748,6 +5218,71 @@
       "duracao": "tabela+entrada",
       "tempoOperacao": "tabela+entrada",
       "custo": "tabela+entrada"
+    },
+    "custoPorCondicao": {
+      "entradas": [
+        {
+          "id": "raio",
+          "tipo": "inteiro",
+          "rotulo": "Raio da área",
+          "min": 1,
+          "max": 100,
+          "padrao": 1,
+          "unidade": "m"
+        },
+        {
+          "id": "recipiente",
+          "tipo": "marca",
+          "rotulo": "Operada em um recipiente (15 por 0,75 m³), e não como área"
+        },
+        {
+          "id": "volume",
+          "tipo": "numero",
+          "rotulo": "Volume do recipiente",
+          "unidade": "m³",
+          "min": 0,
+          "max": 4.5,
+          "passo": 0.25,
+          "padrao": 0.75
+        }
+      ],
+      "operar": [
+        "+",
+        [
+          "*",
+          [
+            "-",
+            1,
+            "$recipiente"
+          ],
+          [
+            "*",
+            4,
+            "$raio"
+          ]
+        ],
+        [
+          "*",
+          "$recipiente",
+          [
+            "*",
+            15,
+            [
+              "max",
+              1,
+              [
+                "cima",
+                [
+                  "/",
+                  "$volume",
+                  0.75
+                ]
+              ]
+            ]
+          ]
+        ]
+      ],
+      "manter": "metade"
     }
   },
   {
@@ -4855,6 +5390,30 @@
       "duracao": "formula",
       "tempoOperacao": "tabela",
       "custo": "tabela+entrada"
+    },
+    "custoPorCondicao": {
+      "entradas": [
+        {
+          "id": "grau",
+          "tipo": "escolha",
+          "rotulo": "Bênção de (3 pontos custam 500: só em cerimônia, com o Mestre)",
+          "padrao": "um",
+          "opcoes": [
+            {
+              "id": "um",
+              "rotulo": "1 ponto",
+              "valor": 10
+            },
+            {
+              "id": "dois",
+              "rotulo": "2 pontos",
+              "valor": 50
+            }
+          ]
+        }
+      ],
+      "operar": "$grau",
+      "tamanho": true
     }
   },
   {
@@ -5507,6 +6066,66 @@
       "duracao": "tabela+entrada",
       "tempoOperacao": "tabela+entrada",
       "custo": "tabela+entrada"
+    },
+    "custoPorCondicao": {
+      "entradas": [
+        {
+          "id": "punho",
+          "tipo": "marca",
+          "rotulo": "Objeto do tamanho de um punho (ou menor)"
+        },
+        {
+          "id": "volume",
+          "tipo": "numero",
+          "rotulo": "Volume do objeto",
+          "unidade": "m³",
+          "min": 0,
+          "max": 30,
+          "passo": 0.05,
+          "padrao": 0.75
+        },
+        {
+          "id": "vezes",
+          "tipo": "inteiro",
+          "rotulo": "Velocidade do aquecimento (1 = 10° por minuto, 2 = 20°...)",
+          "min": 1,
+          "max": 10,
+          "padrao": 1
+        }
+      ],
+      "operar": [
+        "*",
+        "$vezes",
+        [
+          "max",
+          "$punho",
+          [
+            "*",
+            [
+              "-",
+              1,
+              "$punho"
+            ],
+            [
+              "*",
+              2,
+              [
+                "max",
+                1,
+                [
+                  "cima",
+                  [
+                    "/",
+                    "$volume",
+                    0.75
+                  ]
+                ]
+              ]
+            ]
+          ]
+        ]
+      ],
+      "manter": "igual"
     }
   },
   {
@@ -6229,6 +6848,30 @@
       "duracao": "tabela",
       "tempoOperacao": "tabela",
       "custo": "tabela+entrada"
+    },
+    "custoPorCondicao": {
+      "entradas": [
+        {
+          "id": "alcance",
+          "tipo": "escolha",
+          "rotulo": "Parar a paralisia",
+          "padrao": "membro",
+          "opcoes": [
+            {
+              "id": "membro",
+              "rotulo": "De um único membro",
+              "valor": 1
+            },
+            {
+              "id": "corpo",
+              "rotulo": "De todo o corpo",
+              "valor": 2
+            }
+          ]
+        }
+      ],
+      "operar": "$alcance",
+      "tamanho": true
     }
   },
   {
@@ -6269,6 +6912,30 @@
       "duracao": "tabela",
       "tempoOperacao": "tabela",
       "custo": "tabela+entrada"
+    },
+    "custoPorCondicao": {
+      "entradas": [
+        {
+          "id": "ferimento",
+          "tipo": "escolha",
+          "rotulo": "Ferimento",
+          "padrao": "normal",
+          "opcoes": [
+            {
+              "id": "normal",
+              "rotulo": "Normal (parar o sangramento)",
+              "valor": 1
+            },
+            {
+              "id": "mortal",
+              "rotulo": "Mortal (estabilizar)",
+              "valor": 10
+            }
+          ]
+        }
+      ],
+      "operar": "$ferimento",
+      "tamanho": true
     }
   },
   {
@@ -7011,6 +7678,30 @@
       "duracao": "tabela+entrada",
       "tempoOperacao": "tabela",
       "custo": "entrada"
+    },
+    "custoPorCondicao": {
+      "entradas": [
+        {
+          "id": "objeto",
+          "tipo": "escolha",
+          "rotulo": "Objeto",
+          "padrao": "mao",
+          "opcoes": [
+            {
+              "id": "mao",
+              "rotulo": "Pequeno, que cabe na mão",
+              "valor": 1
+            },
+            {
+              "id": "maior",
+              "rotulo": "Maior",
+              "valor": 2
+            }
+          ]
+        }
+      ],
+      "operar": "$objeto",
+      "manter": "metade"
     }
   },
   {
@@ -7182,13 +7873,35 @@
     "tempoOperacaoSeg": 2,
     "tempoTipo": "fixo",
     "custoTipo": "varia",
-    "custoFormula": "Varia",
+    "custoFormula": "1 ponto por 10 pontos de personagem usados para construir o espírito. Metade disso (arredondado para cima) para manter. (Se o Mestre não tiver uma ficha de personagem para o espírito, 5 de energia é uma boa base para espíritos menores, ou 10 de energia para um ser mais formidável.)",
     "conferido": "livro",
     "conferidoPagina": 153,
     "conferidoPor": {
       "duracao": "tabela",
       "tempoOperacao": "tabela",
       "custo": "tabela"
+    },
+    "custoPorCondicao": {
+      "entradas": [
+        {
+          "id": "pontos",
+          "tipo": "inteiro",
+          "rotulo": "Pontos de personagem do espírito",
+          "min": 10,
+          "max": 990,
+          "padrao": 50
+        }
+      ],
+      "operar": [
+        "cima",
+        [
+          "/",
+          "$pontos",
+          10
+        ]
+      ],
+      "manter": "metade",
+      "tamanho": true
     }
   },
   {
@@ -7315,13 +8028,30 @@
     "tempoOperacaoSeg": 1,
     "tempoTipo": "fixo",
     "custoTipo": "varia",
-    "custoFormula": "Varia",
+    "custoFormula": "Duas vezes a quantidade realmente usada pelo mago que drena os PF. A energia gasta pelo operador vai para o poder de outra mágica do mago. PF além do necessário pela mágica não é transferido para o outro mago — use Conceder Energia para fazer isso. O custo para operar esta mágica nunca é reduzido por NH elevado. Um mínimo de 1 PF sempre é gasto ao operar esta mágica.",
     "conferido": "livro",
     "conferidoPagina": 89,
     "conferidoPor": {
       "duracao": "formula",
       "tempoOperacao": "tabela",
       "custo": "tabela"
+    },
+    "custoPorCondicao": {
+      "entradas": [
+        {
+          "id": "usada",
+          "tipo": "inteiro",
+          "rotulo": "Energia realmente usada pelo mago que drena os PF",
+          "min": 1,
+          "max": 49,
+          "padrao": 1
+        }
+      ],
+      "operar": [
+        "*",
+        2,
+        "$usada"
+      ]
     }
   },
   {
@@ -8149,6 +8879,86 @@
       "duracao": "tabela",
       "tempoOperacao": "tabela+entrada",
       "custo": "tabela+entrada"
+    },
+    "custoPorCondicao": {
+      "entradas": [
+        {
+          "id": "punho",
+          "tipo": "marca",
+          "rotulo": "Quantidade do tamanho de um punho"
+        },
+        {
+          "id": "litros",
+          "tipo": "numero",
+          "rotulo": "Água a congelar",
+          "unidade": "litros",
+          "min": 0,
+          "max": 5000,
+          "passo": 5,
+          "padrao": 25
+        }
+      ],
+      "operar": [
+        "max",
+        [
+          "*",
+          2,
+          "$punho"
+        ],
+        [
+          "*",
+          [
+            "-",
+            1,
+            "$punho"
+          ],
+          [
+            "+",
+            4,
+            [
+              "*",
+              2,
+              [
+                "min",
+                1,
+                [
+                  "cima",
+                  [
+                    "max",
+                    0,
+                    [
+                      "-",
+                      "$litros",
+                      25
+                    ]
+                  ]
+                ]
+              ]
+            ],
+            [
+              "*",
+              3,
+              [
+                "cima",
+                [
+                  "/",
+                  [
+                    "max",
+                    0,
+                    [
+                      "-",
+                      "$litros",
+                      250
+                    ]
+                  ],
+                  250
+                ]
+              ]
+            ]
+          ]
+        ]
+      ],
+      "manter": "igual"
     }
   },
   {
@@ -8332,13 +9142,33 @@
     "tempoOperacaoSeg": 5,
     "tempoTipo": "fixo",
     "custoTipo": "varia",
-    "custoFormula": "Varia",
+    "custoFormula": "Metade do custo da mágica a ser anulada, sem contar os bônus de NH elevado do outro operador.",
     "conferido": "livro",
     "conferidoPagina": 121,
     "conferidoPor": {
       "duracao": "tabela",
       "tempoOperacao": "tabela+entrada",
       "custo": "tabela"
+    },
+    "custoPorCondicao": {
+      "entradas": [
+        {
+          "id": "custo",
+          "tipo": "inteiro",
+          "rotulo": "Custo da mágica a anular (sem o NH elevado do outro operador)",
+          "min": 1,
+          "max": 99,
+          "padrao": 2
+        }
+      ],
+      "operar": [
+        "cima",
+        [
+          "/",
+          "$custo",
+          2
+        ]
+      ]
     }
   },
   {
@@ -8377,6 +9207,21 @@
       "duracao": "tabela+entrada",
       "tempoOperacao": "tabela",
       "custo": "tabela+entrada"
+    },
+    "custoPorCondicao": {
+      "entradas": [
+        {
+          "id": "iq",
+          "tipo": "inteiro",
+          "rotulo": "IQ racial da espécie mais inteligente da categoria",
+          "min": 1,
+          "max": 5,
+          "padrao": 5
+        }
+      ],
+      "operar": "$iq",
+      "manter": "metade",
+      "tamanho": true
     }
   },
   {
@@ -8415,6 +9260,21 @@
       "duracao": "tabela+entrada",
       "tempoOperacao": "tabela",
       "custo": "tabela+entrada"
+    },
+    "custoPorCondicao": {
+      "entradas": [
+        {
+          "id": "iq",
+          "tipo": "inteiro",
+          "rotulo": "IQ racial da espécie mais inteligente da categoria",
+          "min": 1,
+          "max": 5,
+          "padrao": 5
+        }
+      ],
+      "operar": "$iq",
+      "manter": "metade",
+      "tamanho": true
     }
   },
   {
@@ -8453,6 +9313,21 @@
       "duracao": "tabela+entrada",
       "tempoOperacao": "tabela",
       "custo": "tabela+entrada"
+    },
+    "custoPorCondicao": {
+      "entradas": [
+        {
+          "id": "iq",
+          "tipo": "inteiro",
+          "rotulo": "IQ racial da espécie mais inteligente da categoria",
+          "min": 1,
+          "max": 5,
+          "padrao": 5
+        }
+      ],
+      "operar": "$iq",
+      "manter": "metade",
+      "tamanho": true
     }
   },
   {
@@ -11582,13 +12457,37 @@
     "tempoOperacaoSeg": 4,
     "tempoTipo": "fixo",
     "custoTipo": "varia",
-    "custoFormula": "Varia",
+    "custoFormula": "4 para operar. 4 para manter. Custo para criar um Guerreiro Bruto (ST 16) é 6 para operar; 6 para manter.",
     "conferido": "livro",
     "conferidoPagina": 98,
     "conferidoPor": {
       "duracao": "tabela+entrada",
       "tempoOperacao": "tabela+entrada",
       "custo": "tabela"
+    },
+    "custoPorCondicao": {
+      "entradas": [
+        {
+          "id": "tipo",
+          "tipo": "escolha",
+          "rotulo": "Guerreiro",
+          "padrao": "comum",
+          "opcoes": [
+            {
+              "id": "comum",
+              "rotulo": "Comum",
+              "valor": 4
+            },
+            {
+              "id": "bruto",
+              "rotulo": "Bruto (ST 16)",
+              "valor": 6
+            }
+          ]
+        }
+      ],
+      "operar": "$tipo",
+      "manter": "igual"
     }
   },
   {
@@ -12087,13 +12986,49 @@
     "tempoOperacaoSeg": 3,
     "tempoTipo": "fixo",
     "custoTipo": "varia",
-    "custoFormula": "Varia",
+    "custoFormula": "3 para operar. 1 para manter. Para um serviçal habilidoso, 4 para operar; 2 para manter. Para um Bruto, 6 para operar; 2 para manter.",
     "conferido": "livro",
     "conferidoPagina": 98,
     "conferidoPor": {
       "duracao": "tabela+entrada",
       "tempoOperacao": "tabela+entrada",
       "custo": "tabela"
+    },
+    "custoPorCondicao": {
+      "entradas": [
+        {
+          "id": "tipo",
+          "tipo": "escolha",
+          "rotulo": "Servo",
+          "padrao": "comum",
+          "opcoes": [
+            {
+              "id": "comum",
+              "rotulo": "Comum",
+              "valor": 3
+            },
+            {
+              "id": "habilidoso",
+              "rotulo": "Serviçal habilidoso",
+              "valor": 4
+            },
+            {
+              "id": "bruto",
+              "rotulo": "Bruto",
+              "valor": 6
+            }
+          ]
+        }
+      ],
+      "operar": "$tipo",
+      "manter": [
+        "cima",
+        [
+          "/",
+          "$operar",
+          3
+        ]
+      ]
     }
   },
   {
@@ -12275,6 +13210,70 @@
       "duracao": "tabela+entrada",
       "tempoOperacao": "tabela",
       "custo": "tabela+entrada"
+    },
+    "custoPorCondicao": {
+      "entradas": [
+        {
+          "id": "palavras",
+          "tipo": "inteiro",
+          "rotulo": "Palavras de texto simples",
+          "min": 1,
+          "max": 9000000,
+          "padrao": 1000
+        }
+      ],
+      "operar": [
+        "+",
+        1,
+        [
+          "min",
+          1,
+          [
+            "cima",
+            [
+              "max",
+              0,
+              [
+                "-",
+                "$palavras",
+                1000
+              ]
+            ]
+          ]
+        ],
+        [
+          "min",
+          1,
+          [
+            "cima",
+            [
+              "max",
+              0,
+              [
+                "-",
+                "$palavras",
+                10000
+              ]
+            ]
+          ]
+        ],
+        [
+          "baixo",
+          [
+            "/",
+            [
+              "max",
+              0,
+              [
+                "-",
+                "$palavras",
+                100000
+              ]
+            ],
+            100000
+          ]
+        ]
+      ]
     }
   },
   {
@@ -12788,6 +13787,44 @@
       "duracao": "tabela",
       "tempoOperacao": "tabela",
       "custo": "tabela+entrada"
+    },
+    "custoPorCondicao": {
+      "entradas": [
+        {
+          "id": "tudo",
+          "tipo": "marca",
+          "rotulo": "Desfazer tudo num raio de 1 metro (a pessoa nessa área resiste com a Vontade)"
+        },
+        {
+          "id": "extras",
+          "tipo": "inteiro",
+          "rotulo": "Alvos extras dentro de 1 metro",
+          "min": 0,
+          "max": 20,
+          "padrao": 0
+        }
+      ],
+      "operar": [
+        "max",
+        [
+          "*",
+          6,
+          "$tudo"
+        ],
+        [
+          "*",
+          [
+            "-",
+            1,
+            "$tudo"
+          ],
+          [
+            "+",
+            3,
+            "$extras"
+          ]
+        ]
+      ]
     }
   },
   {
@@ -12995,6 +14032,20 @@
       "duracao": "tabela",
       "tempoOperacao": "tabela+entrada",
       "custo": "entrada"
+    },
+    "custoPorCondicao": {
+      "entradas": [
+        {
+          "id": "pontos",
+          "tipo": "inteiro",
+          "rotulo": "Energia colocada (1d-1 de dano cada)",
+          "min": 1,
+          "max": 3,
+          "padrao": 1
+        }
+      ],
+      "operar": "$pontos",
+      "tamanho": true
     }
   },
   {
@@ -13103,13 +14154,33 @@
     "tempoOperacaoSeg": 5,
     "tempoTipo": "fixo",
     "custoTipo": "varia",
-    "custoFormula": "Varia",
+    "custoFormula": "1/4 da mágica sendo movida, sem contar os bônus que o outro operador pode ter obtido por NH elevado (arredondado para cima).",
     "conferido": "livro",
     "conferidoPagina": 124,
     "conferidoPor": {
       "duracao": "formula",
       "tempoOperacao": "tabela+entrada",
       "custo": "tabela"
+    },
+    "custoPorCondicao": {
+      "entradas": [
+        {
+          "id": "custo",
+          "tipo": "inteiro",
+          "rotulo": "Custo da mágica sendo movida (sem os bônus do outro operador)",
+          "min": 1,
+          "max": 99,
+          "padrao": 4
+        }
+      ],
+      "operar": [
+        "cima",
+        [
+          "/",
+          "$custo",
+          4
+        ]
+      ]
     }
   },
   {
@@ -13561,13 +14632,50 @@
     "tempoOperacaoSeg": 1,
     "tempoTipo": "fixo",
     "custoTipo": "varia",
-    "custoFormula": "Varia",
+    "custoFormula": "Conforme descrito acima; custo mínimo 3.",
     "conferido": "livro",
     "conferidoPagina": 84,
     "conferidoPor": {
       "duracao": "tabela",
       "tempoOperacao": "tabela",
       "custo": "tabela"
+    },
+    "custoPorCondicao": {
+      "entradas": [
+        {
+          "id": "pretendido",
+          "tipo": "inteiro",
+          "rotulo": "Custo do Teleporte pretendido (destino original)",
+          "min": 3,
+          "max": 30,
+          "padrao": 3
+        },
+        {
+          "id": "novo",
+          "tipo": "inteiro",
+          "rotulo": "Custo do Teleporte para o novo destino",
+          "min": 3,
+          "max": 30,
+          "padrao": 3
+        }
+      ],
+      "operar": [
+        "max",
+        3,
+        [
+          "max",
+          [
+            "-",
+            "$pretendido",
+            "$novo"
+          ],
+          [
+            "-",
+            "$novo",
+            "$pretendido"
+          ]
+        ]
+      ]
     }
   },
   {
@@ -13986,6 +15094,37 @@
       "duracao": "tabela+entrada",
       "tempoOperacao": "tabela+entrada",
       "custo": "entrada"
+    },
+    "custoPorCondicao": {
+      "entradas": [
+        {
+          "id": "toneladas",
+          "tipo": "numero",
+          "rotulo": "Massa da máquina",
+          "unidade": "t",
+          "min": 0,
+          "max": 95,
+          "passo": 0.5,
+          "padrao": 1
+        }
+      ],
+      "operar": [
+        "+",
+        5,
+        [
+          "cima",
+          [
+            "max",
+            0,
+            [
+              "-",
+              "$toneladas",
+              1
+            ]
+          ]
+        ]
+      ],
+      "manter": "metade"
     }
   },
   {
@@ -14186,6 +15325,35 @@
       "duracao": "tabela+entrada",
       "tempoOperacao": "tabela",
       "custo": "tabela+entrada"
+    },
+    "custoPorCondicao": {
+      "entradas": [
+        {
+          "id": "compreensao",
+          "tipo": "escolha",
+          "rotulo": "Compreensão",
+          "padrao": "rudimentar",
+          "opcoes": [
+            {
+              "id": "rudimentar",
+              "rotulo": "Rudimentar",
+              "valor": 2
+            },
+            {
+              "id": "sotaque",
+              "rotulo": "Com Sotaque",
+              "valor": 4
+            },
+            {
+              "id": "materna",
+              "rotulo": "Materna",
+              "valor": 6
+            }
+          ]
+        }
+      ],
+      "operar": "$compreensao",
+      "manter": "metade"
     }
   },
   {
@@ -14223,6 +15391,35 @@
       "duracao": "tabela+entrada",
       "tempoOperacao": "tabela",
       "custo": "tabela+entrada"
+    },
+    "custoPorCondicao": {
+      "entradas": [
+        {
+          "id": "compreensao",
+          "tipo": "escolha",
+          "rotulo": "Compreensão",
+          "padrao": "rudimentar",
+          "opcoes": [
+            {
+              "id": "rudimentar",
+              "rotulo": "Rudimentar",
+              "valor": 2
+            },
+            {
+              "id": "sotaque",
+              "rotulo": "Com Sotaque",
+              "valor": 4
+            },
+            {
+              "id": "materna",
+              "rotulo": "Materna",
+              "valor": 6
+            }
+          ]
+        }
+      ],
+      "operar": "$compreensao",
+      "manter": "metade"
     }
   },
   {
@@ -14757,6 +15954,28 @@
       "duracao": "tabela",
       "tempoOperacao": "tabela",
       "custo": "tabela"
+    },
+    "custoPorCondicao": {
+      "entradas": [
+        {
+          "id": "raio",
+          "tipo": "inteiro",
+          "rotulo": "Raio da área",
+          "min": 1,
+          "max": 100,
+          "padrao": 1,
+          "unidade": "m"
+        }
+      ],
+      "operar": [
+        "max",
+        1,
+        [
+          "*",
+          10,
+          "$raio"
+        ]
+      ]
     }
   },
   {
@@ -15818,6 +17037,29 @@
       "duracao": "tabela",
       "tempoOperacao": "tabela",
       "custo": "tabela"
+    },
+    "custoPorCondicao": {
+      "entradas": [
+        {
+          "id": "raio",
+          "tipo": "inteiro",
+          "rotulo": "Raio da área",
+          "min": 1,
+          "max": 100,
+          "padrao": 1,
+          "unidade": "m"
+        }
+      ],
+      "operar": [
+        "max",
+        1,
+        [
+          "*",
+          3,
+          "$raio"
+        ]
+      ],
+      "manter": "igual"
     }
   },
   {
@@ -16406,13 +17648,32 @@
     "tempoOperacaoSeg": 1,
     "tempoTipo": "fixo",
     "custoTipo": "varia",
-    "custoFormula": "Varia",
+    "custoFormula": "Duas vezes o Bônus de Defesa dado ao objetivo, até um BD máximo de 4 (custo 8). Metade disso para manter.",
     "conferido": "livro",
     "conferidoPagina": 167,
     "conferidoPor": {
       "duracao": "tabela+entrada",
       "tempoOperacao": "tabela",
       "custo": "tabela"
+    },
+    "custoPorCondicao": {
+      "entradas": [
+        {
+          "id": "bd",
+          "tipo": "inteiro",
+          "rotulo": "Pontos de Bônus de Defesa dados ao objetivo",
+          "min": 1,
+          "max": 4,
+          "padrao": 1
+        }
+      ],
+      "operar": [
+        "*",
+        2,
+        "$bd"
+      ],
+      "manter": "metade",
+      "tamanho": true
     }
   },
   {
@@ -17666,13 +18927,37 @@
     "tempoOperacaoSeg": 5,
     "tempoTipo": "fixo",
     "custoTipo": "varia",
-    "custoFormula": "Varia",
+    "custoFormula": "1 ponto por 10 pontos de personagem que o objetivo custou. O custo mínimo de energia é 10. O operador não saberá com antecedência a quantidade de energia que a mágica exigirá, e poderá ficar inconsciente ou até se ferir ao operar Expulsar.",
     "conferido": "livro",
     "conferidoPagina": 156,
     "conferidoPor": {
       "duracao": "tabela",
       "tempoOperacao": "tabela",
       "custo": "tabela"
+    },
+    "custoPorCondicao": {
+      "entradas": [
+        {
+          "id": "pontos",
+          "tipo": "inteiro",
+          "rotulo": "Pontos de personagem que o objetivo custou",
+          "min": 10,
+          "max": 990,
+          "padrao": 100
+        }
+      ],
+      "operar": [
+        "max",
+        10,
+        [
+          "cima",
+          [
+            "/",
+            "$pontos",
+            10
+          ]
+        ]
+      ]
     }
   },
   {
@@ -18385,6 +19670,85 @@
       "duracao": "tabela",
       "tempoOperacao": "tabela+entrada",
       "custo": "tabela+entrada"
+    },
+    "custoPorCondicao": {
+      "entradas": [
+        {
+          "id": "punho",
+          "tipo": "marca",
+          "rotulo": "Quantidade do tamanho de um punho"
+        },
+        {
+          "id": "litros",
+          "tipo": "numero",
+          "rotulo": "Água a ferver",
+          "unidade": "litros",
+          "min": 0,
+          "max": 5000,
+          "passo": 5,
+          "padrao": 25
+        }
+      ],
+      "operar": [
+        "max",
+        [
+          "*",
+          2,
+          "$punho"
+        ],
+        [
+          "*",
+          [
+            "-",
+            1,
+            "$punho"
+          ],
+          [
+            "+",
+            4,
+            [
+              "*",
+              2,
+              [
+                "min",
+                1,
+                [
+                  "cima",
+                  [
+                    "max",
+                    0,
+                    [
+                      "-",
+                      "$litros",
+                      25
+                    ]
+                  ]
+                ]
+              ]
+            ],
+            [
+              "*",
+              3,
+              [
+                "cima",
+                [
+                  "/",
+                  [
+                    "max",
+                    0,
+                    [
+                      "-",
+                      "$litros",
+                      250
+                    ]
+                  ],
+                  250
+                ]
+              ]
+            ]
+          ]
+        ]
+      ]
     }
   },
   {
@@ -19061,13 +20425,73 @@
     "tempoOperacaoSeg": 60,
     "tempoTipo": "fixo",
     "custoTipo": "varia",
-    "custoFormula": "Varia",
+    "custoFormula": "Exatamente como para Calor, exceto que cada minuto reduz a temperatura do alvo em 10°.",
     "conferido": "livro",
     "conferidoPagina": 74,
     "conferidoPor": {
       "duracao": "tabela",
       "tempoOperacao": "tabela",
       "custo": "tabela"
+    },
+    "custoPorCondicao": {
+      "entradas": [
+        {
+          "id": "punho",
+          "tipo": "marca",
+          "rotulo": "Objeto do tamanho de um punho (ou menor)"
+        },
+        {
+          "id": "volume",
+          "tipo": "numero",
+          "rotulo": "Volume do objeto",
+          "unidade": "m³",
+          "min": 0,
+          "max": 30,
+          "passo": 0.05,
+          "padrao": 0.75
+        },
+        {
+          "id": "vezes",
+          "tipo": "inteiro",
+          "rotulo": "Velocidade do esfriamento (1 = 10° por minuto, 2 = 20°...)",
+          "min": 1,
+          "max": 10,
+          "padrao": 1
+        }
+      ],
+      "operar": [
+        "*",
+        "$vezes",
+        [
+          "max",
+          "$punho",
+          [
+            "*",
+            [
+              "-",
+              1,
+              "$punho"
+            ],
+            [
+              "*",
+              2,
+              [
+                "max",
+                1,
+                [
+                  "cima",
+                  [
+                    "/",
+                    "$volume",
+                    0.75
+                  ]
+                ]
+              ]
+            ]
+          ]
+        ]
+      ],
+      "manter": "igual"
     }
   },
   {
@@ -19408,6 +20832,37 @@
       "duracao": "tabela",
       "tempoOperacao": "tabela",
       "custo": "tabela"
+    },
+    "custoPorCondicao": {
+      "entradas": [
+        {
+          "id": "raio",
+          "tipo": "inteiro",
+          "rotulo": "Raio da área",
+          "min": 1,
+          "max": 100,
+          "padrao": 1,
+          "unidade": "m"
+        }
+      ],
+      "operar": [
+        "max",
+        1,
+        [
+          "*",
+          5,
+          "$raio"
+        ]
+      ],
+      "manter": [
+        "max",
+        1,
+        [
+          "*",
+          2,
+          "$raio"
+        ]
+      ]
     }
   },
   {
@@ -20097,6 +21552,39 @@
       "duracao": "tabela",
       "tempoOperacao": "tabela",
       "custo": "tabela+entrada"
+    },
+    "custoPorCondicao": {
+      "entradas": [
+        {
+          "id": "periodo",
+          "tipo": "escolha",
+          "rotulo": "História de",
+          "padrao": "dia",
+          "opcoes": [
+            {
+              "id": "dia",
+              "rotulo": "Um dia",
+              "valor": 3
+            },
+            {
+              "id": "semana",
+              "rotulo": "Uma semana",
+              "valor": 5
+            },
+            {
+              "id": "mes",
+              "rotulo": "Um mês",
+              "valor": 8
+            },
+            {
+              "id": "ano",
+              "rotulo": "Um ano",
+              "valor": 10
+            }
+          ]
+        }
+      ],
+      "operar": "$periodo"
     }
   },
   {
@@ -20134,6 +21622,39 @@
       "duracao": "tabela",
       "tempoOperacao": "tabela",
       "custo": "tabela+entrada"
+    },
+    "custoPorCondicao": {
+      "entradas": [
+        {
+          "id": "periodo",
+          "tipo": "escolha",
+          "rotulo": "História de",
+          "padrao": "ano",
+          "opcoes": [
+            {
+              "id": "ano",
+              "rotulo": "Um ano",
+              "valor": 3
+            },
+            {
+              "id": "dez",
+              "rotulo": "10 anos",
+              "valor": 5
+            },
+            {
+              "id": "cem",
+              "rotulo": "100 anos",
+              "valor": 8
+            },
+            {
+              "id": "mil",
+              "rotulo": "1.000 anos",
+              "valor": 10
+            }
+          ]
+        }
+      ],
+      "operar": "$periodo"
     }
   },
   {
@@ -20905,13 +22426,48 @@
     "tempoOperacaoSeg": 1,
     "tempoTipo": "fixo",
     "custoTipo": "varia",
-    "custoFormula": "Varia",
+    "custoFormula": "Varia com a vantagem conferida. Vantagem Custo de Energia",
     "conferido": "livro",
     "conferidoPagina": 169,
     "conferidoPor": {
       "duracao": "tabela",
       "tempoOperacao": "tabela",
       "custo": "tabela"
+    },
+    "custoPorCondicao": {
+      "entradas": [
+        {
+          "id": "vantagem",
+          "tipo": "escolha",
+          "rotulo": "Vantagem conferida",
+          "padrao": "rp1",
+          "opcoes": [
+            {
+              "id": "rp1",
+              "rotulo": "Resistência à Pressão 1",
+              "valor": 2
+            },
+            {
+              "id": "rp2",
+              "rotulo": "Resistência à Pressão 2",
+              "valor": 3
+            },
+            {
+              "id": "rp3",
+              "rotulo": "Resistência à Pressão 3",
+              "valor": 5
+            },
+            {
+              "id": "vacuo",
+              "rotulo": "Resistência ao Vácuo",
+              "valor": 3
+            }
+          ]
+        }
+      ],
+      "operar": "$vantagem",
+      "manter": "metade",
+      "tamanho": true
     }
   },
   {
@@ -20950,6 +22506,36 @@
       "duracao": "tabela+entrada",
       "tempoOperacao": "tabela",
       "custo": "tabela+entrada"
+    },
+    "custoPorCondicao": {
+      "entradas": [
+        {
+          "id": "fp",
+          "tipo": "escolha",
+          "rotulo": "Fator de proteção",
+          "padrao": "fp10",
+          "opcoes": [
+            {
+              "id": "fp10",
+              "rotulo": "FP 10",
+              "valor": 1
+            },
+            {
+              "id": "fp100",
+              "rotulo": "FP 100",
+              "valor": 2
+            },
+            {
+              "id": "fp1000",
+              "rotulo": "FP 1.000",
+              "valor": 3
+            }
+          ]
+        }
+      ],
+      "operar": "$fp",
+      "manter": "metade",
+      "tamanho": true
     }
   },
   {
@@ -21384,6 +22970,59 @@
       "duracao": "tabela",
       "tempoOperacao": "tabela+entrada",
       "custo": "tabela"
+    },
+    "custoPorCondicao": {
+      "entradas": [
+        {
+          "id": "raio",
+          "tipo": "inteiro",
+          "rotulo": "Raio da área",
+          "min": 1,
+          "max": 100,
+          "padrao": 1,
+          "unidade": "m"
+        },
+        {
+          "id": "aumento",
+          "tipo": "inteiro",
+          "rotulo": "Pontos de aumento de DX ou IQ",
+          "min": 0,
+          "max": 30,
+          "padrao": 0
+        },
+        {
+          "id": "pericias",
+          "tipo": "inteiro",
+          "rotulo": "Perícias aumentadas",
+          "min": 0,
+          "max": 10,
+          "padrao": 0
+        }
+      ],
+      "operar": [
+        "max",
+        1,
+        [
+          "*",
+          [
+            "max",
+            3,
+            [
+              "+",
+              [
+                "cima",
+                [
+                  "/",
+                  "$aumento",
+                  3
+                ]
+              ],
+              "$pericias"
+            ]
+          ],
+          "$raio"
+        ]
+      ]
     }
   },
   {
@@ -23330,6 +24969,41 @@
       "duracao": "tabela+entrada",
       "tempoOperacao": "tabela+entrada",
       "custo": "entrada"
+    },
+    "custoPorCondicao": {
+      "entradas": [
+        {
+          "id": "grau",
+          "tipo": "escolha",
+          "rotulo": "Loucura",
+          "padrao": "grave",
+          "opcoes": [
+            {
+              "id": "leve",
+              "rotulo": "Leve",
+              "valor": 2
+            },
+            {
+              "id": "moderada",
+              "rotulo": "Moderada",
+              "valor": 3
+            },
+            {
+              "id": "grave",
+              "rotulo": "Grave",
+              "valor": 4
+            },
+            {
+              "id": "extrema",
+              "rotulo": "Extrema",
+              "valor": 6
+            }
+          ]
+        }
+      ],
+      "operar": "$grau",
+      "manter": "metade",
+      "tamanho": true
     }
   },
   {
@@ -23439,6 +25113,34 @@
       "duracao": "formula",
       "tempoOperacao": "tabela",
       "custo": "tabela+entrada"
+    },
+    "custoPorCondicao": {
+      "entradas": [
+        {
+          "id": "brilho",
+          "tipo": "escolha",
+          "rotulo": "Brilho",
+          "padrao": "luar",
+          "opcoes": [
+            {
+              "id": "luar",
+              "rotulo": "Fraco, como o luar",
+              "valor": 2
+            },
+            {
+              "id": "tocha",
+              "rotulo": "O brilho de uma tocha",
+              "valor": 4
+            },
+            {
+              "id": "dia",
+              "rotulo": "Forte, como a luz do dia",
+              "valor": 6
+            }
+          ]
+        }
+      ],
+      "operar": "$brilho"
     }
   },
   {
@@ -23475,6 +25177,35 @@
       "duracao": "tabela+entrada",
       "tempoOperacao": "tabela",
       "custo": "tabela+entrada"
+    },
+    "custoPorCondicao": {
+      "entradas": [
+        {
+          "id": "brilho",
+          "tipo": "escolha",
+          "rotulo": "Brilho",
+          "padrao": "velas",
+          "opcoes": [
+            {
+              "id": "velas",
+              "rotulo": "Fraco, como a luz de velas",
+              "valor": 1
+            },
+            {
+              "id": "tocha",
+              "rotulo": "O brilho de uma tocha",
+              "valor": 2
+            },
+            {
+              "id": "dia",
+              "rotulo": "Tão brilhante como o dia",
+              "valor": 3
+            }
+          ]
+        }
+      ],
+      "operar": "$brilho",
+      "manter": "igual"
     }
   },
   {
@@ -23510,6 +25241,35 @@
       "duracao": "formula",
       "tempoOperacao": "tabela",
       "custo": "tabela+entrada"
+    },
+    "custoPorCondicao": {
+      "entradas": [
+        {
+          "id": "brilho",
+          "tipo": "escolha",
+          "rotulo": "Brilho",
+          "padrao": "velas",
+          "opcoes": [
+            {
+              "id": "velas",
+              "rotulo": "Fraco, como a luz de velas",
+              "valor": 2
+            },
+            {
+              "id": "tocha",
+              "rotulo": "O brilho de uma tocha",
+              "valor": 4
+            },
+            {
+              "id": "dia",
+              "rotulo": "Tão brilhante como o dia",
+              "valor": 6
+            }
+          ]
+        }
+      ],
+      "operar": "$brilho",
+      "manter": "igual"
     }
   },
   {
@@ -23740,6 +25500,44 @@
       "duracao": "formula",
       "tempoOperacao": "tabela+entrada",
       "custo": "tabela+entrada"
+    },
+    "custoPorCondicao": {
+      "entradas": [
+        {
+          "id": "divisor",
+          "tipo": "escolha",
+          "rotulo": "Divisor de armadura",
+          "padrao": "dois",
+          "opcoes": [
+            {
+              "id": "dois",
+              "rotulo": "(2)",
+              "valor": 2
+            },
+            {
+              "id": "tres",
+              "rotulo": "(3)",
+              "valor": 4
+            },
+            {
+              "id": "cinco",
+              "rotulo": "(5)",
+              "valor": 6
+            },
+            {
+              "id": "dez",
+              "rotulo": "(10)",
+              "valor": 8
+            },
+            {
+              "id": "ignora",
+              "rotulo": "Ignora RD",
+              "valor": 10
+            }
+          ]
+        }
+      ],
+      "operar": "$divisor"
     }
   },
   {
@@ -23815,6 +25613,35 @@
       "duracao": "formula",
       "tempoOperacao": "formula",
       "custo": "tabela+entrada"
+    },
+    "custoPorCondicao": {
+      "entradas": [
+        {
+          "id": "grau",
+          "tipo": "escolha",
+          "rotulo": "Maldição de",
+          "padrao": "um",
+          "opcoes": [
+            {
+              "id": "um",
+              "rotulo": "1 ponto",
+              "valor": 3
+            },
+            {
+              "id": "dois",
+              "rotulo": "2 pontos",
+              "valor": 10
+            },
+            {
+              "id": "tres",
+              "rotulo": "3 pontos",
+              "valor": 20
+            }
+          ]
+        }
+      ],
+      "operar": "$grau",
+      "tamanho": true
     }
   },
   {
@@ -25346,6 +27173,33 @@
       "duracao": "tabela+entrada",
       "tempoOperacao": "tabela+entrada",
       "custo": "entrada"
+    },
+    "custoPorCondicao": {
+      "entradas": [
+        {
+          "id": "litros",
+          "tipo": "numero",
+          "rotulo": "Água moldada",
+          "unidade": "litros",
+          "min": 0,
+          "max": 7000,
+          "passo": 10,
+          "padrao": 80
+        }
+      ],
+      "operar": [
+        "max",
+        1,
+        [
+          "cima",
+          [
+            "/",
+            "$litros",
+            80
+          ]
+        ]
+      ],
+      "manter": "igual"
     }
   },
   {
@@ -25420,6 +27274,29 @@
       "duracao": "tabela",
       "tempoOperacao": "tabela",
       "custo": "tabela"
+    },
+    "custoPorCondicao": {
+      "entradas": [
+        {
+          "id": "raio",
+          "tipo": "inteiro",
+          "rotulo": "Raio da área",
+          "min": 1,
+          "max": 100,
+          "padrao": 1,
+          "unidade": "m"
+        }
+      ],
+      "operar": [
+        "max",
+        1,
+        [
+          "*",
+          2,
+          "$raio"
+        ]
+      ],
+      "manter": "metade"
     }
   },
   {
@@ -29496,6 +31373,29 @@
       "duracao": "tabela",
       "tempoOperacao": "tabela",
       "custo": "tabela+entrada"
+    },
+    "custoPorCondicao": {
+      "entradas": [
+        {
+          "id": "item",
+          "tipo": "escolha",
+          "rotulo": "Item",
+          "padrao": "leve",
+          "opcoes": [
+            {
+              "id": "leve",
+              "rotulo": "Até 5 kg (1d de dano)",
+              "valor": 1
+            },
+            {
+              "id": "pesado",
+              "rotulo": "Até 12,5 kg (1d+1 de dano)",
+              "valor": 2
+            }
+          ]
+        }
+      ],
+      "operar": "$item"
     }
   },
   {
@@ -30635,6 +32535,29 @@
       "duracao": "tabela",
       "tempoOperacao": "tabela",
       "custo": "tabela+entrada"
+    },
+    "custoPorCondicao": {
+      "entradas": [
+        {
+          "id": "quem",
+          "tipo": "escolha",
+          "rotulo": "Proteger",
+          "padrao": "voce",
+          "opcoes": [
+            {
+              "id": "voce",
+              "rotulo": "Você mesmo",
+              "valor": 2
+            },
+            {
+              "id": "outro",
+              "rotulo": "Alguém que você possa ver",
+              "valor": 3
+            }
+          ]
+        }
+      ],
+      "operar": "$quem"
     }
   },
   {
@@ -30904,6 +32827,35 @@
       "duracao": "tabela",
       "tempoOperacao": "tabela+entrada",
       "custo": "tabela+entrada"
+    },
+    "custoPorCondicao": {
+      "entradas": [
+        {
+          "id": "parte",
+          "tipo": "escolha",
+          "rotulo": "Limpar",
+          "padrao": "mao",
+          "opcoes": [
+            {
+              "id": "mao",
+              "rotulo": "Uma mão ou um pé",
+              "valor": 2
+            },
+            {
+              "id": "tronco",
+              "rotulo": "Um tronco ou um membro",
+              "valor": 4
+            },
+            {
+              "id": "corpo",
+              "rotulo": "Um corpo inteiro",
+              "valor": 6
+            }
+          ]
+        }
+      ],
+      "operar": "$parte",
+      "tamanho": true
     }
   },
   {
@@ -30940,6 +32892,32 @@
       "duracao": "tabela",
       "tempoOperacao": "formula",
       "custo": "entrada"
+    },
+    "custoPorCondicao": {
+      "entradas": [
+        {
+          "id": "litros",
+          "tipo": "numero",
+          "rotulo": "Água a purificar",
+          "unidade": "litros",
+          "min": 0,
+          "max": 392,
+          "passo": 1,
+          "padrao": 4
+        }
+      ],
+      "operar": [
+        "max",
+        1,
+        [
+          "cima",
+          [
+            "/",
+            "$litros",
+            4
+          ]
+        ]
+      ]
     }
   },
   {
@@ -31706,13 +33684,17 @@
     "tempoTipo": "varia",
     "tempoFormula": "Especial",
     "custoTipo": "varia",
-    "custoFormula": "nenhum",
+    "custoFormula": "Nenhum.",
     "conferido": "livro",
     "conferidoPagina": 89,
     "conferidoPor": {
       "duracao": "formula",
       "tempoOperacao": "formula",
       "custo": "formula"
+    },
+    "custoPorCondicao": {
+      "entradas": [],
+      "operar": 0
     }
   },
   {
@@ -31750,6 +33732,30 @@
       "duracao": "tabela+entrada",
       "tempoOperacao": "tabela+entrada",
       "custo": "entrada"
+    },
+    "custoPorCondicao": {
+      "entradas": [
+        {
+          "id": "reducao",
+          "tipo": "escolha",
+          "rotulo": "Redução da carga",
+          "padrao": "quarto",
+          "opcoes": [
+            {
+              "id": "quarto",
+              "rotulo": "25%",
+              "valor": 3
+            },
+            {
+              "id": "metade",
+              "rotulo": "50%",
+              "valor": 5
+            }
+          ]
+        }
+      ],
+      "operar": "$reducao",
+      "manter": "metade"
     }
   },
   {
@@ -31823,6 +33829,29 @@
       "duracao": "tabela",
       "tempoOperacao": "tabela",
       "custo": "tabela+entrada"
+    },
+    "custoPorCondicao": {
+      "entradas": [
+        {
+          "id": "quem",
+          "tipo": "escolha",
+          "rotulo": "Refletir sobre",
+          "padrao": "si",
+          "opcoes": [
+            {
+              "id": "si",
+              "rotulo": "Você mesmo",
+              "valor": 4
+            },
+            {
+              "id": "outro",
+              "rotulo": "Alguém que você possa ver",
+              "valor": 6
+            }
+          ]
+        }
+      ],
+      "operar": "$quem"
     }
   },
   {
@@ -32664,6 +34693,48 @@
       "duracao": "tabela+entrada",
       "tempoOperacao": "tabela+entrada",
       "custo": "entrada"
+    },
+    "custoPorCondicao": {
+      "entradas": [
+        {
+          "id": "raio",
+          "tipo": "inteiro",
+          "rotulo": "Raio da área",
+          "min": 1,
+          "max": 100,
+          "padrao": 1,
+          "unidade": "m"
+        },
+        {
+          "id": "iq",
+          "tipo": "inteiro",
+          "rotulo": "IQ racial da espécie mais inteligente da categoria (o custo de Controle de Animal)",
+          "min": 1,
+          "max": 5,
+          "padrao": 5
+        },
+        {
+          "id": "altura",
+          "tipo": "inteiro",
+          "rotulo": "Altura da área, em blocos de 4 m (1 = 4 m, 2 = 8 m...)",
+          "min": 1,
+          "max": 10,
+          "padrao": 1
+        }
+      ],
+      "operar": [
+        "max",
+        1,
+        [
+          "*",
+          [
+            "*",
+            "$iq",
+            "$raio"
+          ],
+          "$altura"
+        ]
+      ]
     }
   },
   {
@@ -32703,6 +34774,48 @@
       "duracao": "tabela+entrada",
       "tempoOperacao": "tabela+entrada",
       "custo": "entrada"
+    },
+    "custoPorCondicao": {
+      "entradas": [
+        {
+          "id": "raio",
+          "tipo": "inteiro",
+          "rotulo": "Raio da área",
+          "min": 1,
+          "max": 100,
+          "padrao": 1,
+          "unidade": "m"
+        },
+        {
+          "id": "iq",
+          "tipo": "inteiro",
+          "rotulo": "IQ racial da espécie mais inteligente da categoria (o custo de Controle de Animal)",
+          "min": 1,
+          "max": 5,
+          "padrao": 5
+        },
+        {
+          "id": "altura",
+          "tipo": "inteiro",
+          "rotulo": "Altura da área, em blocos de 4 m (1 = 4 m, 2 = 8 m...)",
+          "min": 1,
+          "max": 10,
+          "padrao": 1
+        }
+      ],
+      "operar": [
+        "max",
+        1,
+        [
+          "*",
+          [
+            "*",
+            "$iq",
+            "$raio"
+          ],
+          "$altura"
+        ]
+      ]
     }
   },
   {
@@ -32742,6 +34855,48 @@
       "duracao": "tabela+entrada",
       "tempoOperacao": "tabela+entrada",
       "custo": "entrada"
+    },
+    "custoPorCondicao": {
+      "entradas": [
+        {
+          "id": "raio",
+          "tipo": "inteiro",
+          "rotulo": "Raio da área",
+          "min": 1,
+          "max": 100,
+          "padrao": 1,
+          "unidade": "m"
+        },
+        {
+          "id": "iq",
+          "tipo": "inteiro",
+          "rotulo": "IQ racial da espécie mais inteligente da categoria (o custo de Controle de Animal)",
+          "min": 1,
+          "max": 5,
+          "padrao": 5
+        },
+        {
+          "id": "altura",
+          "tipo": "inteiro",
+          "rotulo": "Altura da área, em blocos de 4 m (1 = 4 m, 2 = 8 m...)",
+          "min": 1,
+          "max": 10,
+          "padrao": 1
+        }
+      ],
+      "operar": [
+        "max",
+        1,
+        [
+          "*",
+          [
+            "*",
+            "$iq",
+            "$raio"
+          ],
+          "$altura"
+        ]
+      ]
     }
   },
   {
@@ -33626,6 +35781,28 @@
       "duracao": "tabela",
       "tempoOperacao": "tabela",
       "custo": "tabela"
+    },
+    "custoPorCondicao": {
+      "entradas": [
+        {
+          "id": "raio",
+          "tipo": "inteiro",
+          "rotulo": "Raio da área",
+          "min": 1,
+          "max": 100,
+          "padrao": 1,
+          "unidade": "m"
+        }
+      ],
+      "operar": [
+        "max",
+        1,
+        [
+          "*",
+          10,
+          "$raio"
+        ]
+      ]
     }
   },
   {
@@ -33815,6 +35992,37 @@
       "duracao": "tabela+entrada",
       "tempoOperacao": "tabela",
       "custo": "tabela+entrada"
+    },
+    "custoPorCondicao": {
+      "entradas": [
+        {
+          "id": "raio",
+          "tipo": "inteiro",
+          "rotulo": "Raio da área",
+          "min": 1,
+          "max": 100,
+          "padrao": 1,
+          "unidade": "m"
+        },
+        {
+          "id": "ritmo",
+          "tipo": "inteiro",
+          "rotulo": "Taxa de queima do incêndio (2 = à metade, 3 = a um terço, 4 = a um quarto...)",
+          "min": 2,
+          "max": 20,
+          "padrao": 2
+        }
+      ],
+      "operar": [
+        "max",
+        1,
+        [
+          "*",
+          "$ritmo",
+          "$raio"
+        ]
+      ],
+      "manter": "igual"
     }
   },
   {
@@ -33972,6 +36180,37 @@
       "duracao": "tabela",
       "tempoOperacao": "tabela+entrada",
       "custo": "tabela"
+    },
+    "custoPorCondicao": {
+      "entradas": [
+        {
+          "id": "raio",
+          "tipo": "inteiro",
+          "rotulo": "Raio da área",
+          "min": 1,
+          "max": 100,
+          "padrao": 1,
+          "unidade": "m"
+        },
+        {
+          "id": "ritmo",
+          "tipo": "inteiro",
+          "rotulo": "Fração da velocidade normal (2 = a metade, 3 = um terço, 4 = um quarto...)",
+          "min": 2,
+          "max": 20,
+          "padrao": 2
+        }
+      ],
+      "operar": [
+        "max",
+        1,
+        [
+          "*",
+          "$ritmo",
+          "$raio"
+        ]
+      ],
+      "manter": "igual"
     }
   },
   {
@@ -34551,13 +36790,17 @@
     "tempoTipo": "varia",
     "tempoFormula": "1 min./3 PF-#",
     "custoTipo": "varia",
-    "custoFormula": "Nenhum#",
+    "custoFormula": "Nenhum para o operador! Para cada 3 PF tirados do objetivo, o operador recupera 1 PF.",
     "conferido": "livro",
     "conferidoPagina": 150,
     "conferidoPor": {
       "duracao": "tabela+entrada",
       "tempoOperacao": "formula",
       "custo": "formula"
+    },
+    "custoPorCondicao": {
+      "entradas": [],
+      "operar": 0
     }
   },
   {
@@ -34715,13 +36958,17 @@
     "tempoTipo": "varia",
     "tempoFormula": "1 min./3 PV-#",
     "custoTipo": "varia",
-    "custoFormula": "Nenhum#",
+    "custoFormula": "Nenhum para o operador! Para cada 3 PV tirados do objetivo, o operador recupera 1 PV.",
     "conferido": "livro",
     "conferidoPagina": 150,
     "conferidoPor": {
       "duracao": "tabela+entrada",
       "tempoOperacao": "formula",
       "custo": "formula"
+    },
+    "custoPorCondicao": {
+      "entradas": [],
+      "operar": 0
     }
   },
   {
@@ -36277,6 +38524,29 @@
       "duracao": "tabela",
       "tempoOperacao": "formula",
       "custo": "tabela+entrada"
+    },
+    "custoPorCondicao": {
+      "entradas": [
+        {
+          "id": "raio",
+          "tipo": "inteiro",
+          "rotulo": "Raio da área",
+          "min": 1,
+          "max": 100,
+          "padrao": 1,
+          "unidade": "m"
+        }
+      ],
+      "operar": [
+        "max",
+        1,
+        [
+          "*",
+          2,
+          "$raio"
+        ]
+      ],
+      "manter": "metade"
     }
   },
   {
@@ -36661,13 +38931,34 @@
     "tempoOperacaoSeg": 1,
     "tempoTipo": "fixo",
     "custoTipo": "varia",
-    "custoFormula": "Varia",
+    "custoFormula": "1/10 do custo de operação da mágica a ser suspensa, sem contar com os bônus que o outro operador pode ter recebido por NH elevado (arredondado para cima). Mesmo custo para manter.",
     "conferido": "livro",
     "conferidoPagina": 121,
     "conferidoPor": {
       "duracao": "tabela+entrada",
       "tempoOperacao": "tabela",
       "custo": "tabela"
+    },
+    "custoPorCondicao": {
+      "entradas": [
+        {
+          "id": "custo",
+          "tipo": "inteiro",
+          "rotulo": "Custo de operação da mágica a suspender (sem o NH elevado do outro operador)",
+          "min": 1,
+          "max": 99,
+          "padrao": 10
+        }
+      ],
+      "operar": [
+        "cima",
+        [
+          "/",
+          "$custo",
+          10
+        ]
+      ],
+      "manter": "igual"
     }
   },
   {
@@ -37707,6 +39998,65 @@
       "duracao": "tabela+entrada",
       "tempoOperacao": "tabela+entrada",
       "custo": "entrada"
+    },
+    "custoPorCondicao": {
+      "entradas": [
+        {
+          "id": "volume",
+          "tipo": "numero",
+          "rotulo": "Terra ou pedra transformada em ar",
+          "unidade": "m³",
+          "min": 0,
+          "max": 30,
+          "passo": 0.025,
+          "padrao": 0.025
+        },
+        {
+          "id": "metal",
+          "tipo": "marca",
+          "rotulo": "O material é metal (o triplo do custo)"
+        }
+      ],
+      "operar": [
+        "*",
+        [
+          "+",
+          1,
+          "$metal",
+          "$metal"
+        ],
+        [
+          "min",
+          [
+            "max",
+            1,
+            [
+              "cima",
+              [
+                "/",
+                "$volume",
+                0.025
+              ]
+            ]
+          ],
+          [
+            "*",
+            5,
+            [
+              "max",
+              1,
+              [
+                "cima",
+                [
+                  "/",
+                  "$volume",
+                  0.75
+                ]
+              ]
+            ]
+          ]
+        ]
+      ]
     }
   },
   {
@@ -37958,6 +40308,29 @@
       "duracao": "tabela",
       "tempoOperacao": "tabela",
       "custo": "entrada"
+    },
+    "custoPorCondicao": {
+      "entradas": [
+        {
+          "id": "alcance",
+          "tipo": "escolha",
+          "rotulo": "Testar",
+          "padrao": "um",
+          "opcoes": [
+            {
+              "id": "um",
+              "rotulo": "Uma única refeição ou garrafa de vinho",
+              "valor": 1
+            },
+            {
+              "id": "raio",
+              "rotulo": "Todos os alimentos e bebidas num raio de 1 metro",
+              "valor": 3
+            }
+          ]
+        }
+      ],
+      "operar": "$alcance"
     }
   },
   {
@@ -38052,6 +40425,29 @@
       "duracao": "tabela",
       "tempoOperacao": "entrada",
       "custo": "tabela+entrada"
+    },
+    "custoPorCondicao": {
+      "entradas": [
+        {
+          "id": "alcance",
+          "tipo": "escolha",
+          "rotulo": "Testar",
+          "padrao": "um",
+          "opcoes": [
+            {
+              "id": "um",
+              "rotulo": "0,5 kg ou 4 litros de combustível",
+              "valor": 1
+            },
+            {
+              "id": "raio",
+              "rotulo": "Todo o combustível num raio de 1 metro",
+              "valor": 3
+            }
+          ]
+        }
+      ],
+      "operar": "$alcance"
     }
   },
   {
@@ -38087,6 +40483,34 @@
       "duracao": "formula",
       "tempoOperacao": "tabela+entrada",
       "custo": "tabela+entrada"
+    },
+    "custoPorCondicao": {
+      "entradas": [
+        {
+          "id": "objeto",
+          "tipo": "escolha",
+          "rotulo": "Tingir",
+          "padrao": "pequeno",
+          "opcoes": [
+            {
+              "id": "pequeno",
+              "rotulo": "Um objeto pequeno (até um palmo)",
+              "valor": 1
+            },
+            {
+              "id": "cabelo",
+              "rotulo": "O cabelo de uma pessoa, ou um objeto de cerca de 0,1 m²",
+              "valor": 2
+            },
+            {
+              "id": "pessoa",
+              "rotulo": "Um objeto do tamanho de uma pessoa (MT 0)",
+              "valor": 5
+            }
+          ]
+        }
+      ],
+      "operar": "$objeto"
     }
   },
   {

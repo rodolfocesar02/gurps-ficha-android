@@ -38,7 +38,7 @@ fun RolagemEnergiaManualDialog(
     var comoBloqueio by remember { mutableStateOf(false) }
     fun contaDe(custoBase: Int) = MagiaEnergiaRules.contaDoCusto(
         base = custoBase, nh = magiaEnergia.target, classe = magiaEnergia.classe, definicaoId = magiaEnergia.definicaoId,
-        temCondicao = magiaEnergia.custoPorCondicao != null, comoBloqueio = comoBloqueio, mt = mtAlvo
+        temCondicao = magiaEnergia.custoPorCondicao?.contaPropria == true, comoBloqueio = comoBloqueio, mt = mtAlvo
     )
 
     AlertDialog(

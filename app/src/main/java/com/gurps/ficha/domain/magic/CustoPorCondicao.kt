@@ -17,7 +17,7 @@ import kotlin.math.floor
  *
  * ## A conta
  *
- * Expressão = número | `"$id"` (o valor de uma entrada) | `["op", expressão...]`, com `op` em `+ - * / cima max min`.
+ * Expressão = número | `"$id"` (o valor de uma entrada) | `["op", expressão...]`, com `op` em `+ - * / cima baixo max min`.
  * Vocabulário FECHADO: nada aqui executa texto. Um id que não existe, ou um operador desconhecido, dá erro e
  * nenhum PF é cobrado: o silêncio nunca vira "custo 0".
  *
@@ -49,12 +49,22 @@ data class CondicaoEntrada(
 /**
  * A conta de uma magia: [entradas] (o que se pergunta), [operar] (a expressão do custo para operar) e [manter]
  * (`"igual"`, `"metade"`, `"nenhum"`, uma expressão com `$operar`, ou ausente: o livro não diz).
+ *
+ * [tamanho] `true`: a conta NÃO leva em conta o tamanho do alvo (é a RD dada, o grau da bênção...): a magia Comum num alvo de MT
+ * positivo continua custando 1 + MT vezes (Magia p.11). Sem ele, a conta é "própria" (peso, volume, raio) e o tamanho não multiplica.
  */
 data class CustoPorCondicao(
     val entradas: List<CondicaoEntrada> = emptyList(),
     val operar: JsonElement? = null,
-    val manter: JsonElement? = null
-)
+    val manter: JsonElement? = null,
+    val tamanho: Boolean = false
+) {
+    /** A conta é própria (o tamanho do alvo não multiplica)? É o `temCondicao` de [com.gurps.ficha.domain.rules.MagiaEnergiaRules]. */
+    val contaPropria: Boolean get() = !tamanho
+
+    /** A conta não pergunta nada (Roubar Energia: "nenhum para o operador"): com custo 0 a rolagem segue direto, sem diálogo. */
+    val semPergunta: Boolean get() = entradas.isEmpty()
+}
 
 object CustoPorCondicaoRules {
 
@@ -155,6 +165,8 @@ object CustoPorCondicaoRules {
         val args = (1 until expr.size()).map { avaliar(expr[it], valores) }
         return when (op) {
             "cima" -> { require(args.size == 1) { "cima leva um argumento" }; paraCima(args[0]) }
+            // só as unidades COMPLETAS ("+1 para cada 100.000 palavras adicionais", Criptografar)
+            "baixo" -> { require(args.size == 1) { "baixo leva um argumento" }; floor(args[0] + 1e-9) }
             "-" -> { require(args.size == 2) { "- leva dois argumentos" }; args[0] - args[1] }
             "/" -> {
                 require(args.size == 2) { "/ leva dois argumentos" }

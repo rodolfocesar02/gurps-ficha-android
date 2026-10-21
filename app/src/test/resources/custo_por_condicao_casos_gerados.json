@@ -2418,6 +2418,1662 @@
    "manterTipo": null
   },
   {
+   "id": "luz_continua",
+   "condicoes": {},
+   "operar": 2,
+   "manter": null,
+   "manterTipo": null
+  },
+  {
+   "id": "luz_continua",
+   "condicoes": {
+    "brilho": "tocha"
+   },
+   "operar": 4,
+   "manter": null,
+   "manterTipo": null
+  },
+  {
+   "id": "luz_continua",
+   "condicoes": {
+    "brilho": "dia"
+   },
+   "operar": 6,
+   "manter": null,
+   "manterTipo": null
+  },
+  {
+   "id": "luz_magica",
+   "condicoes": {},
+   "operar": 1,
+   "manter": 1,
+   "manterTipo": "igual"
+  },
+  {
+   "id": "luz_magica",
+   "condicoes": {
+    "brilho": "tocha"
+   },
+   "operar": 2,
+   "manter": 2,
+   "manterTipo": "igual"
+  },
+  {
+   "id": "luz_magica",
+   "condicoes": {
+    "brilho": "dia"
+   },
+   "operar": 3,
+   "manter": 3,
+   "manterTipo": "igual"
+  },
+  {
+   "id": "luz_magica_continua",
+   "condicoes": {},
+   "operar": 2,
+   "manter": 2,
+   "manterTipo": "igual"
+  },
+  {
+   "id": "luz_magica_continua",
+   "condicoes": {
+    "brilho": "tocha"
+   },
+   "operar": 4,
+   "manter": 4,
+   "manterTipo": "igual"
+  },
+  {
+   "id": "luz_magica_continua",
+   "condicoes": {
+    "brilho": "dia"
+   },
+   "operar": 6,
+   "manter": 6,
+   "manterTipo": "igual"
+  },
+  {
+   "id": "bencao",
+   "condicoes": {},
+   "operar": 10,
+   "manter": null,
+   "manterTipo": null
+  },
+  {
+   "id": "bencao",
+   "condicoes": {
+    "grau": "dois"
+   },
+   "operar": 50,
+   "manter": null,
+   "manterTipo": null
+  },
+  {
+   "id": "maldicao",
+   "condicoes": {},
+   "operar": 3,
+   "manter": null,
+   "manterTipo": null
+  },
+  {
+   "id": "maldicao",
+   "condicoes": {
+    "grau": "dois"
+   },
+   "operar": 10,
+   "manter": null,
+   "manterTipo": null
+  },
+  {
+   "id": "maldicao",
+   "condicoes": {
+    "grau": "tres"
+   },
+   "operar": 20,
+   "manter": null,
+   "manterTipo": null
+  },
+  {
+   "id": "loucura",
+   "condicoes": {
+    "grau": "leve"
+   },
+   "operar": 2,
+   "manter": 1,
+   "manterTipo": "metade"
+  },
+  {
+   "id": "loucura",
+   "condicoes": {
+    "grau": "moderada"
+   },
+   "operar": 3,
+   "manter": 2,
+   "manterTipo": "metade"
+  },
+  {
+   "id": "loucura",
+   "condicoes": {},
+   "operar": 4,
+   "manter": 2,
+   "manterTipo": "metade"
+  },
+  {
+   "id": "loucura",
+   "condicoes": {
+    "grau": "extrema"
+   },
+   "operar": 6,
+   "manter": 3,
+   "manterTipo": "metade"
+  },
+  {
+   "id": "dom_da_escrita",
+   "condicoes": {},
+   "operar": 2,
+   "manter": 1,
+   "manterTipo": "metade"
+  },
+  {
+   "id": "dom_da_escrita",
+   "condicoes": {
+    "compreensao": "sotaque"
+   },
+   "operar": 4,
+   "manter": 2,
+   "manterTipo": "metade"
+  },
+  {
+   "id": "dom_da_escrita",
+   "condicoes": {
+    "compreensao": "materna"
+   },
+   "operar": 6,
+   "manter": 3,
+   "manterTipo": "metade"
+  },
+  {
+   "id": "dom_das_linguas",
+   "condicoes": {},
+   "operar": 2,
+   "manter": 1,
+   "manterTipo": "metade"
+  },
+  {
+   "id": "dom_das_linguas",
+   "condicoes": {
+    "compreensao": "sotaque"
+   },
+   "operar": 4,
+   "manter": 2,
+   "manterTipo": "metade"
+  },
+  {
+   "id": "dom_das_linguas",
+   "condicoes": {
+    "compreensao": "materna"
+   },
+   "operar": 6,
+   "manter": 3,
+   "manterTipo": "metade"
+  },
+  {
+   "id": "cessar_paralisia",
+   "condicoes": {},
+   "operar": 1,
+   "manter": null,
+   "manterTipo": null
+  },
+  {
+   "id": "cessar_paralisia",
+   "condicoes": {
+    "alcance": "corpo"
+   },
+   "operar": 2,
+   "manter": null,
+   "manterTipo": null
+  },
+  {
+   "id": "cessar_sangramento",
+   "condicoes": {},
+   "operar": 1,
+   "manter": null,
+   "manterTipo": null
+  },
+  {
+   "id": "cessar_sangramento",
+   "condicoes": {
+    "ferimento": "mortal"
+   },
+   "operar": 10,
+   "manter": null,
+   "manterTipo": null
+  },
+  {
+   "id": "cobertura_ilusoria",
+   "condicoes": {},
+   "operar": 1,
+   "manter": 1,
+   "manterTipo": "metade"
+  },
+  {
+   "id": "cobertura_ilusoria",
+   "condicoes": {
+    "objeto": "maior"
+   },
+   "operar": 2,
+   "manter": 1,
+   "manterTipo": "metade"
+  },
+  {
+   "id": "protecao",
+   "condicoes": {},
+   "operar": 2,
+   "manter": null,
+   "manterTipo": null
+  },
+  {
+   "id": "protecao",
+   "condicoes": {
+    "quem": "outro"
+   },
+   "operar": 3,
+   "manter": null,
+   "manterTipo": null
+  },
+  {
+   "id": "refletir",
+   "condicoes": {},
+   "operar": 4,
+   "manter": null,
+   "manterTipo": null
+  },
+  {
+   "id": "refletir",
+   "condicoes": {
+    "quem": "outro"
+   },
+   "operar": 6,
+   "manter": null,
+   "manterTipo": null
+  },
+  {
+   "id": "testar_alimento",
+   "condicoes": {},
+   "operar": 1,
+   "manter": null,
+   "manterTipo": null
+  },
+  {
+   "id": "testar_alimento",
+   "condicoes": {
+    "alcance": "raio"
+   },
+   "operar": 3,
+   "manter": null,
+   "manterTipo": null
+  },
+  {
+   "id": "testar_combustivelnt",
+   "condicoes": {},
+   "operar": 1,
+   "manter": null,
+   "manterTipo": null
+  },
+  {
+   "id": "testar_combustivelnt",
+   "condicoes": {
+    "alcance": "raio"
+   },
+   "operar": 3,
+   "manter": null,
+   "manterTipo": null
+  },
+  {
+   "id": "tingir",
+   "condicoes": {},
+   "operar": 1,
+   "manter": null,
+   "manterTipo": null
+  },
+  {
+   "id": "tingir",
+   "condicoes": {
+    "objeto": "cabelo"
+   },
+   "operar": 2,
+   "manter": null,
+   "manterTipo": null
+  },
+  {
+   "id": "tingir",
+   "condicoes": {
+    "objeto": "pessoa"
+   },
+   "operar": 5,
+   "manter": null,
+   "manterTipo": null
+  },
+  {
+   "id": "imunidade_a_radiacao",
+   "condicoes": {},
+   "operar": 1,
+   "manter": 1,
+   "manterTipo": "metade"
+  },
+  {
+   "id": "imunidade_a_radiacao",
+   "condicoes": {
+    "fp": "fp100"
+   },
+   "operar": 2,
+   "manter": 1,
+   "manterTipo": "metade"
+  },
+  {
+   "id": "imunidade_a_radiacao",
+   "condicoes": {
+    "fp": "fp1000"
+   },
+   "operar": 3,
+   "manter": 2,
+   "manterTipo": "metade"
+  },
+  {
+   "id": "purificar",
+   "condicoes": {},
+   "operar": 2,
+   "manter": null,
+   "manterTipo": null
+  },
+  {
+   "id": "purificar",
+   "condicoes": {
+    "parte": "tronco"
+   },
+   "operar": 4,
+   "manter": null,
+   "manterTipo": null
+  },
+  {
+   "id": "purificar",
+   "condicoes": {
+    "parte": "corpo"
+   },
+   "operar": 6,
+   "manter": null,
+   "manterTipo": null
+  },
+  {
+   "id": "historia",
+   "condicoes": {},
+   "operar": 3,
+   "manter": null,
+   "manterTipo": null
+  },
+  {
+   "id": "historia",
+   "condicoes": {
+    "periodo": "semana"
+   },
+   "operar": 5,
+   "manter": null,
+   "manterTipo": null
+  },
+  {
+   "id": "historia",
+   "condicoes": {
+    "periodo": "mes"
+   },
+   "operar": 8,
+   "manter": null,
+   "manterTipo": null
+  },
+  {
+   "id": "historia",
+   "condicoes": {
+    "periodo": "ano"
+   },
+   "operar": 10,
+   "manter": null,
+   "manterTipo": null
+  },
+  {
+   "id": "historia_antiga",
+   "condicoes": {},
+   "operar": 3,
+   "manter": null,
+   "manterTipo": null
+  },
+  {
+   "id": "historia_antiga",
+   "condicoes": {
+    "periodo": "dez"
+   },
+   "operar": 5,
+   "manter": null,
+   "manterTipo": null
+  },
+  {
+   "id": "historia_antiga",
+   "condicoes": {
+    "periodo": "cem"
+   },
+   "operar": 8,
+   "manter": null,
+   "manterTipo": null
+  },
+  {
+   "id": "historia_antiga",
+   "condicoes": {
+    "periodo": "mil"
+   },
+   "operar": 10,
+   "manter": null,
+   "manterTipo": null
+  },
+  {
+   "id": "criar_servo",
+   "condicoes": {},
+   "operar": 3,
+   "manter": 1,
+   "manterTipo": "conta"
+  },
+  {
+   "id": "criar_servo",
+   "condicoes": {
+    "tipo": "habilidoso"
+   },
+   "operar": 4,
+   "manter": 2,
+   "manterTipo": "conta"
+  },
+  {
+   "id": "criar_servo",
+   "condicoes": {
+    "tipo": "bruto"
+   },
+   "operar": 6,
+   "manter": 2,
+   "manterTipo": "conta"
+  },
+  {
+   "id": "criar_guerreiro",
+   "condicoes": {},
+   "operar": 4,
+   "manter": 4,
+   "manterTipo": "igual"
+  },
+  {
+   "id": "criar_guerreiro",
+   "condicoes": {
+    "tipo": "bruto"
+   },
+   "operar": 6,
+   "manter": 6,
+   "manterTipo": "igual"
+  },
+  {
+   "id": "reduzir_carga",
+   "condicoes": {},
+   "operar": 3,
+   "manter": 2,
+   "manterTipo": "metade"
+  },
+  {
+   "id": "reduzir_carga",
+   "condicoes": {
+    "reducao": "metade"
+   },
+   "operar": 5,
+   "manter": 3,
+   "manterTipo": "metade"
+  },
+  {
+   "id": "poltergeist",
+   "condicoes": {},
+   "operar": 1,
+   "manter": null,
+   "manterTipo": null
+  },
+  {
+   "id": "poltergeist",
+   "condicoes": {
+    "item": "pesado"
+   },
+   "operar": 2,
+   "manter": null,
+   "manterTipo": null
+  },
+  {
+   "id": "magica_penetrante",
+   "condicoes": {},
+   "operar": 2,
+   "manter": null,
+   "manterTipo": null
+  },
+  {
+   "id": "magica_penetrante",
+   "condicoes": {
+    "divisor": "tres"
+   },
+   "operar": 4,
+   "manter": null,
+   "manterTipo": null
+  },
+  {
+   "id": "magica_penetrante",
+   "condicoes": {
+    "divisor": "cinco"
+   },
+   "operar": 6,
+   "manter": null,
+   "manterTipo": null
+  },
+  {
+   "id": "magica_penetrante",
+   "condicoes": {
+    "divisor": "dez"
+   },
+   "operar": 8,
+   "manter": null,
+   "manterTipo": null
+  },
+  {
+   "id": "magica_penetrante",
+   "condicoes": {
+    "divisor": "ignora"
+   },
+   "operar": 10,
+   "manter": null,
+   "manterTipo": null
+  },
+  {
+   "id": "aporte",
+   "condicoes": {},
+   "operar": 1,
+   "manter": 1,
+   "manterTipo": "igual"
+  },
+  {
+   "id": "aporte",
+   "condicoes": {
+    "peso": "ate5"
+   },
+   "operar": 2,
+   "manter": 2,
+   "manterTipo": "igual"
+  },
+  {
+   "id": "aporte",
+   "condicoes": {
+    "peso": "ate25"
+   },
+   "operar": 3,
+   "manter": 3,
+   "manterTipo": "igual"
+  },
+  {
+   "id": "aporte",
+   "condicoes": {
+    "peso": "ate100"
+   },
+   "operar": 4,
+   "manter": 4,
+   "manterTipo": "igual"
+  },
+  {
+   "id": "aporte",
+   "condicoes": {
+    "peso": "ate150"
+   },
+   "operar": 8,
+   "manter": 8,
+   "manterTipo": "igual"
+  },
+  {
+   "id": "aporte",
+   "condicoes": {
+    "peso": "ate500"
+   },
+   "operar": 36,
+   "manter": 36,
+   "manterTipo": "igual"
+  },
+  {
+   "id": "animar_maquinant",
+   "condicoes": {},
+   "operar": 8,
+   "manter": 4,
+   "manterTipo": "metade"
+  },
+  {
+   "id": "animar_maquinant",
+   "condicoes": {
+    "massa": "t2"
+   },
+   "operar": 9,
+   "manter": 5,
+   "manterTipo": "metade"
+  },
+  {
+   "id": "animar_maquinant",
+   "condicoes": {
+    "massa": "t4"
+   },
+   "operar": 10,
+   "manter": 5,
+   "manterTipo": "metade"
+  },
+  {
+   "id": "animar_maquinant",
+   "condicoes": {
+    "massa": "t16"
+   },
+   "operar": 12,
+   "manter": 6,
+   "manterTipo": "metade"
+  },
+  {
+   "id": "animar_maquinant",
+   "condicoes": {
+    "massa": "t1024"
+   },
+   "operar": 18,
+   "manter": 9,
+   "manterTipo": "metade"
+  },
+  {
+   "id": "afiar",
+   "condicoes": {},
+   "operar": 2,
+   "manter": 1,
+   "manterTipo": "metade"
+  },
+  {
+   "id": "afiar",
+   "condicoes": {
+    "arma": "flecha"
+   },
+   "operar": 1,
+   "manter": 1,
+   "manterTipo": "metade"
+  },
+  {
+   "id": "afiar",
+   "condicoes": {
+    "arma": "espada1",
+    "bonus": "mais2"
+   },
+   "operar": 6,
+   "manter": 3,
+   "manterTipo": "metade"
+  },
+  {
+   "id": "afiar",
+   "condicoes": {
+    "arma": "espada2",
+    "bonus": "mais3"
+   },
+   "operar": 15,
+   "manter": 8,
+   "manterTipo": "metade"
+  },
+  {
+   "id": "armadura",
+   "condicoes": {
+    "rd": 1
+   },
+   "operar": 2,
+   "manter": 1,
+   "manterTipo": "metade"
+  },
+  {
+   "id": "armadura",
+   "condicoes": {
+    "rd": 3
+   },
+   "operar": 6,
+   "manter": 3,
+   "manterTipo": "metade"
+  },
+  {
+   "id": "armadura",
+   "condicoes": {
+    "rd": 5
+   },
+   "operar": 10,
+   "manter": 5,
+   "manterTipo": "metade"
+  },
+  {
+   "id": "escudo",
+   "condicoes": {
+    "bd": 1
+   },
+   "operar": 2,
+   "manter": 1,
+   "manterTipo": "metade"
+  },
+  {
+   "id": "escudo",
+   "condicoes": {
+    "bd": 2
+   },
+   "operar": 4,
+   "manter": 2,
+   "manterTipo": "metade"
+  },
+  {
+   "id": "escudo",
+   "condicoes": {
+    "bd": 4
+   },
+   "operar": 8,
+   "manter": 4,
+   "manterTipo": "metade"
+  },
+  {
+   "id": "desidratar",
+   "condicoes": {
+    "pontos": 1
+   },
+   "operar": 1,
+   "manter": null,
+   "manterTipo": null
+  },
+  {
+   "id": "desidratar",
+   "condicoes": {
+    "pontos": 3
+   },
+   "operar": 3,
+   "manter": null,
+   "manterTipo": null
+  },
+  {
+   "id": "aprisionar_espirito",
+   "condicoes": {
+    "espirito": 20
+   },
+   "operar": 4,
+   "manter": 2,
+   "manterTipo": "conta"
+  },
+  {
+   "id": "aprisionar_espirito",
+   "condicoes": {
+    "espirito": 23
+   },
+   "operar": 5,
+   "manter": 3,
+   "manterTipo": "conta"
+  },
+  {
+   "id": "aprisionar_espirito",
+   "condicoes": {
+    "espirito": 100
+   },
+   "operar": 20,
+   "manter": 10,
+   "manterTipo": "conta"
+  },
+  {
+   "id": "controle_de_animal_terra",
+   "condicoes": {},
+   "operar": 5,
+   "manter": 3,
+   "manterTipo": "metade"
+  },
+  {
+   "id": "controle_de_animal_terra",
+   "condicoes": {
+    "iq": 2
+   },
+   "operar": 2,
+   "manter": 1,
+   "manterTipo": "metade"
+  },
+  {
+   "id": "controle_de_animal_terra",
+   "condicoes": {
+    "iq": 4
+   },
+   "operar": 4,
+   "manter": 2,
+   "manterTipo": "metade"
+  },
+  {
+   "id": "controle_de_animal_ar",
+   "condicoes": {},
+   "operar": 5,
+   "manter": 3,
+   "manterTipo": "metade"
+  },
+  {
+   "id": "controle_de_animal_ar",
+   "condicoes": {
+    "iq": 2
+   },
+   "operar": 2,
+   "manter": 1,
+   "manterTipo": "metade"
+  },
+  {
+   "id": "controle_de_animal_ar",
+   "condicoes": {
+    "iq": 4
+   },
+   "operar": 4,
+   "manter": 2,
+   "manterTipo": "metade"
+  },
+  {
+   "id": "controle_de_animal_mar",
+   "condicoes": {},
+   "operar": 5,
+   "manter": 3,
+   "manterTipo": "metade"
+  },
+  {
+   "id": "controle_de_animal_mar",
+   "condicoes": {
+    "iq": 2
+   },
+   "operar": 2,
+   "manter": 1,
+   "manterTipo": "metade"
+  },
+  {
+   "id": "controle_de_animal_mar",
+   "condicoes": {
+    "iq": 4
+   },
+   "operar": 4,
+   "manter": 2,
+   "manterTipo": "metade"
+  },
+  {
+   "id": "contramagica",
+   "condicoes": {
+    "custo": 2
+   },
+   "operar": 1,
+   "manter": null,
+   "manterTipo": null
+  },
+  {
+   "id": "contramagica",
+   "condicoes": {
+    "custo": 6
+   },
+   "operar": 3,
+   "manter": null,
+   "manterTipo": null
+  },
+  {
+   "id": "contramagica",
+   "condicoes": {
+    "custo": 5
+   },
+   "operar": 3,
+   "manter": null,
+   "manterTipo": null
+  },
+  {
+   "id": "suspender_magica",
+   "condicoes": {
+    "custo": 10
+   },
+   "operar": 1,
+   "manter": 1,
+   "manterTipo": "igual"
+  },
+  {
+   "id": "suspender_magica",
+   "condicoes": {
+    "custo": 25
+   },
+   "operar": 3,
+   "manter": 3,
+   "manterTipo": "igual"
+  },
+  {
+   "id": "deslocar_magica",
+   "condicoes": {
+    "custo": 4
+   },
+   "operar": 1,
+   "manter": null,
+   "manterTipo": null
+  },
+  {
+   "id": "deslocar_magica",
+   "condicoes": {
+    "custo": 10
+   },
+   "operar": 3,
+   "manter": null,
+   "manterTipo": null
+  },
+  {
+   "id": "adiar_magica",
+   "condicoes": {
+    "custo": 1
+   },
+   "operar": 2,
+   "manter": 2,
+   "manterTipo": "igual"
+  },
+  {
+   "id": "adiar_magica",
+   "condicoes": {
+    "custo": 7
+   },
+   "operar": 7,
+   "manter": 7,
+   "manterTipo": "igual"
+  },
+  {
+   "id": "compartilhar_energia",
+   "condicoes": {
+    "usada": 1
+   },
+   "operar": 2,
+   "manter": null,
+   "manterTipo": null
+  },
+  {
+   "id": "compartilhar_energia",
+   "condicoes": {
+    "usada": 5
+   },
+   "operar": 10,
+   "manter": null,
+   "manterTipo": null
+  },
+  {
+   "id": "apressar_fogo",
+   "condicoes": {},
+   "operar": 2,
+   "manter": 2,
+   "manterTipo": "igual"
+  },
+  {
+   "id": "apressar_fogo",
+   "condicoes": {
+    "fator": 3
+   },
+   "operar": 3,
+   "manter": 3,
+   "manterTipo": "igual"
+  },
+  {
+   "id": "comandar_espirito",
+   "condicoes": {
+    "pontos": 50
+   },
+   "operar": 5,
+   "manter": 3,
+   "manterTipo": "metade"
+  },
+  {
+   "id": "comandar_espirito",
+   "condicoes": {
+    "pontos": 95
+   },
+   "operar": 10,
+   "manter": 5,
+   "manterTipo": "metade"
+  },
+  {
+   "id": "comandar_espirito",
+   "condicoes": {
+    "pontos": 100
+   },
+   "operar": 10,
+   "manter": 5,
+   "manterTipo": "metade"
+  },
+  {
+   "id": "expulsar",
+   "condicoes": {
+    "pontos": 50
+   },
+   "operar": 10,
+   "manter": null,
+   "manterTipo": null
+  },
+  {
+   "id": "expulsar",
+   "condicoes": {
+    "pontos": 100
+   },
+   "operar": 10,
+   "manter": null,
+   "manterTipo": null
+  },
+  {
+   "id": "expulsar",
+   "condicoes": {
+    "pontos": 250
+   },
+   "operar": 25,
+   "manter": null,
+   "manterTipo": null
+  },
+  {
+   "id": "animacao",
+   "condicoes": {},
+   "operar": 3,
+   "manter": 2,
+   "manterTipo": "metade"
+  },
+  {
+   "id": "animacao",
+   "condicoes": {
+    "mt": 2
+   },
+   "operar": 9,
+   "manter": 5,
+   "manterTipo": "metade"
+  },
+  {
+   "id": "animacao",
+   "condicoes": {
+    "material": "pedra"
+   },
+   "operar": 6,
+   "manter": 3,
+   "manterTipo": "metade"
+  },
+  {
+   "id": "animacao",
+   "condicoes": {
+    "mt": 1,
+    "material": "metal"
+   },
+   "operar": 18,
+   "manter": 9,
+   "manterTipo": "metade"
+  },
+  {
+   "id": "diagramant",
+   "condicoes": {
+    "toneladas": 1
+   },
+   "operar": 5,
+   "manter": 3,
+   "manterTipo": "metade"
+  },
+  {
+   "id": "diagramant",
+   "condicoes": {
+    "toneladas": 1.5
+   },
+   "operar": 6,
+   "manter": 3,
+   "manterTipo": "metade"
+  },
+  {
+   "id": "diagramant",
+   "condicoes": {
+    "toneladas": 3
+   },
+   "operar": 7,
+   "manter": 4,
+   "manterTipo": "metade"
+  },
+  {
+   "id": "moldar_agua",
+   "condicoes": {
+    "litros": 80
+   },
+   "operar": 1,
+   "manter": 1,
+   "manterTipo": "igual"
+  },
+  {
+   "id": "moldar_agua",
+   "condicoes": {
+    "litros": 81
+   },
+   "operar": 2,
+   "manter": 2,
+   "manterTipo": "igual"
+  },
+  {
+   "id": "moldar_agua",
+   "condicoes": {
+    "litros": 240
+   },
+   "operar": 3,
+   "manter": 3,
+   "manterTipo": "igual"
+  },
+  {
+   "id": "purificar_a_agua",
+   "condicoes": {
+    "litros": 4
+   },
+   "operar": 1,
+   "manter": null,
+   "manterTipo": null
+  },
+  {
+   "id": "purificar_a_agua",
+   "condicoes": {
+    "litros": 9
+   },
+   "operar": 3,
+   "manter": null,
+   "manterTipo": null
+  },
+  {
+   "id": "terra_para_ar",
+   "condicoes": {},
+   "operar": 1,
+   "manter": null,
+   "manterTipo": null
+  },
+  {
+   "id": "terra_para_ar",
+   "condicoes": {
+    "volume": 0.1
+   },
+   "operar": 4,
+   "manter": null,
+   "manterTipo": null
+  },
+  {
+   "id": "terra_para_ar",
+   "condicoes": {
+    "volume": 0.75
+   },
+   "operar": 5,
+   "manter": null,
+   "manterTipo": null
+  },
+  {
+   "id": "terra_para_ar",
+   "condicoes": {
+    "volume": 1.6
+   },
+   "operar": 15,
+   "manter": null,
+   "manterTipo": null
+  },
+  {
+   "id": "terra_para_ar",
+   "condicoes": {
+    "metal": true
+   },
+   "operar": 3,
+   "manter": null,
+   "manterTipo": null
+  },
+  {
+   "id": "acionarnt",
+   "condicoes": {
+    "pcc": 1.8,
+    "deslocamento": 75,
+    "nh": 15
+   },
+   "operar": 9,
+   "manter": 9,
+   "manterTipo": "igual"
+  },
+  {
+   "id": "acionarnt",
+   "condicoes": {
+    "pcc": 0.5,
+    "deslocamento": 4,
+    "nh": 15
+   },
+   "operar": 1,
+   "manter": 1,
+   "manterTipo": "igual"
+  },
+  {
+   "id": "calor",
+   "condicoes": {
+    "punho": true
+   },
+   "operar": 1,
+   "manter": 1,
+   "manterTipo": "igual"
+  },
+  {
+   "id": "calor",
+   "condicoes": {},
+   "operar": 2,
+   "manter": 2,
+   "manterTipo": "igual"
+  },
+  {
+   "id": "calor",
+   "condicoes": {
+    "volume": 0.76
+   },
+   "operar": 4,
+   "manter": 4,
+   "manterTipo": "igual"
+  },
+  {
+   "id": "calor",
+   "condicoes": {
+    "volume": 1.6
+   },
+   "operar": 6,
+   "manter": 6,
+   "manterTipo": "igual"
+  },
+  {
+   "id": "calor",
+   "condicoes": {
+    "volume": 1.6,
+    "vezes": 2
+   },
+   "operar": 12,
+   "manter": 12,
+   "manterTipo": "igual"
+  },
+  {
+   "id": "calor",
+   "condicoes": {
+    "punho": true,
+    "vezes": 3
+   },
+   "operar": 3,
+   "manter": 3,
+   "manterTipo": "igual"
+  },
+  {
+   "id": "frio",
+   "condicoes": {
+    "punho": true
+   },
+   "operar": 1,
+   "manter": 1,
+   "manterTipo": "igual"
+  },
+  {
+   "id": "frio",
+   "condicoes": {},
+   "operar": 2,
+   "manter": 2,
+   "manterTipo": "igual"
+  },
+  {
+   "id": "frio",
+   "condicoes": {
+    "volume": 0.76
+   },
+   "operar": 4,
+   "manter": 4,
+   "manterTipo": "igual"
+  },
+  {
+   "id": "frio",
+   "condicoes": {
+    "volume": 1.6
+   },
+   "operar": 6,
+   "manter": 6,
+   "manterTipo": "igual"
+  },
+  {
+   "id": "frio",
+   "condicoes": {
+    "volume": 1.6,
+    "vezes": 2
+   },
+   "operar": 12,
+   "manter": 12,
+   "manterTipo": "igual"
+  },
+  {
+   "id": "frio",
+   "condicoes": {
+    "punho": true,
+    "vezes": 3
+   },
+   "operar": 3,
+   "manter": 3,
+   "manterTipo": "igual"
+  },
+  {
+   "id": "congelar",
+   "condicoes": {
+    "punho": true
+   },
+   "operar": 2,
+   "manter": 2,
+   "manterTipo": "igual"
+  },
+  {
+   "id": "congelar",
+   "condicoes": {
+    "litros": 25
+   },
+   "operar": 4,
+   "manter": 4,
+   "manterTipo": "igual"
+  },
+  {
+   "id": "congelar",
+   "condicoes": {
+    "litros": 26
+   },
+   "operar": 6,
+   "manter": 6,
+   "manterTipo": "igual"
+  },
+  {
+   "id": "congelar",
+   "condicoes": {
+    "litros": 250
+   },
+   "operar": 6,
+   "manter": 6,
+   "manterTipo": "igual"
+  },
+  {
+   "id": "congelar",
+   "condicoes": {
+    "litros": 251
+   },
+   "operar": 9,
+   "manter": 9,
+   "manterTipo": "igual"
+  },
+  {
+   "id": "congelar",
+   "condicoes": {
+    "litros": 500
+   },
+   "operar": 9,
+   "manter": 9,
+   "manterTipo": "igual"
+  },
+  {
+   "id": "congelar",
+   "condicoes": {
+    "litros": 501
+   },
+   "operar": 12,
+   "manter": 12,
+   "manterTipo": "igual"
+  },
+  {
+   "id": "ferver_agua",
+   "condicoes": {
+    "punho": true
+   },
+   "operar": 2,
+   "manter": null,
+   "manterTipo": null
+  },
+  {
+   "id": "ferver_agua",
+   "condicoes": {
+    "litros": 25
+   },
+   "operar": 4,
+   "manter": null,
+   "manterTipo": null
+  },
+  {
+   "id": "ferver_agua",
+   "condicoes": {
+    "litros": 26
+   },
+   "operar": 6,
+   "manter": null,
+   "manterTipo": null
+  },
+  {
+   "id": "ferver_agua",
+   "condicoes": {
+    "litros": 250
+   },
+   "operar": 6,
+   "manter": null,
+   "manterTipo": null
+  },
+  {
+   "id": "ferver_agua",
+   "condicoes": {
+    "litros": 251
+   },
+   "operar": 9,
+   "manter": null,
+   "manterTipo": null
+  },
+  {
+   "id": "ferver_agua",
+   "condicoes": {
+    "litros": 500
+   },
+   "operar": 9,
+   "manter": null,
+   "manterTipo": null
+  },
+  {
+   "id": "ferver_agua",
+   "condicoes": {
+    "litros": 501
+   },
+   "operar": 12,
+   "manter": null,
+   "manterTipo": null
+  },
+  {
+   "id": "criptografar",
+   "condicoes": {
+    "palavras": 1000
+   },
+   "operar": 1,
+   "manter": null,
+   "manterTipo": null
+  },
+  {
+   "id": "criptografar",
+   "condicoes": {
+    "palavras": 1001
+   },
+   "operar": 2,
+   "manter": null,
+   "manterTipo": null
+  },
+  {
+   "id": "criptografar",
+   "condicoes": {
+    "palavras": 10000
+   },
+   "operar": 2,
+   "manter": null,
+   "manterTipo": null
+  },
+  {
+   "id": "criptografar",
+   "condicoes": {
+    "palavras": 10001
+   },
+   "operar": 3,
+   "manter": null,
+   "manterTipo": null
+  },
+  {
+   "id": "criptografar",
+   "condicoes": {
+    "palavras": 100000
+   },
+   "operar": 3,
+   "manter": null,
+   "manterTipo": null
+  },
+  {
+   "id": "criptografar",
+   "condicoes": {
+    "palavras": 199999
+   },
+   "operar": 3,
+   "manter": null,
+   "manterTipo": null
+  },
+  {
+   "id": "criptografar",
+   "condicoes": {
+    "palavras": 200000
+   },
+   "operar": 4,
+   "manter": null,
+   "manterTipo": null
+  },
+  {
+   "id": "criptografar",
+   "condicoes": {
+    "palavras": 1050000
+   },
+   "operar": 12,
+   "manter": null,
+   "manterTipo": null
+  },
+  {
+   "id": "desatar",
+   "condicoes": {},
+   "operar": 3,
+   "manter": null,
+   "manterTipo": null
+  },
+  {
+   "id": "desatar",
+   "condicoes": {
+    "extras": 2
+   },
+   "operar": 5,
+   "manter": null,
+   "manterTipo": null
+  },
+  {
+   "id": "desatar",
+   "condicoes": {
+    "tudo": true
+   },
+   "operar": 6,
+   "manter": null,
+   "manterTipo": null
+  },
+  {
+   "id": "anular_criacao",
+   "condicoes": {},
+   "operar": 1,
+   "manter": null,
+   "manterTipo": null
+  },
+  {
+   "id": "anular_criacao",
+   "condicoes": {
+    "objetivo": "vivo"
+   },
+   "operar": 3,
+   "manter": null,
+   "manterTipo": null
+  },
+  {
+   "id": "imunidade_a_pressao",
+   "condicoes": {},
+   "operar": 2,
+   "manter": 1,
+   "manterTipo": "metade"
+  },
+  {
+   "id": "imunidade_a_pressao",
+   "condicoes": {
+    "vantagem": "rp2"
+   },
+   "operar": 3,
+   "manter": 2,
+   "manterTipo": "metade"
+  },
+  {
+   "id": "imunidade_a_pressao",
+   "condicoes": {
+    "vantagem": "rp3"
+   },
+   "operar": 5,
+   "manter": 3,
+   "manterTipo": "metade"
+  },
+  {
+   "id": "imunidade_a_pressao",
+   "condicoes": {
+    "vantagem": "vacuo"
+   },
+   "operar": 3,
+   "manter": 2,
+   "manterTipo": "metade"
+  },
+  {
+   "id": "desviar_teleporte",
+   "condicoes": {},
+   "operar": 3,
+   "manter": null,
+   "manterTipo": null
+  },
+  {
+   "id": "desviar_teleporte",
+   "condicoes": {
+    "pretendido": 9,
+    "novo": 3
+   },
+   "operar": 6,
+   "manter": null,
+   "manterTipo": null
+  },
+  {
+   "id": "desviar_teleporte",
+   "condicoes": {
+    "pretendido": 3,
+    "novo": 9
+   },
+   "operar": 6,
+   "manter": null,
+   "manterTipo": null
+  },
+  {
+   "id": "desviar_teleporte",
+   "condicoes": {
+    "pretendido": 5,
+    "novo": 6
+   },
+   "operar": 3,
+   "manter": null,
+   "manterTipo": null
+  },
+  {
+   "id": "roubar_energia",
+   "condicoes": {},
+   "operar": 0,
+   "manter": null,
+   "manterTipo": null
+  },
+  {
+   "id": "roubar_vitalidade",
+   "condicoes": {},
+   "operar": 0,
+   "manter": null,
+   "manterTipo": null
+  },
+  {
+   "id": "recuperar_energia",
+   "condicoes": {},
+   "operar": 0,
+   "manter": null,
+   "manterTipo": null
+  },
+  {
    "id": "alarme_florestal",
    "condicoes": {
     "raio": 1
@@ -3279,6 +4935,266 @@
    "manterTipo": "igual"
   },
   {
+   "id": "acelerar_tempo",
+   "condicoes": {
+    "raio": 1
+   },
+   "operar": 2,
+   "manter": 2,
+   "manterTipo": "igual"
+  },
+  {
+   "id": "acelerar_tempo",
+   "condicoes": {
+    "raio": 4,
+    "ritmo": 3
+   },
+   "operar": 12,
+   "manter": 12,
+   "manterTipo": "igual"
+  },
+  {
+   "id": "retardar_tempo",
+   "condicoes": {
+    "raio": 1
+   },
+   "operar": 2,
+   "manter": 2,
+   "manterTipo": "igual"
+  },
+  {
+   "id": "retardar_tempo",
+   "condicoes": {
+    "raio": 3,
+    "ritmo": 4
+   },
+   "operar": 12,
+   "manter": 12,
+   "manterTipo": "igual"
+  },
+  {
+   "id": "retardar_fogo",
+   "condicoes": {
+    "raio": 1
+   },
+   "operar": 2,
+   "manter": 2,
+   "manterTipo": "igual"
+  },
+  {
+   "id": "retardar_fogo",
+   "condicoes": {
+    "raio": 2,
+    "ritmo": 3
+   },
+   "operar": 6,
+   "manter": 6,
+   "manterTipo": "igual"
+  },
+  {
+   "id": "iniciativa",
+   "condicoes": {
+    "raio": 1
+   },
+   "operar": 3,
+   "manter": null,
+   "manterTipo": null
+  },
+  {
+   "id": "iniciativa",
+   "condicoes": {
+    "raio": 1,
+    "aumento": 1
+   },
+   "operar": 3,
+   "manter": null,
+   "manterTipo": null
+  },
+  {
+   "id": "iniciativa",
+   "condicoes": {
+    "raio": 1,
+    "aumento": 12,
+    "pericias": 1
+   },
+   "operar": 5,
+   "manter": null,
+   "manterTipo": null
+  },
+  {
+   "id": "iniciativa",
+   "condicoes": {
+    "raio": 2,
+    "aumento": 12,
+    "pericias": 1
+   },
+   "operar": 10,
+   "manter": null,
+   "manterTipo": null
+  },
+  {
+   "id": "aura_falsa",
+   "condicoes": {},
+   "operar": 4,
+   "manter": 2,
+   "manterTipo": "metade"
+  },
+  {
+   "id": "aura_falsa",
+   "condicoes": {
+    "area": true,
+    "raio": 3
+   },
+   "operar": 12,
+   "manter": 6,
+   "manterTipo": "metade"
+  },
+  {
+   "id": "barreira_astral",
+   "condicoes": {
+    "raio": 1
+   },
+   "operar": 4,
+   "manter": 2,
+   "manterTipo": "metade"
+  },
+  {
+   "id": "barreira_astral",
+   "condicoes": {
+    "raio": 3
+   },
+   "operar": 12,
+   "manter": 6,
+   "manterTipo": "metade"
+  },
+  {
+   "id": "barreira_astral",
+   "condicoes": {
+    "recipiente": true
+   },
+   "operar": 15,
+   "manter": 8,
+   "manterTipo": "metade"
+  },
+  {
+   "id": "barreira_astral",
+   "condicoes": {
+    "recipiente": true,
+    "volume": 1.6
+   },
+   "operar": 45,
+   "manter": 23,
+   "manterTipo": "metade"
+  },
+  {
+   "id": "restaurar_mana",
+   "condicoes": {
+    "raio": 1
+   },
+   "operar": 10,
+   "manter": null,
+   "manterTipo": null
+  },
+  {
+   "id": "restaurar_mana",
+   "condicoes": {
+    "raio": 5
+   },
+   "operar": 50,
+   "manter": null,
+   "manterTipo": null
+  },
+  {
+   "id": "repelir_animal_terra",
+   "condicoes": {
+    "raio": 1
+   },
+   "operar": 5,
+   "manter": null,
+   "manterTipo": null
+  },
+  {
+   "id": "repelir_animal_terra",
+   "condicoes": {
+    "raio": 2,
+    "iq": 3
+   },
+   "operar": 6,
+   "manter": null,
+   "manterTipo": null
+  },
+  {
+   "id": "repelir_animal_terra",
+   "condicoes": {
+    "raio": 2,
+    "iq": 3,
+    "altura": 2
+   },
+   "operar": 12,
+   "manter": null,
+   "manterTipo": null
+  },
+  {
+   "id": "repelir_animal_ar",
+   "condicoes": {
+    "raio": 1
+   },
+   "operar": 5,
+   "manter": null,
+   "manterTipo": null
+  },
+  {
+   "id": "repelir_animal_ar",
+   "condicoes": {
+    "raio": 2,
+    "iq": 3
+   },
+   "operar": 6,
+   "manter": null,
+   "manterTipo": null
+  },
+  {
+   "id": "repelir_animal_ar",
+   "condicoes": {
+    "raio": 2,
+    "iq": 3,
+    "altura": 2
+   },
+   "operar": 12,
+   "manter": null,
+   "manterTipo": null
+  },
+  {
+   "id": "repelir_animal_mar",
+   "condicoes": {
+    "raio": 1
+   },
+   "operar": 5,
+   "manter": null,
+   "manterTipo": null
+  },
+  {
+   "id": "repelir_animal_mar",
+   "condicoes": {
+    "raio": 2,
+    "iq": 3
+   },
+   "operar": 6,
+   "manter": null,
+   "manterTipo": null
+  },
+  {
+   "id": "repelir_animal_mar",
+   "condicoes": {
+    "raio": 2,
+    "iq": 3,
+    "altura": 2
+   },
+   "operar": 12,
+   "manter": null,
+   "manterTipo": null
+  },
+  {
    "id": "aquece",
    "condicoes": {
     "raio": 10
@@ -4005,6 +5921,42 @@
    "manterTipo": "conta"
   },
   {
+   "id": "drenar_mana",
+   "condicoes": {
+    "raio": 1
+   },
+   "operar": 10,
+   "manter": null,
+   "manterTipo": null
+  },
+  {
+   "id": "drenar_mana",
+   "condicoes": {
+    "raio": 5
+   },
+   "operar": 50,
+   "manter": null,
+   "manterTipo": null
+  },
+  {
+   "id": "ensebar",
+   "condicoes": {
+    "raio": 1
+   },
+   "operar": 3,
+   "manter": 3,
+   "manterTipo": "igual"
+  },
+  {
+   "id": "ensebar",
+   "condicoes": {
+    "raio": 5
+   },
+   "operar": 15,
+   "manter": 15,
+   "manterTipo": "igual"
+  },
+  {
    "id": "escudo_antimagica",
    "condicoes": {
     "raio": 1
@@ -4165,6 +6117,24 @@
    "operar": 5,
    "manter": null,
    "manterTipo": null
+  },
+  {
+   "id": "geiser",
+   "condicoes": {
+    "raio": 1
+   },
+   "operar": 5,
+   "manter": 2,
+   "manterTipo": "conta"
+  },
+  {
+   "id": "geiser",
+   "condicoes": {
+    "raio": 5
+   },
+   "operar": 25,
+   "manter": 10,
+   "manterTipo": "conta"
   },
   {
    "id": "gerar_odor",
@@ -4345,6 +6315,24 @@
    "operar": 5,
    "manter": 0,
    "manterTipo": "nenhum"
+  },
+  {
+   "id": "moldar_fogo",
+   "condicoes": {
+    "raio": 1
+   },
+   "operar": 2,
+   "manter": 1,
+   "manterTipo": "metade"
+  },
+  {
+   "id": "moldar_fogo",
+   "condicoes": {
+    "raio": 5
+   },
+   "operar": 10,
+   "manter": 5,
+   "manterTipo": "metade"
   },
   {
    "id": "muralha_de_silencio",
@@ -4615,6 +6603,24 @@
    "operar": 10,
    "manter": 5,
    "manterTipo": "conta"
+  },
+  {
+   "id": "sorvedouro",
+   "condicoes": {
+    "raio": 1
+   },
+   "operar": 2,
+   "manter": 1,
+   "manterTipo": "metade"
+  },
+  {
+   "id": "sorvedouro",
+   "condicoes": {
+    "raio": 5
+   },
+   "operar": 10,
+   "manter": 5,
+   "manterTipo": "metade"
   },
   {
    "id": "suspender_magia",

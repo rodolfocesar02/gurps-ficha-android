@@ -9,7 +9,7 @@
  * Rode DEPOIS do passo 2 (`aplicar-numeros-conferidos.js`), que reescreve os campos de custo. Para cada magia de
  * `custo-por-condicao.json`:
  *
- *  - grava `custoPorCondicao` ({entradas, operar, manter}: o que o jogador informa e a conta do PF);
+ *  - grava `custoPorCondicao` ({entradas, operar, manter, tamanho?}: o que o jogador informa e a conta do PF);
  *  - grava o `custoTipo` do spec; onde NÃO é `fixo`, apaga o número-base que o passo 2 leu da primeira frase
  *    ("1 para operar para cada 2 kg" virava custo 1) e guarda no `custoFormula` o texto de custo da entrada;
  *  - onde é `fixo` (Criar Montaria, Mão Mágica, Animar Planta, Despertar Computador/NT), o número-base fica;
@@ -41,15 +41,19 @@ function textosDeCusto(catalogo) {
     const e = x && x.entrada && x.entrada.formato === 'bloco' ? L.camposDaEntrada(livro, x.entrada) : {};
     if (e.custo) out.set(m.id, String(e.custo).replace(/\*\*/g, '').replace(/\s+/g, ' ').trim());
   });
+  // onde o `chunks.jsonl` não traz a linha de custo da entrada (página velha ou embaralhada), vale a lida do PDF
+  const doPdf = C.custosDoPdf();
+  catalogo.forEach((m) => { if (!out.has(m.id) && doPdf[m.id] && doPdf[m.id].texto) out.set(m.id, doPdf[m.id].texto); });
   return out;
 }
 
 function aplicar(catalogo, specs, textos) {
   const problemas = [];
   const ids = new Set(catalogo.map((m) => m.id));
+  const porId = new Map(catalogo.map((m) => [m.id, m]));
   Object.keys(specs).forEach((id) => {
     if (!ids.has(id)) problemas.push(id + ': não existe no catálogo');
-    else C.problemasDoSpec(id, specs[id], textos.get(id)).forEach((p) => problemas.push(p));
+    else C.problemasDoSpec(id, specs[id], C.textoDoGuarda(id, specs[id], textos, porId)).forEach((p) => problemas.push(p));
   });
   if (problemas.length) return { problemas };
   const saida = catalogo.map((m) => {
@@ -67,6 +71,8 @@ function aplicar(catalogo, specs, textos) {
     }
     const cond = { entradas: spec.entradas, operar: spec.operar };
     if (spec.manter !== undefined) cond.manter = spec.manter;
+    // `tamanho: true`: a conta não é de tamanho (RD dada, grau da bênção...): a Comum num alvo grande ainda multiplica (Magia p.11)
+    if (spec.tamanho === true) cond.tamanho = true;
     c.custoPorCondicao = cond;
     return c;
   });

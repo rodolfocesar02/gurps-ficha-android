@@ -46,7 +46,7 @@ fun CustoPorTamanhoEBloqueio(
     val classes = MagicClassParser.parse(magia.classe).classes
     val ehHibrida = TipoClasseMagia.BLOQUEIO in classes && TipoClasseMagia.COMUM in classes
     val perguntaOTamanho = MagiaEnergiaRules.tamanhoMultiplica(
-        magia.classe, magia.definicaoId, temCondicao = magia.custoPorCondicao != null, comoBloqueio = comoBloqueio
+        magia.classe, magia.definicaoId, temCondicao = magia.custoPorCondicao?.contaPropria == true, comoBloqueio = comoBloqueio
     )
     if (!ehHibrida && !perguntaOTamanho) return
 

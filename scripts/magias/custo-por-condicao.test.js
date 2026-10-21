@@ -42,8 +42,31 @@ test('o lote 2 tem o tamanho esperado e nenhuma magia aparece nos dois arquivos'
 
 test('toda conta confere com o texto de custo do livro (número fora de 0 a 4 tem que estar lá)', opcoes, () => {
   const problemas = [];
-  Object.keys(specs).forEach((id) => C.problemasDoSpec(id, specs[id], textos.get(id)).forEach((p) => problemas.push(p)));
+  Object.keys(specs).forEach((id) => C.problemasDoSpec(id, specs[id], C.textoDoGuarda(id, specs[id], textos, porId)).forEach((p) => problemas.push(p)));
   assert.deepStrictEqual(problemas, []);
+});
+
+test('🔴 a conta confere também com a linha de custo lida DIRETO do PDF (o chunks.jsonl tem páginas velhas)', opcoes, () => {
+  const doPdf = C.custosDoPdf();
+  assert.ok(Object.keys(doPdf).length >= 700, 'custos-do-pdf.json vazio: rode extrair-custos-do-pdf.py');
+  const problemas = [];
+  const textosDoPdf = new Map(Object.keys(doPdf).map((id) => [id, doPdf[id].texto]));
+  Object.keys(specs).forEach((id) => {
+    if (!textosDoPdf.has(id)) return;          // a entrada não saiu do PDF (nome diferente): vale a guarda do chunks
+    C.problemasDoSpec(id, specs[id], C.textoDoGuarda(id, specs[id], textosDoPdf, porId)).filter((p) => /não aparece/.test(p)).forEach((p) => problemas.push(p));
+  });
+  assert.deepStrictEqual(problemas, []);
+});
+
+test('🟥 sonda: o PDF pega o que o chunks.jsonl esconde (Mágica Penetrante, 10 → 8): um número que só o texto velho tem fica vermelho', opcoes, () => {
+  const doPdf = C.custosDoPdf();
+  assert.match(doPdf.magica_penetrante.texto, /Divisor de Armadura Custo 2 2 3 4 5 6 10 8 Ignora RD 10/, 'o PDF de 2025 traz 5 → 6 e 10 → 8');
+  const conta = { tipo: 'varia', entradas: [], operar: ['*', 8, 4] };
+  const velho = C.problemasDoSpec('x', conta, 'Veja a tabela abaixo. Divisor de Armadura Custo 2 2 3 4 4 6 5 8 10 10 Ignora RD 10');
+  const novo = C.problemasDoSpec('x', conta, doPdf.magica_penetrante.texto);
+  assert.deepStrictEqual([velho.length, novo.length], [0, 0], 'o 8 está nos dois textos: a conta passa');
+  const seis = C.problemasDoSpec('x', { tipo: 'varia', entradas: [], operar: 9 }, doPdf.magica_penetrante.texto);
+  assert.ok(seis.some((p) => /o número 9 não aparece/.test(p)), seis.join(' | '));
 });
 
 test('🟥 sonda: um número que o livro não tem na conta (0,25 no lugar de 0,5) deixa a guarda vermelha', opcoes, () => {
@@ -61,6 +84,20 @@ test('🟥 sonda: um número que o livro não tem na conta (0,25 no lugar de 0,5
   assert.ok(C.problemasDoSpec('alongar_objeto', eval_, textos.get('alongar_objeto')).some((x) => /fora do vocabulário/.test(x)));
 });
 
+test('o spec só aceita `tamanho: true` e `fonte` "descricao" ou "como:<id>" (P-5); o `baixo` está no vocabulário', opcoes, () => {
+  const base = { tipo: 'varia', entradas: [], operar: ['baixo', 1.5] };
+  const ok = C.problemasDoSpec('x', Object.assign({}, base, { tamanho: true, fonte: 'como:calor' }), 'Custo 1,5.');
+  assert.deepStrictEqual(ok, []);
+  assert.ok(C.problemasDoSpec('x', Object.assign({}, base, { tamanho: false }), '1').some((p) => /tamanho/.test(p)));
+  assert.ok(C.problemasDoSpec('x', Object.assign({}, base, { fonte: 'qualquer coisa' }), '1').some((p) => /fonte/.test(p)));
+  // o texto do guarda: a linha própria, mais a descrição ("veja a tabela abaixo") ou a linha de outra magia ("exatamente como Calor")
+  const fake = new Map([['a', 'veja a tabela'], ['b', 'tem 7']]);
+  const porIdFake = new Map([['a', { descricao: 'tabela: 2 4 6' }]]);
+  assert.match(C.textoDoGuarda('a', { fonte: 'descricao' }, fake, porIdFake), /2 4 6/);
+  assert.match(C.textoDoGuarda('a', { fonte: 'como:b' }, fake, porIdFake), /tem 7/);
+  assert.strictEqual(C.textoDoGuarda('a', {}, fake, porIdFake), 'veja a tabela');
+});
+
 test('o catálogo gravado É o que o passo 6 tira do arquivo (idempotente) e não sobra número-base errado', () => {
   const r = P6.aplicar(catalogo, specs, textos);
   assert.deepStrictEqual(r.problemas, []);
@@ -75,7 +112,7 @@ test('o catálogo gravado É o que o passo 6 tira do arquivo (idempotente) e nã
     } else if (specs[id].tipo !== 'fixo') {
       assert.strictEqual(m.custoOperar, undefined, id + ': a conta não pode ter custoOperar');
       assert.strictEqual(m.custoManter, undefined, id + ': a conta não pode ter custoManter');
-      assert.ok(m.custoFormula && m.custoFormula.length > 10, id + ': sem o texto do livro');
+      assert.ok(m.custoFormula && m.custoFormula.length >= 6, id + ': sem o texto do livro');
     }
   });
 });
@@ -119,8 +156,11 @@ test('a regra da ÁREA (Magia p.11): custo básico × raio, no mínimo 1 PF; só
   const e = porId.get('escudo_antiteleporte').custoPorCondicao;
   assert.deepStrictEqual([MOTOR.oCustoPorCondicao(e, { raio: 3 }).operar, MOTOR.oCustoPorCondicao(e, { raio: 10 }).operar], [1, 4]);
   assert.strictEqual(MOTOR.oCustoPorCondicao(e, { raio: 2 }).erro, 'condicao_invalida', 'abaixo do raio mínimo do livro');
-  // as magias de área do catálogo sem rótulo "Custo básico" no livro NÃO ganham o raio (Acelerar Tempo...)
-  ['acelerar_tempo', 'retardar_tempo', 'retardar_fogo'].forEach((id) => assert.strictEqual(porId.get(id).custoPorCondicao, undefined, id));
+  // P-5: as que o livro escreve "Custo básico" com uma conta no lugar do número (Acelerar/Retardar Tempo, Retardar Fogo) também perguntam o raio
+  ['acelerar_tempo', 'retardar_tempo', 'retardar_fogo'].forEach((id) => {
+    const e = porId.get(id).custoPorCondicao.entradas.map((x) => x.id);
+    assert.deepStrictEqual(e, ['raio', 'ritmo'], id);
+  });
   // toda magia com raio pergunta o raio PRIMEIRO, com o mínimo do livro e o padrão no mínimo
   const comRaio = [...porId.values()].filter((m) => m.custoPorCondicao && m.custoPorCondicao.entradas.some((x) => x.id === 'raio'));
   assert.ok(comRaio.length >= 120, 'magias com raio: ' + comRaio.length);

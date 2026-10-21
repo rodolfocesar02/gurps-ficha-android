@@ -776,6 +776,8 @@ fun TabRolagem(viewModel: FichaViewModel) {
         // fixo ("2/pt/M" lido como 2): a conta manda.
         magia.custoPorCondicao?.let { spec ->
             val padrao = CustoPorCondicaoRules.calcular(spec, emptyMap())
+            // P-5: "nenhum para o operador" (Roubar Energia) não pergunta nada e custa 0: rola direto, como o custo efetivo zero
+            if (spec.semPergunta && (padrao as? CustoPorCondicaoRules.Resultado.Ok)?.operar == 0) return false
             magiaPendenteEnergia = magia
             rolagemDeMagiaEsperando = magia to modMagia
             energiaManualInput = ((padrao as? CustoPorCondicaoRules.Resultado.Ok)?.operar ?: 0).toString()
