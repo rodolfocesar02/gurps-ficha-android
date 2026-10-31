@@ -733,7 +733,7 @@ fun TabRolagem(viewModel: FichaViewModel) {
         )
     }
 
-    fun comprometerEnergiaMagia(custo: Int) {
+    fun comprometerEnergiaMagia(custo: Int, modDaConta: Int = 0) {
         // 🔴 NÃO desconta aqui. O livro cobra conforme o resultado: sucesso
         // decisivo não gasta nada, fracasso perde 1 ponto, falha crítica gasta
         // tudo (MB p.236). Quem desconta é a `finalizarRolagem`.
@@ -749,7 +749,8 @@ fun TabRolagem(viewModel: FichaViewModel) {
         // dava para curar 2 ou 3 PV.
         rolagemDeMagiaEsperando?.let { (magia, mod) ->
             rolagemDeMagiaEsperando = null
-            rolarMagiaAgora(magia, mod)
+            // P-5c: o ajuste no NH que a conta do custo traz (a distância do Teleporte) soma ao modificador da rolagem
+            rolarMagiaAgora(magia, mod + modDaConta)
         }
     }
 
@@ -1453,7 +1454,7 @@ fun TabRolagem(viewModel: FichaViewModel) {
             isPraCegoVariant = isPraCegoVariant,
             onInputMudou = { raw -> energiaManualInput = raw.filter { it.isDigit() }.take(4) },
             onTalismaVinculadoMudou = { talismaMagiaVinculada = it },
-            onAplicar = { custoFinal -> comprometerEnergiaMagia(custoFinal) },
+            onAplicar = { custoFinal, modDaConta -> comprometerEnergiaMagia(custoFinal, modDaConta) },
             onDismiss = {
                 showEnergiaManualDialog = false
                 magiaPendenteEnergia = null

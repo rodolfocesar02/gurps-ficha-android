@@ -1586,7 +1586,8 @@
    },
    "operar": 1,
    "manter": null,
-   "manterTipo": null
+   "manterTipo": null,
+   "modificador": 0
   },
   {
    "id": "translocacao_no_tempo",
@@ -1595,7 +1596,8 @@
    },
    "operar": 5,
    "manter": null,
-   "manterTipo": null
+   "manterTipo": null,
+   "modificador": -4
   },
   {
    "id": "translocar_outro_no_tempo",
@@ -1604,7 +1606,8 @@
    },
    "operar": 1,
    "manter": null,
-   "manterTipo": null
+   "manterTipo": null,
+   "modificador": 0
   },
   {
    "id": "translocar_outro_no_tempo",
@@ -1613,7 +1616,8 @@
    },
    "operar": 5,
    "manter": null,
-   "manterTipo": null
+   "manterTipo": null,
+   "modificador": -4
   },
   {
    "id": "puxar",
@@ -4020,7 +4024,8 @@
    "condicoes": {},
    "operar": 3,
    "manter": null,
-   "manterTipo": null
+   "manterTipo": null,
+   "modificador": 0
   },
   {
    "id": "desviar_teleporte",
@@ -4030,7 +4035,8 @@
    },
    "operar": 6,
    "manter": null,
-   "manterTipo": null
+   "manterTipo": null,
+   "modificador": 0
   },
   {
    "id": "desviar_teleporte",
@@ -4040,7 +4046,8 @@
    },
    "operar": 6,
    "manter": null,
-   "manterTipo": null
+   "manterTipo": null,
+   "modificador": -6
   },
   {
    "id": "desviar_teleporte",
@@ -4050,7 +4057,19 @@
    },
    "operar": 3,
    "manter": null,
-   "manterTipo": null
+   "manterTipo": null,
+   "modificador": -3
+  },
+  {
+   "id": "desviar_teleporte",
+   "condicoes": {
+    "pretendido": 5,
+    "novo": 7
+   },
+   "operar": 3,
+   "manter": null,
+   "manterTipo": null,
+   "modificador": -4
   },
   {
    "id": "roubar_energia",
@@ -4072,6 +4091,388 @@
    "operar": 0,
    "manter": null,
    "manterTipo": null
+  },
+  {
+   "id": "teleporte",
+   "condicoes": {},
+   "operar": 3,
+   "manter": null,
+   "manterTipo": null,
+   "modificador": 0
+  },
+  {
+   "id": "teleporte",
+   "condicoes": {
+    "distancia": "ate20"
+   },
+   "operar": 4,
+   "manter": null,
+   "manterTipo": null,
+   "modificador": -1
+  },
+  {
+   "id": "teleporte",
+   "condicoes": {
+    "distancia": "ate100"
+   },
+   "operar": 5,
+   "manter": null,
+   "manterTipo": null,
+   "modificador": -2
+  },
+  {
+   "id": "teleporte",
+   "condicoes": {
+    "distancia": "ate500"
+   },
+   "operar": 6,
+   "manter": null,
+   "manterTipo": null,
+   "modificador": -3
+  },
+  {
+   "id": "teleporte",
+   "condicoes": {
+    "distancia": "ate3km"
+   },
+   "operar": 7,
+   "manter": null,
+   "manterTipo": null,
+   "modificador": -4
+  },
+  {
+   "id": "teleporte",
+   "condicoes": {
+    "distancia": "ate15km"
+   },
+   "operar": 8,
+   "manter": null,
+   "manterTipo": null,
+   "modificador": -5
+  },
+  {
+   "id": "teleporte",
+   "condicoes": {
+    "distancia": "ate150km"
+   },
+   "operar": 9,
+   "manter": null,
+   "manterTipo": null,
+   "modificador": -6
+  },
+  {
+   "id": "teleporte",
+   "condicoes": {
+    "distancia": "ate1500km"
+   },
+   "operar": 10,
+   "manter": null,
+   "manterTipo": null,
+   "modificador": -7
+  },
+  {
+   "id": "teleporte",
+   "condicoes": {
+    "distancia": "ate15mil"
+   },
+   "operar": 11,
+   "manter": null,
+   "manterTipo": null,
+   "modificador": -8
+  },
+  {
+   "id": "teleporte",
+   "condicoes": {
+    "distancia": "ate100",
+    "mente": true,
+    "mes": true,
+    "breve": "b2"
+   },
+   "operar": 5,
+   "manter": null,
+   "manterTipo": null,
+   "modificador": -8
+  },
+  {
+   "id": "teleporte",
+   "condicoes": {
+    "mes": true,
+    "breve": "b3"
+   },
+   "operar": 3,
+   "manter": null,
+   "manterTipo": null,
+   "modificador": -5
+  },
+  {
+   "id": "teleportar_outro",
+   "condicoes": {},
+   "operar": 3,
+   "manter": null,
+   "manterTipo": null,
+   "modificador": 0
+  },
+  {
+   "id": "teleportar_outro",
+   "condicoes": {
+    "peso": "p5"
+   },
+   "operar": 2,
+   "manter": null,
+   "manterTipo": null,
+   "modificador": 0
+  },
+  {
+   "id": "teleportar_outro",
+   "condicoes": {
+    "distancia": "ate100",
+    "peso": "p100"
+   },
+   "operar": 15,
+   "manter": null,
+   "manterTipo": null,
+   "modificador": -2
+  },
+  {
+   "id": "teleportar_outro",
+   "condicoes": {
+    "distancia": "ate3km",
+    "peso": "p150"
+   },
+   "operar": 28,
+   "manter": null,
+   "manterTipo": null,
+   "modificador": -4
+  },
+  {
+   "id": "teleportar_outro",
+   "condicoes": {
+    "distancia": "ate20",
+    "peso": "p50",
+    "mente": true
+   },
+   "operar": 8,
+   "manter": null,
+   "manterTipo": null,
+   "modificador": -3
+  },
+  {
+   "id": "telemagica",
+   "condicoes": {},
+   "operar": 3,
+   "manter": 3,
+   "manterTipo": "igual",
+   "modificador": 0
+  },
+  {
+   "id": "telemagica",
+   "condicoes": {
+    "distancia": "ate500"
+   },
+   "operar": 6,
+   "manter": 6,
+   "manterTipo": "igual",
+   "modificador": -3
+  },
+  {
+   "id": "telemagica",
+   "condicoes": {
+    "distancia": "ate15km",
+    "mes": true
+   },
+   "operar": 8,
+   "manter": 8,
+   "manterTipo": "igual",
+   "modificador": -7
+  },
+  {
+   "id": "viagem_no_tempo",
+   "condicoes": {},
+   "operar": 4,
+   "manter": null,
+   "manterTipo": null,
+   "modificador": 0
+  },
+  {
+   "id": "viagem_no_tempo",
+   "condicoes": {
+    "tempo": "ate10min"
+   },
+   "operar": 6,
+   "manter": null,
+   "manterTipo": null,
+   "modificador": -1
+  },
+  {
+   "id": "viagem_no_tempo",
+   "condicoes": {
+    "tempo": "ate1h"
+   },
+   "operar": 8,
+   "manter": null,
+   "manterTipo": null,
+   "modificador": -2
+  },
+  {
+   "id": "viagem_no_tempo",
+   "condicoes": {
+    "tempo": "ate10h"
+   },
+   "operar": 10,
+   "manter": null,
+   "manterTipo": null,
+   "modificador": -3
+  },
+  {
+   "id": "viagem_no_tempo",
+   "condicoes": {
+    "tempo": "ate4d"
+   },
+   "operar": 12,
+   "manter": null,
+   "manterTipo": null,
+   "modificador": -4
+  },
+  {
+   "id": "viagem_no_tempo",
+   "condicoes": {
+    "tempo": "ate40d"
+   },
+   "operar": 14,
+   "manter": null,
+   "manterTipo": null,
+   "modificador": -5
+  },
+  {
+   "id": "viagem_no_tempo",
+   "condicoes": {
+    "tempo": "ate1a"
+   },
+   "operar": 16,
+   "manter": null,
+   "manterTipo": null,
+   "modificador": -6
+  },
+  {
+   "id": "viagem_no_tempo",
+   "condicoes": {
+    "tempo": "ate10a"
+   },
+   "operar": 18,
+   "manter": null,
+   "manterTipo": null,
+   "modificador": -7
+  },
+  {
+   "id": "viagem_no_tempo",
+   "condicoes": {
+    "tempo": "ate100a"
+   },
+   "operar": 20,
+   "manter": null,
+   "manterTipo": null,
+   "modificador": -8
+  },
+  {
+   "id": "viagem_no_tempo",
+   "condicoes": {
+    "tempo": "ate1000a"
+   },
+   "operar": 22,
+   "manter": null,
+   "manterTipo": null,
+   "modificador": -9
+  },
+  {
+   "id": "viagem_no_tempo",
+   "condicoes": {
+    "tempo": "ate1h",
+    "distancia": "ate500"
+   },
+   "operar": 14,
+   "manter": null,
+   "manterTipo": null,
+   "modificador": -5
+  },
+  {
+   "id": "transportar_outro_no_tempo",
+   "condicoes": {},
+   "operar": 4,
+   "manter": null,
+   "manterTipo": null,
+   "modificador": 0
+  },
+  {
+   "id": "transportar_outro_no_tempo",
+   "condicoes": {
+    "peso": "p5"
+   },
+   "operar": 2,
+   "manter": null,
+   "manterTipo": null,
+   "modificador": 0
+  },
+  {
+   "id": "transportar_outro_no_tempo",
+   "condicoes": {
+    "tempo": "ate1h",
+    "peso": "p100"
+   },
+   "operar": 24,
+   "manter": null,
+   "manterTipo": null,
+   "modificador": -2
+  },
+  {
+   "id": "transportar_outro_no_tempo",
+   "condicoes": {
+    "tempo": "ate10h",
+    "peso": "p150"
+   },
+   "operar": 40,
+   "manter": null,
+   "manterTipo": null,
+   "modificador": -3
+  },
+  {
+   "id": "jornada_rapida",
+   "condicoes": {},
+   "operar": 3,
+   "manter": 1,
+   "manterTipo": "conta",
+   "modificador": 0
+  },
+  {
+   "id": "jornada_rapida",
+   "condicoes": {
+    "distancia": "ate100"
+   },
+   "operar": 5,
+   "manter": 2,
+   "manterTipo": "conta",
+   "modificador": -2
+  },
+  {
+   "id": "jornada_rapida",
+   "condicoes": {
+    "distancia": "nenhuma",
+    "tempo": "ate1h"
+   },
+   "operar": 8,
+   "manter": 2,
+   "manterTipo": "conta",
+   "modificador": -2
+  },
+  {
+   "id": "jornada_rapida",
+   "condicoes": {
+    "distancia": "ate500",
+    "tempo": "ate1h"
+   },
+   "operar": 14,
+   "manter": 4,
+   "manterTipo": "conta",
+   "modificador": -5
   },
   {
    "id": "alarme_florestal",

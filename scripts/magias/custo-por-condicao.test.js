@@ -98,6 +98,26 @@ test('o spec só aceita `tamanho: true` e `fonte` "descricao" ou "como:<id>" (P-
   assert.strictEqual(C.textoDoGuarda('a', {}, fake, porIdFake), 'veja a tabela');
 });
 
+test('P-5c: o modificador de NH — a guarda aceita `$<escolha>_mod`, recusa referência solta, `mod` que não é número e modificador sem nome', opcoes, () => {
+  const dist = { id: 'distancia', tipo: 'escolha', rotulo: 'Distância', padrao: 'a', opcoes: [{ id: 'a', rotulo: 'A', valor: 3, mod: 0 }, { id: 'b', rotulo: 'B', valor: 5, mod: -2 }] };
+  const ok = { tipo: 'varia', entradas: [dist], operar: '$distancia', modificador: '$distancia_mod', modificadorRotulo: 'Salto', modificadorPagina: 147 };
+  assert.deepStrictEqual(C.problemasDoSpec('x', ok, 'Custo 3.'), []);
+  const solta = Object.assign({}, ok, { modificador: '$nao_existe_mod' });
+  assert.ok(C.problemasDoSpec('x', solta, 'Custo 3.').some((p) => /"\$nao_existe_mod" não é uma entrada/.test(p)));
+  const semNome = Object.assign({}, ok); delete semNome.modificadorRotulo;
+  assert.ok(C.problemasDoSpec('x', semNome, 'Custo 3.').some((p) => /nome da parcela/.test(p)));
+  const ruim = JSON.parse(JSON.stringify(ok)); ruim.entradas[0].opcoes[1].mod = '-2';
+  assert.ok(C.problemasDoSpec('x', ruim, 'Custo 3.').some((p) => /o `mod` da opção b não é número/.test(p)));
+  // um número que o livro não tem na expressão do modificador também fica vermelho (a guarda vale para as duas contas)
+  const inventado = Object.assign({}, ok, { modificador: ['-', 0, ['*', 7, '$distancia']] });
+  assert.ok(C.problemasDoSpec('x', inventado, 'Custo 3.').some((p) => /modificador: o número 7 não aparece/.test(p)));
+  // e o catálogo: o Teleporte e as magias do salto no tempo trazem o modificador e o nome da parcela
+  ['teleporte', 'teleportar_outro', 'telemagica', 'viagem_no_tempo', 'transportar_outro_no_tempo', 'jornada_rapida', 'desviar_teleporte', 'translocacao_no_tempo', 'translocar_outro_no_tempo'].forEach((id) => {
+    const c = porId.get(id).custoPorCondicao;
+    assert.ok(c.modificador !== undefined && c.modificadorRotulo && Number.isInteger(c.modificadorPagina), id);
+  });
+});
+
 test('o catálogo gravado É o que o passo 6 tira do arquivo (idempotente) e não sobra número-base errado', () => {
   const r = P6.aplicar(catalogo, specs, textos);
   assert.deepStrictEqual(r.problemas, []);
@@ -139,6 +159,7 @@ test('os casos do lote 2 (escritos à mão no gerador, do texto do livro) fecham
     const r = MOTOR.oCustoPorCondicao(porId.get(k.id).custoPorCondicao, k.condicoes);
     assert.strictEqual(r.ok, true, k.id + ' ' + JSON.stringify(k.condicoes) + ' ' + JSON.stringify(r));
     assert.deepStrictEqual([r.operar, r.manter, r.manterTipo], [k.operar, k.manter, k.manterTipo], k.id + ' ' + JSON.stringify(k.condicoes));
+    if (k.modificador !== undefined) assert.strictEqual(r.modificador, k.modificador, k.id + ' ' + JSON.stringify(k.condicoes) + ' modificador (P-5c)');
   });
 });
 

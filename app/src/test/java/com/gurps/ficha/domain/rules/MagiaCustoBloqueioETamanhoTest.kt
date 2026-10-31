@@ -78,7 +78,7 @@ class MagiaCustoBloqueioETamanhoTest {
     }
 
     @Test
-    fun `o catalogo - toda classe escrita esta no arquivo da Mesa, e 380 magias ganham o fator do tamanho`() {
+    fun `o catalogo - toda classe escrita esta no arquivo da Mesa, e 378 magias ganham o fator do tamanho`() {
         val doArquivo = recurso("classes_do_custo_do_catalogo.json").getAsJsonArray("classes")
             .map { it.asJsonObject.get("classe").asString }.toSet()
         val doCatalogo = catalogo.map { it.classe.orEmpty() }.toSet()
@@ -89,9 +89,9 @@ class MagiaCustoBloqueioETamanhoTest {
         val multiplicam = catalogo.filter {
             MagiaEnergiaRules.tamanhoMultiplica(it.classe, it.id, temCondicao = it.custoPorCondicao?.contaPropria == true)
         }
-        // O mesmo número que a Mesa trava em test/magia-bloqueio-e-tamanho.test.js ("sentinela"): 408 antes do P-5; 28 Comuns ganharam
-        // conta própria (Luz, Dom das Línguas, Aporte, Criar Servo, Anular Criação...) e deixaram de multiplicar.
-        assertEquals(380, multiplicam.size)
+        // O mesmo número que a Mesa trava em test/magia-bloqueio-e-tamanho.test.js ("sentinela"): 408 antes do P-5; 30 Comuns ganharam
+        // conta própria (28 do P-5: Luz, Dom das Línguas, Aporte, Criar Servo...; 2 do P-5c: Teleportar Outro e Transportar Outro no Tempo).
+        assertEquals(378, multiplicam.size)
         // P-5: 15 magias têm conta mas o tamanho do alvo continua multiplicando (`tamanho: true`: Armadura, Bênção, Controle de Animal...)
         assertEquals(15, catalogo.count { it.custoPorCondicao?.tamanho == true })
         multiplicam.forEach { assertFalse("${it.id} tem tabela própria", it.id in MagiaEnergiaRules.COM_TABELA_PROPRIA_DE_TAMANHO) }

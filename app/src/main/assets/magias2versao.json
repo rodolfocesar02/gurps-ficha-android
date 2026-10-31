@@ -14705,7 +14705,14 @@
             "$pretendido"
           ]
         ]
-      ]
+      ],
+      "modificador": [
+        "-",
+        3,
+        "$novo"
+      ],
+      "modificadorRotulo": "Destino imposto (Desviar Teleporte)",
+      "modificadorPagina": 84
     }
   },
   {
@@ -23782,13 +23789,262 @@
     "tempoOperacaoSeg": 5,
     "tempoTipo": "fixo",
     "custoTipo": "varia",
-    "custoFormula": "Varia",
+    "custoFormula": "Como Teleporte ou Viagem no Tempo, mais um quarto do custo da viagem, por minuto.",
     "conferido": "livro",
     "conferidoPagina": 82,
     "conferidoPor": {
       "duracao": "tabela+entrada",
       "tempoOperacao": "tabela+entrada",
       "custo": "tabela"
+    },
+    "custoPorCondicao": {
+      "entradas": [
+        {
+          "id": "distancia",
+          "tipo": "escolha",
+          "rotulo": "Distância do salto",
+          "padrao": "ate10",
+          "opcoes": [
+            {
+              "id": "nenhuma",
+              "rotulo": "Sem salto no espaço",
+              "valor": 0,
+              "mod": 0
+            },
+            {
+              "id": "ate10",
+              "rotulo": "Até 10 metros",
+              "valor": 3,
+              "mod": 0
+            },
+            {
+              "id": "ate20",
+              "rotulo": "11 a 20 metros",
+              "valor": 4,
+              "mod": -1
+            },
+            {
+              "id": "ate100",
+              "rotulo": "21 a 100 metros",
+              "valor": 5,
+              "mod": -2
+            },
+            {
+              "id": "ate500",
+              "rotulo": "101 a 500 metros",
+              "valor": 6,
+              "mod": -3
+            },
+            {
+              "id": "ate3km",
+              "rotulo": "501 metros a 2,99 km",
+              "valor": 7,
+              "mod": -4
+            },
+            {
+              "id": "ate15km",
+              "rotulo": "3 a 14,99 km",
+              "valor": 8,
+              "mod": -5
+            },
+            {
+              "id": "ate150km",
+              "rotulo": "15 a 149,99 km",
+              "valor": 9,
+              "mod": -6
+            },
+            {
+              "id": "ate1500km",
+              "rotulo": "150 a 1.499,99 km",
+              "valor": 10,
+              "mod": -7
+            },
+            {
+              "id": "ate15mil",
+              "rotulo": "1.500 a 14.999 km",
+              "valor": 11,
+              "mod": -8
+            },
+            {
+              "id": "ate150mil",
+              "rotulo": "15.000 a 149.999 km",
+              "valor": 12,
+              "mod": -9
+            },
+            {
+              "id": "ate1500mil",
+              "rotulo": "150.000 a 1.499.999 km",
+              "valor": 13,
+              "mod": -10
+            }
+          ]
+        },
+        {
+          "id": "tempo",
+          "tipo": "escolha",
+          "rotulo": "Intervalo de tempo",
+          "padrao": "nenhum",
+          "opcoes": [
+            {
+              "id": "nenhum",
+              "rotulo": "Sem salto no tempo",
+              "valor": 0,
+              "mod": 0
+            },
+            {
+              "id": "ate1min",
+              "rotulo": "Dentro de 1 minuto",
+              "valor": 4,
+              "mod": 0
+            },
+            {
+              "id": "ate10min",
+              "rotulo": "1 a 10 minutos",
+              "valor": 6,
+              "mod": -1
+            },
+            {
+              "id": "ate1h",
+              "rotulo": "10 minutos a 1 hora",
+              "valor": 8,
+              "mod": -2
+            },
+            {
+              "id": "ate10h",
+              "rotulo": "1 a 10 horas",
+              "valor": 10,
+              "mod": -3
+            },
+            {
+              "id": "ate4d",
+              "rotulo": "10 horas a 4 dias",
+              "valor": 12,
+              "mod": -4
+            },
+            {
+              "id": "ate40d",
+              "rotulo": "4 a 40 dias",
+              "valor": 14,
+              "mod": -5
+            },
+            {
+              "id": "ate1a",
+              "rotulo": "40 dias a 1 ano",
+              "valor": 16,
+              "mod": -6
+            },
+            {
+              "id": "ate10a",
+              "rotulo": "1 a 10 anos",
+              "valor": 18,
+              "mod": -7
+            },
+            {
+              "id": "ate100a",
+              "rotulo": "10 a 100 anos",
+              "valor": 20,
+              "mod": -8
+            },
+            {
+              "id": "ate1000a",
+              "rotulo": "100 a 1.000 anos",
+              "valor": 22,
+              "mod": -9
+            },
+            {
+              "id": "ate10000a",
+              "rotulo": "1.000 a 10.000 anos",
+              "valor": 24,
+              "mod": -10
+            }
+          ]
+        },
+        {
+          "id": "mente",
+          "tipo": "marca",
+          "rotulo": "Lugar \"visto\" só pela mente ou pela memória de outro, ou pela televisão (−2)"
+        },
+        {
+          "id": "mes",
+          "tipo": "marca",
+          "rotulo": "Lugar que você não vê há mais de um mês (−2)"
+        },
+        {
+          "id": "breve",
+          "tipo": "escolha",
+          "rotulo": "Lugar visto só brevemente",
+          "padrao": "nao",
+          "opcoes": [
+            {
+              "id": "nao",
+              "rotulo": "Não",
+              "valor": 0,
+              "mod": 0
+            },
+            {
+              "id": "b1",
+              "rotulo": "−1",
+              "valor": 0,
+              "mod": -1
+            },
+            {
+              "id": "b2",
+              "rotulo": "−2",
+              "valor": 0,
+              "mod": -2
+            },
+            {
+              "id": "b3",
+              "rotulo": "−3",
+              "valor": 0,
+              "mod": -3
+            }
+          ]
+        }
+      ],
+      "operar": [
+        "max",
+        3,
+        [
+          "+",
+          "$distancia",
+          "$tempo"
+        ]
+      ],
+      "manter": [
+        "cima",
+        [
+          "/",
+          "$operar",
+          4
+        ]
+      ],
+      "modificador": [
+        "+",
+        "$distancia_mod",
+        "$tempo_mod",
+        [
+          "-",
+          0,
+          [
+            "*",
+            2,
+            "$mente"
+          ]
+        ],
+        [
+          "-",
+          0,
+          [
+            "*",
+            2,
+            "$mes"
+          ]
+        ],
+        "$breve_mod"
+      ],
+      "modificadorRotulo": "Salto (Jornada Rápida)",
+      "modificadorPagina": 82
     }
   },
   {
@@ -39404,7 +39660,7 @@
     "tempoOperacaoSeg": 60,
     "tempoTipo": "fixo",
     "custoTipo": "varia",
-    "custoFormula": "Varia",
+    "custoFormula": "Como Teleportar para operar; mesmo custo para manter. NH elevado não reduz o custo. A energia é gasta se a mágica é bem sucedida ou não.",
     "conferido": "livro",
     "conferidoPagina": 128,
     "conferidoPor": {
@@ -39414,6 +39670,153 @@
     },
     "semDescontoDeNh": {
       "pagina": 128
+    },
+    "custoPorCondicao": {
+      "entradas": [
+        {
+          "id": "distancia",
+          "tipo": "escolha",
+          "rotulo": "Distância do Olho Mágico",
+          "padrao": "ate10",
+          "opcoes": [
+            {
+              "id": "ate10",
+              "rotulo": "Até 10 metros",
+              "valor": 3,
+              "mod": 0
+            },
+            {
+              "id": "ate20",
+              "rotulo": "11 a 20 metros",
+              "valor": 4,
+              "mod": -1
+            },
+            {
+              "id": "ate100",
+              "rotulo": "21 a 100 metros",
+              "valor": 5,
+              "mod": -2
+            },
+            {
+              "id": "ate500",
+              "rotulo": "101 a 500 metros",
+              "valor": 6,
+              "mod": -3
+            },
+            {
+              "id": "ate3km",
+              "rotulo": "501 metros a 2,99 km",
+              "valor": 7,
+              "mod": -4
+            },
+            {
+              "id": "ate15km",
+              "rotulo": "3 a 14,99 km",
+              "valor": 8,
+              "mod": -5
+            },
+            {
+              "id": "ate150km",
+              "rotulo": "15 a 149,99 km",
+              "valor": 9,
+              "mod": -6
+            },
+            {
+              "id": "ate1500km",
+              "rotulo": "150 a 1.499,99 km",
+              "valor": 10,
+              "mod": -7
+            },
+            {
+              "id": "ate15mil",
+              "rotulo": "1.500 a 14.999 km",
+              "valor": 11,
+              "mod": -8
+            },
+            {
+              "id": "ate150mil",
+              "rotulo": "15.000 a 149.999 km",
+              "valor": 12,
+              "mod": -9
+            },
+            {
+              "id": "ate1500mil",
+              "rotulo": "150.000 a 1.499.999 km",
+              "valor": 13,
+              "mod": -10
+            }
+          ]
+        },
+        {
+          "id": "mente",
+          "tipo": "marca",
+          "rotulo": "Lugar \"visto\" só pela mente ou pela memória de outro, ou pela televisão (−2)"
+        },
+        {
+          "id": "mes",
+          "tipo": "marca",
+          "rotulo": "Lugar que você não vê há mais de um mês (−2)"
+        },
+        {
+          "id": "breve",
+          "tipo": "escolha",
+          "rotulo": "Lugar visto só brevemente",
+          "padrao": "nao",
+          "opcoes": [
+            {
+              "id": "nao",
+              "rotulo": "Não",
+              "valor": 0,
+              "mod": 0
+            },
+            {
+              "id": "b1",
+              "rotulo": "−1",
+              "valor": 0,
+              "mod": -1
+            },
+            {
+              "id": "b2",
+              "rotulo": "−2",
+              "valor": 0,
+              "mod": -2
+            },
+            {
+              "id": "b3",
+              "rotulo": "−3",
+              "valor": 0,
+              "mod": -3
+            }
+          ]
+        }
+      ],
+      "operar": "$distancia",
+      "manter": "igual",
+      "modificador": [
+        "+",
+        "$distancia_mod",
+        [
+          "-",
+          0,
+          [
+            "*",
+            2,
+            "$mente"
+          ]
+        ],
+        [
+          "-",
+          0,
+          [
+            "*",
+            2,
+            "$mes"
+          ]
+        ],
+        "$breve_mod"
+      ],
+      "modificadorRotulo": "Salto (Telemágica)",
+      "modificadorPagina": 128
     }
   },
   {
@@ -39513,13 +39916,234 @@
     "tempoOperacaoSeg": 1,
     "tempoTipo": "fixo",
     "custoTipo": "varia",
-    "custoFormula": "Varia",
+    "custoFormula": "Custos e penalidades de NH",
     "conferido": "livro",
     "conferidoPagina": 147,
     "conferidoPor": {
       "duracao": "tabela",
       "tempoOperacao": "tabela",
       "custo": "tabela"
+    },
+    "custoPorCondicao": {
+      "entradas": [
+        {
+          "id": "distancia",
+          "tipo": "escolha",
+          "rotulo": "Distância do salto",
+          "padrao": "ate10",
+          "opcoes": [
+            {
+              "id": "ate10",
+              "rotulo": "Até 10 metros",
+              "valor": 3,
+              "mod": 0
+            },
+            {
+              "id": "ate20",
+              "rotulo": "11 a 20 metros",
+              "valor": 4,
+              "mod": -1
+            },
+            {
+              "id": "ate100",
+              "rotulo": "21 a 100 metros",
+              "valor": 5,
+              "mod": -2
+            },
+            {
+              "id": "ate500",
+              "rotulo": "101 a 500 metros",
+              "valor": 6,
+              "mod": -3
+            },
+            {
+              "id": "ate3km",
+              "rotulo": "501 metros a 2,99 km",
+              "valor": 7,
+              "mod": -4
+            },
+            {
+              "id": "ate15km",
+              "rotulo": "3 a 14,99 km",
+              "valor": 8,
+              "mod": -5
+            },
+            {
+              "id": "ate150km",
+              "rotulo": "15 a 149,99 km",
+              "valor": 9,
+              "mod": -6
+            },
+            {
+              "id": "ate1500km",
+              "rotulo": "150 a 1.499,99 km",
+              "valor": 10,
+              "mod": -7
+            },
+            {
+              "id": "ate15mil",
+              "rotulo": "1.500 a 14.999 km",
+              "valor": 11,
+              "mod": -8
+            },
+            {
+              "id": "ate150mil",
+              "rotulo": "15.000 a 149.999 km",
+              "valor": 12,
+              "mod": -9
+            },
+            {
+              "id": "ate1500mil",
+              "rotulo": "150.000 a 1.499.999 km",
+              "valor": 13,
+              "mod": -10
+            }
+          ]
+        },
+        {
+          "id": "peso",
+          "tipo": "escolha",
+          "rotulo": "Peso do objetivo",
+          "padrao": "p25",
+          "opcoes": [
+            {
+              "id": "p5",
+              "rotulo": "Menos de 5 kg (×1/2)",
+              "valor": 0.5
+            },
+            {
+              "id": "p25",
+              "rotulo": "5 a 24 kg (×1)",
+              "valor": 1
+            },
+            {
+              "id": "p50",
+              "rotulo": "25 a 49 kg (×2)",
+              "valor": 2
+            },
+            {
+              "id": "p100",
+              "rotulo": "50 a 99 kg (×3)",
+              "valor": 3
+            },
+            {
+              "id": "p150",
+              "rotulo": "100 a 149 kg (×4)",
+              "valor": 4
+            },
+            {
+              "id": "p200",
+              "rotulo": "150 a 199 kg (×5)",
+              "valor": 5
+            },
+            {
+              "id": "p250",
+              "rotulo": "200 a 249 kg (×6)",
+              "valor": 6
+            },
+            {
+              "id": "p300",
+              "rotulo": "250 a 299 kg (×7)",
+              "valor": 7
+            },
+            {
+              "id": "p350",
+              "rotulo": "300 a 349 kg (×8)",
+              "valor": 8
+            },
+            {
+              "id": "p400",
+              "rotulo": "350 a 399 kg (×9)",
+              "valor": 9
+            },
+            {
+              "id": "p450",
+              "rotulo": "400 a 449 kg (×10)",
+              "valor": 10
+            },
+            {
+              "id": "p500",
+              "rotulo": "450 a 499 kg (×11)",
+              "valor": 11
+            }
+          ]
+        },
+        {
+          "id": "mente",
+          "tipo": "marca",
+          "rotulo": "Lugar \"visto\" só pela mente ou pela memória de outro, ou pela televisão (−2)"
+        },
+        {
+          "id": "mes",
+          "tipo": "marca",
+          "rotulo": "Lugar que você não vê há mais de um mês (−2)"
+        },
+        {
+          "id": "breve",
+          "tipo": "escolha",
+          "rotulo": "Lugar visto só brevemente",
+          "padrao": "nao",
+          "opcoes": [
+            {
+              "id": "nao",
+              "rotulo": "Não",
+              "valor": 0,
+              "mod": 0
+            },
+            {
+              "id": "b1",
+              "rotulo": "−1",
+              "valor": 0,
+              "mod": -1
+            },
+            {
+              "id": "b2",
+              "rotulo": "−2",
+              "valor": 0,
+              "mod": -2
+            },
+            {
+              "id": "b3",
+              "rotulo": "−3",
+              "valor": 0,
+              "mod": -3
+            }
+          ]
+        }
+      ],
+      "operar": [
+        "cima",
+        [
+          "*",
+          "$distancia",
+          "$peso"
+        ]
+      ],
+      "modificador": [
+        "+",
+        "$distancia_mod",
+        [
+          "-",
+          0,
+          [
+            "*",
+            2,
+            "$mente"
+          ]
+        ],
+        [
+          "-",
+          0,
+          [
+            "*",
+            2,
+            "$mes"
+          ]
+        ],
+        "$breve_mod"
+      ],
+      "modificadorRotulo": "Salto (Teleportar Outro)",
+      "modificadorPagina": 147
     }
   },
   {
@@ -39550,13 +40174,159 @@
     "tempoOperacaoSeg": 1,
     "tempoTipo": "fixo",
     "custoTipo": "varia",
-    "custoFormula": "Varia",
+    "custoFormula": "3.000. Um item que só levará o usuário a um local predeterminado custa 2.000 para ser criado; o operador deve estar muito familiarizado com esse lugar. Distância Custo Penalidade no NH Até 10 metros 3 0 11–20 metros 4 -1 21–100 metros 5 -2 101–500 metros 6 -3 501 metros a 2,99 km 7 -4 3–14,99 km 8 -5 15–149,99 km 9 -6 150–1.499,99 km 10 -7 cada ×10 seguintes +1 -1 Teleportar Outro (MD) Comum; Resistível com Vontade+1 O mesmo que Teleporte, exceto que o operador não se move, e o objetivo pode ser qualquer coisa ou alguém. Uma parte de um objeto não pode ser teleportada; nem um objeto sólido pode ser teleportado para outro objeto sólido. Separar dois objetos conectados carrega uma penalidade definida pelo Mestre; tirar a rolha de um pote pode ser de -1, enquanto teleportar uma porta trancada de seu batente pode ser de -5. Joias ou roupas sendo usadas, ou um objeto segurado firmemente por outra pessoa, terá uma penalidade de -5 para teleportar para longe, e o portador pode tentar um teste de resistência. Esta também é uma mágica de Portal. Custo: Custos e penalidades de NH são como Teleporte, com os seguintes multiplicadores: Peso Multiplicador menos de 5 kg ×1/2 5 a 24 kg ×1 25–49 kg ×2 50–99 kg ×3 Um múltiplo adicional para cada 50 kg em diante As consequências de uma jogada perdida são semelhantes, mas objetos inanimados são menos propensos a sofrer danos físicos. Se um objetivo sapiente resiste ao teste, o operador não sofre nenhum outro efeito que não seja o gasto de energia.",
     "conferido": "livro",
     "conferidoPagina": 147,
     "conferidoPor": {
       "duracao": "tabela",
       "tempoOperacao": "tabela",
       "custo": "tabela"
+    },
+    "custoPorCondicao": {
+      "entradas": [
+        {
+          "id": "distancia",
+          "tipo": "escolha",
+          "rotulo": "Distância do salto",
+          "padrao": "ate10",
+          "opcoes": [
+            {
+              "id": "ate10",
+              "rotulo": "Até 10 metros",
+              "valor": 3,
+              "mod": 0
+            },
+            {
+              "id": "ate20",
+              "rotulo": "11 a 20 metros",
+              "valor": 4,
+              "mod": -1
+            },
+            {
+              "id": "ate100",
+              "rotulo": "21 a 100 metros",
+              "valor": 5,
+              "mod": -2
+            },
+            {
+              "id": "ate500",
+              "rotulo": "101 a 500 metros",
+              "valor": 6,
+              "mod": -3
+            },
+            {
+              "id": "ate3km",
+              "rotulo": "501 metros a 2,99 km",
+              "valor": 7,
+              "mod": -4
+            },
+            {
+              "id": "ate15km",
+              "rotulo": "3 a 14,99 km",
+              "valor": 8,
+              "mod": -5
+            },
+            {
+              "id": "ate150km",
+              "rotulo": "15 a 149,99 km",
+              "valor": 9,
+              "mod": -6
+            },
+            {
+              "id": "ate1500km",
+              "rotulo": "150 a 1.499,99 km",
+              "valor": 10,
+              "mod": -7
+            },
+            {
+              "id": "ate15mil",
+              "rotulo": "1.500 a 14.999 km",
+              "valor": 11,
+              "mod": -8
+            },
+            {
+              "id": "ate150mil",
+              "rotulo": "15.000 a 149.999 km",
+              "valor": 12,
+              "mod": -9
+            },
+            {
+              "id": "ate1500mil",
+              "rotulo": "150.000 a 1.499.999 km",
+              "valor": 13,
+              "mod": -10
+            }
+          ]
+        },
+        {
+          "id": "mente",
+          "tipo": "marca",
+          "rotulo": "Lugar \"visto\" só pela mente ou pela memória de outro, ou pela televisão (−2)"
+        },
+        {
+          "id": "mes",
+          "tipo": "marca",
+          "rotulo": "Lugar que você não vê há mais de um mês (−2)"
+        },
+        {
+          "id": "breve",
+          "tipo": "escolha",
+          "rotulo": "Lugar visto só brevemente",
+          "padrao": "nao",
+          "opcoes": [
+            {
+              "id": "nao",
+              "rotulo": "Não",
+              "valor": 0,
+              "mod": 0
+            },
+            {
+              "id": "b1",
+              "rotulo": "−1",
+              "valor": 0,
+              "mod": -1
+            },
+            {
+              "id": "b2",
+              "rotulo": "−2",
+              "valor": 0,
+              "mod": -2
+            },
+            {
+              "id": "b3",
+              "rotulo": "−3",
+              "valor": 0,
+              "mod": -3
+            }
+          ]
+        }
+      ],
+      "operar": "$distancia",
+      "modificador": [
+        "+",
+        "$distancia_mod",
+        [
+          "-",
+          0,
+          [
+            "*",
+            2,
+            "$mente"
+          ]
+        ],
+        [
+          "-",
+          0,
+          [
+            "*",
+            2,
+            "$mes"
+          ]
+        ],
+        "$breve_mod"
+      ],
+      "modificadorRotulo": "Salto (Teleporte)",
+      "modificadorPagina": 147
     }
   },
   {
@@ -41266,7 +42036,14 @@
           "unidade": "s"
         }
       ],
-      "operar": "$segundos"
+      "operar": "$segundos",
+      "modificador": [
+        "-",
+        1,
+        "$segundos"
+      ],
+      "modificadorRotulo": "Lapso pretendido (Translocação no Tempo)",
+      "modificadorPagina": 81
     }
   },
   {
@@ -41354,7 +42131,14 @@
           "unidade": "s"
         }
       ],
-      "operar": "$segundos"
+      "operar": "$segundos",
+      "modificador": [
+        "-",
+        1,
+        "$segundos"
+      ],
+      "modificadorRotulo": "Deslocamento pretendido (Translocar Outro no Tempo)",
+      "modificadorPagina": 81
     }
   },
   {
@@ -41540,13 +42324,170 @@
     "tempoOperacaoSeg": 1,
     "tempoTipo": "fixo",
     "custoTipo": "varia",
-    "custoFormula": "Varia",
+    "custoFormula": "Como Viagem no Tempo; também usa os multiplicadores de peso de Teleportar Outro.",
     "conferido": "livro",
     "conferidoPagina": 81,
     "conferidoPor": {
       "duracao": "tabela",
       "tempoOperacao": "tabela",
       "custo": "tabela"
+    },
+    "custoPorCondicao": {
+      "entradas": [
+        {
+          "id": "tempo",
+          "tipo": "escolha",
+          "rotulo": "Intervalo de tempo",
+          "padrao": "ate1min",
+          "opcoes": [
+            {
+              "id": "ate1min",
+              "rotulo": "Dentro de 1 minuto",
+              "valor": 4,
+              "mod": 0
+            },
+            {
+              "id": "ate10min",
+              "rotulo": "1 a 10 minutos",
+              "valor": 6,
+              "mod": -1
+            },
+            {
+              "id": "ate1h",
+              "rotulo": "10 minutos a 1 hora",
+              "valor": 8,
+              "mod": -2
+            },
+            {
+              "id": "ate10h",
+              "rotulo": "1 a 10 horas",
+              "valor": 10,
+              "mod": -3
+            },
+            {
+              "id": "ate4d",
+              "rotulo": "10 horas a 4 dias",
+              "valor": 12,
+              "mod": -4
+            },
+            {
+              "id": "ate40d",
+              "rotulo": "4 a 40 dias",
+              "valor": 14,
+              "mod": -5
+            },
+            {
+              "id": "ate1a",
+              "rotulo": "40 dias a 1 ano",
+              "valor": 16,
+              "mod": -6
+            },
+            {
+              "id": "ate10a",
+              "rotulo": "1 a 10 anos",
+              "valor": 18,
+              "mod": -7
+            },
+            {
+              "id": "ate100a",
+              "rotulo": "10 a 100 anos",
+              "valor": 20,
+              "mod": -8
+            },
+            {
+              "id": "ate1000a",
+              "rotulo": "100 a 1.000 anos",
+              "valor": 22,
+              "mod": -9
+            },
+            {
+              "id": "ate10000a",
+              "rotulo": "1.000 a 10.000 anos",
+              "valor": 24,
+              "mod": -10
+            }
+          ]
+        },
+        {
+          "id": "peso",
+          "tipo": "escolha",
+          "rotulo": "Peso do objetivo",
+          "padrao": "p25",
+          "opcoes": [
+            {
+              "id": "p5",
+              "rotulo": "Menos de 5 kg (×1/2)",
+              "valor": 0.5
+            },
+            {
+              "id": "p25",
+              "rotulo": "5 a 24 kg (×1)",
+              "valor": 1
+            },
+            {
+              "id": "p50",
+              "rotulo": "25 a 49 kg (×2)",
+              "valor": 2
+            },
+            {
+              "id": "p100",
+              "rotulo": "50 a 99 kg (×3)",
+              "valor": 3
+            },
+            {
+              "id": "p150",
+              "rotulo": "100 a 149 kg (×4)",
+              "valor": 4
+            },
+            {
+              "id": "p200",
+              "rotulo": "150 a 199 kg (×5)",
+              "valor": 5
+            },
+            {
+              "id": "p250",
+              "rotulo": "200 a 249 kg (×6)",
+              "valor": 6
+            },
+            {
+              "id": "p300",
+              "rotulo": "250 a 299 kg (×7)",
+              "valor": 7
+            },
+            {
+              "id": "p350",
+              "rotulo": "300 a 349 kg (×8)",
+              "valor": 8
+            },
+            {
+              "id": "p400",
+              "rotulo": "350 a 399 kg (×9)",
+              "valor": 9
+            },
+            {
+              "id": "p450",
+              "rotulo": "400 a 449 kg (×10)",
+              "valor": 10
+            },
+            {
+              "id": "p500",
+              "rotulo": "450 a 499 kg (×11)",
+              "valor": 11
+            }
+          ]
+        }
+      ],
+      "operar": [
+        "cima",
+        [
+          "*",
+          "$tempo",
+          "$peso"
+        ]
+      ],
+      "modificador": "$tempo_mod",
+      "modificadorRotulo": "Salto no tempo (Transportar Outro no Tempo)",
+      "modificadorPagina": 81
     }
   },
   {
@@ -42267,13 +43208,183 @@
     "tempoOperacaoSeg": 1,
     "tempoTipo": "fixo",
     "custoTipo": "varia",
-    "custoFormula": "Varia",
+    "custoFormula": "Veja tabela abaixo.",
     "conferido": "livro",
     "conferidoPagina": 81,
     "conferidoPor": {
       "duracao": "tabela",
       "tempoOperacao": "tabela",
       "custo": "tabela"
+    },
+    "custoPorCondicao": {
+      "entradas": [
+        {
+          "id": "tempo",
+          "tipo": "escolha",
+          "rotulo": "Intervalo de tempo",
+          "padrao": "ate1min",
+          "opcoes": [
+            {
+              "id": "ate1min",
+              "rotulo": "Dentro de 1 minuto",
+              "valor": 4,
+              "mod": 0
+            },
+            {
+              "id": "ate10min",
+              "rotulo": "1 a 10 minutos",
+              "valor": 6,
+              "mod": -1
+            },
+            {
+              "id": "ate1h",
+              "rotulo": "10 minutos a 1 hora",
+              "valor": 8,
+              "mod": -2
+            },
+            {
+              "id": "ate10h",
+              "rotulo": "1 a 10 horas",
+              "valor": 10,
+              "mod": -3
+            },
+            {
+              "id": "ate4d",
+              "rotulo": "10 horas a 4 dias",
+              "valor": 12,
+              "mod": -4
+            },
+            {
+              "id": "ate40d",
+              "rotulo": "4 a 40 dias",
+              "valor": 14,
+              "mod": -5
+            },
+            {
+              "id": "ate1a",
+              "rotulo": "40 dias a 1 ano",
+              "valor": 16,
+              "mod": -6
+            },
+            {
+              "id": "ate10a",
+              "rotulo": "1 a 10 anos",
+              "valor": 18,
+              "mod": -7
+            },
+            {
+              "id": "ate100a",
+              "rotulo": "10 a 100 anos",
+              "valor": 20,
+              "mod": -8
+            },
+            {
+              "id": "ate1000a",
+              "rotulo": "100 a 1.000 anos",
+              "valor": 22,
+              "mod": -9
+            },
+            {
+              "id": "ate10000a",
+              "rotulo": "1.000 a 10.000 anos",
+              "valor": 24,
+              "mod": -10
+            }
+          ]
+        },
+        {
+          "id": "distancia",
+          "tipo": "escolha",
+          "rotulo": "E no espaço também?",
+          "padrao": "nenhuma",
+          "opcoes": [
+            {
+              "id": "nenhuma",
+              "rotulo": "Só no tempo",
+              "valor": 0,
+              "mod": 0
+            },
+            {
+              "id": "ate10",
+              "rotulo": "Até 10 metros",
+              "valor": 3,
+              "mod": 0
+            },
+            {
+              "id": "ate20",
+              "rotulo": "11 a 20 metros",
+              "valor": 4,
+              "mod": -1
+            },
+            {
+              "id": "ate100",
+              "rotulo": "21 a 100 metros",
+              "valor": 5,
+              "mod": -2
+            },
+            {
+              "id": "ate500",
+              "rotulo": "101 a 500 metros",
+              "valor": 6,
+              "mod": -3
+            },
+            {
+              "id": "ate3km",
+              "rotulo": "501 metros a 2,99 km",
+              "valor": 7,
+              "mod": -4
+            },
+            {
+              "id": "ate15km",
+              "rotulo": "3 a 14,99 km",
+              "valor": 8,
+              "mod": -5
+            },
+            {
+              "id": "ate150km",
+              "rotulo": "15 a 149,99 km",
+              "valor": 9,
+              "mod": -6
+            },
+            {
+              "id": "ate1500km",
+              "rotulo": "150 a 1.499,99 km",
+              "valor": 10,
+              "mod": -7
+            },
+            {
+              "id": "ate15mil",
+              "rotulo": "1.500 a 14.999 km",
+              "valor": 11,
+              "mod": -8
+            },
+            {
+              "id": "ate150mil",
+              "rotulo": "15.000 a 149.999 km",
+              "valor": 12,
+              "mod": -9
+            },
+            {
+              "id": "ate1500mil",
+              "rotulo": "150.000 a 1.499.999 km",
+              "valor": 13,
+              "mod": -10
+            }
+          ]
+        }
+      ],
+      "operar": [
+        "+",
+        "$tempo",
+        "$distancia"
+      ],
+      "modificador": [
+        "+",
+        "$tempo_mod",
+        "$distancia_mod"
+      ],
+      "modificadorRotulo": "Salto no tempo (Viagem no Tempo)",
+      "modificadorPagina": 81
     }
   },
   {

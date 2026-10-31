@@ -62,6 +62,8 @@ class CustoPorCondicaoTest {
                 if (k.get("manterTipo").isJsonNull) null else k.get("manterTipo").asString,
                 r.manterTipo
             )
+            // P-5c: o ajuste no NH que a condição traz (a distância do Teleporte...)
+            if (k.has("modificador")) assertEquals("$nome modificador", k.get("modificador").asInt, r.modificador)
         }
     }
 
@@ -133,6 +135,34 @@ class CustoPorCondicaoTest {
         assertEquals(0, op("roubar_energia"))
         assertTrue(spec("roubar_energia").semPergunta)
         assertTrue(!spec("luz_continua").semPergunta)
+    }
+
+    @Test
+    fun `P-5c - a familia do Teleporte da o custo E a penalidade de NH de cada salto (Magia pp 81, 82, 128 e 147)`() {
+        Assume.assumeNotNull(arquivo)
+        fun cm(id: String, vararg c: Pair<String, Any?>): Pair<Int, Int> = (calcular(id, *c) as CustoPorCondicaoRules.Resultado.Ok).let { it.operar to it.modificador }
+        // a tabela do Teleporte (p.147)
+        listOf("ate10" to (3 to 0), "ate20" to (4 to -1), "ate100" to (5 to -2), "ate500" to (6 to -3), "ate3km" to (7 to -4),
+            "ate15km" to (8 to -5), "ate150km" to (9 to -6), "ate1500km" to (10 to -7)).forEach { (d, esperado) ->
+            assertEquals(d, esperado, cm("teleporte", "distancia" to d))
+        }
+        // o lugar que não se olha: −2 pela mente ou TV, −2 sem ver há um mês, −1 a −3 visto só brevemente; somam, e o custo é o da distância
+        assertEquals(5 to -9, cm("teleporte", "distancia" to "ate100", "mente" to true, "mes" to true, "breve" to "b3"))
+        // Teleportar Outro: o custo × o peso (×1/2, ×1, ×2, ×3...), para cima
+        assertEquals(2 to 0, cm("teleportar_outro", "peso" to "p5"))
+        assertEquals(15 to -2, cm("teleportar_outro", "distancia" to "ate100", "peso" to "p100"))
+        // Viagem no Tempo (p.81): a tabela e, no tempo e no espaço, a soma
+        assertEquals(8 to -2, cm("viagem_no_tempo", "tempo" to "ate1h"))
+        assertEquals(14 to -5, cm("viagem_no_tempo", "tempo" to "ate1h", "distancia" to "ate500"))
+        // Jornada Rápida: a viagem e um quarto dela por minuto (p.82)
+        val jornada = calcular("jornada_rapida", "distancia" to "ate100") as CustoPorCondicaoRules.Resultado.Ok
+        assertEquals(listOf(5, 2, -2), listOf(jornada.operar, jornada.manter, jornada.modificador))
+        // Desviar Teleporte (o exemplo do livro, p.84): 100 m contra 1 km custa o mínimo de 3, com −4 pelo destino imposto
+        assertEquals(3 to -4, cm("desviar_teleporte", "pretendido" to 5.0, "novo" to 7.0))
+        // Translocação no Tempo (p.81): −1 no NH por segundo além do primeiro
+        assertEquals(5 to -4, cm("translocacao_no_tempo", "segundos" to 5.0))
+        // quem não tem ajuste de NH fica com 0
+        assertEquals(0, (calcular("luz_continua") as CustoPorCondicaoRules.Resultado.Ok).modificador)
     }
 
     @Test

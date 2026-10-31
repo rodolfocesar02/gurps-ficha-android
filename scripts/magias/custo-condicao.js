@@ -117,13 +117,17 @@ function problemasDoSpec(id, spec, texto) {
     if (!e || typeof e.id !== 'string') { ruim('entrada sem id'); return; }
     if (ids.has(e.id)) ruim('entrada repetida: ' + e.id);
     ids.add(e.id);
+    if (e.tipo === 'escolha') ids.add(e.id + '_mod');   // P-5c: `$<id>_mod` é o ajuste de NH da opção escolhida
     if (TIPOS_DA_ENTRADA.indexOf(e.tipo) < 0) ruim(e.id + ': tipo "' + e.tipo + '" desconhecido');
     if (!e.rotulo) ruim(e.id + ': sem rótulo');
     if (e.tipo === 'escolha') {
       const ops = Array.isArray(e.opcoes) ? e.opcoes : [];
       if (ops.length < 2) ruim(e.id + ': escolha com menos de 2 opções');
       if (!ops.some((o) => o.id === e.padrao)) ruim(e.id + ': o padrão "' + e.padrao + '" não é uma das opções');
-      ops.forEach((o) => { if (typeof o.valor !== 'number' || !o.rotulo || !o.id) ruim(e.id + ': opção incompleta'); });
+      ops.forEach((o) => {
+        if (typeof o.valor !== 'number' || !o.rotulo || !o.id) ruim(e.id + ': opção incompleta');
+        if (o.mod !== undefined && typeof o.mod !== 'number') ruim(e.id + ': o `mod` da opção ' + o.id + ' não é número');
+      });
     } else if (e.tipo === 'numero' || e.tipo === 'inteiro') {
       if (typeof e.padrao !== 'number') ruim(e.id + ': sem padrão numérico');
       if (typeof e.min === 'number' && typeof e.padrao === 'number' && e.padrao < e.min) ruim(e.id + ': padrão abaixo do mínimo');
@@ -133,6 +137,10 @@ function problemasDoSpec(id, spec, texto) {
   });
   if (spec.operar === undefined) ruim('sem conta (operar)');
   const contas = [['operar', spec.operar]];
+  if (spec.modificador !== undefined) contas.push(['modificador', spec.modificador]);
+  if (spec.modificadorRotulo !== undefined && typeof spec.modificadorRotulo !== 'string') ruim('modificadorRotulo não é texto');
+  if (spec.modificadorPagina !== undefined && !Number.isInteger(spec.modificadorPagina)) ruim('modificadorPagina não é inteiro');
+  if (spec.modificador !== undefined && !spec.modificadorRotulo) ruim('o modificador precisa do nome da parcela (modificadorRotulo)');
   if (spec.manter !== undefined && ['igual', 'metade', 'nenhum'].indexOf(spec.manter) < 0) contas.push(['manter', spec.manter]);
   contas.forEach(([nome, expr]) => {
     operadoresDaConta(expr).forEach((o) => { if (OPERADORES.indexOf(o) < 0) ruim(nome + ': operador "' + o + '" fora do vocabulário'); });

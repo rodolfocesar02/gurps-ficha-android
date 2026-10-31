@@ -40,7 +40,9 @@ import com.gurps.ficha.domain.magic.CustoPorCondicaoRules
 fun CustoPorCondicaoCampos(
     spec: CustoPorCondicao,
     isPraCegoVariant: Boolean,
-    onCusto: (Int?) -> Unit
+    onCusto: (Int?) -> Unit,
+    /** P-5c: o ajuste no NH que a condição traz (a distância do Teleporte: −3...); 0 onde a magia não tem. */
+    onModificador: (Int) -> Unit = {}
 ) {
     // `Any?` porque a entrada é número digitado (texto), id de opção (texto) ou marca (0/1).
     val condicoes = remember(spec) {
@@ -56,6 +58,7 @@ fun CustoPorCondicaoCampos(
     val resultado = CustoPorCondicaoRules.calcular(spec, condicoes.toMap())
     LaunchedEffect(resultado) {
         onCusto((resultado as? CustoPorCondicaoRules.Resultado.Ok)?.operar)
+        onModificador((resultado as? CustoPorCondicaoRules.Resultado.Ok)?.modificador ?: 0)
     }
 
     Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
@@ -109,7 +112,8 @@ fun CustoPorCondicaoCampos(
                     "Conta do custo" + (if (resumo.isNotBlank()) " ($resumo)" else "") + ": " +
                         "${resultado.operar} para operar" +
                         (resultado.manter?.takeIf { resultado.manterTipo != "nenhum" }?.let { ", $it para manter" } ?: "") +
-                        (if (resultado.manterTipo == "nenhum") "; esta magia não se mantém" else "") + ".",
+                        (if (resultado.manterTipo == "nenhum") "; esta magia não se mantém" else "") + "." +
+                        (if (resultado.modificador != 0) " NH ${resultado.modificador} (${spec.modificadorRotulo ?: "a condição"}${spec.modificadorPagina?.let { " — Magia p.$it" }.orEmpty()}), já somado à rolagem." else ""),
                     style = MaterialTheme.typography.bodySmall,
                     modifier = Modifier.semantics {
                         contentDescription = "Conta do custo: ${resultado.operar} de energia para operar."

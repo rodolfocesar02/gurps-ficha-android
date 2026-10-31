@@ -29,7 +29,9 @@ import kotlin.math.floor
 data class CondicaoOpcao(
     val id: String = "",
     val rotulo: String = "",
-    val valor: Double = 0.0
+    val valor: Double = 0.0,
+    /** P-5c: o ajuste no NH que esta opção traz (a distância do Teleporte: custo 5 E penalidade −2). Na conta, `$<id>_mod`. */
+    val mod: Double? = null
 )
 
 /** P-5b: a magia que o LIVRO isenta do desconto do NH elevado no custo (`pagina`: onde o livro diz). Vem do catálogo (`semDescontoDeNh`). */
@@ -60,7 +62,12 @@ data class CustoPorCondicao(
     val entradas: List<CondicaoEntrada> = emptyList(),
     val operar: JsonElement? = null,
     val manter: JsonElement? = null,
-    val tamanho: Boolean = false
+    val tamanho: Boolean = false,
+    /** P-5c: o MODIFICADOR no NH da magia (negativo = penalidade), expressão com os mesmos `$id`; o Teleporte e o Viagem no Tempo têm. */
+    val modificador: JsonElement? = null,
+    /** O nome e a página do livro da parcela que o modificador vira no cartão ("Distância do salto", 147). */
+    val modificadorRotulo: String? = null,
+    val modificadorPagina: Int? = null
 ) {
     /** A conta é própria (o tamanho do alvo não multiplica)? É o `temCondicao` de [com.gurps.ficha.domain.rules.MagiaEnergiaRules]. */
     val contaPropria: Boolean get() = !tamanho
@@ -81,7 +88,9 @@ object CustoPorCondicaoRules {
             val operar: Int,
             val manter: Int?,
             val manterTipo: String?,
-            val valores: Map<String, Double>
+            val valores: Map<String, Double>,
+            /** P-5c: o ajuste no NH que a condição traz (0 se a magia não tem). */
+            val modificador: Int = 0
         ) : Resultado()
 
         /** [erro]: `condicao_invalida` (com [campo], [rotulo] e [motivo]), `conta_invalida`, `custo_fora_da_faixa`. */
@@ -126,6 +135,7 @@ object CustoPorCondicaoRules {
                 "escolha" -> {
                     val op = e.opcoes.orEmpty().firstOrNull { it.id == cru } ?: return null to falha("opção desconhecida")
                     valores[e.id] = op.valor
+                    valores[e.id + "_mod"] = op.mod ?: 0.0
                 }
                 "marca" -> {
                     val v = when (cru) {
@@ -192,6 +202,7 @@ object CustoPorCondicaoRules {
         val operar: Double
         var manter: Double? = null
         var manterTipo: String? = null
+        var modificador = 0
         try {
             operar = paraCima(avaliar(spec.operar, valores))
             val m = spec.manter
@@ -205,6 +216,7 @@ object CustoPorCondicaoRules {
                     manterTipo = "conta"
                 }
             }
+            spec.modificador?.takeIf { !it.isJsonNull }?.let { modificador = Math.round(avaliar(it, valores)).toInt() }
         } catch (e: IllegalArgumentException) {
             return Resultado.Erro("conta_invalida", motivo = e.message ?: "conta inválida")
         }
@@ -214,7 +226,7 @@ object CustoPorCondicaoRules {
         if (operar > TETO_DA_CONTA || (manter != null && manter > TETO_DA_CONTA)) {
             return Resultado.Erro("custo_fora_da_faixa", motivo = "a conta deu ${operar.toInt()}, acima de $TETO_DA_CONTA PF")
         }
-        return Resultado.Ok(operar.toInt(), manter?.toInt(), manterTipo, valores)
+        return Resultado.Ok(operar.toInt(), manter?.toInt(), manterTipo, valores, modificador)
     }
 
     /** "1,5 kg": o número do jeito brasileiro, com a unidade. */

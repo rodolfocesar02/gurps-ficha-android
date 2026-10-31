@@ -28,7 +28,7 @@ fun RolagemEnergiaManualDialog(
     isPraCegoVariant: Boolean,
     onInputMudou: (String) -> Unit,
     onTalismaVinculadoMudou: (String?) -> Unit,
-    onAplicar: (Int) -> Unit,
+    onAplicar: (Int, Int) -> Unit,
     onDismiss: () -> Unit
 ) {
     val exigeVinculoTalisma = magiaEnergia.definicaoId.equals("talisma", ignoreCase = true)
@@ -36,6 +36,8 @@ fun RolagemEnergiaManualDialog(
     // MG-4: o que só o jogador sabe e muda a conta -- o tamanho do alvo (Comum) e operar como Bloqueio ("Comum ou Bloqueio").
     var mtAlvo by remember { mutableStateOf(0) }
     var comoBloqueio by remember { mutableStateOf(false) }
+    // P-5c: o ajuste no NH que a conta do custo traz (a distância do Teleporte...): vai para a rolagem junto com o custo
+    var modificadorDaConta by remember { mutableStateOf(0) }
     fun contaDe(custoBase: Int) = MagiaEnergiaRules.contaDoCusto(
         base = custoBase, nh = magiaEnergia.target, classe = magiaEnergia.classe, definicaoId = magiaEnergia.definicaoId,
         temCondicao = magiaEnergia.custoPorCondicao?.contaPropria == true, comoBloqueio = comoBloqueio, mt = mtAlvo,
@@ -77,7 +79,8 @@ fun RolagemEnergiaManualDialog(
                     CustoPorCondicaoCampos(
                         spec = spec,
                         isPraCegoVariant = isPraCegoVariant,
-                        onCusto = { custo -> onInputMudou(custo?.toString().orEmpty()) }
+                        onCusto = { custo -> onInputMudou(custo?.toString().orEmpty()) },
+                        onModificador = { modificadorDaConta = it }
                     )
                 }
                 CustoPorTamanhoEBloqueio(
@@ -190,7 +193,7 @@ fun RolagemEnergiaManualDialog(
                     // no dia em que ele passou a fazer.
                     val custoBase = energiaManualInput.toIntOrNull()
                     if (custoBase != null) {
-                        onAplicar(contaDe(custoBase).ajustado)
+                        onAplicar(contaDe(custoBase).ajustado, modificadorDaConta)
                     } else {
                         onDismiss()
                     }

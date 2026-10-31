@@ -27,7 +27,8 @@ const E = {
   kg: (padrao = 1, max = 100000, rotulo = 'Peso') => ({ id: 'peso', tipo: 'numero', rotulo, unidade: 'kg', min: 0, max, passo: 0.5, padrao }),
   int: (id, rotulo, min, max, padrao, unidade) => Object.assign({ id, tipo: 'inteiro', rotulo, min, max, padrao }, unidade ? { unidade } : {}),
   marca: (id, rotulo) => ({ id, tipo: 'marca', rotulo }),
-  esc: (id, rotulo, padrao, opcoes) => ({ id, tipo: 'escolha', rotulo, padrao, opcoes: opcoes.map(([i, r, v]) => ({ id: i, rotulo: r, valor: v })) }),
+  /** `opcoes`: `[id, rótulo, valor, mod?]`; `mod` (P-5c) é o ajuste no NH da opção (a tabela do Teleporte: custo E penalidade). */
+  esc: (id, rotulo, padrao, opcoes) => ({ id, tipo: 'escolha', rotulo, padrao, opcoes: opcoes.map(([i, r, v, m]) => (m === undefined ? { id: i, rotulo: r, valor: v } : { id: i, rotulo: r, valor: v, mod: m })) }),
 };
 // ------------------------------------------------------------------------------------------------ contas
 /** ⌈qtd ÷ tam⌉, pelo menos 1 (a unidade começada paga). */
@@ -38,8 +39,9 @@ const mais1 = (...marcas) => ['+', 1, ...marcas];
 const DEFS = [];
 /**
  * Uma magia: `tipo` 'fixo' (o custo-base do livro vale no caso-padrão), 'porUnidade', 'varia' ou 'inalterado' (a de Área).
- * `opcoes`: `tamanho: true` (a conta não é de tamanho: a Comum num alvo grande ainda multiplica por 1 + MT, Magia p.11) e
- * `fonte` (o texto contra o qual a guarda confere: `"descricao"` ou `"como:<id>"`).
+ * `opcoes`: `tamanho: true` (a conta não é de tamanho: a Comum num alvo grande ainda multiplica por 1 + MT, Magia p.11),
+ * `fonte` (o texto contra o qual a guarda confere: `"descricao"` ou `"como:<id>"`) e, P-5c, `modificador` (a expressão do ajuste no NH que
+ * a condição traz, com `modificadorRotulo` e `modificadorPagina`: a parcela que o cartão mostra). Cada caso é `[condições, operar, manter, modificador?]`.
  */
 function S(id, tipo, entradas, operar, manter, casos, opcoes) {
   DEFS.push(Object.assign({ id, tipo, entradas, operar, manter, casos: casos || [] }, opcoes || {}));
@@ -169,8 +171,11 @@ S('curar_radiacao', 'porUnidade', [E.num('rads', 'Radiação removida', 'rads', 
 S('extinguir_radiacao', 'porUnidade', [E.num('rads', 'Radiação por hora', 'rads/h', 10, 2000, 10)], un('$rads', 10), undefined, [[{ rads: 10 }, 1, null], [{ rads: 55 }, 6, null]]);
 S('irradiar', 'porUnidade', [E.num('rads', 'Radiação por hora', 'rads/h', 10, 2000, 10)], un('$rads', 10), 'metade', [[{ rads: 10 }, 1, 1], [{ rads: 55 }, 6, 3]]);
 S('mensagem', 'porUnidade', [E.int('segundos', 'Duração da mensagem', 1, 600, 15, 's')], un('$segundos', 15), undefined, [[{ segundos: 15 }, 1, null], [{ segundos: 40 }, 3, null]]);
-S('translocacao_no_tempo', 'porUnidade', [E.int('segundos', 'Lapso pretendido', 1, 99, 1, 's')], '$segundos', undefined, [[{ segundos: 1 }, 1, null], [{ segundos: 5 }, 5, null]]);
-S('translocar_outro_no_tempo', 'porUnidade', [E.int('segundos', 'Deslocamento pretendido', 1, 99, 1, 's')], '$segundos', undefined, [[{ segundos: 1 }, 1, null], [{ segundos: 5 }, 5, null]]);
+// P-5c: "o teste de NH sofre −1 por cada segundo de deslocamento pretendido além do primeiro" (Magia p.81)
+S('translocacao_no_tempo', 'porUnidade', [E.int('segundos', 'Lapso pretendido', 1, 99, 1, 's')], '$segundos', undefined, [[{ segundos: 1 }, 1, null, 0], [{ segundos: 5 }, 5, null, -4]],
+  { modificador: ['-', 1, '$segundos'], modificadorRotulo: 'Lapso pretendido (Translocação no Tempo)', modificadorPagina: 81 });
+S('translocar_outro_no_tempo', 'porUnidade', [E.int('segundos', 'Deslocamento pretendido', 1, 99, 1, 's')], '$segundos', undefined, [[{ segundos: 1 }, 1, null, 0], [{ segundos: 5 }, 5, null, -4]],
+  { modificador: ['-', 1, '$segundos'], modificadorRotulo: 'Deslocamento pretendido (Translocar Outro no Tempo)', modificadorPagina: 81 });
 S('puxar', 'porUnidade', [E.int('st', 'ST de "atração"', 1, 200, 2)], un('$st', 2), undefined, [[{ st: 2 }, 1, null], [{ st: 5 }, 3, null]]);
 S('repelir', 'porUnidade', [E.int('st', 'ST de "repulsão"', 1, 200, 2)], un('$st', 2), undefined, [[{ st: 2 }, 1, null], [{ st: 7 }, 4, null]]);
 S('reter', 'porUnidade', [E.int('metros', 'Projeção anulada', 1, 99, 1, 'm')], '$metros', undefined, [[{ metros: 4 }, 4, null]]);
@@ -362,9 +367,59 @@ VARIA('imunidade_a_pressao', [tabela('vantagem', 'Vantagem conferida', 'rp1', [[
   '$vantagem', 'metade', [[{}, 2, 1], [{ vantagem: 'rp2' }, 3, 2], [{ vantagem: 'rp3' }, 5, 3], [{ vantagem: 'vacuo' }, 3, 2]], { tamanho: true, fonte: 'descricao' });
 // Desviar Teleporte: "a diferença de custo entre o destino pretendido e o novo destino; o custo mínimo é 3" (9 contra 3 = 6, nos dois sentidos)
 VARIA('desviar_teleporte', [E.int('pretendido', 'Custo do Teleporte pretendido (destino original)', 3, 30, 3), E.int('novo', 'Custo do Teleporte para o novo destino', 3, 30, 3)],
-  ['max', 3, ['max', ['-', '$pretendido', '$novo'], ['-', '$novo', '$pretendido']]], undefined, [[{}, 3, null], [{ pretendido: 9, novo: 3 }, 6, null], [{ pretendido: 3, novo: 9 }, 6, null], [{ pretendido: 5, novo: 6 }, 3, null]]);
+  ['max', 3, ['max', ['-', '$pretendido', '$novo'], ['-', '$novo', '$pretendido']]], undefined,
+  [[{}, 3, null, 0], [{ pretendido: 9, novo: 3 }, 6, null, 0], [{ pretendido: 3, novo: 9 }, 6, null, -6], [{ pretendido: 5, novo: 6 }, 3, null, -3], [{ pretendido: 5, novo: 7 }, 3, null, -4]],
+  { modificador: ['-', 3, '$novo'], modificadorRotulo: 'Destino imposto (Desviar Teleporte)', modificadorPagina: 84 });
 // Os que o livro diz que não custam nada ao operador
 ['roubar_energia', 'roubar_vitalidade', 'recuperar_energia'].forEach((id) => VARIA(id, [], 0, undefined, [[{}, 0, null]]));
+
+// ---- P-5c: a família do Teleporte — o custo E a penalidade de NH de cada salto (Magia pp.81, 82, 128, 147)
+// A tabela do livro dá, para cada distância (ou intervalo de tempo), o custo e a penalidade; `[id, rótulo, custo, mod]`.
+// "Cada ×10 seguintes: +1 de custo e −1 de NH" (no tempo, +2 e −1): as três últimas linhas de cada tabela seguem essa regra.
+const DISTANCIAS = [['ate10', 'Até 10 metros', 3, 0], ['ate20', '11 a 20 metros', 4, -1], ['ate100', '21 a 100 metros', 5, -2], ['ate500', '101 a 500 metros', 6, -3],
+  ['ate3km', '501 metros a 2,99 km', 7, -4], ['ate15km', '3 a 14,99 km', 8, -5], ['ate150km', '15 a 149,99 km', 9, -6], ['ate1500km', '150 a 1.499,99 km', 10, -7],
+  ['ate15mil', '1.500 a 14.999 km', 11, -8], ['ate150mil', '15.000 a 149.999 km', 12, -9], ['ate1500mil', '150.000 a 1.499.999 km', 13, -10]];
+const TEMPOS = [['ate1min', 'Dentro de 1 minuto', 4, 0], ['ate10min', '1 a 10 minutos', 6, -1], ['ate1h', '10 minutos a 1 hora', 8, -2], ['ate10h', '1 a 10 horas', 10, -3],
+  ['ate4d', '10 horas a 4 dias', 12, -4], ['ate40d', '4 a 40 dias', 14, -5], ['ate1a', '40 dias a 1 ano', 16, -6], ['ate10a', '1 a 10 anos', 18, -7],
+  ['ate100a', '10 a 100 anos', 20, -8], ['ate1000a', '100 a 1.000 anos', 22, -9], ['ate10000a', '1.000 a 10.000 anos', 24, -10]];
+// Teleportar Outro e Transportar Outro no Tempo: o custo é multiplicado pelo peso (×1/2, ×1, ×2, ×3 e "um múltiplo adicional para cada 50 kg em diante")
+const PESOS = [['p5', 'Menos de 5 kg (×1/2)', 0.5], ['p25', '5 a 24 kg (×1)', 1], ['p50', '25 a 49 kg (×2)', 2], ['p100', '50 a 99 kg (×3)', 3], ['p150', '100 a 149 kg (×4)', 4],
+  ['p200', '150 a 199 kg (×5)', 5], ['p250', '200 a 249 kg (×6)', 6], ['p300', '250 a 299 kg (×7)', 7], ['p350', '300 a 349 kg (×8)', 8], ['p400', '350 a 399 kg (×9)', 9],
+  ['p450', '400 a 449 kg (×10)', 10], ['p500', '450 a 499 kg (×11)', 11]];
+/** O destino do salto (Teleporte, p.147): só se salta para onde se olha ou se conhece; senão, penalidades. */
+const destino = () => [E.marca('mente', 'Lugar "visto" só pela mente ou pela memória de outro, ou pela televisão (−2)'),
+  E.marca('mes', 'Lugar que você não vê há mais de um mês (−2)'),
+  E.esc('breve', 'Lugar visto só brevemente', 'nao', [['nao', 'Não', 0, 0], ['b1', '−1', 0, -1], ['b2', '−2', 0, -2], ['b3', '−3', 0, -3]])];
+const modDoSalto = ['+', '$distancia_mod', ['-', 0, ['*', 2, '$mente']], ['-', 0, ['*', 2, '$mes']], '$breve_mod'];
+const opcionais = (lista, id, rotulo) => [[id, rotulo, 0, 0]].concat(lista);
+
+VARIA('teleporte', [E.esc('distancia', 'Distância do salto', 'ate10', DISTANCIAS)].concat(destino()), '$distancia', undefined,
+  [[{}, 3, null, 0], [{ distancia: 'ate20' }, 4, null, -1], [{ distancia: 'ate100' }, 5, null, -2], [{ distancia: 'ate500' }, 6, null, -3], [{ distancia: 'ate3km' }, 7, null, -4],
+    [{ distancia: 'ate15km' }, 8, null, -5], [{ distancia: 'ate150km' }, 9, null, -6], [{ distancia: 'ate1500km' }, 10, null, -7], [{ distancia: 'ate15mil' }, 11, null, -8],
+    [{ distancia: 'ate100', mente: true, mes: true, breve: 'b2' }, 5, null, -8], [{ mes: true, breve: 'b3' }, 3, null, -5]],
+  { modificador: modDoSalto, modificadorRotulo: 'Salto (Teleporte)', modificadorPagina: 147 });
+VARIA('teleportar_outro', [E.esc('distancia', 'Distância do salto', 'ate10', DISTANCIAS), E.esc('peso', 'Peso do objetivo', 'p25', PESOS)].concat(destino()),
+  ['cima', ['*', '$distancia', '$peso']], undefined,
+  [[{}, 3, null, 0], [{ peso: 'p5' }, 2, null, 0], [{ distancia: 'ate100', peso: 'p100' }, 15, null, -2], [{ distancia: 'ate3km', peso: 'p150' }, 28, null, -4], [{ distancia: 'ate20', peso: 'p50', mente: true }, 8, null, -3]],
+  { modificador: modDoSalto, modificadorRotulo: 'Salto (Teleportar Outro)', modificadorPagina: 147 });
+VARIA('telemagica', [E.esc('distancia', 'Distância do Olho Mágico', 'ate10', DISTANCIAS)].concat(destino()), '$distancia', 'igual',
+  [[{}, 3, 3, 0], [{ distancia: 'ate500' }, 6, 6, -3], [{ distancia: 'ate15km', mes: true }, 8, 8, -7]],
+  { modificador: modDoSalto, modificadorRotulo: 'Salto (Telemágica)', modificadorPagina: 128 });
+VARIA('viagem_no_tempo', [E.esc('tempo', 'Intervalo de tempo', 'ate1min', TEMPOS), E.esc('distancia', 'E no espaço também?', 'nenhuma', opcionais(DISTANCIAS, 'nenhuma', 'Só no tempo'))],
+  ['+', '$tempo', '$distancia'], undefined,
+  [[{}, 4, null, 0], [{ tempo: 'ate10min' }, 6, null, -1], [{ tempo: 'ate1h' }, 8, null, -2], [{ tempo: 'ate10h' }, 10, null, -3], [{ tempo: 'ate4d' }, 12, null, -4], [{ tempo: 'ate40d' }, 14, null, -5],
+    [{ tempo: 'ate1a' }, 16, null, -6], [{ tempo: 'ate10a' }, 18, null, -7], [{ tempo: 'ate100a' }, 20, null, -8], [{ tempo: 'ate1000a' }, 22, null, -9], [{ tempo: 'ate1h', distancia: 'ate500' }, 14, null, -5]],
+  { modificador: ['+', '$tempo_mod', '$distancia_mod'], modificadorRotulo: 'Salto no tempo (Viagem no Tempo)', modificadorPagina: 81 });
+VARIA('transportar_outro_no_tempo', [E.esc('tempo', 'Intervalo de tempo', 'ate1min', TEMPOS), E.esc('peso', 'Peso do objetivo', 'p25', PESOS)],
+  ['cima', ['*', '$tempo', '$peso']], undefined,
+  [[{}, 4, null, 0], [{ peso: 'p5' }, 2, null, 0], [{ tempo: 'ate1h', peso: 'p100' }, 24, null, -2], [{ tempo: 'ate10h', peso: 'p150' }, 40, null, -3]],
+  { modificador: '$tempo_mod', modificadorRotulo: 'Salto no tempo (Transportar Outro no Tempo)', modificadorPagina: 81 });
+// Jornada Rápida: "como Teleporte ou Viagem no Tempo, mais um quarto do custo da viagem, por minuto" (a viagem de volta é a manutenção: p.82)
+VARIA('jornada_rapida', [E.esc('distancia', 'Distância do salto', 'ate10', opcionais(DISTANCIAS, 'nenhuma', 'Sem salto no espaço')),
+  E.esc('tempo', 'Intervalo de tempo', 'nenhum', opcionais(TEMPOS, 'nenhum', 'Sem salto no tempo'))].concat(destino().map((x) => x)),
+  ['max', 3, ['+', '$distancia', '$tempo']], ['cima', ['/', '$operar', 4]],
+  [[{}, 3, 1, 0], [{ distancia: 'ate100' }, 5, 2, -2], [{ distancia: 'nenhuma', tempo: 'ate1h' }, 8, 2, -2], [{ distancia: 'ate500', tempo: 'ate1h' }, 14, 4, -5]],
+  { modificador: ['+', '$distancia_mod', '$tempo_mod', ['-', 0, ['*', 2, '$mente']], ['-', 0, ['*', 2, '$mes']], '$breve_mod'], modificadorRotulo: 'Salto (Jornada Rápida)', modificadorPagina: 82 });
 
 // ================================================================================================ 4. ÁREA (Magia p.11)
 // "O custo real para operá-la é igual ao custo básico multiplicado pelo raio da área de efeito em metros (mínimo de
@@ -628,9 +683,10 @@ function paraJson() {
     if (d.manter !== undefined) s.manter = d.manter;
     if (d.tamanho) s.tamanho = true;
     if (d.fonte) s.fonte = d.fonte;
+    if (d.modificador !== undefined) { s.modificador = d.modificador; s.modificadorRotulo = d.modificadorRotulo; s.modificadorPagina = d.modificadorPagina; }
     specs[d.id] = s;
     const tipoManter = d.manter === undefined ? null : (typeof d.manter === 'string' ? d.manter : 'conta');
-    d.casos.forEach(([condicoes, operar, manter]) => casos.push({ id: d.id, condicoes, operar, manter, manterTipo: manter === null ? null : tipoManter }));
+    d.casos.forEach(([condicoes, operar, manter, modificador]) => casos.push(Object.assign({ id: d.id, condicoes, operar, manter, manterTipo: manter === null ? null : tipoManter }, modificador === undefined ? {} : { modificador })));
   });
   const leia = ['Gerado por scripts/magias/gerar-custo-por-condicao.js: NÃO edite à mão (edite o gerador e rode de novo).'];
   return {

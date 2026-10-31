@@ -73,6 +73,8 @@ function aplicar(catalogo, specs, textos) {
     if (spec.manter !== undefined) cond.manter = spec.manter;
     // `tamanho: true`: a conta não é de tamanho (RD dada, grau da bênção...): a Comum num alvo grande ainda multiplica (Magia p.11)
     if (spec.tamanho === true) cond.tamanho = true;
+    // P-5c: o ajuste no NH que a condição traz (a distância do Teleporte...) e a parcela que o cartão mostra
+    if (spec.modificador !== undefined) { cond.modificador = spec.modificador; cond.modificadorRotulo = spec.modificadorRotulo; cond.modificadorPagina = spec.modificadorPagina; }
     c.custoPorCondicao = cond;
     return c;
   });
