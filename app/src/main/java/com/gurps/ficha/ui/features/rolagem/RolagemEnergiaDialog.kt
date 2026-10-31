@@ -38,7 +38,8 @@ fun RolagemEnergiaManualDialog(
     var comoBloqueio by remember { mutableStateOf(false) }
     fun contaDe(custoBase: Int) = MagiaEnergiaRules.contaDoCusto(
         base = custoBase, nh = magiaEnergia.target, classe = magiaEnergia.classe, definicaoId = magiaEnergia.definicaoId,
-        temCondicao = magiaEnergia.custoPorCondicao?.contaPropria == true, comoBloqueio = comoBloqueio, mt = mtAlvo
+        temCondicao = magiaEnergia.custoPorCondicao?.contaPropria == true, comoBloqueio = comoBloqueio, mt = mtAlvo,
+        semNhPagina = magiaEnergia.semDescontoDeNh?.pagina
     )
 
     AlertDialog(
@@ -152,14 +153,14 @@ fun RolagemEnergiaManualDialog(
                     val semNh = conta.semDescontoDeNh && MagiaEnergiaRules.reducaoPorNh(magiaEnergia.target) > 0
                     Text(
                         doTamanho + if (semNh) {
-                            "Bloqueio: o NH ${magiaEnergia.target} não reduz o custo (Magia p.8) | custo final: $custoFinal"
+                            (if (conta.paginaSemNh != null) "O NH ${magiaEnergia.target} não reduz o custo desta magia (Magia p.${conta.paginaSemNh})" else "Bloqueio: o NH ${magiaEnergia.target} não reduz o custo (Magia p.8)") + " | custo final: $custoFinal"
                         } else {
                             "Redução por NH ${magiaEnergia.target}: -$reducao | custo final: $custoFinal"
                         },
                         modifier = Modifier.semantics {
                             // ⚠️ O visível mostra "-1"; o falado diz "menos 1".
                             contentDescription = doTamanho + if (semNh) {
-                                "Bloqueio: o nível de habilidade ${magiaEnergia.target} não reduz o custo. Custo final $custoFinal."
+                                (if (conta.paginaSemNh != null) "O nível de habilidade ${magiaEnergia.target} não reduz o custo desta magia." else "Bloqueio: o nível de habilidade ${magiaEnergia.target} não reduz o custo.") + " Custo final $custoFinal."
                             } else {
                                 "Redução por nível de habilidade " +
                                     "${magiaEnergia.target}: ${RotuloAcessivel.modificador(-reducao)}. " +

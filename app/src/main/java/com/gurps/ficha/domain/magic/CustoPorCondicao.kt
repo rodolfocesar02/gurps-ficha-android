@@ -32,6 +32,9 @@ data class CondicaoOpcao(
     val valor: Double = 0.0
 )
 
+/** P-5b: a magia que o LIVRO isenta do desconto do NH elevado no custo (`pagina`: onde o livro diz). Vem do catálogo (`semDescontoDeNh`). */
+data class SemDescontoDeNh(val pagina: Int = 0)
+
 /** O que se pergunta ao jogador: `tipo` é `numero`, `inteiro`, `escolha` ou `marca`. */
 data class CondicaoEntrada(
     val id: String = "",

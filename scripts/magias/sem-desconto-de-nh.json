@@ -1,0 +1,40 @@
+{
+ "_leia": [
+  "As magias em que o LIVRO diz que um NH elevado NÃO reduz o custo (P-5b, 31/out/2026). A regra geral (MB p.238: NH 15 a 19 tira 1, 20 a 24 tira 2...) vale para todas as outras.",
+  "`magias`: o id, a página do livro e um pedaço da frase, TAL COMO o PDF a escreve (o teste confere contra `custos-do-pdf.json`, que `extrair-custos-do-pdf.py` lê do PDF). `naoSeAplica`: as outras frases do livro que falam do NH e do custo, e por que NÃO isentam a magia.",
+  "Quem escreve no catálogo é `aplicar-sem-desconto-de-nh.js` (passo 7): `semDescontoDeNh: {pagina}`. A conta é a mesma da Mesa e do app (`aContaDoCusto` / `contaDoCusto`, parâmetro `semNh`). O desconto também não vale para o custo de MANTER (o desconto do manter sai do mesmo NH)."
+ ],
+ "magias": {
+  "fragilidade": { "pagina": 37, "frase": "O custo para operar não é reduzido devido a um NH elevado" },
+  "forca": { "pagina": 37, "frase": "Um NH alto não diminui o custo para operar esta mágica" },
+  "vigor": { "pagina": 37, "frase": "Um NH elevado não reduz o custo para operar esta mágica" },
+  "aumentar_forca": { "pagina": 37, "frase": "Um NH elevado não reduz o custo para operar esta mágica" },
+  "aumentar_destreza": { "pagina": 37, "frase": "Um NH elevado não reduz o custo para operar esta mágica" },
+  "aumentar_inteligencia": { "pagina": 37, "frase": "Um NH elevado não reduz o custo para operar esta mágica" },
+  "aumentar_vitalidade": { "pagina": 37, "frase": "Um NH elevado não reduz o custo para operar esta mágica" },
+  "conceder_energia": { "pagina": 89, "frase": "O custo de operação não é reduzido por NH elevado" },
+  "conceder_vitalidade": { "pagina": 89, "frase": "O custo de operação não é reduzido por NH elevado" },
+  "compartilhar_energia": { "pagina": 89, "frase": "O custo para operar esta mágica nunca é reduzido por NH elevado" },
+  "guardamagica": { "pagina": 127, "frase": "O custo não é reduzido por NH elevado" },
+  "telemagica": { "pagina": 128, "frase": "NH elevado não reduz o custo" },
+  "acionarnt": { "pagina": 180, "frase": "NH elevado não reduz o custo de operação" },
+  "conceder_corrente_eletricant": { "pagina": 180, "frase": "NH elevado não reduz os custos" },
+  "conduzir_corrente_eletricant": { "pagina": 180, "frase": "Esse custo de manutenção não é reduzido por NH elevado" },
+  "extrair_corrente_eletricant": { "pagina": 181, "frase": "Esse custo de manutenção não é reduzido por NH elevado" }
+ },
+ "naoSeAplica": [
+  { "pagina": 57, "inicio": "Cada ponto de Velocidade reduz o Tempo de operação", "motivo": "é o TEMPO de operação do item Velocidade, não o custo" },
+  { "pagina": 65, "inicio": "Isso não pode ser simultâneo ao apontar o arco", "motivo": "é o tempo de armar a Flecha Mágica, não o custo" },
+  { "pagina": 84, "inicio": "O custo mínimo para operar é 3", "motivo": "Desviar Teleporte é Bloqueio pura: o NH nunca reduz o custo dela (Magia p.8)" },
+  { "pagina": 90, "inicio": "Custo: Nenhuma energia precisa ser gasta", "motivo": "Compartilhar Vitalidade não custa energia: só o tempo muda" },
+  { "pagina": 121, "inicio": "Custo: Metade do custo da mágica a ser anulada", "motivo": "o NH que não conta é o do OUTRO operador (o custo da mágica anulada)" },
+  { "pagina": 121, "inicio": "Custo: 1/10 do custo de operação da mágica a ser suspensa", "motivo": "o NH que não conta é o do OUTRO operador" },
+  { "pagina": 124, "inicio": "Custo: 1/4 da mágica sendo movida", "motivo": "o NH que não conta é o do OUTRO operador" },
+  { "pagina": 128, "inicio": "Custo: Igual à manutenção normal da mágica-objetivo", "motivo": "Manter Mágica: o NH reduz o custo normalmente (a própria entrada diz)" },
+  { "pagina": 128, "inicio": "Se o operador puder manter a mágica indefinidamente", "motivo": "Manter Mágica: o NH reduz o custo normalmente" },
+  { "pagina": 128, "inicio": "NH elevado com esta mágica também reduz o custo normalmente", "motivo": "Manter Mágica: o NH reduz o custo normalmente" },
+  { "pagina": 131, "inicio": "Mágicas conectadas não podem se beneficiar", "motivo": "vale para as mágicas CONECTADAS no momento da operação da Conexão (o Mestre aplica)" },
+  { "pagina": 156, "inicio": "Mágicas operadas com ajuda demoníaca", "motivo": "ajuda demoníaca: a redução de custo vem ANTES do desconto do NH (uma regra de Convocar Demônio, o Mestre aplica)" },
+  { "pagina": 203, "inicio": "Mágicas sintáticas não recebem redução", "motivo": "magia sintática é outro sistema (Magia p.203), que a Mesa não conduz" }
+ ]
+}

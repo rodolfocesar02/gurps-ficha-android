@@ -909,6 +909,8 @@ data class MagiaDefinicao(
     // Onde o livro escreve uma CONTA ("1 por 0,5 kg de peso original, por duplicação da dimensão"), o catálogo guarda o
     // que se pergunta ao jogador e a conta do PF (ver `CustoPorCondicaoRules`). Null = o custo é o do cabeçalho.
     val custoPorCondicao: com.gurps.ficha.domain.magic.CustoPorCondicao? = null,
+    // P-5b: o livro diz que o NH elevado NÃO reduz o custo desta magia (Força, Conceder Energia, Telemágica...): a página que o diz.
+    val semDescontoDeNh: com.gurps.ficha.domain.magic.SemDescontoDeNh? = null,
 ) {
     // Mantendo atributo base IQ fixo para magias
     val atributoBase: String get() = "IQ"

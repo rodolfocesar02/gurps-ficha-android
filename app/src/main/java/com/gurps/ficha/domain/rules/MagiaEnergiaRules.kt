@@ -75,7 +75,9 @@ object MagiaEnergiaRules {
      * - "Comum ou Bloqueio" (8): só quando operada COMO Bloqueio (de defesa, no turno de um inimigo). Operada como Comum, vale
      *   o desconto de sempre.
      */
-    fun semDescontoDeNh(classe: String?, comoBloqueio: Boolean = false): Boolean {
+    fun semDescontoDeNh(classe: String?, comoBloqueio: Boolean = false, semNhDoLivro: Boolean = false): Boolean {
+        // P-5b: o livro diz, na entrada da própria magia, que o NH elevado NÃO reduz o custo dela (Força, Conceder Energia, Telemágica...)
+        if (semNhDoLivro) return true
         val c = MagicClassParser.parse(classe).classes
         if (TipoClasseMagia.BLOQUEIO !in c) return false
         if (comoBloqueio) return true
@@ -117,7 +119,9 @@ object MagiaEnergiaRules {
         val bruto: Int,
         val semDescontoDeNh: Boolean,
         val reducao: Int,
-        val ajustado: Int
+        val ajustado: Int,
+        /** P-5b: a página do livro que isenta ESTA magia do desconto do NH (só quando a classe, sozinha, não a isentaria). */
+        val paginaSemNh: Int? = null
     )
 
     fun contaDoCusto(
@@ -127,16 +131,19 @@ object MagiaEnergiaRules {
         definicaoId: String?,
         temCondicao: Boolean = false,
         comoBloqueio: Boolean = false,
-        mt: Int = 0
+        mt: Int = 0,
+        semNhPagina: Int? = null
     ): ContaDoCusto {
         val b = base.coerceAtLeast(0)
         val fator = if (tamanhoMultiplica(classe, definicaoId, temCondicao, comoBloqueio) && mt > 0) 1 + mt else 1
         val bruto = b * fator
-        val sem = semDescontoDeNh(classe, comoBloqueio)
+        val porClasse = semDescontoDeNh(classe, comoBloqueio)
+        val sem = porClasse || semNhPagina != null
         val reducao = if (sem) 0 else reducaoPorNh(nh)
         return ContaDoCusto(
             base = b, mt = if (fator > 1) mt else 0, fator = fator, bruto = bruto,
-            semDescontoDeNh = sem, reducao = reducao, ajustado = (bruto - reducao).coerceAtLeast(0)
+            semDescontoDeNh = sem, reducao = reducao, ajustado = (bruto - reducao).coerceAtLeast(0),
+            paginaSemNh = if (!porClasse) semNhPagina else null
         )
     }
 
@@ -145,7 +152,9 @@ object MagiaEnergiaRules {
         var t = "custo ${conta.base}"
         if (conta.fator > 1) t += " ×${conta.fator} (alvo MT +${conta.mt} — Magia p.11) = ${conta.bruto}"
         if (conta.reducao > 0) t += ", −${conta.reducao} pelo NH $nh"
-        else if (conta.semDescontoDeNh && reducaoPorNh(nh) > 0) t += " (Bloqueio: o NH não reduz o custo — Magia p.8)"
+        else if (conta.semDescontoDeNh && reducaoPorNh(nh) > 0) {
+            t += if (conta.paginaSemNh != null) " (o NH não reduz o custo desta magia — Magia p.${conta.paginaSemNh})" else " (Bloqueio: o NH não reduz o custo — Magia p.8)"
+        }
         return t
     }
 

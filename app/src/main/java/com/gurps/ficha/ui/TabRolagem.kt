@@ -380,7 +380,8 @@ fun TabRolagem(viewModel: FichaViewModel) {
             encantamentoAlvo = mag.encantamentoAlvo,
             classe = mag.classe,
             descricao = mag.texto.orEmpty(),
-            custoPorCondicao = viewModel.dataRepository.magias.find { it.id == mag.definicaoId }?.custoPorCondicao
+            custoPorCondicao = viewModel.dataRepository.magias.find { it.id == mag.definicaoId }?.custoPorCondicao,
+            semDescontoDeNh = viewModel.dataRepository.magias.find { it.id == mag.definicaoId }?.semDescontoDeNh
         )
     }
 
@@ -789,7 +790,7 @@ fun TabRolagem(viewModel: FichaViewModel) {
         // e aplica o desconto sozinho. Sugerir o valor já descontado descontava
         // duas vezes — um custo 4 com NH 18 virava 2 em vez de 3.
         // MG-4: a Bloqueio não tem o desconto (o custo 1 do Desviar Projétil continua 1), então "zera" é conta da regra.
-        val efetivo = MagiaEnergiaRules.contaDoCusto(custo.minimo, nhEfetivoDaMagia(magia), magia.classe, magia.definicaoId).ajustado
+        val efetivo = MagiaEnergiaRules.contaDoCusto(custo.minimo, nhEfetivoDaMagia(magia), magia.classe, magia.definicaoId, semNhPagina = magia.semDescontoDeNh?.pagina).ajustado
         // ⚠️ Silêncio não é custo zero: numa Comum o tamanho do alvo (MT) pode devolver o custo que o NH tinha apagado
         // (custo 2, NH 15, alvo MT +2: ×3 = 6, −1 = 5). Só o diálogo pergunta o MT, então ele abre.
         val podeSerMaisCaro = custo.minimo > 0 && MagiaEnergiaRules.tamanhoMultiplica(magia.classe, magia.definicaoId)

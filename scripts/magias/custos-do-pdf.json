@@ -4032,5 +4032,103 @@
   "pagina": 153,
   "rotulo": "basico",
   "texto": "7. Raio mínimo 2 metros."
- }
+ },
+ "_frasesNh": [
+  {
+   "pagina": 37,
+   "frase": "O custo para operar não é reduzido devido a um NH elevado"
+  },
+  {
+   "pagina": 37,
+   "frase": "Um NH alto não diminui o custo para operar esta mágica"
+  },
+  {
+   "pagina": 37,
+   "frase": "Um NH elevado não reduz o custo para operar esta mágica"
+  },
+  {
+   "pagina": 57,
+   "frase": "Cada ponto de Velocidade reduz o Tempo de operação ao meio, assim como NH elevado faz para um mago"
+  },
+  {
+   "pagina": 65,
+   "frase": "Isso não pode ser simultâneo ao apontar o arco e não é reduzido por NH elevado (mas veja Flecha Mágica Rápida, abaixo)"
+  },
+  {
+   "pagina": 84,
+   "frase": "O custo mínimo para operar é 3, em qualquer caso (NH elevado não irá reduzir isso normalmente), e o operador paga todo o custo de energia, quer a mágica tenha sucesso ou não"
+  },
+  {
+   "pagina": 89,
+   "frase": "O custo de operação não é reduzido por NH elevado"
+  },
+  {
+   "pagina": 89,
+   "frase": "O custo para operar esta mágica nunca é reduzido por NH elevado"
+  },
+  {
+   "pagina": 90,
+   "frase": "Custo: Nenhuma energia precisa ser gasta; NH elevado afeta apenas o Tempo de operação"
+  },
+  {
+   "pagina": 121,
+   "frase": "Custo: Metade do custo da mágica a ser anulada, sem contar os bônus de NH elevado do outro operador"
+  },
+  {
+   "pagina": 121,
+   "frase": "Custo: 1/10 do custo de operação da mágica a ser suspensa, sem contar com os bônus que o outro operador pode ter recebido por NH elevado (arredondado para cima)"
+  },
+  {
+   "pagina": 124,
+   "frase": "Custo: 1/4 da mágica sendo movida, sem contar os bônus que o outro operador pode ter obtido por NH elevado (arredondado para cima)"
+  },
+  {
+   "pagina": 127,
+   "frase": "O custo não é reduzido por NH elevado"
+  },
+  {
+   "pagina": 128,
+   "frase": "NH elevado não reduz o custo"
+  },
+  {
+   "pagina": 128,
+   "frase": "Custo: Igual à manutenção normal da mágica-objetivo pelo tanto de tempo que o operador quer que ela dure (incluindo as reduções de custo do operador para NH elevado)"
+  },
+  {
+   "pagina": 128,
+   "frase": "Se o operador puder manter a mágica indefinidamente sem custo de energia (devido à NH elevado), o custo é de 1 energia para cada cinco períodos de duração total"
+  },
+  {
+   "pagina": 128,
+   "frase": "NH elevado com esta mágica também reduz o custo normalmente! Tempo de operação: 2 segundos, mais “tempo de programação”, se necessário"
+  },
+  {
+   "pagina": 131,
+   "frase": "Mágicas conectadas não podem se beneficiar de reduções de custo para NH elevado"
+  },
+  {
+   "pagina": 156,
+   "frase": "Mágicas operadas com ajuda demoníaca recebem energia e apoio de forças extradimensionais das trevas; o operador pode reduzir o custo de uma mágica em qualquer quantidade até triplicar seu NH em Ocultismo ou Taumatologia (o que for maior), antes de aplicar a redução de custo para NH elevado"
+  },
+  {
+   "pagina": 180,
+   "frase": "O custo mínimo de energia é de um por hora; NH elevado não reduz os custos"
+  },
+  {
+   "pagina": 180,
+   "frase": "O custo mínimo é de 1 energia; NH elevado não reduz o custo de operação"
+  },
+  {
+   "pagina": 180,
+   "frase": "Esse custo de manutenção não é reduzido por NH elevado"
+  },
+  {
+   "pagina": 181,
+   "frase": "Esse custo de manutenção não é reduzido por NH elevado"
+  },
+  {
+   "pagina": 203,
+   "frase": "Mágicas sintáticas não recebem redução de custo por NH elevado"
+  }
+ ]
 }

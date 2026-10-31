@@ -16,6 +16,7 @@ transcreve.
 | 4 | `aplicar-mecanica.js` | `mecanica.entrega`, projétil, marcas | `RELATORIO-MC-4.md` |
 | 5 (só se uma página do `chunks.jsonl` estiver ruim) | `pdf-para-chunks.py` | só o `text` das páginas pedidas, em `chunks.jsonl` | `RELATORIO-MC-7.md` |
 | 6 (depois da 2, e de novo a cada vez que a 2 rodar) | `aplicar-custo-por-condicao.js` | `custoPorCondicao` + `custoTipo`/`custoFormula` das magias de `custo-por-condicao.json`; apaga o número-base errado que a 2 lia da 1ª frase | `CUSTO-NA-HORA-DA-CONJURACAO.md` |
+| 7 (depois da 6) | `aplicar-sem-desconto-de-nh.js` | `semDescontoDeNh: {pagina}` nas 16 magias em que o LIVRO diz que o NH elevado não reduz o custo (`sem-desconto-de-nh.json`, conferido contra as frases do PDF) | `ADENDOS-DO-CLAUDE.md` (A73) |
 
 **Páginas ruins no `chunks.jsonl`** (cortadas ou com colunas embaralhadas): o PDF de Magia tem camada de texto. 
 `python -I scripts/magias/pdf-para-chunks.py --pdf "<PDF>" --paginas 23,33 [--mostrar] [--aplicar]` lê a página do PDF 

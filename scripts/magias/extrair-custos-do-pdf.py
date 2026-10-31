@@ -88,6 +88,28 @@ def extrair(texto, magia):
     return {'pagina': pagina, 'rotulo': rotulo, 'texto': re.sub(r'\s+', ' ', linha).strip()}
 
 
+# As frases em que o livro fala do desconto do NH no CUSTO ("NH elevado não reduz o custo"...): a lista de quem é isento
+# (`sem-desconto-de-nh.json`, P-5b) é conferida contra elas, e uma frase nova no livro que ninguém classificou deixa o teste vermelho.
+FRASE_DE_NH = re.compile(r'NH (?:elevado|alto)|NH n[ãa]o|reduzid[oa]s? (?:por|pelo|devido)|nunca [ée] reduzid|n[ãa]o [ée] reduzid|n[ãa]o reduz|n[ãa]o diminui|sem desconto')
+
+
+def frases_de_nh(texto):
+    achadas, vistas = [], set()
+    for m in FRASE_DE_NH.finditer(texto):
+        marcas = re.findall(r'⟦p(-?\d+)⟧', texto[:m.start()])
+        pagina = int(marcas[-1]) if marcas else 0
+        if pagina < 14 or pagina > 215:
+            continue
+        ini = max(texto.rfind('. ', 0, m.start()), texto.rfind('⟧', 0, m.start()))
+        fim = texto.find('. ', m.end())
+        frase = re.sub(r'\s+', ' ', texto[ini + 1:fim if fim > 0 else m.end() + 200]).strip(' .:⟧')
+        frase = re.sub(r'⟦p-?\d+⟧', '', frase).strip()
+        if (pagina, frase) not in vistas and len(frase) < 420:
+            vistas.add((pagina, frase))
+            achadas.append({'pagina': pagina, 'frase': frase})
+    return achadas
+
+
 def main():
     sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
     ap = argparse.ArgumentParser()
@@ -113,6 +135,7 @@ def main():
     out = {'_leia': leia}
     for k in sorted(saida):
         out[k] = saida[k]
+    out['_frasesNh'] = frases_de_nh(texto)
     with open(SAIDA, 'w', encoding='utf-8', newline='\n') as f:
         json.dump(out, f, ensure_ascii=False, indent=1)
         f.write('\n')

@@ -347,6 +347,9 @@
         ]
       ],
       "manter": "igual"
+    },
+    "semDescontoDeNh": {
+      "pagina": 180
     }
   },
   {
@@ -4285,6 +4288,9 @@
       "duracao": "tabela",
       "tempoOperacao": "tabela",
       "custo": "entrada"
+    },
+    "semDescontoDeNh": {
+      "pagina": 37
     }
   },
   {
@@ -4329,6 +4335,9 @@
       "duracao": "tabela",
       "tempoOperacao": "tabela",
       "custo": "entrada"
+    },
+    "semDescontoDeNh": {
+      "pagina": 37
     }
   },
   {
@@ -4368,6 +4377,9 @@
       "duracao": "tabela",
       "tempoOperacao": "tabela",
       "custo": "entrada"
+    },
+    "semDescontoDeNh": {
+      "pagina": 37
     }
   },
   {
@@ -4412,6 +4424,9 @@
       "duracao": "tabela",
       "tempoOperacao": "tabela",
       "custo": "entrada"
+    },
+    "semDescontoDeNh": {
+      "pagina": 37
     }
   },
   {
@@ -8052,6 +8067,9 @@
         2,
         "$usada"
       ]
+    },
+    "semDescontoDeNh": {
+      "pagina": 89
     }
   },
   {
@@ -8270,6 +8288,9 @@
       "duracao": "tabela+entrada",
       "tempoOperacao": "tabela",
       "custo": "tabela"
+    },
+    "semDescontoDeNh": {
+      "pagina": 180
     }
   },
   {
@@ -8306,6 +8327,9 @@
       "duracao": "tabela",
       "tempoOperacao": "tabela",
       "custo": "tabela"
+    },
+    "semDescontoDeNh": {
+      "pagina": 89
     }
   },
   {
@@ -8457,6 +8481,9 @@
       "duracao": "tabela+entrada",
       "tempoOperacao": "tabela",
       "custo": "tabela"
+    },
+    "semDescontoDeNh": {
+      "pagina": 89
     }
   },
   {
@@ -8674,6 +8701,9 @@
       "duracao": "tabela+entrada",
       "tempoOperacao": "tabela",
       "custo": "tabela"
+    },
+    "semDescontoDeNh": {
+      "pagina": 180
     }
   },
   {
@@ -19156,6 +19186,9 @@
       "duracao": "tabela",
       "tempoOperacao": "tabela",
       "custo": "tabela"
+    },
+    "semDescontoDeNh": {
+      "pagina": 181
     }
   },
   {
@@ -20015,6 +20048,9 @@
         "$pontos"
       ],
       "manter": "igual"
+    },
+    "semDescontoDeNh": {
+      "pagina": 37
     }
   },
   {
@@ -20319,6 +20355,9 @@
         "$pontos"
       ],
       "manter": "igual"
+    },
+    "semDescontoDeNh": {
+      "pagina": 37
     }
   },
   {
@@ -21479,6 +21518,9 @@
       "duracao": "tabela+entrada",
       "tempoOperacao": "formula",
       "custo": "tabela+entrada"
+    },
+    "semDescontoDeNh": {
+      "pagina": 127
     }
   },
   {
@@ -39369,6 +39411,9 @@
       "duracao": "entrada",
       "tempoOperacao": "tabela+entrada",
       "custo": "tabela"
+    },
+    "semDescontoDeNh": {
+      "pagina": 128
     }
   },
   {
@@ -42402,6 +42447,9 @@
         "$pontos"
       ],
       "manter": "igual"
+    },
+    "semDescontoDeNh": {
+      "pagina": 37
     }
   },
   {

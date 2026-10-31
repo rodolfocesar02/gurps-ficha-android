@@ -43,6 +43,13 @@ function custosDoPdf() {
   return out;
 }
 
+/** As frases do PDF em que o livro fala do NH e do custo (`{pagina, frase}`); vazio se o arquivo não existe. (P-5b) */
+function frasesDeNhDoPdf() {
+  if (!fs.existsSync(ARQUIVO_DO_PDF)) return [];
+  const bruto = JSON.parse(fs.readFileSync(ARQUIVO_DO_PDF, 'utf8'));
+  return Array.isArray(bruto._frasesNh) ? bruto._frasesNh : [];
+}
+
 /** Os specs do arquivo (sem as chaves de comentário `_...`). Sem argumento: os dois arquivos, e id repetido é erro. */
 function lerOsSpecs(arquivo) {
   const arquivos = arquivo ? [arquivo] : [ARQUIVO].concat(fs.existsSync(ARQUIVO_GERADO) ? [ARQUIVO_GERADO] : []);
@@ -166,4 +173,4 @@ function textoDoGuarda(id, spec, textos, porId) {
   return proprio;
 }
 
-module.exports = { ARQUIVO, ARQUIVO_GERADO, ARQUIVO_DO_PDF, custosDoPdf, motor, textoDoGuarda, lerOsSpecs, numerosDoTexto, literaisDaConta, problemasDoSpec };
+module.exports = { ARQUIVO, ARQUIVO_GERADO, ARQUIVO_DO_PDF, custosDoPdf, frasesDeNhDoPdf, motor, textoDoGuarda, lerOsSpecs, numerosDoTexto, literaisDaConta, problemasDoSpec };

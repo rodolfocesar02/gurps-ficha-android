@@ -66,7 +66,9 @@ data class MagiaRollOption(
     val classe: String?,
     val descricao: String,
     // O custo que DEPENDE DA CONDIÇÃO (peso, tamanho, material...): a conta do catálogo, ou null (custo do cabeçalho).
-    val custoPorCondicao: com.gurps.ficha.domain.magic.CustoPorCondicao? = null
+    val custoPorCondicao: com.gurps.ficha.domain.magic.CustoPorCondicao? = null,
+    // P-5b: o livro diz que o NH elevado NÃO reduz o custo desta magia.
+    val semDescontoDeNh: com.gurps.ficha.domain.magic.SemDescontoDeNh? = null
 )
 
 data class TecnicaRollOption(

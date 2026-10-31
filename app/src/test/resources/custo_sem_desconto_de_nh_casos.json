@@ -1,0 +1,29 @@
+{
+ "_leia": [
+  "P-5b: o livro diz que um NH elevado NÃO reduz o custo de certas magias. Os mesmos casos rodam no app (MagiaSemDescontoDeNhTest) e na Mesa (test/sem-desconto-de-nh.test.js).",
+  "`base`: o custo antes do NH (para MT 0). `ajustado`: o que sai dos PF no sucesso. `semNh: false` = a regra geral (MB p.238: NH 15 a 19 tira 1, 20 a 24 tira 2, 25 a 29 tira 3). Os casos de `semNh: false` são o contraste: o livro NÃO isenta essas magias (Graça e Sabedoria, irmãs de Força e Vigor, não dizem nada)."
+ ],
+ "isentas": [
+  "acionarnt", "aumentar_destreza", "aumentar_forca", "aumentar_inteligencia", "aumentar_vitalidade", "compartilhar_energia",
+  "conceder_corrente_eletricant", "conceder_energia", "conceder_vitalidade", "conduzir_corrente_eletricant", "extrair_corrente_eletricant",
+  "forca", "fragilidade", "guardamagica", "telemagica", "vigor"
+ ],
+ "casos": [
+  { "id": "forca", "nh": 20, "base": 6, "semNh": true, "ajustado": 6, "nota": "Força p.37: NH 20 tiraria 2, o livro diz que não tira" },
+  { "id": "forca", "nh": 15, "base": 2, "semNh": true, "ajustado": 2, "nota": "NH 15 tiraria 1" },
+  { "id": "vigor", "nh": 18, "base": 4, "semNh": true, "ajustado": 4 },
+  { "id": "fragilidade", "nh": 25, "base": 10, "semNh": true, "ajustado": 10, "nota": "NH 25 tiraria 3" },
+  { "id": "aumentar_forca", "nh": 20, "base": 3, "semNh": true, "ajustado": 3 },
+  { "id": "conceder_energia", "nh": 25, "base": 5, "semNh": true, "ajustado": 5, "nota": "p.89: gasta 5, o objetivo recupera 5 PF" },
+  { "id": "conceder_vitalidade", "nh": 20, "base": 4, "semNh": true, "ajustado": 4 },
+  { "id": "compartilhar_energia", "nh": 20, "base": 10, "semNh": true, "ajustado": 10 },
+  { "id": "guardamagica", "nh": 20, "base": 3, "semNh": true, "ajustado": 3 },
+  { "id": "telemagica", "nh": 18, "base": 7, "semNh": true, "ajustado": 7 },
+  { "id": "acionarnt", "nh": 15, "base": 9, "semNh": true, "ajustado": 9, "nota": "o exemplo do livro (p.180): (1,8 × 75) ÷ 15 = 9 de energia, e NH 15 não tira 1" },
+  { "id": "conduzir_corrente_eletricant", "nh": 20, "base": 1, "semNh": true, "ajustado": 1, "nota": "p.180: o custo de manter não é reduzido" },
+  { "id": "graca", "nh": 20, "base": 6, "semNh": false, "ajustado": 4, "nota": "Graça p.37 não diz nada do NH: vale o desconto" },
+  { "id": "sabedoria", "nh": 15, "base": 4, "semNh": false, "ajustado": 3 },
+  { "id": "sono", "nh": 20, "base": 4, "semNh": false, "ajustado": 2 },
+  { "id": "contramagica", "nh": 20, "base": 3, "semNh": false, "ajustado": 1, "nota": "p.121: 'sem contar os bônus de NH do OUTRO operador' é o custo da mágica anulada, não o desta" }
+ ]
+}
