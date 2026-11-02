@@ -334,7 +334,8 @@ fun RolagemPericiasDialog(
                                             personagem?.let { p ->
                                                 com.gurps.ficha.ui.features.traits.OrigemDoBonusPericia(
                                                     personagem = p,
-                                                    nomeDaPericia = pericia.nome
+                                                    nomeDaPericia = pericia.nome,
+                                                    especializacao = pericia.especializacao
                                                 )
                                                 val condicionais =
                                                     condicionaisDaPericia(p, pericia.nome, condicionalDaLuz)

@@ -4,6 +4,9 @@ import android.util.Log
 import com.gurps.ficha.domain.rules.CharacterRules
 import com.gurps.ficha.model.Personagem
 
+/** A chave de uma perícia com especialização no mapa de bônus: `"Arma de Arremesso (Faca)"` (TR-1). */
+internal fun chaveDaPericia(nome: String, especializacao: String): String = "$nome (${especializacao.trim()})"
+
 /**
  * Transforma o campo `efeitos` do catálogo numa [TraitRule], sem escrever uma
  * classe Kotlin por vantagem.
@@ -109,8 +112,11 @@ object EfeitoInterpretador {
                     Log.w(TAG, "$traitId: efeito de pericia sem alvo, ignorado")
                     return@forEach
                 }
-                // Soma quando o mesmo alvo aparece mais de uma vez.
-                mapa[efeito.alvo] = (mapa[efeito.alvo] ?: 0) + efeito.valorPara(selection)
+                // Soma quando o mesmo alvo aparece mais de uma vez. Com especializações (TR-1), uma chave por
+                // especialização: "Arma de Arremesso (Faca)"; quem soma é o TraitRuleRegistry.getSkillBonus.
+                val chaves = efeito.especializacoes?.filter { it.isNotBlank() }?.takeIf { it.isNotEmpty() }
+                    ?.map { chaveDaPericia(efeito.alvo, it) } ?: listOf(efeito.alvo)
+                chaves.forEach { mapa[it] = (mapa[it] ?: 0) + efeito.valorPara(selection) }
             }
             return mapa
         }

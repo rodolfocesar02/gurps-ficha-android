@@ -225,7 +225,7 @@ fun PericiaItem(
                     val statusPart = if (hasFailure) ". AVISO: $failureMsg" else ""
                     val origemPart = com.gurps.ficha.ui.features.traits.descricaoAcessivelDeOrigem(
                         com.gurps.ficha.domain.rules.traits.TraitRuleRegistry
-                            .getSkillBonusOrigens(personagem, pericia.nome)
+                            .getSkillBonusOrigens(personagem, pericia.nome, pericia.especializacao)
                     )
                     contentDescription = "Perícia ${pericia.nome}. NH $nivel$origemPart$statusPart. Toque para editar."
                 }
@@ -256,7 +256,8 @@ fun PericiaItem(
             // De onde vem o bônus, quando há: sem isso o NH muda e nada explica.
             com.gurps.ficha.ui.features.traits.OrigemDoBonusPericia(
                 personagem = personagem,
-                nomeDaPericia = pericia.nome
+                nomeDaPericia = pericia.nome,
+                especializacao = pericia.especializacao
             )
         }
         Row(

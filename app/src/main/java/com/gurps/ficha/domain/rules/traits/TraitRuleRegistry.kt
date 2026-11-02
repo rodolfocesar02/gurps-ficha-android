@@ -168,13 +168,29 @@ object TraitRuleRegistry {
      * Só devolve quem realmente contribuiu (valor != 0), na ordem em que os
      * traços estão na ficha.
      */
-    fun getSkillBonusOrigens(personagem: Personagem, skillName: String): List<OrigemDeBonus> =
+    fun getSkillBonusOrigens(personagem: Personagem, skillName: String, especializacao: String = ""): List<OrigemDeBonus> =
         todosOsTracos(personagem).mapNotNull { selection ->
             val valor = getRuleFor(selection)
                 ?.getSkillModifiers(personagem, selection)
-                ?.get(skillName) ?: 0
+                ?.let { valorNaPericia(it, skillName, especializacao) } ?: 0
             if (valor != 0) OrigemDeBonus(selection.nome, valor) else null
         }
+
+    /**
+     * O bônus de um traço numa perícia: o do nome, mais o da especialização quando a perícia tem uma (TR-1,
+     * "Arma de Arremesso (Faca)"). A especialização casa sem acento e sem caixa: o jogador digita "faca".
+     */
+    private fun valorNaPericia(bonuses: Map<String, Int>, skillName: String, especializacao: String): Int {
+        var valor = bonuses[skillName] ?: 0
+        if (especializacao.isNotBlank()) {
+            val chave = semAcentoNemCaixa(chaveDaPericia(skillName, especializacao))
+            valor += bonuses.entries.filter { semAcentoNemCaixa(it.key) == chave }.sumOf { it.value }
+        }
+        return valor
+    }
+
+    private fun semAcentoNemCaixa(texto: String): String =
+        java.text.Normalizer.normalize(texto, java.text.Normalizer.Form.NFD).replace(Regex("\\p{M}+"), "").lowercase().trim()
 
     /**
      * As origens do bônus de dano por dado, em vez do total somado.
@@ -196,13 +212,13 @@ object TraitRuleRegistry {
             if (valor != 0) OrigemDeBonus(selection.nome, valor) else null
         }
 
-    fun getSkillBonus(personagem: Personagem, skillName: String): Int {
+    fun getSkillBonus(personagem: Personagem, skillName: String, especializacao: String = ""): Int {
         var total = 0
         todosOsTracos(personagem).forEach { selection ->
             val rule = getRuleFor(selection)
             if (rule != null) {
                 val bonuses = rule.getSkillModifiers(personagem, selection)
-                val bonus = bonuses[skillName] ?: 0
+                val bonus = valorNaPericia(bonuses, skillName, especializacao)
                 total += bonus
             }
         }

@@ -97,6 +97,9 @@ class ConferenciaCruzadaPericiasTest {
          * classes de motivo.
          */
         val LEGITIMAS: Set<Pair<String, String>> = setOf(
+            // 5. TR-1 (Mesa): o +5/+10 da p.207 vai no teste de IQ de lembrar o que leu, e não na perícia
+            // (MB p.69: a Memória "não acarreta benefícios para perícias"). Só a Eidética: a varredura não casa a Fotográfica.
+            "memoria_eidetica" to "Leitura Dinâmica",
             // 4. 🔴 COLISÃO DE PALAVRA COMUM — lote POD-8.
             // A vantagem `Controle` (GURPS Poderes, p.90) tem por nome uma
             // palavra corriqueira em português, e a varredura procura o nome do
@@ -329,10 +332,17 @@ class ConferenciaCruzadaPericiasTest {
     }
 
     @Test
-    fun `Pele Elastica e as duas Memorias entregam o numero da pagina`() {
+    fun `Pele Elastica entrega o numero e as Memorias NAO dao bonus em pericia`() {
+        // TR-1: o +5/+10 da Memória é condicional de IQ (aprender ou lembrar; MB p.69, p.24, p.207), e não bônus na perícia.
         assertEquals(4, valorEm("pele_elastica", "Disfarce/NT"))
-        assertEquals(5, valorEm("memoria_eidetica", "Leitura Dinâmica"))
-        assertEquals(10, valorEm("memoria_fotografica", "Leitura Dinâmica"))
+        assertEquals(null, valorEm("memoria_eidetica", "Leitura Dinâmica"))
+        assertEquals(null, valorEm("memoria_fotografica", "Leitura Dinâmica"))
+        for ((id, valor) in listOf("memoria_eidetica" to 5, "memoria_fotografica" to 10)) {
+            val efeito = efeitosDe(id).single { it.alvo == "IQ" }
+            assertEquals(valor, efeito.valor)
+            assertEquals(TipoEfeito.ATRIBUTO, efeito.tipoResolvido)
+            assertTrue(efeito.ehCondicional)
+        }
     }
 
     @Test

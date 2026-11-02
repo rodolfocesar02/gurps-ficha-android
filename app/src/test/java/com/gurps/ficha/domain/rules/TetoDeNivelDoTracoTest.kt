@@ -144,7 +144,8 @@ class TetoDeNivelDoTracoTest {
         val talentos = setOf(
             "artifice", "artista_talentoso", "companheiro_animal", "curandeiro",
             "dedos_verdes", "agente_cativante", "explorador",
-            "habilidade_matematica", "habilidade_musical", "perspicacia_comercial"
+            "habilidade_matematica", "habilidade_musical", "perspicacia_comercial",
+            "talento_dos_pequeninos_para_armas_de_longa_distancia"
         )
         val porId = ler("vantagens.v3.json").associateBy { it.id }
         talentos.forEach { id ->

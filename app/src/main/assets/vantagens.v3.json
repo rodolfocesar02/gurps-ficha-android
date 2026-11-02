@@ -3761,9 +3761,10 @@
   "descricao": "O personagem tem uma memória excepcionalmente boa.\n\nQualquer pessoa pode fazer um teste de IQ para tentar relembrar eventos passados.\n\nQuanto melhor o resultado do teste, mais verdadeira será a lembrança, mas os detalhes sempre ficam incompletos.\n\nCom esse talento, o personagem é automaticamente bem-sucedido nesses “testes de memória” e se lembra de detalhes precisos.\n\nEsta característica pode ser comprada em dois níveis.\n\n## Memória Eidética\n\nO personagem sempre consegue se lembrar de tudo no que focalizar sua atenção e consegue relembrar detalhes específicos com um sucesso num teste de IQ.\n\nÉ possível “aprender” essa vantagem durante o jogo.\n\nTrovadores e escaldos costumam adquiri-la para decorar poemas e canções.\n\nCusto: 5 pontos.\n\nEsta característica afeta a memória, não a compreensão.\n\nPortanto, ela não acarreta benefícios para perícias.\n\nNo entanto, ela concede bônus sempre que o Mestre pedir um teste de IQ para o aprendizado de um assunto.\n\n| Tipo | Bônus |\n|---|---|\n| Memória Eidética | +5 |",
   "efeitos": [
    {
-    "tipo": "pericia",
-    "alvo": "Leitura Dinâmica",
-    "valor": 5
+    "tipo": "atributo",
+    "alvo": "IQ",
+    "valor": 5,
+    "condicao": "no teste de IQ para aprender ou lembrar: um assunto, um sotaque, o que leu com Leitura Dinâmica, uma perícia sem uso (MB p.69, p.24, p.207, p.292, p.294)"
    }
   ]
  },
@@ -3785,9 +3786,10 @@
   "descricao": "O personagem tem uma memória excepcionalmente boa.\n\nQualquer pessoa pode fazer um teste de IQ para tentar relembrar eventos passados.\n\nQuanto melhor o resultado do teste, mais verdadeira será a lembrança, mas os detalhes sempre ficam incompletos.\n\nCom esse talento, o personagem é automaticamente bem-sucedido nesses “testes de memória” e se lembra de detalhes precisos.\n\nO personagem sempre consegue se lembrar de tudo no que focalizar sua atenção e consegue relembrar detalhes específicos com um sucesso num teste de IQ.\n\nÉ possível “aprender” essa vantagem durante o jogo.\n\nTrovadores e escaldos costumam adquiri-la para decorar poemas e canções.\n\nO personagem também se lembra automaticamente de detalhes específicos.\n\nToda vez que o jogador esquecer qualquer detalhe que seu personagem viu ou ouviu, o Mestre ou os outros jogadores devem lembrá-lo de forma honesta.\n\nCusto: 10 pontos.\n\nEsta característica afeta a memória, não a compreensão.\n\nPortanto, ela não acarreta benefícios para perícias.\n\nNo entanto, ela concede bônus sempre que o Mestre pedir um teste de IQ para o aprendizado de um assunto.\n\n| Tipo | Bônus |\n|---|---|\n| Memória Eidética | +5 |\n| Memória Fotográfica | +10 |",
   "efeitos": [
    {
-    "tipo": "pericia",
-    "alvo": "Leitura Dinâmica",
-    "valor": 10
+    "tipo": "atributo",
+    "alvo": "IQ",
+    "valor": 10,
+    "condicao": "no teste de IQ para aprender ou lembrar: um assunto, um sotaque, o que leu com Leitura Dinâmica, uma perícia sem uso (MB p.69, p.24, p.207, p.292, p.294)"
    }
   ]
  },
@@ -4178,7 +4180,7 @@
  },
  {
   "id": "oflato_discriminatorio",
-  "nome": "Oflato Discriminatório",
+  "nome": "Olfato Discriminatório",
   "pagina": 74,
   "costKind": "fixed",
   "fixed": 15,
@@ -4189,7 +4191,14 @@
   "rawCost": "15",
   "specialRule": null,
   "tags": [],
-  "descricao": "O olfato do personagem é muito mais aguçado do que o olfato normal dos seres humanos e registra odores diferentes para praticamente tudo que ele encontrar.\n\nIsso permite que o personagem reconheça pessoas, lugares e coisas pelo cheiro.\n\nNo caso de um sucesso em um teste de IQ, ele é capaz de memorizar um odor se farejá-lo durante pelo menos um minuto.\n\nNo caso de um fracasso, ele tem que esperar no mínimo um dia antes de repetir a tentativa.\n\nO personagem recebe um bônus de +4, além dos bônus relacionados à vantagem Paladar/Olfato Apurado, em qualquer tarefa que utiliza o olfato e na perícia Rastreamento.\n\nSe ficar doente quando for exposto ao odor de uma determinada substância, o personagem pode adquirir a limitação Desvantagem Temporária (pág. 111).\n\nO efeito mais comum é Repugnância (pág. 154), mas o Mestre pode optar por permitir outras desvantagens temporárias."
+  "descricao": "O olfato do personagem é muito mais aguçado do que o olfato normal dos seres humanos e registra odores diferentes para praticamente tudo que ele encontrar.\n\nIsso permite que o personagem reconheça pessoas, lugares e coisas pelo cheiro.\n\nNo caso de um sucesso em um teste de IQ, ele é capaz de memorizar um odor se farejá-lo durante pelo menos um minuto.\n\nNo caso de um fracasso, ele tem que esperar no mínimo um dia antes de repetir a tentativa.\n\nO personagem recebe um bônus de +4, além dos bônus relacionados à vantagem Paladar/Olfato Apurado, em qualquer tarefa que utiliza o olfato e na perícia Rastreamento.\n\nSe ficar doente quando for exposto ao odor de uma determinada substância, o personagem pode adquirir a limitação Desvantagem Temporária (pág. 111).\n\nO efeito mais comum é Repugnância (pág. 154), mas o Mestre pode optar por permitir outras desvantagens temporárias.",
+  "efeitos": [
+   {
+    "tipo": "pericia",
+    "alvo": "Rastreamento",
+    "valor": 4
+   }
+  ]
  },
  {
   "id": "oraculo",
@@ -5451,11 +5460,49 @@
   "perLevel": 5,
   "options": null,
   "min": null,
-  "max": null,
+  "max": 4,
   "rawCost": "5/nível",
   "specialRule": null,
   "tags": [],
-  "descricao": "Arco, Arma de Arremesso (Dardo), Arma de Arremesso (Faca), Arma de Arremesso (Vara), Arremesso, e Funda. Bônus de reação: arqueiros e outros usuários de armas de longa distância. 5 pontos/nível. Apenas pequeninos podem ter esse Talento e, por padrão, no nível 2. Pequeninos inusitados podem ter níveis maiores ou menores. Note que talentos que incluam perícias de combate podem desequilibrar o jogo. O fato desta ser restrita a uma raça específica ajuda a prevenir abusos."
+  "descricao": "Talento racial dos pequeninos (Cataclismo, p.185): +1 por nível em Arcos, Arremesso, Funda e Arma de Arremesso (só nas especializações Dardo, Faca e Vara), e +1 por nível de reação de arqueiros e de quem usa armas de longa distância. Custa 5 pontos por nível; o padrão da raça é o nível 2. Como todo Talento, para em 4 níveis (MB p.90).",
+  "efeitos": [
+   {
+    "tipo": "pericia",
+    "alvo": "Arcos",
+    "valor": 1,
+    "porNivel": true
+   },
+   {
+    "tipo": "pericia",
+    "alvo": "Arremesso",
+    "valor": 1,
+    "porNivel": true
+   },
+   {
+    "tipo": "pericia",
+    "alvo": "Funda",
+    "valor": 1,
+    "porNivel": true
+   },
+   {
+    "tipo": "pericia",
+    "alvo": "Arma de Arremesso",
+    "especializacoes": [
+     "Dardo",
+     "Faca",
+     "Vara"
+    ],
+    "valor": 1,
+    "porNivel": true
+   },
+   {
+    "tipo": "pericia",
+    "alvo": "reacao",
+    "valor": 1,
+    "porNivel": true,
+    "condicao": "de arqueiros e de quem usa armas de longa distância"
+   }
+  ]
  },
  {
   "id": "tato_apurado",
@@ -5957,15 +6004,7 @@
   "rawCost": "25",
   "specialRule": null,
   "tags": [],
-  "descricao": "O personagem possui um campo de visão completo ao seu redor, permitindo observar todas as direções simultaneamente.\n\nEssa capacidade pode ser resultado de olhos adicionais, visão composta semelhante à de insetos, sensores distribuídos pelo corpo ou qualquer outra explicação compatível com o conceito do personagem.\n\nIndependentemente da aparência física, os efeitos mecânicos permanecem os mesmos.\n\n## Campo de Visão Total\n\nO personagem possui:\n\n- Campo de visão de 360°.\n\nEle consegue enxergar simultaneamente:\n\n- À frente.\n- Nas laterais.\n- Atrás de si.\n\nSem necessidade de virar a cabeça ou o corpo.\n\n## Defesa Contra Ataques\n\nO personagem não sofre as penalidades normais para se defender de ataques vindos:\n\n- Pelas laterais.\n- Pelas costas.\n\nEle mantém suas defesas normalmente contra ameaças vindas de qualquer direção visível.\n\n## Ataques na Retaguarda\n\nO personagem pode atacar inimigos localizados:\n\n- Nas laterais.\n- Atrás dele.\n\nSem precisar utilizar um Golpe Desenfreado.\n\nEntretanto, esses ataques sofrem:\n\n- Penalidade de -2 para atingir.\n\nEssa penalidade representa a dificuldade de golpear em ângulos pouco naturais.\n\nAlgumas técnicas especiais de combate podem ignorar esse redutor, conforme determinado pelas regras específicas dessas técnicas.\n\n## Perseguição\n\nO personagem recebe:\n\n+5 em testes para detectar tentativas de Perseguição.\n\nA grande cobertura visual dificulta que alguém o siga sem ser notado.\n\n## Ataques Surpresa\n\nO personagem nunca é surpreendido por um ataque vindo pelas costas apenas por falta de visão.\n\nPara atacá-lo sem ser percebido, é necessário ocultar-se de alguma forma.\n\nExemplos:\n\n- Invisibilidade.\n- Camuflagem adequada.\n- Cobertura total.\n- Escuridão.\n- Disfarces especiais.\n- Poderes sobrenaturais.\n\n## Olhos Adicionais\n\nOlhos extras são apenas uma possível explicação visual para a vantagem.\n\nO personagem pode possuir:\n\n- Dois olhos.\n- Quatro olhos.\n- Oito olhos.\n- Centenas de olhos.\n- Sensores artificiais.\n- Estruturas alienígenas equivalentes.\n\nNenhuma dessas opções altera o custo da vantagem.\n\n## Exemplos de Usuários\n\nVisão Periférica é comum entre:\n\n- Insetos gigantes.\n- Aranhas monstruosas.\n- Aberrações alienígenas.\n- Robôs de vigilância.\n- Criaturas com olhos múltiplos.\n- Entidades sobrenaturais.\n- Supers com sentidos ampliados.\n\n## Limitações\n\nA vantagem não concede:\n\n- Visão através de objetos.\n- Visão no escuro.\n- Visão microscópica.\n- Visão telescópica.\n\nEla apenas amplia o campo visual disponível ao personagem.\n\n## Resumo\n\nVisão Periférica concede um campo de visão de 360°, elimina as penalidades defensivas contra ataques laterais e pelas costas, permite atacar nessas direções com penalidade de -2, fornece +5 para detectar perseguições e impede que o personagem seja surpreendido simplesmente por um ataque vindo de trás.\n\nCusto: 15 pontos.",
-  "efeitos": [
-   {
-    "tipo": "pericia",
-    "alvo": "Perseguição",
-    "valor": 5,
-    "porNivel": false
-   }
-  ]
+  "descricao": "O personagem possui um campo de visão completo ao seu redor, permitindo observar todas as direções simultaneamente.\n\nEssa capacidade pode ser resultado de olhos adicionais, visão composta semelhante à de insetos, sensores distribuídos pelo corpo ou qualquer outra explicação compatível com o conceito do personagem.\n\nIndependentemente da aparência física, os efeitos mecânicos permanecem os mesmos.\n\n## Campo de Visão Total\n\nO personagem possui:\n\n- Campo de visão de 360°.\n\nEle consegue enxergar simultaneamente:\n\n- À frente.\n- Nas laterais.\n- Atrás de si.\n\nSem necessidade de virar a cabeça ou o corpo.\n\n## Defesa Contra Ataques\n\nO personagem não sofre as penalidades normais para se defender de ataques vindos:\n\n- Pelas laterais.\n- Pelas costas.\n\nEle mantém suas defesas normalmente contra ameaças vindas de qualquer direção visível.\n\n## Ataques na Retaguarda\n\nO personagem pode atacar inimigos localizados:\n\n- Nas laterais.\n- Atrás dele.\n\nSem precisar utilizar um Golpe Desenfreado.\n\nEntretanto, esses ataques sofrem:\n\n- Penalidade de -2 para atingir.\n\nEssa penalidade representa a dificuldade de golpear em ângulos pouco naturais.\n\nAlgumas técnicas especiais de combate podem ignorar esse redutor, conforme determinado pelas regras específicas dessas técnicas.\n\n## Perseguição\n\nO personagem recebe:\n\n+5 em testes para detectar tentativas de Perseguição.\n\nA grande cobertura visual dificulta que alguém o siga sem ser notado.\n\n## Ataques Surpresa\n\nO personagem nunca é surpreendido por um ataque vindo pelas costas apenas por falta de visão.\n\nPara atacá-lo sem ser percebido, é necessário ocultar-se de alguma forma.\n\nExemplos:\n\n- Invisibilidade.\n- Camuflagem adequada.\n- Cobertura total.\n- Escuridão.\n- Disfarces especiais.\n- Poderes sobrenaturais.\n\n## Olhos Adicionais\n\nOlhos extras são apenas uma possível explicação visual para a vantagem.\n\nO personagem pode possuir:\n\n- Dois olhos.\n- Quatro olhos.\n- Oito olhos.\n- Centenas de olhos.\n- Sensores artificiais.\n- Estruturas alienígenas equivalentes.\n\nNenhuma dessas opções altera o custo da vantagem.\n\n## Exemplos de Usuários\n\nVisão Periférica é comum entre:\n\n- Insetos gigantes.\n- Aranhas monstruosas.\n- Aberrações alienígenas.\n- Robôs de vigilância.\n- Criaturas com olhos múltiplos.\n- Entidades sobrenaturais.\n- Supers com sentidos ampliados.\n\n## Limitações\n\nA vantagem não concede:\n\n- Visão através de objetos.\n- Visão no escuro.\n- Visão microscópica.\n- Visão telescópica.\n\nEla apenas amplia o campo visual disponível ao personagem.\n\n## Resumo\n\nVisão Periférica concede um campo de visão de 360°, elimina as penalidades defensivas contra ataques laterais e pelas costas, permite atacar nessas direções com penalidade de -2, fornece +5 para detectar perseguições e impede que o personagem seja surpreendido simplesmente por um ataque vindo de trás.\n\nCusto: 15 pontos."
  },
  {
   "id": "visao_agucada",

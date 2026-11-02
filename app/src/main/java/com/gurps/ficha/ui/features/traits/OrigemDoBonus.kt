@@ -25,9 +25,10 @@ import com.gurps.ficha.model.Personagem
 fun OrigemDoBonusPericia(
     personagem: Personagem,
     nomeDaPericia: String,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    especializacao: String = ""
 ) {
-    val origens = TraitRuleRegistry.getSkillBonusOrigens(personagem, nomeDaPericia)
+    val origens = TraitRuleRegistry.getSkillBonusOrigens(personagem, nomeDaPericia, especializacao)
     if (origens.isEmpty()) return   // perícia sem bônus não ganha linha nenhuma
 
     Text(

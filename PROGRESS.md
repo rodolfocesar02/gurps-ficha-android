@@ -10050,3 +10050,12 @@ ficar verde**.
   - Mesa: `magias-livro.json` e `magias-ciclo.json` regerados.
 - **Ficam com o texto antigo (18 páginas):** 2, 3 e 4 (abertura do livro); 55, 180 e 191 (um número solto cada); e 12 páginas cujo texto antigo já tem todos os números do PDF (17, 27, 47, 64, 72, 84, 98, 128, 132, 158, 202, 210). Tabela em `RELATORIO-P-8.md`.
 - **Testes:** scripts JS **108/108**; JVM nas duas variantes e a suíte da Mesa: ver o adendo A88. Versão **198** (`12.8.13-MAGIAS-TEXTO-DO-LIVRO-3`).
+
+## Lote TR-1 — [2026-11-02] Quatro defeitos do catálogo de vantagens, conferidos no PDF (app + Mesa)
+- **Hash:** (commit deste lote; ver `git log`) + commit da Mesa (TR-0 e TR-1 juntos) e o ponteiro do submódulo.
+- **Pedido dele:** o plano dos traços da Mesa (`mesa-virtual/planos/tracos/PLANO.md`, TR-1), avisado antes de que muda números na aba Rolagem.
+- **Mudanças (catálogo, vale para os dois lados):**
+  - `vantagens.v3.json`: **Memória Eidética/Fotográfica** sem o +5/+10 em Leitura Dinâmica; viram condicional de IQ ("aprender ou lembrar", MB p.69, 24, 207, 292, 294). **Visão 360 graus** sem o +5 em Perseguição (o +5 do livro é na Visão de quem é seguido, p.97). **Olfato Discriminatório**: o nome corrigido (o id `oflato_discriminatorio` fica) e +4 em Rastreamento (p.74). **Talento dos Pequeninos**: `max: 4` e os efeitos (Arcos, Arremesso, Funda e Arma de Arremesso só com Dardo, Faca e Vara; Cataclismo p.185).
+  - `TraitEffectModels.kt`: campo novo `especializacoes` no `EfeitoDeclarado`. `EfeitoInterpretador.kt`: uma chave por especialização (`chaveDaPericia`). `TraitRuleRegistry.kt`: `getSkillBonus`/`getSkillBonusOrigens` com `especializacao` (sem acento e sem caixa). `Personagem.kt`, `TabPericias.kt`, `OrigemDoBonus.kt` e `RolagemPrimaryDialogs.kt`: só repassam a especialização.
+  - **Não mexido, de propósito (aba Rolagem parada):** a caixinha de IQ da Memória e a de Visão 360°; o `SentidoRules.kt` segue somando +4 sempre no Olfato/Paladar.
+- **Testes:** `TracosDoTr1Test.kt` (novo: Arcos 13, Faca 13, "faca" 13, Machado/Maça 11, Funda 11, Arremesso nível 3 13; Rastreamento +4 pessoal e racial; Paladar 0; Perseguição 0; Leitura Dinâmica 0 e IQ sem mudar). `ConferenciaCruzadaPericiasTest.kt` (a Memória deixa de travar o número errado), `EfeitosDeclaradosCatalogoTest.kt` e `TetoDeNivelDoTracoTest.kt` (o talento entra na lista). Sondas: sem a lista de especializações (Machado/Maça 13) e `Personagem.kt` sem repassar (Faca 11), as duas vermelhas. Versão **199** (`12.8.14-TRACOS-TR1`).

@@ -150,7 +150,13 @@ data class EfeitoDeclarado(
      * dado do catálogo, e não uma constante única no código.
      */
     @SerializedName(value = "porAutocontrole", alternate = ["por_autocontrole"])
-    val porAutocontrole: Map<String, Int>? = null
+    val porAutocontrole: Map<String, Int>? = null,
+    /**
+     * TR-1 (V-11): o efeito vale **só nestas especializações** da perícia `alvo`. O Talento dos Pequeninos
+     * dá +1 em Arma de Arremesso só com Dardo, Faca e Vara (Cataclismo p.185); Machado/Maça fica de fora.
+     * Nulo ou vazio quer dizer "todas".
+     */
+    val especializacoes: List<String>? = null
 ) {
     val tipoResolvido: TipoEfeito? get() = TipoEfeito.de(tipo)
     val escopoResolvido: EscopoEfeito get() = EscopoEfeito.de(escopo)

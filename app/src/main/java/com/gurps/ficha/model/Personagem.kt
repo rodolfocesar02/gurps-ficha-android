@@ -795,7 +795,7 @@ data class PericiaSelecionada(
         }?.nivelRelativo ?: 0
 
         // Bônus de vantagens automatizadas
-        val bonusVantagens = com.gurps.ficha.domain.rules.traits.TraitRuleRegistry.getSkillBonus(personagem, nome)
+        val bonusVantagens = com.gurps.ficha.domain.rules.traits.TraitRuleRegistry.getSkillBonus(personagem, nome, especializacao)
 
         return valorAtributo + bonus + bonusRacial + bonusVantagens
     }

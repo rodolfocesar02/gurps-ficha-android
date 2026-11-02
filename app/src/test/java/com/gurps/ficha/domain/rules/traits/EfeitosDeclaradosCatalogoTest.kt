@@ -49,7 +49,9 @@ class EfeitosDeclaradosCatalogoTest {
         val OS_DEZ_TALENTOS = setOf(
             "artifice", "artista_talentoso", "companheiro_animal", "curandeiro",
             "dedos_verdes", "agente_cativante", "explorador",
-            "habilidade_matematica", "habilidade_musical", "perspicacia_comercial"
+            "habilidade_matematica", "habilidade_musical", "perspicacia_comercial",
+            // TR-1 (Mesa): o talento racial dos pequeninos (Cataclismo p.185) tem as mesmas regras de todo Talento.
+            "talento_dos_pequeninos_para_armas_de_longa_distancia"
         )
     }
 
