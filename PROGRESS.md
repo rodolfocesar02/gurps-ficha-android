@@ -10040,3 +10040,13 @@ ficar verde**.
   - Mesa: `magias-livro.json` e `magias-ciclo.json` regerados (`extrair-magias-no-alvo.js`).
 - **Ficam com o texto antigo (22 páginas):** abertura do livro (2, 3, 4), páginas de tabelas e quadros coloridos de regra (17, 64, 72, 84, 98, 128, 132, 158, 180, 202, 210, 214, 215), 27, 47, 55, 160, 165 e 191 (a 191 passa nas duas provas com `--fundir-bordas`, mas à vista ainda tem restos: não aplicada). Tabela com o motivo de cada uma em `RELATORIO-P-8.md`.
 - **Testes:** scripts JS **108/108**; JVM nas duas variantes e a suíte da Mesa: ver os números abaixo/adendo A88. Versão **197** (`12.8.12-MAGIAS-TEXTO-DO-LIVRO-1`).
+
+## Lote P-8 (3) — [2026-11-02] As colunas ditas por região (p.165 e p.160) e as páginas de Alquimia (p.214 e p.215)
+- **Hash:** (commit deste lote; ver `git log`) + commit da Mesa e o ponteiro do submódulo.
+- **Pedido dele:** "Sim, lote 3". **O que mudou o plano:** medi o texto antigo contra o texto CRU do PDF, número a número: em **12 das 22 páginas restantes o texto antigo já tem exatamente os números do PDF**; as perdas que o ensaio mostrava eram do conversor. Ficam como estão. Os defeitos reais eram poucos: p.165 (perdeu o 3.000), p.160 (perdeu "24 horas"), p.214/215 (preços trocados entre as duas).
+- **Mudanças:**
+  - `pdf-para-chunks.py`: **`--regioes`** (UMA página: retângulos em pontos do PDF, na ordem de leitura; só a ordem é dita, o texto sai do PDF); `LIMIAR_TITULO` 13,0 → 12,5 (o PDF encolhe o título para caber na coluna: a "Invulnerabilidade" da p.214 tem 12,9; provado nas 221 páginas: só mudaram 5, todas títulos que passavam batidos). `validar-paginas-do-pdf.py`: `--regioes`, `--caixas` (caixas laterais), `--alquimia` (a entrada de elixir não tem classe), e o "N pontos" solto no meio de uma entrada passou a reprovar (a p.191 passava nas duas provas e ainda tinha esse resto).
+  - `chunks.jsonl`: **4 linhas** (160, 165, 214, 215); `MestreIARepository.kt`: Códex **versão 9**; `magias2versao.json`: só a descrição de 6 magias (Chuva de Nozes, Enclausuramento Arbóreo, Forma de Planta em Outro, Corpo de Madeira, Corpo de Lodo, Espectro).
+  - Mesa: `magias-livro.json` e `magias-ciclo.json` regerados.
+- **Ficam com o texto antigo (18 páginas):** 2, 3 e 4 (abertura do livro); 55, 180 e 191 (um número solto cada); e 12 páginas cujo texto antigo já tem todos os números do PDF (17, 27, 47, 64, 72, 84, 98, 128, 132, 158, 202, 210). Tabela em `RELATORIO-P-8.md`.
+- **Testes:** scripts JS **108/108**; JVM nas duas variantes e a suíte da Mesa: ver o adendo A88. Versão **198** (`12.8.13-MAGIAS-TEXTO-DO-LIVRO-3`).

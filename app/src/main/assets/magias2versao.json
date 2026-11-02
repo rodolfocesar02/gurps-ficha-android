@@ -9629,7 +9629,7 @@
     "energia": "1/10/I",
     "tempoOperacao": "1 seg",
     "preRequisitos": "AM1, 6 mágicas sobre Plantas incl. Moldar Planta",
-    "descricao": "Área Arbóreo\n\nFaz com que uma chuva de nozes caia dentro da área, saindo das árvores próximas como se de repente estivessem cheias de esquilos enlouquecidos. A torrente barulhenta se choca em capacetes, pica a pele nua e interfere no disparo de projéteis. Qualquer personagem na área sofre uma penalidade de -1 em qualquer tarefa que exija concentração ou teste de habilidade, incluindo combate e operação de mágicas. Há uma penalidade de visibilidade adicional de -1 por 8 metros de distância, aplicada a ataques de projéteis e testes de visão. O operador pode escolher excluir qualquer item da área dos efeitos da mágica, focalizando a “ira” da madeira nos inimigos.\n\nEsta mágica só pode ser operada ao ar livre, em uma floresta. Não vai funcionar no auge do inverno, ou em bosques muito escassos. Dependendo das espécies de árvores, as nozes podem ser comestíveis.\n\nMagos humanos raramente usam esta mágica (a maioria sente que está abaixo de sua dignidade), mas espécies silvestres e espíritos da natureza a usam para expulsar intrusos de suas florestas.\n\nDuração: 1 minuto.\nCusto básico: 1/10 para operar. Mesmo custo para manter. Dobrando o custo, o operador pode dobrar o efeito da mágica (-2 de penalidade no NH e visibilidade -1 por 4 metros), se o Mestre concordar que as florestas são suficientemente densas e selvagens.\nPré-requisitos: Aptidão Mágica 1 e pelo menos seis mágicas sobre Plantas, incluindo Moldar Planta.\n\nItem: Cajado ou varinha. Utilizável apenas por magos. Custo de energia para criar: 500.",
+    "descricao": "Área\n\nFaz com que uma chuva de nozes caia dentro da área, saindo das árvores próximas como se de repente estivessem cheias de esquilos enlouquecidos. A torrente barulhenta se choca em capacetes, pica a pele nua e interfere no disparo de projéteis. Qualquer personagem na área sofre uma penalidade de -1 em qualquer tarefa que exija concentração ou teste de habilidade, incluindo combate e operação de mágicas. Há uma penalidade de visibilidade adicional de -1 por 8 metros de distância, aplicada a ataques de projéteis e testes de visão. O operador pode escolher excluir qualquer item da área dos efeitos da mágica, focalizando a “ira” da madeira nos inimigos.\n\nEsta mágica só pode ser operada ao ar livre, em uma floresta. Não vai funcionar no auge do inverno, ou em bosques muito escassos. Dependendo das espécies de árvores, as nozes podem ser comestíveis.\n\nMagos humanos raramente usam esta mágica (a maioria sente que está abaixo de sua dignidade), mas espécies silvestres e espíritos da natureza a usam para expulsar intrusos de suas florestas.\n\nDuração: 1 minuto.\n\nCusto básico: 1/10 para operar. Mesmo custo para manter. Dobrando o custo, o operador pode dobrar o efeito da mágica (-2 de penalidade no NH e visibilidade -1 por 4 metros), se o Mestre concordar que as florestas são suficientemente densas e selvagens.\n\nPré-requisitos: Aptidão Mágica 1 e pelo menos seis mágicas sobre Plantas, incluindo Moldar Planta.\n\nItem\nCajado ou varinha. Utilizável apenas por magos. Custo de energia para criar: 500.",
     "descricaoConferida": true,
     "descricaoPagina": 165,
     "mecanica": {
@@ -14155,7 +14155,7 @@
     "energia": "6/2",
     "tempoOperacao": "5 seg",
     "preRequisitos": "AM2, Forma de Planta, Moldar Água",
-    "descricao": "Comum; Resistível com HT\n\nO equivalente aquático do Corpo de Madeira. O objetivo se torna uma massa animada de lodo verde — algas, espuma de lago e outros restos de comida que você pode encontrar em um pântano — temporariamente concedendo a ele a metacaracterística Corpo de Lodo (veja caixa). Roupas (até 3 kg) também são transformadas, mas perdem qualquer poder mágico que elas possam ter.\n\nDuração: 1 minuto. A mágica expira se o objetivo perder a consciência.\nCusto: 6 para operar; 2 para manter.\nTempo de operação: 5 segundos.\nPré-requisitos: Aptidão Mágica 2, Forma de Planta e Moldar Água.\n\nItem: Cajado, varinha ou joia. Só afeta o usuário. Custo de energia para criar: 1.300.",
+    "descricao": "Comum; Resistível com HT\n\nO equivalente aquático do Corpo de Madeira. O objetivo se torna uma massa animada de lodo verde — algas, espuma de lago e outros restos de comida que você pode encontrar em um pântano — temporariamente concedendo a ele a metacaracterística Corpo de Lodo (veja caixa). Roupas (até 3 kg) também são transformadas, mas perdem qualquer poder mágico que elas possam ter.\n\nDuração: 1 minuto. A mágica expira se o objetivo perder a consciência.\n\nCusto: 6 para operar. 2 para manter.\n\nTempo de operação: 5 segundos.\n\nPré-requisitos: Aptidão Mágica 2, Forma de Planta e Moldar Água.\n\nItem\nCajado, varinha ou joia. Só afeta o usuário. Custo de energia para criar: 1.300.\nA Escola de Proteção e Aviso é uma segunda especialidade comum para magos. É uma escola particularmente acessível; a maioria de suas mágicas tem poucos pré-requisitos. Além disso, um mago sábio é um mago com um plano de contingência.",
     "descricaoConferida": true,
     "descricaoPagina": 165,
     "mecanica": {
@@ -14209,7 +14209,7 @@
     "energia": "7/3",
     "tempoOperacao": "5 seg",
     "preRequisitos": "AM2, Forma de Planta",
-    "descricao": "Comum; Resistível com HT\n\nO objetivo torna-se uma estátua de madeira animada, concedendo-lhe temporariamente a metacaracterística Corpo de Madeira (veja quadro). Roupas (até 3 kg) também se tornam madeira, mas perdem qualquer poder mágico que elas possam ter. Ele ainda pode falar, operar mágicas, etc. Um objetivo sob os efeitos do Corpo de Madeira também pode se fundir em objetos de madeira como se ele tivesse a vantagem Interposição (Madeira) (pág. MB66).\n\nDuração: 1 minuto. A mágica expira se o objetivo perder a consciência.\nCusto: 7 para operar; 3 para manter.\nTempo de operação: 5 segundos.\nPré-requisitos: Aptidão Mágica 2 e Forma de Planta.\n\nItem: Cajado, varinha ou joia. Só afeta o usuário. Custo de energia para criar: 1.300.",
+    "descricao": "Comum; Resistível com HT\n\nO objetivo torna-se uma estátua de madeira animada, concedendo-lhe temporariamente a metacaracterística Corpo de Madeira (veja quadro). Roupas (até 3 kg) também se tornam madeira, mas perdem qualquer poder mágico que elas possam ter. Ele ainda pode falar, operar mágicas, etc. Um objetivo sob os efeitos do Corpo de Madeira também pode se fundir em objetos de madeira como se ele tivesse a vantagem Interposição (Madeira) (pág. MB66).\n\nDuração: 1 minuto. A mágica expira se o objetivo perder a consciência.\n\nCusto: 7 para operar. 3 para manter.\n\nTempo de operação: 5 segundos.\n\nPré-requisitos: Aptidão Mágica 2 e Forma de Planta.\n\nItem\nCajado, varinha ou joia. Só afeta o usuário. Custo de energia para criar: 1.300.",
     "descricaoConferida": true,
     "descricaoPagina": 165,
     "mecanica": {
@@ -21128,7 +21128,7 @@
     "energia": "8#",
     "tempoOperacao": "3 seg.",
     "preRequisitos": "AM2, Atravessar Madeira",
-    "descricao": "Comum; Resistível com HT\n\nSemelhante à Soterramento, exceto que uma árvore, em vez da terra, confina o objetivo. O objetivo é imediatamente engolido pela árvore mais próxima o suficiente para contê-lo. Ele permanece em animação suspensa (como Animação Suspensa, pág. 94) em uma minúscula câmara cilíndrica dentro da árvore, até ser resgatado cortando a árvore ou cancelando a mágica. Um mago que opera Enclausuramento Arbóreo em si mesmo pode optar por ficar acordado, mas isso não é sábio a menos que ele possa criar ar!\n\nModificadores: Aplique os Modificadores de Longa Distância (pág. 14) para a distância do objetivo até a árvore mais próxima, grande o suficiente para segurá-lo.\n\nDuração: Indefinida.\nCusto: 8 para operar; 5 para reverter um Enclausuramento Arbóreo.\nTempo de operação: 3 segundos.\nPré-requisitos: Aptidão Mágica 2 e Atravessar Madeira.\n\nItem: Varinha ou cajado. O item deve ser de madeira e funciona apenas com árvores dessa madeira. Utilizável apenas por magos; o item deve tocar o objetivo. Custo de energia para criar: 1.000.",
+    "descricao": "Comum; Resistível com HT\n\nSemelhante à Soterramento, exceto que uma árvore, em vez da terra, confina o objetivo. O objetivo é imediatamente engolido pela árvore mais próxima o suficiente para contê-lo. Ele permanece em animação suspensa (como Animação Suspensa, pág. 94) em uma minúscula câmara cilíndrica dentro da árvore, até ser resgatado cortando a árvore ou cancelando a mágica.\n\nUm mago que opera Enclausuramento Arbóreo em si mesmo pode optar por ficar acordado, mas isso não é sábio a menos que ele possa criar ar!\n\nModificadores: Aplique os Modificadores de Longa Distância (pág. 14) para a distância do objetivo até a árvore mais próxima, grande o suficiente para segurá-lo.\n\nDuração: Indefinida.\n\nCusto: 8 para operar. 5 para reverter um Enclausuramento Arbóreo.\n\nTempo de operação: 3 segundos.\n\nPré-requisitos: Aptidão Mágica 2 e Atravessar Madeira.\n\nItem\nVarinha ou cajado. O item deve ser de madeira e funciona apenas com árvores dessa madeira. Utilizável apenas por magos; o item deve tocar o objetivo. Custo de energia para criar: 1.000.",
     "descricaoConferida": true,
     "descricaoPagina": 165,
     "mecanica": {
@@ -23582,7 +23582,7 @@
     "energia": "250 ou 500#",
     "tempoOperacao": "Varia",
     "preRequisitos": "AM3, IQ 13+, Encantar, Interromper Envelhecimento, Aprisionar Alma",
-    "descricao": "233 pontos\n\nModificadores de Atributos: ST+5 [50]; HT+5 [50].\nModificadores de Características Secundárias: PV+5 [10].\nVantagens: Não Respira [20]; RD 4 [20]; Imunidade a Danos Metabólicos [30]; Tolerância à Ferimentos (Sem Sangue, Sem Cérebro, Sem Sinais Vitais, Sem Vida) [35]; Aptidão Mágica 1 [15]; Visão Noturna 9 [9]; Durabilidade Sobrenatural (Magias, Armas Mágicas) [150]; Tolerância à Temperatura 10 [10]; Idade Imutável [15]; Fleuma [15].\nDesvantagens: Aparência (Horrível) [-24]; Sanguinolência (12) [-10]; Insensível (12) [-5]; Dependência (Objeto Espectro; raro, constante) [-150]; Voz Irritante [-10]; Estigma Social (Morto) [-20]; Características Sobrenaturais (Sem Calor Corporal, Palidez) [-15]; Sem Recuperação (pode curar com Roubar HT) [-20].\nPeculiaridades: Ama batalha; Assexuado. [-2]\nMagias Raciais Inatas: Toque Mortal-15 [20]; Roubar Saúde-15 [20]; Corpo Etéreo-15 [20].",
+    "descricao": "233 pontos\n\nModificadores de Atributos: ST+5 [50]; HT+5 [50]. Modificadores de Características Secundárias: PV+5 [10]. Vantagens: Não Respira [20]; RD 4 [20]; Imunidade a Danos Metabólicos [30]; Tolerância à Ferimentos (Sem Sangue, Sem Cérebro, Sem Sinais Vitais, Sem Vida) [35]; Aptidão Mágica 1 [15]; Visão Noturna 9 [9]; Durabilidade Sobrenatural (Magias, Armas Mágicas) [150]; Tolerância à Temperatura 10 [10]; Idade Imutável [15]; Fleuma [15]. Desvantagens: Aparência (Horrível) [-24]; Sanguinolência (12) [-10]; Insensível (12) [-5]; Dependência (Objeto Espectro; raro, constante) [-150]; Voz Irritante [-10]; Estigma Social (Morto) [-20]; Características Sobrenaturais (Sem Calor Corporal, Palidez) [-15]; Sem Recuperação (pode curar com Roubar HT) [-20]. Peculiaridades: Ama batalha; Assexuado. [-2] Magias Raciais Inatas: Toque Mortal-15 [20]; Roubar Saúde-15 [20];\n\nCorpo Etéreo-15 [20].",
     "descricaoConferida": true,
     "descricaoPagina": 160,
     "mecanica": {
@@ -25874,7 +25874,7 @@
     "energia": "5/2",
     "tempoOperacao": "30 seg",
     "preRequisitos": "AM2, Forma de Planta",
-    "descricao": "Especial; Resistível com Vontade\n\nComo Forma de Planta, mas utilizável em outros. Apenas o operador ou a mágica Remover Maldição pode terminar a mágica. A perda de IQ logo transformará o objetivo em um verdadeiro vegetal!\nA Escola de Proteção e Aviso é uma segunda especialidade comum para magos. É uma escola particularmente acessível; a maioria de suas mágicas tem poucos pré-requisitos. Além disso, um mago sábio é um mago com um plano de contingência.",
+    "descricao": "Especial; Resistível com Vontade\n\nComo Forma de Planta, mas utilizável em outros. Apenas o operador ou a mágica Remover Maldição pode terminar a mágica. A perda de IQ logo transformará o objetivo em um verdadeiro vegetal!\n\nDuração: 1 hora.\n\nCusto: 5 para operar. 2 para manter.\n\nTempo de operação: 30 segundos.\n\nPré-requisitos: Aptidão Mágica 2 e Forma de Planta.\n\nItem\nCajado ou varinha. Utilizável apenas por magos; o item deve tocar o objetivo. Custo de energia para criar: 3.000.",
     "descricaoConferida": true,
     "descricaoPagina": 165,
     "mecanica": {
@@ -25894,9 +25894,9 @@
     "conferido": "livro",
     "conferidoPagina": 165,
     "conferidoPor": {
-      "duracao": "tabela",
-      "tempoOperacao": "tabela",
-      "custo": "tabela"
+      "duracao": "tabela+entrada",
+      "tempoOperacao": "tabela+entrada",
+      "custo": "tabela+entrada"
     },
     "faixaDoLivro": {
       "operar": {

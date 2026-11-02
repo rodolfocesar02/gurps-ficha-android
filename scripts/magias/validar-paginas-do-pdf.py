@@ -62,7 +62,7 @@ def conteudo(cru, corpo):
     return ok, dict(perdeu=perdeu, inventou=inventou, palavras_faltando=faltam, palavras=total, custo=custo)
 
 
-def estrutura(md):
+def estrutura(md, caixas=(), sem_classe_ok=False):
     sem_classe = fragmentos = repetidos = soltos = 0
     achados = []
     for n_sec, sec in enumerate(re.split(r"^---$", md, flags=re.M)):
@@ -73,7 +73,8 @@ def estrutura(md):
         continuacao = n_sec == 0 and not linhas[0].startswith("### ")
         if linhas[0].startswith("### "):
             proxima = linhas[1] if len(linhas) > 1 else ""
-            if not re.match(r"^\*\*[^*]+\*\*$", proxima.strip()) and not proxima.startswith(("|", "Modificadores")):
+            if (not re.match(r"^\*\*[^*]+\*\*$", proxima.strip()) and not proxima.startswith(("|", "Modificadores"))
+                    and linhas[0][4:].strip() not in caixas and not sem_classe_ok):
                 sem_classe += 1
                 achados.append("sem classe: " + linhas[0][4:40])
         idx = [i for i, l in enumerate(linhas) if CAMPO.match(l)]
@@ -83,6 +84,12 @@ def estrutura(md):
             achados.append("campo repetido em: " + linhas[0][:40])
         item = next((i for i, l in enumerate(linhas) if l.strip() == "**Item**"), len(linhas))
         for i, l in enumerate(linhas):
+            if re.match(r"^\*\*\d+ pontos\*\*$", l.strip()) and not (i == 1 and linhas[0].startswith("### ")):
+                # o total de pontos de uma ficha lateral de criatura ("233 pontos") SOLTO no meio do texto: a caixa se misturou com a entrada (p.160, p.191).
+                # (logo abaixo do título da própria ficha é onde ele mora: não conta)
+                soltos += 1
+                achados.append("total de pontos solto: " + l.strip())
+                continue
             if l.startswith(("**", "|", "#", "-")):
                 continue
             if re.match(r"^[a-zà-ÿ]", l):
@@ -104,9 +111,13 @@ def main():
     ap.add_argument("--chunks", default="app/src/main/assets/chunks.jsonl")
     ap.add_argument("--fundir-bordas", action="store_true")
     ap.add_argument("--quadro-largo", action="store_true")
+    ap.add_argument("--caixas", default="", help="títulos de CAIXAS laterais (não são magia, não têm classe), separados por ';': 'Metacaracterísticas de Plantas'")
+    ap.add_argument("--alquimia", action="store_true", help="páginas de Alquimia (elixires, p.210 em diante): a entrada não tem classe, e o campo 'Forma/Ingredientes' é dela")
+    ap.add_argument("--regioes", help="UMA página: as regiões de leitura (ver pdf-para-chunks.py --regioes)")
     ap.add_argument("--json")
     a = ap.parse_args()
     conv.FUNDIR_BORDAS, conv.QUADRO_LARGO = a.fundir_bordas, a.quadro_largo
+    conv.REGIOES = [tuple(float(n) for n in r.split(",")) for r in a.regioes.split(";") if r.strip()] if a.regioes else None
     doc = conv.pymupdf.open(a.pdf)
     vocab = conv.vocabulario(a.chunks)
     impressas = list(range(2, 223)) if a.paginas == "todas" else [int(x) for x in a.paginas.split(",") if x.strip()]
@@ -115,7 +126,7 @@ def main():
         novo = conv.converter(doc, p, vocab)
         corpo = novo.split(QUEBRA, 1)[1] if QUEBRA in novo else novo
         ok_c, c = conteudo(texto_cru(doc[conv.pagina_do_pdf(doc, p)]), corpo)
-        ok_e, e = estrutura(novo)
+        ok_e, e = estrutura(novo, tuple(x.strip() for x in a.caixas.split(";") if x.strip()), a.alquimia)
         saida[p] = dict(segura=ok_c and ok_e, conteudo=c, estrutura=e)
         if ok_c and ok_e:
             seguras.append(p)

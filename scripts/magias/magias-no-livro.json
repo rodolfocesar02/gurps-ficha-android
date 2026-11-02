@@ -10,7 +10,7 @@
   "localizada": 878,
   "comBlocoETabela": 878,
   "semNenhuma": 0,
-  "blocoSemCampos": 27,
+  "blocoSemCampos": 26,
   "remissoes": 0,
   "casamentoTabela": {
    "exato": 809,
@@ -7076,17 +7076,17 @@
     "titulo": "Chuva de Nozes",
     "pagina": 165,
     "paginaFim": 165,
-    "linhaInicio": 10,
-    "linhaFim": 26,
+    "linhaInicio": 9,
+    "linhaFim": 27,
     "temCampos": true,
     "campos": {
      "duracao": {
       "pagina": 165,
-      "linha": 20
+      "linha": 18
      },
      "custo": {
       "pagina": 165,
-      "linha": 21
+      "linha": 20
      },
      "preRequisitos": {
       "pagina": 165,
@@ -10534,26 +10534,26 @@
     "variante": null,
     "titulo": "Corpo de Lodo",
     "pagina": 165,
-    "paginaFim": 165,
-    "linhaInicio": 60,
-    "linhaFim": 73,
+    "paginaFim": 166,
+    "linhaInicio": 87,
+    "linhaFim": 4,
     "temCampos": true,
     "campos": {
      "duracao": {
       "pagina": 165,
-      "linha": 66
+      "linha": 92
      },
      "custo": {
       "pagina": 165,
-      "linha": 67
+      "linha": 94
      },
      "tempo": {
       "pagina": 165,
-      "linha": 68
+      "linha": 96
      },
      "preRequisitos": {
       "pagina": 165,
-      "linha": 69
+      "linha": 98
      }
     },
     "remissao": null
@@ -10587,25 +10587,25 @@
     "titulo": "Corpo de Madeira",
     "pagina": 165,
     "paginaFim": 165,
-    "linhaInicio": 45,
-    "linhaFim": 58,
+    "linhaInicio": 69,
+    "linhaFim": 85,
     "temCampos": true,
     "campos": {
      "duracao": {
       "pagina": 165,
-      "linha": 51
+      "linha": 74
      },
      "custo": {
       "pagina": 165,
-      "linha": 52
+      "linha": 76
      },
      "tempo": {
       "pagina": 165,
-      "linha": 53
+      "linha": 78
      },
      "preRequisitos": {
       "pagina": 165,
-      "linha": 54
+      "linha": 80
      }
     },
     "remissao": null
@@ -15681,25 +15681,25 @@
     "titulo": "Enclausuramento Arbóreo",
     "pagina": 165,
     "paginaFim": 165,
-    "linhaInicio": 28,
-    "linhaFim": 43,
+    "linhaInicio": 29,
+    "linhaFim": 49,
     "temCampos": true,
     "campos": {
      "duracao": {
       "pagina": 165,
-      "linha": 36
+      "linha": 38
      },
      "custo": {
       "pagina": 165,
-      "linha": 37
+      "linha": 40
      },
      "tempo": {
       "pagina": 165,
-      "linha": 38
+      "linha": 42
      },
      "preRequisitos": {
       "pagina": 165,
-      "linha": 39
+      "linha": 44
      }
     },
     "remissao": null
@@ -17492,8 +17492,8 @@
     "titulo": "Espectro",
     "pagina": 160,
     "paginaFim": 160,
-    "linhaInicio": 27,
-    "linhaFim": 37,
+    "linhaInicio": 25,
+    "linhaFim": 32,
     "temCampos": false,
     "campos": {},
     "remissao": null
@@ -19228,11 +19228,28 @@
     "variante": null,
     "titulo": "Forma de Planta em Outro",
     "pagina": 165,
-    "paginaFim": 166,
-    "linhaInicio": 75,
-    "linhaFim": 4,
-    "temCampos": false,
-    "campos": {},
+    "paginaFim": 165,
+    "linhaInicio": 51,
+    "linhaFim": 67,
+    "temCampos": true,
+    "campos": {
+     "duracao": {
+      "pagina": 165,
+      "linha": 56
+     },
+     "custo": {
+      "pagina": 165,
+      "linha": 58
+     },
+     "tempo": {
+      "pagina": 165,
+      "linha": 60
+     },
+     "preRequisitos": {
+      "pagina": 165,
+      "linha": 62
+     }
+    },
     "remissao": null
    }
   },

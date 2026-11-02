@@ -32,13 +32,14 @@ PRETO = 0x000000
 # (azul na Água, outro azul no Ar...): o que vale é "itálico, colorido e com a palavra do rótulo".
 ROTULOS = re.compile(r"^(Duração|Custo|Custo básico|Tempo de operação|Pré-requisitos?)$", re.I)
 FONTE_TITULO = "BoldIt"
-LIMIAR_TITULO = 13.0
+LIMIAR_TITULO = 12.5  # P-8: era 13.0; o PDF encolhe o título para caber na coluna (a "Invulnerabilidade" da p.214 tem 12,9)
 ROTULOS_DE_CLASSE = ("SemiBold",)
 
 # Duas regras que ajudam algumas páginas e ATRAPALHAM outras (o ensaio de 19/out mudou 46 e 10 páginas, algumas para
 # pior). Por isso só valem quando pedidas, página a página: `--fundir-bordas` e `--quadro-largo`.
 FUNDIR_BORDAS = False
 QUADRO_LARGO = False
+REGIOES = None  # P-8: [(x0, y0, x1, y1)] em pontos do PDF, na ordem de leitura (uma página só); ver `--regioes`
 
 SEPARADOR_DE_COLUNA = 40.0  # pontos: dois grupos de x0 mais longe que isto são colunas diferentes
 LACUNA_DE_PARAGRAFO = 2.5   # pontos entre o fim de uma linha e o começo da próxima
@@ -286,7 +287,19 @@ def atribuir_colunas(linhas, colunas):
                 l["col"] = len(colunas)
 
 
+def ordenar_por_regioes(linhas):
+    """P-8: a ordem de leitura DITA por quem olhou a página (uma caixa que corta as colunas, como a p.165). Cada linha vai para a primeira região que
+    contém o centro dela; o que não cabe em região nenhuma vai para o fim. O texto continua saindo do PDF: só a ordem é dita."""
+    for l in linhas:
+        cx, cy = (l["x0"] + l["x1"]) / 2.0, (l["y0"] + l["y1"]) / 2.0
+        l["col"] = next((i for i, (x0, y0, x1, y1) in enumerate(REGIOES) if x0 <= cx <= x1 and y0 <= cy <= y1), len(REGIOES))
+    ordenadas = sorted(linhas, key=lambda l: (l["col"], round(l["y0"], 1), l["x0"]))
+    return agrupar_tabelas(ordenadas), list(range(len(REGIOES) + 1))
+
+
 def ordenar(linhas):
+    if REGIOES:
+        return ordenar_por_regioes(linhas)
     colunas = bordas_das_colunas(linhas)
     atribuir_colunas(linhas, colunas)
     ordenadas = sorted(linhas, key=lambda l: (l["col"], round(l["y0"], 1), l["x0"]))
@@ -546,11 +559,17 @@ def main():
                     help="margens a menos de 40pt são a mesma coluna (p.142, p.2, p.6...); confira o ensaio")
     ap.add_argument("--quadro-largo", action="store_true",
                     help="quadro que ocupa 2+ colunas, mas não a página toda, é lido no fim (p.112); confira o ensaio")
+    ap.add_argument("--regioes", help="UMA página só: as regiões de leitura em pontos do PDF, na ordem, 'x0,y0,x1,y1;x0,y0,x1,y1;...' "
+                    "(a p.165: a caixa de cima, depois cada coluna); o texto sai do PDF, só a ordem é dita")
     ap.add_argument("--mostrar", action="store_true", help="imprime o markdown de cada página")
     ap.add_argument("--saida", help="grava o markdown de cada página neste JSON (ensaio)")
     a = ap.parse_args()
-    global FUNDIR_BORDAS, QUADRO_LARGO
+    global FUNDIR_BORDAS, QUADRO_LARGO, REGIOES
     FUNDIR_BORDAS, QUADRO_LARGO = a.fundir_bordas, a.quadro_largo
+    if a.regioes:
+        if len([x for x in a.paginas.split(",") if x.strip()]) != 1:
+            raise SystemExit("--regioes vale para UMA página só (cada página tem as suas regiões)")
+        REGIOES = [tuple(float(n) for n in r.split(",")) for r in a.regioes.split(";") if r.strip()]
     sys.stdout.reconfigure(encoding="utf-8")
 
     impressas = [int(x) for x in a.paginas.split(",") if x.strip()]
