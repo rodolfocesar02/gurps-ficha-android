@@ -3,7 +3,6 @@ package com.gurps.ficha.viewmodel.delegates
 import com.gurps.ficha.BuildConfig
 import com.gurps.ficha.data.network.DiscordRollApiClient
 import com.gurps.ficha.data.network.DiscordRollPayload
-import com.gurps.ficha.data.network.MestreIAClient
 import com.gurps.ficha.domain.roll.RollDispatchPolicy
 import com.gurps.ficha.model.*
 import kotlinx.coroutines.*
@@ -35,18 +34,6 @@ class FichaNetworkDelegate {
         }
     }
 
-    /** Sobe o retrato do personagem ao servidor (uma vez, ao salvar a ficha). */
-    suspend fun enviarRetratoDiscord(characterName: String, imageDataUri: String): Boolean {
-        return withContext(Dispatchers.IO) {
-            DiscordRollApiClient.postPortrait(
-                baseUrl = BuildConfig.DISCORD_ROLL_API_BASE_URL,
-                apiKey = BuildConfig.DISCORD_ROLL_API_KEY,
-                characterName = characterName,
-                imageDataUri = imageDataUri
-            )
-        }
-    }
-
     suspend fun buscarCanaisDiscord(): Result<List<com.gurps.ficha.data.network.DiscordVoiceChannel>> {
         return withContext(Dispatchers.IO) {
             val resultado = DiscordRollApiClient.fetchVoiceChannels(
@@ -58,30 +45,6 @@ class FichaNetworkDelegate {
             } else {
                 Result.failure(Exception(resultado.error ?: "erro_ao_carregar_canais"))
             }
-        }
-    }
-
-    suspend fun conversarComMestreIA(
-        baseUrl: String,
-        apiKey: String,
-        workspaceSlug: String,
-        prompt: String,
-        history: List<MestreIAClient.ChatMessage>,
-        contextoPersonagem: String,
-        catalogo: MestreIAClient.CatalogoNomes,
-        modo: String
-    ): MestreIAClient.ChatResponse {
-        return withContext(Dispatchers.IO) {
-            MestreIAClient.perguntarAoMestre(
-                baseUrl = baseUrl,
-                apiKey = apiKey,
-                workspaceSlug = workspaceSlug,
-                prompt = prompt,
-                history = history.map { it.role to it.text },
-                contextoPersonagem = contextoPersonagem,
-                catalogo = catalogo,
-                modo = modo
-            )
         }
     }
 

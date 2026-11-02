@@ -58,11 +58,9 @@ class PadraoDeTelaTest {
         "TabPericias.kt",
         "TabMagias.kt",
         "TabTecnicas.kt",
-        "TabSaga.kt",
         "DialogsCommon.kt",
         "DiceRoller.kt",
-        "FichaScreen.kt",
-        "DialogsMestreIA.kt"
+        "FichaScreen.kt"
     )
 
     /**
@@ -87,10 +85,6 @@ class PadraoDeTelaTest {
         val caminho = f.path.replace('\\', '/')
         if (f.name in JA_NASCEM_NO_PADRAO) return@filterNot false
         f.name in DO_PROPRIO_PADRAO || f.name in DIVIDA_ATE_MIGRAR ||
-            // A tela do combate tático da Saga é outro projeto de UI (grade de
-            // hexágonos, tokens, câmera) e não compartilha nada com os diálogos
-            // de catálogo. Entra quando a Saga for migrada.
-            caminho.contains("/ui/saga/") ||
             // `features/` inteiro sai por enquanto, MENOS o que já foi migrado:
             // traits (LAYOUT-3/4) e magic (LAYOUT-5).
             //

@@ -1,44 +1,24 @@
 package com.gurps.ficha.ui
 
-import android.Manifest
 import android.app.Activity
-import android.os.Handler
-import android.os.Looper
-import android.content.pm.ActivityInfo
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.net.Uri
-import androidx.core.content.ContextCompat
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AddAPhoto
-import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Download
 import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material.icons.filled.PhotoCamera
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Scaffold
-import com.gurps.ficha.domain.MestreIAContextFilter
 import com.gurps.ficha.ui.components.FichaCustomNavigationBar
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
@@ -49,51 +29,28 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.window.Dialog
-import androidx.compose.ui.window.DialogProperties
-import coil.compose.AsyncImage
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.contentDescription
-import androidx.compose.ui.semantics.liveRegion
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.gurps.ficha.BuildConfig
-import com.gurps.ficha.R
-import com.gurps.ficha.model.PersonagemInterop
 import com.gurps.ficha.update.AppUpdateService
 import com.gurps.ficha.update.AppUpdateHelper
 import com.gurps.ficha.viewmodel.FichaViewModel
-import com.gurps.ficha.ui.components.EstadoLive
-import com.gurps.ficha.ui.components.EstadoVoz
-import com.gurps.ficha.ui.components.GeminiLiveService
 import com.gurps.ficha.ui.features.dice3d.ConfigurarDadosDialog
-import com.gurps.ficha.ui.components.GeminiLiveTools
 import kotlinx.coroutines.launch
-
-// Flag para ligar/desligar a Aba SAGA na compilação do APK.
-// Mude para true para mostrar a aba, ou false para escondê-la e desacoplar.
-const val HABILITAR_ABA_SAGA = false
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -124,7 +81,6 @@ fun FichaScreen(viewModel: FichaViewModel) {
     var showLoadDialog by remember { mutableStateOf(false) }
     var showUpdateDialog by remember { mutableStateOf(false) }
     var showConfigDadosDialog by remember { mutableStateOf(false) }
-    var showMestreIADialog by remember { mutableStateOf(false) }
     var updateDialogTitle by remember { mutableStateOf("Atualização") }
     var updateDialogMessage by remember { mutableStateOf("") }
     var updateApkUrl by remember { mutableStateOf<String?>(null) }
@@ -132,92 +88,6 @@ fun FichaScreen(viewModel: FichaViewModel) {
     val activity = context as? Activity
     val coroutineScope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
-    var estadoVoz by remember { mutableStateOf(EstadoVoz.OCIOSO) }
-    var estadoLive by remember { mutableStateOf(EstadoLive.OCIOSO) }
-    var mostrarImagemFullscreen by remember { mutableStateOf(false) }
-
-    // OpenDocument (SAF): explorador de arquivos completo — permite escolher de
-    // QUALQUER pasta do telefone (Downloads, WhatsApp, Drive, etc.), não só a galeria.
-    val imagemPersonagemPicker = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.OpenDocument()
-    ) { uri: Uri? ->
-        if (uri == null) return@rememberLauncherForActivityResult
-        coroutineScope.launch {
-            val store = com.gurps.ficha.data.storage.ImagemPersonagemStore
-            val imagens = store.salvarImagem(context, uri)
-            if (imagens != null) {
-                // Remove os arquivos anteriores, se houver, para não acumular.
-                val anteriorRecorte = viewModel.personagem.imagemPersonagemUri
-                val anteriorOriginal = viewModel.personagem.imagemPersonagemOriginalUri
-                if (anteriorRecorte.isNotBlank() && anteriorRecorte != imagens.recortadaUri) {
-                    store.excluirImagem(anteriorRecorte)
-                }
-                if (anteriorOriginal.isNotBlank() && anteriorOriginal != imagens.originalUri) {
-                    store.excluirImagem(anteriorOriginal)
-                }
-                viewModel.atualizarImagemPersonagem(imagens.recortadaUri, imagens.originalUri)
-            } else {
-                snackbarHostState.showSnackbar("Falha ao processar a imagem.")
-            }
-        }
-    }
-    val geminiLive = remember { GeminiLiveService(context) }
-    val geminiLiveTools = remember { GeminiLiveTools(viewModel, context) }
-
-    SideEffect {
-        geminiLive.onEstado = { novoEstado ->
-            estadoLive = novoEstado
-            if (novoEstado == EstadoLive.OUVINDO && !showMestreIADialog) {
-                Handler(Looper.getMainLooper()).post { showMestreIADialog = true }
-            }
-        }
-        geminiLive.onTranscricaoUsuario = { texto ->
-            // Primeiro fragmento: cria entrada no chat e abre o diálogo
-            viewModel.adicionarMensagemVoz(texto, "user")
-            Handler(Looper.getMainLooper()).post { showMestreIADialog = true }
-        }
-        geminiLive.onAtualizarTranscricaoUsuario = { texto ->
-            // Fragmentos seguintes e versão final: atualiza a entrada existente
-            viewModel.atualizarUltimaMensagemVozUsuario(texto)
-            Handler(Looper.getMainLooper()).post { showMestreIADialog = true }
-        }
-        geminiLive.onRespostaMestre = { texto ->
-            viewModel.adicionarMensagemVoz(texto, "model")
-            Handler(Looper.getMainLooper()).post { showMestreIADialog = true }
-        }
-        geminiLive.onToolCall = { nome, args ->
-            geminiLiveTools.executar(nome, args)
-        }
-    }
-    DisposableEffect(Unit) { onDispose { geminiLive.encerrar() } }
-
-    val permissaoMicLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.RequestPermission()
-    ) { concedida ->
-        if (concedida) {
-            val ctx = MestreIAContextFilter.gerarContexto(viewModel.personagem, "conversa")
-            geminiLive.iniciarSessao(ctx)
-        }
-    }
-
-    fun iniciarVozComPermissao() {
-        // 🟥 A Mesa manda no microfone enquanto a sala estiver ligada — MNA-7.
-        com.gurps.ficha.ui.features.mesa.oQueImpedeAVozDoMestreIA()?.let { recado ->
-            coroutineScope.launch { snackbarHostState.showSnackbar(recado) }
-            return
-        }
-        if (estadoLive != EstadoLive.OCIOSO && estadoLive != EstadoLive.ERRO) {
-            geminiLive.encerrar()
-            return
-        }
-        val permissao = ContextCompat.checkSelfPermission(context, Manifest.permission.RECORD_AUDIO)
-        if (permissao == PackageManager.PERMISSION_GRANTED) {
-            val ctx = MestreIAContextFilter.gerarContexto(viewModel.personagem, "conversa")
-            geminiLive.iniciarSessao(ctx)
-        } else {
-            permissaoMicLauncher.launch(Manifest.permission.RECORD_AUDIO)
-        }
-    }
 
     // Check automático de atualização na inicialização
     LaunchedEffect(Unit) {
@@ -260,20 +130,11 @@ fun FichaScreen(viewModel: FichaViewModel) {
         add("Equipamentos")
         add("Rolagem")
         if (temMesaLigada) add("Mesa")
-        if (HABILITAR_ABA_SAGA) add("Saga")
     }
     // ⚠️ Se a aba escolhida sumir da lista (a Magia, quando a aptidão sai),
     // cai-se na primeira — e não num índice que já não quer dizer nada.
     val selectedTab = tabs.indexOf(abaEscolhida).takeIf { it >= 0 } ?: 0
     val selectedTitle = tabs.getOrNull(selectedTab).orEmpty()
-    // Lote TOK-6a — MODO JOGO: dentro de uma campanha da Saga, o app vira "jogo em tela cheia"
-    // (sem cabeçalho da ficha, sem PontosBar, sem abas). O X no header da campanha (TabSaga) sai.
-    // Fica na vertical: o Modo Jogo da Saga é de telefone em pé.
-    val sagaModoJogo = selectedTitle == "Saga" && viewModel.sagaCampanhaAtiva != null
-    // 🔴 So o Modo Jogo da Saga esconde a barra inteira. O VTT, que tambem a
-    // escondia, foi apagado em 22/set: ele era o tabuleiro de antes, e quem faz
-    // esse trabalho hoje e a Mesa.
-    val hideAppChrome = sagaModoJogo
     /**
      * 🟥 **Esconder o cabeçalho NÃO é esconder as abas** — MNA-1b.
      *
@@ -291,8 +152,13 @@ fun FichaScreen(viewModel: FichaViewModel) {
      * Mesa já tem a barra dela (SALAS / PESSOAS / MENU) e o mapa é o que
      * importa. Duas barras uma em cima da outra num telefone não deixam
      * tabuleiro nenhum à vista.
+     *
+     * 🔴 E a barra de baixo, agora, **não some nunca**. O `hideAppChrome` só
+     * existia para o VTT (apagado em 22/set) e para o Modo Jogo da Saga (que saiu
+     * no lote SEM-IA). Sem nenhum dos dois, uma condição ali só serviria para
+     * alguém voltar a trancar a pessoa dentro de uma aba.
      */
-    val esconderOCabecalho = hideAppChrome || selectedTitle == "Mesa"
+    val esconderOCabecalho = selectedTitle == "Mesa"
     val maxTabIndex = tabs.lastIndex
     val exportCompativelLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.CreateDocument("application/json")
@@ -300,7 +166,7 @@ fun FichaScreen(viewModel: FichaViewModel) {
         if (uri == null) return@rememberLauncherForActivityResult
         coroutineScope.launch {
             val exportResult = runCatching {
-                val json = viewModel.exportarFichaJsonCompativelComImagem()
+                val json = viewModel.exportarFichaJsonCompativel()
                 context.contentResolver.openOutputStream(uri)?.use { output ->
                     output.writer(Charsets.UTF_8).use { writer -> writer.write(json) }
                 }
@@ -322,7 +188,7 @@ fun FichaScreen(viewModel: FichaViewModel) {
         if (uri == null) return@rememberLauncherForActivityResult
         coroutineScope.launch {
             val exportResult = runCatching {
-                val json = viewModel.exportarFichaJsonVersionadaComImagem()
+                val json = viewModel.exportarFichaJsonVersionada()
                 context.contentResolver.openOutputStream(uri)?.use { output ->
                     output.writer(Charsets.UTF_8).use { writer -> writer.write(json) }
                 }
@@ -363,8 +229,7 @@ fun FichaScreen(viewModel: FichaViewModel) {
     fun compartilharFicha() {
         coroutineScope.launch {
             runCatching {
-                // Exporta com a imagem do personagem embutida (vai junto no arquivo).
-                val json = viewModel.exportarFichaJsonCompativelComImagem()
+                val json = viewModel.exportarFichaJsonCompativel()
                 val nomeBase = viewModel.personagem.nome.ifBlank { "ficha_gurps" }
                     .replace(Regex("[^a-zA-Z0-9._-]"), "_")
                 val fileName = "${nomeBase}.json"
@@ -425,81 +290,43 @@ fun FichaScreen(viewModel: FichaViewModel) {
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
         topBar = {
             if (!esconderOCabecalho) {
-                val imagemUri = viewModel.personagem.imagemPersonagemUri
-                if (imagemUri.isNotBlank()) {
-                    CabecalhoComImagem(
-                        viewModel = viewModel,
-                        imagemUri = imagemUri,
-                        mostrarPontos = selectedTitle != "Rolagem",
-                        isPraCegoVariant = isPraCegoVariant,
-                        onMenuClick = { showMenuDialog = true },
-                        onTrocarImagem = {
-                            imagemPersonagemPicker.launch(arrayOf("image/*"))
-                        },
-                        onExpandirImagem = { mostrarImagemFullscreen = true }
-                    )
-                } else {
-                    TopAppBar(
-                        title = {
-                            Text(
-                                text = viewModel.personagem.nome.ifBlank { "GURPS - Nova Ficha" },
-                                fontWeight = FontWeight.Bold
+                TopAppBar(
+                    title = {
+                        Text(
+                            text = viewModel.personagem.nome.ifBlank { "GURPS - Nova Ficha" },
+                            fontWeight = FontWeight.Bold
+                        )
+                    },
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = MaterialTheme.colorScheme.primary,
+                        titleContentColor = MaterialTheme.colorScheme.onPrimary
+                    ),
+                    actions = {
+                        IconButton(
+                            onClick = { showMenuDialog = true },
+                            modifier = if (isPraCegoVariant) {
+                                Modifier.semantics { contentDescription = "Abrir menu da ficha" }
+                            } else {
+                                Modifier
+                            }
+                        ) {
+                            Icon(
+                                Icons.Default.MoreVert,
+                                contentDescription = "Menu",
+                                tint = MaterialTheme.colorScheme.onPrimary
                             )
-                        },
-                        colors = TopAppBarDefaults.topAppBarColors(
-                            containerColor = MaterialTheme.colorScheme.primary,
-                            titleContentColor = MaterialTheme.colorScheme.onPrimary
-                        ),
-                        actions = {
-                            IconButton(
-                                onClick = {
-                                    imagemPersonagemPicker.launch(arrayOf("image/*"))
-                                },
-                                modifier = if (isPraCegoVariant) {
-                                    Modifier.semantics { contentDescription = "Adicionar foto do personagem" }
-                                } else {
-                                    Modifier
-                                }
-                            ) {
-                                Icon(
-                                    Icons.Default.AddAPhoto,
-                                    contentDescription = "Adicionar foto",
-                                    tint = MaterialTheme.colorScheme.onPrimary
-                                )
-                            }
-                            IconButton(
-                                onClick = { showMenuDialog = true },
-                                modifier = if (isPraCegoVariant) {
-                                    Modifier.semantics { contentDescription = "Abrir menu da ficha" }
-                                } else {
-                                    Modifier
-                                }
-                            ) {
-                                Icon(
-                                    Icons.Default.MoreVert,
-                                    contentDescription = "Menu",
-                                    tint = MaterialTheme.colorScheme.onPrimary
-                                )
-                            }
                         }
-                    )
-                }
+                    }
+                )
             }
         },
         bottomBar = {
-            if (!hideAppChrome) {
-                FichaCustomNavigationBar(
-                    tabs = tabs,
-                    currentIndex = selectedTab,
-                    onTabClick = { index -> abaEscolhida = tabs[index] },
-                    onMestreIAClick = { showMestreIADialog = true },
-                    onMestreIALongPress = { iniciarVozComPermissao() },
-                    mestreIAAberto = showMestreIADialog,
-                    estadoVoz = estadoVoz,
-                    estadoLive = estadoLive,
-                    isPraCegoVariant = isPraCegoVariant
-                )
-            }
+            FichaCustomNavigationBar(
+                tabs = tabs,
+                currentIndex = selectedTab,
+                onTabClick = { index -> abaEscolhida = tabs[index] },
+                isPraCegoVariant = isPraCegoVariant
+            )
         }
     ) { paddingValues ->
         Column(
@@ -507,10 +334,7 @@ fun FichaScreen(viewModel: FichaViewModel) {
                 .fillMaxSize()
                 .padding(paddingValues)
         ) {
-            // Quando há foto, a linha de pontos já é exibida SOBRE a imagem no
-            // cabeçalho (CabecalhoComImagem), então não repetimos a PontosBar aqui.
-            val temImagemNoCabecalho = viewModel.personagem.imagemPersonagemUri.isNotBlank()
-            if (!esconderOCabecalho && selectedTitle != "Rolagem" && !temImagemNoCabecalho) {
+            if (!esconderOCabecalho && selectedTitle != "Rolagem") {
                 PontosBar(viewModel)
             }
             when (selectedTitle) {
@@ -528,7 +352,6 @@ fun FichaScreen(viewModel: FichaViewModel) {
                     aoSairDaMesa = { abaEscolhida = "Rolagem" },
                     aoReceberPedido = { viewModel.pedidoDaMesa = it }
                 )
-                "Saga" -> TabSaga(viewModel)
                 else -> TabGeral(viewModel)
             }
         }
@@ -714,315 +537,6 @@ fun FichaScreen(viewModel: FichaViewModel) {
 
     if (showConfigDadosDialog) {
         ConfigurarDadosDialog(onDismiss = { showConfigDadosDialog = false })
-    }
-
-    if (showMestreIADialog) {
-        LaunchedEffect(Unit) {
-            if (estadoLive == EstadoLive.OCIOSO || estadoLive == EstadoLive.ERRO) {
-                viewModel.gerarSaudacaoMestreIA()
-            }
-        }
-        DialogMestreIA(
-            viewModel = viewModel,
-            onDismiss = { showMestreIADialog = false },
-            estadoLive = if (BuildConfig.VOZ_BIDIRECIONAL_HABILITADA) estadoLive else EstadoLive.OCIOSO,
-            onEncerrarLive = { geminiLive.encerrar() }
-        )
-    }
-
-    if (viewModel.mostrarDialogRetrato) {
-        DialogRetratoIA(
-            nomePersonagem = viewModel.personagem.nome.ifBlank { "o personagem" },
-            onGerar = { viewModel.gerarRetratoIA() },
-            onDispensар = { viewModel.dispensarDialogRetrato() }
-        )
-    }
-
-    if (viewModel.retratoGerandoStatus.isNotBlank()) {
-        AlertDialog(
-            onDismissRequest = {},
-            title = { Text("Gerando retrato...") },
-            text = {
-                Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                    CircularProgressIndicator(modifier = Modifier.size(24.dp))
-                    Text(viewModel.retratoGerandoStatus, style = MaterialTheme.typography.bodyMedium)
-                }
-            },
-            confirmButton = {}
-        )
-    }
-
-    if (mostrarImagemFullscreen && viewModel.personagem.imagemPersonagemUri.isNotBlank()) {
-        // Tela cheia mostra a imagem INTEIRA (original). Fichas antigas sem
-        // original caem na recortada.
-        val original = viewModel.personagem.imagemPersonagemOriginalUri
-        val recorte = viewModel.personagem.imagemPersonagemUri
-        ImagemPersonagemFullscreenDialog(
-            imagemUri = original.ifBlank { recorte },
-            nomePersonagem = viewModel.personagem.nome,
-            onDismiss = { mostrarImagemFullscreen = false }
-        )
-    }
-}
-
-/**
- * Cabeçalho da ficha com a foto do personagem ao fundo (estilo "capa"),
- * com título e a linha de pontos (Iniciais/Gastos/Restantes) por cima,
- * em branco, sobre um gradiente escuro para legibilidade.
- *
- * - Toque na foto -> abre em tela cheia ([onExpandirImagem]).
- * - Ícone de câmera -> trocar a foto.
- * - Ícone de menu -> menu da ficha.
- */
-@Composable
-private fun CabecalhoComImagem(
-    viewModel: FichaViewModel,
-    imagemUri: String,
-    mostrarPontos: Boolean,
-    isPraCegoVariant: Boolean,
-    onMenuClick: () -> Unit,
-    onTrocarImagem: () -> Unit,
-    onExpandirImagem: () -> Unit
-) {
-    val p = viewModel.personagem
-    val restantes = p.pontosRestantes
-    val corRestantes = when {
-        restantes < 0 -> MaterialTheme.colorScheme.error
-        else -> Color.White
-    }
-
-    // Altura fixa: mesma faixa que o cabeçalho original (TopAppBar + linha de
-    // pontos) ocupava, para NÃO empurrar a ficha pra baixo. A foto preenche
-    // essa faixa como fundo (Crop), alinhada ao TOPO (favorece cabeça/rosto).
-    // A foto vai ATÉ atrás da status bar (sem statusBarsPadding no Box);
-    // só o conteúdo interno (título/pontos) respeita a status bar.
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(140.dp)
-            .clickable(onClick = onExpandirImagem)
-            .semantics {
-                contentDescription = "Foto do personagem. Toque para ampliar."
-            }
-    ) {
-        AsyncImage(
-            model = imagemUri,
-            contentDescription = null,
-            modifier = Modifier.fillMaxSize(),
-            contentScale = ContentScale.Crop,
-            alignment = Alignment.Center
-        )
-        // Gradiente escuro de cima e de baixo para o texto branco ficar legível.
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(
-                    Brush.verticalGradient(
-                        colors = listOf(
-                            Color.Black.copy(alpha = 0.45f),
-                            Color.Transparent,
-                            Color.Black.copy(alpha = 0.55f)
-                        )
-                    )
-                )
-        )
-
-        // Linha do topo: título + ações (câmera, menu)
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .statusBarsPadding()
-                .padding(horizontal = 12.dp, vertical = 8.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(
-                text = p.nome.ifBlank { "GURPS - Nova Ficha" },
-                fontWeight = FontWeight.Bold,
-                color = Color.White,
-                style = MaterialTheme.typography.titleLarge,
-                modifier = Modifier.weight(1f, fill = false)
-            )
-            Row {
-                IconButton(
-                    onClick = onTrocarImagem,
-                    modifier = if (isPraCegoVariant) {
-                        Modifier.semantics { contentDescription = "Trocar foto do personagem" }
-                    } else Modifier
-                ) {
-                    Icon(Icons.Default.PhotoCamera, contentDescription = "Trocar foto", tint = Color.White)
-                }
-                IconButton(
-                    onClick = onMenuClick,
-                    modifier = if (isPraCegoVariant) {
-                        Modifier.semantics { contentDescription = "Abrir menu da ficha" }
-                    } else Modifier
-                ) {
-                    Icon(Icons.Default.MoreVert, contentDescription = "Menu", tint = Color.White)
-                }
-            }
-        }
-
-        // Linha de pontos, ancorada na parte de baixo da foto.
-        if (mostrarPontos) {
-            Row(
-                modifier = Modifier
-                    .align(Alignment.BottomStart)
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 10.dp)
-                    .semantics {
-                        if (isPraCegoVariant) {
-                            contentDescription =
-                                "Resumo de pontos. ${p.rotuloDePontosAcessivel}. Gastos ${p.pontosGastos}. Restantes $restantes."
-                        }
-                    },
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.Bottom
-            ) {
-                Column {
-                    Text(
-                        p.rotuloDePontos,
-                        style = MaterialTheme.typography.bodySmall,
-                        color = Color.White
-                    )
-                    Text(
-                        "Gastos: ${p.pontosGastos}",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = Color.White
-                    )
-                }
-                Text(
-                    text = "Restantes: $restantes",
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold,
-                    color = corRestantes
-                )
-            }
-        }
-    }
-}
-
-/**
- * Mostra a foto do personagem em tela cheia; toque em qualquer lugar fecha.
- *
- * Também é a porta de saída da imagem: o retrato mora em filesDir/portraits/,
- * armazenamento privado do app, invisível para a galeria e para qualquer
- * gerenciador de arquivos. O botão de baixar copia a foto para Imagens/GURPS —
- * é o único jeito de o usuário ficar com o retrato do Mestre Pintor fora do app.
- */
-@Composable
-private fun ImagemPersonagemFullscreenDialog(
-    imagemUri: String,
-    nomePersonagem: String,
-    onDismiss: () -> Unit
-) {
-    val context = LocalContext.current
-    val escopo = rememberCoroutineScope()
-    var status by remember { mutableStateOf("") }
-    var salvando by remember { mutableStateOf(false) }
-
-    // Declarado ANTES do launcher de permissão porque o callback dele chama isto.
-    val salvarAgora: () -> Unit = {
-        if (!salvando) {
-            salvando = true
-            status = "Salvando na galeria…"
-            escopo.launch {
-                val resultado = com.gurps.ficha.data.storage.ImagemPersonagemStore
-                    .salvarNaGaleria(context, imagemUri, nomePersonagem)
-                salvando = false
-                status = when (resultado) {
-                    com.gurps.ficha.data.storage.ImagemPersonagemStore.ResultadoGaleria.OK ->
-                        "Foto salva na galeria, na pasta Imagens, GURPS."
-                    com.gurps.ficha.data.storage.ImagemPersonagemStore.ResultadoGaleria.SEM_PERMISSAO ->
-                        "Sem permissão para gravar na galeria. Libere o acesso a fotos nas configurações do app."
-                    com.gurps.ficha.data.storage.ImagemPersonagemStore.ResultadoGaleria.FALHOU ->
-                        "Não foi possível salvar a foto na galeria."
-                }
-            }
-        }
-    }
-
-    val permissaoLauncher = rememberLauncherForActivityResult(
-        ActivityResultContracts.RequestPermission()
-    ) { concedida ->
-        if (concedida) salvarAgora()
-        else status = "Permissão negada. Sem ela o app não consegue gravar na galeria."
-    }
-
-    Dialog(
-        onDismissRequest = onDismiss,
-        properties = DialogProperties(usePlatformDefaultWidth = false)
-    ) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(Color.Black)
-                .clickable(onClick = onDismiss)
-        ) {
-            AsyncImage(
-                model = imagemUri,
-                contentDescription = "Foto do personagem em tela cheia",
-                modifier = Modifier.fillMaxSize(),
-                contentScale = ContentScale.Fit
-            )
-            Row(
-                modifier = Modifier
-                    .align(Alignment.TopEnd)
-                    .statusBarsPadding()
-                    .padding(8.dp)
-            ) {
-                IconButton(
-                    onClick = {
-                        val jaTemPermissao =
-                            !com.gurps.ficha.data.storage.ImagemPersonagemStore.precisaPermissaoGaleria() ||
-                                ContextCompat.checkSelfPermission(
-                                    context, Manifest.permission.WRITE_EXTERNAL_STORAGE
-                                ) == PackageManager.PERMISSION_GRANTED
-                        if (salvando) return@IconButton
-                        if (jaTemPermissao) salvarAgora()
-                        else permissaoLauncher.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                    }
-                    // Sem `enabled = false` durante o salvamento: um IconButton
-                    // desabilitado deixa o toque VAZAR para o Box de trás, que
-                    // fecha a tela cheia. O bloqueio fica no próprio onClick.
-                ) {
-                    if (salvando) {
-                        CircularProgressIndicator(
-                            modifier = Modifier.size(20.dp),
-                            color = Color.White,
-                            strokeWidth = 2.dp
-                        )
-                    } else {
-                        Icon(
-                            Icons.Default.Download,
-                            contentDescription = "Salvar foto na galeria",
-                            tint = Color.White
-                        )
-                    }
-                }
-                IconButton(onClick = onDismiss) {
-                    Icon(Icons.Default.Close, contentDescription = "Fechar", tint = Color.White)
-                }
-            }
-
-            // liveRegion: o TalkBack anuncia o resultado sozinho, sem o usuário
-            // precisar caçar o texto na tela.
-            if (status.isNotBlank()) {
-                Text(
-                    text = status,
-                    color = Color.White,
-                    style = MaterialTheme.typography.bodyMedium,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier
-                        .align(Alignment.BottomCenter)
-                        .fillMaxWidth()
-                        .navigationBarsPadding()
-                        .background(Color.Black.copy(alpha = 0.6f))
-                        .padding(horizontal = 16.dp, vertical = 12.dp)
-                        .semantics { liveRegion = LiveRegionMode.Polite }
-                )
-            }
-        }
     }
 }
 

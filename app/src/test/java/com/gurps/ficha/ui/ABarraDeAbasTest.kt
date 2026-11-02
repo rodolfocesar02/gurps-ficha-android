@@ -66,16 +66,22 @@ class ABarraDeAbasTest {
             "as abas voltaram para a direita -- e o buraco a esquerda com elas",
             codigo.contains("Arrangement.End")
         )
-        // 🔴 E o Mestre IA esta DENTRO da fila, e nao numa ancora a esquerda com
-        // um contrapeso vazio do outro lado. Achado dele: "o icone do mestre IA
-        // ficou fora do alinhamento, ele pode entrar no grupo".
+        // 🔴 Nada numa ancora a esquerda com um contrapeso vazio do outro lado.
+        // Achado dele, quando o Mestre IA morava ali: "o icone do mestre IA ficou
+        // fora do alinhamento, ele pode entrar no grupo".
         assertFalse(
-            "o Mestre IA voltou para fora da fila, e o centro volta a depender de um contrapeso",
+            "voltou uma ancora fora da fila, e o centro volta a depender de um contrapeso",
             codigo.contains("LARGURA_DA_ANCORA")
         )
+        // ⚠️ O Mestre IA saiu (lote SEM-IA): a fila e SO de abas, e o lugar N e a
+        // aba N. Um `+ 1` esquecido aqui poria o cometa um lugar adiante.
         assertTrue(
-            "a fila deixou de contar o Mestre IA, e o cometa vai parar no lugar errado",
-            codigo.contains("val quantosLugares = tabs.size + 1")
+            "a fila deixou de contar exatamente as abas, e o cometa vai parar no lugar errado",
+            codigo.contains("val quantosLugares = tabs.size\n")
+        )
+        assertTrue(
+            "o cometa deixou de parar debaixo da aba escolhida",
+            codigo.contains("lugarAceso = currentIndex,")
         )
     }
 
@@ -167,11 +173,5 @@ class ABarraDeAbasTest {
                 corpos.contains("\"$nome\" ->")
             )
         }
-    }
-
-    @Test
-    fun `⚠️ mas o anel do microfone FICA -- e o unico efeito que avisa algo`() {
-        assertTrue(codigo.contains("vozRingScale"))
-        assertTrue(codigo.contains("vozRingAlpha"))
     }
 }

@@ -124,18 +124,26 @@ class AAbaDaMesaTest {
     // == A saída ======================================================
 
     @Test
-    fun `🟥 a Mesa NAO entra no hideAppChrome`() {
-        // 🔴 A linha exata que trancou a pessoa lá dentro. Se ela voltar, isto
-        // fica vermelho — e é a única coisa entre o defeito e o aparelho dele.
-        val linha = codigo.lines().first { it.contains("val hideAppChrome") }
+    fun `🟥 nada esconde a barra de abas de baixo -- nem a Mesa`() {
+        // 🔴 A linha que trancou a pessoa lá dentro era a Mesa no `hideAppChrome`.
+        //
+        // ⚠️ O `hideAppChrome` saiu de vez no lote SEM-IA. Ele servia ao VTT
+        // (apagado em 22/set) e ao Modo Jogo da Saga (que saiu agora), e os dois
+        // tinham saida propria. Sem eles, a barra de baixo aparece SEMPRE -- e um
+        // interruptor que voltasse seria o caminho para trancar alguem de novo.
         assertFalse(
-            "a Mesa voltou para o hideAppChrome, e isso esconde a barra de abas",
-            linha.contains("\"Mesa\"")
+            "voltou um interruptor que esconde a barra de abas inteira",
+            codigo.contains("hideAppChrome")
         )
-        // ⚠️ O `vttFullscreen` saiu desta linha em 22/set, com o VTT inteiro: ele
-        // era o tabuleiro de antes, e quem faz esse trabalho hoje e a Mesa. Ficou
-        // so o Modo Jogo da Saga, que TEM saida propria dentro dele.
-        assertTrue(linha.contains("sagaModoJogo"))
+        val i = codigo.indexOf("bottomBar = {")
+        assertTrue("nao achei a barra de baixo", i > 0)
+        val trecho = codigo.substring(i, minOf(i + 400, codigo.length))
+        val ondeABarra = trecho.indexOf("FichaCustomNavigationBar(")
+        assertTrue("a barra de baixo deixou de ser a barra de abas", ondeABarra > 0)
+        assertFalse(
+            "a barra de abas voltou a depender de uma condicao para aparecer",
+            trecho.substring(0, ondeABarra).contains("if (")
+        )
     }
 
     @Test
@@ -146,8 +154,8 @@ class AAbaDaMesaTest {
         assertTrue("nao achei a barra de baixo", i > 0)
         val trecho = codigo.substring(i, minOf(i + 400, codigo.length))
         assertTrue(
-            "a barra de baixo passou a depender de outra coisa que nao o hideAppChrome",
-            trecho.contains("if (!hideAppChrome)")
+            "a barra de baixo deixou de ser a barra de abas",
+            trecho.contains("FichaCustomNavigationBar(")
         )
         assertFalse(
             "a barra de baixo some na Mesa, e a pessoa fica trancada la dentro",
@@ -161,7 +169,6 @@ class AAbaDaMesaTest {
         // cima da outra num telefone não deixam tabuleiro nenhum à vista.
         val linha = codigo.lines().first { it.contains("val esconderOCabecalho") }
         assertTrue(linha.contains("\"Mesa\""))
-        assertTrue(linha.contains("hideAppChrome"))
 
         val topo = codigo.indexOf("topBar = {")
         assertTrue(topo > 0)

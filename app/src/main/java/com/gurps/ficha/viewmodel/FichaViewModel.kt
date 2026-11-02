@@ -15,7 +15,6 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.gurps.ficha.data.DataRepository
 import com.gurps.ficha.data.network.*
-import com.gurps.ficha.BuildConfig
 import com.gurps.ficha.domain.magias.NexusArcanoModoAlvoAdapter
 import com.gurps.ficha.data.storage.FichaStorageRepository
 import com.gurps.ficha.domain.rules.CharacterRules
@@ -25,7 +24,6 @@ import com.gurps.ficha.regras_prerequisitos.PreRequisitoType
 import com.gurps.ficha.viewmodel.delegates.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
-import com.gurps.ficha.domain.MestreIAUseCase
 import com.gurps.ficha.domain.engine.MagicEngine
 import com.gurps.ficha.domain.engine.SkillEngine
 import com.gurps.ficha.domain.magias.NexusArcanoModoAlvoSnapshot
@@ -90,9 +88,6 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
     private val historyDelegate = FichaHistoryDelegate()
     
     // Novos Delegados (Refatoração Lote 15)
-    private val iaDelegate = FichaIADelegate(this, dataRepository, viewModelScope, application)
-    // Lote 354 (Saga A5): delegate do modo Saga (Narrador + campanhas + rolagem interativa)
-    private val sagaDelegate = FichaSagaDelegate(this, dataRepository, viewModelScope, application)
     private val socialDelegate = FichaSocialDelegate(networkDelegate, configPrefs, viewModelScope)
     private val notesDelegate = com.gurps.ficha.viewmodel.delegates.FichaNotesDelegate()
     private val deviceId by lazy { Settings.Secure.getString(application.contentResolver, Settings.Secure.ANDROID_ID) ?: "DESCONHECIDO" }
@@ -100,10 +95,6 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
     // Propriedades Estáticas/Config
     private val prefCanalDiscordId = "discord_canal_id"
     private val prefCanalDiscordNome = "discord_canal_nome"
-    // MESTRE IA PRIME (Configurações Mascaradas via BuildConfig)
-    val iaBaseUrl get() = BuildConfig.MESTRE_IA_URL
-    val iaApiKey get() = BuildConfig.MESTRE_IA_KEY
-    val iaWorkspaceSlug get() = BuildConfig.MESTRE_IA_MODEL
     private val prefNaoMostrarManualModoAlvo = "modo_alvo_manual_nao_mostrar"
 
     // Getters Delegados
@@ -175,158 +166,10 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
         socialDelegate.testarMesa()
     val canalDiscordSelecionadoNome get() = socialDelegate.canalDiscordSelecionadoNome
 
-    // Getters do modo Saga (Lote 354)
-    val sagaCampanhas get() = sagaDelegate.campanhas
-    val sagaCampanhaAtiva get() = sagaDelegate.campanhaAtiva
-    val sagaCenaAtiva get() = sagaDelegate.cenaAtiva
-    val sagaFeed get() = sagaDelegate.feed
-    val sagaRolagemPendente get() = sagaDelegate.rolagemPendente
-    val sagaFase get() = sagaDelegate.fase
-    val sagaProcessando get() = sagaDelegate.processando
-    fun sagaCarregarCampanhas() = sagaDelegate.carregarCampanhas()
-    fun sagaCriarCampanha(nome: String, config: com.gurps.ficha.domain.saga.CampanhaConfig) = sagaDelegate.criarCampanha(nome, config)
-    fun sagaContinuarCampanha(id: Long) = sagaDelegate.continuarCampanha(id)
-    fun sagaExcluirCampanha(id: Long) = sagaDelegate.excluirCampanha(id)
-    fun sagaSair() = sagaDelegate.sairDaCampanha()
-    fun sagaEnviar(texto: String) = sagaDelegate.enviarMensagem(texto)
-    fun sagaRolarDado() = sagaDelegate.rolarDadoPendente()
-
-    // Getters/ações do combate da Saga (Lote 365 / B7)
-    val sagaCombateEstado get() = sagaDelegate.combate.estado
-    val sagaCombateDefesaPendente get() = sagaDelegate.combate.defesaPendente
-    val sagaCombateAtivo get() = sagaDelegate.combate.ativo
-    /** Lote HEX-2: flag "modo tático em hexágonos" da campanha atual (default false — modo faixas). */
-    val sagaModoTaticoHex get() = sagaDelegate.configAtiva.modoTaticoHex
-    /** Lote HEX-7: flag "render 3D SceneView" da campanha atual (efetivo só se `sagaModoTaticoHex` também). */
-    val sagaModoTaticoHex3D get() = sagaDelegate.configAtiva.modoTaticoHex3D
-    // Lote TOK-4: grade tática dirigida pelo combate REAL.
-    val sagaEstadoTatico get() = sagaDelegate.combate.estadoTatico
-    val sagaTokensTaticos get() = sagaDelegate.combate.tokensTaticos
-    var sagaAvisoTatico
-        get() = sagaDelegate.combate.avisoTatico
-        set(v) { sagaDelegate.combate.avisoTatico = v }
-    fun sagaHexesAlcancaveis() = sagaDelegate.combate.hexesAlcancaveisHeroi()
-    fun sagaAoTocarHexTatico(hex: com.gurps.ficha.domain.combat.hex.HexCoord) = sagaDelegate.combate.aoTocarHexTatico(hex)
-    fun sagaLimparSelecaoTatica() = sagaDelegate.combate.limparSelecaoTatica() // Lote TOK-6b-2: fecha o menu do token
-    /** Lote HEX-FACING: vira o herói (ação LIVRE — MB p.387/388; não gasta o turno). */
-    fun sagaCombateVirar(direcao: com.gurps.ficha.domain.combat.hex.Direcao) =
-        sagaDelegate.combate.heroiVirar(direcao)
-    // Lote HEX-FACING-2 (MB p.388): virada de FIM DE MOVIMENTO — o turno espera o jogador escolher
-    // para onde fica olhando antes de os inimigos agirem.
-    val sagaViradaFinalPendente get() = sagaDelegate.combate.viradaFinalPendente
-    fun sagaDirecoesViradaFinal() = sagaDelegate.combate.direcoesDaViradaFinal()
-    fun sagaConcluirViradaFinal(direcao: com.gurps.ficha.domain.combat.hex.Direcao?) =
-        sagaDelegate.combate.concluirViradaFinal(direcao)
-    fun sagaCombateAtacar(alvoId: String, manobra: com.gurps.ficha.domain.combat.Manobra, local: com.gurps.ficha.domain.rules.LocalAtaque, modo: com.gurps.ficha.domain.combat.AtaqueTotalModo = com.gurps.ficha.domain.combat.AtaqueTotalModo.DETERMINADO, enganoso: Int = 0, telegrafico: Boolean = false) =
-        sagaDelegate.combate.heroiAtaca(alvoId, manobra, local, modo, enganoso, telegrafico)
-    fun sagaCombateAtaqueDedicado(alvoId: String, local: com.gurps.ficha.domain.rules.LocalAtaque, dedicadoModo: com.gurps.ficha.domain.combat.DedicadoModo) = // Lote PONTE-4
-        sagaDelegate.combate.heroiAtaca(alvoId, com.gurps.ficha.domain.combat.Manobra.ATAQUE_DEDICADO, local, dedicadoModo = dedicadoModo)
-    fun sagaCombateAtaqueDefensivo(alvoId: String, local: com.gurps.ficha.domain.rules.LocalAtaque, benefDefensivo: com.gurps.ficha.domain.combat.CombatResolver.TipoDefesa?) = // Lote PONTE-4
-        sagaDelegate.combate.heroiAtaca(alvoId, com.gurps.ficha.domain.combat.Manobra.ATAQUE_DEFENSIVO, local, benefDefensivo = benefDefensivo)
-    fun sagaCombateAtacarDuplo(alvoId: String, local: com.gurps.ficha.domain.rules.LocalAtaque, offHandIndex: Int) =
-        sagaDelegate.combate.heroiAtaqueDuplo(alvoId, local, offHandIndex)
-    fun sagaCombateMover(alvoId: String?, afastar: Boolean, metros: Int) = sagaDelegate.combate.heroiMove(alvoId, afastar, metros)
-    fun sagaCombateMoverEAtacar(alvoId: String, local: com.gurps.ficha.domain.rules.LocalAtaque) =
-        sagaDelegate.combate.heroiMoverEAtacar(alvoId, local)
-    fun sagaCombateAvaliar(alvoId: String) = sagaDelegate.combate.heroiAvaliar(alvoId)
-    fun sagaCombateConjurar(magiaId: String, alvoId: String?, energiaInvestida: Int, pvQueimados: Int = 0,
-                            danoPorEnergia: Boolean = false,
-                            ritual: com.gurps.ficha.domain.magic.RitualDeConjuracao =
-                                com.gurps.ficha.domain.magic.RitualDeConjuracao()) = // Lote MA-3a/3b/MA-6/C12
-        sagaDelegate.combate.heroiConjurar(magiaId, alvoId, energiaInvestida, pvQueimados, danoPorEnergia, ritual)
-    fun sagaCombateContinuarConjuracao() = sagaDelegate.combate.heroiContinuarConjuracao() // Lote MA-3c
-    fun sagaCombateAbortarConjuracao() = sagaDelegate.combate.heroiAbortarConjuracao()      // Lote MA-3c
-    val sagaMiraAreaPendente get() = sagaDelegate.combate.miraAreaPendente                  // Lote MA-3d
-    fun sagaIniciarMiraArea(magiaId: String, raio: Int, energia: Int, pvQueimar: Int, causaDano: Boolean = false,
-                            ritual: com.gurps.ficha.domain.magic.RitualDeConjuracao =
-                                com.gurps.ficha.domain.magic.RitualDeConjuracao()) =
-        sagaDelegate.combate.iniciarMiraArea(magiaId, raio, energia, pvQueimar, causaDano, ritual)
-    /** Lote C11: zonas ativas (rótulo, raio) para a UI oferecer o encolhimento. */
-    val sagaZonasAtivas get() = sagaDelegate.combate.zonasAtivasUi
-    /** Lote C11: encolhe uma zona; expandir é recusado pela regra (Magia p.10). */
-    fun sagaEncolherZona(nome: String, novoRaio: Int) = sagaDelegate.combate.encolherZona(nome, novoRaio)
-    fun sagaCancelarMiraArea() = sagaDelegate.combate.cancelarMiraArea()
-    /**
-     * Lote TESTE-1: inicia um combate de TESTE direto do preview da grade tática, sem o Narrador.
-     * Serve para o jogador exercitar as magias no aparelho. Cria [qtdGoblins] goblins a [distanciaM]m;
-     * um deles é conjurador (Bola de Fogo) para testar a esquiva interativa contra magia de NPC.
-     */
-    fun sagaIniciarCombateTeste(qtdGoblins: Int = 2, distanciaM: Int = 5) {
-        viewModelScope.launch {
-            // Lote LIMPEZA-2: entrada PRÓPRIA do sandbox (a API de produção não carrega mais flag de
-            // teste). O controller monta a grade, roda o loop e publica o estado sozinho — a UI reage
-            // por `sagaCombateAtivo`/`sagaEstadoTatico`, sem refresh manual.
-            sagaDelegate.combate.iniciarCombateSandbox(
-                inimigos = listOf("goblin" to qtdGoblins),
-                distanciaM = distanciaM,
-                magiasDeclaradas = listOf("Bola de Fogo"),
-            )
-        }
-    }
-    /** Lote MEC-23: mágicas esperando o herói decidir se mantém (manter é OPCIONAL em GURPS). */
-    val sagaManutencaoPendente: List<com.gurps.ficha.domain.combat.CombatSession.ManutencaoPendente>
-        get() = sagaDelegate.combate.manutencaoPendente
-
-    fun sagaResolverManutencao(magiaId: String, manter: Boolean) =
-        sagaDelegate.combate.resolverManutencao(magiaId, manter)
-
-    /** Lote TESTE-SANDBOX: motivo de o combate de teste não ter aberto (null = abriu). */
-    val sagaAvisoSandbox: String?
-        get() = sagaDelegate.combate.avisoSandbox
-
-    fun sagaLimparAvisoSandbox() = sagaDelegate.combate.limparAvisoSandbox()
-
-    /**
-     * Lote TESTE-NPC: modo dos NPCs no combate de teste (Normal / Congelado / Boneco). Vale também
-     * com a luta já em andamento — trocar não obriga a reiniciar.
-     */
-    val sagaModoTesteNpc: com.gurps.ficha.domain.combat.ModoTesteNpc
-        get() = sagaDelegate.combate.modoTesteNpc
-
-    fun sagaDefinirModoTesteNpc(modo: com.gurps.ficha.domain.combat.ModoTesteNpc) =
-        sagaDelegate.combate.definirModoTesteNpc(modo)
-
-    /** Lote MA-5: mana ambiente da cena atual (setada pelo Narrador via definir_cena). Alimenta a conjuração. */
-    var sagaNivelMana: com.gurps.ficha.domain.magic.NivelMana = com.gurps.ficha.domain.magic.NivelMana.NORMAL
-    fun sagaCombateEntregarToque(alvoId: String) = sagaDelegate.combate.heroiEntregarToque(alvoId)   // Lote MA-3d-2
-    // Lote MEC-39 (P11): projétil carregado por vários turnos.
-    fun sagaCarregarProjetil(magiaId: String, energia: Int) = sagaDelegate.combate.carregarProjetil(magiaId, energia)
-    fun sagaAumentarProjetil(energia: Int) = sagaDelegate.combate.aumentarProjetil(energia)
-    fun sagaArremessarProjetil(alvoId: String) = sagaDelegate.combate.arremessarProjetil(alvoId)
-    fun sagaDissiparProjetil() = sagaDelegate.combate.dissiparProjetilCarregado()
-    /** Lote MEC-46 (P1b): hexes cobertos por zona ativa (chuva/nuvem/gás) para pintar na grade. */
-    val sagaHexesDeZona get() = sagaDelegate.combate.hexesDeZona
-    fun sagaCombateDissiparToque() = sagaDelegate.combate.heroiDissiparToque()                        // Lote MA-3d-2
-    fun sagaCombateApontar(alvoId: String, firmado: Boolean = false) = sagaDelegate.combate.heroiApontar(alvoId, firmado)
-    fun sagaCombateFogoRetencao() = sagaDelegate.combate.heroiFogoRetencao()
-    fun sagaCombateAguardar() = sagaDelegate.combate.heroiAguardar()
-    fun sagaCombateGolpeRapido(alvoId: String, local: com.gurps.ficha.domain.rules.LocalAtaque) =
-        sagaDelegate.combate.heroiGolpeRapido(alvoId, local)
-    fun sagaCombateEncontrao(alvoId: String) = sagaDelegate.combate.heroiEncontrao(alvoId)
-    fun sagaCombateEmpurrao(alvoId: String) = sagaDelegate.combate.heroiEmpurrao(alvoId)
-    fun sagaCombateImobilizar(alvoId: String) = sagaDelegate.combate.heroiImobilizar(alvoId)
-    fun sagaCombateEstrangular(alvoId: String) = sagaDelegate.combate.heroiEstrangular(alvoId)
-    fun sagaCombateChaveMembro(alvoId: String, perna: Boolean = false) = sagaDelegate.combate.heroiChaveMembro(alvoId, perna) // Lote PONTE-1
-    fun sagaCombateMataLeao(alvoId: String) = sagaDelegate.combate.heroiMataLeao(alvoId) // Lote PONTE-1
-    fun sagaCombateFintar(alvoId: String) = sagaDelegate.combate.heroiFintar(alvoId)
-    fun sagaCombateAgarrar(alvoId: String) = sagaDelegate.combate.heroiAgarrar(alvoId)
-    fun sagaCombateDerrubar(alvoId: String) = sagaDelegate.combate.heroiDerrubar(alvoId)
-    fun sagaCombateManobra(manobra: com.gurps.ficha.domain.combat.Manobra, novaPostura: com.gurps.ficha.domain.combat.Postura? = null) =
-        sagaDelegate.combate.heroiManobra(manobra, novaPostura)
-    fun sagaCombateDefesaTotal(modo: com.gurps.ficha.domain.combat.DefesaTotalModo, aumentadaEm: com.gurps.ficha.domain.combat.CombatResolver.TipoDefesa? = null) =
-        sagaDelegate.combate.heroiDefesaTotal(modo, aumentadaEm)
-    fun sagaCombateDefender(opcao: com.gurps.ficha.domain.combat.CombatResolver.OpcaoDefesa) = sagaDelegate.combate.escolherDefesa(opcao)
-    fun sagaCombateSelecionarAtaque(indice: Int) = sagaDelegate.combate.selecionarAtaque(indice)
-    fun sagaCombateSacarArma(indice: Int) = sagaDelegate.combate.sacarArma(indice)
-    fun sagaCombateEncerrar() = sagaDelegate.combate.encerrarManual()
-    fun sagaCombateDesvencilhar() = sagaDelegate.combate.heroiDesvencilhar() // Lote 422: herói preso se solta
-
-    // Efeitos da Saga na ficha do herói (Lote 366 / B8) — mutam e SALVAM a ficha carregada.
     /**
      * O XP que o Mestre deu, digitado pelo jogador (Lote GER-1).
      *
-     * ⚠️ **Define**, nao soma — ao contrario do `sagaConcederXp`, que e o Narrador
-     * premiando e por isso acumula. Aqui o jogador esta corrigindo um numero na
+     * ⚠️ **Define**, nao soma. Aqui o jogador esta corrigindo um numero na
      * ficha, e somar faria o campo crescer sozinho a cada toque.
      */
     fun atualizarXpGanhos(valor: Int) {
@@ -337,76 +180,6 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
     fun atualizarNivelTecnologico(valor: Int) {
         personagem = personagem.copy(nivelTecnologico = valor.coerceIn(0, 12)); salvarFicha()
     }
-
-    fun sagaConcederXp(pts: Int): Int {
-        personagem = personagem.copy(xpGanhos = (personagem.xpGanhos + pts).coerceAtLeast(0)); salvarFicha(); return personagem.xpGanhos
-    }
-    fun sagaDefinirPvAtual(v: Int) { atualizarPontosVidaRolagemAtual(v); salvarFicha() }
-    fun sagaDefinirPfAtual(v: Int) { atualizarPontosFadigaRolagemAtual(v); salvarFicha() }
-    /** Lote 423: persiste o sangramento ativo do herói entre cenas/combates (MB p.420). */
-    fun sagaDefinirSangramento(penalidadeLocal: Int, intervaloSeg: Int) {
-        personagem = personagem.copy(sagaSangrando = true,
-            sagaSangramentoPenalidadeLocal = penalidadeLocal, sagaSangramentoIntervaloSeg = intervaloSeg)
-        salvarFicha()
-    }
-    /** Lote 423: estanca o sangramento persistido (cura/descanso). Retorna true se havia sangramento. */
-    fun sagaLimparSangramento(): Boolean {
-        if (!personagem.sagaSangrando) return false
-        personagem = personagem.copy(sagaSangrando = false,
-            sagaSangramentoPenalidadeLocal = null, sagaSangramentoIntervaloSeg = null)
-        salvarFicha(); return true
-    }
-    fun sagaAdicionarItem(nome: String, qtd: Int) {
-        if (nome.isBlank()) return
-        adicionarEquipamento(com.gurps.ficha.model.Equipamento(nome = nome, quantidade = qtd.coerceAtLeast(1))); salvarFicha()
-    }
-
-    /**
-     * Saga (item 1 do teste de batalha): o Narrador TIRA/DEVOLVE/DESTRÓI equipamento do herói para que o
-     * combate respeite a narrativa (desarmado/capturado). operacao: "confiscar" (marca indisponível, mas
-     * recuperável) | "devolver" (volta a usar) | "destruir" (some da ficha de vez). itemNome casa por nome
-     * (igual/contém) ou por categoria ("armas" / "armaduras" / "tudo"). Persiste na ficha. Retorna os nomes
-     * afetados (vazio = nada casou). O combate ignora ARMA/ARMADURA confiscada (ver construirAtaques/rdHeroi).
-     */
-    fun sagaGerirEquipamento(itemNome: String, operacao: String): List<String> {
-        val alvoNorm = com.gurps.ficha.domain.filters.CatalogFilters.normalizarBusca(itemNome)
-        fun ehAlvo(e: com.gurps.ficha.model.Equipamento): Boolean {
-            val n = com.gurps.ficha.domain.filters.CatalogFilters.normalizarBusca(e.nome)
-            return when (alvoNorm) {
-                "armas", "arma", "todas as armas" -> e.tipo == com.gurps.ficha.model.TipoEquipamento.ARMA
-                "armaduras", "armadura" -> e.tipo == com.gurps.ficha.model.TipoEquipamento.ARMADURA
-                "tudo", "tudo que carrega", "equipamento", "equipamentos" -> e.tipo in listOf(
-                    com.gurps.ficha.model.TipoEquipamento.ARMA, com.gurps.ficha.model.TipoEquipamento.ARMADURA,
-                    com.gurps.ficha.model.TipoEquipamento.ESCUDO, com.gurps.ficha.model.TipoEquipamento.CAPA
-                )
-                else -> n.isNotBlank() && alvoNorm.isNotBlank() && (n == alvoNorm || n.contains(alvoNorm) || alvoNorm.contains(n))
-            }
-        }
-        val afetados = personagem.equipamentos.filter { ehAlvo(it) }.map { it.nome }
-        if (afetados.isEmpty()) return emptyList()
-        val novaLista = when (operacao.lowercase().trim()) {
-            "destruir", "descartar" -> personagem.equipamentos.filterNot { ehAlvo(it) }
-            "devolver", "equipar" -> personagem.equipamentos.map { if (ehAlvo(it)) it.copy(confiscado = false) else it }
-            else -> personagem.equipamentos.map { if (ehAlvo(it)) it.copy(confiscado = true) else it } // confiscar/desequipar/tirar
-        }
-        personagem = personagem.copy(equipamentos = novaLista)
-        ajustarEscudo()
-        salvarFicha()
-        return afetados
-    }
-
-    val mestreIAChatHistory get() = iaDelegate.mestreIAChatHistory
-    val fichaGeradaPendente get() = iaDelegate.fichaGeradaPendente
-    val mostrarDialogRetrato get() = iaDelegate.mostrarDialogRetrato
-    val retratoGerandoStatus get() = iaDelegate.retratoGerandoStatus
-    var mestreIAMode 
-        get() = iaDelegate.mestreIAMode
-        set(value) { 
-            iaDelegate.mestreIAMode = value 
-            if (value != "fechado") { // Se estiver abrindo qualquer modo de IA
-                iaDelegate.verificarSincroniaAutomatica()
-            }
-        }
 
     // Estados de Sessão (Interface) - Não salvos no JSON
     var ataqueSelecionadoId by mutableStateOf<String?>(null)
@@ -443,8 +216,7 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
     init {
         CharacterRules.DATA_REPOSITORY_INSTANCE = dataRepository
         socialDelegate.atualizarCanais()
-        iaDelegate.verificarSincroniaAutomatica()
-        
+
         viewModelScope.launch(Dispatchers.Default) {
             runCatching { dataRepository.magias; dataRepository.filtrarMagias() }
         }
@@ -453,10 +225,6 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
             fichaStorage.migrarDeSharedPreferencesSeNecessario()
             restaurarAutoSaveSeExistir()
             carregarListaFichas()
-            // Depois do auto-save restaurado: só aqui `personagem` já aponta para
-            // o retrato em uso, e a faxina precisa dessa informação para não
-            // apagá-lo.
-            faxinaDeRetratosOrfaos()
         }
 
         viewModelScope.launch {
@@ -507,7 +275,6 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
     fun atualizarCampanha(campanha: String) { personagem = attributeDelegate.atualizarCampanha(personagem, campanha) }
     fun atualizarHistorico(historico: String) { personagem = attributeDelegate.atualizarHistorico(personagem, historico) }
     fun atualizarAparencia(aparencia: String) { personagem = attributeDelegate.atualizarAparencia(personagem, aparencia) }
-    fun atualizarImagemPersonagem(uri: String, originalUri: String) { personagem = attributeDelegate.atualizarImagemPersonagem(personagem, uri, originalUri) }
     fun atualizarNotas(notas: String) { personagem = attributeDelegate.atualizarNotas(personagem, notas) }
     fun atualizarPontosIniciais(pontos: Int) { personagem = attributeDelegate.atualizarPontosIniciais(personagem, pontos) }
     fun atualizarLimiteDesvantagens(limite: Int) { personagem = attributeDelegate.atualizarLimiteDesvantagens(personagem, limite) }
@@ -534,15 +301,12 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
     }
     fun atualizarModeloRacial(novo: ModeloRacial) { personagem = attributeDelegate.atualizarModeloRacial(personagem, novo); salvarFicha() }
 
-    fun injetarEventoMestreIA(texto: String) = iaDelegate.injetarEvento(texto)
-
     // === VANTAGENS ===
     fun adicionarVantagem(def: VantagemDefinicao, nivel: Int = 1, custo: Int = 0, desc: String = "", mods: List<ModificadorSelecao> = emptyList(), meta: Map<String, String>? = null): String? {
         val res = traitDelegate.adicionarVantagem(personagem, def, nivel, custo, desc, mods, meta)
         return res.fold(
             onSuccess = {
                 atualizarVantagensComConfirmacao(it)
-                injetarEventoMestreIA("[SISTEMA] '${def.nome}' adicionada à ficha ($custo pts).")
                 null
             },
             onFailure = { it.message }
@@ -564,7 +328,6 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
         return res.fold(
             onSuccess = {
                 personagem = personagem.copy(desvantagens = it)
-                injetarEventoMestreIA("[SISTEMA] Desvantagem '${def.nome}' adicionada à ficha ($custo pts).")
                 null
             },
             onFailure = { it.message }
@@ -754,7 +517,6 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
         return res.fold(
             onSuccess = {
                 personagem = personagem.copy(pericias = it)
-                injetarEventoMestreIA("[SISTEMA] Perícia '${def.nome}' adicionada à ficha ($pts pts).")
                 null
             },
             onFailure = { it.message }
@@ -778,7 +540,6 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
         return res.fold(
             onSuccess = {
                 personagem = personagem.copy(magias = it)
-                injetarEventoMestreIA("[SISTEMA] Magia '${def.nome}' adicionada à ficha ($pts pts).")
                 null
             },
             onFailure = { it.message }
@@ -881,32 +642,14 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
     fun salvarFicha(nome: String = personagem.nome.ifBlank { "Sem_Nome" }) {
         nomeFichaAtual = nome
         viewModelScope.launch { fichasSalvas = persistenceDelegate.salvarFicha(nome, personagem) }
-        // Sobe o retrato ao Discord UMA vez, junto do salvar (best-effort, não
-        // bloqueia o salvamento). O bot guarda e usa nos embeds de rolagem.
-        val imagemUri = personagem.imagemPersonagemUri
-        if (imagemUri.isNotBlank() && nome.isNotBlank()) {
-            viewModelScope.launch {
-                val dataUri = com.gurps.ficha.data.storage.ImagemPersonagemStore.bytesBase64(imagemUri)
-                if (dataUri != null) {
-                    networkDelegate.enviarRetratoDiscord(nome, dataUri)
-                    // 🔴 E para a Mesa também, quando é ela o destino.
-                    //
-                    // O Discord já recebia a imagem aqui; a Mesa não, e por isso
-                    // a rolagem chegava lá com a cara do personagem e aqui como
-                    // texto pelado. A mesma imagem, os dois destinos.
-                    socialDelegate.enviarRetratoParaAMesa(nome, dataUri)
-                }
-            }
-        }
         // 🔴 **E a ficha calculada para a Mesa** (CAMPO-17).
         //
-        // Vai no MESMO gancho do retrato: salvar a ficha e o momento em que os
-        // numeros mudaram, e e por isso que a mesa acompanha sozinha sem
-        // ninguem carregar em botao nenhum.
+        // Salvar a ficha e o momento em que os numeros mudaram, e e por isso
+        // que a mesa acompanha sozinha sem ninguem carregar em botao nenhum.
         //
-        // ⚠️ Best-effort, como o retrato, e fora do `if` da imagem: uma ficha sem
-        // retrato tambem tem Velocidade Basica, e prende-la a existencia da
-        // imagem faria a iniciativa depender de a pessoa ter escolhido uma foto.
+        // ⚠️ Best-effort e SEM condicao nenhuma: uma ficha qualquer tem
+        // Velocidade Basica, e prender o envio a outra coisa (antes era o
+        // retrato) faria a iniciativa depender dela.
         // 🔴 O nome em branco tambem PRECISA de recado. Sem isto, quem nunca
         // preencheu "Seu nome" salva a ficha, nada acontece, e nao ha como saber
         // se esta quebrado ou se falta configurar -- que foi o que aconteceu.
@@ -1011,14 +754,14 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
             nova
         }
         if (mudou > 0) {
-            com.gurps.ficha.domain.combat.SagaLog.mecanica(
-                "ficha ressincronizada com o catálogo: $mudou magia(s) com classe/custo desatualizados")
+            android.util.Log.d("FichaViewModel",
+                "⚙ ficha ressincronizada com o catálogo: $mudou magia(s) com classe/custo desatualizados")
         }
         return p.copy(magias = novas)
     }
 
     fun excluirFicha(nome: String) { viewModelScope.launch { fichasSalvas = persistenceDelegate.excluirFicha(nome) } }
-    fun novaFicha() { personagem = Personagem(); personagemPendenteLimpezaMagias = null; mostrarConfirmacaoLimpezaMagias = false; nomeFichaAtual = null; nomeSessaoIA = null }
+    fun novaFicha() { personagem = Personagem(); personagemPendenteLimpezaMagias = null; mostrarConfirmacaoLimpezaMagias = false; nomeFichaAtual = null }
     
     fun atualizarListaFichasUnificada() {
         viewModelScope.launch {
@@ -1047,161 +790,31 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
     }
     fun exportarFichaJsonCompativel() = persistenceDelegate.exportarJsonCompativel(personagem)
     fun exportarFichaJsonVersionada() = persistenceDelegate.exportarJsonVersionado(personagem)
-
-    /**
-     * Versões SUSPEND da exportação que EMBUTEM a imagem original do
-     * personagem (base64) no arquivo, para a foto viajar junto com a ficha.
-     * Use estas ao exportar/compartilhar.
-     */
-    suspend fun exportarFichaJsonCompativelComImagem(): String {
-        return persistenceDelegate.exportarJsonCompativel(comImagemEmbutida())
-    }
-    suspend fun exportarFichaJsonVersionadaComImagem(): String {
-        return persistenceDelegate.exportarJsonVersionado(comImagemEmbutida())
-    }
-
-    /** Devolve uma cópia do personagem com a imagem ORIGINAL embutida em base64. */
-    private suspend fun comImagemEmbutida(): Personagem {
-        val original = personagem.imagemPersonagemOriginalUri.ifBlank { personagem.imagemPersonagemUri }
-        if (original.isBlank()) return personagem
-        val dataUri = com.gurps.ficha.data.storage.ImagemPersonagemStore.bytesBase64(original)
-            ?: return personagem
-        return personagem.copy(imagemPersonagemBase64 = dataUri)
-    }
     fun importarFichaJson(json: String): String? {
         estaCarregando = true
         val res = persistenceDelegate.importarJson(json)
         return res.fold(onSuccess = { novo ->
-            personagem = novo
+            // ⚠️ Uma ficha exportada por uma versão antiga pode trazer a foto
+            // EMBUTIDA (base64, megabytes). Sem a imagem do personagem no app,
+            // ninguém a usa — e guardá-la faria cada salvar e cada envio à nuvem
+            // carregar esse peso morto.
+            personagem = novo.copy(imagemPersonagemBase64 = "")
             nomeFichaAtual = novo.nome.ifBlank { "Importada_${System.currentTimeMillis()}" }
             searchDelegate.resetarTodosCaches()
             estaCarregando = false
-            restaurarImagemEmbutidaSeHouver(novo)
             "Sucesso"
         }, onFailure = {
             estaCarregando = false
             it.message
         })
     }
-
-    /**
-     * Apaga retratos que nenhuma ficha cita mais (ver
-     * [com.gurps.ficha.data.storage.ImagemPersonagemStore.faxinaDeOrfaos]).
-     * Roda uma vez por sessão, em segundo plano, e nunca derruba o app: se algo
-     * falhar, a pasta só continua como está.
-     */
-    private suspend fun faxinaDeRetratosOrfaos() {
-        runCatching {
-            com.gurps.ficha.data.storage.ImagemPersonagemStore.faxinaDeOrfaos(
-                context = getApplication(),
-                jsonsDasFichas = fichaStorage.todosOsJsons(),
-                emUso = listOf(
-                    personagem.imagemPersonagemUri,
-                    personagem.imagemPersonagemOriginalUri
-                ).filter { it.isNotBlank() }
-            )
-        }
-    }
-
-    /**
-     * Se a ficha importada trouxe a imagem EMBUTIDA (imagemPersonagemBase64),
-     * salva a imagem no aparelho (re-recorta o rosto → gera as 2 versões),
-     * aponta os URIs e LIMPA o base64. Assíncrono — a foto aparece logo após.
-     */
-    private fun restaurarImagemEmbutidaSeHouver(ficha: Personagem) {
-        val base64 = ficha.imagemPersonagemBase64
-        if (base64.isBlank()) return
-        viewModelScope.launch {
-            val imagens = com.gurps.ficha.data.storage.ImagemPersonagemStore
-                .salvarDeBase64(getApplication(), base64)
-            // Atualiza só se a ficha ativa ainda for esta (usuário não trocou).
-            if (personagem.nome == ficha.nome) {
-                personagem = if (imagens != null) {
-                    personagem.copy(
-                        imagemPersonagemUri = imagens.recortadaUri,
-                        imagemPersonagemOriginalUri = imagens.originalUri,
-                        imagemPersonagemBase64 = ""
-                    )
-                } else {
-                    personagem.copy(imagemPersonagemBase64 = "")
-                }
-            }
-        }
-    }
     private suspend fun carregarListaFichas() { fichasSalvas = persistenceDelegate.listarFichas() }
     private suspend fun restaurarAutoSaveSeExistir() { persistenceDelegate.restaurarAutoSave(autoSaveRecuperacaoNome)?.let { personagem = it } }
 
-    // === MESTRE IA / DISCORD ===
-    fun conversarComMestreIA(p: String, m: String = "conversa", onRes: (Boolean, String) -> Unit) = iaDelegate.conversar(p, m, onRes)
-    fun executarAcaoIA(c: String) = iaDelegate.executarAcao(c)
-    fun confirmarIntegracaoFicha() = iaDelegate.confirmarIntegracao()
-    fun descartarFichaPendente() = iaDelegate.descartarPendente()
-    fun gerarRetratoIA(promptCustom: String? = null, onFim: (() -> Unit)? = null) =
-        iaDelegate.gerarRetratoIA(promptCustom, onFim)
-    fun dispensarDialogRetrato() { iaDelegate.mostrarDialogRetrato = false }
-    fun limparChatMestreIA() = iaDelegate.limparChat()
-    fun gerarSaudacaoMestreIA() = iaDelegate.gerarSaudacaoSeVazio()
-    fun adicionarMensagemVoz(texto: String, role: String) = iaDelegate.adicionarMensagemVoz(texto, role)
-    fun atualizarUltimaMensagemVozUsuario(texto: String) = iaDelegate.atualizarUltimaMensagemVozUsuario(texto)
-    val mestreIASavedSessions get() = iaDelegate.savedSessions
-    fun carregarHistoricoMestreIA() = iaDelegate.carregarHistorico()
-    fun carregarSessaoMestreIA(id: Long) = iaDelegate.carregarSessao(id)
-    /**
-     * Função desabilitada na arquitetura PRIME (Segurança Sete Chaves).
-     * As chaves agora são injetadas via BuildConfig.
-     */
-    fun salvarConfiguracaoIA(baseUrl: String, apiKey: String, workspaceSlug: String) {
-        // Log ou ação de segurança se necessário
-    }
-    // Nome FIXO da sessão de criação/edição por IA. Antes (bug): cada autoSaveIA
-    // usava timestamp novo → ~20 arquivos-lixo por ficha criada (o loop salva a
-    // cada edição). Agora o nome é fixado na 1ª chamada e REUSADO nas seguintes,
-    // sobrescrevendo o MESMO arquivo. Zera em novaFicha() (início de nova criação).
-    private var nomeSessaoIA: String? = null
-    fun autoSaveIA() {
-        val nome = nomeSessaoIA ?: "IA_${personagem.nome.ifBlank { "Sem_Nome" }}_${System.currentTimeMillis()}".also { nomeSessaoIA = it }
-        viewModelScope.launch { fichaStorage.salvarFicha(nome, personagem.toJson()); carregarListaFichas() }
-    }
-    fun gerarFichaComIA(h: String, onRes: (Boolean, String) -> Unit) = iaDelegate.conversar(h, "geracao", onRes)
-    fun analisarFichaComIA(onRes: (Boolean, String) -> Unit) = iaDelegate.conversar("Analise minha ficha atual e dê sugestões.", "analise", onRes)
-
+    // === DISCORD ===
     fun atualizarCanaisDiscord() = socialDelegate.atualizarCanais()
     fun selecionarCanalDiscord(c: DiscordVoiceChannel?) = socialDelegate.selecionarCanal(c)
-    /**
-     * ⚠️ O retrato do personagem já foi para a Mesa nesta sessão?
-     *
-     * Guardado em memória: uma vez por arranque do app basta. Guardar em disco
-     * mentiria no dia em que a sala fosse reiniciada e perdesse a imagem.
-     */
-    private val retratosJaEnviadosAMesa = mutableSetOf<String>()
-
-    /**
-     * 🔴 Garante que a Mesa tem a cara deste personagem ANTES da rolagem.
-     *
-     * A imagem só subia ao **salvar a ficha** — então quem já tinha salvo antes
-     * de escolher a Mesa rolava a sessão inteira sem imagem, e não havia nada
-     * na tela que explicasse por quê. O primeiro lançamento agora resolve isso
-     * sozinho.
-     *
-     * ⚠️ Não segura a rolagem se falhar: rolagem sem imagem é um aborrecimento,
-     * rolagem que não sai é a jogada perdida.
-     */
-    private suspend fun garantirRetratoNaMesa(nomeDoPersonagem: String) {
-        if (nomeDoPersonagem.isBlank()) return
-        if (!retratosJaEnviadosAMesa.add(nomeDoPersonagem)) return
-
-        val imagemUri = personagem.imagemPersonagemUri
-        if (imagemUri.isBlank()) return
-        val dataUri = com.gurps.ficha.data.storage.ImagemPersonagemStore.bytesBase64(imagemUri)
-            ?: return
-        // Se não der certo, tenta de novo na próxima rolagem.
-        if (!socialDelegate.enviarRetratoParaAMesa(nomeDoPersonagem, dataUri)) {
-            retratosJaEnviadosAMesa.remove(nomeDoPersonagem)
-        }
-    }
-
     suspend fun enviarRolagemDiscord(p: DiscordRollPayload): RollDispatchStatus {
-        garantirRetratoNaMesa(p.character)
         return socialDelegate.enviarRolagem(p)
     }
 

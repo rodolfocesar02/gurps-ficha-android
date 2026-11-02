@@ -27,16 +27,6 @@ import kotlinx.coroutines.sync.withLock
  */
 private val gson = Gson()
 
-data class MestreIaTema(
-    val id: String,
-    val canonical: String,
-    val keywords: List<String>
-)
-
-data class MestreIaTemasWrapper(
-    val temas: List<MestreIaTema>
-)
-
 open class DataRepository(internal val context: Context) {
     private data class MagiaFiltroIndex(
         val definicao: MagiaDefinicao,
@@ -62,9 +52,6 @@ open class DataRepository(internal val context: Context) {
     private var _armadurasCatalogo: List<ArmaduraCatalogoItem>? = null
     private var _modificadoresGerais: List<ModificadorDefinicao>? = null
     private var _modificadoresPoderes: List<ModificadorDefinicao>? = null
-    private var _temasMestreIA: List<MestreIaTema>? = null
-    
-    val mestreIARepository by lazy { MestreIARepository(context, database) }
 
     open val poderes: List<PoderDefinicao>
         get() = _poderes ?: carregarPoderes().also { _poderes = it }
@@ -123,14 +110,7 @@ open class DataRepository(internal val context: Context) {
     open val magias: List<MagiaDefinicao>
         get() = _magias ?: carregarMagias().also { _magias = it }
 
-    open val temasMestreIA: List<MestreIaTema>
-        get() = _temasMestreIA ?: carregarTemasMestreIA().also { _temasMestreIA = it }
-
     private val catalogLoaders = com.gurps.ficha.domain.loaders.CatalogLoaders(context)
-    private val database by lazy { com.gurps.ficha.data.storage.FichaDatabase.getInstance(context) }
-    private val graphNodeDao by lazy { database.graphNodeDao() }
-    private val manualChunkDao by lazy { database.manualChunkDao() }
-    fun chatHistoryDao() = database.chatHistoryDao()
 
     fun getCatalogLoadErrors(): Map<String, String> {
         return synchronized(catalogLoaders.loadErrors) { catalogLoaders.loadErrors.toMap() }
@@ -150,15 +130,6 @@ open class DataRepository(internal val context: Context) {
     private fun carregarArmadurasCatalogo(): List<ArmaduraCatalogoItem> = catalogLoaders.carregarArmadurasCatalogo()
     private fun carregarModificadoresGerais(): List<ModificadorDefinicao> = catalogLoaders.carregarModificadoresGerais()
     private fun carregarModificadoresPoderes(): List<ModificadorDefinicao> = catalogLoaders.carregarModificadoresPoderes()
-
-    private fun carregarTemasMestreIA(): List<MestreIaTema> {
-        return try {
-            val json = context.assets.open("mestre_ia_temas.json").bufferedReader().use { it.readText() }
-            gson.fromJson(json, MestreIaTemasWrapper::class.java).temas
-        } catch (e: Exception) {
-            emptyList()
-        }
-    }
 
     // === FILTROS DE VANTAGENS E OUTROS (Delegados para CatalogFilters) ===
 
@@ -190,26 +161,6 @@ open class DataRepository(internal val context: Context) {
             .map { it.definicao }
             .toList()
     }
-
-    // --- MÉTODOS DELEGADOS AO MESTRE IA REPOSITORY ---
-    open suspend fun sincronizarCodexSeNecessario() = mestreIARepository.sincronizarCodexSeNecessario()
-    open suspend fun buscarNoCodexDireto(query: String, termosTecnicos: List<String> = emptyList(), limit: Int = 30) = mestreIARepository.buscarNoCodexDireto(query, termosTecnicos, limit)
-    open suspend fun buscarRecortesManual(query: String, limit: Int = 30) = mestreIARepository.buscarNoCodexDireto(query, emptyList(), limit)
-    open suspend fun buscarPorPagina(pagina: Int) = mestreIARepository.buscarPorPagina(pagina)
-    open suspend fun buscarPorPaginaESource(pagina: Int, source: String) = mestreIARepository.buscarPorPaginaESource(pagina, source)
-
-    // Lote 325: motor de busca por palavra-chave (localizar + ler) — Auditor
-    open suspend fun localizarNoCodex(termos: String, livrosFiltro: List<String>? = null, limit: Int = 60) =
-        mestreIARepository.localizarNoCodex(termos, livrosFiltro, limit)
-    open suspend fun lerPaginas(livro: String, paginaInicial: Int, paginaFinal: Int? = null) =
-        mestreIARepository.lerPaginas(livro, paginaInicial, paginaFinal)
-    open suspend fun getChunkById(id: String) = mestreIARepository.getChunkById(id)
-    open suspend fun forçarSincronizacaoManual() = mestreIARepository.forçarSincronizacaoManual()
-    open suspend fun contarTotalChunks(): Int = mestreIARepository.contarTotalChunks()
-    open fun calcularAvgdlCorpus(): Double = mestreIARepository.calcularAvgdlCorpus()
-
-    // Lote 259: Acesso ao DAO de embeddings semânticos
-    val vecChunkDao by lazy { database.vecChunkDao() }
 
     fun filtrarTecnicasCatalogo(busca: String = "", sourceBook: String? = null): List<TecnicaCatalogoItem> {
         return CatalogFilters.filtrarTecnicasCatalogo(tecnicasCatalogo, busca, sourceBook)

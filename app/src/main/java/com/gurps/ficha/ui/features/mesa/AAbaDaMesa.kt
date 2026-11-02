@@ -99,24 +99,3 @@ fun SaltarParaAMesaQuandoPedirem(
         if (SalaDaMesa.estaDePe) viewModel.irParaAMesa = false
     }
 }
-
-/**
- * **A Mesa manda no microfone enquanto a sala estiver ligada** — MNA-7.
- * Decisão dele.
- *
- * @return o recado a mostrar, ou `null` quando o microfone está livre
- *
- * 🔴 O Android **não garante dois donos do microfone**. Deixar os dois ligados
- * daria um dos dois emudecendo em silêncio, sem erro na tela — e quem emudecesse
- * só seria descoberto por outra pessoa dizendo *"não te ouço"*, no meio de uma
- * cena.
- *
- * ⚠️ Um recado, e não um botão morto: um botão que não faz nada é pior do que um
- * botão que explica.
- */
-fun oQueImpedeAVozDoMestreIA(): String? =
-    if (SalaDaMesa.estaDePe) {
-        "O microfone está com a Mesa. Saia da mesa para falar com o Mestre IA."
-    } else {
-        null
-    }

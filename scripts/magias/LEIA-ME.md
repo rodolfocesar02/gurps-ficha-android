@@ -24,7 +24,7 @@ transcreve.
 `python -I scripts/magias/pdf-para-chunks.py --pdf "<PDF>" --paginas 23,33 [--mostrar] [--aplicar]` lê a página do PDF 
 (ordem das colunas, parágrafos, tabelas), mostra o que mudaria (números que saem e entram) e, com `--aplicar`, troca só 
 essas linhas do `chunks.jsonl`. Depois rode a cadeia **0, 1, 2, 3, 4** (a 1 também: ela refresca o cabeçalho e as 
-exceções) e suba `CODEX_VERSION_CURRENT`. ⚠️ `mecanica-lida-na-pagina.json` guarda posições de LINHA de páginas que 
+exceções). (Não há mais `CODEX_VERSION_CURRENT` para subir: desde o lote SEM-IA, de 02/nov/2026, o app não importa o `chunks.jsonl`; quem o lê são estes scripts e a Mesa.) ⚠️ `mecanica-lida-na-pagina.json` guarda posições de LINHA de páginas que 
 foram embaralhadas: se reextrair uma delas, reaponte as linhas (e confira o `mecanica.test.js`). Número que SAI 
 da página depois de reextrair é sinal de erro do conversor: o ensaio mostra.
 O conversor já sabe: colunas pelas linhas longas, tabelas só com 2+ linhas alinhadas, historinha de abertura de capítulo 

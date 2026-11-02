@@ -5,8 +5,6 @@ import androidx.compose.animation.core.*
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.combinedClickable
-import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.*
@@ -21,7 +19,6 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.invisibleToUser
@@ -38,22 +35,8 @@ fun FichaCustomNavigationBar(
     tabs: List<String>,
     currentIndex: Int,
     onTabClick: (Int) -> Unit,
-    onMestreIAClick: () -> Unit = {},
-    onMestreIALongPress: () -> Unit = {},
-    mestreIAAberto: Boolean = false,
-    estadoVoz: EstadoVoz = EstadoVoz.OCIOSO,
-    estadoLive: EstadoLive = EstadoLive.OCIOSO,
     isPraCegoVariant: Boolean = false
 ) {
-    // Mapeia EstadoLive para EstadoVoz para reutilizar o anel visual existente
-    val estadoVozEfetivo = when {
-        estadoLive == EstadoLive.OUVINDO      -> EstadoVoz.ESCUTANDO    // anel verde
-        estadoLive == EstadoLive.FALANDO      -> EstadoVoz.PROCESSANDO  // anel amarelo
-        estadoLive == EstadoLive.CONECTANDO   -> EstadoVoz.PROCESSANDO  // anel amarelo
-        estadoLive == EstadoLive.PROCESSANDO  -> EstadoVoz.PROCESSANDO  // anel amarelo
-        else -> estadoVoz
-    }
-
     /**
      * **O nome aparece e some** — lote BARRA-1.
      *
@@ -117,19 +100,11 @@ fun FichaCustomNavigationBar(
             }
 
             /**
-             * 🟥 **O Mestre IA entra na FILA** — achado dele, no aparelho:
+             * 🟥 **Só abas na FILA, e o grupo no centro.**
              *
-             * > *"o icone do mestre IA, ficou fora do alinhamento, ele pode
-             * > entrar no grupo ficar todos icones na mesma linha!"*
-             *
-             * 🔴 Ele estava numa âncora à esquerda, fora do grupo, com um
-             * contrapeso vazio do outro lado para o centro não sair torto. Era uma
-             * conta a mais para uma coisa que se resolve pondo tudo na mesma
-             * linha: com ele **dentro**, o grupo é o que é, e o centro é o centro.
-             *
-             * ⚠️ E ele continua a **não ser uma aba**: toque abre o chat, segurar
-             * liga a voz, e o cometa não para debaixo dele — ver o
-             * `OTrilhoDoCometa`.
+             * 🔴 O Mestre IA morou aqui como "lugar zero" (não era aba: o toque
+             * abria o chat e o cometa pulava por cima dele). Ele saiu no lote
+             * SEM-IA, e com ele a conta do `+1` — o lugar N é a aba N.
              */
             BoxWithConstraints(
                 // ⚠️ A folga em cima, para o ícone crescido não subir para dentro
@@ -141,29 +116,16 @@ fun FichaCustomNavigationBar(
                  * 🔴 A largura de cada lugar é **calculada**, e não fixa.
                  *
                  * ⚠️ São sete abas num dia e nove no outro (as Magias entram com a
-                 * aptidão; a Mesa, com a sala aberta), mais o Mestre IA. Uma
-                 * largura fixa que coubesse dez desperdiçaria tela com oito, e uma
-                 * que ficasse bonita com oito estouraria a barra com dez.
+                 * aptidão; a Mesa, com a sala aberta). Uma largura fixa que
+                 * coubesse nove desperdiçaria tela com sete, e uma que ficasse
+                 * bonita com sete estouraria a barra com nove.
                  */
-                val quantosLugares = tabs.size + 1
+                val quantosLugares = tabs.size
                 val larguraDaAba =
                     minOf(LARGURA_IDEAL_DA_ABA, maxWidth / quantosLugares)
 
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     Row(verticalAlignment = Alignment.Bottom) {
-                        // O Mestre IA, primeiro da fila e do mesmo tamanho.
-                        Box(modifier = Modifier.width(larguraDaAba)) {
-                            RPGNavigationItem(
-                                label = "Mestre IA",
-                                iconRes = R.drawable.tab_mestre_ia,
-                                isSelected = mestreIAAberto,
-                                isPraCegoVariant = isPraCegoVariant,
-                                estadoVoz = estadoVozEfetivo,
-                                onClick = onMestreIAClick,
-                                onLongClick = onMestreIALongPress
-                            )
-                        }
-
                         tabs.forEachIndexed { index, title ->
                             val iconRes = when (title) {
                                 "Geral" -> R.drawable.tab_geral
@@ -174,7 +136,6 @@ fun FichaCustomNavigationBar(
                                 "Equipamentos" -> R.drawable.tab_equipamentos
                                 "Rolagem" -> R.drawable.tab_rolagem
                                 "Mesa" -> R.drawable.tab_mesa
-                                "Saga" -> R.drawable.tab_mestre_ia
                                 else -> R.drawable.tab_geral
                             }
                             // 🟥 A caixa tem largura FIXA, e é ela que segura a
@@ -202,9 +163,7 @@ fun FichaCustomNavigationBar(
 
                     OTrilhoDoCometa(
                         quantosLugares = quantosLugares,
-                        // 🔴 `+1`: o lugar zero é o do Mestre IA, e ele não é uma
-                        // aba. Sem isto o cometa pararia sempre um lugar atrás.
-                        lugarAceso = currentIndex + 1,
+                        lugarAceso = currentIndex,
                         larguraDaAba = larguraDaAba,
                         aceso = !isPraCegoVariant
                     )
@@ -240,8 +199,7 @@ private val LARGURA_IDEAL_DA_ABA = 42.dp
  * alinhados. Uma segunda conta aqui dentro seria uma conta para divergir no dia
  * em que a largura mudasse.
  *
- * ⚠️ Fora do `pracego`: um risco de luz não diz nada a quem não vê a tela, e o
- * anel do microfone continua sendo o único efeito que **avisa** alguma coisa.
+ * ⚠️ Fora do `pracego`: um risco de luz não diz nada a quem não vê a tela.
  */
 @Composable
 private fun OTrilhoDoCometa(
@@ -340,9 +298,7 @@ fun RPGNavigationItem(
     iconRes: Int,
     isSelected: Boolean,
     isPraCegoVariant: Boolean,
-    estadoVoz: EstadoVoz = EstadoVoz.OCIOSO,
-    onClick: () -> Unit,
-    onLongClick: (() -> Unit)? = null
+    onClick: () -> Unit
 ) {
     val interactionSource = remember { MutableInteractionSource() }
 
@@ -390,47 +346,15 @@ fun RPGNavigationItem(
     )
 
     val primaryColor = MaterialTheme.colorScheme.primary
-    val escutando = estadoVoz == EstadoVoz.ESCUTANDO || estadoVoz == EstadoVoz.PROCESSANDO
 
-    // Anel pulsante durante escuta de voz. ⚠️ Este FICA: é o único efeito da
-    // barra que **avisa** alguma coisa, em vez de só enfeitar.
-    val vozRingScale by infiniteTransition.animateFloat(
-        initialValue = 1f,
-        targetValue = if (escutando) 1.6f else 1f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(700, easing = FastOutSlowInEasing),
-            repeatMode = RepeatMode.Reverse
-        ),
-        label = "VozRing"
-    )
-    val vozRingAlpha by infiniteTransition.animateFloat(
-        initialValue = 0f,
-        targetValue = if (escutando) 0.6f else 0f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(700, easing = FastOutSlowInEasing),
-            repeatMode = RepeatMode.Reverse
-        ),
-        label = "VozAlpha"
-    )
-    val vozColor = if (estadoVoz == EstadoVoz.PROCESSANDO) Color(0xFFFFA000) else Color(0xFF4CAF50)
-
-    val clickModifier = if (onLongClick != null) {
-        Modifier.pointerInput(onClick, onLongClick) {
-            detectTapGestures(
-                onTap = { onClick() },
-                onLongPress = { onLongClick() }
-            )
-        }
-    } else {
+    val clickModifier =
         Modifier.clickable(interactionSource = interactionSource, indication = null, onClick = onClick)
-    }
 
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .semantics {
                 contentDescription = when {
-                    escutando -> "$label (Escutando voz)"
                     isSelected -> "$label (Aba Selecionada)"
                     else -> "Aba $label"
                 }
@@ -442,20 +366,6 @@ fun RPGNavigationItem(
             modifier = Modifier.size(TAMANHO_DO_ICONE),
             contentAlignment = Alignment.Center
         ) {
-            // Anel verde/amarelo pulsante ao escutar
-            if (escutando) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .graphicsLayer {
-                            scaleX = vozRingScale
-                            scaleY = vozRingScale
-                            alpha = vozRingAlpha
-                        }
-                        .drawBehind { drawCircle(color = vozColor) }
-                )
-            }
-
             // O brilho, PRESO ao tamanho do ícone.
             if (isSelected && !isPraCegoVariant) {
                 Box(

@@ -10,8 +10,8 @@ script só decide a ordem das colunas, junta linhas em parágrafos e marca o que
 
 Sem `--aplicar` é um ensaio: mostra, página a página, o que mudaria (tamanho, números que saem e entram).
 Com `--aplicar` troca SÓ o campo `text` dessas páginas no `chunks.jsonl`; o resto do arquivo fica byte a byte
-como está (CRLF e a mesma serialização). Depois: rodar a cadeia dos scripts do MC (ver LEIA-ME.md) e subir
-`CODEX_VERSION_CURRENT`.
+como está (CRLF e a mesma serialização). Depois: rodar a cadeia dos scripts do MC (ver LEIA-ME.md). Desde o
+lote SEM-IA (02/nov/2026) o app não importa mais o `chunks.jsonl` e não há versão do Códex para subir.
 
 Por que existe: a extração antiga (por IA, a partir de imagens) embaralhou as páginas de colunas e cortou
 outras (a p.185 tinha 739 caracteres). O PDF tem camada de texto (InDesign): é só lê-la na ordem certa.
