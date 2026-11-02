@@ -411,6 +411,16 @@ def paragrafos(linhas, vocab):
                 atual[2] = l
                 continue
             tipo = "corpo"
+        # P-8: o valor de um campo que quebra em duas linhas ("Custo: 1 para até 1000 palavras de" / "texto simples; 2 para…"): a linha de baixo é PRETA
+        # (só o rótulo é colorido), então caía num parágrafo novo, começando no meio da frase — e o campo pode passar para o alto da coluna seguinte.
+        # Valor sem ponto final e a linha nova em minúscula, na mesma coluna (logo abaixo) ou na seguinte: é o mesmo campo.
+        if (atual and atual[0] == "rotulo" and texto[:1].islower() and atual[1][1].rstrip()[-1:] not in ".!?:;”\")…"
+                and (l["col"] == atual[2]["col"] and 0 <= (l["y0"] - atual[2]["y1"]) <= LACUNA_DE_PARAGRAFO
+                     or l["col"] == atual[2]["col"] + 1)):
+            r, v = atual[1]
+            atual[1] = (r, juntar(v, texto, vocab))
+            atual[2] = l
+            continue
         # corpo
         if atual and atual[0] == "corpo":
             ult = atual[2]

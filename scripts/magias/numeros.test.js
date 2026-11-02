@@ -25,6 +25,13 @@ const TEM_O_LIVRO = TEM_LEITOR && fs.existsSync(CHUNKS) && fs.existsSync(CATALOG
 
 const cc = () => N.leitorDeCusto();
 
+/**
+ * Os campos que o PASSO 8 (`aplicar-correcoes-manuais.js`) grava à mão, por `id|campo`: a cadeia 1 a 7 não os conhece, então os testes
+ * "o catálogo É o que o leitor tira do livro" não os cobram. (`correcoes-manuais.test.js` cobra que eles estão LÁ, e a página do livro em cada um.)
+ */
+const FEITO_A_MAO = new Set(JSON.parse(fs.readFileSync(path.join(__dirname, 'correcoes-manuais.json'), 'utf8')).correcoes
+  .map((c) => c.id + '|' + c.campo.split('.')[0]));
+
 // ------------------------------------------------------------------------------ 1. unidade
 
 test('duração: tabela e entrada concordam -> "tabela+entrada"; discordam -> vale a entrada e fica a lista', opcoes, () => {
@@ -224,6 +231,7 @@ test('livro real: o catálogo gravado É o que o leitor tira do livro agora (879
     N.CAMPOS_DOS_NUMEROS.forEach((k) => {
       // onde o passo 6 manda no custo (o livro escreve uma CONTA, não um número), o leitor do passo 2 não vale
       if (porCondicao.has(r.m.id) && CAMPOS_DE_CUSTO.indexOf(k) >= 0) return;
+      if (FEITO_A_MAO.has(r.m.id + '|' + k)) return; // passo 8
       const esperado = r.d.campos[k];
       const gravado = r.m[k];
       if (JSON.stringify(esperado) !== JSON.stringify(gravado)) erros.push(r.m.nome + ' (p.' + (r.x.tabela && r.x.tabela.pagina) + '): ' + k + ' gravado ' + JSON.stringify(gravado) + ' ≠ livro ' + JSON.stringify(esperado));
@@ -311,7 +319,7 @@ test('livro real: Respirar Ar tem "3/1" na tela e "4/2" no cabeçalho; nenhuma t
   catalogo.forEach((m) => {
     if (m.energiaTela) { assert.notStrictEqual(m.energiaTela, m.energia, m.id); assert.ok(m.custoTipo === 'fixo' || m.custoTipo === 'faixa', m.id); }
     if (m.duracaoTela) { assert.notStrictEqual(m.duracaoTela, m.duracao, m.id); assert.ok(m.duracaoTipo, m.id); }
-    if (m.tempoOperacaoTela) { assert.notStrictEqual(m.tempoOperacaoTela, m.tempoOperacao, m.id); assert.ok(m.tempoOperacaoSeg !== undefined, m.id); }
+    if (m.tempoOperacaoTela && !FEITO_A_MAO.has(m.id + '|tempoOperacaoTela')) { assert.notStrictEqual(m.tempoOperacaoTela, m.tempoOperacao, m.id); assert.ok(m.tempoOperacaoSeg !== undefined, m.id); }
   });
 });
 
@@ -325,6 +333,7 @@ test('🟥 sonda: o catálogo gravado É o que `derivar` tira do livro, com a te
     const entrada = x.entrada && x.entrada.formato === 'bloco' ? L.camposDaEntrada(livro, x.entrada) : {};
     const d = N.derivar(m, x, entrada, { legado: m, protegida: m.conferidoPor && Object.values(m.conferidoPor).includes('conferencia') });
     ['energiaTela', 'duracaoTela', 'tempoOperacaoTela'].forEach((k) => {
+      if (FEITO_A_MAO.has(m.id + '|' + k)) return; // passo 8
       if ((d.campos[k] || null) !== (m[k] || null)) erros.push(m.id + ' ' + k + ': gravado ' + m[k] + ' × livro ' + d.campos[k]);
     });
   });

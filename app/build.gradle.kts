@@ -70,8 +70,8 @@ android {
         applicationId = "com.gurps.ficha"
         minSdk = 24
         targetSdk = 35
-        versionCode = 196
-        versionName = "12.8.11-MAGIAS-FAIXA-DO-LIVRO"
+        versionCode = 197
+        versionName = "12.8.12-MAGIAS-TEXTO-DO-LIVRO-1"
         buildConfigField("String", "DISCORD_ROLL_API_BASE_URL", "\"$discordApiBaseUrl\"")
         buildConfigField("String", "DISCORD_ROLL_API_KEY", "\"$discordApiKey\"")
         buildConfigField(

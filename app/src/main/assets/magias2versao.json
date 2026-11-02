@@ -451,7 +451,7 @@
     "energia": "1 a AM#",
     "tempoOperacao": "1 a 3 seg.",
     "preRequisitos": "Esfera de Gelo ou Jato de Água",
-    "descricao": "Projétil\n\nCria e arremessa um pingente afiado de gelo. Quando ataca, causa dano por perfuração e derrete instantaneamente. Possui 1/2D 30, Max 60, Prec 3.\n\nCusto: Qualquer quantia até o seu nível de Aptidão Mágica por segundo, por 3 segundos. Causa 1d-1 de dano por perfuração para cada ponto de energia colocado nela. Nenhum efeito extra em criaturas de fogo.\n\nTempo de operação: 1 a 3 segundos.\nPré-requisito: Esfera de Gelo ou Jato de Água.",
+    "descricao": "Projétil\n\nCria e arremessa um pingente afiado de gelo. Quando ataca, causa dano por perfuração e derrete instantaneamente. Possui 1/2D 30, Max 60, Prec 3.\n\nCusto: Qualquer quantia até o seu nível de Aptidão Mágica por segundo, por 3 segundos. Causa 1d-1 de dano por perfuração para cada ponto de energia colocado nela. Nenhum efeito extra em criaturas de fogo.\n\nTempo de operação: 1 a 3 segundos.\n\nPré-requisito: Esfera de Gelo ou Jato de Água.\n\nItem\nJoias; o objeto deve ter uma forma ou desenho de adaga. Utilizável apenas por um mago. Custo de energia para criar: 400.",
     "descricaoConferida": true,
     "descricaoPagina": 188,
     "mecanica": {
@@ -710,7 +710,7 @@
     "energia": "4/2",
     "tempoOperacao": "2 seg.",
     "preRequisitos": "Solidificar",
-    "descricao": "Comum\n\nQuando operada em uma pessoa ou objeto, esta mágica permite que o objetivo interaja com espíritos incorpóreos como se fossem sólidos. Uma arma com essa mágica pode prejudicar um espírito insubstancial.\n\nDuração: 1 minuto.\nCusto: 4 para operar. 2 para manter.\nTempo de operação: 2 segundos.\nPré-requisito: Solidificar.\n\nItem\nEsta mágica não pode ser encantada em um item, mas veja Arma Fantasmagórica (pág. 65).",
+    "descricao": "Comum\n\nQuando operada em uma pessoa ou objeto, esta mágica permite que o objetivo interaja com espíritos incorpóreos como se fossem sólidos. Uma arma com essa mágica pode prejudicar um espírito insubstancial.\n\nDuração: 1 minuto.\n\nCusto: 4 para operar. 2 para manter.\n\nTempo de operação: 2 segundos.\n\nPré-requisito: Solidificar.\n\nItem\nEsta mágica não pode ser encantado em um item, mas veja Arma Fantasmagórica (pág. 65).",
     "descricaoConferida": true,
     "descricaoPagina": 151,
     "mecanica": {
@@ -2306,7 +2306,7 @@
     "energia": "3",
     "tempoOperacao": "1 seg",
     "preRequisitos": "Trança-Pés",
-    "descricao": "Comum; Resistível com HT\n\nMuda o lado para o qual o objetivo está andando, para qualquer direção que se deseje. Não se trata de um “teleporte-no-lugar”, mas sim um giro físico. Para que o objetivo possa tomar qualquer atitude, ele precisará obter sucesso num teste de Percepção do Corpo ou DX-6 no turno seguinte. Se no turno anterior ele tiver se deslocado 2 ou mais metros, ele precisará ser bem-sucedido num teste de IQ para abster-se de continuar se deslocando na nova direção.\n\nCusto: 3.\nPré-requisitos: Trança-Pés.",
+    "descricao": "Comum; Resistível com HT\n\nMuda o lado para o qual o objetivo está andando, para qualquer direção que se deseje. Não se trata de um “teleporte-no-lugar”, mas sim um giro físico. Para que o objetivo possa tomar qualquer atitude, ele precisará obter sucesso num teste de Percepção do Corpo ou DX-6 no turno seguinte. Se no turno anterior ele tiver se deslocado 2 ou mais metros, ele precisará ser bem-sucedido num teste de IQ para abster-se de continuar se deslocando na nova direção.\n\nCusto: 3.\n\nPré-requisitos: Trança-Pés.",
     "descricaoConferida": true,
     "descricaoPagina": 36,
     "mecanica": {
@@ -2506,7 +2506,7 @@
     "energia": "Varia",
     "tempoOperacao": "Varia",
     "preRequisitos": "Controle de Máquina, Animação ou Animar Objeto",
-    "descricao": "Comum; Resistível com Vontade\n\nConvoca um espírito para animar uma máquina que o mago está tocando. Personagens com a metacaracterística Máquina (pág. MB263) podem ser afetados por essa mágica, embora máquinas inteligentes tenham a chance de resistir.\n\nO espírito convocado controla a máquina animada como se estivesse sendo operada da maneira normal. Ele também controla todos os acessórios mecânicos ou eletrônicos (incluindo armas) embutidos na máquina.\n\nO espírito tem DX 10 e IQ 9 com as metacaracterísticas Autômato e Espírito (pág. MB263). Obedece às ordens do operador ou a qualquer pessoa que este designar — mas o espírito aceita todas as ordens literalmente! “Me tira daqui” é um comando particularmente infeliz para dar a um helicóptero animado. Nesses casos, teste a IQ do espírito para ver se ele usa o significado coloquial ou literal da frase.\n\nEm uma falha crítica durante a operação, um demônio entra na máquina. Ele então tenta matar seu convocador e qualquer outra pessoa que ele possa alcançar. O operador não pode expulsar o demônio que anima a máquina — ele usa seus próprios 15 PF para manter a mágica funcionando! Em outros aspectos, o demônio é semelhante aos espíritos normalmente convocados.\n\nDuração: Um minuto.\nCusto: 8 para uma máquina de até uma tonelada de massa, 9 para duas toneladas ou menos, 10 para quatro toneladas, 11 para oito toneladas, 12 para 16 toneladas e assim por diante, com cada ponto de energia extra dobrando a massa capaz da mágica. Metade disso para manter.\nTempo de operação: Um segundo por ponto de energia.\nPré-requisitos: Controle de Máquina e Animação ou Animar Objeto.",
+    "descricao": "Comum; Resistível com Vontade\n\nConvoca um espírito para animar uma máquina que o mago está tocando. Personagens com a metacaracterística Máquina (pág. MB263) podem ser afetados por essa mágica, embora máquinas inteligentes tenham a chance de resistir.\n\nO espírito convocado controla a máquina animada como se estivesse sendo operada da maneira normal. Ele também controla todos os acessórios mecânicos ou eletrônicos (incluindo armas) embutidos na máquina.\n\nO espírito tem DX 10 e IQ 9 com as metacaracterísticas Autômato e Espírito (pág. MB263). Obedece às ordens do operador ou a qualquer pessoa que este designar — mas o espírito aceita todas as ordens literalmente! “Me tira daqui” é um comando particularmente infeliz para dar a um helicóptero animado. Nesses casos, teste a IQ do espírito para ver se ele usa o significado coloquial ou literal da frase.\n\nEm uma falha crítica durante a operação, um demônio entra na máquina. Ele então tenta matar seu convocador e qualquer outra pessoa que ele possa alcançar. O operador não pode expulsar o demônio que anima a máquina — ele usa seus próprios 15 PF para manter a mágica funcionando! Em outros aspectos, o demônio é semelhante aos espíritos normalmente convocados.\n\nDuração: Um minuto.\n\nCusto: 8 para uma máquina de até uma tonelada de massa, 9 para duas toneladas ou menos, 10 para quatro toneladas, 11 para oito toneladas, 12 para 16 toneladas e assim por diante, com cada ponto de energia extra dobrando a massa capaz da mágica. Metade disso para manter.\n\nTempo de operação: Um segundo por ponto de energia.\n\nPré-requisitos: Controle de Máquina e Animação ou Animar Objeto.",
     "descricaoConferida": true,
     "descricaoPagina": 177,
     "mecanica": {
@@ -2855,7 +2855,7 @@
     "energia": "1 a 3#",
     "tempoOperacao": "1 seg",
     "preRequisitos": "Controle de Criação",
-    "descricao": "Comum; Resistível com a mágica-objetivo\n\nDestrói qualquer tipo de criação. Não afeta ilusões.\nCusto: 1 para anular um objetivo não vivo ou 3 para anular uma criação viva.\nPré-requisito: Controle de Criação.",
+    "descricao": "Comum; Resistível com a mágica-objetivo\n\nDestrói qualquer tipo de criação. Não afeta ilusões.\n\nCusto: 1 para anular um objetivo não vivo ou 3 para anular uma criação viva.\n\nPré-requisito: Controle de Criação.\n\nItem\nVarinha ou cajado. Custo de energia para criar: 500.\nO adivinho colocou o aparelho alongado na mesa à sua frente. Mesmo na fraca luz das velas, Gulden podia ver que ele parecia preocupado.\n“Onde você adquiriu este objeto?”\n“Isso é problema meu. O que você pode me dizer sobre ele?”\nO adivinho franziu o cenho. “Você anda fuçando a Cidade Arruinada com os outros tolos e, como eles, encontrou só problemas. Este objeto é antigo… talvez trezentos, talvez quatrocentos anos. Não posso afirmar nada sobre seu criador, exceto que ele era um mago de grande poder. Não sei dizer os poderes que isto tem. Eles são complexos demais para que eu possa definir através de magia — camadas de mágicas sobre mágicas, encantamentos sobre encantamentos — e não me atrevo a testar mais nada.”\n“Como você me disse, isto pode detectar se um objeto é mágico. Mas também pode indicar se um objeto é mágico por magia ou encantamento e analisar apropriadamente a natureza dessa magia. Pode revelar a história de um objeto — ou de seu portador. Pode remover encantamentos de um item mágico, e isso por vontade própria.”\n“Esta abominação, de alguma forma, pensa. Percebe, decide e age. Mesmo assim, não vive. Eu o testei com todos os métodos que conheço, e não sei dizer como é possível. É uma coisa inerte, porém é capaz de pensar.”\n“Recomendo que você destrua esse artefato, se puder. Se estivesse ao meu alcance, eu já teria feito isso. Agora saia daqui.”\n\nAs mágicas desta escola fornecem informações. A duração é “instantânea”, a menos que seja indicado o contrário — isto é, o operador recebe um lampejo de conhecimento, mas não um panorama contínuo.",
     "descricaoConferida": true,
     "descricaoPagina": 99,
     "mecanica": {
@@ -2978,7 +2978,7 @@
     "energia": "3",
     "tempoOperacao": "seg=custo",
     "preRequisitos": "Contramágica e 12 outras mágicas",
-    "descricao": "Área; Resistível com a mágica-objetivo\n\nAnula outras mágicas dentro da área da mágica, se for bem sucedida. Não tem efeito nos encantamentos, mas anula qualquer mágica temporária, duradoura ou permanente (pág. 10), a menos que a mágica especifique o contrário. Cada mágica resiste separadamente. Anular Mágica não é seletiva! O operador não precisa conhecer as mágicas sendo anuladas. Para anular uma mágica específica sem afetar as outras, use Contramágica, acima.\n\nDuração: A mágica anulada é eliminada permanentemente.\n\nCusto básico: 3.\n\nTempo de operação: 1 segundo para cada ponto de energia gasto.\n\nPré-requisitos: Contramágica e pelo menos doze outras mágicas de qualquer tipo.",
+    "descricao": "Área; Resistível com a mágica-objetivo\n\nAnula outras mágicas dentro da área se for bem sucedida. Não tem efeito nos encantamentos, mas anula qualquer mágica temporária, duradoura ou permanente (pág. 10), a menos que a mágica especifique o contrário. Cada mágica resiste separadamente. Anular Mágica não é seletiva! O operador não precisa conhecer as mágicas sendo anuladas. Para anular uma mágica específica sem afetar as outras, use Contramágica, acima.\n\nDuração: A mágica anulada é eliminada permanentemente.\n\nCusto básico: 3.\n\nTempo de operação: 1 segundo para cada ponto de energia gasto.\n\nPré-requisitos: Contramágica e pelo menos doze outras mágicas de qualquer tipo.",
     "descricaoConferida": true,
     "descricaoPagina": 126,
     "mecanica": {
@@ -3048,11 +3048,11 @@
     "escola": [
       "Comunicação"
     ],
-    "duracao": "Permanente",
+    "duracao": "Instant",
     "energia": "10",
     "tempoOperacao": "10 seg",
     "preRequisitos": "Passageiro da Alma e Possessao",
-    "descricao": "Comum; Resistível com a mágica no objetivo\n\nTermina qualquer mágica Passageiro da Alma, Controle ou Possessão (ou seus equivalentes animais) afetando o objetivo.\n\nCusto: 10.\nTempo de operação: 10 segundos.\nPré-requisito: Passageiro da Alma, Possessão, ou (opção do Mestre) com status “santo”.\n\nDuração: Permanente.\nItem — Cajado ou varinha. Utilizável apenas por magos. O item deve tocar o objetivo possuído. Custo de energia para criar: 300.\nBayard sorriu e entrou de volta na mansão. Lady Ann voltou seu olhar para o labirinto do jardim; acabara de ter ideias fabulosas para as sebes.\n\nAs mágicas desta escola lidam com o tradicional “elemento” mágico da Terra. Exceto quando houver uma observação, nenhuma dessas mágicas afeta pedra ou metal. Mais mágicas para afetar metais aparecem em Mágicas Tecnológicas (pág. 182).\n\nA Escola da Terra não é para amadores. Pouquíssimas mágicas estão disponíveis para magos que não dominaram todas as mágicas básicas da escola, e poucas mágicas, seja do tipo que for, são acessíveis a não-magos.",
+    "descricao": "Comum; Resistível com a mágica no objetivo\n\nTermina qualquer mágica Passageiro da Alma, Controle ou Possessão (ou seus equivalentes animais) afetando o objetivo.\n\nCusto: 10.\n\nTempo de operação: 10 segundos.\n\nPré-requisito: Passageiro da Alma, Possessão, ou (opção do Mestre) com status “santo”.\n\nItem\nCajado ou varinha. Utilizável apenas por magos. O item deve tocar o objetivo possuído. Custo de energia para criar: 300.",
     "descricaoConferida": true,
     "descricaoPagina": 49,
     "mecanica": {
@@ -3061,7 +3061,7 @@
     },
     "mecanicaConferida": true,
     "fonteCabecalho": "tabela",
-    "duracaoTipo": "permanente",
+    "duracaoTipo": "instantanea",
     "duracaoSeg": 0,
     "tempoOperacaoSeg": 10,
     "tempoTipo": "fixo",
@@ -3070,7 +3070,7 @@
     "conferido": "livro",
     "conferidoPagina": 49,
     "conferidoPor": {
-      "duracao": "entrada",
+      "duracao": "tabela",
       "tempoOperacao": "tabela+entrada",
       "custo": "tabela+entrada"
     },
@@ -3080,8 +3080,8 @@
         "nota": "tempo de concentração"
       },
       "dura": {
-        "valor": "Permanente",
-        "nota": "não precisa manter"
+        "valor": "Instantânea",
+        "nota": "efeito imediato"
       },
       "manter": {
         "tipo": "naoDiz",
@@ -3679,7 +3679,7 @@
     "energia": "1/10/I",
     "tempoOperacao": "1 min#",
     "preRequisitos": "Calor, 4 mágicas do Ar",
-    "descricao": "Área\n\nAumenta a temperatura do ar ambiente de uma área. Isso pode ser usado para dissipar Nevoeiro, por exemplo. A mágica não pode elevar a temperatura acima de 37° C.\n\nEsta também é uma mágica do Ar.\n\nDuração: 1 hora\nTempo de operação: 1 minuto por aplicação do custo básico.\nCusto básico: 1/10 (mínimo 1). Cada aplicação do custo básico aumenta a temperatura ambiente em 2° C. Mesmo custo para manter.\nPré-requisitos: Calor e pelo menos quatro mágicas do Ar\n\nItem\nCajado. Utilizável apenas por um mago. Custo de energia para criar: 150.",
+    "descricao": "Área\n\nAumenta a temperatura do ar ambiente de uma área. Isso pode ser usado para dissipar Nevoeiro, por exemplo. A mágica não pode elevar a temperatura acima de 37° C.\n\nEsta também é uma mágica do Ar.\n\nDuração: 1 hora.\n\nTempo de operação: 1 minuto por aplicação do custo básico.\n\nCusto básico: 1/10 (mínimo 1). Cada aplicação do custo básico aumenta a temperatura ambiente em 2° C. Mesmo custo para manter.\n\nPré-requisitos: Calor e pelo menos quatro mágicas do Ar.\n\nItem\nCajado. Utilizável apenas por um mago. Custo de energia para criar: 150.",
     "descricaoConferida": true,
     "descricaoPagina": 195,
     "mecanica": {
@@ -4751,7 +4751,7 @@
     "energia": "2",
     "tempoOperacao": "1 seg",
     "preRequisitos": "Torpor ou Atordoamento",
-    "descricao": "Comum; Resistível com Vontade\n\nO objetivo fica mentalmente atordoado até que ele possa fazer um teste de IQ para se recuperar.\n\nCusto: 2.\nPré-requisito: Torpor ou Atordoamento.",
+    "descricao": "Comum; Resistível com Vontade\n\nO objetivo fica mentalmente atordoado até que ele possa fazer um teste de IQ para se recuperar.\n\nCusto: 2.\n\nPré-requisito: Torpor ou Atordoamento.\n\nItem\n(a) Qualquer item. Sempre ativo; o usuário fica mentalmente atordoado até que o item seja removido. Custo de energia para criar: 500. (b) Cajado ou varinha. Utilizável apenas por magos; o item deve tocar o objetivo. Custo de energia para criar: 1.100.",
     "descricaoConferida": true,
     "descricaoPagina": 135,
     "mecanica": {
@@ -4802,7 +4802,7 @@
     "energia": "1/I",
     "tempoOperacao": "10 seg",
     "preRequisitos": "Controle de Emoção",
-    "descricao": "Área; Resistível com Vontade\n\nCada ser que pisa dentro da área de efeito desta mágica sente-se compelido a se aproximar do centro da região afetada. Uma vez que a vítima tenha atingido o centro, ele estará imune à mágica até que ele saia da área afetada (se ele retornar, ele será novamente “atacado” pela mágica).\n\nAtrair e Repelir são mágicas antagônicas e, portanto, resistem uma à outra.\n\nDuração: 1 hora.\nCusto básico: 1 para operar. Mesmo custo para manter.\nTempo de operação: 10 segundos.\nPré-requisito: Controle de Emoção.",
+    "descricao": "Área; Resistível com Vontade\n\nCada ser que pisa dentro da área de efeito desta mágica sente-se compelido a se aproximar do centro da região afetada. O Mestre deve testar a resistência da criatura em segredo e depois dizer à vítima infeliz que ele “se sente curioso sobre o baú” ou alguma dica tão sutil. Uma vez que a vítima tenha atingido o centro, ele estará imune à mágica até que ele saia da área afetada (se ele retornar, ele será novamente “atacado” pela mágica). Atrair e Repelir são mágicas antagônicas e, portanto, resistem uma à outra.\n\nDuração: 1 hora.\n\nCusto básico: 1 para operar. Mesmo custo para manter.\n\nTempo de operação: 10 segundos.\n\nPré-requisito: Controle de Emoção.\n\nItem\nUma área pode ser permanentemente atrativa por 100 vezes o custo normal de energia.",
     "descricaoConferida": true,
     "descricaoPagina": 137,
     "mecanica": {
@@ -4930,7 +4930,7 @@
     "energia": "4/3",
     "tempoOperacao": "3 seg",
     "preRequisitos": "AM1, Moldar Água",
-    "descricao": "Comum\n\nPasse pela água ou pelo gelo como se fosse ar; o objetivo pode percorrer geleiras, ao longo dos lagos, etc. Como a mágica Nadar, isso anula as penalidades de combate por lutar na água. Em água líquida, o objetivo precisa de uma superfície para andar. A mágica pode custar mais se for necessária resistência a altas pressões. A mágica não abre uma passagem para que outros possam seguir, nem revela o que está do outro lado… Se o operador (ou o objetivo) conhece uma mágica para deixá-lo respirar, o objetivo não terá dificuldade em respirar durante sua jornada, sem custo de energia. Caso contrário, ele deve prender a respiração!\n\nSe a mágica terminar antes que o objetivo recupere o ar livre, ele se encontra submerso. Ele não é ferido automaticamente, mas se afoga (ou sufoca, se estiver no gelo) se não puder escapar.\n\nDuração: 1 segundo.\nCusto: 4 para operar. 3 para manter.\nTempo de operação: 3 segundos.\nPré-requisitos: Aptidão Mágica 1 e Moldar Água.\n\nItem\nRoupas ou joias; afeta apenas o usuário. Custo de energia para criar: 1.100.",
+    "descricao": "Comum\n\nPasse pela água ou pelo gelo como se fosse ar; o objetivo pode percorrer geleiras, ao longo dos lagos, etc. Como a mágica Nadar, isso anula as penalidades de combate por lutar na água. Em água líquida, o objetivo precisa de uma superfície para andar. A mágica pode custar mais se for necessária resistência a altas pressões. A mágica não abre uma passagem para que outros possam seguir, nem revela o que está do outro lado… Se o operador (ou o objetivo) conhece uma mágica para deixá-lo respirar, o objetivo não terá dificuldade em respirar durante sua jornada, sem custo de energia. Caso contrário, ele deve prender a respiração!\n\nSe a mágica terminar antes que o objetivo recupere o ar livre, ele se encontra submerso. Ele não é ferido automaticamente, mas se afoga (ou sufoca, se estiver no gelo) se não puder escapar.\n\nDuração: 1 segundo.\n\nCusto: 4 para operar. 3 para manter.\n\nTempo de operação: 3 segundos.\n\nPré-requisitos: Aptidão Mágica 1 e Moldar Água.\n\nItem\nRoupas ou joias; afeta apenas o usuário. Custo de energia para criar: 1.100.",
     "descricaoConferida": true,
     "descricaoPagina": 188,
     "mecanica": {
@@ -6131,7 +6131,7 @@
     "energia": "4/M",
     "tempoOperacao": "10 seg",
     "preRequisitos": "Ocultar Mágica, Aura",
-    "descricao": "Comum, Área; Resistência Especial; Resiste a mágicas de Informação\n\nSubstitui as emanações mágicas de um ser, área ou objeto por emanações falsas; o termo “aura” é apenas literal para coisas vivas. Por exemplo, um ser humano poderia ter a aura de um Zumbi, uma espada poderia parecer encantada com Arma Dançante, uma área poderia parecer estar sob mágicas Criar Fogo e Colar, etc. Jogue uma Disputa Rápida entre Aura Falsa e qualquer mágica (Informação ou Comum) que possa ver ou detectar as emanações (como Aura, Visão de Magia, ou Analisar Mágica). Se a Aura Falsa vencer, a outra mágica é enganada. Aura Falsa também funciona contra sentidos equivalentes que algumas criaturas podem possuir.\n\nAlvos não voluntários resistem com IQ. A Aura Falsa escolhida deve ser familiar ao operador — um mago não poderia colocar uma Aura Falsa de Golem em uma estátua a menos que ele conheça a mágica Golem, por exemplo.\nDuração: 10 horas\nCusto: 4 para operar. Metade disso para manter. Quando operada em uma área, o custo básico é 4.\nTempo de operação: 10 segundos.\nPré-requisitos: Ocultar Magia e Aura.\n\nItem\n(a) Qualquer. Afeta somente o usuário. Custo de energia para criar: 300.\n(b) Qualquer objeto ou área pode receber uma Aura Falsa permanente por 100 vezes o custo de operação.",
+    "descricao": "Comum, Área ; Resistência Especial; Resiste a mágicas de Informação\n\nSubstitui as emanações mágicas de um ser, área ou objeto por emanações falsas; o termo “aura” é apenas literal para coisas vivas. Por exemplo, um ser humano poderia ter a aura de um Zumbi, uma espada poderia parecer encantada com Arma Dançante, uma área poderia parecer estar sob mágicas Criar Fogo e Colar, etc. Jogue uma Disputa Rápida entre Aura Falsa e qualquer mágica (Informação ou Comum) que possa ver ou detectar as emanações (como Aura, Visão de Magia, ou Analisar Mágica). Se a Aura Falsa vencer, a outra mágica é enganada. Aura Falsa também funciona contra sentidos equivalentes que algumas criaturas podem possuir.\n\nAlvos não voluntários resistem com IQ. A Aura Falsa escolhida deve ser familiar ao operador — um mago não poderia colocar uma Aura Falsa de Golem em uma estátua a menos que ele conheça a mágica Golem, por exemplo.\nDuração: 10 horas\nCusto: 4 para operar. Metade disso para manter. Quando operada em uma área, o custo básico é 4.\nTempo de operação: 10 segundos.\nPré-requisitos: Ocultar Magia e Aura.\n\nItem\n(a) Qualquer. Afeta somente o usuário. Custo de energia para criar: 300.\n(b) Qualquer objeto ou área pode receber uma Aura Falsa permanente por 100 vezes o custo de operação.",
     "descricaoConferida": true,
     "descricaoPagina": 122,
     "mecanica": {
@@ -6295,7 +6295,7 @@
     "energia": "5",
     "tempoOperacao": "1 seg",
     "preRequisitos": "AM2, Pane",
-    "descricao": "Toque; Resistível com HT\n\nO equivalente mecânico da Paralisia Total. A máquina em questão simplesmente deixa de funcionar enquanto durar a mágica (um avião cai, um sensor fica “cego” e assim por diante). O operador deve tocar o objetivo.\n\nDuração: 1 minuto.\nCusto: 5. Não pode ser mantida; precisa ser refeita.\nPré-requisitos: Aptidão Mágica 2 e Pane.\n\nItem\n\nCajado ou varinha. Utilizável apenas por magos; o item deve tocar o objetivo.\nCusto de energia para criar: 2.000.",
+    "descricao": "Toque; Resistível com HT\n\nO equivalente mecânico da Paralisia Total. A máquina em questão simplesmente deixa de funcionar enquanto durar a mágica (um avião cai, um sensor fica “cego” e assim por diante). O operador deve tocar o objetivo.\n\nDuração: 1 minuto.\n\nCusto: 5. Não pode ser mantida; precisa ser refeita.\n\nPré-requisitos: Aptidão Mágica 2 e Pane.\n\nItem\nCajado ou varinha. Utilizável apenas por magos; o item deve tocar o objetivo. Custo de energia para criar: 2.000.",
     "descricaoConferida": true,
     "descricaoPagina": 177,
     "mecanica": {
@@ -7097,7 +7097,7 @@
     "energia": "4/2",
     "tempoOperacao": "2 seg",
     "preRequisitos": "Aporte, Paladar Remoto, Voz Amplificada",
-    "descricao": "Comum\n\nCria uma réplica — cerca de 10 cm de diâmetro — da boca e dos lábios do operador, através dos quais ele pode falar e saborear. A Boca voa pelo ar com Deslocamento 10, no turno do operador, embora não possa fazê-lo sem esbarrar em coisas a menos que seja acompanhado por um Olho ou Ouvido Mágico! A concentração é necessária para mover a Boca, mas não para falar ou saborear através dela. Quaisquer mágicas de voz ou de sabor que afetam o operador também serão utilizáveis através da Boca. A boca não pode operar mágicas! Enquanto saboreia através da Boca, a própria boca do mago está insensível. Cada vez, ele deve especificar se ele está provando através da Boca ou através de sua própria boca.\n\nA Boca é pequena, com um MT de -6, por isso é difícil de acertar — mas se for atingida por um ataque físico, ou por qualquer mágica que possa incapacitá-la razoavelmente, ela é destruída. A Boca em si não pode causar nenhum dano.\n\nEsta também é uma mágica sobre Alimentos e uma mágica de Som.\n\nDuração: 1 minuto.\nCusto: 4 para operar. 2 para manter.\nTempo de operação: 2 segundos.\nPré-requisitos: Aporte, Paladar Remoto e Voz Amplificada.\n\nItem\n(a) Qualquer item que represente uma boca humana pode ser transformado em uma Boca Mágica imóvel, através da qual o portador de um amuleto em forma de boca, encantado ao mesmo tempo, pode falar independentemente da distância. Cada uma dessas Bocas se liga a um amuleto e vice-versa. Custo de energia para criar: 325. (b) Uma boca esculpida em coral vermelho e com dentes de marfim incrustados. Utilizável apenas por magos. Ao comando do seu titular, ele se transforma em uma Boca Mágica; ao retornar à sua mão, ela retorna à forma do item. Custo para criar: 650 de energia, $1.000 para escultura de coral e $400 em marfim.",
+    "descricao": "Comum\n\nCria uma réplica — cerca de 10 cm de diâmetro — da boca e dos lábios físicos do operador, através dos quais ele pode falar e saborear. A Boca voa pelo ar com Deslocamento 10, no turno do operador, embora não possa fazê-lo sem esbarrar em coisas a menos que seja acompanhado por um Olho ou Ouvido Mágico! A concentração é necessária para mover a Boca, mas não para falar ou saborear através dela. Quaisquer mágicas de voz ou de sabor que afetam o operador também serão utilizáveis através da Boca. A boca não pode operar mágicas! Enquanto saboreia através da Boca, a própria boca do mago está insensível. Cada vez, ele deve especificar se ele está provando através da Boca ou através de sua própria boca.\n\nA Boca é pequena, com um MT de -6, por isso é difícil de acertar — mas se for atingida por um ataque físico, ou por qualquer mágica que possa incapacitá-la razoavelmente, ela é destruída. A Boca em si não pode causar nenhum dano.\n\nEsta também é uma mágica sobre Alimentos e uma mágica de Som.\n\nDuração: 1 minuto.\n\nCusto: 4 para operar. 2 para manter.\n\nTempo de operação: 2 segundos.\n\nPré-requisitos: Aporte, Paladar Remoto e Voz Amplificada.\n\nItem\n(a) Qualquer item que represente uma boca humana pode ser transformado em uma Boca Mágica imóvel, através da qual o portador de um amuleto em forma de boca, encantado ao mesmo tempo, pode falar independentemente da distância. Cada uma dessas Bocas se liga a um amuleto e vice-versa. Custo de energia para criar: 325. (b) Uma boca esculpida em coral vermelho e com dentes de marfim incrustados. Utilizável apenas por magos. Ao comando do seu titular, ele se transforma em uma Boca Mágica; ao retornar à sua mão, ela retorna à forma do item. Custo para criar: 650 de energia, $1.000 para escultura de coral e $400 em marfim.",
     "descricaoConferida": true,
     "descricaoPagina": 104,
     "mecanica": {
@@ -8015,7 +8015,7 @@
     "energia": "3/2",
     "tempoOperacao": "1 seg",
     "preRequisitos": "Caminhar no Ar, Caminhar na Água",
-    "descricao": "Comum\n\nAnde nas nuvens (incluindo bancos de névoa) como se fossem sólidas. Se o objetivo cair por qualquer motivo (por exemplo, lesão), a mágica está quebrada.\nAs mágicas desta escola lidam com a morte, os mortos e os espíritos. Elas afetam cadáveres e espíritos de todas as raças, salvo indicação em contrário em uma descrição racial.\n\nA magia necromântica é quase sempre proibida, além das mágicas básicas que os caçadores de demônios e curandeiros usam. Necromantes, portanto, tendem a viver em sigilo.",
+    "descricao": "Comum\n\nAnde nas nuvens (incluindo bancos de névoa) como se fossem sólidas. Se o objetivo cair por qualquer motivo (por exemplo, lesão), a mágica está quebrada! Se a mágica for reformulada imediatamente, o objetivo cairá por apenas um segundo (cerca de 5 metros); se ele ainda estiver no meio da nuvem, ele terá que “cavar” sua saída, o que levará cerca de 5 segundos. Se ele já estiver na nuvem, muito ruim!\n\nEsta é também uma Mágica do Clima.\n\nDuração: 1 hora.\n\nCusto: 3 para operar. 2 para manter.\n\nPré-requisitos: Caminhar no Ar e Caminhar na Água.\n\nItem\nCajado, varinha, joias ou sapatos. As joias e sapatos afetam apenas seus usuários. Custo de energia para criar: 500.",
     "descricaoConferida": true,
     "descricaoPagina": 148,
     "mecanica": {
@@ -8036,9 +8036,9 @@
     "conferido": "livro",
     "conferidoPagina": 148,
     "conferidoPor": {
-      "duracao": "tabela",
+      "duracao": "tabela+entrada",
       "tempoOperacao": "tabela",
-      "custo": "tabela"
+      "custo": "tabela+entrada"
     },
     "faixaDoLivro": {
       "operar": {
@@ -8358,7 +8358,7 @@
     "energia": "3/3",
     "tempoOperacao": "1 seg",
     "preRequisitos": "Esquecimento, Torpor, Retardar",
-    "descricao": "Especial; Resistível com Vontade\n\nO operador conta uma história fascinante. Qualquer um que entenda o idioma e preste atenção cai sob a mágica. Uma hora de tempo real passa, mas as vítimas percebem apenas um minuto passando.\n\nDuração: 1 hora (tempo real).\nCusto: 3 para operar; 3 para manter.\nPré-requisitos: Esquecimento, Torpor e Retardar.",
+    "descricao": "Especial; Resistível com Vontade\n\nO operador conta uma história fascinante. Qualquer um que entenda o idioma e preste atenção cai sob a mágica, resistindo com Vontade. Uma hora de tempo real passa, mas as vítimas percebem apenas um minuto passando. Qualquer um que resista perceberá o operador e suas vítimas paralisadas, embora exames prolongados revelem que estão se movendo muito devagar. Qualquer objetivo que seja atacado ou balançado se liberta da mágica (no último caso, a vítima recebe um teste de resistência extra por cada segundo que ele está perturbado).\n\nO NH nessa mágica nunca pode ser maior do que o NH de Oratória do operador ou Atuação se a história for imitada ou encenada.\n\nDuração: 1 hora (tempo real).\n\nCusto: 3 para operar. 3 para manter.\n\nPré-requisitos: Esquecimento, Torpor e Retardar.\n\nItem\nCajado, máscara de comediante ou instrumento musical. Custo de energia para criar: 500.",
     "descricaoConferida": true,
     "descricaoPagina": 139,
     "mecanica": {
@@ -8755,7 +8755,7 @@
     "energia": "1",
     "tempoOperacao": "1 seg",
     "preRequisitos": "Espasmo ou Conceder Vitalidade",
-    "descricao": "Comum\n\nInterrompe qualquer crise espasmódica que o objetivo esteja sofrendo. Esta mágica funciona contra epilepsia, crises de vômito, etc. Esta também é uma mágica de Cura.\n\nCusto: 1.\nPré-requisitos: Espasmo ou Conceder Vitalidade.\nItem\nTempo de operação: 2 segundos da mágica. Enquanto a mágica estiver\n(a) Cajado ou varinha, ornamentado num estilo de serpente. Utilizável apenas por um mago ou por um não-mago com Medicina-15 ou superior. Custo para criar: 400 de energia. (b) Qualquer item. Sempre ativo. Evita que o usuário sofra qualquer tipo de crise espasmódica (concede um bônus de +5 para resistir à mágica Espasmo). Custo para criar: 750 de energia.\nem vigor, a habilidade do objetivo com qualquer arma que não seja de combate à distância sofrerá uma penalidade igual a -2 e sua Esquiva ficará reduzida pela metade (arredondada para baixo). Duração: 1 minuto, ou até que o alvo consiga se libertar. Custo: 3. Não pode ser mantida; precisa ser refeita. Pré-requisitos: Estorvar.",
+    "descricao": "Comum\n\nInterrompe qualquer crise espasmódica que o objetivo esteja sofrendo. Esta mágica funciona contra epilepsia, crises de vômito, etc. Esta também é uma mágica de Cura.\n\nCusto: 1.\nPré-requisitos: Espasmo ou Conceder Vitalidade.\nItem\n(a) Cajado ou varinha, ornamentado num estilo de serpente. Utilizável apenas por um mago ou por um não-mago com Medicina-15 ou superior. Custo para criar: 400 de energia. (b) Qualquer item. Sempre ativo. Evita que o usuário sofra qualquer tipo de crise espasmódica (concede um bônus de +5 para resistir à mágica Espasmo). Custo para criar: 750 de energia.",
     "descricaoConferida": true,
     "descricaoPagina": 35,
     "mecanica": {
@@ -9272,7 +9272,7 @@
     "energia": "1/10/I#",
     "tempoOperacao": "1 min",
     "preRequisitos": "Nuvens",
-    "descricao": "Área\n\nCria (ou impede) 2,5 centímetros de chuva em um ambiente externo normal.\n\nEsta também é uma mágica do Ar e Água.\n\nDuração: 1 hora\nCusto básico: 1/10 (mínimo 1). Custo dobra para fazer chover em um deserto ou outra área (determinação do Mestre), onde a chuva não é natural. Custo dobra para evitar a chuva em uma área naturalmente chuvosa ou pantanosa. Mesmo custo para manter.\nTempo de operação: 1 minuto\nPré-requisito: Nuvens\n\nItem\nCajado ou varinha. Utilizável apenas por um mago. O item deve ser mantido na água quando não estiver em uso; perde seus poderes se permanecer seco por mais de uma hora. Custo de energia para criar: 600.",
+    "descricao": "Área\n\nCria (ou impede) 2,5 centímetros de chuva em um ambiente externo normal.\n\nEsta também é uma mágica do Ar e Água.\n\nDuração: 1 hora.\n\nCusto básico: 1/10 (mínimo 1). Custo dobra para fazer chover em um deserto ou outra área (determinação do Mestre), onde a chuva não é natural. Custo dobra para evitar a chuva em uma área naturalmente chuvosa ou pantanosa. Mesmo custo para manter.\n\nTempo de operação: 1 minuto.\n\nPré-requisito: Nuvens.\n\nItem\nCajado ou varinha. Utilizável apenas por um mago. O item deve ser mantido na água quando não estiver em uso; perde seus poderes se permanecer seco por mais de uma hora. Custo de energia para criar: 600.",
     "descricaoConferida": true,
     "descricaoPagina": 195,
     "mecanica": {
@@ -9888,7 +9888,7 @@
     "energia": "5/5",
     "tempoOperacao": "1 seg",
     "preRequisitos": "Espasmo",
-    "descricao": "Comum; Resistível com Vontade\n\nO objetivo sente que estão lhe fazendo cócegas. Se ele não resistir, ficará indefeso com gargalhadas, contorcendo-se para tentar se livrar de seu torturador invisível. Esta mágica causa cócegas graves; a vítima fica incapacitada como se estivesse sofrendo de convulsões (veja Condições Incapacitantes, pág. MB428). O objetivo deve fazer um segundo teste de Vontade se ele tentar se manter em silêncio. Hipoalgia/Hiperalgia não afeta o resultado da mágica. Personagens com Fleuma ganham bônus de +5 em seu teste de resistência.\n\nDuração: 1 minuto.\nCusto: 5 para operar. 5 para manter (requer concentração).\nPré-requisitos: Espasmo.\n\nItem\n(a) Varinha, cajado ou pluma. Utilizável apenas por magos; o item deve tocar o objetivo. Custo para criar: 600 de energia. (b) Cadeira, almofada ou travesseiro. Sempre ativo. Qualquer um que use o item é imediatamente “atacado” pela mágica. É uma ótima peça a se pregar. Custo para criar: 250 de energia.",
+    "descricao": "Comum; Resistível com Vontade\n\nO objetivo sente que estão lhe fazendo cócegas. Se ele não resistir, ficará indefeso com gargalhadas, contorcendo-se para tentar se livrar de seu torturador invisível. Esta mágica causa cócegas graves; a vítima fica incapacitada como se estivesse sofrendo de convulsões (veja Condições Incapacitantes, pág. MB428). O objetivo deve fazer um segundo teste de Vontade se ele tentar se manter em silêncio. Hipoalgia/Hiperalgia não afeta o resultado da mágica. Personagens com Fleuma ganham bônus de +5 em seu teste de resistência.\n\nDuração: 1 minuto.\n\nCusto: 5 para operar. 5 para manter (requer concentração).\n\nPré-requisitos: Espasmo.\n\nItem\n(a) Varinha, cajado ou pluma. Utilizável apenas por magos; o item deve tocar o objetivo. Custo para criar: 600 de energia. (b) Cadeira, almofada ou travesseiro. Sempre ativo. Qualquer um que use o item é imediatamente “atacado” pela mágica. É uma ótima peça a se pregar. Custo para criar: 250 de energia.",
     "descricaoConferida": true,
     "descricaoPagina": 36,
     "mecanica": {
@@ -10394,7 +10394,7 @@
     "energia": "4/2",
     "tempoOperacao": "1 seg",
     "preRequisitos": "Controle de Emoção",
-    "descricao": "Comum; Resistível com Vontade\n\nO objetivo torna-se incapaz de dizer a verdade: ele não pode fazer qualquer afirmação que ele acredita ser verdade, e de fato se sente compelido a mentir, embora ele possa (se ele perceber que está sob uma mágica) optar por permanecer em silêncio.\n\nCompelir à Mentira e Compelir à Verdade resistem uma à outra. Aura pode ser necessária para descobrir qual mágica venceu! Esta é também uma mágica de Comunicação e Empatia.\n\nDuração: 5 minutos.\nCusto: 4 para operar; 2 para manter.\nPré-requisito: Controle de Emoção.",
+    "descricao": "Comum; Resistível com Vontade\n\nO objetivo torna-se incapaz de dizer a verdade: ele não pode fazer qualquer afirmação que ele acredita ser verdade, e de fato se sente compelido a mentir, embora ele possa (se ele perceber que está sob uma mágica) optar por permanecer em silêncio.\n\nCompelir à Mentira e Compelir à Verdade resistem uma à outra. Aura pode ser necessária para descobrir qual mágica venceu!\n\nEsta é também uma mágica de Comunicação e Empatia.\n\nDuração: 5 minutos.\n\nCusto: 4 para operar. 2 para manter.\n\nPré-requisito: Controle de Emoção.\n\nItem\nGargantilha ou colar pesado; o usuário não pode dizer a verdade. Custo de energia para criar: 600.",
     "descricaoConferida": true,
     "descricaoPagina": 137,
     "mecanica": {
@@ -10500,7 +10500,7 @@
     "energia": "4/4",
     "tempoOperacao": "4 seg",
     "preRequisitos": "Olho Mágico, Audição Remota, Vozes, Ilusão Simples",
-    "descricao": "Comum\n\nEsta mágica permite ao operador configurar comunicação bidirecional com o objetivo. Cada participante vê uma imagem do outro, permitindo conversação em tempo real. Utilize os Modificadores de Longa Distância (pág. 14), a menos que o operador conheça o objetivo, e o objetivo estiver esperando a “chamada”, caso em que nenhum modificador de distância será aplicado! Aplique um -4 adicional ao NH se o operador não conhece o objetivo.\n\nA comunicação é apenas audiovisual. No entanto, se o operador também conhecer Paladar Remoto e Odor, ele poderá adicionar odor à comunicação por um ponto extra de energia (tanto para operação quanto para manutenção).\n\nOutros podem participar da “conferência” a qualquer momento — uma nova operação da mágica (para qualquer pessoa envolvida) é necessária para cada nova pessoa entrar.\n\nEssa comunicação, obviamente, não é segura.\n\nDuração: 1 minuto.\nCusto: 4 para operar. 4 para manter. O mesmo custo para cada pessoa adicional que participa da comunicação.\nTempo de operação: 4 segundos.\nPré-requisitos: Olho Mágico, Audição Remota, Vozes e Ilusão Simples.\nItem — Um par de peças idênticas de joias — uma de ouro e uma de prata. A de ouro deve ser usada pelo operador, a de prata pelo objetivo. A mágica pode então ser operada a qualquer momento, independentemente da distância. Utilizável apenas por magos. Se uma Gema de Energia estiver incluída no item, ela estará na de ouro. Se um dos itens for quebrado, o outro perderá seu encantamento. Custo para criar: 1.000 de energia (para o par) e uma opala de $100 para cada peça.",
+    "descricao": "Comum\n\nEsta mágica permite ao operador configurar comunicação bidirecional com o objetivo. Cada participante vê uma imagem do outro, permitindo conversação em tempo real. Utilize os Modificadores de Longa Distância (pág. 14), a menos que o operador conheça o objetivo, e o objetivo estiver esperando a “chamada”, caso em que nenhum modificador de distância será aplicado! Aplique um -4 adicional ao NH se o operador não conhece o objetivo.\n\nA comunicação é apenas audiovisual. No entanto, se o operador também conhecer Paladar Remoto e Odor, ele poderá adicionar odor à comunicação por um ponto extra de energia (tanto para operação quanto para manutenção).\n\nOutros podem participar da “conferência” a qualquer momento — uma nova operação da mágica (para qualquer pessoa envolvida) é necessária para cada nova pessoa entrar.\n\nEssa comunicação, obviamente, não é segura.\n\nDuração: 1 minuto.\nCusto: 4 para operar. 4 para manter. O mesmo custo para cada pessoa adicional que participa da comunicação.\nTempo de operação: 4 segundos.\nPré-requisitos: Olho Mágico, Audição Remota, Vozes e Ilusão Simples.\nItem\nQualquer item que protege a cabeça, taça, espelho ou bola de cristal. Utilizável apenas por magos. Custo de energia para criar: 800.",
     "descricaoConferida": true,
     "descricaoPagina": 48,
     "mecanica": {
@@ -10744,7 +10744,7 @@
     "energia": "Varia",
     "tempoOperacao": "3 seg",
     "preRequisitos": "Aptidao Magica 1, Conceder Pericia, 2 magicas em seis escolas diferentes",
-    "descricao": "Comum\n\n“Concede” uma mágica já operada e mantida para outra pessoa. O receptor adquire total controle e responsabilidade pela mágica emprestada, como se ele próprio tivesse operado a mágica; ele pode mantê-la ou manipulá-la à vontade, dentro dos limites da própria mágica.\n\nO receptor deve satisfazer todas as qualificações de vantagens e atributos da mágica emprestada, mas não precisa conhecer seus pré-requisitos. Assim, uma mágica que requeira Aptidão Mágica 2 só poderia ser emprestada a um personagem com Aptidão Mágica 2, mas uma mágica que não requeira Aptidão Mágica e nenhuma vantagem ou atributo especial poderia ser emprestada a qualquer um. Se o receptor tiver a vantagem Abascanto, Conceder Mágica deverá superá-la.\n\nConceder Mágica é operada com o menor valor entre o NH do operador com Conceder Mágica e a mágica-objetivo. O operador deve tocar o receptor.\n\nModificadores: Se o receptor não conhece todos os pré-requisitos da mágica a ser emprestada, o operador sofre uma penalidade de -2 no NH. Se o destinatário conhece todos os pré-requisitos, a mágica é operada normalmente. Se o receptor realmente conhecer a mágica, o operador recebe um bônus de +2.\n\nDuração: Permanente; uma vez “emprestada”, a mágica não pertence mais ao seu operador original.\n\nCusto: Igual ao custo de manutenção da mágica a ser emprestada.\n\nTempo de operação: 3 segundos.\n\nPré-requisitos: Aptidão Mágica 1, Conceder Perícia e mágicas em pelo menos seis escolas diferentes.\n\nItem: Cajado, varinha ou joia. Utilizável apenas por magos. O mago empresta a mágica-objetivo ativando o item e passando fisicamente o item para o receptor; o item deve ser mantido o tempo todo para que a mágica funcione — pode não ser arremessado. O receptor “possui” a mágica pelo tempo que ele segurar o item, e pode passá-lo para outro receptor, seja ele um mago ou não.\n\nCusto de energia para criar: 1.000.",
+    "descricao": "Comum\n\n“Concede” uma mágica já operada e mantida para outra pessoa. O receptor adquire total controle e responsabilidade pela mágica emprestada, como se ele próprio tivesse operado a mágica; ele pode mantê-la ou manipulá-la à vontade, dentro dos limites da própria mágica.\n\nO receptor deve satisfazer todas as qualificações de vantagens e atributos da mágica emprestada, mas não precisa conhecer seus pré-requisitos da mágica. Assim, uma mágica que requeira Aptidão Mágica 2 só poderia ser emprestada a um personagem com Aptidão Mágica 2, mas uma mágica que não requeira Aptidão Mágica e nenhuma vantagem ou atributo especial poderia ser emprestada a qualquer um. Se o receptor tiver a vantagem Abascanto, Conceder Mágica deverá superá-la.\n\nConceder Mágica é operada com o menor valor entre o NH do operador com Conceder Mágica e a mágica-objetivo. O operador deve tocar o receptor.\n\nModificadores: Se o receptor não conhece todos os pré-requisitos da mágica a ser emprestada, o operador sofre uma penalidade de -2 no NH. Se o destinatário conhece todos os pré-requisitos, a mágica é operada normalmente. Se o receptor realmente conhecer a mágica, o operador recebe um bônus de +2.\n\nDuração: Permanente; uma vez “emprestada”, a mágica não pertence mais ao seu operador original.\n\nCusto: Igual ao custo de manutenção da mágica a ser emprestada.\n\nTempo de operação: 3 segundos.\n\nPré-requisitos: Aptidão Mágica 1, Conceder Perícia e mágicas em pelo menos seis escolas diferentes.\n\nItem\nCajado, varinha ou joia. Utilizável apenas por magos. O mago empresta a mágica-objetivo ativando o item e passando fisicamente o item para o receptor; o item deve ser mantido o tempo todo para que a mágica funcione — pode não ser arremessado. O receptor “possui” a mágica pelo tempo que ele segurar o item, e pode passá-lo para outro receptor, seja ele um mago ou não. Custo de energia para criar: 1.000.",
     "descricaoConferida": true,
     "descricaoPagina": 126,
     "mecanica": {
@@ -12006,7 +12006,7 @@
     "energia": "1",
     "tempoOperacao": "2 seg",
     "preRequisitos": "Criar Animal ou Criar Servo",
-    "descricao": "Comum; Resistível com a mágica-objetivo\n\nAssume o controle de uma criação viva operada por outra pessoa. Em um sucesso, mais custos de energia são necessários para manter a criação. Em uma falha, a criação continua sendo do operador original. Esta mágica não pode afetar uma ilusão.",
+    "descricao": "Comum; Resistível com a mágica-objetivo\n\nAssume o controle de uma criação viva operada por outra pessoa. Em um sucesso, mais custos de energia são necessários para manter a criação. Em uma falha, a criação continua sendo do operador original. Esta mágica não pode afetar uma ilusão.\n\nCusto: 1.\n\nTempo de operação: 2 segundos.\n\nPré-requisito: Criar Animal ou Criar Servo.\n\nItem\nVarinha ou cajado; o item deve tocar a criação objetivo. Custo de energia para criar: 400.",
     "descricaoConferida": true,
     "descricaoPagina": 99,
     "mecanica": {
@@ -12025,8 +12025,8 @@
     "conferidoPagina": 99,
     "conferidoPor": {
       "duracao": "tabela",
-      "tempoOperacao": "tabela",
-      "custo": "tabela"
+      "tempoOperacao": "tabela+entrada",
+      "custo": "tabela+entrada"
     },
     "faixaDoLivro": {
       "operar": {
@@ -12367,7 +12367,7 @@
     "energia": "2",
     "tempoOperacao": "1 seg",
     "preRequisitos": "Lealdade ou Atordoamento Mental",
-    "descricao": "Área; Resistível com Vontade\n\nIncute ao objetivo qualquer emoção escolhida pelo operador. Não há nenhum efeito de “sistema de jogo” a menos que o Mestre julgue necessário, mas os participantes devem interpretá-lo!\n\nAlguns exemplos de emoções: amor, ódio, luxúria, raiva, ganância, inveja, fome, medo, tristeza, alegria, paz, inquietação, depressão, patriotismo, tédio.\n\nDuração: 1 hora.\nCusto básico: 2. Não pode ser mantida; a mágica precisa ser refeita.\nPré-requisito: Lealdade ou Atordoamento Mental.",
+    "descricao": "Área; Resistível com Vontade\n\nIncute ao objetivo qualquer emoção escolhida pelo operador. Não há nenhum efeito de “sistema de jogo” a menos que o Mestre julgue necessário, mas os participantes devem interpretá-lo! Alguns exemplos de emoções: amor, ódio, luxúria, raiva, ganância, inveja, fome, medo, tristeza, alegria, paz, inquietação, depressão, patriotismo, tédio.\n\nDuração: 1 hora.\n\nCusto básico: 2. Não pode ser mantida; a mágica precisa ser refeita.\n\nPré-requisito: Lealdade ou Atordoamento Mental.\n\nItem\n(a) Qualquer item. Sempre ativo; o usuário é afetado pela emoção instilada no item quando ele foi criado. Custo de energia para criar: 300. (b) Cajado ou varinha. Utilizável apenas por magos; o item deve tocar o objetivo. Custo de energia para criar: 1.000 para um item que pode incutir apenas uma emoção, ou 2.200 para um que incuta qualquer emoção desejada.",
     "descricaoConferida": true,
     "descricaoPagina": 137,
     "mecanica": {
@@ -12673,7 +12673,7 @@
     "energia": "6/3",
     "tempoOperacao": "10 seg",
     "preRequisitos": "Passageiro da Alma ou Telepatia",
-    "descricao": "Comum; Resistível com Vontade\n\nUse todos os sentidos da vítima e controle todas as ações físicas da vítima (o operador não tem acesso às memórias, perícia, mágicas, etc.) do objetivo. O objetivo retém sua memória e inteligência e está ciente do que está acontecendo — embora não da identidade do operador. O operador só pode “animar” um corpo de cada vez e deve se concentrar para controlar o corpo do objetivo. Quando ele se concentra, seu próprio corpo fica flácido; quando ele para de se concentrar, o objetivo recupera o controle de seu próprio corpo. O operador pode se mover entre os corpos livremente enquanto a mágica durar.\n\nDuração: 1 minuto.\nCusto: 6 para operar; 3 para manter.\nTempo de operação: 10 segundos.\nPré-requisito: Passageiro da Alma ou Telepatia.\n\nItem — Coroa, capacete ou outro item que protege a cabeça. Utilizável apenas por magos. Custo de energia para criar: 1.500.",
+    "descricao": "Comum; Resistível com Vontade\n\nUse todos os sentidos da vítima e controle todas as ações físicas da vítima (o operador não tem acesso às memórias, perícia, mágicas, etc.) do objetivo. O objetivo retém sua memória e inteligência e está ciente do que está acontecendo — embora não da identidade do operador. O operador só pode “animar” um corpo de cada vez e deve se concentrar para controlar o corpo do objetivo. Quando ele se concentra, seu próprio corpo fica flácido; quando ele para de se concentrar, o objetivo recupera o controle de seu próprio corpo. O operador pode se mover entre os corpos livremente enquanto a mágica durar.\n\nDuração: 1 minuto.\n\nCusto: 6 para operar. 3 para manter.\n\nTempo de operação: 10 segundos.\n\nPré-requisito: Passageiro da Alma ou Telepatia.\n\nItem\nCoroa, capacete ou outro item que protege a cabeça. Utilizável apenas por magos. Custo de energia para criar: 1.500.",
     "descricaoConferida": true,
     "descricaoPagina": 49,
     "mecanica": {
@@ -14700,7 +14700,7 @@
     "energia": "1/50/I",
     "tempoOperacao": "1 min",
     "preRequisitos": "6 mágicas da Água",
-    "descricao": "Especial; Área\n\nAfeta as correntes de qualquer grande corpo de água. Cada aplicação da mágica pode mudar a direção atual em 22,5 graus ou a velocidade em 1,6 km/h (ou um nó). Para obter mudanças combinadas de direção/velocidade ou mais mudanças extremas em uma ou outra, aumente o custo proporcionalmente.\n\nA mágica pode ser operada em uma área, afetando a corrente que se move sob ela por 40 metros de profundidade. Também pode ser operada em um objeto, como um navio, que deve abranger sua totalidade. A área de efeito se move com o objeto.\n\nEsta também é uma mágica da Água.\n\nDuração: 1 hora.\nCusto básico: 1/50 (mínimo 1). Mesmo custo para manter.\nTempo de operação: 1 minuto.\nPré-requisitos: Pelo menos seis mágicas da Água.\n\nItem: Cajado, varinha ou joias. Custo de energia para criar: 300.",
+    "descricao": "Especial; Área\n\nAfeta as correntes de qualquer grande corpo de água. Cada aplicação da mágica pode mudar a direção atual em 22,5 graus ou a velocidade em 1,6 km/h (ou um nó). Para obter mudanças combinadas de direção/velocidade ou mais mudanças extremas em uma ou outra, aumente o custo proporcionalmente.\n\nA mágica pode ser operada em uma área, afetando a corrente que se move sob ela por 40 metros de profundidade. Também pode ser operada em um objeto, como um navio, que deve abranger sua totalidade. A área de efeito se move com o objeto.\n\nEsta também é uma mágica da Água.\n\nDuração: 1 hora.\n\nCusto básico: 1/50 (mínimo 1). Mesmo custo para manter.\n\nTempo de operação: 1 minuto.\n\nPré-requisitos: Pelo menos seis mágicas da Água.\n\nItem\nCajado, varinha ou joias. Custo de energia para criar: 300.",
     "descricaoConferida": true,
     "descricaoPagina": 194,
     "mecanica": {
@@ -15339,7 +15339,7 @@
     "energia": "Varia",
     "tempoOperacao": "seg = custo",
     "preRequisitos": "Criar Água, Criar Objeto, IQ 12+",
-    "descricao": "Comum\n\nCrie um animal (IQ 5 ou menos) que executará seus comandos mentais enquanto existir. Um ser vivo criado continua existindo até que o operador pare de manter a mágica, ou até que seja morto, ponto no qual ele desaparece. Uma criação viva deve ser idêntica a um ser vivo “real” com o qual o operador está familiarizado. Você não pode criar um ser imaginário, ou mesmo uma criatura real da qual você tenha apenas ouvido histórias. Nem você\npode criar um urso com presas de veneno… mas alguns magos ocasionalmente pesquisam variações privadas da mágica para criar criaturas incomuns.\n\nCriar Animal também pode ser usada para criar um enxame de pequenas criaturas (pág. MB461). Um “enxame” custa 2 de energia para criar.\n\nDuração: 1 minuto.\nCusto: 2, multiplicado por 1+MT para animais maiores que MT 0. Metade disso para manter.\nTempo de operação: Igual ao custo, em segundos.\nPré-requisitos: Criar Água, Criar Objeto e IQ 12 ou superior.",
+    "descricao": "Comum\n\nCrie um animal (IQ 5 ou menos) que executará seus comandos mentais enquanto existir. Um ser vivo criado continua existindo até que o operador pare de manter a mágica, ou até que seja morto, ponto no qual ele desaparece. Uma criação viva deve ser idêntica a um ser vivo “real” com o qual o operador está familiarizado. Você não pode criar um ser imaginário, ou mesmo uma criatura real da qual você tenha apenas ouvido histórias. Nem você\npode criar um urso com presas de veneno… mas alguns magos ocasionalmente pesquisam variações privadas da mágica para criar criaturas incomuns.\n\nCriar Animal também pode ser usada para criar um enxame de pequenas criaturas (pág. MB461). Um “enxame” custa 2 de energia para criar.\n\nDuração: 1 minuto.\n\nCusto: 2, multiplicado por 1+MT para animais maiores que MT 0. Metade disso para manter.\n\nTempo de operação: Igual ao custo, em segundos.\n\nPré-requisitos: Criar Água, Criar Objeto e IQ 12 ou superior.",
     "descricaoConferida": true,
     "descricaoPagina": 98,
     "mecanica": {
@@ -15957,7 +15957,7 @@
     "energia": "2/4 litros",
     "tempoOperacao": "1 seg",
     "preRequisitos": "Congelar",
-    "descricao": "Item Comum\n\nCria uma quantidade de gelo ou neve. Pode aparecer como: um bloco sólido de qualquer forma; dentro de um contêiner (que deve ser grande o suficiente); pendurado no ar (cai imediatamente); como uma massa de lascas de gelo (ótima para resfriar bebidas); ou como uma nuvem de neve (que se assenta no chão). São necessários 240 litros de lascas de gelo ou neve para apagar uma área de um metro de raio de fogo em um segundo. Quatro litros de neve, dependendo da sua densidade (pág. 195), cobrirá uma área de um metro de raio até uma profundidade entre 5 a 45 centímetros.\n\nDuração: Permanente; o gelo dura até derreter naturalmente.\nCusto: 2 por 4 litros de gelo criado.\nPré-requisito: Congelar.\n\nItem\nCajado, varinha ou joias. Custo para criar: 200 de energia e uma safira de $100.",
+    "descricao": "Comum\n\nCria uma quantidade de gelo ou neve. Pode aparecer como: um bloco sólido de qualquer forma; dentro de um contêiner (que deve ser grande o suficiente); pendurado no ar (cai imediatamente); como uma massa de lascas de gelo (ótima para resfriar bebidas); ou como uma nuvem de neve (que se assenta no chão). São necessários 240 litros de lascas de gelo ou neve para apagar uma área de um metro de raio de fogo em um segundo. Quatro litros de neve, dependendo da sua densidade (pág. 195), cobrirá uma área de um metro de raio até uma profundidade entre 5 a 45 centímetros.\n\nDuração: Permanente; o gelo dura até derreter naturalmente.\n\nCusto: 2 por 4 litros de gelo criado.\n\nPré-requisito: Congelar.\n\nItem\nCajado, varinha ou joias. Custo para criar: 200 de energia e uma safira de $100.",
     "descricaoConferida": true,
     "descricaoPagina": 188,
     "mecanica": {
@@ -16112,7 +16112,7 @@
     "energia": "Varia",
     "tempoOperacao": "3 seg",
     "preRequisitos": "AM3, Criar Animal",
-    "descricao": "Comum | 13\n\nCria uma montaria estúpida, mas obediente, na qual pode ser montada enquanto ela existir. Também pode ser usada como um animal de tração.\n\nOs atributos da montaria são equivalentes ao pônei (pág. MB460), mas o operador descreve sua aparência no momento da operação; pode ser um cavalo, um camelo, um golfinho, um elefante anão, um enorme avestruz ou qualquer outra coisa que o Mestre aceite (use as diretrizes de Criar Animais). A montaria só pode entender comandos falados muito simples, como pare, ande, esquerda, direita, volte, etc. Ela está sob o controle do Mestre e não pode lutar ou lidar com situações confusas; não tem perícias. Diante do perigo, ela vai gemer, empacar ou simplesmente desaparecer.\n\nO operador também pode optar por criar uma montaria Bruta com ST 35, uma montaria Alada com Deslocamento 7/14, uma montaria de Corrida com Deslocamento 18, ou uma montaria Treinada para a Guerra que permanece calma em situações perigosas e pode ser ordenada a atropelar ou atacar.\n\nDuração: 1 hora.\nCusto: 8 para operar. 3 para manter. Duplique o custo para uma montaria Bruta, uma montaria Alada, uma montaria Treinada para a Guerra ou uma montaria de Corrida. Triplique o custo para uma montaria Alada de Corrida, etc.\nTempo de operação: 3 segundos.\nPré-requisitos: Aptidão Mágica 3 e Criar Animal.",
+    "descricao": "Comum\n\nCria uma montaria estúpida, mas obediente, na qual pode ser montada enquanto ela existir. Também pode ser usada como um animal de tração.\n\nOs atributos da montaria são equivalentes ao pônei (pág. MB460), mas o operador descreve sua aparência no momento da operação; pode ser um cavalo, um camelo, um golfinho, um elefante anão, um enorme avestruz ou qualquer outra coisa que o Mestre aceite (use as diretrizes de Criar Animais). A montaria só pode entender comandos falados muito simples, como pare, ande, esquerda, direita, volte, etc. Ela está sob o controle do Mestre e não pode lutar ou lidar com situações confusas; não tem perícias. Diante do perigo, ela vai gemer, empacar ou simplesmente desaparecer.\n\nO operador também pode optar por criar uma montaria Bruta com ST 35, uma montaria Alada com Deslocamento 7/14, uma montaria de Corrida com Deslocamento 18, ou uma montaria Treinada para a Guerra que permanece calma em situações perigosas e pode ser ordenada a atropelar ou atacar.\n\nDuração: 1 hora.\n\nCusto: 8 para operar. 3 para manter. Duplique o custo para uma montaria Bruta, uma montaria Alada, uma montaria Treinada para a Guerra ou uma montaria de Corrida. Triplique o custo para uma montaria Alada de Corrida, etc.\n\nTempo de operação: 3 segundos.\n\nPré-requisitos: Aptidão Mágica 3 e Criar Animal.\n\nItem\n(a) Um mago pode criar uma montaria permanente por 100 vezes o custo de operação. b) Chifre ou apito. Utilizável apenas por magos. Soar o chifre ou apito faz com que a montaria apareça como se fosse convocada. Custo de energia para criar: 200 vezes o custo de operação para o tipo de montaria pretendida.",
     "descricaoConferida": true,
     "descricaoPagina": 99,
     "mecanica": {
@@ -16958,7 +16958,7 @@
     "energia": "Varia",
     "tempoOperacao": "1 seg",
     "preRequisitos": "Torpor",
-    "descricao": "Comum\n\nQuando operada em qualquer escrita ou outro meio de informação visual, esta mágica torna ilegível para qualquer um exceto o operador. Qualquer um pode ver a escrita, mas eles estarão convencidos de que ela é irremediavelmente arcana, complexa ou estrangeira. Outros meios dependentes dos sentidos (incluindo qualquer “escrita” arcaica baseada em gosto ou cheiro que possa ser usada por raças não humanas, assim como o braile em ambientes modernos) podem ser criptografadas se o Mestre permitir.\n\nDuração: 1 semana.\nCusto: 1 para até 1.000 palavras de texto simples; 2 para até 10.000 palavras de texto simples; 3 para até 100.000 palavras de texto simples; +1 para cada 100.000 palavras adicionais. Assim, uma pilha de seis suplementos típicos de GURPS Quarta Edição, com cerca de 175.000 palavras por livro, custaria 12 de energia para criptografar.\nPré-requisito: Torpor.",
+    "descricao": "Comum\n\nQuando operada em qualquer escrita ou outro meio de informação visual, esta mágica torna ilegível para qualquer um exceto o operador. Qualquer um pode ver a escrita, mas eles estarão convencidos de que ela é irremediavelmente arcana, complexa ou estrangeira. Outros meios dependentes dos sentidos (incluindo qualquer “escrita” arcaica baseada em gosto ou cheiro que possa ser usada por raças não humanas, assim como o braile em ambientes modernos) podem ser criptografadas se o Mestre permitir.\n\nDuração: 1 semana.\n\nCusto: 1 para até 1000 palavras de texto simples; 2 para até 10.000 palavras de texto simples; 3 para até 100.000 palavras de texto simples; +1 para cada 100.000 palavras adicionais. Assim, uma pilha de seis suplementos típicos de GURPS Quarta Edição, com cerca de 175.000 palavras por livro, custaria 12 de energia para criptografar.\n\nPré-requisito: Torpor.\n\nItem\n(a) Qualquer escrita pode ser permanentemente criptografada por 100 vezes o custo de operação da mágica. (b) Cajado, varinha ou joia. Custo de energia para criar: 100.",
     "descricaoConferida": true,
     "descricaoPagina": 135,
     "mecanica": {
@@ -16972,7 +16972,7 @@
     "tempoOperacaoSeg": 1,
     "tempoTipo": "fixo",
     "custoTipo": "varia",
-    "custoFormula": "1 para até 1.000 palavras de texto simples; 2 para até 10.000 palavras de texto simples; 3 para até 100.000 palavras de texto simples; +1 para cada 100.000 palavras adicionais. Assim, uma pilha de seis suplementos típicos de GURPS Quarta Edição, com cerca de 175.000 palavras por livro, custaria 12 de energia para criptografar.",
+    "custoFormula": "1 para até 1000 palavras de texto simples; 2 para até 10.000 palavras de texto simples; 3 para até 100.000 palavras de texto simples; +1 para cada 100.000 palavras adicionais. Assim, uma pilha de seis suplementos típicos de GURPS Quarta Edição, com cerca de 175.000 palavras por livro, custaria 12 de energia para criptografar.",
     "conferido": "livro",
     "conferidoPagina": 135,
     "conferidoPor": {
@@ -17429,7 +17429,7 @@
     "energia": "1 por ST-/M",
     "tempoOperacao": "1 seg",
     "preRequisitos": "—",
-    "descricao": "Comum; Resistível com HT\n\nReduz temporariamente a ST do objetivo. Isso afetará o dano básico do objetivo com armas, mas não os PV. Afeta a Base de Carga, mas o MJ, se quiser, pode ignorar esse detalhe para fins de jogabilidade.\n\nDuração: 1 minuto.\nCusto: 1 para cada ponto de redução de ST (máximo 5). Metade do total (arredondar para cima) para manter.\nItem\n(a) Cajado ou varinha. Utilizável apenas por magos; o item deve ser apontado para (mas não deve necessariamente tocar) o objetivo. Custo para criar: 900 de energia. (b) Qualquer item. Sempre ativo; reduz a ST do usuário. Custo para criar: 100 de energia para cada ponto de redução da ST do usuário.",
+    "descricao": "Comum; Resistível com HT\n\nReduz temporariamente a ST do objetivo. Isso afetará o dano básico do objetivo com armas, mas não os PV. Afeta a Base de Carga, mas o MJ, se quiser, pode ignorar esse detalhe para fins de jogabilidade.\n\nDuração: 1 minuto.\n\nCusto: 1 para cada ponto de redução de ST (máximo 5). Metade do total (arredondar para cima) para manter.\nItem\n(a) Cajado ou varinha. Utilizável apenas por magos; o item deve ser apontado para (mas não deve necessariamente tocar) o objetivo. Custo para criar: 900 de energia. (b) Qualquer item. Sempre ativo; reduz a ST do usuário. Custo para criar: 100 de energia para cada ponto de redução da ST do usuário.",
     "descricaoConferida": true,
     "descricaoPagina": 36,
     "mecanica": {
@@ -18015,7 +18015,7 @@
     "energia": "1 a 3",
     "tempoOperacao": "2 seg",
     "preRequisitos": "5 mágicas da Água incl. Dissipar Água",
-    "descricao": "Comum; Resistível com HT\n\nRemove a água dos tecidos de um objetivo, causando danos ou morte. Afeta toda a vítima se for operada à distância; se o operador tocar o objetivo, o dano será limitado à parte tocada. A armadura não protege!\n\nDuração: O dano causado é permanente até ser curado.\nCusto: 1 para 1d-1 de dano causado, até 3.\nTempo de operação: 2 segundos.\nPré-requisitos: Pelo menos cinco mágicas da Água, incluindo Dissipar Água.\n\nItem\nVarinha ou cajado. Utilizável apenas por magos; o objeto deve tocar o objetivo. Custo para criar: 700 de energia e $1.000 em materiais para a mágica.",
+    "descricao": "Comum; Resistível com HT\n\nRemove a água dos tecidos de um objetivo, causando danos ou morte. Afeta toda a vítima se for operada à distância; se o operador tocar o objetivo, o dano será limitado à parte tocada. A armadura não protege!\n\nDuração: O dano causado é permanente até ser curado.\n\nCusto: 1 para 1d-1 de dano causado, até 3.\n\nTempo de operação: 2 segundos.\n\nPré-requisitos: Pelo menos cinco mágicas da Água, incluindo Dissipar Água.\n\nItem\nVarinha ou cajado. Utilizável apenas por magos; o objeto deve tocar o objetivo. Custo para criar: 700 de energia e $1.000 em materiais para a mágica.",
     "descricaoConferida": true,
     "descricaoPagina": 188,
     "mecanica": {
@@ -18346,7 +18346,7 @@
     "energia": "1",
     "tempoOperacao": "10 seg",
     "preRequisitos": "Tolice",
-    "descricao": "Área; Resistível com Vontade\n\nTodos dentro da área perdem o rumo. Eles não se sentirão imediatamente perdidos, mas assim que for necessário lembrar o caminho que eles tomaram, ou lembrarem-se de sua posição em relação a um ponto de referência, eles desenharão um espaço em branco. Aqueles com Direção Absoluta resistem a +5.\n\nDuração: Os objetivos podem recuperar o rumo da maneira habitual (rolagem de Navegação, rastreamento de volta, comparação de notas, etc.).\nTempo de operação: 10 segundos.\nCusto básico: 1. Não pode ser mantida.\nPré-requisito: Tolice.",
+    "descricao": "Área; Resistível com Vontade\n\nTodos dentro da área perdem o rumo. Eles não se sentirão imediatamente perdidos, mas assim que for necessário lembrar o caminho que eles tomaram, ou lembrarem-se de sua posição em relação a um ponto de referência, eles desenharão um espaço em branco. Aqueles com Direção Absoluta resistem a +5.\n\nDuração: Os objetivos podem recuperar o rumo da maneira habitual (rolagem de Navegação, rastreamento de volta, comparação de notas, etc.)\n\nTempo de operação: 10 segundos.\n\nCusto básico: 1. Não pode ser mantida.\n\nPré-requisito: Tolice.\n\nItem\nCajado ou varinha. Utilizável apenas por magos. Custo de energia para criar: 200.",
     "descricaoConferida": true,
     "descricaoPagina": 135,
     "mecanica": {
@@ -19400,7 +19400,7 @@
     "energia": "5/M#",
     "tempoOperacao": "5 seg.",
     "preRequisitos": "Identificar Função, História",
-    "descricao": "Informação\n\nCria “plantas técnicas” detalhadas da máquina objetivo na mente do operador. O operador pode navegar pelo diagrama mental à vontade ou na mesma proporção em que ele poderia examinar os planos reais de cópia impressa da máquina. No entanto, essa mágica não concede perícias apropriadas; para interpretar, por exemplo, um diagrama da usina de fusão de uma nave estelar, o operador precisaria de alguma fazer um teste contra Engenharia (Fusão). Para fazer qualquer uso do diagrama de uma arma, seria necessário Armeiro ou algum tipo de perícia em arma. A duração é o período em que a imagem permanece com qualquer clareza útil na mente do operador. O operador deve tocar o objetivo durante a operação.\n\nO diagrama pode representar o estado atual do objeto (mostrando qualquer dano interno, alterações e desgaste) ou o estado ideal do objeto, a critério do operador. Ambos podem ser úteis. O último uso ainda fornece planos para um objeto com base apenas em uma pequena fração dele (pelo menos 5% da massa total da máquina precisa estar presente). Isso pode ser usado para formar uma imagem completa de um dispositivo precursor fragmentado, por exemplo… Em ambos os casos, o custo para operar a mágica é baseado na massa da máquina intacta.\n\nA imagem do diagrama, mesmo quando mantida pelo mago, não conta como uma mágica “ativa” para fins de penalidade. Esta também é uma mágica de Reconhecimento.\n\nDuração: 1 minuto.\nCusto: 5 para um objeto de uma tonelada ou menor; adicione 1 energia ao custo para cada tonelada ou fração adicional. Metade disso para manter.\nTempo de operação: 5 segundos.\nPré-requisitos: Identificar Função e História.\n\nItem\n\nPlanta ou capacete. Utilizável apenas por magos; o item deve tocar o objetivo.\nCusto de energia para criar: 200.",
+    "descricao": "Informação\n\nCria “plantas técnicas” detalhadas da máquina objetivo na mente do operador. O operador pode navegar pelo diagrama mental à vontade ou na mesma proporção em que ele poderia examinar os planos reais de cópia impressa da máquina. No entanto, essa mágica não concede perícias apropriadas; para interpretar, por exemplo, um diagrama da usina de fusão de uma nave estelar, o operador precisaria de alguma fazer um teste contra Engenharia (Fusão). Para fazer qualquer uso do diagrama de uma arma, seria necessário Armeiro ou algum tipo de perícia em arma. A duração é o período em que a imagem permanece com qualquer clareza útil na mente do operador. O operador deve tocar o objetivo durante a operação.\n\nO diagrama pode representar o estado atual do objeto (mostrando qualquer dano interno, alterações e desgaste) ou o estado ideal do objeto, a critério do operador. Ambos podem ser úteis. O último uso ainda fornece planos para um objeto com base apenas em uma pequena fração dele (pelo menos 5% da massa total da máquina precisa estar presente). Isso pode ser usado para formar uma imagem completa de um dispositivo precursor fragmentado, por exemplo… Em ambos os casos, o custo para operar a mágica é baseada na massa da máquina intacta.\n\nA imagem do diagrama, mesmo quando mantida pelo mago, não conta como uma mágica “ativa” para fins de penalidade.\n\nEsta também é uma mágica de Reconhecimento.\n\nDuração: 1 minuto.\n\nCusto: 5 para um objeto de uma tonelada ou menor; adicione 1 energia ao custo para cada tonelada ou fração adicional. Metade disso para manter.\n\nTempo de operação: 5 segundos.\n\nPré-requisitos: Identificar Função e História.\n\nItem\nPlanta ou capacete. Utilizável apenas por magos; o item deve tocar o objetivo. Custo de energia para criar: 200.",
     "descricaoConferida": true,
     "descricaoPagina": 177,
     "mecanica": {
@@ -20384,7 +20384,7 @@
     "energia": "2",
     "tempoOperacao": "2 seg.",
     "preRequisitos": "Espasmo",
-    "descricao": "Comum; Resistível com HT\n\nO objetivo sente uma pontada de dor agonizante. Ele precisará de um sucesso em um teste de Vontade para não gritar. Se estiver em uma situação difícil (escalando uma montanha, por exemplo), ele também precisará fazer um teste de DX para evitar um desastre. A DX e todas as perícias com base em DX do objetivo sofrerão uma penalidade igual a -3 durante o próximo turno. Se estiver realizando uma mágica que exija gestos, o objetivo precisará obter sucesso em um teste de Vontade ou terá de começar tudo de novo. Hipoalgia concede um bônus igual a +3 nos testes de Vontade e DX; Hiperalgia impõe uma penalidade igual a -4.\n\nDuração: 1 segundo.\nCusto: 2. Não pode ser mantida; precisa ser refeita.\nPré-requisitos: Espasmo.\n\nItem\n(a) Cajado ou varinha, ornamentado num estilo de serpente. Utilizável apenas por magos. O item deve tocar a vítima. Custo para criar: 400 de energia. (b) Qualquer item. Sempre ativo. O usuário sentirá uma dor lancinante, como descrito, porém continua até que ele seja bem-sucedido em um teste de HT. Ele não será capaz de fazer nada até que obtenha sucesso no teste! Custo para criar: 300 de energia.",
+    "descricao": "Comum; Resistível com HT\n\nO objetivo sente uma pontada de dor agonizante. Ele precisará de um sucesso em um teste de Vontade para não gritar. Se estiver em uma situação difícil (escalando uma montanha, por exemplo), ele também precisará fazer um teste de DX para evitar um desastre. A DX e todas as perícias com base em DX do objetivo sofrerão uma penalidade igual a -3 durante o próximo turno. Se estiver realizando uma mágica que exija gestos, o objetivo precisará obter sucesso em um teste de Vontade ou terá de começar tudo de novo. Hipoalgia concede um bônus igual a +3 nos testes de Vontade e DX; Hiperalgia impõe uma penalidade igual a -4.\n\nDuração: 1 segundo.\n\nCusto: 2. Não pode ser mantida; precisa ser refeita.\n\nTempo de operação: 2 segundos.\n\nPré-requisitos: Espasmo.\n\nItem\n(a) Cajado ou varinha; utilizável apenas por magos. O item deve tocar a vítima. Custo para criar: 400 de energia. (b) Qualquer item; sempre ativo. O usuário sentirá uma dor lancinante, como descrito, porém continua até que ele seja bem-sucedido em um teste de HT. Ele nao será capaz de fazer nada até que obtenha sucesso no teste! Custo para criar: 300 de energia.",
     "descricaoConferida": true,
     "descricaoPagina": 36,
     "mecanica": {
@@ -20406,7 +20406,7 @@
     "conferidoPagina": 36,
     "conferidoPor": {
       "duracao": "tabela+entrada",
-      "tempoOperacao": "tabela",
+      "tempoOperacao": "tabela+entrada",
       "custo": "entrada"
     },
     "faixaDoLivro": {
@@ -20487,7 +20487,7 @@
     "energia": "10",
     "tempoOperacao": "1 hora",
     "preRequisitos": "Anular Mágica, Suspender Mana",
-    "descricao": "Área\n\nRemove todo o mana de uma área, deixando-a permanentemente “morta” para magia. Mágicas não funcionam lá, e a mágica não pode sentir alguém ou alguma coisa em uma zona sem mana; mágicas terminam, e itens mágicos não funcionam até que sejam removidos da área.\n\nEsta mágica é usada para criar áreas nas quais magos, criaturas mágicas e itens mágicos podem ser confinados ou ocultos com segurança. Uma zona sem mana permanece estável em relação à terra, mas não a objetos.",
+    "descricao": "Área\n\nRemove todo o mana de uma área, deixando-a permanentemente “morta” para magia. Mágicas não funcionam lá, e a mágica não pode sentir alguém ou alguma coisa em uma zona sem mana; mágicas terminam, e itens mágicos não funcionam até que sejam removidos da área.\n\nEssa mágica é usada para criar áreas nas quais magos, criaturas mágicas e itens mágicos podem ser confinados ou ocultos com segurança. Uma zona sem mana permanece estável em relação à terra, mas não a objetos. Assim, se você fizer o interior de uma caixa morta de mana, quando mover a caixa, o espaço morto permanecerá onde estava, em vez de se mover com a caixa.\n\nUma falha crítica com esta mágica custa ao operador um nível de Aptidão Mágica!\n\nDuração: Permanente.\n\nCusto básico: 10.\n\nTempo de operação: 1 hora.\n\nPré-requisitos: Anular Mágica e Suspender Mana.",
     "descricaoConferida": true,
     "descricaoPagina": 127,
     "mecanica": {
@@ -20506,9 +20506,9 @@
     "conferido": "livro",
     "conferidoPagina": 127,
     "conferidoPor": {
-      "duracao": "tabela",
-      "tempoOperacao": "tabela",
-      "custo": "tabela"
+      "duracao": "tabela+entrada",
+      "tempoOperacao": "tabela+entrada",
+      "custo": "tabela+entrada"
     },
     "custoPorCondicao": {
       "entradas": [
@@ -20852,7 +20852,7 @@
     "energia": "3/2",
     "tempoOperacao": "1 seg.",
     "preRequisitos": "Vozes, Controle de Emoção",
-    "descricao": "Comum\n\nConcede ao objetivo a vantagem Voz Melodiosa (pág. MB100). A mágica não tem efeito em seres que já possuem a vantagem.",
+    "descricao": "Comum\n\nConcede ao objetivo a vantagem Voz Melodiosa (pág. MB100). A mágica não tem efeito em seres que já possuem a vantagem.\n\nDuração: 1 minuto.\n\nCusto: 3 para operar. 2 para manter.\n\nPré-requisitos: Vozes e Controle de Emoção.\n\nItem\n(a) Cajado ou varinha. Utilizável apenas por magos; o item deve tocar o objetivo. Custo de energia para criar: 200. (b) Joias; deve ter uma figura de um rouxinol. Sempre ativo, afeta apenas o usuário. Custo de energia para criar: 600.",
     "descricaoConferida": true,
     "descricaoPagina": 174,
     "mecanica": {
@@ -20873,9 +20873,9 @@
     "conferido": "livro",
     "conferidoPagina": 174,
     "conferidoPor": {
-      "duracao": "tabela",
+      "duracao": "tabela+entrada",
       "tempoOperacao": "tabela",
-      "custo": "tabela"
+      "custo": "tabela+entrada"
     },
     "faixaDoLivro": {
       "operar": {
@@ -22584,7 +22584,7 @@
     "energia": "3/1",
     "tempoOperacao": "1 seg",
     "preRequisitos": "Vozes, Objeto Dançante, 1 idioma Com Sotaque",
-    "descricao": "Comum\n\nAnima uma caneta, que escreve o que o operador determinar durante o tempo da mágica. Se o operador falhar em apenas 1 ou 2 pontos, a caneta ainda estará animada, mas a transcrição não é perfeitamente precisa! Portanto, o operador deve sempre checar novamente seu trabalho. Em NTs mais altos, essa mágica também pode ser usada com máquinas de escrever, teclados de computador e outros dispositivos de transcrição.\n\nDuração: 1 minuto\nCusto: 3 para operar, 1 para manter\nPré-requisitos: Vozes, Objeto Dançante, e deve ter compreensão da escrita Com Sotaque ou melhor em pelo menos um idioma.\n\nItem\nUma caneta pode ser permanentemente animada a um custo de energia de 250. Por mais 100 pontos de energia (que podem ser em um encantamento separado), o operador pode sintonizá-la com as palavras de outra pessoa.",
+    "descricao": "Comum\n\nAnima uma caneta, que escreve o que o operador determinar durante o tempo da mágica. Se o operador falhar em apenas 1 ou 2 pontos, a caneta ainda estará animada, mas a transcrição não é perfeitamente precisa! Portanto, o operador deve sempre checar novamente seu trabalho. Em NTs mais altos, essa mágica também pode ser usada com máquinas de escrever, teclados de computador e outros dispositivos de transcrição.\n\nDuração: 1 minuto.\n\nCusto: 3 para operar. 1 para manter.\n\nPré-requisitos: Vozes, Objeto Dançante, e deve ter compreensão da escrita Com Sotaque ou melhor em pelo menos um idioma.\n\nItem\nUma caneta pode ser permanentemente animada a um custo de energia de 250. Por mais 100 pontos de energia (que podem ser em um encantamento separado), o operador pode sintonizá-la com as palavras de outra pessoa.",
     "descricaoConferida": true,
     "descricaoPagina": 174,
     "mecanica": {
@@ -22637,7 +22637,7 @@
     "energia": "3/1#",
     "tempoOperacao": "1 seg",
     "preRequisitos": "Escriba",
-    "descricao": "Comum\n\nAnima uma caneta, que grava em notação musical qualquer melodia que o operador cantarola, canta ou toca em um instrumento. O operador também pode sintonizar a caneta para os sons criados por outra pessoa (ou por um rádio, etc.), em vez de si mesmo. A caneta registra apenas a música; se as letras forem gravadas simultaneamente, uma segunda caneta com Escriba operada pode acompanhá-lo e fazê-lo!\n\nDuração: 1 minuto\nCusto: 3 para operar, 1 para manter. Aumente o custo em 1 (operação e manutenção) se o papel fornecido não for devidamente regulado para fins de escrita musical (a caneta tem que trabalhar mais para suprir as linhas, assim como notas!)\nPré-requisito: Escriba\n\nItem\nUma caneta pode ser permanentemente animada a um custo de energia de 350. O operador pode comandá-la para mudar a fonte em que está “sintonizada” à vontade.",
+    "descricao": "Comum\n\nAnima uma caneta, que grava em notação musical qualquer melodia que o operador cantarola, canta ou toca em um instrumento. O operador também pode sintonizar a caneta para os sons criados por outra pessoa (ou por um rádio, etc.), em vez de si mesmo. A caneta registra apenas a música; se as letras forem gravadas simultaneamente, uma segunda caneta com Escriba operada pode acompanhá-lo e fazê-lo!\n\nDuração: 1 minuto.\n\nCusto: 3 para operar. 1 para manter. Aumente o custo em 1 (operação e manutenção) se o papel fornecido não for devidamente regulado para fins de escrita musical (a caneta tem que trabalhar mais para suprir as linhas, assim como notas!)\n\nPré-requisito: Escriba.\n\nItem\nUma caneta pode ser permanentemente animada a um custo de energia de 350. O operador pode comandá-la para mudar a fonte em que está “sintonizada” à vontade.",
     "descricaoConferida": true,
     "descricaoPagina": 174,
     "mecanica": {
@@ -23394,7 +23394,7 @@
     "energia": "4/2#",
     "tempoOperacao": "1 seg",
     "preRequisitos": "Medo, Percepção de Espíritos",
-    "descricao": "Comum; Resistível com Vontade\n\nFaz com que um único objetivo em forma de espírito se afaste do operador. O operador deve ser capaz de ver o objetivo. O objetivo se afasta do operador no seu Deslocamento máximo atual até que a mágica termine ou o operador o perca de vista. O objetivo não pode atacar o operador durante esse tempo; isso inclui o uso de poderes especiais e mágicas. Se o espírito possuir uma entidade viva, Espantar Espírito não forçará o espírito a sair do hospedeiro. Em vez disso, o espírito fugirá usando o corpo do hospedeiro.\n\nDuração: 10 segundos.\nCusto: 4 para operar. 2 para manter.\nCada ponto de energia extra na operação reduz a resistência do espírito em 1.",
+    "descricao": "Comum; Resistível com Vontade\n\nFaz com que um único objetivo em forma de espírito se afaste do operador. O operador deve ser capaz de ver o objetivo. O objetivo se afasta do operador no seu Deslocamento máximo atual até que a mágica termine ou o operador o perca de vista. O objetivo não pode atacar o operador durante esse tempo; isso inclui o uso de poderes especiais e mágicas.\n\nSe o espírito possuir uma entidade viva, Espantar Espírito não forçará o espírito a sair do hospedeiro. Em vez disso, o espírito fugirá usando o corpo do hospedeiro.\n\nDuração: 10 segundos.\n\nCusto: 4 para operar. 2 para manter. Cada ponto de energia extra na operação reduz a resistência do espírito em 1.\n\nPré-requisitos: Medo e Percepção de Espíritos.\n\nItem\nVarinha, cajado ou joias. Utilizável apenas por magos. Custo de energia para criar: 350.",
     "descricaoConferida": true,
     "descricaoPagina": 151,
     "mecanica": {
@@ -23792,7 +23792,7 @@
     "energia": "20",
     "tempoOperacao": "1 seg",
     "preRequisitos": "4 magicas de Necromancia",
-    "descricao": "Comum\n\nConvoca um assassino fantasma para executar as ordens do operador (veja Espíritos de Caveira, pág. 150). Requer o crânio de uma criatura sapiente, que é destruída na operação.\n\nDuração: O espírito dura 24 horas, a menos que seja destruído primeiro.\nCusto: 20.\nPré-requisitos: Quatro outras mágicas de Necromancia.\n\nItem\nPré-requisitos: Medo e Percepção de Espíritos.\nO crânio de uma criatura sapiente. Qualquer usuário pode invocar o Espírito de Caveira dizendo uma senha (escolhida pelo operador quando a caveira é encantada). A caveira então desintegra-se e o espírito aparece como acima.\nCusto de energia para criar: 40.",
+    "descricao": "Comum\n\nConvoca um assassino fantasma para executar as ordens do operador (veja Espíritos de Caveira, pág. 150). Requer o crânio de uma criatura sapiente, que é destruída na operação.\n\nDuração: O espírito dura 24 horas, a menos que seja destruído primeiro.\n\nCusto: 20.\n\nPré-requisitos: Quatro outras mágicas de Necromancia.\n\nItem\nO crânio de uma criatura sapiente. Qualquer usuário pode invocar o Espírito de Caveira dizendo uma senha (escolhida pelo operador quando a caveira é encantada). A caveira então desintegra-se e o espírito aparece como acima. Custo de energia para criar: 40.",
     "descricaoConferida": true,
     "descricaoPagina": 151,
     "mecanica": {
@@ -23843,7 +23843,7 @@
     "energia": "3/3",
     "tempoOperacao": "10 seg",
     "preRequisitos": "AM1, Tolice",
-    "descricao": "Comum; Resistível com Vontade ou perícia\n\nFaz com que o objetivo esqueça um fato, perícia ou mágica temporariamente. A perícia ou mágica não pode ser usada enquanto Esquecimento estiver fazendo efeito. Se (por exemplo) uma mágica esquecida é um pré-requisito para outras mágicas, as outras mágicas ainda podem ser usadas, com uma penalidade de -2 no NH.\n\nDuração: 1 hora.\nCusto: 3 para operar. 3 para manter.\nTempo de operação: 10 segundos.\nPré-requisitos: Aptidão Mágica 1 e Tolice.",
+    "descricao": "Comum; Resistível com Vontade ou perícia\n\nFaz com que o objetivo esqueça um fato, perícia ou mágica temporariamente. A perícia ou mágica não pode ser usada enquanto Esquecimento estiver fazendo efeito. Se (por exemplo) uma mágica esquecida é um pré-requisito para outras mágicas, as outras mágicas ainda podem ser usadas, com uma penalidade de -2 no NH.\n\nDuração: 1 hora.\n\nCusto: 3 para operar. 3 para manter.\n\nTempo de operação: 10 segundos.\n\nPré-requisitos: Aptidão Mágica 1 e Tolice.\n\nItem\nQualquer item. Sempre ativo; o item faz com que o usuário esqueça uma coisa especificada quando o item é criado. O usuário se lembrará novamente uma hora após o item ser removido. Custo de energia para criar: 500.",
     "descricaoConferida": true,
     "descricaoPagina": 135,
     "mecanica": {
@@ -23947,7 +23947,7 @@
     "energia": "1 a 4/I",
     "tempoOperacao": "1 seg",
     "preRequisitos": "Apressar ou Inabilidade",
-    "descricao": "Comum; Resistível com HT\n\nPara cada ponto de energia aplicado nesta mágica, o objetivo sofrerá uma penalidade igual a -1 em seus valores de Deslocamento e Esquiva. Esta mágica também é considerada uma mágica de Deslocamento.\n\nDuração: 1 minuto.\nCusto: 1 a 4 para operar. O mesmo para manter.\nPré-requisitos: Inabilidade ou Apressar (pág. 142).\n\nItem\n(a) Cajado ou varinha. Utilizável apenas por magos; o item deve ser apontado para (mas não deve necessariamente tocar) o objetivo. Custo para criar: 600 de energia. (b) Qualquer item. Sempre ativo; reduz o parâmetro Deslocamento do usuário. Custo para criar: 200 de energia para cada 1 metro de redução no Deslocamento do usuário.",
+    "descricao": "Comum; Resistível com HT\n\nPara cada ponto de energia aplicado nesta mágica, o objetivo sofrerá uma penalidade igual a -1 em seus valores de Deslocamento e Esquiva.\n\nEsta mágica também é considerada uma mágica de Deslocamento.\n\nDuração: 1 minuto.\n\nCusto: 1 a 4 para operar. O mesmo para manter.\n\nPré-requisitos: Inabilidade ou Apressar (pág. 142).\n\nItem\n(a) Cajado ou varinha. Utilizável apenas por magos; o item deve ser apontado para (mas não deve necessariamente tocar) o objetivo. Custo para criar: 600 de energia. (b) Qualquer item. Sempre ativo; reduz o parâmetro Deslocamento do usuário. Custo para criar: 200 de energia para cada 1 metro de redução no Deslocamento do usuário.",
     "descricaoConferida": true,
     "descricaoPagina": 36,
     "mecanica": {
@@ -24138,7 +24138,7 @@
     "energia": "8/4",
     "tempoOperacao": "5 seg",
     "preRequisitos": "AM2, Esquecimento",
-    "descricao": "Comum; Resistível com Vontade\n\nReduz a IQ do objetivo para 1 temporariamente, reduzindo-o a um idiota balbuciante. O objetivo não pode operar ou manter mágicas, usar perícias, falar ou outras ações determinadas pelo Mestre.\n\nDuração: 1 minuto.\nCusto: 8 para operar; 4 para manter.\nTempo de operação: 5 segundos.\nPré-requisitos: Aptidão Mágica 2 e Esquecimento.",
+    "descricao": "Comum; Resistível com Vontade\n\nReduz a IQ do objetivo para 1 temporariamente, reduzindo-o a um idiota balbuciante. O objetivo não pode operar ou manter mágicas, usar perícias, falar ou outras ações determinadas pelo Mestre. O objetivo pode andar, rir, chorar babar, comer com as mãos, reagir ao calor e ao frio, etc. Ele tem uma atenção muito curta e percebe apenas cores, coisas bonitas, movimentos e outras coisas que um bebê teria curiosidade. Se o objetivo é um PdJ, o jogador deve interpretar este estado.\n\nDuração: 1 minuto.\n\nCusto: 8 para operar. 4 para manter.\n\nTempo de operação: 5 segundos.\n\nPré-requisitos: Aptidão Mágica 2 e Esquecimento.\n\nItem\nQualquer item. O item opera Estupidez em seu portador. Custo de energia para criar: 800.",
     "descricaoConferida": true,
     "descricaoPagina": 137,
     "mecanica": {
@@ -24457,7 +24457,7 @@
     "energia": "6",
     "tempoOperacao": "3 seg",
     "preRequisitos": "AM2, Controle de Emoção",
-    "descricao": "Comum; Resistível com Vontade\n\nO objetivo sente uma onda de prazer incapacitante; ele não pode agir por enquanto, nem mesmo sair do caminho do mal!\n\nDuração: 10 segundos.\nCusto: 6 para operar. Não pode ser mantida.\nTempo de operação: 3 segundos.\nPré-requisitos: Aptidão Mágica 2 e Controle de Emoção.",
+    "descricao": "Comum; Resistível com vontade\n\nO objetivo sente uma onda de prazer incapacitante; ele não pode agir por enquanto, nem mesmo sair do caminho do mal! O alto/baixo limiar de dor é irrelevante.\n\nA exposição repetida pode ser perigosa para o objetivo. Se qualquer personagem tiver sido objetivo de uma mágica Êxtase três vezes em 10 dias, ele deverá fazer um teste de Vontade+2 após a terceira vez e depois de cada vez subsequente até que cinco dias passem sem exposição á mágica. Se qualquer um desses testes falhar, o objetivo ganha um Vício (veja pág. MB159) pela mágica, e implorará ao operador (ou a qualquer outra pessoa que tenha a mágica) por mais! Retirado da mágica Êxtase, segue as regras normais para uma dependência psicológica (veja Desintoxicação, pág. MB440).\n\nDuração: 10 segundos.\n\nCusto: 6 para operar. Não pode ser mantida.\n\nTempo de operação: 3 segundos.\n\nPré-requisitos: Aptidão Mágica 2 e Controle de Emoção.\n\nItem\n(a) Cajado ou varinha. Utilizável apenas por magos; o item deve tocar o objetivo. Custo de energia para criar: 800. (b) Chapéu. Sempre ativo. O usuário não pode remover voluntariamente o item e o vício ocorre em 15 minutos. Custo de energia para criar: 1.300.",
     "descricaoConferida": true,
     "descricaoPagina": 139,
     "mecanica": {
@@ -25170,7 +25170,7 @@
     "energia": "4",
     "tempoOperacao": "1 seg",
     "preRequisitos": "Torpor",
-    "descricao": "Comum ou Bloqueio; Resistível com Vontade\n\nMantém o objetivo (um ser sapiente) imóvel e inconsciente da passagem do tempo, desde que o operador mantenha contato visual e concentração. Trevas quebra o contato visual! Pode ser operada como uma mágica de Bloqueio se o objetivo estiver entrando no alcance do Combate Corporal. O operador pode mover-se lentamente (Deslocamento 1) enquanto mantém contato visual se ele conhecer a mágica com NH 15 ou melhor; cada metro que ele se afasta do objetivo permite que outro teste de resistência quebre a mágica. A mágica também é quebrada por qualquer ataque (físico ou mágico) sobre o objetivo.\n\nDuração: Indefinida.\nCusto: 4.\nPré-requisito: Torpor.",
+    "descricao": "Comum ou Bloqueio; Resistível com Vontade\n\nMantém o objetivo (um ser sapiente) imóvel e inconsciente da passagem do tempo, desde que o operador mantenha contato visual e concentração. Trevas quebra o contato visual! Pode ser operada como uma mágica de Bloqueio se o objetivo estiver entrando no alcance do Combate Corporal. O operador pode mover-se lentamente (Deslocamento 1) enquanto mantém contato visual se ele conhecer a mágica com NH 15 ou melhor; cada metro que ele se afasta do objetivo permite que outro teste de resistência quebre a mágica. A mágica também é quebrada por qualquer ataque (físico ou mágico) sobre o objetivo.\n\nDuração: Indefinida.\n\nCusto: 4.\n\nPré-requisito: Torpor.\n\nItem\nEspelho, pintura ou estatueta. Sempre ativa. Custo de energia para criar: 1.000. Este item é usado como guardião em alguns lugares (a mágica é quebrada quando a vítima fica inconsciente por inanição, desidratação ou exaustão).",
     "descricaoConferida": true,
     "descricaoPagina": 135,
     "mecanica": {
@@ -27509,7 +27509,7 @@
     "energia": "1/5/I#",
     "tempoOperacao": "1 seg.",
     "preRequisitos": "Neve",
-    "descricao": "Área\n\nCausa uma chuva de granizo. A temperatura deve estar acima do congelamento. O principal efeito é proporcionar intensa distração para quem está sendo atingido por granizo; magos devem fazer um teste de Vontade a cada segundo para manter sua concentração.\n\nPor 5 vezes o custo, o Mestre pode permitir pedras de granizo realmente grandes, causando 1d-2 de dano por segundo.\n\nEsta também é uma mágica da Água.\n\nDuração: 1 minuto\nCusto básico: 1/5 (mínimo 1). Para granizo prejudicial, o custo básico é 1. Mesmo custo para manter.\nPré-requisito: Neve\n\nItem\nCajado. Utilizável apenas por um mago. Custo de energia para criar: 500.",
+    "descricao": "Área\n\nCausa uma chuva de granizo. A temperatura deve estar acima do congelamento. O principal efeito é proporcionar intensa distração para quem está sendo atingido por granizo; magos devem fazer um teste de Vontade a cada segundo para manter sua concentração.\n\nPor 5 vezes o custo, o Mestre pode permitir pedras de granizo realmente grandes, causando 1d-2 de dano por segundo.\n\nEsta também é uma mágica da Água.\n\nDuração: 1 minuto.\n\nCusto básico: 1/5 (mínimo 1). Para granizo prejudicial, o custo básico é 1. Mesmo custo para manter.\n\nPré-requisito: Neve.\n\nItem\nCajado. Utilizável apenas por um mago. Custo de energia para criar: 500.",
     "descricaoConferida": true,
     "descricaoPagina": 195,
     "mecanica": {
@@ -27657,7 +27657,7 @@
     "energia": "1 a 3/I#",
     "tempoOperacao": "Varia",
     "preRequisitos": "Anular Mágica",
-    "descricao": "Comum; Resiste a tentativas de adulterar sua mágica-objetivo\n\nEsta mágica é lançada em outra mágica para protegê-la contra tentativas de adulteração. Duas vezes a energia colocada na mágica (até 3 pontos) é subtraída do NH de qualquer operação das seguintes Metamágicas contra a mágica-objetivo: Contramágica, Deslocar Mágica, Aura Falsa, Remover Aura, Remover Maldição, Roubar Feitiço, Suspender Maldição e Suspender Magia. Duas vezes a energia colocada em Guarda-Mágica é adicionada ao NH efetivo do operador da mágica quando resistir a Anular Mágica ou Suspender Magia. Quando a mágica que ela protege falha ou é anulada, Guarda-Mágica também cai.\n\nDuração: 10 horas.\nCusto: 1 a 3 para operar. Mesmo custo para manter. O custo não é reduzido por NH elevado.\nTempo de operação: 1 segundo para cada ponto de energia gasto.\nPré-requisito: Anular Mágica.",
+    "descricao": "Comum; Resiste a tentativas de adulterar sua mágica-objetivo\n\nEsta mágica é lançada em outra mágica para protegê-la contra tentativas de adulteração. Duas vezes a energia colocada na mágica (até 3 pontos) é subtraída do NH de qualquer operação das seguintes Metamágicas contra a mágica-objetivo: Contramágica, Deslocar Mágica, Aura Falsa, Remover Aura, Remover Maldição, Roubar Feitiço, Suspender Maldição e Suspender Magia. Duas vezes a energia colocada em Guarda-Mágica é adicionada ao NH efetivo do operador da mágica quando resistir a Anular Mágica ou Suspender Magia. Quando a mágica que ela protege falha ou é anulada, Guarda-Mágica também cai.\n\nDuração: 10 horas.\n\nCusto: 1 a 3 para operar. Mesmo custo para manter. O custo não é reduzido por NH elevado.\n\nTempo de operação: 1 segundo para cada ponto de energia gasto.\n\nPré-requisito: Anular Mágica.\n\nItem\n(a) Cajado, varinha ou joia. Utilizável apenas por magos. Custo de energia para criar: 500. (b) Pode ser operada permanentemente em um item ou área encantada para dificultar a manipulação; então, também dificulta Suspender Encantamento e Remover Encantamento. Custo de energia para criar: 100 vezes o custo normal.",
     "descricaoConferida": true,
     "descricaoPagina": 127,
     "mecanica": {
@@ -29491,7 +29491,7 @@
     "energia": "1 a 5/M",
     "tempoOperacao": "1 seg.",
     "preRequisitos": "Espasmos",
-    "descricao": "Comum; Resistível com HT\n\nPara cada ponto de energia aplicado nesta mágica, o objetivo sofrerá uma penalidade igual a -1 na DX e nas perícias com base em DX.\n\nDuração: 1 minuto.\nCusto: 1 a 5 para fazer. Metade desse valor (arredondado para cima) para manter.\nPré-requisitos: Espasmo.\n\nItem\n(a) Cajado ou varinha. Utilizável apenas por magos; o item deve tocar o objetivo. Custo para criar: 400 de energia. (b) Qualquer item. Sempre ativo; reduz a DX do usuário. Custo para criar: 100 de energia para cada ponto de redução de DX.",
+    "descricao": "Comum; Resistível com HT\n\nPara cada ponto de energia aplicado nesta mágica, o objetivo sofrerá uma penalidade igual a -1 na DX e nas perícias com base em DX.\n\nDuração: 1 minuto.\n\nCusto: 1 a 5 para fazer. Metade desse valor (arredondado para cima) para manter.\n\nPré-requisitos: Espasmo.\n\nItem\n(a) Qualquer item. Sempre ativo; reduz a DX do usuário. Custo para criar: 100 de energia para cada ponto de redução de DX. (b) Cajado ou varinha. Utilizável apenas por magos; o item deve tocar o objetivo. Custo para criar: 800 de energia.",
     "descricaoConferida": true,
     "descricaoPagina": 36,
     "mecanica": {
@@ -31326,7 +31326,7 @@
     "energia": "2/pt/I",
     "tempoOperacao": "1 seg.",
     "preRequisitos": "3 mágicas de Corpo, 3 mágicas de Deslocamento, 2 mágicas de Proteção",
-    "descricao": "Comum\n\nConcede um bônus ao uso de perícias ou atributos do objetivo para manter ou recuperar sua liberdade de movimentos. Casos típicos incluem: disputas de DX ou ST para evitar serem agarrados, se libertarem ou fugir; usando Fuga ou Arrombamento; saltar ou escalar paredes de contenção; dobrar barras ou forçar portas; resistindo a mágicas de Cola, Levitação ou Paralisia, e assim por diante.\n\nA mágica não ajuda com Camuflagem, Disfarce ou Furtividade; mágicas de Controle da Mente; esquivando-se de projéteis; usando Arrombamento, Escalada ou Salto para entrar em algum lugar, e assim por diante. O julgamento do Mestre é final.\n\nEsta também é uma mágica de Proteção e Aviso.\n\nDuração: 1 minuto.\nCusto: 2 por ponto de bônus (bônus máximo +5). Mesmo custo para manter.\nPré-requisitos: Pelo menos três mágicas de cada um das escolas de Controle do Corpo, Deslocamento, Proteção e Aviso.\n\nItem\nJoias ou roupas. Sempre ativo. O usuário fica muito difícil de segurar, manter em correntes ou atrás das grades… Um item raro! Custo de energia para criar: 500 por ponto de bônus.",
+    "descricao": "Comum\n\nConcede um bônus ao uso de perícias ou atributos do objetivo para manter ou recuperar sua liberdade de movimentos. Casos típicos incluem: disputas de DX ou ST para evitar serem agarrados, se libertarem ou fugir; usando Fuga ou Arrombamento; saltar ou escalar paredes de contenção; dobrar barras ou forçar portas; resistindo a mágicas de Cola, Levitação ou Paralisia, e assim por diante.\n\nA mágica não ajuda com Camuflagem, Disfarce ou Furtividade; mágicas de Controle da Mente; esquivando-se de projéteis; usando Arrombamento, Escalada ou Salto para entrar em algum lugar, e assim por diante. O julgamento do Mestre é final.\n\nEsta também é uma mágica de Proteção e Aviso.\n\nDuração: 1 minuto.\n\nCusto: 2 por ponto de bônus (bônus máximo +5). Mesmo custo para manter.\n\nPré-requisitos: Pelo menos três mágicas de cada um das escolas de Controle do Corpo, Deslocamento, Proteção e Aviso.\n\nItem\nJoias ou roupas. Sempre ativo. O usuário fica muito difícil de segurar, manter em correntes ou atrás das grades… Um item raro! Custo de energia para criar: 500 por ponto de bônus.",
     "descricaoConferida": true,
     "descricaoPagina": 148,
     "mecanica": {
@@ -32610,7 +32610,7 @@
     "energia": "20",
     "tempoOperacao": "10 min.",
     "preRequisitos": "AM2, Loucura, IQ 13+",
-    "descricao": "Duração: Permanente.\nCusto: 20.\nTempo de operação: 10 minutos.\nPré-requisitos: Aptidão Mágica 2, Loucura e IQ 13 ou superior.",
+    "descricao": "Comum; Resistível com Vontade-2\n\nIgual à Loucura, mas permanente.\n\nDuração: Permanente.\n\nCusto: 20.\n\nTempo de operação: 10 minutos.\n\nPré-requisitos: Aptidão Mágica 2, Loucura e IQ 13 ou superior.",
     "descricaoConferida": true,
     "descricaoPagina": 139,
     "mecanica": {
@@ -33607,7 +33607,7 @@
     "energia": "Varia",
     "tempoOperacao": "3 seg.",
     "preRequisitos": "Manipular, Tato Remoto",
-    "descricao": "Comum\n\nCria uma réplica da mão física do operador, através da qual ele pode agarrar e sentir. A mão voa pelo ar com Deslocamento 10, no turno do operador, embora não possa fazê-lo sem esbarrar nas coisas, a menos que seja acompanhado por um Ouvido ou Olho Mágico! Alternativamente, ele pode tatear ao longo de paredes, pisos e tetos com Deslocamento 3. Concentração é necessária para mover a mão, mas não para segurar ou sentir através dela. A mão não pode operar ou entregar mágicas! Quaisquer mágicas que melhorem o toque que afetem o operador também serão utilizáveis através da Mão. Enquanto ele sente através da Mão, as próprias mãos do mago são insensíveis. Cada vez, ele deve especificar se ele está sentindo através da Mão ou através de suas próprias mãos.\nA mão é pequena, com um MT de Memorizar -5, mas qualquer golpe com um ataque físico ou qualquer mágica que possa incapacitá-la razoavelmente irá destruí-la. A mão em si não pode infligir nenhum dano por soco; tem ST 2 e a DX do operador.\n\nEsta também é uma mágica de Deslocamento.\n\nDuração: 1 minuto.\nCusto: 4 para operar e 3 para manter uma mão; 6 para operar e 4 para manter duas mãos.\nTempo de operação: 3 segundos.\nPré-requisitos: Manipular e Tato Remoto.",
+    "descricao": "Comum\n\nCria uma réplica da mão física do operador, através da qual ele pode agarrar e sentir. A mão voa pelo ar com Deslocamento 10, no turno do operador, embora não possa fazê-lo sem esbarrar nas coisas, a menos que seja acompanhado por um Ouvido ou Olho Mágico!\n\nAlternativamente, ele pode tatear ao longo de paredes, pisos e tetos com Deslocamento 3. Concentração é necessária para mover a mão, mas não para segurar ou sentir através dela. A mão não pode operar ou entregar mágicas! Quaisquer mágicas que melhorem o toque que afetem o operador também serão utilizáveis através da Mão. Enquanto ele sente através da Mão, as próprias mãos do mago são insensíveis. Cada vez, ele deve especificar se ele está sentindo através da Mão ou através de suas próprias mãos.\nA mão é pequena, com um MT de Memorizar -5, mas qualquer golpe com um ataque físico ou qualquer mágica que possa incapacitá-la razoavelmente irá destruí-la. A mão em si não pode infligir nenhum dano por soco; tem ST 2 e a DX do operador.\n\nEsta também é uma mágica de Deslocamento.\n\nDuração: 1 minuto.\nCusto: 4 para operar e 3 para manter uma mão; 6 para operar e 4 para manter duas mãos.\nTempo de operação: 3 segundos.\nPré-requisitos: Manipular e Tato Remoto.",
     "descricaoConferida": true,
     "descricaoPagina": 104,
     "mecanica": {
@@ -33854,7 +33854,7 @@
     "energia": "1/30/I",
     "tempoOperacao": "1 min",
     "preRequisitos": "8 mágicas da Água",
-    "descricao": "Especial; Área\n\nCada aplicação dessa mágica pode aumentar ou diminuir o nível da água em 30 centímetros; para mudanças maiores, aumente o custo da mágica proporcionalmente.\n\nA “colina de água” criada assim se espalha naturalmente a partir da área afetada, caindo 30 centímetros por cada metro além da área real da mágica.\n\nA mágica pode ser operada em uma área, afetando a maré nela. Também pode ser operada em um objeto, como um navio, que deve abranger sua totalidade. A área de efeito se move com o objeto.\n\nEsta também é uma mágica da Água.\n\nDuração: 1 hora.\nCusto básico: 1/30 (mínimo 1). Mesmo custo para manter.\nTempo de operação: 1 minuto.\nPré-requisitos: Pelo menos oito mágicas da Água.\n\nItem: Cajado, varinha ou joias. Custo de energia para criar: 300.",
+    "descricao": "Especial; Área\n\nCada aplicação dessa mágica pode aumentar ou diminuir o nível da água em 30 centímetros; para mudanças maiores, aumente o custo da mágica proporcionalmente.\n\nA “colina de água” criada assim se espalha naturalmente a partir da área afetada, caindo 30 centímetros por cada metro além da área real da mágica.\n\nA mágica pode ser operada em uma área, afetando a maré nela. Também pode ser operada em um objeto, como um navio, que deve abranger sua totalidade. A área de efeito se move com o objeto.\n\nEsta também é uma mágica da Água.\n\nDuração: 1 hora.\n\nCusto básico: 1/30 (mínimo 1). Mesmo custo para manter.\n\nTempo de operação: 1 minuto.\n\nPré-requisitos: Pelo menos oito mágicas da Água.\nItem\nCajado, varinha ou joias. Custo de energia para criar: 225.",
     "descricaoConferida": true,
     "descricaoPagina": 194,
     "mecanica": {
@@ -33928,7 +33928,7 @@
     "energia": "5/5",
     "tempoOperacao": "1 seg",
     "preRequisitos": "Convocar Espírito",
-    "descricao": "Especial; Resistível com ST ou IQ\n\nEsta mágica é usada por fantasmas e outros espíritos que normalmente não podem tornar-se visíveis para os seres no mundo físico.",
+    "descricao": "Especial; Resistível com ST ou IQ\n\nEsta mágica é usada por fantasmas e outros espíritos que normalmente não podem tornar-se visíveis para os seres no mundo físico.\nA mágica também pode ser usada por um mago para forçar um espírito a se materializar; nesse caso, o fantasma resiste com o melhor de sua ST ou IQ.\n\nDuração: 1 minuto.\n\nCusto: 5 para operar. 5 para manter.\n\nPré-requisito: Convocar Espírito.",
     "descricaoConferida": true,
     "descricaoPagina": 150,
     "mecanica": {
@@ -33949,9 +33949,9 @@
     "conferido": "livro",
     "conferidoPagina": 150,
     "conferidoPor": {
-      "duracao": "tabela",
+      "duracao": "tabela+entrada",
       "tempoOperacao": "tabela",
-      "custo": "tabela"
+      "custo": "tabela+entrada"
     },
     "faixaDoLivro": {
       "operar": {
@@ -34293,7 +34293,7 @@
     "energia": "Varia",
     "tempoOperacao": "5 seg",
     "preRequisitos": "Esquecimento, 6 mágicas de mente",
-    "descricao": "Comum; Resistível com Vontade\n\nInsira uma única memória falsa simples na mente de um objetivo.\n\nDuração: Variável.\nCusto: 3 por uma duração de uma hora ou 8 por um dia inteiro. Manutenção 3 por hora ou 4 por dia.\nTempo de operação: 5 segundos.\nPré-requisitos: Esquecimento e outras seis mágicas de Controle da Mente.",
+    "descricao": "Comum; Resistível com Vontade\n\nInsira uma única memória falsa simples na mente de um objetivo. Esta mágica é frequentemente usada para evitar o pagamento de contas, e é considerada altamente ilegal em muitas áreas.\n\nSe a memória implantada entrar em conflito com uma memória real, o cérebro do objetivo geralmente se encaixará na nova, deixando-o um pouco confuso, mas convencido. Em caso de conflito direto extremo — “Você se lembra de ter matado o duque” (quando o objetivo viu o operador matar o duque!) — o objetivo deve receber um bônus em seu teste de resistência; o exemplo acima seria +5 para um objetivo leal, mas provavelmente apenas +1 para alguém que quisesse matar o duque.\n\nDuração: Variável (veja abaixo). Quando a mágica termina, o objetivo recebe um segundo teste de resistência, a -1 para cada dia que a mágica durou. Se este teste falhar, o objetivo acreditará indefinidamente na falsa memória, mas é provável que se lembre da verdade em algum momento imprevisível, talvez como resultado de um choque.\n\nCusto: 3 por uma duração de uma hora ou 8 por um dia inteiro. O custo de manutenção é de 3 por hora, se for operada por uma hora, ou 4 por dia, se for operada por um dia.\n\nTempo de operação: 5 segundos.\n\nPré-requisitos: Esquecimento e outras seis mágicas de Controle da Mente.",
     "descricaoConferida": true,
     "descricaoPagina": 139,
     "mecanica": {
@@ -34306,7 +34306,7 @@
     "tempoOperacaoSeg": 5,
     "tempoTipo": "fixo",
     "custoTipo": "porUnidade",
-    "custoFormula": "3 por uma duração de uma hora ou 8 por um dia inteiro. Manutenção 3 por hora ou 4 por dia.",
+    "custoFormula": "3 por uma duração de uma hora ou 8 por um dia inteiro. O custo de manutenção é de 3 por hora, se for operada por uma hora, ou 4 por dia, se for operada por um dia.",
     "conferido": "livro",
     "conferidoPagina": 139,
     "conferidoPor": {
@@ -34438,7 +34438,7 @@
     "energia": "1/15 seg",
     "tempoOperacao": "Varia",
     "preRequisitos": "Voz Amplificada, Localizador",
-    "descricao": "Comum; Resistível\n\nEnvie uma mensagem falada para um objetivo. Utilize os Modificadores de Longa Distância (pág. 14). Se o operador não conhece o objetivo, ele terá uma penalidade de -2. Se ele não sabe o paradeiro do objetivo, ele também terá uma penalidade de -5 (uma mágica Localizador de sucesso eliminará isso). Essas penalidades podem ser cumulativas. Um teste de Rastrear bem sucedido concede um bônus de +5.\n\nO objetivo ouve a mensagem clara e distintamente qualquer que seja seu ambiente sonoro, mas ninguém mais a ouve. Silêncio, Muralha de Silêncio e Barulho resistirão à mensagem recebida.\n\nEsta também é uma mágica de Comunicação e Empatia.\n\nDuração: A mensagem viaja para o objetivo a 80 km/h. Essa velocidade dobra quando o custo de operação é dobrado.\nCusto: 1 por 15 segundos de duração da mensagem.\nTempo de operação: Igual à duração da mensagem, conforme falada pelo operador.\nPré-requisitos: Voz Amplificada e Localizador.\n\nItem\nUma concha fala enquanto se concentra em uma imagem mental do objetivo e seus arredores. Custo de energia para criar: 1.000.",
+    "descricao": "Comum; Resistível com mágicas que bloqueiam o som\n\nEnvie uma mensagem falada para um objetivo. Utilize os Modificadores de Longa Distância (pág. 14). Se o operador não conhece o objetivo, ele terá uma penalidade de -2. Se ele não sabe o paradeiro do objetivo, ele também terá uma penalidade de -5 (uma mágica Localizador de sucesso eliminará isso). Essas penalidades podem ser cumulativas. Um teste de Rastrear bem sucedido concede um bônus de +5.\n\nO objetivo ouve a mensagem clara e distintamente qualquer que seja seu ambiente sonoro, mas ninguém mais a ouve. Silêncio, Muralha de Silêncio e Barulho resistirão à mensagem recebida.\n\nEsta também é uma mágica de Comunicação e Empatia.\n\nDuração: A mensagem viaja para o objetivo a 80 km/h. Essa velocidade dobra quando o custo de operação é dobrado.\n\nCusto: 1 por 15 segundos de duração da mensagem.\n\nTempo de operação: Igual à duração da mensagem, conforme falada pelo operador.\n\nPré-requisitos: Voz Amplificada e Localizador.\n\nItem\nUma concha fala enquanto se concentra em uma imagem mental do objetivo e seus arredores. Custo de energia para criar: 1.000.",
     "descricaoConferida": true,
     "descricaoPagina": 174,
     "mecanica": {
@@ -36794,7 +36794,7 @@
     "energia": "3/2",
     "tempoOperacao": "2 seg",
     "preRequisitos": "Aporte, Paladar Remoto",
-    "descricao": "Comum\n\nCria uma réplica desincorporada — cerca de 5 a 7 cm de comprimento — do nariz físico do operador, através do qual ele pode cheirar. O Nariz voa pelo ar com Deslocamento 10, no turno do operador, embora não possa fazê-lo sem esbarrar nas coisas, a menos que seja acompanhado por um Ouvido ou Olho Mágico! A concentração é necessária para mover o nariz, mas não para cheirar através dele. Quaisquer mágicas que melhorem o olfato que afetem o operador também serão utilizáveis através do Nariz. Enquanto cheirando pelo Nariz, o próprio nariz do mágico é insensível. Toda vez, ele deve especificar se está cheirando pelo Nariz ou pelo próprio nariz. O Nariz é pequeno, com um MT de -7, mas se for atingido por um ataque físico ou qualquer mágica que possa incapacitá-lo razoavelmente, ele será destruído.\n\nEsta também é uma mágica sobre Alimentos.\n\nDuração: 1 minuto.\nCusto: 3 para operar. 2 para manter.\nTempo de operação: 2 segundos.\nPré-requisitos: Aporte e Paladar Remoto.\n\nItem\n(a) Qualquer item representando um nariz humano pode ser transformado em um Nariz Mágico imóvel, através do qual o portador de um amuleto em forma de flor, encantado ao mesmo tempo, pode cheirar independentemente da distância. Cada um deles liga o Nariz com um amuleto e vice-versa. Custo de energia para criar: 475. (b) Um nariz esculpido em pedra preciosa. Utilizável apenas por magos. Ao comando de seu portador, ele se transformará em um Nariz Mágico; ao retornar à sua mão, ele irá reverter para a forma de item. Custo para criar: 500 de energia e $500 em materiais e mão de obra.",
+    "descricao": "Comum\n\nCria uma réplica desincorporada — cerca de 5 a 7 cm de comprimento — do nariz físico do operador, através do qual ele pode cheirar. O Nariz voa pelo ar com Deslocamento 10, no turno do operador, embora não possa fazê-lo sem esbarrar nas coisas, a menos que seja acompanhado por um Ouvido ou Olho Mágico! A concentração é necessária para mover o nariz, mas não para cheirar através dele. Quaisquer mágicas que melhorem o olfato que afetem o operador também serão utilizáveis através do Nariz. Enquanto cheirando pelo Nariz, o próprio nariz do mágico é insensível. Toda vez, ele deve especificar se está cheirando pelo Nariz ou pelo próprio nariz. O Nariz é pequeno, com um MT de -7, mas se for atingido por um ataque físico ou qualquer mágica que possa incapacitá-lo razoavelmente, ele será destruído.\n\nEsta também é uma mágica sobre Alimentos.\n\nDuração: 1 minuto.\n\nCusto: 3 para operar. 2 para manter.\n\nTempo de operação: 2 segundos.\n\nPré-requisitos: Aporte e Paladar Remoto.\n\nItem\n(a) Qualquer item representando um nariz humano pode ser transformado em um Nariz Mágico imóvel, através do qual o portador de um amuleto em forma de flor, encantado ao mesmo tempo, pode cheirar independentemente da distância. Cada um deles liga o Nariz com um amuleto e vice-versa. Custo de energia para criar: 475. (b) Um nariz esculpido em pedra preciosa. Utilizável apenas por magos. Ao comando de seu portador, ele se transformará em um Nariz Mágico; Ao retornar à sua mão, ele irá reverter para a forma de item. Custo para criar: 500 de energia e $500 em materiais e mão de obra.",
     "descricaoConferida": true,
     "descricaoPagina": 104,
     "mecanica": {
@@ -37082,7 +37082,7 @@
     "energia": "1/15#/I",
     "tempoOperacao": "1 seg",
     "preRequisitos": "Nuvens, Geada",
-    "descricao": "Área\n\nCria (ou impede) 2,5 centímetros de neve, em um ambiente externo normal.\n\nPara funcionar corretamente, essa mágica deve ser operada quando a temperatura é de 0°C ou inferior. Quando lançada em condições mais quentes, essa mágica evoca uma garoa fina, umedecendo o chão, mas não deixando poças significativas.\n\nEsta também é uma mágica do Ar e da Água.\n\nDuração: 1 hora\nCusto básico: 1/15 (mínimo 1). Cada 1/15 de energia adicional por metro de raio aumenta a quantidade de neve em 2,5 centímetros por hora. Mesmo custo para manter.\nPré-requisitos: Nuvens e Geada\n\nItem\nCajado. Deve ser mantido fresco quando não estiver em uso; perde sua potência se for exposto a temperaturas acima de 32°C por mais de duas horas. Utilizável apenas por um mago. Custo de energia para criar: 450.",
+    "descricao": "Área\n\nCria (ou impede) 2,5 centímetros de neve, em um ambiente externo normal. Para funcionar corretamente, essa mágica deve ser operada quando a temperatura é de 0°C ou inferior. Quando lançada em condições mais quentes, essa mágica evoca uma garoa fina, umedecendo o chão, mas não deixando poças significativas.\n\nEsta também é uma mágica do Ar e da Água.\n\nDuração: 1 hora.\n\nCusto básico: 1/15 (mínimo 1). Cada 1/15 de energia adicional por metro de raio aumenta a quantidade de neve em 2,5 centímetro por hora. Mesmo custo para manter.\n\nPré-requisitos: Nuvens e Geada.\n\nItem\nCajado. Deve ser mantido fresco quando não estiver em uso; perde sua potência se for exposto a temperaturas acima de 32°C por mais de duas horas. Utilizável apenas por um mago. Custo de energia para criar: 450.",
     "descricaoConferida": true,
     "descricaoPagina": 195,
     "mecanica": {
@@ -37614,7 +37614,7 @@
     "energia": "1/20/I",
     "tempoOperacao": "10 seg",
     "preRequisitos": "2 mágicas da Água, 2 mágicas do Ar",
-    "descricao": "Especial; Área\n\nCria ou dissipa a cobertura normal de nuvens ao ar livre, conforme o operador escolher.\n\nEsta também é uma mágica do Ar.\n\nDuração: 10 minutos, após o qual as nuvens normais saem ou retornam, a menos que a mágica seja mantida.\nCusto básico: 1/20 (mínimo 1). Mesmo custo para manter.\nTempo de operação: 10 segundos.\nPré-requisitos: Pelo menos seis mágicas da Água.\n\nItem: Cajado, varinha ou joias. Custo de energia para criar: 300.",
+    "descricao": "Área\n\nCria ou dissipa a cobertura normal de nuvens ao ar livre, conforme o operador escolher.\n\nEsta também é uma mágica do Ar.\n\nDuração: 10 minutos, após o qual as nuvens normais saem ou retornam, a menos que a mágica seja mantida.\n\nCusto básico: 1/20 (mínimo 1). Mesmo custo para manter.\n\nTempo de operação: 10 segundos.\n\nPré-requisitos: Pelo menos duas mágicas da Água e duas do Ar.\n\nItem\nCajado, varinha ou joias. Custo de energia para criar: 300.",
     "descricaoConferida": true,
     "descricaoPagina": 194,
     "mecanica": {
@@ -37892,7 +37892,7 @@
     "energia": "1 a 5/I#",
     "tempoOperacao": "3 seg",
     "preRequisitos": "Detecção de Magia",
-    "descricao": "Comum\n\nOpere em uma única pessoa ou item, esta mágica interfere com qualquer mágica de informação lançada sobre o objetivo. Duas vezes a energia colocada na mágica (até 5 pontos) é subtraída de qualquer teste feito para descobrir sobre o item, encontrá-lo, etc.\n\nExemplo: 4 pontos de energia são colocados em uma mágica Ocultar Magia em um anel. Até que a mágica expire, qualquer mágica Detecção de (a) Qualquer contêiner. Isso e tudo dentro é protegido pela mágica Resguardar Área. Custo de energia para criar: 200 por 0,025 m³ (custo mínimo 500). (b) Qualquer tapete ou área de piso; protege as pessoas e as coisas em cima dele. Custo de energia para criar: 300 por metro de raio.\n\nNote que esta mágica tem efeitos similares em algumas maneiras com Resguardar (pág. 121), mas elas não são as mesmas!\n\nDuração: 10 horas.\nCusto: 1 a 5 para operar. Mesmo custo para manter.\nTempo de operação: 3 segundos.\nPré-requisitos: Aptidão Mágica 1 e Detecção de Magia.\n\nItem\nEsta mágica pode ser operada permanentemente em qualquer item para tornar mais difícil sentir ou identificá-lo com mágica. Custo de energia para criar: 100 vezes o custo acima, por exemplo, 200 para dar -4 em todas as tentativas de detecção ou identificação.",
+    "descricao": "Comum\n\nOpere em uma única pessoa ou item, esta mágica interfere com qualquer mágica de informação lançada sobre o objetivo. Duas vezes a energia colocada na mágica (até 5 pontos) é subtraída de qualquer teste feito para descobrir sobre o item, encontrá-lo, etc.\n\nExemplo: 4 pontos de energia são colocados em uma mágica Ocultar\n\nMagia em um anel. Até que a mágica expire, qualquer mágica Detecção de Magia terá uma penalidade de -8 para funcionar naquele anel; Identificar Mágica terá uma penalidade de -8 para encontrar qualquer mágica no anel; Visão de Magia não verá o anel a menos que o mago tenha feito seu teste com pelo menos 8 (embora ele ainda possa ver outras coisas) — e assim por diante.\n\nNote que esta mágica tem efeitos similares em algumas maneiras com Resguardar (pág. 121), mas elas não são as mesmas!\n\nDuração: 10 horas.\n\nCusto: 1 a 5 para operar. Mesmo custo para manter.\n\nTempo de operação: 3 segundos.\n\nPré-requisitos: Aptidão Mágica 1 e Detecção de Magia.\n\nItem\nEsta mágica pode ser operada permanentemente em qualquer item para tornar mais difícil sentir ou identificá-lo com mágica. Custo de energia para criar: 100 vezes o custo acima, por exemplo, 200 para dar -4 em todas as tentativas de detecção ou identificação.",
     "descricaoConferida": true,
     "descricaoPagina": 122,
     "mecanica": {
@@ -38190,7 +38190,7 @@
     "energia": "4/2",
     "tempoOperacao": "2 seg",
     "preRequisitos": "Aporte, Sentido aguçado (Visão Aguçada)",
-    "descricao": "Comum\n\nCria um olho físico — uma bola de 5 cm — através da qual o operador pode ver. O olho pode voar pelo ar, verticalmente e/ou horizontalmente, com Deslocamento 10; ele se move no turno do operador. Concentração é necessária para mover o olho, mas não para ver através dele. Quaisquer mágicas que melhorem a visão que afetem o operador também serão utilizáveis através do Olho. O Olho é pequeno, com um MT de -7, então é difícil de acertar — mas se for atingido por um ataque físico, ou qualquer mágica que o incapacite razoavelmente, ele será destruído.\n\nDuração: 1 minuto.\nCusto: 4 para operar. 2 para manter.\nTempo de operação: 2 segundos.\nPré-requisitos: Aporte e Visão Aguçada.\n\nItem\nUm globo ocular esculpido em marfim e incrustado com joias. Utilizável apenas por magos. Ao comando de seu portador, ele se transformará em um Olho Mágico; ao retornar à sua mão, ele retornará para a forma de joia. Custo para criar: 1.100 de energia; $1.000 para entalhes de marfim de qualidade e $600 para esmeraldas.",
+    "descricao": "Comum\n\nCria um olho físico — uma bola de 5 cm — através da qual o operador pode ver. O olho pode voar pelo ar, verticalmente e/ou horizontalmente, com Deslocamento 10; ele se move no turno do operador. Concentração é necessária para mover o olho, mas não para ver através dele. Quaisquer mágicas que melhorem a visão que afetem o operador também serão utilizáveis através do Olho. O Olho é pequeno, com um MT de -7, então é difícil de acertar — mas se for atingido por um ataque físico, ou qualquer mágica que o incapacite razoavelmente, ele será destruído.\n\nDuração: 1 minuto.\n\nCusto: 4 para operar. 2 para manter.\n\nTempo de operação: 2 segundos.\n\nPré-requisitos: Aporte e Visão Aguçada.\n\nItem\nUm globo ocular esculpido em marfim e incrustado com joias. Utilizável apenas por magos. Ao comando de seu portador, ele se transformará em um Olho Mágico; ao retornar à sua mão, ele retornará para a forma de joia. Custo para criar: 1.100 de energia; $1.000 para entalhes de marfim de qualidade e $600 para esmeraldas.",
     "descricaoConferida": true,
     "descricaoPagina": 104,
     "mecanica": {
@@ -38243,7 +38243,7 @@
     "energia": "5/3",
     "tempoOperacao": "4 seg",
     "preRequisitos": "Olho Mágico, Invisibilidade",
-    "descricao": "Comum\n\nCria um Olho Mágico que não pode ser visto sem a mágica Ver o Invisível. Qualquer um que adivinhe onde está pode ainda atacar, mas a penalidade de -7 pelo MT combinada com a penalidade de -6 por invisibilidade torna muito difícil de acertar.\n\nDuração: 1 minuto.\nCusto: 5 para operar. 3 para manter.\nTempo de operação: 4 segundos.\nPré-requisitos: Olho Mágico e Invisibilidade.\n\nItem\nComo Olho Mágico, só que mais caro. Custo para criar: 1.600 de energia; $1.000 para entalhes de marfim de qualidade e $900 para esmeraldas e opalas.",
+    "descricao": "Comum\n\nCria um Olho Mágico que não pode ser visto sem a mágica Ver o Invisível. Qualquer um que adivinhe onde está pode ainda atacar, mas a penalidade de -7 pelo MT combinada com a penalidade de -6 por invisibilidade torna muito difícil de acertar.\n\nDuração: 1 minuto.\n\nCusto: 5 para operar. 3 para manter.\n\nTempo de operação: 4 segundos.\n\nPré-requisitos: Olho Mágico e Invisibilidade.\n\nItem\nComo Olho Mágico, só que mais caro. Custo para criar: 1.600 de energia; $1.000 para entalhes de marfim de qualidade e $900 para esmeraldas e opalas.",
     "descricaoConferida": true,
     "descricaoPagina": 104,
     "mecanica": {
@@ -38367,7 +38367,7 @@
     "energia": "1/60/I",
     "tempoOperacao": "1 min",
     "preRequisitos": "Moldar Água",
-    "descricao": "Especial; Área\n\nAltera a calma da superfície de qualquer grande corpo de água. Cada aplicação da mágica pode aumentar ou diminuir a altura da onda em um ponto na escala de Beaufort (acima); para conseguir alterações em vários pontos, multiplique o custo da mágica de acordo. O vento não é afetado. Observe que a escala de Beaufort é específica para as ondas do oceano; as ondas produzidas nas margens de lagos geralmente são muito mais baixas em relação à velocidade do vento (julgamento do Mestre).\n\nA mágica pode ser operada em uma área, afetando as ondas que se movem através dela. Também pode ser operada em um objeto, como um navio, que deve abranger sua totalidade (normalmente, 10 a 30 metros de raio). A área de efeito se move com o objeto.\n\nEsta também é uma mágica da Água.\n\nDuração: 1 hora.\nCusto básico: 1/60 (mínimo 1). Mesmo custo para manter.\nTempo de operação: 1 minuto.\nPré-requisito: Moldar Água.\n\nItem: Cajado, varinha ou joias. Custo de energia para criar: 300.",
+    "descricao": "Especial; Área\n\nAltera a calma da superfície de qualquer grande corpo de água. Cada aplicação da mágica pode aumentar ou diminuir a altura da onda em um ponto na escala de Beaufort (acima); para conseguir alterações em vários pontos, multiplique o custo da mágica de acordo. O vento não é afetado. Observe que a escala de Beaufort é específica para as ondas do oceano; as ondas produzidas nas margens de lagos geralmente são muito mais baixas em relação à velocidade do vento (julgamento do Mestre).\n\nA mágica pode ser operada em uma área, afetando as ondas que se movem através dela. Também pode ser operada em um objeto, como um navio, que deve abranger sua totalidade (normalmente, 10 a 30 metros de raio). A área de efeito se move com o objeto.\n\nEsta também é uma mágica da Água.\n\nDuração: 1 hora.\n\nCusto básico: 1/60 (mínimo 1). Mesmo custo para manter.\n\nTempo de operação: 1 minuto.\n\nPré-requisito: Moldar Água.\n\nItem\nCajado, varinha ou joias. Custo de energia para criar: 300.\n\nAltura média das ondas em Alto Mar (metros)\n\nObservações < 1 0 1 a 5 0 0–0,3 0,3–0,6 Quebra de crista 0,6–1,2 Alguma espuma 1,2–2,4 2,4–3,9 Alguns respingos 3,9–6 Alguns borrifos 3,9–6 3,9–6 Ondas rolam 6–9 Visibilidade afetada 9–13,5 13,5\n\n202+",
     "descricaoConferida": true,
     "descricaoPagina": 194,
     "mecanica": {
@@ -38491,7 +38491,7 @@
     "energia": "4/3",
     "tempoOperacao": "2 seg",
     "preRequisitos": "Aporte, Audição Remota",
-    "descricao": "Comum\n\nCria uma réplica do ouvido físico do operador, através da qual ele pode ouvir. O ouvido pode se movimentar sem esbarrar nas coisas (como se tivesse Visão Sonora), embora não possa “ver” mais do que o tamanho geral e a forma dos salões e salas. Esta mágica pode ser operada em um Olho Mágico já existente (normal ou invisível); isso não muda sua forma, mas permite ouvir conversas e outros sons.\n\nDuração: 1 minuto\nCusto: 4 para operar, 3 para manter\nTempo de operação: 2 segundos\nPré-requisitos: Aporte, Audição Remota e Visão Sonora.\n\nItem\nQualquer pintura ou escultura que represente um ouvido humano pode ser transformada em um Ouvido Mágico imóvel, através da qual o portador de um amuleto em forma de orelha, encantado ao mesmo tempo, pode ouvir independentemente da distância. Cada Ouvido liga-se apenas a um amuleto e vice-versa. Custo de energia para criar: 450.",
+    "descricao": "Comum\n\nCria uma réplica do ouvido físico do operador, através da qual ele pode ouvir. O ouvido pode se movimentar sem esbarrar nas coisas (como se tivesse Visão Sonora), embora não possa “ver” mais do que o tamanho geral e a forma dos salões e salas. Esta mágica pode ser operada em um Olho Mágico já existente (normal ou invisível); isso não muda sua forma, mas permite ouvir conversas e outros sons.\n\nDuração: 1 minuto.\n\nCusto: 4 para operar. 3 para manter.\n\nTempo de operação: 2 segundos.\n\nPré-requisitos: Aporte, Audição Remota e Visão Sonora.\n\nItem\nQualquer pintura ou escultura que represente um ouvido humano pode ser transformada em um Ouvido Mágico imóvel, através da qual o portador de um amuleto em forma de orelha, encantado ao mesmo tempo, pode ouvir independentemente da distância. Cada Ouvido liga-se apenas a um amuleto e vice-versa. Custo de energia para criar: 450.",
     "descricaoConferida": true,
     "descricaoPagina": 174,
     "mecanica": {
@@ -38544,7 +38544,7 @@
     "energia": "5/3",
     "tempoOperacao": "4 seg",
     "preRequisitos": "Ouvido Mágico, Invisibilidade",
-    "descricao": "Comum\n\nCria um Ouvido Mágico que não pode ser visto sem a mágica Ver o Invisível. Qualquer um que adivinhe onde ele está ainda pode atacar, mas os modificadores cumulativos da invisibilidade e seu tamanho pequeno tornam quase impossível atingir.\n\nDuração: 1 minuto\nCusto: 5 para operar, 3 para manter\nTempo de operação: 4 segundos\nPré-requisitos: Ouvido Mágico e Invisibilidade.\nDiálogo: “Meu celular faz isso!” ... “Tanto faz.”\n\nTradicionalmente, a maioria dos cenários mágicos é de NT4 ou inferior — pré-industrial. Introduzir magia em um ambiente pós-industrial, no entanto, pode criar possibilidades fascinantes para jogadores e Mestres explorarem. Em um cenário em que alta tecnologia e magia coexistem, mágicas que manipulam e auxiliam as ferramentas e os recursos do mundo mecanizado devem, pela lógica, surgir.\n\nAo contrário de outras mágicas, as muitas mágicas tecnológicas são Perícias Tecnológicas (pág. MB168) e devem ser aprendidas em um NT específico. Quando um mago é especialista em magia projetada para interagir com a tecnologia NT10, ele é penalizado ao tentar alimentar uma arma laser de NT11 ou ao drenar a energia de uma bateria de lanterna NT7.\n\nEssas penalidades também afetam os pré-requisitos. Para usar uma Mágica Tecnológica como pré-requisito, você deve tê-la no nível equivalente ao gasto de um ponto de personagem mágica. Assim, um mago que tenha que aprender Revelar Função/NT9 deve conhecer Localizar Máquina/NT9 com IQ-2, Localizar Máquina/NT10 com IQ-1 (para compensar a penalidade -1) ou Localizar Máquina/NT8 com IQ+3 (para compensar a penalidade de -5).\n\n“E então, o que é?”\n“Meus pais dizem que é bem antigo. Ele detecta magia e coisas assim.”",
+    "descricao": "Comum\n\nCria um Ouvido Mágico que não pode ser visto sem a mágica Ver o Invisível. Qualquer um que adivinhe onde ele está ainda pode atacar, mas os modificadores cumulativos da invisibilidade e seu tamanho pequeno tornam quase impossível atingir.\n\nDuração: 1 minuto.\n\nCusto: 5 para operar. 3 para manter.\n\nTempo de operação: 4 segundos.\n\nPré-requisitos: Ouvido Mágico e Invisibilidade.\nDiálogo: “Meu celular faz isso!” ... “Tanto faz.”\n\nTradicionalmente, a maioria dos cenários mágicos é de NT4 ou inferior — pré-industrial. Introduzir magia em um ambiente pós-industrial, no entanto, pode criar possibilidades fascinantes para jogadores e Mestres explorarem. Em um cenário em que alta tecnologia e magia coexistem, mágicas que manipulam e auxiliam as ferramentas e os recursos do mundo mecanizado devem, pela lógica, surgir.\n\nAo contrário de outras mágicas, as muitas mágicas tecnológicas são Perícias Tecnológicas (pág. MB168) e devem ser aprendidas em um NT específico. Quando um mago é especialista em magia projetada para interagir com a tecnologia NT10, ele é penalizado ao tentar alimentar uma arma laser de NT11 ou ao drenar a energia de uma bateria de lanterna NT7.\n\nEssas penalidades também afetam os pré-requisitos. Para usar uma Mágica Tecnológica como pré-requisito, você deve tê-la no nível equivalente ao gasto de um ponto de personagem mágica. Assim, um mago que tenha que aprender Revelar Função/NT9 deve conhecer Localizar Máquina/NT9 com IQ-2, Localizar Máquina/NT10 com IQ-1 (para compensar a penalidade -1) ou Localizar Máquina/NT8 com IQ+3 (para compensar a penalidade de -5).\n\n“E então, o que é?”\n“Meus pais dizem que é bem antigo. Ele detecta magia e coisas assim.”",
     "descricaoConferida": true,
     "descricaoPagina": 174,
     "mecanica": {
@@ -38652,7 +38652,7 @@
     "energia": "3",
     "tempoOperacao": "1 seg",
     "preRequisitos": "Controle de Máquina",
-    "descricao": "Comum; Resistível com HT\n\nO equivalente para máquina ao Espasmo (pág. 35). Essa mágica faz com que algo dê errado por um mo-",
+    "descricao": "Comum; Resistível com HT\n\nO equivalente para máquina ao Espasmo (pág. 35). Essa mágica faz com que algo dê errado por um mo-\nmento na máquina objetivo. Ele pode soltar o que estava segurando, ejetar uma peça, errar uma roda dentada no maquinário ou corromper um pacote de dados. Operadores engenhosos encontrarão todos os tipos de usos. Os efeitos do jogo podem ser desde aborrecimentos triviais (se operada em uma lanterna, por exemplo) até potencialmente mortais (se operada em um automédico no meio de uma cirurgia a laser).\n\nDuração: Um instante.\n\nCusto: 3. Não pode ser mantida.\n\nPré-requisito: Controle de Máquina.\n\nItem\nCajado ou varinha. Utilizável apenas por magos; o item deve tocar o objetivo. Custo de energia para criar: 300.",
     "descricaoConferida": true,
     "descricaoPagina": 176,
     "mecanica": {
@@ -38672,7 +38672,7 @@
     "conferidoPor": {
       "duracao": "tabela",
       "tempoOperacao": "tabela",
-      "custo": "tabela"
+      "custo": "entrada"
     },
     "faixaDoLivro": {
       "operar": {
@@ -38684,10 +38684,11 @@
         "nota": "efeito imediato"
       },
       "manter": {
-        "tipo": "naoDiz",
-        "nota": "não se aplica"
+        "tipo": "nao"
       }
-    }
+    },
+    "custoManter": 0,
+    "custoManterTipo": "nao"
   },
   {
     "id": "panico",
@@ -38899,7 +38900,7 @@
     "energia": "5/2",
     "tempoOperacao": "3 seg",
     "preRequisitos": "Leitura da Mente",
-    "descricao": "Comum; Resistível com Vontade\n\nO operador pode ver através dos olhos do objetivo, ouvir através de seus ouvidos, etc., sempre que ele se concentra. (O operador também permanece consciente de seu próprio corpo e pode agir normalmente). O operador não exerce nenhum controle sobre o objetivo e não sabe os pensamentos do objetivo. O objetivo deve ser sapiente (IQ 6 ou maior). O NH terá uma penalidade de -2 se o objetivo for de uma raça diferente; se o objetivo for totalmente alienígena, a penalidade será de -4 ou mais!\n\nDuração: 1 minuto.\nCusto: 5 para operar; 2 para manter.\nTempo de operação: 3 segundos.\nPré-requisito: Leitura da Mente.\n\nItem — Um par de peças idênticas de joias — uma de ouro e uma de prata. A de ouro deve ser usada pelo operador, a de prata pelo objetivo. A mágica pode então ser operada a qualquer momento, independentemente da distância. Utilizável apenas por magos. Se uma Gema de Energia estiver incluída no item, ela estará na de ouro. Se um dos itens for quebrado, o outro perderá seu encantamento. Custo para criar: 1.000 de energia (para o par) e uma opala de $100 para cada peça.",
+    "descricao": "Comum; Resistível com Vontade\n\nO operador pode ver através dos olhos do objetivo, ouvir através de seus ouvidos, etc., sempre que ele se concentra. (O operador também permanece consciente de seu próprio corpo e pode agir normalmente). O operador não exerce nenhum controle sobre o objetivo e não sabe os pensamentos do objetivo. O objetivo deve ser sapiente (IQ 6 ou maior). O NH terá uma penalidade de -2 se o objetivo for de uma raça diferente; se o objetivo for totalmente alienígena, a penalidade será de -4 ou mais!\n\nDuração: 1 minuto.\n\nCusto: 5 para operar. 2 para manter.\n\nTempo de operação: 3 segundos.\n\nPré-requisito: Leitura da Mente.\n\nItem\nUm par de peças idênticas de joias — uma de ouro e uma de prata. A de ouro deve ser usada pelo operador, a de prata pelo objetivo. A mágica pode então ser operada a qualquer momento, independentemente da distância. Utilizável apenas por magos. Se uma Gema de Energia estiver incluída no item, ela estará na de ouro. Se um dos itens for quebrado, o outro perderá seu encantamento. Custo para criar: 1.000 de energia (para o par) e uma opala de $100 para cada peça.",
     "descricaoConferida": true,
     "descricaoPagina": 49,
     "mecanica": {
@@ -40505,7 +40506,7 @@
     "energia": "3",
     "tempoOperacao": "1 seg",
     "preRequisitos": "Estorvar",
-    "descricao": "Comum; Resistível com ST\n\nOs pés do objetivo ficam plantados no lugar! Para se libertar, ele pode tentar, a cada turno, um novo teste de resistência com uma penalidade igual a -5 contra o teste de habilidade original.\n\nDuração: 1 minuto, ou até que o alvo consiga se libertar.\nCusto: 3. Não pode ser mantida; precisa ser refeita.\nPré-requisitos: Estorvar.\n\nItem\n(a) Cajado ou varinha. Utilizável apenas por magos; o item deve tocar o objetivo. Custo para criar: 400 de energia. (b) Qualquer item. Sempre ativo; o usuário precisa ser bem-sucedido num teste de (ST-5) feito a cada turno para conseguir se mover. Um fracasso significa que ele não consegue se deslocar. Custo para criar: 600 de energia.",
+    "descricao": "Comum; Resistível com ST\n\nOs pés do objetivo ficam plantados no lugar! Para se libertar, ele pode tentar, a cada turno, um novo teste de resistência com uma penalidade igual a -5 contra o teste de habilidade original da mágica. Enquanto a mágica estiver em vigor, a habilidade do objetivo com qualquer arma que não seja de combate à distância sofrerá uma penalidade igual a -2 e sua Esquiva ficará reduzida pela metade (arredondada para baixo).\n\nDuração: 1 minuto, ou até que o alvo consiga se libertar.\n\nCusto: 3. Não pode ser mantida; precisa ser refeita.\n\nPré-requisitos: Estorvar.\n\nItem\n(a) Cajado ou varinha. Utilizável apenas por magos; o item deve tocar o objetivo. Custo para criar: 400 de energia. (b) Qualquer item. Sempre ativo; o usuário precisa ser bem-sucedido num teste de (ST-5) feito a cada turno para conseguir se mover. Um fracasso significa que ele não consegue se deslocar. Custo para criar: 600 de energia.",
     "descricaoConferida": true,
     "descricaoPagina": 36,
     "mecanica": {
@@ -40872,7 +40873,7 @@
     "energia": "10/4",
     "tempoOperacao": "1 min",
     "preRequisitos": "AM1, e Controle de Pessoa ou Possessão de Animais",
-    "descricao": "Comum; Resistível com Vontade\n\nComo Controle de Pessoa — exceto que a vítima está inconsciente durante toda a “possessão”, e o operador tem acesso total às memórias, perícias e mágicas do objetivo. Enquanto no corpo do objetivo, o operador tem suas próprias perícias e mágicas, e pode usar todas as perícias, mágicas e memórias do objetivo como se fossem dele (as perícias físicas do objetivo terão NH ajustado em -1). O corpo do próprio operador fica inconsciente durante a mágica e deve ser protegido.\n\nDuração: 1 minuto.\nCusto: 10 para operar; 4 para manter.\nTempo de operação: 1 minuto.\nPré-requisito: Aptidão Mágica 1 e Controle de Pessoa ou Possessão de Animais.\n\nItem — Boné, coroa, capacete ou outro item que protege a cabeça. Utilizável apenas por magos. Custo de energia para criar: 2.500.",
+    "descricao": "Comum; Resistível com Vontade\n\nComo Controle de Pessoa — exceto que a vítima está inconsciente durante toda a “possessão”, e o operador tem acesso total às memórias, perícias e mágicas do objetivo. Enquanto no corpo do objetivo, o operador tem suas próprias perícias e mágicas, e pode usar todas as perícias, mágicas e memórias do objetivo como se fossem dele (as perícias físicas do objetivo terão NH ajustado em -1). O corpo do próprio operador fica inconsciente durante a mágica e deve ser protegido.\n\nDuração: 1 minuto.\n\nCusto: 10 para operar. 4 para manter.\n\nTempo de operação: 1 minuto.\n\nPré-requisito: Aptidão Mágica 1 e Controle de Pessoa ou Possessão de Animais.\n\nItem\nBoné, coroa, capacete ou outro item que protege a cabeça. Utilizável apenas por magos. Custo de energia para criar: 2.500.",
     "descricaoConferida": true,
     "descricaoPagina": 49,
     "mecanica": {
@@ -41032,7 +41033,7 @@
     "energia": "30",
     "tempoOperacao": "5 min",
     "preRequisitos": "AM3, Possessão",
-    "descricao": "Comum; Resistível com Vontade\n\nComo Possessão — mas o operador permanece no corpo do objetivo até que ele opte por sair, ou seja expulso por Anular Possessão ou por Remover Maldição. O corpo do operador está em Animação Suspensa (pág. 94) enquanto a mágica continuar. Se o corpo do operador morrer, a mágica será quebrada. Sempre que o corpo do objetivo sofrer dano, o operador deve fazer um teste de HT de seu próprio corpo ou sofrerá o mesmo dano. Se o corpo do objetivo morrer, o operador deve fazer um teste de HT ou ele mesmo morrerá!\n\nDuração: Indefinida (pode ser permanente).\nCusto: 30.\nTempo de operação: 5 minutos.\nPré-requisitos: Aptidão Mágica 3 e Possessão.\n\nItem — Boné, coroa, capacete ou outro item que protege a cabeça. Utilizável apenas por magos. Custo de energia para criar: 3.000.",
+    "descricao": "Comum; Resistível com Vontade\n\nComo Possessão — mas o operador permanece no corpo do objetivo até que ele opte por sair, ou seja expulso por Anular Possessão ou por Remover Maldição. O corpo do operador está em Animação Suspensa (pág. 94) enquanto a mágica continuar. Se o corpo do operador morrer, a mágica será quebrada. Sempre que o corpo do objetivo sofrer dano, o operador deve fazer um teste de HT de seu próprio corpo ou sofrerá o mesmo dano. Se o corpo do objetivo morrer, o operador deve fazer um teste de HT ou ele mesmo morrerá!\n\nDuração: Indefinida (pode ser permanente).\n\nCusto: 30.\n\nTempo de operação: 5 minutos.\n\nPré-requisitos: Aptidão Mágica 3 e Possessão.\n\nItem\nBoné, coroa, capacete ou outro item que protege a cabeça. Utilizável apenas por magos. Custo de energia para criar: 3.000.",
     "descricaoConferida": true,
     "descricaoPagina": 49,
     "mecanica": {
@@ -41768,7 +41769,7 @@
     "energia": "Varia",
     "tempoOperacao": "5 seg.",
     "preRequisitos": "4 mágicas do Ar",
-    "descricao": "Informação\n\nPrevê o tempo com precisão para um determinado local em um determinado período. Essa previsão não leva em consideração a intromissão mágica ou prediz as ações de outros mágicos!\n\nEsta também é uma mágica do Ar.\n\nCusto: 2 vezes a duração da previsão, em dias. Duplique o custo de um local fora da área geral (por exemplo, no horizonte). Quadruplique o custo de um local em outro continente. Essa mágica não pode prever o tempo em plane-\n\nTempo de operação: 5 segundos por dia de previsão.\n\nPré-requisitos: Pelo menos quatro mágicas do Ar.",
+    "descricao": "Informação\n\nPrevê o tempo com precisão para um determinado local em um determinado período. Essa previsão não leva em consideração a intromissão mágica ou prediz as ações de outros mágicos!\n\nEsta também é uma mágica do Ar.\n\nCusto: 2 vezes a duração da previsão, em dias. Duplique o custo de um local fora da área geral (por exemplo, no horizonte). Quadruplique o custo de um local em outro continente. Essa mágica não pode prever o tempo em plane-\n\nTempo de operação: 5 segundos por dia de previsão.\n\nPré-requisitos: Pelo menos quatro mágicas do Ar.\nVelocidade Grau do Vento Beaufort Descrição (km/h) 0 Calmaria 1 Bafagem 2 Brisa Leve 6 a 11 3 Brisa Fraca 12 a 19 4 Brisa Moderada 20 a 28 5 Brisa Forte 29 a 38 6 Vento Fresco 39 a 49 7 Vento Forte 50 a 61 8 Ventania 62 a 74 9 Ventania Forte 75 a 88 10 Vendaval 89 a 102 11 Tempestade 103 a 117 12 Furacão 118 a 132 13 Furacão 133 a 149 14 Furacão 150 a 166 15 Furacão 167 a 183 16 Furacão 184 a 201 17 Furacão",
     "descricaoConferida": true,
     "descricaoPagina": 193,
     "mecanica": {
@@ -43488,7 +43489,7 @@
     "energia": "3/ponto",
     "tempoOperacao": "10 min.",
     "preRequisitos": "AM3, Gema de Energia, Conceder Energia",
-    "descricao": "Comum\n\nRecarga uma Gema de Energia a uma taxa maior do que a gema se recarrega. Cada 3 de energia gasto pelo operador restaura 1 ponto de energia para a gema, mas cada ponto restaurado é contado como um “avanço” contra a futura recarga “natural”. Assim, se uma Gema de Energia de 10 pontos for recarregada com esta mágica em uma área de mana normal, ele não começará a recarregar por 10 dias após ser usada. Se for usada, e depois recarregada novamente usando esta mágica, serão 20 dias até que a pedra comece a recarregar normalmente, e assim por diante. A presença de várias Gemas de Energia não inibe a operação dessa mágica.\n\nEm qualquer falha comum com esta mágica, a Gema de Energia ganha uma nova peculiaridade (pág. 69). Em uma falha crítica, a Gema de Energia racha e é destruída. Esta mágica pode recarregar com segurança Gemas de Energia com peculiaridades que limitam a recarga somente se as condições impostas pelas peculiaridades forem cumpridas. Tentativas de ignorar essas condições podem causar a quebra da Gema de Energia. Esta mágica não funciona em Gemas de Mana.",
+    "descricao": "Comum\n\nRecarga uma Gema de Energia a uma taxa maior do que a gema se recarrega. Cada 3 de energia gasto pelo operador restaura 1 ponto de energia para a gema, mas cada ponto restaurado é contado como um “avanço” contra a futura recarga “natural”. Assim, se uma Gema de Energia de 10 pontos for recarregada com esta mágica em uma área de mana normal, ele não começará a recarregar por 10 dias após ser usada. Se for usada, e depois recarregada novamente usando esta mágica, serão 20 dias até que a pedra comece a recarregar normalmente, e assim por diante. A presença de várias Gemas de Energia não inibe a operação dessa mágica.\nEm qualquer falha comum com esta mágica, a Gema de Energia ganha uma nova peculiaridade (pág. 69). Em uma falha crítica, a Gema de Energia racha e é destruída. Esta mágica pode recarregar com segurança Gemas de Energia com peculiaridades que limitam a recarga somente se as condições impostas pelas peculiaridades forem cumpridas. Tentativas de ignorar essas condições podem causar a quebra da Gema de Energia. Esta mágica não funciona em Gemas de Mana.\n\nDuração: A energia permanece na Gema de Energia até ser necessária.\n\nCusto: 3 por ponto de energia recarregada.\n\nTempo de operação: 10 minutos.\n\nPré-requisitos: Aptidão Mágica 3, Gema de Energia e Conceder Energia.",
     "descricaoConferida": true,
     "descricaoPagina": 126,
     "mecanica": {
@@ -43501,14 +43502,14 @@
     "duracaoSeg": 0,
     "tempoOperacaoSeg": 600,
     "tempoTipo": "fixo",
-    "custoTipo": "porUnidade",
-    "custoFormula": "3/ponto",
+    "custoTipo": "porPonto",
+    "custoFormula": "3 por ponto de energia recarregada.",
     "conferido": "livro",
     "conferidoPagina": 126,
     "conferidoPor": {
       "duracao": "tabela",
-      "tempoOperacao": "tabela",
-      "custo": "tabela"
+      "tempoOperacao": "tabela+entrada",
+      "custo": "entrada"
     },
     "faixaDoLivro": {
       "operar": {
@@ -43589,7 +43590,7 @@
     "energia": "Varia",
     "tempoOperacao": "Varia",
     "preRequisitos": "AM3 e Consertar e Criar Objeto e 3 mágicas de cada um dos quatro escola (ar,fogo,terra,agua)",
-    "descricao": "Comum\n\nEssa mágica é uma versão aprimorada de Consertar. Ela reconstrói totalmente qualquer objeto, mesmo de um fragmento. O operador deve primeiro operar com sucesso Diagrama no objetivo e, enquanto o diagrama ainda estiver em mente, começa a operar Reconstruir. Diagrama é desnecessária para objetos mais simples. Com energia suficiente, você pode reconstruir uma nave estelar a partir de um pedaço de antepara!\n\nO objeto é reformado a uma taxa de 250 kg de massa perdida por segundo, começando após a conclusão da operação. Assim, um tanque de 30 toneladas levaria dois minutos para se reconstruir completamente. Materiais exóticos podem infligir uma penalidade ao NH ou retardar o processo de reconstrução.\n\nEm objetos mais simples que máquinas, ignore os modificadores de NT. Objetos mágicos não podem ser reconstruídos.\n\nEsta também é uma mágica de Quebrar e Consertar.\n\nDuração: Permanente.\nCusto: 30 se a massa final for de 250 kg ou menos; o estado atual de reparo do objeto não é um fator. Adicione 1 ao custo para cada 250 kg ou fração adicional de massa final.\nTempo de operação: 1 segundo por ponto de energia necessário.\nPré-requisitos: Aptidão Mágica 3, Consertar, Criar Objeto e pelo menos três mágicas de cada elemento. Diagrama é exigida para operar mágica em máquinas.",
+    "descricao": "Comum\n\nEssa mágica é uma versão aprimorada de Consertar. Ela reconstrói totalmente qualquer objeto, mesmo de um fragmento. O operador deve primeiro operar com sucesso Diagrama no objetivo e, enquanto o diagrama ainda estiver em mente, começa a operar Reconstruir. Diagrama é desnecessária para objetos mais simples. Com energia suficiente, você pode reconstruir uma nave estelar a partir de um pedaço de antepara!\n\nO objeto é reformado a uma taxa de 250 kg de massa perdida por segundo, começando após a conclusão da operação. Assim, um tanque de 30 toneladas levaria dois minutos para se reconstruir completamente. Materiais exóticos podem infligir uma penalidade ao NH ou retardar o processo de reconstrução.\n\nEm objetos mais simples que máquinas, ignore os modificadores de NT. Objetos mágicos não podem ser reconstruídos.\n\nEsta também é uma mágica de Quebrar e Consertar.\n\nDuração: Permanente.\n\nCusto: 30 se a massa final for de 250 kg ou menos; o estado atual de reparo do objeto não é um fator. Adicione 1 ao custo para cada 250 kg ou fração adicional de massa final.\n\nTempo de operação: 1 segundo por ponto de energia necessário.\n\nPré-requisitos: Aptidão Mágica 3, Consertar, Criar Objeto e pelo menos três mágicas de cada elemento. Diagrama é exigida para operar mágica em máquinas.",
     "descricaoConferida": true,
     "descricaoPagina": 177,
     "mecanica": {
@@ -44703,7 +44704,7 @@
     "energia": "5",
     "tempoOperacao": "10 seg.",
     "preRequisitos": "Anular Mágica, Aura",
-    "descricao": "Regular; Resistência Especial\n\nComo Aura Falsa, mas remove inteiramente as emanações mágicas do objetivo. Quando operada em um objeto inanimado, esta mágica o transforma em um quadro em branco para mágicas como História Antiga, História, Ver Segredos ou Localizador (no último caso, Remover Aura quebra a “associação”, então Localizador é lançada com uma penalidade de -5).\n\nPara resolver isso, qualquer operação futura das mágicas acima mencionadas é resistida por Remover Aura — sempre que a outra mágica falhar, as informações que ela tentou acessar foram removidas com sucesso. O que quer que aconteça com o objeto depois que sua aura é removida, pode ser acessado livremente por essas mágicas, é claro.\n\nQuando operada em um objetivo vivo ou mágico, Remover Aura dura apenas um dia e não pode ser mantida. Ela interfere com mágicas como Aura, Detecção de Magia, Localizar Magia ou Visão de Magia. Seres objetivos não voluntários resistem com Vontade.\n\nDuração: Permanente (mas veja acima).\nCusto: 5.\nTempo de operação: 10 segundos.\nPré-requisitos: Anular Mágica e Aura.",
+    "descricao": "Regular; Resistência Especial; Resiste às mágicas de Informação\n\nComo Aura Falsa, mas remove inteiramente as emanações mágicas do objetivo. Quando operada em um objeto inanimado, esta mágica o transforma em um quadro em branco para mágicas como História Antiga, História, Ver Segredos ou Localizador (no último caso, Remover Aura quebra a “associação”, então Localizador é lançada com uma penalidade de -5). Para resolver isso, qualquer operação futura das mágicas acima mencionadas é resistida por Remover Aura — sempre que a outra mágica falhar, as informações que ela tentou acessar foram removidas com sucesso. O que quer que aconteça com o objeto depois que sua aura é removida, pode ser acessado livremente por essas mágicas, é claro.\n\nQuando operada em um objetivo vivo ou mágico, Remover Aura dura apenas um dia e não pode ser mantida. Ela interfere com mágicas como Aura, Detecção de Magia, Localizar Magia ou Visão de Magia. Seres objetivos não voluntários resistem com Vontade.\n\nDuração: Permanente (mas veja acima).\n\nCusto: 5.\n\nTempo de operação: 10 segundos.\n\nPré-requisitos: Anular Mágica e Aura.\n\nItem\n(a) Varinha, cajado ou joias. Utilizável apenas por magos; o item deve tocar o objetivo. Custo de energia para criar: 250. (b) Joias ou roupas. Sempre ativo; afeta apenas o usuário. Custo de energia para criar: 750.",
     "descricaoConferida": true,
     "descricaoPagina": 127,
     "mecanica": {
@@ -45666,7 +45667,7 @@
     "energia": "1/10/I",
     "tempoOperacao": "1 min.#",
     "preRequisitos": "Frio, 4 mágicas do Ar",
-    "descricao": "Área\n\nReduz a temperatura do ar ambiente de uma área. Isso pode causar neblina se as condições forem adequadas. A mágica não pode baixar a temperatura abaixo de -40° C.\n\nEsta também é uma mágica do Ar.\n\nDuração: 1 hora\nTempo de operação: 1 minuto por aplicação do custo básico.\nCusto básico: 1/10 (mínimo 1). Cada aplicação do custo básico reduz a temperatura ambiente em 20° C. Mesmo custo para manter.\nPré-requisitos: Frio e pelo menos quatro mágicas do Ar\n\nItem\nCajado. Utilizável apenas por um mago. Custo de energia para criar: 150.",
+    "descricao": "Área\n\nReduz a temperatura do ar ambiente de uma área. Isso pode causar neblina se as condições forem adequadas. A mágica não pode baixar a temperatura abaixo de -40 ° C.\n\nEsta também é uma mágica do Ar.\n\nDuração: 1 hora.\n\nTempo de operação: 1 minuto por aplicação do custo básico.\n\nCusto básico: 1/10 (mínimo 1). Cada aplicação do custo básico reduz a temperatura ambiente em 20° C. Mesmo custo para manter.\n\nPré-requisitos: Frio e pelo menos quatro mágicas do Ar.\n\nItem\nCajado. Utilizável apenas por um mago. Custo de energia para criar: 150.",
     "descricaoConferida": true,
     "descricaoPagina": 195,
     "mecanica": {
@@ -45805,7 +45806,7 @@
     "energia": "3/2",
     "tempoOperacao": "seg=custo",
     "preRequisitos": "Resguardar",
-    "descricao": "Área; Resiste a qualquer mágica de Informação\n\nComo Resguardar, mas para proteger toda uma área e tudo nela.\nDuração: 10 horas.\nCusto básico: 3 para operar; 2 para manter.\nTempo de operação: Segundos iguais ao custo de energia.\nPré-requisito: Resguardar.",
+    "descricao": "Área; Resiste a qualquer mágica de Informação\n\nComo Resguardar, mas para proteger toda uma área e tudo nela.\n\nDuração: 10 horas.\n\nCusto básico: 3 para operar. 2 para manter.\n\nTempo de operação: Segundos iguais ao custo de energia.\n\nPré-requisito: Resguardar.\n\nItem\n(a) Qualquer contêiner. Isso e tudo dentro é protegido pela mágica Resguardar Área. Custo de energia para criar: 200 por 0,025 m³ (custo mínimo 500). (b) Qualquer tapete ou área de piso; protege as pessoas e as coisas em cima dele. Custo de energia para criar: 300 por metro de raio.",
     "descricaoConferida": true,
     "descricaoPagina": 122,
     "mecanica": {
@@ -46508,7 +46509,7 @@
     "energia": "10",
     "tempoOperacao": "1 hora",
     "preRequisitos": "Anular Mágica, Suspender Mana",
-    "descricao": "Área\n\nO reverso de Drenar Mana; restaura mana em uma zona morta. A área ganha um mana igual ao nível de mana “médio” ao redor da área, independentemente do que poderia ter sido antes.\n\nCusto, tempo e pré-requisitos: Mesmos de Drenar Mana, mas não há risco de perder Aptidão Mágica.",
+    "descricao": "Área\n\nO reverso de Drenar Mana; restaura mana em uma zona morta. A área ganha um mana igual ao nível de mana “médio” ao redor da área, independentemente do que poderia ter sido antes. Custo, tempo e pré-requisitos são os mesmos de Drenar Mana, mas não há risco de perder Aptidão Mágica.",
     "descricaoConferida": true,
     "descricaoPagina": 127,
     "mecanica": {
@@ -47937,7 +47938,7 @@
     "energia": "Varia",
     "tempoOperacao": "5 seg.",
     "preRequisitos": "Conceder Mágica, Proteção Superior",
-    "descricao": "Regular; Resistível com a mágica-objetivo\n\nRouba o controle de uma mágica que pode ser mantida já operada de seu operador original. Note que ela é operada no operador da outra mágica e, portanto, está sujeita a modificadores de distância.\n\nDuração: Permanente.\nCusto: Igual ao custo de manutenção da mágica a ser roubada.\nTempo de operação: 1 segundo por ponto de energia gasto.\nPré-requisitos: Conceder Mágica e Proteção Superior.",
+    "descricao": "Regular; Resistível com a mágica-objetivo\n\nRouba o controle de uma mágica que pode ser mantida já operada de seu operador original. Note que ela é operada no operador da outra mágica e, portanto, está sujeita a modificadores de distância. O operador deve saber exatamente o que ele está roubando — Identificar Mágica é muito útil para esse propósito. Mágicas operando sob Manter Mágica também podem ser roubadas; o “operador”, para fins de distância, é a área ou o objetivo da mágica mantida.\n\nVocê não pode roubar uma mágica se você não tiver a Aptidão Mágica, vantagem, o nível de atributo ou a falta de desvantagem necessária (veja as condições em Conceder Mágica, acima). Um projétil detido não pode ser roubado.\n\nModificadores: -3 se o operador não souber a mágica que ele está roubando; mais -2 se o operador não conhecer seus pré-requisitos também.\n\nDuração: Permanente; uma vez roubada, a mágica não pertence mais ao seu operador original.\n\nCusto: Igual ao custo de manutenção da mágica a ser roubada.\n\nTempo de operação: 1 segundo por ponto de energia gasto.\n\nPré-requisitos: Conceder Mágica e Proteção Superior.",
     "descricaoConferida": true,
     "descricaoPagina": 127,
     "mecanica": {
@@ -47956,7 +47957,7 @@
     "conferido": "livro",
     "conferidoPagina": 127,
     "conferidoPor": {
-      "duracao": "tabela+entrada",
+      "duracao": "tabela",
       "tempoOperacao": "tabela",
       "custo": "entrada"
     },
@@ -48196,7 +48197,7 @@
     "energia": "4 por IQ+/I",
     "tempoOperacao": "1 seg.",
     "preRequisitos": "6 outras mágicas de Mente",
-    "descricao": "Comum\n\nAumenta a IQ do objetivo temporariamente. Isso aumenta sua habilidade com perícias, mas não com mágicas! O IQ do objetivo não pode ficar mais alto do que o do operador.\n\nDuração: 1 minuto.\nCusto: 4 para cada ponto de aumento de IQ (máximo de 5). Mesmo custo para manter.\nPré-requisitos: Pelo menos seis outras mágicas de Controle da Mente.",
+    "descricao": "Comum\n\nAumenta a IQ do objetivo temporariamente. Isso aumenta sua habilidade com perícias, mas não com mágicas! O IQ do objetivo não pode ficar mais alto do que o do operador.\n\nDuração: 1 minuto.\n\nCusto: 4 para cada ponto de aumento de IQ (máximo de 5). Mesmo custo manter.\n\nPré-requisitos: Pelo menos seis outras mágicas de Controle da Mente.\n\nItem\n(a) Qualquer item. Sempre ativo; a IQ do usuário é aumentado enquanto o item for gasto! Este é um item muito raro e valioso. Custo de energia para criar: 2.000 por ponto de aumento (máximo 5). (b) Cajado ou varinha. Utilizável apenas por magos; o item deve tocar o objetivo. Custo de energia para criar: 2.000.",
     "descricaoConferida": true,
     "descricaoPagina": 135,
     "mecanica": {
@@ -48215,7 +48216,7 @@
     "tempoOperacaoSeg": 1,
     "tempoTipo": "fixo",
     "custoTipo": "porUnidade",
-    "custoFormula": "4 para cada ponto de aumento de IQ (máximo de 5). Mesmo custo para manter.",
+    "custoFormula": "4 para cada ponto de aumento de IQ (máximo de 5). Mesmo custo manter.",
     "conferido": "livro",
     "conferidoPagina": 135,
     "conferidoPor": {
@@ -48321,7 +48322,7 @@
     "energia": "7",
     "tempoOperacao": "1 seg.",
     "preRequisitos": "AM2, Salto, Caminhar nas Nuvens",
-    "descricao": "Comum\n\nViaje grandes distâncias com alguns movimentos. O objetivo vira para o céu e pula para o seu destino usando nuvens como trampolins. Saltar nas Nuvens só pode ser operada ao ar livre.\n\nCada operação desta mágica carrega o objetivo até 150 km, mais 150 km por nível de habilidade acima do valor. Se não houver nuvens no céu (uma ocorrência frequente em desertos), o objetivo não pode ir além de 150 km. As tempestades irão bloquear o caminho do objetivo. Um teste de Acrobacia é necessário a cada 150 km, a uma penalidade igual ao nível de carga do objetivo. Em caso de falha, o objetivo cai 3d×3 metros (pág. MB431) e aterrissa em um local aleatório ao longo do caminho pretendido — Retardar Queda salvará o objetivo de dano, mas a mágica Saltar Nuvens ainda está quebrada.\n\nEsta é uma mágica vertiginosa; ao chegar ao seu destino (ou ao falhar no seu teste de Acrobacia), o objetivo ficará fisicamente atordoado, a menos que possa testar sua perícia Percepção do Corpo (pág. MB215) com uma penalidade de -1 por 150 km percorridos.\n\nEsta também é uma mágica do Clima.\n\nDuração: 1 segundo por 150 km.\nCusto: 7 para operar. Não pode ser mantida.\nPré-requisitos: Aptidão Mágica 2 e Caminhar nas Nuvens.\n\nItem\n(a) Calçado. O objeto deve ter uma figura de nuvem. Custo de energia para criar: 4.000. (b) Joias, varinha ou cajado. Utilizável apenas por magos. Custo de energia para criar: 3.000.",
+    "descricao": "Comum\n\nViaje grandes distâncias com alguns movimentos. O objetivo vira para o céu e pula para o seu destino usando nuvens como trampolins. Saltar nas Nuvens só pode ser operada ao ar livre.\n\nCada operação desta mágica carrega o objetivo até 150 km, mais 150 km por nível de habilidade acima do valor de DX em Acrobacia. Se não houver nuvens no céu (uma ocorrência frequente em desertos), o objetivo não pode ir além de 150 km. As tempestades irão bloquear o caminho do objetivo. Um teste de Acrobacia é necessária a cada 150 km, a uma penalidade igual ao nível de carga do objetivo. Em caso de falha, o objetivo cai 3d×3 metros (pág. MB431) e aterrissa em um local aleatório ao longo do caminho pretendido — Retardar Queda salvará o objetivo de dano, mas a mágica Saltar Nuvens ainda está quebrada.\n\nEsta é uma mágica vertiginosa; ao chegar ao seu destino (ou ao falhar no seu teste de Acrobacia), o objetivo ficará fisicamente atordoado, a menos que possa testar sua perícia Percepção do Corpo (pág. MB215) com uma penalidade de -1 por 150 km percorridos.\n\nEsta também é uma mágica do Clima.\n\nDuração: 1 segundo por 150 km.\n\nCusto: 7 para operar. Não pode ser mantida.\n\nPré-requisitos: Aptidão Mágica 2 e Caminhar nas Nuvens .\n\nItem\n(a) Calçado. O objeto deve ter uma figura de nuvem. Custo de energia para criar: 4.000. (b) Joias, varinha ou cajado. Utilizável apenas por magos. Custo de energia para criar: 3.000.\nAs mágicas desta escola lidam com a morte, os mortos e os espíritos. Elas afetam cadáveres e espíritos de todas as raças, salvo indicação em contrário em uma descrição racial.\n\nA magia necromântica é quase sempre proibida, além das mágicas básicas que os caçadores de demônios e curandeiros usam. Necromantes, portanto, tendem a viver em sigilo.",
     "descricaoConferida": true,
     "descricaoPagina": 148,
     "mecanica": {
@@ -48533,7 +48534,7 @@
     "energia": "Varia#",
     "tempoOperacao": "1 min.",
     "preRequisitos": "Dissipar Água, Moldar Terra",
-    "descricao": "Comum\n\nSeca e bloqueia o fluxo de água dentro de uma nascente, reduzindo sua produção.\n\nDuração: Permanente. Observe, no entanto, que a geologia local pode eventualmente mudar, restaurando a produção da nascente para o nível anterior.\nCusto: 3 vezes a redução na produção da nascente, em 4 litros por hora.\nTempo de operação: 1 minuto.\nPré-requisitos: Dissipar Água e Moldar Terra.\n\nItem\nCajado. Custo para criar: 450 de energia e uma esmeralda de $500.",
+    "descricao": "Comum\n\nSeca e bloqueia o fluxo de água dentro de uma nascente, reduzindo sua produção.\n\nDuração: Permanente. Observe, no entanto, que a geologia local pode eventualmente mudar, restaurando a produção da nascente para o nível anterior.\n\nCusto: 3 vezes a redução na produção da nascente, em 4 litros por hora.\n\nTempo de operação: 1 minuto.\n\nPré-requisitos: Dissipar Água e Moldar Terra.\n\nItem\nCajado. Custo para criar: 450 de energia e uma esmeralda de $500.",
     "descricaoConferida": true,
     "descricaoPagina": 188,
     "mecanica": {
@@ -49354,7 +49355,7 @@
     "energia": "50/10",
     "tempoOperacao": "1 seg",
     "preRequisitos": "Materializar",
-    "descricao": "Especial; Resistível com ST ou IQ\n\nEsta mágica é usada por espíritos insubstanciais para tornarem-se tangíveis e afetar objetos e criaturas no mundo substancial. Um espírito tangível é em todos os aspectos como um ser físico normal. A mágica também pode ser usada por um mago para forçar um espírito a solidificar; Nesse caso, o fantasma resiste com o melhor de sua ST ou IQ.\n\nDuração: 1 minuto.\nCusto: 50 para operar. 10 para manter.\nPré-requisito: Materializar.",
+    "descricao": "Especial; Resistível com ST ou IQ\n\nEsta mágica é usada por espíritos insubstanciais para tornarem-se tangíveis e afetar objetos e criaturas no mundo substancial. Um espírito tangível é em todos os aspectos como um ser físico normal. A mágica também pode ser usada por um mago para forçar um espírito a solidificar; Nesse caso, o fantasma resiste com o melhor de sua ST ou IQ.\n\nDuração: 1 minuto.\n\nCusto: 50 para operar. 10 para manter.\n\nPré-requisito: Materializar.",
     "descricaoConferida": true,
     "descricaoPagina": 151,
     "mecanica": {
@@ -49562,7 +49563,7 @@
     "energia": "4",
     "tempoOperacao": "3 seg",
     "preRequisitos": "Torpor",
-    "descricao": "Comum; Resistível com HT\n\nO objetivo adormece. Se estiver em pé, ele cai — mas isso não o acorda. Ele pode ser despertado por um golpe, barulho alto, etc., mas ficará mentalmente atordoado (veja Efeitos do Atordoamento, pág. MB420). A mágica Despertar (pág. 90) o despertará instantaneamente. Se não for acordado, ele dormirá por cerca de oito horas e acordará normalmente.\n\nCusto: 4.\nTempo de operação: 3 segundos.\nPré-requisito: Torpor.",
+    "descricao": "Comum; Resistível com HT\n\nO objetivo adormece. Se estiver em pé, ele cai — mas isso não o acorda. Ele pode ser despertado por um golpe, barulho alto, etc., mas ficará mentalmente atordoado (veja Efeitos do Atordoamento, pág. MB420). A mágica Despertar (pág. 90) o despertará instantaneamente. Se não for acordado, ele dormirá por cerca de oito horas e acordará normalmente.\n\nCusto: 4.\n\nTempo de operação: 3 segundos.\n\nPré-requisito: Torpor.\n\nItem\n(a) Qualquer item. Sempre ativo; o item coloca o usuário para dormir até ser removido. Quando o item é criado, o operador pode especificar se os efeitos são graduais ou imediatos. Custo de energia para criar: 600. (b) Cajado ou varinha. Utilizável apenas por magos; o item deve tocar o objetivo. Custo de energia para criar: 1.200.",
     "descricaoConferida": true,
     "descricaoPagina": 135,
     "mecanica": {
@@ -49613,7 +49614,7 @@
     "energia": "3",
     "tempoOperacao": "# seg=custo",
     "preRequisitos": "Sono, IQ 13+",
-    "descricao": "Área; Resistível com HT\n\nComo Sono, mas pode ser operada sobre uma área.\nCusto básico: 3. Raio mínimo de 2 metros.\nTempo de operação: 1 segundo para cada ponto de energia gasto.\nPré-requisitos: Sono e IQ 13 ou superior.",
+    "descricao": "Área; Resistível com HT\n\nComo Sono, mas pode ser operada sobre uma área.\n\nCusto básico: 3. Raio mínimo de 2 metros.\n\nTempo de operação: 1 segundo para cada ponto de energia gasto.\n\nPré-requisitos: Sono e IQ 13 ou superior.",
     "descricaoConferida": true,
     "descricaoPagina": 137,
     "mecanica": {
@@ -50256,7 +50257,7 @@
     "energia": "6/3",
     "tempoOperacao": "3 seg",
     "preRequisitos": "AM1, 5 mágicas de Corpo incl. Espasmo",
-    "descricao": "Comum; Resistível com Vontade\n\nO objetivo se torna escravo fiel do operador até que a mágica expire, seguindo qualquer ordem, não importa quão perigosa seja. Não há elo mental — o operador deve dar suas ordens ao objetivo verbalmente ou por escrito.\n\nDuração: 1 minuto.\nCusto: 6 para operar; 3 para manter.\nTempo de operação: 3 segundos.\nPré-requisitos: Aptidão Mágica 1, Lealdade e sete outras mágicas de Controle da Mente.",
+    "descricao": "Comum; Resistível com Vontade\n\nO objetivo se torna escravo fiel do operador até que a mágica expire, seguindo qualquer ordem, não importa quão perigosa seja. Não há elo mental — o operador deve dar suas ordens ao objetivo verbalmente ou por escrito. No entanto, o objetivo protegerá o operador sem ordens. Em todos os outros aspectos, o objetivo será mentalmente normal e alerta. Ele será incapaz de explicar (e não quer discutir ou mesmo pensar sobre) sua lealdade ao operador.\n\nDuração: 1 minuto.\n\nCusto: 6 para operar. 3 para manter.\n\nTempo de operação: 3 segundos.\n\nPré-requisitos: Aptidão Mágica 1, Lealdade e sete outras mágicas de Controle da Mente.\n\nItem\n(a) Qualquer item. Sempre ativo; o usuário se torna fiel ao criador original do item (quando essa pessoa morre, o item perde seu poder). Custo de energia para criar: 1.000. Dobre esse custo por um item que torne o usuário fiel a uma terceira pessoa específica. (b) Cajado ou varinha. Utilizável apenas por magos; o item deve tocar o objetivo. Custo de energia para criar: 3.000.",
     "descricaoConferida": true,
     "descricaoPagina": 139,
     "mecanica": {
@@ -52011,7 +52012,7 @@
     "energia": "1/50/I",
     "tempoOperacao": "1 min",
     "preRequisitos": "Chuva, Granizo",
-    "descricao": "Área\n\nCria (ou dissipa) uma tempestade. Dependendo da temperatura e umidade do ambiente, pode ser uma tempestade de vento simples ou incluir chuva, neve ou granizo — um eventual relâmpago também. Isto é particularmente eficaz no mar. A mágica é imprevisível em seus efeitos (ou seja, o Mestre decide o que a tempestade faz…)\n\nA mágica também pode ser usada para dissipar uma tempestade; a eficácia da mágica depende dos tamanhos relativos da área afetada contra a área total da tempestade natural.\n\nEsta também é uma mágica do Ar e Água.\n\nDuração: 1 hora\nCusto básico: 1/50 (mínimo 1). Mesmo custo para manter.\nTempo de operação: 1 minuto. Uma tempestade incipiente levará cerca de uma hora para se reunir e atingir força total. Uma vez que a mágica termine, pode levar um tempo variado para se acalmar — ela pode até continuar sozinha por horas! Uma tempestade dissipada também levará cerca de uma hora para se acalmar.\nPré-requisitos: Chuva e Granizo\n\nItem\nCajado. Utilizável apenas por um mago. Custo de energia para criar: 1.000.",
+    "descricao": "Área\n\nCria (ou dissipa) uma tempestade. Dependendo da temperatura e umidade do ambiente, pode ser uma tempestade de vento simples ou incluir chuva, neve ou granizo — um eventual relâmpago também. Isto é particularmente eficaz no mar. A mágica é imprevisível em seus efeitos (ou seja, o Mestre decide o que a tempestade faz…)\n\nA mágica também pode ser usada para dissipar uma tempestade; a eficácia da mágica depende dos tamanhos relativos da área afetada contra a área total da tempestade natural.\n\nEsta também é uma mágica do Ar e água.\n\nDuração: 1 hora.\n\nCusto básico: 1/50 (mínimo 1). Mesmo custo para manter.\n\nTempo de operação: 1 minuto. Uma tempestade incipiente levará cerca de uma hora para se reunir e atingir força total. Uma vez que a mágica termine, pode levar um tempo variado para se acalmar — ela pode até continuar sozinha por horas! Uma tempestade dissipada também levará cerca de uma hora para se acalmar.\n\nPré-requisitos: Chuva e Granizo.\n\nItem\nCajado. Utilizável apenas por um mago. Custo de energia para criar: 1.000.",
     "descricaoConferida": true,
     "descricaoPagina": 195,
     "mecanica": {
@@ -53378,7 +53379,7 @@
     "energia": "2",
     "tempoOperacao": "# 1 seg",
     "preRequisitos": "AM1, 4 mágicas da Água",
-    "descricao": "Toque\n\nCobre o objetivo com uma camada de gelo. O operador deve tocar o objetivo para ativar essa mágica; o local acertado é irrelevante. O objetivo é imobilizado e não pode tomar nenhuma ação até que ele rompa o gelo com um teste de ST bem-sucedido com uma penalidade de -1 por cada 0,5cm de gelo. O gelo pode ser picado por fora a uma taxa de 0,5cm de gelo para cada ponto de dano básico; possui RD 1 por 1cm de gelo.\n\nSe os socorristas não forem cuidadosos, eles podem esmagar o gelo ferindo o objetivo (consulte Superpenetração, pág. MB408).\n\nEnquanto está envolto em gelo, o objetivo é vulnerável a choques térmicos (pág. MB433); ele deve fazer um teste de HT imediatamente. Em um sucesso, ele perde 1 PF; em uma falha, ele perde PF igual à margem da falha. O teste HT deve ser repetido a cada minuto em que o objetivo permanecer envolto em gelo. Se a situação se tornar terrível o suficiente para que o objetivo comece a fazer testes de morte, um sucesso decisivo significa que o objetivo caiu em animação suspensa, conforme a mágica.\n\nDuração: Permanente. Se a temperatura estiver acima do ponto de congelamento, o revestimento de gelo pode ser mantido gastando tanta energia quanto na operação original a cada 10 minutos.\nCusto: 2 por 0,5cm de gelo; deve afetar o objetivo inteiro, não apenas uma parte dele! Cada 0,5cm causa 1d-1 de dano às criaturas de fogo.\nTempo de operação: 1 segundo por 0,5cm de gelo.\nPré-requisitos: Aptidão Mágica 1 e pelo menos quatro mágicas da Água.\n\nItem\nCajado ou varinha. Utilizável apenas por magos; o objeto deve tocar o objetivo. A ponta do objeto deve ser branca. Custo de energia para criar: 800.",
+    "descricao": "Toque\n\nCobre o objetivo com uma camada de gelo. O operador deve tocar o objetivo para ativar essa mágica; o local acertado é irrelevante. O objetivo é imobilizado e não pode tomar nenhuma ação até que ele rompa o gelo com um teste de ST bem-sucedido com uma penalidade de -1 por cada 0,5cm de gelo. O gelo pode ser picado por fora a uma taxa de 0,5cm de gelo para cada ponto de dano básico; possui RD 1 por 1cm de gelo. Se os socorristas não forem cuidadosos, eles podem esmagar o gelo ferindo o objetivo (consulte Superpenetração, pág. MB408).\n\nEnquanto está envolto em gelo, o objetivo é vulnerável a choques térmicos (pág. MB433); ele deve fazer um teste de HT imediatamente. Em um sucesso, ele perde 1 PF; em uma falha, ele perde PF igual à margem da falha. O teste HT deve ser repetido a cada minuto em que o objetivo permanecer envolto em gelo. Se a situação se tornar terrível o suficiente para que o objetivo comece a fazer testes de morte, um sucesso decisivo significa que o objetivo caiu em animação suspensa, conforme a mágica.\n\nDuração: Permanente. Se a temperatura estiver acima do ponto de congelamento, o revestimento de gelo pode ser mantido gastando tanta energia quanto na operação original a cada 10 minutos.\n\nCusto: 2 por 0,5cm de gelo; deve afetar o objetivo inteiro, não apenas uma parte dele! Cada 0,5cm causa 1d-1 de dano às criaturas de fogo.\n\nTempo de operação: 1 segundo por 0,5cm de gelo.\n\nPré-requisitos: Aptidão Mágica 1 e pelo menos quatro mágicas da Água.\n\nItem\nCajado ou varinha. Utilizável apenas por magos; o objeto deve tocar o objetivo. A ponta do objeto deve ser branca. Custo de energia para criar: 800.",
     "descricaoConferida": true,
     "descricaoPagina": 188,
     "mecanica": {
@@ -53567,7 +53568,7 @@
     "energia": "2/1#",
     "tempoOperacao": "seg.=custo",
     "preRequisitos": "Torpor, IQ 13+",
-    "descricao": "Área; Resistível com HT\n\nComo Torpor, mas pode ser operada sobre uma área.\n\nDuração: 1 minuto.\nCusto básico: 2 para operar; 1 para manter. Raio mínimo de 2 metros.\nTempo de operação: 1 segundo para cada ponto de energia gasto.\nPré-requisitos: Torpor e IQ 13 ou superior.",
+    "descricao": "Área; Resistível com HT\n\nComo Torpor, mas pode ser operada sobre uma área.\n\nDuração: 1 minuto.\n\nCusto básico: 2 para operar. 1 para manter. Raio mínimo de 2 metros.\n\nTempo de operação: 1 segundo para cada ponto de energia gasto.\n\nPré-requisitos: Torpor e IQ 13 ou superior.",
     "descricaoConferida": true,
     "descricaoPagina": 137,
     "mecanica": {
@@ -53706,7 +53707,7 @@
     "energia": "2",
     "tempoOperacao": "1 seg.",
     "preRequisitos": "Inabilidade",
-    "descricao": "Comum; Resistível com DX\n\nO objetivo tropeça e cai.\n\nCusto: 2.\nPré-requisitos: Inabilidade.\n\nItem\nCajado ou varinha. Utilizável apenas por magos; o item deve ser apontado para (mas não deve necessariamente tocar) o objetivo. Custo para criar: 600 de energia.",
+    "descricao": "Comum; Resistível com DX\n\nO objetivo tropeça e cai.\n\nCusto: 2.\n\nPré-requisitos: Inabilidade.\n\nItem\nCajado ou varinha. Utilizável apenas por magos; o item deve ser apontado para (mas não deve necessariamente tocar) o objetivo. Custo para criar: 600 de energia.",
     "descricaoConferida": true,
     "descricaoPagina": 36,
     "mecanica": {
@@ -53966,7 +53967,7 @@
     "energia": "2",
     "tempoOperacao": "1 seg.",
     "preRequisitos": "Teleporte",
-    "descricao": "Bloqueio\n\nEvita um ataque se teleportando instantaneamente para fora de seu caminho e para um local aberto nas proximidades. Um local não está aberto se alguém estiver nele; qualquer obstrução menor está “aberta” para o propósito desta mágica.\n\nO operador pode Translocar para qualquer ponto desocupado dentro de 3 metros, em qualquer direção. A direção do operador permanece inalterada. O operador deve fazer um teste contra sua perícia Percepção do Corpo para agir no seu próximo turno (pág. MB215). Se não houver pontos abertos em um raio de 3 metros, a mágica falhará. Para fins de combate, o “translocação” é tratada como uma esquiva que é bem sucedida automaticamente se o teste de mágica for feito.\n\nUma falha crítica nessa mágica é tratada como uma falha crítica no Teleporte, exceto que o operador raramente ultrapassa 1,5 km.\n\nEsta também é uma mágica de Portal.\n\nCusto: 2.\nPré-requisito: Teleporte.\n\nItem\nRoupas ou joias. Custo de energia para criar: 800.",
+    "descricao": "Bloqueio\n\nEvita um ataque se teleportando instantaneamente para fora de seu caminho e para um local aberto nas proximidades. Um local não está aberto se alguém estiver nele; qualquer obstrução menor está “aberta” para o propósito desta mágica.\n\nO operador pode Translocar para qualquer ponto desocupado dentro de 3 metros, em qualquer direção. A direção do operador permanece inalterada. O operador deve fazer um teste contra sua perícia Percepção do Corpo para agir no seu próximo turno (pág. MB215). Se não houver pontos abertos em um raio de 3 metros, a mágica falhará. Para fins de combate, o “translocação” é tratada como uma esquiva que é bem sucedida automaticamente se o teste de mágica for feito.\n\nUma falha crítica nessa mágica é tratada como uma falha crítica no Teleporte, exceto que o operador raramente ultrapassa 1,5 km.\n\nEsta também é uma mágica de Portal.\n\nCusto: 2.\n\nPré-requisito: Teleporte.\n\nItem\nRoupas ou joias. Custo de energia para criar: 800.",
     "descricaoConferida": true,
     "descricaoPagina": 148,
     "mecanica": {
@@ -54090,7 +54091,7 @@
     "energia": "2",
     "tempoOperacao": "1 seg.",
     "preRequisitos": "Translocação",
-    "descricao": "Bloqueio\n\nComo Translocação, mas utilizável nos outros.\n\nEsta também é uma mágica de Portal.\n\nCusto: 2.\nPré-requisito: Translocação.\n\nItem\nVarinha, cajado ou joias. Utilizável apenas por magos. Custo de energia para criar: 1.600.",
+    "descricao": "Bloqueio\n\nComo Translocação, mas utilizável nos outros.\n\nEsta também é uma mágica de Portal.\n\nCusto: 2.\n\nPré-requisito: Translocação.\n\nItem\nVarinha, cajado ou joias. Utilizável apenas por magos. Custo de energia para criar: 1.600.",
     "descricaoConferida": true,
     "descricaoPagina": 148,
     "mecanica": {
@@ -54795,7 +54796,7 @@
     "energia": "120",
     "tempoOperacao": "1 hora",
     "preRequisitos": "Possessão Permanente, Aprisionar Alma",
-    "descricao": "Comum; Resistível com Vontade\n\nO operador troca permanentemente de corpo com o objetivo. O objetivo pode ser qualquer criatura viva. A única maneira de reverter essa mágica, uma vez operada, é operá-la novamente; Anular Possessão ou outra antimágica não irá funcionar. Os atributos de ST, DX e HT, assim como todas as vantagens e desvantagens físicas, acompanham o corpo; IQ, memória, personalidade e todas as perícias e mágicas vão com a mente.\n\nNota: Trocar de Corpo pode resultar no usuário aumentar seu valor de pontos. O Mestre pode querer cobrar do antigo mago pela diferença no valor dos pontos de personagem. Veja Transferência Mental (pág. MB296) para mais informações sobre isso. Para ajudar a manter os magos saltadores sob controle, o Mestre pode desejar requerer alguns materiais mágicos para essa mágica (pág. 8).\n\nDuração: Permanente.\nCusto: 120.\nTempo de operação: 1 hora.\nPré-requisitos: Possessão Permanente e Aprisionar Alma.\n\nItem — Cajado ou varinha. Utilizável apenas por magos. O item deve tocar o objetivo possuído. Custo de energia para criar: 300.",
+    "descricao": "Comum; Resistível com Vontade\n\nO operador troca permanentemente de corpo com o objetivo. O objetivo pode ser qualquer criatura viva. A única maneira de reverter essa mágica, uma vez operada, é operá-la novamente; Anular Possessão ou outra antimágica não irá funcionar. Os atributos de ST, DX e HT, assim como todas as vantagens e desvantagens físicas, acompanham o corpo; IQ, memória, personalidade e todas as perícias e mágicas vão com a mente.\n\nNota: Trocar de Corpo pode resultar no usuário aumentar seu valor de pontos. O Mestre pode querer cobrar do antigo mago pela diferença no valor dos pontos de personagem. Veja Transferência Mental (pág. MB296) para mais informações sobre isso. Para ajudar a manter os magos saltadores sob controle, o Mestre pode desejar requerer alguns materiais mágicos para essa mágica (pág. 8).\n\nDuração: Permanente.\n\nCusto: 120.\n\nTempo de operação: 1 hora.\n\nPré-requisitos: Possessão Permanente e Aprisionar Alma.\nBayard sorriu e entrou de volta na mansão. Lady Ann voltou seu olhar para o labirinto do jardim; acabara de ter ideias fabulosas para as sebes.\n\nAs mágicas desta escola lidam com o tradicional “elemento” mágico da Terra. Exceto quando houver uma observação, nenhuma dessas mágicas afeta pedra ou metal. Mais mágicas para afetar metais aparecem em Mágicas Tecnológicas (pág. 182).\n\nA Escola da Terra não é para amadores. Pouquíssimas mágicas estão disponíveis para magos que não dominaram todas as mágicas básicas da escola, e poucas mágicas, seja do tipo que for, são acessíveis a não-magos.",
     "descricaoConferida": true,
     "descricaoPagina": 49,
     "mecanica": {
@@ -55032,7 +55033,7 @@
     "energia": "1/50/I",
     "tempoOperacao": "1 min.",
     "preRequisitos": "Furacão",
-    "descricao": "Área\n\nModifica as condições atuais do vento externo. Cada aplicação da mágica pode mudar a direção do vento em 22,5 graus (de O para OSO, por exemplo) ou alterar a velocidade do vento em um nível na escala de Beaufort (veja caixa). Para obter mudanças combinadas de direção/velocidade ou mudanças mais extremas em uma ou outra, aumente o custo proporcionalmente.\n\nA mágica pode ser operada em uma área, afetando o vento que se move sobre ele do chão até uma altitude de cerca de 90 metros. Também pode ser operada em um objeto, como um veleiro, que deve abranger sua totalidade. A área de efeito se move com o objeto.\n\nEsta também é uma mágica do Ar.\n\nDuração: 1 hora\nCusto básico: 1/50 (mínimo 1). Mesmo custo para manter.\nTempo de operação: 1 minuto\nPré-requisito: Furacão\n\nItem\nCajado, varinha ou joias. Custo de energia para criar: 300.",
+    "descricao": "Especial; Área\n\nModifica as condições atuais do vento externo. Cada aplicação da mágica pode mudar a direção do vento em 22,5 graus (de O para OSO, por exemplo) ou alterar a velocidade do vento em um nível na escala de Beaufort (veja caixa). Para obter mudanças combinadas de direção/velocidade ou mudanças mais extremas em uma ou outra, aumente o custo proporcionalmente.\n\nA mágica pode ser operada em uma área, afetando o vento que se move sobre ele do chão até uma altitude de cerca de 90 metros. Também pode ser operada em um objeto, como um veleiro, que deve abranger sua totalidade. A área de efeito se move com o objeto.\n\nEsta também é uma mágica do Ar.\n\nDuração: 1 hora.\n\nCusto básico: 1/50 (mínimo 1). Mesmo custo para manter.\n\nTempo de operação: 1 minuto.\n\nPré-requisito: Furacão.\n\nItem\nCajado, varinha ou joias. Custo de energia para criar: 300.",
     "descricaoConferida": true,
     "descricaoPagina": 195,
     "mecanica": {
@@ -55865,7 +55866,7 @@
     "energia": "6",
     "tempoOperacao": "1 seg.",
     "preRequisitos": "AM2, Sono, Conceder Energia",
-    "descricao": "Comum\n\nPule uma noite de sono sem efeitos nocivos. Cada noite consecutiva de operação sobre o mesmo objetivo terá uma penalidade acumulada de -3 no NH.\n\nDuração: 1 noite.\n\nCusto: 8. Não pode ser mantida, mas pode ser reformulada.\n\nPré-requisitos: Aptidão Mágica 2, Sono e Conceder Energia. Por opção do Mestre, um status “santo” pode ser suficiente.",
+    "descricao": "Comum\n\nPule uma noite de sono sem efeitos nocivos. Cada noite consecutiva de operação sobre o mesmo objetivo terá uma penalidade acumulada de -3 no NH.\n\nDuração: 1 noite.\n\nCusto: 8. Não pode ser mantida, mas pode ser reformulada.\n\nPré-requisitos: Aptidão Mágica 2, Sono e Conceder Energia. Por opção do Mestre, um status “santo” pode ser suficiente.\nItem\nChapéu ou joias. Utilizável apenas por um mago ou (a critério do Mestre) por seres “santos”. Custo de energia para criar: 1.000. Rumores persistem em uma versão “sempre ativo”.",
     "descricaoConferida": true,
     "descricaoPagina": 138,
     "mecanica": {
@@ -57086,7 +57087,7 @@
     "energia": "8",
     "tempoOperacao": "1 min.",
     "preRequisitos": "Convocar Espírito, Conceder Vitalidade",
-    "descricao": "Comum\n\nO objetivo desta mágica deve ser um corpo morto relativamente completo. A natureza e condição do cadáver determina a natureza da criatura morta-viva produzida. O cadáver animado se torna um servo morto-vivo do operador. Seus atributos são baseados naqueles do corpo original, assim como suas vantagens físicas e perícias baseadas em DX. Não tem “alma”, traços mentais, perícias baseadas em IQ ou memórias da pessoa. O Mestre determinará suas habilidades exatas, conforme apropriado para a campanha.\n\nDuração: O zumbi continua animado até ser destruído.\nCusto: 8.\nTempo de operação: 1 minuto.\nPré-requisitos: Convocar Espírito e Conceder Vitalidade.\n\nItem\nVarinha, cajado ou joias. Utilizável apenas por magos. Custo de energia para criar: 350.",
+    "descricao": "Comum\n\nO objetivo desta mágica deve ser um corpo morto relativamente completo. A natureza e condição do cadáver determina a natureza da criatura morta-viva produzida. O cadáver animado se torna um servo morto-vivo do operador. Seus atributos são baseados naqueles do corpo original, assim como suas vantagens físicas e perícias baseadas em DX. Não tem “alma”, traços mentais, perícias baseadas em IQ ou memórias da pessoa viva. O Mestre determinará suas habilidades exatas, conforme apropriado para a campanha.\n\nDuração: O zumbi continua animado até ser destruído.\n\nCusto: 8.\n\nTempo de operação: 1 minuto.\n\nPré-requisitos: Convocar Espírito e Conceder Vitalidade.",
     "descricaoConferida": true,
     "descricaoPagina": 151,
     "mecanica": {

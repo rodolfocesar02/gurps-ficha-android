@@ -155,7 +155,10 @@ test('livro real: 30 magias sorteadas (semente fixa) têm a descrição IGUAL ao
 
 test('livro real: TODAS as descrições conferidas são o recorte de agora (as 812)', { skip: !TEM_O_LIVRO }, () => {
   const { livro, catalogo, indice } = recorteAgora();
-  const conferidas = catalogo.filter((m) => m.descricaoConferida === true);
+  // (menos as que o PASSO 8 corrige à mão: `correcoes-manuais.json`, campo `descricao`; `correcoes-manuais.test.js` cobra que a correção está lá)
+  const aMao = new Set(JSON.parse(fs.readFileSync(path.join(__dirname, 'correcoes-manuais.json'), 'utf8')).correcoes
+    .filter((c) => c.campo === 'descricao').map((c) => c.id));
+  const conferidas = catalogo.filter((m) => m.descricaoConferida === true && !aMao.has(m.id));
   assert.deepStrictEqual(diferentes(conferidas, livro, indice).slice(0, 10), []);
 });
 

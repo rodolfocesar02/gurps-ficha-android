@@ -33,14 +33,6 @@
     "entrada": "5 segundos"
    }
   },
-  "anular_possessao": {
-   "duracao": {
-    "motivo": "o-livro-discorda-de-si: vale a entrada",
-    "catalogo": "Permanente",
-    "tabela": "Instant",
-    "entrada": "Permanente"
-   }
-  },
   "apanhar_magica": {
    "duracao": {
     "motivo": "o-livro-discorda-de-si: vale a entrada",

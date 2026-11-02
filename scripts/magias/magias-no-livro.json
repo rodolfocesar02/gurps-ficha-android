@@ -10,7 +10,7 @@
   "localizada": 878,
   "comBlocoETabela": 878,
   "semNenhuma": 0,
-  "blocoSemCampos": 34,
+  "blocoSemCampos": 27,
   "remissoes": 0,
   "casamentoTabela": {
    "exato": 809,
@@ -357,21 +357,21 @@
     "titulo": "Adaga de Gelo",
     "pagina": 188,
     "paginaFim": 188,
-    "linhaInicio": 31,
-    "linhaFim": 41,
+    "linhaInicio": 36,
+    "linhaFim": 50,
     "temCampos": true,
     "campos": {
      "custo": {
       "pagina": 188,
-      "linha": 36
+      "linha": 41
      },
      "tempo": {
       "pagina": 188,
-      "linha": 38
+      "linha": 43
      },
      "preRequisitos": {
       "pagina": 188,
-      "linha": 39
+      "linha": 45
      }
     },
     "remissao": null
@@ -553,25 +553,25 @@
     "titulo": "Afetar Espíritos",
     "pagina": 151,
     "paginaFim": 151,
-    "linhaInicio": 11,
-    "linhaFim": 24,
+    "linhaInicio": 25,
+    "linhaFim": 41,
     "temCampos": true,
     "campos": {
      "duracao": {
       "pagina": 151,
-      "linha": 16
+      "linha": 30
      },
      "custo": {
       "pagina": 151,
-      "linha": 17
+      "linha": 32
      },
      "tempo": {
       "pagina": 151,
-      "linha": 18
+      "linha": 34
      },
      "preRequisitos": {
       "pagina": 151,
-      "linha": 19
+      "linha": 36
      }
     },
     "remissao": null
@@ -1772,17 +1772,17 @@
     "titulo": "Andar em Círculos",
     "pagina": 36,
     "paginaFim": 36,
-    "linhaInicio": 83,
-    "linhaFim": 92,
+    "linhaInicio": 105,
+    "linhaFim": 114,
     "temCampos": true,
     "campos": {
      "custo": {
       "pagina": 36,
-      "linha": 89
+      "linha": 110
      },
      "preRequisitos": {
       "pagina": 36,
-      "linha": 90
+      "linha": 112
      }
     },
     "remissao": null
@@ -1903,25 +1903,25 @@
     "titulo": "Animar Máquina/NT",
     "pagina": 177,
     "paginaFim": 178,
-    "linhaInicio": 60,
+    "linhaInicio": 76,
     "linhaFim": 2,
     "temCampos": true,
     "campos": {
      "duracao": {
       "pagina": 177,
-      "linha": 72
+      "linha": 87
      },
      "custo": {
       "pagina": 177,
-      "linha": 73
+      "linha": 89
      },
      "tempo": {
       "pagina": 177,
-      "linha": 74
+      "linha": 91
      },
      "preRequisitos": {
       "pagina": 177,
-      "linha": 75
+      "linha": 93
      }
     },
     "remissao": null
@@ -2110,18 +2110,18 @@
     "variante": null,
     "titulo": "Anular Criação",
     "pagina": 99,
-    "paginaFim": 99,
-    "linhaInicio": 46,
-    "linhaFim": 55,
+    "paginaFim": 100,
+    "linhaInicio": 54,
+    "linhaFim": 12,
     "temCampos": true,
     "campos": {
      "custo": {
       "pagina": 99,
-      "linha": 52
+      "linha": 59
      },
      "preRequisitos": {
       "pagina": 99,
-      "linha": 53
+      "linha": 61
      }
     },
     "remissao": null
@@ -2250,26 +2250,22 @@
     "variante": null,
     "titulo": "Anular Possessão",
     "pagina": 49,
-    "paginaFim": 50,
-    "linhaInicio": 66,
-    "linhaFim": 8,
+    "paginaFim": 49,
+    "linhaInicio": 75,
+    "linhaFim": 89,
     "temCampos": true,
     "campos": {
      "custo": {
       "pagina": 49,
-      "linha": 71
+      "linha": 80
      },
      "tempo": {
       "pagina": 49,
-      "linha": 72
+      "linha": 82
      },
      "preRequisitos": {
       "pagina": 49,
-      "linha": 73
-     },
-     "duracao": {
-      "pagina": 49,
-      "linha": 75
+      "linha": 84
      }
     },
     "remissao": null
@@ -2674,25 +2670,25 @@
     "titulo": "Aquecer",
     "pagina": 195,
     "paginaFim": 195,
-    "linhaInicio": 66,
-    "linhaFim": 81,
+    "linhaInicio": 87,
+    "linhaFim": 105,
     "temCampos": true,
     "campos": {
      "duracao": {
       "pagina": 195,
-      "linha": 73
+      "linha": 94
      },
      "tempo": {
       "pagina": 195,
-      "linha": 74
+      "linha": 96
      },
      "custo": {
       "pagina": 195,
-      "linha": 75
+      "linha": 98
      },
      "preRequisitos": {
       "pagina": 195,
-      "linha": 76
+      "linha": 100
      }
     },
     "remissao": null
@@ -3537,7 +3533,7 @@
     "pagina": 135,
     "paginaFim": 135,
     "linhaInicio": 2,
-    "linhaFim": 10,
+    "linhaFim": 14,
     "temCampos": true,
     "campos": {
      "custo": {
@@ -3546,7 +3542,7 @@
      },
      "preRequisitos": {
       "pagina": 135,
-      "linha": 8
+      "linha": 9
      }
     },
     "remissao": null
@@ -3580,25 +3576,25 @@
     "titulo": "Atrair",
     "pagina": 137,
     "paginaFim": 137,
-    "linhaInicio": 62,
-    "linhaFim": 74,
+    "linhaInicio": 76,
+    "linhaFim": 92,
     "temCampos": true,
     "campos": {
      "duracao": {
       "pagina": 137,
-      "linha": 69
+      "linha": 81
      },
      "custo": {
       "pagina": 137,
-      "linha": 70
+      "linha": 83
      },
      "tempo": {
       "pagina": 137,
-      "linha": 71
+      "linha": 85
      },
      "preRequisitos": {
       "pagina": 137,
-      "linha": 72
+      "linha": 87
      }
     },
     "remissao": null
@@ -3676,25 +3672,25 @@
     "titulo": "Atravessar Água",
     "pagina": 188,
     "paginaFim": 188,
-    "linhaInicio": 43,
-    "linhaFim": 58,
+    "linhaInicio": 72,
+    "linhaFim": 90,
     "temCampos": true,
     "campos": {
      "duracao": {
       "pagina": 188,
-      "linha": 50
+      "linha": 79
      },
      "custo": {
       "pagina": 188,
-      "linha": 51
+      "linha": 81
      },
      "tempo": {
       "pagina": 188,
-      "linha": 52
+      "linha": 83
      },
      "preRequisitos": {
       "pagina": 188,
-      "linha": 53
+      "linha": 85
      }
     },
     "remissao": null
@@ -4580,7 +4576,7 @@
     "titulo": "Aura Falsa",
     "pagina": 122,
     "paginaFim": 123,
-    "linhaInicio": 62,
+    "linhaInicio": 86,
     "linhaFim": 11,
     "temCampos": true,
     "campos": {
@@ -4684,21 +4680,21 @@
     "titulo": "Avaria/NT",
     "pagina": 177,
     "paginaFim": 177,
-    "linhaInicio": 2,
-    "linhaFim": 17,
+    "linhaInicio": 15,
+    "linhaFim": 29,
     "temCampos": true,
     "campos": {
      "duracao": {
       "pagina": 177,
-      "linha": 8
+      "linha": 20
      },
      "custo": {
       "pagina": 177,
-      "linha": 9
+      "linha": 22
      },
      "preRequisitos": {
       "pagina": 177,
-      "linha": 10
+      "linha": 24
      }
     },
     "remissao": null
@@ -5216,25 +5212,25 @@
     "titulo": "Boca Mágica",
     "pagina": 104,
     "paginaFim": 104,
-    "linhaInicio": 34,
-    "linhaFim": 52,
+    "linhaInicio": 45,
+    "linhaFim": 65,
     "temCampos": true,
     "campos": {
      "duracao": {
       "pagina": 104,
-      "linha": 44
+      "linha": 54
      },
      "custo": {
       "pagina": 104,
-      "linha": 45
+      "linha": 56
      },
      "tempo": {
       "pagina": 104,
-      "linha": 46
+      "linha": 58
      },
      "preRequisitos": {
       "pagina": 104,
-      "linha": 47
+      "linha": 60
      }
     },
     "remissao": null
@@ -5895,11 +5891,24 @@
     "variante": null,
     "titulo": "Caminhar nas Nuvens",
     "pagina": 148,
-    "paginaFim": 149,
+    "paginaFim": 148,
     "linhaInicio": 98,
-    "linhaFim": 6,
-    "temCampos": false,
-    "campos": {},
+    "linhaFim": 114,
+    "temCampos": true,
+    "campos": {
+     "duracao": {
+      "pagina": 148,
+      "linha": 105
+     },
+     "custo": {
+      "pagina": 148,
+      "linha": 107
+     },
+     "preRequisitos": {
+      "pagina": 148,
+      "linha": 109
+     }
+    },
     "remissao": null
    }
   },
@@ -6183,21 +6192,21 @@
     "titulo": "Cativar",
     "pagina": 139,
     "paginaFim": 139,
-    "linhaInicio": 32,
-    "linhaFim": 41,
+    "linhaInicio": 52,
+    "linhaFim": 68,
     "temCampos": true,
     "campos": {
      "duracao": {
       "pagina": 139,
-      "linha": 37
+      "linha": 59
      },
      "custo": {
       "pagina": 139,
-      "linha": 38
+      "linha": 61
      },
      "preRequisitos": {
       "pagina": 139,
-      "linha": 39
+      "linha": 63
      }
     },
     "remissao": null
@@ -6528,7 +6537,7 @@
     "pagina": 35,
     "paginaFim": 36,
     "linhaInicio": 67,
-    "linhaFim": 6,
+    "linhaFim": 5,
     "temCampos": true,
     "campos": {
      "custo": {
@@ -6867,25 +6876,25 @@
     "titulo": "Chuva",
     "pagina": 195,
     "paginaFim": 195,
-    "linhaInicio": 19,
-    "linhaFim": 34,
+    "linhaInicio": 29,
+    "linhaFim": 47,
     "temCampos": true,
     "campos": {
      "duracao": {
       "pagina": 195,
-      "linha": 26
+      "linha": 36
      },
      "custo": {
       "pagina": 195,
-      "linha": 27
+      "linha": 38
      },
      "tempo": {
       "pagina": 195,
-      "linha": 28
+      "linha": 40
      },
      "preRequisitos": {
       "pagina": 195,
-      "linha": 29
+      "linha": 42
      }
     },
     "remissao": null
@@ -7211,8 +7220,8 @@
     "titulo": "Cócegas",
     "pagina": 36,
     "paginaFim": 36,
-    "linhaInicio": 6,
-    "linhaFim": 19,
+    "linhaInicio": 7,
+    "linhaFim": 21,
     "temCampos": true,
     "campos": {
      "duracao": {
@@ -7221,11 +7230,11 @@
      },
      "custo": {
       "pagina": 36,
-      "linha": 13
+      "linha": 14
      },
      "preRequisitos": {
       "pagina": 36,
-      "linha": 14
+      "linha": 16
      }
     },
     "remissao": null
@@ -7586,21 +7595,21 @@
     "titulo": "Compelir à Mentira",
     "pagina": 137,
     "paginaFim": 137,
-    "linhaInicio": 14,
-    "linhaFim": 25,
+    "linhaInicio": 56,
+    "linhaFim": 74,
     "temCampos": true,
     "campos": {
      "duracao": {
       "pagina": 137,
-      "linha": 21
+      "linha": 65
      },
      "custo": {
       "pagina": 137,
-      "linha": 22
+      "linha": 67
      },
      "preRequisitos": {
       "pagina": 137,
-      "linha": 23
+      "linha": 69
      }
     },
     "remissao": null
@@ -7683,7 +7692,7 @@
     "pagina": 48,
     "paginaFim": 49,
     "linhaInicio": 49,
-    "linhaFim": 4,
+    "linhaFim": 5,
     "temCampos": true,
     "campos": {
      "duracao": {
@@ -7879,7 +7888,7 @@
     "pagina": 126,
     "paginaFim": 126,
     "linhaInicio": 17,
-    "linhaFim": 40,
+    "linhaFim": 39,
     "temCampos": true,
     "campos": {
      "duracao": {
@@ -8838,10 +8847,23 @@
     "titulo": "Controle de Criação",
     "pagina": 99,
     "paginaFim": 99,
-    "linhaInicio": 36,
-    "linhaFim": 43,
-    "temCampos": false,
-    "campos": {},
+    "linhaInicio": 38,
+    "linhaFim": 52,
+    "temCampos": true,
+    "campos": {
+     "custo": {
+      "pagina": 99,
+      "linha": 43
+     },
+     "tempo": {
+      "pagina": 99,
+      "linha": 45
+     },
+     "preRequisitos": {
+      "pagina": 99,
+      "linha": 47
+     }
+    },
     "remissao": null
    }
   },
@@ -9081,21 +9103,21 @@
     "titulo": "Controle de Emoção",
     "pagina": 137,
     "paginaFim": 137,
-    "linhaInicio": 30,
-    "linhaFim": 41,
+    "linhaInicio": 7,
+    "linhaFim": 21,
     "temCampos": true,
     "campos": {
      "duracao": {
       "pagina": 137,
-      "linha": 37
+      "linha": 12
      },
      "custo": {
       "pagina": 137,
-      "linha": 38
+      "linha": 14
      },
      "preRequisitos": {
       "pagina": 137,
-      "linha": 39
+      "linha": 16
      }
     },
     "remissao": null
@@ -9321,25 +9343,25 @@
     "titulo": "Controle de Pessoa",
     "pagina": 49,
     "paginaFim": 49,
-    "linhaInicio": 4,
-    "linhaFim": 16,
+    "linhaInicio": 39,
+    "linhaFim": 55,
     "temCampos": true,
     "campos": {
      "duracao": {
       "pagina": 49,
-      "linha": 9
+      "linha": 44
      },
      "custo": {
       "pagina": 49,
-      "linha": 10
+      "linha": 46
      },
      "tempo": {
       "pagina": 49,
-      "linha": 11
+      "linha": 48
      },
      "preRequisitos": {
       "pagina": 49,
-      "linha": 12
+      "linha": 50
      }
     },
     "remissao": null
@@ -11032,26 +11054,26 @@
     "variante": null,
     "titulo": "Correnteza",
     "pagina": 194,
-    "paginaFim": 195,
-    "linhaInicio": 64,
-    "linhaFim": 2,
+    "paginaFim": 194,
+    "linhaInicio": 54,
+    "linhaFim": 74,
     "temCampos": true,
     "campos": {
      "duracao": {
       "pagina": 194,
-      "linha": 74
+      "linha": 63
      },
      "custo": {
       "pagina": 194,
-      "linha": 75
+      "linha": 65
      },
      "tempo": {
       "pagina": 194,
-      "linha": 76
+      "linha": 67
      },
      "preRequisitos": {
       "pagina": 194,
-      "linha": 77
+      "linha": 69
      }
     },
     "remissao": null
@@ -11478,7 +11500,7 @@
     "pagina": 98,
     "paginaFim": 99,
     "linhaInicio": 58,
-    "linhaFim": 11,
+    "linhaFim": 14,
     "temCampos": true,
     "campos": {
      "duracao": {
@@ -11487,15 +11509,15 @@
      },
      "custo": {
       "pagina": 99,
-      "linha": 7
+      "linha": 8
      },
      "tempo": {
       "pagina": 99,
-      "linha": 8
+      "linha": 10
      },
      "preRequisitos": {
       "pagina": 99,
-      "linha": 9
+      "linha": 12
      }
     },
     "remissao": null
@@ -11886,7 +11908,7 @@
     "pagina": 188,
     "paginaFim": 188,
     "linhaInicio": 2,
-    "linhaFim": 14,
+    "linhaFim": 16,
     "temCampos": true,
     "campos": {
      "duracao": {
@@ -11895,11 +11917,11 @@
      },
      "custo": {
       "pagina": 188,
-      "linha": 8
+      "linha": 9
      },
      "preRequisitos": {
       "pagina": 188,
-      "linha": 9
+      "linha": 11
      }
     },
     "remissao": null
@@ -11985,25 +12007,25 @@
     "titulo": "Criar Montaria",
     "pagina": 99,
     "paginaFim": 99,
-    "linhaInicio": 11,
-    "linhaFim": 27,
+    "linhaInicio": 16,
+    "linhaFim": 36,
     "temCampos": true,
     "campos": {
      "duracao": {
       "pagina": 99,
-      "linha": 22
+      "linha": 25
      },
      "custo": {
       "pagina": 99,
-      "linha": 23
+      "linha": 27
      },
      "tempo": {
       "pagina": 99,
-      "linha": 24
+      "linha": 29
      },
      "preRequisitos": {
       "pagina": 99,
-      "linha": 25
+      "linha": 31
      }
     },
     "remissao": null
@@ -12549,21 +12571,21 @@
     "titulo": "Criptografar",
     "pagina": 135,
     "paginaFim": 135,
-    "linhaInicio": 26,
-    "linhaFim": 35,
+    "linhaInicio": 34,
+    "linhaFim": 48,
     "temCampos": true,
     "campos": {
      "duracao": {
       "pagina": 135,
-      "linha": 31
+      "linha": 39
      },
      "custo": {
       "pagina": 135,
-      "linha": 32
+      "linha": 41
      },
      "preRequisitos": {
       "pagina": 135,
-      "linha": 33
+      "linha": 43
      }
     },
     "remissao": null
@@ -12889,17 +12911,17 @@
     "titulo": "Debilitar",
     "pagina": 36,
     "paginaFim": 37,
-    "linhaInicio": 92,
+    "linhaInicio": 116,
     "linhaFim": 5,
     "temCampos": true,
     "campos": {
      "duracao": {
       "pagina": 36,
-      "linha": 98
+      "linha": 121
      },
      "custo": {
       "pagina": 36,
-      "linha": 99
+      "linha": 123
      }
     },
     "remissao": null
@@ -13345,25 +13367,25 @@
     "titulo": "Desidratar",
     "pagina": 188,
     "paginaFim": 188,
-    "linhaInicio": 16,
-    "linhaFim": 29,
+    "linhaInicio": 18,
+    "linhaFim": 34,
     "temCampos": true,
     "campos": {
      "duracao": {
       "pagina": 188,
-      "linha": 21
+      "linha": 23
      },
      "custo": {
       "pagina": 188,
-      "linha": 22
+      "linha": 25
      },
      "tempo": {
       "pagina": 188,
-      "linha": 23
+      "linha": 27
      },
      "preRequisitos": {
       "pagina": 188,
-      "linha": 24
+      "linha": 29
      }
     },
     "remissao": null
@@ -13597,25 +13619,25 @@
     "titulo": "Desorientar",
     "pagina": 135,
     "paginaFim": 135,
-    "linhaInicio": 13,
-    "linhaFim": 23,
+    "linhaInicio": 16,
+    "linhaFim": 32,
     "temCampos": true,
     "campos": {
      "duracao": {
       "pagina": 135,
-      "linha": 18
+      "linha": 21
      },
      "tempo": {
       "pagina": 135,
-      "linha": 19
+      "linha": 23
      },
      "custo": {
       "pagina": 135,
-      "linha": 20
+      "linha": 25
      },
      "preRequisitos": {
       "pagina": 135,
-      "linha": 21
+      "linha": 27
      }
     },
     "remissao": null
@@ -14372,25 +14394,25 @@
     "titulo": "Diagrama/NT",
     "pagina": 177,
     "paginaFim": 177,
-    "linhaInicio": 19,
-    "linhaFim": 39,
+    "linhaInicio": 31,
+    "linhaFim": 53,
     "temCampos": true,
     "campos": {
      "duracao": {
       "pagina": 177,
-      "linha": 29
+      "linha": 42
      },
      "custo": {
       "pagina": 177,
-      "linha": 30
+      "linha": 44
      },
      "tempo": {
       "pagina": 177,
-      "linha": 31
+      "linha": 46
      },
      "preRequisitos": {
       "pagina": 177,
-      "linha": 32
+      "linha": 48
      }
     },
     "remissao": null
@@ -15040,21 +15062,25 @@
     "titulo": "Dor",
     "pagina": 36,
     "paginaFim": 36,
-    "linhaInicio": 19,
-    "linhaFim": 32,
+    "linhaInicio": 23,
+    "linhaFim": 39,
     "temCampos": true,
     "campos": {
      "duracao": {
       "pagina": 36,
-      "linha": 25
+      "linha": 28
      },
      "custo": {
       "pagina": 36,
-      "linha": 26
+      "linha": 30
+     },
+     "tempo": {
+      "pagina": 36,
+      "linha": 32
      },
      "preRequisitos": {
       "pagina": 36,
-      "linha": 27
+      "linha": 34
      }
     },
     "remissao": null
@@ -15140,10 +15166,27 @@
     "titulo": "Drenar Mana",
     "pagina": 127,
     "paginaFim": 127,
-    "linhaInicio": 36,
-    "linhaFim": 44,
-    "temCampos": false,
-    "campos": {},
+    "linhaInicio": 52,
+    "linhaFim": 69,
+    "temCampos": true,
+    "campos": {
+     "duracao": {
+      "pagina": 127,
+      "linha": 61
+     },
+     "custo": {
+      "pagina": 127,
+      "linha": 63
+     },
+     "tempo": {
+      "pagina": 127,
+      "linha": 65
+     },
+     "preRequisitos": {
+      "pagina": 127,
+      "linha": 67
+     }
+    },
     "remissao": null
    }
   },
@@ -15402,10 +15445,23 @@
     "titulo": "Eloquência",
     "pagina": 174,
     "paginaFim": 174,
-    "linhaInicio": 63,
-    "linhaFim": 68,
-    "temCampos": false,
-    "campos": {},
+    "linhaInicio": 70,
+    "linhaFim": 84,
+    "temCampos": true,
+    "campos": {
+     "duracao": {
+      "pagina": 174,
+      "linha": 75
+     },
+     "custo": {
+      "pagina": 174,
+      "linha": 77
+     },
+     "preRequisitos": {
+      "pagina": 174,
+      "linha": 79
+     }
+    },
     "remissao": null
    }
   },
@@ -16725,7 +16781,7 @@
     "pagina": 174,
     "paginaFim": 174,
     "linhaInicio": 2,
-    "linhaFim": 14,
+    "linhaFim": 16,
     "temCampos": true,
     "campos": {
      "duracao": {
@@ -16734,11 +16790,11 @@
      },
      "custo": {
       "pagina": 174,
-      "linha": 8
+      "linha": 9
      },
      "preRequisitos": {
       "pagina": 174,
-      "linha": 9
+      "linha": 11
      }
     },
     "remissao": null
@@ -16772,21 +16828,21 @@
     "titulo": "Escriba Musical",
     "pagina": 174,
     "paginaFim": 174,
-    "linhaInicio": 16,
-    "linhaFim": 28,
+    "linhaInicio": 18,
+    "linhaFim": 32,
     "temCampos": true,
     "campos": {
      "duracao": {
       "pagina": 174,
-      "linha": 21
+      "linha": 23
      },
      "custo": {
       "pagina": 174,
-      "linha": 22
+      "linha": 25
      },
      "preRequisitos": {
       "pagina": 174,
-      "linha": 23
+      "linha": 27
      }
     },
     "remissao": null
@@ -17288,17 +17344,21 @@
     "titulo": "Espantar Espírito",
     "pagina": 151,
     "paginaFim": 151,
-    "linhaInicio": 43,
-    "linhaFim": 52,
+    "linhaInicio": 66,
+    "linhaFim": 82,
     "temCampos": true,
     "campos": {
      "duracao": {
       "pagina": 151,
-      "linha": 48
+      "linha": 73
      },
      "custo": {
       "pagina": 151,
-      "linha": 49
+      "linha": 75
+     },
+     "preRequisitos": {
+      "pagina": 151,
+      "linha": 77
      }
     },
     "remissao": null
@@ -17619,21 +17679,21 @@
     "titulo": "Espírito de Caveira",
     "pagina": 151,
     "paginaFim": 151,
-    "linhaInicio": 29,
-    "linhaFim": 43,
+    "linhaInicio": 50,
+    "linhaFim": 64,
     "temCampos": true,
     "campos": {
      "duracao": {
       "pagina": 151,
-      "linha": 34
+      "linha": 55
      },
      "custo": {
       "pagina": 151,
-      "linha": 35
+      "linha": 57
      },
      "preRequisitos": {
       "pagina": 151,
-      "linha": 36
+      "linha": 59
      }
     },
     "remissao": null
@@ -17667,25 +17727,25 @@
     "titulo": "Esquecimento",
     "pagina": 135,
     "paginaFim": 135,
-    "linhaInicio": 50,
-    "linhaFim": 60,
+    "linhaInicio": 66,
+    "linhaFim": 82,
     "temCampos": true,
     "campos": {
      "duracao": {
       "pagina": 135,
-      "linha": 55
+      "linha": 71
      },
      "custo": {
       "pagina": 135,
-      "linha": 56
+      "linha": 73
      },
      "tempo": {
       "pagina": 135,
-      "linha": 57
+      "linha": 75
      },
      "preRequisitos": {
       "pagina": 135,
-      "linha": 58
+      "linha": 77
      }
     },
     "remissao": null
@@ -17771,21 +17831,21 @@
     "titulo": "Estorvar",
     "pagina": 36,
     "paginaFim": 36,
-    "linhaInicio": 45,
-    "linhaFim": 58,
+    "linhaInicio": 57,
+    "linhaFim": 73,
     "temCampos": true,
     "campos": {
      "duracao": {
       "pagina": 36,
-      "linha": 51
+      "linha": 64
      },
      "custo": {
       "pagina": 36,
-      "linha": 52
+      "linha": 66
      },
      "preRequisitos": {
       "pagina": 36,
-      "linha": 53
+      "linha": 68
      }
     },
     "remissao": null
@@ -17915,25 +17975,25 @@
     "titulo": "Estupidez",
     "pagina": 137,
     "paginaFim": 137,
-    "linhaInicio": 47,
-    "linhaFim": 57,
+    "linhaInicio": 38,
+    "linhaFim": 54,
     "temCampos": true,
     "campos": {
      "duracao": {
       "pagina": 137,
-      "linha": 52
+      "linha": 43
      },
      "custo": {
       "pagina": 137,
-      "linha": 53
+      "linha": 45
      },
      "tempo": {
       "pagina": 137,
-      "linha": 54
+      "linha": 47
      },
      "preRequisitos": {
       "pagina": 137,
-      "linha": 55
+      "linha": 49
      }
     },
     "remissao": null
@@ -18146,25 +18206,25 @@
     "titulo": "Êxtase",
     "pagina": 139,
     "paginaFim": 139,
-    "linhaInicio": 17,
-    "linhaFim": 27,
+    "linhaInicio": 32,
+    "linhaFim": 50,
     "temCampos": true,
     "campos": {
      "duracao": {
       "pagina": 139,
-      "linha": 22
+      "linha": 39
      },
      "custo": {
       "pagina": 139,
-      "linha": 23
+      "linha": 41
      },
      "tempo": {
       "pagina": 139,
-      "linha": 24
+      "linha": 43
      },
      "preRequisitos": {
       "pagina": 139,
-      "linha": 25
+      "linha": 45
      }
     },
     "remissao": null
@@ -18665,21 +18725,21 @@
     "titulo": "Fascinar",
     "pagina": 135,
     "paginaFim": 135,
-    "linhaInicio": 38,
-    "linhaFim": 47,
+    "linhaInicio": 50,
+    "linhaFim": 64,
     "temCampos": true,
     "campos": {
      "duracao": {
       "pagina": 135,
-      "linha": 43
+      "linha": 55
      },
      "custo": {
       "pagina": 135,
-      "linha": 44
+      "linha": 57
      },
      "preRequisitos": {
       "pagina": 135,
-      "linha": 45
+      "linha": 59
      }
     },
     "remissao": null
@@ -20310,21 +20370,21 @@
     "titulo": "Granizo",
     "pagina": 195,
     "paginaFim": 195,
-    "linhaInicio": 50,
-    "linhaFim": 66,
+    "linhaInicio": 67,
+    "linhaFim": 85,
     "temCampos": true,
     "campos": {
      "duracao": {
       "pagina": 195,
-      "linha": 59
+      "linha": 76
      },
      "custo": {
       "pagina": 195,
-      "linha": 60
+      "linha": 78
      },
      "preRequisitos": {
       "pagina": 195,
-      "linha": 61
+      "linha": 80
      }
     },
     "remissao": null
@@ -20410,25 +20470,25 @@
     "titulo": "Guarda-Mágica",
     "pagina": 127,
     "paginaFim": 127,
-    "linhaInicio": 19,
+    "linhaInicio": 14,
     "linhaFim": 30,
     "temCampos": true,
     "campos": {
      "duracao": {
       "pagina": 127,
-      "linha": 25
+      "linha": 19
      },
      "custo": {
       "pagina": 127,
-      "linha": 26
+      "linha": 21
      },
      "tempo": {
       "pagina": 127,
-      "linha": 27
+      "linha": 23
      },
      "preRequisitos": {
       "pagina": 127,
-      "linha": 28
+      "linha": 25
      }
     },
     "remissao": null
@@ -21757,21 +21817,21 @@
     "titulo": "Inabilidade",
     "pagina": 36,
     "paginaFim": 36,
-    "linhaInicio": 32,
-    "linhaFim": 45,
+    "linhaInicio": 41,
+    "linhaFim": 55,
     "temCampos": true,
     "campos": {
      "duracao": {
       "pagina": 36,
-      "linha": 38
+      "linha": 46
      },
      "custo": {
       "pagina": 36,
-      "linha": 39
+      "linha": 48
      },
      "preRequisitos": {
       "pagina": 36,
-      "linha": 40
+      "linha": 50
      }
     },
     "remissao": null
@@ -23041,21 +23101,21 @@
     "titulo": "Liberdade",
     "pagina": 148,
     "paginaFim": 148,
-    "linhaInicio": 82,
-    "linhaFim": 98,
+    "linhaInicio": 78,
+    "linhaFim": 96,
     "temCampos": true,
     "campos": {
      "duracao": {
       "pagina": 148,
-      "linha": 91
+      "linha": 87
      },
      "custo": {
       "pagina": 148,
-      "linha": 92
+      "linha": 89
      },
      "preRequisitos": {
       "pagina": 148,
-      "linha": 93
+      "linha": 91
      }
     },
     "remissao": null
@@ -24117,25 +24177,25 @@
     "titulo": "Loucura Permanente",
     "pagina": 139,
     "paginaFim": 139,
-    "linhaInicio": 46,
-    "linhaFim": 52,
+    "linhaInicio": 70,
+    "linhaFim": 83,
     "temCampos": true,
     "campos": {
      "duracao": {
       "pagina": 139,
-      "linha": 47
+      "linha": 75
      },
      "custo": {
       "pagina": 139,
-      "linha": 48
+      "linha": 77
      },
      "tempo": {
       "pagina": 139,
-      "linha": 49
+      "linha": 79
      },
      "preRequisitos": {
       "pagina": 139,
-      "linha": 50
+      "linha": 81
      }
     },
     "remissao": null
@@ -24805,7 +24865,7 @@
     "titulo": "Mão Mágica",
     "pagina": 104,
     "paginaFim": 105,
-    "linhaInicio": 72,
+    "linhaInicio": 87,
     "linhaFim": 11,
     "temCampos": true,
     "campos": {
@@ -25012,26 +25072,26 @@
     "variante": null,
     "titulo": "Maré",
     "pagina": 194,
-    "paginaFim": 194,
-    "linhaInicio": 45,
-    "linhaFim": 64,
+    "paginaFim": 195,
+    "linhaInicio": 76,
+    "linhaFim": 5,
     "temCampos": true,
     "campos": {
      "duracao": {
       "pagina": 194,
-      "linha": 57
+      "linha": 87
      },
      "custo": {
       "pagina": 194,
-      "linha": 58
+      "linha": 89
      },
      "tempo": {
       "pagina": 194,
-      "linha": 59
+      "linha": 91
      },
      "preRequisitos": {
       "pagina": 194,
-      "linha": 60
+      "linha": 93
      }
     },
     "remissao": null
@@ -25066,9 +25126,22 @@
     "pagina": 150,
     "paginaFim": 151,
     "linhaInicio": 79,
-    "linhaFim": 2,
-    "temCampos": false,
-    "campos": {},
+    "linhaFim": 10,
+    "temCampos": true,
+    "campos": {
+     "duracao": {
+      "pagina": 151,
+      "linha": 4
+     },
+     "custo": {
+      "pagina": 151,
+      "linha": 6
+     },
+     "preRequisitos": {
+      "pagina": 151,
+      "linha": 8
+     }
+    },
     "remissao": null
    }
   },
@@ -25288,25 +25361,25 @@
     "titulo": "Memória Falsa",
     "pagina": 139,
     "paginaFim": 140,
-    "linhaInicio": 54,
+    "linhaInicio": 99,
     "linhaFim": 2,
     "temCampos": true,
     "campos": {
      "duracao": {
       "pagina": 139,
-      "linha": 59
+      "linha": 106
      },
      "custo": {
       "pagina": 139,
-      "linha": 60
+      "linha": 108
      },
      "tempo": {
       "pagina": 139,
-      "linha": 61
+      "linha": 110
      },
      "preRequisitos": {
       "pagina": 139,
-      "linha": 62
+      "linha": 112
      }
     },
     "remissao": null
@@ -25392,25 +25465,25 @@
     "titulo": "Mensagem",
     "pagina": 174,
     "paginaFim": 174,
-    "linhaInicio": 30,
-    "linhaFim": 47,
+    "linhaInicio": 34,
+    "linhaFim": 54,
     "temCampos": true,
     "campos": {
      "duracao": {
       "pagina": 174,
-      "linha": 39
+      "linha": 43
      },
      "custo": {
       "pagina": 174,
-      "linha": 40
+      "linha": 45
      },
      "tempo": {
       "pagina": 174,
-      "linha": 41
+      "linha": 47
      },
      "preRequisitos": {
       "pagina": 174,
-      "linha": 42
+      "linha": 49
      }
     },
     "remissao": null
@@ -27210,25 +27283,25 @@
     "titulo": "Nariz Mágico",
     "pagina": 104,
     "paginaFim": 104,
-    "linhaInicio": 54,
-    "linhaFim": 70,
+    "linhaInicio": 67,
+    "linhaFim": 85,
     "temCampos": true,
     "campos": {
      "duracao": {
       "pagina": 104,
-      "linha": 62
+      "linha": 74
      },
      "custo": {
       "pagina": 104,
-      "linha": 63
+      "linha": 76
      },
      "tempo": {
       "pagina": 104,
-      "linha": 64
+      "linha": 78
      },
      "preRequisitos": {
       "pagina": 104,
-      "linha": 65
+      "linha": 80
      }
     },
     "remissao": null
@@ -27458,21 +27531,21 @@
     "titulo": "Neve",
     "pagina": 195,
     "paginaFim": 195,
-    "linhaInicio": 34,
-    "linhaFim": 50,
+    "linhaInicio": 49,
+    "linhaFim": 65,
     "temCampos": true,
     "campos": {
      "duracao": {
       "pagina": 195,
-      "linha": 43
+      "linha": 56
      },
      "custo": {
       "pagina": 195,
-      "linha": 44
+      "linha": 58
      },
      "preRequisitos": {
       "pagina": 195,
-      "linha": 45
+      "linha": 60
      }
     },
     "remissao": null
@@ -27810,25 +27883,25 @@
     "titulo": "Nuvens",
     "pagina": 194,
     "paginaFim": 194,
-    "linhaInicio": 30,
-    "linhaFim": 45,
+    "linhaInicio": 34,
+    "linhaFim": 52,
     "temCampos": true,
     "campos": {
      "duracao": {
       "pagina": 194,
-      "linha": 38
+      "linha": 41
      },
      "custo": {
       "pagina": 194,
-      "linha": 39
+      "linha": 43
      },
      "tempo": {
       "pagina": 194,
-      "linha": 40
+      "linha": 45
      },
      "preRequisitos": {
       "pagina": 194,
-      "linha": 41
+      "linha": 47
      }
     },
     "remissao": null
@@ -28014,21 +28087,21 @@
     "titulo": "Ocultar Magia",
     "pagina": 122,
     "paginaFim": 122,
-    "linhaInicio": 27,
+    "linhaInicio": 22,
     "linhaFim": 44,
     "temCampos": true,
     "campos": {
      "duracao": {
       "pagina": 122,
-      "linha": 36
+      "linha": 33
      },
      "custo": {
       "pagina": 122,
-      "linha": 37
+      "linha": 35
      },
      "tempo": {
       "pagina": 122,
-      "linha": 38
+      "linha": 37
      },
      "preRequisitos": {
       "pagina": 122,
@@ -28266,25 +28339,25 @@
     "titulo": "Olho Mágico",
     "pagina": 104,
     "paginaFim": 104,
-    "linhaInicio": 2,
-    "linhaFim": 16,
+    "linhaInicio": 9,
+    "linhaFim": 25,
     "temCampos": true,
     "campos": {
      "duracao": {
       "pagina": 104,
-      "linha": 8
+      "linha": 14
      },
      "custo": {
       "pagina": 104,
-      "linha": 9
+      "linha": 16
      },
      "tempo": {
       "pagina": 104,
-      "linha": 10
+      "linha": 18
      },
      "preRequisitos": {
       "pagina": 104,
-      "linha": 11
+      "linha": 20
      }
     },
     "remissao": null
@@ -28318,25 +28391,25 @@
     "titulo": "Olho Mágico Invisível",
     "pagina": 104,
     "paginaFim": 104,
-    "linhaInicio": 18,
-    "linhaFim": 32,
+    "linhaInicio": 27,
+    "linhaFim": 43,
     "temCampos": true,
     "campos": {
      "duracao": {
       "pagina": 104,
-      "linha": 24
+      "linha": 32
      },
      "custo": {
       "pagina": 104,
-      "linha": 25
+      "linha": 34
      },
      "tempo": {
       "pagina": 104,
-      "linha": 26
+      "linha": 36
      },
      "preRequisitos": {
       "pagina": 104,
-      "linha": 27
+      "linha": 38
      }
     },
     "remissao": null
@@ -28422,25 +28495,25 @@
     "titulo": "Ondas",
     "pagina": 194,
     "paginaFim": 194,
-    "linhaInicio": 13,
-    "linhaFim": 30,
+    "linhaInicio": 6,
+    "linhaFim": 32,
     "temCampos": true,
     "campos": {
      "duracao": {
       "pagina": 194,
-      "linha": 23
+      "linha": 15
      },
      "custo": {
       "pagina": 194,
-      "linha": 24
+      "linha": 17
      },
      "tempo": {
       "pagina": 194,
-      "linha": 25
+      "linha": 19
      },
      "preRequisitos": {
       "pagina": 194,
-      "linha": 26
+      "linha": 21
      }
     },
     "remissao": null
@@ -28518,25 +28591,25 @@
     "titulo": "Ouvido Mágico",
     "pagina": 174,
     "paginaFim": 174,
-    "linhaInicio": 77,
-    "linhaFim": 90,
+    "linhaInicio": 93,
+    "linhaFim": 109,
     "temCampos": true,
     "campos": {
      "duracao": {
       "pagina": 174,
-      "linha": 82
+      "linha": 98
      },
      "custo": {
       "pagina": 174,
-      "linha": 83
+      "linha": 100
      },
      "tempo": {
       "pagina": 174,
-      "linha": 84
+      "linha": 102
      },
      "preRequisitos": {
       "pagina": 174,
-      "linha": 85
+      "linha": 104
      }
     },
     "remissao": null
@@ -28570,25 +28643,25 @@
     "titulo": "Ouvido Mágico Invisível",
     "pagina": 174,
     "paginaFim": 175,
-    "linhaInicio": 92,
+    "linhaInicio": 111,
     "linhaFim": 13,
     "temCampos": true,
     "campos": {
      "duracao": {
       "pagina": 174,
-      "linha": 97
+      "linha": 116
      },
      "custo": {
       "pagina": 174,
-      "linha": 98
+      "linha": 118
      },
      "tempo": {
       "pagina": 174,
-      "linha": 99
+      "linha": 120
      },
      "preRequisitos": {
       "pagina": 174,
-      "linha": 100
+      "linha": 122
      }
     },
     "remissao": null
@@ -28675,9 +28748,22 @@
     "pagina": 176,
     "paginaFim": 177,
     "linhaInicio": 82,
-    "linhaFim": 2,
-    "temCampos": false,
-    "campos": {},
+    "linhaFim": 13,
+    "temCampos": true,
+    "campos": {
+     "duracao": {
+      "pagina": 177,
+      "linha": 4
+     },
+     "custo": {
+      "pagina": 177,
+      "linha": 6
+     },
+     "preRequisitos": {
+      "pagina": 177,
+      "linha": 8
+     }
+    },
     "remissao": null
    }
   },
@@ -28853,25 +28939,25 @@
     "titulo": "Passageiro da Alma",
     "pagina": 49,
     "paginaFim": 49,
-    "linhaInicio": 16,
-    "linhaFim": 28,
+    "linhaInicio": 21,
+    "linhaFim": 37,
     "temCampos": true,
     "campos": {
      "duracao": {
       "pagina": 49,
-      "linha": 21
+      "linha": 26
      },
      "custo": {
       "pagina": 49,
-      "linha": 22
+      "linha": 28
      },
      "tempo": {
       "pagina": 49,
-      "linha": 23
+      "linha": 30
      },
      "preRequisitos": {
       "pagina": 49,
-      "linha": 24
+      "linha": 32
      }
     },
     "remissao": null
@@ -30099,21 +30185,21 @@
     "titulo": "Pés Plantados",
     "pagina": 36,
     "paginaFim": 36,
-    "linhaInicio": 58,
-    "linhaFim": 71,
+    "linhaInicio": 75,
+    "linhaFim": 89,
     "temCampos": true,
     "campos": {
      "duracao": {
       "pagina": 36,
-      "linha": 64
+      "linha": 80
      },
      "custo": {
       "pagina": 36,
-      "linha": 65
+      "linha": 82
      },
      "preRequisitos": {
       "pagina": 36,
-      "linha": 66
+      "linha": 84
      }
     },
     "remissao": null
@@ -30391,25 +30477,25 @@
     "titulo": "Possessão",
     "pagina": 49,
     "paginaFim": 49,
-    "linhaInicio": 28,
-    "linhaFim": 40,
+    "linhaInicio": 57,
+    "linhaFim": 73,
     "temCampos": true,
     "campos": {
      "duracao": {
       "pagina": 49,
-      "linha": 33
+      "linha": 62
      },
      "custo": {
       "pagina": 49,
-      "linha": 34
+      "linha": 64
      },
      "tempo": {
       "pagina": 49,
-      "linha": 35
+      "linha": 66
      },
      "preRequisitos": {
       "pagina": 49,
-      "linha": 36
+      "linha": 68
      }
     },
     "remissao": null
@@ -30547,25 +30633,25 @@
     "titulo": "Possessão Permanente",
     "pagina": 49,
     "paginaFim": 49,
-    "linhaInicio": 40,
-    "linhaFim": 52,
+    "linhaInicio": 91,
+    "linhaFim": 107,
     "temCampos": true,
     "campos": {
      "duracao": {
       "pagina": 49,
-      "linha": 45
+      "linha": 96
      },
      "custo": {
       "pagina": 49,
-      "linha": 46
+      "linha": 98
      },
      "tempo": {
       "pagina": 49,
-      "linha": 47
+      "linha": 100
      },
      "preRequisitos": {
       "pagina": 49,
-      "linha": 48
+      "linha": 102
      }
     },
     "remissao": null
@@ -31092,7 +31178,7 @@
     "pagina": 193,
     "paginaFim": 194,
     "linhaInicio": 44,
-    "linhaFim": 2,
+    "linhaFim": 4,
     "temCampos": true,
     "campos": {
      "custo": {
@@ -31495,17 +31581,17 @@
     "titulo": "Proteção",
     "pagina": 122,
     "paginaFim": 122,
-    "linhaInicio": 11,
-    "linhaFim": 22,
+    "linhaInicio": 2,
+    "linhaFim": 13,
     "temCampos": true,
     "campos": {
      "custo": {
       "pagina": 122,
-      "linha": 18
+      "linha": 9
      },
      "preRequisitos": {
       "pagina": 122,
-      "linha": 20
+      "linha": 11
      }
     },
     "remissao": null
@@ -31539,17 +31625,17 @@
     "titulo": "Proteção Superior",
     "pagina": 122,
     "paginaFim": 122,
-    "linhaInicio": 53,
-    "linhaFim": 62,
+    "linhaInicio": 75,
+    "linhaFim": 84,
     "temCampos": true,
     "campos": {
      "custo": {
       "pagina": 122,
-      "linha": 58
+      "linha": 80
      },
      "preRequisitos": {
       "pagina": 122,
-      "linha": 60
+      "linha": 82
      }
     },
     "remissao": null
@@ -32359,10 +32445,27 @@
     "titulo": "Recarregar Gema de Energia",
     "pagina": 126,
     "paginaFim": 127,
-    "linhaInicio": 55,
-    "linhaFim": 2,
-    "temCampos": false,
-    "campos": {},
+    "linhaInicio": 54,
+    "linhaFim": 12,
+    "temCampos": true,
+    "campos": {
+     "duracao": {
+      "pagina": 127,
+      "linha": 4
+     },
+     "custo": {
+      "pagina": 127,
+      "linha": 6
+     },
+     "tempo": {
+      "pagina": 127,
+      "linha": 8
+     },
+     "preRequisitos": {
+      "pagina": 127,
+      "linha": 10
+     }
+    },
     "remissao": null
    }
   },
@@ -32442,25 +32545,25 @@
     "titulo": "Reconstruir/NT",
     "pagina": 177,
     "paginaFim": 177,
-    "linhaInicio": 41,
-    "linhaFim": 58,
+    "linhaInicio": 55,
+    "linhaFim": 74,
     "temCampos": true,
     "campos": {
      "duracao": {
       "pagina": 177,
-      "linha": 53
+      "linha": 66
      },
      "custo": {
       "pagina": 177,
-      "linha": 54
+      "linha": 68
      },
      "tempo": {
       "pagina": 177,
-      "linha": 55
+      "linha": 70
      },
      "preRequisitos": {
       "pagina": 177,
-      "linha": 56
+      "linha": 72
      }
     },
     "remissao": null
@@ -32734,17 +32837,17 @@
     "titulo": "Refletir",
     "pagina": 122,
     "paginaFim": 122,
-    "linhaInicio": 44,
-    "linhaFim": 53,
+    "linhaInicio": 46,
+    "linhaFim": 55,
     "temCampos": true,
     "campos": {
      "custo": {
       "pagina": 122,
-      "linha": 49
+      "linha": 51
      },
      "preRequisitos": {
       "pagina": 122,
-      "linha": 51
+      "linha": 53
      }
     },
     "remissao": null
@@ -33366,25 +33469,25 @@
     "titulo": "Remover Aura",
     "pagina": 127,
     "paginaFim": 127,
-    "linhaInicio": 2,
-    "linhaFim": 17,
+    "linhaInicio": 32,
+    "linhaFim": 50,
     "temCampos": true,
     "campos": {
      "duracao": {
       "pagina": 127,
-      "linha": 12
+      "linha": 39
      },
      "custo": {
       "pagina": 127,
-      "linha": 13
+      "linha": 41
      },
      "tempo": {
       "pagina": 127,
-      "linha": 14
+      "linha": 43
      },
      "preRequisitos": {
       "pagina": 127,
-      "linha": 15
+      "linha": 45
      }
     },
     "remissao": null
@@ -33522,21 +33625,21 @@
     "titulo": "Remover Maldição",
     "pagina": 126,
     "paginaFim": 126,
-    "linhaInicio": 42,
-    "linhaFim": 53,
+    "linhaInicio": 41,
+    "linhaFim": 52,
     "temCampos": true,
     "campos": {
      "custo": {
       "pagina": 126,
-      "linha": 47
+      "linha": 46
      },
      "tempo": {
       "pagina": 126,
-      "linha": 49
+      "linha": 48
      },
      "preRequisitos": {
       "pagina": 126,
-      "linha": 51
+      "linha": 50
      }
     },
     "remissao": null
@@ -34082,25 +34185,25 @@
     "titulo": "Resfriar",
     "pagina": 195,
     "paginaFim": 195,
-    "linhaInicio": 81,
-    "linhaFim": 96,
+    "linhaInicio": 107,
+    "linhaFim": 125,
     "temCampos": true,
     "campos": {
      "duracao": {
       "pagina": 195,
-      "linha": 88
+      "linha": 114
      },
      "tempo": {
       "pagina": 195,
-      "linha": 89
+      "linha": 116
      },
      "custo": {
       "pagina": 195,
-      "linha": 90
+      "linha": 118
      },
      "preRequisitos": {
       "pagina": 195,
-      "linha": 91
+      "linha": 120
      }
     },
     "remissao": null
@@ -34186,25 +34289,25 @@
     "titulo": "Resguardar Área",
     "pagina": 122,
     "paginaFim": 122,
-    "linhaInicio": 2,
-    "linhaFim": 11,
+    "linhaInicio": 57,
+    "linhaFim": 73,
     "temCampos": true,
     "campos": {
      "duracao": {
       "pagina": 122,
-      "linha": 6
+      "linha": 62
      },
      "custo": {
       "pagina": 122,
-      "linha": 7
+      "linha": 64
      },
      "tempo": {
       "pagina": 122,
-      "linha": 8
+      "linha": 66
      },
      "preRequisitos": {
       "pagina": 122,
-      "linha": 9
+      "linha": 68
      }
     },
     "remissao": null
@@ -34790,8 +34893,8 @@
     "titulo": "Restaurar Mana",
     "pagina": 127,
     "paginaFim": 127,
-    "linhaInicio": 46,
-    "linhaFim": 54,
+    "linhaInicio": 71,
+    "linhaFim": 76,
     "temCampos": false,
     "campos": {},
     "remissao": null
@@ -35925,25 +36028,25 @@
     "titulo": "Roubar Mágica",
     "pagina": 127,
     "paginaFim": 128,
-    "linhaInicio": 56,
+    "linhaInicio": 78,
     "linhaFim": 2,
     "temCampos": true,
     "campos": {
      "duracao": {
       "pagina": 127,
-      "linha": 62
+      "linha": 87
      },
      "custo": {
       "pagina": 127,
-      "linha": 63
+      "linha": 89
      },
      "tempo": {
       "pagina": 127,
-      "linha": 64
+      "linha": 91
      },
      "preRequisitos": {
       "pagina": 127,
-      "linha": 65
+      "linha": 93
      }
     },
     "remissao": null
@@ -36128,22 +36231,22 @@
     "variante": null,
     "titulo": "Sabedoria",
     "pagina": 135,
-    "paginaFim": 135,
-    "linhaInicio": 75,
-    "linhaFim": 84,
+    "paginaFim": 136,
+    "linhaInicio": 100,
+    "linhaFim": 2,
     "temCampos": true,
     "campos": {
      "duracao": {
       "pagina": 135,
-      "linha": 80
+      "linha": 105
      },
      "custo": {
       "pagina": 135,
-      "linha": 81
+      "linha": 107
      },
      "preRequisitos": {
       "pagina": 135,
-      "linha": 82
+      "linha": 109
      }
     },
     "remissao": null
@@ -36216,22 +36319,22 @@
     "variante": null,
     "titulo": "Saltar Nuvens",
     "pagina": 148,
-    "paginaFim": 148,
-    "linhaInicio": 64,
-    "linhaFim": 82,
+    "paginaFim": 149,
+    "linhaInicio": 116,
+    "linhaFim": 6,
     "temCampos": true,
     "campos": {
      "duracao": {
       "pagina": 148,
-      "linha": 75
+      "linha": 127
      },
      "custo": {
       "pagina": 148,
-      "linha": 76
+      "linha": 129
      },
      "preRequisitos": {
       "pagina": 148,
-      "linha": 77
+      "linha": 131
      }
     },
     "remissao": null
@@ -36417,25 +36520,25 @@
     "titulo": "Secar Nascente",
     "pagina": 188,
     "paginaFim": 188,
-    "linhaInicio": 79,
-    "linhaFim": 92,
+    "linhaInicio": 92,
+    "linhaFim": 108,
     "temCampos": true,
     "campos": {
      "duracao": {
       "pagina": 188,
-      "linha": 84
+      "linha": 97
      },
      "custo": {
       "pagina": 188,
-      "linha": 85
+      "linha": 99
      },
      "tempo": {
       "pagina": 188,
-      "linha": 86
+      "linha": 101
      },
      "preRequisitos": {
       "pagina": 188,
-      "linha": 87
+      "linha": 103
      }
     },
     "remissao": null
@@ -37012,21 +37115,21 @@
     "titulo": "Solidificar",
     "pagina": 151,
     "paginaFim": 151,
-    "linhaInicio": 2,
-    "linhaFim": 11,
+    "linhaInicio": 12,
+    "linhaFim": 23,
     "temCampos": true,
     "campos": {
      "duracao": {
       "pagina": 151,
-      "linha": 7
+      "linha": 17
      },
      "custo": {
       "pagina": 151,
-      "linha": 8
+      "linha": 19
      },
      "preRequisitos": {
       "pagina": 151,
-      "linha": 9
+      "linha": 21
      }
     },
     "remissao": null
@@ -37199,21 +37302,21 @@
     "titulo": "Sono",
     "pagina": 135,
     "paginaFim": 135,
-    "linhaInicio": 63,
-    "linhaFim": 72,
+    "linhaInicio": 84,
+    "linhaFim": 98,
     "temCampos": true,
     "campos": {
      "custo": {
       "pagina": 135,
-      "linha": 68
+      "linha": 89
      },
      "tempo": {
       "pagina": 135,
-      "linha": 69
+      "linha": 91
      },
      "preRequisitos": {
       "pagina": 135,
-      "linha": 70
+      "linha": 93
      }
     },
     "remissao": null
@@ -37247,21 +37350,21 @@
     "titulo": "Sono Coletivo",
     "pagina": 137,
     "paginaFim": 138,
-    "linhaInicio": 79,
+    "linhaInicio": 94,
     "linhaFim": 2,
     "temCampos": true,
     "campos": {
      "custo": {
       "pagina": 137,
-      "linha": 83
+      "linha": 99
      },
      "tempo": {
       "pagina": 137,
-      "linha": 84
+      "linha": 101
      },
      "preRequisitos": {
       "pagina": 137,
-      "linha": 85
+      "linha": 103
      }
     },
     "remissao": null
@@ -37734,25 +37837,25 @@
     "titulo": "Subjugar",
     "pagina": 139,
     "paginaFim": 139,
-    "linhaInicio": 2,
-    "linhaFim": 12,
+    "linhaInicio": 14,
+    "linhaFim": 30,
     "temCampos": true,
     "campos": {
      "duracao": {
       "pagina": 139,
-      "linha": 7
+      "linha": 19
      },
      "custo": {
       "pagina": 139,
-      "linha": 8
+      "linha": 21
      },
      "tempo": {
       "pagina": 139,
-      "linha": 9
+      "linha": 23
      },
      "preRequisitos": {
       "pagina": 139,
-      "linha": 10
+      "linha": 25
      }
     },
     "remissao": null
@@ -38670,25 +38773,25 @@
     "titulo": "Tempestade",
     "pagina": 195,
     "paginaFim": 196,
-    "linhaInicio": 96,
+    "linhaInicio": 127,
     "linhaFim": 2,
     "temCampos": true,
     "campos": {
      "duracao": {
       "pagina": 195,
-      "linha": 105
+      "linha": 136
      },
      "custo": {
       "pagina": 195,
-      "linha": 106
+      "linha": 138
      },
      "tempo": {
       "pagina": 195,
-      "linha": 107
+      "linha": 140
      },
      "preRequisitos": {
       "pagina": 195,
-      "linha": 108
+      "linha": 142
      }
     },
     "remissao": null
@@ -39526,25 +39629,25 @@
     "titulo": "Toque Congelante",
     "pagina": 188,
     "paginaFim": 188,
-    "linhaInicio": 60,
-    "linhaFim": 77,
+    "linhaInicio": 52,
+    "linhaFim": 70,
     "temCampos": true,
     "campos": {
      "duracao": {
       "pagina": 188,
-      "linha": 69
+      "linha": 59
      },
      "custo": {
       "pagina": 188,
-      "linha": 70
+      "linha": 61
      },
      "tempo": {
       "pagina": 188,
-      "linha": 71
+      "linha": 63
      },
      "preRequisitos": {
       "pagina": 188,
-      "linha": 72
+      "linha": 65
      }
     },
     "remissao": null
@@ -39674,25 +39777,25 @@
     "titulo": "Torpor Coletivo",
     "pagina": 137,
     "paginaFim": 137,
-    "linhaInicio": 2,
-    "linhaFim": 12,
+    "linhaInicio": 23,
+    "linhaFim": 36,
     "temCampos": true,
     "campos": {
      "duracao": {
       "pagina": 137,
-      "linha": 7
+      "linha": 28
      },
      "custo": {
       "pagina": 137,
-      "linha": 8
+      "linha": 30
      },
      "tempo": {
       "pagina": 137,
-      "linha": 9
+      "linha": 32
      },
      "preRequisitos": {
       "pagina": 137,
-      "linha": 10
+      "linha": 34
      }
     },
     "remissao": null
@@ -39778,17 +39881,17 @@
     "titulo": "Trança-Pés",
     "pagina": 36,
     "paginaFim": 36,
-    "linhaInicio": 71,
-    "linhaFim": 83,
+    "linhaInicio": 91,
+    "linhaFim": 103,
     "temCampos": true,
     "campos": {
      "custo": {
       "pagina": 36,
-      "linha": 77
+      "linha": 96
      },
      "preRequisitos": {
       "pagina": 36,
-      "linha": 78
+      "linha": 98
      }
     },
     "remissao": null
@@ -39978,17 +40081,17 @@
     "titulo": "Translocação",
     "pagina": 148,
     "paginaFim": 148,
-    "linhaInicio": 5,
-    "linhaFim": 22,
+    "linhaInicio": 7,
+    "linhaFim": 25,
     "temCampos": true,
     "campos": {
      "custo": {
       "pagina": 148,
-      "linha": 16
+      "linha": 18
      },
      "preRequisitos": {
       "pagina": 148,
-      "linha": 17
+      "linha": 20
      }
     },
     "remissao": null
@@ -40066,17 +40169,17 @@
     "titulo": "Translocar Outro",
     "pagina": 148,
     "paginaFim": 148,
-    "linhaInicio": 22,
-    "linhaFim": 35,
+    "linhaInicio": 27,
+    "linhaFim": 41,
     "temCampos": true,
     "campos": {
      "custo": {
       "pagina": 148,
-      "linha": 29
+      "linha": 34
      },
      "preRequisitos": {
       "pagina": 148,
-      "linha": 30
+      "linha": 36
      }
     },
     "remissao": null
@@ -40505,26 +40608,26 @@
     "variante": null,
     "titulo": "Trocar de Corpo",
     "pagina": 49,
-    "paginaFim": 49,
-    "linhaInicio": 52,
-    "linhaFim": 66,
+    "paginaFim": 50,
+    "linhaInicio": 109,
+    "linhaFim": 8,
     "temCampos": true,
     "campos": {
      "duracao": {
       "pagina": 49,
-      "linha": 59
+      "linha": 116
      },
      "custo": {
       "pagina": 49,
-      "linha": 60
+      "linha": 118
      },
      "tempo": {
       "pagina": 49,
-      "linha": 61
+      "linha": 120
      },
      "preRequisitos": {
       "pagina": 49,
-      "linha": 62
+      "linha": 122
      }
     },
     "remissao": null
@@ -40690,25 +40793,25 @@
     "titulo": "Vento",
     "pagina": 195,
     "paginaFim": 195,
-    "linhaInicio": 2,
-    "linhaFim": 19,
+    "linhaInicio": 7,
+    "linhaFim": 27,
     "temCampos": true,
     "campos": {
      "duracao": {
       "pagina": 195,
-      "linha": 11
+      "linha": 16
      },
      "custo": {
       "pagina": 195,
-      "linha": 12
+      "linha": 18
      },
      "tempo": {
       "pagina": 195,
-      "linha": 13
+      "linha": 20
      },
      "preRequisitos": {
       "pagina": 195,
-      "linha": 14
+      "linha": 22
      }
     },
     "remissao": null
@@ -41263,7 +41366,7 @@
     "pagina": 138,
     "paginaFim": 139,
     "linhaInicio": 108,
-    "linhaFim": 2,
+    "linhaFim": 5,
     "temCampos": true,
     "campos": {
      "duracao": {
@@ -42302,25 +42405,25 @@
     "titulo": "Zumbi",
     "pagina": 151,
     "paginaFim": 152,
-    "linhaInicio": 52,
+    "linhaInicio": 84,
     "linhaFim": 2,
     "temCampos": true,
     "campos": {
      "duracao": {
       "pagina": 151,
-      "linha": 57
+      "linha": 89
      },
      "custo": {
       "pagina": 151,
-      "linha": 58
+      "linha": 91
      },
      "tempo": {
       "pagina": 151,
-      "linha": 59
+      "linha": 93
      },
      "preRequisitos": {
       "pagina": 151,
-      "linha": 60
+      "linha": 95
      }
     },
     "remissao": null

@@ -1,0 +1,14 @@
+{
+  "_leia": "Passo 8 da cadeia (aplicar-correcoes-manuais.js): onde o LIVRO diz uma coisa e a cadeia (passos 1 a 7) lê outra, a correção mora AQUI, com o adendo (planos/magias/ADENDOS-DO-CLAUDE.md, no repositório da Mesa) e a página. campo: 'descricao', 'tempoOperacaoTela', 'custoManter', 'custoManterTipo' ou 'mecanica.<campo>'. de/para: texto a trocar (ou, com de=null, o valor a gravar). Idempotente: o que já está certo é só avisado. Quando a cadeia passar a ler certo (página reextraída do PDF, P-8), apague a linha.",
+  "correcoes": [
+    { "adendo": "A6", "pagina": 45, "id": "percepcao_de_vida", "campo": "descricao", "de": " Duração: 1 minuto.", "para": "", "porque": "o livro não tem linha de duração (a tabela diz Instantânea); o 'Duração: 1 minuto.' é sobra do texto antigo" },
+    { "adendo": "A12", "pagina": 192, "id": "sopro_congelante", "campo": "mecanica.danoPorEnergia", "de": "1d-1", "para": "1d+1", "porque": "o livro: 'Dá 1d+1 de dano a cada ponto de energia' (o 1d-1 é o do Jato de Neve)" },
+    { "adendo": "A12", "pagina": 192, "id": "sopro_congelante", "campo": "mecanica.notas", "de": "1d-1 por ponto", "para": "1d+1 por ponto", "porque": "idem" },
+    { "adendo": "A48", "pagina": 192, "id": "sopro_congelante", "campo": "custoManter", "de": null, "para": 0, "porque": "o livro: 'Não pode ser mantida' (como os outros sopros)" },
+    { "adendo": "A48", "pagina": 192, "id": "sopro_congelante", "campo": "custoManterTipo", "de": null, "para": "nao", "porque": "o catálogo exige o tipo junto do custoManter 0" },
+    { "adendo": "A13", "pagina": 28, "id": "criar_elemental_ar", "campo": "tempoOperacaoTela", "de": null, "para": "segundos = pontos do elemental (p.28)", "porque": "o livro: o tempo é 'um valor em segundos igual ao total de pontos de personagem do elemental'" },
+    { "adendo": "A13", "pagina": 28, "id": "criar_elemental_agua", "campo": "tempoOperacaoTela", "de": null, "para": "segundos = pontos do elemental (p.28)", "porque": "idem" },
+    { "adendo": "A13", "pagina": 28, "id": "criar_elemental_fogo", "campo": "tempoOperacaoTela", "de": null, "para": "segundos = pontos do elemental (p.28)", "porque": "idem" },
+    { "adendo": "A13", "pagina": 28, "id": "criar_elemental_terra", "campo": "tempoOperacaoTela", "de": null, "para": "segundos = pontos do elemental (p.28)", "porque": "idem" }
+  ]
+}
