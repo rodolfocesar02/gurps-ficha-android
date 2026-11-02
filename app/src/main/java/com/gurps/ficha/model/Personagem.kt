@@ -911,6 +911,8 @@ data class MagiaDefinicao(
     val custoPorCondicao: com.gurps.ficha.domain.magic.CustoPorCondicao? = null,
     // P-5b: o livro diz que o NH elevado NÃO reduz o custo desta magia (Força, Conceder Energia, Telemágica...): a página que o diz.
     val semDescontoDeNh: com.gurps.ficha.domain.magic.SemDescontoDeNh? = null,
+    // P-9: a faixa Operar / Dura / Manter do livro, pronta (gravada no catálogo pelo gerador da Mesa; ver `FaixaDoLivro`). Null = sem faixa.
+    val faixaDoLivro: com.gurps.ficha.domain.magic.FaixaDoLivro? = null,
 ) {
     // Mantendo atributo base IQ fixo para magias
     val atributoBase: String get() = "IQ"

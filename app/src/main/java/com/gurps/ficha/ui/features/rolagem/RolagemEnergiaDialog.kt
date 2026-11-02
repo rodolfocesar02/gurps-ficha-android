@@ -38,6 +38,8 @@ fun RolagemEnergiaManualDialog(
     var comoBloqueio by remember { mutableStateOf(false) }
     // P-5c: o ajuste no NH que a conta do custo traz (a distância do Teleporte...): vai para a rolagem junto com o custo
     var modificadorDaConta by remember { mutableStateOf(0) }
+    // P-9: o que a conta por condição diz sobre manter (a faixa do livro mostra), onde a magia tem essa conta
+    var manterDaConta by remember { mutableStateOf<com.gurps.ficha.domain.magic.ManterDaConta?>(null) }
     fun contaDe(custoBase: Int) = MagiaEnergiaRules.contaDoCusto(
         base = custoBase, nh = magiaEnergia.target, classe = magiaEnergia.classe, definicaoId = magiaEnergia.definicaoId,
         temCondicao = magiaEnergia.custoPorCondicao?.contaPropria == true, comoBloqueio = comoBloqueio, mt = mtAlvo,
@@ -73,6 +75,11 @@ fun RolagemEnergiaManualDialog(
                         style = MaterialTheme.typography.bodySmall
                     )
                 }
+                // P-9: o que o livro diz da magia (Operar / Dura / Manter), igual ao cartão da Mesa; o "Manter" acompanha o custo escolhido e o NH
+                magiaEnergia.faixaDoLivro?.let { faixa ->
+                    val custoEscolhido = energiaManualInput.toIntOrNull()
+                    FaixaDoLivroLinha(faixa.colunas(custoEscolhido, custoEscolhido?.let { contaDe(it).reducao } ?: 0, manterDaConta))
+                }
                 // O custo que DEPENDE DA CONDIÇÃO (peso, tamanho, material...): o jogador informa e a conta do catálogo
                 // preenche o custo base logo abaixo (que ele ainda pode corrigir à mão).
                 magiaEnergia.custoPorCondicao?.let { spec ->
@@ -80,7 +87,8 @@ fun RolagemEnergiaManualDialog(
                         spec = spec,
                         isPraCegoVariant = isPraCegoVariant,
                         onCusto = { custo -> onInputMudou(custo?.toString().orEmpty()) },
-                        onModificador = { modificadorDaConta = it }
+                        onModificador = { modificadorDaConta = it },
+                        onManter = { manterDaConta = it }
                     )
                 }
                 CustoPorTamanhoEBloqueio(

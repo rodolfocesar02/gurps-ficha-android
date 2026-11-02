@@ -91,7 +91,9 @@ class TextoDaTelaDoLivroTest {
             }
             if (bruta.tempoOperacaoTela != null) {
                 viu++
-                assertEquals("${bruta.nome}: tempo de operação", bruta.tempoOperacaoSeg, MagicTime.parseTempoSeg(m.tempoOperacao))
+                // P-9: o texto da tela pode ser uma REGRA e não um tempo ("segundos = pontos do elemental (p.28)", o Criar Elemental): sem número
+                // conferido o parser dá o mínimo de 1 s, e o "28" da página não conta (`MagicTime.parseTempoSeg` ignora o que está entre parênteses).
+                assertEquals("${bruta.nome}: tempo de operação", bruta.tempoOperacaoSeg ?: 1, MagicTime.parseTempoSeg(m.tempoOperacao))
             }
         }
         assertTrue("o catálogo tem texto de tela para ler", viu >= 10)

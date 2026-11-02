@@ -42,7 +42,9 @@ fun CustoPorCondicaoCampos(
     isPraCegoVariant: Boolean,
     onCusto: (Int?) -> Unit,
     /** P-5c: o ajuste no NH que a condição traz (a distância do Teleporte: −3...); 0 onde a magia não tem. */
-    onModificador: (Int) -> Unit = {}
+    onModificador: (Int) -> Unit = {},
+    /** P-9: o que a conta diz sobre manter (a faixa Operar/Dura/Manter do diálogo usa); `null` quando a conta não fecha. */
+    onManter: (com.gurps.ficha.domain.magic.ManterDaConta?) -> Unit = {}
 ) {
     // `Any?` porque a entrada é número digitado (texto), id de opção (texto) ou marca (0/1).
     val condicoes = remember(spec) {
@@ -59,6 +61,7 @@ fun CustoPorCondicaoCampos(
     LaunchedEffect(resultado) {
         onCusto((resultado as? CustoPorCondicaoRules.Resultado.Ok)?.operar)
         onModificador((resultado as? CustoPorCondicaoRules.Resultado.Ok)?.modificador ?: 0)
+        onManter((resultado as? CustoPorCondicaoRules.Resultado.Ok)?.let { com.gurps.ficha.domain.magic.ManterDaConta(it.manterTipo, it.manter) })
     }
 
     Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {

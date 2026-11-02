@@ -68,8 +68,14 @@ data class MagiaRollOption(
     // O custo que DEPENDE DA CONDIÇÃO (peso, tamanho, material...): a conta do catálogo, ou null (custo do cabeçalho).
     val custoPorCondicao: com.gurps.ficha.domain.magic.CustoPorCondicao? = null,
     // P-5b: o livro diz que o NH elevado NÃO reduz o custo desta magia.
-    val semDescontoDeNh: com.gurps.ficha.domain.magic.SemDescontoDeNh? = null
+    val semDescontoDeNh: com.gurps.ficha.domain.magic.SemDescontoDeNh? = null,
+    // P-9: a faixa Operar / Dura / Manter do livro (o diálogo de energia a mostra).
+    val faixaDoLivro: com.gurps.ficha.domain.magic.FaixaDoLivro? = null
 )
+
+/** O que só o catálogo sabe da magia: a conta do custo por condição, o que isenta do desconto do NH e a faixa do livro. */
+fun MagiaRollOption.comOCatalogo(def: com.gurps.ficha.model.MagiaDefinicao?): MagiaRollOption =
+    copy(custoPorCondicao = def?.custoPorCondicao, semDescontoDeNh = def?.semDescontoDeNh, faixaDoLivro = def?.faixaDoLivro)
 
 data class TecnicaRollOption(
     val id: String,

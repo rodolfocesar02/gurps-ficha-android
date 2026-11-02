@@ -68,6 +68,23 @@ família do Teleporte (o custo vem com a penalidade de NH) e a Metamorfose (o li
 `python -I scripts/magias/extrair-custos-do-pdf.py --pdf "<PDF de Magia>"` grava `custos-do-pdf.json` (a linha de custo de cada entrada, direto do PDF de 2025);
 onde o `chunks.jsonl` não traz a linha (Animação, Comandar Espírito, Expulsar, Drenar Mana...) vale o PDF, e um teste confere TODA conta contra ele.
 
+## A faixa Operar / Dura / Manter (passo 7, **gerado pela Mesa**) — P-9, 02/nov/2026
+
+O diálogo de energia da aba Rolagem mostra o que o livro diz da magia (tempo de concentração, duração, custo de manter), como o cartão da Mesa. Quem **lê** o cabeçalho e os números conferidos
+(`duracao`, `tempoOperacao`, `energia`, `duracaoTipo/Seg`, `tempoOperacaoSeg`, `custoOperar/Manter`, os `*Tela`) é a **Mesa** (`magia-leitor.js`, `roda-cartao.js`); este catálogo guarda o resultado pronto
+em `faixaDoLivro` (`operar`, `dura`, `manter`) **por script da Mesa, nunca à mão**:
+
+```
+cd mesa-virtual/server
+node scripts/extrair-magias-no-alvo.js                              # a Mesa relê o catálogo
+node scripts/gerar-faixa-do-livro-no-catalogo-do-app.js             # grava faixaDoLivro e src/test/resources/faixa_do_livro_casos_gerados.json
+node scripts/gerar-faixa-do-livro-no-catalogo-do-app.js --verificar # diz se o catálogo ficou velho
+```
+
+Mexeu em qualquer campo de duração, tempo ou custo (os passos 1 a 6 acima)? **Rode estes dois depois.** Guardas: `FaixaDoLivroTest` (Kotlin: as 879 e as escolhas de custo/NH contra os 2.919 casos que a Mesa gera) e
+`test/faixa-no-catalogo-do-app.test.js` (Mesa: o catálogo e o arquivo de casos não envelhecem). As correções que a Mesa fazia por cima deste catálogo (`CORRECOES_DA_MESA`) foram gravadas aqui no P-9; a lista
+da Mesa ficou **vazia**, e `scripts/aplicar-correcoes-no-catalogo-do-app.js` (Mesa) grava uma correção nova, se um dia for preciso.
+
 ## O que NÃO se corrige para "ficar igual à prosa do livro"
 
 Os **pré-requisitos** e regras como a do *Transformar Outro* são **adaptações de propósito** para o motor

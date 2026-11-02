@@ -379,10 +379,8 @@ fun TabRolagem(viewModel: FichaViewModel) {
             tempoOperacao = mag.tempoOperacao,
             encantamentoAlvo = mag.encantamentoAlvo,
             classe = mag.classe,
-            descricao = mag.texto.orEmpty(),
-            custoPorCondicao = viewModel.dataRepository.magias.find { it.id == mag.definicaoId }?.custoPorCondicao,
-            semDescontoDeNh = viewModel.dataRepository.magias.find { it.id == mag.definicaoId }?.semDescontoDeNh
-        )
+            descricao = mag.texto.orEmpty()
+        ).comOCatalogo(viewModel.dataRepository.magias.find { it.id == mag.definicaoId })
     }
 
     val opcoesTecnica = p.tecnicas.filter { tec ->

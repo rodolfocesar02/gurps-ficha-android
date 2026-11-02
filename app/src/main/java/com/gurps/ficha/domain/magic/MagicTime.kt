@@ -60,9 +60,14 @@ object MagicTime {
     private fun temUnidadeDeTempo(t: String): Boolean =
         "seg" in t || "min" in t || "hora" in t || "hr" in t || "dia" in t || "semana" in t
 
-    /** Segundos do campo `tempoOperacao` (padrão 1s quando não informa — Magia p.9). */
+    /**
+     * Segundos do campo `tempoOperacao` (padrão 1s quando não informa — Magia p.9).
+     *
+     * O que está entre parênteses é nota ("segundos = pontos do elemental (p.28)", o texto da tela do Criar Elemental, P-9) e não conta:
+     * o "28" é a página do livro, e sem esta guarda viraria um tempo de 28 segundos.
+     */
     fun parseTempoSeg(txt: String?): Int {
-        val t = txt?.lowercase().orEmpty()
+        val t = txt?.lowercase().orEmpty().replace(Regex("""\([^)]*\)"""), " ")
         val n = Regex("""\d+""").find(t)?.value?.toIntOrNull() ?: 1
         return (n * unidadeEmSegundos(t)).coerceAtLeast(1)
     }
