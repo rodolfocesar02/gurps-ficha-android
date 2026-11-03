@@ -2352,19 +2352,32 @@
   {
     "id": "gigantismo",
     "nome": "Gigantismo",
-    "pagina": 144,
+    "pagina": 19,
     "costKind": "fixed",
-    "fixed": -10,
+    "fixed": 0,
     "perLevel": null,
     "options": null,
     "min": null,
     "max": null,
-    "rawCost": "-10",
+    "rawCost": "0",
     "specialRule": null,
     "tags": [
       "fisica"
     ],
-    "descricao": "V. Gigantismo, pág. 19\n\n## Gordo\nV. Gordo, pág. 19\n\n## Gregário\nV. Amigável, pág. 122"
+    "descricao": "V. Gigantismo, pág. 19\n\n## Gordo\nV. Gordo, pág. 19\n\n## Gregário\nV. Amigável, pág. 122",
+    "efeitos": [
+      {
+        "tipo": "pericia",
+        "alvo": "Disfarce/NT",
+        "valor": -2
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Perseguição",
+        "valor": -2,
+        "condicao": "só seguindo alguém no meio da multidão (MB p.19)"
+      }
+    ]
   },
   {
     "id": "gordo",
@@ -3441,7 +3454,20 @@
     "tags": [
       "fisica"
     ],
-    "descricao": "O personagem é extremamente pequeno para sua espécie. Isso afeta seu Modificador de Tamanho (MT) e alcance."
+    "descricao": "O personagem é extremamente pequeno para sua espécie. Isso afeta seu Modificador de Tamanho (MT) e alcance.",
+    "efeitos": [
+      {
+        "tipo": "pericia",
+        "alvo": "Disfarce/NT",
+        "valor": -2
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Perseguição",
+        "valor": -2,
+        "condicao": "só seguindo alguém no meio da multidão (MB p.19)"
+      }
+    ]
   },
   {
     "id": "nao_iconografico",

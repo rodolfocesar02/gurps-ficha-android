@@ -10109,3 +10109,13 @@ ficar verde**.
 - **Não havia botão de REMOVER a foto** antes (só escolher e trocar); continua assim.
 - **Testes:** voltam `FaxinaRetratosOrfaosTest` (9), `RostoDetectorSalienciaTest` (7), os 2 do retrato em `DestinoDaRolagemTest` e o `FichaParaAMesaTest` original ("o envio da ficha NAO depende de haver retrato"). Sonda: sem o `enviarRetratoParaAMesa` no salvar, "a Mesa recebe o retrato do personagem, como o Discord" fica vermelho (MD5 conferido na volta). JVM **1.949 testes, 0 falhas** nas 4 (visual e pracego, debug e release) = 1.931 do TR-2 + 18; `./gradlew build` **===EXIT=0===** (com `--max-workers=3`: duas sessões compilando ao mesmo tempo dividem o mesmo daemon do Kotlin e faltava memória).
 - **APK:** debug **123,5 MB** (era 138,0 antes do SEM-IA e 83,6 sem a imagem: o detector de rosto do ML Kit pesa ~37 MB, a maior parte para as 4 arquiteturas de processador); release **113,3 MB**. Nomes das chaves removidas no SEM-IA: **0** nos 4 APKs. Versão **202** (`12.9.2-IMAGEM-DE-VOLTA`).
+
+## Lote TR-2 (item 6) — [2026-11-03] Gigantismo a 0 ponto, Nanismo e Gigantismo em Disfarce e Perseguição, Audição Discriminatória em Perseguição
+- **Hash:** (commit deste lote; ver `git log`) + commit da Mesa e o ponteiro do submódulo.
+- **Pedido dele:** "Siga as propostas! O gigantismo é zero mesmo!" (`mesa-virtual/planos/tracos/PLANO.md`, TR-2 item 6).
+- **Mudanças (catálogo, vale para os dois lados):**
+  - `desvantagens.v2.json`: **Gigantismo** custa **0** (era −10) e a página é a **19** (era 144, a remissão). **Nanismo** e **Gigantismo**: −2 em Disfarce/NT e −2 em Perseguição como condicional ("só seguindo alguém no meio da multidão", MB p.19).
+  - `vantagens.v3.json`: **Audição Discriminatória**: +4 em Perseguição como condicional ("seguindo um alvo barulhento", MB p.44).
+  - **Na aba Rolagem isto muda:** Disfarce −2 com Nanismo ou Gigantismo, as caixinhas novas em Perseguição, e o custo do Gigantismo na criação da ficha.
+- **Na Mesa (sem mudança no app):** o MT do alvo soma Nanismo −1 e Gigantismo +1; Sem Noção de Profundidade vale como o Zarolho; a Audição Discriminatória vira caixinha +4 no sentido Audição.
+- **Testes:** scripts JS 108/108; JVM das duas variantes (ver o `===EXIT===` do gate); suíte da Mesa. Versão **203** (`12.9.3-TRACOS-TR2-ITEM6`).

@@ -1041,7 +1041,15 @@
   "rawCost": "15",
   "specialRule": null,
   "tags": [],
-  "descricao": "O personagem tem uma capacidade sobre-humana para distinguir sons. Ele sempre consegue identificar as pessoas pela voz e é capaz de reconhecer cada máquina por seu “som típico”. No caso de um sucesso em um teste de IQ, ele também é capaz de memorizar um som se puder ouvi-lo durante pelo menos um minuto. No caso de um fracasso, ele tem que esperar no mínimo um dia antes de repetir a tentativa. O personagem recebe um bônus de +4 (além dos eventuais bônus de Audição Aguçada) em qualquer tarefa que utiliza a audição e na perícia Perseguição quando estiver seguindo um alvo barulhento. Para simular o sonar passivo utilizado pelos submarinos, acrescente uma limitação, de Acesso de -30%; “Somente sob a Água”."
+  "descricao": "O personagem tem uma capacidade sobre-humana para distinguir sons. Ele sempre consegue identificar as pessoas pela voz e é capaz de reconhecer cada máquina por seu “som típico”. No caso de um sucesso em um teste de IQ, ele também é capaz de memorizar um som se puder ouvi-lo durante pelo menos um minuto. No caso de um fracasso, ele tem que esperar no mínimo um dia antes de repetir a tentativa. O personagem recebe um bônus de +4 (além dos eventuais bônus de Audição Aguçada) em qualquer tarefa que utiliza a audição e na perícia Perseguição quando estiver seguindo um alvo barulhento. Para simular o sonar passivo utilizado pelos submarinos, acrescente uma limitação, de Acesso de -30%; “Somente sob a Água”.",
+  "efeitos": [
+   {
+    "tipo": "pericia",
+    "alvo": "Perseguição",
+    "valor": 4,
+    "condicao": "seguindo um alvo barulhento (MB p.44)"
+   }
+  ]
  },
  {
   "id": "audicao_parabolica",
