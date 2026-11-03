@@ -225,6 +225,10 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
             fichaStorage.migrarDeSharedPreferencesSeNecessario()
             restaurarAutoSaveSeExistir()
             carregarListaFichas()
+            // Depois do auto-save restaurado: só aqui `personagem` já aponta para
+            // o retrato em uso, e a faxina precisa dessa informação para não
+            // apagá-lo.
+            faxinaDeRetratosOrfaos()
         }
 
         viewModelScope.launch {
@@ -275,6 +279,7 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
     fun atualizarCampanha(campanha: String) { personagem = attributeDelegate.atualizarCampanha(personagem, campanha) }
     fun atualizarHistorico(historico: String) { personagem = attributeDelegate.atualizarHistorico(personagem, historico) }
     fun atualizarAparencia(aparencia: String) { personagem = attributeDelegate.atualizarAparencia(personagem, aparencia) }
+    fun atualizarImagemPersonagem(uri: String, originalUri: String) { personagem = attributeDelegate.atualizarImagemPersonagem(personagem, uri, originalUri) }
     fun atualizarNotas(notas: String) { personagem = attributeDelegate.atualizarNotas(personagem, notas) }
     fun atualizarPontosIniciais(pontos: Int) { personagem = attributeDelegate.atualizarPontosIniciais(personagem, pontos) }
     fun atualizarLimiteDesvantagens(limite: Int) { personagem = attributeDelegate.atualizarLimiteDesvantagens(personagem, limite) }
@@ -642,14 +647,32 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
     fun salvarFicha(nome: String = personagem.nome.ifBlank { "Sem_Nome" }) {
         nomeFichaAtual = nome
         viewModelScope.launch { fichasSalvas = persistenceDelegate.salvarFicha(nome, personagem) }
+        // Sobe o retrato ao Discord UMA vez, junto do salvar (best-effort, não
+        // bloqueia o salvamento). O bot guarda e usa nos embeds de rolagem.
+        val imagemUri = personagem.imagemPersonagemUri
+        if (imagemUri.isNotBlank() && nome.isNotBlank()) {
+            viewModelScope.launch {
+                val dataUri = com.gurps.ficha.data.storage.ImagemPersonagemStore.bytesBase64(imagemUri)
+                if (dataUri != null) {
+                    networkDelegate.enviarRetratoDiscord(nome, dataUri)
+                    // 🔴 E para a Mesa também, quando é ela o destino.
+                    //
+                    // O Discord já recebia a imagem aqui; a Mesa não, e por isso
+                    // a rolagem chegava lá com a cara do personagem e aqui como
+                    // texto pelado. A mesma imagem, os dois destinos.
+                    socialDelegate.enviarRetratoParaAMesa(nome, dataUri)
+                }
+            }
+        }
         // 🔴 **E a ficha calculada para a Mesa** (CAMPO-17).
         //
-        // Salvar a ficha e o momento em que os numeros mudaram, e e por isso
-        // que a mesa acompanha sozinha sem ninguem carregar em botao nenhum.
+        // Vai no MESMO gancho do retrato: salvar a ficha e o momento em que os
+        // numeros mudaram, e e por isso que a mesa acompanha sozinha sem
+        // ninguem carregar em botao nenhum.
         //
-        // ⚠️ Best-effort e SEM condicao nenhuma: uma ficha qualquer tem
-        // Velocidade Basica, e prender o envio a outra coisa (antes era o
-        // retrato) faria a iniciativa depender dela.
+        // ⚠️ Best-effort, como o retrato, e fora do `if` da imagem: uma ficha sem
+        // retrato tambem tem Velocidade Basica, e prende-la a existencia da
+        // imagem faria a iniciativa depender de a pessoa ter escolhido uma foto.
         // 🔴 O nome em branco tambem PRECISA de recado. Sem isto, quem nunca
         // preencheu "Seu nome" salva a ficha, nada acontece, e nao ha como saber
         // se esta quebrado ou se falta configurar -- que foi o que aconteceu.
@@ -790,23 +813,86 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
     }
     fun exportarFichaJsonCompativel() = persistenceDelegate.exportarJsonCompativel(personagem)
     fun exportarFichaJsonVersionada() = persistenceDelegate.exportarJsonVersionado(personagem)
+
+    /**
+     * Versões SUSPEND da exportação que EMBUTEM a imagem original do
+     * personagem (base64) no arquivo, para a foto viajar junto com a ficha.
+     * Use estas ao exportar/compartilhar.
+     */
+    suspend fun exportarFichaJsonCompativelComImagem(): String {
+        return persistenceDelegate.exportarJsonCompativel(comImagemEmbutida())
+    }
+    suspend fun exportarFichaJsonVersionadaComImagem(): String {
+        return persistenceDelegate.exportarJsonVersionado(comImagemEmbutida())
+    }
+
+    /** Devolve uma cópia do personagem com a imagem ORIGINAL embutida em base64. */
+    private suspend fun comImagemEmbutida(): Personagem {
+        val original = personagem.imagemPersonagemOriginalUri.ifBlank { personagem.imagemPersonagemUri }
+        if (original.isBlank()) return personagem
+        val dataUri = com.gurps.ficha.data.storage.ImagemPersonagemStore.bytesBase64(original)
+            ?: return personagem
+        return personagem.copy(imagemPersonagemBase64 = dataUri)
+    }
     fun importarFichaJson(json: String): String? {
         estaCarregando = true
         val res = persistenceDelegate.importarJson(json)
         return res.fold(onSuccess = { novo ->
-            // ⚠️ Uma ficha exportada por uma versão antiga pode trazer a foto
-            // EMBUTIDA (base64, megabytes). Sem a imagem do personagem no app,
-            // ninguém a usa — e guardá-la faria cada salvar e cada envio à nuvem
-            // carregar esse peso morto.
-            personagem = novo.copy(imagemPersonagemBase64 = "")
+            personagem = novo
             nomeFichaAtual = novo.nome.ifBlank { "Importada_${System.currentTimeMillis()}" }
             searchDelegate.resetarTodosCaches()
             estaCarregando = false
+            restaurarImagemEmbutidaSeHouver(novo)
             "Sucesso"
         }, onFailure = {
             estaCarregando = false
             it.message
         })
+    }
+
+    /**
+     * Apaga retratos que nenhuma ficha cita mais (ver
+     * [com.gurps.ficha.data.storage.ImagemPersonagemStore.faxinaDeOrfaos]).
+     * Roda uma vez por sessão, em segundo plano, e nunca derruba o app: se algo
+     * falhar, a pasta só continua como está.
+     */
+    private suspend fun faxinaDeRetratosOrfaos() {
+        runCatching {
+            com.gurps.ficha.data.storage.ImagemPersonagemStore.faxinaDeOrfaos(
+                context = getApplication(),
+                jsonsDasFichas = fichaStorage.todosOsJsons(),
+                emUso = listOf(
+                    personagem.imagemPersonagemUri,
+                    personagem.imagemPersonagemOriginalUri
+                ).filter { it.isNotBlank() }
+            )
+        }
+    }
+
+    /**
+     * Se a ficha importada trouxe a imagem EMBUTIDA (imagemPersonagemBase64),
+     * salva a imagem no aparelho (re-recorta o rosto → gera as 2 versões),
+     * aponta os URIs e LIMPA o base64. Assíncrono — a foto aparece logo após.
+     */
+    private fun restaurarImagemEmbutidaSeHouver(ficha: Personagem) {
+        val base64 = ficha.imagemPersonagemBase64
+        if (base64.isBlank()) return
+        viewModelScope.launch {
+            val imagens = com.gurps.ficha.data.storage.ImagemPersonagemStore
+                .salvarDeBase64(getApplication(), base64)
+            // Atualiza só se a ficha ativa ainda for esta (usuário não trocou).
+            if (personagem.nome == ficha.nome) {
+                personagem = if (imagens != null) {
+                    personagem.copy(
+                        imagemPersonagemUri = imagens.recortadaUri,
+                        imagemPersonagemOriginalUri = imagens.originalUri,
+                        imagemPersonagemBase64 = ""
+                    )
+                } else {
+                    personagem.copy(imagemPersonagemBase64 = "")
+                }
+            }
+        }
     }
     private suspend fun carregarListaFichas() { fichasSalvas = persistenceDelegate.listarFichas() }
     private suspend fun restaurarAutoSaveSeExistir() { persistenceDelegate.restaurarAutoSave(autoSaveRecuperacaoNome)?.let { personagem = it } }
@@ -814,7 +900,41 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
     // === DISCORD ===
     fun atualizarCanaisDiscord() = socialDelegate.atualizarCanais()
     fun selecionarCanalDiscord(c: DiscordVoiceChannel?) = socialDelegate.selecionarCanal(c)
+    /**
+     * ⚠️ O retrato do personagem já foi para a Mesa nesta sessão?
+     *
+     * Guardado em memória: uma vez por arranque do app basta. Guardar em disco
+     * mentiria no dia em que a sala fosse reiniciada e perdesse a imagem.
+     */
+    private val retratosJaEnviadosAMesa = mutableSetOf<String>()
+
+    /**
+     * 🔴 Garante que a Mesa tem a cara deste personagem ANTES da rolagem.
+     *
+     * A imagem só subia ao **salvar a ficha** — então quem já tinha salvo antes
+     * de escolher a Mesa rolava a sessão inteira sem imagem, e não havia nada
+     * na tela que explicasse por quê. O primeiro lançamento agora resolve isso
+     * sozinho.
+     *
+     * ⚠️ Não segura a rolagem se falhar: rolagem sem imagem é um aborrecimento,
+     * rolagem que não sai é a jogada perdida.
+     */
+    private suspend fun garantirRetratoNaMesa(nomeDoPersonagem: String) {
+        if (nomeDoPersonagem.isBlank()) return
+        if (!retratosJaEnviadosAMesa.add(nomeDoPersonagem)) return
+
+        val imagemUri = personagem.imagemPersonagemUri
+        if (imagemUri.isBlank()) return
+        val dataUri = com.gurps.ficha.data.storage.ImagemPersonagemStore.bytesBase64(imagemUri)
+            ?: return
+        // Se não der certo, tenta de novo na próxima rolagem.
+        if (!socialDelegate.enviarRetratoParaAMesa(nomeDoPersonagem, dataUri)) {
+            retratosJaEnviadosAMesa.remove(nomeDoPersonagem)
+        }
+    }
+
     suspend fun enviarRolagemDiscord(p: DiscordRollPayload): RollDispatchStatus {
+        garantirRetratoNaMesa(p.character)
         return socialDelegate.enviarRolagem(p)
     }
 

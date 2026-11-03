@@ -129,27 +129,18 @@ class FichaParaAMesaTest {
     }
 
     @Test
-    fun `⚠️ o envio da ficha NAO depende de condicao nenhuma ao salvar`() {
-        // ⚠️ Uma ficha qualquer tem Velocidade Basica. Prender o envio a outra
-        // coisa faria a iniciativa da mesa depender dela — e ninguem ligaria as
-        // duas coisas.
-        //
-        // 🔴 Era o retrato: o envio morava ao lado do `if` da imagem, e esta sonda
-        // vigiava que ele ficasse FORA dele. O retrato saiu no lote SEM-IA; a
-        // regra fica, e mais dura: nenhum `if` antes da chamada.
-        val salvar = viewModel.substringAfter("fun salvarFicha(")
-            .substringBefore("private fun mandarAFichaParaAMesa")
-        val codigo = salvar.lines()
-            .filterNot {
-                val t = it.trim()
-                t.startsWith("*") || t.startsWith("//") || t.startsWith("/*")
-            }
-            .joinToString("\n")
-        val ondeManda = codigo.indexOf("mandarAFichaParaAMesa()")
-        assertTrue("salvar deixou de mandar a ficha para a Mesa", ondeManda >= 0)
-        assertFalse(
-            "o envio da ficha passou a depender de uma condicao",
-            codigo.substring(0, ondeManda).contains("if (")
+    fun `⚠️ o envio da ficha NAO depende de haver retrato`() {
+        // ⚠️ Uma ficha sem retrato tambem tem Velocidade Basica. Prender uma a
+        // outra faria a iniciativa da mesa depender de a pessoa ter escolhido
+        // uma foto — e ninguem ligaria as duas coisas.
+        val salvar = viewModel.substringAfter("fun salvarFicha(").substringBefore("fun carregarFicha")
+        val ondeImagem = salvar.indexOf("val imagemUri")
+        val ondeFicha = salvar.indexOf("enviarFichaParaAMesa(")
+        val ondeFechaImagem = salvar.indexOf("val nomeNaMesa")
+        assertTrue("nao achei os dois envios", ondeImagem >= 0 && ondeFicha >= 0)
+        assertTrue(
+            "o envio da ficha esta dentro do `if` da imagem",
+            ondeFechaImagem in (ondeImagem + 1) until ondeFicha
         )
     }
 

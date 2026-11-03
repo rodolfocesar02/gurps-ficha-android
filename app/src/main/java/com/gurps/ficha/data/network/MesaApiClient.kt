@@ -112,7 +112,7 @@ object MesaApiClient {
      * mostrar ao lado do boneco -- numeros que o JSON cru **nao tem**, porque os
      * derivados sao propriedades e o Gson serializa campos.
      *
-     * ⚠️ Best-effort: **nunca segura o salvar da ficha**. Ficar
+     * ⚠️ Best-effort, como o retrato: **nunca segura o salvar da ficha**. Ficar
      * sem ficha na Mesa e um aborrecimento; nao salvar e perder trabalho.
      *
      * ⚠️ O token vai no **corpo**, e nao na URL, pelo motivo de sempre: query
@@ -145,9 +145,10 @@ object MesaApiClient {
     private fun enviar(
         endpoint: String,
         corpo: ByteArray,
-        // ⚠️ A folga de leitura e parametro porque a ficha inteira precisa de
-        // MAIS: ela e bem maior que uma linha de texto, e um telefone em 3G leva
-        // tempo. Fixar o valor aqui a faria falhar em rede lenta, calada.
+        // ⚠️ A folga de leitura e parametro porque o retrato precisa de MAIS:
+        // a imagem e bem maior que uma linha de texto, e um telefone em 3G leva
+        // tempo. Fixar o valor aqui teria feito o retrato voltar a falhar em rede
+        // lenta, calado, so por causa da extracao.
         folgaDeLeitura: Int = READ_TIMEOUT_MS
     ): DiscordRollSendResult {
         // 🔴 **A costura de teste.** Sem ela, nada nesta corrente se corre num
@@ -186,6 +187,43 @@ object MesaApiClient {
         } finally {
             connection?.disconnect()
         }
+    }
+
+    /**
+     * Sobe o retrato do PERSONAGEM para a sala.
+     *
+     * 🔴 Espelha o que já se fazia com o Discord: a imagem sobe uma vez, ao
+     * salvar a ficha, e a sala a reaproveita em cada rolagem daquele
+     * personagem. Sem isto a rolagem chegava na Mesa como texto pelado,
+     * enquanto no Discord vinha com a cara do personagem ao lado.
+     *
+     * ⚠️ O token vai no **corpo**, como na rolagem, e pela mesma razão: query
+     * string fica no histórico e nos registros de qualquer intermediário.
+     */
+    fun postRetrato(
+        baseUrl: String,
+        token: String,
+        personagem: String,
+        imagemDataUri: String
+    ): DiscordRollSendResult {
+        if (baseUrl.isBlank()) {
+            return DiscordRollSendResult(false, null, "endereco_vazio")
+        }
+        if (token.isBlank()) return DiscordRollSendResult(false, null, "token_vazio")
+        if (personagem.isBlank() || imagemDataUri.isBlank()) {
+            return DiscordRollSendResult(false, null, "sem_imagem")
+        }
+
+        val corpo = gson.toJson(
+            mapOf("token" to token, "personagem" to personagem, "imagem" to imagemDataUri)
+        ).toByteArray(StandardCharsets.UTF_8)
+
+        // ⚠️ Mais folga na leitura que a rolagem: a imagem é bem maior que uma
+        // linha de texto, e um telefone em 3G leva tempo.
+        return enviar(
+            "${baseUrl.trimEnd('/')}/api/retrato", corpo,
+            folgaDeLeitura = READ_TIMEOUT_MS * 4
+        )
     }
 
     /**
