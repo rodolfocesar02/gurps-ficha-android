@@ -1626,9 +1626,8 @@ fun TabRolagem(viewModel: FichaViewModel) {
             equipamentos = p.equipamentos,
             guardadas = p.armadurasGuardadas.toSet(),
             // Lote POD-30: a RD do proprio corpo (MB p.83) soma com a da
-            // armadura. A vantagem existia no catalogo e nao descontava nada.
-            rdNatural = com.gurps.ficha.domain.rules.ResistenciaDanoNatural.total(p),
-            explicacaoRdNatural = com.gurps.ficha.domain.rules.ResistenciaDanoNatural.explicar(p),
+            // armadura; TR-3: a conta e por local (olho, Parcial, Membrana).
+            rdNatural = { local -> com.gurps.ficha.domain.rules.ResistenciaDanoNatural.noLocal(p, local) },
             isPraCegoVariant = isPraCegoVariant,
             onSalvar = { pvNovo, pfNovo, guardadas, _ ->
                 viewModel.aplicarFerimentoPorLocal(pvNovo, pfNovo, guardadas)

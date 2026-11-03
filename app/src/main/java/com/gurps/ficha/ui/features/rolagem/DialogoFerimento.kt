@@ -76,10 +76,8 @@ fun DialogoFerimento(
     equipamentos: List<Equipamento>,
     guardadas: Set<String>,
     // Lote POD-30: a RD do próprio corpo (MB p.83), que soma com a da armadura.
-    // ⚠️ Chega calculada, e não como `Personagem`: o contrato deste diálogo é
-    // só de valores, e abrir exceção para um deles convidaria os próximos.
-    rdNatural: Int,
-    explicacaoRdNatural: String?,
+    // ⚠️ Chega como conta POR LOCAL (TR-3): não protege o olho, a Parcial vale só no local dela, a Membrana só no olho.
+    rdNatural: (LocalAtaque) -> com.gurps.ficha.domain.rules.ResistenciaDanoNatural.NoLocal,
     isPraCegoVariant: Boolean,
     onSalvar: (pvNovo: Int, pfNovo: Int, guardadas: Set<String>, resumo: String) -> Unit,
     onFechar: () -> Unit
@@ -128,10 +126,12 @@ fun DialogoFerimento(
     // ⚠️ Ela entra na MESMA caixa de marcar, e não numa segunda: quem desmarca
     // quer o ataque sem RD nenhuma. Duas caixas seriam duas rotas para a mesma
     // decisão, e o defeito mora na diferença.
-    val rd = if (usarRd) CoberturaDaArmadura.rdTotal(pecasVestidas) + rdNatural else 0
+    val natural = rdNatural(local)
+    val rd = if (usarRd) CoberturaDaArmadura.rdTotal(pecasVestidas) + natural.rd else 0
     // Lote EQP-9: quanto dessa RD veio de peça FLEXÍVEL (as com `*`). É o que
     // decide o trauma por impacto — ver `TraumaPorImpacto`.
-    val rdFlexivel = if (!usarRd) 0 else pecasVestidas.filter { it.rd.flexivel }.sumOf { it.rd.principal }
+    // TR-3: a RD natural com Pele Resistente ou Flexível também deixa passar o trauma (MB p.379).
+    val rdFlexivel = if (!usarRd) 0 else pecasVestidas.filter { it.rd.flexivel }.sumOf { it.rd.principal } + natural.flexivel
 
     val dano = danoTexto.toIntOrNull() ?: 0
     val resultado = remember(dano, tipo, local, rd, rdFlexivel, pvInicial, masculino, escolheu) {
@@ -252,7 +252,7 @@ fun DialogoFerimento(
                     escolheu = escolheu,
                     noLocal = noLocal,
                     naMochila = naMochila,
-                    explicacaoRdNatural = explicacaoRdNatural,
+                    explicacaoRdNatural = if (escolheu) natural.explicacao else null,
                     usarRd = usarRd,
                     rd = rd,
                     onUsarRd = { usarRd = !usarRd },

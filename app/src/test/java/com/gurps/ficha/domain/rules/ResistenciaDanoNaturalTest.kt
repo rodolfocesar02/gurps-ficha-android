@@ -119,13 +119,12 @@ class ResistenciaDanoNaturalTest {
         val d = fonte("com/gurps/ficha/ui/features/rolagem/DialogoFerimento.kt")
         assertTrue(
             "a RD natural deixou de somar com a da armadura",
-            d.contains("CoberturaDaArmadura.rdTotal(pecasVestidas) + rdNatural")
+            d.contains("CoberturaDaArmadura.rdTotal(pecasVestidas) + natural.rd")
         )
+        // TR-3: a conta chega por local (a RD natural não protege o olho; a Parcial vale só no local dela).
         val t = fonte("com/gurps/ficha/ui/TabRolagem.kt")
-        assertTrue("o dialogo nao recebe a RD natural",
-            t.contains("ResistenciaDanoNatural.total(p)"))
-        assertTrue("o dialogo nao recebe a explicacao",
-            t.contains("ResistenciaDanoNatural.explicar(p)"))
+        assertTrue("o dialogo nao recebe a RD natural por local",
+            t.contains("ResistenciaDanoNatural.noLocal(p, local)"))
     }
 
     @Test

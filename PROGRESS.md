@@ -10119,3 +10119,14 @@ ficar verde**.
   - **Na aba Rolagem isto muda:** Disfarce −2 com Nanismo ou Gigantismo, as caixinhas novas em Perseguição, e o custo do Gigantismo na criação da ficha.
 - **Na Mesa (sem mudança no app):** o MT do alvo soma Nanismo −1 e Gigantismo +1; Sem Noção de Profundidade vale como o Zarolho; a Audição Discriminatória vira caixinha +4 no sentido Audição.
 - **Testes:** scripts JS 108/108; JVM das duas variantes (ver o `===EXIT===` do gate); suíte da Mesa. Versão **203** (`12.9.3-TRACOS-TR2-ITEM6`).
+
+## Lote TR-3 — [2026-11-03] O golpe no alvo: a RD natural por local no diálogo de Ferimento
+- **Hash:** (commit deste lote; ver `git log`) + commit da Mesa e o ponteiro do submódulo.
+- **Pedido dele:** "Segue as propostas que sugeriu e corrigir o diálogo de ferimento da aba rolagem" (`mesa-virtual/planos/tracos/PLANO.md`, TR-3).
+- **O defeito:** o diálogo de Ferimento da aba Rolagem somava a RD natural em qualquer local, inclusive no olho (MB p.83: a RD natural não protege o olho, a não ser com Campo de Força), e a RD Parcial valia no corpo inteiro (o Minotauro levava 5 em todo lugar; o certo é 5 no crânio e 3 no resto).
+- **Mudanças:**
+  - `ResistenciaDanoNatural.kt`: `noLocal(personagem, local)` devolve a RD natural daquele local, a parte flexível (Pele Resistente, Flexível) e a explicação. A Parcial lê o local na descrição ("Apenas o Crânio", "Apenas os Braços"; o Tronco cobre os vitais); Parcial sem local não desconta e avisa. A Membrana Nictitante dá RD só no olho (MB p.69). `total` e `explicar` continuam.
+  - `DialogoFerimento.kt`: recebe `rdNatural: (LocalAtaque) -> NoLocal` e soma a do local escolhido (e a flexível na conta do trauma). `TabRolagem.kt` só passa `ResistenciaDanoNatural.noLocal(p, local)`.
+  - **Na aba Rolagem isto muda:** o ferimento no olho de quem tem RD natural sobe; a RD Parcial só vale no seu local.
+- **Na Mesa (mesmo lote):** a RD natural pela mesma regra (`rd-natural.js`), Durabilidade Sobrenatural, Impossível de Matar, Membrana, Hemofilia, Fragilidade, Regeneração e a Vulnerabilidade com o botão do Mestre na faixa.
+- **Testes:** `ResistenciaDanoNaturalNoLocalTest.kt` (5; os mesmos números do `tracos-tr3.test.js` da Mesa); `ResistenciaDanoNaturalTest.kt` com a conferência do texto atualizada. Sonda: a regra do olho tirada deixa o teste vermelho. JVM **1.954 testes, 0 falhas** nas 4 (visual e pracego, debug e release) = 1.949 + 5; `./gradlew build --max-workers=3` **===EXIT=0===**; scripts do catálogo **108/108**. Versão **204** (`12.9.4-TRACOS-TR3`).
