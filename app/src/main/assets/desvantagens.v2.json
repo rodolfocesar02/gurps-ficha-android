@@ -1213,7 +1213,339 @@
     "tags": [
       "fisica"
     ],
-    "descricao": "Esta desvantagem assume que o personagem é um membro de uma raça que possui pernas. Se todos os membros da raça dele não tiverem pernas, consulte Sem Pernas (pág. 156).\n\nO personagem tem algum grau de redução em sua mobilidade:\n\n**Perna Incapacitada:** O personagem tem todas as pernas, mas algumas não funcionam direito. Para os humanos, isso significa ter uma perna ruim. O personagem sofre uma penalidade de -3 em todos os testes de habilidade que exigem uso das pernas, o que inclui todas as perícias com armas de combate corpo a corpo e todas as perícias de combate desarmado (as perícias com armas de projétil não são prejudicadas). O Deslocamento Básico do personagem deve ser reduzido à metade da sua Velocidade Básica (arredondado para baixo), mas ele recebe todos os pontos por isso (v. Deslocamento Básico, pág. 17). -10 pontos.\n\n**Pernas Faltando:** O personagem perdeu alguma(s) — mas não todas — as pernas. Para um ser humano, isso significa que ele só tem uma perna. Ele sofre uma penalidade de -6 em todos os testes de habilidade que exigem o uso das pernas, mas é capaz em ficar em pé e andar vagarosamente usando muletas ou pernas de pau. Seu Deslocamento Básico é reduzido a 2, mas o personagem recebe todos os pontos por isso. Ele também ainda é capaz de chutar, mas juntando a penalidade de -2 para um chute com a de -6 desta desvantagem, ele chuta com um valor de DX-8. Sem as muletas ou a pernas de pau, o personagem é incapaz de ficar de pé, andar ou chutar. -20 pontos.\n\n**Nenhuma Perna:** O personagem perdeu todas as pernas, independente de quantas tinha originalmente. Ele sofre uma penalidade de -6 em todos os testes de habilidade que exigem o uso das pernas e não consegue ficar em pé, chutar ou sequer andar. O Deslocamento Básico do personagem é reduzido a 0, mas ele recebe todos os pontos por isso. -30 pontos.\n\n**Paraplégico:** O personagem possui todas as pernas, mas elas estão paralisadas. Os efeitos e o valor em pontos são idênticos ao caso anterior. Ao contrário de um personagem Sem Pernas, um paraplégico pode ser atingido nas pernas e sofre dano. Isso se baseia no fato de que não é impossível que ele venha a recuperar a utilização de seus membros inferiores (um personagem Sem Pernas simplesmente não conta com essa possibilidade). -30 pontos.\n\n> **Auxílio Tecnológico**\n> Uma cadeira de rodas impulsionada pela força dos braços do personagem ou uma plataforma com rodas tem um Deslocamento terrestre de 1/4 do atributo ST do personagem (arredondado para baixo), mas ele não é capaz de passar por portas estreitas, subir escadas ou calçadas com degraus, entrar na maioria dos veículos, etc.\n> \n> Se o personagem tiver acesso a próteses, que cancelam esta desvantagem enquanto estiverem sendo utilizadas, aplique a limitação Mitigador (pág. 113) à Deficiência Física e a qualquer Deslocamento Básico reduzido. Se uma cirurgia ou peças de reposição avançadas são capazes de recomprar a desvantagem completamente, então será necessário pagar pelos pontos de personagem recebidos pela Deficiência Física e pelo Deslocamento Básico reduzido."
+    "descricao": "Esta desvantagem assume que o personagem é um membro de uma raça que possui pernas. Se todos os membros da raça dele não tiverem pernas, consulte Sem Pernas (pág. 156).\n\nO personagem tem algum grau de redução em sua mobilidade:\n\n**Perna Incapacitada:** O personagem tem todas as pernas, mas algumas não funcionam direito. Para os humanos, isso significa ter uma perna ruim. O personagem sofre uma penalidade de -3 em todos os testes de habilidade que exigem uso das pernas, o que inclui todas as perícias com armas de combate corpo a corpo e todas as perícias de combate desarmado (as perícias com armas de projétil não são prejudicadas). O Deslocamento Básico do personagem deve ser reduzido à metade da sua Velocidade Básica (arredondado para baixo), mas ele recebe todos os pontos por isso (v. Deslocamento Básico, pág. 17). -10 pontos.\n\n**Pernas Faltando:** O personagem perdeu alguma(s) — mas não todas — as pernas. Para um ser humano, isso significa que ele só tem uma perna. Ele sofre uma penalidade de -6 em todos os testes de habilidade que exigem o uso das pernas, mas é capaz em ficar em pé e andar vagarosamente usando muletas ou pernas de pau. Seu Deslocamento Básico é reduzido a 2, mas o personagem recebe todos os pontos por isso. Ele também ainda é capaz de chutar, mas juntando a penalidade de -2 para um chute com a de -6 desta desvantagem, ele chuta com um valor de DX-8. Sem as muletas ou a pernas de pau, o personagem é incapaz de ficar de pé, andar ou chutar. -20 pontos.\n\n**Nenhuma Perna:** O personagem perdeu todas as pernas, independente de quantas tinha originalmente. Ele sofre uma penalidade de -6 em todos os testes de habilidade que exigem o uso das pernas e não consegue ficar em pé, chutar ou sequer andar. O Deslocamento Básico do personagem é reduzido a 0, mas ele recebe todos os pontos por isso. -30 pontos.\n\n**Paraplégico:** O personagem possui todas as pernas, mas elas estão paralisadas. Os efeitos e o valor em pontos são idênticos ao caso anterior. Ao contrário de um personagem Sem Pernas, um paraplégico pode ser atingido nas pernas e sofre dano. Isso se baseia no fato de que não é impossível que ele venha a recuperar a utilização de seus membros inferiores (um personagem Sem Pernas simplesmente não conta com essa possibilidade). -30 pontos.\n\n> **Auxílio Tecnológico**\n> Uma cadeira de rodas impulsionada pela força dos braços do personagem ou uma plataforma com rodas tem um Deslocamento terrestre de 1/4 do atributo ST do personagem (arredondado para baixo), mas ele não é capaz de passar por portas estreitas, subir escadas ou calçadas com degraus, entrar na maioria dos veículos, etc.\n> \n> Se o personagem tiver acesso a próteses, que cancelam esta desvantagem enquanto estiverem sendo utilizadas, aplique a limitação Mitigador (pág. 113) à Deficiência Física e a qualquer Deslocamento Básico reduzido. Se uma cirurgia ou peças de reposição avançadas são capazes de recomprar a desvantagem completamente, então será necessário pagar pelos pontos de personagem recebidos pela Deficiência Física e pelo Deslocamento Básico reduzido.",
+    "efeitos": [
+      {
+        "tipo": "pericia",
+        "alvo": "Adaga de Esgrima",
+        "valor": 0,
+        "porOpcao": {
+          "-10": -3,
+          "-20": -6,
+          "-30": -6
+        }
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Armas de Haste",
+        "valor": 0,
+        "porOpcao": {
+          "-10": -3,
+          "-20": -6,
+          "-30": -6
+        }
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Bastão",
+        "valor": 0,
+        "porOpcao": {
+          "-10": -3,
+          "-20": -6,
+          "-30": -6
+        }
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Chicote",
+        "valor": 0,
+        "porOpcao": {
+          "-10": -3,
+          "-20": -6,
+          "-30": -6
+        }
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Chicote de Energia",
+        "valor": 0,
+        "porOpcao": {
+          "-10": -3,
+          "-20": -6,
+          "-30": -6
+        }
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Chicote Monofio",
+        "valor": 0,
+        "porOpcao": {
+          "-10": -3,
+          "-20": -6,
+          "-30": -6
+        }
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Escudo",
+        "valor": 0,
+        "porOpcao": {
+          "-10": -3,
+          "-20": -6,
+          "-30": -6
+        }
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Espada de Duas Mãos",
+        "valor": 0,
+        "porOpcao": {
+          "-10": -3,
+          "-20": -6,
+          "-30": -6
+        }
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Espada de Energia",
+        "valor": 0,
+        "porOpcao": {
+          "-10": -3,
+          "-20": -6,
+          "-30": -6
+        }
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Espadas Curtas",
+        "valor": 0,
+        "porOpcao": {
+          "-10": -3,
+          "-20": -6,
+          "-30": -6
+        }
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Espadas de Lâmina Larga",
+        "valor": 0,
+        "porOpcao": {
+          "-10": -3,
+          "-20": -6,
+          "-30": -6
+        }
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Faca",
+        "valor": 0,
+        "porOpcao": {
+          "-10": -3,
+          "-20": -6,
+          "-30": -6
+        }
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Garrote",
+        "valor": 0,
+        "porOpcao": {
+          "-10": -3,
+          "-20": -6,
+          "-30": -6
+        }
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Lança",
+        "valor": 0,
+        "porOpcao": {
+          "-10": -3,
+          "-20": -6,
+          "-30": -6
+        }
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Lança de Justa",
+        "valor": 0,
+        "porOpcao": {
+          "-10": -3,
+          "-20": -6,
+          "-30": -6
+        }
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Mangual",
+        "valor": 0,
+        "porOpcao": {
+          "-10": -3,
+          "-20": -6,
+          "-30": -6
+        }
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Mangual de Duas Mãos",
+        "valor": 0,
+        "porOpcao": {
+          "-10": -3,
+          "-20": -6,
+          "-30": -6
+        }
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Maça/Machado",
+        "valor": 0,
+        "porOpcao": {
+          "-10": -3,
+          "-20": -6,
+          "-30": -6
+        }
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Maça/Machado de Duas Mãos",
+        "valor": 0,
+        "porOpcao": {
+          "-10": -3,
+          "-20": -6,
+          "-30": -6
+        }
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Rapieira",
+        "valor": 0,
+        "porOpcao": {
+          "-10": -3,
+          "-20": -6,
+          "-30": -6
+        }
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Sabre",
+        "valor": 0,
+        "porOpcao": {
+          "-10": -3,
+          "-20": -6,
+          "-30": -6
+        }
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Tonfa",
+        "valor": 0,
+        "porOpcao": {
+          "-10": -3,
+          "-20": -6,
+          "-30": -6
+        }
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Boxe",
+        "valor": 0,
+        "porOpcao": {
+          "-10": -3,
+          "-20": -6,
+          "-30": -6
+        }
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Briga",
+        "valor": 0,
+        "porOpcao": {
+          "-10": -3,
+          "-20": -6,
+          "-30": -6
+        }
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Caratê",
+        "valor": 0,
+        "porOpcao": {
+          "-10": -3,
+          "-20": -6,
+          "-30": -6
+        }
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Judô",
+        "valor": 0,
+        "porOpcao": {
+          "-10": -3,
+          "-20": -6,
+          "-30": -6
+        }
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Luta Greco-Romana",
+        "valor": 0,
+        "porOpcao": {
+          "-10": -3,
+          "-20": -6,
+          "-30": -6
+        }
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Sumô",
+        "valor": 0,
+        "porOpcao": {
+          "-10": -3,
+          "-20": -6,
+          "-30": -6
+        }
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Acrobacia",
+        "valor": 0,
+        "porOpcao": {
+          "-10": -3,
+          "-20": -6,
+          "-30": -6
+        }
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Corrida",
+        "valor": 0,
+        "porOpcao": {
+          "-10": -3,
+          "-20": -6,
+          "-30": -6
+        }
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Dança",
+        "valor": 0,
+        "porOpcao": {
+          "-10": -3,
+          "-20": -6,
+          "-30": -6
+        }
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Escalada",
+        "valor": 0,
+        "porOpcao": {
+          "-10": -3,
+          "-20": -6,
+          "-30": -6
+        }
+      },
+      {
+        "tipo": "pericia",
+        "alvo": "Salto",
+        "valor": 0,
+        "porOpcao": {
+          "-10": -3,
+          "-20": -6,
+          "-30": -6
+        }
+      }
+    ]
   },
   {
     "id": "deficiencias_menores",
