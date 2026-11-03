@@ -45,9 +45,9 @@ class DesvantagensEspelhoTest {
         desvantagens = desvantagens
     )
 
-    private fun desv(id: String, nome: String, nivel: Int = 1, custo: Int = 0) =
+    private fun desv(id: String, nome: String, nivel: Int = 1, custo: Int = 0, descricao: String = "") =
         DesvantagemSelecionada(
-            definicaoId = id, nome = nome, nivel = nivel, custoEscolhido = custo
+            definicaoId = id, nome = nome, nivel = nivel, custoEscolhido = custo, descricao = descricao
         )
 
     private fun testesDe(p: Personagem) = ResistenciaRules.testesDe(p)
@@ -147,15 +147,24 @@ class DesvantagensEspelhoTest {
     // ------------------------------------------------------------------
 
     @Test
-    fun `Suscetivel entra SO em doenca e veneno`() {
-        val p = heroi(desvantagens = listOf(desv("suscetivel", "Suscetível", nivel = 2)))
-        assertEquals(8, alvoDe(p, "doença"))
-        assertEquals(8, alvoDe(p, "veneno"))
-        // ⚠️ Os tres que NAO podem cair. O app nao guarda a QUAL objeto o
-        // personagem e suscetivel; espalhar seria inventar regra.
-        assertEquals(10, alvoDe(p, "esforço"))
-        assertEquals(10, alvoDe(p, "consciência"))
-        assertEquals(10, alvoDe(p, "Evitar a morte"))
+    fun `Suscetivel entra SO no objeto dele - TR-5`() {
+        // MB p.158: "uma classe de objetos". Suscetível a Veneno não pesa contra doença.
+        val veneno = heroi(desvantagens = listOf(desv("suscetivel", "Suscetível", nivel = 2, descricao = "Veneno")))
+        assertEquals(8, alvoDe(veneno, "veneno"))
+        assertEquals(10, alvoDe(veneno, "doença"))
+        val doenca = heroi(desvantagens = listOf(desv("suscetivel", "Suscetível", nivel = 2, descricao = "Doenças")))
+        assertEquals(8, alvoDe(doenca, "doença"))
+        assertEquals(10, alvoDe(doenca, "veneno"))
+        val tudo = heroi(desvantagens = listOf(desv("suscetivel", "Suscetível", nivel = 2, descricao = "Danos ao Metabolismo")))
+        assertEquals(8, alvoDe(tudo, "doença"))
+        assertEquals(8, alvoDe(tudo, "veneno"))
+        // ⚠️ Os tres que NAO podem cair.
+        assertEquals(10, alvoDe(tudo, "esforço"))
+        assertEquals(10, alvoDe(tudo, "consciência"))
+        assertEquals(10, alvoDe(tudo, "Evitar a morte"))
+        // Objeto estreito ou sem objeto: nenhum número calado (o aviso manda conferir com o Mestre).
+        val estreito = heroi(desvantagens = listOf(desv("suscetivel", "Suscetível", nivel = 2, descricao = "Venenos Ingeridos")))
+        assertEquals(10, alvoDe(estreito, "veneno"))
     }
 
     @Test
@@ -174,7 +183,7 @@ class DesvantagensEspelhoTest {
         // Armadilha real do catalogo: `suscetivel` tem options [-4,-2,-1], que
         // sao PRECOS POR NIVEL (raridade do objeto), nao a penalidade. Ler o
         // custo daria -4 para quem comprou um unico nivel de "Muito Comum".
-        val p = heroi(desvantagens = listOf(desv("suscetivel", "Suscetível", nivel = 1, custo = -4)))
+        val p = heroi(desvantagens = listOf(desv("suscetivel", "Suscetível", nivel = 1, custo = -4, descricao = "Veneno")))
         assertEquals(9, alvoDe(p, "veneno"))
     }
 

@@ -214,7 +214,7 @@ class ResistenciaLesaoTest {
         // herdado a penalidade que o app aplica só a dois.
         val p = heroi(
             desvantagens = listOf(
-                DesvantagemSelecionada(definicaoId = "suscetivel", nome = "Suscetível", nivel = 3)
+                DesvantagemSelecionada(definicaoId = "suscetivel", nome = "Suscetível", nivel = 3, descricao = "Danos ao Metabolismo")
             )
         )
         assertEquals(7, alvoDe(p, "Resistir a doença"))
@@ -267,7 +267,7 @@ class ResistenciaLesaoTest {
             desvantagens = listOf(
                 DesvantagemSelecionada(definicaoId = "facil_de_matar", nome = "FM", nivel = 12),
                 DesvantagemSelecionada(definicaoId = "temor", nome = "Temor", nivel = 12),
-                DesvantagemSelecionada(definicaoId = "suscetivel", nome = "S", nivel = 12),
+                DesvantagemSelecionada(definicaoId = "suscetivel", nome = "S", nivel = 12, descricao = "Danos ao Metabolismo"),
                 DesvantagemSelecionada(
                     definicaoId = "fora_de_forma", nome = "FF", custoEscolhido = -15
                 )

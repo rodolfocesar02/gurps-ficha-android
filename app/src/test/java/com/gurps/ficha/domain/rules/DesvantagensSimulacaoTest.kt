@@ -345,7 +345,7 @@ class DesvantagensSimulacaoTest {
                 desvantagens = listOf(
                     DesvantagemSelecionada(definicaoId = "facil_de_matar", nome = "FM", nivel = nivel),
                     DesvantagemSelecionada(definicaoId = "temor", nome = "Temor", nivel = nivel),
-                    DesvantagemSelecionada(definicaoId = "suscetivel", nome = "S", nivel = nivel),
+                    DesvantagemSelecionada(definicaoId = "suscetivel", nome = "S", nivel = nivel, descricao = "Danos ao Metabolismo"),
                     DesvantagemSelecionada(
                         definicaoId = "fora_de_forma", nome = "FF", custoEscolhido = -15
                     )

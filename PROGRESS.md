@@ -10130,3 +10130,13 @@ ficar verde**.
   - **Na aba Rolagem isto muda:** o ferimento no olho de quem tem RD natural sobe; a RD Parcial só vale no seu local.
 - **Na Mesa (mesmo lote):** a RD natural pela mesma regra (`rd-natural.js`), Durabilidade Sobrenatural, Impossível de Matar, Membrana, Hemofilia, Fragilidade, Regeneração e a Vulnerabilidade com o botão do Mestre na faixa.
 - **Testes:** `ResistenciaDanoNaturalNoLocalTest.kt` (5; os mesmos números do `tracos-tr3.test.js` da Mesa); `ResistenciaDanoNaturalTest.kt` com a conferência do texto atualizada. Sonda: a regra do olho tirada deixa o teste vermelho. JVM **1.954 testes, 0 falhas** nas 4 (visual e pracego, debug e release) = 1.949 + 5; `./gradlew build --max-workers=3` **===EXIT=0===**; scripts do catálogo **108/108**. Versão **204** (`12.9.4-TRACOS-TR3`).
+
+## Lote TR-5 — [2026-11-03] O Suscetível vale só no objeto escrito na ficha
+- **Hash:** (commit deste lote; ver `git log`) + commit da Mesa e o ponteiro do submódulo.
+- **Pedido dele:** "Siga, com o app" (`mesa-virtual/planos/tracos/PLANO.md`, TR-5).
+- **O defeito (achado do TR-0):** a aba Rolagem tirava o nível do Suscetível em "Resistir a veneno" **e** em "Resistir a doença", fosse qual fosse o objeto. Suscetível a Veneno 2 dava −2 contra doença. O livro (MB p.158) fala em "uma classe de objetos".
+- **Mudanças:**
+  - `ResistenciaRules.kt`: `oQueOObjetoCobre(descricao)` lê o objeto do texto da ficha ("Veneno", "Doenças", "Danos ao Metabolismo"; acentos e graus "+3/+8/Imunidade" não contam); `oSuscetivelNoTeste(descricao, nivel, teste)` tira o nível só no teste que o objeto inteiro cobre. Objeto estreito ("Venenos Ingeridos") ou sem objeto não desconta: o teste avisa "confira com o Mestre se vale aqui (MB p.158)".
+  - **Na aba Rolagem isto muda:** Suscetível a Veneno não pesa mais em doença; Suscetível sem objeto escrito não desconta sozinho.
+- **Na Mesa (mesmo lote):** a mesma leitura em `resistir-com-tracos.js`, mais Resistente, Reflexos em Combate, Fleuma, Escudo Mental, Sentido Protegido, Lacrado e as Recuperações nos testes de resistência.
+- **Testes:** `ResistenciaRulesTest.kt` ganhou 9 casos em forma literal (a pedra de toque da Mesa os lê e a Mesa dá o mesmo número); `DesvantagensEspelhoTest.kt`, `DesvantagensSimulacaoTest.kt` e `ResistenciaLesaoTest.kt` passaram a escrever o objeto. Sonda: sem a exigência do objeto inteiro, 3 testes ficam vermelhos. JVM **1.955 testes, 0 falhas** nas 4 (visual e pracego, debug e release); `./gradlew build --max-workers=3` **===EXIT=0===**; scripts do catálogo **108/108**. Versão **205** (`12.9.5-TRACOS-TR5`).

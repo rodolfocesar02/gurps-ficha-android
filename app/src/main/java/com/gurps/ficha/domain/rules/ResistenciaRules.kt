@@ -133,7 +133,7 @@ object ResistenciaRules {
      */
     private const val ID_SUSCETIBILIDADE_MAGIA = "susceptibilidade_a_magia"
 
-    /** **Suscetível** (MB p.159) — o espelho do Resistente. */
+    /** **Suscetível** (MB p.158) — o espelho do Resistente; vale pelo objeto escrito na ficha (TR-5). */
     private const val ID_SUSCETIVEL = "suscetivel"
 
     /**
@@ -213,21 +213,20 @@ object ResistenciaRules {
             origensHt + origemDe(personagem, ID_DURO_DE_MATAR) +
                 if (facil != 0) listOf("Fácil de Matar $facil") else emptyList()
         )
-        // Suscetível entra SÓ nestes dois: são os exemplos que o livro dá, e o
-        // app não guarda a qual objeto o personagem é suscetível.
-        val suscetivel = penalidadeSuscetivel(personagem)
-        val origemSuscetivel = origemDaDesvantagem(personagem, ID_SUSCETIVEL)
+        // TR-5 (MB p.158): o Suscetível vale só no OBJETO escrito na ficha ("Veneno" tira do veneno, e não da
+        // doença). Objeto estreito ou desconhecido ("Venenos Ingeridos") não desconta: vira aviso para o Mestre.
+        // A mesma leitura do `resistir-com-tracos.js` da Mesa (a pedra de toque prova o número).
+        val (susDoenca, origemDoenca, avisoDoenca) = suscetivelNoTeste(personagem, "doenca")
         lista += TesteDeResistencia(
-            "Resistir a doença", PisoDeTeste.aplicar(ht + bonusHt + suscetivel),
-            "Contra infecção e contágio. O modificador vem da doença." +
-                if (suscetivel != 0) " Confirme com o Mestre se a sua Suscetibilidade vale aqui." else "",
-            Familia.CORPO, origensHt + origemSuscetivel
+            "Resistir a doença", PisoDeTeste.aplicar(ht + bonusHt + susDoenca),
+            "Contra infecção e contágio. O modificador vem da doença." + avisoDoenca,
+            Familia.CORPO, origensHt + origemDoenca
         )
+        val (susVeneno, origemVeneno, avisoVeneno) = suscetivelNoTeste(personagem, "veneno")
         lista += TesteDeResistencia(
-            "Resistir a veneno", PisoDeTeste.aplicar(ht + bonusHt + suscetivel),
-            "O modificador vem do veneno." +
-                if (suscetivel != 0) " Confirme com o Mestre se a sua Suscetibilidade vale aqui." else "",
-            Familia.CORPO, origensHt + origemSuscetivel
+            "Resistir a veneno", PisoDeTeste.aplicar(ht + bonusHt + susVeneno),
+            "O modificador vem do veneno." + avisoVeneno,
+            Familia.CORPO, origensHt + origemVeneno
         )
         lista += TesteDeResistencia(
             "Aguentar o esforço", ht + bonusHt,
@@ -384,18 +383,59 @@ object ResistenciaRules {
         resistenciaAMagia(personagem) < 0
 
     /**
-     * **Suscetível** (MB p.159) — o espelho do Resistente.
+     * **Suscetível** (MB p.158) — o espelho do Resistente.
      *
      * > **-1 por nível** nos testes de HT para resistir aos efeitos negativos de
      * > uma classe de objetos ou substâncias (doença, veneno, etc.).
      *
-     * ⚠️ O app **não guarda a qual objeto** o personagem é suscetível — o
-     * catálogo tem uma entrada só. Então a penalidade entra em **doença e
-     * veneno**, que são os dois exemplos que o livro dá, e o texto do card avisa
-     * que o Mestre decide se vale naquele caso.
+     * TR-5: o objeto é o texto da `descricao` ("Veneno", "Doenças", "Danos ao Metabolismo"). Antes a
+     * penalidade entrava em doença e veneno sempre; agora só no objeto que a ficha diz.
+     *
+     * O Suscetível neste teste ("veneno" ou "doenca"): a penalidade, as origens e o aviso do objeto que não casou. */
+    private fun suscetivelNoTeste(personagem: Personagem, teste: String): Triple<Int, List<String>, String> {
+        val todos = personagem.desvantagensTotais.filter { it.definicaoId == ID_SUSCETIVEL }
+        var total = 0
+        val origens = mutableListOf<String>()
+        val avisos = mutableListOf<String>()
+        todos.forEach { d ->
+            val p = oSuscetivelNoTeste(d.descricao, d.nivel, teste)
+            if (p != 0) { total += p; origens += "${d.nome} $p" }
+            else if (teste in oQueOObjetoCobre(d.descricao).first) {
+                avisos += "${d.nome}${if (d.descricao.isNotBlank()) " (" + d.descricao.trim() + ")" else ""}: confira com o Mestre se vale aqui (MB p.158)."
+            }
+        }
+        return Triple(total, origens, avisos.joinToString("") { " $it" })
+    }
+
+    private val PALAVRAS_QUE_NAO_CONTAM = setOf("a", "ao", "aos", "as", "de", "do", "dos", "da", "das", "e", "o", "os",
+        "contra", "imunidade", "imune", "resistente", "resistencia", "suscetivel", "3", "8")
+    private val DO_VENENO = setOf("veneno", "venenos", "toxina", "toxinas")
+    private val DA_DOENCA = setOf("doenca", "doencas")
+
+    /**
+     * **Que testes o objeto escrito na ficha cobre** (`"veneno"`, `"doenca"`), e se o texto é SÓ o objeto
+     * (`second = true`: vira número). Desconhecido ou vazio: os dois, e `false`. Igual ao `oQueOObjetoCobre` da Mesa.
      */
-    private fun penalidadeSuscetivel(personagem: Personagem): Int =
-        penalidadeDe(personagem, ID_SUSCETIVEL)
+    fun oQueOObjetoCobre(descricao: String): Pair<List<String>, Boolean> {
+        val palavras = java.text.Normalizer.normalize(descricao, java.text.Normalizer.Form.NFD)
+            .replace(Regex("\\p{Mn}+"), "").lowercase()
+            .replace(Regex("[^a-z0-9]+"), " ").trim().split(" ")
+            .filter { it.isNotEmpty() && it !in PALAVRAS_QUE_NAO_CONTAM }
+        val nocivos = listOf("veneno", "doenca")
+        if (palavras.isEmpty()) return nocivos to false
+        val juntas = palavras.joinToString(" ")
+        if (juntas == "metabolismo" || juntas == "danos metabolismo") return nocivos to true
+        val testes = (if (palavras.any { it in DO_VENENO }) listOf("veneno") else emptyList()) +
+            (if (palavras.any { it in DA_DOENCA }) listOf("doenca") else emptyList())
+        if (testes.isEmpty()) return nocivos to false
+        return testes to palavras.all { it in DO_VENENO || it in DA_DOENCA }
+    }
+
+    /** **Quanto o Suscetível tira neste teste** (MB p.158): −nível se o objeto inteiro cobre o teste; senão 0. */
+    fun oSuscetivelNoTeste(descricao: String, nivel: Int, teste: String): Int {
+        val (testes, inteiro) = oQueOObjetoCobre(descricao)
+        return if (inteiro && teste in testes) -nivel.coerceAtLeast(1) else 0
+    }
 
     /** Se a ficha tem Aptidão Mágica — usado pela trava do Abascanto. */
     fun temAptidaoMagica(personagem: Personagem): Boolean =

@@ -124,4 +124,22 @@ class ResistenciaRulesTest {
         val p = heroi(vantagens = listOf(vant("aptidao_magica", "Aptidão Mágica")))
         assertTrue(ResistenciaRules.temAptidaoMagica(p))
     }
+
+    /**
+     * **TR-5: o Suscetível pelo objeto** (MB p.158). Os casos em forma literal são lidos pela pedra de toque da Mesa
+     * (`scripts/extrair-pedra-de-toque.js`), que prova que o `resistir-com-tracos.js` dá o mesmo número.
+     * ⚠️ Sem parênteses dentro das aspas: o extrator não os aceita.
+     */
+    @Test
+    fun `Suscetivel vale so no objeto escrito na ficha - TR-5`() {
+        assertEquals(-2, ResistenciaRules.oSuscetivelNoTeste("Veneno", 2, "veneno"))
+        assertEquals(0, ResistenciaRules.oSuscetivelNoTeste("Veneno", 2, "doenca"))
+        assertEquals(-3, ResistenciaRules.oSuscetivelNoTeste("Doenças", 3, "doenca"))
+        assertEquals(0, ResistenciaRules.oSuscetivelNoTeste("Doenças", 3, "veneno"))
+        assertEquals(-1, ResistenciaRules.oSuscetivelNoTeste("Danos ao Metabolismo", 1, "doenca"))
+        assertEquals(-1, ResistenciaRules.oSuscetivelNoTeste("Danos ao Metabolismo", 1, "veneno"))
+        assertEquals(0, ResistenciaRules.oSuscetivelNoTeste("Venenos Ingeridos", 3, "veneno"))
+        assertEquals(0, ResistenciaRules.oSuscetivelNoTeste("Bactérias", 2, "doenca"))
+        assertEquals(0, ResistenciaRules.oSuscetivelNoTeste("", 2, "veneno"))
+    }
 }
