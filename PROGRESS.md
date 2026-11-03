@@ -10086,3 +10086,12 @@ ficar verde**.
 - **APK:** debug **138,0 → 83,6 MB** (−54,4 MB, −39%): ML Kit −37,2 (detector de rosto e modelos), ObjectBox −9,6, imagens −3,6, código −3,5; os assets ficaram com os mesmos 29,0 MB. Release novo: **73,9 MB**. Versão **200** (`12.9.0-SEM-MESTRE-IA`).
 - **⚠️ Fora do código, com ele:** as chaves continuam dentro de todo APK gerado até hoje; tirá-las do APK novo não as invalida. O certo é trocá-las nos painéis (Google, DeepSeek, OpenRouter, NVIDIA, Xiaomi).
 - **Não coberto por teste automático:** o desenho da barra e do cabeçalho, a migração rodando no Room de verdade, a rolagem chegando ao Discord e à Mesa e a Mesa conectando: é o teste dele no aparelho.
+
+## Lote TR-2 — [2026-11-03] O ataque da Mesa com os traços do app (Zarolho, Assassino Relutante, Atirador, Mão Fraca, Completamente Desastrado)
+- **Hash:** (commit deste lote; ver `git log`) + commit da Mesa e o ponteiro do submódulo.
+- **Pedido dele:** "Siga para o TR-2" (`mesa-virtual/planos/tracos/PLANO.md`).
+- **No app, só um teste:** `AtiradorRulesTest.kt` ganhou `pedra de toque - os numeros do Atirador em forma literal` (15 linhas `assertEquals(x, AtiradorRules.metodo(args))` com argumentos soltos), que o `extrair-pedra-de-toque.js` da Mesa lê. A Mesa responde com o mesmo número nos 16 casos.
+- **A regra mora no app e foi transcrita para a Mesa** (`tracos-no-ataque.js`, `desastrado-na-rolagem.js`, a Mão Fraca no `efeitos-na-rolagem.js`), com o mesmo número.
+- **Páginas conferidas no PDF do Módulo Básico:** Zarolho é **p.162**, Assassino Relutante **p.152**, Mão Fraca **p.150** e Desastrado **p.132**. O app cita uma a mais nas quatro (`ZarolhoRules`, `PacifismoRules`, `MaoFracaRule`, `DesastradoRules.MOTIVO`): **não corrigido aqui**, porque o texto aparece na aba Rolagem (parada).
+- **Achado no catálogo:** a desvantagem `gigantismo` custa −10; o livro (p.19) dá 0 pontos. Espera a decisão dele.
+- **Testes:** as quatro baterias JVM (visual e pracego, debug e release) verdes: **1931 testes cada, 0 falhas**, com o teste novo. O `./gradlew build` inteiro caiu duas vezes por falta de memória no lint/compilação (`OutOfMemoryError`: o emulador e o Android Studio estavam abertos, 1,7 GB livres); como a mudança é só um teste e a versão, ficou assim. Versão **201** (`12.9.1-TRACOS-TR2`).

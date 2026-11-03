@@ -292,4 +292,27 @@ class AtiradorRulesTest {
         )
         assertTrue(semOParametro!!, semOParametro.contains("não tem Precisão cadastrada"))
     }
+
+    /**
+     * 🔴 A pedra de toque da Mesa (TR-2 do plano dos traços): os mesmos números em forma literal, um por linha, que
+     * o `scripts/extrair-pedra-de-toque.js` da Mesa sabe ler (argumento nomeado e constante ele não lê).
+     */
+    @Test
+    fun `pedra de toque - os numeros do Atirador em forma literal`() {
+        assertEquals(2, AtiradorRules.precisaoSemApontar(AtiradorRules.Estilo.ATIRADOR, 2, false, 3))
+        assertEquals(3, AtiradorRules.precisaoSemApontar(AtiradorRules.Estilo.ATIRADOR, 5, true, 1))
+        assertEquals(3, AtiradorRules.precisaoSemApontar(AtiradorRules.Estilo.ATIRADOR, 6, false, 4))
+        assertEquals(1, AtiradorRules.precisaoSemApontar(AtiradorRules.Estilo.ATIRADOR, 1, true, 1))
+        assertEquals(3, AtiradorRules.precisaoSemApontar(AtiradorRules.Estilo.ARQUEIRO_HEROICO, 3, true, 1))
+        assertEquals(0, AtiradorRules.precisaoSemApontar(AtiradorRules.Estilo.ATIRADOR, 0, false, 1))
+        assertEquals(0, AtiradorRules.bonusPorTurnos(AtiradorRules.Estilo.ATIRADOR, 1))
+        assertEquals(1, AtiradorRules.bonusPorTurnos(AtiradorRules.Estilo.ATIRADOR, 2))
+        assertEquals(2, AtiradorRules.bonusPorTurnos(AtiradorRules.Estilo.ATIRADOR, 3))
+        assertEquals(1, AtiradorRules.bonusPorTurnos(AtiradorRules.Estilo.ARQUEIRO_HEROICO, 1))
+        assertEquals(2, AtiradorRules.bonusPorTurnos(AtiradorRules.Estilo.ARQUEIRO_HEROICO, 2))
+        assertEquals(2, AtiradorRules.bonusNoAtaque(AtiradorRules.Estilo.ATIRADOR, 2, false, 3, false, false))
+        assertEquals(0, AtiradorRules.bonusNoAtaque(AtiradorRules.Estilo.ATIRADOR, 2, false, 3, true, false))
+        assertEquals(0, AtiradorRules.bonusNoAtaque(AtiradorRules.Estilo.ATIRADOR, 2, false, 3, false, true))
+        assertEquals(0, AtiradorRules.bonusNoAtaque(AtiradorRules.Estilo.NENHUM, 2, false, 3, false, false))
+    }
 }
