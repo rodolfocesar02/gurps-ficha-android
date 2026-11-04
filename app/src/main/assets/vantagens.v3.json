@@ -5890,17 +5890,20 @@
    {
     "tipo": "pericia",
     "alvo": "Observação",
-    "valor": 2
+    "valor": 2,
+    "condicao": "sob luz UV: o sol, mesmo nublado, ou lâmpada fluorescente (MB p.96)"
    },
    {
     "tipo": "pericia",
     "alvo": "Perícia Forense/NT",
-    "valor": 2
+    "valor": 2,
+    "condicao": "sob luz UV: o sol, mesmo nublado, ou lâmpada fluorescente (MB p.96)"
    },
    {
     "tipo": "pericia",
     "alvo": "Revistar",
-    "valor": 2
+    "valor": 2,
+    "condicao": "sob luz UV: o sol, mesmo nublado, ou lâmpada fluorescente (MB p.96)"
    }
   ]
  },

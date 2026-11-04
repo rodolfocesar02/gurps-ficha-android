@@ -10148,3 +10148,12 @@ ficar verde**.
   - **Na aba Rolagem isto muda:** quem tem Deficiência Física perde 3 (Perna Incapacitada) ou 6 (Pernas Faltando, Nenhuma Perna, Paraplégico) nessas perícias. Ficha antiga sem o custo escolhido não perde nada.
 - **Na Mesa (mesmo lote):** a água como chão para o Anfíbio e quem Caminha sobre Líquidos, o "não anda" do Tetraplégico e da Deficiência Física de −30, a Queda de Gato e o Super Salto na queda, e o Sem Pernas na silhueta.
 - **Testes:** `TracosDoTr6Test.kt` (o catálogo real → o interpretador → o bônus da perícia: −3, −6, −6; o Arco não muda; custo 0 não muda); os testes do catálogo de efeitos (nomes exatos no `pericias.json`) seguem verdes. JVM **1.956 testes, 0 falhas** nas 4 (visual e pracego, debug e release); `./gradlew build --max-workers=3` **===EXIT=0===**; scripts do catálogo **108/108**. Versão **206** (`12.9.6-TRACOS-TR6A`).
+
+## Lote TR-7 — [2026-11-04] A Ultravisão só dá o +2 sob luz UV
+- **Hash:** (commit deste lote; ver `git log`) + commit da Mesa e o ponteiro do submódulo.
+- **Pedido dele:** "Siga as propostas" (`mesa-virtual/planos/tracos/PLANO.md`, TR-7; a Ultravisão com a condição no catálogo).
+- **O defeito:** o catálogo dava +2 em Observação, Perícia Forense/NT e Revistar a quem tem Ultravisão SEMPRE, no NH. O livro (MB p.96) diz "sob luz UV".
+- **Mudança (catálogo, vale para os dois lados):** `vantagens.v3.json`: os três efeitos da **Ultravisão** ganharam a condição "sob luz UV: o sol, mesmo nublado, ou lâmpada fluorescente (MB p.96)".
+  - **Na aba Rolagem isto muda:** o +2 deixa de entrar no NH e vira caixinha que o jogador marca.
+- **Na Mesa (mesmo lote):** Visão Restrita nos lados do ataque, Infravisão na escuridão, Camaleão e Silêncio pelo movimento do turno, Invisibilidade (o boneco não viaja para quem não o vê) e Ver o Invisível, Obscurecer no ataque.
+- **Testes:** `TracosDoTr7Test.kt` (o catálogo real: nada no NH, a caixinha "sob luz UV" de +2 nas três perícias). JVM **1.957 testes, 0 falhas** nas 4 (visual e pracego, debug e release); `./gradlew build --max-workers=3` **===EXIT=0===**; scripts do catálogo **108/108**. Versão **207** (`12.9.7-TRACOS-TR7`).
