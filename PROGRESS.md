@@ -10157,3 +10157,12 @@ ficar verde**.
   - **Na aba Rolagem isto muda:** o +2 deixa de entrar no NH e vira caixinha que o jogador marca.
 - **Na Mesa (mesmo lote):** Visão Restrita nos lados do ataque, Infravisão na escuridão, Camaleão e Silêncio pelo movimento do turno, Invisibilidade (o boneco não viaja para quem não o vê) e Ver o Invisível, Obscurecer no ataque.
 - **Testes:** `TracosDoTr7Test.kt` (o catálogo real: nada no NH, a caixinha "sob luz UV" de +2 nas três perícias). JVM **1.957 testes, 0 falhas** nas 4 (visual e pracego, debug e release); `./gradlew build --max-workers=3` **===EXIT=0===**; scripts do catálogo **108/108**. Versão **207** (`12.9.7-TRACOS-TR7`).
+
+## Lote RG-2b (app) — [2026-11-05] Dois erros de OCR no catálogo de armas: o Machado de Haste e a Segadeira
+- **Hash:** (commit deste lote; ver `git log`) + o ponteiro do submódulo.
+- **Pedido dele:** "Corrija no app" (`mesa-virtual/planos/regras/PLANO.md`, RG-2b: a varredura das 150 armas da Mesa achou os dois).
+- **O defeito:** o segundo modo de duas armas saiu errado do OCR da tabela (MB p.271-274): Machado de Haste "GeP+4 cont" (não existe "GeP") e Segadeira "GdB perf" (não existe "GdB"); o `base` do modo ficava nulo.
+- **Mudança (catálogo):** `armas_corpo_a_corpo.v1.normalized.json`: Machado de Haste "GeB+4 corte/GeB+4 cont" (MB p.272) e Segadeira "GeB+2 corte/GeB perf" (MB p.274), com `base: "GeB"`. 6 linhas.
+  - **Na aba Rolagem isto muda:** o segundo ataque dessas duas armas passa a sair do GeB (balanço), como o livro diz.
+- **Na Mesa (mesmo dia):** a Mesa completa a ficha pelo mesmo catálogo (os modos que o app não copia, o "‡", o BD do escudo); a correção que a Mesa fazia no gerador ficou vazia.
+- **Testes:** `ArmasCatalogoTest.kt` ganhou a varredura "todo modo de dano começa por GeB, GdP ou um dado" e fixa as duas armas; sonda: devolver o "GdB perf" deixa o teste vermelho. JVM **1.958 testes, 0 falhas** nas 4 (visual e pracego, debug e release); `./gradlew build` **===EXIT=0===**; scripts do catálogo **108/108**. Versão **208** (`12.9.8-REGRAS-RG2B`).

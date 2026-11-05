@@ -357,6 +357,23 @@ class ArmasCatalogoTest {
         assertTrue("ids repetidos: $repetidos", repetidos.isEmpty())
     }
 
+    /**
+     * **RG-2b da Mesa** — a varredura achou dois erros do OCR da tabela: "GeP+4 cont" no Machado de Haste e "GdB perf"
+     * na Segadeira (nem "GeP" nem "GdB" existem). O livro diz GeB nos dois (MB p.272 e p.274). Todo dano tem de começar
+     * por GeB, GdP ou um dado; os poucos que o livro escreve de outro jeito ("espec.", o HT da arma de choque, "—") passam.
+     */
+    @Test
+    fun `todo modo de dano comeca por GeB, GdP ou um dado (o OCR nao inventa GeP nem GdB)`() {
+        val conhecido = Regex("^(GeB|GdP)\\b|^\\d+d|^HT|^espec|^—|^$")
+        todas().forEach { arma ->
+            (arma.modos.map { it.danoRaw } + arma.danoRaw).forEach { raw ->
+                assertTrue("${arma.nome}: dano '$raw'", conhecido.containsMatchIn(raw.trim()))
+            }
+        }
+        assertEquals(listOf("GeB+4 corte", "GeB+4 cont"), porNome(corpoACorpo(), "Machado de Haste").modos.map { it.danoRaw })
+        assertEquals(listOf("GeB+2 corte", "GeB perf"), porNome(corpoACorpo(), "Segadeira").modos.map { it.danoRaw })
+    }
+
     @Test
     fun `o tipo de combate continua sendo um dos tres conhecidos`() {
         val validos = setOf(

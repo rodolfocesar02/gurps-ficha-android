@@ -1853,7 +1853,7 @@
       "nt": 3,
       "ntRaw": "3",
       "dano": {
-        "raw": "GeB+4 corte/GeP+4 cont",
+        "raw": "GeB+4 corte/GeB+4 cont",
         "base": "GeB",
         "tipo": "corte",
         "modos": [
@@ -1863,8 +1863,8 @@
             "tipo": "corte"
           },
           {
-            "raw": "GeP+4 cont",
-            "base": null,
+            "raw": "GeB+4 cont",
+            "base": "GeB",
             "tipo": "cont"
           }
         ]
@@ -2968,7 +2968,7 @@
       "nt": 1,
       "ntRaw": "1",
       "dano": {
-        "raw": "GeB+2 corte/GdB perf",
+        "raw": "GeB+2 corte/GeB perf",
         "base": "GeB",
         "tipo": "corte",
         "modos": [
@@ -2978,8 +2978,8 @@
             "tipo": "corte"
           },
           {
-            "raw": "GdB perf",
-            "base": null,
+            "raw": "GeB perf",
+            "base": "GeB",
             "tipo": "perf"
           }
         ]
