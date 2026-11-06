@@ -5,6 +5,7 @@ import com.gurps.ficha.model.Equipamento
 import com.gurps.ficha.model.Personagem
 import com.gurps.ficha.model.TipoEquipamento
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
@@ -49,6 +50,14 @@ class QualidadeDaArmaTest {
         }
         assertEquals(2, QualidadeDaArma.Nivel.BARATA.modificadorDeQuebra)
         assertEquals(0, QualidadeDaArma.Nivel.BOA.modificadorDeQuebra)
+    }
+
+    @Test
+    fun `a explicacao da barata diz que ela quebra MAIS ao aparar (MB p376), e nao o contrario`() {
+        val texto = QualidadeDaArma.Nivel.BARATA.explicacao
+        assertTrue(texto, texto.contains("quebra mais"))
+        assertFalse(texto, texto.contains("aguenta mais"))
+        assertTrue(QualidadeDaArma.Nivel.SUPERIOR.explicacao.contains("quebra menos"))
     }
 
     // ── A altíssima é só de espada ─────────────────────────────────────

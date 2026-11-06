@@ -10166,3 +10166,11 @@ ficar verde**.
   - **Na aba Rolagem isto muda:** o segundo ataque dessas duas armas passa a sair do GeB (balanço), como o livro diz.
 - **Na Mesa (mesmo dia):** a Mesa completa a ficha pelo mesmo catálogo (os modos que o app não copia, o "‡", o BD do escudo); a correção que a Mesa fazia no gerador ficou vazia.
 - **Testes:** `ArmasCatalogoTest.kt` ganhou a varredura "todo modo de dano começa por GeB, GdP ou um dado" e fixa as duas armas; sonda: devolver o "GdB perf" deixa o teste vermelho. JVM **1.958 testes, 0 falhas** nas 4 (visual e pracego, debug e release); `./gradlew build` **===EXIT=0===**; scripts do catálogo **108/108**. Versão **208** (`12.9.8-REGRAS-RG2B`).
+
+## Lote RG-6 (app) — [2026-11-06] O texto da qualidade "Barata" dizia o contrário do livro
+- **Hash:** (commit deste lote; ver `git log`) + o ponteiro do submódulo.
+- **Pedido dele:** "corrija" (achado ao conferir o RG-6 da Mesa, que lê o `armaQualidade` da ficha para a quebra ao aparar).
+- **O defeito:** a explicação da Barata dizia "aguenta mais ao aparar" e o comentário do `modificadorDeQuebra` dizia "positivo é bom". O livro (MB p.376): "+2 se a arma for barata, -1 se for de qualidade superior ou -2 se de qualidade altíssima" na chance de QUEBRAR. Os números do enum já estavam certos (+2, 0, −1, −2); só o texto estava trocado.
+- **Mudança:** `QualidadeDaArma.kt`: o comentário e as explicações da Barata ("quebra mais fácil ao aparar uma arma pesada"), da Superior e da Altíssima ("quebra menos ao aparar").
+  - **Na aba Rolagem isto muda:** só o texto explicativo da qualidade.
+- **Testes:** `QualidadeDaArmaTest.kt` ganhou "a explicação da barata diz que ela quebra MAIS" (sonda: o texto antigo deixa o teste vermelho). `./gradlew build` **===EXIT=0===**. Versão **209** (`12.9.9-QUALIDADE-BARATA`).

@@ -29,8 +29,9 @@ object QualidadeDaArma {
 
     /**
      * @param bonusDeDano soma ao dano, **só** em corte e perfuração.
-     * @param modificadorDeQuebra entra no teste de quebra ao aparar arma pesada
-     *   (p.376) — positivo é bom, a arma resiste mais.
+     * @param modificadorDeQuebra soma à chance de QUEBRAR ao aparar arma pesada
+     *   (p.376: "+2 se a arma for barata, -1 se for de qualidade superior ou -2 se
+     *   de qualidade altíssima") — positivo é ruim: a arma quebra mais.
      * @param soEspadas a altíssima qualidade *"somente as armas de esgrima e as
      *   espadas podem ser consideradas"*.
      */
@@ -47,10 +48,10 @@ object QualidadeDaArma {
 
         val explicacao: String
             get() = when (this) {
-                BARATA -> "aguenta mais ao aparar, mas se for de arremesso perde 1 de Precisão"
+                BARATA -> "quebra mais fácil ao aparar uma arma pesada (+2 na chance), e se for de arremesso perde 1 de Precisão"
                 BOA -> "a qualidade padrão das tabelas do livro"
-                SUPERIOR -> "lâmina bem-feita: mais 1 no dano por corte e perfuração"
-                ALTISSIMA -> "só espadas e esgrima: mais 2 no dano por corte e perfuração"
+                SUPERIOR -> "lâmina bem-feita: mais 1 no dano por corte e perfuração, e quebra menos ao aparar (−1 na chance)"
+                ALTISSIMA -> "só espadas e esgrima: mais 2 no dano por corte e perfuração, e quebra menos ao aparar (−2 na chance)"
             }
     }
 
