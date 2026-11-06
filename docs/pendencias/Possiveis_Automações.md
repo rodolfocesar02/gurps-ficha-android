@@ -1199,3 +1199,23 @@ jogador realmente faz — "quanto eu ando agora?" — e não só "quanto eu anda
 O diálogo deve mostrar **todos os cinco níveis de carga** sempre, ou só o nível
 atual com um "ver todos"? Eu prefiro todos — a tabela inteira ensina a regra e é
 curta —, mas se a tela ficar cheia, o "ver todos" resolve.
+
+---
+
+## ⭐ Recado da Mesa (06/nov/2026): as ampliações e limitações dos traços
+
+> Anotado a pedido dele, no RG-9 da Mesa (`mesa-virtual/planos/regras/PLANO.md`).
+
+**O que falta:** o catálogo de modificadores do app (`modificadores.v1.json`) não tem as **ampliações especiais da
+Atribulação** (MB p.44-45: Cegueira, Incapacitação, Irritante, Ataque Cardíaco, Paralisia...) nem boa parte das
+ampliações e limitações de ataque (MB p.101-116) que mudam o que um Ataque Inato ou uma Atribulação **fazem**
+(Acompanhamento, Agente de Contato, Agente Respiratório, Agente Sanguíneo, Base Sensorial, Cone, Efeito de Área,
+Divisor de Armadura...).
+
+**Por que importa:** a ficha que vai para a Mesa já leva os modificadores de cada traço (id e nome). Se o catálogo do
+app os tiver, a Mesa pode ler da ficha **o efeito** da Atribulação (hoje é sempre "atordoado", e o Mestre escolhe o
+resto numa faixa) e o jeito do Ataque Inato (o RD que não protege, o cone, a área), sem o Mestre conferir à mão.
+
+<<Proposta: pôr no catálogo as ampliações especiais da Atribulação (p.44-45) e as de ataque (p.101-116) com um campo
+de efeito que a Mesa entenda (`efeito: "cegueira"`, `penetracao: "agente_sanguineo"`...). A Mesa já tem o lugar para
+ler (`atributo-bonus.js`, os modificadores do traço). Decisão dele: quando fazer.>>
