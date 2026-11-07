@@ -10174,3 +10174,12 @@ ficar verde**.
 - **Mudança:** `QualidadeDaArma.kt`: o comentário e as explicações da Barata ("quebra mais fácil ao aparar uma arma pesada"), da Superior e da Altíssima ("quebra menos ao aparar").
   - **Na aba Rolagem isto muda:** só o texto explicativo da qualidade.
 - **Testes:** `QualidadeDaArmaTest.kt` ganhou "a explicação da barata diz que ela quebra MAIS" (sonda: o texto antigo deixa o teste vermelho). `./gradlew build` **===EXIT=0===**. Versão **209** (`12.9.9-QUALIDADE-BARATA`).
+
+## Lote RG-9c (app) — [2026-11-07] Os estados temporários: a IQ desce para Per e Vontade
+- **Hash:** (commit deste lote; ver `git log`) + o ponteiro do submódulo.
+- **Pedido dele:** "Sim, nos dois" (a decisão do RG-9c da Mesa: o MB p.422 diz "Penalidades na IQ se aplicam igualmente à Per e Vontade").
+- **O que estava:** o `EstadosTemporarios.kt` dizia que a IQ NÃO descia para a Vontade, com o Lunático de prova; mas o Lunático tira a Vontade, não a IQ, e a frase dele não é redundante.
+- **Mudança:** `EstadosTemporarios.kt` ganhou `penalidadesNosAtributos` (o que a página nomeia + a IQ somada em `VON` e `PER`); o `penalidadeDeAtributo` usa ela; o `PainelAtributosEStatus.kt` passa ela ao painel dos atributos. O `Mods.atributos` continua com o que cada página nomeia.
+  - **Na aba Rolagem isto muda:** com a Dor Crônica, o Dorminhoco, o Enjoo, a Repugnância, os Problemas na Coluna ou o Supersensitivo ligados, o teste de Vontade e o de Percepção caem junto com a IQ. O Lunático continua tirando só a Vontade.
+- **Na Mesa (mesmo dia):** `estados-temporarios.js` (`aPenalidadeDeAtributo`) faz a mesma conta.
+- **Testes:** `EstadosTemporariosTest.kt`: o teste "IQ não desce" virou "a IQ desce para Vontade e Percepção no teste", e um novo (Lunático + Dorminhoco: Vontade −3, Per −1). 28 testes; sonda: tirar o PER deixa o teste vermelho. Versão **210** (`12.9.10-IQ-EM-PER-E-VONTADE`).

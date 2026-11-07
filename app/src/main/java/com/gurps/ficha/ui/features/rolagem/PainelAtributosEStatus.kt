@@ -117,7 +117,7 @@ fun PainelAtributosEStatus(
                 bonusStLevantamento = if (stLevantamentoAtivo) {
                     StEspecializadaRules.bonusDeLevantamento(personagem)
                 } else 0,
-                penalidadesDeEstado = EstadosTemporarios.totalDe(grausDeEstado).atributos,
+                penalidadesDeEstado = EstadosTemporarios.penalidadesNosAtributos(grausDeEstado),   // MB p.422: a IQ desce para Per e Vontade
                 onExecutarRolagem = onRolarAtributo
             )
 

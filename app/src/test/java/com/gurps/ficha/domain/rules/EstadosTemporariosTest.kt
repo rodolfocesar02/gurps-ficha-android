@@ -26,8 +26,8 @@ import java.io.File
  *    **Deslocamento**. Se o desenho tivesse parado em DX/IQ/perícia — que era o
  *    plano quando eu conhecia só três clientes — os dois sairiam errados e
  *    ninguém veria.
- * 3. **A propagação indevida.** Penalidade de IQ **não** desce para Vontade e
- *    Percepção. O próprio Lunático prova: ele nomeia Vontade e não fala em IQ.
+ * 3. **A propagação** (MB p.422, decisão dele em 07/nov/2026): a penalidade de IQ
+ *    desce para Vontade e Percepção no teste; o que cada página nomeia fica igual.
  */
 class EstadosTemporariosTest {
 
@@ -134,9 +134,8 @@ class EstadosTemporariosTest {
 
     @Test
     fun `⚠️ Lunatico mexe em VONTADE, nao em IQ`() {
-        // A dimensão que não estava no meu desenho de três clientes. E é esta
-        // frase do livro que prova que IQ NÃO arrasta Vontade junto: se
-        // arrastasse, "-2 em todos os testes de Vontade" seria redundante.
+        // A dimensão que não estava no meu desenho de três clientes: a Vontade cai,
+        // a IQ (e a Per) não.
         val m = EstadosTemporarios.totalDe(mapOf("lunatico" to 1))
         assertEquals(-2, m.atributos["VON"])
         assertEquals(-2, m.autocontrole)
@@ -221,13 +220,27 @@ class EstadosTemporariosTest {
     // ==================================================================
 
     @Test
-    fun `⚠️ penalidade de IQ nao desce para Vontade nem Percepcao`() {
-        // Seria "natural" propagar, já que as duas nascem da IQ — e estaria
-        // errado. Cada estado penaliza exatamente o que a página dele nomeia.
-        val m = EstadosTemporarios.totalDe(mapOf("dor_cronica" to 3))
-        assertEquals(-6, m.atributos["IQ"])
-        assertNull("Vontade nao pode cair junto", m.atributos["VON"])
-        assertNull("Percepcao nao pode cair junto", m.atributos["PER"])
+    fun `🔴 a penalidade de IQ desce para Vontade e Percepcao no teste (MB p 422)`() {
+        // "Penalidades na IQ se aplicam igualmente à Per e Vontade" (MB p.422).
+        val nomeados = EstadosTemporarios.totalDe(mapOf("dor_cronica" to 3)).atributos
+        assertEquals(-6, nomeados["IQ"])
+        assertNull("o que a pagina nomeia continua igual", nomeados["VON"])
+        val noTeste = EstadosTemporarios.penalidadesNosAtributos(mapOf("dor_cronica" to 3))
+        assertEquals(-6, noTeste["IQ"])
+        assertEquals(-6, noTeste["VON"])
+        assertEquals(-6, noTeste["PER"])
+        assertEquals(-6, noTeste["DX"])
+        assertNull("HT nao", noTeste["HT"])
+        assertEquals(-6, EstadosTemporarios.penalidadeDeAtributo(mapOf("dor_cronica" to 3), "VON"))
+    }
+
+    @Test
+    fun `Lunatico mais Dorminhoco - a Vontade soma os dois, a Per so a IQ`() {
+        val noTeste = EstadosTemporarios.penalidadesNosAtributos(mapOf("lunatico" to 1, "dorminhoco" to 1))
+        assertEquals(-3, noTeste["VON"])   // -2 da lua, -1 da IQ do Dorminhoco
+        assertEquals(-1, noTeste["PER"])
+        assertEquals(-1, noTeste["IQ"])
+        assertNull(EstadosTemporarios.penalidadesNosAtributos(mapOf("lunatico" to 1))["PER"])
     }
 
     @Test

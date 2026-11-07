@@ -29,12 +29,16 @@ import com.gurps.ficha.model.Personagem
  * **Lunático** mexe em **Vontade** e **Sangue Frio** em **Deslocamento** — duas
  * dimensões que não estavam no plano. Refazer depois de construído seria o caro.
  *
- * ## ⚠️ Penalidade de IQ NÃO desce para Vontade e Percepção
+ * ## 🔴 A penalidade de IQ DESCE para Vontade e Percepção (MB p.422)
  *
- * Poderia parecer natural propagar, já que as duas nascem da IQ. O próprio livro
- * mostra que não é assim: o **Lunático** dá *"−2 em todos os testes de Vontade"*
- * e não fala em IQ. Se IQ arrastasse Vontade junto, essa frase seria redundante.
- * Cada estado penaliza exatamente o que a página dele nomeia.
+ * "Penalidades na IQ se aplicam igualmente à Per e Vontade" (Penalidades
+ * Temporárias de Atributo, MB p.422). Até 07/nov/2026 este arquivo dizia o
+ * contrário, com o Lunático de prova; mas o Lunático tira a **Vontade**, não a
+ * IQ, e por isso a frase dele não é redundante. Decisão dele (RG-9c da Mesa):
+ * "Sim, nos dois".
+ *
+ * [Mods.atributos] continua sendo o que a página de cada estado NOMEIA; quem
+ * aplica no teste usa [penalidadesNosAtributos], que soma a IQ na Vontade e na Per.
  *
  * ## O que fica de fora, e por quê
  *
@@ -195,8 +199,7 @@ object EstadosTemporarios {
             )
         ),
         // p.149: "-2 em todos os testes de Vontade e autocontrole".
-        // ⚠️ Vontade, NÃO IQ -- e é esta frase que prova que IQ não arrasta
-        // Vontade junto.
+        // ⚠️ Vontade, NÃO IQ: a IQ fica intacta (a Vontade cai sozinha).
         Estado(
             "lunatico", "Lunático", 149, "na lua cheia",
             listOf(Grau("Lua cheia", mods(VONT to -2, autocontrole = -2)))
@@ -275,9 +278,20 @@ object EstadosTemporarios {
             acc + (POR_ID[id]?.modsDo(grau) ?: Mods())
         }
 
-    /** O desconto num atributo específico, pelo código da aba Rolagem. */
+    /**
+     * **O desconto em cada atributo, como vale no teste** (MB p.422): o que a página
+     * nomeia, e a IQ somada também na Vontade (`VON`) e na Percepção (`PER`).
+     */
+    fun penalidadesNosAtributos(ligados: Map<String, Int>): Map<String, Int> {
+        val nomeados = totalDe(ligados).atributos
+        val iq = nomeados[IQ] ?: 0
+        if (iq == 0) return nomeados
+        return nomeados + mapOf(VONT to (nomeados[VONT] ?: 0) + iq, PER to (nomeados[PER] ?: 0) + iq)
+    }
+
+    /** O desconto num atributo específico, pelo código da aba Rolagem (com a IQ em Per e Vontade). */
     fun penalidadeDeAtributo(ligados: Map<String, Int>, atributo: String): Int =
-        totalDe(ligados).atributos[atributo] ?: 0
+        penalidadesNosAtributos(ligados)[atributo] ?: 0
 
     /**
      * A linha de resumo do painel, quando há algo ligado.
