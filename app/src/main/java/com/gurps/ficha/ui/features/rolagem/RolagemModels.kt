@@ -48,7 +48,8 @@ data class PericiaRollOption(
     val especializacao: String,
     val contextLabel: String,
     val target: Int,
-    val descricao: String
+    val descricao: String,
+    val atributoBase: String? = null   // RG-9c: o estado temporário desce pelo atributo (MB p.422)
 )
 
 data class MagiaRollOption(
@@ -83,7 +84,8 @@ data class TecnicaRollOption(
     val periciaBaseNome: String,
     val contextLabel: String,
     val target: Int?,
-    val descricao: String
+    val descricao: String,
+    val atributoBase: String? = null   // RG-9c: o da perícia-base
 )
 
 data class ParsedDamage(

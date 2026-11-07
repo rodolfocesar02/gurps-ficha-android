@@ -352,7 +352,8 @@ fun TabRolagem(viewModel: FichaViewModel) {
             especializacao = per.especializacao,
             contextLabel = periciaLabel(per),
             target = per.calcularNivel(p),
-            descricao = viewModel.dataRepository.regraPericiaV2(per.definicaoId)?.descricao.orEmpty()
+            descricao = viewModel.dataRepository.regraPericiaV2(per.definicaoId)?.descricao.orEmpty(),
+            atributoBase = per.atributoBase.sigla
         )
     }
 
@@ -396,7 +397,8 @@ fun TabRolagem(viewModel: FichaViewModel) {
             periciaBaseNome = tec.periciaBaseNome,
             contextLabel = tec.nome,
             target = tec.calcularNivel(p),
-            descricao = viewModel.dataRepository.tecnicasCatalogo.find { it.id == tec.definicaoId }?.descricao.orEmpty()
+            descricao = viewModel.dataRepository.tecnicasCatalogo.find { it.id == tec.definicaoId }?.descricao.orEmpty(),
+            atributoBase = p.pericias.find { it.definicaoId == tec.periciaBaseDefinicaoId }?.atributoBase?.sigla
         )
     }
 
@@ -727,7 +729,7 @@ fun TabRolagem(viewModel: FichaViewModel) {
             tipo = TipoTeste.MAGIA,
             contextoLabel = magia.contextLabel,
             alvo = magia.target,
-            mod = modMagia
+            mod = modMagia + EstadosTemporarios.penalidadeNaPericia(grausDeEstado, "IQ")   // RG-9c: magia é IQ (MB p.422)
         )
     }
 
@@ -1359,7 +1361,9 @@ fun TabRolagem(viewModel: FichaViewModel) {
             nivelEquipamento = nivelEquipamento,
             onAlternarEquipamento = { nivelEquipamento = nivelEquipamento.proximo() },
             onExecutarRolagem = { contexto, alvo, mod ->
-                executarRolagem(TipoTeste.PERICIA, contexto, alvo, mod + modsDeEstado.pericias)
+                // RG-9c (MB p.422): o pior entre o "todos os testes" e o atributo-base da perícia
+                val base = opcoesPericia.firstOrNull { it.contextLabel == contexto }?.atributoBase
+                executarRolagem(TipoTeste.PERICIA, contexto, alvo, mod + EstadosTemporarios.penalidadeNaPericia(grausDeEstado, base))
             },
             onDismiss = { showPericiasDialog = false }
         )
@@ -1395,7 +1399,10 @@ fun TabRolagem(viewModel: FichaViewModel) {
             modificadoresTecnica = modificadoresTecnica,
             isPraCegoVariant = isPraCegoVariant,
             onShowDescricao = { descricaoDialog = it },
-            onExecutarRolagem = { contexto, alvo, mod -> executarRolagem(TipoTeste.TECNICA, contexto, alvo, mod) },
+            onExecutarRolagem = { contexto, alvo, mod ->
+                val base = opcoesTecnica.firstOrNull { it.contextLabel == contexto }?.atributoBase   // RG-9c
+                executarRolagem(TipoTeste.TECNICA, contexto, alvo, mod + EstadosTemporarios.penalidadeNaPericia(grausDeEstado, base))
+            },
             onDismiss = { showTecnicasDialog = false }
         )
     }

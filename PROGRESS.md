@@ -10183,3 +10183,12 @@ ficar verde**.
   - **Na aba Rolagem isto muda:** com a Dor Crônica, o Dorminhoco, o Enjoo, a Repugnância, os Problemas na Coluna ou o Supersensitivo ligados, o teste de Vontade e o de Percepção caem junto com a IQ. O Lunático continua tirando só a Vontade.
 - **Na Mesa (mesmo dia):** `estados-temporarios.js` (`aPenalidadeDeAtributo`) faz a mesma conta.
 - **Testes:** `EstadosTemporariosTest.kt`: o teste "IQ não desce" virou "a IQ desce para Vontade e Percepção no teste", e um novo (Lunático + Dorminhoco: Vontade −3, Per −1). 28 testes; sonda: tirar o PER deixa o teste vermelho. Versão **210** (`12.9.10-IQ-EM-PER-E-VONTADE`).
+
+## Lote RG-9c-b (app) — [2026-11-07] Os estados temporários descem para as perícias do atributo
+- **Hash:** (commit deste lote; ver `git log`) + o ponteiro do submódulo.
+- **Pedido dele:** "Sim, nos dois" (MB p.422: "Uma penalidade a um atributo sempre reduz os NHs das perícias governadas pelo atributo em questão").
+- **Mudança:** `EstadosTemporarios.kt` ganhou `penalidadeNaPericia(ligados, atributoBase)`: o PIOR entre o "todos os testes" da página e o do atributo-base (com a IQ em Per e Vontade), sem somar. `RolagemModels.kt`: `PericiaRollOption` e `TecnicaRollOption` levam o `atributoBase`. `TabRolagem.kt`: a perícia, a técnica (pela perícia-base) e a magia (IQ) rolam com esse desconto.
+  - **Na aba Rolagem isto muda:** com a Dor Crônica Suave ligada, a Furtividade (DX), a Diplomacia (IQ), a Intimidação (Vontade) e as magias caem 2; a Natação (HT), não. O Enjoo continua −2 (não −4) e a Repugnância ingerida −10.
+  - **Fica igual:** o ataque da aba Rolagem não recebe os estados (nunca recebeu; a Mesa recebe).
+- **Na Mesa (mesmo dia):** `estados-temporarios.js` (`aPenalidadeNaPericia`), o cartão da roda e a janela da ficha do Mestre.
+- **Testes:** `EstadosTemporariosTest.kt` (29; sonda: somar em vez do pior deixa vermelho). `./gradlew build` **===EXIT=0===**. Versão **211** (`12.9.11-ESTADOS-NAS-PERICIAS`).

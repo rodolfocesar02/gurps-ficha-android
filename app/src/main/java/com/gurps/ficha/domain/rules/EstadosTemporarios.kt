@@ -289,6 +289,19 @@ object EstadosTemporarios {
         return nomeados + mapOf(VONT to (nomeados[VONT] ?: 0) + iq, PER to (nomeados[PER] ?: 0) + iq)
     }
 
+    /**
+     * **O desconto numa perícia, técnica ou magia** (MB p.422): "uma penalidade a um atributo
+     * sempre reduz os NHs das perícias governadas pelo atributo". Vale o PIOR entre o "todos os
+     * testes" da página ([Mods.pericias]) e o do atributo-base (com a IQ em Per e Vontade) -- sem
+     * somar: o Enjoo "−2 em todos os testes de habilidade, DX e IQ" é −2 na Furtividade, não −4.
+     * [atributoBase]: `DX`, `IQ`, `HT`, `ST`, `VON`, `PER` (`null`: só o "todos os testes").
+     */
+    fun penalidadeNaPericia(ligados: Map<String, Int>, atributoBase: String?): Int {
+        val todos = totalDe(ligados).pericias
+        val doAtributo = atributoBase?.let { penalidadesNosAtributos(ligados)[it.uppercase()] } ?: 0
+        return minOf(todos, doAtributo, 0)
+    }
+
     /** O desconto num atributo específico, pelo código da aba Rolagem (com a IQ em Per e Vontade). */
     fun penalidadeDeAtributo(ligados: Map<String, Int>, atributo: String): Int =
         penalidadesNosAtributos(ligados)[atributo] ?: 0

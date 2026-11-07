@@ -235,6 +235,25 @@ class EstadosTemporariosTest {
     }
 
     @Test
+    fun `🔴 o atributo do estado desce para as pericias dele, sem somar com o todos os testes (MB p 422)`() {
+        val dor = mapOf("dor_cronica" to 1)   // DX -2, IQ -2, nada em "todos"
+        assertEquals("Furtividade (DX)", -2, EstadosTemporarios.penalidadeNaPericia(dor, "DX"))
+        assertEquals("Diplomacia (IQ)", -2, EstadosTemporarios.penalidadeNaPericia(dor, "IQ"))
+        assertEquals("Intimidacao (Vontade): a IQ desce", -2, EstadosTemporarios.penalidadeNaPericia(dor, "VON"))
+        assertEquals("Observacao (Per)", -2, EstadosTemporarios.penalidadeNaPericia(dor, "PER"))
+        assertEquals("Natacao (HT) nao", 0, EstadosTemporarios.penalidadeNaPericia(dor, "HT"))
+        assertEquals("sem base: so o todos", 0, EstadosTemporarios.penalidadeNaPericia(dor, null))
+        // Enjoo: "-2 em todos os testes de habilidade, DX e IQ" -> -2, e nao -4
+        assertEquals(-2, EstadosTemporarios.penalidadeNaPericia(mapOf("enjoo" to 1), "DX"))
+        assertEquals(-2, EstadosTemporarios.penalidadeNaPericia(mapOf("enjoo" to 1), "HT"))
+        // Repugnancia ingerida: -10 nas pericias, -5 nos atributos: vale o pior
+        assertEquals(-10, EstadosTemporarios.penalidadeNaPericia(mapOf("repugnancia" to 2), "DX"))
+        // o Lunatico (-2 na Vontade) pesa na pericia de Vontade, nao na de IQ
+        assertEquals(-2, EstadosTemporarios.penalidadeNaPericia(mapOf("lunatico" to 1), "VON"))
+        assertEquals(0, EstadosTemporarios.penalidadeNaPericia(mapOf("lunatico" to 1), "IQ"))
+    }
+
+    @Test
     fun `Lunatico mais Dorminhoco - a Vontade soma os dois, a Per so a IQ`() {
         val noTeste = EstadosTemporarios.penalidadesNosAtributos(mapOf("lunatico" to 1, "dorminhoco" to 1))
         assertEquals(-3, noTeste["VON"])   // -2 da lua, -1 da IQ do Dorminhoco
