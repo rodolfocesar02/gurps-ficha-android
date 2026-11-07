@@ -302,6 +302,19 @@ object EstadosTemporarios {
         return minOf(todos, doAtributo, 0)
     }
 
+    /**
+     * **O desconto no ataque** (o ataque é um teste da perícia da arma, MB p.422): a opção
+     * `pericia_<definicaoId>_<especializacao>` leva o atributo-base da perícia; os ataques dos
+     * traços (Garras, Ataque Inato...) são de DX. Igual ao cartão do ataque na Mesa.
+     */
+    fun penalidadeNoAtaque(ligados: Map<String, Int>, personagem: Personagem, idDaOpcao: String): Int {
+        val base = if (idDaOpcao.startsWith("pericia_")) {
+            personagem.periciasTotais.find { "pericia_${it.definicaoId}_${it.especializacao}" == idDaOpcao }
+                ?.atributoBase?.sigla ?: "DX"
+        } else "DX"
+        return penalidadeNaPericia(ligados, base)
+    }
+
     /** O desconto num atributo específico, pelo código da aba Rolagem (com a IQ em Per e Vontade). */
     fun penalidadeDeAtributo(ligados: Map<String, Int>, atributo: String): Int =
         penalidadesNosAtributos(ligados)[atributo] ?: 0

@@ -1087,7 +1087,8 @@ fun TabRolagem(viewModel: FichaViewModel) {
                         "${att.contextLabel} a $onde"
                     } else att.contextLabel,
                     alvo = att.target,
-                    mod = mod + penalidadeDaMao + penalidadeDistancia + penalidadeLuz
+                    mod = mod + penalidadeDaMao + penalidadeDistancia + penalidadeLuz +
+                        EstadosTemporarios.penalidadeNoAtaque(grausDeEstado, p, att.id)   // RG-9c: o estado temporário (MB p.422)
                 )
             },
             origensDoDano = origensDoDano,
@@ -1290,7 +1291,7 @@ fun TabRolagem(viewModel: FichaViewModel) {
                         tipo = TipoTeste.ATAQUE,
                         contextoLabel = comoSeChama,
                         alvo = escolha.nh,
-                        mod = pedido.mod
+                        mod = pedido.mod + EstadosTemporarios.penalidadeNoAtaque(grausDeEstado, p, escolha.id)   // RG-9c
                     )
                 }
             },
@@ -1533,7 +1534,8 @@ fun TabRolagem(viewModel: FichaViewModel) {
             },
             onEscolher = { rotulo, nh ->
                 miraDoAtaque = null
-                executarRolagem(tipo = TipoTeste.ATAQUE, contextoLabel = rotulo, alvo = nh, mod = 0)
+                executarRolagem(tipo = TipoTeste.ATAQUE, contextoLabel = rotulo, alvo = nh,
+                    mod = EstadosTemporarios.penalidadeNoAtaque(grausDeEstado, p, ataque.id))   // RG-9c
             },
             onDismiss = { miraDoAtaque = null }
         )

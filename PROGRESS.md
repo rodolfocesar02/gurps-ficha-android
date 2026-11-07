@@ -10192,3 +10192,10 @@ ficar verde**.
   - **Fica igual:** o ataque da aba Rolagem não recebe os estados (nunca recebeu; a Mesa recebe).
 - **Na Mesa (mesmo dia):** `estados-temporarios.js` (`aPenalidadeNaPericia`), o cartão da roda e a janela da ficha do Mestre.
 - **Testes:** `EstadosTemporariosTest.kt` (29; sonda: somar em vez do pior deixa vermelho). `./gradlew build` **===EXIT=0===**. Versão **211** (`12.9.11-ESTADOS-NAS-PERICIAS`).
+
+## Lote RG-9c-c (app) — [2026-11-07] O ataque da aba Rolagem recebe os estados temporários
+- **Hash:** (commit deste lote; ver `git log`) + o ponteiro do submódulo.
+- **Pedido dele:** "Sim, no app" (a Mesa já descontava; o app nunca descontou).
+- **Mudança:** `EstadosTemporarios.kt` ganhou `penalidadeNoAtaque(ligados, personagem, idDaOpcao)`: a opção `pericia_<id>_<esp>` usa o atributo-base da perícia; o ataque do traço (Garras, Ataque Inato...) é DX; a conta é a do `penalidadeNaPericia`. `TabRolagem.kt`: os 3 caminhos do ataque (o painel, o pedido da Mesa e a mira) somam esse desconto.
+  - **Na aba Rolagem isto muda:** com o Enjoo ligado, o ataque de espada sai com −2; com a Dor Crônica Grave, −4. Igual à Mesa.
+- **Testes:** `EstadosTemporariosTest.kt` (30; sonda: ignorar a perícia-base deixa vermelho). `./gradlew build` **===EXIT=0===**. Versão **212** (`12.9.12-ESTADOS-NO-ATAQUE`).

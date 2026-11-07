@@ -2,7 +2,10 @@ package com.gurps.ficha.domain.rules
 
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import com.gurps.ficha.model.AtributoBase
 import com.gurps.ficha.model.DesvantagemSelecionada
+import com.gurps.ficha.model.Dificuldade
+import com.gurps.ficha.model.PericiaSelecionada
 import com.gurps.ficha.model.Personagem
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -251,6 +254,20 @@ class EstadosTemporariosTest {
         // o Lunatico (-2 na Vontade) pesa na pericia de Vontade, nao na de IQ
         assertEquals(-2, EstadosTemporarios.penalidadeNaPericia(mapOf("lunatico" to 1), "VON"))
         assertEquals(0, EstadosTemporarios.penalidadeNaPericia(mapOf("lunatico" to 1), "IQ"))
+    }
+
+    @Test
+    fun `🔴 o ataque leva o estado pela pericia da arma - a de DX e a de HT - e o do traco e DX (MB p 422)`() {
+        val p = Personagem(nome = "T", pericias = listOf(
+            PericiaSelecionada(definicaoId = "espada_larga", nome = "Espada Larga", atributoBase = AtributoBase.DX, dificuldade = Dificuldade.MEDIA, pontosGastos = 4),
+            PericiaSelecionada(definicaoId = "pesca_submarina", nome = "Arpao", atributoBase = AtributoBase.HT, dificuldade = Dificuldade.MEDIA, pontosGastos = 4)
+        ))
+        val dor = mapOf("dor_cronica" to 2)   // DX -4, IQ -4
+        assertEquals(-4, EstadosTemporarios.penalidadeNoAtaque(dor, p, "pericia_espada_larga_"))
+        assertEquals("a pericia de HT nao", 0, EstadosTemporarios.penalidadeNoAtaque(dor, p, "pericia_pesca_submarina_"))
+        assertEquals("o ataque do traco (Garras) e DX", -4, EstadosTemporarios.penalidadeNoAtaque(dor, p, "garras_briga"))
+        assertEquals("o Enjoo: -2 em todos", -2, EstadosTemporarios.penalidadeNoAtaque(mapOf("enjoo" to 1), p, "pericia_pesca_submarina_"))
+        assertEquals("nada ligado", 0, EstadosTemporarios.penalidadeNoAtaque(emptyMap(), p, "pericia_espada_larga_"))
     }
 
     @Test
