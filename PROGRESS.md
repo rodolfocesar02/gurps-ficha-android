@@ -10206,3 +10206,9 @@ ficar verde**.
 - **Mudança:** `assets/montarias.v1.json` (as 12 do MB pp.459-460: cavalos de sela, cavalaria, guerra pesado, corrida e tração, pônei, mulas, burro, camelo, elefante, gado). `MontariaDados.kt` (a ficha técnica). `TipoEquipamento.MONTARIA` e `Equipamento.montaria` (anulável: ficha antiga lê como null). `MontariasDoInventario.kt`: o diálogo "Selecionar Montaria" (padrão `AppSelectionDialog`) e o cartão da montaria. `TabEquipamentos.kt`: o botão "Adicionar Montaria" e a lista "Montarias".
   - **Na tela isto muda:** Equipamentos ▸ Adicionar Montaria ▸ a lista do livro com ST, Deslocamento, Esquiva, hexágonos, custo, perícias e características; escolhida, aparece em "Montarias" com a ficha técnica. Peso 0: não muda a carga.
 - **Testes:** `MontariasTest.kt` (3; sonda: o item com o peso do animal deixa vermelho) e `PadraoDeTelaTest` (12). `./gradlew assembleDebug` **===EXIT=0===**. Versão **213** (`12.9.13-MONTARIAS`).
+
+## Lote RG-11a-2 (app) — [2026-11-09] Editar a montaria
+- **Hash:** (commit deste lote; ver `git log`) + o ponteiro do submódulo.
+- **Pedido dele:** "faltou um sistema de edição pra montaria como é nos itens, porque o Mestre pode definir ST maior, perícia maior, algo diferente do livro".
+- **Mudança:** `EditarMontaria.kt`: o diálogo de tela cheia (o padrão do editor de itens) com nome, custo, ST, DX, IQ, HT, PV, PF, Vontade, Percepção, Velocidade, Deslocamento, Esquiva, RD, MT, hexágonos, "Treinada para a guerra", "Pode ser montada", perícias, características e notas; "Voltar aos números do livro". `MontariasDoInventario.kt`: o lápis no cartão. `TabEquipamentos.kt`: abre o editor e salva (`atualizarEquipamento`). O peso continua 0.
+- **Testes:** `MontariasTest.kt` (4; o novo: os números do Mestre valem, peso 0, vão para a Mesa) e `PadraoDeTelaTest` (12). `./gradlew assembleDebug` **===EXIT=0===**. Versão **214** (`12.9.14-EDITAR-MONTARIA`).

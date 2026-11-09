@@ -79,6 +79,7 @@ fun TabEquipamentos(viewModel: FichaViewModel) {
     var showEscudoDialog by remember { mutableStateOf(false) }
     var showArmaduraDialog by remember { mutableStateOf(false) }
     var showMontariaDialog by remember { mutableStateOf(false) }   // RG-11 (Mesa)
+    var montariaEditando by remember { mutableStateOf<Pair<Int, Equipamento>?>(null) }
     var armaduraPendenteConfiguracao by remember { mutableStateOf<ArmaduraCatalogoItem?>(null) }
     var editingEquipamento by remember { mutableStateOf<Pair<Int, Equipamento>?>(null) }
     // Lote ARMA-3: a arma cuja ficha técnica está aberta (vinda do catálogo).
@@ -185,12 +186,17 @@ fun TabEquipamentos(viewModel: FichaViewModel) {
         if (montarias.isNotEmpty()) {
             Text("Montarias", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
             montarias.forEach { entry ->
-                AppListItemCard { MontariaItem(equipamento = entry.value, onDelete = { viewModel.removerEquipamento(entry.index) }) }
+                AppListItemCard { MontariaItem(equipamento = entry.value, onEdit = { montariaEditando = entry.index to entry.value }, onDelete = { viewModel.removerEquipamento(entry.index) }) }
             }
         }
 
         ResumoEquipamentosFooter(viewModel = viewModel)
         Spacer(modifier = Modifier.height(24.dp))
+    }
+
+    montariaEditando?.let { (indice, item) ->
+        EditarMontariaDialog(item = item, onDismiss = { montariaEditando = null },
+            onSave = { viewModel.atualizarEquipamento(indice, it); montariaEditando = null })
     }
 
     if (showMontariaDialog) {

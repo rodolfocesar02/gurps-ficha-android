@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -92,7 +93,7 @@ fun SelecionarMontariaDialog(onDismiss: () -> Unit, onSelect: (MontariaDados) ->
 
 /** O cartão da montaria no inventário: a ficha técnica e o remover. */
 @Composable
-fun MontariaItem(equipamento: Equipamento, onDelete: () -> Unit) {
+fun MontariaItem(equipamento: Equipamento, onEdit: () -> Unit, onDelete: () -> Unit) {
     val m = equipamento.montaria
     Row(
         modifier = Modifier.fillMaxWidth(),
@@ -107,6 +108,7 @@ fun MontariaItem(equipamento: Equipamento, onDelete: () -> Unit) {
                 Text("Sem a ficha técnica: remova e adicione de novo.", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.error)
             }
         }
+        IconButton(onClick = onEdit) { Icon(Icons.Default.Edit, contentDescription = "Editar montaria ${equipamento.nome}") }
         IconButton(onClick = onDelete) { Icon(Icons.Default.Delete, contentDescription = "Remover montaria ${equipamento.nome}") }
     }
 }

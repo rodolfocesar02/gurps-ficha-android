@@ -1,7 +1,10 @@
 package com.gurps.ficha.model
 
 import com.google.gson.Gson
+import com.gurps.ficha.ui.aplicarNaMontaria
+import com.gurps.ficha.ui.camposDe
 import com.gurps.ficha.ui.equipamentoDaMontaria
+import com.gurps.ficha.ui.montariaEditada
 import com.gurps.ficha.ui.linhasDaMontaria
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -57,5 +60,28 @@ class MontariasTest {
         assertEquals(8, eq.getAsJsonObject("montaria").get("deslocamento").asInt)
         val volta = Personagem.fromJson(p.toJson())
         assertEquals(sela, volta.equipamentos[0].montaria)
+    }
+
+    @Test
+    fun `o Mestre edita a montaria - os numeros dele valem, o peso continua 0 e vai para a Mesa`() {
+        val sela = catalogo().first { it.id == "cavalo_de_sela" }
+        val item = equipamentoDaMontaria(sela)
+        val campos = camposDe(item.nome, item.custo, item.notas, sela).copy(
+            nome = "Relâmpago", st = "24", deslocamento = "8", velocidade = "5,5", pericias = "Montaria 14; Briga 11", guerra = true, custo = "2500"
+        )
+        val nova = aplicarNaMontaria(campos, sela)
+        assertEquals(listOf(24, 8), listOf(nova.st, nova.deslocamento))
+        assertEquals(5.5f, nova.velocidadeBasica)
+        assertEquals(listOf("Montaria 14", "Briga 11"), nova.pericias)
+        assertTrue(nova.treinadaParaGuerra)
+        assertEquals(sela.id, nova.id)
+        val editado = montariaEditada(item, campos.nome, campos.custo, campos.notas, nova)
+        assertEquals("Relâmpago", editado.nome)
+        assertEquals(0f, editado.peso)
+        assertEquals(2500f, editado.custo)
+        val paraAMesa = PersonagemInterop.fichaInteiraParaAMesa(Personagem(nome = "Jack", equipamentos = listOf(editado)))
+        assertEquals(24, paraAMesa.getAsJsonArray("equipamentos")[0].asJsonObject.getAsJsonObject("montaria").get("st").asInt)
+        // o que não for número fica como estava
+        assertEquals(sela.dx, aplicarNaMontaria(campos.copy(dx = "abc"), sela).dx)
     }
 }
