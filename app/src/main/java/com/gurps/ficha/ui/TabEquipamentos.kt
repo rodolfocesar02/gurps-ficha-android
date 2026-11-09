@@ -78,6 +78,7 @@ fun TabEquipamentos(viewModel: FichaViewModel) {
     var showArmaDialog by remember { mutableStateOf(false) }
     var showEscudoDialog by remember { mutableStateOf(false) }
     var showArmaduraDialog by remember { mutableStateOf(false) }
+    var showMontariaDialog by remember { mutableStateOf(false) }   // RG-11 (Mesa)
     var armaduraPendenteConfiguracao by remember { mutableStateOf<ArmaduraCatalogoItem?>(null) }
     var editingEquipamento by remember { mutableStateOf<Pair<Int, Equipamento>?>(null) }
     // Lote ARMA-3: a arma cuja ficha técnica está aberta (vinda do catálogo).
@@ -95,6 +96,7 @@ fun TabEquipamentos(viewModel: FichaViewModel) {
     val armasEquipadas = equipamentosComIndice.filter { it.value.tipo == TipoEquipamento.ARMA }
     val escudosEquipados = equipamentosComIndice.filter { it.value.tipo == TipoEquipamento.ESCUDO }
     val armadurasEquipadas = equipamentosComIndice.filter { it.value.tipo == TipoEquipamento.ARMADURA }
+    val montarias = equipamentosComIndice.filter { it.value.tipo == TipoEquipamento.MONTARIA }
 
     StandardTabColumn {
         if (errosCarga.isNotEmpty()) {
@@ -178,8 +180,24 @@ fun TabEquipamentos(viewModel: FichaViewModel) {
             }
         }
 
+        // RG-11 (Mesa): a montaria do livro, com a ficha técnica (MontariasDoInventario.kt)
+        BotaoAdicionarPadrao(texto = "Adicionar Montaria", onClick = { showMontariaDialog = true })
+        if (montarias.isNotEmpty()) {
+            Text("Montarias", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+            montarias.forEach { entry ->
+                AppListItemCard { MontariaItem(equipamento = entry.value, onDelete = { viewModel.removerEquipamento(entry.index) }) }
+            }
+        }
+
         ResumoEquipamentosFooter(viewModel = viewModel)
         Spacer(modifier = Modifier.height(24.dp))
+    }
+
+    if (showMontariaDialog) {
+        SelecionarMontariaDialog(
+            onDismiss = { showMontariaDialog = false },
+            onSelect = { viewModel.adicionarEquipamento(equipamentoDaMontaria(it)); showMontariaDialog = false }
+        )
     }
 
     if (showDialog) {

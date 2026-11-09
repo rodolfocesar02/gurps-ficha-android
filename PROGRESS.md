@@ -10199,3 +10199,10 @@ ficar verde**.
 - **Mudança:** `EstadosTemporarios.kt` ganhou `penalidadeNoAtaque(ligados, personagem, idDaOpcao)`: a opção `pericia_<id>_<esp>` usa o atributo-base da perícia; o ataque do traço (Garras, Ataque Inato...) é DX; a conta é a do `penalidadeNaPericia`. `TabRolagem.kt`: os 3 caminhos do ataque (o painel, o pedido da Mesa e a mira) somam esse desconto.
   - **Na aba Rolagem isto muda:** com o Enjoo ligado, o ataque de espada sai com −2; com a Dor Crônica Grave, −4. Igual à Mesa.
 - **Testes:** `EstadosTemporariosTest.kt` (30; sonda: ignorar a perícia-base deixa vermelho). `./gradlew build` **===EXIT=0===**. Versão **212** (`12.9.12-ESTADOS-NO-ATAQUE`).
+
+## Lote RG-11a (app) — [2026-11-09] As montarias do livro no inventário
+- **Hash:** (commit deste lote; ver `git log`) + o ponteiro do submódulo.
+- **Pedido dele:** "a lista de cavalos deve fazer parte do equipamento do jogador ... com toda a ficha técnica do cavalo, e os dados irem junto no arquivo salvo da ficha pra Mesa saber o item, sem o peso".
+- **Mudança:** `assets/montarias.v1.json` (as 12 do MB pp.459-460: cavalos de sela, cavalaria, guerra pesado, corrida e tração, pônei, mulas, burro, camelo, elefante, gado). `MontariaDados.kt` (a ficha técnica). `TipoEquipamento.MONTARIA` e `Equipamento.montaria` (anulável: ficha antiga lê como null). `MontariasDoInventario.kt`: o diálogo "Selecionar Montaria" (padrão `AppSelectionDialog`) e o cartão da montaria. `TabEquipamentos.kt`: o botão "Adicionar Montaria" e a lista "Montarias".
+  - **Na tela isto muda:** Equipamentos ▸ Adicionar Montaria ▸ a lista do livro com ST, Deslocamento, Esquiva, hexágonos, custo, perícias e características; escolhida, aparece em "Montarias" com a ficha técnica. Peso 0: não muda a carga.
+- **Testes:** `MontariasTest.kt` (3; sonda: o item com o peso do animal deixa vermelho) e `PadraoDeTelaTest` (12). `./gradlew assembleDebug` **===EXIT=0===**. Versão **213** (`12.9.13-MONTARIAS`).

@@ -967,7 +967,9 @@ enum class TipoEquipamento {
     ARMA,
     ESCUDO,
     ARMADURA,
-    CAPA
+    CAPA,
+    // RG-11 (Mesa): a montaria do livro (MB pp.459-460), com a ficha técnica em `Equipamento.montaria`
+    MONTARIA
 }
 
 @Stable
@@ -1022,7 +1024,9 @@ data class Equipamento(
     // Saga (item 1 do teste de batalha): item TIRADO do herói pela narrativa (desarmado/capturado). Continua
     // na ficha (recuperável) mas indisponível: o combate ignora arma confiscada (some dos ataques) e armadura
     // confiscada (não dá RD). Aditivo/anulável → fichas antigas (Gson sem o campo) desserializam como false.
-    var confiscado: Boolean = false
+    var confiscado: Boolean = false,
+    // RG-11 (Mesa): a ficha técnica do animal (só no tipo MONTARIA). Anulável: ficha antiga lê como null.
+    var montaria: MontariaDados? = null
 ) {
     /**
      * Dano da arma já resolvido contra a ST de quem a empunha.
