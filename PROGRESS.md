@@ -10212,3 +10212,10 @@ ficar verde**.
 - **Pedido dele:** "faltou um sistema de edição pra montaria como é nos itens, porque o Mestre pode definir ST maior, perícia maior, algo diferente do livro".
 - **Mudança:** `EditarMontaria.kt`: o diálogo de tela cheia (o padrão do editor de itens) com nome, custo, ST, DX, IQ, HT, PV, PF, Vontade, Percepção, Velocidade, Deslocamento, Esquiva, RD, MT, hexágonos, "Treinada para a guerra", "Pode ser montada", perícias, características e notas; "Voltar aos números do livro". `MontariasDoInventario.kt`: o lápis no cartão. `TabEquipamentos.kt`: abre o editor e salva (`atualizarEquipamento`). O peso continua 0.
 - **Testes:** `MontariasTest.kt` (4; o novo: os números do Mestre valem, peso 0, vão para a Mesa) e `PadraoDeTelaTest` (12). `./gradlew assembleDebug` **===EXIT=0===**. Versão **214** (`12.9.14-EDITAR-MONTARIA`).
+
+## Lote RG-12-a (app) — [2026-11-09] O item mágico e a Gema de Energia
+- **Hash:** (commit deste lote; ver `git log`) + o ponteiro do submódulo.
+- **Pedido dele (decisões 2 e 3 da prévia do RG-12):** "Faça a opção da caixinha 'item mágico': qualquer item dos equipamentos pode ter essa caixa" e "Faça o tipo de item com esse nome e com campo de quantidade" (a Gema de Energia).
+- **Mudança:** `Equipamento.itemMagico` (Boolean) e `Equipamento.gemaCapacidade` (Int?), aditivos (ficha antiga lê falso e null); `TipoEquipamento.GEMA_DE_ENERGIA`. `DialogsCommon.kt`: o editor de item ganhou a caixinha "Item mágico" (em todo item que ele edita) e, na gema, o campo "Capacidade (pontos de energia)"; `tipoNovo` abre o editor já como gema. `TabEquipamentos.kt`: o botão "Adicionar Gema de Energia", a lista "Gemas de Energia" (com a capacidade) e o ✨ no nome do item mágico.
+  - **Na tela isto muda:** Equipamentos ▸ Adicionar Gema de Energia ▸ nome, peso, custo, capacidade; o lápis de qualquer item mostra "Item mágico". O item mágico aparece com ✨ na lista. Tudo vai para a Mesa no arquivo da ficha.
+- **Testes:** `ItemMagicoEGemaTest.kt` (2; sonda: tirar o ✨ deixa vermelho), `MontariasTest` e `PadraoDeTelaTest`. `./gradlew assembleDebug` **===EXIT=0===**. Versão **215** (`12.9.15-ITEM-MAGICO-E-GEMA`).

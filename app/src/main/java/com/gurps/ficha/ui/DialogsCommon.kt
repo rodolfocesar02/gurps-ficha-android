@@ -19,6 +19,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
@@ -214,6 +215,8 @@ fun CarregarDialog(
 fun EquipamentoDialog(
     initialEquipamento: Equipamento? = null,
     fichaTecnica: com.gurps.ficha.domain.rules.FichaDeEquipamento.Ficha? = null,
+    // RG-12: o tipo do item novo (a Gema de Energia), quando o botão já diz qual é
+    tipoNovo: TipoEquipamento? = null,
     onDismiss: () -> Unit,
     onSave: (Equipamento) -> Unit
 ) {
@@ -244,20 +247,25 @@ fun EquipamentoDialog(
     var dano by remember { mutableStateOf(initialEquipamento?.armaDanoRaw ?: "") }
     var stMin by remember { mutableStateOf(initialEquipamento?.armaStMinimo?.toString() ?: "") }
 
+    // RG-12 (Mesa): o item mágico (qualquer item) e a capacidade da Gema de Energia
+    var itemMagico by remember { mutableStateOf(initialEquipamento?.itemMagico ?: (tipoNovo == TipoEquipamento.GEMA_DE_ENERGIA)) }
+    var capacidade by remember { mutableStateOf(initialEquipamento?.gemaCapacidade?.toString() ?: "") }
+
     val editando = initialEquipamento != null
-    val tipo = initialEquipamento?.tipo ?: TipoEquipamento.GERAL
+    val tipo = initialEquipamento?.tipo ?: tipoNovo ?: TipoEquipamento.GERAL
+    val ehGema = tipo == TipoEquipamento.GEMA_DE_ENERGIA
     val ehArmadura = tipo == TipoEquipamento.ARMADURA
     val ehEscudo = tipo == TipoEquipamento.ESCUDO
     // ⚠️ Armadura nao ataca. O bloco de Dano/ST Min existia para TODOS os
     // itens, e num item de armadura ele nao so era inutil: preencher o Dano
     // virava o tipo para ARMA (v. `tipoFinal`), e a peca sumia da secao de
     // armaduras sem aviso.
-    val temAutomacaoDeCombate = !ehArmadura
+    val temAutomacaoDeCombate = !ehArmadura && !ehGema
 
     FullscreenDialogContainer(onDismiss = onDismiss) {
         Column(modifier = Modifier.fillMaxSize()) {
             Text(
-                if (editando) nome.ifBlank { "Editar Equipamento" } else "Adicionar Equipamento",
+                if (editando) nome.ifBlank { "Editar Equipamento" } else if (ehGema) "Adicionar Gema de Energia" else "Adicionar Equipamento",
                 style = UiEstilos.tituloDialogo,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.primary
@@ -333,6 +341,28 @@ fun EquipamentoDialog(
                         modifier = Modifier.fillMaxWidth()
                     )
                 }
+                if (ehGema) {
+                    OutlinedTextField(
+                        value = capacidade, onValueChange = { capacidade = it },
+                        label = { Text("Capacidade (pontos de energia)") },
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                        singleLine = true,
+                        supportingText = {
+                            Text("Quanta energia ela guarda. A Mesa gasta e recarrega pela mana da cena (Magia p.69).", style = UiEstilos.detalheDoItem)
+                        },
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
+                Row(
+                    modifier = Modifier.fillMaxWidth().linhaAlternavel(itemMagico, "Item mágico", { itemMagico = !itemMagico }),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Checkbox(checked = itemMagico, onCheckedChange = null)
+                    Column {
+                        Text("Item mágico", style = MaterialTheme.typography.bodyMedium)
+                        Text("Um cajado ou varinha mágicos dão alcance às magias na Mesa (Magia p.13).", style = UiEstilos.detalheDoItem, color = MaterialTheme.colorScheme.outline)
+                    }
+                }
                 OutlinedTextField(
                     value = notas, onValueChange = { notas = it },
                     label = { Text("Notas") },
@@ -399,6 +429,7 @@ fun EquipamentoDialog(
                             // ⚠️ `ehArmadura` primeiro: sem isto, uma armadura com
                             // Dano preenchido virava ARMA e sumia da secao dela.
                             ehArmadura -> TipoEquipamento.ARMADURA
+                            ehGema -> TipoEquipamento.GEMA_DE_ENERGIA
                             danoFinal != null -> TipoEquipamento.ARMA
                             initialEquipamento != null -> initialEquipamento.tipo
                             else -> TipoEquipamento.GERAL
@@ -413,6 +444,8 @@ fun EquipamentoDialog(
                                 tipo = tipoFinal,
                                 armaDanoRaw = danoFinal,
                                 armaStMinimo = stMin.toIntOrNull(),
+                                itemMagico = itemMagico,
+                                gemaCapacidade = if (ehGema) capacidade.trim().toIntOrNull()?.coerceIn(1, 9999) else initialEquipamento?.gemaCapacidade,
                                 armaQualidade = qualidade?.name,
                                 armaduraRd = if (ehArmadura) rdArmadura.trim().ifBlank { null } else initialEquipamento?.armaduraRd,
                                 bonusDefesa = if (ehEscudo) {

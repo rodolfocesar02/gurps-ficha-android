@@ -79,6 +79,7 @@ fun TabEquipamentos(viewModel: FichaViewModel) {
     var showEscudoDialog by remember { mutableStateOf(false) }
     var showArmaduraDialog by remember { mutableStateOf(false) }
     var showMontariaDialog by remember { mutableStateOf(false) }   // RG-11 (Mesa)
+    var showGemaDialog by remember { mutableStateOf(false) }   // RG-12 (Mesa): a Gema de Energia
     var montariaEditando by remember { mutableStateOf<Pair<Int, Equipamento>?>(null) }
     var armaduraPendenteConfiguracao by remember { mutableStateOf<ArmaduraCatalogoItem?>(null) }
     var editingEquipamento by remember { mutableStateOf<Pair<Int, Equipamento>?>(null) }
@@ -98,6 +99,7 @@ fun TabEquipamentos(viewModel: FichaViewModel) {
     val escudosEquipados = equipamentosComIndice.filter { it.value.tipo == TipoEquipamento.ESCUDO }
     val armadurasEquipadas = equipamentosComIndice.filter { it.value.tipo == TipoEquipamento.ARMADURA }
     val montarias = equipamentosComIndice.filter { it.value.tipo == TipoEquipamento.MONTARIA }
+    val gemas = equipamentosComIndice.filter { it.value.tipo == TipoEquipamento.GEMA_DE_ENERGIA }
 
     StandardTabColumn {
         if (errosCarga.isNotEmpty()) {
@@ -190,6 +192,22 @@ fun TabEquipamentos(viewModel: FichaViewModel) {
             }
         }
 
+        // RG-12 (Mesa): a Gema de Energia (Magia p.69), com a capacidade; a Mesa paga a magia com ela
+        BotaoAdicionarPadrao(texto = "Adicionar Gema de Energia", onClick = { showGemaDialog = true })
+        if (gemas.isNotEmpty()) {
+            Text("Gemas de Energia", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+            gemas.forEach { entry ->
+                AppListItemCard {
+                    EquipamentoItem(
+                        equipamento = entry.value,
+                        onEdit = { editingEquipamento = entry.index to entry.value },
+                        onDelete = { viewModel.removerEquipamento(entry.index) },
+                        viewModel = viewModel
+                    )
+                }
+            }
+        }
+
         ResumoEquipamentosFooter(viewModel = viewModel)
         Spacer(modifier = Modifier.height(24.dp))
     }
@@ -203,6 +221,14 @@ fun TabEquipamentos(viewModel: FichaViewModel) {
         SelecionarMontariaDialog(
             onDismiss = { showMontariaDialog = false },
             onSelect = { viewModel.adicionarEquipamento(equipamentoDaMontaria(it)); showMontariaDialog = false }
+        )
+    }
+
+    if (showGemaDialog) {
+        EquipamentoDialog(
+            tipoNovo = TipoEquipamento.GEMA_DE_ENERGIA,
+            onDismiss = { showGemaDialog = false },
+            onSave = { viewModel.adicionarEquipamento(it); showGemaDialog = false }
         )
     }
 
@@ -376,7 +402,7 @@ private fun ArmaduraSelecionadaItem(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Column(modifier = Modifier.weight(1f)) {
-            NomeDoItemPadrao(TextoDoCatalogo.corrigir(equipamento.nome))
+            NomeDoItemPadrao((if (equipamento.itemMagico) "✨ " else "") + TextoDoCatalogo.corrigir(equipamento.nome))
             CorpoDoItemPadrao(CartaoDoItem.linhasDaArmadura(equipamento))
         }
         IconButton(onClick = onEdit) { Icon(Icons.Default.Edit, contentDescription = "Editar armadura ${equipamento.nome}") }
@@ -489,7 +515,7 @@ fun EquipamentoArmaItem(
                     contentDescription = "${equipamento.nome}. Toque para ver a ficha técnica completa."
                 }
         ) {
-            NomeDoItemPadrao(equipamento.nome)
+            NomeDoItemPadrao(nomeNaLista(equipamento))
             val observacoesCatalogo = viewModel.observacoesArmaPorEquipamento(equipamento).trim()
             val observacoesFaltantes = if (observacoesCatalogo.isBlank()) emptyList() else {
                 observacoesCatalogo.lineSequence().map { it.trim() }
@@ -541,7 +567,7 @@ fun EquipamentoItem(equipamento: Equipamento, onEdit: () -> Unit, onDelete: () -
         verticalAlignment = Alignment.CenterVertically
     ) {
         Column(modifier = Modifier.weight(1f)) {
-            NomeDoItemPadrao(equipamento.nome)
+            NomeDoItemPadrao(nomeNaLista(equipamento))
             CorpoDoItemPadrao(
                 buildList {
                     add(CartaoDoItem.Linha(
@@ -552,6 +578,7 @@ fun EquipamentoItem(equipamento: Equipamento, onEdit: () -> Unit, onDelete: () -
                         add(CartaoDoItem.Linha(
                             "Dano: $raw -> ${viewModel.calcularDanoArmaComSt(raw)}", CartaoDoItem.Papel.DANO))
                     }
+                    equipamento.gemaCapacidade?.let { add(CartaoDoItem.Linha("Capacidade: $it pontos de energia (Magia p.69)", CartaoDoItem.Papel.NEUTRO)) }
                     if (equipamento.custo > 0) {
                         add(CartaoDoItem.Linha(
                             "Custo: $${equipamento.custo * equipamento.quantidade}", CartaoDoItem.Papel.CUSTO))
@@ -947,3 +974,6 @@ private fun ConfigurarArmaduraDialog(
         dismissButton = { TextButton(onClick = onDismiss) { Text("Cancelar") } }
     )
 }
+
+/** RG-12 (Mesa): o nome na lista, com ✨ quando o item é mágico. */
+fun nomeNaLista(e: Equipamento): String = if (e.itemMagico) "✨ " + e.nome else e.nome
