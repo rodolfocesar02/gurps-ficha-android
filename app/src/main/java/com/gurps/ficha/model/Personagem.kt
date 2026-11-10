@@ -971,7 +971,9 @@ enum class TipoEquipamento {
     // RG-11 (Mesa): a montaria do livro (MB pp.459-460), com a ficha técnica em `Equipamento.montaria`
     MONTARIA,
     // RG-12 (Mesa): a Gema de Energia (Magia p.69), com a capacidade em `Equipamento.gemaCapacidade`
-    GEMA_DE_ENERGIA
+    GEMA_DE_ENERGIA,
+    // Relatório de testes da Mesa (10/nov): a munição como estoque (flechas, virotes, balas); a arma em `Equipamento.municaoDe`
+    MUNICAO
 }
 
 @Stable
@@ -1032,7 +1034,9 @@ data class Equipamento(
     // RG-12 (Mesa, decisão dele em 09/nov): qualquer item pode ser mágico (o cajado mágico, Magia p.13); a gema guarda a
     // capacidade de energia (Magia p.69). Ficha antiga lê false e null.
     var itemMagico: Boolean = false,
-    var gemaCapacidade: Int? = null
+    var gemaCapacidade: Int? = null,
+    // A munição: o nome da arma do inventário que ela serve (o Arco Longo, a Besta...). A Mesa gasta 1 por tiro. Ficha antiga lê null.
+    var municaoDe: String? = null
 ) {
     /**
      * Dano da arma já resolvido contra a ST de quem a empunha.

@@ -80,6 +80,7 @@ fun TabEquipamentos(viewModel: FichaViewModel) {
     var showArmaduraDialog by remember { mutableStateOf(false) }
     var showMontariaDialog by remember { mutableStateOf(false) }   // RG-11 (Mesa)
     var showGemaDialog by remember { mutableStateOf(false) }   // RG-12 (Mesa): a Gema de Energia
+    var showMunicaoDialog by remember { mutableStateOf(false) }   // a munição como estoque (a Mesa gasta 1 por tiro)
     var montariaEditando by remember { mutableStateOf<Pair<Int, Equipamento>?>(null) }
     var armaduraPendenteConfiguracao by remember { mutableStateOf<ArmaduraCatalogoItem?>(null) }
     var editingEquipamento by remember { mutableStateOf<Pair<Int, Equipamento>?>(null) }
@@ -100,6 +101,8 @@ fun TabEquipamentos(viewModel: FichaViewModel) {
     val armadurasEquipadas = equipamentosComIndice.filter { it.value.tipo == TipoEquipamento.ARMADURA }
     val montarias = equipamentosComIndice.filter { it.value.tipo == TipoEquipamento.MONTARIA }
     val gemas = equipamentosComIndice.filter { it.value.tipo == TipoEquipamento.GEMA_DE_ENERGIA }
+    val municoes = equipamentosComIndice.filter { it.value.tipo == TipoEquipamento.MUNICAO }
+    val armasDeLonge = p.equipamentos.filter { it.tipo == TipoEquipamento.ARMA && !it.confiscado && armaDeLonge(it) }.map { it.nome }.distinct()
 
     StandardTabColumn {
         if (errosCarga.isNotEmpty()) {
@@ -192,6 +195,22 @@ fun TabEquipamentos(viewModel: FichaViewModel) {
             }
         }
 
+        // A munição (flechas, virotes, balas): a quantidade é o estoque; "Serve para" liga à arma; a Mesa gasta 1 por tiro
+        BotaoAdicionarPadrao(texto = "Adicionar Munição", onClick = { showMunicaoDialog = true })
+        if (municoes.isNotEmpty()) {
+            Text("Munição", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+            municoes.forEach { entry ->
+                AppListItemCard {
+                    EquipamentoItem(
+                        equipamento = entry.value,
+                        onEdit = { editingEquipamento = entry.index to entry.value },
+                        onDelete = { viewModel.removerEquipamento(entry.index) },
+                        viewModel = viewModel
+                    )
+                }
+            }
+        }
+
         // RG-12 (Mesa): a Gema de Energia (Magia p.69), com a capacidade; a Mesa paga a magia com ela
         BotaoAdicionarPadrao(texto = "Adicionar Gema de Energia", onClick = { showGemaDialog = true })
         if (gemas.isNotEmpty()) {
@@ -221,6 +240,15 @@ fun TabEquipamentos(viewModel: FichaViewModel) {
         SelecionarMontariaDialog(
             onDismiss = { showMontariaDialog = false },
             onSelect = { viewModel.adicionarEquipamento(equipamentoDaMontaria(it)); showMontariaDialog = false }
+        )
+    }
+
+    if (showMunicaoDialog) {
+        EquipamentoDialog(
+            tipoNovo = TipoEquipamento.MUNICAO,
+            armasDoInventario = armasDeLonge,
+            onDismiss = { showMunicaoDialog = false },
+            onSave = { viewModel.adicionarEquipamento(it); showMunicaoDialog = false }
         )
     }
 
@@ -254,6 +282,7 @@ fun TabEquipamentos(viewModel: FichaViewModel) {
             // formulário pelado ao editar. O `when` mora no ViewModel, num lugar
             // só, para não haver uma terceira vez.
             fichaTecnica = viewModel.fichaTecnicaDoItem(equipamento),
+            armasDoInventario = armasDeLonge,   // a munição: "Serve para" 
             onDismiss = { editingEquipamento = null },
             onSave = {
                 viewModel.atualizarEquipamento(index, it)
@@ -578,6 +607,7 @@ fun EquipamentoItem(equipamento: Equipamento, onEdit: () -> Unit, onDelete: () -
                         add(CartaoDoItem.Linha(
                             "Dano: $raw -> ${viewModel.calcularDanoArmaComSt(raw)}", CartaoDoItem.Papel.DANO))
                     }
+                    equipamento.municaoDe?.let { add(CartaoDoItem.Linha("Serve para: $it (a Mesa gasta 1 por tiro)", CartaoDoItem.Papel.NEUTRO)) }
                     equipamento.gemaCapacidade?.let { add(CartaoDoItem.Linha("Capacidade: $it pontos de energia (Magia p.69)", CartaoDoItem.Papel.NEUTRO)) }
                     if (equipamento.custo > 0) {
                         add(CartaoDoItem.Linha(
@@ -977,3 +1007,9 @@ private fun ConfigurarArmaduraDialog(
 
 /** RG-12 (Mesa): o nome na lista, com ✨ quando o item é mágico. */
 fun nomeNaLista(e: Equipamento): String = if (e.itemMagico) "✨ " + e.nome else e.nome
+
+/** A arma que atira (arco, besta, arma de fogo, arremesso): a que gasta munição. */
+fun armaDeLonge(e: Equipamento): Boolean {
+    val t = (e.armaTipoCombate ?: "").lowercase()
+    return !e.armaTirosRaw.isNullOrBlank() || t.contains("dist") || t.contains("fogo") || t.contains("arremess") || t.contains("projet")
+}

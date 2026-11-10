@@ -217,6 +217,8 @@ fun EquipamentoDialog(
     fichaTecnica: com.gurps.ficha.domain.rules.FichaDeEquipamento.Ficha? = null,
     // RG-12: o tipo do item novo (a Gema de Energia), quando o botão já diz qual é
     tipoNovo: TipoEquipamento? = null,
+    // A munição: as armas de longe do inventário, para o "Serve para"
+    armasDoInventario: List<String> = emptyList(),
     onDismiss: () -> Unit,
     onSave: (Equipamento) -> Unit
 ) {
@@ -250,22 +252,24 @@ fun EquipamentoDialog(
     // RG-12 (Mesa): o item mágico (qualquer item) e a capacidade da Gema de Energia
     var itemMagico by remember { mutableStateOf(initialEquipamento?.itemMagico ?: (tipoNovo == TipoEquipamento.GEMA_DE_ENERGIA)) }
     var capacidade by remember { mutableStateOf(initialEquipamento?.gemaCapacidade?.toString() ?: "") }
+    var municaoDe by remember { mutableStateOf(initialEquipamento?.municaoDe ?: armasDoInventario.firstOrNull()) }
 
     val editando = initialEquipamento != null
     val tipo = initialEquipamento?.tipo ?: tipoNovo ?: TipoEquipamento.GERAL
     val ehGema = tipo == TipoEquipamento.GEMA_DE_ENERGIA
+    val ehMunicao = tipo == TipoEquipamento.MUNICAO
     val ehArmadura = tipo == TipoEquipamento.ARMADURA
     val ehEscudo = tipo == TipoEquipamento.ESCUDO
     // ⚠️ Armadura nao ataca. O bloco de Dano/ST Min existia para TODOS os
     // itens, e num item de armadura ele nao so era inutil: preencher o Dano
     // virava o tipo para ARMA (v. `tipoFinal`), e a peca sumia da secao de
     // armaduras sem aviso.
-    val temAutomacaoDeCombate = !ehArmadura && !ehGema
+    val temAutomacaoDeCombate = !ehArmadura && !ehGema && !ehMunicao
 
     FullscreenDialogContainer(onDismiss = onDismiss) {
         Column(modifier = Modifier.fillMaxSize()) {
             Text(
-                if (editando) nome.ifBlank { "Editar Equipamento" } else if (ehGema) "Adicionar Gema de Energia" else "Adicionar Equipamento",
+                if (editando) nome.ifBlank { "Editar Equipamento" } else if (ehGema) "Adicionar Gema de Energia" else if (ehMunicao) "Adicionar Munição" else "Adicionar Equipamento",
                 style = UiEstilos.tituloDialogo,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.primary
@@ -340,6 +344,20 @@ fun EquipamentoDialog(
                         },
                         modifier = Modifier.fillMaxWidth()
                     )
+                }
+                if (ehMunicao) {
+                    Text("Serve para (a Mesa gasta 1 por tiro desta arma)", style = UiEstilos.detalheDoItem, color = MaterialTheme.colorScheme.outline)
+                    if (armasDoInventario.isEmpty()) {
+                        Text("Adicione antes a arma (Arco, Besta, Pistola...) na lista de Armas.", style = UiEstilos.detalheDoItem, color = MaterialTheme.colorScheme.error)
+                    }
+                    Row(
+                        modifier = Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()),
+                        horizontalArrangement = Arrangement.spacedBy(UiTokens.BotaoEspacamento)
+                    ) {
+                        (armasDoInventario + listOfNotNull(municaoDe?.takeIf { it !in armasDoInventario })).forEach { arma ->
+                            AppFiltroChip(arma, municaoDe == arma) { municaoDe = arma }
+                        }
+                    }
                 }
                 if (ehGema) {
                     OutlinedTextField(
@@ -430,6 +448,7 @@ fun EquipamentoDialog(
                             // Dano preenchido virava ARMA e sumia da secao dela.
                             ehArmadura -> TipoEquipamento.ARMADURA
                             ehGema -> TipoEquipamento.GEMA_DE_ENERGIA
+                            ehMunicao -> TipoEquipamento.MUNICAO
                             danoFinal != null -> TipoEquipamento.ARMA
                             initialEquipamento != null -> initialEquipamento.tipo
                             else -> TipoEquipamento.GERAL
@@ -445,6 +464,7 @@ fun EquipamentoDialog(
                                 armaDanoRaw = danoFinal,
                                 armaStMinimo = stMin.toIntOrNull(),
                                 itemMagico = itemMagico,
+                                municaoDe = if (ehMunicao) municaoDe else initialEquipamento?.municaoDe,
                                 gemaCapacidade = if (ehGema) capacidade.trim().toIntOrNull()?.coerceIn(1, 9999) else initialEquipamento?.gemaCapacidade,
                                 armaQualidade = qualidade?.name,
                                 armaduraRd = if (ehArmadura) rdArmadura.trim().ifBlank { null } else initialEquipamento?.armaduraRd,

@@ -10219,3 +10219,10 @@ ficar verde**.
 - **Mudança:** `Equipamento.itemMagico` (Boolean) e `Equipamento.gemaCapacidade` (Int?), aditivos (ficha antiga lê falso e null); `TipoEquipamento.GEMA_DE_ENERGIA`. `DialogsCommon.kt`: o editor de item ganhou a caixinha "Item mágico" (em todo item que ele edita) e, na gema, o campo "Capacidade (pontos de energia)"; `tipoNovo` abre o editor já como gema. `TabEquipamentos.kt`: o botão "Adicionar Gema de Energia", a lista "Gemas de Energia" (com a capacidade) e o ✨ no nome do item mágico.
   - **Na tela isto muda:** Equipamentos ▸ Adicionar Gema de Energia ▸ nome, peso, custo, capacidade; o lápis de qualquer item mostra "Item mágico". O item mágico aparece com ✨ na lista. Tudo vai para a Mesa no arquivo da ficha.
 - **Testes:** `ItemMagicoEGemaTest.kt` (2; sonda: tirar o ✨ deixa vermelho), `MontariasTest` e `PadraoDeTelaTest`. `./gradlew assembleDebug` **===EXIT=0===**. Versão **215** (`12.9.15-ITEM-MAGICO-E-GEMA`).
+
+## Lote MUNICAO (app) — [2026-11-10] A munição como estoque
+- **Hash:** (commit deste lote; ver `git log`) + o ponteiro do submódulo.
+- **Pedido dele:** do relatório de testes da Mesa, "Deve mexer sim!" (a Mesa só contava o carregador; não havia estoque de flechas e balas).
+- **Mudança:** `TipoEquipamento.MUNICAO` e `Equipamento.municaoDe` (o nome da arma que ela serve; aditivo, ficha antiga lê null). `DialogsCommon.kt`: no editor, "Serve para" com as armas que atiram do inventário (`armasDoInventario`). `TabEquipamentos.kt`: o botão "Adicionar Munição", a lista "Munição" (com "Serve para") e `armaDeLonge`.
+  - **Na tela isto muda:** Equipamentos ▸ Adicionar Munição ▸ nome (Flechas), quantidade (o estoque), peso, custo e "Serve para: Arco Longo". A Mesa gasta 1 por tiro.
+- **Testes:** `MunicaoTest.kt` (2) e `PadraoDeTelaTest`. `./gradlew assembleDebug` **===EXIT=0===**. Versão **216** (`12.9.16-MUNICAO`).
