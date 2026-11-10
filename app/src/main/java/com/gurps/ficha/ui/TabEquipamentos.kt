@@ -52,6 +52,9 @@ import com.gurps.ficha.model.ArmaCatalogoItem
 import com.gurps.ficha.model.Equipamento
 import com.gurps.ficha.model.EscudoCatalogoItem
 import com.gurps.ficha.model.TipoEquipamento
+import com.gurps.ficha.ui.features.equipamento.AdicionarItensDialog
+import com.gurps.ficha.ui.features.equipamento.SelecionarArmaduraEquipamentoDialog
+import com.gurps.ficha.ui.features.equipamento.SelecionarEscudoEquipamentoDialog
 import com.gurps.ficha.viewmodel.FichaViewModel
 
 private fun limparRuidoGrupoArma(texto: String): String {
@@ -75,6 +78,7 @@ private fun BotaoAdicionarPadrao(texto: String, onClick: () -> Unit) {
 @Composable
 fun TabEquipamentos(viewModel: FichaViewModel) {
     var showDialog by remember { mutableStateOf(false) }
+    var showItensDialog by remember { mutableStateOf(false) }   // IC-2 (Mesa): os itens do livro, com a regra
     var showArmaDialog by remember { mutableStateOf(false) }
     var showEscudoDialog by remember { mutableStateOf(false) }
     var showArmaduraDialog by remember { mutableStateOf(false) }
@@ -122,10 +126,10 @@ fun TabEquipamentos(viewModel: FichaViewModel) {
             }
         }
 
-        BotaoAdicionarPadrao(texto = "Adicionar Itens", onClick = { showDialog = true })
+        BotaoAdicionarPadrao(texto = "Adicionar Itens", onClick = { showItensDialog = true })
 
         if (equipamentosManuais.isNotEmpty()) {
-            Text("Equipamentos Manuais", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+            Text("Itens", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
             equipamentosManuais.forEach { entry ->
                 AppListItemCard {
                     EquipamentoItem(
@@ -234,6 +238,14 @@ fun TabEquipamentos(viewModel: FichaViewModel) {
     montariaEditando?.let { (indice, item) ->
         EditarMontariaDialog(item = item, onDismiss = { montariaEditando = null },
             onSave = { viewModel.atualizarEquipamento(indice, it); montariaEditando = null })
+    }
+
+    if (showItensDialog) {
+        AdicionarItensDialog(
+            onDismiss = { showItensDialog = false },
+            onAdicionar = { viewModel.adicionarEquipamento(it); showItensDialog = false },
+            onSemCatalogo = { showItensDialog = false; showDialog = true }
+        )
     }
 
     if (showMontariaDialog) {
@@ -689,36 +701,6 @@ private fun TipoArmaFiltroChip(label: String, selected: Boolean, onClick: () -> 
     )
 }
 
-private fun observacoesFormatadas(armadura: ArmaduraCatalogoItem): List<String> {
-    val refs = Regex("\\[(\\d+)]")
-        .findAll(armadura.observacoes)
-        .mapNotNull { it.groupValues.getOrNull(1)?.toIntOrNull() }
-        .toList()
-    val detalhesOriginais = armadura.observacoesDetalhadas
-        .map { it.trim() }
-        .filter { it.isNotBlank() }
-    if (detalhesOriginais.isEmpty()) return emptyList()
-
-    val saida = mutableListOf<String>()
-    var detalhes = detalhesOriginais
-
-    // Para NT alto, a observacao global (NT7+) deve aparecer sem numero.
-    val primeira = detalhes.firstOrNull()
-    if (primeira != null && primeira.contains("NT7+", ignoreCase = true)) {
-        saida.add(primeira)
-        detalhes = detalhes.drop(1)
-    }
-
-    if (refs.isEmpty() || detalhes.isEmpty()) return saida
-
-    val pareadas = refs.zip(detalhes).map { (ref, texto) -> "[$ref] $texto" }
-    saida.addAll(pareadas)
-    if (detalhes.size > refs.size) {
-        detalhes.drop(refs.size).forEach { extra -> saida.add(extra) }
-    }
-    return saida
-}
-
 /**
  * Uma arma na lista de escolha.
  *
@@ -796,35 +778,7 @@ private fun ArmaItemSelecao(
     )
 }
 
-@Composable
-private fun SelecionarEscudoEquipamentoDialog(
-    viewModel: FichaViewModel,
-    onDismiss: () -> Unit,
-    onSelect: (EscudoCatalogoItem) -> Unit
-) {
-    val escudos = viewModel.escudosEquipamentosFiltrados
-    val stAtual = viewModel.personagem.forca
-    // Lote LAYOUT-6.
-    AppSelectionDialog(
-        titulo = "Selecionar Escudo",
-        subtitulo = "ST do personagem: $stAtual",
-        busca = viewModel.equipmentSearch.query,
-        onBusca = { viewModel.atualizarBuscaEscudoEquipamento(it) },
-        rotuloDaBusca = "Buscar escudo",
-        contador = contadorDe(escudos.size, "escudo", "escudos"),
-        onDismiss = onDismiss
-    ) {
-        items(escudos, key = { it.id }) { escudo ->
-            AppSelectionRow(
-                nome = escudo.nome,
-                detalhe = "BD +${escudo.db} | Custo: $${escudo.custo ?: 0f} | Peso: ${escudo.pesoKg ?: 0f} kg",
-                onClick = { onSelect(escudo) }
-            )
-        }
-    }
-}
-
-private val LOCAIS_ARMADURA = listOf(
+internal val LOCAIS_ARMADURA = listOf(
     "cabeca" to "Cabeca",
     "corpo" to "Corpo",
     "pescoco" to "Pescoco",
@@ -837,71 +791,6 @@ private val LOCAIS_ARMADURA = listOf(
     "maos" to "Maos",
     "traje_completo" to "Traje Completo"
 )
-
-@Composable
-private fun SelecionarArmaduraEquipamentoDialog(
-    viewModel: FichaViewModel,
-    onDismiss: () -> Unit,
-    onSelect: (ArmaduraCatalogoItem) -> Unit
-) {
-    val armaduras = viewModel.armadurasEquipamentosFiltradas
-    val filtrosAtivos = viewModel.equipmentSearch.query.isNotBlank() ||
-        viewModel.equipmentSearch.armorerLocation != null ||
-        viewModel.equipmentSearch.armorerNt != null
-    // Lote LAYOUT-6. O "Resultados: N" vira o contador padrão, e o "Limpar
-    // filtros" entra no cabeçalho livre — ele é uma ação, não um filtro.
-    AppSelectionDialog(
-        titulo = "Selecionar Armadura",
-        subtitulo = "Use Local e NT para refinar mais rápido.",
-        busca = viewModel.equipmentSearch.query,
-        onBusca = { viewModel.atualizarBuscaArmaduraEquipamento(it) },
-        rotuloDaBusca = "Buscar armadura",
-        contador = contadorDe(armaduras.size, "armadura", "armaduras"),
-        filtros = {
-            AppFiltroChip("Local: Todos", viewModel.equipmentSearch.armorerLocation == null) { viewModel.atualizarFiltroLocalArmaduraEquipamento(null) }
-            LOCAIS_ARMADURA.forEach { (id, label) ->
-                AppFiltroChip(label, viewModel.equipmentSearch.armorerLocation == id) { viewModel.atualizarFiltroLocalArmaduraEquipamento(id) }
-            }
-        },
-        filtrosSecundarios = {
-            AppFiltroChip("NT: Todas", viewModel.equipmentSearch.armorerNt == null) { viewModel.atualizarFiltroNtArmaduraEquipamento(null) }
-            for (nt in 0..10) {
-                AppFiltroChip("NT $nt", viewModel.equipmentSearch.armorerNt == nt) { viewModel.atualizarFiltroNtArmaduraEquipamento(nt) }
-            }
-        },
-        cabecalhoExtra = if (!filtrosAtivos) null else ({
-            AppFileiraDeBotoes(alinhamento = Arrangement.Start) {
-                AppBotaoDiscreto(texto = "Limpar filtros", onClick = { viewModel.limparFiltrosArmaduraEquipamento() })
-            }
-        }),
-        onDismiss = onDismiss
-    ) {
-        items(armaduras, key = { it.id }) { armadura ->
-            val observacoes = observacoesFormatadas(armadura)
-            AppSelectionRow(
-                nome = TextoDoCatalogo.corrigir(armadura.nome),
-                detalhe = "NT ${armadura.nt ?: "—"} | RD ${armadura.rd} | Peso ${armadura.pesoBaseKg ?: 0f} kg | Custo $${armadura.custoBase ?: 0f}",
-                onClick = { onSelect(armadura) },
-                descricaoAcessivel = "${TextoDoCatalogo.corrigir(armadura.nome)}. NT ${armadura.nt ?: "não cadastrado"}, " +
-                    "RD ${armadura.rd}. Local: ${TextoDoCatalogo.corrigir(armadura.local)}.",
-                extra = {
-                    Text(
-                        "Local: ${TextoDoCatalogo.corrigir(armadura.local)}",
-                        style = UiEstilos.detalheDoItem,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                    observacoes.forEach { linha ->
-                        Text(
-                            linha,
-                            style = UiEstilos.detalheDoItem,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                    }
-                }
-            )
-        }
-    }
-}
 
 @Composable
 private fun ConfigurarArmaduraDialog(

@@ -1036,7 +1036,11 @@ data class Equipamento(
     var itemMagico: Boolean = false,
     var gemaCapacidade: Int? = null,
     // A munição: o nome da arma do inventário que ela serve (o Arco Longo, a Besta...). A Mesa gasta 1 por tiro. Ficha antiga lê null.
-    var municaoDe: String? = null
+    var municaoDe: String? = null,
+    // IC-2 (Mesa, planos/itens): o item escolhido do catálogo do livro (`itens.v1.json`) leva o id e a REGRA dele (um tipo e os
+    // números: veneno, elixir, explosivo, kit...), para a Mesa aplicar pelo tipo e não pelo nome. Ficha antiga lê null.
+    var itemCatalogoId: String? = null,
+    var regra: com.google.gson.JsonObject? = null
 ) {
     /**
      * Dano da arma já resolvido contra a ST de quem a empunha.

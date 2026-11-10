@@ -101,7 +101,8 @@ class FichaIgualNosDoisLadosTest {
     @Test
     fun `armadura nunca vira arma ao salvar`() {
         val i = editor.indexOf("val tipoFinal = when {")
-        val trecho = editor.substring(i, i + 400)
+        // 700: a Gema (RG-12) e a Municao entraram no when antes do dano, e os 400 de antes deixaram de alcancar a linha do dano
+        val trecho = editor.substring(i, i + 700)
         val posArmadura = trecho.indexOf("ehArmadura ->")
         val posDano = trecho.indexOf("danoFinal != null ->")
         assertTrue("a armadura nao e verificada antes do dano", posArmadura in 0 until posDano)

@@ -1,0 +1,4833 @@
+{
+ "versao": 1,
+ "fonte": "Módulo Básico pp.277, 279-280, 288-289, 439; Magia pp.213-219. Gerado por scripts/itens/gerar_itens.py; a nota é frase própria.",
+ "tipos": {
+  "narrativo": 82,
+  "kit": 17,
+  "luz": 5,
+  "concede": 7,
+  "cura": 5,
+  "acessorio": 4,
+  "explosivo": 9,
+  "municao": 4,
+  "veneno": 7,
+  "elixir": 67
+ },
+ "itens": [
+  {
+   "id": "algibeira_ou_bolsa_pequena",
+   "nome": "Algibeira ou Bolsa Pequena",
+   "categoria": "Acampamento e Sobrevivência",
+   "nt": 1,
+   "ntVariavel": false,
+   "peso": 0,
+   "custo": 10,
+   "legalidade": 4,
+   "pagina": 288,
+   "livro": "MB",
+   "nota": "Suporta 1,5 kg.",
+   "regra": {
+    "tipo": "narrativo"
+   }
+  },
+  {
+   "id": "anzol_e_linha",
+   "nome": "Anzol e Linha",
+   "categoria": "Acampamento e Sobrevivência",
+   "nt": 0,
+   "ntVariavel": false,
+   "peso": 0,
+   "custo": 50,
+   "legalidade": 4,
+   "pagina": 288,
+   "livro": "MB",
+   "nota": "Equipamento básico de Pescaria.",
+   "regra": {
+    "tipo": "kit",
+    "pericias": [
+     "Pescaria"
+    ],
+    "basico": true
+   }
+  },
+  {
+   "id": "arpeu",
+   "nome": "Arpéu",
+   "categoria": "Acampamento e Sobrevivência",
+   "nt": 5,
+   "ntVariavel": false,
+   "peso": 1,
+   "custo": 20,
+   "legalidade": 4,
+   "pagina": 288,
+   "livro": "MB",
+   "nota": "Suporta 150 kg.",
+   "regra": {
+    "tipo": "narrativo"
+   }
+  },
+  {
+   "id": "barraca_1_pessoa",
+   "nome": "Barraca, 1 pessoa",
+   "categoria": "Acampamento e Sobrevivência",
+   "nt": 0,
+   "ntVariavel": false,
+   "peso": 2.5,
+   "custo": 50,
+   "legalidade": 4,
+   "pagina": 288,
+   "livro": "MB",
+   "nota": "",
+   "regra": {
+    "tipo": "narrativo"
+   }
+  },
+  {
+   "id": "barraca_2_pessoas",
+   "nome": "Barraca, 2 pessoas",
+   "categoria": "Acampamento e Sobrevivência",
+   "nt": 0,
+   "ntVariavel": false,
+   "peso": 6,
+   "custo": 80,
+   "legalidade": 4,
+   "pagina": 288,
+   "livro": "MB",
+   "nota": "",
+   "regra": {
+    "tipo": "narrativo"
+   }
+  },
+  {
+   "id": "barraca_4_pessoas",
+   "nome": "Barraca, 4 pessoas",
+   "categoria": "Acampamento e Sobrevivência",
+   "nt": 0,
+   "ntVariavel": false,
+   "peso": 15,
+   "custo": 150,
+   "legalidade": 4,
+   "pagina": 288,
+   "livro": "MB",
+   "nota": "",
+   "regra": {
+    "tipo": "narrativo"
+   }
+  },
+  {
+   "id": "barraca_20_pessoas",
+   "nome": "Barraca, 20 pessoas",
+   "categoria": "Acampamento e Sobrevivência",
+   "nt": 1,
+   "ntVariavel": false,
+   "peso": 50,
+   "custo": 300,
+   "legalidade": 4,
+   "pagina": 288,
+   "livro": "MB",
+   "nota": "",
+   "regra": {
+    "tipo": "narrativo"
+   }
+  },
+  {
+   "id": "bussola",
+   "nome": "Bússola",
+   "categoria": "Acampamento e Sobrevivência",
+   "nt": 6,
+   "ntVariavel": false,
+   "peso": 0,
+   "custo": 50,
+   "legalidade": 4,
+   "pagina": 288,
+   "livro": "MB",
+   "nota": "+1 em Navegação.",
+   "regra": {
+    "tipo": "kit",
+    "pericia": "Navegação",
+    "bonus": 1
+   }
+  },
+  {
+   "id": "cabo_de_aco_3_75cm",
+   "nome": "Cabo de Aço, 3,75cm",
+   "categoria": "Acampamento e Sobrevivência",
+   "nt": 5,
+   "ntVariavel": false,
+   "peso": 8.5,
+   "custo": 100,
+   "legalidade": 4,
+   "pagina": 288,
+   "livro": "MB",
+   "unidade": "cada 10 metros",
+   "nota": "Suporta 2 t.",
+   "regra": {
+    "tipo": "narrativo"
+   }
+  },
+  {
+   "id": "cantil",
+   "nome": "Cantil",
+   "categoria": "Acampamento e Sobrevivência",
+   "nt": 5,
+   "ntVariavel": false,
+   "peso": 0.5,
+   "custo": 10,
+   "legalidade": 4,
+   "pagina": 288,
+   "livro": "MB",
+   "nota": "Leva 1 litro(s) de líquido.",
+   "regra": {
+    "tipo": "narrativo"
+   }
+  },
+  {
+   "id": "cobertor",
+   "nome": "Cobertor",
+   "categoria": "Acampamento e Sobrevivência",
+   "nt": 1,
+   "ntVariavel": false,
+   "peso": 2,
+   "custo": 20,
+   "legalidade": 4,
+   "pagina": 288,
+   "livro": "MB",
+   "nota": "",
+   "regra": {
+    "tipo": "narrativo"
+   }
+  },
+  {
+   "id": "colete_salva_vidas",
+   "nome": "Colete Salva-vidas",
+   "categoria": "Acampamento e Sobrevivência",
+   "nt": 6,
+   "ntVariavel": false,
+   "peso": 3,
+   "custo": 100,
+   "legalidade": 4,
+   "pagina": 288,
+   "livro": "MB",
+   "nota": "",
+   "regra": {
+    "tipo": "narrativo"
+   }
+  },
+  {
+   "id": "corda_3_8",
+   "nome": "Corda, 3/8",
+   "categoria": "Acampamento e Sobrevivência",
+   "nt": 0,
+   "ntVariavel": false,
+   "peso": 0.75,
+   "custo": 5,
+   "legalidade": 4,
+   "pagina": 288,
+   "livro": "MB",
+   "unidade": "cada 10 metros",
+   "nota": "Suporta 150 kg.",
+   "regra": {
+    "tipo": "narrativo"
+   }
+  },
+  {
+   "id": "corda_3_4",
+   "nome": "Corda, 3/4",
+   "categoria": "Acampamento e Sobrevivência",
+   "nt": 1,
+   "ntVariavel": false,
+   "peso": 2.5,
+   "custo": 25,
+   "legalidade": 4,
+   "pagina": 288,
+   "livro": "MB",
+   "unidade": "cada 10 metros",
+   "nota": "Suporta 550 kg.",
+   "regra": {
+    "tipo": "narrativo"
+   }
+  },
+  {
+   "id": "cordel_de_3_16",
+   "nome": "Cordel de 3/16",
+   "categoria": "Acampamento e Sobrevivência",
+   "nt": 0,
+   "ntVariavel": false,
+   "peso": 0.25,
+   "custo": 1,
+   "legalidade": 4,
+   "pagina": 288,
+   "livro": "MB",
+   "unidade": "cada 10 metros",
+   "nota": "Suporta 45 kg.",
+   "regra": {
+    "tipo": "narrativo"
+   }
+  },
+  {
+   "id": "equipamento_basico_para_grupo",
+   "nome": "Equipamento Básico para Grupo",
+   "categoria": "Acampamento e Sobrevivência",
+   "nt": 0,
+   "ntVariavel": false,
+   "peso": 10,
+   "custo": 50,
+   "legalidade": 4,
+   "pagina": 288,
+   "livro": "MB",
+   "nota": "Equipamento básico de Culinária e Sobrevivência.",
+   "regra": {
+    "tipo": "kit",
+    "pericias": [
+     "Culinária",
+     "Sobrevivência"
+    ],
+    "basico": true
+   }
+  },
+  {
+   "id": "equipamento_basico_pessoal",
+   "nome": "Equipamento Básico Pessoal",
+   "categoria": "Acampamento e Sobrevivência",
+   "nt": 0,
+   "ntVariavel": false,
+   "peso": 0.5,
+   "custo": 5,
+   "legalidade": 4,
+   "pagina": 288,
+   "livro": "MB",
+   "nota": "Sem ele, −2 em Sobrevivência.",
+   "regra": {
+    "tipo": "kit",
+    "pericia": "Sobrevivência",
+    "penalidadeSemEle": -2
+   }
+  },
+  {
+   "id": "equipamento_de_alpinismo",
+   "nome": "Equipamento de Alpinismo",
+   "categoria": "Acampamento e Sobrevivência",
+   "nt": 2,
+   "ntVariavel": false,
+   "peso": 2,
+   "custo": 20,
+   "legalidade": 4,
+   "pagina": 288,
+   "livro": "MB",
+   "nota": "",
+   "regra": {
+    "tipo": "narrativo"
+   }
+  },
+  {
+   "id": "equipamento_de_mergulho",
+   "nome": "Equipamento de Mergulho",
+   "categoria": "Acampamento e Sobrevivência",
+   "nt": 6,
+   "ntVariavel": false,
+   "peso": 16,
+   "custo": 1500,
+   "legalidade": 4,
+   "pagina": 288,
+   "livro": "MB",
+   "nota": "Equipamento básico de Mergulho.",
+   "regra": {
+    "tipo": "kit",
+    "pericias": [
+     "Mergulho"
+    ],
+    "basico": true
+   }
+  },
+  {
+   "id": "espigos_de_ferro_esracador",
+   "nome": "Espigos de Ferro (Esracador)",
+   "categoria": "Acampamento e Sobrevivência",
+   "nt": 2,
+   "ntVariavel": false,
+   "peso": 0.25,
+   "custo": 1,
+   "legalidade": 4,
+   "pagina": 288,
+   "livro": "MB",
+   "nota": "",
+   "regra": {
+    "tipo": "narrativo"
+   }
+  },
+  {
+   "id": "fogao_pequeno",
+   "nome": "Fogão Pequeno",
+   "categoria": "Acampamento e Sobrevivência",
+   "nt": 6,
+   "ntVariavel": false,
+   "peso": 1,
+   "custo": 50,
+   "legalidade": 4,
+   "pagina": 288,
+   "livro": "MB",
+   "nota": "",
+   "regra": {
+    "tipo": "narrativo"
+   }
+  },
+  {
+   "id": "fosforos",
+   "nome": "Fósforos",
+   "categoria": "Acampamento e Sobrevivência",
+   "nt": 6,
+   "ntVariavel": false,
+   "peso": 0,
+   "custo": 1.5,
+   "legalidade": 4,
+   "pagina": 288,
+   "livro": "MB",
+   "nota": "",
+   "regra": {
+    "tipo": "narrativo"
+   }
+  },
+  {
+   "id": "garrafa_ceramica",
+   "nome": "Garrafa Cerâmica",
+   "categoria": "Acampamento e Sobrevivência",
+   "nt": 1,
+   "ntVariavel": false,
+   "peso": 0.5,
+   "custo": 3,
+   "legalidade": 4,
+   "pagina": 288,
+   "livro": "MB",
+   "nota": "Leva 1 litro(s) de líquido.",
+   "regra": {
+    "tipo": "narrativo"
+   }
+  },
+  {
+   "id": "garrafa_termica",
+   "nome": "Garrafa Térmica",
+   "categoria": "Acampamento e Sobrevivência",
+   "nt": 5,
+   "ntVariavel": false,
+   "peso": 1,
+   "custo": 10,
+   "legalidade": 4,
+   "pagina": 288,
+   "livro": "MB",
+   "nota": "",
+   "regra": {
+    "tipo": "narrativo"
+   }
+  },
+  {
+   "id": "gasolina",
+   "nome": "Gasolina",
+   "categoria": "Acampamento e Sobrevivência",
+   "nt": 6,
+   "ntVariavel": false,
+   "peso": 0.75,
+   "custo": 1,
+   "legalidade": 4,
+   "pagina": 288,
+   "livro": "MB",
+   "unidade": "por litro",
+   "nota": "",
+   "regra": {
+    "tipo": "narrativo"
+   }
+  },
+  {
+   "id": "isqueiro",
+   "nome": "Isqueiro",
+   "categoria": "Acampamento e Sobrevivência",
+   "nt": 6,
+   "ntVariavel": false,
+   "peso": 0,
+   "custo": 10,
+   "legalidade": 4,
+   "pagina": 288,
+   "livro": "MB",
+   "nota": "",
+   "regra": {
+    "tipo": "narrativo"
+   }
+  },
+  {
+   "id": "lamparina",
+   "nome": "Lamparina",
+   "categoria": "Acampamento e Sobrevivência",
+   "nt": 2,
+   "ntVariavel": false,
+   "peso": 1,
+   "custo": 20,
+   "legalidade": 4,
+   "pagina": 288,
+   "livro": "MB",
+   "nota": "Ilumina por 24 h.",
+   "regra": {
+    "tipo": "luz",
+    "duracaoHoras": 24
+   }
+  },
+  {
+   "id": "lanterna_pesada",
+   "nome": "Lanterna Pesada",
+   "categoria": "Acampamento e Sobrevivência",
+   "nt": 6,
+   "ntVariavel": false,
+   "peso": 0.5,
+   "custo": 20,
+   "legalidade": 4,
+   "pagina": 288,
+   "livro": "MB",
+   "bateriaHoras": 5,
+   "nota": "Facho de 9 m.",
+   "regra": {
+    "tipo": "luz",
+    "alcanceMetros": 9
+   }
+  },
+  {
+   "id": "maleta_resistente",
+   "nome": "Maleta Resistente",
+   "categoria": "Acampamento e Sobrevivência",
+   "nt": 5,
+   "ntVariavel": false,
+   "peso": 4,
+   "custo": 250,
+   "legalidade": 4,
+   "pagina": 288,
+   "livro": "MB",
+   "nota": "Suporta 50 kg.",
+   "regra": {
+    "tipo": "narrativo"
+   }
+  },
+  {
+   "id": "mini_lanterna",
+   "nome": "Mini lanterna",
+   "categoria": "Acampamento e Sobrevivência",
+   "nt": 7,
+   "ntVariavel": false,
+   "peso": 0.025,
+   "custo": 10,
+   "legalidade": 4,
+   "pagina": 288,
+   "livro": "MB",
+   "bateriaHoras": 1,
+   "nota": "Facho de 4,5 m.",
+   "regra": {
+    "tipo": "luz",
+    "alcanceMetros": 4.5
+   }
+  },
+  {
+   "id": "mochila_pequena",
+   "nome": "Mochila Pequena",
+   "categoria": "Acampamento e Sobrevivência",
+   "nt": 1,
+   "ntVariavel": false,
+   "peso": 1.5,
+   "custo": 60,
+   "legalidade": 4,
+   "pagina": 288,
+   "livro": "MB",
+   "nota": "Suporta 20 kg.",
+   "regra": {
+    "tipo": "narrativo"
+   }
+  },
+  {
+   "id": "mochila",
+   "nome": "Mochila",
+   "categoria": "Acampamento e Sobrevivência",
+   "nt": 1,
+   "ntVariavel": false,
+   "peso": 5,
+   "custo": 100,
+   "legalidade": 4,
+   "pagina": 288,
+   "livro": "MB",
+   "nota": "Suporta 50 kg.",
+   "regra": {
+    "tipo": "narrativo"
+   }
+  },
+  {
+   "id": "odre_de_vinho",
+   "nome": "Odre de Vinho",
+   "categoria": "Acampamento e Sobrevivência",
+   "nt": 0,
+   "ntVariavel": false,
+   "peso": 0.125,
+   "custo": 10,
+   "legalidade": 4,
+   "pagina": 288,
+   "livro": "MB",
+   "nota": "Leva 4 litro(s) de líquido.",
+   "regra": {
+    "tipo": "narrativo"
+   }
+  },
+  {
+   "id": "oleo",
+   "nome": "Óleo",
+   "categoria": "Acampamento e Sobrevivência",
+   "nt": 2,
+   "ntVariavel": false,
+   "peso": 0.5,
+   "custo": 2,
+   "legalidade": 4,
+   "pagina": 288,
+   "livro": "MB",
+   "unidade": "cada 0,5 litro",
+   "nota": "",
+   "regra": {
+    "tipo": "narrativo"
+   }
+  },
+  {
+   "id": "paraquedas",
+   "nome": "Paraquedas",
+   "categoria": "Acampamento e Sobrevivência",
+   "nt": 6,
+   "ntVariavel": false,
+   "peso": 15,
+   "custo": 1000,
+   "legalidade": 4,
+   "pagina": 288,
+   "livro": "MB",
+   "nota": "",
+   "regra": {
+    "tipo": "narrativo"
+   }
+  },
+  {
+   "id": "pastilhas_de_purificar_a_agua",
+   "nome": "Pastilhas de Purificar a Água",
+   "categoria": "Acampamento e Sobrevivência",
+   "nt": 6,
+   "ntVariavel": false,
+   "peso": 0,
+   "custo": 5,
+   "legalidade": 4,
+   "pagina": 288,
+   "livro": "MB",
+   "nota": "",
+   "regra": {
+    "tipo": "narrativo"
+   }
+  },
+  {
+   "id": "pelagem_de_animal",
+   "nome": "Pelagem de Animal",
+   "categoria": "Acampamento e Sobrevivência",
+   "nt": 0,
+   "ntVariavel": false,
+   "peso": 4,
+   "custo": 50,
+   "legalidade": 4,
+   "pagina": 288,
+   "livro": "MB",
+   "nota": "",
+   "regra": {
+    "tipo": "narrativo"
+   }
+  },
+  {
+   "id": "querosene",
+   "nome": "Querosene",
+   "categoria": "Acampamento e Sobrevivência",
+   "nt": 6,
+   "ntVariavel": false,
+   "peso": 1,
+   "custo": 0.5,
+   "legalidade": 4,
+   "pagina": 288,
+   "livro": "MB",
+   "unidade": "por litro",
+   "nota": "",
+   "regra": {
+    "tipo": "narrativo"
+   }
+  },
+  {
+   "id": "racao_de_viagem",
+   "nome": "Ração de Viagem",
+   "categoria": "Acampamento e Sobrevivência",
+   "nt": 0,
+   "ntVariavel": false,
+   "peso": 0.25,
+   "custo": 2,
+   "legalidade": 4,
+   "pagina": 288,
+   "livro": "MB",
+   "nota": "",
+   "regra": {
+    "tipo": "narrativo"
+   }
+  },
+  {
+   "id": "receptor_gps",
+   "nome": "Receptor GPS",
+   "categoria": "Acampamento e Sobrevivência",
+   "nt": 8,
+   "ntVariavel": false,
+   "peso": 1.5,
+   "custo": 200,
+   "legalidade": 4,
+   "pagina": 288,
+   "livro": "MB",
+   "bateriaHoras": 24,
+   "nota": "Concede Senso de Direção.",
+   "regra": {
+    "tipo": "concede",
+    "vantagem": "Senso de Direção"
+   }
+  },
+  {
+   "id": "relogio_de_pulso",
+   "nome": "Relógio de Pulso",
+   "categoria": "Acampamento e Sobrevivência",
+   "nt": 6,
+   "ntVariavel": false,
+   "peso": 0,
+   "custo": 20,
+   "legalidade": 4,
+   "pagina": 288,
+   "livro": "MB",
+   "nota": "",
+   "regra": {
+    "tipo": "narrativo"
+   }
+  },
+  {
+   "id": "saco_de_dormir_reforcado",
+   "nome": "Saco de Dormir Reforçado",
+   "categoria": "Acampamento e Sobrevivência",
+   "nt": 7,
+   "ntVariavel": false,
+   "peso": 7.5,
+   "custo": 100,
+   "legalidade": 4,
+   "pagina": 288,
+   "livro": "MB",
+   "nota": "",
+   "regra": {
+    "tipo": "narrativo"
+   }
+  },
+  {
+   "id": "saco_de_dormir",
+   "nome": "Saco de Dormir",
+   "categoria": "Acampamento e Sobrevivência",
+   "nt": 6,
+   "ntVariavel": false,
+   "peso": 3.5,
+   "custo": 25,
+   "legalidade": 4,
+   "pagina": 288,
+   "livro": "MB",
+   "nota": "",
+   "regra": {
+    "tipo": "narrativo"
+   }
+  },
+  {
+   "id": "tocha",
+   "nome": "Tocha",
+   "categoria": "Acampamento e Sobrevivência",
+   "nt": 0,
+   "ntVariavel": false,
+   "peso": 0.5,
+   "custo": 3,
+   "legalidade": 4,
+   "pagina": 288,
+   "livro": "MB",
+   "nota": "Ilumina por 1 h.",
+   "regra": {
+    "tipo": "luz",
+    "duracaoHoras": 1
+   }
+  },
+  {
+   "id": "vara_2_m",
+   "nome": "Vara, 2 m",
+   "categoria": "Acampamento e Sobrevivência",
+   "nt": 0,
+   "ntVariavel": false,
+   "peso": 1.5,
+   "custo": 5,
+   "legalidade": 4,
+   "pagina": 288,
+   "livro": "MB",
+   "nota": "",
+   "regra": {
+    "tipo": "narrativo"
+   }
+  },
+  {
+   "id": "vara_3_m",
+   "nome": "Vara, 3 m",
+   "categoria": "Acampamento e Sobrevivência",
+   "nt": 0,
+   "ntVariavel": false,
+   "peso": 2.5,
+   "custo": 8,
+   "legalidade": 4,
+   "pagina": 288,
+   "livro": "MB",
+   "nota": "",
+   "regra": {
+    "tipo": "narrativo"
+   }
+  },
+  {
+   "id": "vela_de_sebo",
+   "nome": "Vela de Sebo",
+   "categoria": "Acampamento e Sobrevivência",
+   "nt": 1,
+   "ntVariavel": false,
+   "peso": 0.5,
+   "custo": 5,
+   "legalidade": 4,
+   "pagina": 288,
+   "livro": "MB",
+   "nota": "Ilumina por 12 h.",
+   "regra": {
+    "tipo": "luz",
+    "duracaoHoras": 12
+   }
+  },
+  {
+   "id": "baterias",
+   "nome": "Baterias",
+   "categoria": "Comunicação e Informação",
+   "nt": 6,
+   "ntVariavel": false,
+   "peso": 0,
+   "custo": 1,
+   "legalidade": 4,
+   "pagina": 288,
+   "livro": "MB",
+   "nota": "",
+   "regra": {
+    "tipo": "narrativo"
+   }
+  },
+  {
+   "id": "celular",
+   "nome": "Celular",
+   "categoria": "Comunicação e Informação",
+   "nt": 8,
+   "ntVariavel": false,
+   "peso": 0.125,
+   "custo": 250,
+   "legalidade": 4,
+   "pagina": 288,
+   "livro": "MB",
+   "bateriaHoras": 10,
+   "nota": "",
+   "regra": {
+    "tipo": "narrativo"
+   }
+  },
+  {
+   "id": "computador_laptop",
+   "nome": "Computador, Laptop",
+   "categoria": "Comunicação e Informação",
+   "nt": 8,
+   "ntVariavel": false,
+   "peso": 1.5,
+   "custo": 1500,
+   "legalidade": 4,
+   "pagina": 288,
+   "livro": "MB",
+   "bateriaHoras": 2,
+   "nota": "",
+   "regra": {
+    "tipo": "narrativo"
+   }
+  },
+  {
+   "id": "computador_acessorio",
+   "nome": "Computador, Acessório",
+   "categoria": "Comunicação e Informação",
+   "nt": 8,
+   "ntVariavel": false,
+   "peso": 1,
+   "custo": 1000,
+   "legalidade": 4,
+   "pagina": 288,
+   "livro": "MB",
+   "bateriaHoras": 8,
+   "nota": "",
+   "regra": {
+    "tipo": "narrativo"
+   }
+  },
+  {
+   "id": "fone_de_ouvido_com_radio",
+   "nome": "Fone de Ouvido com Rádio",
+   "categoria": "Comunicação e Informação",
+   "nt": 8,
+   "ntVariavel": false,
+   "peso": 0.25,
+   "custo": 500,
+   "legalidade": 4,
+   "pagina": 288,
+   "livro": "MB",
+   "bateriaHoras": 12,
+   "nota": "",
+   "regra": {
+    "tipo": "narrativo"
+   }
+  },
+  {
+   "id": "kit_de_escriba",
+   "nome": "Kit de Escriba",
+   "categoria": "Comunicação e Informação",
+   "nt": 3,
+   "ntVariavel": false,
+   "peso": 1,
+   "custo": 50,
+   "legalidade": 4,
+   "pagina": 288,
+   "livro": "MB",
+   "nota": "",
+   "regra": {
+    "tipo": "narrativo"
+   }
+  },
+  {
+   "id": "maquina_de_escrever",
+   "nome": "Máquina de Escrever",
+   "categoria": "Comunicação e Informação",
+   "nt": 6,
+   "ntVariavel": false,
+   "peso": 5,
+   "custo": 200,
+   "legalidade": 4,
+   "pagina": 288,
+   "livro": "MB",
+   "nota": "",
+   "regra": {
+    "tipo": "narrativo"
+   }
+  },
+  {
+   "id": "minigravador",
+   "nome": "Minigravador",
+   "categoria": "Comunicação e Informação",
+   "nt": 7,
+   "ntVariavel": false,
+   "peso": 0.25,
+   "custo": 200,
+   "legalidade": 4,
+   "pagina": 288,
+   "livro": "MB",
+   "nota": "",
+   "regra": {
+    "tipo": "narrativo"
+   }
+  },
+  {
+   "id": "minigravador_digital",
+   "nome": "Minigravador Digital",
+   "categoria": "Comunicação e Informação",
+   "nt": 8,
+   "ntVariavel": false,
+   "peso": 0.25,
+   "custo": 30,
+   "legalidade": 4,
+   "pagina": 288,
+   "livro": "MB",
+   "nota": "Como Minigravador.",
+   "regra": {
+    "tipo": "narrativo",
+    "comoO": "minigravador"
+   }
+  },
+  {
+   "id": "minitelevisor",
+   "nome": "Minitelevisor",
+   "categoria": "Comunicação e Informação",
+   "nt": 7,
+   "ntVariavel": false,
+   "peso": 1.5,
+   "custo": 150,
+   "legalidade": 4,
+   "pagina": 288,
+   "livro": "MB",
+   "bateriaHoras": 4,
+   "nota": "",
+   "regra": {
+    "tipo": "narrativo"
+   }
+  },
+  {
+   "id": "mochila_com_radio",
+   "nome": "Mochila com Rádio",
+   "categoria": "Comunicação e Informação",
+   "nt": 7,
+   "ntVariavel": false,
+   "peso": 7.5,
+   "custo": 6000,
+   "legalidade": 4,
+   "pagina": 288,
+   "livro": "MB",
+   "bateriaHoras": 12,
+   "nota": "",
+   "regra": {
+    "tipo": "narrativo"
+   }
+  },
+  {
+   "id": "radio_de_mao",
+   "nome": "Rádio de Mão",
+   "categoria": "Comunicação e Informação",
+   "nt": 7,
+   "ntVariavel": false,
+   "peso": 0.5,
+   "custo": 100,
+   "legalidade": 4,
+   "pagina": 288,
+   "livro": "MB",
+   "bateriaHoras": 12,
+   "nota": "",
+   "regra": {
+    "tipo": "narrativo"
+   }
+  },
+  {
+   "id": "radio_transistor",
+   "nome": "Rádio Transistor",
+   "categoria": "Comunicação e Informação",
+   "nt": 7,
+   "ntVariavel": false,
+   "peso": 0.25,
+   "custo": 15,
+   "legalidade": 4,
+   "pagina": 288,
+   "livro": "MB",
+   "bateriaHoras": 8,
+   "nota": "",
+   "regra": {
+    "tipo": "narrativo"
+   }
+  },
+  {
+   "id": "tablete_de_cera",
+   "nome": "Tablete de Cera",
+   "categoria": "Comunicação e Informação",
+   "nt": 1,
+   "ntVariavel": false,
+   "peso": 1,
+   "custo": 10,
+   "legalidade": 4,
+   "pagina": 288,
+   "livro": "MB",
+   "nota": "",
+   "regra": {
+    "tipo": "narrativo"
+   }
+  },
+  {
+   "id": "tambor",
+   "nome": "Tambor",
+   "categoria": "Comunicação e Informação",
+   "nt": 0,
+   "ntVariavel": false,
+   "peso": 1,
+   "custo": 40,
+   "legalidade": 4,
+   "pagina": 288,
+   "livro": "MB",
+   "nota": "",
+   "regra": {
+    "tipo": "narrativo"
+   }
+  },
+  {
+   "id": "telefone_por_satelite",
+   "nome": "Telefone por Satélite",
+   "categoria": "Comunicação e Informação",
+   "nt": 8,
+   "ntVariavel": false,
+   "peso": 1.5,
+   "custo": 3000,
+   "legalidade": 4,
+   "pagina": 288,
+   "livro": "MB",
+   "bateriaHoras": 1,
+   "nota": "",
+   "regra": {
+    "tipo": "narrativo"
+   }
+  },
+  {
+   "id": "alforjes",
+   "nome": "Alforjes",
+   "categoria": "Equitação",
+   "nt": 1,
+   "ntVariavel": false,
+   "peso": 1.5,
+   "custo": 100,
+   "legalidade": 4,
+   "pagina": 289,
+   "livro": "MB",
+   "nota": "Suporta 20 kg.",
+   "regra": {
+    "tipo": "narrativo"
+   }
+  },
+  {
+   "id": "bridao_e_redea",
+   "nome": "Bridão e Rédea",
+   "categoria": "Equitação",
+   "nt": 1,
+   "ntVariavel": false,
+   "peso": 1.5,
+   "custo": 35,
+   "legalidade": 4,
+   "pagina": 289,
+   "livro": "MB",
+   "nota": "+2 para controlar a montaria. Só compensa redutores.",
+   "regra": {
+    "tipo": "kit",
+    "pericia": "Cavalgar",
+    "bonus": 2,
+    "soCompensaRedutor": true
+   }
+  },
+  {
+   "id": "esporas",
+   "nome": "Esporas",
+   "categoria": "Equitação",
+   "nt": 2,
+   "ntVariavel": false,
+   "peso": 0,
+   "custo": 25,
+   "legalidade": 4,
+   "pagina": 289,
+   "livro": "MB",
+   "nota": "+1 para controlar a montaria. Só compensa redutores.",
+   "regra": {
+    "tipo": "kit",
+    "pericia": "Cavalgar",
+    "bonus": 1,
+    "soCompensaRedutor": true
+   }
+  },
+  {
+   "id": "estribos",
+   "nome": "Estribos",
+   "categoria": "Equitação",
+   "nt": 3,
+   "ntVariavel": false,
+   "peso": 10,
+   "custo": 125,
+   "legalidade": 4,
+   "pagina": 289,
+   "livro": "MB",
+   "nota": "+1 para controlar a montaria. Só compensa redutores.",
+   "regra": {
+    "tipo": "kit",
+    "pericia": "Cavalgar",
+    "bonus": 1,
+    "soCompensaRedutor": true
+   }
+  },
+  {
+   "id": "ferraduras",
+   "nome": "Ferraduras",
+   "categoria": "Equitação",
+   "nt": 3,
+   "ntVariavel": false,
+   "peso": 2,
+   "custo": 50,
+   "legalidade": 4,
+   "pagina": 289,
+   "livro": "MB",
+   "unidade": "conjunto com 4",
+   "nota": "",
+   "regra": {
+    "tipo": "narrativo"
+   }
+  },
+  {
+   "id": "sela_de_combate",
+   "nome": "Sela de Combate",
+   "categoria": "Equitação",
+   "nt": 3,
+   "ntVariavel": false,
+   "peso": 17.5,
+   "custo": 250,
+   "legalidade": 4,
+   "pagina": 289,
+   "livro": "MB",
+   "nota": "+1 em Cavalgar. Só compensa redutores.",
+   "regra": {
+    "tipo": "kit",
+    "pericia": "Cavalgar",
+    "bonus": 1,
+    "soCompensaRedutor": true
+   }
+  },
+  {
+   "id": "sela_e_arreios",
+   "nome": "Sela e Arreios",
+   "categoria": "Equitação",
+   "nt": 2,
+   "ntVariavel": false,
+   "peso": 7.5,
+   "custo": 150,
+   "legalidade": 4,
+   "pagina": 289,
+   "livro": "MB",
+   "nota": "Equipamento básico de Cavalgar. Só compensa redutores.",
+   "regra": {
+    "tipo": "kit",
+    "pericias": [
+     "Cavalgar"
+    ],
+    "basico": true,
+    "soCompensaRedutor": true
+   }
+  },
+  {
+   "id": "algemas",
+   "nome": "Algemas",
+   "categoria": "Ladrões, Defensores da Lei e Espiões",
+   "nt": 5,
+   "ntVariavel": false,
+   "peso": 0.25,
+   "custo": 40,
+   "legalidade": 4,
+   "pagina": 289,
+   "livro": "MB",
+   "nota": "−5 em Fuga.",
+   "regra": {
+    "tipo": "kit",
+    "pericia": "Fuga",
+    "penalidade": -5
+   }
+  },
+  {
+   "id": "danificador_de_escutas",
+   "nome": "Danificador de Escutas",
+   "categoria": "Ladrões, Defensores da Lei e Espiões",
+   "nt": 7,
+   "ntVariavel": false,
+   "peso": 1,
+   "custo": 1200,
+   "legalidade": 4,
+   "pagina": 289,
+   "livro": "MB",
+   "bateriaHoras": 8,
+   "nota": "",
+   "regra": {
+    "tipo": "narrativo"
+   }
+  },
+  {
+   "id": "escuta",
+   "nome": "Escuta",
+   "categoria": "Ladrões, Defensores da Lei e Espiões",
+   "nt": 7,
+   "ntVariavel": false,
+   "peso": 0,
+   "custo": 200,
+   "legalidade": 4,
+   "pagina": 289,
+   "livro": "MB",
+   "nota": "",
+   "regra": {
+    "tipo": "narrativo"
+   }
+  },
+  {
+   "id": "escuta_microscopica",
+   "nome": "Escuta Microscópica",
+   "categoria": "Ladrões, Defensores da Lei e Espiões",
+   "nt": 8,
+   "ntVariavel": false,
+   "peso": 0,
+   "custo": 100,
+   "legalidade": 4,
+   "pagina": 289,
+   "livro": "MB",
+   "nota": "",
+   "regra": {
+    "tipo": "narrativo"
+   }
+  },
+  {
+   "id": "gazuas",
+   "nome": "Gazuas",
+   "categoria": "Ladrões, Defensores da Lei e Espiões",
+   "nt": 3,
+   "ntVariavel": false,
+   "peso": 0,
+   "custo": 50,
+   "legalidade": 4,
+   "pagina": 289,
+   "livro": "MB",
+   "nota": "Equipamento básico de Arrombamento.",
+   "regra": {
+    "tipo": "kit",
+    "pericias": [
+     "Arrombamento"
+    ],
+    "basico": true
+   }
+  },
+  {
+   "id": "gazuas_eletronicas",
+   "nome": "Gazuas Eletrônicas",
+   "categoria": "Ladrões, Defensores da Lei e Espiões",
+   "nt": 7,
+   "ntVariavel": false,
+   "peso": 1.5,
+   "custo": 1500,
+   "legalidade": 4,
+   "pagina": 289,
+   "livro": "MB",
+   "nota": "",
+   "regra": {
+    "tipo": "narrativo"
+   }
+  },
+  {
+   "id": "kit_de_disfarces",
+   "nome": "Kit de Disfarces",
+   "categoria": "Ladrões, Defensores da Lei e Espiões",
+   "nt": 5,
+   "ntVariavel": false,
+   "peso": 5,
+   "custo": 200,
+   "legalidade": 4,
+   "pagina": 289,
+   "livro": "MB",
+   "nota": "+1 em Disfarce.",
+   "regra": {
+    "tipo": "kit",
+    "pericia": "Disfarce",
+    "bonus": 1
+   }
+  },
+  {
+   "id": "microfone_a_laser",
+   "nome": "Microfone a Laser",
+   "categoria": "Ladrões, Defensores da Lei e Espiões",
+   "nt": 8,
+   "ntVariavel": false,
+   "peso": 1,
+   "custo": 500,
+   "legalidade": 4,
+   "pagina": 289,
+   "livro": "MB",
+   "nota": "",
+   "regra": {
+    "tipo": "narrativo"
+   }
+  },
+  {
+   "id": "microfone_direcional",
+   "nome": "Microfone Direcional",
+   "categoria": "Ladrões, Defensores da Lei e Espiões",
+   "nt": 6,
+   "ntVariavel": false,
+   "peso": 1,
+   "custo": 250,
+   "legalidade": 4,
+   "pagina": 289,
+   "livro": "MB",
+   "nota": "Concede Audição Parabólica (NT − 5 níveis).",
+   "regra": {
+    "tipo": "concede",
+    "vantagem": "Audição Parabólica",
+    "niveis": "NT-5"
+   }
+  },
+  {
+   "id": "sinal_teleguiado",
+   "nome": "Sinal Teleguiado",
+   "categoria": "Ladrões, Defensores da Lei e Espiões",
+   "nt": 7,
+   "ntVariavel": false,
+   "peso": 0,
+   "custo": 40,
+   "legalidade": 4,
+   "pagina": 289,
+   "livro": "MB",
+   "bateriaHoras": 12,
+   "nota": "",
+   "regra": {
+    "tipo": "narrativo"
+   }
+  },
+  {
+   "id": "antibiotico",
+   "nome": "Antibiótico",
+   "categoria": "Médico",
+   "nt": 6,
+   "ntVariavel": false,
+   "peso": 0,
+   "custo": 20,
+   "legalidade": 4,
+   "pagina": 289,
+   "livro": "MB",
+   "nota": "",
+   "regra": {
+    "tipo": "narrativo"
+   }
+  },
+  {
+   "id": "ataduras",
+   "nome": "Ataduras",
+   "categoria": "Médico",
+   "nt": null,
+   "ntVariavel": true,
+   "peso": 1,
+   "custo": 10,
+   "legalidade": 4,
+   "pagina": 289,
+   "livro": "MB",
+   "nota": "Equipamento básico de Primeiros Socorros.",
+   "regra": {
+    "tipo": "cura",
+    "pericias": [
+     "Primeiros Socorros"
+    ],
+    "basico": true
+   }
+  },
+  {
+   "id": "instrumentos_cirurgicos",
+   "nome": "Instrumentos Cirúrgicos",
+   "categoria": "Médico",
+   "nt": null,
+   "ntVariavel": true,
+   "peso": 7.5,
+   "custo": 300,
+   "legalidade": 4,
+   "pagina": 289,
+   "livro": "MB",
+   "nota": "Equipamento básico de Cirurgia.",
+   "regra": {
+    "tipo": "cura",
+    "pericias": [
+     "Cirurgia"
+    ],
+    "basico": true
+   }
+  },
+  {
+   "id": "kit_antitoxinas",
+   "nome": "Kit Antitoxinas",
+   "categoria": "Médico",
+   "nt": 6,
+   "ntVariavel": false,
+   "peso": 0.25,
+   "custo": 25,
+   "legalidade": 4,
+   "pagina": 289,
+   "livro": "MB",
+   "nota": "Antídoto de um veneno específico, 10 doses.",
+   "regra": {
+    "tipo": "cura",
+    "antidoto": true,
+    "doses": 10
+   }
+  },
+  {
+   "id": "kit_de_emergencia",
+   "nome": "Kit de Emergência",
+   "categoria": "Médico",
+   "nt": null,
+   "ntVariavel": true,
+   "peso": 5,
+   "custo": 200,
+   "legalidade": 4,
+   "pagina": 289,
+   "livro": "MB",
+   "nota": "+2 em Primeiros Socorros. Serve de improviso para Cirurgia (−5).",
+   "regra": {
+    "tipo": "cura",
+    "pericia": "Primeiros Socorros",
+    "bonus": 2,
+    "improvisado": {
+     "pericia": "Cirurgia",
+     "mod": -5
+    }
+   }
+  },
+  {
+   "id": "kit_de_primeiros_socorros",
+   "nome": "Kit de Primeiros Socorros",
+   "categoria": "Médico",
+   "nt": null,
+   "ntVariavel": true,
+   "peso": 1,
+   "custo": 50,
+   "legalidade": 4,
+   "pagina": 289,
+   "livro": "MB",
+   "nota": "+1 em Primeiros Socorros.",
+   "regra": {
+    "tipo": "cura",
+    "pericia": "Primeiros Socorros",
+    "bonus": 1
+   }
+  },
+  {
+   "id": "binoculos",
+   "nome": "Binóculos",
+   "categoria": "Sensores e Óticos",
+   "nt": 6,
+   "ntVariavel": false,
+   "peso": 1,
+   "custo": 400,
+   "legalidade": 4,
+   "pagina": 289,
+   "livro": "MB",
+   "nota": "Concede Visão Telescópica (NT − 4 níveis).",
+   "regra": {
+    "tipo": "concede",
+    "vantagem": "Visão Telescópica",
+    "niveis": "NT-4"
+   }
+  },
+  {
+   "id": "camera_de_espiao",
+   "nome": "Câmera de Espião",
+   "categoria": "Sensores e Óticos",
+   "nt": 6,
+   "ntVariavel": false,
+   "peso": 0,
+   "custo": 500,
+   "legalidade": 4,
+   "pagina": 289,
+   "livro": "MB",
+   "nota": "",
+   "regra": {
+    "tipo": "narrativo"
+   }
+  },
+  {
+   "id": "camera_de_video",
+   "nome": "Câmera de Vídeo",
+   "categoria": "Sensores e Óticos",
+   "nt": 8,
+   "ntVariavel": false,
+   "peso": 0.5,
+   "custo": 1000,
+   "legalidade": 4,
+   "pagina": 289,
+   "livro": "MB",
+   "bateriaHoras": 7,
+   "nota": "Concede Visão Noturna 5.",
+   "regra": {
+    "tipo": "concede",
+    "vantagem": "Visão Noturna",
+    "niveis": 5
+   }
+  },
+  {
+   "id": "camera_fotografica_35_mm",
+   "nome": "Câmera Fotográfica 35 mm",
+   "categoria": "Sensores e Óticos",
+   "nt": 6,
+   "ntVariavel": false,
+   "peso": 1.5,
+   "custo": 50,
+   "legalidade": 4,
+   "pagina": 289,
+   "livro": "MB",
+   "nota": "Equipamento básico de Fotografia.",
+   "regra": {
+    "tipo": "kit",
+    "pericias": [
+     "Fotografia"
+    ],
+    "basico": true
+   }
+  },
+  {
+   "id": "detector_de_metais_portatil",
+   "nome": "Detector de Metais Portátil",
+   "categoria": "Sensores e Óticos",
+   "nt": 7,
+   "ntVariavel": false,
+   "peso": 0.5,
+   "custo": 50,
+   "legalidade": 4,
+   "pagina": 289,
+   "livro": "MB",
+   "bateriaHoras": 8,
+   "nota": "",
+   "regra": {
+    "tipo": "narrativo"
+   }
+  },
+  {
+   "id": "minicamera_digital",
+   "nome": "Minicâmera Digital",
+   "categoria": "Sensores e Óticos",
+   "nt": 8,
+   "ntVariavel": false,
+   "peso": 0,
+   "custo": 500,
+   "legalidade": 4,
+   "pagina": 289,
+   "livro": "MB",
+   "nota": "",
+   "regra": {
+    "tipo": "narrativo"
+   }
+  },
+  {
+   "id": "oculos_de_visao_noturna",
+   "nome": "Óculos de Visão Noturna",
+   "categoria": "Sensores e Óticos",
+   "nt": 8,
+   "ntVariavel": false,
+   "peso": 1,
+   "custo": 600,
+   "legalidade": 4,
+   "pagina": 289,
+   "livro": "MB",
+   "bateriaHoras": 8,
+   "nota": "Concede Visão Noturna 9.",
+   "regra": {
+    "tipo": "concede",
+    "vantagem": "Visão Noturna",
+    "niveis": 9
+   }
+  },
+  {
+   "id": "telescopio",
+   "nome": "Telescópio",
+   "categoria": "Sensores e Óticos",
+   "nt": 4,
+   "ntVariavel": false,
+   "peso": 3,
+   "custo": 500,
+   "legalidade": 4,
+   "pagina": 289,
+   "livro": "MB",
+   "nota": "Concede Visão Telescópica (NT − 3 níveis).",
+   "regra": {
+    "tipo": "concede",
+    "vantagem": "Visão Telescópica",
+    "niveis": "NT-3"
+   }
+  },
+  {
+   "id": "agulhas_de_trico",
+   "nome": "Agulhas de Tricô",
+   "categoria": "Ferramentas",
+   "nt": 3,
+   "ntVariavel": false,
+   "peso": 0,
+   "custo": 5,
+   "legalidade": 4,
+   "pagina": 289,
+   "livro": "MB",
+   "unidade": "cada par",
+   "nota": "",
+   "regra": {
+    "tipo": "narrativo"
+   }
+  },
+  {
+   "id": "arado_de_ferro",
+   "nome": "Arado de Ferro",
+   "categoria": "Ferramentas",
+   "nt": 2,
+   "ntVariavel": false,
+   "peso": 60,
+   "custo": 220,
+   "legalidade": 4,
+   "pagina": 289,
+   "livro": "MB",
+   "nota": "",
+   "regra": {
+    "tipo": "narrativo"
+   }
+  },
+  {
+   "id": "arado_de_madeira",
+   "nome": "Arado de Madeira",
+   "categoria": "Ferramentas",
+   "nt": 1,
+   "ntVariavel": false,
+   "peso": 30,
+   "custo": 55,
+   "legalidade": 4,
+   "pagina": 289,
+   "livro": "MB",
+   "nota": "",
+   "regra": {
+    "tipo": "narrativo"
+   }
+  },
+  {
+   "id": "balanca_e_pesos",
+   "nome": "Balança e Pesos",
+   "categoria": "Ferramentas",
+   "nt": 1,
+   "ntVariavel": false,
+   "peso": 1.5,
+   "custo": 35,
+   "legalidade": 4,
+   "pagina": 289,
+   "livro": "MB",
+   "nota": "",
+   "regra": {
+    "tipo": "narrativo"
+   }
+  },
+  {
+   "id": "caixa_de_ferramentas_portatil",
+   "nome": "Caixa de Ferramentas Portátil",
+   "categoria": "Ferramentas",
+   "nt": null,
+   "ntVariavel": true,
+   "peso": 5,
+   "custo": 1200,
+   "legalidade": 4,
+   "pagina": 289,
+   "livro": "MB",
+   "nota": "Equipamento básico de uma perícia à escolha (3 opções de preço).",
+   "regra": {
+    "tipo": "kit",
+    "basico": true,
+    "periciaAEscolher": true,
+    "variantes": [
+     {
+      "pericias": [
+       "Carpintaria"
+      ],
+      "custo": 300,
+      "peso": 10
+     },
+     {
+      "pericias": [
+       "Armeiro",
+       "Explosivos",
+       "Maquinista",
+       "Mecânico",
+       "Eletricista"
+      ],
+      "custo": 600,
+      "peso": 10
+     },
+     {
+      "pericias": [
+       "Conserto de Equipamentos Eletrônicos"
+      ],
+      "custo": 1200,
+      "peso": 5
+     }
+    ]
+   }
+  },
+  {
+   "id": "carrinho_de_mao",
+   "nome": "Carrinho de Mão",
+   "categoria": "Ferramentas",
+   "nt": 2,
+   "ntVariavel": false,
+   "peso": 9,
+   "custo": 60,
+   "legalidade": 4,
+   "pagina": 289,
+   "livro": "MB",
+   "nota": "Suporta 175 kg.",
+   "regra": {
+    "tipo": "narrativo"
+   }
+  },
+  {
+   "id": "laboratorio_portatil",
+   "nome": "Laboratório Portátil",
+   "categoria": "Ferramentas",
+   "nt": null,
+   "ntVariavel": true,
+   "peso": 5,
+   "custo": 3000,
+   "legalidade": 4,
+   "pagina": 289,
+   "livro": "MB",
+   "nota": "Equipamento básico de uma perícia à escolha.",
+   "regra": {
+    "tipo": "kit",
+    "basico": true,
+    "periciaAEscolher": true
+   }
+  },
+  {
+   "id": "macarico",
+   "nome": "Maçarico",
+   "categoria": "Ferramentas",
+   "nt": 6,
+   "ntVariavel": false,
+   "peso": 15,
+   "custo": 500,
+   "legalidade": 4,
+   "pagina": 289,
+   "livro": "MB",
+   "nota": "",
+   "regra": {
+    "tipo": "narrativo"
+   }
+  },
+  {
+   "id": "pa",
+   "nome": "Pá",
+   "categoria": "Ferramentas",
+   "nt": 1,
+   "ntVariavel": false,
+   "peso": 3,
+   "custo": 12,
+   "legalidade": 4,
+   "pagina": 289,
+   "livro": "MB",
+   "nota": "",
+   "regra": {
+    "tipo": "narrativo"
+   }
+  },
+  {
+   "id": "pe_de_cabra_1_m",
+   "nome": "Pé-de-Cabra, 1 m",
+   "categoria": "Ferramentas",
+   "nt": 2,
+   "ntVariavel": false,
+   "peso": 1.5,
+   "custo": 20,
+   "legalidade": 4,
+   "pagina": 289,
+   "livro": "MB",
+   "nota": "",
+   "regra": {
+    "tipo": "narrativo"
+   }
+  },
+  {
+   "id": "pedra_de_amolar",
+   "nome": "Pedra de Amolar",
+   "categoria": "Ferramentas",
+   "nt": 1,
+   "ntVariavel": false,
+   "peso": 0.5,
+   "custo": 5,
+   "legalidade": 4,
+   "pagina": 289,
+   "livro": "MB",
+   "nota": "",
+   "regra": {
+    "tipo": "narrativo"
+   }
+  },
+  {
+   "id": "picareta",
+   "nome": "Picareta",
+   "categoria": "Ferramentas",
+   "nt": 2,
+   "ntVariavel": false,
+   "peso": 4,
+   "custo": 15,
+   "legalidade": 4,
+   "pagina": 289,
+   "livro": "MB",
+   "nota": "",
+   "regra": {
+    "tipo": "narrativo"
+   }
+  },
+  {
+   "id": "roca_de_tear",
+   "nome": "Roca de Tear",
+   "categoria": "Ferramentas",
+   "nt": 3,
+   "ntVariavel": false,
+   "peso": 20,
+   "custo": 100,
+   "legalidade": 4,
+   "pagina": 289,
+   "livro": "MB",
+   "nota": "",
+   "regra": {
+    "tipo": "narrativo"
+   }
+  },
+  {
+   "id": "serra",
+   "nome": "Serra",
+   "categoria": "Ferramentas",
+   "nt": 0,
+   "ntVariavel": false,
+   "peso": 1.5,
+   "custo": 150,
+   "legalidade": 4,
+   "pagina": 289,
+   "livro": "MB",
+   "nota": "",
+   "regra": {
+    "tipo": "narrativo"
+   }
+  },
+  {
+   "id": "abafadores_de_ouvido",
+   "nome": "Abafadores de Ouvido",
+   "categoria": "Acessórios para Armas e de Combate",
+   "nt": 6,
+   "ntVariavel": false,
+   "peso": 0.5,
+   "custo": 200,
+   "legalidade": 4,
+   "pagina": 289,
+   "livro": "MB",
+   "nota": "Concede Audição Protegida.",
+   "regra": {
+    "tipo": "concede",
+    "vantagem": "Audição Protegida"
+   }
+  },
+  {
+   "id": "aljava_de_cintura",
+   "nome": "Aljava de Cintura",
+   "categoria": "Acessórios para Armas e de Combate",
+   "nt": 0,
+   "ntVariavel": false,
+   "peso": 0.5,
+   "custo": 15,
+   "legalidade": 4,
+   "pagina": 289,
+   "livro": "MB",
+   "nota": "Cabem 20 flechas ou virotes.",
+   "regra": {
+    "tipo": "narrativo",
+    "capacidade": 20
+   }
+  },
+  {
+   "id": "aljava_de_ombro",
+   "nome": "Aljava de Ombro",
+   "categoria": "Acessórios para Armas e de Combate",
+   "nt": 0,
+   "ntVariavel": false,
+   "peso": 0.25,
+   "custo": 10,
+   "legalidade": 4,
+   "pagina": 289,
+   "livro": "MB",
+   "nota": "Cabem 12 flechas ou virotes.",
+   "regra": {
+    "tipo": "narrativo",
+    "capacidade": 12
+   }
+  },
+  {
+   "id": "cinturao_de_ferramentas",
+   "nome": "Cinturão de Ferramentas",
+   "categoria": "Acessórios para Armas e de Combate",
+   "nt": 6,
+   "ntVariavel": false,
+   "peso": 1,
+   "custo": 50,
+   "legalidade": 4,
+   "pagina": 289,
+   "livro": "MB",
+   "nota": "",
+   "regra": {
+    "tipo": "narrativo"
+   }
+  },
+  {
+   "id": "coldre_de_cintura",
+   "nome": "Coldre de Cintura",
+   "categoria": "Acessórios para Armas e de Combate",
+   "nt": 5,
+   "ntVariavel": false,
+   "peso": 0.25,
+   "custo": 25,
+   "legalidade": 4,
+   "pagina": 289,
+   "livro": "MB",
+   "nota": "",
+   "regra": {
+    "tipo": "narrativo"
+   }
+  },
+  {
+   "id": "coldre_de_ombro",
+   "nome": "Coldre de Ombro",
+   "categoria": "Acessórios para Armas e de Combate",
+   "nt": 5,
+   "ntVariavel": false,
+   "peso": 0.5,
+   "custo": 50,
+   "legalidade": 4,
+   "pagina": 289,
+   "livro": "MB",
+   "nota": "−1 em Saque Rápido.",
+   "regra": {
+    "tipo": "kit",
+    "pericia": "Saque Rápido",
+    "penalidade": -1
+   }
+  },
+  {
+   "id": "correia_de_couro",
+   "nome": "Correia de Couro",
+   "categoria": "Acessórios para Armas e de Combate",
+   "nt": 0,
+   "ntVariavel": false,
+   "peso": 0,
+   "custo": 1,
+   "legalidade": 4,
+   "pagina": 289,
+   "livro": "MB",
+   "nota": "",
+   "regra": {
+    "tipo": "narrativo"
+   }
+  },
+  {
+   "id": "correia_de_aco_trancado",
+   "nome": "Correia de Aço Trançado",
+   "categoria": "Acessórios para Armas e de Combate",
+   "nt": 6,
+   "ntVariavel": false,
+   "peso": 0,
+   "custo": 15,
+   "legalidade": 4,
+   "pagina": 289,
+   "livro": "MB",
+   "nota": "Como Correia de Couro, com RD 6 e PV 4.",
+   "regra": {
+    "tipo": "narrativo",
+    "comoO": "correia_de_couro",
+    "rd": 6,
+    "pv": 4
+   }
+  },
+  {
+   "id": "mira_laser",
+   "nome": "Mira Laser",
+   "categoria": "Acessórios para Armas e de Combate",
+   "nt": 8,
+   "ntVariavel": false,
+   "peso": 0,
+   "custo": 100,
+   "legalidade": 4,
+   "pagina": 289,
+   "livro": "MB",
+   "bateriaHoras": 6,
+   "nota": "+1 no NH do tiro.",
+   "regra": {
+    "tipo": "acessorio",
+    "bonusNh": 1
+   }
+  },
+  {
+   "id": "mira_4x",
+   "nome": "Mira, 4×",
+   "categoria": "Acessórios para Armas e de Combate",
+   "nt": 6,
+   "ntVariavel": false,
+   "peso": 0.75,
+   "custo": 150,
+   "legalidade": 4,
+   "pagina": 289,
+   "livro": "MB",
+   "nota": "+2 em Prec, só em tiro apontado.",
+   "regra": {
+    "tipo": "acessorio",
+    "bonusPrec": 2,
+    "soApontando": true
+   }
+  },
+  {
+   "id": "mira_de_imagem_termica_4x",
+   "nome": "Mira de Imagem Térmica, 4×",
+   "categoria": "Acessórios para Armas e de Combate",
+   "nt": 8,
+   "ntVariavel": false,
+   "peso": 2,
+   "custo": 8000,
+   "legalidade": 4,
+   "pagina": 289,
+   "livro": "MB",
+   "bateriaHoras": 2,
+   "nota": "Como Mira, 4×, e dá Infravisão.",
+   "regra": {
+    "tipo": "acessorio",
+    "bonusPrec": 2,
+    "soApontando": true,
+    "comoO": "mira_4x",
+    "concede": "Infravisão"
+   }
+  },
+  {
+   "id": "silenciador_de_pistola_ou_mm",
+   "nome": "Silenciador de Pistola ou MM",
+   "categoria": "Acessórios para Armas e de Combate",
+   "nt": 6,
+   "ntVariavel": false,
+   "peso": 0.5,
+   "custo": 400,
+   "legalidade": 4,
+   "pagina": 289,
+   "livro": "MB",
+   "nota": "−1 de dano por dado; abafa o tiro.",
+   "regra": {
+    "tipo": "acessorio",
+    "danoPorDado": -1
+   }
+  },
+  {
+   "id": "granada_de_polvora_negra",
+   "nome": "Granada de Pólvora Negra",
+   "categoria": "Granadas e Incendiárias",
+   "nt": 5,
+   "ntVariavel": false,
+   "peso": 0.5,
+   "custo": 5,
+   "legalidade": 2,
+   "pagina": 277,
+   "livro": "MB",
+   "nota": "3d contusão explosivo, fragmentos 1d; explode em 3 a 5 s.",
+   "regra": {
+    "tipo": "explosivo",
+    "expr": "3d",
+    "tipoDano": "cont",
+    "frag": 1,
+    "estopim": [
+     3,
+     5
+    ],
+    "acender": true,
+    "pino": false
+   }
+  },
+  {
+   "id": "granada_de_concussao",
+   "nome": "Granada de Concussão",
+   "categoria": "Granadas e Incendiárias",
+   "nt": 6,
+   "ntVariavel": false,
+   "peso": 0.5,
+   "custo": 15,
+   "legalidade": 2,
+   "pagina": 277,
+   "livro": "MB",
+   "nota": "6d contusão explosivo; explode em 4 s.",
+   "regra": {
+    "tipo": "explosivo",
+    "expr": "6d",
+    "tipoDano": "cont",
+    "frag": 0,
+    "estopim": 4,
+    "acender": false,
+    "pino": true
+   }
+  },
+  {
+   "id": "granada_de_fragmentacao",
+   "nome": "Granada de Fragmentação",
+   "categoria": "Granadas e Incendiárias",
+   "nt": 6,
+   "ntVariavel": false,
+   "peso": 0.5,
+   "custo": 10,
+   "legalidade": 2,
+   "pagina": 277,
+   "livro": "MB",
+   "nota": "4d contusão explosivo, fragmentos 2d; explode em 4 s.",
+   "regra": {
+    "tipo": "explosivo",
+    "expr": "4d",
+    "tipoDano": "cont",
+    "frag": 2,
+    "estopim": 4,
+    "acender": false,
+    "pino": true
+   }
+  },
+  {
+   "id": "coquetel_molotov",
+   "nome": "Coquetel Molotov",
+   "categoria": "Granadas e Incendiárias",
+   "nt": 6,
+   "ntVariavel": false,
+   "peso": 0.5,
+   "custo": 2,
+   "legalidade": 3,
+   "pagina": 277,
+   "livro": "MB",
+   "nota": "3d de queimadura, depois 1d por segundo; quebra no impacto e incendeia 1 m.",
+   "regra": {
+    "tipo": "explosivo",
+    "raio": 1,
+    "molotov": true,
+    "mauf": 12,
+    "expr": "3d",
+    "tipoDano": "qmd",
+    "porSegundo": "1d",
+    "paginaDaRegra": 411,
+    "acender": true,
+    "pino": false
+   }
+  },
+  {
+   "id": "granada_quimica",
+   "nome": "Granada Química",
+   "categoria": "Granadas e Incendiárias",
+   "nt": 7,
+   "ntVariavel": false,
+   "peso": 0.5,
+   "custo": 10,
+   "legalidade": 3,
+   "pagina": 277,
+   "livro": "MB",
+   "nota": "Nuvem de 2 m; explode em 2 s.",
+   "regra": {
+    "tipo": "explosivo",
+    "raio": 2,
+    "especial": "quimica",
+    "estopim": 2,
+    "acender": false,
+    "pino": true
+   }
+  },
+  {
+   "id": "granada_de_concussao_nt7",
+   "nome": "Granada de Concussão (NT7)",
+   "categoria": "Granadas e Incendiárias",
+   "nt": 7,
+   "ntVariavel": false,
+   "peso": 0.5,
+   "custo": 40,
+   "legalidade": 2,
+   "pagina": 277,
+   "livro": "MB",
+   "nota": "5d×2 contusão explosivo; explode em 4 s.",
+   "regra": {
+    "tipo": "explosivo",
+    "expr": "5d×2",
+    "tipoDano": "cont",
+    "frag": 0,
+    "estopim": 4,
+    "acender": false,
+    "pino": true
+   }
+  },
+  {
+   "id": "granada_de_fragmentacao_nt7",
+   "nome": "Granada de Fragmentação (NT7)",
+   "categoria": "Granadas e Incendiárias",
+   "nt": 7,
+   "ntVariavel": false,
+   "peso": 0.5,
+   "custo": 40,
+   "legalidade": 2,
+   "pagina": 277,
+   "livro": "MB",
+   "nota": "8d contusão explosivo, fragmentos 3d; explode em 4 s.",
+   "regra": {
+    "tipo": "explosivo",
+    "expr": "8d",
+    "tipoDano": "cont",
+    "frag": 3,
+    "estopim": 4,
+    "acender": false,
+    "pino": true
+   }
+  },
+  {
+   "id": "granada_de_atordoamento",
+   "nome": "Granada de Atordoamento",
+   "categoria": "Granadas e Incendiárias",
+   "nt": 8,
+   "ntVariavel": false,
+   "peso": 0.5,
+   "custo": 40,
+   "legalidade": 2,
+   "pagina": 277,
+   "livro": "MB",
+   "nota": "HT−5 ou atordoado, em 10 m; explode em 2 s.",
+   "regra": {
+    "tipo": "explosivo",
+    "raio": 10,
+    "especial": "atordoamento",
+    "resistirHt": -5,
+    "estopim": 2,
+    "acender": false,
+    "pino": true
+   }
+  },
+  {
+   "id": "granada_de_plasma",
+   "nome": "Granada de Plasma",
+   "categoria": "Granadas e Incendiárias",
+   "nt": 10,
+   "ntVariavel": false,
+   "peso": 0.5,
+   "custo": 100,
+   "legalidade": 1,
+   "pagina": 277,
+   "livro": "MB",
+   "nota": "6d×4 queimadura explosivo; explode em 2 s.",
+   "regra": {
+    "tipo": "explosivo",
+    "expr": "6d×4",
+    "tipoDano": "qmd",
+    "frag": 0,
+    "estopim": 2,
+    "acender": false,
+    "pino": true
+   }
+  },
+  {
+   "id": "flechas_de_ponta_fina",
+   "nome": "Flechas e virotes de ponta fina",
+   "categoria": "Munição",
+   "nt": 3,
+   "ntVariavel": false,
+   "peso": 0,
+   "custo": null,
+   "legalidade": 4,
+   "pagina": 277,
+   "livro": "MB",
+   "nota": "O dano de perfuração vira perfurante, com divisor de armadura 2.",
+   "regra": {
+    "tipo": "municao",
+    "divisor": 2,
+    "tipoDano": "pa",
+    "serve": [
+     "arco",
+     "besta"
+    ]
+   }
+  },
+  {
+   "id": "municao_ponta_oca",
+   "nome": "Munição de ponta oca (PO)",
+   "categoria": "Munição",
+   "nt": 6,
+   "ntVariavel": false,
+   "peso": 0,
+   "custo": null,
+   "legalidade": 4,
+   "pagina": 279,
+   "livro": "MB",
+   "nota": "Divisor de armadura 0.5; o tipo de dano sobe um passo.",
+   "regra": {
+    "tipo": "municao",
+    "divisor": 0.5,
+    "passoDoTipo": 1,
+    "custoVezes": 1,
+    "serve": [
+     "pistola",
+     "metralhadora de mão",
+     "rifle",
+     "metralhadora"
+    ]
+   }
+  },
+  {
+   "id": "municao_prpa",
+   "nome": "Munição perfurante de ponta rígida (PRPA)",
+   "categoria": "Munição",
+   "nt": 7,
+   "ntVariavel": false,
+   "peso": 0,
+   "custo": null,
+   "legalidade": 2,
+   "pagina": 279,
+   "livro": "MB",
+   "nota": "Divisor de armadura 2; o tipo de dano desce um passo.",
+   "regra": {
+    "tipo": "municao",
+    "divisor": 2,
+    "passoDoTipo": -1,
+    "custoVezes": 2,
+    "serve": [
+     "pistola",
+     "metralhadora de mão",
+     "rifle",
+     "metralhadora"
+    ]
+   }
+  },
+  {
+   "id": "municao_pdpa",
+   "nome": "Munição perfurante de ponta destacável (PDPA)",
+   "categoria": "Munição",
+   "nt": null,
+   "ntVariavel": false,
+   "peso": 0,
+   "custo": null,
+   "legalidade": 1,
+   "pagina": 280,
+   "livro": "MB",
+   "nota": "Como a PRPA, com +1 de dano por dado e +50% de distância.",
+   "regra": {
+    "tipo": "municao",
+    "divisor": null,
+    "passoDoTipo": -1,
+    "custoVezes": 5,
+    "serve": [
+     "pistola",
+     "metralhadora de mão",
+     "rifle",
+     "metralhadora"
+    ],
+    "comoA": "municao_prpa",
+    "danoPorDado": 1,
+    "distanciaPorCento": 50
+   }
+  },
+  {
+   "id": "arsenico",
+   "nome": "Arsênico",
+   "categoria": "Venenos",
+   "nt": 1,
+   "ntVariavel": false,
+   "peso": 0,
+   "custo": 1,
+   "porDose": true,
+   "legalidade": 1,
+   "pagina": 439,
+   "livro": "MB",
+   "nota": "Por digestivo; HT−2; 1d de toxina, 8 vezes.",
+   "regra": {
+    "tipo": "veneno",
+    "transmissao": [
+     "digestivo"
+    ],
+    "area": false,
+    "retardo": 3600,
+    "mod": -2,
+    "dano": "1d",
+    "tipoDano": "tox",
+    "intervalo": 3600,
+    "ciclos": 8
+   }
+  },
+  {
+   "id": "cianureto",
+   "nome": "Cianureto",
+   "categoria": "Venenos",
+   "nt": 4,
+   "ntVariavel": false,
+   "peso": 0,
+   "custo": 2,
+   "porDose": true,
+   "legalidade": 1,
+   "pagina": 439,
+   "livro": "MB",
+   "nota": "Por acompanhamento, contato, digestivo, respiratorio; sem teste de HT; 4d de toxina.",
+   "regra": {
+    "tipo": "veneno",
+    "transmissao": [
+     "acompanhamento",
+     "contato",
+     "digestivo",
+     "respiratorio"
+    ],
+    "area": false,
+    "retardo": 0,
+    "mod": null,
+    "semTeste": true,
+    "dano": "4d",
+    "tipoDano": "tox",
+    "intervalo": 0,
+    "ciclos": 1,
+    "porTransmissao": {
+     "acompanhamento": {
+      "retardo": 0
+     },
+     "respiratorio": {
+      "retardo": 0
+     },
+     "contato": {
+      "retardo": 900,
+      "dano": "4d"
+     },
+     "digestivo": {
+      "retardo": 900,
+      "dano": "4d"
+     }
+    }
+   }
+  },
+  {
+   "id": "fumaca",
+   "nome": "Fumaça",
+   "categoria": "Venenos",
+   "nt": null,
+   "ntVariavel": false,
+   "peso": 0,
+   "custo": null,
+   "porDose": true,
+   "legalidade": 4,
+   "pagina": 439,
+   "livro": "MB",
+   "nota": "Por respiratorio; HT.",
+   "regra": {
+    "tipo": "veneno",
+    "transmissao": [
+     "respiratorio"
+    ],
+    "area": true,
+    "retardo": 10,
+    "mod": 0,
+    "intervalo": 0,
+    "ciclos": 1,
+    "atribulacoes": [
+     "tosse"
+    ]
+   }
+  },
+  {
+   "id": "gas_lacrimogeneo",
+   "nome": "Gás Lacrimogêneo",
+   "categoria": "Venenos",
+   "nt": 6,
+   "ntVariavel": false,
+   "peso": 0,
+   "custo": 10,
+   "porDose": true,
+   "legalidade": 2,
+   "pagina": 439,
+   "livro": "MB",
+   "nota": "Por respiratorio, visual; HT−2.",
+   "regra": {
+    "tipo": "veneno",
+    "transmissao": [
+     "respiratorio",
+     "visual"
+    ],
+    "area": true,
+    "retardo": 0,
+    "mod": -2,
+    "intervalo": 0,
+    "ciclos": 1,
+    "porTransmissao": {
+     "respiratorio": {
+      "retardo": 0,
+      "mod": -2
+     },
+     "visual": {
+      "retardo": 0,
+      "mod": -2
+     }
+    },
+    "atribulacoes": [
+     "tosse",
+     "cegueira"
+    ]
+   }
+  },
+  {
+   "id": "gas_mostarda",
+   "nome": "Gás Mostarda",
+   "categoria": "Venenos",
+   "nt": 6,
+   "ntVariavel": false,
+   "peso": 0,
+   "custo": 10,
+   "porDose": true,
+   "legalidade": 0,
+   "pagina": 439,
+   "livro": "MB",
+   "nota": "Por contato, respiratorio; HT−4; 1 de toxina, 24 vezes.",
+   "regra": {
+    "tipo": "veneno",
+    "transmissao": [
+     "contato",
+     "respiratorio"
+    ],
+    "area": true,
+    "retardo": 0,
+    "mod": -4,
+    "dano": "1",
+    "tipoDano": "tox",
+    "intervalo": 28800,
+    "ciclos": 24,
+    "porTransmissao": {
+     "contato": {
+      "retardo": 0,
+      "mod": -4,
+      "dano": "1",
+      "intervalo": 28800,
+      "ciclos": 24
+     },
+     "respiratorio": {
+      "retardo": 7200,
+      "mod": -1,
+      "dano": "1d",
+      "intervalo": 3600,
+      "ciclos": 6
+     }
+    }
+   }
+  },
+  {
+   "id": "gas_nervoso",
+   "nome": "Gás Nervoso",
+   "categoria": "Venenos",
+   "nt": 6,
+   "ntVariavel": false,
+   "peso": 0,
+   "custo": 20,
+   "porDose": true,
+   "legalidade": 0,
+   "pagina": 439,
+   "livro": "MB",
+   "nota": "Por contato; HT−6; 2d de toxina, 6 vezes.",
+   "regra": {
+    "tipo": "veneno",
+    "transmissao": [
+     "contato"
+    ],
+    "area": true,
+    "retardo": 0,
+    "mod": -6,
+    "dano": "2d",
+    "tipoDano": "tox",
+    "intervalo": 60,
+    "ciclos": 6,
+    "atribulacoes": [
+     "agonia",
+     "paralisia"
+    ]
+   }
+  },
+  {
+   "id": "veneno_de_cobra",
+   "nome": "Veneno de Cobra",
+   "categoria": "Venenos",
+   "nt": 0,
+   "ntVariavel": false,
+   "peso": 0,
+   "custo": 10,
+   "porDose": true,
+   "legalidade": 1,
+   "pagina": 439,
+   "livro": "MB",
+   "nota": "Por acompanhamento; HT−3; 2d de toxina, 6 vezes.",
+   "regra": {
+    "tipo": "veneno",
+    "transmissao": [
+     "acompanhamento"
+    ],
+    "area": false,
+    "retardo": 60,
+    "mod": -3,
+    "dano": "2d",
+    "tipoDano": "tox",
+    "intervalo": 3600,
+    "ciclos": 6,
+    "sintomas": [
+     {
+      "fracao": [
+       1,
+       3
+      ],
+      "dx": -2
+     },
+     {
+      "fracao": [
+       1,
+       2
+      ],
+      "dx": -4
+     },
+     {
+      "fracao": [
+       2,
+       3
+      ],
+      "dx": -6
+     }
+    ]
+   }
+  },
+  {
+   "id": "elixir_fala_animal",
+   "nome": "Elixir de Fala Animal",
+   "categoria": "Elixires",
+   "nt": null,
+   "ntVariavel": false,
+   "peso": 0,
+   "custo": 850,
+   "custoMagiaRara": 1350,
+   "porDose": true,
+   "legalidade": 4,
+   "pagina": 213,
+   "livro": "Magia",
+   "nota": "",
+   "regra": {
+    "tipo": "elixir",
+    "formas": [
+     "pocao",
+     "po",
+     "unguento"
+    ],
+    "duracao": {
+     "quanto": "2d",
+     "unidade": "minuto"
+    },
+    "efeitos": [],
+    "secao": "Controle de Animais",
+    "narrado": true
+   }
+  },
+  {
+   "id": "elixir_controle_das_aves",
+   "nome": "Elixir de Controle das Aves",
+   "categoria": "Elixires",
+   "nt": null,
+   "ntVariavel": false,
+   "peso": 0,
+   "custo": 550,
+   "custoMagiaRara": 900,
+   "porDose": true,
+   "legalidade": 4,
+   "pagina": 213,
+   "livro": "Magia",
+   "nota": "",
+   "regra": {
+    "tipo": "elixir",
+    "formas": [
+     "pocao",
+     "po",
+     "unguento"
+    ],
+    "duracao": {
+     "quanto": "3d×5",
+     "unidade": "minuto"
+    },
+    "efeitos": [],
+    "secao": "Controle de Animais",
+    "narrado": true
+   }
+  },
+  {
+   "id": "elixir_mata_dragao",
+   "nome": "Elixir Mata-Dragão",
+   "categoria": "Elixires",
+   "nt": null,
+   "ntVariavel": false,
+   "peso": 0,
+   "custo": 1300,
+   "custoMagiaRara": 2000,
+   "porDose": true,
+   "legalidade": 4,
+   "pagina": 213,
+   "livro": "Magia",
+   "nota": "5d de dano.",
+   "regra": {
+    "tipo": "elixir",
+    "formas": [
+     "pastilha"
+    ],
+    "duracao": {
+     "texto": "veja pastilha"
+    },
+    "efeitos": [
+     {
+      "dano": "5d"
+     }
+    ],
+    "secao": "Controle de Animais"
+   }
+  },
+  {
+   "id": "elixir_domador_de_montaria",
+   "nome": "Elixir Domador de Montaria",
+   "categoria": "Elixires",
+   "nt": null,
+   "ntVariavel": false,
+   "peso": 0,
+   "custo": 250,
+   "custoMagiaRara": 500,
+   "porDose": true,
+   "legalidade": 4,
+   "pagina": 214,
+   "livro": "Magia",
+   "nota": "+4 em Adestramento de animais por 2d horas.",
+   "regra": {
+    "tipo": "elixir",
+    "formas": [
+     "unguento"
+    ],
+    "duracao": {
+     "quanto": "2d",
+     "unidade": "hora"
+    },
+    "efeitos": [
+     {
+      "pericia": "Adestramento de animais",
+      "bonus": 4
+     }
+    ],
+    "secao": "Controle de Animais"
+   }
+  },
+  {
+   "id": "elixir_guerreiro",
+   "nome": "Elixir de Guerreiro",
+   "categoria": "Elixires",
+   "nt": null,
+   "ntVariavel": false,
+   "peso": 0,
+   "custo": 350,
+   "custoMagiaRara": 700,
+   "porDose": true,
+   "legalidade": 4,
+   "pagina": 214,
+   "livro": "Magia",
+   "nota": "+1d em DX, como a mágica Bravura por 1 hora.",
+   "regra": {
+    "tipo": "elixir",
+    "formas": [
+     "pocao",
+     "po",
+     "unguento"
+    ],
+    "duracao": {
+     "quanto": "1",
+     "unidade": "hora"
+    },
+    "efeitos": [
+     {
+      "atributo": "DX",
+      "mod": "+1d"
+     },
+     {
+      "magica": "Bravura",
+      "paginaMagia": 134
+     }
+    ],
+    "secao": "Habilidades de Combate"
+   }
+  },
+  {
+   "id": "elixir_resistencia",
+   "nome": "Elixir de Resistência",
+   "categoria": "Elixires",
+   "nt": null,
+   "ntVariavel": false,
+   "peso": 0,
+   "custo": 1400,
+   "custoMagiaRara": 2400,
+   "porDose": true,
+   "legalidade": 4,
+   "pagina": 214,
+   "livro": "Magia",
+   "nota": "",
+   "regra": {
+    "tipo": "elixir",
+    "formas": [
+     "pocao",
+     "po",
+     "pastilha",
+     "unguento"
+    ],
+    "duracao": {
+     "quanto": "1d",
+     "unidade": "hora"
+    },
+    "efeitos": [],
+    "secao": "Habilidades de Combate",
+    "narrado": true
+   }
+  },
+  {
+   "id": "elixir_cacador",
+   "nome": "Elixir de Caçador",
+   "categoria": "Elixires",
+   "nt": null,
+   "ntVariavel": false,
+   "peso": 0,
+   "custo": 300,
+   "custoMagiaRara": 400,
+   "porDose": true,
+   "legalidade": 4,
+   "pagina": 214,
+   "livro": "Magia",
+   "nota": "",
+   "regra": {
+    "tipo": "elixir",
+    "formas": [
+     "pocao",
+     "po",
+     "pastilha",
+     "unguento"
+    ],
+    "duracao": {
+     "quanto": "1d+1",
+     "unidade": "hora"
+    },
+    "efeitos": [],
+    "secao": "Habilidades de Combate",
+    "narrado": true
+   }
+  },
+  {
+   "id": "elixir_lideranca",
+   "nome": "Elixir de Liderança",
+   "categoria": "Elixires",
+   "nt": null,
+   "ntVariavel": false,
+   "peso": 0,
+   "custo": 1650,
+   "custoMagiaRara": 2850,
+   "porDose": true,
+   "legalidade": 4,
+   "pagina": 214,
+   "livro": "Magia",
+   "nota": "+4 em Liderança por 1d horas.",
+   "regra": {
+    "tipo": "elixir",
+    "formas": [
+     "pocao",
+     "po",
+     "pastilha",
+     "unguento"
+    ],
+    "duracao": {
+     "quanto": "1d",
+     "unidade": "hora"
+    },
+    "efeitos": [
+     {
+      "pericia": "Liderança",
+      "bonus": 4
+     }
+    ],
+    "secao": "Habilidades de Combate"
+   }
+  },
+  {
+   "id": "elixir_invulnerabilidade",
+   "nome": "Elixir de Invulnerabilidade",
+   "categoria": "Elixires",
+   "nt": null,
+   "ntVariavel": false,
+   "peso": 0,
+   "custo": 2100,
+   "custoMagiaRara": 3100,
+   "porDose": true,
+   "legalidade": 4,
+   "pagina": 214,
+   "livro": "Magia",
+   "nota": "RD 3 por 1d+1 horas.",
+   "regra": {
+    "tipo": "elixir",
+    "formas": [
+     "pocao",
+     "po",
+     "unguento"
+    ],
+    "duracao": {
+     "quanto": "1d+1",
+     "unidade": "hora"
+    },
+    "efeitos": [
+     {
+      "rd": 3
+     }
+    ],
+    "secao": "Habilidades de Combate"
+   }
+  },
+  {
+   "id": "elixir_velocidade",
+   "nome": "Elixir de Velocidade",
+   "categoria": "Elixires",
+   "nt": null,
+   "ntVariavel": false,
+   "peso": 0,
+   "custo": 550,
+   "custoMagiaRara": 850,
+   "porDose": true,
+   "legalidade": 4,
+   "pagina": 214,
+   "livro": "Magia",
+   "nota": "+1 em Velocidade e Deslocamento por 3d×4 minutos.",
+   "regra": {
+    "tipo": "elixir",
+    "formas": [
+     "pocao",
+     "po",
+     "unguento"
+    ],
+    "duracao": {
+     "quanto": "3d×4",
+     "unidade": "minuto"
+    },
+    "efeitos": [
+     {
+      "velocidade": 1,
+      "deslocamento": 1
+     }
+    ],
+    "secao": "Habilidades de Combate"
+   }
+  },
+  {
+   "id": "elixir_furtividade",
+   "nome": "Elixir de Furtividade",
+   "categoria": "Elixires",
+   "nt": null,
+   "ntVariavel": false,
+   "peso": 0,
+   "custo": 500,
+   "custoMagiaRara": 2000,
+   "porDose": true,
+   "legalidade": 4,
+   "pagina": 214,
+   "livro": "Magia",
+   "nota": "",
+   "regra": {
+    "tipo": "elixir",
+    "formas": [
+     "pocao",
+     "po",
+     "pastilha",
+     "unguento"
+    ],
+    "duracao": {
+     "quanto": "1",
+     "unidade": "hora"
+    },
+    "efeitos": [],
+    "secao": "Habilidades de Combate",
+    "narrado": true
+   }
+  },
+  {
+   "id": "elixir_forca",
+   "nome": "Elixir de Força",
+   "categoria": "Elixires",
+   "nt": null,
+   "ntVariavel": false,
+   "peso": 0,
+   "custo": 250,
+   "custoMagiaRara": 500,
+   "porDose": true,
+   "legalidade": 4,
+   "pagina": 214,
+   "livro": "Magia",
+   "nota": "+1d em ST por 1 hora.",
+   "regra": {
+    "tipo": "elixir",
+    "formas": [
+     "pocao",
+     "po",
+     "unguento"
+    ],
+    "duracao": {
+     "quanto": "1",
+     "unidade": "hora"
+    },
+    "efeitos": [
+     {
+      "atributo": "ST",
+      "mod": "+1d"
+     }
+    ],
+    "secao": "Habilidades de Combate"
+   }
+  },
+  {
+   "id": "elixir_envelhecimento",
+   "nome": "Elixir de Envelhecimento",
+   "categoria": "Elixires",
+   "nt": null,
+   "ntVariavel": false,
+   "peso": 0,
+   "custo": 825,
+   "custoMagiaRara": 1350,
+   "porDose": true,
+   "legalidade": 4,
+   "pagina": 214,
+   "livro": "Magia",
+   "nota": "",
+   "regra": {
+    "tipo": "elixir",
+    "formas": [
+     "pocao",
+     "po",
+     "pastilha",
+     "unguento"
+    ],
+    "duracao": {
+     "texto": "permanente"
+    },
+    "efeitos": [],
+    "secao": "Elixires Hostis",
+    "narrado": true
+   }
+  },
+  {
+   "id": "elixir_morte",
+   "nome": "Elixir de Morte",
+   "categoria": "Elixires",
+   "nt": null,
+   "ntVariavel": false,
+   "peso": 0,
+   "custo": 500,
+   "custoMagiaRara": 800,
+   "porDose": true,
+   "legalidade": 4,
+   "pagina": 215,
+   "livro": "Magia",
+   "nota": "4d de dano (2d com sucesso em HT).",
+   "regra": {
+    "tipo": "elixir",
+    "formas": [
+     "pocao",
+     "po",
+     "pastilha",
+     "unguento"
+    ],
+    "duracao": {
+     "texto": "instantâneo"
+    },
+    "efeitos": [
+     {
+      "dano": "4d",
+      "comSucessoEmHt": "2d"
+     }
+    ],
+    "secao": "Elixires Hostis"
+   }
+  },
+  {
+   "id": "elixir_medo",
+   "nome": "Elixir de Medo",
+   "categoria": "Elixires",
+   "nt": null,
+   "ntVariavel": false,
+   "peso": 0,
+   "custo": 225,
+   "custoMagiaRara": 400,
+   "porDose": true,
+   "legalidade": 4,
+   "pagina": 215,
+   "livro": "Magia",
+   "nota": "Como a mágica Medo.",
+   "regra": {
+    "tipo": "elixir",
+    "formas": [
+     "pocao",
+     "po",
+     "pastilha",
+     "unguento"
+    ],
+    "duracao": {
+     "texto": "como em medo"
+    },
+    "efeitos": [
+     {
+      "magica": "Medo",
+      "paginaMagia": 134
+     }
+    ],
+    "secao": "Elixires Hostis"
+   }
+  },
+  {
+   "id": "elixir_tolice",
+   "nome": "Elixir de Tolice",
+   "categoria": "Elixires",
+   "nt": null,
+   "ntVariavel": false,
+   "peso": 0,
+   "custo": 500,
+   "custoMagiaRara": 850,
+   "porDose": true,
+   "legalidade": 4,
+   "pagina": 215,
+   "livro": "Magia",
+   "nota": "−3 em IQ por 1d horas.",
+   "regra": {
+    "tipo": "elixir",
+    "formas": [
+     "pocao",
+     "po",
+     "pastilha",
+     "unguento"
+    ],
+    "duracao": {
+     "quanto": "1d",
+     "unidade": "hora"
+    },
+    "efeitos": [
+     {
+      "atributo": "IQ",
+      "mod": "-3",
+      "porDose": true
+     }
+    ],
+    "secao": "Elixires Hostis"
+   }
+  },
+  {
+   "id": "elixir_frustracao",
+   "nome": "Elixir de Frustração",
+   "categoria": "Elixires",
+   "nt": null,
+   "ntVariavel": false,
+   "peso": 0,
+   "custo": 650,
+   "custoMagiaRara": 1150,
+   "porDose": true,
+   "legalidade": 4,
+   "pagina": 215,
+   "livro": "Magia",
+   "nota": "−2 em todas as jogadas por 1 dia.",
+   "regra": {
+    "tipo": "elixir",
+    "formas": [
+     "pocao",
+     "po",
+     "pastilha",
+     "unguento"
+    ],
+    "duracao": {
+     "quanto": "1",
+     "unidade": "dia"
+    },
+    "efeitos": [
+     {
+      "todasAsJogadas": -2
+     }
+    ],
+    "secao": "Elixires Hostis"
+   }
+  },
+  {
+   "id": "elixir_odio",
+   "nome": "Elixir de Ódio",
+   "categoria": "Elixires",
+   "nt": null,
+   "ntVariavel": false,
+   "peso": 0,
+   "custo": 300,
+   "custoMagiaRara": 500,
+   "porDose": true,
+   "legalidade": 4,
+   "pagina": 215,
+   "livro": "Magia",
+   "nota": "",
+   "regra": {
+    "tipo": "elixir",
+    "formas": [
+     "pocao",
+     "po",
+     "pastilha",
+     "unguento"
+    ],
+    "duracao": {
+     "quanto": "1",
+     "unidade": "hora"
+    },
+    "efeitos": [],
+    "secao": "Elixires Hostis",
+    "narrado": true
+   }
+  },
+  {
+   "id": "elixir_inveja",
+   "nome": "Elixir de Inveja",
+   "categoria": "Elixires",
+   "nt": null,
+   "ntVariavel": false,
+   "peso": 0,
+   "custo": 400,
+   "custoMagiaRara": 750,
+   "porDose": true,
+   "legalidade": 4,
+   "pagina": 215,
+   "livro": "Magia",
+   "nota": "",
+   "regra": {
+    "tipo": "elixir",
+    "formas": [
+     "pocao",
+     "po",
+     "pastilha",
+     "unguento"
+    ],
+    "duracao": {
+     "quanto": "1d",
+     "unidade": "hora"
+    },
+    "efeitos": [],
+    "secao": "Elixires Hostis",
+    "narrado": true
+   }
+  },
+  {
+   "id": "elixir_luxuria",
+   "nome": "Elixir de Luxúria",
+   "categoria": "Elixires",
+   "nt": null,
+   "ntVariavel": false,
+   "peso": 0,
+   "custo": 500,
+   "custoMagiaRara": 700,
+   "porDose": true,
+   "legalidade": 4,
+   "pagina": 215,
+   "livro": "Magia",
+   "nota": "Dá Luxúria por 1d horas.",
+   "regra": {
+    "tipo": "elixir",
+    "formas": [
+     "pocao",
+     "po",
+     "pastilha",
+     "unguento"
+    ],
+    "duracao": {
+     "quanto": "1d",
+     "unidade": "hora"
+    },
+    "efeitos": [
+     {
+      "traco": "Luxúria",
+      "paginaMb": 148
+     }
+    ],
+    "secao": "Elixires Hostis"
+   }
+  },
+  {
+   "id": "elixir_loucura",
+   "nome": "Elixir de Loucura",
+   "categoria": "Elixires",
+   "nt": null,
+   "ntVariavel": false,
+   "peso": 0,
+   "custo": 200,
+   "custoMagiaRara": 400,
+   "porDose": true,
+   "legalidade": 4,
+   "pagina": 215,
+   "livro": "Magia",
+   "nota": "Como a mágica Loucura por 1d horas.",
+   "regra": {
+    "tipo": "elixir",
+    "formas": [
+     "pocao",
+     "po",
+     "pastilha",
+     "unguento"
+    ],
+    "duracao": {
+     "quanto": "1d",
+     "unidade": "hora"
+    },
+    "efeitos": [
+     {
+      "magica": "Loucura",
+      "paginaMagia": 136
+     }
+    ],
+    "secao": "Elixires Hostis"
+   }
+  },
+  {
+   "id": "elixir_detestabilidade",
+   "nome": "Elixir de Detestabilidade",
+   "categoria": "Elixires",
+   "nt": null,
+   "ntVariavel": false,
+   "peso": 0,
+   "custo": 1000,
+   "custoMagiaRara": 1700,
+   "porDose": true,
+   "legalidade": 4,
+   "pagina": 215,
+   "livro": "Magia",
+   "nota": "−4 de reação por 1d+2 horas.",
+   "regra": {
+    "tipo": "elixir",
+    "formas": [
+     "pocao",
+     "po",
+     "pastilha",
+     "unguento"
+    ],
+    "duracao": {
+     "quanto": "1d+2",
+     "unidade": "hora"
+    },
+    "efeitos": [
+     {
+      "reacao": -4
+     }
+    ],
+    "secao": "Elixires Hostis"
+   }
+  },
+  {
+   "id": "elixir_egoismo",
+   "nome": "Elixir de Egoísmo",
+   "categoria": "Elixires",
+   "nt": null,
+   "ntVariavel": false,
+   "peso": 0,
+   "custo": 750,
+   "custoMagiaRara": 1450,
+   "porDose": true,
+   "legalidade": 4,
+   "pagina": 215,
+   "livro": "Magia",
+   "nota": "",
+   "regra": {
+    "tipo": "elixir",
+    "formas": [
+     "pocao",
+     "po",
+     "pastilha",
+     "unguento"
+    ],
+    "duracao": {
+     "quanto": "1d+1",
+     "unidade": "hora"
+    },
+    "efeitos": [],
+    "secao": "Elixires Hostis",
+    "narrado": true
+   }
+  },
+  {
+   "id": "elixir_azar",
+   "nome": "Elixir de Azar",
+   "categoria": "Elixires",
+   "nt": null,
+   "ntVariavel": false,
+   "peso": 0,
+   "custo": 1600,
+   "custoMagiaRara": 3000,
+   "porDose": true,
+   "legalidade": 4,
+   "pagina": 215,
+   "livro": "Magia",
+   "nota": "Dá Azar por 1 dia.",
+   "regra": {
+    "tipo": "elixir",
+    "formas": [
+     "pocao",
+     "po",
+     "unguento"
+    ],
+    "duracao": {
+     "quanto": "1",
+     "unidade": "dia"
+    },
+    "efeitos": [
+     {
+      "traco": "Azar",
+      "paginaMb": 124
+     }
+    ],
+    "secao": "Elixires Hostis"
+   }
+  },
+  {
+   "id": "elixir_fraqueza",
+   "nome": "Elixir de Fraqueza",
+   "categoria": "Elixires",
+   "nt": null,
+   "ntVariavel": false,
+   "peso": 0,
+   "custo": 400,
+   "custoMagiaRara": 700,
+   "porDose": true,
+   "legalidade": 4,
+   "pagina": 215,
+   "livro": "Magia",
+   "nota": "−3 em ST por 1d horas.",
+   "regra": {
+    "tipo": "elixir",
+    "formas": [
+     "pocao",
+     "po",
+     "pastilha",
+     "unguento"
+    ],
+    "duracao": {
+     "quanto": "1d",
+     "unidade": "hora"
+    },
+    "efeitos": [
+     {
+      "atributo": "ST",
+      "mod": "-3",
+      "porDose": true
+     }
+    ],
+    "secao": "Elixires Hostis"
+   }
+  },
+  {
+   "id": "elixir_atracao",
+   "nome": "Elixir de Atração",
+   "categoria": "Elixires",
+   "nt": null,
+   "ntVariavel": false,
+   "peso": 0,
+   "custo": 600,
+   "custoMagiaRara": 1000,
+   "porDose": true,
+   "legalidade": 4,
+   "pagina": 216,
+   "livro": "Magia",
+   "nota": "Dá Nível de Aparência por 2d+1 horas.",
+   "regra": {
+    "tipo": "elixir",
+    "formas": [
+     "pocao",
+     "po",
+     "unguento"
+    ],
+    "duracao": {
+     "quanto": "2d+1",
+     "unidade": "hora"
+    },
+    "efeitos": [
+     {
+      "traco": "Nível de Aparência",
+      "paginaMb": 21
+     }
+    ],
+    "secao": "Habilidades Mágicas"
+   }
+  },
+  {
+   "id": "elixir_resistencia_ao_fogo",
+   "nome": "Elixir de Resistência ao Fogo",
+   "categoria": "Elixires",
+   "nt": null,
+   "ntVariavel": false,
+   "peso": 0,
+   "custo": 500,
+   "custoMagiaRara": 700,
+   "porDose": true,
+   "legalidade": 4,
+   "pagina": 216,
+   "livro": "Magia",
+   "nota": "Como a mágica Imunidade ao Fogo por 1d horas.",
+   "regra": {
+    "tipo": "elixir",
+    "formas": [
+     "pocao",
+     "po",
+     "unguento"
+    ],
+    "duracao": {
+     "quanto": "1d",
+     "unidade": "hora"
+    },
+    "efeitos": [
+     {
+      "magica": "Imunidade ao Fogo",
+      "paginaMagia": 74
+     }
+    ],
+    "secao": "Habilidades Mágicas"
+   }
+  },
+  {
+   "id": "elixir_voo",
+   "nome": "Elixir de Voo",
+   "categoria": "Elixires",
+   "nt": null,
+   "ntVariavel": false,
+   "peso": 0,
+   "custo": 3000,
+   "custoMagiaRara": 4700,
+   "porDose": true,
+   "legalidade": 4,
+   "pagina": 216,
+   "livro": "Magia",
+   "nota": "Como a mágica Voo por 1 hora.",
+   "regra": {
+    "tipo": "elixir",
+    "formas": [
+     "pocao",
+     "po",
+     "unguento"
+    ],
+    "duracao": {
+     "quanto": "1",
+     "unidade": "hora"
+    },
+    "efeitos": [
+     {
+      "magica": "Voo",
+      "paginaMagia": 145
+     }
+    ],
+    "secao": "Habilidades Mágicas"
+   }
+  },
+  {
+   "id": "elixir_jogatina",
+   "nome": "Elixir de Jogatina",
+   "categoria": "Elixires",
+   "nt": null,
+   "ntVariavel": false,
+   "peso": 0,
+   "custo": 900,
+   "custoMagiaRara": null,
+   "porDose": true,
+   "legalidade": 4,
+   "pagina": 216,
+   "livro": "Magia",
+   "nota": "+3 em Jogos de azar por 1 hora.",
+   "regra": {
+    "tipo": "elixir",
+    "formas": [
+     "pocao",
+     "po"
+    ],
+    "duracao": {
+     "quanto": "1",
+     "unidade": "hora"
+    },
+    "efeitos": [
+     {
+      "pericia": "Jogos de azar",
+      "bonus": 3
+     }
+    ],
+    "secao": "Habilidades Mágicas"
+   }
+  },
+  {
+   "id": "elixir_invisibilidade",
+   "nome": "Elixir de Invisibilidade",
+   "categoria": "Elixires",
+   "nt": null,
+   "ntVariavel": false,
+   "peso": 0,
+   "custo": 3000,
+   "custoMagiaRara": 6000,
+   "porDose": true,
+   "legalidade": 4,
+   "pagina": 216,
+   "livro": "Magia",
+   "nota": "",
+   "regra": {
+    "tipo": "elixir",
+    "formas": [
+     "pocao",
+     "unguento"
+    ],
+    "duracao": {
+     "quanto": "1d×10",
+     "unidade": "minuto"
+    },
+    "efeitos": [],
+    "secao": "Habilidades Mágicas",
+    "narrado": true
+   }
+  },
+  {
+   "id": "elixir_sorte",
+   "nome": "Elixir de Sorte",
+   "categoria": "Elixires",
+   "nt": null,
+   "ntVariavel": false,
+   "peso": 0,
+   "custo": 1300,
+   "custoMagiaRara": 2300,
+   "porDose": true,
+   "legalidade": 4,
+   "pagina": 216,
+   "livro": "Magia",
+   "nota": "Dá Sorte por 2d horas.",
+   "regra": {
+    "tipo": "elixir",
+    "formas": [
+     "pocao",
+     "po",
+     "pastilha",
+     "unguento"
+    ],
+    "duracao": {
+     "quanto": "2d",
+     "unidade": "hora"
+    },
+    "efeitos": [
+     {
+      "traco": "Sorte",
+      "paginaMb": 89
+     }
+    ],
+    "secao": "Habilidades Mágicas"
+   }
+  },
+  {
+   "id": "elixir_resistencia_a_magia",
+   "nome": "Elixir de Resistência à Magia",
+   "categoria": "Elixires",
+   "nt": null,
+   "ntVariavel": false,
+   "peso": 0,
+   "custo": 1600,
+   "custoMagiaRara": 3200,
+   "porDose": true,
+   "legalidade": 4,
+   "pagina": 216,
+   "livro": "Magia",
+   "nota": "Dá Abascanto 5 por 1 hora.",
+   "regra": {
+    "tipo": "elixir",
+    "formas": [
+     "pocao",
+     "po",
+     "pastilha",
+     "unguento"
+    ],
+    "duracao": {
+     "quanto": "1",
+     "unidade": "hora"
+    },
+    "efeitos": [
+     {
+      "traco": "Abascanto",
+      "paginaMb": 34,
+      "niveis": 5
+     }
+    ],
+    "secao": "Habilidades Mágicas"
+   }
+  },
+  {
+   "id": "elixir_resistencia_a_dor",
+   "nome": "Elixir de Resistência à Dor",
+   "categoria": "Elixires",
+   "nt": null,
+   "ntVariavel": false,
+   "peso": 0,
+   "custo": 600,
+   "custoMagiaRara": 1000,
+   "porDose": true,
+   "legalidade": 4,
+   "pagina": 216,
+   "livro": "Magia",
+   "nota": "Dá Hipoalgia por 1 hora.",
+   "regra": {
+    "tipo": "elixir",
+    "formas": [
+     "pocao",
+     "po",
+     "unguento"
+    ],
+    "duracao": {
+     "quanto": "1",
+     "unidade": "hora"
+    },
+    "efeitos": [
+     {
+      "traco": "Hipoalgia",
+      "paginaMb": 63
+     }
+    ],
+    "secao": "Habilidades Mágicas"
+   }
+  },
+  {
+   "id": "elixir_transformacao",
+   "nome": "Elixir de Transformação",
+   "categoria": "Elixires",
+   "nt": null,
+   "ntVariavel": false,
+   "peso": 0,
+   "custo": 3000,
+   "custoMagiaRara": 5000,
+   "porDose": true,
+   "legalidade": 4,
+   "pagina": 216,
+   "livro": "Magia",
+   "nota": "Como a mágica Metamorfose por 2d horas.",
+   "regra": {
+    "tipo": "elixir",
+    "formas": [
+     "pocao",
+     "po",
+     "unguento"
+    ],
+    "duracao": {
+     "quanto": "2d",
+     "unidade": "hora"
+    },
+    "efeitos": [
+     {
+      "magica": "Metamorfose",
+      "paginaMagia": 32
+     }
+    ],
+    "secao": "Habilidades Mágicas"
+   }
+  },
+  {
+   "id": "elixir_visao_da_verdade",
+   "nome": "Elixir de Visão da Verdade",
+   "categoria": "Elixires",
+   "nt": null,
+   "ntVariavel": false,
+   "peso": 0,
+   "custo": 550,
+   "custoMagiaRara": 1300,
+   "porDose": true,
+   "legalidade": 4,
+   "pagina": 216,
+   "livro": "Magia",
+   "nota": "Como a mágica Aura por 1d minutos.",
+   "regra": {
+    "tipo": "elixir",
+    "formas": [
+     "pocao",
+     "po",
+     "unguento"
+    ],
+    "duracao": {
+     "quanto": "1d",
+     "unidade": "minuto"
+    },
+    "efeitos": [
+     {
+      "magica": "Aura",
+      "paginaMagia": 101
+     }
+    ],
+    "secao": "Habilidades Mágicas"
+   }
+  },
+  {
+   "id": "elixir_respirar_agua",
+   "nome": "Elixir de Respirar Água",
+   "categoria": "Elixires",
+   "nt": null,
+   "ntVariavel": false,
+   "peso": 0,
+   "custo": 600,
+   "custoMagiaRara": 1100,
+   "porDose": true,
+   "legalidade": 4,
+   "pagina": 216,
+   "livro": "Magia",
+   "nota": "",
+   "regra": {
+    "tipo": "elixir",
+    "formas": [
+     "pocao"
+    ],
+    "duracao": {
+     "quanto": "1d",
+     "unidade": "hora"
+    },
+    "efeitos": [],
+    "secao": "Habilidades Mágicas",
+    "narrado": true
+   }
+  },
+  {
+   "id": "elixir_andar_sobre_a_agua",
+   "nome": "Elixir de Andar sobre a Água",
+   "categoria": "Elixires",
+   "nt": null,
+   "ntVariavel": false,
+   "peso": 0,
+   "custo": 700,
+   "custoMagiaRara": 1200,
+   "porDose": true,
+   "legalidade": 4,
+   "pagina": 216,
+   "livro": "Magia",
+   "nota": "",
+   "regra": {
+    "tipo": "elixir",
+    "formas": [
+     "pocao",
+     "po",
+     "unguento"
+    ],
+    "duracao": {
+     "quanto": "3d×4",
+     "unidade": "minuto"
+    },
+    "efeitos": [],
+    "secao": "Habilidades Mágicas",
+    "narrado": true
+   }
+  },
+  {
+   "id": "elixir_antidoto_alquimico",
+   "nome": "Elixir Antídoto Alquímico",
+   "categoria": "Elixires",
+   "nt": null,
+   "ntVariavel": false,
+   "peso": 0,
+   "custo": 400,
+   "custoMagiaRara": 1000,
+   "porDose": true,
+   "legalidade": 4,
+   "pagina": 217,
+   "livro": "Magia",
+   "nota": "",
+   "regra": {
+    "tipo": "elixir",
+    "formas": [
+     "pocao",
+     "po",
+     "unguento"
+    ],
+    "duracao": {
+     "texto": "instantâneo"
+    },
+    "efeitos": [],
+    "secao": "Elixires Medicinais",
+    "narrado": true
+   }
+  },
+  {
+   "id": "elixir_despertar",
+   "nome": "Elixir de Despertar",
+   "categoria": "Elixires",
+   "nt": null,
+   "ntVariavel": false,
+   "peso": 0,
+   "custo": 500,
+   "custoMagiaRara": 900,
+   "porDose": true,
+   "legalidade": 4,
+   "pagina": 217,
+   "livro": "Magia",
+   "nota": "Como a mágica Despertar.",
+   "regra": {
+    "tipo": "elixir",
+    "formas": [
+     "pocao",
+     "po",
+     "pastilha",
+     "unguento"
+    ],
+    "duracao": {
+     "texto": "instantâneo"
+    },
+    "efeitos": [
+     {
+      "magica": "Despertar",
+      "paginaMagia": 90
+     }
+    ],
+    "secao": "Elixires Medicinais"
+   }
+  },
+  {
+   "id": "elixir_descanso_eterno",
+   "nome": "Elixir de Descanso Eterno",
+   "categoria": "Elixires",
+   "nt": null,
+   "ntVariavel": false,
+   "peso": 0,
+   "custo": 4100,
+   "custoMagiaRara": 6200,
+   "porDose": true,
+   "legalidade": 4,
+   "pagina": 217,
+   "livro": "Magia",
+   "nota": "Como a mágica Descanso Final.",
+   "regra": {
+    "tipo": "elixir",
+    "formas": [
+     "pocao",
+     "unguento"
+    ],
+    "duracao": {
+     "texto": "permanente"
+    },
+    "efeitos": [
+     {
+      "magica": "Descanso Final",
+      "paginaMagia": 89
+     }
+    ],
+    "secao": "Elixires Medicinais"
+   }
+  },
+  {
+   "id": "elixir_fertilidade",
+   "nome": "Elixir de Fertilidade",
+   "categoria": "Elixires",
+   "nt": null,
+   "ntVariavel": false,
+   "peso": 0,
+   "custo": 6000,
+   "custoMagiaRara": 11000,
+   "porDose": true,
+   "legalidade": 4,
+   "pagina": 217,
+   "livro": "Magia",
+   "nota": "",
+   "regra": {
+    "tipo": "elixir",
+    "formas": [
+     "pocao",
+     "po",
+     "unguento"
+    ],
+    "duracao": {
+     "quanto": "1",
+     "unidade": "hora"
+    },
+    "efeitos": [],
+    "secao": "Elixires Medicinais",
+    "narrado": true
+   }
+  },
+  {
+   "id": "elixir_cura",
+   "nome": "Elixir de Cura",
+   "categoria": "Elixires",
+   "nt": null,
+   "ntVariavel": false,
+   "peso": 0,
+   "custo": 120,
+   "custoMagiaRara": 250,
+   "porDose": true,
+   "legalidade": 4,
+   "pagina": 217,
+   "livro": "Magia",
+   "nota": "Cura 1d PV, ou devolve 1d PF.",
+   "regra": {
+    "tipo": "elixir",
+    "formas": [
+     "pocao",
+     "po",
+     "unguento"
+    ],
+    "duracao": {
+     "texto": "instantâneo"
+    },
+    "efeitos": [
+     {
+      "cura": "1d"
+     },
+     {
+      "curaPf": "1d"
+     }
+    ],
+    "secao": "Elixires Medicinais"
+   }
+  },
+  {
+   "id": "elixir_vitalidade",
+   "nome": "Elixir de Vitalidade",
+   "categoria": "Elixires",
+   "nt": null,
+   "ntVariavel": false,
+   "peso": 0,
+   "custo": 750,
+   "custoMagiaRara": 1200,
+   "porDose": true,
+   "legalidade": 4,
+   "pagina": 217,
+   "livro": "Magia",
+   "nota": "Cura 2 PV.",
+   "regra": {
+    "tipo": "elixir",
+    "formas": [
+     "pocao"
+    ],
+    "duracao": {
+     "texto": "instantâneo"
+    },
+    "efeitos": [
+     {
+      "cura": "2"
+     }
+    ],
+    "secao": "Elixires Medicinais"
+   }
+  },
+  {
+   "id": "elixir_hibridizacao",
+   "nome": "Elixir de Hibridização",
+   "categoria": "Elixires",
+   "nt": null,
+   "ntVariavel": false,
+   "peso": 0,
+   "custo": 2250,
+   "custoMagiaRara": 4000,
+   "porDose": true,
+   "legalidade": 4,
+   "pagina": 217,
+   "livro": "Magia",
+   "nota": "",
+   "regra": {
+    "tipo": "elixir",
+    "formas": [
+     "pocao",
+     "po"
+    ],
+    "duracao": {
+     "texto": "1 acasalamento"
+    },
+    "efeitos": [],
+    "secao": "Elixires Medicinais",
+    "narrado": true
+   }
+  },
+  {
+   "id": "elixir_letargia",
+   "nome": "Elixir de Letargia",
+   "categoria": "Elixires",
+   "nt": null,
+   "ntVariavel": false,
+   "peso": 0,
+   "custo": 9000,
+   "custoMagiaRara": 14000,
+   "porDose": true,
+   "legalidade": 4,
+   "pagina": 217,
+   "livro": "Magia",
+   "nota": "",
+   "regra": {
+    "tipo": "elixir",
+    "formas": [
+     "pocao",
+     "po",
+     "pastilha",
+     "unguento"
+    ],
+    "duracao": {
+     "texto": "indefinida"
+    },
+    "efeitos": [],
+    "secao": "Elixires Medicinais",
+    "narrado": true
+   }
+  },
+  {
+   "id": "elixir_reanimacao",
+   "nome": "Elixir de Reanimação",
+   "categoria": "Elixires",
+   "nt": null,
+   "ntVariavel": false,
+   "peso": 0,
+   "custo": 4100,
+   "custoMagiaRara": 6200,
+   "porDose": true,
+   "legalidade": 4,
+   "pagina": 217,
+   "livro": "Magia",
+   "nota": "Como a mágica Visão da Morte.",
+   "regra": {
+    "tipo": "elixir",
+    "formas": [
+     "unguento"
+    ],
+    "duracao": {
+     "texto": "uma pergunta"
+    },
+    "efeitos": [
+     {
+      "magica": "Visão da Morte",
+      "paginaMagia": 149
+     }
+    ],
+    "secao": "Elixires Medicinais"
+   }
+  },
+  {
+   "id": "elixir_regeneracao",
+   "nome": "Elixir de Regeneração",
+   "categoria": "Elixires",
+   "nt": null,
+   "ntVariavel": false,
+   "peso": 0,
+   "custo": 5000,
+   "custoMagiaRara": 11000,
+   "porDose": true,
+   "legalidade": 4,
+   "pagina": 218,
+   "livro": "Magia",
+   "nota": "",
+   "regra": {
+    "tipo": "elixir",
+    "formas": [
+     "unguento"
+    ],
+    "duracao": {
+     "texto": "permanente"
+    },
+    "efeitos": [],
+    "secao": "Elixires Medicinais",
+    "narrado": true
+   }
+  },
+  {
+   "id": "elixir_ressurreicao",
+   "nome": "Elixir de Ressurreição",
+   "categoria": "Elixires",
+   "nt": null,
+   "ntVariavel": false,
+   "peso": 0,
+   "custo": 25000,
+   "custoMagiaRara": 40000,
+   "porDose": true,
+   "legalidade": 4,
+   "pagina": 218,
+   "livro": "Magia",
+   "nota": "Cura 2d PV.",
+   "regra": {
+    "tipo": "elixir",
+    "formas": [
+     "pocao"
+    ],
+    "duracao": {
+     "texto": "permanente"
+    },
+    "efeitos": [
+     {
+      "cura": "2d"
+     }
+    ],
+    "secao": "Elixires Medicinais"
+   }
+  },
+  {
+   "id": "elixir_sono",
+   "nome": "Elixir de Sono",
+   "categoria": "Elixires",
+   "nt": null,
+   "ntVariavel": false,
+   "peso": 0,
+   "custo": 120,
+   "custoMagiaRara": 250,
+   "porDose": true,
+   "legalidade": 4,
+   "pagina": 218,
+   "livro": "Magia",
+   "nota": "Resiste com HT−4.",
+   "regra": {
+    "tipo": "elixir",
+    "formas": [
+     "pocao",
+     "po",
+     "pastilha",
+     "unguento"
+    ],
+    "duracao": {
+     "texto": "como acima"
+    },
+    "efeitos": [
+     {
+      "resistirHt": -4
+     }
+    ],
+    "secao": "Elixires Medicinais"
+   }
+  },
+  {
+   "id": "elixir_calmante",
+   "nome": "Elixir Calmante",
+   "categoria": "Elixires",
+   "nt": null,
+   "ntVariavel": false,
+   "peso": 0,
+   "custo": 500,
+   "custoMagiaRara": 900,
+   "porDose": true,
+   "legalidade": 4,
+   "pagina": 218,
+   "livro": "Magia",
+   "nota": "",
+   "regra": {
+    "tipo": "elixir",
+    "formas": [
+     "pocao",
+     "po",
+     "pastilha",
+     "unguento"
+    ],
+    "duracao": {
+     "quanto": "2d",
+     "unidade": "hora"
+    },
+    "efeitos": [],
+    "secao": "Elixires Medicinais",
+    "narrado": true
+   }
+  },
+  {
+   "id": "elixir_antidoto_universal",
+   "nome": "Elixir Antídoto Universal",
+   "categoria": "Elixires",
+   "nt": null,
+   "ntVariavel": false,
+   "peso": 0,
+   "custo": 750,
+   "custoMagiaRara": 1150,
+   "porDose": true,
+   "legalidade": 4,
+   "pagina": 218,
+   "livro": "Magia",
+   "nota": "+8 em HT para resistir a veneno por 8 horas.",
+   "regra": {
+    "tipo": "elixir",
+    "formas": [
+     "pocao",
+     "po"
+    ],
+    "duracao": {
+     "quanto": "8",
+     "unidade": "hora"
+    },
+    "efeitos": [
+     {
+      "resistirVeneno": 8
+     }
+    ],
+    "secao": "Elixires Medicinais"
+   }
+  },
+  {
+   "id": "elixir_juventude",
+   "nome": "Elixir de Juventude",
+   "categoria": "Elixires",
+   "nt": null,
+   "ntVariavel": false,
+   "peso": 0,
+   "custo": 25000,
+   "custoMagiaRara": 60000,
+   "porDose": true,
+   "legalidade": 4,
+   "pagina": 218,
+   "livro": "Magia",
+   "nota": "",
+   "regra": {
+    "tipo": "elixir",
+    "formas": [
+     "pocao"
+    ],
+    "duracao": {
+     "texto": "permanente"
+    },
+    "efeitos": [],
+    "secao": "Elixires Medicinais",
+    "narrado": true
+   }
+  },
+  {
+   "id": "elixir_carisma",
+   "nome": "Elixir de Carisma",
+   "categoria": "Elixires",
+   "nt": null,
+   "ntVariavel": false,
+   "peso": 0,
+   "custo": 350,
+   "custoMagiaRara": 550,
+   "porDose": true,
+   "legalidade": 4,
+   "pagina": 218,
+   "livro": "Magia",
+   "nota": "",
+   "regra": {
+    "tipo": "elixir",
+    "formas": [
+     "pocao",
+     "po",
+     "unguento"
+    ],
+    "duracao": {
+     "quanto": "1d",
+     "unidade": "hora"
+    },
+    "efeitos": [],
+    "secao": "Habilidades Mentais",
+    "narrado": true
+   }
+  },
+  {
+   "id": "elixir_presciencia",
+   "nome": "Elixir de Presciência",
+   "categoria": "Elixires",
+   "nt": null,
+   "ntVariavel": false,
+   "peso": 0,
+   "custo": 2000,
+   "custoMagiaRara": 3700,
+   "porDose": true,
+   "legalidade": 4,
+   "pagina": 218,
+   "livro": "Magia",
+   "nota": "",
+   "regra": {
+    "tipo": "elixir",
+    "formas": [
+     "pocao",
+     "po",
+     "pastilha",
+     "unguento"
+    ],
+    "duracao": {
+     "texto": "instantâneo"
+    },
+    "efeitos": [],
+    "secao": "Habilidades Mentais",
+    "narrado": true
+   }
+  },
+  {
+   "id": "elixir_coracao_de_pedra",
+   "nome": "Elixir de Coração de Pedra",
+   "categoria": "Elixires",
+   "nt": null,
+   "ntVariavel": false,
+   "peso": 0,
+   "custo": 500,
+   "custoMagiaRara": 1000,
+   "porDose": true,
+   "legalidade": 4,
+   "pagina": 218,
+   "livro": "Magia",
+   "nota": "",
+   "regra": {
+    "tipo": "elixir",
+    "formas": [
+     "pocao"
+    ],
+    "duracao": {
+     "texto": "como acima"
+    },
+    "efeitos": [],
+    "secao": "Habilidades Mentais",
+    "narrado": true
+   }
+  },
+  {
+   "id": "elixir_memoria",
+   "nome": "Elixir de Memória",
+   "categoria": "Elixires",
+   "nt": null,
+   "ntVariavel": false,
+   "peso": 0,
+   "custo": 1500,
+   "custoMagiaRara": 2500,
+   "porDose": true,
+   "legalidade": 4,
+   "pagina": 219,
+   "livro": "Magia",
+   "nota": "Dá Memória Eidética por 1 hora.",
+   "regra": {
+    "tipo": "elixir",
+    "formas": [
+     "pocao",
+     "po",
+     "pastilha",
+     "unguento"
+    ],
+    "duracao": {
+     "quanto": "1",
+     "unidade": "hora"
+    },
+    "efeitos": [
+     {
+      "traco": "Memória Eidética",
+      "paginaMb": 69
+     }
+    ],
+    "secao": "Habilidades Mentais"
+   }
+  },
+  {
+   "id": "elixir_sabedoria",
+   "nome": "Elixir de Sabedoria",
+   "categoria": "Elixires",
+   "nt": null,
+   "ntVariavel": false,
+   "peso": 0,
+   "custo": 1500,
+   "custoMagiaRara": 2400,
+   "porDose": true,
+   "legalidade": 4,
+   "pagina": 219,
+   "livro": "Magia",
+   "nota": "+1 em IQ por 1 hora.",
+   "regra": {
+    "tipo": "elixir",
+    "formas": [
+     "pocao",
+     "po"
+    ],
+    "duracao": {
+     "quanto": "1",
+     "unidade": "hora"
+    },
+    "efeitos": [
+     {
+      "atributo": "IQ",
+      "mod": "+1"
+     }
+    ],
+    "secao": "Habilidades Mentais"
+   }
+  },
+  {
+   "id": "elixir_embriaguez",
+   "nome": "Elixir de Embriaguez",
+   "categoria": "Elixires",
+   "nt": null,
+   "ntVariavel": false,
+   "peso": 0,
+   "custo": 130,
+   "custoMagiaRara": 300,
+   "porDose": true,
+   "legalidade": 4,
+   "pagina": 219,
+   "livro": "Magia",
+   "nota": "−3 em DX, −3 em IQ, como a mágica Embriaguez por 1d horas.",
+   "regra": {
+    "tipo": "elixir",
+    "formas": [
+     "po"
+    ],
+    "duracao": {
+     "quanto": "1d",
+     "unidade": "hora"
+    },
+    "efeitos": [
+     {
+      "atributo": "DX",
+      "mod": "-3"
+     },
+     {
+      "atributo": "IQ",
+      "mod": "-3"
+     },
+     {
+      "magica": "Embriaguez",
+      "paginaMagia": 136
+     }
+    ],
+    "secao": "Controle da Mente"
+   }
+  },
+  {
+   "id": "elixir_amizade",
+   "nome": "Elixir de Amizade",
+   "categoria": "Elixires",
+   "nt": null,
+   "ntVariavel": false,
+   "peso": 0,
+   "custo": 550,
+   "custoMagiaRara": 1000,
+   "porDose": true,
+   "legalidade": 4,
+   "pagina": 219,
+   "livro": "Magia",
+   "nota": "+3 de reação por 1d horas.",
+   "regra": {
+    "tipo": "elixir",
+    "formas": [
+     "pocao",
+     "po",
+     "pastilha",
+     "unguento"
+    ],
+    "duracao": {
+     "quanto": "1d",
+     "unidade": "hora"
+    },
+    "efeitos": [
+     {
+      "reacao": 3
+     }
+    ],
+    "secao": "Controle da Mente"
+   }
+  },
+  {
+   "id": "elixir_esquecimento",
+   "nome": "Elixir de Esquecimento",
+   "categoria": "Elixires",
+   "nt": null,
+   "ntVariavel": false,
+   "peso": 0,
+   "custo": 700,
+   "custoMagiaRara": 1200,
+   "porDose": true,
+   "legalidade": 4,
+   "pagina": 219,
+   "livro": "Magia",
+   "nota": "",
+   "regra": {
+    "tipo": "elixir",
+    "formas": [
+     "pocao"
+    ],
+    "duracao": {
+     "quanto": "1",
+     "unidade": "hora"
+    },
+    "efeitos": [],
+    "secao": "Controle da Mente",
+    "narrado": true
+   }
+  },
+  {
+   "id": "elixir_credulidade",
+   "nome": "Elixir de Credulidade",
+   "categoria": "Elixires",
+   "nt": null,
+   "ntVariavel": false,
+   "peso": 0,
+   "custo": 500,
+   "custoMagiaRara": 900,
+   "porDose": true,
+   "legalidade": 4,
+   "pagina": 219,
+   "livro": "Magia",
+   "nota": "Dá Credulidade por 1d horas.",
+   "regra": {
+    "tipo": "elixir",
+    "formas": [
+     "pocao",
+     "po",
+     "unguento"
+    ],
+    "duracao": {
+     "quanto": "1d",
+     "unidade": "hora"
+    },
+    "efeitos": [
+     {
+      "traco": "Credulidade",
+      "paginaMb": 129
+     }
+    ],
+    "secao": "Controle da Mente"
+   }
+  },
+  {
+   "id": "elixir_amor",
+   "nome": "Elixir de Amor",
+   "categoria": "Elixires",
+   "nt": null,
+   "ntVariavel": false,
+   "peso": 0,
+   "custo": 900,
+   "custoMagiaRara": 2000,
+   "porDose": true,
+   "legalidade": 4,
+   "pagina": 219,
+   "livro": "Magia",
+   "nota": "",
+   "regra": {
+    "tipo": "elixir",
+    "formas": [
+     "pocao",
+     "po",
+     "pastilha",
+     "unguento"
+    ],
+    "duracao": {
+     "texto": "permanente"
+    },
+    "efeitos": [],
+    "secao": "Controle da Mente",
+    "narrado": true
+   }
+  },
+  {
+   "id": "elixir_veracidade",
+   "nome": "Elixir de Veracidade",
+   "categoria": "Elixires",
+   "nt": null,
+   "ntVariavel": false,
+   "peso": 0,
+   "custo": 1100,
+   "custoMagiaRara": 2000,
+   "porDose": true,
+   "legalidade": 4,
+   "pagina": 219,
+   "livro": "Magia",
+   "nota": "Como a mágica Compelir à Verdade por 1 hora.",
+   "regra": {
+    "tipo": "elixir",
+    "formas": [
+     "pocao",
+     "po",
+     "pastilha",
+     "unguento"
+    ],
+    "duracao": {
+     "quanto": "1",
+     "unidade": "hora"
+    },
+    "efeitos": [
+     {
+      "magica": "Compelir à Verdade",
+      "paginaMagia": 47
+     }
+    ],
+    "secao": "Controle da Mente"
+   }
+  },
+  {
+   "id": "elixir_artesanato",
+   "nome": "Elixir de Artesanato",
+   "categoria": "Elixires",
+   "nt": null,
+   "ntVariavel": false,
+   "peso": 0,
+   "custo": 1100,
+   "custoMagiaRara": 1800,
+   "porDose": true,
+   "legalidade": 4,
+   "pagina": 219,
+   "livro": "Magia",
+   "nota": "",
+   "regra": {
+    "tipo": "elixir",
+    "formas": [
+     "pocao",
+     "po",
+     "pastilha",
+     "unguento"
+    ],
+    "duracao": {
+     "quanto": "1d",
+     "unidade": "hora"
+    },
+    "efeitos": [],
+    "secao": "Perícias e Habilidades Físicas",
+    "narrado": true
+   }
+  },
+  {
+   "id": "elixir_audicao",
+   "nome": "Elixir de Audição",
+   "categoria": "Elixires",
+   "nt": null,
+   "ntVariavel": false,
+   "peso": 0,
+   "custo": 300,
+   "custoMagiaRara": 500,
+   "porDose": true,
+   "legalidade": 4,
+   "pagina": 219,
+   "livro": "Magia",
+   "nota": "+6 em Audição por 3d×5 minutos.",
+   "regra": {
+    "tipo": "elixir",
+    "formas": [
+     "unguento"
+    ],
+    "duracao": {
+     "quanto": "3d×5",
+     "unidade": "minuto"
+    },
+    "efeitos": [
+     {
+      "pericia": "Audição",
+      "bonus": 6
+     }
+    ],
+    "secao": "Perícias e Habilidades Físicas"
+   }
+  },
+  {
+   "id": "elixir_visao",
+   "nome": "Elixir de Visão",
+   "categoria": "Elixires",
+   "nt": null,
+   "ntVariavel": false,
+   "peso": 0,
+   "custo": 400,
+   "custoMagiaRara": 700,
+   "porDose": true,
+   "legalidade": 4,
+   "pagina": 219,
+   "livro": "Magia",
+   "nota": "+6 em Visão, como a mágica Ver o Invisível por 3d×5 minutos.",
+   "regra": {
+    "tipo": "elixir",
+    "formas": [
+     "unguento"
+    ],
+    "duracao": {
+     "quanto": "3d×5",
+     "unidade": "minuto"
+    },
+    "efeitos": [
+     {
+      "pericia": "Visão",
+      "bonus": 6
+     },
+     {
+      "magica": "Ver o Invisível",
+      "paginaMagia": 113
+     }
+    ],
+    "secao": "Perícias e Habilidades Físicas"
+   }
+  },
+  {
+   "id": "elixir_musica",
+   "nome": "Elixir de Música",
+   "categoria": "Elixires",
+   "nt": null,
+   "ntVariavel": false,
+   "peso": 0,
+   "custo": 300,
+   "custoMagiaRara": 400,
+   "porDose": true,
+   "legalidade": 4,
+   "pagina": 219,
+   "livro": "Magia",
+   "nota": "Dá Habilidade Musical 4 por 1d horas.",
+   "regra": {
+    "tipo": "elixir",
+    "formas": [
+     "pocao",
+     "po",
+     "pastilha",
+     "unguento"
+    ],
+    "duracao": {
+     "quanto": "1d",
+     "unidade": "hora"
+    },
+    "efeitos": [
+     {
+      "traco": "Habilidade Musical",
+      "paginaMb": 90,
+      "niveis": 4
+     }
+    ],
+    "secao": "Perícias e Habilidades Físicas"
+   }
+  }
+ ]
+}
