@@ -93,7 +93,7 @@ object ItensCatalogLoader {
      *
      * ⚠️ As `notas` levam a frase do que ele faz e a página: é o que o cartão do inventário já mostra, sem código novo.
      */
-    fun equipamentoDoItem(item: ItemDoCatalogo, quantidade: Int = 1): Equipamento = Equipamento(
+    fun equipamentoDoItem(item: ItemDoCatalogo, quantidade: Int = 1, serveAoVeneno: com.gurps.ficha.model.ServeAoVeneno? = null): Equipamento = Equipamento(
         nome = item.nome,
         peso = item.peso,
         custo = item.custo ?: 0f,
@@ -101,7 +101,8 @@ object ItensCatalogLoader {
         notas = listOf(item.nota, referencia(item)).filter { it.isNotBlank() }.joinToString(" "),
         tipo = TipoEquipamento.GERAL,
         itemCatalogoId = item.id,
-        regra = item.regra?.deepCopy()
+        regra = item.regra?.deepCopy(),
+        serveAoVeneno = serveAoVeneno?.takeIf { it.escolhido }   // IC-4B: o antídoto serve a um veneno só, escolhido na compra
     )
 
     private fun formas(item: ItemDoCatalogo): String? {

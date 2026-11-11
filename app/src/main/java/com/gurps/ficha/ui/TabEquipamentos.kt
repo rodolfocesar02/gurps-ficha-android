@@ -245,7 +245,8 @@ fun TabEquipamentos(viewModel: FichaViewModel) {
         AdicionarItensDialog(
             onDismiss = { showItensDialog = false },
             onAdicionar = { viewModel.adicionarEquipamento(it); showItensDialog = false },
-            onSemCatalogo = { showItensDialog = false; showDialog = true }
+            onSemCatalogo = { showItensDialog = false; showDialog = true },
+            equipamentosDoInventario = p.equipamentos
         )
     }
 
@@ -297,6 +298,7 @@ fun TabEquipamentos(viewModel: FichaViewModel) {
             // formulário pelado ao editar. O `when` mora no ViewModel, num lugar
             // só, para não haver uma terceira vez.
             fichaTecnica = viewModel.fichaTecnicaDoItem(equipamento),
+            equipamentosDoInventario = p.equipamentos,   // IC-4B: os venenos dele, para o "Serve para" do antídoto
             armasDoInventario = armasDeLonge,   // a munição: "Serve para" 
             onDismiss = { editingEquipamento = null },
             onSave = {
@@ -625,6 +627,7 @@ fun EquipamentoItem(equipamento: Equipamento, onEdit: () -> Unit, onDelete: () -
                             "Dano: $raw -> ${viewModel.calcularDanoArmaComSt(raw)}", CartaoDoItem.Papel.DANO))
                     }
                     equipamento.municaoDe?.let { add(CartaoDoItem.Linha("Serve para: $it (a Mesa gasta 1 por tiro)", CartaoDoItem.Papel.NEUTRO)) }
+                    com.gurps.ficha.ui.features.equipamento.ServeAoVenenoRules.linha(equipamento)?.let { add(CartaoDoItem.Linha(it, if (equipamento.serveAoVeneno?.escolhido == true) CartaoDoItem.Papel.PROTECAO else CartaoDoItem.Papel.ALERTA)) }   // IC-4B
                     equipamento.gemaCapacidade?.let { add(CartaoDoItem.Linha("Capacidade: $it pontos de energia (Magia p.69)", CartaoDoItem.Papel.NEUTRO)) }
                     if (equipamento.custo > 0) {
                         add(CartaoDoItem.Linha(

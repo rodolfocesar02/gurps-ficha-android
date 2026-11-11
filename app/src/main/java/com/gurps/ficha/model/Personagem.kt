@@ -1051,7 +1051,9 @@ data class Equipamento(
     // (o número depois da barra na coluna Peso, MB p.279), para a munição pesar na carga. Ficha antiga lê null.
     var municoes: List<MunicaoDaArma>? = null,
     var acessorios: List<AcessorioDaArma>? = null,
-    var armaMunicaoKg: Float? = null
+    var armaMunicaoKg: Float? = null,
+    // IC-4B (Mesa, decisão dele em 11/nov): o Kit Antitoxinas serve a UM veneno (MB p.289); a Mesa só deixa usar contra ele. Ficha antiga lê null.
+    var serveAoVeneno: ServeAoVeneno? = null
 ) {
     /**
      * Dano da arma já resolvido contra a ST de quem a empunha.

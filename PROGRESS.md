@@ -10243,3 +10243,9 @@ ficar verde**.
   - **Na tela isto muda:** o lápis de uma arma que atira mostra "Munição desta arma" (−, o campo para digitar, +; "Adicionar outro tipo de munição" abre as 4 do livro) e "Acessórios desta arma" (Mira Laser, Mira 4×, Mira térmica, Silenciador). O cartão da arma diz "Tiros 30+1(3) · Munição: 90 · 1,50 kg" e os acessórios. O botão "Adicionar Munição" saiu; o item Munição da versão 216 entra sozinho na arma que servia (o que não acha a arma fica numa seção "Munição sem arma").
 - **Para a Mesa:** a arma viaja com `municoes` e `acessorios` dentro; `MunicaoDaArmaTest` grava `build/arma-com-municao-como-o-app-manda.json`, copiado para `server/test/amostras/` da Mesa.
 - **Testes:** `MunicaoDaArmaTest.kt` (6: quem leva munição, o peso e o custo, a migração e a idempotência, o arquivo antigo e o novo, o cartão, a costura) e `MunicaoTest` atualizado para a migração. `./gradlew assembleVisualDebug assemblePracegoDebug testVisualDebugUnitTest testPracegoDebugUnitTest` **===EXIT=0===**. Versão **218** (`12.9.18-MUNICAO-NA-ARMA`).
+
+## Versão 219 — 12.9.19-KIT-DO-VENENO (IC-4B, 11/nov)
+- **Pedido dele:** o Kit Antitoxinas serve a UM veneno (MB p.289): escolhido na compra e no lápis do item; a Mesa não deixa usar contra outro.
+- **Mudança:** `model/ServeAoVeneno.kt`; `Equipamento.serveAoVeneno` (aditivo; ficha antiga lê null e o kit fica bloqueado até escolher). `ServeAoVenenoRules` (lista = 7 venenos do livro + venenos do inventário + "Outro (digitar)"), `ServeAoVenenoCampo` (chips no padrão do app). "Adicionar" do kit só habilita com a escolha. O cartão mostra "Para: X" ou o aviso.
+- **Para a Mesa:** `ServeAoVenenoTest` grava `build/kits-antitoxinas-como-o-app-manda.json`, copiado para `server/test/amostras/`.
+- **Testes:** `ServeAoVenenoTest` (6).

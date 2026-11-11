@@ -55,7 +55,9 @@ fun carregarItensDoLivro(context: Context): List<ItemDoCatalogo> = try {
 fun AdicionarItensDialog(
     onDismiss: () -> Unit,
     onAdicionar: (Equipamento) -> Unit,
-    onSemCatalogo: () -> Unit
+    onSemCatalogo: () -> Unit,
+    // IC-4B: o que o personagem já carrega (os venenos dele entram na lista do "Serve para" do antídoto)
+    equipamentosDoInventario: List<Equipamento> = emptyList()
 ) {
     val context = LocalContext.current
     val todos = remember { carregarItensDoLivro(context) }
@@ -98,11 +100,14 @@ fun AdicionarItensDialog(
     }
 
     escolhido?.let { item ->
+        val doLivro = remember(todos) { ServeAoVenenoRules.doLivro(todos) }
         ConfirmarItemDialog(
             item = item,
+            venenosDoLivro = doLivro,
+            venenosDoInventario = remember(equipamentosDoInventario, doLivro) { ServeAoVenenoRules.doInventario(equipamentosDoInventario, doLivro) },
             onDismiss = { escolhido = null },
-            onConfirm = { quantidade ->
-                onAdicionar(ItensCatalogLoader.equipamentoDoItem(item, quantidade))
+            onConfirm = { quantidade, serveAo ->
+                onAdicionar(ItensCatalogLoader.equipamentoDoItem(item, quantidade, serveAo))
                 escolhido = null
             }
         )
@@ -111,14 +116,24 @@ fun AdicionarItensDialog(
 
 /** A confirmação: o cartão do item e a quantidade (doses, granadas, flechas). */
 @Composable
-private fun ConfirmarItemDialog(item: ItemDoCatalogo, onDismiss: () -> Unit, onConfirm: (Int) -> Unit) {
+private fun ConfirmarItemDialog(
+    item: ItemDoCatalogo,
+    venenosDoLivro: List<com.gurps.ficha.model.ServeAoVeneno>,
+    venenosDoInventario: List<com.gurps.ficha.model.ServeAoVeneno>,
+    onDismiss: () -> Unit,
+    onConfirm: (Int, com.gurps.ficha.model.ServeAoVeneno?) -> Unit
+) {
     var quantidade by remember(item.id) { mutableStateOf(1) }
+    // IC-4B: o antídoto serve a UM veneno (MB p.289): a escolha é obrigatória na compra
+    val antidoto = ServeAoVenenoRules.ehAntidoto(item)
+    var serveAo by remember(item.id) { mutableStateOf<com.gurps.ficha.model.ServeAoVeneno?>(null) }
     AlertDialog(
         onDismissRequest = onDismiss,
         title = { Text(item.nome, style = UiEstilos.tituloDialogo) },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(UiTokens.BotaoEspacamento)) {
                 CorpoDoItemPadrao(ItensCatalogLoader.linhasDoItem(item))
+                if (antidoto) ServeAoVenenoCampo(serveAo, { serveAo = it }, venenosDoLivro, venenosDoInventario)
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -136,7 +151,7 @@ private fun ConfirmarItemDialog(item: ItemDoCatalogo, onDismiss: () -> Unit, onC
         confirmButton = {
             AppFileiraDeBotoes {
                 AppBotaoSecundario("Cancelar", onDismiss)
-                AppBotaoPrincipal("Adicionar", { onConfirm(quantidade) })
+                AppBotaoPrincipal("Adicionar", { onConfirm(quantidade, serveAo) }, enabled = !antidoto || serveAo?.escolhido == true)
             }
         }
     )

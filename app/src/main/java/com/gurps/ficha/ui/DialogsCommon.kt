@@ -219,6 +219,8 @@ fun EquipamentoDialog(
     tipoNovo: TipoEquipamento? = null,
     // A munição: as armas de longe do inventário, para o "Serve para"
     armasDoInventario: List<String> = emptyList(),
+    // IC-4B: o que o personagem carrega (os venenos dele entram na lista do "Serve para" do Kit Antitoxinas)
+    equipamentosDoInventario: List<Equipamento> = emptyList(),
     onDismiss: () -> Unit,
     onSave: (Equipamento) -> Unit
 ) {
@@ -257,6 +259,9 @@ fun EquipamentoDialog(
     var municoes by remember { mutableStateOf(initialEquipamento?.municoes.orEmpty()) }
     var acessorios by remember { mutableStateOf(initialEquipamento?.acessorios.orEmpty()) }
     val armaComMunicao = initialEquipamento?.let { com.gurps.ficha.domain.rules.MunicaoDaArmaRules.usaMunicao(it) } == true
+    // IC-4B: o antídoto serve a UM veneno (MB p.289)
+    val ehAntidoto = initialEquipamento?.let { com.gurps.ficha.ui.features.equipamento.ServeAoVenenoRules.ehAntidoto(it) } == true
+    var serveAoVeneno by remember { mutableStateOf(initialEquipamento?.serveAoVeneno) }
 
     val editando = initialEquipamento != null
     val tipo = initialEquipamento?.tipo ?: tipoNovo ?: TipoEquipamento.GERAL
@@ -347,6 +352,16 @@ fun EquipamentoDialog(
                             )
                         },
                         modifier = Modifier.fillMaxWidth()
+                    )
+                }
+                if (ehAntidoto) {
+                    val contextoDoKit = androidx.compose.ui.platform.LocalContext.current
+                    val catalogoDeVenenos = remember { com.gurps.ficha.ui.features.equipamento.carregarItensDoLivro(contextoDoKit) }
+                    val doLivro = remember(catalogoDeVenenos) { com.gurps.ficha.ui.features.equipamento.ServeAoVenenoRules.doLivro(catalogoDeVenenos) }
+                    com.gurps.ficha.ui.features.equipamento.ServeAoVenenoCampo(
+                        escolhido = serveAoVeneno, onEscolher = { serveAoVeneno = it },
+                        venenosDoLivro = doLivro,
+                        venenosDoInventario = remember(equipamentosDoInventario, doLivro) { com.gurps.ficha.ui.features.equipamento.ServeAoVenenoRules.doInventario(equipamentosDoInventario, doLivro) }
                     )
                 }
                 if (armaComMunicao) {
@@ -477,6 +492,7 @@ fun EquipamentoDialog(
                                 armaStMinimo = stMin.toIntOrNull(),
                                 itemMagico = itemMagico,
                                 municaoDe = if (ehMunicao) municaoDe else initialEquipamento?.municaoDe,
+                                serveAoVeneno = if (ehAntidoto) serveAoVeneno?.takeIf { it.escolhido } else initialEquipamento?.serveAoVeneno,
                                 municoes = if (armaComMunicao) municoes.takeIf { it.isNotEmpty() } else initialEquipamento?.municoes,
                                 acessorios = if (armaComMunicao) acessorios.takeIf { it.isNotEmpty() } else initialEquipamento?.acessorios,
                                 gemaCapacidade = if (ehGema) capacidade.trim().toIntOrNull()?.coerceIn(1, 9999) else initialEquipamento?.gemaCapacidade,
