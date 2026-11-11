@@ -200,9 +200,10 @@ fun TabEquipamentos(viewModel: FichaViewModel) {
         }
 
         // A munição (flechas, virotes, balas): a quantidade é o estoque; "Serve para" liga à arma; a Mesa gasta 1 por tiro
-        BotaoAdicionarPadrao(texto = "Adicionar Munição", onClick = { showMunicaoDialog = true })
+        // IC-3B (decisão dele, 11/nov): a munição mora DENTRO da arma (o lápis da arma). Esta seção só aparece para o item antigo
+        // que ficou sem arma para servir (a ficha da versão 216 migra sozinha ao abrir).
         if (municoes.isNotEmpty()) {
-            Text("Munição", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+            Text("Munição sem arma (abra a arma e ponha a munição nela)", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
             municoes.forEach { entry ->
                 AppListItemCard {
                     EquipamentoItem(
@@ -284,7 +285,9 @@ fun TabEquipamentos(viewModel: FichaViewModel) {
 
     editingEquipamento?.let { (index, equipamento) ->
         EquipamentoDialog(
-            initialEquipamento = equipamento,
+            initialEquipamento = if (equipamento.tipo == TipoEquipamento.ARMA && equipamento.armaMunicaoKg == null) {
+                equipamento.copy(armaMunicaoKg = viewModel.armaDoCatalogoPara(equipamento)?.municaoKg)   // IC-3B: arma de ficha antiga
+            } else equipamento,
             // Lote LAYOUT-7: o editor mostra a MESMA ficha do card do seletor,
             // só leitura, acima dos campos. Nula quando o item foi criado à mão
             // e não casa com nada do catálogo.
@@ -579,6 +582,8 @@ fun EquipamentoArmaItem(
                         if (danoRaw.isNullOrBlank()) CartaoDoItem.Papel.NEUTRO
                         else CartaoDoItem.Papel.DANO
                     ))
+                    // IC-3B (Mesa): o que a arma leva de munição e de acessórios
+                    com.gurps.ficha.domain.rules.MunicaoDaArmaRules.linhas(equipamento).forEach { add(CartaoDoItem.Linha(it, CartaoDoItem.Papel.NEUTRO)) }
                     val notasLimpas = if (equipamento.armaCatalogoId != null) {
                         limparRuidoGrupoArma(equipamento.notas)
                     } else {

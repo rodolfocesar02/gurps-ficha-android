@@ -68,6 +68,7 @@ class FichaEquipmentDelegate(private val dataRepository: DataRepository) {
             armaAlcanceMultStRaw = arma.alcanceMultStRaw,
             armaCadenciaTiro = arma.cadenciaTiro,
             armaTirosRaw = arma.tirosRaw,
+            armaMunicaoKg = arma.municaoKg,   // IC-3B: o peso da carga cheia, para a munição pesar
             armaMagnitude = arma.magnitude,
             armaRecuo = arma.recuo,
             armaAparar = arma.aparar

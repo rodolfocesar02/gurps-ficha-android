@@ -20,7 +20,10 @@ class MunicaoTest {
         assertEquals("MUNICAO", eq.get("tipo").asString)
         assertEquals("Arco Longo", eq.get("municaoDe").asString)
         assertEquals(20, eq.get("quantidade").asInt)
-        assertEquals(flechas, Personagem.fromJson(p.toJson()).equipamentos[1])
+        // IC-3B (11/nov): ao abrir o arquivo, a munição à parte entra na arma que ela servia (a ficha da versão 216 migra sozinha)
+        val volta = Personagem.fromJson(p.toJson()).equipamentos
+        assertEquals(1, volta.size)
+        assertEquals(listOf(MunicaoDaArma(nome = "Flechas", quantidade = 20)), volta[0].municoes)
         assertEquals(null, Personagem.fromJson("""{"nome":"V","equipamentos":[{"nome":"Espada","tipo":"ARMA"}]}""").equipamentos[0].municaoDe)
     }
 

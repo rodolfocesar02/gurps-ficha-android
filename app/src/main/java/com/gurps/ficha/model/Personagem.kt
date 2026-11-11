@@ -212,11 +212,12 @@ data class Personagem(
         CharacterRules.calcularDanoGeB(com.gurps.ficha.domain.rules.StEspecializadaRules.stParaDano(this))
 
     val pesoTotalEquipamentos: Float get() = equipamentos.sumOf {
-        (it.peso * it.quantidade).toDouble()
+        // IC-3B: a munição e os acessórios que a arma leva pesam junto (MB p.279)
+        (it.peso * it.quantidade).toDouble() + com.gurps.ficha.domain.rules.MunicaoDaArmaRules.pesoExtra(it)
     }.toFloat()
 
     val custoTotalEquipamentos: Float get() = equipamentos.sumOf {
-        (it.custo * it.quantidade).toDouble()
+        (it.custo * it.quantidade).toDouble() + com.gurps.ficha.domain.rules.MunicaoDaArmaRules.custoExtra(it)
     }.toFloat()
 
     val nivelCarga: Int get() = CharacterRules.calcularNivelCarga(baseCarga, pesoTotalEquipamentos)
@@ -407,7 +408,11 @@ data class Personagem(
             if (!jsonObject.has("notasDeJogo")) {
                 jsonObject.add("notasDeJogo", com.google.gson.JsonArray())
             }
-            return gson.fromJson(jsonObject, Personagem::class.java)
+            // IC-3B: a ficha antiga (versão 216) tinha a munição como item à parte; ela entra na arma que servia
+            return gson.fromJson(jsonObject, Personagem::class.java).let { p ->
+                val migrados = com.gurps.ficha.domain.rules.MunicaoDaArmaRules.migrar(p.equipamentos)
+                if (migrados === p.equipamentos) p else p.copy(equipamentos = migrados)
+            }
         }
     }
 }
@@ -1040,7 +1045,13 @@ data class Equipamento(
     // IC-2 (Mesa, planos/itens): o item escolhido do catálogo do livro (`itens.v1.json`) leva o id e a REGRA dele (um tipo e os
     // números: veneno, elixir, explosivo, kit...), para a Mesa aplicar pelo tipo e não pelo nome. Ficha antiga lê null.
     var itemCatalogoId: String? = null,
-    var regra: com.google.gson.JsonObject? = null
+    var regra: com.google.gson.JsonObject? = null,
+    // IC-3B (Mesa, decisão dele em 11/nov): a munição e os acessórios moram DENTRO da arma. `municoes`: o que ela leva de cada tipo
+    // (a Mesa gasta 1 por tiro); `acessorios`: mira laser, luneta, silenciador; `armaMunicaoKg`: o peso da carga cheia pelo livro
+    // (o número depois da barra na coluna Peso, MB p.279), para a munição pesar na carga. Ficha antiga lê null.
+    var municoes: List<MunicaoDaArma>? = null,
+    var acessorios: List<AcessorioDaArma>? = null,
+    var armaMunicaoKg: Float? = null
 ) {
     /**
      * Dano da arma já resolvido contra a ST de quem a empunha.

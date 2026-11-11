@@ -253,6 +253,10 @@ fun EquipamentoDialog(
     var itemMagico by remember { mutableStateOf(initialEquipamento?.itemMagico ?: (tipoNovo == TipoEquipamento.GEMA_DE_ENERGIA)) }
     var capacidade by remember { mutableStateOf(initialEquipamento?.gemaCapacidade?.toString() ?: "") }
     var municaoDe by remember { mutableStateOf(initialEquipamento?.municaoDe ?: armasDoInventario.firstOrNull()) }
+    // IC-3B (Mesa): a munição e os acessórios que a arma leva consigo
+    var municoes by remember { mutableStateOf(initialEquipamento?.municoes.orEmpty()) }
+    var acessorios by remember { mutableStateOf(initialEquipamento?.acessorios.orEmpty()) }
+    val armaComMunicao = initialEquipamento?.let { com.gurps.ficha.domain.rules.MunicaoDaArmaRules.usaMunicao(it) } == true
 
     val editando = initialEquipamento != null
     val tipo = initialEquipamento?.tipo ?: tipoNovo ?: TipoEquipamento.GERAL
@@ -343,6 +347,14 @@ fun EquipamentoDialog(
                             )
                         },
                         modifier = Modifier.fillMaxWidth()
+                    )
+                }
+                if (armaComMunicao) {
+                    com.gurps.ficha.ui.features.equipamento.MunicaoEAcessoriosDaArma(
+                        municoes = municoes, onMunicoes = { municoes = it },
+                        acessorios = acessorios, onAcessorios = { acessorios = it },
+                        tirosRaw = initialEquipamento?.armaTirosRaw,
+                        pesoPorTiro = initialEquipamento?.let { com.gurps.ficha.domain.rules.MunicaoDaArmaRules.pesoPorTiro(it) }
                     )
                 }
                 if (ehMunicao) {
@@ -465,6 +477,8 @@ fun EquipamentoDialog(
                                 armaStMinimo = stMin.toIntOrNull(),
                                 itemMagico = itemMagico,
                                 municaoDe = if (ehMunicao) municaoDe else initialEquipamento?.municaoDe,
+                                municoes = if (armaComMunicao) municoes.takeIf { it.isNotEmpty() } else initialEquipamento?.municoes,
+                                acessorios = if (armaComMunicao) acessorios.takeIf { it.isNotEmpty() } else initialEquipamento?.acessorios,
                                 gemaCapacidade = if (ehGema) capacidade.trim().toIntOrNull()?.coerceIn(1, 9999) else initialEquipamento?.gemaCapacidade,
                                 armaQualidade = qualidade?.name,
                                 armaduraRd = if (ehArmadura) rdArmadura.trim().ifBlank { null } else initialEquipamento?.armaduraRd,
