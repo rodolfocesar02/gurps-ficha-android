@@ -10249,3 +10249,9 @@ ficar verde**.
 - **Mudança:** `model/ServeAoVeneno.kt`; `Equipamento.serveAoVeneno` (aditivo; ficha antiga lê null e o kit fica bloqueado até escolher). `ServeAoVenenoRules` (lista = 7 venenos do livro + venenos do inventário + "Outro (digitar)"), `ServeAoVenenoCampo` (chips no padrão do app). "Adicionar" do kit só habilita com a escolha. O cartão mostra "Para: X" ou o aviso.
 - **Para a Mesa:** `ServeAoVenenoTest` grava `build/kits-antitoxinas-como-o-app-manda.json`, copiado para `server/test/amostras/`.
 - **Testes:** `ServeAoVenenoTest` (6).
+
+## Versão 220 — 12.9.20-FORMA-DO-ELIXIR (IC-5b, 11/nov)
+- **Pedido dele:** escolher a forma do elixir (poção, pó, pastilha, unguento; Magia p.213) na compra, para a Mesa saber se é beber, tomar, passar na pele ou acender.
+- **Mudança:** `Equipamento.formaDoElixir` (aditivo; ficha antiga lê null e a Mesa usa a primeira forma que o livro lista). `FormaDoElixirRules` (as formas saem da `regra` do elixir; só as que o livro aceita), `FormaDoElixirCampo` (chips no padrão do app). No "Adicionar Itens" a escolha é obrigatória quando o livro aceita mais de uma forma; se só aceita uma, entra sozinha. O lápis do item deixa mudar, e o cartão mostra "Forma: Poção" ou o aviso.
+- **Para a Mesa:** `FormaDoElixirTest` grava `build/elixires-como-o-app-manda.json`, copiado para `server/test/amostras/`.
+- **Testes:** `FormaDoElixirTest` (5: formas do livro, os 67 elixires com forma, a escolha e a recusa de forma inválida, vai e volta e ficha antiga, a costura).

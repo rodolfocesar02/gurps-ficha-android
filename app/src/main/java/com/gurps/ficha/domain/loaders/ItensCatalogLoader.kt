@@ -93,7 +93,7 @@ object ItensCatalogLoader {
      *
      * ⚠️ As `notas` levam a frase do que ele faz e a página: é o que o cartão do inventário já mostra, sem código novo.
      */
-    fun equipamentoDoItem(item: ItemDoCatalogo, quantidade: Int = 1, serveAoVeneno: com.gurps.ficha.model.ServeAoVeneno? = null): Equipamento = Equipamento(
+    fun equipamentoDoItem(item: ItemDoCatalogo, quantidade: Int = 1, serveAoVeneno: com.gurps.ficha.model.ServeAoVeneno? = null, formaDoElixir: String? = null): Equipamento = Equipamento(
         nome = item.nome,
         peso = item.peso,
         custo = item.custo ?: 0f,
@@ -102,7 +102,8 @@ object ItensCatalogLoader {
         tipo = TipoEquipamento.GERAL,
         itemCatalogoId = item.id,
         regra = item.regra?.deepCopy(),
-        serveAoVeneno = serveAoVeneno?.takeIf { it.escolhido }   // IC-4B: o antídoto serve a um veneno só, escolhido na compra
+        serveAoVeneno = serveAoVeneno?.takeIf { it.escolhido },   // IC-4B: o antídoto serve a um veneno só, escolhido na compra
+        formaDoElixir = formaDoElixir?.takeIf { f -> f in com.gurps.ficha.ui.features.equipamento.FormaDoElixirRules.formas(item) }   // IC-5b: só uma forma que o livro aceita
     )
 
     private fun formas(item: ItemDoCatalogo): String? {

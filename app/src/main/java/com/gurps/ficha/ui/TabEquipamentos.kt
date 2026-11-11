@@ -627,6 +627,7 @@ fun EquipamentoItem(equipamento: Equipamento, onEdit: () -> Unit, onDelete: () -
                             "Dano: $raw -> ${viewModel.calcularDanoArmaComSt(raw)}", CartaoDoItem.Papel.DANO))
                     }
                     equipamento.municaoDe?.let { add(CartaoDoItem.Linha("Serve para: $it (a Mesa gasta 1 por tiro)", CartaoDoItem.Papel.NEUTRO)) }
+                    com.gurps.ficha.ui.features.equipamento.FormaDoElixirRules.linha(equipamento)?.let { add(CartaoDoItem.Linha(it, if (equipamento.formaDoElixir != null) CartaoDoItem.Papel.NEUTRO else CartaoDoItem.Papel.ALERTA)) }   // IC-5b
                     com.gurps.ficha.ui.features.equipamento.ServeAoVenenoRules.linha(equipamento)?.let { add(CartaoDoItem.Linha(it, if (equipamento.serveAoVeneno?.escolhido == true) CartaoDoItem.Papel.PROTECAO else CartaoDoItem.Papel.ALERTA)) }   // IC-4B
                     equipamento.gemaCapacidade?.let { add(CartaoDoItem.Linha("Capacidade: $it pontos de energia (Magia p.69)", CartaoDoItem.Papel.NEUTRO)) }
                     if (equipamento.custo > 0) {

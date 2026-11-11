@@ -1053,7 +1053,9 @@ data class Equipamento(
     var acessorios: List<AcessorioDaArma>? = null,
     var armaMunicaoKg: Float? = null,
     // IC-4B (Mesa, decisão dele em 11/nov): o Kit Antitoxinas serve a UM veneno (MB p.289); a Mesa só deixa usar contra ele. Ficha antiga lê null.
-    var serveAoVeneno: ServeAoVeneno? = null
+    var serveAoVeneno: ServeAoVeneno? = null,
+    // IC-5b (Magia p.213): a forma do elixir que o personagem carrega (pocao, po, pastilha, unguento): decide beber, tomar, passar ou acender. Ficha antiga lê null.
+    var formaDoElixir: String? = null
 ) {
     /**
      * Dano da arma já resolvido contra a ST de quem a empunha.

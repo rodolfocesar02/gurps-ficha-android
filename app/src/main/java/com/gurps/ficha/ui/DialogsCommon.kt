@@ -262,6 +262,9 @@ fun EquipamentoDialog(
     // IC-4B: o antídoto serve a UM veneno (MB p.289)
     val ehAntidoto = initialEquipamento?.let { com.gurps.ficha.ui.features.equipamento.ServeAoVenenoRules.ehAntidoto(it) } == true
     var serveAoVeneno by remember { mutableStateOf(initialEquipamento?.serveAoVeneno) }
+    // IC-5b: a forma do elixir (Magia p.213)
+    val formasDoElixir = initialEquipamento?.let { com.gurps.ficha.ui.features.equipamento.FormaDoElixirRules.formas(it) }.orEmpty()
+    var formaDoElixir by remember { mutableStateOf(initialEquipamento?.formaDoElixir) }
 
     val editando = initialEquipamento != null
     val tipo = initialEquipamento?.tipo ?: tipoNovo ?: TipoEquipamento.GERAL
@@ -354,6 +357,7 @@ fun EquipamentoDialog(
                         modifier = Modifier.fillMaxWidth()
                     )
                 }
+                if (formasDoElixir.size > 1) com.gurps.ficha.ui.features.equipamento.FormaDoElixirCampo(formasDoElixir, formaDoElixir) { formaDoElixir = it }
                 if (ehAntidoto) {
                     val contextoDoKit = androidx.compose.ui.platform.LocalContext.current
                     val catalogoDeVenenos = remember { com.gurps.ficha.ui.features.equipamento.carregarItensDoLivro(contextoDoKit) }
@@ -492,6 +496,7 @@ fun EquipamentoDialog(
                                 armaStMinimo = stMin.toIntOrNull(),
                                 itemMagico = itemMagico,
                                 municaoDe = if (ehMunicao) municaoDe else initialEquipamento?.municaoDe,
+                                formaDoElixir = formaDoElixir?.takeIf { it in formasDoElixir },
                                 serveAoVeneno = if (ehAntidoto) serveAoVeneno?.takeIf { it.escolhido } else initialEquipamento?.serveAoVeneno,
                                 municoes = if (armaComMunicao) municoes.takeIf { it.isNotEmpty() } else initialEquipamento?.municoes,
                                 acessorios = if (armaComMunicao) acessorios.takeIf { it.isNotEmpty() } else initialEquipamento?.acessorios,

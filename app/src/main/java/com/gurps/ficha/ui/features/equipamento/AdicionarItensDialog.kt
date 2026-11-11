@@ -106,8 +106,8 @@ fun AdicionarItensDialog(
             venenosDoLivro = doLivro,
             venenosDoInventario = remember(equipamentosDoInventario, doLivro) { ServeAoVenenoRules.doInventario(equipamentosDoInventario, doLivro) },
             onDismiss = { escolhido = null },
-            onConfirm = { quantidade, serveAo ->
-                onAdicionar(ItensCatalogLoader.equipamentoDoItem(item, quantidade, serveAo))
+            onConfirm = { quantidade, serveAo, forma ->
+                onAdicionar(ItensCatalogLoader.equipamentoDoItem(item, quantidade, serveAo, forma ?: FormaDoElixirRules.unica(item)))
                 escolhido = null
             }
         )
@@ -121,12 +121,16 @@ private fun ConfirmarItemDialog(
     venenosDoLivro: List<com.gurps.ficha.model.ServeAoVeneno>,
     venenosDoInventario: List<com.gurps.ficha.model.ServeAoVeneno>,
     onDismiss: () -> Unit,
-    onConfirm: (Int, com.gurps.ficha.model.ServeAoVeneno?) -> Unit
+    onConfirm: (Int, com.gurps.ficha.model.ServeAoVeneno?, String?) -> Unit
 ) {
     var quantidade by remember(item.id) { mutableStateOf(1) }
     // IC-4B: o antídoto serve a UM veneno (MB p.289): a escolha é obrigatória na compra
     val antidoto = ServeAoVenenoRules.ehAntidoto(item)
     var serveAo by remember(item.id) { mutableStateOf<com.gurps.ficha.model.ServeAoVeneno?>(null) }
+    // IC-5b: o elixir vem numa forma só (Magia p.213); quando o livro aceita mais de uma, a escolha é obrigatória
+    val formas = FormaDoElixirRules.formas(item)
+    var forma by remember(item.id) { mutableStateOf<String?>(null) }
+    val precisaForma = formas.size > 1
     AlertDialog(
         onDismissRequest = onDismiss,
         title = { Text(item.nome, style = UiEstilos.tituloDialogo) },
@@ -134,6 +138,7 @@ private fun ConfirmarItemDialog(
             Column(verticalArrangement = Arrangement.spacedBy(UiTokens.BotaoEspacamento)) {
                 CorpoDoItemPadrao(ItensCatalogLoader.linhasDoItem(item))
                 if (antidoto) ServeAoVenenoCampo(serveAo, { serveAo = it }, venenosDoLivro, venenosDoInventario)
+                if (precisaForma) FormaDoElixirCampo(formas, forma) { forma = it }
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -151,7 +156,7 @@ private fun ConfirmarItemDialog(
         confirmButton = {
             AppFileiraDeBotoes {
                 AppBotaoSecundario("Cancelar", onDismiss)
-                AppBotaoPrincipal("Adicionar", { onConfirm(quantidade, serveAo) }, enabled = !antidoto || serveAo?.escolhido == true)
+                AppBotaoPrincipal("Adicionar", { onConfirm(quantidade, serveAo, forma) }, enabled = (!antidoto || serveAo?.escolhido == true) && (!precisaForma || forma != null))
             }
         }
     )
