@@ -10255,3 +10255,9 @@ ficar verde**.
 - **Mudança:** `Equipamento.formaDoElixir` (aditivo; ficha antiga lê null e a Mesa usa a primeira forma que o livro lista). `FormaDoElixirRules` (as formas saem da `regra` do elixir; só as que o livro aceita), `FormaDoElixirCampo` (chips no padrão do app). No "Adicionar Itens" a escolha é obrigatória quando o livro aceita mais de uma forma; se só aceita uma, entra sozinha. O lápis do item deixa mudar, e o cartão mostra "Forma: Poção" ou o aviso.
 - **Para a Mesa:** `FormaDoElixirTest` grava `build/elixires-como-o-app-manda.json`, copiado para `server/test/amostras/`.
 - **Testes:** `FormaDoElixirTest` (5: formas do livro, os 67 elixires com forma, a escolha e a recusa de forma inválida, vai e volta e ficha antiga, a costura).
+
+## Versão 221 — 12.9.21-MUNICAO-E-ATADURAS (IC-7d, 12/nov)
+- **Pedido dele:** o IC-7 inteiro (munição especial e cura). A Mesa ganhou os tipos de dano do livro, o divisor de armadura, a munição carregada e as ataduras de 6 usos; este é o lado do aplicativo.
+- **Mudança:** o catálogo `itens.v1.json` (regenerado por `scripts/itens/gerar_itens.py`, só 3 itens mudaram): **Ataduras** ganham `usos: 6` ("ataduras para meia dúzia de ferimentos", MB p.289); **PRPA** e **PDPA** ganham `soSeCalibreMenorQueMm: 20` (MB p.279: o tipo só desce se o calibre for menor que 20 mm); a **PDPA** passa a ter `divisor: 2` explícito (antes `null`, "como a PRPA"). A nota da PRPA diz o limite de calibre.
+- **Para a Mesa:** a Mesa lê esses números do item que viaja dentro da ficha; nenhum campo novo na ficha.
+- **Testes:** os existentes (o catálogo continua com 207 itens e os mesmos tipos de regra).

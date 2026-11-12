@@ -190,6 +190,9 @@ def regra_do_variado(nome, categoria, corpo):
     if improvisado and regra["tipo"] != "narrativo":
         regra["improvisado"] = {"pericia": improvisado.group(2), "mod": -int(improvisado.group(1))}
         notas.append("Serve de improviso para %s (−%s)." % (improvisado.group(2), improvisado.group(1)))
+    if "meia dúzia de ferimentos" in corpo and regra["tipo"] != "narrativo":   # IC-7d (MB p.289): as ataduras servem para 6 ferimentos
+        regra["usos"] = 6
+        notas.append("Dá para 6 ferimentos.")
     doses = re.search(r"(\d+) doses", corpo)
     if doses and categoria == "Médico" and regra["tipo"] == "narrativo":
         regra = {"tipo": "cura", "antidoto": True, "doses": int(doses.group(1))}
@@ -380,9 +383,13 @@ def municao(mb):
         nt = re.search(r"NT(\d)\+", t)
         cl = re.search(r"CL(\d)", t)
         custo = next((v for k, v in vezes.items() if re.search(k + r" (?:do |o )?custo", t)), 1)
-        regra = {"tipo": "municao", "divisor": divisor(t) if ident != "municao_pdpa" else None, "passoDoTipo": passo,
+        # IC-7d (MB p.279): na PRPA o tipo só desce se o calibre for menor que 20 mm (.80); a PDPA funciona como a PRPA (divisor 2)
+        div_prpa = divisor(prpa)
+        regra = {"tipo": "municao", "divisor": divisor(t) if ident != "municao_pdpa" else div_prpa, "passoDoTipo": passo,
                  "custoVezes": custo, "serve": ["pistola", "metralhadora de mão", "rifle", "metralhadora"]}
-        nota = "Divisor de armadura %s; o tipo de dano %s um passo." % (regra["divisor"], "sobe" if passo > 0 else "desce")
+        if passo < 0:
+            regra["soSeCalibreMenorQueMm"] = 20
+        nota = "Divisor de armadura %s; o tipo de dano %s um passo%s." % (regra["divisor"], "sobe" if passo > 0 else "desce", " (se o calibre for menor que 20 mm)" if passo < 0 else "")
         if ident == "municao_pdpa":
             mais = re.search(r"dano em \+(\d) por dado", t)
             dist = re.search(r"distância aumenta em (\d+)%", t)

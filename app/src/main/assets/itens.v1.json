@@ -1394,13 +1394,14 @@
    "legalidade": 4,
    "pagina": 289,
    "livro": "MB",
-   "nota": "Equipamento básico de Primeiros Socorros.",
+   "nota": "Equipamento básico de Primeiros Socorros. Dá para 6 ferimentos.",
    "regra": {
     "tipo": "cura",
     "pericias": [
      "Primeiros Socorros"
     ],
-    "basico": true
+    "basico": true,
+    "usos": 6
    }
   },
   {
@@ -2351,7 +2352,7 @@
    "legalidade": 2,
    "pagina": 279,
    "livro": "MB",
-   "nota": "Divisor de armadura 2; o tipo de dano desce um passo.",
+   "nota": "Divisor de armadura 2; o tipo de dano desce um passo (se o calibre for menor que 20 mm).",
    "regra": {
     "tipo": "municao",
     "divisor": 2,
@@ -2362,7 +2363,8 @@
      "metralhadora de mão",
      "rifle",
      "metralhadora"
-    ]
+    ],
+    "soSeCalibreMenorQueMm": 20
    }
   },
   {
@@ -2379,7 +2381,7 @@
    "nota": "Como a PRPA, com +1 de dano por dado e +50% de distância.",
    "regra": {
     "tipo": "municao",
-    "divisor": null,
+    "divisor": 2,
     "passoDoTipo": -1,
     "custoVezes": 5,
     "serve": [
@@ -2388,6 +2390,7 @@
      "rifle",
      "metralhadora"
     ],
+    "soSeCalibreMenorQueMm": 20,
     "comoA": "municao_prpa",
     "danoPorDado": 1,
     "distanciaPorCento": 50
