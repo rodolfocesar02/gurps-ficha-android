@@ -156,7 +156,7 @@ object ModificadoresSituacionais {
         ))
         // ⚠️ Mergulho está TAMBÉM na lista do seletor de equipamento, e os dois
         // números somam de propósito: o seletor mede a **qualidade** do aparelho
-        // (MB p.346) e este mede a **familiaridade** com ele. Um mergulhador com
+        // (MB p.345) e este mede a **familiaridade** com ele. Um mergulhador com
         // equipamento improvisado E que nunca viu aquele modelo leva os dois.
         // O texto diz "que ele nunca usou" justamente para não parecer repetição
         // do seletor lá em cima.

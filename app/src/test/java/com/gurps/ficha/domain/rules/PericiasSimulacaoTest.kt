@@ -246,7 +246,7 @@ class PericiasSimulacaoTest {
         // então a sobreposição é possível — e esta é a cerca.
         //
         // ⚠️ Familiaridade NÃO é qualidade. Mergulho tem as duas de propósito: o
-        // seletor mede o aparelho (MB p.346) e a situação mede o mergulhador
+        // seletor mede o aparelho (MB p.345) e a situação mede o mergulhador
         // nunca ter usado aquele modelo. Somam, e devem somar.
         val palavrasDeQualidade = listOf("improvisado", "boa qualidade", "superior", "sem equipamento")
         QualidadeDoEquipamento.PERICIAS.forEach { pericia ->

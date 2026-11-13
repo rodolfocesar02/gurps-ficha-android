@@ -1,5 +1,7 @@
 package com.gurps.ficha.ui
 
+import com.gurps.ficha.domain.roll.CriticoRules
+import com.gurps.ficha.domain.roll.ContaDoTeste
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -305,23 +307,15 @@ fun rolarDados(quantidade: Int, modificador: Int, alvo: Int?): RolagemResultado 
     val total = soma
     val alvoEfetivo = alvo?.plus(modificador)
 
+    // PE-2 passo 0: a conta do livro (MB pp.343-348), a mesma da aba Rolagem. O crítico só vale em 3d6: com 1, 2 ou 4
+    // dados "soma <= 4" não é sucesso decisivo.
     val (tipoResultado, margem) = if (alvoEfetivo != null) {
-        val m = alvoEfetivo - total
-        val tipo = when {
-            // Sucesso Critico: 3-4 sempre, 5 se NH >= 15, 6 se NH >= 16
-            soma <= 4 -> TipoResultado.SUCESSO_CRITICO
-            soma == 5 && alvoEfetivo >= 15 -> TipoResultado.SUCESSO_CRITICO
-            soma == 6 && alvoEfetivo >= 16 -> TipoResultado.SUCESSO_CRITICO
-            // Falha Critica: 18 sempre, 17 se NH <= 15
-            soma == 18 -> TipoResultado.FALHA_CRITICA
-            soma == 17 && alvoEfetivo <= 15 -> TipoResultado.FALHA_CRITICA
-            // Falha por 10+ tambem e critica
-            m <= -10 -> TipoResultado.FALHA_CRITICA
-            // Sucesso/Falha normal
-            total <= alvoEfetivo -> TipoResultado.SUCESSO
-            else -> TipoResultado.FALHA
-        }
-        tipo to m
+        val tipo = if (quantidade == 3) when (ContaDoTeste.critico(soma, alvoEfetivo)) {
+            CriticoRules.ResultadoCritico.DECISIVO -> TipoResultado.SUCESSO_CRITICO
+            CriticoRules.ResultadoCritico.FALHA_CRITICA -> TipoResultado.FALHA_CRITICA
+            else -> if (ContaDoTeste.passou(soma, alvoEfetivo)) TipoResultado.SUCESSO else TipoResultado.FALHA
+        } else if (total <= alvoEfetivo) TipoResultado.SUCESSO else TipoResultado.FALHA
+        tipo to (if (quantidade == 3) ContaDoTeste.margemAssinada(soma, alvoEfetivo) else alvoEfetivo - total)
     } else {
         TipoResultado.NENHUM to 0
     }

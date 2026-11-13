@@ -54,7 +54,7 @@ class PericiasEquipCultSitTest {
     }
 
     // ==================================================================
-    // P-EQUIP — a tabela do MB p.346
+    // P-EQUIP — a tabela do MB p.345
     // ==================================================================
 
     @Test
@@ -133,7 +133,7 @@ class PericiasEquipCultSitTest {
         val linha = QualidadeDoEquipamento.rotuloNaPericia("Cirurgia/NT", N.SEM_NENHUM)
         assertTrue(linha, linha.contains("-10"))
         assertTrue(linha, linha.contains("tecnológica"))
-        assertTrue(linha, linha.contains("p.346"))
+        assertTrue(linha, linha.contains("p.345"))
         // Sem nada a dizer, a linha some.
         assertEquals("", QualidadeDoEquipamento.rotuloNaPericia("Cirurgia/NT", N.BASICO))
         assertEquals("", QualidadeDoEquipamento.rotuloNaPericia("Lábia", N.SEM_NENHUM))

@@ -208,7 +208,7 @@ fun RolagemPericiasDialog(
                 )
 
                 // Lote P-EQUIP: um seletor só para as 32 perícias que dependem
-                // de equipamento (MB p.346). Só aparece se a ficha tiver alguma
+                // de equipamento (MB p.345). Só aparece se a ficha tiver alguma
                 // delas — senão seria ruído para quem não usa ferramenta.
                 val temPericiaDeEquipamento = opcoesPericia.any {
                     com.gurps.ficha.domain.rules.QualidadeDoEquipamento

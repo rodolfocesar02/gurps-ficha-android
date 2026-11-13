@@ -31,7 +31,7 @@ data class Personagem(
      * - o multiplicador de **preco** por qualidade de arma (p.275-276) muda em
      *   NT6 ou menos contra NT7+;
      * - o degrau *"melhores equipamentos possiveis para o seu NT: +NT/2"* do
-     *   modificador de pericia (p.346);
+     *   modificador de pericia (p.345);
      * - a **composicao da lamina** (p.276): pedra em NT0, bronze em NT1, ferro em
      *   NT2, aco em NT3+.
      *

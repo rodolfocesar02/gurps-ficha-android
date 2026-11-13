@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.sp
 import com.gurps.ficha.data.network.DiscordRollPayload
 import com.gurps.ficha.data.network.DiscordVoiceChannel
 
+import com.gurps.ficha.domain.roll.ContaDoTeste
 import com.gurps.ficha.domain.roll.CriticoRules
 import com.gurps.ficha.domain.rules.DesastradoRules
 import com.gurps.ficha.domain.rules.EstadosTemporarios
@@ -488,6 +489,12 @@ fun TabRolagem(viewModel: FichaViewModel) {
     }
 
     fun executarRolagem(tipo: TipoTeste, contextoLabel: String, alvo: Int?, mod: Int = 0) {
+        // PE-2 passo 0 (MB p.345): NH efetivo abaixo de 3 não pode tentar, exceto defesa.
+        val nhDoTeste = if (alvo != null) alvo + mod + (if (isPraCegoVariant) modificadorGlobalPraCego else 0) else null
+        if (nhDoTeste != null && !ContaDoTeste.podeTentar(nhDoTeste, tipo == TipoTeste.DEFESA)) {
+            android.widget.Toast.makeText(context, "$contextoLabel: NH efetivo abaixo de 3, não dá para tentar (MB p.345)", android.widget.Toast.LENGTH_LONG).show()
+            return
+        }
         pendingRoll = PendingRollState(
             tipo = tipo,
             contextoLabel = contextoLabel,
@@ -531,17 +538,17 @@ fun TabRolagem(viewModel: FichaViewModel) {
         ) " · ${DesastradoRules.MOTIVO}" else ""
 
         val statusText = if (alvoEfetivo != null) {
-            val dist = alvoEfetivo - soma
+            val dist = ContaDoTeste.margemAssinada(soma, alvoEfetivo)
             val marginPart = "(por ${abs(dist)})"
             when (critico) {
                 CriticoRules.ResultadoCritico.DECISIVO -> "Sucesso Crítico! $marginPart"
                 CriticoRules.ResultadoCritico.FALHA_CRITICA -> "Falha Crítica! $marginPart$avisoDesastrado"
-                else -> if (dist >= 0) "Sucesso $marginPart" else "Falha $marginPart"
+                else -> if (ContaDoTeste.passou(soma, alvoEfetivo)) "Sucesso $marginPart" else "Falha $marginPart"
             }
         } else ""
 
         val outcome = if (alvoEfetivo != null) {
-            val dist = alvoEfetivo - soma
+            val dist = ContaDoTeste.margemAssinada(soma, alvoEfetivo)
             val marginPart = " (por ${abs(dist)})"
             when (critico) {
                 CriticoRules.ResultadoCritico.DECISIVO -> "crítico$marginPart"
@@ -549,10 +556,10 @@ fun TabRolagem(viewModel: FichaViewModel) {
                 // falha crítica num 12 e acha que o app errou a conta.
                 CriticoRules.ResultadoCritico.FALHA_CRITICA ->
                     "falha_crítica$marginPart$avisoDesastrado"
-                else -> if (dist >= 0) "sucesso$marginPart" else "falha$marginPart"
+                else -> if (ContaDoTeste.passou(soma, alvoEfetivo)) "sucesso$marginPart" else "falha$marginPart"
             }
         } else "sucesso"
-        val margin = if (alvoEfetivo != null) alvoEfetivo - soma else null
+        val margin = if (alvoEfetivo != null) ContaDoTeste.margemAssinada(soma, alvoEfetivo) else null
 
         // 🔴 Lote MAGIA-E2: a energia sai da ficha AGORA, e o quanto depende do
         // que os dados fizeram (MB p.236). Antes o app cobrava o custo cheio nos
@@ -565,7 +572,7 @@ fun TabRolagem(viewModel: FichaViewModel) {
                     MagiaEnergiaRules.Resultado.SUCESSO_DECISIVO
                 critico == CriticoRules.ResultadoCritico.FALHA_CRITICA ->
                     MagiaEnergiaRules.Resultado.FALHA_CRITICA
-                alvoEfetivo != null && soma <= alvoEfetivo -> MagiaEnergiaRules.Resultado.SUCESSO
+                alvoEfetivo != null && ContaDoTeste.passou(soma, alvoEfetivo) -> MagiaEnergiaRules.Resultado.SUCESSO
                 else -> MagiaEnergiaRules.Resultado.FRACASSO
             }
             val ehInformacao = MagiaEnergiaRules.ehMagiaDeInformacao(

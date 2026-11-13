@@ -1,7 +1,7 @@
 package com.gurps.ficha.domain.rules
 
 /**
- * **Modificadores de Equipamentos** (MB p.346) — Lote P-EQUIP.
+ * **Modificadores de Equipamentos** (MB p.345) — Lote P-EQUIP.
  *
  * ## Trinta e duas perícias, UMA tabela
  *
@@ -154,7 +154,7 @@ object QualidadeDoEquipamento {
         if (m == 0) return ""
         val sinal = if (m > 0) "+$m" else "$m"
         val coluna = if (ehTecnologica(nomeDaPericia)) "tecnológica" else "comum"
-        return "Equipamento ${nivel.rotulo.lowercase()}: $sinal ($coluna, MB p.346)"
+        return "Equipamento ${nivel.rotulo.lowercase()}: $sinal ($coluna, MB p.345)"
     }
 
     /** O que o TalkBack lê no seletor — inclui o que o próximo toque faz. */

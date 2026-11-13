@@ -5,7 +5,7 @@ package com.gurps.ficha.domain.rules
  *
  * ## ⚠️ Não confundir com [QualidadeDoEquipamento]
  *
- * Aquele é o modificador de **perícia** por ferramenta (p.346) — *"todos de
+ * Aquele é o modificador de **perícia** por ferramenta (p.345) — *"todos de
  * equipamento"*. Este é a qualidade da **arma**, e mexe em **dano**. Nomes
  * parecidos, páginas diferentes, contas diferentes.
  *

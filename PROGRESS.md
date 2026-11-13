@@ -10267,3 +10267,11 @@ ficar verde**.
 - **Mudança:** `pericias.v3.json` — 104 perícias corrigidas (102 com o predefinido do livro, 3 dificuldades, 1 atributo). Ciclismo e Salto passam a Fácil (ordem dele). As 22 armas de corpo a corpo ganham DX−4/−5/−6 pela dificuldade mais as irmãs da categoria (−3); Mangual de Duas Mãos é Difícil (p.178). Lista completa em `mesa-virtual/planos/pericias/PE-1-MUDANCAS-NO-APP.md`.
 - **Corrosão (regras do livro):** `CorrosaoNaArmadura.rdDestruida(tipo, danoBasico)` — 1 de RD a cada 5 de dano BÁSICO (antes do multiplicador de ferimento).
 - **Testes:** `PericiasCatalogoUnificadoTest` e `TiposDeDanoNovosTest` ajustados; `pericias_referencia.json` regenerado. Suíte unitária inteira verde.
+
+## Versão 223 — 12.9.23-CONTA-DO-TESTE (PE-2 passo 0, 13/nov)
+- **Pedido dele:** "verificar se a aba de rolagem está errada, bem provável que sim; se estiver, colocar no plano a correção". Estava, em três de quatro casos (MB pp.343, 345, 347).
+- **O que errava:** tirar 17 com NH efetivo 17 ou mais dava "Sucesso" (o livro: 17 e 18 sempre falham); tirar 4 com NH 3 saía com margem −1 no Discord e na Mesa (3 e 4 sempre passam, margem 0); NH efetivo abaixo de 3 rolava (o livro: não pode tentar, exceto defesa). Na magia, o 17 "sucesso" cobrava a energia do sucesso. O rolador avulso tinha o mesmo 17 e dava "crítico" para soma até 4 com 1, 2 ou 4 dados. O NH acima de 18 já estava certo (margem sem teto).
+- **Mudança:** `domain/roll/ContaDoTeste.kt` (`passou`, `margemAssinada`, `podeTentar`, `critico`), usado por `TabRolagem.finalizarRolagem`, `executarRolagem` (Toast "NH efetivo abaixo de 3, não dá para tentar (MB p.345)"; a defesa continua rolando) e `DiceRoller.rolarDados`. O `TabRolagem.kt` não cresceu em conta nova: só chama o arquivo.
+- **Para a Mesa:** par exato em `src/campo/ficha-rolagem.js` (`resultadoDe`, `podeTentar`, `nhEfetivo` sem teto de 18). Os dois testes usam os MESMOS números.
+- **Página:** a tabela de modificadores de equipamento é a p.345 do livro impresso (o código citava a p.346, que é a página do PDF). Corrigido nos comentários e na linha que o app escreve.
+- **Testes:** `ContaDoTesteTest` (4); `PericiasEquipCultSitTest` ajustado para p.345.
