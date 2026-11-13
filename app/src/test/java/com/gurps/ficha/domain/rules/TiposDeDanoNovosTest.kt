@@ -152,16 +152,16 @@ class CorrosaoNaArmaduraTest {
     }
 
     @Test
-    fun `acido barrado pela armadura nao a corroi`() {
-        // ⚠️ A base é o dano PENETRANTE, não o rolado. O que a armadura segura
-        // inteiro escorre; é o que passa que a come por dentro.
-        assertEquals(0, CorrosaoNaArmadura.rdDestruida(DanoTipo.COR, penetrante = 0))
+    fun `acido barrado pela armadura a corroi do mesmo jeito`() {
+        // ⚠️ A base é o dano BÁSICO (MB p.380: 1 de RD a cada 5 de dano básico), não o
+        // penetrante: o ácido que a armadura barrou inteiro também a come.
+        assertEquals(0, CorrosaoNaArmadura.rdDestruida(DanoTipo.COR, danoBasico = 0))
         val r = FerimentoPorLocalRules.aplicar(
             pvInicial = 10, danoBruto = 20, tipo = DanoTipo.COR,
             local = LocalAtaque.TORSO, rdArmadura = 20
         )
         assertEquals(0, r.penetrante)
-        assertEquals(0, r.rdDestruidaPorCorrosao)
+        assertEquals(4, r.rdDestruidaPorCorrosao)   // 20 de dano básico ÷ 5
     }
 
     @Test
@@ -171,7 +171,7 @@ class CorrosaoNaArmaduraTest {
             local = LocalAtaque.TORSO, rdArmadura = 6
         )
         assertEquals(10, r.penetrante)
-        assertEquals(2, r.rdDestruidaPorCorrosao)
+        assertEquals(3, r.rdDestruidaPorCorrosao)   // 16 de dano básico ÷ 5
         // O dano continua ×1 — a corrosão come armadura, não multiplica ferimento.
         assertEquals(10, r.pvPerdidos)
         assertTrue(

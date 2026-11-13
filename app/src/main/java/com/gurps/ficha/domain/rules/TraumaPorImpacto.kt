@@ -127,25 +127,26 @@ object TraumaPorImpacto {
  */
 object CorrosaoNaArmadura {
 
-    /** Cinco pontos de dano penetrante por ponto de RD destruído (p.380). */
+    /** Cinco pontos de dano BÁSICO por ponto de RD destruído (p.380). */
     const val POR_PONTO_DE_RD = 5
 
     /**
      * Quantos pontos de RD o ácido destruiu.
      *
-     * ⚠️ A base é o **dano penetrante**, não o rolado. Um ácido que a armadura
-     * barrou inteiro não a corrói — é o que passa que a come por dentro.
+     * ⚠️ A base é o **dano básico** (o rolado, antes da RD): *"destrói um ponto da
+     * RD do alvo a cada 5 pontos de dano básico"* (MB p.380, conferido no PE-0). Um
+     * ácido que a armadura barrou inteiro também a corrói. (Antes era o penetrante.)
      */
-    fun rdDestruida(tipo: DanoTipo, penetrante: Int): Int {
+    fun rdDestruida(tipo: DanoTipo, danoBasico: Int): Int {
         if (tipo != DanoTipo.COR) return 0
-        if (penetrante <= 0) return 0
-        return penetrante / POR_PONTO_DE_RD
+        if (danoBasico <= 0) return 0
+        return danoBasico / POR_PONTO_DE_RD
     }
 
     /** A conta pronta para a tela. Null quando não houve corrosão. */
-    fun conta(penetrante: Int, destruida: Int): String? {
+    fun conta(danoBasico: Int, destruida: Int): String? {
         if (destruida <= 0) return null
-        return "Corrosão: $penetrante penetrante ÷ $POR_PONTO_DE_RD = " +
+        return "Corrosão: $danoBasico de dano básico ÷ $POR_PONTO_DE_RD = " +
             "$destruida ponto(s) de RD destruídos. Ajuste o RD da peça no lápis — " +
             "armadura corroída não se recupera."
     }

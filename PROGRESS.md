@@ -10261,3 +10261,9 @@ ficar verde**.
 - **Mudança:** o catálogo `itens.v1.json` (regenerado por `scripts/itens/gerar_itens.py`, só 3 itens mudaram): **Ataduras** ganham `usos: 6` ("ataduras para meia dúzia de ferimentos", MB p.289); **PRPA** e **PDPA** ganham `soSeCalibreMenorQueMm: 20` (MB p.279: o tipo só desce se o calibre for menor que 20 mm); a **PDPA** passa a ter `divisor: 2` explícito (antes `null`, "como a PRPA"). A nota da PRPA diz o limite de calibre.
 - **Para a Mesa:** a Mesa lê esses números do item que viaja dentro da ficha; nenhum campo novo na ficha.
 - **Testes:** os existentes (o catálogo continua com 207 itens e os mesmos tipos de regra).
+
+## Versão 222 — 12.9.22-PERICIAS-DO-LIVRO (PE-1 e PE-1b, 13/nov)
+- **Pedido dele:** o plano das perícias (`mesa-virtual/planos/pericias/PLANO.md`): o catálogo de perícias tem de bater com o Módulo Básico (pp.174-227), porque as descrições trazem REGRAS (predefinidos por especialização, valor entre especializações).
+- **Mudança:** `pericias.v3.json` — 104 perícias corrigidas (102 com o predefinido do livro, 3 dificuldades, 1 atributo). Ciclismo e Salto passam a Fácil (ordem dele). As 22 armas de corpo a corpo ganham DX−4/−5/−6 pela dificuldade mais as irmãs da categoria (−3); Mangual de Duas Mãos é Difícil (p.178). Lista completa em `mesa-virtual/planos/pericias/PE-1-MUDANCAS-NO-APP.md`.
+- **Corrosão (regras do livro):** `CorrosaoNaArmadura.rdDestruida(tipo, danoBasico)` — 1 de RD a cada 5 de dano BÁSICO (antes do multiplicador de ferimento).
+- **Testes:** `PericiasCatalogoUnificadoTest` e `TiposDeDanoNovosTest` ajustados; `pericias_referencia.json` regenerado. Suíte unitária inteira verde.

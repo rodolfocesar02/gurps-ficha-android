@@ -143,8 +143,9 @@ class PericiasCatalogoUnificadoTest {
         val porNome = catalogo().associateBy { it.nome }
         mapOf(
             "Camuflagem" to "F",
-            "Ciclismo" to "M",
-            "Salto" to "M",
+            // PE-1 (12/nov/2026): o Módulo Básico diz DX/Fácil para Ciclismo (p.188) e Salto (p.222); o Rodolfo mandou seguir o livro.
+            "Ciclismo" to "F",
+            "Salto" to "F",
             "Controle das Funções Involuntárias" to "MD",
             "Arte de Combate" to "M",
             "Esporte de Combate/NT (†)" to "M"

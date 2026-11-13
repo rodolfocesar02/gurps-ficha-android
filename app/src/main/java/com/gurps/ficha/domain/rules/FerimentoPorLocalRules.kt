@@ -308,7 +308,7 @@ object FerimentoPorLocalRules {
         val rigida = rdArmadura.coerceAtLeast(0) - flexivel + rdExtraNatural(local)
         // 🔴 Lote EQP-13: o ácido come a armadura, e é a única consequência que
         // sobrevive ao golpe. Ver `CorrosaoNaArmadura`.
-        val rdDestruida = CorrosaoNaArmadura.rdDestruida(tipo, penetrante)
+        val rdDestruida = CorrosaoNaArmadura.rdDestruida(tipo, danoBruto)
 
         val trauma = TraumaPorImpacto.calcular(
             danoBruto = danoBruto,
@@ -367,7 +367,7 @@ object FerimentoPorLocalRules {
         }
 
         avisos += avisosDe(local, tipo, efeito, desperdicado, pvInicial)
-        CorrosaoNaArmadura.conta(penetrante, rdDestruida)?.let { avisos += it }
+        CorrosaoNaArmadura.conta(danoBruto, rdDestruida)?.let { avisos += it }
 
         return Resultado(
             danoBruto = danoBruto,

@@ -705,7 +705,7 @@
     "atributoBase": "DX",
     "atributosPossiveis": null,
     "atributoEscolhaObrigatoria": false,
-    "dificuldadeFixa": "M",
+    "dificuldadeFixa": "F",
     "dificuldadeVariavel": false,
     "exigeEspecializacao": false
   },
@@ -1272,7 +1272,7 @@
   {
     "id": "exorcismo",
     "nome": "Exorcismo",
-    "atributoBase": "PER",
+    "atributoBase": "VON",
     "atributosPossiveis": null,
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "D",
@@ -1855,7 +1855,7 @@
     "atributoBase": "DX",
     "atributosPossiveis": null,
     "atributoEscolhaObrigatoria": false,
-    "dificuldadeFixa": "M",
+    "dificuldadeFixa": "D",
     "dificuldadeVariavel": false,
     "exigeEspecializacao": false
   },
@@ -2571,7 +2571,7 @@
     "atributoBase": "DX",
     "atributosPossiveis": null,
     "atributoEscolhaObrigatoria": false,
-    "dificuldadeFixa": "M",
+    "dificuldadeFixa": "F",
     "dificuldadeVariavel": false,
     "exigeEspecializacao": false
   },

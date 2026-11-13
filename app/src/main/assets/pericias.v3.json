@@ -213,10 +213,16 @@
         "tokens": []
       },
       "preDefinido": {
-        "raw": "Jitte/Sai-4 ou Faca-4",
+        "raw": "DX-5, Jitte/Sai-4, Faca-4, Rapieira-3, Sabre-3, Terçado-3",
         "kind": "parsed",
         "onZeroPoints": "use_parsed_pré-definido",
         "parsed": [
+          {
+            "raw": "DX-5",
+            "type": "attribute",
+            "base": "DX",
+            "modifier": -5
+          },
           {
             "raw": "Jitte/Sai-4",
             "type": "skill_or_rule",
@@ -228,6 +234,24 @@
             "type": "skill_or_rule",
             "base": "Faca",
             "modifier": -4
+          },
+          {
+            "raw": "Rapieira-3",
+            "type": "skill_or_rule",
+            "base": "Rapieira",
+            "modifier": -3
+          },
+          {
+            "raw": "Sabre-3",
+            "type": "skill_or_rule",
+            "base": "Sabre",
+            "modifier": -3
+          },
+          {
+            "raw": "Terçado-3",
+            "type": "skill_or_rule",
+            "base": "Terçado",
+            "modifier": -3
           }
         ]
       },
@@ -266,6 +290,12 @@
         "onZeroPoints": "use_parsed_pré-definido",
         "parsed": [
           {
+            "raw": "IQ-5",
+            "type": "attribute",
+            "base": "IQ",
+            "modifier": -5
+          },
+          {
             "raw": "-2 a -6 entre especializações",
             "type": "skill_or_rule",
             "base": "-2 a",
@@ -303,7 +333,7 @@
         "tokens": []
       },
       "preDefinido": {
-        "raw": "IQ-5",
+        "raw": "IQ-5, Lábia-3 ou Ocultismo-3",
         "kind": "parsed",
         "onZeroPoints": "use_parsed_pré-definido",
         "parsed": [
@@ -312,6 +342,18 @@
             "type": "attribute",
             "base": "IQ",
             "modifier": -5
+          },
+          {
+            "raw": "Lábia-3",
+            "type": "skill_or_rule",
+            "base": "Lábia",
+            "modifier": -3
+          },
+          {
+            "raw": "Ocultismo-3",
+            "type": "skill_or_rule",
+            "base": "Ocultismo",
+            "modifier": -3
           }
         ]
       },
@@ -345,7 +387,7 @@
         "tokens": []
       },
       "preDefinido": {
-        "raw": "IQ-5",
+        "raw": "IQ-5 ou Comércio-3",
         "kind": "parsed",
         "onZeroPoints": "use_parsed_pré-definido",
         "parsed": [
@@ -354,6 +396,12 @@
             "type": "attribute",
             "base": "IQ",
             "modifier": -5
+          },
+          {
+            "raw": "Comércio-3",
+            "type": "skill_or_rule",
+            "base": "Comércio",
+            "modifier": -3
           }
         ]
       },
@@ -476,10 +524,16 @@
         "onZeroPoints": "use_parsed_pré-definido",
         "parsed": [
           {
-            "raw": "IQ-6, Comércio-4",
+            "raw": "IQ-6",
             "type": "attribute",
             "base": "IQ",
             "modifier": -6
+          },
+          {
+            "raw": "Comércio-4",
+            "type": "skill_or_rule",
+            "base": "Comércio",
+            "modifier": -4
           },
           {
             "raw": "Economia-5",
@@ -519,15 +573,21 @@
         "tokens": []
       },
       "preDefinido": {
-        "raw": "IQ-6, Paleontologia/NT-2 ou Sociologia-3",
+        "raw": "IQ-6, Paleontologia (Paleoantropologia)-2 ou Sociologia-3",
         "kind": "parsed",
         "onZeroPoints": "use_parsed_pré-definido",
         "parsed": [
           {
-            "raw": "IQ-6, Paleontologia/NT-2",
+            "raw": "IQ-6",
             "type": "attribute",
             "base": "IQ",
             "modifier": -6
+          },
+          {
+            "raw": "Paleontologia (Paleoantropologia)-2",
+            "type": "skill_or_rule",
+            "base": "Paleontologia (Paleoantropologia)",
+            "modifier": -2
           },
           {
             "raw": "Sociologia-3",
@@ -782,7 +842,7 @@
         "tokens": []
       },
       "preDefinido": {
-        "raw": "IQ-5 ou Arrombamento-3 (ou DX-5 p/ desarmar)",
+        "raw": "IQ-5 ou Arrombamento-3*",
         "kind": "parsed",
         "onZeroPoints": "use_parsed_pré-definido",
         "parsed": [
@@ -793,16 +853,10 @@
             "modifier": -5
           },
           {
-            "raw": "Arrombamento-3 (",
+            "raw": "Arrombamento-3*",
             "type": "skill_or_rule",
             "base": "Arrombamento",
             "modifier": -3
-          },
-          {
-            "raw": "DX-5 p/ desarmar)",
-            "type": "attribute",
-            "base": "DX",
-            "modifier": -5
           }
         ]
       },
@@ -881,6 +935,12 @@
         "onZeroPoints": "use_parsed_pré-definido",
         "parsed": [
           {
+            "raw": "DX-4",
+            "type": "attribute",
+            "base": "DX",
+            "modifier": -4
+          },
+          {
             "raw": "Outra especialização -4",
             "type": "skill_or_rule",
             "base": "Outra especialização",
@@ -923,6 +983,12 @@
         "onZeroPoints": "use_parsed_pré-definido",
         "parsed": [
           {
+            "raw": "DX-4",
+            "type": "attribute",
+            "base": "DX",
+            "modifier": -4
+          },
+          {
             "raw": "Outra especialização -2 a -4",
             "type": "skill_or_rule",
             "base": "Outra especialização",
@@ -960,9 +1026,35 @@
         }
       },
       "preDefinido": {
-        "raw": "-",
-        "onZeroPoints": "-",
-        "parsed": []
+        "raw": "DX-5, Lança-4, Bastão-4, Maça/ Machado de Duas Mãos-4",
+        "kind": "parsed",
+        "onZeroPoints": "use_parsed_pré-definido",
+        "parsed": [
+          {
+            "raw": "DX-5",
+            "type": "attribute",
+            "base": "DX",
+            "modifier": -5
+          },
+          {
+            "raw": "Lança-4",
+            "type": "skill_or_rule",
+            "base": "Lança",
+            "modifier": -4
+          },
+          {
+            "raw": "Bastão-4",
+            "type": "skill_or_rule",
+            "base": "Bastão",
+            "modifier": -4
+          },
+          {
+            "raw": "Maça/ Machado de Duas Mãos-4",
+            "type": "skill_or_rule",
+            "base": "Maça/ Machado de Duas Mãos",
+            "modifier": -4
+          }
+        ]
       },
       "modificadores": {
         "raw": ""
@@ -1216,9 +1308,17 @@
         }
       },
       "preDefinido": {
-        "raw": "IQ-6, Dissimulação-6, Linguística-4, Naturalista-6",
-        "onZeroPoints": "-",
-        "parsed": []
+        "raw": "IQ-6, entre outras",
+        "kind": "parsed",
+        "onZeroPoints": "use_parsed_pré-definido",
+        "parsed": [
+          {
+            "raw": "IQ-6",
+            "type": "attribute",
+            "base": "IQ",
+            "modifier": -6
+          }
+        ]
       },
       "modificadores": {
         "raw": "-3 para imitar pessoa específica (Disputa vs. IQ do conhecido)."
@@ -1245,9 +1345,17 @@
         }
       },
       "preDefinido": {
-        "raw": "IQ-6, Dissimulação-6, Linguística-4, Naturalista-6",
-        "onZeroPoints": "-",
-        "parsed": []
+        "raw": "IQ-6, entre outras",
+        "kind": "parsed",
+        "onZeroPoints": "use_parsed_pré-definido",
+        "parsed": [
+          {
+            "raw": "IQ-6",
+            "type": "attribute",
+            "base": "IQ",
+            "modifier": -6
+          }
+        ]
       },
       "modificadores": {
         "raw": "-3 para imitar pessoa específica (Disputa vs. IQ do conhecido)."
@@ -1271,9 +1379,17 @@
         }
       },
       "preDefinido": {
-        "raw": "IQ-6, Dissimulação-6, Linguística-4, Naturalista-6",
-        "onZeroPoints": "-",
-        "parsed": []
+        "raw": "IQ-6, entre outras",
+        "kind": "parsed",
+        "onZeroPoints": "use_parsed_pré-definido",
+        "parsed": [
+          {
+            "raw": "IQ-6",
+            "type": "attribute",
+            "base": "IQ",
+            "modifier": -6
+          }
+        ]
       },
       "modificadores": {
         "raw": "-3 para imitar pessoa específica (Disputa vs. IQ do conhecido)."
@@ -1775,6 +1891,12 @@
         "onZeroPoints": "use_parsed_pré-definido",
         "parsed": [
           {
+            "raw": "IQ-6",
+            "type": "attribute",
+            "base": "IQ",
+            "modifier": -6
+          },
+          {
             "raw": "IQ-6 (e outros entre especializações)",
             "type": "attribute",
             "base": "IQ",
@@ -2122,10 +2244,16 @@
         "onZeroPoints": "use_parsed_pré-definido",
         "parsed": [
           {
-            "raw": "IQ-5, Dissimulação-2",
+            "raw": "IQ-5",
             "type": "attribute",
             "base": "IQ",
             "modifier": -5
+          },
+          {
+            "raw": "Dissimulação-2",
+            "type": "skill_or_rule",
+            "base": "Dissimulação",
+            "modifier": -2
           },
           {
             "raw": "Oratória-2",
@@ -2207,9 +2335,29 @@
         }
       },
       "preDefinido": {
-        "raw": "-",
-        "onZeroPoints": "-",
-        "parsed": []
+        "raw": "DX-5, Armas de Haste-4, Lança-4",
+        "kind": "parsed",
+        "onZeroPoints": "use_parsed_pré-definido",
+        "parsed": [
+          {
+            "raw": "DX-5",
+            "type": "attribute",
+            "base": "DX",
+            "modifier": -5
+          },
+          {
+            "raw": "Armas de Haste-4",
+            "type": "skill_or_rule",
+            "base": "Armas de Haste",
+            "modifier": -4
+          },
+          {
+            "raw": "Lança-4",
+            "type": "skill_or_rule",
+            "base": "Lança",
+            "modifier": -4
+          }
+        ]
       },
       "modificadores": {
         "raw": ""
@@ -2283,6 +2431,12 @@
         "onZeroPoints": "use_parsed_pré-definido",
         "parsed": [
           {
+            "raw": "Biologia-5",
+            "type": "skill_or_rule",
+            "base": "Biologia",
+            "modifier": -5
+          },
+          {
             "raw": "Biologia-5 (e -4 entre especializações)",
             "type": "skill_or_rule",
             "base": "Biologia",
@@ -2331,6 +2485,12 @@
             "modifier": -6
           },
           {
+            "raw": "Naturalista-6",
+            "type": "skill_or_rule",
+            "base": "Naturalista",
+            "modifier": -6
+          },
+          {
             "raw": "Naturalista-6 (-4 entre especializações)",
             "type": "skill_or_rule",
             "base": "Naturalista",
@@ -2375,7 +2535,7 @@
           {
             "raw": "Vontade-5",
             "type": "attribute",
-            "base": "Vontade",
+            "base": "VON",
             "modifier": -5
           },
           {
@@ -2764,15 +2924,21 @@
         "tokens": []
       },
       "preDefinido": {
-        "raw": "DX-5, Escudo-4 ou Rede-4",
+        "raw": "DX-5, Escudo (qualquer)-4 ou Rede-4",
         "kind": "parsed",
         "onZeroPoints": "use_parsed_pré-definido",
         "parsed": [
           {
-            "raw": "DX-5, Escudo-4",
+            "raw": "DX-5",
             "type": "attribute",
             "base": "DX",
             "modifier": -5
+          },
+          {
+            "raw": "Escudo (qualquer)-4",
+            "type": "skill_or_rule",
+            "base": "Escudo (qualquer)",
+            "modifier": -4
           },
           {
             "raw": "Rede-4",
@@ -2815,8 +2981,8 @@
         "parsed": [
           {
             "raw": "Percepção-4",
-            "type": "skill_or_rule",
-            "base": "Percepção",
+            "type": "attribute",
+            "base": "PER",
             "modifier": -4
           }
         ]
@@ -2985,10 +3151,22 @@
         "onZeroPoints": "use_parsed_pré-definido",
         "parsed": [
           {
-            "raw": "IQ-5, Adestramento-4",
+            "raw": "IQ-5",
             "type": "attribute",
             "base": "IQ",
             "modifier": -5
+          },
+          {
+            "raw": "Adestramento de Animais (mesma)-4",
+            "type": "skill_or_rule",
+            "base": "Adestramento de Animais (mesma)",
+            "modifier": -4
+          },
+          {
+            "raw": "Cavalgar (mesma)-2",
+            "type": "skill_or_rule",
+            "base": "Cavalgar (mesma)",
+            "modifier": -2
           },
           {
             "raw": "Cavalgar-2 (-3 entre especializações)",
@@ -3028,20 +3206,32 @@
         "tokens": []
       },
       "preDefinido": {
-        "raw": "IQ-5, Geografia-2, Matemática-2 ou Navegação-4",
+        "raw": "IQ-5, Geografia (qualquer)-2, Matemática (Topografia)-2 ou Navegação (qualquer)-4",
         "kind": "parsed",
         "onZeroPoints": "use_parsed_pré-definido",
         "parsed": [
           {
-            "raw": "IQ-5, Geografia-2, Matemática-2",
+            "raw": "IQ-5",
             "type": "attribute",
             "base": "IQ",
             "modifier": -5
           },
           {
-            "raw": "Navegação-4",
+            "raw": "Geografia (qualquer)-2",
             "type": "skill_or_rule",
-            "base": "Navegação",
+            "base": "Geografia (qualquer)",
+            "modifier": -2
+          },
+          {
+            "raw": "Matemática (Topografia)-2",
+            "type": "skill_or_rule",
+            "base": "Matemática (Topografia)",
+            "modifier": -2
+          },
+          {
+            "raw": "Navegação (qualquer)-4",
+            "type": "skill_or_rule",
+            "base": "Navegação (qualquer)",
             "modifier": -4
           }
         ]
@@ -3076,9 +3266,23 @@
         }
       },
       "preDefinido": {
-        "raw": "-",
-        "onZeroPoints": "-",
-        "parsed": []
+        "raw": "DX-5 ou Adestramento de Animais (mesma)-3",
+        "kind": "parsed",
+        "onZeroPoints": "use_parsed_pré-definido",
+        "parsed": [
+          {
+            "raw": "DX-5",
+            "type": "attribute",
+            "base": "DX",
+            "modifier": -5
+          },
+          {
+            "raw": "Adestramento de Animais (mesma)-3",
+            "type": "skill_or_rule",
+            "base": "Adestramento de Animais (mesma)",
+            "modifier": -3
+          }
+        ]
       },
       "modificadores": {
         "raw": ""
@@ -3178,7 +3382,7 @@
       "atributoBase": "DX",
       "atributosPossiveis": null,
       "atributoEscolhaObrigatoria": false,
-      "dificuldadeFixa": "M",
+      "dificuldadeFixa": "F",
       "dificuldadeVariavel": false,
       "exigeEspecializacao": false,
       "preDefinicoes": [],
@@ -3277,10 +3481,22 @@
         "onZeroPoints": "use_parsed_pré-definido",
         "parsed": [
           {
-            "raw": "Fisiologia-8, Primeiros Socorros-12, Medicina-15",
+            "raw": "Fisiologia-8",
             "type": "skill_or_rule",
             "base": "Fisiologia",
             "modifier": -8
+          },
+          {
+            "raw": "Primeiros Socorros-12",
+            "type": "skill_or_rule",
+            "base": "Primeiros Socorros",
+            "modifier": -12
+          },
+          {
+            "raw": "Medicina-15",
+            "type": "skill_or_rule",
+            "base": "Medicina",
+            "modifier": -15
           },
           {
             "raw": "Veterinária-5",
@@ -3362,14 +3578,14 @@
         "tokens": []
       },
       "preDefinido": {
-        "raw": "Instrumento Musical-2 ou Poesia-2",
+        "raw": "Instrumento Musical-2 ou Poesia-2 para canções",
         "kind": "parsed",
         "onZeroPoints": "use_parsed_pré-definido",
         "parsed": [
           {
             "raw": "Instrumento Musical-2",
             "type": "skill_or_rule",
-            "base": "Instrumento Musical",
+            "base": "Instrumentos Musicais",
             "modifier": -2
           },
           {
@@ -3415,10 +3631,16 @@
         "onZeroPoints": "use_parsed_pré-definido",
         "parsed": [
           {
-            "raw": "IQ-5, Análise de Mercado-4",
+            "raw": "IQ-5",
             "type": "attribute",
             "base": "IQ",
             "modifier": -5
+          },
+          {
+            "raw": "Análise de Mercado-4",
+            "type": "skill_or_rule",
+            "base": "Análise de Mercado",
+            "modifier": -4
           },
           {
             "raw": "Finanças-6",
@@ -3774,20 +3996,26 @@
         "tokens": []
       },
       "preDefinido": {
-        "raw": "IQ-5, Engenharia (Eletrônica)-3 ou Operação (mesma)-3",
+        "raw": "IQ-5, Engenharia (Eletrônica)-3 ou Operação de Aparelhos Eletrônicos (mesma)-3",
         "kind": "parsed",
         "onZeroPoints": "use_parsed_pré-definido",
         "parsed": [
           {
-            "raw": "IQ-5, Engenharia (Eletrônica)-3",
+            "raw": "IQ-5",
             "type": "attribute",
             "base": "IQ",
             "modifier": -5
           },
           {
-            "raw": "Operação (mesma)-3",
+            "raw": "Engenharia (Eletrônica)-3",
             "type": "skill_or_rule",
-            "base": "Operação (mesma)",
+            "base": "Engenharia (Eletrônica)",
+            "modifier": -3
+          },
+          {
+            "raw": "Operação de Aparelhos Eletrônicos (mesma)-3",
+            "type": "skill_or_rule",
+            "base": "Operação de Aparelhos Eletrônicos (mesma)",
             "modifier": -3
           }
         ]
@@ -3827,10 +4055,22 @@
         "onZeroPoints": "use_parsed_pré-definido",
         "parsed": [
           {
-            "raw": "IQ-6, Comércio-5, Finanças-4",
+            "raw": "IQ-6",
             "type": "attribute",
             "base": "IQ",
             "modifier": -6
+          },
+          {
+            "raw": "Comércio-5",
+            "type": "skill_or_rule",
+            "base": "Comércio",
+            "modifier": -5
+          },
+          {
+            "raw": "Finanças-4",
+            "type": "skill_or_rule",
+            "base": "Finanças",
+            "modifier": -4
           },
           {
             "raw": "Matemática (Estatística)-5",
@@ -4359,9 +4599,15 @@
         "onZeroPoints": "use_parsed_pré-definido",
         "parsed": [
           {
-            "raw": "IQ-5, Biologia-5",
+            "raw": "IQ-5",
             "type": "attribute",
             "base": "IQ",
+            "modifier": -5
+          },
+          {
+            "raw": "Biologia-5",
+            "type": "skill_or_rule",
+            "base": "Biologia",
             "modifier": -5
           },
           {
@@ -4804,10 +5050,16 @@
         "onZeroPoints": "use_parsed_pré-definido",
         "parsed": [
           {
-            "raw": "Percepção-6, Linguagem Corporal-4",
-            "type": "skill_or_rule",
-            "base": "Percepção",
+            "raw": "Percepção-6",
+            "type": "attribute",
+            "base": "PER",
             "modifier": -6
+          },
+          {
+            "raw": "Linguagem Corporal-4",
+            "type": "skill_or_rule",
+            "base": "Linguagem Corporal",
+            "modifier": -4
           },
           {
             "raw": "Psicologia-4",
@@ -4852,10 +5104,22 @@
         "onZeroPoints": "use_parsed_pré-definido",
         "parsed": [
           {
-            "raw": "IQ-6, Medicina-4, Primeiros Socorros-8",
+            "raw": "IQ-6",
             "type": "attribute",
             "base": "IQ",
             "modifier": -6
+          },
+          {
+            "raw": "Medicina-4",
+            "type": "skill_or_rule",
+            "base": "Medicina",
+            "modifier": -4
+          },
+          {
+            "raw": "Primeiros Socorros-8",
+            "type": "skill_or_rule",
+            "base": "Primeiros Socorros",
+            "modifier": -8
           },
           {
             "raw": "Veterinária-5",
@@ -5041,10 +5305,16 @@
         "onZeroPoints": "use_parsed_pré-definido",
         "parsed": [
           {
-            "raw": "IQ-5, Atuação-2",
+            "raw": "IQ-5",
             "type": "attribute",
             "base": "IQ",
             "modifier": -5
+          },
+          {
+            "raw": "Atuação-2",
+            "type": "skill_or_rule",
+            "base": "Atuação",
+            "modifier": -2
           },
           {
             "raw": "Oratória-5",
@@ -5089,9 +5359,21 @@
         "onZeroPoints": "use_parsed_pré-definido",
         "parsed": [
           {
-            "raw": "IQ-6, Análise de Mercado-5, Comércio-6",
+            "raw": "IQ-6",
             "type": "attribute",
             "base": "IQ",
+            "modifier": -6
+          },
+          {
+            "raw": "Análise de Mercado-5",
+            "type": "skill_or_rule",
+            "base": "Análise de Mercado",
+            "modifier": -5
+          },
+          {
+            "raw": "Comércio-6",
+            "type": "skill_or_rule",
+            "base": "Comércio",
             "modifier": -6
           },
           {
@@ -5456,6 +5738,12 @@
         "onZeroPoints": "use_parsed_pré-definido",
         "parsed": [
           {
+            "raw": "DX-4",
+            "type": "attribute",
+            "base": "DX",
+            "modifier": -4
+          },
+          {
             "raw": "DX-4 (-2 entre especializações)",
             "type": "attribute",
             "base": "DX",
@@ -5493,9 +5781,29 @@
         }
       },
       "preDefinido": {
-        "raw": "-",
-        "onZeroPoints": "-",
-        "parsed": []
+        "raw": "DX-5, Espada de Energia-4, Espadas de Lâmina Larga-4",
+        "kind": "parsed",
+        "onZeroPoints": "use_parsed_pré-definido",
+        "parsed": [
+          {
+            "raw": "DX-5",
+            "type": "attribute",
+            "base": "DX",
+            "modifier": -5
+          },
+          {
+            "raw": "Espada de Energia-4",
+            "type": "skill_or_rule",
+            "base": "Espada de Energia",
+            "modifier": -4
+          },
+          {
+            "raw": "Espadas de Lâmina Larga-4",
+            "type": "skill_or_rule",
+            "base": "Espadas de Lâmina Larga",
+            "modifier": -4
+          }
+        ]
       },
       "modificadores": {
         "raw": ""
@@ -5522,9 +5830,23 @@
         }
       },
       "preDefinido": {
-        "raw": "-",
-        "onZeroPoints": "-",
-        "parsed": []
+        "raw": "DX-5, NH em qualquer espada -3",
+        "kind": "parsed",
+        "onZeroPoints": "use_parsed_pré-definido",
+        "parsed": [
+          {
+            "raw": "DX-5",
+            "type": "attribute",
+            "base": "DX",
+            "modifier": -5
+          },
+          {
+            "raw": "NH em qualquer espada -3",
+            "type": "skill_or_rule",
+            "base": "NH em qualquer espada",
+            "modifier": -3
+          }
+        ]
       },
       "modificadores": {
         "raw": ""
@@ -5551,9 +5873,59 @@
         }
       },
       "preDefinido": {
-        "raw": "-",
-        "onZeroPoints": "-",
-        "parsed": []
+        "raw": "DX-5, Espada de Energia-4, Espadas de Lâmina Larga-2, Faca-4, Jitte/Sai-3, Sabre-4, Terçado-4, Tonfa-3",
+        "kind": "parsed",
+        "onZeroPoints": "use_parsed_pré-definido",
+        "parsed": [
+          {
+            "raw": "DX-5",
+            "type": "attribute",
+            "base": "DX",
+            "modifier": -5
+          },
+          {
+            "raw": "Espada de Energia-4",
+            "type": "skill_or_rule",
+            "base": "Espada de Energia",
+            "modifier": -4
+          },
+          {
+            "raw": "Espadas de Lâmina Larga-2",
+            "type": "skill_or_rule",
+            "base": "Espadas de Lâmina Larga",
+            "modifier": -2
+          },
+          {
+            "raw": "Faca-4",
+            "type": "skill_or_rule",
+            "base": "Faca",
+            "modifier": -4
+          },
+          {
+            "raw": "Jitte/Sai-3",
+            "type": "skill_or_rule",
+            "base": "Jitte/Sai",
+            "modifier": -3
+          },
+          {
+            "raw": "Sabre-4",
+            "type": "skill_or_rule",
+            "base": "Sabre",
+            "modifier": -4
+          },
+          {
+            "raw": "Terçado-4",
+            "type": "skill_or_rule",
+            "base": "Terçado",
+            "modifier": -4
+          },
+          {
+            "raw": "Tonfa-3",
+            "type": "skill_or_rule",
+            "base": "Tonfa",
+            "modifier": -3
+          }
+        ]
       },
       "modificadores": {
         "raw": ""
@@ -5580,9 +5952,47 @@
         }
       },
       "preDefinido": {
-        "raw": "-",
-        "onZeroPoints": "-",
-        "parsed": []
+        "raw": "DX-5, Espadas Curtas-2, Espada de Duas Mãos-4, Espada de Energia-4, Rapieira-4, Sabre-4",
+        "kind": "parsed",
+        "onZeroPoints": "use_parsed_pré-definido",
+        "parsed": [
+          {
+            "raw": "DX-5",
+            "type": "attribute",
+            "base": "DX",
+            "modifier": -5
+          },
+          {
+            "raw": "Espadas Curtas-2",
+            "type": "skill_or_rule",
+            "base": "Espadas Curtas",
+            "modifier": -2
+          },
+          {
+            "raw": "Espada de Duas Mãos-4",
+            "type": "skill_or_rule",
+            "base": "Espada de Duas Mãos",
+            "modifier": -4
+          },
+          {
+            "raw": "Espada de Energia-4",
+            "type": "skill_or_rule",
+            "base": "Espada de Energia",
+            "modifier": -4
+          },
+          {
+            "raw": "Rapieira-4",
+            "type": "skill_or_rule",
+            "base": "Rapieira",
+            "modifier": -4
+          },
+          {
+            "raw": "Sabre-4",
+            "type": "skill_or_rule",
+            "base": "Sabre",
+            "modifier": -4
+          }
+        ]
       },
       "modificadores": {
         "raw": ""
@@ -5686,10 +6096,17 @@
         "tokens": []
       },
       "preDefinido": {
-        "raw": "-",
-        "kind": "empty",
-        "onZeroPoints": "use_default_pré-definido",
-        "parsed": []
+        "raw": "HT-6",
+        "kind": "parsed",
+        "onZeroPoints": "use_parsed_pré-definido",
+        "parsed": [
+          {
+            "raw": "HT-6",
+            "type": "attribute",
+            "base": "HT",
+            "modifier": -6
+          }
+        ]
       },
       "modificadores": {
         "raw": "-",
@@ -5726,9 +6143,21 @@
         "onZeroPoints": "use_parsed_pré-definido",
         "parsed": [
           {
-            "raw": "IQ-6, Análise da Informação-6",
+            "raw": "IQ-6",
             "type": "attribute",
             "base": "IQ",
+            "modifier": -6
+          },
+          {
+            "raw": "Análise da Informação-6",
+            "type": "skill_or_rule",
+            "base": "Análise da Informação",
+            "modifier": -6
+          },
+          {
+            "raw": "Tática-6",
+            "type": "skill_or_rule",
+            "base": "Tática",
             "modifier": -6
           },
           {
@@ -5752,7 +6181,7 @@
     {
       "id": "exorcismo",
       "nome": "Exorcismo",
-      "atributoBase": "PER",
+      "atributoBase": "VON",
       "atributosPossiveis": null,
       "atributoEscolhaObrigatoria": false,
       "dificuldadeFixa": "D",
@@ -5769,20 +6198,32 @@
         "tokens": []
       },
       "preDefinido": {
-        "raw": "Magia Ritualística-3, Ritual Religioso-3, Teologia-3 ou Vontade-6",
+        "raw": "Magia Ritualística (qualquer)-3, Ritual Religioso (qualquer)-3, Teologia (qualquer)-3 ou Vontade-6",
         "kind": "parsed",
         "onZeroPoints": "use_parsed_pré-definido",
         "parsed": [
           {
-            "raw": "Magia Ritualística-3, Ritual Religioso-3, Teologia-3",
+            "raw": "Magia Ritualística (qualquer)-3",
             "type": "skill_or_rule",
-            "base": "Magia Ritualística",
+            "base": "Magia Ritualística (qualquer)",
+            "modifier": -3
+          },
+          {
+            "raw": "Ritual Religioso (qualquer)-3",
+            "type": "skill_or_rule",
+            "base": "Ritual Religioso (qualquer)",
+            "modifier": -3
+          },
+          {
+            "raw": "Teologia (qualquer)-3",
+            "type": "skill_or_rule",
+            "base": "Teologia (qualquer)",
             "modifier": -3
           },
           {
             "raw": "Vontade-6",
             "type": "attribute",
-            "base": "Vontade",
+            "base": "VON",
             "modifier": -6
           }
         ]
@@ -5822,6 +6263,12 @@
         "onZeroPoints": "use_parsed_pré-definido",
         "parsed": [
           {
+            "raw": "IQ-5",
+            "type": "attribute",
+            "base": "IQ",
+            "modifier": -5
+          },
+          {
             "raw": "IQ-5 (e outros entre especializações)",
             "type": "attribute",
             "base": "IQ",
@@ -5859,9 +6306,35 @@
         }
       },
       "preDefinido": {
-        "raw": "-",
-        "onZeroPoints": "-",
-        "parsed": []
+        "raw": "DX-4, Adaga de Esgrima-3, Espadas Curtas-3, Espada de Energia-3",
+        "kind": "parsed",
+        "onZeroPoints": "use_parsed_pré-definido",
+        "parsed": [
+          {
+            "raw": "DX-4",
+            "type": "attribute",
+            "base": "DX",
+            "modifier": -4
+          },
+          {
+            "raw": "Adaga de Esgrima-3",
+            "type": "skill_or_rule",
+            "base": "Adaga de Esgrima",
+            "modifier": -3
+          },
+          {
+            "raw": "Espadas Curtas-3",
+            "type": "skill_or_rule",
+            "base": "Espadas Curtas",
+            "modifier": -3
+          },
+          {
+            "raw": "Espada de Energia-3",
+            "type": "skill_or_rule",
+            "base": "Espada de Energia",
+            "modifier": -3
+          }
+        ]
       },
       "modificadores": {
         "raw": ""
@@ -6076,6 +6549,12 @@
         "onZeroPoints": "use_parsed_pré-definido",
         "parsed": [
           {
+            "raw": "IQ-5",
+            "type": "attribute",
+            "base": "IQ",
+            "modifier": -5
+          },
+          {
             "raw": "IQ-5, Joalheiro-4 (-4 entre especializações)",
             "type": "attribute",
             "base": "IQ",
@@ -6113,10 +6592,17 @@
         "tokens": []
       },
       "preDefinido": {
-        "raw": "-",
-        "kind": "empty",
-        "onZeroPoints": "use_default_pré-definido",
-        "parsed": []
+        "raw": "IQ-6",
+        "kind": "parsed",
+        "onZeroPoints": "use_parsed_pré-definido",
+        "parsed": [
+          {
+            "raw": "IQ-6",
+            "type": "attribute",
+            "base": "IQ",
+            "modifier": -6
+          }
+        ]
       },
       "modificadores": {
         "raw": "-",
@@ -6153,10 +6639,16 @@
         "onZeroPoints": "use_parsed_pré-definido",
         "parsed": [
           {
-            "raw": "Economia-3, Comércio-6",
+            "raw": "Economia-3",
             "type": "skill_or_rule",
             "base": "Economia",
             "modifier": -3
+          },
+          {
+            "raw": "Comércio-6",
+            "type": "skill_or_rule",
+            "base": "Comércio",
+            "modifier": -6
           },
           {
             "raw": "Contabilidade-4",
@@ -6201,10 +6693,22 @@
         "onZeroPoints": "use_parsed_pré-definido",
         "parsed": [
           {
-            "raw": "IQ-6, Cirurgia-5, Diagnose-5",
+            "raw": "IQ-6",
             "type": "attribute",
             "base": "IQ",
             "modifier": -6
+          },
+          {
+            "raw": "Cirurgia-5",
+            "type": "skill_or_rule",
+            "base": "Cirurgia",
+            "modifier": -5
+          },
+          {
+            "raw": "Diagnose-5",
+            "type": "skill_or_rule",
+            "base": "Diagnose",
+            "modifier": -5
           },
           {
             "raw": "Medicina-5",
@@ -6609,6 +7113,12 @@
         "onZeroPoints": "use_parsed_pré-definido",
         "parsed": [
           {
+            "raw": "IQ-6",
+            "type": "attribute",
+            "base": "IQ",
+            "modifier": -6
+          },
+          {
             "raw": "IQ-6, Geologia-4, Meteorologia-4, Economia-4, Conhecimento do Terreno-6 (-5 entre especializações)",
             "type": "attribute",
             "base": "IQ",
@@ -6651,10 +7161,16 @@
         "onZeroPoints": "use_parsed_pré-definido",
         "parsed": [
           {
-            "raw": "IQ-6, Geografia (Física)-4",
+            "raw": "IQ-6",
             "type": "attribute",
             "base": "IQ",
             "modifier": -6
+          },
+          {
+            "raw": "Geografia (Física)-4",
+            "type": "skill_or_rule",
+            "base": "Geografia (Física)",
+            "modifier": -4
           },
           {
             "raw": "Prospecção-5",
@@ -6835,9 +7351,15 @@
         "onZeroPoints": "use_parsed_pré-definido",
         "parsed": [
           {
-            "raw": "DX-4, Escalada-4",
+            "raw": "DX-4",
             "type": "attribute",
             "base": "DX",
+            "modifier": -4
+          },
+          {
+            "raw": "Escalada-4",
+            "type": "skill_or_rule",
+            "base": "Escalada",
             "modifier": -4
           },
           {
@@ -7201,10 +7723,16 @@
         "onZeroPoints": "use_parsed_pré-definido",
         "parsed": [
           {
-            "raw": "IQ-5, Intimidação-3",
+            "raw": "IQ-5",
             "type": "attribute",
             "base": "IQ",
             "modifier": -5
+          },
+          {
+            "raw": "Intimidação-3",
+            "type": "skill_or_rule",
+            "base": "Intimidação",
+            "modifier": -3
           },
           {
             "raw": "Psicologia-4",
@@ -7251,7 +7779,7 @@
           {
             "raw": "Vontade-5",
             "type": "attribute",
-            "base": "Vontade",
+            "base": "VON",
             "modifier": -5
           },
           {
@@ -7340,9 +7868,35 @@
         }
       },
       "preDefinido": {
-        "raw": "-",
-        "onZeroPoints": "-",
-        "parsed": []
+        "raw": "DX-5, Adaga de Esgrima-4, Espadas Curtas-3, Espada de Energia-4",
+        "kind": "parsed",
+        "onZeroPoints": "use_parsed_pré-definido",
+        "parsed": [
+          {
+            "raw": "DX-5",
+            "type": "attribute",
+            "base": "DX",
+            "modifier": -5
+          },
+          {
+            "raw": "Adaga de Esgrima-4",
+            "type": "skill_or_rule",
+            "base": "Adaga de Esgrima",
+            "modifier": -4
+          },
+          {
+            "raw": "Espadas Curtas-3",
+            "type": "skill_or_rule",
+            "base": "Espadas Curtas",
+            "modifier": -3
+          },
+          {
+            "raw": "Espada de Energia-4",
+            "type": "skill_or_rule",
+            "base": "Espada de Energia",
+            "modifier": -4
+          }
+        ]
       },
       "modificadores": {
         "raw": ""
@@ -7551,6 +8105,12 @@
         "onZeroPoints": "use_parsed_pré-definido",
         "parsed": [
           {
+            "raw": "IQ-6",
+            "type": "attribute",
+            "base": "IQ",
+            "modifier": -6
+          },
+          {
             "raw": "IQ-6 (-4 a -6 entre especializações)",
             "type": "attribute",
             "base": "IQ",
@@ -7662,9 +8222,41 @@
         }
       },
       "preDefinido": {
-        "raw": "-",
-        "onZeroPoints": "-",
-        "parsed": []
+        "raw": "DX-6, Mangual de Duas Mãos-4, Chicote-3, Chicote de Energia-3, Chicote Monofio-3",
+        "kind": "parsed",
+        "onZeroPoints": "use_parsed_pré-definido",
+        "parsed": [
+          {
+            "raw": "DX-6",
+            "type": "attribute",
+            "base": "DX",
+            "modifier": -6
+          },
+          {
+            "raw": "Mangual de Duas Mãos-4",
+            "type": "skill_or_rule",
+            "base": "Mangual de Duas Mãos",
+            "modifier": -4
+          },
+          {
+            "raw": "Chicote-3",
+            "type": "skill_or_rule",
+            "base": "Chicote",
+            "modifier": -3
+          },
+          {
+            "raw": "Chicote de Energia-3",
+            "type": "skill_or_rule",
+            "base": "Chicote de Energia",
+            "modifier": -3
+          },
+          {
+            "raw": "Chicote Monofio-3",
+            "type": "skill_or_rule",
+            "base": "Chicote Monofio",
+            "modifier": -3
+          }
+        ]
       },
       "modificadores": {
         "raw": ""
@@ -7691,9 +8283,35 @@
         }
       },
       "preDefinido": {
-        "raw": "-",
-        "onZeroPoints": "-",
-        "parsed": []
+        "raw": "DX-5, Armas de Haste-4, Bastão-4, Arma de Arremesso (Lança)-4",
+        "kind": "parsed",
+        "onZeroPoints": "use_parsed_pré-definido",
+        "parsed": [
+          {
+            "raw": "DX-5",
+            "type": "attribute",
+            "base": "DX",
+            "modifier": -5
+          },
+          {
+            "raw": "Armas de Haste-4",
+            "type": "skill_or_rule",
+            "base": "Armas de Haste",
+            "modifier": -4
+          },
+          {
+            "raw": "Bastão-4",
+            "type": "skill_or_rule",
+            "base": "Bastão",
+            "modifier": -4
+          },
+          {
+            "raw": "Arma de Arremesso (Lança)-4",
+            "type": "skill_or_rule",
+            "base": "Arma de Arremesso (Lança)",
+            "modifier": -4
+          }
+        ]
       },
       "modificadores": {
         "raw": ""
@@ -7808,17 +8426,10 @@
         ]
       },
       "preDefinido": {
-        "raw": "(pode ter base em outras perícias -6)",
-        "kind": "parsed",
-        "onZeroPoints": "use_parsed_pré-definido",
-        "parsed": [
-          {
-            "raw": "(pode ter base em outras perícias -6)",
-            "type": "skill_or_rule",
-            "base": "(pode ter base em outras perícias",
-            "modifier": -6
-          }
-        ]
+        "raw": "-",
+        "kind": "empty",
+        "onZeroPoints": "use_default_pré-definido",
+        "parsed": []
       },
       "modificadores": {
         "raw": "-",
@@ -7937,8 +8548,8 @@
         "parsed": [
           {
             "raw": "Percepção-10",
-            "type": "skill_or_rule",
-            "base": "Percepção",
+            "type": "attribute",
+            "base": "PER",
             "modifier": -10
           }
         ]
@@ -8384,6 +8995,12 @@
         "onZeroPoints": "use_parsed_pré-definido",
         "parsed": [
           {
+            "raw": "Ritual Religioso (mesma)-6",
+            "type": "skill_or_rule",
+            "base": "Ritual Religioso (mesma)",
+            "modifier": -6
+          },
+          {
             "raw": "Ritual Religioso-6 (-5 entre especializações)",
             "type": "skill_or_rule",
             "base": "Ritual Religioso",
@@ -8473,10 +9090,16 @@
         ]
       },
       "preDefinido": {
-        "raw": "Tripulante-5, Pilotagem-5",
+        "raw": "IQ-6, entre outras",
         "kind": "parsed",
         "onZeroPoints": "use_parsed_pré-definido",
         "parsed": [
+          {
+            "raw": "IQ-6",
+            "type": "attribute",
+            "base": "IQ",
+            "modifier": -6
+          },
           {
             "raw": "Tripulante-5, Pilotagem-5",
             "type": "skill_or_rule",
@@ -8515,9 +9138,23 @@
         }
       },
       "preDefinido": {
-        "raw": "-",
-        "onZeroPoints": "-",
-        "parsed": []
+        "raw": "DX-6, Machado/Maça-4",
+        "kind": "parsed",
+        "onZeroPoints": "use_parsed_pré-definido",
+        "parsed": [
+          {
+            "raw": "DX-6",
+            "type": "attribute",
+            "base": "DX",
+            "modifier": -6
+          },
+          {
+            "raw": "Machado/Maça-4",
+            "type": "skill_or_rule",
+            "base": "Machado/Maça",
+            "modifier": -4
+          }
+        ]
       },
       "modificadores": {
         "raw": ""
@@ -8530,7 +9167,7 @@
       "atributoBase": "DX",
       "atributosPossiveis": null,
       "atributoEscolhaObrigatoria": false,
-      "dificuldadeFixa": "M",
+      "dificuldadeFixa": "D",
       "dificuldadeVariavel": false,
       "exigeEspecializacao": false,
       "preDefinicoes": [],
@@ -8544,9 +9181,29 @@
         }
       },
       "preDefinido": {
-        "raw": "-",
-        "onZeroPoints": "-",
-        "parsed": []
+        "raw": "DX-6, Kusari-4, Maça/Machado de Duas Mãos-4",
+        "kind": "parsed",
+        "onZeroPoints": "use_parsed_pré-definido",
+        "parsed": [
+          {
+            "raw": "DX-6",
+            "type": "attribute",
+            "base": "DX",
+            "modifier": -6
+          },
+          {
+            "raw": "Kusari-4",
+            "type": "skill_or_rule",
+            "base": "Kusari",
+            "modifier": -4
+          },
+          {
+            "raw": "Maça/Machado de Duas Mãos-4",
+            "type": "skill_or_rule",
+            "base": "Maça/Machado de Duas Mãos",
+            "modifier": -4
+          }
+        ]
       },
       "modificadores": {
         "raw": ""
@@ -8755,6 +9412,12 @@
         "onZeroPoints": "use_parsed_pré-definido",
         "parsed": [
           {
+            "raw": "IQ-6",
+            "type": "attribute",
+            "base": "IQ",
+            "modifier": -6
+          },
+          {
             "raw": "-5 entre especializações",
             "type": "text",
             "base": "-5 entre especializações",
@@ -8797,6 +9460,12 @@
         "onZeroPoints": "use_parsed_pré-definido",
         "parsed": [
           {
+            "raw": "IQ-5",
+            "type": "attribute",
+            "base": "IQ",
+            "modifier": -5
+          },
+          {
             "raw": "IQ-5 (-5 entre especializações)",
             "type": "attribute",
             "base": "IQ",
@@ -8834,9 +9503,29 @@
         }
       },
       "preDefinido": {
-        "raw": "-",
-        "onZeroPoints": "-",
-        "parsed": []
+        "raw": "DX-5, Mangual-4, Maça/Machado de Duas Mãos-3",
+        "kind": "parsed",
+        "onZeroPoints": "use_parsed_pré-definido",
+        "parsed": [
+          {
+            "raw": "DX-5",
+            "type": "attribute",
+            "base": "DX",
+            "modifier": -5
+          },
+          {
+            "raw": "Mangual-4",
+            "type": "skill_or_rule",
+            "base": "Mangual",
+            "modifier": -4
+          },
+          {
+            "raw": "Maça/Machado de Duas Mãos-3",
+            "type": "skill_or_rule",
+            "base": "Maça/Machado de Duas Mãos",
+            "modifier": -3
+          }
+        ]
       },
       "modificadores": {
         "raw": ""
@@ -8863,9 +9552,35 @@
         }
       },
       "preDefinido": {
-        "raw": "-",
-        "onZeroPoints": "-",
-        "parsed": []
+        "raw": "DX-5, Armas de Haste-4, Mangual de Duas Mãos-4, Maça/Machado-3",
+        "kind": "parsed",
+        "onZeroPoints": "use_parsed_pré-definido",
+        "parsed": [
+          {
+            "raw": "DX-5",
+            "type": "attribute",
+            "base": "DX",
+            "modifier": -5
+          },
+          {
+            "raw": "Armas de Haste-4",
+            "type": "skill_or_rule",
+            "base": "Armas de Haste",
+            "modifier": -4
+          },
+          {
+            "raw": "Mangual de Duas Mãos-4",
+            "type": "skill_or_rule",
+            "base": "Mangual de Duas Mãos",
+            "modifier": -4
+          },
+          {
+            "raw": "Maça/Machado-3",
+            "type": "skill_or_rule",
+            "base": "Maça/Machado",
+            "modifier": -3
+          }
+        ]
       },
       "modificadores": {
         "raw": ""
@@ -8897,9 +9612,21 @@
         "onZeroPoints": "use_parsed_pré-definido",
         "parsed": [
           {
-            "raw": "IQ-5, Engenharia-4",
+            "raw": "IQ-5",
             "type": "attribute",
             "base": "IQ",
+            "modifier": -5
+          },
+          {
+            "raw": "Engenharia (mesma)-4",
+            "type": "skill_or_rule",
+            "base": "Engenharia (mesma)",
+            "modifier": -4
+          },
+          {
+            "raw": "Maquinista-5",
+            "type": "skill_or_rule",
+            "base": "Maquinista",
             "modifier": -5
           },
           {
@@ -8946,8 +9673,8 @@
         "parsed": [
           {
             "raw": "Percepção-6",
-            "type": "skill_or_rule",
-            "base": "Percepção",
+            "type": "attribute",
+            "base": "PER",
             "modifier": -6
           }
         ]
@@ -8987,10 +9714,16 @@
         "onZeroPoints": "use_parsed_pré-definido",
         "parsed": [
           {
-            "raw": "IQ-7, Primeiros Socorros-11",
+            "raw": "IQ-7",
             "type": "attribute",
             "base": "IQ",
             "modifier": -7
+          },
+          {
+            "raw": "Primeiros Socorros-11",
+            "type": "skill_or_rule",
+            "base": "Primeiros Socorros",
+            "modifier": -11
           },
           {
             "raw": "Veterinária-5",
@@ -9037,7 +9770,7 @@
           {
             "raw": "Vontade-6",
             "type": "attribute",
-            "base": "Vontade",
+            "base": "VON",
             "modifier": -6
           },
           {
@@ -9083,10 +9816,16 @@
         "onZeroPoints": "use_parsed_pré-definido",
         "parsed": [
           {
-            "raw": "IQ-4, Lábia-2",
+            "raw": "IQ-4",
             "type": "attribute",
             "base": "IQ",
             "modifier": -4
+          },
+          {
+            "raw": "Lábia-2",
+            "type": "skill_or_rule",
+            "base": "Lábia",
+            "modifier": -2
           },
           {
             "raw": "Oratória-3",
@@ -9195,15 +9934,21 @@
         "tokens": []
       },
       "preDefinido": {
-        "raw": "Ferreiro/NT-8, Química-5 ou Joalheiro-8",
+        "raw": "Ferreiro (qualquer)-8, Química-5 ou Joalheiro-8",
         "kind": "parsed",
         "onZeroPoints": "use_parsed_pré-definido",
         "parsed": [
           {
-            "raw": "Ferreiro/NT-8, Química-5",
+            "raw": "Ferreiro (qualquer)-8",
             "type": "skill_or_rule",
-            "base": "Ferreiro/NT",
+            "base": "Ferreiro (qualquer)",
             "modifier": -8
+          },
+          {
+            "raw": "Química-5",
+            "type": "skill_or_rule",
+            "base": "Química",
+            "modifier": -5
           },
           {
             "raw": "Joalheiro-8",
@@ -9328,8 +10073,16 @@
       },
       "preDefinido": {
         "raw": "IQ-4",
-        "onZeroPoints": "-",
-        "parsed": []
+        "kind": "parsed",
+        "onZeroPoints": "use_parsed_pré-definido",
+        "parsed": [
+          {
+            "raw": "IQ-4",
+            "type": "attribute",
+            "base": "IQ",
+            "modifier": -4
+          }
+        ]
       },
       "modificadores": {
         "raw": "Modificadores de Familiaridade Cultural."
@@ -9527,14 +10280,20 @@
         "tokens": []
       },
       "preDefinido": {
-        "raw": "IQ-5, Artilharia-5, Operação de Aparelhos Eletrônicos-5",
+        "raw": "IQ-5, Artilharia (qualquer)-5, entre outras",
         "kind": "parsed",
         "onZeroPoints": "use_parsed_pré-definido",
         "parsed": [
           {
-            "raw": "IQ-5, Artilharia-5, Operação de Aparelhos Eletrônicos-5",
+            "raw": "IQ-5",
             "type": "attribute",
             "base": "IQ",
+            "modifier": -5
+          },
+          {
+            "raw": "Artilharia (qualquer)-5",
+            "type": "skill_or_rule",
+            "base": "Artilharia (qualquer)",
             "modifier": -5
           }
         ]
@@ -9575,8 +10334,8 @@
         "parsed": [
           {
             "raw": "Percepção-5",
-            "type": "skill_or_rule",
-            "base": "Percepção",
+            "type": "attribute",
+            "base": "PER",
             "modifier": -5
           },
           {
@@ -9709,9 +10468,21 @@
         "onZeroPoints": "use_parsed_pré-definido",
         "parsed": [
           {
-            "raw": "IQ-5, Conserto-5",
+            "raw": "IQ-5",
             "type": "attribute",
             "base": "IQ",
+            "modifier": -5
+          },
+          {
+            "raw": "Conserto de Equipamento Eletrônico (mesma)-5",
+            "type": "skill_or_rule",
+            "base": "Conserto de Equipamento Eletrônico (mesma)",
+            "modifier": -5
+          },
+          {
+            "raw": "Engenharia (Eletrônica)-5",
+            "type": "skill_or_rule",
+            "base": "Engenharia (Eletrônica)",
             "modifier": -5
           },
           {
@@ -9839,9 +10610,21 @@
         "onZeroPoints": "use_parsed_pré-definido",
         "parsed": [
           {
-            "raw": "IQ-5, Atuação-3, Dissimulação-5",
+            "raw": "IQ-5",
             "type": "attribute",
             "base": "IQ",
+            "modifier": -5
+          },
+          {
+            "raw": "Atuação-3",
+            "type": "skill_or_rule",
+            "base": "Atuação",
+            "modifier": -3
+          },
+          {
+            "raw": "Dissimulação-5",
+            "type": "skill_or_rule",
+            "base": "Dissimulação",
             "modifier": -5
           },
           {
@@ -9886,6 +10669,12 @@
         "kind": "parsed",
         "onZeroPoints": "use_parsed_pré-definido",
         "parsed": [
+          {
+            "raw": "Biologia-4",
+            "type": "skill_or_rule",
+            "base": "Biologia",
+            "modifier": -4
+          },
           {
             "raw": "Biologia-4 (-2 entre especializações)",
             "type": "skill_or_rule",
@@ -10228,10 +11017,16 @@
         ]
       },
       "preDefinido": {
-        "raw": "Instrumento Musical-2, Canto-2, Dança-2, Encenação de Combate-2, Atuação-5",
+        "raw": "IQ-5, entre outras",
         "kind": "parsed",
         "onZeroPoints": "use_parsed_pré-definido",
         "parsed": [
+          {
+            "raw": "IQ-5",
+            "type": "attribute",
+            "base": "IQ",
+            "modifier": -5
+          },
           {
             "raw": "Instrumento Musical-2, Canto-2, Dança-2, Encenação de Combate-2, Atuação-5",
             "type": "skill_or_rule",
@@ -10270,15 +11065,21 @@
         "tokens": []
       },
       "preDefinido": {
-        "raw": "IQ-5, Furtividade-4 (a pé) ou Observação-5",
+        "raw": "IQ-5, Furtividade-4 (a pé apenas) ou Observação-5",
         "kind": "parsed",
         "onZeroPoints": "use_parsed_pré-definido",
         "parsed": [
           {
-            "raw": "IQ-5, Furtividade-4 (a pé)",
+            "raw": "IQ-5",
             "type": "attribute",
             "base": "IQ",
             "modifier": -5
+          },
+          {
+            "raw": "Furtividade-4 (a pé apenas)",
+            "type": "skill_or_rule",
+            "base": "Furtividade",
+            "modifier": -4
           },
           {
             "raw": "Observação-5",
@@ -10516,8 +11317,8 @@
         "parsed": [
           {
             "raw": "Percepção-4",
-            "type": "skill_or_rule",
-            "base": "Percepção",
+            "type": "attribute",
+            "base": "PER",
             "modifier": -4
           }
         ]
@@ -10902,17 +11703,10 @@
         ]
       },
       "preDefinido": {
-        "raw": "Nenhum (Medicina Alternativa-4 em campanha cinematográfica)",
-        "kind": "parsed",
-        "onZeroPoints": "use_parsed_pré-definido",
-        "parsed": [
-          {
-            "raw": "Nenhum (Medicina Alternativa-4 em campanha cinematográfica)",
-            "type": "skill_or_rule",
-            "base": "Nenhum (Medicina Alternativa",
-            "modifier": -4
-          }
-        ]
+        "raw": "-",
+        "kind": "empty",
+        "onZeroPoints": "use_default_pré-definido",
+        "parsed": []
       },
       "modificadores": {
         "raw": "Modificadores fisiológicos.",
@@ -11128,14 +11922,26 @@
         "tokens": []
       },
       "preDefinido": {
-        "raw": "IQ-4, Medicina-4, Medicina Alternativa-4 ou Veterinária-4",
+        "raw": "IQ-4, Medicina, Medicina Alternativa ou Veterinária-4",
         "kind": "parsed",
         "onZeroPoints": "use_parsed_pré-definido",
         "parsed": [
           {
-            "raw": "IQ-4, Medicina-4, Medicina Alternativa-4",
+            "raw": "IQ-4",
             "type": "attribute",
             "base": "IQ",
+            "modifier": -4
+          },
+          {
+            "raw": "Medicina-4",
+            "type": "skill_or_rule",
+            "base": "Medicina",
+            "modifier": -4
+          },
+          {
+            "raw": "Medicina Alternativa-4",
+            "type": "skill_or_rule",
+            "base": "Medicina Alternativa",
             "modifier": -4
           },
           {
@@ -11223,6 +12029,12 @@
         "onZeroPoints": "use_parsed_pré-definido",
         "parsed": [
           {
+            "raw": "DX-4",
+            "type": "attribute",
+            "base": "DX",
+            "modifier": -4
+          },
+          {
             "raw": "DX-4 (-4 entre especializações)",
             "type": "attribute",
             "base": "DX",
@@ -11265,9 +12077,15 @@
         "onZeroPoints": "use_parsed_pré-definido",
         "parsed": [
           {
-            "raw": "IQ-5, Comércio-5",
+            "raw": "IQ-5",
             "type": "attribute",
             "base": "IQ",
+            "modifier": -5
+          },
+          {
+            "raw": "Comércio-5",
+            "type": "skill_or_rule",
+            "base": "Comércio",
             "modifier": -5
           },
           {
@@ -11406,10 +12224,16 @@
         "onZeroPoints": "use_parsed_pré-definido",
         "parsed": [
           {
-            "raw": "DX-6, Surrupiar-5",
+            "raw": "DX-6",
             "type": "attribute",
             "base": "DX",
             "modifier": -6
+          },
+          {
+            "raw": "Surrupiar-5",
+            "type": "skill_or_rule",
+            "base": "Surrupiar",
+            "modifier": -5
           },
           {
             "raw": "Prestidigitação-4",
@@ -11542,15 +12366,39 @@
         "tokens": []
       },
       "preDefinido": {
-        "raw": "Espadas de Lâmina Larga-4",
+        "raw": "DX-5, Espadas de Lâmina Larga-4, Adaga de Esgrima-3, Sabre-3, Terçado-3",
         "kind": "parsed",
         "onZeroPoints": "use_parsed_pré-definido",
         "parsed": [
+          {
+            "raw": "DX-5",
+            "type": "attribute",
+            "base": "DX",
+            "modifier": -5
+          },
           {
             "raw": "Espadas de Lâmina Larga-4",
             "type": "skill_or_rule",
             "base": "Espadas de Lâmina Larga",
             "modifier": -4
+          },
+          {
+            "raw": "Adaga de Esgrima-3",
+            "type": "skill_or_rule",
+            "base": "Adaga de Esgrima",
+            "modifier": -3
+          },
+          {
+            "raw": "Sabre-3",
+            "type": "skill_or_rule",
+            "base": "Sabre",
+            "modifier": -3
+          },
+          {
+            "raw": "Terçado-3",
+            "type": "skill_or_rule",
+            "base": "Terçado",
+            "modifier": -3
           }
         ]
       },
@@ -11590,8 +12438,8 @@
         "parsed": [
           {
             "raw": "Percepção-5",
-            "type": "skill_or_rule",
-            "base": "Percepção",
+            "type": "attribute",
+            "base": "PER",
             "modifier": -5
           },
           {
@@ -11675,8 +12523,22 @@
       },
       "preDefinido": {
         "raw": "DX-5 ou IQ-5",
-        "onZeroPoints": "-",
-        "parsed": []
+        "kind": "parsed",
+        "onZeroPoints": "use_parsed_pré-definido",
+        "parsed": [
+          {
+            "raw": "DX-5",
+            "type": "attribute",
+            "base": "DX",
+            "modifier": -5
+          },
+          {
+            "raw": "IQ-5",
+            "type": "attribute",
+            "base": "IQ",
+            "modifier": -5
+          }
+        ]
       },
       "modificadores": {
         "raw": "-2 p/ barco não familiar na especialidade; -3 p/ mau tempo/perigos."
@@ -11754,8 +12616,8 @@
         "parsed": [
           {
             "raw": "Percepção-5",
-            "type": "skill_or_rule",
-            "base": "Percepção",
+            "type": "attribute",
+            "base": "PER",
             "modifier": -5
           },
           {
@@ -11844,10 +12706,16 @@
         "tokens": []
       },
       "preDefinido": {
-        "raw": "Espadas de Lâmina Larga-4 ou Espadas Curtas-4",
+        "raw": "DX-5, Espadas de Lâmina Larga-4, Espadas Curtas-4, Adaga de Esgrima-3, Rapieira-3, Terçado-3",
         "kind": "parsed",
         "onZeroPoints": "use_parsed_pré-definido",
         "parsed": [
+          {
+            "raw": "DX-5",
+            "type": "attribute",
+            "base": "DX",
+            "modifier": -5
+          },
           {
             "raw": "Espadas de Lâmina Larga-4",
             "type": "skill_or_rule",
@@ -11859,6 +12727,24 @@
             "type": "skill_or_rule",
             "base": "Espadas Curtas",
             "modifier": -4
+          },
+          {
+            "raw": "Adaga de Esgrima-3",
+            "type": "skill_or_rule",
+            "base": "Adaga de Esgrima",
+            "modifier": -3
+          },
+          {
+            "raw": "Rapieira-3",
+            "type": "skill_or_rule",
+            "base": "Rapieira",
+            "modifier": -3
+          },
+          {
+            "raw": "Terçado-3",
+            "type": "skill_or_rule",
+            "base": "Terçado",
+            "modifier": -3
           }
         ]
       },
@@ -11907,7 +12793,7 @@
       "atributoBase": "DX",
       "atributosPossiveis": null,
       "atributoEscolhaObrigatoria": false,
-      "dificuldadeFixa": "M",
+      "dificuldadeFixa": "F",
       "dificuldadeVariavel": false,
       "exigeEspecializacao": false,
       "preDefinicoes": [],
@@ -12104,20 +12990,20 @@
         "tokens": []
       },
       "preDefinido": {
-        "raw": "Percepção-5 ou Naturalista-3",
+        "raw": "Percepção-5 ou Naturalista (mesmo planeta)-3",
         "kind": "parsed",
         "onZeroPoints": "use_parsed_pré-definido",
         "parsed": [
           {
             "raw": "Percepção-5",
-            "type": "skill_or_rule",
-            "base": "Percepção",
+            "type": "attribute",
+            "base": "PER",
             "modifier": -5
           },
           {
-            "raw": "Naturalista-3",
+            "raw": "Naturalista (mesmo planeta)-3",
             "type": "skill_or_rule",
-            "base": "Naturalista",
+            "base": "Naturalista (mesmo planeta)",
             "modifier": -3
           }
         ]
@@ -12158,8 +13044,8 @@
         "parsed": [
           {
             "raw": "Percepção-5",
-            "type": "skill_or_rule",
-            "base": "Percepção",
+            "type": "attribute",
+            "base": "PER",
             "modifier": -5
           }
         ]
@@ -12199,10 +13085,16 @@
         "onZeroPoints": "use_parsed_pré-definido",
         "parsed": [
           {
-            "raw": "IQ-6, Antropologia-3",
+            "raw": "IQ-6",
             "type": "attribute",
             "base": "IQ",
             "modifier": -6
+          },
+          {
+            "raw": "Antropologia-3",
+            "type": "skill_or_rule",
+            "base": "Antropologia",
+            "modifier": -3
           },
           {
             "raw": "Psicologia-4",
@@ -12339,7 +13231,7 @@
           {
             "raw": "Vontade-6",
             "type": "attribute",
-            "base": "Vontade",
+            "base": "VON",
             "modifier": -6
           }
         ]
@@ -12456,10 +13348,16 @@
         "onZeroPoints": "use_parsed_pré-definido",
         "parsed": [
           {
-            "raw": "DX-5, Prestidigitação-4",
+            "raw": "DX-5",
             "type": "attribute",
             "base": "DX",
             "modifier": -5
+          },
+          {
+            "raw": "Prestidigitação-4",
+            "type": "skill_or_rule",
+            "base": "Prestidigitação",
+            "modifier": -4
           },
           {
             "raw": "Punga-4",
@@ -12589,15 +13487,39 @@
         "tokens": []
       },
       "preDefinido": {
-        "raw": "Espadas Curtas-4",
+        "raw": "DX-5, Espadas Curtas-4, Adaga de Esgrima-3, Rapieira-3, Sabre-3",
         "kind": "parsed",
         "onZeroPoints": "use_parsed_pré-definido",
         "parsed": [
+          {
+            "raw": "DX-5",
+            "type": "attribute",
+            "base": "DX",
+            "modifier": -5
+          },
           {
             "raw": "Espadas Curtas-4",
             "type": "skill_or_rule",
             "base": "Espadas Curtas",
             "modifier": -4
+          },
+          {
+            "raw": "Adaga de Esgrima-3",
+            "type": "skill_or_rule",
+            "base": "Adaga de Esgrima",
+            "modifier": -3
+          },
+          {
+            "raw": "Rapieira-3",
+            "type": "skill_or_rule",
+            "base": "Rapieira",
+            "modifier": -3
+          },
+          {
+            "raw": "Sabre-3",
+            "type": "skill_or_rule",
+            "base": "Sabre",
+            "modifier": -3
           }
         ]
       },
@@ -12631,9 +13553,23 @@
         }
       },
       "preDefinido": {
-        "raw": "-",
-        "onZeroPoints": "-",
-        "parsed": []
+        "raw": "DX-5, Espadas Curtas-3",
+        "kind": "parsed",
+        "onZeroPoints": "use_parsed_pré-definido",
+        "parsed": [
+          {
+            "raw": "DX-5",
+            "type": "attribute",
+            "base": "DX",
+            "modifier": -5
+          },
+          {
+            "raw": "Espadas Curtas-3",
+            "type": "skill_or_rule",
+            "base": "Espadas Curtas",
+            "modifier": -3
+          }
+        ]
       },
       "modificadores": {
         "raw": ""
@@ -12703,6 +13639,12 @@
         "kind": "parsed",
         "onZeroPoints": "use_parsed_pré-definido",
         "parsed": [
+          {
+            "raw": "IQ-4",
+            "type": "attribute",
+            "base": "IQ",
+            "modifier": -4
+          },
           {
             "raw": "IQ-4 (e outros entre especializações)",
             "type": "attribute",
@@ -12828,15 +13770,27 @@
         "tokens": []
       },
       "preDefinido": {
-        "raw": "IQ-6, Farmácia-3, Química-5 ou Medicina-3",
+        "raw": "IQ-6, Farmácia (qualquer)-3, Química-5 ou Medicina-3",
         "kind": "parsed",
         "onZeroPoints": "use_parsed_pré-definido",
         "parsed": [
           {
-            "raw": "IQ-6, Farmácia-3, Química-5",
+            "raw": "IQ-6",
             "type": "attribute",
             "base": "IQ",
             "modifier": -6
+          },
+          {
+            "raw": "Farmácia (qualquer)-3",
+            "type": "skill_or_rule",
+            "base": "Farmácia (qualquer)",
+            "modifier": -3
+          },
+          {
+            "raw": "Química-5",
+            "type": "skill_or_rule",
+            "base": "Química",
+            "modifier": -5
           },
           {
             "raw": "Medicina-3",
@@ -12918,15 +13872,21 @@
         "tokens": []
       },
       "preDefinido": {
-        "raw": "Adestramento-6, Cirurgia-5 ou Medicina-5",
+        "raw": "Adestramento de Animais (qualquer)-6, Cirurgia-5 ou Medicina-5",
         "kind": "parsed",
         "onZeroPoints": "use_parsed_pré-definido",
         "parsed": [
           {
-            "raw": "Adestramento-6, Cirurgia-5",
+            "raw": "Adestramento de Animais (qualquer)-6",
             "type": "skill_or_rule",
-            "base": "Adestramento",
+            "base": "Adestramento de Animais (qualquer)",
             "modifier": -6
+          },
+          {
+            "raw": "Cirurgia-5",
+            "type": "skill_or_rule",
+            "base": "Cirurgia",
+            "modifier": -5
           },
           {
             "raw": "Medicina-5",
