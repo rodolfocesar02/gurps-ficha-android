@@ -51,8 +51,8 @@ android {
         applicationId = "com.gurps.ficha"
         minSdk = 24
         targetSdk = 35
-        versionCode = 223
-        versionName = "12.9.23-CONTA-DO-TESTE"
+        versionCode = 224
+        versionName = "12.9.24-FIDELIDADE"
         buildConfigField("String", "DISCORD_ROLL_API_BASE_URL", "\"$discordApiBaseUrl\"")
         buildConfigField("String", "DISCORD_ROLL_API_KEY", "\"$discordApiKey\"")
         buildConfigField(

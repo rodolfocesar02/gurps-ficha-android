@@ -871,46 +871,6 @@
       }
     },
     {
-      "id": "armas_de_combate_corpo_a_corpo",
-      "nome": "Armas de Combate Corpo a Corpo",
-      "atributoBase": "DX",
-      "dificuldadeFixa": "M",
-      "dificuldadeVariavel": true,
-      "atributosPossiveis": null,
-      "atributoEscolhaObrigatoria": false,
-      "descricao": "Predefinido: Especial.\n\nEssa não é uma perícia e sim uma coleção de perícias — uma para cada classe de armas de combate corpo a corpo intimamente relacionadas.\n\nEssas perícias são baseadas em DX e têm um valor predefinido igual a DX-4 se forem Fáceis, DX-5 as Médias ou DX-6 as Difíceis.\n\nVeja as descrições específicas de cada perícia para encontrar os outros valores predefinidos.\n\nFaça um teste de Armas de Combate Corpo a Corpo para atingir um inimigo durante um combate.\n\nTambém é possível usar essas perícias para aparar.\n\nO valor da defesa Aparar é igual a (NH/2) + 3, arredondado para baixo.\n\nQuando se fala em equilíbrio e função, as Armas de Combate Corpo a Corpo se encaixam em categorias amplas.\n\nQuando se referem a uma delas, as regras se aplicarão a todas as armas da mesma categoria e a todas as perícias de Armas de Combate Corpo a Corpo utilizadas para empunhá-las.\n\nPor exemplo, “armas de esgrima” significa “todas as armas utilizadas com qualquer uma das perícias Adaga de Esgrima, Rapieira, Sabre ou Terçado”.\n\nArmas de Esgrima\n\nAs armas de Esgrima são leves, empunhadas com uma mão (geralmente são lâminas com cabos) e otimizadas para se realizar manobras Aparar.\n\nSe tiver uma arma desse tipo, o personagem receberá um bônus maior de retirada quando estiver aparando — v. Retirada (pág. 377).\n\nAlém disso, ele sofre metade da penalidade usual por aparar mais de uma vez com a mesma mão (v. Aparar, pág. 376).\n\nObserve que as armas de esgrima são leves e têm chance de quebrar quando usadas para aparar uma arma mais pesada.\n\nElas não podem ser utilizadas para aparar manguais.\n\nO personagem deve estar em movimento para tirar proveito da velocidade e maneabilidade dessas armas: todos os ataques e manobras Aparar estão sujeitos a uma penalidade igual ao seu nível de carga ex.: Carga Pesada resulta em uma penalidade de -3 nas tentativas de acertar o alvo ou aparar.\n\nAs perícias dessa categoria têm valor predefinido igual ao NH de qualquer outra -3.\n\nElas também têm um valor predefinido baseado nas perícias com espadas, conforme observado a seguir.",
-      "paginaRaw": "177",
-      "preRequisito": {
-        "raw": "-",
-        "kind": "none",
-        "allowWithoutPrerequisite": true,
-        "logic": null,
-        "tokens": []
-      },
-      "preDefinido": {
-        "raw": "DX-4 (Fácil), -5 (Média), -6 (Difícil)",
-        "kind": "parsed",
-        "onZeroPoints": "use_parsed_pré-definido",
-        "parsed": [
-          {
-            "raw": "DX-4 (Fácil), -5 (Média), -6 (Difícil)",
-            "type": "attribute",
-            "base": "DX",
-            "modifier": -4
-          }
-        ]
-      },
-      "modificadores": {
-        "raw": "-",
-        "automation": "disabled_if_empty"
-      },
-      "policy": {
-        "emptyPrerequisite": "allow_without_block",
-        "emptyPredefinido": "on_zero_points_use_default_pré-definido",
-        "emptyModifiers": "do_not_automate"
-      }
-    },
-    {
       "id": "armas_de_feixe_nt",
       "nome": "Armas de Feixe/NT",
       "atributoBase": "DX",

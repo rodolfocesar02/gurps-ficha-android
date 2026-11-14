@@ -186,10 +186,16 @@ class PericiasCatalogoUnificadoTest {
     fun `o arquivo unificado carrega as regras junto com a pericia`() {
         // A prova de que a fusão levou o conteúdo, e não só os ids. Se o passo 3
         // tivesse copiado a base sem a camada, o app perderia descrição e
-        // modificadores de todas as 281 de uma vez — e nenhum outro teste
+        // modificadores de todas as perícias de uma vez — e nenhum outro teste
         // notaria, porque os campos de tipo continuariam certos.
+        //
+        // ⚠️ Eram 281. Virou **280** no PF-3 (14/nov/2026): a entrada "Armas de
+        // Combate Corpo a Corpo" saiu porque o Módulo Básico diz, com todas as
+        // letras (pág. 169 e o próprio texto dela), que **não é uma perícia e sim
+        // a coleção delas** — o título do grupo. Ela era oferecida na busca como
+        // se fosse comprável, e o personagem podia "aprender o grupo".
         val itens = mapa()
-        assertEquals(281, itens.size)
+        assertEquals(280, itens.size)
         assertTrue(
             "quase toda perícia deveria ter descrição",
             itens.count { !it.descricao.isNullOrBlank() } > 270

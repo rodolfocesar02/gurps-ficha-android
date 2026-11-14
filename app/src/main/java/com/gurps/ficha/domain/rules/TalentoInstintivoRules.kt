@@ -27,7 +27,7 @@ import com.gurps.ficha.model.Personagem
  *
  * Eu havia registrado no plano que ela dependia de o app calcular o **valor
  * predefinido** de cada perícia. Fui conferir: o campo `preDefinicoes` existe no
- * catálogo e está **vazio nas 281 perícias** — nenhum dado.
+ * catálogo e está **vazio nas 280 perícias** — nenhum dado.
  *
  * Mas a vantagem **não precisa do predefinido**: ela o substitui pelo atributo.
  * O que ela precisa é da lista de perícias que o personagem **não tem** e do

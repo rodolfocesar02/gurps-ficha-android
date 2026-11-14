@@ -170,16 +170,6 @@
     "exigeEspecializacao": false
   },
   {
-    "id": "armas_de_combate_corpo_a_corpo",
-    "nome": "Armas de Combate Corpo a Corpo",
-    "atributoBase": "DX",
-    "atributosPossiveis": null,
-    "atributoEscolhaObrigatoria": false,
-    "dificuldadeFixa": "M",
-    "dificuldadeVariavel": true,
-    "exigeEspecializacao": null
-  },
-  {
     "id": "armas_de_feixe_nt",
     "nome": "Armas de Feixe/NT",
     "atributoBase": "DX",
